@@ -305,14 +305,10 @@ public:
 protected:
 
     double m_potentialEnergy;
-    /// the list of the springs
-    Data<sofa::helper::vector<Spring> > springs;
+
     /// the list of the local referentials of the springs
     VecCoord springRef;
-    /// bool to allow the display of the 2 parts of springs torsions
-    Data<bool> showLawfulTorsion;
-    Data<bool> showExtraTorsion;
-    Data<float> showFactorSize;
+
 
     JointSpringForceFieldInternalData<DataTypes> data;
     friend class JointSpringForceFieldInternalData<DataTypes>;
@@ -382,6 +378,13 @@ public:
     }
 
     bool useMask() const {return true;}
+
+    /// the list of the springs
+    Data<sofa::helper::vector<Spring> > springs;
+    /// bool to allow the display of the 2 parts of springs torsions
+    Data<bool> showLawfulTorsion;
+    Data<bool> showExtraTorsion;
+    Data<SReal> showFactorSize;
 
 };
 

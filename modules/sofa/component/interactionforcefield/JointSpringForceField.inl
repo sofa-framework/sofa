@@ -54,7 +54,7 @@ JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , showLawfulTorsion(initData(&showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
     , showExtraTorsion(initData(&showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
-    , showFactorSize(initData(&showFactorSize, 1.0f, "showFactorSize", "modify the size of the debug information of a given factor" ))
+    , showFactorSize(initData(&showFactorSize, 1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
 }
 
@@ -63,7 +63,7 @@ JointSpringForceField<DataTypes>::JointSpringForceField()
     : springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , showLawfulTorsion(initData(&showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
     , showExtraTorsion(initData(&showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
-    , showFactorSize(initData(&showFactorSize, 1.0f, "showFactorSize", "modify the size of the debug information of a given factor" ))
+    , showFactorSize(initData(&showFactorSize, 1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
 }
 
@@ -297,11 +297,11 @@ void JointSpringForceField<DataTypes>::draw()
         }
         if(springs[i].freeMovements[4] == 1)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,1*showFactorSize.getValue(),0));
+            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,(Real)(1.0*showFactorSize.getValue()),0));
         }
         if(springs[i].freeMovements[5] == 1)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,0,1*showFactorSize.getValue()));
+            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,0,(Real)(1.0*showFactorSize.getValue())) );
         }
 
         //---debugging
