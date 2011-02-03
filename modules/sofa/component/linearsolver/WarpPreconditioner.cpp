@@ -51,7 +51,13 @@ namespace linearsolver
 SOFA_DECL_CLASS(WarpPreconditioner)
 
 int WarpPreconditionerClass = core::RegisterObject("Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix")
+#ifndef SOFA_FLOAT
         .add< WarpPreconditioner< defaulttype::Vec3dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< WarpPreconditioner< defaulttype::Vec3fTypes > >()
+#endif
+
         .addAlias("WarpLinearSolver");
 ;
 

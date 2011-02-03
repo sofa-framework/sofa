@@ -255,7 +255,7 @@ void LineLocalMinDistanceFilter::LMDFilterPointCreationFunction(int, void *param
     sofa::core::topology::BaseMeshTopology * bmt = (sofa::core::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
-    component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(pLMDFilter->getContext()->getMechanicalState());
+    component::container::MechanicalObject<defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(pLMDFilter->getContext()->getMechanicalState());
     if(mstateVec3d != NULL)
     {
         pInfo.setPositionFiltering(mstateVec3d->getX());
@@ -280,7 +280,7 @@ void LineLocalMinDistanceFilter::LMDFilterLineCreationFunction(int, void *param,
 
 
     /////// TODO : template de la classe
-    component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(lLMDFilter->getContext()->getMechanicalState());
+    component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
     if(mstateVec3d != NULL)
     {
         lInfo.setPositionFiltering(mstateVec3d->getX());

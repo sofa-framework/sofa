@@ -402,7 +402,7 @@ void PositionalLight::draw()
         const Vector3& col = color.getValue();
 
         glDisable(GL_LIGHTING);
-        glColor3dv(col.ptr());
+        glColor3fv(col.ptr());
 
         glPushMatrix();
         glTranslated(pos[0], pos[1], pos[2]);
@@ -492,7 +492,7 @@ void SpotLight::draw()
         GLfloat rotMat[16];
         q.writeOpenGlMatrix(rotMat);
         glDisable(GL_LIGHTING);
-        glColor3dv(col.ptr());
+        glColor3fv(col.ptr());
 
         glPushMatrix();
         glTranslated(pos[0], pos[1], pos[2]);

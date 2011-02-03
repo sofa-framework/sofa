@@ -42,7 +42,7 @@ int FixPickedParticleButtonSettingClass = core::RegisterObject("Fix a picked par
         ;
 
 FixPickedParticleButtonSetting::FixPickedParticleButtonSetting():
-    stiffness(initData(&stiffness, 10000.0, "stiffness", "Stiffness of the spring to fix a particule"))
+    stiffness(initData(&stiffness, (SReal)10000.0, "stiffness", "Stiffness of the spring to fix a particule"))
 {
 }
 

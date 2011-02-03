@@ -61,8 +61,8 @@ class SOFA_COMPONENT_VISUALMODEL_API BaseCamera : public core::objectmodel::Base
 public:
     enum  CameraType { PERSPECTIVE_TYPE =0, ORTHOGRAPHIC_TYPE =1};
 
-    typedef defaulttype::Vec3d Vec3;
-    typedef defaulttype::Quatd Quat;
+    typedef defaulttype::Vector3 Vec3;
+    typedef defaulttype::Quat Quat;
 
     Data<Vec3> p_position;
     Data<Quat> p_orientation;

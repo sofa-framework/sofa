@@ -124,7 +124,7 @@ void SpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addSpringForce(double& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring)
+void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring)
 {
     int a = spring.m1;
     int b = spring.m2;
