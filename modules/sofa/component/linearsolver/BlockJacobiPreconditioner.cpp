@@ -39,7 +39,13 @@ namespace linearsolver
 SOFA_DECL_CLASS(BlockJacobiPreconditioner)
 
 int BlockJacobiPreconditionerClass = core::RegisterObject("Linear solver based on a NxN bloc diagonal matrix (i.e. block Jacobi preconditioner)")
+#ifndef SOFA_FLOAT
         .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,double> ,FullVector<double> > >()
+#endif
+//#ifndef SOFA_DOUBLE
+//.add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,float> ,FullVector<float> > >()
+//#endif
+
 // .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<2,double> ,FullVector<double> > >()
 // .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<6,double> ,FullVector<double> > >()
 // .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<9,double> ,FullVector<double> > >()

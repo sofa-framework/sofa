@@ -210,7 +210,7 @@ BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
 
 void BaseCamera::getOpenGLMatrix(double mat[16])
 {
-    defaulttype::SolidTypes<double>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
+    defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
     world_H_cam.inversed().writeOpenGlMatrix(mat);
 }
 
@@ -267,7 +267,7 @@ BaseCamera::Vec3 BaseCamera::getPositionFromOrientation(const BaseCamera::Vec3 &
 void BaseCamera::rotateCameraAroundPoint(Quat& rotation, const Vec3& point)
 {
     Vec3 tempAxis;
-    double tempAngle;
+    SReal tempAngle;
     Quat orientation = this->getOrientation();
     Vec3& position = *p_position.beginEdit();
     double distance = (point - p_position.getValue()).norm();
@@ -287,17 +287,17 @@ void BaseCamera::rotateCameraAroundPoint(Quat& rotation, const Vec3& point)
 void BaseCamera::rotateWorldAroundPoint(Quat& rotation, const Vec3&  point )
 {
     Vec3 tempAxis;
-    double tempAngle;
+    SReal tempAngle;
     Quat orientationCam = this->getOrientation();
     Vec3& positionCam = *p_position.beginEdit();
 
     rotation.quatToAxis(tempAxis, tempAngle);
     Quat tempQuat (orientationCam.rotate(-tempAxis), tempAngle);
 
-    defaulttype::SolidTypes<double>::Transform world_H_cam(positionCam, orientationCam);
-    defaulttype::SolidTypes<double>::Transform world_H_pivot(point, Quat());
-    defaulttype::SolidTypes<double>::Transform pivotBefore_R_pivotAfter(Vec3(0.0,0.0,0.0), tempQuat);
-    defaulttype::SolidTypes<double>::Transform camera_H_WorldAfter = world_H_cam.inversed() * world_H_pivot * pivotBefore_R_pivotAfter * world_H_pivot.inversed();
+    defaulttype::SolidTypes<SReal>::Transform world_H_cam(positionCam, orientationCam);
+    defaulttype::SolidTypes<SReal>::Transform world_H_pivot(point, Quat());
+    defaulttype::SolidTypes<SReal>::Transform pivotBefore_R_pivotAfter(Vec3(0.0,0.0,0.0), tempQuat);
+    defaulttype::SolidTypes<SReal>::Transform camera_H_WorldAfter = world_H_cam.inversed() * world_H_pivot * pivotBefore_R_pivotAfter * world_H_pivot.inversed();
     //defaulttype::SolidTypes<double>::Transform camera_H_WorldAfter = worldBefore_H_cam.inversed()*worldBefore_R_worldAfter;
 
     positionCam = camera_H_WorldAfter.inversed().getOrigin();

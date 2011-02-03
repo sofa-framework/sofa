@@ -59,9 +59,9 @@ void EnslavementForceFeedback::init()
         context->getTreeObjects<core::CollisionModel>(&collisionModels);
 }
 
-void EnslavementForceFeedback::computeForce(double x, double y, double z,
-        double /*u*/, double /*v*/, double /*w*/, double /*q*/,
-        double& fx, double& fy, double& fz)
+void EnslavementForceFeedback::computeForce(SReal x, SReal y, SReal z,
+        SReal /*u*/, SReal /*v*/, SReal /*w*/, SReal /*q*/,
+        SReal& fx, SReal& fy, SReal& fz)
 {
     if (f_activate.getValue())
     {
@@ -71,11 +71,11 @@ void EnslavementForceFeedback::computeForce(double x, double y, double z,
             // contact position on object surface
             if (collisionModels[i]->getNumberOfContacts() > 0)
             {
-                double mx = (*mState->getX())[0].getCenter()[0];
-                double my = (*mState->getX())[0].getCenter()[1];
-                double mz = (*mState->getX())[0].getCenter()[2];
+                SReal mx = (*mState->getX())[0].getCenter()[0];
+                SReal my = (*mState->getX())[0].getCenter()[1];
+                SReal mz = (*mState->getX())[0].getCenter()[2];
 
-                const double& s = stiffness.getValue();
+                const SReal& s = stiffness.getValue();
                 fx = s * (mx - x);
                 fy = s * (my - y);
                 fz = s * (mz - z);
@@ -89,9 +89,9 @@ void EnslavementForceFeedback::computeForce(double x, double y, double z,
 }
 
 
-void EnslavementForceFeedback::computeWrench(const SolidTypes<double>::Transform &world_H_tool,
-        const SolidTypes<double>::SpatialVector &/*V_tool_world*/,
-        SolidTypes<double>::SpatialVector &W_tool_world )
+void EnslavementForceFeedback::computeWrench(const SolidTypes<SReal>::Transform &world_H_tool,
+        const SolidTypes<SReal>::SpatialVector &/*V_tool_world*/,
+        SolidTypes<SReal>::SpatialVector &W_tool_world )
 {
 
     if (!f_activate.getValue())
@@ -112,11 +112,11 @@ void EnslavementForceFeedback::computeWrench(const SolidTypes<double>::Transform
 
     if (is_in_contact)
     {
-        SolidTypes<double>::Transform world_H_tool_simu(  (*mState->getX())[0].getCenter(), (*mState->getX())[0].getOrientation()  );
-        SolidTypes<double>::Transform tool_H_tool_simu = world_H_tool.inversed() * world_H_tool_simu;
-        SolidTypes<double>::SpatialVector DX_tool_tool = tool_H_tool_simu.DTrans();
+        SolidTypes<SReal>::Transform world_H_tool_simu(  (*mState->getX())[0].getCenter(), (*mState->getX())[0].getOrientation()  );
+        SolidTypes<SReal>::Transform tool_H_tool_simu = world_H_tool.inversed() * world_H_tool_simu;
+        SolidTypes<SReal>::SpatialVector DX_tool_tool = tool_H_tool_simu.DTrans();
 
-        SolidTypes<double>::SpatialVector W_tool_tool(DX_tool_tool.getLinearVelocity() * stiffness.getValue(),
+        SolidTypes<SReal>::SpatialVector W_tool_tool(DX_tool_tool.getLinearVelocity() * stiffness.getValue(),
                 DX_tool_tool.getAngularVelocity() * angular_stiffness.getValue());
 
         W_tool_world.setForce (world_H_tool.projectVector( W_tool_tool.getForce() ) );
