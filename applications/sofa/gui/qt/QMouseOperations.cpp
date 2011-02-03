@@ -84,17 +84,22 @@ QAttachOperation::QAttachOperation()
 
     QHBoxLayout *layout=new QHBoxLayout(this);
     QLabel *label=new QLabel(QString("Stiffness"), this);
-    stiffnessWidget = createWidgetFromData(setting.getDataStiffness());
+    stiffnessWidget = createWidgetFromData(&(setting.stiffness));
 
     QLabel *labelSize=new QLabel(QString("Arrow Size"), this);
-    arrowSizeWidget = createWidgetFromData(setting.getDataArrowSize());
+    arrowSizeWidget = createWidgetFromData(&(setting.arrowSize));
+
+    QLabel *labelShowFactor=new QLabel(QString("Show Factor Size"), this);
+    showSizeFactorWidget = createWidgetFromData(&(setting.showFactorSize));
 
     layout->addWidget(label);
     layout->addWidget(stiffnessWidget);
 
-
     layout->addWidget(labelSize);
     layout->addWidget(arrowSizeWidget);
+
+    layout->addWidget(labelShowFactor);
+    layout->addWidget(showSizeFactorWidget);
 }
 
 
@@ -103,8 +108,9 @@ void QAttachOperation::configure(PickHandler *picker, sofa::component::configura
     if (sofa::component::configurationsetting::AttachBodyButtonSetting* attachSetting=dynamic_cast<sofa::component::configurationsetting::AttachBodyButtonSetting*>(button))
     {
         AttachOperation::configure(picker,GetMouseId(button->getButton()));
-        setting.getDataStiffness()->setValue(attachSetting->getStiffness());
-        setting.getDataArrowSize()->setValue(attachSetting->getArrowSize());
+        setting.stiffness.copyValue(&(attachSetting->stiffness));
+        setting.arrowSize.copyValue(&(attachSetting->arrowSize) );
+        setting.showFactorSize.copyValue(&( attachSetting->showFactorSize) ) ;
 
         stiffnessWidget->updateWidgetValue();
         arrowSizeWidget->updateWidgetValue();

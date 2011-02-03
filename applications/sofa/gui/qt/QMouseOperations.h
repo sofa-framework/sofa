@@ -77,6 +77,7 @@ public:
 protected:
     DataWidget *stiffnessWidget;
     DataWidget *arrowSizeWidget;
+    DataWidget *showSizeFactorWidget;
 };
 
 

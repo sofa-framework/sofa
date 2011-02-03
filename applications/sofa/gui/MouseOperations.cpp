@@ -73,6 +73,7 @@ void AttachOperation::start()
         component::collision::AttachBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::AttachBodyPerformerConfiguration*>(performer);
         performerConfiguration->setStiffness(getStiffness());
         performerConfiguration->setArrowSize(getArrowSize());
+        performerConfiguration->setShowFactorSize(getShowFactorSize());
         //Start
         performer->start();
     }

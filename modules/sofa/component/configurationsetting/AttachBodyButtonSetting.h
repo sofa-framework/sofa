@@ -43,21 +43,10 @@ class SOFA_COMPONENT_CONFIGURATIONSETTING_API AttachBodyButtonSetting: public Mo
 public:
     SOFA_CLASS(AttachBodyButtonSetting,MouseButtonSetting);
     AttachBodyButtonSetting();
-
     std::string getOperationType() {return "Attach";}
-
-    void setStiffness(SReal s) {stiffness.setValue(s);}
-    SReal getStiffness() const {return stiffness.getValue();};
-
-
-    void setArrowSize(SReal s) {arrowSize.setValue(s);}
-    SReal getArrowSize() const {return arrowSize.getValue();};
-
-    Data<SReal> *getDataStiffness() {return &stiffness;};
-    Data<SReal> *getDataArrowSize() {return &arrowSize;};
-protected:
     Data<SReal> stiffness;
     Data<SReal> arrowSize;
+    Data<SReal> showFactorSize;
 };
 
 }
