@@ -383,8 +383,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
         }
 
         this->m_constraint = new constraintset::PersistentUnilateralInteractionConstraint<Vec3Types>(mmodel1, mmodel2);
-        std::cout << "mmodel1 = " << mmodel1->getName() << std::endl;
-        std::cout << "mmodel2 = " << mmodel2->getName() << std::endl;
 
         if (this->f_printLog.getValue())
         {
