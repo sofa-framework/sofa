@@ -195,8 +195,8 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(DataVecDeriv& f, const D
 
         // rotation
         Quat dq = p1[index].getOrientation() * p_0[ext_index].getOrientation().inverse();
-        Vector3 dir;
-        Real angle=0;
+        Vec3d dir;
+        double angle=0;
         dq.normalize();
         if (dq[3] < 0.999999999999999)
             dq.quatToAxis(dir, angle);
