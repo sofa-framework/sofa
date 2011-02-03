@@ -64,19 +64,20 @@ bool AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPic
     core::behavior::MechanicalState<Rigid3fTypes>* mstateCollision=NULL;
 
     double restLength = picked.dist;
-    mstateCollision = dynamic_cast< core::behavior::MechanicalState<Rigid3fTypes>*  >(picked.mstate);
+    mstateCollision = static_cast< core::behavior::MechanicalState<Rigid3fTypes>*  >(picked.mstate);
     std::string name = "contactMouse";
-    sofa::component::interactionforcefield::JointSpring<Rigid3fTypes> spring;
+
 
     forcefield = new JointSpringForceField<Rigid3fTypes>(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
+    sofa::component::interactionforcefield::JointSpring<Rigid3fTypes> spring(0,picked.indexCollisionElement);
     JointSpringForceField<Rigid3fTypes>* jointspringforcefield = static_cast<JointSpringForceField<Rigid3fTypes>*>(forcefield);
-    jointspringforcefield->setName("Spring-Mouse-Contact");
 
+    jointspringforcefield->setName("Spring-Mouse-Contact");
 
     spring.setInitLength(this->interactor->getMouseRayModel()->getRay(0).direction()*restLength);
     spring.setSoftStiffnessTranslation((float)stiffness);
     jointspringforcefield->addSpring(spring);
-
+    jointspringforcefield->showFactorSize.setValue(showFactorSize);
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
         jointspringforcefield->addTag(*it);
@@ -96,18 +97,20 @@ bool AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPic
     core::behavior::MechanicalState<Rigid3dTypes>* mstateCollision=NULL;
 
     double restLength = picked.dist;
-    mstateCollision = dynamic_cast< core::behavior::MechanicalState<Rigid3dTypes>*  >(picked.mstate);
+    mstateCollision = static_cast< core::behavior::MechanicalState<Rigid3dTypes>*  >(picked.mstate);
     std::string name = "contactMouse";
-    sofa::component::interactionforcefield::JointSpring<Rigid3dTypes> spring;
 
     forcefield = new JointSpringForceField<Rigid3dTypes>(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
     JointSpringForceField<Rigid3dTypes>* jointspringforcefield = static_cast<JointSpringForceField<Rigid3dTypes>*>(forcefield);
+    sofa::component::interactionforcefield::JointSpring<Rigid3dTypes> spring(0,picked.indexCollisionElement);
     jointspringforcefield->setName("Spring-Mouse-Contact");
 
 
     spring.setInitLength(this->interactor->getMouseRayModel()->getRay(0).direction()*restLength);
     spring.setSoftStiffnessTranslation(stiffness);
     jointspringforcefield->addSpring(spring);
+    jointspringforcefield->showFactorSize.setValue(showFactorSize);
+
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
         jointspringforcefield->addTag(*it);

@@ -50,11 +50,15 @@ struct BodyPicked;
 class AttachBodyPerformerConfiguration
 {
 public:
+    AttachBodyPerformerConfiguration():stiffness(1000),size(0),showFactorSize(1.0)
+    {};
     void setStiffness(double s) {stiffness=s;}
     void setArrowSize(float s) {size=s;}
+    void setShowFactorSize(float s) {showFactorSize = s;}
 protected:
     SReal stiffness;
     SReal size;
+    SReal showFactorSize;
 };
 
 template <class DataTypes>
