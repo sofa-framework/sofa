@@ -320,7 +320,7 @@ void LCPForceFeedback<DataTypes>::computeForce(SReal , SReal, SReal, SReal, SRea
 #ifndef SOFA_DOUBLE
 using sofa::defaulttype::Rigid3fTypes;
 template <>
-void LCPForceFeedback<Rigid3fTypes>::computeForce(float x, float y, float z, float, float, float, float, float& fx, float& fy, float& fz)
+void LCPForceFeedback<Rigid3fTypes>::computeForce(double x, double y, double z, double, double, double, double, double& fx, double& fy, double& fz)
 {
     Rigid3fTypes::VecCoord state;
     Rigid3fTypes::VecDeriv forces;

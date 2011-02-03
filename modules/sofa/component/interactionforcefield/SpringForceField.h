@@ -118,7 +118,7 @@ public:
 
 protected:
     bool maskInUse;
-    SReal m_potentialEnergy;
+    Real m_potentialEnergy;
     Data<SReal> ks;
     Data<SReal> kd;
     Data<float> showArrowSize;
