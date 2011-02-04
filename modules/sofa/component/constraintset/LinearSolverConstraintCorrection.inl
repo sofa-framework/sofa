@@ -243,8 +243,8 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     core::VecDerivId forceID(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
     core::VecDerivId dxID = core::VecDerivId::dx();
 
-    mstate->vAlloc(forceID);
-    mstate->vOp(forceID);
+//     mstate->vAlloc(forceID);
+//     mstate->vOp(forceID);
     //    mstate->vAlloc(dxID);
 
     //double dt = this->getContext()->getDt();
