@@ -37,6 +37,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <limits>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/defaulttype/Vec.h>
 
 #include <string>
 #include <iostream>
