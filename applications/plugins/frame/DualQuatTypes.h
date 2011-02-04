@@ -115,7 +115,7 @@ public:
         return t;
     }
 
-    DualQuatCoord<3,real> operator + (const Vec<6,real>& v) const
+    DualQuatCoord<3,real> operator + (const Vec<6,real>& a) const
     {
         DualQuatCoord r;
 
@@ -124,9 +124,9 @@ public:
         r.orientation[2] = orientation[2] +(real)0.5* (getVOrientation(a)[2] * orientation[3] + getVOrientation(a)[0] * orientation[1] - getVOrientation(a)[1] * orientation[0]);
         r.orientation[3] = orientation[3] +(real)0.5* (-(getVOrientation(a)[0] * orientation[0] + getVOrientation(a)[1] * orientation[1] + getVOrientation(a)[2] * orientation[2]));
 
-        r.setTranslation(getTranslation()+getVCenter(v));
+        r.setTranslation(getTranslation()+getVCenter(a));
         r.orientation.normalize();
-        return c;
+        return r;
     }
 
 
@@ -149,7 +149,7 @@ public:
     }
 
     // get quaternion change: dqn = J(q) dq
-    DualQuatCoord<3,real> velocity_applyJ( const Vec<6,real>& v )
+    DualQuatCoord<3,real> velocity_applyJ( const Vec<6,real>& a )
     {
         DualQuatCoord r ;
 
@@ -158,7 +158,7 @@ public:
         r.orientation[2] = (real)0.5* (getVOrientation(a)[2] * orientation[3] + getVOrientation(a)[0] * orientation[1] - getVOrientation(a)[1] * orientation[0]);
         r.orientation[3] = (real)0.5* (-(getVOrientation(a)[0] * orientation[0] + getVOrientation(a)[1] * orientation[1] + getVOrientation(a)[2] * orientation[2]));
 
-        r.setTranslation(getTranslation()+getVCenter(v));
+        r.setTranslation(getTranslation()+getVCenter(a));
         r.dual-=dual;
 
         //Mat<4,3,real> J0,JE;
@@ -344,24 +344,24 @@ public:
     static DualQuatCoord<3,real> identity()
     {
         DualQuatCoord c;
-        orientation[3]=(real)1.;
+        c.getOrientation[3]=(real)1.;
         return c;
     }
 
     Vec3 rotate(const Vec3& v) const
     {
-        return Vec(
-                (typename Vec::value_type)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v[0] + (2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3])) * v[1] + (2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3])) * v[2]),
-                (typename Vec::value_type)((2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3]))*v[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v[1] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v[2]),
-                (typename Vec::value_type)((2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3]))*v[0] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v[2])
+        return Vec3(
+                (Real)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v[0] + (2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3])) * v[1] + (2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3])) * v[2]),
+                (Real)((2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3]))*v[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v[1] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v[2]),
+                (Real)((2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3]))*v[0] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v[2])
                 );
     }
     Vec3 inverseRotate(const Vec3& v) const
     {
-        return Vec(
-                (typename Vec::value_type)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v[0] + (2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3])) * v[1] + (2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3])) * v[2]),
-                (typename Vec::value_type)((2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]))*v[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v[1] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v[2]),
-                (typename Vec::value_type)((2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3]))*v[0] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v[2])
+        return Vec3(
+                (Real)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v[0] + (2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3])) * v[1] + (2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3])) * v[2]),
+                (Real)((2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]))*v[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v[1] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v[2]),
+                (Real)((2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3]))*v[0] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v[2])
                 );
     }
 
@@ -615,14 +615,14 @@ public:
     DualQuatCoord<3,real> pointToParent_applyHT( const Mat<3,8,real>& dJ ,const Vec3& p)
     {
         DualQuatCoord r;
-        r.orientation[0]=(real)2.*(p[0]*J[0][0]+p[1]*J[0][1]+p[2]*J[0][2]-J[0][7]-p[1]*J[1][0]+p[0]*J[1][1]-p[2]*J[1][3]-J[1][6]-p[2]*J[2][0]+p[0]*J[2][2]+p[1]*J[2][3]+J[2][5]);
-        r.orientation[1]=(real)2.*(p[1]*J[0][0]-p[0]*J[0][1]+p[2]*J[0][3]+J[0][6]+p[0]*J[1][0]+p[1]*J[1][1]+p[2]*J[1][2]-J[1][7]-p[2]*J[2][1]+p[1]*J[2][2]-p[0]*J[2][3]-J[2][4]);
-        r.orientation[2]=(real)2.*(p[2]*J[0][0]-p[0]*J[0][2]-p[1]*J[0][3]-J[0][5]+p[2]*J[1][1]-p[1]*J[1][2]+p[0]*J[1][3]+J[1][4]+p[0]*J[2][0]+p[1]*J[2][1]+p[2]*J[2][2]-J[2][7]);
-        r.orientation[3]=(real)2.*(p[2]*J[0][1]-p[1]*J[0][2]+p[0]*J[0][3]+J[0][4]-p[2]*J[1][0]+p[0]*J[1][2]+p[1]*J[1][3]+J[1][5]+p[1]*J[2][0]-p[0]*J[2][1]+p[2]*J[2][3]+J[2][6]);
-        r.dual[0]=(real)2.*(J[0][3]+J[1][2]-J[2][1]);
-        r.dual[1]=(real)2.*(-J[0][2]+J[1][3]+J[2][0]);
-        r.dual[2]=(real)2.*(J[0][1]-J[1][0]+J[2][3]);
-        r.dual[3]=(real)2.*(-J[0][0]-J[1][1]-J[2][2]);
+        r.orientation[0]=(real)2.*(p[0]*dJ[0][0]+p[1]*dJ[0][1]+p[2]*dJ[0][2]-dJ[0][7]-p[1]*dJ[1][0]+p[0]*dJ[1][1]-p[2]*dJ[1][3]-dJ[1][6]-p[2]*dJ[2][0]+p[0]*dJ[2][2]+p[1]*dJ[2][3]+dJ[2][5]);
+        r.orientation[1]=(real)2.*(p[1]*dJ[0][0]-p[0]*dJ[0][1]+p[2]*dJ[0][3]+dJ[0][6]+p[0]*dJ[1][0]+p[1]*dJ[1][1]+p[2]*dJ[1][2]-dJ[1][7]-p[2]*dJ[2][1]+p[1]*dJ[2][2]-p[0]*dJ[2][3]-dJ[2][4]);
+        r.orientation[2]=(real)2.*(p[2]*dJ[0][0]-p[0]*dJ[0][2]-p[1]*dJ[0][3]-dJ[0][5]+p[2]*dJ[1][1]-p[1]*dJ[1][2]+p[0]*dJ[1][3]+dJ[1][4]+p[0]*dJ[2][0]+p[1]*dJ[2][1]+p[2]*dJ[2][2]-dJ[2][7]);
+        r.orientation[3]=(real)2.*(p[2]*dJ[0][1]-p[1]*dJ[0][2]+p[0]*dJ[0][3]+dJ[0][4]-p[2]*dJ[1][0]+p[0]*dJ[1][2]+p[1]*dJ[1][3]+dJ[1][5]+p[1]*dJ[2][0]-p[0]*dJ[2][1]+p[2]*dJ[2][3]+dJ[2][6]);
+        r.dual[0]=(real)2.*(dJ[0][3]+dJ[1][2]-dJ[2][1]);
+        r.dual[1]=(real)2.*(-dJ[0][2]+dJ[1][3]+dJ[2][0]);
+        r.dual[2]=(real)2.*(dJ[0][1]-dJ[1][0]+dJ[2][3]);
+        r.dual[3]=(real)2.*(-dJ[0][0]-dJ[1][1]-dJ[2][2]);
         return r;
     }
 
