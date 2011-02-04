@@ -53,6 +53,7 @@ namespace mapping
 
 using helper::WriteAccessor;
 using helper::ReadAccessor;
+using sofa::defaulttype::Vec;
 
 template <class TIn, class TOut>
 SkinningMapping<TIn, TOut>::SkinningMapping (core::State<In>* from, core::State<Out>* to )
