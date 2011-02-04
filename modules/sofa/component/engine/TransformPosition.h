@@ -62,12 +62,14 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
+    typedef topology::PointSubset SetIndex;
 
     typedef enum
     {
         PROJECT_ON_PLANE,
         TRANSLATION,
         ROTATION,
+        RANDOM,
         SCALE,
         SCALE_TRANSLATION,
         SCALE_ROTATION_TRANSLATION
@@ -127,8 +129,10 @@ protected:
     Data<Coord> f_translation; // translation
     Data<Coord> f_rotation; // rotation
     Data<Real> f_scale; // scale
-    Data<std::string> method; // the method of the transformation
-
+    Data<std::string> f_method; // the method of the transformation
+    Data<long> f_seed; // the seed for the random generator
+    Data<Real> f_maxRandomDisplacement; // the maximum displacement for the random generator
+    Data<SetIndex> f_fixedIndices; // the indices of the elements that are not transformed
     MechanicalState<DataTypes>* mstate;
     const VecCoord* x0;
 

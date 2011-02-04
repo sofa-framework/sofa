@@ -33,6 +33,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/Quater.h>
 #include <math.h>
+#include <sofa/helper/RandomGenerator.h>
 
 namespace sofa
 {
@@ -56,41 +57,49 @@ TransformPosition<DataTypes>::TransformPosition()
     , f_translation(initData(&f_translation, "translation", "translation vector ") )
     , f_rotation(initData(&f_rotation, "rotation", "rotation vector ") )
     , f_scale(initData(&f_scale, (Real) 1.0, "scale", "scale factor") )
-    , method(initData(&method, "method", "transformation method either translation or scale or rotation or projectOnPlane") )
+    , f_seed(initData(&f_seed, (long) 0, "seedValue", "the seed value for the random generator") )
+    , f_maxRandomDisplacement(initData(&f_maxRandomDisplacement, (Real) 1.0, "maxRandomDisplacement", "the maximum displacement around initial position for the random transformation") )
+    , f_method(initData(&f_method, "method", "transformation method either translation or scale or rotation or random or projectOnPlane") )
+    , f_fixedIndices( initData(&f_fixedIndices,"fixedIndices","Indices of the entries that are not transformed") )
+
 {
 }
 
 template <class DataTypes>
 void TransformPosition<DataTypes>::init()
 {
-    if (method=="projectOnPlane")
+    if (f_method=="projectOnPlane")
     {
         transformationMethod=PROJECT_ON_PLANE;
     }
-    else if (method=="translation")
+    else if (f_method=="translation")
     {
         transformationMethod=TRANSLATION;
     }
-    else if (method=="rotation")
+    else if (f_method=="rotation")
     {
         transformationMethod=ROTATION;
     }
-    else if (method=="scale")
+    else if (f_method=="random")
+    {
+        transformationMethod=RANDOM;
+    }
+    else if (f_method=="scale")
     {
         transformationMethod=SCALE;
     }
-    else if (method=="scaleTranslation")
+    else if (f_method=="scaleTranslation")
     {
         transformationMethod=SCALE_TRANSLATION;
     }
-    else if (method=="scaleRotationTranslation")
+    else if (f_method=="scaleRotationTranslation")
     {
         transformationMethod=SCALE_ROTATION_TRANSLATION;
     }
     else
     {
         transformationMethod=TRANSLATION;
-        serr << "Error : Method " << method << "is unknown" <<sendl;
+        serr << "Error : Method " << f_method << "is unknown" <<sendl;
     }
 
     Coord& normal = *(f_normal.beginEdit());
@@ -129,6 +138,9 @@ void TransformPosition<DataTypes>::update()
     helper::ReadAccessor< Data<Coord> > translation = f_translation;
     helper::ReadAccessor< Data<Real> > scale = f_scale;
     helper::ReadAccessor< Data<Coord> > rotation = f_rotation;
+    helper::ReadAccessor< Data<Real> > maxDisplacement = f_maxRandomDisplacement;
+    helper::ReadAccessor< Data<long> > seed = f_seed;
+    helper::ReadAccessor< Data<SetIndex> > fixedIndices = f_fixedIndices;
 
     out.resize(in.size());
     unsigned int i;
@@ -140,6 +152,19 @@ void TransformPosition<DataTypes>::update()
             out[i]=in[i]+normal.ref()*dot((origin.ref()-in[i]),normal.ref());
         }
         break;
+    case RANDOM :
+    {
+        sofa::helper::RandomGenerator rg;
+        double dis=(double) maxDisplacement.ref();
+        if (seed.ref()!=0)
+            rg.initSeed(seed.ref());
+        for (i=0; i< in.size(); ++i)
+        {
+
+            out[i]=in[i]+Coord((Real)rg.randomDouble(-dis,dis),(Real)rg.randomDouble(-dis,dis),(Real)rg.randomDouble(-dis,dis));
+        }
+    }
+    break;
     case TRANSLATION :
         for (i=0; i< in.size(); ++i)
         {
@@ -178,6 +203,12 @@ void TransformPosition<DataTypes>::update()
         }
         break;
     }
+    }
+    /// assumes the set of fixed indices is small compared to the whole set
+    SetIndex::const_iterator it=fixedIndices.ref().begin();
+    for (; it!=fixedIndices.ref().end(); ++it)
+    {
+        out[*it]=in[*it];
     }
 
 }
