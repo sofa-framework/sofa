@@ -126,7 +126,7 @@ int main(int argc, char** argv)
 
 
     MechanicalObject3* subsetDof = new MechanicalObject3;
-    SubsetMechanicalMultiMapping3_to_3* subsetMultiMapping = new SubsetMechanicalMultiMapping3_to_3();
+    SubsetMultiMapping3_to_3* subsetMultiMapping = new SubsetMultiMapping3_to_3();
     MechanicalObject3* input1 = dynamic_cast<MechanicalObject3*>(grid2->getMechanicalState());
     MechanicalObject3* input2 = dynamic_cast<MechanicalObject3*>(grid1->getMechanicalState());
 
