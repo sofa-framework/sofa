@@ -46,15 +46,8 @@
 #endif
 
 
-#include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/TriangleModelInRegularGrid.h>
 #include <sofa/component/collision/TriangleOctreeModel.h>
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for SphereTreeModel
-typedef  sofa::component::collision::SphereTreeModel SphereTreeModel3d;
 
 
 
@@ -73,7 +66,6 @@ typedef  sofa::component::collision::TriangleOctreeModel TriangleOctreeModel3d;
 
 
 #ifndef SOFA_FLOAT
-typedef SphereTreeModel3d SphereTreeModel3;
 typedef TriangleModelInRegularGrid3d TriangleModelInRegularGrid3;
 typedef TriangleOctreeModel3d TriangleOctreeModel3;
 #endif

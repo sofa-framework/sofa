@@ -46,6 +46,7 @@
 #endif
 
 
+#include <sofa/component/engine/AverageCoord.h>
 #include <sofa/component/engine/BoxROI.h>
 #include <sofa/component/engine/Distances.h>
 #include <sofa/component/engine/ExtrudeSurface.h>
@@ -67,6 +68,15 @@
 #include <sofa/component/engine/TransformPosition.h>
 #include <sofa/component/engine/ValuesFromPositions.h>
 #include <sofa/component/engine/Vertex2Frame.h>
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for AverageCoord
+typedef  sofa::component::engine::AverageCoord< sofa::defaulttype::StdRigidTypes<2,float> > AverageCoordRigid2f;
+typedef  sofa::component::engine::AverageCoord< sofa::defaulttype::StdRigidTypes<3,float> > AverageCoordRigid3f;
+typedef  sofa::component::engine::AverageCoord< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > AverageCoord2f;
+typedef  sofa::component::engine::AverageCoord< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > AverageCoord3f;
 
 
 
@@ -211,6 +221,10 @@ typedef  sofa::component::engine::Vertex2Frame< sofa::defaulttype::StdRigidTypes
 
 
 #ifdef SOFA_FLOAT
+typedef AverageCoordRigid2f AverageCoordRigid2;
+typedef AverageCoordRigid3f AverageCoordRigid3;
+typedef AverageCoord2f AverageCoord2;
+typedef AverageCoord3f AverageCoord3;
 typedef BoxROIRigid3f BoxROIRigid3;
 typedef BoxROI3f BoxROI3;
 typedef Distances3f Distances3;

@@ -46,8 +46,10 @@
 #endif
 
 
+#include <sofa/component/forcefield/AspirationForceField.h>
 #include <sofa/component/forcefield/BeamFEMForceField.h>
 #include <sofa/component/interactionforcefield/BoxStiffSpringForceField.h>
+#include <sofa/component/forcefield/BuoyantForceField.h>
 #include <sofa/component/forcefield/ConicalForceField.h>
 #include <sofa/component/forcefield/ConstantForceField.h>
 #include <sofa/component/forcefield/DistanceGridForceField.h>
@@ -101,6 +103,12 @@
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for AspirationForceField
+typedef  sofa::component::forcefield::AspirationForceField< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > AspirationForceField3f;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for BeamFEMForceField
 typedef  sofa::component::forcefield::BeamFEMForceField< sofa::defaulttype::StdRigidTypes<3,float> > BeamFEMForceFieldRigid3f;
 
@@ -112,6 +120,12 @@ typedef  sofa::component::interactionforcefield::BoxStiffSpringForceField< sofa:
 typedef  sofa::component::interactionforcefield::BoxStiffSpringForceField< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > BoxStiffSpringForceField2f;
 typedef  sofa::component::interactionforcefield::BoxStiffSpringForceField< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > BoxStiffSpringForceField3f;
 typedef  sofa::component::interactionforcefield::BoxStiffSpringForceField< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > BoxStiffSpringForceField6f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for BuoyantForceField
+typedef  sofa::component::forcefield::BuoyantForceField< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > BuoyantForceField3f;
 
 
 
@@ -449,11 +463,13 @@ typedef  sofa::component::interactionforcefield::VectorSpringForceField< sofa::d
 
 
 #ifdef SOFA_FLOAT
+typedef AspirationForceField3f AspirationForceField3;
 typedef BeamFEMForceFieldRigid3f BeamFEMForceFieldRigid3;
 typedef BoxStiffSpringForceField1f BoxStiffSpringForceField1;
 typedef BoxStiffSpringForceField2f BoxStiffSpringForceField2;
 typedef BoxStiffSpringForceField3f BoxStiffSpringForceField3;
 typedef BoxStiffSpringForceField6f BoxStiffSpringForceField6;
+typedef BuoyantForceField3f BuoyantForceField3;
 typedef ConicalForceField3f ConicalForceField3;
 typedef ConstantForceFieldRigid2f ConstantForceFieldRigid2;
 typedef ConstantForceFieldRigid3f ConstantForceFieldRigid3;

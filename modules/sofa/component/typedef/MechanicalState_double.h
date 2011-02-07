@@ -47,7 +47,6 @@
 
 
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/collision/SphereTreeModel.h>
 
 
 
@@ -62,12 +61,6 @@ typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdVec
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for SphereTreeModel
-typedef  sofa::component::collision::SphereTreeModel SphereTreeModel3d;
-
-
-
 
 
 #ifndef SOFA_FLOAT
@@ -77,7 +70,6 @@ typedef MechanicalObject1d MechanicalObject1;
 typedef MechanicalObject2d MechanicalObject2;
 typedef MechanicalObject3d MechanicalObject3;
 typedef MechanicalObject6d MechanicalObject6;
-typedef SphereTreeModel3d SphereTreeModel3;
 #endif
 
 #endif

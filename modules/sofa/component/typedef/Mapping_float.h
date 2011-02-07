@@ -59,7 +59,6 @@
 #include <sofa/component/mapping/CircumcenterMapping.h>
 #include <sofa/component/mapping/CurveMapping.h>
 #include <sofa/component/mapping/DeformableOnRigidFrameMapping.h>
-#include <sofa/component/mapping/DualQuatSkinningMapping.h>
 #include <sofa/component/mapping/ExternalInterpolationMapping.h>
 #include <sofa/component/mapping/HexahedronCompositeFEMMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
@@ -142,13 +141,6 @@ typedef  sofa::component::mapping::CurveMapping< sofa::defaulttype::StdVectorTyp
 //---------------------------------------------------------------------------------------------
 //Typedef for DeformableOnRigidFrameMapping
 typedef  sofa::component::mapping::DeformableOnRigidFrameMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > DeformableOnRigidFrameMapping3f_Rigid3f_to_3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for DualQuatSkinningMapping
-typedef  sofa::component::mapping::DualQuatSkinningMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > DualQuatSkinningMappingRigid3f_to_Ext3f;
-typedef  sofa::component::mapping::DualQuatSkinningMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > DualQuatSkinningMappingRigid3f_to_3f;
 
 
 
@@ -281,8 +273,6 @@ typedef CircumcenterMapping3f_to_Ext3f CircumcenterMapping3_to_Ext3;
 typedef CircumcenterMapping3f_to_3f CircumcenterMapping3_to_3;
 typedef CurveMapping3f_to_Rigid3f CurveMapping3_to_Rigid3;
 typedef DeformableOnRigidFrameMapping3f_Rigid3f_to_3f DeformableOnRigidFrameMapping3_Rigid3_to_3;
-typedef DualQuatSkinningMappingRigid3f_to_Ext3f DualQuatSkinningMappingRigid3_to_Ext3;
-typedef DualQuatSkinningMappingRigid3f_to_3f DualQuatSkinningMappingRigid3_to_3;
 typedef ExternalInterpolationMapping1f_to_1f ExternalInterpolationMapping1_to_1;
 typedef ExternalInterpolationMapping2f_to_2f ExternalInterpolationMapping2_to_2;
 typedef ExternalInterpolationMapping3f_to_Ext3f ExternalInterpolationMapping3_to_Ext3;
