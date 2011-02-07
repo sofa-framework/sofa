@@ -102,6 +102,7 @@ typedef  sofa::component::misc::EvalSurfaceDistance< sofa::defaulttype::StdVecto
 //Typedef for ExtraMonitor
 typedef  sofa::component::misc::ExtraMonitor< sofa::defaulttype::StdRigidTypes<3,double> > ExtraMonitorRigid3d;
 typedef  sofa::component::misc::ExtraMonitor< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > ExtraMonitor3d;
+typedef  sofa::component::misc::ExtraMonitor< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,double>, sofa::defaulttype::Vec<6,double>,double> > ExtraMonitor6d;
 
 
 
@@ -120,6 +121,7 @@ typedef  sofa::component::container::MappedObject< sofa::defaulttype::StdVectorT
 //Typedef for Monitor
 typedef  sofa::component::misc::Monitor< sofa::defaulttype::StdRigidTypes<3,double> > MonitorRigid3d;
 typedef  sofa::component::misc::Monitor< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > Monitor3d;
+typedef  sofa::component::misc::Monitor< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,double>, sofa::defaulttype::Vec<6,double>,double> > Monitor6d;
 
 
 
@@ -153,6 +155,7 @@ typedef EvalPointsDistance3d EvalPointsDistance3;
 typedef EvalSurfaceDistance3d EvalSurfaceDistance3;
 typedef ExtraMonitorRigid3d ExtraMonitorRigid3;
 typedef ExtraMonitor3d ExtraMonitor3;
+typedef ExtraMonitor6d ExtraMonitor6;
 typedef MappedObjectRigid3d MappedObjectRigid3;
 typedef MappedObjectRigid2d MappedObjectRigid2;
 typedef MappedObject1d MappedObject1;
@@ -161,6 +164,7 @@ typedef MappedObject3d MappedObject3;
 typedef MappedObject6d MappedObject6;
 typedef MonitorRigid3d MonitorRigid3;
 typedef Monitor3d Monitor3;
+typedef Monitor6d Monitor6;
 typedef RotationFinder3d RotationFinder3;
 typedef SpatialGridContainer3d SpatialGridContainer3;
 typedef SpringIt3d SpringIt3;

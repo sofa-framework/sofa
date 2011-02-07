@@ -53,6 +53,7 @@
 #include <sofa/component/mass/MatrixMass.h>
 #include <sofa/component/mass/MeshMatrixMass.h>
 #include <sofa/component/forcefield/NonUniformHexahedralFEMForceFieldAndMass.h>
+#include <sofa/component/forcefield/NonUniformHexahedralFEMForceFieldAndMassCorrected.h>
 #include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldAndMass.h>
 #include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldDensity.h>
 #include <sofa/component/mass/UniformMass.h>
@@ -110,6 +111,12 @@ typedef  sofa::component::forcefield::NonUniformHexahedralFEMForceFieldAndMass< 
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for NonUniformHexahedralFEMForceFieldAndMassCorrected
+typedef  sofa::component::forcefield::NonUniformHexahedralFEMForceFieldAndMassCorrected< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > NonUniformHexahedralFEMForceFieldAndMassCorrected3f;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for NonUniformHexahedronFEMForceFieldAndMass
 typedef  sofa::component::forcefield::NonUniformHexahedronFEMForceFieldAndMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > NonUniformHexahedronFEMForceFieldAndMass3f;
 
@@ -150,6 +157,7 @@ typedef MeshMatrixMass1f MeshMatrixMass1;
 typedef MeshMatrixMass2f MeshMatrixMass2;
 typedef MeshMatrixMass3f MeshMatrixMass3;
 typedef NonUniformHexahedralFEMForceFieldAndMass3f NonUniformHexahedralFEMForceFieldAndMass3;
+typedef NonUniformHexahedralFEMForceFieldAndMassCorrected3f NonUniformHexahedralFEMForceFieldAndMassCorrected3;
 typedef NonUniformHexahedronFEMForceFieldAndMass3f NonUniformHexahedronFEMForceFieldAndMass3;
 typedef NonUniformHexahedronFEMForceFieldDensity3f NonUniformHexahedronFEMForceFieldDensity3;
 typedef UniformMassRigid2f UniformMassRigid2;

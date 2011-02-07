@@ -55,7 +55,6 @@
 #include <sofa/component/mapping/CenterPointMechanicalMapping.h>
 #include <sofa/component/mapping/CircumcenterMapping.h>
 #include <sofa/component/mapping/CurveMapping.h>
-#include <sofa/component/mapping/DualQuatSkinningMapping.h>
 #include <sofa/component/mapping/ExternalInterpolationMapping.h>
 #include <sofa/component/mapping/HexahedronCompositeFEMMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
@@ -116,13 +115,6 @@ typedef  sofa::component::mapping::CircumcenterMapping< sofa::defaulttype::StdVe
 //Typedef for CurveMapping
 typedef  sofa::component::mapping::CurveMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double>, sofa::defaulttype::StdRigidTypes<3,float> > CurveMapping3d_to_Rigid3f;
 typedef  sofa::component::mapping::CurveMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdRigidTypes<3,double> > CurveMapping3f_to_Rigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for DualQuatSkinningMapping
-typedef  sofa::component::mapping::DualQuatSkinningMapping< sofa::defaulttype::StdRigidTypes<3,double>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > DualQuatSkinningMappingRigid3d_to_3f;
-typedef  sofa::component::mapping::DualQuatSkinningMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > DualQuatSkinningMappingRigid3f_to_3d;
 
 
 
