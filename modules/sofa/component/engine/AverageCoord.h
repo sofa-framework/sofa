@@ -93,14 +93,14 @@ protected:
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Vec2dTypes>;
 template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid2dTypesTypes>;
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid3dTypesTypes>;
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid2dTypes>;
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Vec2fTypes>;
 template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid2fTypesTypes>;
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid3fTypesTypes>;
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid2fTypes>;
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 
