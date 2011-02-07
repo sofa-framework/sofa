@@ -927,25 +927,25 @@ struct DataTypeInfo<unsigned int> : public IntegerTypeInfo<unsigned int>
 };
 
 template<>
-struct DataTypeInfo<long> : public IntegerTypeInfo<int>
+struct DataTypeInfo<long> : public IntegerTypeInfo<long>
 {
     static const char* name() { return "long"; }
 };
 
 template<>
-struct DataTypeInfo<unsigned long> : public IntegerTypeInfo<unsigned int>
+struct DataTypeInfo<unsigned long> : public IntegerTypeInfo<unsigned long>
 {
     static const char* name() { return "unsigned long"; }
 };
 
 template<>
-struct DataTypeInfo<long long> : public IntegerTypeInfo<int>
+struct DataTypeInfo<long long> : public IntegerTypeInfo<long long>
 {
     static const char* name() { return "long long"; }
 };
 
 template<>
-struct DataTypeInfo<unsigned long long> : public IntegerTypeInfo<unsigned int>
+struct DataTypeInfo<unsigned long long> : public IntegerTypeInfo<unsigned long long>
 {
     static const char* name() { return "unsigned long long"; }
 };

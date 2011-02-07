@@ -57,11 +57,11 @@ TransformPosition<DataTypes>::TransformPosition()
     , f_translation(initData(&f_translation, "translation", "translation vector ") )
     , f_rotation(initData(&f_rotation, "rotation", "rotation vector ") )
     , f_scale(initData(&f_scale, (Real) 1.0, "scale", "scale factor") )
+    , f_method(initData(&f_method, "method", "transformation method either translation or scale or rotation or random or projectOnPlane") )
     , f_seed(initData(&f_seed, (long) 0, "seedValue", "the seed value for the random generator") )
     , f_maxRandomDisplacement(initData(&f_maxRandomDisplacement, (Real) 1.0, "maxRandomDisplacement", "the maximum displacement around initial position for the random transformation") )
-    , f_method(initData(&f_method, "method", "transformation method either translation or scale or rotation or random or projectOnPlane") )
     , f_fixedIndices( initData(&f_fixedIndices,"fixedIndices","Indices of the entries that are not transformed") )
-
+    , mstate(NULL), x0(NULL)
 {
 }
 
