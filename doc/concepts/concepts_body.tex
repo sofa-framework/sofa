@@ -13,8 +13,8 @@ Fran\c{c}ois Faure
 % In this section, we present a general framework to map the contact forces to the degrees of freedom of arbitrary physical models.
 % We then demonstrate it on a variety of models.
 
-\subsection{Geometrical layers} \label{sec:geometryLayers}
-Different geometrical models are used to model objects in contact.
+\subsection{Motivation} \label{sec:geometryLayers}
+Different geometrical models can be used to model objects in contact.
 We organize them in a hierarchy of layers. An example is shown in figure~\ref{fig:hierarchy}, where a rigid object hits a shape embedded in deformable cells.
 
 \begin{figure}
@@ -37,14 +37,14 @@ We call it the \textit{shape}.
 It is typically defined by points, such as triangle vertices or sphere centers, and additional data such as triangle connectivity or sphere radii.
 We call these points the \textit{vertices}. 
 Their positions, velocities and associated forces are stored in vectors $x_1$, $v_1$ and $f_1$, respectively.
-They are not independent variables, since the positions and velocities are bound to the DOF using kinematic operators which we call the \textit{mappings}:
+They are not independent variables, since the positions and velocities are bound to the DOF.
+We say that the geometrical model $1$ is mapped from model $0$,
+ using a kinematic operator which we call \textit{mapping}:
 \begin{eqnarray*} %\label{eq:mapV}
 x_1 &=&\JNL_1(x_0)\\ 
 v_1 &=& J_1 v_0
 \end{eqnarray*}
-When the vertices and the DOF are the same, the mapping is the identity.
-This special case occurs for instance when we simulate cloth or rigid balls.
-More general cases include polygonal shapes attached to rigid bodies using local coordinates, or embedded in deformable cells using barycentric coordinates, as well as skin surrounding articulated bodies using vertex blending techniques.
+Typical mappings include polygonal shapes attached to rigid bodies using local coordinates, or embedded in deformable cells using barycentric coordinates, as well as skin surrounding articulated bodies using vertex blending techniques.
 Matrix $J_1 = \frac{\partial x_1}{\partial x_0}$ encodes the linear relation between the DOF velocities and the shape velocities. Due to linearity, the same relation holds on elementary displacements $dx$.
 It also holds on accelerations, with an additional offset due to velocities when the position mapping \JNL is nonlinear.
 In most cases, operators \JNL~ and \J~ are the same, but in the case of rigid bodies, \JNL~ is nonlinear with respect to $x$ and it can not be written as a matrix.
@@ -69,26 +69,54 @@ For instance, the DOF layer may have two independent children, one for collision
 The hierarchy can also be deeper, using for instance a fine mesh for rendering and its convex hull for collision.
 This flexible framework gives us a great freedom for physical modeling.
 
-\subsection{Mechanical mappings}
-Positions and velocities can be propagated top-down through our layer hierarchy using the relations presented in the previous section.
-In order to take the contact forces into account in the dynamics equation, we have to convert the contact forces applied to the contact points to forces applied to the DOF, where Newton's law is applied. 
-This requires an extension to the position and velocity mappings presented in section~\ref{sec:geometryLayers}. We call it \textit{mechanical mapping}.
+\subsection{Mappings}
+Positions and velocities can be propagated top-down through a hierarchy of geometrical models using the relations presented in the previous section. Conversely,
+in order to take the contact forces into account in the dynamics equation, we need to propagate the forces bottom-up in the hierarchy, up to the independent DOFs, on which Newton's law $f=ma$ is applied. 
+Moreover, implicit differential equation solvers need compute changes of force  given changes of displacements, and constraint solvers need to translate the expression of constraint Jacobian from lower models to the top.
+% The mapping methods are organized in three categories:
+% - method apply propagates positions top-down and computes derivatives of the mapping functions
+% - methods applyJ() 
 
-We derive a new, general method to propagate forces bottom-up through the layers of the geometrical hierarchy.
-Given forces $f_n$ applied to a geometry layer $n$, we derive the equivalent force applied to its parent layer $n-1$. 
-Equivalent forces must have the same power. Thus, we have to compute $f_{n-1}$ such that:
+Given forces $f_n$ applied to a geometrical model $n$, the mapping computes and accumulates the equivalent force applied to its parent model $n-1$. 
+Since equivalent forces must have the same power, we have to compute $f_{n-1}$ such that:
 $$
 v_{n-1}^T f_{n-1} = v_n^T f_n
 $$
-The relation $v_{n} = J_{n}v_{n-1}$ allows us to rewrite the previous equation as
+The kinematic relation $v_{n} = J_{n}v_{n-1}$ allows us to rewrite the previous equation as
 $$
 v_{n-1}^T f_{n-1} = v_{n-1}^T J_{n}^T f_n
 $$
-Since this relation must hold for any velocity $v_{n-1}$, we simplify it and get
+Since this relation must hold for any velocity $v_{n-1}$, the principle of virtual work allows us to simplify the previous equation to obtain:
 \begin{equation} \label{eq:mapF}
 f_{n-1} = J_n^T f_n
 \end{equation}
-This corresponds to the principle of virtual work.
+The name of the methods used to propagate velocities or small displacements top-down contain $J$, which denotes the kinematic matrix, while the names of the methods used to propagate forces or constraint Jacobians bottom-up contain $JT$, which denotes the transpose of the same.
+Method \texttt{applyJT( OutDataVecDeriv\& out, const InDataVecDeriv\& in, const MechanicalParams* mparams)} is used to accumulate forces from a child model to its parent. It performs a cumulative write (+=) since a model may have several children:
+\begin{equation}
+ \label{eq.applyjt}
+ f_{n-1} += J_n^T f_n
+\end{equation}
+
+Some differential equation solvers need compute the change of force df, given a change of position dx.
+The displacement dx, considered small, is propagated top-down using the linear operator \texttt{applyJ( InDataVecDeriv\& out, const OutDataVecDeriv\& in, const MechanicalParams* mparams)}, then the force changes are accumulated bottom-up.
+Differentiating eq.\ref{eq.applyjt}, we get:
+\begin{equation}
+ \label{eq.applydjt}
+ \delta f_{n-1} += J_n^T \delta f_n + \delta J_n^T f_n
+\end{equation}
+Once the change of child force $delta f_n$ is computed (see the section on force fields), method \texttt{applyJT} is used to accumulate it in the parent, corresponding to the first term in the right of eq.\ref{eq.applydjt}.
+Method \texttt{applyDJT(MultiVecDerivId parentForce, ConstMultiVecDerivId  childForce, const MechanicalParams* mparams  )} is used to accumulate the second term, which is due to the change of matrix J due to a displacement.
+It is null in linear mappings, such as BarycentricMapping.
+The method queries the last displacement propagated using the MechanicalParams.
+
+Nonlinearity is also implied in the computation of accelerations.
+The top-down method to compute the nonlinear, velocity-dependent part of accelerations is \texttt{computeAccFromMapping(MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc, const MechanicalParams* mparams )}.
+
+Constraints enforced using Lagrange multipliers are represented using linear equations.
+When these are applied to child models, method \texttt{applyJT( InDataMatrixDeriv\& out, const OutDataMatrixDeriv\& in, const ConstraintParams* mparams )} is used to propagate the Jacobians bottom-up.
+
+
+
 %This simple relation allows us to map forces bottom-up through the hierarchy. 
 %The corresponding acceleration can then be computed in the DOF layer.
 
@@ -96,7 +124,14 @@ This corresponds to the principle of virtual work.
 % It makes no assumption about the constitutive laws of the simulated objects.
 % It allows us to connect arbitrary bodies using any geometry, provided that a kinematic operator linking the velocity of the geometry to the body DOFs is available.
 % %It is not limited to polygonal geometries.
+
 % It encompasses and generalizes \cite{Sifakis07}'s hard bindings which were introduced for Finite Elements and empirically extended to rigid bodies.
 % It enables us to efficiently and straightforwardly connect or make collide a wide variety of bodies.
+
+% Let $x_n$, $y_n$, $f_n$ be, respectively, the positions, velocities and net forces in the geometrical model $n$, and $x_{n+1}$, $y_{n+1}$, $f_{n+1}$ the positions, velocities and net forces in model $n+1$ mapped from model $n$.
+% The mappings have the following propagation methods:
+% \begin{itemize}
+%  \item apply: propa
+% \end{itemize}
 
 
