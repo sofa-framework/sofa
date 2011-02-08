@@ -97,15 +97,16 @@ void SofaPluginManager::initPluginList()
     listPlugins->clear();
     typedef void (*componentLoader)();
     typedef const char* (*componentStr)();
+    int numToRemove = 0;
 
     for (int i=1 ; i<=size; i++)
     {
-        QString config;
-        config = config.setNum(i);
+        QString pluginEntry;
+        pluginEntry = pluginEntry.setNum(i);
 
-        settings.beginGroup(config);
+        settings.beginGroup(pluginEntry);
         QString sfile = settings.readEntry("/location");
-        settings.endGroup();
+        settings.endGroup(); // pluginEntry
 
         //load the plugin libs -> automatically look at the relase/debug version depending on the current mode we are
 #ifndef NDEBUG
@@ -133,16 +134,33 @@ void SofaPluginManager::initPluginList()
             if(componentVersionFunc)
                 sversion=componentVersionFunc();
 
-            Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, sfile);
-            item->setSelectable(true);
-            pluginList.insert(std::string(sfile.ascii()) );
-            emit( libraryAdded() );
+            if( listPlugins->findItem(sfile,LOCATION_COLUMN) == NULL )
+            {
+                Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, sfile);
+                item->setSelectable(true);
+                pluginList.insert(std::string(sfile.ascii()) );
+                emit( libraryAdded() );
+            }
+            else
+            {
+                // the settings contains more than one entry to this plugin, so we remove the extra ones .
+                ++numToRemove;
+                settings.beginGroup(pluginEntry);
+                settings.removeEntry("/location");
+                settings.endGroup();  // pluginEntry
+            }
+        }
+        else
+        {
+            //we fail to load the plugin for some reason, so we remove it from the settings.
+            ++numToRemove;
+            settings.beginGroup(pluginEntry);
+            settings.removeEntry("/location");
+            settings.endGroup();  // pluginEntry
         }
     }
-    // 			settings.endArray();
-    settings.endGroup();
-
-
+    settings.writeEntry("/size", size - numToRemove);
+    settings.endGroup();  // plugins
 }
 
 
@@ -207,11 +225,11 @@ void SofaPluginManager::addLibrary()
         settings.setPath( "SOFA-FRAMEWORK", QString(binPath.c_str()), QSettings::User);
         settings.beginGroup("/plugins");
         int size = settings.readNumEntry("/size");
-        QString titi;
-        titi = titi.setNum(size+1);
-        settings.beginGroup(titi);
+        QString pluginEntry;
+        pluginEntry = pluginEntry.setNum(size+1);
+        settings.beginGroup(pluginEntry);
 #ifndef NDEBUG
-        //remove the "d" in the name if we are currently in debug mode
+        //remove the "d" in the name if we are currently in release mode
         sfile.replace(QString("d."), QString("."));
 #endif
         settings.writeEntry("/location", sfile);
