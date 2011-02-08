@@ -34,7 +34,7 @@
 #include <sofa/helper/map.h>
 #include <limits>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include "CImg.h"
+#include <../extlibs/CImg/CImg.h>
 
 #define DISTANCE_GEODESIC 0
 #define DISTANCE_DIFFUSION 1
