@@ -54,7 +54,7 @@ JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , showLawfulTorsion(initData(&showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
     , showExtraTorsion(initData(&showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
-    , showFactorSize(initData(&showFactorSize, 1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
+    , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
 }
 
@@ -63,7 +63,7 @@ JointSpringForceField<DataTypes>::JointSpringForceField()
     : springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , showLawfulTorsion(initData(&showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
     , showExtraTorsion(initData(&showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
-    , showFactorSize(initData(&showFactorSize, 1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
+    , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
 }
 
