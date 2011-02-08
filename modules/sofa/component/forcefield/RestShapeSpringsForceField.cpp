@@ -70,11 +70,11 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(DataVecDeriv& f, const D
         const unsigned int ext_index = m_ext_indices[i];
 
         // translation
-        Vec3f dx = p1[index].getCenter() - p_0[ext_index].getCenter();
+        Vec3d dx = p1[index].getCenter() - p_0[ext_index].getCenter();
         getVCenter(f1[index]) -=  dx * k[i] ;
 
         // rotation
-        Quat dq = p1[index].getOrientation() * p_0[ext_index].getOrientation().inverse();
+        Quatd dq = p1[index].getOrientation() * p_0[ext_index].getOrientation().inverse();
         Vec3d dir;
         double angle=0;
         dq.normalize();
@@ -194,9 +194,9 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(DataVecDeriv& f, const D
         getVCenter(f1[index]) -=  dx * k[i] ;
 
         // rotation
-        Quat dq = p1[index].getOrientation() * p_0[ext_index].getOrientation().inverse();
+        Quatf dq = p1[index].getOrientation() * p_0[ext_index].getOrientation().inverse();
         Vec3f dir;
-        float angle=0;
+        Real angle=0;
         dq.normalize();
         if (dq[3] < 0.999999999999999)
             dq.quatToAxis(dir, angle);
