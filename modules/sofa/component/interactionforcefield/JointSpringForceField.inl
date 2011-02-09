@@ -218,6 +218,14 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     Real phi; Mp1p2.getOrientation().quatToAxis(spring.torsion,phi); spring.torsion*=phi;
     // update lawfull torsion
     projectTorsion(spring);
+    Vector extraTorsion=spring.torsion-spring.lawfulTorsion;
+    Real pi2=(Real)2.*(Real)PI;
+    for (unsigned int i=0; i<3; i++)
+    {
+        // remove modulo(2PI) from torsion
+        while(extraTorsion[i]<-PI) extraTorsion[i]+=pi2;
+        while(extraTorsion[i]>PI) extraTorsion[i]-=pi2;
+    }
 
     //compute torque
     for (unsigned int i=0; i<3; i++) spring.KR[i]=spring.freeMovements[3+i]==0?spring.hardStiffnessRot:spring.softStiffnessRot;
@@ -226,7 +234,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
         if(spring.freeMovements[3+i] && spring.torsion[i]!=spring.lawfulTorsion[i]) // outside limits
         {
             spring.KR[i]=spring.blocStiffnessRot;
-            fR0[i]=(spring.torsion[i]-spring.lawfulTorsion[i])*spring.KR[i];
+            fR0[i]=extraTorsion[i]*spring.KR[i];
         }
         else fR0[i]=spring.torsion[i]*spring.KR[i]; // hard constraint or soft constraint inside limits
 
