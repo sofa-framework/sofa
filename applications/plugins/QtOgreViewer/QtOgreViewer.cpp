@@ -229,9 +229,9 @@ void QtOgreViewer::setupResources()
 
     Ogre::String pluginsPath;
     Ogre::String configPath;
-    Ogre::String ogrePath;
     Ogre::String ogreLog;
-    // only use plugins.cfg if not static
+    Ogre::String ogreCfg;
+
 #ifndef OGRE_STATIC_LIB
     ogreLog="config/Ogre.log";
     if ( !sofa::helper::system::DataRepository.findFile ( ogreLog ) )
@@ -242,7 +242,7 @@ void QtOgreViewer::setupResources()
         ofile.close();
     }
     ogreLog = sofa::helper::system::DataRepository.getFile("config/Ogre.log");
-    ogrePath = sofa::helper::system::DataRepository.getFile("config/ogre.cfg");
+    ogreCfg = sofa::helper::system::DataRepository.getFile("config/ogre.cfg");
 #ifdef _WINDOWS
 #ifdef NDEBUG
     pluginsPath = sofa::helper::system::DataRepository.getFile("config/plugins_win.cfg");
@@ -255,9 +255,9 @@ void QtOgreViewer::setupResources()
 #endif
 #endif // OGRE_STATIC_LIB
     std::cout << "pluginsPath: " << pluginsPath << std::endl;
-    std::cout << "ogrePath: " << ogrePath << std::endl;
+    std::cout << "ogreCfg: " << ogreCfg << std::endl;
     std::cout << "ogreLog: " << ogreLog << std::endl;
-    mRoot = new Ogre::Root(pluginsPath, ogrePath, ogreLog);
+    mRoot = new Ogre::Root(pluginsPath, ogreCfg, ogreLog);
     if( mRoot == NULL)
     {
         std::cerr << "Failed to create Ogre::Root" << std::endl;
@@ -270,13 +270,38 @@ void QtOgreViewer::setupResources()
     const std::vector< std::string > &paths=sofa::helper::system::DataRepository.getPaths();
     for (unsigned int i=0; i<paths.size(); ++i)  Ogre::ResourceGroupManager::getSingleton().addResourceLocation(paths[i] ,"FileSystem","General");
 
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(helper::system::SetDirectory::GetCurrentDir(),"FileSystem","General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sofa::helper::system::DataRepository.getFirstPath() +"/config","FileSystem","General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sofa::helper::system::DataRepository.getFirstPath() +"/textures","FileSystem","General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sofa::helper::system::DataRepository.getFirstPath() +"/materials/programs","FileSystem","General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sofa::helper::system::DataRepository.getFirstPath() +"/materials/scripts","FileSystem","General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sofa::helper::system::DataRepository.getFirstPath() +"/materials/textures","FileSystem","General");
-    //Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sofa::helper::system::DataRepository.getFirstPath() +"/materials/textures/nvidia","FileSystem","General");
+    std::string resourceCfgFile = "config/ogreResources.cfg";
+    if( sofa::helper::system::DataRepository.findFile(resourceCfgFile) )
+    {
+        resourceCfgFile = sofa::helper::system::DataRepository.getFile("config/ogreResources.cfg");
+        Ogre::ConfigFile cf;
+        cf.load(resourceCfgFile);
+
+        // Go through all sections & settings in the file
+        Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+
+        Ogre::String secName, typeName, archName;
+        while (seci.hasMoreElements())
+        {
+            secName = seci.peekNextKey();
+            Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+            Ogre::ConfigFile::SettingsMultiMap::iterator i;
+            for (i = settings->begin(); i != settings->end(); ++i)
+            {
+                typeName = i->first;
+                archName = i->second;
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+                // OS X does not set the working directory relative to the app,
+                // In order to make things portable on OS X we need to provide
+                // the loading with it's own bundle path location
+                if (!StringUtil::startsWith(archName, "/", false)) // only adjust relative dirs
+                    archName = String(macBundlePath() + "/" + archName);
+#endif
+                Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+                    archName, typeName, secName);
+            }
+        }
+    }
 }
 
 
@@ -1686,22 +1711,22 @@ QString QtOgreViewer::helpString()
 {
 
     QString text("<H1>QtOgreViewer</H1><br>\
-                       <ul>\
-                       <li><b>Mouse</b>: TO NAVIGATE<br></li>\
-                       <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
-                       <li><b>A</b>: TO DRAW THE SCENE AXIS<br></li>\
-                       <li><b>C</b>: TO CENTER THE VIEW<br></li>\
-                       <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
-                       <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
-                       <li><b>L</b>: TO DRAW SHADOWS<br></li>\
-                       <li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\
-                       Each time the frame is updated an obj is exported<br></li>\
-                       <li><b>I</b>: TO SAVE A SCREENSHOT<br>\
-                       The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
-                       <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
-                       <li><b>V</b>: TO SAVE A VIDEO<br>\
-                       Each time the frame is updated a screenshot is saved<br></li>\
-                       <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
+                         <ul>\
+                         <li><b>Mouse</b>: TO NAVIGATE<br></li>\
+                         <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
+                         <li><b>A</b>: TO DRAW THE SCENE AXIS<br></li>\
+                         <li><b>C</b>: TO CENTER THE VIEW<br></li>\
+                         <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
+                         <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
+                         <li><b>L</b>: TO DRAW SHADOWS<br></li>\
+                         <li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\
+                         Each time the frame is updated an obj is exported<br></li>\
+                         <li><b>I</b>: TO SAVE A SCREENSHOT<br>\
+                         The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
+                         <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
+                         <li><b>V</b>: TO SAVE A VIDEO<br>\
+                         Each time the frame is updated a screenshot is saved<br></li>\
+                         <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
 
     return text;
 }
