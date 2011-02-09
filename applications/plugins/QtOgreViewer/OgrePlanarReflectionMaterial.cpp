@@ -33,7 +33,6 @@ OgrePlanarReflectionMaterial::OgrePlanarReflectionMaterial():
     ,textureFilename(initData(&textureFilename,"textureFilename","Filename of an additional texture to blend with the relfection texture"))
     ,blendingFactor(initData(&blendingFactor,0.25,"blendingFactor","The blending factor between the reflection texture and textureFilename."))
     ,debugDraw(initData(&debugDraw,false,"debugDraw","Display a plane textured with the reflectionTexture."))
-    ,mSceneMgr(NULL)
     ,mCamera(NULL)
     ,mPlane(NULL)
     ,mDebugPlaneEntity(NULL)
@@ -236,13 +235,6 @@ void OgrePlanarReflectionMaterial::reinit()
     mRttPtr->getBuffer()->getRenderTarget()->addListener(this);
     sofa::defaulttype::Vector3 dist = normalReflectionPlane.getValue() * distanceToOrigin.getValue();
     mPlaneNode->setPosition(dist.elems[0],dist.elems[1],dist.elems[2]);
-}
-
-
-
-void OgrePlanarReflectionMaterial::setSceneManager(Ogre::SceneManager &sceneMgr)
-{
-    mSceneMgr = &sceneMgr;
 }
 
 void OgrePlanarReflectionMaterial::drawVisual()

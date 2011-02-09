@@ -35,6 +35,7 @@
 
 #include "OgreShaderParameter.h"
 #include "OgreShaderTextureUnit.h"
+#include "OgreSceneObject.h"
 
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/VisualModel.h>
@@ -54,14 +55,14 @@ namespace visualmodel
 
 
 
-class OgreVisualModel : public sofa::component::visualmodel::VisualModelImpl
+class OgreVisualModel : public sofa::component::visualmodel::VisualModelImpl, public sofa::core::ogre::OgreSceneObject
 {
 public:
     SOFA_CLASS(OgreVisualModel,sofa::component::visualmodel::VisualModelImpl);
     typedef sofa::component::visualmodel::VisualModelImpl Inherit;
     OgreVisualModel();
     ~OgreVisualModel();
-    void setOgreSceneManager(Ogre::SceneManager* m) {mSceneMgr=m;}
+
 private:
     virtual void internalDraw(bool transparent=false);
 public:
@@ -97,7 +98,7 @@ protected:
 
     Ogre::ManualObject *ogreObject;
     Ogre::ManualObject *ogreNormalObject;
-    Ogre::SceneManager* mSceneMgr;
+
     Ogre::MaterialPtr currentMaterial;
     Ogre::MaterialPtr currentMaterialNormals;
 
