@@ -457,6 +457,8 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
         	helper::gl::glVertexT(c.Qfree);
         }
         */
+
+        glLineWidth(1);
     }
 }
 
