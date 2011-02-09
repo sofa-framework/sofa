@@ -1,4 +1,4 @@
-#include "OgreReflectionTexture.h"
+#include "OgrePlanarReflectionMaterial.h"
 #include "OgreVisualModel.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Tag.h>
@@ -14,17 +14,18 @@ namespace visualmodel
 
 /*ObjectFactory code */
 
-SOFA_DECL_CLASS(OgreReflectionTexture);
+SOFA_DECL_CLASS(OgrePlanarReflectionMaterial);
 int OgreReflectionTextureClass = core::RegisterObject("Generate a reflection texture with respect to a plane.")
-        .add< OgreReflectionTexture >();
+        .add< OgrePlanarReflectionMaterial >()
+        .addAlias("OgreReflectionTexture");
 
 
 /* */
 
 
-int OgreReflectionTexture::numInstances = 0;
+int OgrePlanarReflectionMaterial::numInstances = 0;
 
-OgreReflectionTexture::OgreReflectionTexture():
+OgrePlanarReflectionMaterial::OgrePlanarReflectionMaterial():
     normalReflectionPlane(initData(&normalReflectionPlane,sofa::defaulttype::Vector3(0,1,0),"normal","Normal of the reflection plane."))
     ,distanceToOrigin(initData(&distanceToOrigin,0.0,"distance","Distance to origin along normal direction."))
     ,sizeReflectionPlane(initData(&sizeReflectionPlane,Vec2i(100,100),"size","Size of the reflection plane."))
@@ -45,7 +46,7 @@ OgreReflectionTexture::OgreReflectionTexture():
     numInstances++;
 }
 
-OgreReflectionTexture::~OgreReflectionTexture()
+OgrePlanarReflectionMaterial::~OgrePlanarReflectionMaterial()
 {
     using namespace Ogre;
     mRttPtr->getBuffer()->getRenderTarget()->removeListener(this);
@@ -64,7 +65,7 @@ OgreReflectionTexture::~OgreReflectionTexture()
     assert(numInstances >=0 );
 }
 
-Ogre::Camera* OgreReflectionTexture::createReflectionCamera()
+Ogre::Camera* OgrePlanarReflectionMaterial::createReflectionCamera()
 {
     std::ostringstream s;
     s << "ReflectionCamera[" << numInstances <<"]";
@@ -73,7 +74,7 @@ Ogre::Camera* OgreReflectionTexture::createReflectionCamera()
     return camera;
 }
 
-Ogre::MovablePlane* OgreReflectionTexture::createReflectionPlane()
+Ogre::MovablePlane* OgrePlanarReflectionMaterial::createReflectionPlane()
 {
     std::ostringstream s;
     s << "ClipPlane[" << numInstances <<"]";
@@ -86,7 +87,7 @@ Ogre::MovablePlane* OgreReflectionTexture::createReflectionPlane()
     return plane;
 }
 
-Ogre::SceneNode* OgreReflectionTexture::createPlaneSceneNode(Ogre::MovablePlane& plane)
+Ogre::SceneNode* OgrePlanarReflectionMaterial::createPlaneSceneNode(Ogre::MovablePlane& plane)
 {
     Ogre::SceneNode* planeNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
     //mPlaneNode->attachObject(mPlaneEntity);
@@ -96,7 +97,7 @@ Ogre::SceneNode* OgreReflectionTexture::createPlaneSceneNode(Ogre::MovablePlane&
     return planeNode;
 }
 
-Ogre::Entity* OgreReflectionTexture::createDebugPlaneEntity(const Ogre::MovablePlane& plane)
+Ogre::Entity* OgrePlanarReflectionMaterial::createDebugPlaneEntity(const Ogre::MovablePlane& plane)
 {
     using namespace Ogre;
     std::ostringstream s;
@@ -113,7 +114,7 @@ Ogre::Entity* OgreReflectionTexture::createDebugPlaneEntity(const Ogre::MovableP
     return planeEntity;
 }
 
-Ogre::TexturePtr OgreReflectionTexture::createRenderTargetTexture(Ogre::Camera& camera)
+Ogre::TexturePtr OgrePlanarReflectionMaterial::createRenderTargetTexture(Ogre::Camera& camera)
 {
     using namespace Ogre;
     std::ostringstream s;
@@ -134,24 +135,29 @@ Ogre::TexturePtr OgreReflectionTexture::createRenderTargetTexture(Ogre::Camera& 
     return texture;
 }
 
-Ogre::MaterialPtr OgreReflectionTexture::createMaterial(const Ogre::TexturePtr& texture, const Ogre::Camera& projectionCamera)
+Ogre::MaterialPtr OgrePlanarReflectionMaterial::createMaterial(const Ogre::TexturePtr& texture, const Ogre::Camera& projectionCamera)
 {
     using namespace::Ogre;
 
     Ogre::MaterialPtr matPtr = MaterialManager::getSingleton().create(this->getName(),"General");
     Ogre::TextureUnitState* t;
-    t = matPtr->getTechnique(0)->getPass(0)->createTextureUnitState(textureFilename.getValue());
+    if(! textureFilename.getValue().empty() )
+    {
+        t = matPtr->getTechnique(0)->getPass(0)->createTextureUnitState(textureFilename.getValue());
+    }
     t = matPtr->getTechnique(0)->getPass(0)->createTextureUnitState(texture->getName() );
     t->setColourOperationEx(Ogre::LBX_BLEND_MANUAL, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT,
             Ogre::ColourValue::White, Ogre::ColourValue::White,
             blendingFactor.getValue());
     t->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
     t->setProjectiveTexturing(true,&projectionCamera);
+
+    matPtr->compile();
     return matPtr;
 }
 
 
-void OgreReflectionTexture::initVisual()
+void OgrePlanarReflectionMaterial::initVisual()
 {
     assert(mSceneMgr != NULL);
 
@@ -198,7 +204,7 @@ void OgreReflectionTexture::initVisual()
     }
 }
 
-void OgreReflectionTexture::reinit()
+void OgrePlanarReflectionMaterial::reinit()
 {
     using namespace Ogre;
     mRttPtr->getBuffer()->getRenderTarget()->removeListener(this);
@@ -234,22 +240,22 @@ void OgreReflectionTexture::reinit()
 
 
 
-void OgreReflectionTexture::setSceneManager(Ogre::SceneManager &sceneMgr)
+void OgrePlanarReflectionMaterial::setSceneManager(Ogre::SceneManager &sceneMgr)
 {
     mSceneMgr = &sceneMgr;
 }
 
-void OgreReflectionTexture::drawVisual()
+void OgrePlanarReflectionMaterial::drawVisual()
 {
 }
 
-void OgreReflectionTexture::updateVisual()
+void OgrePlanarReflectionMaterial::updateVisual()
 {
 }
 
 
 
-void OgreReflectionTexture::updateReflectionCamera(const Ogre::MovablePlane& plane)
+void OgrePlanarReflectionMaterial::updateReflectionCamera(const Ogre::MovablePlane& plane)
 {
     Ogre::Camera* sofaCamera = mSceneMgr->getCamera("sofaCamera");
     assert(sofaCamera);
@@ -267,12 +273,12 @@ void OgreReflectionTexture::updateReflectionCamera(const Ogre::MovablePlane& pla
 
 }
 
-void OgreReflectionTexture::updatePlaneSceneNode()
+void OgrePlanarReflectionMaterial::updatePlaneSceneNode()
 {
 
 }
 
-void OgreReflectionTexture::preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
+void OgrePlanarReflectionMaterial::preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
 {
     if( evt.source == mRttPtr->getBuffer()->getRenderTarget() )
     {
@@ -290,7 +296,7 @@ void OgreReflectionTexture::preRenderTargetUpdate(const Ogre::RenderTargetEvent&
     }
 }
 
-void OgreReflectionTexture::postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
+void OgrePlanarReflectionMaterial::postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
 {
     if( evt.source == mRttPtr->getBuffer()->getRenderTarget() )
     {

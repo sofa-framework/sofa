@@ -50,7 +50,7 @@ SOURCES += DotSceneLoader.cpp \
            OgreShaderParameter.cpp \
            OgreShaderTextureUnit.cpp \
            QOgreLightWidget.cpp \
-           OgreReflectionTexture.cpp \
+           OgrePlanarReflectionMaterial.cpp \
            DrawManagerOGRE.cpp \
            OgreViewerSetting.cpp \
            initQtOgreViewer.cpp \
@@ -65,7 +65,7 @@ HEADERS += DotSceneLoader.h \
            OgreShaderParameter.h \
            OgreShaderTextureUnit.h \
            QOgreLightWidget.h \
-           OgreReflectionTexture.h \
+           OgrePlanarReflectionMaterial.h \
            OgreSofaViewer.h \
            DrawManagerOGRE.h \
            OgreViewerSetting.h \

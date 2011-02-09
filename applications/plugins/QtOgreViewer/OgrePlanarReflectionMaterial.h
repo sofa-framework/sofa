@@ -22,15 +22,15 @@ namespace visualmodel
 
 class OgreVisualModel;
 
-class OgreReflectionTexture : public core::VisualModel, public Ogre::RenderTargetListener
+class OgrePlanarReflectionMaterial : public core::VisualModel, public Ogre::RenderTargetListener
 {
 public:
-    SOFA_CLASS(OgreReflectionTexture,core::objectmodel::BaseObject);
+    SOFA_CLASS(OgrePlanarReflectionMaterial,core::objectmodel::BaseObject);
 
     typedef sofa::defaulttype::Vec<2,int> Vec2i;
 
-    OgreReflectionTexture();
-    virtual ~OgreReflectionTexture();
+    OgrePlanarReflectionMaterial();
+    virtual ~OgrePlanarReflectionMaterial();
 
     void initVisual();
     void reinit();
@@ -46,8 +46,6 @@ public:
     //RenderTargetListenerMethods
     void preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
     void postRenderTargetUpdate(const Ogre::RenderTargetEvent &evt);
-
-    Ogre::MaterialPtr getMaterialPtr(const std::string& name) const { return mMatPtr->clone(name); }
 
     core::objectmodel::Data< sofa::defaulttype::Vector3 > normalReflectionPlane;
     core::objectmodel::Data< SReal> distanceToOrigin;

@@ -32,7 +32,7 @@
 #include "QtOgreViewer.h"
 #include "DotSceneLoader.h"
 #include "OgreVisualModel.h"
-#include "OgreReflectionTexture.h"
+#include "OgrePlanarReflectionMaterial.h"
 #include "OgreShaderParameter.h"
 #include "OgreShaderTextureUnit.h"
 #include "OgreViewerSetting.h"
@@ -962,8 +962,8 @@ void QtOgreViewer::showEntireScene()
     //In case new Visual Model appeared
     std::vector<OgreVisualModel*> visualModels;
     simulation::getSimulation()->getVisualRoot()->getTreeObjects<OgreVisualModel>(&visualModels);
-    helper::vector<sofa::component::visualmodel::OgreReflectionTexture* > reflectionTextures;
-    simulation::getSimulation()->getVisualRoot()->getTreeObjects<sofa::component::visualmodel::OgreReflectionTexture>(&reflectionTextures);
+    helper::vector<sofa::component::visualmodel::OgrePlanarReflectionMaterial* > reflectionTextures;
+    simulation::getSimulation()->getVisualRoot()->getTreeObjects<sofa::component::visualmodel::OgrePlanarReflectionMaterial>(&reflectionTextures);
 
     for ( unsigned int i=0; i<reflectionTextures.size(); i++)
     {
