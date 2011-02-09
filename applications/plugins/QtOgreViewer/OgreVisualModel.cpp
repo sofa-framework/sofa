@@ -32,7 +32,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/BaseMapping.h>
 
-#include "OgreReflectionTexture.h"
+#include "OgrePlanarReflectionMaterial.h"
 #include <iostream>
 
 namespace sofa
@@ -47,8 +47,6 @@ namespace visualmodel
 SOFA_DECL_CLASS(OgreVisualModel)
 
 int OgreVisualModel::meshName=0; //static counter to get unique name for entities
-int SubMesh::materialUniqueIndex=0;
-
 bool OgreVisualModel::lightsEnabled=false;
 
 OgreVisualModel::OgreVisualModel():

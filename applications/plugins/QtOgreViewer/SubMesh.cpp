@@ -8,6 +8,8 @@ namespace component
 {
 namespace visualmodel
 {
+
+int SubMesh::materialUniqueIndex=0;
 //-------------------------------------------
 // SubMesh
 //-------------------------------------------

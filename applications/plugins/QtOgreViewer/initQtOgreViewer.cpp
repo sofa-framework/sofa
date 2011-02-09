@@ -93,7 +93,7 @@ SOFA_LINK_CLASS(QtOgreViewer)
 SOFA_LINK_CLASS(OgreVisualModel)
 SOFA_LINK_CLASS(OgreShaderParameter)
 SOFA_LINK_CLASS(OgreShaderTextureUnit)
-SOFA_LINK_CLASS(OgreReflectionTexture);
+SOFA_LINK_CLASS(OgrePlanarReflectionMaterial);
 SOFA_LINK_CLASS(OgreViewerSetting)
 SOFA_LINK_CLASS(OgreMeshLoader);
 

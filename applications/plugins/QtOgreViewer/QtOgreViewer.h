@@ -173,40 +173,7 @@ private:
 
     void createScene(void);
 
-    //******************************Configuration Panel for Ogre***********************************
-    virtual bool configure(void)
-    {
-        // Show the configuration dialog and initialise the system
-        // You can skip this and use root.restoreConfig() to load configuration
-        // settings if you were sure there are valid ones saved in ogre.cfg
-        std::cerr<<"Show Dialog " << mRoot<<"\n";
-        if(mRoot->showConfigDialog())
-        {
-            // Custom option - to use PlaneOptimalShadowCameraSetup we must have
-            // double-precision. Thus, set the D3D floating point mode if present,
-            // no matter what was chosen
-            Ogre::ConfigOptionMap& optMap = mRoot->getRenderSystem()->getConfigOptions();
-            Ogre::ConfigOptionMap::iterator i = optMap.find("Floating-point mode");
-            if (i != optMap.end())
-            {
-                if (i->second.currentValue != "Consistent")
-                {
-                    i->second.currentValue = "Consistent";
-                    Ogre::LogManager::getSingleton().logMessage("ExampleApplication: overriding "
-                            "D3D floating point mode to 'Consistent' to ensure precision "
-                            "for numerical computations");
-                }
-            }
-            // If returned true, user clicked OK so initialise
 
-            mRoot->initialise(false, "SOFA - OGRE");
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
 
     void setCameraMode(component::visualmodel::BaseCamera::CameraType mode);
 
