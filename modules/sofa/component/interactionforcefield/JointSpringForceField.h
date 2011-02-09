@@ -65,8 +65,12 @@ public:
     Real kd;				/// damping factor
     Vector  initTrans;		/// rest length of the spring
     Quat initRot;			/// rest orientation of the spring
-    Quat lawfulTorsion;	/// general (lawful) torsion of the springs (used to fix a bug with large rotations)
-    Quat extraTorsion;	/// extra (illicit) torsion of the springs (used to fix a bug with large rotations)
+//	  Quat lawfulTorsion;	/// general (lawful) torsion of the springs (used to fix a bug with large rotations)
+//	  Quat extraTorsion;	/// extra (illicit) torsion of the springs (used to fix a bug with large rotations)
+    Vector torsion;		/// torsion of the springs in axis/angle format
+    Vector lawfulTorsion;	/// projected torsion in allowed angles
+    Vector KT;	// linear stiffness
+    Vector KR;	// angular stiffness
 
     sofa::defaulttype::Vec<6,bool> freeMovements;	///defines the axis where the movements is free. (0,1,2)--> translation axis (3,4,5)-->rotation axis
     Real softStiffnessTrans;	///stiffness to apply on axis where the translations are free (default 0.0)
@@ -77,13 +81,13 @@ public:
 
     sofa::defaulttype::Vec<6,Real> limitAngles; ///limit angles on rotation axis (default no limit)
 
-    Vector bloquage;
+    //Vector bloquage;
     bool needToInitializeTrans;
     bool needToInitializeRot;
 
     ///constructors
     JointSpring()
-        : m1(0), m2(0), kd(0), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
+        : m1(0), m2(0), kd(0), lawfulTorsion(0,0,0), torsion(0,0,0) , KT(0,0,0) , KR(0,0,0)
         , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100), needToInitializeTrans(true), needToInitializeRot(true)
         //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
     {
@@ -94,7 +98,7 @@ public:
     }
 
     JointSpring(int m1, int m2)
-        : m1(m1), m2(m2), kd(0), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
+        : m1(m1), m2(m2), kd(0), lawfulTorsion(0,0,0), torsion(0,0,0) , KT(0,0,0) , KR(0,0,0)
         , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100), needToInitializeTrans(true), needToInitializeRot(true)
         //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
     {
@@ -105,7 +109,7 @@ public:
     }
 
     JointSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
-        : m1(m1), m2(m2), kd(kd), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
+        : m1(m1), m2(m2), kd(kd), lawfulTorsion(0,0,0), torsion(0,0,0) , KT(0,0,0) , KR(0,0,0)
         //,limitAngles(axmin,axmax,aymin,aymax,azmin,azmax)
         , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr), needToInitializeTrans(true), needToInitializeRot(true)
     {
@@ -319,6 +323,8 @@ protected:
     /// Apply the stiffness, i.e. accumulate df given dx
     void addSpringDForce(VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, /*const*/ Spring& spring, Real kFactor);
 
+    // project torsion to Lawfulltorsion according to limitangles
+    void projectTorsion(Spring& spring);
 
 
 public:
