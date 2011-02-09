@@ -31,12 +31,12 @@
 
 #include "QtOgreViewer.h"
 #include "DotSceneLoader.h"
+
 #include "OgreVisualModel.h"
-#include "OgrePlanarReflectionMaterial.h"
-#include "OgreShaderParameter.h"
-#include "OgreShaderTextureUnit.h"
 #include "OgreViewerSetting.h"
 #include "DrawManagerOGRE.h"
+#include "PropagateOgreSceneManager.h"
+
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/qt/RealGUI.h>
@@ -118,7 +118,7 @@ helper::SofaViewerCreator<QtOgreViewer> QtOgreViewer_class("ogre",false);
 int QtOGREGUIClass = GUIManager::RegisterGUI ( "ogre", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 1 );
 
 using sofa::simulation::Simulation;
-using sofa::component::visualmodel::OgreVisualModel;
+
 
 //Application principale
 QtOgreViewer::QtOgreViewer( QWidget *parent, const char *name )
@@ -960,21 +960,10 @@ void QtOgreViewer::showEntireScene()
     if (mSceneMgr == NULL) return;
 
     //In case new Visual Model appeared
-    std::vector<OgreVisualModel*> visualModels;
-    simulation::getSimulation()->getVisualRoot()->getTreeObjects<OgreVisualModel>(&visualModels);
-    helper::vector<sofa::component::visualmodel::OgrePlanarReflectionMaterial* > reflectionTextures;
-    simulation::getSimulation()->getVisualRoot()->getTreeObjects<sofa::component::visualmodel::OgrePlanarReflectionMaterial>(&reflectionTextures);
 
-    for ( unsigned int i=0; i<reflectionTextures.size(); i++)
-    {
-        reflectionTextures[i]->setSceneManager(*mSceneMgr);
-    }
-
-    for (unsigned int i=0; i<visualModels.size(); i++)
-    {
-        visualModels[i]->setOgreSceneManager(mSceneMgr);
-    }
-
+    sofa::simulation::ogre::PropagateOgreSceneManager v(core::ExecParams::defaultInstance(),mSceneMgr);
+    v.execute(groot);
+    v.execute(sofa::simulation::getSimulation()->getVisualRoot());
 
     mSceneMgr->_updateSceneGraph (mCamera);
     //************************************************************************************************

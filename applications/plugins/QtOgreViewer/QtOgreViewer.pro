@@ -53,6 +53,8 @@ SOURCES += DotSceneLoader.cpp \
            OgrePlanarReflectionMaterial.cpp \
            DrawManagerOGRE.cpp \
            OgreViewerSetting.cpp \
+		   OgreSceneObject.cpp \
+		   PropagateOgreSceneManager.cpp \
            initQtOgreViewer.cpp \
 		   SubMesh.cpp 
 
@@ -69,6 +71,8 @@ HEADERS += DotSceneLoader.h \
            OgreSofaViewer.h \
            DrawManagerOGRE.h \
            OgreViewerSetting.h \
+		   OgreSceneObject.h \
+		   PropagateOgreSceneManager.h \
            initQtOgreViewer.h \
 		   SubMesh.h
 

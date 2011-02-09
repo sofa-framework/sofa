@@ -1,7 +1,9 @@
 #ifndef SOFA_GUI_QT_VIEWER_QTOGRE_OGREREFLECTIONTEXTURE_H
 #define SOFA_GUI_QT_VIEWER_QTOGRE_OGREREFLECTIONTEXTURE_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
+
+#include "OgreSceneObject.h"
+
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -22,10 +24,11 @@ namespace visualmodel
 
 class OgreVisualModel;
 
-class OgrePlanarReflectionMaterial : public core::VisualModel, public Ogre::RenderTargetListener
+class OgrePlanarReflectionMaterial : public core::VisualModel, public Ogre::RenderTargetListener,
+    public core::ogre::OgreSceneObject
 {
 public:
-    SOFA_CLASS(OgrePlanarReflectionMaterial,core::objectmodel::BaseObject);
+    SOFA_CLASS(OgrePlanarReflectionMaterial,core::VisualModel);
 
     typedef sofa::defaulttype::Vec<2,int> Vec2i;
 
@@ -39,9 +42,6 @@ public:
 
     void drawVisual();
     void updateVisual();
-
-
-    void setSceneManager( Ogre::SceneManager& sceneMgr);
 
     //RenderTargetListenerMethods
     void preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
@@ -59,7 +59,7 @@ public:
 protected:
     static int numInstances;
     Ogre::Root* mRoot;
-    Ogre::SceneManager* mSceneMgr;
+
     Ogre::Camera* mCamera;
     Ogre::MovablePlane* mPlane;
 
