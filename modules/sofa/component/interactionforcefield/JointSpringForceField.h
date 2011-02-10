@@ -98,7 +98,7 @@ public:
     }
 
     JointSpring(int m1, int m2)
-        : m1(m1), m2(m2), kd(0), lawfulTorsion(0,0,0), torsion(0,0,0) , KT(0,0,0) , KR(0,0,0)
+        : m1(m1), m2(m2), kd(0),  torsion(0,0,0), lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
         , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100), needToInitializeTrans(true), needToInitializeRot(true)
         //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
     {
@@ -109,7 +109,7 @@ public:
     }
 
     JointSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
-        : m1(m1), m2(m2), kd(kd), lawfulTorsion(0,0,0), torsion(0,0,0) , KT(0,0,0) , KR(0,0,0)
+        : m1(m1), m2(m2), kd(kd),  torsion(0,0,0), lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
         //,limitAngles(axmin,axmax,aymin,aymax,azmin,azmax)
         , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr), needToInitializeTrans(true), needToInitializeRot(true)
     {
