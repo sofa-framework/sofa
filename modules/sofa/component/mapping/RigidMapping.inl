@@ -622,11 +622,11 @@ void RigidMapping<TIn, TOut>::applyDJT(core::MultiVecDerivId parentForceChangeId
             typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIdx]);
             const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIdx]);
             parentTorque -=  TIn::crosscross( childForces[childIdx], parentRotation, rotatedPoints[childIdx]) * kfactor;
-            cerr<<"RigidMapping<TIn, TOut>::applyJT, childForces[childIdx] = "<< childForces[childIdx] << endl;
-            cerr<<"RigidMapping<TIn, TOut>::applyJT, parentRotation = "<< parentRotation << endl;
-            cerr<<"RigidMapping<TIn, TOut>::applyJT, rotatedPoints[childIdx] = "<< rotatedPoints[childIdx] << endl;
-            cerr<<"RigidMapping<TIn, TOut>::applyJT,  kfactor = "<<  kfactor << endl;
-            cerr<<"RigidMapping<TIn, TOut>::applyJT, parentTorque = "<< parentTorque << endl;
+//                                    cerr<<"RigidMapping<TIn, TOut>::applyJT, childForces[childIdx] = "<< childForces[childIdx] << endl;
+//                                    cerr<<"RigidMapping<TIn, TOut>::applyJT, parentRotation = "<< parentRotation << endl;
+//                                    cerr<<"RigidMapping<TIn, TOut>::applyJT, rotatedPoints[childIdx] = "<< rotatedPoints[childIdx] << endl;
+//                                    cerr<<"RigidMapping<TIn, TOut>::applyJT,  kfactor = "<<  kfactor << endl;
+//                                    cerr<<"RigidMapping<TIn, TOut>::applyJT, parentTorque = "<< parentTorque << endl;
 
         }
         if (isMaskInUse)

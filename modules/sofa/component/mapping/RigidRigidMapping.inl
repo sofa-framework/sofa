@@ -157,13 +157,13 @@ void RigidRigidMapping<TIn, TOut>::clear()
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::disable()
 {
-	if (!this->points.getValue().empty() && this->toModel!=NULL)
-	{
-		VecCoord& x = *this->toModel->getX();
-		x.resize(points.getValue().size());
-		for (unsigned int i=0;i<points.getValue().size();i++)
-			x[i] = points.getValue()[i];
-	}
+if (!this->points.getValue().empty() && this->toModel!=NULL)
+{
+	VecCoord& x = *this->toModel->getX();
+	x.resize(points.getValue().size());
+	for (unsigned int i=0;i<points.getValue().size();i++)
+		x[i] = points.getValue()[i];
+}
 }
 */
 
@@ -441,8 +441,9 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<Ou
     helper::ReadAccessor< Data<OutVecDeriv> > childForces = dIn;
 
     Vector v,omega;
-    unsigned int val;
-    unsigned int cpt;
+    unsigned int childrenPerParent;
+    unsigned childIndex;
+    unsigned parentIndex;
 
     if ( !(maskTo->isInUse()) )
     {
@@ -450,46 +451,49 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<Ou
         switch(repartition.getValue().size())
         {
         case 0 :
-            for(unsigned int i=0; i<points.getValue().size(); i++)
+            for(childIndex=0; childIndex<points.getValue().size(); childIndex++)
             {
                 // out = Jt in
                 // Jt = [ I     ]
                 //      [ -OM^t ]
                 // -OM^t = OM^
 
-                Vector f = getVCenter(childForces[i]);
+                Vector f = getVCenter(childForces[childIndex]);
                 v += f;
-                omega += getVOrientation(childForces[i]) + cross(f,-pointsR0[i].getCenter());
+                omega += getVOrientation(childForces[childIndex]) + cross(f,-pointsR0[childIndex].getCenter());
             }
 
-            if (!indexFromEnd.getValue())
-            {
-                getVCenter(parentForces[index.getValue()]) += v;
-                getVOrientation(parentForces[index.getValue()]) += omega;
-            }
-            else
-            {
-                getVCenter(parentForces[parentForces.size() - 1 - index.getValue()]) += v;
-                getVOrientation(parentForces[parentForces.size() - 1 - index.getValue()]) += omega;
-            }
+            parentIndex = indexFromEnd.getValue() ? parentForces.size()-1-index.getValue() : index.getValue() ;
+            getVCenter(parentForces[parentIndex]) += v;
+            getVOrientation(parentForces[parentIndex]) += omega;
+            //			if (!indexFromEnd.getValue())
+            //			{
+            //                            getVCenter(parentForces[index.getValue()]) += v;
+            //                            getVOrientation(parentForces[index.getValue()]) += omega;
+            //			}
+            //			else
+            //			{
+            //                            getVCenter(parentForces[parentForces.size() - 1 - index.getValue()]) += v;
+            //                            getVOrientation(parentForces[parentForces.size() - 1 - index.getValue()]) += omega;
+            //			}
 
             break;
         case 1 :
-            val = repartition.getValue()[0];
-            cpt=0;
-            for(unsigned int ito=0; ito<parentForces.size(); ito++)
+            childrenPerParent = repartition.getValue()[0];
+            childIndex=0;
+            for(parentIndex=0; parentIndex<parentForces.size(); parentIndex++)
             {
                 v=Vector();
                 omega=Vector();
-                for(unsigned int i=0; i<val; i++)
+                for(unsigned int i=0; i<childrenPerParent; i++)
                 {
-                    Vector f = getVCenter(childForces[cpt]);
+                    Vector f = getVCenter(childForces[childIndex]);
                     v += f;
-                    omega += getVOrientation(childForces[cpt]) + cross(f,-pointsR0[cpt].getCenter());
-                    cpt++;
+                    omega += getVOrientation(childForces[childIndex]) + cross(f,-pointsR0[childIndex].getCenter());
+                    childIndex++;
                 }
-                getVCenter(parentForces[ito]) += v;
-                getVOrientation(parentForces[ito]) += omega;
+                getVCenter(parentForces[parentIndex]) += v;
+                getVOrientation(parentForces[parentIndex]) += omega;
             }
             break;
         default :
@@ -498,20 +502,20 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<Ou
                 serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
                 return;
             }
-            cpt=0;
-            for(unsigned int ito=0; ito<parentForces.size(); ito++)
+            childIndex=0;
+            for(parentIndex=0; parentIndex<parentForces.size(); parentIndex++)
             {
                 v=Vector();
                 omega=Vector();
-                for(unsigned int i=0; i<repartition.getValue()[ito]; i++)
+                for(unsigned int i=0; i<repartition.getValue()[parentIndex]; i++)
                 {
-                    Vector f =getVCenter( childForces[cpt]);
+                    Vector f =getVCenter( childForces[childIndex]);
                     v += f;
-                    omega += getVOrientation(childForces[cpt]) + cross(f,-pointsR0[cpt].getCenter());
-                    cpt++;
+                    omega += getVOrientation(childForces[childIndex]) + cross(f,-pointsR0[childIndex].getCenter());
+                    childIndex++;
                 }
-                getVCenter(parentForces[ito]) += v;
-                getVOrientation(parentForces[ito]) += omega;
+                getVCenter(parentForces[parentIndex]) += v;
+                getVOrientation(parentForces[parentIndex]) += omega;
             }
             break;
         }
@@ -527,50 +531,55 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<Ou
         case 0 :
             for(; it!=indices.end(); it++)
             {
-                const int i=(*it);
+                childIndex=(*it);
                 // out = Jt in
                 // Jt = [ I     ]
                 //      [ -OM^t ]
                 // -OM^t = OM^
 
-                Vector f = getVCenter(childForces[i]);
+                Vector f = getVCenter(childForces[childIndex]);
                 v += f;
-                omega += getVOrientation(childForces[i]) + cross(f,-pointsR0[i].getCenter());
+                omega += getVOrientation(childForces[childIndex]) + cross(f,-pointsR0[childIndex].getCenter());
             }
 
-            if (!indexFromEnd.getValue())
-            {
-                getVCenter(parentForces[index.getValue()]) += v;
-                getVOrientation(parentForces[index.getValue()]) += omega;
-                maskFrom->insertEntry(index.getValue());
-            }
-            else
-            {
-                getVCenter(parentForces[parentForces.size() - 1 - index.getValue()]) += v;
-                getVOrientation(parentForces[parentForces.size() - 1 - index.getValue()]) += omega;
-                maskFrom->insertEntry(parentForces.size() - 1 - index.getValue());
-            }
+            parentIndex = indexFromEnd.getValue() ? parentForces.size()-1-index.getValue() : index.getValue();
+            getVCenter(parentForces[parentIndex]) += v;
+            getVOrientation(parentForces[parentIndex]) += omega;
+            maskFrom->insertEntry(parentIndex);
+
+//			if (!indexFromEnd.getValue())
+//			{
+//                            getVCenter(parentForces[index.getValue()]) += v;
+//                            getVOrientation(parentForces[index.getValue()]) += omega;
+//                            maskFrom->insertEntry(index.getValue());
+//			}
+//			else
+//			{
+//                            getVCenter(parentForces[parentForces.size() - 1 - index.getValue()]) += v;
+//                            getVOrientation(parentForces[parentForces.size() - 1 - index.getValue()]) += omega;
+//                            maskFrom->insertEntry(parentForces.size() - 1 - index.getValue());
+//			}
 
             break;
         case 1 :
-            val = repartition.getValue()[0];
-            cpt=0;
-            for(unsigned int ito=0; ito<parentForces.size() && it!=indices.end(); ito++)
+            childrenPerParent = repartition.getValue()[0];
+            childIndex=0;
+            for(parentIndex=0; parentIndex<parentForces.size() && it!=indices.end(); parentIndex++)
             {
                 v=Vector();
                 omega=Vector();
-                for(unsigned int i=0; i<val && it != indices.end(); i++, cpt++)
+                for(unsigned int i=0; i<childrenPerParent && it != indices.end(); i++, childIndex++)
                 {
                     const unsigned int idx=(*it);
-                    if (idx != cpt) continue;
-                    Vector f = getVCenter(childForces[cpt]);
+                    if (idx != childIndex) continue;
+                    Vector f = getVCenter(childForces[childIndex]);
                     v += f;
-                    omega += getVOrientation(childForces[cpt]) + cross(f,-pointsR0[cpt].getCenter());
+                    omega += getVOrientation(childForces[childIndex]) + cross(f,-pointsR0[childIndex].getCenter());
                     it++;
                 }
-                getVCenter(parentForces[ito]) += v;
-                getVOrientation(parentForces[ito]) += omega;
-                maskFrom->insertEntry(ito);
+                getVCenter(parentForces[parentIndex]) += v;
+                getVOrientation(parentForces[parentIndex]) += omega;
+                maskFrom->insertEntry(parentIndex);
             }
             break;
         default :
@@ -579,28 +588,157 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<Ou
                 serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
                 return;
             }
-            cpt=0;
-            for(unsigned int ito=0; ito<parentForces.size() && it != indices.end(); ito++)
+            childIndex=0;
+            for(parentIndex=0; parentIndex<parentForces.size() && it != indices.end(); parentIndex++)
             {
                 v=Vector();
                 omega=Vector();
-                for(unsigned int i=0; i<repartition.getValue()[ito] && it != indices.end(); i++, cpt++)
+                for(unsigned int i=0; i<repartition.getValue()[parentIndex] && it != indices.end(); i++, childIndex++)
                 {
                     const unsigned int idx=(*it);
-                    if (idx != cpt) continue;
-                    Vector f = getVCenter(childForces[cpt]);
+                    if (idx != childIndex) continue;
+                    Vector f = getVCenter(childForces[childIndex]);
                     v += f;
-                    omega += getVOrientation(childForces[cpt]) + cross(f,-pointsR0[cpt].getCenter());
+                    omega += getVOrientation(childForces[childIndex]) + cross(f,-pointsR0[childIndex].getCenter());
                     it++;
                 }
-                getVCenter(parentForces[ito]) += v;
-                getVOrientation(parentForces[ito]) += omega;
-                maskFrom->insertEntry(ito);
+                getVCenter(parentForces[parentIndex]) += v;
+                getVOrientation(parentForces[parentIndex]) += omega;
+                maskFrom->insertEntry(parentIndex);
             }
             break;
         }
     }
 }
+
+
+
+template <class TIn, class TOut>
+void RigidRigidMapping<TIn, TOut>::applyDJT(core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId, const core::MechanicalParams* mparams )
+{
+    helper::ReadAccessor<Data<OutVecDeriv> > childForces (*mparams->readF(this->toModel));
+    helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel].write());
+    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
+    Real kfactor = mparams->kFactor();
+
+    unsigned int childrenPerParent;
+    unsigned childIndex;
+    unsigned parentIndex;
+
+    if ( !(maskTo->isInUse()) )
+    {
+        maskFrom->setInUse(false);
+        switch(repartition.getValue().size())
+        {
+        case 0 :
+            parentIndex = indexFromEnd.getValue() ? parentForces.size()-1-index.getValue() : index.getValue() ;
+            for(childIndex=0; childIndex<points.getValue().size(); childIndex++)
+            {
+                typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIndex]);
+                const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIndex]);
+                parentTorque -=  TIn::crosscross( getLinear(childForces[childIndex]), parentRotation, pointsR0[childIndex].getCenter()) * kfactor;
+            }
+
+            break;
+        case 1 :
+            childrenPerParent = repartition.getValue()[0];
+            childIndex=0;
+            for(parentIndex=0; parentIndex<parentForces.size(); parentIndex++)
+            {
+                for(unsigned int i=0; i<childrenPerParent; i++)
+                {
+                    typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIndex]);
+                    const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIndex]);
+                    parentTorque -=  TIn::crosscross( getLinear(childForces[childIndex]), parentRotation, pointsR0[childIndex].getCenter()) * kfactor;
+                    childIndex++;
+                }
+            }
+            break;
+        default :
+            if (repartition.getValue().size() != parentForces.size())
+            {
+                serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
+                return;
+            }
+            childIndex=0;
+            for(parentIndex=0; parentIndex<parentForces.size(); parentIndex++)
+            {
+                for(unsigned int i=0; i<repartition.getValue()[parentIndex]; i++)
+                {
+                    typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIndex]);
+                    const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIndex]);
+                    parentTorque -=  TIn::crosscross( getLinear(childForces[childIndex]), parentRotation, pointsR0[childIndex].getCenter()) * kfactor;
+                    childIndex++;
+                }
+            }
+            break;
+        }
+    }
+    else
+    {
+        typedef helper::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+
+        ParticleMask::InternalStorage::const_iterator it=indices.begin();
+        switch(repartition.getValue().size())
+        {
+        case 0 :
+            parentIndex = indexFromEnd.getValue() ? parentForces.size()-1-index.getValue() : index.getValue();
+            maskFrom->insertEntry(parentIndex);
+            for(; it!=indices.end(); it++)
+            {
+                childIndex=(*it);
+                typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIndex]);
+                const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIndex]);
+                parentTorque -=  TIn::crosscross( getLinear(childForces[childIndex]), parentRotation, pointsR0[childIndex].getCenter()) * kfactor;
+            }
+
+            break;
+        case 1 :
+            childrenPerParent = repartition.getValue()[0];
+            childIndex=0;
+            for(parentIndex=0; parentIndex<parentForces.size() && it!=indices.end(); parentIndex++)
+            {
+                for(unsigned int i=0; i<childrenPerParent && it != indices.end(); i++, childIndex++)
+                {
+                    const unsigned int idx=(*it);
+                    if (idx != childIndex) continue;
+                    typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIndex]);
+                    const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIndex]);
+                    parentTorque -=  TIn::crosscross( getLinear(childForces[childIndex]), parentRotation, pointsR0[childIndex].getCenter()) * kfactor;
+                    it++;
+                }
+                maskFrom->insertEntry(parentIndex);
+            }
+            break;
+        default :
+            if (repartition.getValue().size() != parentForces.size())
+            {
+                serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
+                return;
+            }
+            childIndex=0;
+            for(parentIndex=0; parentIndex<parentForces.size() && it != indices.end(); parentIndex++)
+            {
+                for(unsigned int i=0; i<repartition.getValue()[parentIndex] && it != indices.end(); i++, childIndex++)
+                {
+                    const unsigned int idx=(*it);
+                    if (idx != childIndex) continue;
+                    typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIndex]);
+                    const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIndex]);
+                    parentTorque -=  TIn::crosscross( getLinear(childForces[childIndex]), parentRotation, pointsR0[childIndex].getCenter()) * kfactor;
+                    it++;
+                }
+                maskFrom->insertEntry(parentIndex);
+            }
+            break;
+        }
+    }
+}
+
+
+
+
 
 
 template <class TIn, class TOut>
@@ -752,7 +890,7 @@ template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(Data<OutVecDeriv>& dAcc_out, const Data<InVecDeriv>& dV_in, const Data<InVecDeriv>& dAcc_in, const core::MechanicalParams *mparams)
 {
     const InVecDeriv& v_in = dV_in.getValue();
-//	const InVecDeriv& acc_in = dAcc_in.getValue();
+    //	const InVecDeriv& acc_in = dAcc_in.getValue();
 
     {
         OutVecDeriv& acc_out = *dAcc_out.beginEdit();
