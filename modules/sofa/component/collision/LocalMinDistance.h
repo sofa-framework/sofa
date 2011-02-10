@@ -32,6 +32,7 @@
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/CubeModel.h>
+#include <sofa/component/collision/BSplineModel.h>
 #include <sofa/component/collision/RayModel.h>
 
 namespace sofa
@@ -108,6 +109,7 @@ public:
     bool testValidity(Point&, const Vector3&);
     bool testValidity(Line&, const Vector3&);
     bool testValidity(Triangle&, const Vector3&);
+
 
     void draw();
 
