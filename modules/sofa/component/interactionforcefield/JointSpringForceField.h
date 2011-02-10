@@ -87,7 +87,7 @@ public:
 
     ///constructors
     JointSpring()
-        : m1(0), m2(0), kd(0), lawfulTorsion(0,0,0), torsion(0,0,0) , KT(0,0,0) , KR(0,0,0)
+        : m1(0), m2(0), kd(0), torsion(0,0,0) ,  lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
         , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100), needToInitializeTrans(true), needToInitializeRot(true)
         //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
     {
