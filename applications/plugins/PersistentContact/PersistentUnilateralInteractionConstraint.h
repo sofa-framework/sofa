@@ -45,9 +45,15 @@ template<class DataTypes>
 class PersistentUnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
-    PersistentUnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev=NULL, bool* active = NULL)
+
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename Coord::value_type Real;
+
+    PersistentUnilateralConstraintResolutionWithFriction(double mu, bool* active = NULL)
         : _mu(mu)
-        , _prev(prev)
         , _active(active)
         , m_constraint(0)
     {
@@ -63,12 +69,19 @@ public:
         m_constraint = c;
     }
 
+    void setInitForce(defaulttype::Vec3d f)
+    {
+        _f[0] = f.x();
+        _f[1] = f.y();
+        _f[2] = f.z();
+    }
+
     enum ContactState { NONE=0, SLIDING, STICKY };
 
 protected:
     double _mu;
     double _W[6];
-    PreviousForcesContainer* _prev;
+    double _f[3];
     bool* _active; // Will set this after the resolution
     PersistentUnilateralInteractionConstraint<DataTypes> *m_constraint;
 };
@@ -131,6 +144,8 @@ public:
 
 protected:
     std::map< int, ContactState > contactStates;
+    std::map< int, Deriv > contactForces;
+    std::map< int, Deriv > initForces;
 
 public:
 
@@ -146,6 +161,24 @@ public:
     void debugContactStates();
 
     // @}
+
+    /// @name LCP Hot Start API
+    /// @{
+
+    void setContactForce(int id, Deriv f);
+
+    Deriv getContactForce(int id);
+
+    void clearContactForces();
+
+    void setInitForce(int id, Deriv f);
+
+    Deriv getInitForce(int id);
+
+    void clearInitForces();
+
+    // @}
+
 #endif
 
     void draw();

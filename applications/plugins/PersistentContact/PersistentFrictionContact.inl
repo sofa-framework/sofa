@@ -80,7 +80,6 @@ PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::~PersistentFrictio
 template < class TCollisionModel1, class TCollisionModel2 >
 void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::init()
 {
-//	m_mappedContacts.clear();
     m_stickedContacts.clear();
     m_generatedContacts.clear();
 
@@ -113,8 +112,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
         map2 = NULL;
     }
 
-//	m_mappedContacts.clear();
-
     Inherit::cleanup();
 }
 
@@ -126,7 +123,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::filterDuplica
 
     int inputVectorSize = input.size();
 
-    // The following procedure cancels the duplicated detection outputs
     for (int cpt = 0; cpt < inputVectorSize; cpt++)
     {
         DetectionOutput* o = &input[cpt];
@@ -203,6 +199,8 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyCon
                             m_stickedContacts[*it].m_index2 = oldContact.m_index2;
                         }
 
+                        m_stickedContacts[*it].m_initForce = cc->getContactForce(oldContact.m_contactId);
+
                         // Remove related detection output info from old lists
                         m_generatedContacts.erase(itOld);
 
@@ -217,6 +215,8 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyCon
         }
 
         cc->clearContactStates();
+        cc->clearContactForces();
+        cc->clearInitForces();
     }
 #endif
 
@@ -422,6 +422,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
         bool m2 = false;
 
         double distance = d0;
+        Vec3d f;
 
         typename DataTypes1::Real r1 = 0.0;
         typename DataTypes2::Real r2 = 0.0;
@@ -439,6 +440,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             if (isSticked(o))
             {
                 index1 = this->keepThePersistentContact(m_stickedContacts[o].m_index1, true);
+                f = m_stickedContacts[o].m_initForce;
             }
             else
             {
@@ -463,6 +465,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             if (isSticked(o))
             {
                 index2 = this->keepThePersistentContact(m_stickedContacts[o].m_index2, false);
+                f = m_stickedContacts[o].m_initForce;
             }
             else
             {
@@ -475,7 +478,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             m2 = false;
         }
 
-        m_generatedContacts.insert(std::make_pair(*it, ContactInfo(index1, index2, m1, m2, distance)));
+        m_generatedContacts.insert(std::make_pair(*it, ContactInfo(index1, index2, m1, m2, distance, f)));
     }
 
     // Update mappings
@@ -530,11 +533,12 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
 
             if (genContactIt != m_generatedContacts.end())
             {
-                ContactInfo newContact = genContactIt->second;
+                ContactInfo& newContact = genContactIt->second;
 
                 int index1		= newContact.m_index1;
                 int index2		= newContact.m_index2;
                 double distance	= newContact.m_distance;
+                Vec3d initForce = newContact.m_initForce;
 
                 // Polynome de Cantor bijectif f(x,y)=((x+y)^2+3x+y)/2
                 long index = cantorPolynomia(o->id, this->id);
@@ -544,6 +548,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
                 PersistentConstraint *persistent_constraint = static_cast< PersistentConstraint * >(this->m_constraint);
 
                 persistent_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id/*, isSticked(o)*/);
+                persistent_constraint->setInitForce(index, initForce);
 
                 // Store generated contact detectionOutput data and contact id
                 newContact.m_detectionOutputId = o->id;
