@@ -49,15 +49,17 @@ struct ContactInfo
         , m_mapper1(false)
         , m_mapper2(false)
         , m_distance(0.0)
+        , m_initForce(Vec3d())
     {
     }
 
-    ContactInfo(int id1, int id2, bool map1, bool map2, double dist)
+    ContactInfo(int id1, int id2, bool map1, bool map2, double dist, Vec3d f)
         : m_index1(id1)
         , m_index2(id2)
         , m_mapper1(map1)
         , m_mapper2(map2)
         , m_distance(dist)
+        , m_initForce(f)
     {
     }
 
@@ -67,6 +69,7 @@ struct ContactInfo
     bool m_mapper1;
     bool m_mapper2;
     double m_distance;
+    Vec3d m_initForce;
 
     // DetectionOutput data
     std::pair< core::CollisionElementIterator, core::CollisionElementIterator > m_elem;
@@ -179,10 +182,7 @@ protected:
     std::vector< Vector3 > barycentricValues1;
     std::vector< Vector3 > barycentricValues2;
 
-//	std::map< int64_t, int > m_generatedContacts;
-
     MappedContactsMap m_generatedContacts;
-//	MappedContactsMap m_mappedContacts;
     MappedContactsMap m_stickedContacts;
 };
 

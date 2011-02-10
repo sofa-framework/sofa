@@ -44,22 +44,17 @@ namespace constraintset
 template< class DataTypes >
 void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::init(int line, double** w, double* force)
 {
-    _W[0]=w[line  ][line  ];
-    _W[1]=w[line  ][line+1];
-    _W[2]=w[line  ][line+2];
-    _W[3]=w[line+1][line+1];
-    _W[4]=w[line+1][line+2];
-    _W[5]=w[line+2][line+2];
+    _W[0] = w[line		][line		];
+    _W[1] = w[line		][line + 1	];
+    _W[2] = w[line		][line + 2	];
+    _W[3] = w[line + 1	][line + 1	];
+    _W[4] = w[line + 1	][line + 2	];
+    _W[5] = w[line + 2	][line + 2	];
 
-//	return;
-
-    ////////////////// christian : the following does not work ! /////////
-    if(_prev)
-    {
-        force[line] = _prev->popForce();
-        force[line+1] = _prev->popForce();
-        force[line+2] = _prev->popForce();
-    }
+    ///@TODO OPTIMIZATION
+    force[line		] = _f[0];
+    force[line + 1	] = _f[1];
+    force[line + 2	] = _f[2];
 }
 
 template< class DataTypes >
@@ -75,6 +70,7 @@ void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::resoluti
     {
         force[line]=0; force[line+1]=0; force[line+2]=0;
 
+        ///@TODO OPTIMIZATION
         if (m_constraint)
             m_constraint->setContactState(line, NONE);
 
@@ -93,30 +89,33 @@ void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::resoluti
         force[line+1] *= _mu*force[line]/normFt;
         force[line+2] *= _mu*force[line]/normFt;
 
+        ///@TODO OPTIMIZATION
         if (m_constraint)
+        {
             m_constraint->setContactState(line, SLIDING);
+            m_constraint->setContactForce(line, Deriv(force[line], force[line+1], force[line+2]));
+        }
     }
     else
     {
+        ///@TODO OPTIMIZATION
         if (m_constraint)
+        {
             m_constraint->setContactState(line, STICKY);
+            m_constraint->setContactForce(line, Deriv(force[line], force[line+1], force[line+2]));
+        }
     }
 }
 
 template< class DataTypes >
 void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::store(int line, double* force, bool /*convergence*/)
 {
-    if(_prev)
-    {
-        _prev->pushForce(force[line]);
-        _prev->pushForce(force[line+1]);
-        _prev->pushForce(force[line+2]);
-    }
-
     if(_active)
     {
         *_active = (force[line] != 0);
-        _active = NULL; // Won't be used in the haptic thread
+
+        // Won't be used in the haptic thread
+        _active = NULL;
     }
 }
 
@@ -124,18 +123,6 @@ void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::store(in
 template<class DataTypes>
 void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id, PersistentID localid, bool isPersistent)
 {
-    /*
-    std::cout << "_norm = " << _norm << std::endl;
-
-    Deriv norm = P-Q;
-    norm.normalize();
-
-    if (dot(norm,_norm) < 0)
-    	norm = -norm;
-
-    std::cout << "norm = " << norm << std::endl;
-    */
-
     // Compute dt and delta
     const Real delta = dot(P-Q, norm) - contactDistance;
     const Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
@@ -245,8 +232,9 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::getConstraintResoluti
         Contact& c = this->contacts[i];
         if(c.mu > 0.0)
         {
-            PersistentUnilateralConstraintResolutionWithFriction<DataTypes> *cRes = new PersistentUnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, NULL, &this->contactsStatus[i]);
+            PersistentUnilateralConstraintResolutionWithFriction<DataTypes> *cRes = new PersistentUnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, &this->contactsStatus[i]);
             cRes->setConstraint(this);
+            cRes->setInitForce(getInitForce(c.contactId));
             resTab[offset] = cRes;
             offset += 3;
         }
@@ -293,6 +281,80 @@ template<class DataTypes>
 void PersistentUnilateralInteractionConstraint<DataTypes>::clearContactStates()
 {
     contactStates.clear();
+}
+
+template<class DataTypes>
+void PersistentUnilateralInteractionConstraint<DataTypes>::setContactForce(int id, Deriv f)
+{
+    if (contactForces.find(id) != contactForces.end())
+    {
+        contactForces[id] = f;
+    }
+    else
+    {
+        contactForces.insert(std::make_pair(id, f));
+    }
+}
+
+template<class DataTypes>
+typename PersistentUnilateralInteractionConstraint<DataTypes>::Deriv PersistentUnilateralInteractionConstraint<DataTypes>::getContactForce(int _contactId)
+{
+    typename sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
+    typename sofa::helper::vector< Contact >::iterator itEnd = this->contacts.end();
+
+    while (it != itEnd)
+    {
+        if (it->contactId == _contactId)
+            break;
+
+        ++it;
+    }
+
+    if (it != itEnd)
+    {
+        if (contactForces.find(it->id) != contactForces.end())
+        {
+            return contactForces[it->id];
+        }
+    }
+
+    return Deriv();
+}
+
+template<class DataTypes>
+void PersistentUnilateralInteractionConstraint<DataTypes>::clearContactForces()
+{
+    contactForces.clear();
+}
+
+template<class DataTypes>
+void PersistentUnilateralInteractionConstraint<DataTypes>::setInitForce(int id, Deriv f)
+{
+    if (initForces.find(id) != initForces.end())
+    {
+        initForces[id] = f;
+    }
+    else
+    {
+        initForces.insert(std::make_pair(id, f));
+    }
+}
+
+template<class DataTypes>
+typename PersistentUnilateralInteractionConstraint<DataTypes>::Deriv PersistentUnilateralInteractionConstraint<DataTypes>::getInitForce(int id)
+{
+    if (initForces.find(id) != initForces.end())
+    {
+        return initForces[id];
+    }
+
+    return Deriv();
+}
+
+template<class DataTypes>
+void PersistentUnilateralInteractionConstraint<DataTypes>::clearInitForces()
+{
+    initForces.clear();
 }
 
 template<class DataTypes>
@@ -367,16 +429,6 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::draw()
         glColor4f(1,1,1,1);
         helper::gl::glVertexT(c.Pfree);
         helper::gl::glVertexT(c.Qfree);
-
-        /*glColor4f(1,1,1,1);
-        helper::gl::glVertexT(c.P);
-        glColor4f(0,0.5,0.5,1);
-        helper::gl::glVertexT(c.P + c.norm);
-
-        glColor4f(0,0,0,1);
-        helper::gl::glVertexT(c.Q);
-        glColor4f(0,0.5,0.5,1);
-        helper::gl::glVertexT(c.Q - c.norm);*/
 
         glEnd();
 
