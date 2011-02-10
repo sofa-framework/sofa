@@ -117,16 +117,16 @@ public:
     int addPoint(const Coord& c);
     int addPoint(const Coord& c, int indexFrom);
 
-    void init();
+    virtual void init();
 
 
-    void apply(Data<VecCoord>& out, const Data<InVecCoord>& in, const core::MechanicalParams *mparams);
+    virtual void apply(Data<VecCoord>& out, const Data<InVecCoord>& in, const core::MechanicalParams *mparams);
 
-    void applyJ(Data<VecDeriv>& out, const Data<InVecDeriv>& in, const core::MechanicalParams *mparams);
+    virtual void applyJ(Data<VecDeriv>& out, const Data<InVecDeriv>& in, const core::MechanicalParams *mparams);
 
-    void applyJT(Data<InVecDeriv>& out, const Data<VecDeriv>& in, const core::MechanicalParams *mparams);
+    virtual void applyJT(Data<InVecDeriv>& out, const Data<VecDeriv>& in, const core::MechanicalParams *mparams);
 
-    void applyJT(Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in, const core::ConstraintParams *cparams);
+    virtual void applyJT(Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in, const core::ConstraintParams *cparams);
 
     virtual void applyDJT(core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce, const core::MechanicalParams* mparams = core::MechanicalParams::defaultInstance() );
 

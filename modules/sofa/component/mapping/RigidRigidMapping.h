@@ -93,8 +93,8 @@ public:
     RigidRigidMapping(core::State< In >* from, core::State< Out >* to)
         : Inherit(from, to),
           points(initData(&points, "initialPoints", "Initial position of the points")),
-          repartition(initData(&repartition,"repartition","number of dest dofs per entry dof")),
-          index(initData(&index,(unsigned)0,"index","input DOF index")),
+          repartition(initData(&repartition,"repartition","number of child frames per parent frame. If empty, all the children are attached to the parent with index given in the \"index\" attribute. If one value, each parent frame drives the given number of children frames. Otherwise, the values are the number of child frames driven by each parent frame. ")),
+          index(initData(&index,(unsigned)0,"index","input frame index")),
           fileRigidRigidMapping(initData(&fileRigidRigidMapping,"fileRigidRigidMapping","Filename")),
           axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display")),
           indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
@@ -113,19 +113,19 @@ public:
     {
     }
 
-    void init();
+    virtual void init();
 
-    //	void disable(); //useless now that points are saved in a Data
+    virtual void apply(Data<OutVecCoord>& out, const Data<InVecCoord>& in, const core::MechanicalParams *mparams);
 
-    void apply(Data<OutVecCoord>& out, const Data<InVecCoord>& in, const core::MechanicalParams *mparams);
+    virtual void applyJ(Data<OutVecDeriv>& out, const Data<InVecDeriv>& in, const core::MechanicalParams *mparams);
 
-    void applyJ(Data<OutVecDeriv>& out, const Data<InVecDeriv>& in, const core::MechanicalParams *mparams);
+    virtual void applyJT(Data<InVecDeriv>& out, const Data<OutVecDeriv>& in, const core::MechanicalParams *mparams);
 
-    void applyJT(Data<InVecDeriv>& out, const Data<OutVecDeriv>& in, const core::MechanicalParams *mparams);
+    virtual void applyJT(Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in, const core::ConstraintParams *cparams);
 
-    void applyJT(Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in, const core::ConstraintParams *cparams);
+    virtual void computeAccFromMapping(Data<OutVecDeriv>& acc_out, const Data<InVecDeriv>& v_in, const Data<InVecDeriv>& acc_in, const core::MechanicalParams *mparams);
 
-    void computeAccFromMapping(Data<OutVecDeriv>& acc_out, const Data<InVecDeriv>& v_in, const Data<InVecDeriv>& acc_in, const core::MechanicalParams *mparams);
+    virtual void applyDJT(core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce, const core::MechanicalParams* mparams = core::MechanicalParams::defaultInstance() );
 
     void draw();
 
