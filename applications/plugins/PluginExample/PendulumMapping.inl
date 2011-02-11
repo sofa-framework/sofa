@@ -152,6 +152,25 @@ void PendulumMapping<In,Out>::applyJT( MatrixInDeriv& parentJacobians, const Mat
     }
 }
 
+template <class In, class Out>
+void PendulumMapping<In,Out>::applyDJT(core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId, const core::MechanicalParams* mparams )
+{
+
+    ReadAccessor<Data<VecOutDeriv> > childForce (*mparams->readF(this->toModel));
+    WriteAccessor<Data<VecInDeriv> > parentForce (*parentForceChangeId[this->fromModel].write());
+    ReadAccessor<Data<VecInDeriv> > parentDx (*mparams->readDx(this->fromModel));
+    InReal kfactor = mparams->kFactor();
+
+//    serr<<"PendulumMapping2<In,Out>::applyDJT"<< sendl;
+    for(unsigned i=0; i<parentForce.size(); i++)
+    {
+        parentForce[i][0] -= ( gap[i][0] * childForce[i][0] +  gap[i][1] * childForce[i][1] ) * parentDx[i][0] * kfactor;
+//        serr<<"PendulumMapping2<In,Out>::applyDJT, gap[i] = "<< gap[i] << sendl;
+//        serr<<"PendulumMapping2<In,Out>::applyDJT, childForce[i] = "<< childForce[i] << sendl;
+//        serr<<"PendulumMapping2<In,Out>::applyDJT, parent displacement = "<< parentDx[i][0] << sendl;
+//        serr<<"PendulumMapping2<In,Out>::applyDJT, parent force -= "<< ( gap[i][0] * childForce[i][0] +  gap[i][1] * childForce[i][1] ) * parentDx[i][0] << sendl;
+    }
+}
 
 
 }	//mapping
