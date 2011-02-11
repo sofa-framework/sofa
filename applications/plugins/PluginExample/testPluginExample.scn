@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" time="0" animate="0" showVisualModels="0" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="1" showMechanicalMappings="1" showForceFields="1" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 	<Node 	name="parent node with independent DOFs" >
-		<EulerImplicitSolver name="ODE solver" />
-<!-- 		<StaticSolver name="ODE solver" /> -->
+<!-- 		<EulerImplicitSolver name="ODE solver" /> -->
+		<StaticSolver name="ODE solver" />
 		<CGLinearSolver template="GraphScattered" name="linear solver used by implicit ODE solvers" />
 		<MechanicalObject template="Vec1d" name="angles" />
 		<UniformMass template="Vec1d" name="mass" />
