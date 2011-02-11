@@ -36,6 +36,7 @@
 #include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/collision/TetrahedronModel.h>
+#include <sofa/component/collision/BSplineModel.h>
 
 namespace sofa
 {

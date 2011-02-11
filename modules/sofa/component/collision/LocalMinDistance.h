@@ -110,6 +110,13 @@ public:
     bool testValidity(Line&, const Vector3&);
     bool testValidity(Triangle&, const Vector3&);
 
+    //Copy of Line computation. TODO_Spline : finding adaptive and optimized computation for Spline
+    bool testValidity(CubicBezierCurve&, const Vector3&);
+    bool testIntersection(CubicBezierCurve&, Point&);
+    int computeIntersection(CubicBezierCurve&, Point&, OutputVector*);
+    //bool testIntersection(CubicBezierCurve&, Sphere&);
+    //bool testIntersection(CubicBezierCurve&, CubicBezierCurve&);
+
 
     void draw();
 
