@@ -102,6 +102,71 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
 }
 
 template <> template <>
+inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref)
+{
+    M.compress();
+    nRow = M.rowSize();
+    nCol = 0;
+    nBlocRow = M.rowBSize()*3;
+    nBlocCol = 0;
+    rowIndex.clear();
+    rowBegin.clear();
+    colsIndex.clear();
+    colsValue.clear();
+    compressed = true;
+    btemp.clear();
+    rowIndex.reserve(M.rowIndex.size()*3);
+    rowBegin.reserve(M.rowBegin.size()*3);
+    colsIndex.reserve(M.colsIndex.size()*3);
+    colsValue.reserve(M.colsValue.size()*3);
+
+    int vid = 0;
+    for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
+    {
+        int i = M.rowIndex[rowId] * 3;
+
+        Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId+1]);
+
+        for (int lb = 0; lb<3 ; lb++)
+        {
+            rowIndex.push_back(i+lb);
+            rowBegin.push_back(vid);
+
+            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            {
+                int j = M.colsIndex[xj] * 3;
+                defaulttype::Mat<3,3,double> b = M.colsValue[xj];
+                if ((*filter)(i+lb,j+0,b[lb][0],ref))
+                {
+                    colsIndex.push_back(j+0);
+                    colsValue.push_back(b[lb][0]);
+                    ++vid;
+                }
+                if ((*filter)(i+lb,j+1,b[lb][1],ref))
+                {
+                    colsIndex.push_back(j+1);
+                    colsValue.push_back(b[lb][1]);
+                    ++vid;
+                }
+                if ((*filter)(i+lb,j+2,b[lb][2],ref))
+                {
+                    colsIndex.push_back(j+2);
+                    colsValue.push_back(b[lb][2]);
+                    ++vid;
+                }
+            }
+
+            if (rowBegin.back() == vid)   // row was empty
+            {
+                rowIndex.pop_back();
+                rowBegin.pop_back();
+            }
+        }
+    }
+    rowBegin.push_back(vid); // end of last row
+}
+
+template <> template <>
 inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref)
 {
     M.compress();
@@ -165,6 +230,72 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
     }
     rowBegin.push_back(vid); // end of last row
 }
+
+template <> template <>
+inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref)
+{
+    M.compress();
+    nRow = M.rowSize();
+    nCol = 0;
+    nBlocRow = M.rowBSize()*3;
+    nBlocCol = 0;
+    rowIndex.clear();
+    rowBegin.clear();
+    colsIndex.clear();
+    colsValue.clear();
+    compressed = true;
+    btemp.clear();
+    rowIndex.reserve(M.rowIndex.size()*3);
+    rowBegin.reserve(M.rowBegin.size()*3);
+    colsIndex.reserve(M.colsIndex.size()*3);
+    colsValue.reserve(M.colsValue.size()*3);
+
+    int vid = 0;
+    for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
+    {
+        int i = M.rowIndex[rowId] * 3;
+
+        Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId+1]);
+
+        for (int lb = 0; lb<3 ; lb++)
+        {
+            rowIndex.push_back(i+lb);
+            rowBegin.push_back(vid);
+
+            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            {
+                int j = M.colsIndex[xj] * 3;
+                defaulttype::Mat<3,3,float> b = M.colsValue[xj];
+                if ((*filter)(i+lb,j+0,b[lb][0],ref))
+                {
+                    colsIndex.push_back(j+0);
+                    colsValue.push_back(b[lb][0]);
+                    ++vid;
+                }
+                if ((*filter)(i+lb,j+1,b[lb][1],ref))
+                {
+                    colsIndex.push_back(j+1);
+                    colsValue.push_back(b[lb][1]);
+                    ++vid;
+                }
+                if ((*filter)(i+lb,j+2,b[lb][2],ref))
+                {
+                    colsIndex.push_back(j+2);
+                    colsValue.push_back(b[lb][2]);
+                    ++vid;
+                }
+            }
+
+            if (rowBegin.back() == vid)   // row was empty
+            {
+                rowIndex.pop_back();
+                rowBegin.pop_back();
+            }
+        }
+    }
+    rowBegin.push_back(vid); // end of last row
+}
+
 
 } // namespace linearsolver
 
