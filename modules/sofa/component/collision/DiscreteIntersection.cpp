@@ -82,6 +82,7 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<RayModel, TetrahedronModel,                DiscreteIntersection>  (this);
     intersectors.add<RayModel, RigidDistanceGridCollisionModel, DiscreteIntersection>  (this);
     intersectors.add<RayModel, FFDDistanceGridCollisionModel,   DiscreteIntersection>  (this);
+
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
