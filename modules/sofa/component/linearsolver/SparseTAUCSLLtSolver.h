@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SparseTAUCSLUSolver_H
-#define SOFA_COMPONENT_LINEARSOLVER_SparseTAUCSLUSolver_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSETAUCSLLTSOLVER_H
+#define SOFA_COMPONENT_LINEARSOLVER_SPARSETAUCSLLTSOLVER_H
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/ParallelMatrixLinearSolver.h>
@@ -58,10 +58,10 @@ namespace linearsolver
 
 /// Direct linear solvers implemented with the TAUCS library
 template<class TMatrix, class TVector>
-class SparseTAUCSLUSolver : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
+class SparseTAUCSLLtSolver : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SparseTAUCSLUSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS(SOFA_TEMPLATE2(SparseTAUCSLLtSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
@@ -72,17 +72,17 @@ public:
     Data<double> f_dropTol;
     Data<unsigned> f_nproc_simu;
 
-    SparseTAUCSLUSolver();
+    SparseTAUCSLLtSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 
     MatrixInvertData * createInvertData()
     {
-        return new SparseTAUCSLUSolverInvertData();
+        return new SparseTAUCSLLtSolverInvertData();
     }
 
 protected:
-    class SparseTAUCSLUSolverInvertData : public MatrixInvertData
+    class SparseTAUCSLLtSolverInvertData : public MatrixInvertData
     {
     public :
         CompressedRowSparseMatrix<Real> Mfiltered;
@@ -95,7 +95,7 @@ protected:
         taucsmt_ccs_matrix<Real> * L; //factorization
         taucsmt_ccs_matrix<Real> * PAPT; //reordered matrix
 
-        SparseTAUCSLUSolverInvertData()
+        SparseTAUCSLLtSolverInvertData()
         {
             perm    = NULL;
             invperm = NULL;
@@ -103,7 +103,7 @@ protected:
             PAPT    = NULL;
         }
 
-        ~SparseTAUCSLUSolverInvertData()
+        ~SparseTAUCSLLtSolverInvertData()
         {
             if (perm) free(perm);
             if (invperm) free(invperm);

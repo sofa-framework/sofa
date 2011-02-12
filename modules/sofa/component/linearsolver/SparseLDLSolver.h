@@ -94,7 +94,7 @@ protected :
 
     void LDL_ordering(Matrix& M);
     void LDL_symbolic(Matrix& M);
-    int LDL_numeric(Matrix& M);
+    void LDL_numeric(Matrix& M);
 
     helper::vector<int> xadj,adj;
     helper::vector<Real> Y,B;
@@ -108,11 +108,11 @@ protected :
         sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
         int n;
 
-        int * colptr;
-        int * rowind;
-        Real * values;
-        helper::vector<Real> Lx,D;
-        helper::vector<int> Li,Lp;
+        int * Mcolptr;
+        int * Mrowind;
+        Real * Mvalues;
+        helper::vector<Real> values,D;
+        helper::vector<int> rowind,colptr;
         helper::vector<int> perm, invperm; //premutation inverse
     };
 
