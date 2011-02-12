@@ -255,22 +255,28 @@ CUDA_SOURCES += \
 
 contains(DEFINES,SOFA_HAVE_CSPARSE){
 	HEADERS += \
-		  CudaPrecomputedLinearSolver.h			
+		  CudaPrecomputedLinearSolver.h	\
+		  CudaSparseLDLSolver.h \
+		  CudaSparseLDLSolver.inl \
+
 	SOURCES += \	
 		  CudaPrecomputedLinearSolver.cpp \
 		  CudaSparseLDLSolver.cpp
+
+	CUDA_SOURCES += \
+		CudaSparseLDLSolver.cu
 }
 
 contains(DEFINES,SOFA_HAVE_TAUCS_MT){ 
 	HEADERS += \
-		CudaSparseTaucsLUSolver.h \
-		CudaSparseTaucsLUSolver.inl
+		CudaSparseTaucsLLtSolver.h \
+		CudaSparseTaucsLLtSolver.inl
 
 	SOURCES += \	
-		CudaSparseTaucsLUSolver.cpp
+		CudaSparseTaucsLLtSolver.cpp
 
 	CUDA_SOURCES += \
-		CudaSparseTaucsLUSolver.cu
+		CudaSparseTaucsLLtSolver.cu
 }
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){

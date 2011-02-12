@@ -25,7 +25,7 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/SparseTAUCSLUSolver.h>
+#include <sofa/component/linearsolver/SparseTAUCSLLtSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
@@ -55,7 +55,7 @@ using std::cerr;
 using std::endl;
 
 template<class TMatrix, class TVector>
-SparseTAUCSLUSolver<TMatrix,TVector>::SparseTAUCSLUSolver()
+SparseTAUCSLLtSolver<TMatrix,TVector>::SparseTAUCSLLtSolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_dropTol( initData(&f_dropTol,(double) 0.0,"ic_dropTol","Drop tolerance use for incomplete factorization") )
     , f_nproc_simu( initData(&f_nproc_simu,(unsigned) 1,"nproc_simu","NB proc used for the simulation") )
@@ -72,9 +72,9 @@ template<>
 int get_taucs_lu_flags<float>() { return TAUCSMT_SINGLE; }
 
 template<class TMatrix, class TVector>
-void SparseTAUCSLUSolver<TMatrix,TVector>::invert(Matrix& M)
+void SparseTAUCSLLtSolver<TMatrix,TVector>::invert(Matrix& M)
 {
-    SparseTAUCSLUSolverInvertData * data = (SparseTAUCSLUSolverInvertData *) getMatrixInvertData(&M);
+    SparseTAUCSLLtSolverInvertData * data = (SparseTAUCSLLtSolverInvertData *) getMatrixInvertData(&M);
 
     if (data->perm) free(data->perm);
     if (data->invperm) free(data->invperm);
@@ -110,9 +110,9 @@ void SparseTAUCSLUSolver<TMatrix,TVector>::invert(Matrix& M)
 }
 
 template<class TMatrix, class TVector>
-void SparseTAUCSLUSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
+void SparseTAUCSLLtSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    SparseTAUCSLUSolverInvertData * data = (SparseTAUCSLUSolverInvertData *) getMatrixInvertData(&M);
+    SparseTAUCSLLtSolverInvertData * data = (SparseTAUCSLLtSolverInvertData *) getMatrixInvertData(&M);
 
     // permutation according to metis
     for (int i=0; i<data->matrix_taucs.n; i++) data->B[i] = r[data->perm[i]];
@@ -158,13 +158,13 @@ void SparseTAUCSLUSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
 }
 
 
-SOFA_DECL_CLASS(SparseTAUCSLUSolver)
+SOFA_DECL_CLASS(SparseTAUCSLLtSolver)
 
-int SparseTAUCSLUSolverClass = core::RegisterObject("Direct linear solvers implemented with the TAUCS library")
-        .add< SparseTAUCSLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
-        .add< SparseTAUCSLUSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >,FullVector<double> > >(true)
-        .add< SparseTAUCSLUSolver< CompressedRowSparseMatrix<float>,FullVector<float> > >()
-        .add< SparseTAUCSLUSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> >,FullVector<float> > >()
+int SparseTAUCSLLtSolverClass = core::RegisterObject("Direct linear solvers implemented with the TAUCS library")
+        .add< SparseTAUCSLLtSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
+        .add< SparseTAUCSLLtSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >,FullVector<double> > >(true)
+        .add< SparseTAUCSLLtSolver< CompressedRowSparseMatrix<float>,FullVector<float> > >()
+        .add< SparseTAUCSLLtSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> >,FullVector<float> > >()
         ;
 
 } // namespace linearsolver
