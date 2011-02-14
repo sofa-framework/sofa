@@ -173,9 +173,9 @@ protected :
     TVector subZ;
     PrecomputedWarpPreconditionerInternalData<TDataTypes> internalData;
 
-    void rotateConstraints();
-    void loadMatrixWithCSparse(TMatrix& M);
-    void loadMatrixWithSolver();
+    virtual void rotateConstraints();
+    virtual void loadMatrixWithCSparse(TMatrix& M);
+    virtual void loadMatrixWithSolver();
 
     template<class JMatrix>
     void ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact);
