@@ -105,8 +105,6 @@ private:
 
     int				_renderingMode;
 
-    Texture			*texLogo;
-
     ctime_t			_beginTime;
 
 
@@ -160,9 +158,6 @@ public:
     void setCameraMode(component::visualmodel::BaseCamera::CameraType mode);
 
     QString helpString();
-
-    virtual void setBackgroundImage(std::string imageFileName);
-
 
 
 private:
