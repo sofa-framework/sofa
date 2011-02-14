@@ -100,7 +100,7 @@ void GenerateBenchSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
 
         file.close();
 
-        std::cout << "File debug_file has been saved " << std::endl;
+        std::cout << "File " << file_system.getValue() << " has been saved size of M is (" << M.rowSize() << "," << M.colSize() << ")" << std::endl;
     }
     z = r;
 }
@@ -163,7 +163,7 @@ bool GenerateBenchSolver<TMatrix,TVector>::addJMInvJt(RMatrix& /*result*/, JMatr
 
         if (this->f_printLog.getValue()) std::cout << J << std::endl;
 
-        std::cout << "Constraint saved " << std::endl;
+        std::cout << "File " << file_constraint.getValue() << " has been saved size of J is (" << J.rowSize() << "," << J.colSize() << ")" << std::endl;
     }
     return true;
 }
