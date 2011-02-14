@@ -58,7 +58,7 @@ namespace linearsolver
 
 /// Direct linear solvers implemented with the TAUCS library
 template<class TMatrix, class TVector>
-class SparseTAUCSLLtSolver : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
+class SOFA_COMPONENT_LINEARSOLVER_API SparseTAUCSLLtSolver : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(SparseTAUCSLLtSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
