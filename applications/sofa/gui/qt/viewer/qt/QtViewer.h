@@ -130,7 +130,6 @@ private:
     bool _waitForRender;
 
     //GLuint			_logoTexture;
-    Texture			*texLogo;
 
     ctime_t			_beginTime;
 
@@ -245,8 +244,6 @@ public:
 
 
     QString helpString();
-
-    virtual void setBackgroundImage(std::string imageFileName);
 
 private:
 

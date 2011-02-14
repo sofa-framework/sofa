@@ -51,6 +51,7 @@
 #include <qcursor.h>
 
 #include <sofa/helper/gl/Capture.h>
+#include <sofa/helper/gl/Texture.h>
 #include <sofa/gui/qt/SofaVideoRecorderManager.h>
 #ifdef SOFA_HAVE_FFMPEG
 #include <sofa/helper/gl/VideoRecorder.h>
@@ -81,6 +82,7 @@
 #endif
 
 #include <sofa/gui/qt/viewer/VisualModelPolicy.h>
+#include <sofa/helper/io/Image.h>
 
 namespace sofa
 {
@@ -108,7 +110,7 @@ class SOFA_SOFAGUIQT_API SofaViewer
 
 public:
     SofaViewer();
-    virtual ~SofaViewer() {  };
+    virtual ~SofaViewer();
 
     virtual void drawColourPicking (core::CollisionModel::ColourCode /*code*/) {};
     virtual void removeViewerTab(QTabWidget *) {};
@@ -147,7 +149,7 @@ public:
     virtual void resetView();
 
     virtual void setBackgroundColour(float r, float g, float b);
-    virtual void setBackgroundImage(std::string imageFileName);
+    virtual void setBackgroundImage(std::string imageFileName = std::string("textures/SOFA_logo.bmp"));
     std::string getBackgroundImage();
 
     PickHandler* getPickHandler();
@@ -194,6 +196,7 @@ protected:
     sofa::component::visualmodel::BaseCamera* currentCamera;
     std::string sceneFileName;
     sofa::helper::gl::Capture capture;
+
 #ifdef SOFA_HAVE_FFMPEG
     sofa::helper::gl::VideoRecorder videoRecorder;
 #endif //SOFA_HAVE_FFMPEG
@@ -209,7 +212,9 @@ protected:
     bool sceneBBoxIsValid;
 
     Vector3 backgroundColour;
-    std::string backgroundImage;
+    sofa::helper::gl::Texture* texLogo;
+    std::string backgroundImageFile;
+
     Vector3 ambientColour;
 
     PickHandler pick;

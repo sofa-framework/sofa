@@ -1,5 +1,5 @@
 #include <sofa/gui/qt/viewer/SofaViewer.h>
-
+#include <sofa/helper/Factory.inl>
 
 namespace sofa
 {
@@ -16,15 +16,22 @@ SofaViewer::SofaViewer()
     , m_isControlPressed(false)
     , _video(false)
     , _shadow(false)
-    , _gl_shadow(false)
+    , _gl_shadow(true)
     , _axis(false)
     , backgroundColour(Vector3())
-    , backgroundImage("textures/SOFA_logo.bmp")
+    , texLogo(NULL)
     , ambientColour(Vector3())
 {
-    colourPickingRenderCallBack = ColourPickingRenderCallBack(this);
 }
 
+SofaViewer::~SofaViewer()
+{
+    if(texLogo)
+    {
+        delete texLogo;
+        texLogo = NULL;
+    }
+}
 
 sofa::simulation::Node* SofaViewer::getScene()
 {
@@ -726,12 +733,38 @@ void SofaViewer::setBackgroundColour(float r, float g, float b)
 void SofaViewer::setBackgroundImage(std::string imageFileName)
 {
     _background = 0;
-    backgroundImage = imageFileName;
+
+    if( sofa::helper::system::DataRepository.findFile(imageFileName) )
+    {
+        backgroundImageFile = sofa::helper::system::DataRepository.getFile(imageFileName);
+        std::string extension = sofa::helper::system::SetDirectory::GetExtension(imageFileName.c_str());
+        std::transform(extension.begin(),extension.end(),extension.begin(),::tolower );
+        if(texLogo)
+        {
+            delete texLogo;
+            texLogo = NULL;
+        }
+        helper::io::Image* image =  helper::io::Image::FactoryImage::getInstance()->createObject(extension,backgroundImageFile);
+        if( !image )
+        {
+            helper::vector<std::string> validExtensions;
+            helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
+            std::cerr << "Could not create: " << imageFileName << std::endl;
+            std::cerr << "Valid extensions: " << validExtensions << std::endl;
+        }
+        else
+        {
+            texLogo = new helper::gl::Texture( image );
+            texLogo->init();
+
+        }
+
+    }
 }
 
 std::string SofaViewer::getBackgroundImage()
 {
-    return backgroundImage;
+    return backgroundImageFile;
 }
 PickHandler* SofaViewer::getPickHandler()
 {
