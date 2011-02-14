@@ -176,7 +176,7 @@ public:
 
     virtual void applyDJT(core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/, const core::MechanicalParams* /*mparams*/)
     {
-        serr<<"Warning ! ArticulatedSystemMapping::applyDJT(MultiVecDerivId inForce, ConstMultiVecDerivId outForce, const MechanicalParams* mparams)  not implemented !"<< sendl;
+//                     serr<<"Warning ! ArticulatedSystemMapping::applyDJT(MultiVecDerivId inForce, ConstMultiVecDerivId outForce, const MechanicalParams* mparams)  not implemented !"<< sendl;
     }
 
 
