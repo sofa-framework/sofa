@@ -174,7 +174,8 @@ HEADERS += \
 	   	CudaBTDLinearSolver.h \
 	   	CudaUnilateralInteractionConstraint.h \
 		CudaBlockJacobiPreconditioner.h \
-	   	CudaPrecomputedWarpPreconditioner.h \		
+	   	CudaPrecomputedWarpPreconditioner.h \
+		CudaPrecomputedWarpPreconditioner.inl \
 	        CudaParallelMatrixLinearSolver.h \
 		CudaWarpPreconditioner.h \
 		CudaConstantForceField.inl \
