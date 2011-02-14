@@ -1959,7 +1959,7 @@ void RealGUI::showhideElements(int FILTER, bool value)
         {
             root->getContext()->setShowInteractionForceFields ( value );
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowWireFrame ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowInteractionForceFields ( value );
 #endif
             break;
         }
