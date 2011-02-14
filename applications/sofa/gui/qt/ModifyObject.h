@@ -110,6 +110,7 @@ typedef struct ModifyObjectFlags
     bool RESIZABLE_FLAG;
     bool REINIT_FLAG;
     bool LINKPATH_MODIFIABLE_FLAG; //if we allow to modify the links of the Data
+    bool MODELER_FLAG; //if we attempt to create this dialog from the Modeler.
 
     ModifyObjectFlags():
         HIDE_FLAG(true),
@@ -127,6 +128,7 @@ typedef struct ModifyObjectFlags
         RESIZABLE_FLAG = true;
         REINIT_FLAG = true;
         LINKPATH_MODIFIABLE_FLAG = false;
+        MODELER_FLAG = false;
     };
 
     void setFlagsForModeler()
@@ -137,6 +139,7 @@ typedef struct ModifyObjectFlags
         RESIZABLE_FLAG = true;
         REINIT_FLAG = false;
         LINKPATH_MODIFIABLE_FLAG = true;
+        MODELER_FLAG = true;
     };
 } ModifyObjectFlags;
 

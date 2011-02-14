@@ -67,7 +67,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         A custom widget is used by default if we run this code from the Modeler
         */
         std::string widgetName=data_->getWidget();
-        if( widgetName.empty() && !flags.HIDE_FLAG )
+        if( widgetName.empty() && flags.MODELER_FLAG )
         {
             data_->setWidget("widget_filename");
         }
