@@ -175,7 +175,18 @@ private:
     // et un indice permettant de pointer dans le vecteur
 };
 
-
+#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec3dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec1dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec3fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec1fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Rigid3fTypes>;
+#endif
+#endif
 
 } // namespace collision
 

@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP
 #include "LinearSolverConstraintCorrection.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -49,14 +50,14 @@ int LinearSolverContactCorrectionClass = core::RegisterObject("")
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class LinearSolverConstraintCorrection<Vec3dTypes>;
-template class LinearSolverConstraintCorrection<Vec1dTypes>;
-template class LinearSolverConstraintCorrection<Rigid3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec1dTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class LinearSolverConstraintCorrection<Vec3fTypes>;
-template class LinearSolverConstraintCorrection<Vec1fTypes>;
-template class LinearSolverConstraintCorrection<Rigid3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec1fTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Rigid3fTypes>;
 #endif
 
 
