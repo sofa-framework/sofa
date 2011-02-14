@@ -138,6 +138,8 @@ void TSphereModel<DataTypes>::draw()
 {
     if (getContext()->getShowCollisionModels())
     {
+        sofa::simulation::getSimulation()->DrawUtility().setPolygonMode(0,getContext()->getShowWireFrame());
+
         glEnable(GL_LIGHTING);
         glEnable(GL_COLOR_MATERIAL);
 
@@ -164,6 +166,8 @@ void TSphereModel<DataTypes>::draw()
     glDisable(GL_COLOR_MATERIAL);
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();
+
+    sofa::simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
 }
 
 template <class DataTypes>
