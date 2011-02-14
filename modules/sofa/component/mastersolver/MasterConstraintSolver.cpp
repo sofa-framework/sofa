@@ -251,6 +251,8 @@ MasterConstraintSolver::MasterConstraintSolver()
     CP2.clear(0,_tol.getValue());
 
     timer = 0;
+
+    std::cerr << "WARNING : MasterConstraintSolver is deprecated. Please use the combination of FreeMotionMasterSolver and GenericConstraintSolver." << std::endl;
 }
 
 MasterConstraintSolver::~MasterConstraintSolver()
