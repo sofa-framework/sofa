@@ -114,6 +114,8 @@ public:
     bool testValidity(CubicBezierCurve&, const Vector3&);
     bool testIntersection(CubicBezierCurve&, Point&);
     int computeIntersection(CubicBezierCurve&, Point&, OutputVector*);
+    bool testIntersection(CubicBezierCurve&, Sphere&);
+    int computeIntersection(CubicBezierCurve&, Sphere&, OutputVector*);
     //bool testIntersection(CubicBezierCurve&, Sphere&);
     //bool testIntersection(CubicBezierCurve&, CubicBezierCurve&);
 

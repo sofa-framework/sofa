@@ -36,7 +36,6 @@
 #include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/collision/TetrahedronModel.h>
-#include <sofa/component/collision/BSplineModel.h>
 
 namespace sofa
 {
@@ -141,6 +140,7 @@ public:
     int computeIntersection(FFDDistanceGridCollisionElement&, Sphere&, OutputVector*);
     int computeIntersection(FFDDistanceGridCollisionElement&, Triangle&, OutputVector*);
     int computeIntersection(Ray&, FFDDistanceGridCollisionElement&, OutputVector*);
+
 
 };
 
