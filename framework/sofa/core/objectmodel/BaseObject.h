@@ -168,6 +168,13 @@ public:
 
     ///@}
 
+    /// Sets a source Object and parses it to collect dependent Data
+    void setSrc(const std::string &v, std::vector< std::string > *attributeList=0);
+
+    /// Sets a source Object and parses it to collect dependent Data
+    /// Use it before scene graph insertion
+    void setSrc(const std::string &v, const BaseObject *loader, std::vector< std::string > *attributeList=0);
+
 #ifdef SOFA_SMP
     void setPartition(Iterative::IterativePartition* p);
     Iterative::IterativePartition*  getPartition();

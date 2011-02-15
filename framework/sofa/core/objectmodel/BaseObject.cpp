@@ -63,6 +63,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
 {
     std::vector< std::string > attributeList;
     arg->getAttributeList(attributeList);
+
     for (unsigned int i=0; i<attributeList.size(); ++i)
     {
         if (attributeList[i] == "src")
@@ -83,69 +84,8 @@ void BaseObject::parse( BaseObjectDescription* arg )
                 break;
             }
 
-            BaseObject* obj = this;
-            BaseObject* loader = NULL;
+            setSrc(valueString, &attributeList);
 
-            std::size_t posAt = valueString.rfind('@');
-            if (posAt == std::string::npos) posAt = 0;
-            std::string objectName;
-
-            objectName = valueString.substr(posAt+1);
-            loader = getContext()->get<BaseObject>(objectName);
-
-            std::map < std::string, BaseData*> dataLoaderMap;
-            std::map < std::string, BaseData*>::iterator it_map;
-
-            for (unsigned int j = 0; j<loader->m_fieldVec.size(); ++j)
-            {
-                dataLoaderMap.insert (std::pair<std::string, BaseData*> (loader->m_fieldVec[j].first, loader->m_fieldVec[j].second));
-            }
-
-            for (unsigned int j = 0; j<attributeList.size(); ++j)
-            {
-                it_map = dataLoaderMap.find (attributeList[j]);
-                if (it_map != dataLoaderMap.end())
-                    dataLoaderMap.erase (it_map);
-            }
-
-            // -- Temporary patch, using exceptions. TODO: use a flag to set Data not to be automatically linked. --
-            //{
-            it_map = dataLoaderMap.find ("name");
-            if (it_map != dataLoaderMap.end())
-                dataLoaderMap.erase (it_map);
-
-            it_map = dataLoaderMap.find ("type");
-            if (it_map != dataLoaderMap.end())
-                dataLoaderMap.erase (it_map);
-
-            it_map = dataLoaderMap.find ("filename");
-            if (it_map != dataLoaderMap.end())
-                dataLoaderMap.erase (it_map);
-
-            it_map = dataLoaderMap.find ("tags");
-            if (it_map != dataLoaderMap.end())
-                dataLoaderMap.erase (it_map);
-
-            it_map = dataLoaderMap.find ("printLog");
-            if (it_map != dataLoaderMap.end())
-                dataLoaderMap.erase (it_map);
-
-            it_map = dataLoaderMap.find ("listening");
-            if (it_map != dataLoaderMap.end())
-                dataLoaderMap.erase (it_map);
-            //}
-
-
-            for (it_map =dataLoaderMap.begin(); it_map != dataLoaderMap.end(); ++it_map)
-            {
-                BaseData* Data = obj->findField( (*it_map).first );
-                if (Data != NULL)
-                {
-                    std::string linkPath = valueString+"."+(*it_map).first;
-                    Data->setLinkPath(linkPath);
-                    Data->setParent( (*it_map).second);
-                }
-            }
             continue;
         }
 
@@ -260,6 +200,82 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
                 if( !(dataModif[d]->read( valueString ))) serr<<"could not read value for option "<< attributeList[i] <<": " << val << sendl;
             }
+        }
+    }
+}
+
+void BaseObject::setSrc(const std::string &valueString, std::vector< std::string > *attributeList)
+{
+    BaseObject* loader = NULL;
+
+    std::size_t posAt = valueString.rfind('@');
+    if (posAt == std::string::npos) posAt = 0;
+    std::string objectName;
+
+    objectName = valueString.substr(posAt+1);
+    loader = getContext()->get<BaseObject>(objectName);
+
+    setSrc(valueString, loader, attributeList);
+}
+
+void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader, std::vector< std::string > *attributeList)
+{
+    BaseObject* obj = this;
+
+    std::map < std::string, BaseData*> dataLoaderMap;
+    std::map < std::string, BaseData*>::iterator it_map;
+
+    for (unsigned int j = 0; j<loader->m_fieldVec.size(); ++j)
+    {
+        dataLoaderMap.insert (std::pair<std::string, BaseData*> (loader->m_fieldVec[j].first, loader->m_fieldVec[j].second));
+    }
+
+    if (attributeList != 0)
+    {
+        for (unsigned int j = 0; j<attributeList->size(); ++j)
+        {
+            it_map = dataLoaderMap.find ((*attributeList)[j]);
+            if (it_map != dataLoaderMap.end())
+                dataLoaderMap.erase (it_map);
+        }
+    }
+
+    // -- Temporary patch, using exceptions. TODO: use a flag to set Data not to be automatically linked. --
+    //{
+    it_map = dataLoaderMap.find ("name");
+    if (it_map != dataLoaderMap.end())
+        dataLoaderMap.erase (it_map);
+
+    it_map = dataLoaderMap.find ("type");
+    if (it_map != dataLoaderMap.end())
+        dataLoaderMap.erase (it_map);
+
+    it_map = dataLoaderMap.find ("filename");
+    if (it_map != dataLoaderMap.end())
+        dataLoaderMap.erase (it_map);
+
+    it_map = dataLoaderMap.find ("tags");
+    if (it_map != dataLoaderMap.end())
+        dataLoaderMap.erase (it_map);
+
+    it_map = dataLoaderMap.find ("printLog");
+    if (it_map != dataLoaderMap.end())
+        dataLoaderMap.erase (it_map);
+
+    it_map = dataLoaderMap.find ("listening");
+    if (it_map != dataLoaderMap.end())
+        dataLoaderMap.erase (it_map);
+    //}
+
+
+    for (it_map =dataLoaderMap.begin(); it_map != dataLoaderMap.end(); ++it_map)
+    {
+        BaseData* Data = obj->findField( (*it_map).first );
+        if (Data != NULL)
+        {
+            std::string linkPath = valueString+"."+(*it_map).first;
+            Data->setLinkPath(linkPath);
+            Data->setParent( (*it_map).second);
         }
     }
 }
