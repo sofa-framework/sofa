@@ -18,6 +18,7 @@ LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += $$SOFA_EXT_LIBS
 LIBS += -lsofasimulation$$LIBSUFFIX
 LIBS += -lsofacomponentprojectiveconstraintset$$LIBSUFFIX
+LIBS += -lsofacomponentvisualmodel$$LIBSUFFIX
 LIBS += -lsofacomponentbase$$LIBSUFFIX
 
 # Make sure there are no cross-dependencies
@@ -55,8 +56,8 @@ HEADERS += \
            NewHookeMaterial.inl \
            Interpolater.h \
            Interpolater.inl \
-           TetrahedronFEMForceFieldWithExternalMaterial.h \
-           TetrahedronFEMForceFieldWithExternalMaterial.inl
+           #TetrahedronFEMForceFieldWithExternalMaterial.h \
+           #TetrahedronFEMForceFieldWithExternalMaterial.inl
 
 SOURCES += \
            initFrame.cpp \
@@ -74,5 +75,5 @@ SOURCES += \
            GridMaterial.cpp \
            NewHookeMaterial.cpp \
            Interpolater.cpp \
-           TetrahedronFEMForceFieldWithExternalMaterial.cpp
+           #TetrahedronFEMForceFieldWithExternalMaterial.cpp
 
