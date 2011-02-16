@@ -248,7 +248,7 @@ void ARTrackDriver::handleEvent(core::objectmodel::Event *event)
         std::cout<<"ARTrack AnimateBeginEvent "<<std::endl;
         core::objectmodel::ARTrackEvent aRTrackEvent(dataARTrack.wirstTranslation, dataARTrack.wristRotation, dataARTrack.angle_finger, dataARTrack.fingersGlobalPos);
 
-        this->getContext()->propagateEvent(&aRTrackEvent);
+        this->getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &aRTrackEvent);
     }
 }
 

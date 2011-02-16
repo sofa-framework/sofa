@@ -289,7 +289,7 @@ public:
         FlowVRPreInitEvent ev;
         ev.from = this;
         ev.ports = &ports;
-        getContext()->propagateEvent(&ev);
+        getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &ev);
         const vector<std::string>& inputPorts = f_inputPorts.getValue();
         for (vector<std::string>::const_iterator it = inputPorts.begin(); it != inputPorts.end(); ++it)
             ports.insert(createInputPort(it->c_str()));
@@ -309,7 +309,7 @@ public:
         FlowVRInitEvent ev2;
         ev2.from = this;
         ev2.module = module;
-        getContext()->propagateEvent(&ev2);
+        getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &ev2);
     }
 
     virtual void animateBegin(double /*dt*/)
@@ -327,7 +327,7 @@ public:
         FlowVRBeginIterationEvent ev;
         ev.from = this;
         ev.module = module;
-        getContext()->propagateEvent(&ev);
+        getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &ev);
     }
 
     virtual void animateEnd(double /*dt*/)
@@ -339,7 +339,7 @@ public:
         FlowVREndIterationEvent ev;
         ev.from = this;
         ev.module = module;
-        getContext()->propagateEvent(&ev);
+        getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &ev);
     }
 };
 
@@ -1130,7 +1130,7 @@ public:
             ev.from = mod;
             ev.scene = &scene;
             ev.scratch = &scratch;
-            getContext()->propagateEvent(&ev);
+            getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &ev);
             init = true;
         }
     }
@@ -1141,7 +1141,7 @@ public:
         ev.from = mod;
         ev.scene = &scene;
         ev.scratch = &scratch;
-        getContext()->propagateEvent(&ev);
+        getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &ev);
         scene.put(pOutScene, scratch);
         scratch = true;
     }
@@ -1154,7 +1154,7 @@ public:
             //FlowVRRenderInitEvent ev;
             //ev.from = mod;
             //ev.scene = &scene;
-            //getContext()->propagateEvent(&ev);
+            //getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &ev);
             scene.put(pOutScene);
             //init = true;
         }

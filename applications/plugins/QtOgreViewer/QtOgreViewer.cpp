@@ -1076,7 +1076,7 @@ void QtOgreViewer::keyPressEvent ( QKeyEvent * e )
     {
         //cerr<<"QtViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
         sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-        groot->propagateEvent(&keyEvent);
+        groot->propagateEvent(sofa::core::ExecParams::defaultInstance(), &keyEvent);
     }
     else  // control the GUI
     {

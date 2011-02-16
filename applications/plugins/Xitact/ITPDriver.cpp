@@ -363,7 +363,7 @@ void ITPDriver::handleEvent(core::objectmodel::Event *event)
     			/// TODO : SHOULD INCLUDE VELOCITY !!
     			sofa::core::objectmodel::XitactEvent ITPEvent(data.deviceData.id, world_H_virtualTool.getOrigin(), world_H_virtualTool.getOrientation() , data.deviceData.m_buttonState);
 
-    			this->getContext()->propagateEvent(&ITPEvent);
+    			this->getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &ITPEvent);
 
     			if (moveITPBase)
     			{
