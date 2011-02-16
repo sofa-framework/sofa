@@ -96,8 +96,10 @@ void LocalMinDistance::init()
     intersectors.ignore<RayModel, LineModel>();
     intersectors.add<RayModel, TriangleModel, LocalMinDistance>(this);
 
+#ifdef SOFA_DEV
     intersectors.add<BSplineModel , PointModel,  LocalMinDistance>(this);
     intersectors.add<BSplineModel , SphereModel,  LocalMinDistance>(this);
+#endif // SOFA_DEV
 }
 
 bool LocalMinDistance::testIntersection(Cube &cube1, Cube &cube2)
@@ -1434,6 +1436,7 @@ void LocalMinDistance::draw()
 
 
 
+#ifdef SOFA_DEV
 
 //Copy of Line computation. TODO_Spline : finding adaptive and optimized computation for Spline
 bool LocalMinDistance::testValidity(CubicBezierCurve& /*spline*/, const Vector3& /*PQ*/)
@@ -1731,7 +1734,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Sphere& e1, Outp
     return 1;
 }
 
-
+#endif // SOFA_DEV
 
 } // namespace collision
 
