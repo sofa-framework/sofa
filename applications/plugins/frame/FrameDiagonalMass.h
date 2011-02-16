@@ -33,6 +33,7 @@
 #include "FrameMass.h"
 #include "MappingTypes.h"
 #include "initFrame.h"
+#include <sofa/component/topology/PointSetTopologyContainer.h>
 
 namespace sofa
 {
@@ -44,6 +45,7 @@ namespace mass
 {
 using sofa::defaulttype::FrameData;
 using defaulttype::Quat;
+using sofa::component::topology::PointSetTopologyContainer;
 
 template <class DataTypes, class TMassType>
 class FrameDiagonalMass : public core::behavior::Mass<DataTypes>
@@ -92,6 +94,9 @@ public:
 
     void resize(int vsize);
 
+    virtual void handleTopologyChange(core::topology::Topology* t);
+    void handleEvent ( core::objectmodel::Event * );
+
     // -- Mass interface
     void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
 
@@ -136,6 +141,7 @@ protected:
 
 private:
     FData* frameData; // Storage and computation of the mass blocks
+    PointSetTopologyContainer* _topo;
 
     void updateMass();
     void computeRelRot (Mat33& relRot, const Quat& q, const Quat& q0);
