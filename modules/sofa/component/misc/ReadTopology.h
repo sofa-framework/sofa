@@ -154,7 +154,7 @@ protected:
 class SOFA_COMPONENT_MISC_API ReadTopologyModifier: public simulation::Visitor
 {
 public:
-    ReadTopologyModifier(double _time, const core::ExecParams* params)
+    ReadTopologyModifier(const core::ExecParams* params /* PARAMS FIRST */, double _time)
         :Visitor(params), time(_time) {}
 
     virtual Result processNodeTopDown( simulation::Node*  );

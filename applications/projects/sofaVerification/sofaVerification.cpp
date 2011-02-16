@@ -131,7 +131,7 @@ void apply(const std::string& directory, std::vector<std::string>& files,
                 writeVisitor.setSceneName(refFile);
                 writeVisitor.execute(groot);
 
-                sofa::component::misc::WriteTopologyActivator v_write(true,sofa::core::ExecParams::defaultInstance());
+                sofa::component::misc::WriteTopologyActivator v_write(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
                 v_write.execute(groot);
             }
             else
@@ -142,7 +142,7 @@ void apply(const std::string& directory, std::vector<std::string>& files,
                 writeVisitor.setSceneName(refFile);
                 writeVisitor.execute(groot);
 
-                sofa::component::misc::WriteStateActivator v_write(true,sofa::core::ExecParams::defaultInstance());
+                sofa::component::misc::WriteStateActivator v_write(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
                 v_write.execute(groot);
             }
 
@@ -168,7 +168,7 @@ void apply(const std::string& directory, std::vector<std::string>& files,
                 compareVisitor.setSceneName(refFile);
                 compareVisitor.execute(groot);
 
-                sofa::component::misc::ReadStateActivator v_read(true,sofa::core::ExecParams::defaultInstance());
+                sofa::component::misc::ReadStateActivator v_read(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
                 v_read.execute(groot);
             }
         }

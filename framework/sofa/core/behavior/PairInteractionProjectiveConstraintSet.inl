@@ -74,7 +74,7 @@ bool PairInteractionProjectiveConstraintSet<DataTypes>::isActive() const
 }
 
 template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(MultiMatrixDerivId /*cId*/, const MechanicalParams* /*mparams*/)
+void PairInteractionProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, MultiMatrixDerivId /*cId*/)
 {
     serr << "NOT IMPLEMENTED YET" << sendl;
 }
@@ -83,33 +83,33 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(Mu
 template<class DataTypes>
 struct PairConstraintProjectResponseTask
 {
-    void operator()(PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx1,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx2, const MechanicalParams* mparams)
+    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx1,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx2)
     {
-        c->projectResponse(dx1.access(), dx2.access(), mparams);
+        c->projectResponse(mparams /* PARAMS FIRST */, dx1.access(), dx2.access());
     }
 };
 
 template<class DataTypes>
 struct PairConstraintProjectVelocityTask
 {
-    void operator()(PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v1, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v2, const MechanicalParams* mparams)
+    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v1, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v2)
     {
-        c->projectVelocity(v1.access(), v2.access(), mparams);
+        c->projectVelocity(mparams /* PARAMS FIRST */, v1.access(), v2.access());
     }
 };
 
 template<class DataTypes>
 struct PairConstraintProjectPositionTask
 {
-    void operator()(PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x1, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x2, const MechanicalParams* mparams)
+    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x1, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x2)
     {
-        c->projectPosition(x1.access(), x2.access(), mparams);
+        c->projectPosition(mparams /* PARAMS FIRST */, x1.access(), x2.access());
     }
 };
 #endif /* SOFA_SMP */
 
 template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(MultiVecDerivId dxId, const MechanicalParams* mparams)
+void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dxId)
 {
     if( !isActive() ) return;
     if (mstate1 && mstate2)
@@ -118,15 +118,15 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(MultiVec
         this->mask2 = &mstate2->forceMask;
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<PairConstraintProjectResponseTask<DataTypes> >(this, **defaulttype::getShared(*dxId[mstate1].write()), **defaulttype::getShared(*dxId[mstate2].write()), mparams);
+            Task<PairConstraintProjectResponseTask<DataTypes> >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*dxId[mstate1].write()), **defaulttype::getShared(*dxId[mstate2].write()));
         else
 #endif /* SOFA_SMP */
-            projectResponse(*dxId[mstate1].write(), *dxId[mstate2].write(), mparams);
+            projectResponse(mparams /* PARAMS FIRST */, *dxId[mstate1].write(), *dxId[mstate2].write());
     }
 }
 
 template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(MultiVecDerivId vId, const MechanicalParams* mparams)
+void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId vId)
 {
     if( !isActive() ) return;
     if (mstate1 && mstate2)
@@ -135,15 +135,15 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(MultiVec
         this->mask2 = &mstate2->forceMask;
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<PairConstraintProjectVelocityTask<DataTypes> >(this, **defaulttype::getShared(*vId[mstate1].write()), **defaulttype::getShared(*vId[mstate2].write()), mparams);
+            Task<PairConstraintProjectVelocityTask<DataTypes> >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*vId[mstate1].write()), **defaulttype::getShared(*vId[mstate2].write()));
         else
 #endif /* SOFA_SMP */
-            projectVelocity(*vId[mstate1].write(), *vId[mstate2].write(), mparams);
+            projectVelocity(mparams /* PARAMS FIRST */, *vId[mstate1].write(), *vId[mstate2].write());
     }
 }
 
 template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(MultiVecCoordId xId, const MechanicalParams* mparams)
+void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecCoordId xId)
 {
     if( !isActive() ) return;
     if (mstate1 && mstate2)
@@ -152,10 +152,10 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(MultiVec
         this->mask2 = &mstate2->forceMask;
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<PairConstraintProjectPositionTask<DataTypes> >(this, **defaulttype::getShared(*xId[mstate1].write()), **defaulttype::getShared(*xId[mstate2].write()), mparams);
+            Task<PairConstraintProjectPositionTask<DataTypes> >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*xId[mstate1].write()), **defaulttype::getShared(*xId[mstate2].write()));
         else
 #endif /* SOFA_SMP */
-            projectPosition(*xId[mstate1].write(), *xId[mstate2].write(), mparams);
+            projectPosition(mparams /* PARAMS FIRST */, *xId[mstate1].write(), *xId[mstate2].write());
     }
 }
 

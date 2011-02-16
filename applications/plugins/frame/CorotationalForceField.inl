@@ -111,7 +111,7 @@ void CorotationalForceField<DataTypes>::init()
 
 
 template <class DataTypes>
-void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v , const core::MechanicalParams* /*mparams*/)
+void CorotationalForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
 {
     ReadAccessor<DataVecCoord> x(_x);
     ReadAccessor<DataVecDeriv> v(_v);
@@ -149,7 +149,7 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
 }
 
 template <class DataTypes>
-void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* mparams)
+void CorotationalForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& _df , const DataVecDeriv&  _dx)
 {
     ReadAccessor<DataVecCoord> x (*this->getMState()->read(core::ConstVecCoordId::position()));
     ReadAccessor<DataVecDeriv> dx(_dx);

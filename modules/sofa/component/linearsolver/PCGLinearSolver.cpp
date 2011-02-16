@@ -157,13 +157,13 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Mechanical
 }
 
 template<>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta, const core::ExecParams* /*params*/)
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* /*params*/ /* PARAMS FIRST */, Vector& p, Vector& r, double beta)
 {
     p.eq(r,p,beta); // p = p*beta + r
 }
 
 template<>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha, const core::ExecParams* /*params*/)
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* /*params*/ /* PARAMS FIRST */, Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
 {
 #if 1 //SOFA_NO_VMULTIOP // unoptimized version
     x.peq(p,alpha);                 // x = x + alpha p
@@ -262,7 +262,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         {
             beta = rho / rho_1;
             //p = p*beta + z;
-            cgstep_beta(p,z,beta,params);
+            cgstep_beta(params /* PARAMS FIRST */, p,z,beta);
         }
 
         if( verbose ) cerr<<"p : "<<p<<endl;
@@ -286,7 +286,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         alpha = rho/den;
         //x.peq(p,alpha);                 // x = x + alpha p
         //r.peq(q,-alpha);                // r = r - alpha q
-        cgstep_alpha(x,r,p,q,alpha,params);
+        cgstep_alpha(params /* PARAMS FIRST */, x,r,p,q,alpha);
 
         if( verbose )
         {

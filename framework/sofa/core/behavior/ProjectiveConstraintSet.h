@@ -96,28 +96,28 @@ public:
     /// This method retrieves the dxId vector from the MechanicalState and call
     /// the internal projectResponse(VecDeriv&) method implemented by
     /// the component.
-    virtual void projectResponse(MultiVecDerivId dxId, const MechanicalParams* mparams);
+    virtual void projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dxId);
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     ///
     /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
     /// the internal projectResponse(MatrixDeriv&) method implemented by
     /// the component.
-    virtual void projectJacobianMatrix(MultiMatrixDerivId cId, const MechanicalParams* mparams);
+    virtual void projectJacobianMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, MultiMatrixDerivId cId);
 
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method retrieves the vId vector from the MechanicalState and call
     /// the internal projectVelocity(VecDeriv&) method implemented by
     /// the component.
-    virtual void projectVelocity(MultiVecDerivId vId, const MechanicalParams* mparams);
+    virtual void projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId vId);
 
     /// Project x to constrained space (x models a position).
     ///
     /// This method retrieves the xId vector from the MechanicalState and call
     /// the internal projectPosition(VecCoord&) method implemented by
     /// the component.
-    virtual void projectPosition(MultiVecCoordId xId, const MechanicalParams* mparams);
+    virtual void projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecCoordId xId);
 
 
 
@@ -125,7 +125,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectResponse() method.
-    virtual void projectResponse(DataVecDeriv& dx, const MechanicalParams* /*mparams*/)
+    virtual void projectResponse(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& dx)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -133,7 +133,7 @@ public:
         projectResponse(*dx.beginEdit());
         dx.endEdit();
     }
-    /// @deprecated use instead projectResponse(DataVecDeriv& dx, const MechanicalParams* mparams)
+    /// @deprecated use instead projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx)
     virtual void projectResponse(VecDeriv& /*dx*/) {}
 #endif
 
@@ -141,7 +141,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectVelocity() method.
-    virtual void projectVelocity(DataVecDeriv& v, const MechanicalParams* /*mparams*/)
+    virtual void projectVelocity(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& v)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -149,7 +149,7 @@ public:
         projectVelocity(*v.beginEdit());
         v.endEdit();
     }
-    /// @deprecated use instead projectResponse(DataVecDeriv& v, const MechanicalParams* mparams)
+    /// @deprecated use instead projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& v)
     virtual void projectVelocity(VecDeriv& /*v*/) {}
 #endif
 
@@ -157,7 +157,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectPosition() method.
-    virtual void projectPosition(DataVecCoord& x, const MechanicalParams* /*mparams*/)
+    virtual void projectPosition(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& x)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -165,14 +165,14 @@ public:
         projectPosition(*x.beginEdit());
         x.endEdit();
     }
-    /// @deprecated use instead  projectResponse(DataVecCoord& x, const MechanicalParams* mparams)
+    /// @deprecated use instead  projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x)
     virtual void projectPosition(VecCoord& /*x*/) {}
 #endif
 
     /// Project c to constrained space (c models a constraint).
     ///
     /// This method must be implemented by the component to handle Lagrange Multiplier based constraint
-    virtual void projectJacobianMatrix(DataMatrixDeriv& cData, const MechanicalParams* /*mparams*/)
+    virtual void projectJacobianMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& cData)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -188,7 +188,7 @@ public:
             ++rowIt;
         }
     }
-    /// @deprecated use instead projectResponse(Data< MatrixDeriv >& c, const MechanicalParams* mparams)
+    /// @deprecated use instead projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, Data< MatrixDeriv >& c)
     virtual void projectResponse(MatrixDerivRowType& /*c*/) {}
 #endif
 
@@ -202,7 +202,7 @@ public:
     }
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* /*mparams*/)
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
         MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
         if (r)
@@ -216,7 +216,7 @@ public:
     }
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* /*mparams*/)
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
         int o = matrix->getGlobalOffset(this->mstate);
         if (o >= 0)

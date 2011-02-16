@@ -37,7 +37,7 @@ namespace simulation
 namespace tree
 {
 
-ExportDotVisitor::ExportDotVisitor(std::ostream* out, const sofa::core::ExecParams* params)
+ExportDotVisitor::ExportDotVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, std::ostream* out)
     : GNodeVisitor(params),
       out(out),
       showNode(true),

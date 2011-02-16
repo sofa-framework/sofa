@@ -147,7 +147,7 @@ void HermiteSplineConstraint<DataTypes>::computeDerivateHermiteCoefs( const Real
 
 
 template <class DataTypes> template <class DataDeriv>
-void HermiteSplineConstraint<DataTypes>::projectResponseT(DataDeriv& dx, const core::MechanicalParams* /*mparams*/)
+void HermiteSplineConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
 {
     Real t = (Real) this->getContext()->getTime();
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
@@ -159,14 +159,14 @@ void HermiteSplineConstraint<DataTypes>::projectResponseT(DataDeriv& dx, const c
 }
 
 template <class DataTypes>
-void HermiteSplineConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams)
+void HermiteSplineConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT(res.wref(), mparams);
+    projectResponseT(mparams /* PARAMS FIRST */, res.wref());
 }
 
 template <class DataTypes>
-void HermiteSplineConstraint<DataTypes>::projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* /*mparams*/)
+void HermiteSplineConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> dx = vData;
     Real t = (Real) this->getContext()->getTime();
@@ -190,7 +190,7 @@ void HermiteSplineConstraint<DataTypes>::projectVelocity(DataVecDeriv& vData, co
 }
 
 template <class DataTypes>
-void HermiteSplineConstraint<DataTypes>::projectPosition(DataVecCoord& xData, const core::MechanicalParams* /*mparams*/)
+void HermiteSplineConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
     Real t = (Real) this->getContext()->getTime();
@@ -214,7 +214,7 @@ void HermiteSplineConstraint<DataTypes>::projectPosition(DataVecCoord& xData, co
 }
 
 template <class DataTypes>
-void HermiteSplineConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams)
+void HermiteSplineConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
@@ -223,7 +223,7 @@ void HermiteSplineConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& 
 
     while (rowIt != rowItEnd)
     {
-        projectResponseT<MatrixDerivRowType>(rowIt.row(), mparams);
+        projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
         ++rowIt;
     }
 }

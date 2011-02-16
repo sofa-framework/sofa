@@ -146,16 +146,16 @@ template<>
 void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::removeIndex(unsigned int index);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectJacobianMatrix(DataMatrixDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& dx);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx);
 
 template<>
 void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::addIndex(unsigned int index);
@@ -164,16 +164,16 @@ template<>
 void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::removeIndex(unsigned int index);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectJacobianMatrix(DataMatrixDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& dx);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
@@ -187,16 +187,16 @@ template<>
 void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::removeIndex(unsigned int index);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectJacobianMatrix(DataMatrixDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& dx);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx);
 
 template<>
 void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::addIndex(unsigned int index);
@@ -205,16 +205,16 @@ template<>
 void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::removeIndex(unsigned int index);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectJacobianMatrix(DataMatrixDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& dx);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x);
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 

@@ -31,7 +31,7 @@ namespace sofa
 namespace simulation
 {
 
-MechanicalVPrintVisitor::MechanicalVPrintVisitor(ConstMultiVecId v, std::ostream& out, const core::ExecParams* params )
+MechanicalVPrintVisitor::MechanicalVPrintVisitor(const core::ExecParams* params /* PARAMS FIRST */, ConstMultiVecId v, std::ostream& out )
     : Visitor(params)
     , v_(v)
     , out_(out)
@@ -54,7 +54,7 @@ Visitor::Result MechanicalVPrintVisitor::processNodeTopDown(simulation::Node* no
 }
 
 
-MechanicalVPrintWithElapsedTimeVisitor::MechanicalVPrintWithElapsedTimeVisitor(ConstMultiVecId vid, unsigned time, std::ostream& out, const core::ExecParams* params )
+MechanicalVPrintWithElapsedTimeVisitor::MechanicalVPrintWithElapsedTimeVisitor(const core::ExecParams* params /* PARAMS FIRST */, ConstMultiVecId vid, unsigned time, std::ostream& out )
     : Visitor (params)
     , v_(vid)
     , count_(0)

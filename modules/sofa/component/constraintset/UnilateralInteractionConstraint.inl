@@ -216,8 +216,8 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
 
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &contactId
-        , const DataVecCoord &, const DataVecCoord &, const core::ConstraintParams*)
+void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &contactId
+        , const DataVecCoord &, const DataVecCoord &)
 {
     assert(this->mstate1);
     assert(this->mstate2);
@@ -306,8 +306,8 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(DataMatri
 
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &, const DataVecCoord &
-        , const DataVecDeriv &, const DataVecDeriv &, const core::ConstraintParams*)
+void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &, const DataVecCoord &
+        , const DataVecDeriv &, const DataVecDeriv &)
 {
     for (unsigned int i=0; i<contacts.size(); i++)
     {

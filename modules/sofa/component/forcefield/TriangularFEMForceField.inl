@@ -272,7 +272,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
 // ---
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-double TriangularFEMForceField<DataTypes>::getPotentialEnergy(const DataVecCoord& /* x */, const core::MechanicalParams* /* mparams */) const
+double TriangularFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, const DataVecCoord& /* x */) const
 {
     serr<<"TriangularFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
@@ -1258,7 +1258,7 @@ void TriangularFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Inde
 // ---
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */, const core::MechanicalParams* /* mparams */)
+void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
     //sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
     //sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > x1 = x;
@@ -1512,7 +1512,7 @@ void TriangularFEMForceField<DataTypes>::addForce(DataVecDeriv& f, const DataVec
 // ---
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams)
+void TriangularFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx)
 {
     VecDeriv& df1 = *df.beginEdit();
     const VecDeriv& dx1 = dx.getValue();

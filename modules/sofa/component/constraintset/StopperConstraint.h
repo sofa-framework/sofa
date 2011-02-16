@@ -117,8 +117,8 @@ public:
     virtual ~StopperConstraint() {}
 
     virtual void init();
-    virtual void buildConstraintMatrix(DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
-    virtual void getConstraintViolation(defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
+    virtual void buildConstraintMatrix(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x);
+    virtual void getConstraintViolation(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v);
 
 #ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);

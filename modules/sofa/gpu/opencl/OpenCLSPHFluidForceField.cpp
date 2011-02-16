@@ -90,7 +90,7 @@ void SPHFluidForceFieldOpenCL3f_computeDensity(unsigned int size, const _device_
     SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<unsigned int>(0,&size);
     SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<_device_pointer>(1,&cells);
     SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<_device_pointer>(2,&cellGhost);
-    SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<GPUSPHFluid3f>(3,params);
+    SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<GPUSPHFluid3f>(params /* PARAMS FIRST */, 3);
     SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<_device_pointer>(4,&pos4);
     SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<_device_pointer>(5,&x);
 
@@ -155,7 +155,7 @@ void SPHFluidForceFieldOpenCL3f_addForce (unsigned int size, const _device_point
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<unsigned int>(0,&size);
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(1,&cells);
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(2,&cellGhost);
-    SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<GPUSPHFluid3f>(3,params);
+    SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<GPUSPHFluid3f>(params /* PARAMS FIRST */, 3);
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(4,&f);
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(5,&pos4);
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(6,&v);

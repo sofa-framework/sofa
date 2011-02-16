@@ -254,7 +254,7 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
 
     mouseCollision->getRay(0).setOrigin( position+orientation*interaction->mouseInteractor->getDistanceFromMouse() );
     mouseCollision->getRay(0).setDirection( orientation );
-    simulation::MechanicalPropagatePositionVisitor(0, sofa::core::VecCoordId::position(), true, sofa::core::MechanicalParams::defaultInstance()).execute(mouseCollision->getContext());
+    simulation::MechanicalPropagatePositionVisitor(sofa::core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, 0, sofa::core::VecCoordId::position(), true).execute(mouseCollision->getContext());
 
     if (needToCastRay())
     {
@@ -420,7 +420,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
 {
     BodyPicked result;
     // Look for particles hit by this ray
-    simulation::MechanicalPickParticlesVisitor picker(origin, direction, maxLength, 0, sofa::core::ExecParams::defaultInstance() );
+    simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, origin, direction, maxLength, 0 );
     core::objectmodel::BaseNode* rootNode = dynamic_cast<core::objectmodel::BaseNode*>(sofa::simulation::getSimulation()->getContext());
 
     if (rootNode) picker.execute(rootNode->getContext());

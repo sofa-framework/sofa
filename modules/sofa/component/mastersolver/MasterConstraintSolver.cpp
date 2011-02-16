@@ -296,7 +296,7 @@ void MasterConstraintSolver::launchCollisionDetection(const core::ExecParams* pa
 }
 
 
-void MasterConstraintSolver::freeMotion(simulation::Node *context, double &dt, const core::ExecParams* params)
+void MasterConstraintSolver::freeMotion(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, double &dt)
 {
     if (debug)
         serr<<"Free Motion is called"<<sendl;
@@ -304,7 +304,7 @@ void MasterConstraintSolver::freeMotion(simulation::Node *context, double &dt, c
 
     ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
     sofa::helper::AdvancedTimer::stepBegin("Free Motion");
-    simulation::MechanicalBeginIntegrationVisitor(dt, params).execute(context);
+    simulation::MechanicalBeginIntegrationVisitor(params /* PARAMS FIRST */, dt).execute(context);
 
     ////////////////// (optional) PREDICTIVE CONSTRAINT FORCES ///////////////////////////////////////////////////////////////////////////////////////////
     // When scheme Correction is used, the constraint forces computed at the previous time-step
@@ -323,13 +323,13 @@ void MasterConstraintSolver::freeMotion(simulation::Node *context, double &dt, c
         }
     }
 
-    simulation::SolveVisitor(dt, true, params).execute(context);
+    simulation::SolveVisitor(params /* PARAMS FIRST */, dt, true).execute(context);
     //simulation::MechanicalPropagateFreePositionVisitor().execute(context);
     {
         sofa::core::MechanicalParams mparams(*params);
         sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
         mparams.x() = xfree;
-        simulation::MechanicalPropagatePositionVisitor(0, xfree, true, &mparams ).execute(context);
+        simulation::MechanicalPropagatePositionVisitor(&mparams /* PARAMS FIRST */, 0, xfree, true ).execute(context);
     }
     sofa::helper::AdvancedTimer::stepEnd  ("Free Motion");
 
@@ -337,7 +337,7 @@ void MasterConstraintSolver::freeMotion(simulation::Node *context, double &dt, c
 
     ////////propagate acceleration ? //////
     core::MultiVecDerivId dx_id = core::VecDerivId::dx();
-    simulation::MechanicalVOpVisitor(dx_id, ConstVecId::null(), ConstVecId::null(), 1.0, params ).setMapped(true).execute(context);
+    simulation::MechanicalVOpVisitor(params /* PARAMS FIRST */, dx_id, ConstVecId::null(), ConstVecId::null(), 1.0 ).setMapped(true).execute(context);
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if ( displayTime.getValue() )
@@ -348,7 +348,7 @@ void MasterConstraintSolver::freeMotion(simulation::Node *context, double &dt, c
     }
 }
 
-void MasterConstraintSolver::setConstraintEquations(simulation::Node *context, const core::ExecParams* params)
+void MasterConstraintSolver::setConstraintEquations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
 {
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -370,7 +370,7 @@ void MasterConstraintSolver::setConstraintEquations(simulation::Node *context, c
     {
         /// calling resetConstraint & setConstraint & accumulateConstraint visitors
         /// and resize the constraint problem that will be solved
-        writeAndAccumulateAndCountConstraintDirections(context, numConstraints, params);
+        writeAndAccumulateAndCountConstraintDirections(params /* PARAMS FIRST */, context, numConstraints);
     }
 
     core::MechanicalParams mparams = core::MechanicalParams(*params);
@@ -379,12 +379,12 @@ void MasterConstraintSolver::setConstraintEquations(simulation::Node *context, c
 
     /// calling GetConstraintValueVisitor: each constraint provides its present violation
     /// for a given state (by default: free_position TODO: add VecId to make this method more generic)
-    getIndividualConstraintViolations(context, params);
+    getIndividualConstraintViolations(params /* PARAMS FIRST */, context);
 
     if(!schemeCorrection.getValue())
     {
         /// calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
-        getIndividualConstraintSolvingProcess(context, params);
+        getIndividualConstraintSolvingProcess(params /* PARAMS FIRST */, context);
     }
 
     sofa::helper::AdvancedTimer::stepEnd  ("Constraints definition");
@@ -399,7 +399,7 @@ void MasterConstraintSolver::setConstraintEquations(simulation::Node *context, c
     }
 }
 
-void MasterConstraintSolver::writeAndAccumulateAndCountConstraintDirections(simulation::Node *context, unsigned int &numConstraints, const core::ExecParams* params)
+void MasterConstraintSolver::writeAndAccumulateAndCountConstraintDirections(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, unsigned int &numConstraints)
 {
     // calling resetConstraint on LMConstraints and MechanicalStates
     simulation::MechanicalResetConstraintVisitor(params).execute(context);
@@ -409,11 +409,11 @@ void MasterConstraintSolver::writeAndAccumulateAndCountConstraintDirections(simu
     cparams.setV(core::ConstVecDerivId::freeVelocity());
 
     // calling applyConstraint on each constraint
-    MechanicalSetConstraint(core::MatrixDerivId::holonomicC(), numConstraints, &cparams).execute(context);
+    MechanicalSetConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
     // calling accumulateConstraint on the mappings
-    MechanicalAccumulateConstraint2(core::MatrixDerivId::holonomicC(), &cparams).execute(context);
+    MechanicalAccumulateConstraint2(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC()).execute(context);
 
     if (debug)
         sout << "   1. resize constraints : numConstraints=" << numConstraints << sendl;
@@ -424,7 +424,7 @@ void MasterConstraintSolver::writeAndAccumulateAndCountConstraintDirections(simu
         CP1.clear(numConstraints,this->_tol.getValue());
 }
 
-void MasterConstraintSolver::getIndividualConstraintViolations(simulation::Node *context, const core::ExecParams* params)
+void MasterConstraintSolver::getIndividualConstraintViolations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
 {
     if (debug)
         sout << "   2. compute violation" << sendl;
@@ -435,24 +435,24 @@ void MasterConstraintSolver::getIndividualConstraintViolations(simulation::Node 
 
     if (doubleBuffer.getValue() && bufCP1)
     {
-        constraintset::MechanicalGetConstraintValueVisitor(CP2.getDfree(), &cparams).execute(context);
+        constraintset::MechanicalGetConstraintValueVisitor(&cparams /* PARAMS FIRST */, CP2.getDfree()).execute(context);
     }
     else
     {
-        constraintset::MechanicalGetConstraintValueVisitor(CP1.getDfree(), &cparams).execute(context);
+        constraintset::MechanicalGetConstraintValueVisitor(&cparams /* PARAMS FIRST */, CP1.getDfree()).execute(context);
     }
 }
 
-void MasterConstraintSolver::getIndividualConstraintSolvingProcess(simulation::Node *context, const core::ExecParams* params)
+void MasterConstraintSolver::getIndividualConstraintSolvingProcess(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
 {
     /// calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
     if (debug)
         sout<<"   3. get resolution method for each constraint"<<sendl;
 
     if (doubleBuffer.getValue() && bufCP1)
-        MechanicalGetConstraintResolutionVisitor(CP2.getConstraintResolutions(), 0, params).execute(context);
+        MechanicalGetConstraintResolutionVisitor(params /* PARAMS FIRST */, CP2.getConstraintResolutions(), 0).execute(context);
     else
-        MechanicalGetConstraintResolutionVisitor(CP1.getConstraintResolutions(), 0, params).execute(context);
+        MechanicalGetConstraintResolutionVisitor(params /* PARAMS FIRST */, CP1.getConstraintResolutions(), 0).execute(context);
 }
 
 void MasterConstraintSolver::computeComplianceInConstraintSpace()
@@ -475,7 +475,7 @@ void MasterConstraintSolver::computeComplianceInConstraintSpace()
 
 }
 
-void MasterConstraintSolver::correctiveMotion(simulation::Node *context, const core::ExecParams* params)
+void MasterConstraintSolver::correctiveMotion(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
 {
 
     if (debug)
@@ -524,7 +524,7 @@ void MasterConstraintSolver::correctiveMotion(simulation::Node *context, const c
     sofa::helper::AdvancedTimer::stepEnd ("Corrective Motion");
 }
 
-void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
+void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIRST */, double dt )
 {
     time = 0.0;
     double totaltime = 0.0;
@@ -565,7 +565,7 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
     // Update the BehaviorModels => to be removed ?
     // Required to allow the RayPickInteractor interaction
     sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdate");
-    simulation::BehaviorUpdatePositionVisitor(dt, params).execute(context);
+    simulation::BehaviorUpdatePositionVisitor(params /* PARAMS FIRST */, dt).execute(context);
     sofa::helper::AdvancedTimer::stepEnd  ("BehaviorUpdate");
 
 
@@ -575,10 +575,10 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
         numConstraints = 0;
 
         //1. Find the new constraint direction
-        writeAndAccumulateAndCountConstraintDirections(context, numConstraints, params);
+        writeAndAccumulateAndCountConstraintDirections(params /* PARAMS FIRST */, context, numConstraints);
 
         //2. Get the constraint solving process:
-        getIndividualConstraintSolvingProcess(context, params);
+        getIndividualConstraintSolvingProcess(params /* PARAMS FIRST */, context);
 
         //3. Use the stored forces to compute
         if (debug)
@@ -620,7 +620,7 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
 
 
     /// FREE MOTION
-    freeMotion(context, dt, params);
+    freeMotion(params /* PARAMS FIRST */, context, dt);
 
 
 
@@ -632,11 +632,11 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
 
     //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
     core::MechanicalParams mparams(*params);
-    simulation::MechanicalPropagatePositionVisitor(0, VecCoordId::position(), true, &mparams).execute(context);
+    simulation::MechanicalPropagatePositionVisitor(&mparams /* PARAMS FIRST */, 0, VecCoordId::position(), true).execute(context);
 
 
     /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION
-    setConstraintEquations(context, params);
+    setConstraintEquations(params /* PARAMS FIRST */, context);
 
     if (debug)
     {
@@ -690,7 +690,7 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
     }
 
     /// CORRECTIVE MOTION
-    correctiveMotion(context, params);
+    correctiveMotion(params /* PARAMS FIRST */, context);
 
     if ( displayTime.getValue() )
     {
@@ -704,7 +704,7 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
         sout << "<<<<< End display MasterContactSolver time." << sendl;
     }
 
-    simulation::MechanicalEndIntegrationVisitor endVisitor(dt, params);
+    simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
     context->execute(&endVisitor);
 }
 

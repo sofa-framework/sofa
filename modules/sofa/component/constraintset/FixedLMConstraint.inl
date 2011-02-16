@@ -140,7 +140,7 @@ template <class DataTypes> void FixedLMConstraint<DataTypes>::handleTopologyChan
 
 
 template<class DataTypes>
-void FixedLMConstraint<DataTypes>::buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* /* cParams*/)
+void FixedLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /* cParams*/ /* PARAMS FIRST */, core::MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     using namespace core::objectmodel;
     Data<MatrixDeriv>* dC = cId[this->constrainedObject1].write();

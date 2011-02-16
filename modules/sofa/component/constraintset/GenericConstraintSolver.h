@@ -122,7 +122,7 @@ private:
 class SOFA_COMPONENT_CONSTRAINTSET_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalGetConstraintResolutionVisitor(std::vector<core::behavior::ConstraintResolution*>& res, const core::ConstraintParams* params)
+    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, std::vector<core::behavior::ConstraintResolution*>& res)
         : simulation::BaseMechanicalVisitor(params) , cparams(params)
         , _res(res), _offset(0)
     {

@@ -53,7 +53,7 @@ int RungeKutta2SolverClass = core::RegisterObject("A popular explicit time integ
 SOFA_DECL_CLASS(RungeKutta2);
 
 
-void RungeKutta2Solver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params)
+void RungeKutta2Solver::solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( this->getContext() );

@@ -41,7 +41,7 @@ namespace simulation
 {
 
 
-AnimateVisitor::AnimateVisitor(double dt , const core::ExecParams* params)
+AnimateVisitor::AnimateVisitor(const core::ExecParams* params /* PARAMS FIRST */, double dt)
     : Visitor(params)
     , dt(dt)
 #ifdef SOFA_HAVE_EIGEN2
@@ -82,7 +82,7 @@ void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior:
     MultiVecDerivId   ffId      = VecDerivId::externalForce();
     MechanicalParams* m_mparams = MechanicalParams::defaultInstance();
     m_mparams->setDt(this->dt);
-    obj->addForce(ffId,m_mparams);
+    obj->addForce(m_mparams /* PARAMS FIRST */, ffId);
 
     sofa::helper::AdvancedTimer::stepEnd("InteractionFF",obj);
 }
@@ -101,7 +101,7 @@ void AnimateVisitor::processOdeSolver(simulation::Node* node, core::behavior::Od
     /*    MechanicalIntegrationVisitor act(getDt());
         node->execute(&act);*/
 //  cerr<<"AnimateVisitor::processOdeSolver "<<solver->getName()<<endl;
-    solver->solve(getDt(), params);
+    solver->solve(params /* PARAMS FIRST */, getDt());
     sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }
 
@@ -145,13 +145,13 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 #ifndef SOFA_SMP
         {
             CollisionBeginEvent evBegin;
-            PropagateEventVisitor eventPropagation(&evBegin, this->params);
+            PropagateEventVisitor eventPropagation(this->params /* PARAMS FIRST */, &evBegin);
             eventPropagation.execute(node);
         }
         processCollisionPipeline(node, node->collisionPipeline);
         {
             CollisionEndEvent evEnd;
-            PropagateEventVisitor eventPropagation(&evEnd, this->params);
+            PropagateEventVisitor eventPropagation(this->params /* PARAMS FIRST */, &evEnd);
             eventPropagation.execute(node);
         }
 #endif
@@ -170,7 +170,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         double nextTime = node->getTime() + dt;
 
 
-        MechanicalBeginIntegrationVisitor beginVisitor(dt, params);
+        MechanicalBeginIntegrationVisitor beginVisitor(params /* PARAMS FIRST */, dt);
         node->execute(&beginVisitor);
 
         sofa::core::MechanicalParams m_mparams(*this->params);
@@ -180,8 +180,8 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         {
             unsigned int constraintId=0;
             core::ConstraintParams cparams;
-            //MechanicalAccumulateConstraint(constraintId, VecCoordId::position(), &m_mparams).execute(node);
-            simulation::MechanicalAccumulateConstraint(core::MatrixDerivId::holonomicC(),constraintId,&cparams).execute(node);
+            //MechanicalAccumulateConstraint(&m_mparams /* PARAMS FIRST */, constraintId, VecCoordId::position()).execute(node);
+            simulation::MechanicalAccumulateConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(),constraintId).execute(node);
         }
 #endif
 
@@ -189,17 +189,17 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         {
             ctime_t t0 = begin(node, node->solver[i]);
             //cerr<<"AnimateVisitor::processNodeTpDown  solver  "<<node->solver[i]->getName()<<endl;
-            node->solver[i]->solve(getDt(), params);
+            node->solver[i]->solve(params /* PARAMS FIRST */, getDt());
             end(node, node->solver[i], t0);
         }
 
-        MechanicalPropagatePositionAndVelocityVisitor(nextTime,VecCoordId::position(),VecDerivId::velocity(),
+        MechanicalPropagatePositionAndVelocityVisitor(&m_mparams /* PARAMS FIRST */, nextTime,VecCoordId::position(),VecDerivId::velocity(),
 #ifdef SOFA_SUPPORT_MAPPED_MASS
                 VecDerivId::dx(),
 #endif
-                true, &m_mparams).execute( node );
+                true).execute( node );
 
-        MechanicalEndIntegrationVisitor endVisitor(dt, params);
+        MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
         node->execute(&endVisitor);
         return RESULT_PRUNE;
     }

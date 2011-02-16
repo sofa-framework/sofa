@@ -301,7 +301,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         if (eulerSolver)
         {
             using core::behavior::BaseMechanicalState;
-            eulerSolver->solve(dt, core::VecCoordId::position(), core::VecDerivId::velocity(), core::ExecParams::defaultInstance());
+            eulerSolver->solve(core::ExecParams::defaultInstance() /* PARAMS FIRST */, dt, core::VecCoordId::position(), core::VecDerivId::velocity());
         }
 
         for (unsigned int f = 0; f < nbNodes; f++)
@@ -342,7 +342,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 if(eulerSolver)
                 {
                     using core::behavior::BaseMechanicalState;
-                    eulerSolver->solve(dt, core::VecCoordId::position(), core::VecDerivId::velocity(), core::ExecParams::defaultInstance());
+                    eulerSolver->solve(core::ExecParams::defaultInstance() /* PARAMS FIRST */, dt, core::VecCoordId::position(), core::VecDerivId::velocity());
                     if (linearSolver)
                         linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
                 }
@@ -354,7 +354,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
                 /*	if (f*dof_on_node+i < 2)
                 	{
-                		//eulerSolver->solve(dt, core::VecCoordId::position(), core::VecDerivId::velocity(), core::ExecParams::defaultInstance());
+                		//eulerSolver->solve(core::ExecParams::defaultInstance()  // PARAMS FIRST //, dt, core::VecCoordId::position(), core::VecDerivId::velocity());
                 		eulerSolver->f_verbose.setValue(false);
                 		eulerSolver->f_printLog.setValue(false);
                 	//	serr<<"getV : "<<velocity<<sendl;

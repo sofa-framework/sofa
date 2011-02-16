@@ -66,7 +66,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::init()
 
 
 template <class TIn, class TOut>
-void Mesh2PointMechanicalMapping<TIn, TOut>::apply(Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn, const core::MechanicalParams * /*mparams*/)
+void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     if (!topoMap) return;
 
@@ -172,7 +172,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(Data<OutVecCoord>& dOut, cons
 }
 
 template <class TIn, class TOut>
-void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn, const core::MechanicalParams * /*mparams*/)
+void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
     if (!topoMap) return;
 
@@ -278,7 +278,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(Data<OutVecDeriv>& dOut, con
 }
 
 template <class TIn, class TOut>
-void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn, const core::MechanicalParams * /*mparams*/)
+void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn)
 {
     if (!topoMap) return;
 
@@ -385,7 +385,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, con
 
 
 template <class TIn, class TOut>
-void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(Data<InMatrixDeriv>& dOut, const Data<OutMatrixDeriv>& dIn, const core::ConstraintParams * /*cparams*/)
+void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, Data<InMatrixDeriv>& dOut, const Data<OutMatrixDeriv>& dIn)
 {
     using topology::Mesh2PointTopologicalMapping;
 

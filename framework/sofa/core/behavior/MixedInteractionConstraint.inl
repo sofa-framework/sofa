@@ -69,20 +69,20 @@ bool MixedInteractionConstraint<DataTypes1, DataTypes2>::isActive() const
 }
 
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::getConstraintViolation(defaulttype::BaseVector *v, const ConstraintParams* cParams)
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::getConstraintViolation(const ConstraintParams* cParams /* PARAMS FIRST */, defaulttype::BaseVector *v)
 {
     if (cParams)
     {
-        getConstraintViolation(v, *cParams->readX(mstate1), *cParams->readX(mstate2), *cParams->readV(mstate1), *cParams->readV(mstate2), cParams);
+        getConstraintViolation(cParams /* PARAMS FIRST */, v, *cParams->readX(mstate1), *cParams->readX(mstate2), *cParams->readV(mstate1), *cParams->readV(mstate2));
     }
 }
 
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(MultiMatrixDerivId cId, unsigned int &cIndex, const ConstraintParams* cParams)
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST */, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     if (cParams)
     {
-        buildConstraintMatrix(*cId[mstate1].write(), *cId[mstate2].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2), cParams);
+        buildConstraintMatrix(cParams /* PARAMS FIRST */, *cId[mstate1].write(), *cId[mstate2].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
     }
 }
 

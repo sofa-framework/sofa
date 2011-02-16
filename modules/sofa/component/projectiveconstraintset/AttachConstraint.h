@@ -109,15 +109,15 @@ public:
 
     // -- Constraint interface
     void init();
-    void projectResponse(DataVecDeriv& dx1, DataVecDeriv& dx2, const core::MechanicalParams *mparams);
-    void projectVelocity(DataVecDeriv& v1, DataVecDeriv& v2, const core::MechanicalParams *mparams);
-    void projectPosition(DataVecCoord& x1, DataVecCoord& x2, const core::MechanicalParams *mparams);
+    void projectResponse(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv& dx1, DataVecDeriv& dx2);
+    void projectVelocity(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv& v1, DataVecDeriv& v2);
+    void projectPosition(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecCoord& x1, DataVecCoord& x2);
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    void applyConstraint(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams *mparams);
+    void applyConstraint(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    void applyConstraint(defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams *mparams);
+    void applyConstraint(const core::MechanicalParams *mparams /* PARAMS FIRST */, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     // Handle topological changes
     //virtual void handleTopologyChange();

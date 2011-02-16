@@ -65,14 +65,14 @@ void ProjectiveConstraintSet<DataTypes>::init()
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(MultiMatrixDerivId cId, const MechanicalParams* mparams)
+void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, MultiMatrixDerivId cId)
 {
     if (!isActive())
         return;
 
     if (mstate)
     {
-        projectJacobianMatrix(*cId[mstate].write(), mparams);
+        projectJacobianMatrix(mparams /* PARAMS FIRST */, *cId[mstate].write());
     }
 }
 
@@ -80,60 +80,60 @@ void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(MultiMatrixDerivI
 template<class T>
 struct projectResponseTask
 {
-    void operator()(void *c, Shared_rw< objectmodel::Data< typename T::VecDeriv> > dx, const MechanicalParams* mparams)
+    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, void *c, Shared_rw< objectmodel::Data< typename T::VecDeriv> > dx)
     {
-        ((T *)c)->T::projectResponse(dx.access(), mparams);
+        ((T *)c)->T::projectResponse(mparams /* PARAMS FIRST */, dx.access());
     }
 };
 
 template<class T>
 struct projectVelocityTask
 {
-    void operator()(void *c, Shared_rw< objectmodel::Data< typename T::VecDeriv> > v, const MechanicalParams* mparams)
+    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, void *c, Shared_rw< objectmodel::Data< typename T::VecDeriv> > v)
     {
-        ((T *)c)->T::projectVelocity(v.access(), mparams);
+        ((T *)c)->T::projectVelocity(mparams /* PARAMS FIRST */, v.access());
     }
 };
 
 template<class T>
 struct projectPositionTask
 {
-    void operator()(void *c, Shared_rw< objectmodel::Data< typename T::VecCoord> > x, const MechanicalParams* mparams)
+    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, void *c, Shared_rw< objectmodel::Data< typename T::VecCoord> > x)
     {
-        ((T *)c)->T::projectPosition(x.access(), mparams);
+        ((T *)c)->T::projectPosition(mparams /* PARAMS FIRST */, x.access());
     }
 };
 
 template<class DataTypes>
 struct projectResponseTask<ProjectiveConstraintSet< DataTypes > >
 {
-    void operator()(ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx, const MechanicalParams* mparams)
+    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx)
     {
-        c->projectResponse(dx.access(), mparams);
+        c->projectResponse(mparams /* PARAMS FIRST */, dx.access());
     }
 };
 
 template<class DataTypes>
 struct projectVelocityTask<ProjectiveConstraintSet< DataTypes > >
 {
-    void operator()(ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v, const MechanicalParams* mparams)
+    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v)
     {
-        c->projectVelocity(v.access(), mparams);
+        c->projectVelocity(mparams /* PARAMS FIRST */, v.access());
     }
 };
 
 template<class DataTypes>
 struct projectPositionTask<ProjectiveConstraintSet< DataTypes > >
 {
-    void operator()(ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x, const MechanicalParams* mparams)
+    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x)
     {
-        c->projectPosition(x.access(), mparams);
+        c->projectPosition(mparams /* PARAMS FIRST */, x.access());
     }
 };
 #endif /* SOFA_SMP */
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectResponse(MultiVecDerivId dxId, const MechanicalParams* mparams)
+void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dxId)
 {
     if (!isActive())
         return;
@@ -143,16 +143,16 @@ void ProjectiveConstraintSet<DataTypes>::projectResponse(MultiVecDerivId dxId, c
         mstate->forceMask.setInUse(this->useMask());
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<projectResponseTask<ProjectiveConstraintSet< DataTypes > > >(this,
-                    **defaulttype::getShared(*dxId[mstate].write()), mparams);
+            Task<projectResponseTask<ProjectiveConstraintSet< DataTypes > > >(mparams /* PARAMS FIRST */, this,
+                    **defaulttype::getShared(*dxId[mstate].write()));
         else
 #endif /* SOFA_SMP */
-            projectResponse(*dxId[mstate].write(), mparams);
+            projectResponse(mparams /* PARAMS FIRST */, *dxId[mstate].write());
     }
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectVelocity(MultiVecDerivId vId, const MechanicalParams* mparams)
+void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId vId)
 {
     if (!isActive())
         return;
@@ -162,16 +162,16 @@ void ProjectiveConstraintSet<DataTypes>::projectVelocity(MultiVecDerivId vId, co
         mstate->forceMask.setInUse(this->useMask());
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<projectVelocityTask<ProjectiveConstraintSet< DataTypes > > >(this,
-                    **defaulttype::getShared(*vId[mstate].write()), mparams);
+            Task<projectVelocityTask<ProjectiveConstraintSet< DataTypes > > >(mparams /* PARAMS FIRST */, this,
+                    **defaulttype::getShared(*vId[mstate].write()));
         else
 #endif /* SOFA_SMP */
-            projectVelocity(*vId[mstate].write(), mparams);
+            projectVelocity(mparams /* PARAMS FIRST */, *vId[mstate].write());
     }
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectPosition(MultiVecCoordId xId, const MechanicalParams* mparams)
+void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecCoordId xId)
 {
     if (!isActive())
         return;
@@ -181,11 +181,11 @@ void ProjectiveConstraintSet<DataTypes>::projectPosition(MultiVecCoordId xId, co
         mstate->forceMask.setInUse(this->useMask());
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(this,
-                    **defaulttype::getShared(*xId[mstate].write()), mparams);
+            Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(mparams /* PARAMS FIRST */, this,
+                    **defaulttype::getShared(*xId[mstate].write()));
         else
 #endif /* SOFA_SMP */
-            projectPosition(*xId[mstate].write(), mparams);
+            projectPosition(mparams /* PARAMS FIRST */, *xId[mstate].write());
     }
 }
 

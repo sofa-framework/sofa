@@ -194,7 +194,7 @@ void BeamFEMForceField<DataTypes>::handleTopologyChange()
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/, const sofa::core::MechanicalParams* /*mparams*/ )
+void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/ )
 {
     VecDeriv& f = *(dataF.beginEdit());
     const VecCoord& p=dataX.getValue();
@@ -252,7 +252,7 @@ void BeamFEMForceField<DataTypes>::addForce(DataVecDeriv &  dataF, const DataVec
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::addDForce(DataVecDeriv& datadF , const DataVecDeriv& datadX, const sofa::core::MechanicalParams *mparams)
+void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv& datadF , const DataVecDeriv& datadX)
 {
     VecDeriv& df = *(datadF.beginEdit());
     const VecDeriv& dx=datadX.getValue();
@@ -506,7 +506,7 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const sofa::core::MechanicalParams* mparams )
+void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     double k = mparams->kFactor();

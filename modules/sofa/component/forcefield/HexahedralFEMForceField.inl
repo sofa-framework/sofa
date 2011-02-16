@@ -146,7 +146,7 @@ void HexahedralFEMForceField<DataTypes>::reinit()
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::addForce (DataVecDeriv& f, const DataVecCoord& p, const DataVecDeriv& /*v*/, const core::MechanicalParams* /*mparams*/)
+void HexahedralFEMForceField<DataTypes>::addForce (const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& p, const DataVecDeriv& /*v*/)
 {
     WDataRefVecDeriv _f = f;
     RDataRefVecCoord _p = p;
@@ -176,7 +176,7 @@ void HexahedralFEMForceField<DataTypes>::addForce (DataVecDeriv& f, const DataVe
 }
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::addDForce (DataVecDeriv& v, const DataVecDeriv& x, const core::MechanicalParams *mparams)
+void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv& v, const DataVecDeriv& x)
 {
     helper::WriteAccessor< DataVecDeriv > _v = v;
     const VecCoord& _x = x.getValue();

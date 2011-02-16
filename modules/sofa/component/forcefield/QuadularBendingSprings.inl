@@ -573,7 +573,7 @@ void QuadularBendingSprings<DataTypes>::init()
 }
 
 template<class DataTypes>
-void QuadularBendingSprings<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
+void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -706,7 +706,7 @@ void QuadularBendingSprings<DataTypes>::addForce(DataVecDeriv& d_f, const DataVe
 }
 
 template<class DataTypes>
-void QuadularBendingSprings<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
+void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();

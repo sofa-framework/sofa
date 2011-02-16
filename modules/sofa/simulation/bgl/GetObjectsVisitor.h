@@ -45,7 +45,7 @@ public:
     typedef sofa::core::objectmodel::ClassInfo ClassInfo;
     typedef sofa::core::objectmodel::BaseContext::GetObjectsCallBack GetObjectsCallBack;
 
-    GetObjectsVisitor(const ClassInfo& class_inf, GetObjectsCallBack& cont, const sofa::core::ExecParams* params)
+    GetObjectsVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, const ClassInfo& class_inf, GetObjectsCallBack& cont)
         : Visitor(params), class_info(class_inf), container(cont)
     {}
 
@@ -71,7 +71,7 @@ public:
     typedef sofa::core::objectmodel::ClassInfo ClassInfo;
     typedef sofa::core::objectmodel::BaseContext::GetObjectsCallBack GetObjectsCallBack;
     typedef sofa::core::objectmodel::BaseContext::SearchDirection SearchDirection;
-    GetObjectVisitor(const ClassInfo& class_inf, const sofa::core::ExecParams* params)
+    GetObjectVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, const ClassInfo& class_inf)
         : Visitor(params), class_info(class_inf), result(NULL)
     {}
 

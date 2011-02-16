@@ -101,7 +101,7 @@ void FrameVolumePreservationForceField<DataTypes>::init()
 #define MIN_DETERMINANT  1.0e-100
 
 template <class DataTypes>
-void FrameVolumePreservationForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& /*_v */, const core::MechanicalParams* /*mparams*/)
+void FrameVolumePreservationForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& /*_v */)
 {
     ReadAccessor<DataVecCoord> x(_x);
     WriteAccessor<DataVecDeriv> f(_f);
@@ -135,7 +135,7 @@ void FrameVolumePreservationForceField<DataTypes>::addForce(DataVecDeriv& _f , c
 }
 
 template <class DataTypes>
-void FrameVolumePreservationForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* mparams)
+void FrameVolumePreservationForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& _df , const DataVecDeriv&  _dx)
 {
     ReadAccessor<DataVecCoord> x (*this->getMState()->read(core::ConstVecCoordId::position()));
     ReadAccessor<DataVecDeriv> dx(_dx);

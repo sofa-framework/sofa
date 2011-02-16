@@ -141,18 +141,18 @@ bool GenericConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::Const
     // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
     // calling buildConstraintMatrix
-    simulation::MechanicalAccumulateConstraint(core::MatrixDerivId::holonomicC(), numConstraints, &cparams).execute(context);
+    simulation::MechanicalAccumulateConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
     current_cp->clear(numConstraints);
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
-    MechanicalGetConstraintValueVisitor(&current_cp->dFree, &cparams).execute(context);
+    MechanicalGetConstraintValueVisitor(&cparams /* PARAMS FIRST */, &current_cp->dFree).execute(context);
     sofa::helper::AdvancedTimer::stepEnd ("Get Constraint Value");
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Resolutions");
-    MechanicalGetConstraintResolutionVisitor(current_cp->constraintsResolutions, &cparams).execute(context);
+    MechanicalGetConstraintResolutionVisitor(&cparams /* PARAMS FIRST */, current_cp->constraintsResolutions).execute(context);
     sofa::helper::AdvancedTimer::stepEnd("Get Constraint Resolutions");
 
     if (this->f_printLog.getValue()) sout<<"GenericConstraintSolver: "<<numConstraints<<" constraints"<<sendl;

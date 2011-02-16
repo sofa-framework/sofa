@@ -52,7 +52,7 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API WriteStateVisitor: public Visitor
 {
 public:
-    WriteStateVisitor( std::ostream& out, const sofa::core::ExecParams* params );
+    WriteStateVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, std::ostream& out );
     virtual ~WriteStateVisitor();
 
     virtual Result processNodeTopDown( simulation::Node*  );

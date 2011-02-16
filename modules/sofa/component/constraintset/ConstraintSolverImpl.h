@@ -132,7 +132,7 @@ class SOFA_COMPONENT_MASTERSOLVER_API MechanicalApplyContactForceVisitor : publi
 {
 public:
     //VecId force;
-    MechanicalApplyContactForceVisitor(double *f, const core::ExecParams* params)
+    MechanicalApplyContactForceVisitor(const core::ExecParams* params /* PARAMS FIRST */, double *f)
         : simulation::BaseMechanicalVisitor(params)
         , _f(f)
     {
@@ -182,7 +182,7 @@ class MechanicalGetConstraintValueVisitor : public simulation::BaseMechanicalVis
 {
 public:
 
-    MechanicalGetConstraintValueVisitor(BaseVector *v, const core::ConstraintParams* params)
+    MechanicalGetConstraintValueVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, BaseVector *v)
         : simulation::BaseMechanicalVisitor(params)
         , cparams(params)
         , m_v(v)
@@ -197,7 +197,7 @@ public:
         if (core::behavior::BaseConstraintSet *c=dynamic_cast<core::behavior::BaseConstraintSet*>(cSet))
         {
             ctime_t t0 = begin(node, c);
-            c->getConstraintViolation(m_v, cparams);
+            c->getConstraintViolation(cparams /* PARAMS FIRST */, m_v);
             end(node, c, t0);
         }
         return RESULT_CONTINUE;

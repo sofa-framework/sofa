@@ -88,7 +88,7 @@ void SPHFluidForceField<DataTypes>::init()
 
 
 template<class DataTypes>
-void SPHFluidForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
+void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -562,7 +562,7 @@ void SPHFluidForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoo
 }
 
 template<class DataTypes>
-void SPHFluidForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
+void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     VecDeriv& f1 = *d_df.beginEdit();
     const VecDeriv& dx1 = d_dx.getValue();

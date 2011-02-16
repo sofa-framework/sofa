@@ -578,7 +578,7 @@ void QtOgreViewer::setupView()
 #endif
     //Finally create our window.
     std::cout<< "createRenderWindow :" << width() << "x" << height() << "...";
-    mRenderWindow = mRoot->createRenderWindow("OgreWindow", width(), height(), false, &params);
+    mRenderWindow = mRoot->createRenderWindow(&params /* PARAMS FIRST */, "OgreWindow", width(), height(), false);
     std::cout<< "done.";
 
 

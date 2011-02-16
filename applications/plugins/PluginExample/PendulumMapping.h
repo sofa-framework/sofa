@@ -82,7 +82,7 @@ public:
     virtual void applyJ( VecOutDeriv& out, const VecInDeriv& in);
     virtual void applyJT( VecInDeriv& out, const VecOutDeriv& in);
     virtual void applyJT( MatrixInDeriv& out, const MatrixOutDeriv& in);
-    virtual void applyDJT(core::MultiVecDerivId parentForceChange, core::ConstMultiVecDerivId, const core::MechanicalParams* mparams = core::MechanicalParams::defaultInstance() );
+    virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForceChange, core::ConstMultiVecDerivId );
 
 
 protected:

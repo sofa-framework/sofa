@@ -65,8 +65,8 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(std::
 #endif
 
 template <>
-void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
-        , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/, const core::ConstraintParams* /*cParams*/)
+void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
+        , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
     unsigned minp = min(m1.getValue().size(),m2.getValue().size());
     cid.resize(minp);
@@ -130,8 +130,8 @@ void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(DataMat
 
 
 template <>
-void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
-        , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/, const core::ConstraintParams* /*cParams*/)
+void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+        , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
 {
     unsigned minp = min(m1.getValue().size(),m2.getValue().size());
     dfree.resize(minp);
@@ -151,8 +151,8 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(defaul
 
 #ifndef SOFA_DOUBLE
 template <>
-void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
-        , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/, const core::ConstraintParams* /*cParams*/)
+void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
+        , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
     unsigned minp = min(m1.getValue().size(),m2.getValue().size());
     cid.resize(minp);
@@ -216,8 +216,8 @@ void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(DataMat
 
 
 template <>
-void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
-        , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/, const core::ConstraintParams* /*cParams*/)
+void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+        , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
 {
     unsigned min = min(m1.getValue().size(),m2.getValue().size());
     dfree.resize(min);

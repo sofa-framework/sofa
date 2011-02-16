@@ -412,7 +412,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
         {
             simulation::Node* n = root->child[g];
             double gdim = 0;
-            simulation::MechanicalGetDimensionVisitor(&gdim, mparams).execute(n);
+            simulation::MechanicalGetDimensionVisitor(mparams /* PARAMS FIRST */, &gdim).execute(n);
             if (gdim <= 0) continue;
             groups.push_back(n);
             gData[n].systemSize = (int)gdim;
@@ -424,7 +424,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
     {
         groups.clear();
         double dim = 0;
-        simulation::MechanicalGetDimensionVisitor(&dim, mparams).execute(root);
+        simulation::MechanicalGetDimensionVisitor(mparams /* PARAMS FIRST */, &dim).execute(root);
         defaultGroup.systemSize = (int)dim;
     }
     currentNode = root;
@@ -472,7 +472,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
         setGroup(g);
         if (!this->frozen)
         {
-            simulation::common::MechanicalOperations mops(this->getContext(), mparams);
+            simulation::common::MechanicalOperations mops(mparams /* PARAMS FIRST */, this->getContext());
             if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
             currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
             currentGroup->matrixAccessor.clear();

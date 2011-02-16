@@ -295,7 +295,7 @@ void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMDx(DataVecDeriv& res, const DataVecDeriv& dx, double factor, const core::MechanicalParams* /*mparams*/)
+void DiagonalMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& res, const DataVecDeriv& dx, double factor)
 {
     const MassVector &masses= f_mass.getValue();
     //std::cout << "DIAGONALMASS: dx size = " << dx.size() << " res size = " << res.size() << " masses size = " << masses.size() << std::endl;
@@ -324,7 +324,7 @@ void DiagonalMass<DataTypes, MassType>::addMDx(DataVecDeriv& res, const DataVecD
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::accFromF(DataVecDeriv& a, const DataVecDeriv& f, const core::MechanicalParams* /*mparams*/)
+void DiagonalMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f)
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -338,7 +338,7 @@ void DiagonalMass<DataTypes, MassType>::accFromF(DataVecDeriv& a, const DataVecD
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const DataVecDeriv& v, const core::MechanicalParams* /*mparams*/ ) const
+double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecDeriv& v ) const
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -352,7 +352,7 @@ double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const DataVecDeriv& 
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const DataVecCoord& x, const core::MechanicalParams* /*mparams*/ ) const
+double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& x ) const
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -370,7 +370,7 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const DataVecCoord
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams *mparams)
+void DiagonalMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     const MassVector &masses= f_mass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
@@ -567,7 +567,7 @@ void DiagonalMass<DataTypes, MassType>::init()
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams)
+void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v)
 {
     if(mparams)
     {
@@ -587,7 +587,7 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(DataVecDeriv& d_v, const c
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* /*mparams*/)
+void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if(this->m_separateGravity.getValue())
@@ -714,9 +714,9 @@ template <>
     void* , vector<Rigid3dMass> &);*/
 
 template <>
-double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const DataVecCoord& x, const core::MechanicalParams* mparams) const;
+double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 template <>
-double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const DataVecCoord& x, const core::MechanicalParams* mparams) const;
+double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw();
 template <>
@@ -724,9 +724,9 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw();
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const DataVecCoord& x, const core::MechanicalParams* mparams) const;
+double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 template <>
-double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const DataVecCoord& x, const core::MechanicalParams* mparams) const;
+double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw();

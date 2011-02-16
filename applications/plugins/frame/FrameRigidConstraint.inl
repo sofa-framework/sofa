@@ -85,7 +85,7 @@ void FrameRigidConstraint<DataTypes>::init()
 
 
 template <class DataTypes>
-void FrameRigidConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* /*mparams*/)
+void FrameRigidConstraint<DataTypes>::projectResponse(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
     const vector<unsigned> & indices = f_index.getValue();
@@ -106,7 +106,7 @@ void FrameRigidConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, con
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
 // But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
 template <class DataTypes>
-void FrameRigidConstraint<DataTypes>::projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* /*mparams*/)
+void FrameRigidConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> res = vData;
     const vector<unsigned> & indices = f_index.getValue();
@@ -119,7 +119,7 @@ void FrameRigidConstraint<DataTypes>::projectVelocity(DataVecDeriv& vData, const
 }
 
 template <class DataTypes>
-void FrameRigidConstraint<DataTypes>::projectPosition(DataVecCoord& xData, const core::MechanicalParams* /*mparams*/)
+void FrameRigidConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
 {
 
     helper::WriteAccessor<DataVecCoord> res = xData;

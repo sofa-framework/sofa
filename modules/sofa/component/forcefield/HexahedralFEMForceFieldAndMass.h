@@ -86,33 +86,33 @@ public:
     virtual void handleTopologyChange(core::topology::Topology*);
 
     // -- Mass interface
-    virtual  void addMDx(DataVecDeriv& f, const DataVecDeriv& dx, double factor, const core::MechanicalParams* mparams);
+    virtual  void addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
 
     ///// WARNING this method only add diagonal elements in the given matrix !
     // virtual void addMToMatrix(defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset);
-    virtual void addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams);
+    virtual void addMToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     ///// WARNING this method only add diagonal elements in the given matrix !
     // virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset);
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams);
+    virtual void addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     ///// WARNING this method only add diagonal elements in the given matrix !
     // virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix,
 // double mFact, double bFact, double kFact, unsigned int &offset);
-    virtual void addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams);
+    virtual void addMBKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
-    virtual  void accFromF(DataVecDeriv& a, const DataVecDeriv& f, const core::MechanicalParams* mparams);
+    virtual  void accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f);
 
-    virtual  void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
+    virtual  void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    virtual double getKineticEnergy(const DataVecDeriv& /*v*/, const core::MechanicalParams* /* mparams */)  const ///< vMv/2 using dof->getV()
+    virtual double getKineticEnergy(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, const DataVecDeriv& /*v*/)  const ///< vMv/2 using dof->getV()
     {serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"<<sendl; return 0;}
 
-    virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams);
+    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
     // virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
     // virtual void addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double);
 
-    virtual void addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams);
+    virtual void addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v);
 
     virtual void draw();
 

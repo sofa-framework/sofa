@@ -92,9 +92,9 @@ public:
     /// $ f += B v + K x $
     ///
     /// This method retrieves the force, x and v vector from the MechanicalState
-    /// and call the internal addForce(DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&, const MechanicalParams*)
+    /// and call the internal addForce(const MechanicalParams* /* PARAMS FIRST */, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
     /// method implemented by the component.
-    virtual void addForce(MultiVecDerivId fId , const MechanicalParams* mparams );
+    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fId );
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -104,12 +104,12 @@ public:
     /// $ f += B v + K x $
     ///
     /// This is the method that should be implemented by the component
-    virtual void addForce(DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v , const MechanicalParams* /*mparams*/)
+    virtual void addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
     ;
-    /// @deprecated use instead addForce(DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&, const MechanicalParams*)
+    /// @deprecated use instead addForce(const MechanicalParams* /* PARAMS FIRST */, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
     virtual void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 #endif
 
@@ -126,9 +126,9 @@ public:
     /// This method retrieves the force and dx vector from the MechanicalState
     /// and call the internal addDForce(VecDeriv&,const VecDeriv&,double,double)
     /// method implemented by the component.
-    virtual void addDForce(MultiVecDerivId dfId , const MechanicalParams* mparams );
+    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId );
 
-    virtual void addDForce(DataVecDeriv&   df , const DataVecDeriv&   dx , const MechanicalParams* mparams )
+    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   df , const DataVecDeriv&   dx )
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -151,7 +151,7 @@ public:
 
     virtual double getPotentialEnergy(const MechanicalParams* mparams) const  ;
 
-    virtual double getPotentialEnergy(const DataVecCoord&   x, const MechanicalParams* /*mparams*/) const
+    virtual double getPotentialEnergy(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&   x) const
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -165,14 +165,14 @@ public:
     /// @name Matrix operations
     /// @{
 
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams );
+    virtual void addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix );
 
     /// @deprecated
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset)               ;
 
 
 
-    virtual void addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams);
+    virtual void addBToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     /// @deprecated
     virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset)              ;

@@ -84,7 +84,7 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(defaulttype::BaseVector *v, const ConstraintParams* cParams=ConstraintParams::defaultInstance());
+    virtual void getConstraintViolation(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *v);
 
     /// Construct the Constraint violations vector of each constraint
     ///
@@ -94,12 +94,12 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
-    virtual void getConstraintViolation(defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v, const ConstraintParams* cParams=ConstraintParams::defaultInstance())
+    virtual void getConstraintViolation(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
     ;
-    /// @deprecated use instead getConstraintViolation(defaulttype::BaseVector *, const DataVecCoord&, const DataVecDeriv&, const ConstraintParams*)
+    /// @deprecated use instead getConstraintViolation(const ConstraintParams* /* PARAMS FIRST */, defaulttype::BaseVector *, const DataVecCoord&, const DataVecDeriv&)
     virtual void getConstraintValue(defaulttype::BaseVector *resV, bool /*freeMotion*/ = true);
 #endif
 
@@ -109,7 +109,7 @@ public:
     /// \param cId is the result constraint sparse matrix Id
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void buildConstraintMatrix(MultiMatrixDerivId cId, unsigned int &cIndex, const ConstraintParams* cParams=ConstraintParams::defaultInstance());
+    virtual void buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, MultiMatrixDerivId cId, unsigned int &cIndex);
 
     /// Construct the Jacobian Matrix
     ///
@@ -119,7 +119,7 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
-    virtual void buildConstraintMatrix(DataMatrixDeriv &c, unsigned int &cIndex, const DataVecCoord &x, const ConstraintParams* cParams=ConstraintParams::defaultInstance())
+    virtual void buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, DataMatrixDeriv &c, unsigned int &cIndex, const DataVecCoord &x)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else

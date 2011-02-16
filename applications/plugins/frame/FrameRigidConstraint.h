@@ -68,10 +68,10 @@ public:
     // -- Constraint interface
     void init();
 
-    void projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams);
-    void projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* mparams);
-    void projectPosition(DataVecCoord& xData, const core::MechanicalParams* mparams);
-    void projectJacobianMatrix(DataMatrixDeriv& , const core::MechanicalParams* ) {}
+    void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
+    void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
+    void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
+    void projectJacobianMatrix(const core::MechanicalParams* /* PARAMS FIRST */, DataMatrixDeriv& ) {}
 
     void applyConstraint(defaulttype::BaseMatrix *, unsigned int /*offset*/) {}
     void applyConstraint(defaulttype::BaseVector *, unsigned int /*offset*/) {}

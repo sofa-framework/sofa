@@ -821,7 +821,7 @@ void GraphModeler::saveComponents()
 void GraphModeler::saveComponents(helper::vector<Q3ListViewItem*> items, const std::string &file)
 {
     std::ofstream out(file.c_str());
-    simulation::XMLPrintVisitor print(out,true, sofa::core::ExecParams::defaultInstance());
+    simulation::XMLPrintVisitor print(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, out,true);
     print.setLevel(1);
     out << "<Node name=\"Group\">\n";
     for (unsigned int i=0; i<items.size(); ++i)

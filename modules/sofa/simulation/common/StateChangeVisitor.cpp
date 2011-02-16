@@ -33,7 +33,7 @@ namespace sofa
 namespace simulation
 {
 
-StateChangeVisitor::StateChangeVisitor(core::topology::Topology* source, const sofa::core::ExecParams* params)
+StateChangeVisitor::StateChangeVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, core::topology::Topology* source)
     : Visitor(params), root(true), source(source)
 {
 }

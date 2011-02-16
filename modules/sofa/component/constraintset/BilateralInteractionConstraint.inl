@@ -51,8 +51,8 @@ void BilateralInteractionConstraint<DataTypes>::init()
 }
 
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
-        , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/, const core::ConstraintParams* /*cParams*/)
+void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
+        , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
     unsigned minp = min(m1.getValue().size(),m2.getValue().size());
     cid.resize(minp);
@@ -94,8 +94,8 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(DataMatrix
 
 
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
-        , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/, const core::ConstraintParams*)
+void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+        , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
 {
     unsigned minp=min(m1.getValue().size(),m2.getValue().size());
     dfree.resize(minp);
@@ -142,22 +142,22 @@ void BilateralInteractionConstraint<DataTypes>::draw()
 
 #ifndef SOFA_FLOAT
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
-        , const DataVecCoord &x1, const DataVecCoord &x2, const core::ConstraintParams *cParams);
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::buildConstraintMatrix(const core::ConstraintParams *cParams /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
+        , const DataVecCoord &x1, const DataVecCoord &x2);
 
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
-        , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d, const core::ConstraintParams *cParams);
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::getConstraintViolation(const core::ConstraintParams *cParams /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
+        , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
 #endif
 
 #ifndef SOFA_DOUBLE
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
-        , const DataVecCoord &x1_d, const DataVecCoord &x2_d, const core::ConstraintParams *cParams);
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::buildConstraintMatrix(const core::ConstraintParams *cParams /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
+        , const DataVecCoord &x1_d, const DataVecCoord &x2_d);
 
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
-        , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d, const core::ConstraintParams *cParams);
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::getConstraintViolation(const core::ConstraintParams *cParams /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
+        , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
 #endif
 
 } // namespace constraintset

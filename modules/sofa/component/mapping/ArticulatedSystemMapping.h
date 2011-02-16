@@ -102,10 +102,10 @@ public:
 
     //Apply
     void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
-    void apply( const helper::vector<OutDataVecCoord*>& dataVecOutPos,
-            const helper::vector<const InDataVecCoord*>& dataVecInPos ,
-            const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos,
-            const core::MechanicalParams* /* mparams */)
+    void apply(
+        const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
+        const helper::vector<const InDataVecCoord*>& dataVecInPos ,
+        const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos)
     {
         if(dataVecOutPos.empty() || dataVecInPos.empty())
             return;
@@ -126,10 +126,10 @@ public:
 
     //ApplyJ
     void applyJ( OutVecDeriv& out, const InVecDeriv& in, const InRootVecDeriv* inroot );
-    void applyJ( const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
-            const helper::vector<const InDataVecDeriv*>& dataVecInVel,
-            const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel,
-            const core::MechanicalParams* /* mparams */)
+    void applyJ(
+        const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
+        const helper::vector<const InDataVecDeriv*>& dataVecInVel,
+        const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel)
     {
         if(dataVecOutVel.empty() || dataVecInVel.empty())
             return;
@@ -150,10 +150,10 @@ public:
 
     //ApplyJT Force
     void applyJT( InVecDeriv& out, const OutVecDeriv& in, InRootVecDeriv* outroot );
-    void applyJT( const helper::vector< InDataVecDeriv*>& dataVecOutForce,
-            const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
-            const helper::vector<const OutDataVecDeriv*>& dataVecInForce,
-            const core::MechanicalParams* /* mparams */)
+    void applyJT(
+        const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, const helper::vector< InDataVecDeriv*>& dataVecOutForce,
+        const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
+        const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
     {
         if(dataVecOutForce.empty() || dataVecInForce.empty())
             return;
@@ -174,19 +174,19 @@ public:
             dataVecOutRootForce[0]->endEdit();
     }
 
-    virtual void applyDJT(core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/, const core::MechanicalParams* /*mparams*/)
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/)
     {
-//                     serr<<"Warning ! ArticulatedSystemMapping::applyDJT(MultiVecDerivId inForce, ConstMultiVecDerivId outForce, const MechanicalParams* mparams)  not implemented !"<< sendl;
+//                     serr<<"Warning ! ArticulatedSystemMapping::applyDJT(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)  not implemented !"<< sendl;
     }
 
 
 
     //ApplyJT Constraint
     void applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outroot );
-    void applyJT( const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
-            const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
-            const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst ,
-            const core::ConstraintParams* /* cparams */)
+    void applyJT(
+        const core::ConstraintParams* /* cparams */ /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
+        const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
+        const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst)
     {
         if(dataMatOutConst.empty() || dataMatInConst.empty())
             return;

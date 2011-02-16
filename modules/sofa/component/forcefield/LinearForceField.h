@@ -105,16 +105,16 @@ public:
 
     // ForceField methods
     /// Add the forces
-    virtual void addForce (DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
+    virtual void addForce (const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
     /// Compute the force derivative
-    virtual void addDForce(DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */, const core::MechanicalParams* mparams)
+    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
     {
         //TODO: remove this line (avoid warning message) ...
         mparams->kFactor();
     };
 
-    virtual double getPotentialEnergy(const DataVecCoord& x, const core::MechanicalParams* mparams) const;
+    virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 
 private :
     /// the key times surrounding the current simulation time (for interpolation)

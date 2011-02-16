@@ -86,7 +86,7 @@ public:
     /// \param mparams->getX() input vector of position
     /// \param mparams->getV() input vector of velocity
     /// \param fId output vector of forces
-    virtual void addForce(MultiVecDerivId fId , const MechanicalParams* mparams )=0;
+    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fId )=0;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -103,7 +103,7 @@ public:
     /// \param dfId output vector
     /// \param mparams->mFactor() coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     /// \param mparams->kFactor() coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addDForce(MultiVecDerivId dfId , const MechanicalParams* mparams )=0;
+    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId )=0;
 
     /// Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
@@ -122,7 +122,7 @@ public:
     /// \param mparams->mFactor() coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     /// \param mparams->bFactor() coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param mparams->kFactor() coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addMBKdx(MultiVecDerivId dfId , const MechanicalParams* mparams);
+    virtual void addMBKdx(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId);
 
     /// Get the potential energy associated to this ForceField during the last call of addForce( const MechanicalParams* mparams );
     ///
@@ -139,14 +139,14 @@ public:
     ///
     /// \param matrix matrix to add the result to
     /// \param mparams->kFactor() coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams ) = 0;
+    virtual void addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix ) = 0;
     //virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
 
     /// Compute the system matrix corresponding to b B
     ///
     /// \param matrix matrix to add the result to
     /// \param mparams->bFactor() coefficient for damping contributions (i.e. first derivatives term in the ODE)
-    virtual void addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams );
+    virtual void addBToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix );
     //virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset);
 
 
@@ -156,7 +156,7 @@ public:
     /// \param mparams->mFactor() coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     /// \param mparams->bFactor() coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param mparams->kFactor() coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams );
+    virtual void addMBKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix );
     ////virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
 
     /// @}

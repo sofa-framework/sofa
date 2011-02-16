@@ -302,7 +302,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::computeQRRotation( Mat3x3
 }
 
 template <class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/, const sofa::core::MechanicalParams* /*mparams*/ )
+void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/ )
 {
 
     VecDeriv& f        = *(dataF.beginEdit());
@@ -403,7 +403,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(DataVecDeriv &  
 
 
 template <class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(DataVecDeriv&   datadF , const DataVecDeriv&   datadX , const sofa::core::MechanicalParams* mparams )
+void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   datadF , const DataVecDeriv&   datadX )
 {
     VecDeriv& df       = *(datadF.beginEdit());
     const VecCoord& dx =   datadX.getValue()  ;

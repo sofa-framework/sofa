@@ -60,7 +60,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
-void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::apply ( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* /* mparams */)
+void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn)
 {
     const InVecCoord& in = dIn.getValue();
     OutVecCoord& out = *dOut.beginEdit();
@@ -87,7 +87,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::apply ( OutDataVecCoord&
 }
 
 template <class TIn, class TOut>
-void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* /* mparams */ )
+void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
 {
     const InVecDeriv& in = dIn.getValue();
     OutVecDeriv& out = *dOut.beginEdit();
@@ -113,7 +113,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( OutDataVecDeriv&
 }
 
 template <class TIn, class TOut>
-void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* /* mparams */ )
+void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
     const OutVecDeriv& in = dIn.getValue();
     InVecDeriv& out = *dOut.beginEdit();
@@ -143,7 +143,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( InDataVecDeriv&
 
 
 template <class TIn, class TOut>
-void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn, const core::ConstraintParams * /*cparams*/)
+void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn)
 {
     const OutMatrixDeriv& in = dIn.getValue();
     InMatrixDeriv& out = *dOut.beginEdit();

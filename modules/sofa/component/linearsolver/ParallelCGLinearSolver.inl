@@ -291,7 +291,7 @@ void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector
         p.print();
     }
 
-// TODO : TODO reput this : this->v_op(p,r,p,*betaSh,params); // p = p*beta + r
+// TODO : TODO reput this : this->v_op(params /* PARAMS FIRST */, p,r,p,*betaSh); // p = p*beta + r
 
     // matrix-vector product
     //  	  propagateDx(p);          // dx = p

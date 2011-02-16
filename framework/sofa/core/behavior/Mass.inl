@@ -63,9 +63,9 @@ void Mass<DataTypes>::init()
 template<class DataTypes>
 struct ParallelMassAccFromF
 {
-    void	operator()( Mass< DataTypes >*m,Shared_rw< objectmodel::Data< typename  DataTypes::VecDeriv> > _a,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _f, const MechanicalParams* mparams)
+    void	operator()( const MechanicalParams* mparams /* PARAMS FIRST */, Mass< DataTypes >*m,Shared_rw< objectmodel::Data< typename  DataTypes::VecDeriv> > _a,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _f)
     {
-        m->accFromF(_a.access(),_f.read(), mparams);
+        m->accFromF(mparams /* PARAMS FIRST */, _a.access(),_f.read());
     }
 };
 
@@ -73,9 +73,9 @@ template<class DataTypes>
 struct ParallelMassAddMDx
 {
 public:
-    void	operator()(Mass< DataTypes >*m,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _res,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _dx,double factor, const MechanicalParams* mparams)
+    void	operator()(const MechanicalParams* mparams /* PARAMS FIRST */, Mass< DataTypes >*m,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _res,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _dx,double factor)
     {
-        m->addMDx(_res.access(),_dx.read(),factor, mparams);
+        m->addMDx(mparams /* PARAMS FIRST */, _res.access(),_dx.read(),factor);
     }
 };
 
@@ -93,21 +93,21 @@ public:
 
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDx(MultiVecDerivId fid, double factor, const MechanicalParams* mparams)
+void Mass<DataTypes>::addMDx(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fid, double factor)
 {
     if (mparams)
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelMassAddMDx< DataTypes > >(this, **defaulttype::getShared(*fid[this->mstate].write()), **defaulttype::getShared(*mparams->readDx(this->mstate)), factor, mparams);
+            Task<ParallelMassAddMDx< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*fid[this->mstate].write()), **defaulttype::getShared(*mparams->readDx(this->mstate)), factor);
         else
 #endif /* SOFA_SMP */
-            addMDx(*fid[this->mstate].write(), *mparams->readDx(this->mstate), factor, mparams);
+            addMDx(mparams /* PARAMS FIRST */, *fid[this->mstate].write(), *mparams->readDx(this->mstate), factor);
     }
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDx(DataVecDeriv& f, const DataVecDeriv& dx , double factor , const MechanicalParams* /*mparams*/ )
+void Mass<DataTypes>::addMDx(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx , double factor )
 {
     if (this->mstate)
     {
@@ -124,21 +124,21 @@ void Mass<DataTypes>::addMDx(VecDeriv& /*f*/, const VecDeriv& /*dx*/, double /*f
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::accFromF(MultiVecDerivId aid, const MechanicalParams* mparams)
+void Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId aid)
 {
     if(mparams)
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelMassAccFromF< DataTypes > >(this, **defaulttype::getShared(*aid[this->mstate].write()), **defaulttype::getShared(*mparams->readF(this->mstate)), mparams);
+            Task<ParallelMassAccFromF< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*aid[this->mstate].write()), **defaulttype::getShared(*mparams->readF(this->mstate)));
         else
 #endif /* SOFA_SMP */
-            accFromF(*aid[this->mstate].write(), *mparams->readF(this->mstate) , mparams);
+            accFromF(mparams /* PARAMS FIRST */, *aid[this->mstate].write(), *mparams->readF(this->mstate));
     }
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::accFromF(DataVecDeriv& a, const DataVecDeriv& f, const MechanicalParams* /*mparams*/)
+void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f)
 {
     if (this->mstate)
     {
@@ -155,7 +155,7 @@ void Mass<DataTypes>::accFromF(VecDeriv& /*a*/, const VecDeriv& /*f*/)
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addDForce(DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/ , const MechanicalParams* mparams)
+void Mass<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/)
 {
     // @TODO Remove
     // Hack to disable warning message
@@ -163,12 +163,12 @@ void Mass<DataTypes>::addDForce(DataVecDeriv & /*df*/, const DataVecDeriv & /*dx
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMBKdx(MultiVecDerivId dfId , const MechanicalParams* mparams)
+void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId)
 {
-    this->ForceField<DataTypes>::addMBKdx(dfId,mparams);
+    this->ForceField<DataTypes>::addMBKdx(mparams /* PARAMS FIRST */, dfId);
     if (mparams->mFactor() != 0.0)
     {
-        addMDx(*dfId[this->mstate].write(), *mparams->readDx(this->mstate), mparams->mFactor() , mparams);
+        addMDx(mparams /* PARAMS FIRST */, *dfId[this->mstate].write(), *mparams->readDx(this->mstate), mparams->mFactor());
     }
 }
 
@@ -176,12 +176,12 @@ template<class DataTypes>
 double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
-        return getKineticEnergy(*mparams->readV(this->mstate) , mparams);
+        return getKineticEnergy(mparams /* PARAMS FIRST */, *mparams->readV(this->mstate));
     return 0;
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getKineticEnergy(const DataVecDeriv& v ,const MechanicalParams* /*mparams*/) const
+double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecDeriv& v) const
 {
     return getKineticEnergy(v.getValue());
 }
@@ -197,12 +197,12 @@ template<class DataTypes>
 double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
-        return getPotentialEnergy(*mparams->readX(this->mstate), mparams);
+        return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate));
     return 0;
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getPotentialEnergy(const DataVecCoord& x ,const MechanicalParams* /*mparams*/) const
+double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& x) const
 {
     return getPotentialEnergy(x.getValue());
 }
@@ -215,19 +215,19 @@ double Mass<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/ ) const
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, const MechanicalParams* /*mparams*/)
+void Mass<DataTypes>::addKToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
 //    serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, const MechanicalParams* /*mparams*/)
+void Mass<DataTypes>::addBToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
 //	serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams)
+void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
@@ -241,20 +241,20 @@ void Mass<DataTypes>::addMToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, doub
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams)
+void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    this->ForceField<DataTypes>::addMBKToMatrix(matrix, mparams);
+    this->ForceField<DataTypes>::addMBKToMatrix(mparams /* PARAMS FIRST */, matrix);
     if (mparams->mFactor() != 0.0)
-        addMToMatrix(matrix, mparams);
+        addMToMatrix(mparams /* PARAMS FIRST */, matrix);
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addGravityToV(MultiVecDerivId vid, const MechanicalParams* mparams)
+void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId vid)
 {
     if(this->mstate)
     {
         DataVecDeriv& v = *vid[this->mstate].write();
-        addGravityToV(v, mparams);
+        addGravityToV(mparams /* PARAMS FIRST */, v);
     }
 }
 
@@ -271,7 +271,7 @@ void Mass<DataTypes>::initGnuplot(const std::string path)
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::exportGnuplot(double time,const MechanicalParams* mparams)
+void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams /* PARAMS FIRST */, double time)
 {
     if (m_gnuplotFileEnergy!=NULL)
     {

@@ -64,7 +64,7 @@ void CenterPointMechanicalMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
-void CenterPointMechanicalMapping<TIn, TOut>::apply(Data< typename Out::VecCoord >& _out, const Data< typename In::VecCoord >& _in, const core::MechanicalParams * /*mparams*/)
+void CenterPointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data< typename Out::VecCoord >& _out, const Data< typename In::VecCoord >& _in)
 {
     helper::WriteAccessor< Data< typename Out::VecCoord > > out = _out;
     helper::ReadAccessor< Data< typename In::VecCoord > > in = _in;
@@ -88,7 +88,7 @@ void CenterPointMechanicalMapping<TIn, TOut>::apply(Data< typename Out::VecCoord
 }
 
 template <class TIn, class TOut>
-void CenterPointMechanicalMapping<TIn, TOut>::applyJ(Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& _in, const core::MechanicalParams * /*mparams*/)
+void CenterPointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& _in)
 {
     helper::WriteAccessor< Data< typename Out::VecDeriv > > out = _out;
     helper::ReadAccessor< Data< typename In::VecDeriv > > in = _in;
@@ -112,7 +112,7 @@ void CenterPointMechanicalMapping<TIn, TOut>::applyJ(Data< typename Out::VecDeri
 }
 
 template <class TIn, class TOut>
-void CenterPointMechanicalMapping<TIn, TOut>::applyJT(Data< typename In::VecDeriv >& _out, const Data< typename Out::VecDeriv >& _in, const core::MechanicalParams * /*mparams*/)
+void CenterPointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data< typename In::VecDeriv >& _out, const Data< typename Out::VecDeriv >& _in)
 {
     helper::WriteAccessor< Data< typename In::VecDeriv > > out = _out;
     helper::ReadAccessor< Data< typename Out::VecDeriv > > in = _in;
@@ -137,7 +137,7 @@ void CenterPointMechanicalMapping<TIn, TOut>::applyJT(Data< typename In::VecDeri
 }
 
 template <class TIn, class TOut>
-void CenterPointMechanicalMapping<TIn, TOut>::applyJT(Data< typename In::MatrixDeriv >& /*out*/, const Data< typename Out::MatrixDeriv >& /*in*/, const core::ConstraintParams * /*cparams*/)
+void CenterPointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, Data< typename In::MatrixDeriv >& /*out*/, const Data< typename Out::MatrixDeriv >& /*in*/)
 {
     // TODO
 

@@ -402,7 +402,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 #define CudaSpringForceField_ImplMethods(T) \
     template<> void SpringForceField< T >::init() \
     { data.init(this, false); } \
-    template<> void SpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* /*mparams*/) \
+    template<> void SpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2) \
     { \
 		VecDeriv& f1 = *d_f1.beginEdit(); \
 		const VecCoord& x1 = d_x1.getValue(); \
@@ -416,7 +416,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 	} \
     template<> void StiffSpringForceField< T >::init() \
     { data.init(this, true); } \
-    template<> void StiffSpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* /*mparams*/) \
+    template<> void StiffSpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2) \
     { \
 		VecDeriv& f1 = *d_f1.beginEdit(); \
 		const VecCoord& x1 = d_x1.getValue(); \
@@ -428,7 +428,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 		d_f1.endEdit(); \
 		d_f2.endEdit(); \
 	} \
-    template<> void StiffSpringForceField< T >::addDForce(DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2, const core::MechanicalParams* mparams) \
+    template<> void StiffSpringForceField< T >::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2) \
     { \
 		VecDeriv& df1 = *d_df1.beginEdit(); \
 		const VecDeriv& dx1 = d_dx1.getValue(); \

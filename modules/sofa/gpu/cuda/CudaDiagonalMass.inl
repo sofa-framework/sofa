@@ -63,7 +63,7 @@ namespace mass
 {
 
 template<>
-void DiagonalMass<CudaVec3fTypes, float>::addMDx(DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor, const core::MechanicalParams* /*mparams*/)
+void DiagonalMass<CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -78,7 +78,7 @@ void DiagonalMass<CudaVec3fTypes, float>::addMDx(DataVecDeriv& d_f, const DataVe
 }
 
 template<>
-void DiagonalMass<CudaVec3fTypes, float>::accFromF(DataVecDeriv& d_a, const DataVecDeriv& d_f, const core::MechanicalParams* /*mparams*/)
+void DiagonalMass<CudaVec3fTypes, float>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -93,7 +93,7 @@ void DiagonalMass<CudaVec3fTypes, float>::accFromF(DataVecDeriv& d_a, const Data
 }
 
 template <>
-void DiagonalMass<CudaVec3fTypes, float>::addForce(DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/, const core::MechanicalParams* /*mparams*/)
+void DiagonalMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
     VecDeriv& f = *d_f.beginEdit();
     //const VecCoord& x = d_x.getValue();
@@ -152,7 +152,7 @@ bool DiagonalMass<CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBB
 
 template<>
 //void DiagonalMass<CudaVec3dTypes, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
-void DiagonalMass<CudaVec3dTypes, double>::addMDx(DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor, const core::MechanicalParams* mparams)
+void DiagonalMass<CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -163,7 +163,7 @@ void DiagonalMass<CudaVec3dTypes, double>::addMDx(DataVecDeriv& d_f, const DataV
 }
 
 template<>
-void DiagonalMass<CudaVec3dTypes, double>::accFromF(DataVecDeriv& d_a, const DataVecDeriv& d_f, const core::MechanicalParams* mparams)
+void DiagonalMass<CudaVec3dTypes, double>::accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -174,7 +174,7 @@ void DiagonalMass<CudaVec3dTypes, double>::accFromF(DataVecDeriv& d_a, const Dat
 }
 
 template<>
-void DiagonalMass<CudaVec3dTypes, double>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams)
+void DiagonalMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();

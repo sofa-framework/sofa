@@ -45,7 +45,7 @@ class SOFA_COMPONENT_ODESOLVER_API DampVelocitySolver : public sofa::core::behav
 public:
     SOFA_CLASS(DampVelocitySolver, sofa::core::behavior::OdeSolver);
     DampVelocitySolver();
-    void solve (double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params);
+    void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
     Data<double> rate;
     Data<double> threshold;
 

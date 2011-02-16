@@ -75,7 +75,7 @@ ConstraintGroup* BaseLMConstraint::addGroupConstraint(ConstraintParams::ConstOrd
     return c;
 }
 
-void BaseLMConstraint::getConstraintViolation(defaulttype::BaseVector *v, const core::ConstraintParams* cparams)
+void BaseLMConstraint::getConstraintViolation(const core::ConstraintParams* cparams /* PARAMS FIRST */, defaulttype::BaseVector *v)
 {
     getConstraintViolation(v,cparams->constOrder());
 }

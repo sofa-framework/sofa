@@ -75,7 +75,7 @@ public:
         : UpdateContextVisitor(params), filter(Node::ALLFLAGS)
     {
     }
-    UpdateVisualContextVisitor(Node::VISUAL_FLAG FILTER, const core::ExecParams* params)
+    UpdateVisualContextVisitor(const core::ExecParams* params /* PARAMS FIRST */, Node::VISUAL_FLAG FILTER)
         : UpdateContextVisitor(params), filter(FILTER)
     {}
     virtual Result processNodeTopDown(simulation::Node* node);

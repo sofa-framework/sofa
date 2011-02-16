@@ -74,13 +74,13 @@ public:
 
     virtual ~SimpleTesselatedTetraMechanicalMapping();
 
-    virtual void apply(OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams);
+    virtual void apply(const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn);
 
-    virtual void applyJ(OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams);
+    virtual void applyJ(const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn);
 
-    virtual void applyJT(InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams);
+    virtual void applyJT(const core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn);
 
-    virtual void applyJT(InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn, const core::ConstraintParams* cparams);
+    virtual void applyJT(const core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn);
 
 protected:
     topology::SimpleTesselatedTetraTopologicalMapping* topoMap;

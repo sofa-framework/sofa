@@ -89,7 +89,7 @@ class MechanicalApplyContactForceVisitor : public simulation::BaseMechanicalVisi
 {
 public:
     //core::MultiVecDerivId force;
-    MechanicalApplyContactForceVisitor(double *f, const core::ExecParams* params)
+    MechanicalApplyContactForceVisitor(const core::ExecParams* params /* PARAMS FIRST */, double *f)
         : simulation::BaseMechanicalVisitor(params)
         ,_f(f)
     {
@@ -127,7 +127,7 @@ class MechanicalGetConstraintValueVisitor : public simulation::BaseMechanicalVis
 {
 public:
 
-    MechanicalGetConstraintValueVisitor(BaseVector * v, const core::ConstraintParams* params)
+    MechanicalGetConstraintValueVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, BaseVector * v)
         : simulation::BaseMechanicalVisitor(params)
         , cparams(params)
     {
@@ -160,7 +160,7 @@ private:
 class CudaMechanicalGetConstraintValueVisitor  : public simulation::BaseMechanicalVisitor
 {
 public:
-    CudaMechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v, const core::ConstraintParams* params)
+    CudaMechanicalGetConstraintValueVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, defaulttype::BaseVector * v)
         : simulation::BaseMechanicalVisitor(params)
         , cparams(params)
         , _v(v)
@@ -175,7 +175,7 @@ public:
 
         if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
         {
-            c->getConstraintViolation(_v, cparams);
+            c->getConstraintViolation(cparams /* PARAMS FIRST */, _v);
         }
         return RESULT_CONTINUE;
     }
@@ -200,7 +200,7 @@ public:
     typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
     typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
-    MechanicalGetConstraintInfoVisitor(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas, const core::ExecParams* params)
+    MechanicalGetConstraintInfoVisitor(const core::ExecParams* params /* PARAMS FIRST */, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
         : simulation::BaseMechanicalVisitor(params), _blocks(blocks), _ids(ids), _positions(positions), _directions(directions), _areas(areas)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -253,7 +253,7 @@ public:
     CudaMasterContactSolver();
     // virtual const char* getTypeName() const { return "MasterSolver"; }
 
-    void step (double dt, const core::ExecParams* params = core::ExecParams::defaultInstance());
+    void step (const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, double dt);
 
     //virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
 

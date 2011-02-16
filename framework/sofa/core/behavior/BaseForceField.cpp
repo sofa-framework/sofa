@@ -37,22 +37,22 @@ namespace behavior
 
 
 
-void BaseForceField::addMBKdx(MultiVecDerivId dfId , const MechanicalParams* mparams)
+void BaseForceField::addMBKdx(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId)
 {
     if (mparams->kFactor() != 0.0 || mparams->bFactor() != 0.0)
-        addDForce(dfId, mparams);
+        addDForce(mparams /* PARAMS FIRST */, dfId);
 }
 
-void BaseForceField::addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, const MechanicalParams* /*mparams*/)
+void BaseForceField::addBToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
 }
 
-void BaseForceField::addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams)
+void BaseForceField::addMBKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     if (mparams->kFactor() != 0.0)
-        addKToMatrix(matrix, mparams);
+        addKToMatrix(mparams /* PARAMS FIRST */, matrix);
     if (mparams->bFactor() != 0.0)
-        addBToMatrix(matrix, mparams);
+        addBToMatrix(mparams /* PARAMS FIRST */, matrix);
 }
 
 } // namespace behavior

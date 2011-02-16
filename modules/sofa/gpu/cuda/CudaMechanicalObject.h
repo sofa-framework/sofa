@@ -150,9 +150,9 @@ public:
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_DeclMethods(T) \
     template<> inline void MechanicalObject< T >::accumulateForce(const core::ExecParams* params); \
-    template<> inline void MechanicalObject< T >::vOp(core::VecId v, core::ConstVecId a, core::ConstVecId b, double f, const core::ExecParams* params); \
-    template<> inline void MechanicalObject< T >::vMultiOp(const VMultiOp& ops, const core::ExecParams* params); \
-    template<> inline double MechanicalObject< T >::vDot(core::ConstVecId a, core::ConstVecId b, const core::ExecParams* params); \
+    template<> inline void MechanicalObject< T >::vOp(const core::ExecParams* params /* PARAMS FIRST */, core::VecId v, core::ConstVecId a, core::ConstVecId b, double f); \
+    template<> inline void MechanicalObject< T >::vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops); \
+    template<> inline double MechanicalObject< T >::vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b); \
     template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params); \
     template<> inline void MechanicalObject< T >::addDxToCollisionModel(); \
     template<> inline void MechanicalObject< T >::copyToBaseVector(defaulttype::BaseVector * dest, core::ConstVecId src, unsigned int &offset); \

@@ -121,7 +121,7 @@ public:
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
-    virtual void apply (MultiVecCoordId outPos, ConstMultiVecCoordId inPos, const MechanicalParams* mparams = MechanicalParams::defaultInstance() )
+    virtual void apply (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecCoordId outPos, ConstMultiVecCoordId inPos )
     {
         helper::vector<OutDataVecCoord*> vecOutPos;
         getVecOutCoord(outPos, vecOutPos);
@@ -130,16 +130,16 @@ public:
         helper::vector<const In2DataVecCoord*> vecIn2Pos;
         getConstVecIn2Coord(inPos, vecIn2Pos);
 
-        this->apply(vecOutPos, vecIn1Pos, vecIn2Pos, mparams);
+        this->apply(mparams /* PARAMS FIRST */, vecOutPos, vecIn1Pos, vecIn2Pos);
     }
     /// This method must be reimplemented by all mappings.
     /// InPos and OutPos by default contains VecIds of type V_COORD.
     /// The size of InPos vector is the same as the number of fromModels.
     /// The size of OutPos vector is the same as the number of OutModels.
-    virtual void apply(const helper::vector<OutDataVecCoord*>& dataVecOutPos,
-            const helper::vector<const In1DataVecCoord*>& dataVecIn1Pos ,
-            const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos,
-            const MechanicalParams* /* mparams */)
+    virtual void apply(
+        const MechanicalParams* /* mparams */ /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
+        const helper::vector<const In1DataVecCoord*>& dataVecIn1Pos ,
+        const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -174,7 +174,7 @@ public:
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
-    virtual void applyJ (MultiVecDerivId outVel, ConstMultiVecDerivId inVel, const MechanicalParams* mparams = MechanicalParams::defaultInstance() )
+    virtual void applyJ (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel, ConstMultiVecDerivId inVel )
     {
         helper::vector<OutDataVecDeriv*> vecOutVel;
         getVecOutDeriv(outVel, vecOutVel);
@@ -182,16 +182,16 @@ public:
         getConstVecIn1Deriv(inVel, vecIn1Vel);
         helper::vector<const In2DataVecDeriv*> vecIn2Vel;
         getConstVecIn2Deriv(inVel, vecIn2Vel);
-        this->applyJ(vecOutVel, vecIn1Vel, vecIn2Vel, mparams);
+        this->applyJ(mparams /* PARAMS FIRST */, vecOutVel, vecIn1Vel, vecIn2Vel);
     }
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
-    virtual void applyJ(const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
-            const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
-            const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel,
-            const MechanicalParams* /* mparams */)
+    virtual void applyJ(
+        const MechanicalParams* /* mparams */ /* PARAMS FIRST */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
+        const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
+        const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -222,7 +222,7 @@ public:
 
     /// ApplyJT (Force)///
     /// Apply the mapping on Force vectors.
-    virtual void applyJT (MultiVecDerivId inForce, ConstMultiVecDerivId outForce, const MechanicalParams* mparams = MechanicalParams::defaultInstance() )
+    virtual void applyJT (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId inForce, ConstMultiVecDerivId outForce )
     {
         helper::vector<In1DataVecDeriv*> vecOut1Force;
         getVecIn1Deriv(inForce, vecOut1Force);
@@ -231,16 +231,16 @@ public:
 
         helper::vector<const OutDataVecDeriv*> vecInForce;
         getConstVecOutDeriv(outForce, vecInForce);
-        this->applyJT(vecOut1Force, vecOut2Force, vecInForce, mparams);
+        this->applyJT(mparams /* PARAMS FIRST */, vecOut1Force, vecOut2Force, vecInForce);
     }
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
-    virtual void applyJT(const helper::vector< In1DataVecDeriv*>& dataVecOut1Force,
-            const helper::vector< In2DataVecDeriv*>& dataVecOut2Force,
-            const helper::vector<const OutDataVecDeriv*>& dataVecInForce,
-            const MechanicalParams* /* mparams */)
+    virtual void applyJT(
+        const MechanicalParams* /* mparams */ /* PARAMS FIRST */, const helper::vector< In1DataVecDeriv*>& dataVecOut1Force,
+        const helper::vector< In2DataVecDeriv*>& dataVecOut2Force,
+        const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -277,7 +277,7 @@ public:
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst, const ConstraintParams* cparams = ConstraintParams::defaultInstance() )
+    virtual void applyJT(const ConstraintParams* cparams /* PARAMS FIRST  = ConstraintParams::defaultInstance()*/, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
     {
         helper::vector<In1DataMatrixDeriv*> matOut1Const;
         getMatIn1Deriv(inConst, matOut1Const);
@@ -286,13 +286,13 @@ public:
 
         helper::vector<const OutDataMatrixDeriv*> matInConst;
         getConstMatOutDeriv(outConst, matInConst);
-        this->applyJT(matOut1Const, matOut2Const, matInConst, cparams);
+        this->applyJT(cparams /* PARAMS FIRST */, matOut1Const, matOut2Const, matInConst);
     }
     /// This method must be reimplemented by all mappings if they need to support constraints.
-    virtual void applyJT( const helper::vector< In1DataMatrixDeriv*>& dataMatOut1Const ,
-            const helper::vector< In2DataMatrixDeriv*>&  dataMatOut2Const ,
-            const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst ,
-            const ConstraintParams* /* cparams */)
+    virtual void applyJT(
+        const ConstraintParams* /* cparams */ /* PARAMS FIRST */, const helper::vector< In1DataMatrixDeriv*>& dataMatOut1Const ,
+        const helper::vector< In2DataMatrixDeriv*>&  dataMatOut2Const ,
+        const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst)
 #ifdef SOFA_DEPRECATE_OLD_API
     {
         serr << "This mapping does not support constraints" << sendl;
@@ -334,7 +334,7 @@ public:
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// computeAccFromMapping
-    virtual void computeAccFromMapping(MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc, const MechanicalParams* mparams = MechanicalParams::defaultInstance() )
+    virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
     {
         helper::vector<OutDataVecDeriv*> vecOutAcc;
         getVecOutDeriv(outAcc, vecOutAcc);
@@ -349,15 +349,15 @@ public:
         helper::vector<const In2DataVecDeriv*> vecIn2Acc;
         getConstVecIn2Deriv(inAcc, vecIn2Acc);
 
-        this->computeAccFromMapping(vecOutAcc, vecIn1Vel, vecIn2Vel,vecIn1Acc, vecIn2Acc, mparams);
+        this->computeAccFromMapping(mparams /* PARAMS FIRST */, vecOutAcc, vecIn1Vel, vecIn2Vel,vecIn1Acc, vecIn2Acc);
     }
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
-    virtual void computeAccFromMapping( const helper::vector< OutDataVecDeriv*>& dataVecOutAcc,
-            const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
-            const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel,
-            const helper::vector<const In1DataVecDeriv*>& dataVecIn1Acc,
-            const helper::vector<const In2DataVecDeriv*>& dataVecIn2Acc,
-            const MechanicalParams* /* mparams */)
+    virtual void computeAccFromMapping(
+        const MechanicalParams* /* mparams */ /* PARAMS FIRST */, const helper::vector< OutDataVecDeriv*>& dataVecOutAcc,
+        const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
+        const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel,
+        const helper::vector<const In1DataVecDeriv*>& dataVecIn1Acc,
+        const helper::vector<const In2DataVecDeriv*>& dataVecIn2Acc)
 #ifdef SOFA_DEPRECATE_OLD_API
     {
     }

@@ -101,7 +101,7 @@ public:
     /// This method retrieves the force, x and v vector from the two MechanicalState
     /// and call the internal addForce(VecDeriv&,VecDeriv&,const VecCoord&,const VecCoord&,const VecDeriv&,const VecDeriv&)
     /// method implemented by the component.
-    virtual void addForce(MultiVecDerivId fId , const MechanicalParams* mparams );
+    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fId );
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -116,7 +116,7 @@ public:
     /// This method retrieves the force and dx vector from the two MechanicalState
     /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,double,double)
     /// method implemented by the component.
-    virtual void addDForce(MultiVecDerivId dfId , const MechanicalParams* mparams );
+    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId );
 
 
     /// Get the potential energy associated to this ForceField.
@@ -139,7 +139,7 @@ public:
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::addForce() method.
 
-    virtual void addForce(DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2, const MechanicalParams* mparams)=0;
+    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2)=0;
     /// @deprecated
     //virtual void addForce(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& x1, const VecCoord2& x2, const VecDeriv1& v1, const VecDeriv2& v2);
 
@@ -159,7 +159,7 @@ public:
     /// @deprecated to more efficiently accumulate contributions from all terms
     ///   of the system equation, a new addDForce method allowing to pass two
     ///   coefficients for the stiffness and damping terms should now be used.
-    virtual void addDForce(DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2, const MechanicalParams* mparams)=0;
+    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)=0;
 
     /// @deprecated
     //virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2, double kFactor, double /*bFactor*/);
@@ -191,7 +191,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy() method.
-    virtual double getPotentialEnergy(const DataVecCoord1& x1, const DataVecCoord2& x2, const MechanicalParams* mparams) const =0;
+    virtual double getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord1& x1, const DataVecCoord2& x2) const =0;
 
     /// @deprecated
     //virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) const;

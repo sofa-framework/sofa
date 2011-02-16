@@ -237,7 +237,7 @@ std::string HexahedronFEMForceFieldAndMass<DataTypes>::getTemplateName() const
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(DataVecDeriv& f, const DataVecDeriv& dx, double factor, const core::MechanicalParams* /*mparams*/)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor)
 {
     helper::WriteAccessor< DataVecDeriv > _f = f;
     helper::ReadAccessor< DataVecDeriv > _dx = dx;
@@ -285,7 +285,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(DataVecDeriv& f, const Da
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, e;
@@ -329,7 +329,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const sofa::core::b
 }
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::accFromF(DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/, const core::MechanicalParams* /*mparams*/)
+void HexahedronFEMForceFieldAndMass<DataTypes>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
     serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented"<<sendl;
     // need to built the big global mass matrix and to inverse it...
@@ -337,7 +337,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::accFromF(DataVecDeriv& /*a*/, co
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v)
 {
     if(mparams)
     {
@@ -353,9 +353,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addGravityToV(DataVecDeriv& d_v,
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
-    HexahedronFEMForceFieldT::addForce(f,x,v,mparams);
+    HexahedronFEMForceFieldT::addForce(mparams /* PARAMS FIRST */, f,x,v);
 
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if (this->m_separateGravity.getValue())
@@ -394,7 +394,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (DataVecDeriv& f, const
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx)
 {
     //if (mparams->kFactor() != 1.0)
     //{
@@ -405,11 +405,11 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(DataVecDeriv& df, cons
     //	Real kFactor = (Real)mparams->kFactor();
     //	for(unsigned i=0;i<_dx.size();++i)
     //		_kdx[i]=_dx[i]*kFactor;
-    //	HexahedronFEMForceFieldT::addDForce(df,kdx,mparams);
+    //	HexahedronFEMForceFieldT::addDForce(mparams /* PARAMS FIRST */, df,kdx);
     //}
     //else
     //{
-    HexahedronFEMForceFieldT::addDForce(df, dx, mparams);
+    HexahedronFEMForceFieldT::addDForce(mparams /* PARAMS FIRST */, df, dx);
     //}
 }
 
