@@ -548,7 +548,7 @@ void NewOmniDriver::handleEvent(core::objectmodel::Event *event)
             /// TODO : SHOULD INCLUDE VELOCITY !!
             sofa::core::objectmodel::OmniEvent omniEvent(data.deviceData.id, world_H_virtualTool.getOrigin(), world_H_virtualTool.getOrientation() , data.deviceData.m_buttonState);
 
-            this->getContext()->propagateEvent(&omniEvent);
+            this->getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &omniEvent);
 
             if (moveOmniBase)
             {

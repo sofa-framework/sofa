@@ -78,7 +78,7 @@ public:
     static void addDxToCollisionModel(Main* m);
     static void vAlloc(Main* m, VecId v);
     static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f);
-    static void vMultiOp(Main* m, const VMultiOp& ops);
+    static void vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops);
     static double vDot(Main* m, ConstVecId a, ConstVecId b);
     static void resetForce(Main* m);
 
@@ -125,7 +125,7 @@ public:
     static void addDxToCollisionModel(Main* m);
     static void vAlloc(Main* m, VecId v);
     static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f);
-    static void vMultiOp(Main* m, const VMultiOp& ops);
+    static void vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops);
     static double vDot(Main* m, ConstVecId a, ConstVecId b);
     static void resetForce(Main* m);
 
