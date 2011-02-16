@@ -168,8 +168,8 @@ void Multi2Mapping<In1,In2,Out>::init()
 {
     ///<TO REMOVE>
     //this->updateMapping();
-    apply(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecId::position(), ConstVecId::position());
-    applyJ(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecId::velocity(), ConstVecId::velocity());
+    apply(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecId::position(), ConstVecId::position());
+    applyJ(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecId::velocity(), ConstVecId::velocity());
 }
 
 ///<TO REMOVE>

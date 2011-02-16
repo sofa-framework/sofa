@@ -170,7 +170,7 @@ void Simulation::init ( Node* root )
         root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
         /*sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
         mparams.x() = xfree;
-        MechanicalPropagatePositionVisitor act(&mparams  // PARAMS FIRST //, 0, xfree, true);
+        MechanicalPropagatePositionVisitor act(&mparams   // PARAMS FIRST //, 0, xfree, true);
         root->execute(act);*/
     }
 
@@ -199,7 +199,7 @@ void Simulation::initNode( Node* node)
         node->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
         /*sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
         mparams.x() = xfree;
-        MechanicalPropagatePositionVisitor act(&mparams  // PARAMS FIRST //, 0, xfree, true);
+        MechanicalPropagatePositionVisitor act(&mparams   // PARAMS FIRST //, 0, xfree, true);
         node->execute(act);*/
     }
 

@@ -553,8 +553,8 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
 
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
-    simulation::MechanicalVInitVisitor<V_COORD>(VecCoordId::freePosition(), ConstVecCoordId::position(), true).execute(context);
-    simulation::MechanicalVInitVisitor<V_DERIV>(VecDerivId::freeVelocity(), ConstVecDerivId::velocity()).execute(context);
+    simulation::MechanicalVInitVisitor<V_COORD>(params, VecCoordId::freePosition(), ConstVecCoordId::position(), true).execute(context);
+    simulation::MechanicalVInitVisitor<V_DERIV>(params, VecDerivId::freeVelocity(), ConstVecDerivId::velocity()).execute(context);
 
     if (doCollisionsFirst.getValue())
     {

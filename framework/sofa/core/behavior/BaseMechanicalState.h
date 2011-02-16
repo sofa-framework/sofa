@@ -239,7 +239,7 @@ public:
     virtual void resetContactForce(void) {}
 
     virtual void addDxToCollisionModel( ConstVecId dx = ConstVecId::dx() )
-    { vOp( VecId::position(), ConstVecId::freePosition(), dx ); }
+    { vOp( core::ExecParams::defaultInstance(), VecId::position(), ConstVecId::freePosition(), dx ); }
 
     /// @}
 

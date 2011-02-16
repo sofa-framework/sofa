@@ -60,7 +60,7 @@ WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
 {
 }
 
-WriteStateCreator::WriteStateCreator(const std::string &n, bool _recordX, bool _recordV, bool _createInMapping, const core::ExecParams* params, int c)
+WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _createInMapping, int c)
     :Visitor(params)
     , sceneName(n)
 #ifdef SOFA_HAVE_ZLIB

@@ -104,7 +104,7 @@ public:
     virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
     {
         ctime_t t0 = begin(node, ms);
-        ms->resetForce(/*force*/);
+        ms->resetForce(this->params /*, force*/);
         end(node, ms, t0);
         return RESULT_CONTINUE;
     }

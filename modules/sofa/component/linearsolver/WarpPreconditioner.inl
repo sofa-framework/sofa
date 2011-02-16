@@ -75,15 +75,15 @@ void WarpPreconditioner<DataTypes>::setSystemMBKMatrix(const sofa::core::Mechani
     if (rotatedLHVId.isNull())
     {
         rotatedLHVId = core::VecDerivId(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
-        mstate->vAvail(rotatedLHVId);
-        mstate->vAlloc(rotatedLHVId);
+        mstate->vAvail(mparams, rotatedLHVId);
+        mstate->vAlloc(mparams, rotatedLHVId);
         sout << "Allocated LH vector " << rotatedLHVId << sendl;
     }
     if (rotatedRHVId.isNull())
     {
         rotatedRHVId = core::VecDerivId(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
-        mstate->vAvail(rotatedRHVId);
-        mstate->vAlloc(rotatedRHVId);
+        mstate->vAvail(mparams, rotatedRHVId);
+        mstate->vAlloc(mparams, rotatedRHVId);
         sout << "Allocated RH vector " << rotatedRHVId << sendl;
     }
 
@@ -208,7 +208,7 @@ void WarpPreconditioner<DataTypes>::solveSystem()
         dataLv->endEdit();
 
     }
-    else mstate->vOp(systemLHVId.getId(mstate), systemRHVId.getId(mstate));     // systemLH = rotatedLH
+    else mstate->vOp(core::ExecParams::defaultInstance(), systemLHVId.getId(mstate), systemRHVId.getId(mstate));     // systemLH = rotatedLH
 }
 
 template<class TDataTypes>

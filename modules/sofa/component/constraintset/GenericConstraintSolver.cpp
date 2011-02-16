@@ -105,7 +105,7 @@ bool GenericConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::
     sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
 
     last_cp = current_cp;
-    simulation::MechanicalVOpVisitor((VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
+    simulation::MechanicalVOpVisitor(core::ExecParams::defaultInstance(), (VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
     //simulation::MechanicalPropagateDxVisitor(dx_id,true,true).execute( context); //Propagate dX //ignore the mask here
 
     if( f_printLog.getValue())

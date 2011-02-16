@@ -337,7 +337,10 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     xData.endEdit();
     vData.endEdit();
 
-    mstate->vFree(forceID);
+    /// @TODO: freeing forceID here is incorrect as it was not allocated
+    /// Maybe the call to vAlloc at the beginning of this method should be enabled...
+    /// -- JeremieA, 2011-02-16
+    mstate->vFree(core::ExecParams::defaultInstance(), forceID);
 }
 
 

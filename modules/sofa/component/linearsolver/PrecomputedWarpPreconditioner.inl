@@ -396,10 +396,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     VecDerivId rhId = core::VecDerivId::force();
 
 
-    mstate->vAvail(lhId);
-    mstate->vAlloc(lhId);
-    mstate->vAvail(rhId);
-    mstate->vAlloc(rhId);
+    mstate->vAvail(core::ExecParams::defaultInstance(), lhId);
+    mstate->vAlloc(core::ExecParams::defaultInstance(), lhId);
+    mstate->vAvail(core::ExecParams::defaultInstance(), rhId);
+    mstate->vAlloc(core::ExecParams::defaultInstance(), rhId);
     std::cout << "System: (" << init_mFact << " * M + " << init_bFact << " * B + " << init_kFact << " * K) " << lhId << " = " << rhId << std::endl;
     if (linearSolver)
     {
@@ -550,8 +550,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 //         dataForce->endEdit();
 //         dataVelocity->endEdit();
 
-    mstate->vFree(lhId);
-    mstate->vFree(rhId);
+    mstate->vFree(core::ExecParams::defaultInstance(), lhId);
+    mstate->vFree(core::ExecParams::defaultInstance(), rhId);
 
     usePrecond = true;
 }

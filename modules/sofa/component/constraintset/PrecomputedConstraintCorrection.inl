@@ -354,7 +354,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
                 /*	if (f*dof_on_node+i < 2)
                 	{
-                		//eulerSolver->solve(core::ExecParams::defaultInstance()  // PARAMS FIRST //, dt, core::VecCoordId::position(), core::VecDerivId::velocity());
+                		//eulerSolver->solve(core::ExecParams::defaultInstance()   // PARAMS FIRST //, dt, core::VecCoordId::position(), core::VecDerivId::velocity());
                 		eulerSolver->f_verbose.setValue(false);
                 		eulerSolver->f_printLog.setValue(false);
                 	//	serr<<"getV : "<<velocity<<sendl;

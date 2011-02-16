@@ -51,7 +51,7 @@ BaseMechanicalState::~BaseMechanicalState()
 /// This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
 /// Note that if the result vector appears inside the expression, it must be the first operand.
 /// By default this method decompose the computation into multiple vOp calls.
-void BaseMechanicalState::vMultiOp(const ExecParams* /* params */ /* PARAMS FIRST */, const VMultiOp& ops)
+void BaseMechanicalState::vMultiOp(const ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops)
 {
     for(VMultiOp::const_iterator it = ops.begin(), itend = ops.end(); it != itend; ++it)
     {
@@ -60,30 +60,30 @@ void BaseMechanicalState::vMultiOp(const ExecParams* /* params */ /* PARAMS FIRS
         int nop = operands.size();
         if (nop==0)
         {
-            vOp(r);
+            vOp(params, r);
         }
         else if (nop==1)
         {
             if (operands[0].second == 1.0)
-                vOp(r, operands[0].first.getId(this));
+                vOp( params, r, operands[0].first.getId(this));
             else
-                vOp(r, ConstVecId::null(), operands[0].first.getId(this), operands[0].second);
+                vOp( params, r, ConstVecId::null(), operands[0].first.getId(this), operands[0].second);
         }
         else
         {
             int i;
             if (operands[0].second == 1.0)
             {
-                vOp(r, operands[0].first.getId(this), operands[1].first.getId(this), operands[1].second);
+                vOp( params, r, operands[0].first.getId(this), operands[1].first.getId(this), operands[1].second);
                 i = 2;
             }
             else
             {
-                vOp(r, ConstVecId::null(), operands[0].first.getId(this), operands[0].second);
+                vOp( params, r, ConstVecId::null(), operands[0].first.getId(this), operands[0].second);
                 i = 1;
             }
             for (; i<nop; ++i)
-                vOp(r, r, operands[i].first.getId(this), operands[i].second);
+                vOp( params, r, r, operands[i].first.getId(this), operands[i].second);
         }
     }
 }
