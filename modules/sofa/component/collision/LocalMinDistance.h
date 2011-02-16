@@ -32,7 +32,9 @@
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/CubeModel.h>
+#ifdef SOFA_DEV
 #include <sofa/component/collision/BSplineModel.h>
+#endif // SOFA_DEV
 #include <sofa/component/collision/RayModel.h>
 
 namespace sofa
@@ -110,6 +112,7 @@ public:
     bool testValidity(Line&, const Vector3&);
     bool testValidity(Triangle&, const Vector3&);
 
+#ifdef SOFA_DEV
     //Copy of Line computation. TODO_Spline : finding adaptive and optimized computation for Spline
     bool testValidity(CubicBezierCurve&, const Vector3&);
     bool testIntersection(CubicBezierCurve&, Point&);
@@ -118,7 +121,7 @@ public:
     int computeIntersection(CubicBezierCurve&, Sphere&, OutputVector*);
     //bool testIntersection(CubicBezierCurve&, Sphere&);
     //bool testIntersection(CubicBezierCurve&, CubicBezierCurve&);
-
+#endif // SOFA_DEV
 
     void draw();
 
