@@ -1018,7 +1018,7 @@ typename NonUniformHexahedralFEMForceFieldAndMass<T>::Vec3i NonUniformHexahedral
 
 
 template <class DataTypes>
-void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(core::MultiVecDerivId dfId , const core::MechanicalParams* mparams)
+void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::MechanicalParams* mparams /* PARAMS FIRST */, core::MultiVecDerivId dfId)
 {
     Real mFactor=mparams->mFactor();
     Real kFactor=mparams->kFactor();

@@ -115,7 +115,7 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecD
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* /*mparams*/ )
+void StiffSpringForceField<DataTypes>::addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
 {
 
     VecDeriv&       f1 = *data_f1.beginEdit();
@@ -142,7 +142,7 @@ void StiffSpringForceField<DataTypes>::addForce(DataVecDeriv& data_f1, DataVecDe
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addDForce(DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2, const core::MechanicalParams* mparams)
+void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
 {
     VecDeriv&        df1 = *data_df1.beginEdit();
     VecDeriv&        df2 = *data_df2.beginEdit();
@@ -171,7 +171,7 @@ void StiffSpringForceField<DataTypes>::addDForce(DataVecDeriv& data_df1, DataVec
 
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams)
+void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     double kFact = mparams->kFactor();
     if (this->mstate1 == this->mstate2)

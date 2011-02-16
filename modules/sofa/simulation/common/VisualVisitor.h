@@ -76,7 +76,7 @@ public:
         : VisualVisitor(params) , pass(core::VisualModel::Std)
     {
     }
-    VisualDrawVisitor(Pass pass, const core::ExecParams* params)
+    VisualDrawVisitor(const core::ExecParams* params /* PARAMS FIRST */, Pass pass)
         : VisualVisitor(params) , pass(pass)
     {
     }

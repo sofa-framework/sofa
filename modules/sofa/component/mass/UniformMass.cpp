@@ -282,7 +282,7 @@ void UniformMass<Rigid2dTypes, Rigid2dMass>::draw()
 }
 
 template <> SOFA_COMPONENT_MASS_API
-double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const DataVecCoord& vx, const core::MechanicalParams* ) const
+double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const
 {
     double e = 0;
     helper::ReadAccessor< DataVecCoord > x = vx;
@@ -297,7 +297,7 @@ double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const DataVecC
 
 
 template <> SOFA_COMPONENT_MASS_API
-double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const DataVecCoord& vx, const core::MechanicalParams* ) const
+double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const
 {
     double e = 0;
     helper::ReadAccessor< DataVecCoord > x = vx;
@@ -564,7 +564,7 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw()
 }
 
 template <> SOFA_COMPONENT_MASS_API
-double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const DataVecCoord& vx, const core::MechanicalParams* ) const
+double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const
 {
     double e = 0;
     helper::ReadAccessor< DataVecCoord > x = vx;
@@ -578,7 +578,7 @@ double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const DataVecC
 }
 
 template <> SOFA_COMPONENT_MASS_API
-double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const DataVecCoord& vx, const core::MechanicalParams*) const
+double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx) const
 {
     double e = 0;
     helper::ReadAccessor< DataVecCoord > x = vx;

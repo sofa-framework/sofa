@@ -186,7 +186,7 @@ void LinearMovementConstraint<DataTypes>::reset()
 
 template <class DataTypes>
 template <class DataDeriv>
-void LinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx, const core::MechanicalParams* /*mparams*/)
+void LinearMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
 {
     Real cT = (Real) this->getContext()->getTime();
     if ((cT != currentTime) || !finished)
@@ -207,14 +207,14 @@ void LinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx, const 
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams)
+void LinearMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(res.wref(), mparams);
+    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* /*mparams*/)
+void LinearMovementConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> dx = vData;
     Real cT = (Real) this->getContext()->getTime();
@@ -237,7 +237,7 @@ void LinearMovementConstraint<DataTypes>::projectVelocity(DataVecDeriv& vData, c
 
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectPosition(DataVecCoord& xData, const core::MechanicalParams* /*mparams*/)
+void LinearMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
     Real cT = (Real) this->getContext()->getTime();
@@ -301,7 +301,7 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams)
+void LinearMovementConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
@@ -310,7 +310,7 @@ void LinearMovementConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv&
 
     while (rowIt != rowItEnd)
     {
-        projectResponseT<MatrixDerivRowType>(rowIt.row(), mparams);
+        projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
         ++rowIt;
     }
 }

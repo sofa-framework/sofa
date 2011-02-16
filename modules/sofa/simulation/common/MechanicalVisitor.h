@@ -420,7 +420,7 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalGetDimensionVisitor : public MechanicalVisitor
 {
 public:
-    MechanicalGetDimensionVisitor(double* result, const core::MechanicalParams* mparams)
+    MechanicalGetDimensionVisitor(const core::MechanicalParams* mparams /* PARAMS FIRST */, double* result)
         : MechanicalVisitor(mparams)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -458,7 +458,7 @@ public:
     typedef std::set<sofa::core::BaseState*> StateSet;
     MyVecId& v;
     StateSet states;
-    MechanicalVAvailVisitor( MyVecId& v, const core::ExecParams* params)
+    MechanicalVAvailVisitor( const core::ExecParams* params /* PARAMS FIRST */, MyVecId& v)
         : BaseMechanicalVisitor(params), v(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -505,7 +505,7 @@ public:
     /// \param _vDest output vector
     /// \param _vSrc input vector
     /// \param propagate sets to true propagates vector initialization to mapped mechanical states
-    MechanicalVInitVisitor(DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), bool propagate=false, const core::ExecParams* params=core::ExecParams::defaultInstance())
+    MechanicalVInitVisitor(const core::ExecParams* params /* PARAMS FIRST =core::ExecParams::defaultInstance()*/, DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), bool propagate=false)
         : BaseMechanicalVisitor(params)
         , vDest(_vDest)
         , vSrc(_vSrc)
@@ -553,7 +553,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalVAllocVisitor : public BaseMechanical
 public:
     typedef sofa::core::TMultiVecId<vtype, V_WRITE> MyMultiVecId;
     MyMultiVecId v;
-    MechanicalVAllocVisitor( MyMultiVecId v, const core::ExecParams* params )
+    MechanicalVAllocVisitor( const core::ExecParams* params /* PARAMS FIRST */, MyMultiVecId v )
         : BaseMechanicalVisitor(params) , v(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -586,7 +586,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalVFreeVisitor : public BaseMechanicalV
 public:
     typedef sofa::core::TMultiVecId<vtype,V_WRITE> MyMultiVecId;
     MyMultiVecId v;
-    MechanicalVFreeVisitor( MyMultiVecId v, const sofa::core::ExecParams* params)
+    MechanicalVFreeVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, MyMultiVecId v)
         : BaseMechanicalVisitor(params) , v(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -621,7 +621,7 @@ public:
     ConstMultiVecId b;
     double f;
     bool mapped;
-    MechanicalVOpVisitor(MultiVecId v, ConstMultiVecId a = ConstMultiVecId::null(), ConstMultiVecId b = ConstMultiVecId::null(), double f=1.0, const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance() )
+    MechanicalVOpVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, MultiVecId v, ConstMultiVecId a = ConstMultiVecId::null(), ConstMultiVecId b = ConstMultiVecId::null(), double f=1.0 )
         : BaseMechanicalVisitor(params) , v(v), a(a), b(b), f(f), mapped(false)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -704,7 +704,7 @@ public:
     bool mapped;
     //     MechanicalVMultiOpVisitor()
     //     {}
-    MechanicalVMultiOpVisitor(const VMultiOp& o, const sofa::core::ExecParams* params)
+    MechanicalVMultiOpVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& o)
         : BaseMechanicalVisitor(params), mapped(false), ops(o)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -810,7 +810,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalVDotVisitor : public BaseMechanicalVi
 public:
     ConstMultiVecId a;
     ConstMultiVecId b;
-    MechanicalVDotVisitor(ConstMultiVecId a, ConstMultiVecId b, double* t, const sofa::core::ExecParams* params)
+    MechanicalVDotVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, ConstMultiVecId a, ConstMultiVecId b, double* t)
         : BaseMechanicalVisitor(params) , a(a), b(b) //, total(t)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -861,7 +861,7 @@ public:
 
     bool ignoreMask;
     bool ignoreFlag;
-    MechanicalPropagateDxVisitor( MultiVecDerivId dx, bool m, bool f = false, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance() )
+    MechanicalPropagateDxVisitor( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecDerivId dx, bool m, bool f = false )
         : MechanicalVisitor(mparams) , dx(dx), ignoreMask(m), ignoreFlag(f)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -955,7 +955,7 @@ public:
     MultiVecDerivId dx,f;
     bool ignoreMask;
 
-    MechanicalPropagateDxAndResetForceVisitor(MultiVecDerivId dx, MultiVecDerivId f, bool m, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance())
+    MechanicalPropagateDxAndResetForceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecDerivId dx, MultiVecDerivId f, bool m)
         : MechanicalVisitor(mparams) , dx(dx), f(f), ignoreMask(m)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -993,7 +993,7 @@ public:
     MultiVecCoordId x;
     bool ignoreMask;
 
-    MechanicalPropagateXVisitor( MultiVecCoordId x, bool m, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance() )
+    MechanicalPropagateXVisitor( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecCoordId x, bool m )
         : MechanicalVisitor(mparams) , x(x), ignoreMask(m)
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
@@ -1035,7 +1035,7 @@ public:
     MultiVecDerivId f;
     bool ignoreMask;
 
-    MechanicalPropagateXAndResetForceVisitor(MultiVecCoordId x, MultiVecDerivId f, bool m, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance())
+    MechanicalPropagateXAndResetForceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecCoordId x, MultiVecDerivId f, bool m)
         : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m)
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
@@ -1118,7 +1118,7 @@ public:
     MultiVecDerivId res;
     MultiVecDerivId dx;
     double factor;
-    MechanicalAddMDxVisitor(MultiVecDerivId res, MultiVecDerivId dx, double factor, const sofa::core::MechanicalParams* mparams)
+    MechanicalAddMDxVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res, MultiVecDerivId dx, double factor)
         : MechanicalVisitor(mparams), res(res), dx(dx), factor(factor)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1170,7 +1170,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalAccFromFVisitor : public MechanicalVi
 public:
     MultiVecDerivId a;
     //ConstMultiVecDerivId f; // in MechanicalParams
-    MechanicalAccFromFVisitor(MultiVecDerivId a, const sofa::core::MechanicalParams* mparams)
+    MechanicalAccFromFVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId a)
         : MechanicalVisitor(mparams), a(a) //, f(f)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1315,7 +1315,7 @@ public:
     MultiVecCoordId x;
     bool ignoreMask;
 
-    MechanicalPropagatePositionVisitor( double time=0, MultiVecCoordId x = VecCoordId::position(), bool m=true, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance());
+    MechanicalPropagatePositionVisitor( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, double time=0, MultiVecCoordId x = VecCoordId::position(), bool m=true);
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
@@ -1367,13 +1367,13 @@ public:
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     // compute the acceleration created by the input velocity and the derivative of the mapping
     MultiVecDerivId a;
-    MechanicalPropagatePositionAndVelocityVisitor(double time=0,
-            MultiVecCoordId x = VecCoordId::position(), MultiVecDerivId v = VecDerivId::velocity(),
-            MultiVecDerivId a = VecDerivId::dx() , bool m=true,
-            const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance()); //
+    MechanicalPropagatePositionAndVelocityVisitor(
+        const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, double time=0,
+        MultiVecCoordId x = VecCoordId::position(), MultiVecDerivId v = VecDerivId::velocity(),
+        MultiVecDerivId a = VecDerivId::dx() , bool m=true); //
 #else
-    MechanicalPropagatePositionAndVelocityVisitor(double time=0, MultiVecCoordId x = VecId::position(), MultiVecDerivId v = VecId::velocity(),
-            bool m=true, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance() );
+    MechanicalPropagatePositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, double time=0, MultiVecCoordId x = VecId::position(), MultiVecDerivId v = VecId::velocity(),
+            bool m=true );
 #endif
     bool ignoreMask;
 
@@ -1462,7 +1462,7 @@ public:
     MultiVecDerivId res;
     bool onlyMapped;
 
-    MechanicalResetForceVisitor(MultiVecDerivId res, bool onlyMapped = false, const sofa::core::ExecParams* mparams = sofa::core::ExecParams::defaultInstance() )
+    MechanicalResetForceVisitor(const sofa::core::ExecParams* mparams /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, MultiVecDerivId res, bool onlyMapped = false )
         : BaseMechanicalVisitor(mparams) , res(res), onlyMapped(onlyMapped)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1504,7 +1504,7 @@ public:
     MultiVecDerivId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
 
-    MechanicalComputeForceVisitor(MultiVecDerivId res, bool accumulate = true, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance() )
+    MechanicalComputeForceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecDerivId res, bool accumulate = true )
         : MechanicalVisitor(mparams) , res(res), accumulate(accumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1550,14 +1550,14 @@ class SOFA_SIMULATION_COMMON_API MechanicalComputeDfVisitor : public MechanicalV
 public:
     MultiVecDerivId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
-    MechanicalComputeDfVisitor(MultiVecDerivId res, const sofa::core::MechanicalParams* mparams)
+    MechanicalComputeDfVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res)
         : MechanicalVisitor(mparams) , res(res), accumulate(true)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
-    MechanicalComputeDfVisitor(MultiVecDerivId res, bool accumulate, const sofa::core::MechanicalParams* mparams)
+    MechanicalComputeDfVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res, bool accumulate)
         : MechanicalVisitor(mparams) , res(res), accumulate(accumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1606,7 +1606,7 @@ public:
     MultiVecDerivId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
 
-    MechanicalAddMBKdxVisitor(MultiVecDerivId res, const sofa::core::MechanicalParams* mparams)
+    MechanicalAddMBKdxVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res)
         : MechanicalVisitor(mparams) , res(res), accumulate(true)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1614,7 +1614,7 @@ public:
 #endif
     }
 
-    MechanicalAddMBKdxVisitor(MultiVecDerivId res, bool accumulate, const sofa::core::MechanicalParams* mparams)
+    MechanicalAddMBKdxVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId res, bool accumulate)
         : MechanicalVisitor(mparams) , res(res), accumulate(accumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1818,7 +1818,7 @@ protected:
 class SOFA_SIMULATION_COMMON_API MechanicalAccumulateConstraint : public BaseMechanicalVisitor
 {
 public:
-    MechanicalAccumulateConstraint(MultiMatrixDerivId _res, unsigned int &_contactId, const sofa::core::ConstraintParams* _cparams = sofa::core::ConstraintParams::defaultInstance())
+    MechanicalAccumulateConstraint(const sofa::core::ConstraintParams* _cparams /* PARAMS FIRST  = sofa::core::ConstraintParams::defaultInstance()*/, MultiMatrixDerivId _res, unsigned int &_contactId)
         : BaseMechanicalVisitor(cparams)
         , res(_res)
         , contactId(_contactId)
@@ -1908,7 +1908,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalApplyConstraintsVisitor : public Mech
 public:
     MultiVecDerivId res;
     double **W;
-    MechanicalApplyConstraintsVisitor(MultiVecDerivId res, double **W = NULL, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance())
+    MechanicalApplyConstraintsVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecDerivId res, double **W = NULL)
         : MechanicalVisitor(mparams) , res(res), W(W)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1948,7 +1948,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalBeginIntegrationVisitor : public Base
 {
 public:
     double dt;
-    MechanicalBeginIntegrationVisitor (double _dt, const sofa::core::ExecParams* _params)
+    MechanicalBeginIntegrationVisitor (const sofa::core::ExecParams* _params /* PARAMS FIRST */, double _dt)
         : BaseMechanicalVisitor(_params) , dt(_dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1985,7 +1985,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalEndIntegrationVisitor : public BaseMe
 {
 public:
     double dt;
-    MechanicalEndIntegrationVisitor (double _dt, const sofa::core::ExecParams* _params)
+    MechanicalEndIntegrationVisitor (const sofa::core::ExecParams* _params /* PARAMS FIRST */, double _dt)
         : BaseMechanicalVisitor(_params) , dt(_dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -2023,7 +2023,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalIntegrationVisitor : public BaseMecha
 {
 public:
     double dt;
-    MechanicalIntegrationVisitor (double _dt, const sofa::core::ExecParams* m_params)
+    MechanicalIntegrationVisitor (const sofa::core::ExecParams* m_params /* PARAMS FIRST */, double _dt)
         : BaseMechanicalVisitor(m_params) , dt(_dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -2094,7 +2094,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalComputeContactForceVisitor : public M
 {
 public:
     MultiVecDerivId res;
-    MechanicalComputeContactForceVisitor(MultiVecDerivId res, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance() )
+    MechanicalComputeContactForceVisitor(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecDerivId res )
         : MechanicalVisitor(mparams) , res(res)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -2129,7 +2129,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalAddSeparateGravityVisitor : public Me
 {
 public:
     MultiVecDerivId res;
-    MechanicalAddSeparateGravityVisitor(MultiVecDerivId res, const sofa::core::MechanicalParams* m_mparams = sofa::core::MechanicalParams::defaultInstance() )
+    MechanicalAddSeparateGravityVisitor(const sofa::core::MechanicalParams* m_mparams /* PARAMS FIRST  = sofa::core::MechanicalParams::defaultInstance()*/, MultiVecDerivId res )
         : MechanicalVisitor(m_mparams) , res(res)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -2163,7 +2163,7 @@ public:
     defaulttype::Vec3d rayOrigin, rayDirection;
     double radius0, dRadius;
     std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> > particles;
-    MechanicalPickParticlesVisitor(const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0, const sofa::core::ExecParams* mparams = sofa::core::ExecParams::defaultInstance() )
+    MechanicalPickParticlesVisitor(const sofa::core::ExecParams* mparams /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0 )
         : BaseMechanicalVisitor(mparams) , rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr)
     {
     }

@@ -247,7 +247,7 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
 }
 
 template <class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::addGravityToV (core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
+void FrameDiagonalMass<DataTypes, MassType>::addGravityToV (const core::MechanicalParams* mparams /* PARAMS FIRST */, core::MultiVecDerivId vid)
 {
     if ( this->mstate )
     {

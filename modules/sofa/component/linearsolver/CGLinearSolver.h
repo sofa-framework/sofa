@@ -68,10 +68,10 @@ public:
 protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: p = p*beta + r
-    inline void cgstep_beta(Vector& p, Vector& r, double beta, const core::ExecParams* params);
+    inline void cgstep_beta(const core::ExecParams* params /* PARAMS FIRST */, Vector& p, Vector& r, double beta);
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: x += p*alpha, r -= q*alpha
-    inline void cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha, const core::ExecParams* params);
+    inline void cgstep_alpha(const core::ExecParams* params /* PARAMS FIRST */, Vector& x, Vector& r, Vector& p, Vector& q, double alpha);
 
 public:
     void resetSystem();
@@ -84,24 +84,24 @@ public:
 };
 
 template<class TMatrix, class TVector>
-inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(Vector& p, Vector& r, double beta, const core::ExecParams* /*params*/)
+inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(const core::ExecParams* /*params*/ /* PARAMS FIRST */, Vector& p, Vector& r, double beta)
 {
     p *= beta;
     p += r; //z;
 }
 
 template<class TMatrix, class TVector>
-inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha, const core::ExecParams* /*params*/)
+inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams* /*params*/ /* PARAMS FIRST */, Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
 {
     x.peq(p,alpha);                 // x = x + alpha p
     r.peq(q,-alpha);                // r = r - alpha q
 }
 
 template<>
-void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta, const core::ExecParams* params);
+void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* params /* PARAMS FIRST */, Vector& p, Vector& r, double beta);
 
 template<>
-void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha, const core::ExecParams* params);
+void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params /* PARAMS FIRST */, Vector& x, Vector& r, Vector& p, Vector& q, double alpha);
 
 } // namespace linearsolver
 

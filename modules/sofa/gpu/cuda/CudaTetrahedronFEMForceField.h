@@ -330,10 +330,10 @@ public:
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaTetrahedronFEMForceField_DeclMethods(T) \
     template<> void TetrahedronFEMForceField< T >::reinit(); \
-    template<> void TetrahedronFEMForceField< T >::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams); \
+    template<> void TetrahedronFEMForceField< T >::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v); \
     template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& vecR); \
     template<> void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * vecR,int offset); \
-    template<> void TetrahedronFEMForceField< T >::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams); \
+    template<> void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx); \
     template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset); \
     template<> void TetrahedronFEMForceField< T >::handleEvent(sofa::core::objectmodel::Event* event);
 

@@ -1396,7 +1396,7 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addForce (DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */, const core::MechanicalParams* /* mparams */)
+void TetrahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& p = d_x.getValue();
@@ -1449,7 +1449,7 @@ void TetrahedronFEMForceField<DataTypes>::addForce (DataVecDeriv& d_f, const Dat
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
+void TetrahedronFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();

@@ -68,18 +68,18 @@ void Constraint<DataTypes>::init()
 
 
 template<class DataTypes>
-void Constraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *v, const ConstraintParams* cParams)
+void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams /* PARAMS FIRST */, defaulttype::BaseVector *v)
 {
     if (cParams)
     {
-        getConstraintViolation(v, *cParams->readX(mstate), *cParams->readV(mstate), cParams);
+        getConstraintViolation(cParams /* PARAMS FIRST */, v, *cParams->readX(mstate), *cParams->readV(mstate));
     }
 }
 
 
 #ifndef SOFA_DEPRECATE_OLD_API
 template<class DataTypes>
-void Constraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/, const ConstraintParams* /*cParams*/)
+void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/)
 {
     if (mstate)
     {
@@ -101,21 +101,21 @@ void Constraint<DataTypes>::getConstraintValue(defaulttype::BaseVector * /*resV*
 
 
 template<class DataTypes>
-void Constraint<DataTypes>::buildConstraintMatrix(MultiMatrixDerivId cId, unsigned int &cIndex, const ConstraintParams* cParams)
+void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST */, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     if (cParams)
     {
-        buildConstraintMatrix(*cId[mstate].write(), cIndex, *cParams->readX(mstate), cParams);
+        buildConstraintMatrix(cParams /* PARAMS FIRST */, *cId[mstate].write(), cIndex, *cParams->readX(mstate));
     }
 }
 
 
 #ifndef SOFA_DEPRECATE_OLD_API
 template<class DataTypes>
-void Constraint<DataTypes>::buildConstraintMatrix(DataMatrixDeriv &/*c*/, unsigned int &/*cIndex*/, const DataVecCoord &/*x*/, const ConstraintParams* /*cParams*/)
+void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &/*c*/, unsigned int &/*cIndex*/, const DataVecCoord &/*x*/)
 {
     serr << "ERROR(" << getClassName()
-            << "): buildConstraintMatrix(DataMatrixDeriv *c, unsigned int &cIndex, const DataVecCoord &x, const ConstraintParams* cParams) not implemented." << sendl;
+            << "): buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST */, DataMatrixDeriv *c, unsigned int &cIndex, const DataVecCoord &x) not implemented." << sendl;
 }
 #endif
 

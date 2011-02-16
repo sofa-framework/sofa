@@ -71,8 +71,8 @@ public:
 
     // -- ForceField interface
     void init();
-    void addForce(DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v , const core::MechanicalParams* /*mparams*/);
-    void addDForce(DataVecDeriv&   df , const DataVecDeriv&   dx , const core::MechanicalParams* mparams );
+    void addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v);
+    void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   df , const DataVecDeriv&   dx );
 
     //        virtual void draw();
 

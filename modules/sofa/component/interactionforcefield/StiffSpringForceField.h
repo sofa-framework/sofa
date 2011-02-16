@@ -97,17 +97,17 @@ public:
     virtual void init();
 
     /// Accumulate f corresponding to x,v
-    virtual void addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* mparams );
+    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
     ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 
     /// Accumulate df corresponding to dx
-    virtual void addDForce(DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2, const core::MechanicalParams* mparams);
+    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2);
     ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 
-    virtual double getPotentialEnergy(const DataVecCoord&, const DataVecCoord&, const core::MechanicalParams* ) const { return m_potentialEnergy; }
+    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
     ///SOFA_DEPRECATED_ForceField <<<virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact);
 
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams);
+    virtual void addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_INTERACTIONFORCEFIELD)

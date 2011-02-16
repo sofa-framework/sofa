@@ -154,7 +154,7 @@ void LinearForceField<sofa::gpu::cuda::CudaRigid3fTypes>::init()
 }// LinearForceFieldInternalData::init
 
 template<>
-void LinearForceField<sofa::gpu::cuda::CudaRigid3fTypes>::addForce(DataVecDeriv& f, const DataVecCoord& /*p*/, const DataVecDeriv& /*v*/, const core::MechanicalParams* /* mparams */)
+void LinearForceField<sofa::gpu::cuda::CudaRigid3fTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& /*p*/, const DataVecDeriv& /*v*/)
 {
     VecDeriv& _f = *f.beginEdit();
     data->addForce(this, _f);
@@ -162,7 +162,7 @@ void LinearForceField<sofa::gpu::cuda::CudaRigid3fTypes>::addForce(DataVecDeriv&
 }// LinearForceField::addForce
 
 template<>
-double LinearForceField<sofa::gpu::cuda::CudaRigid3fTypes>::getPotentialEnergy(const DataVecCoord& , const core::MechanicalParams*) const
+double LinearForceField<sofa::gpu::cuda::CudaRigid3fTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&) const
 {
     this->serr<<"["<<this->getName()<<"] getPotentialEnergy not implemented !"<<this->sendl;
     return 0;
@@ -177,7 +177,7 @@ void LinearForceField<sofa::gpu::cuda::CudaRigid3dTypes>::init()
 }// LinearForceFieldInternalData::init
 
 template<>
-void LinearForceField<sofa::gpu::cuda::CudaRigid3dTypes>::addForce(DataVecDeriv& f, const DataVecCoord& /*p*/, const DataVecDeriv& /*v*/, const core::MechanicalParams* /* mparams */)
+void LinearForceField<sofa::gpu::cuda::CudaRigid3dTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& /*p*/, const DataVecDeriv& /*v*/)
 {
     VecDeriv& _f = *f.beginEdit();
     data->addForce(this, _f);
@@ -185,7 +185,7 @@ void LinearForceField<sofa::gpu::cuda::CudaRigid3dTypes>::addForce(DataVecDeriv&
 }// LinearForceField::addForce
 
 template<>
-double LinearForceField<sofa::gpu::cuda::CudaRigid3dTypes>::getPotentialEnergy(const DataVecCoord& , const core::MechanicalParams*) const
+double LinearForceField<sofa::gpu::cuda::CudaRigid3dTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&) const
 {
     this->serr<<"["<<this->getName()<<"] getPotentialEnergy not implemented !"<<this->sendl;
     return 0;

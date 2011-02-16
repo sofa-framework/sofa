@@ -48,7 +48,7 @@ namespace forcefield
 
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* /* mparams */)
+void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
@@ -87,7 +87,7 @@ void PlaneForceField<DataTypes>::addForce(DataVecDeriv& f, const DataVecCoord& x
 }
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams)
+void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx)
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df1 = df;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
@@ -103,7 +103,7 @@ void PlaneForceField<DataTypes>::addDForce(DataVecDeriv& df, const DataVecDeriv&
 }
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams )
+void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     const Real fact = (Real)(-this->stiffness.getValue()*mparams->kFactor());
     const Deriv& normal = planeNormal.getValue();

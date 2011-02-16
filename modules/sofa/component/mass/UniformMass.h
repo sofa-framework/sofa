@@ -100,22 +100,22 @@ public:
 
     void handleTopologyChange();
 
-    void addMDx(DataVecDeriv& f, const DataVecDeriv& dx, double factor, const core::MechanicalParams* mparams);
+    void addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
 
-    void accFromF(DataVecDeriv& a, const DataVecDeriv& f, const core::MechanicalParams* mparams);
+    void accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f);
 
-    void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
+    void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    double getKineticEnergy(const DataVecDeriv& v, const core::MechanicalParams* mparams) const;  ///< vMv/2 using dof->getV()
+    double getKineticEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV()
 
-    double getPotentialEnergy(const DataVecCoord& x, const core::MechanicalParams* mparams) const;   ///< Mgx potential in a uniform gravity field, null at origin
+    double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
     void addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
 
-    void addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams);
+    void addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v);
 
     /// Add Mass contribution to global Matrix assembling
-    void addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams *mparams);
+    void addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     double getElementMass(unsigned int index) const;
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;

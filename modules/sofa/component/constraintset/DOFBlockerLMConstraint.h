@@ -109,7 +109,7 @@ public:
     void resetConstraint();
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams);
+    void buildConstraintMatrix(const core::ConstraintParams* cParams /* PARAMS FIRST */, core::MultiMatrixDerivId cId, unsigned int &cIndex);
     void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order);
 
     std::string getTemplateName() const

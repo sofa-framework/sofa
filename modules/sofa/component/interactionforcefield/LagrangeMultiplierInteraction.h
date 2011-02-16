@@ -115,16 +115,16 @@ public:
 
     }
 
-    virtual void addForce(DataVecDeriv1& data_violation, DataVecDeriv2& data_f2, const DataVecCoord1& data_lambda , const DataVecCoord2& data_p2, const DataVecDeriv1& , const DataVecDeriv2& data_v2, const MechanicalParams* mparams);
+    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& data_violation, DataVecDeriv2& data_f2, const DataVecCoord1& data_lambda , const DataVecCoord2& data_p2, const DataVecDeriv1& , const DataVecDeriv2& data_v2);
     ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv1& violation, VecDeriv2& f2, const VecCoord1& lambda , const VecCoord2& p2, const VecDeriv1& , const VecDeriv2& v2);
 
 
-    virtual void addDForce(DataVecDeriv1& data_dViolation, DataVecDeriv2& data_df2, const DataVecDeriv1& data_dLambda, const DataVecDeriv2& data_dx2, const MechanicalParams* mparams);
+    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& data_dViolation, DataVecDeriv2& data_df2, const DataVecDeriv1& data_dLambda, const DataVecDeriv2& data_dx2);
     ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv1& dViolation, VecDeriv2& df2, const VecDeriv1& dLambda, const VecDeriv2& dx2);
 
 
     virtual void addForce2(DataVecDeriv1& , DataVecDeriv2& , const DataVecCoord1& , const DataVecCoord2& , const DataVecDeriv1& , const DataVecDeriv2& ) {}
-    virtual double getPotentialEnergy(const DataVecCoord1& /*x1*/, const DataVecCoord2& /*x2*/, const MechanicalParams* /*mparams*/) const { return 0.0;}
+    virtual double getPotentialEnergy(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord1& /*x1*/, const DataVecCoord2& /*x2*/) const { return 0.0;}
 
     void init();
 

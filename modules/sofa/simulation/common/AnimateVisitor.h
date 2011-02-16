@@ -56,7 +56,7 @@ protected :
 #endif
 public:
     AnimateVisitor(const core::ExecParams* params = ExecParams::defaultInstance());
-    AnimateVisitor(double dt, const core::ExecParams* params = ExecParams::defaultInstance());
+    AnimateVisitor(const core::ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, double dt);
 
     void setDt(double v) { dt = v; }
     double getDt() const { return dt; }

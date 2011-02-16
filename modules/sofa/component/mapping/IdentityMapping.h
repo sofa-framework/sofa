@@ -117,13 +117,13 @@ public:
     /// input and output DOFs (mostly identity or data-conversion mappings).
     virtual bool sameTopology() const { return true; }
 
-    void apply(Data<VecCoord>& out, const Data<InVecCoord>& in, const core::MechanicalParams *mparams);
+    void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<VecCoord>& out, const Data<InVecCoord>& in);
 
-    void applyJ(Data<VecDeriv>& out, const Data<InVecDeriv>& in, const core::MechanicalParams *mparams);
+    void applyJ(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<VecDeriv>& out, const Data<InVecDeriv>& in);
 
-    void applyJT(Data<InVecDeriv>& out, const Data<VecDeriv>& in, const core::MechanicalParams *mparams);
+    void applyJT(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<InVecDeriv>& out, const Data<VecDeriv>& in);
 
-    void applyJT(Data<InMatrixDeriv>& out, const Data<MatrixDeriv>& in, const core::ConstraintParams *cparams);
+    void applyJT(const core::ConstraintParams *cparams /* PARAMS FIRST */, Data<InMatrixDeriv>& out, const Data<MatrixDeriv>& in);
 
     const sofa::defaulttype::BaseMatrix* getJ();
 

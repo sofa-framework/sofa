@@ -301,7 +301,7 @@ void BglNode::doExecuteVisitor( Visitor* visit )
 void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    GetObjectVisitor getobj(class_info, params);
+    GetObjectVisitor getobj(params /* PARAMS FIRST */, class_info);
     getobj.setTags(tags);
     if (dir == Local)
     {
@@ -332,7 +332,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    GetObjectsVisitor getobjs(class_info, container, params);
+    GetObjectsVisitor getobjs(params /* PARAMS FIRST */, class_info, container);
     getobjs.setTags(tags);
     if (dir == Local)
     {

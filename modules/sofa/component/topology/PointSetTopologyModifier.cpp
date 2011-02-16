@@ -182,7 +182,7 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
-    sofa::simulation::TopologyChangeVisitor a(m_container, params);
+    sofa::simulation::TopologyChangeVisitor a(params /* PARAMS FIRST */, m_container);
 
 // std::cout << getName() << " propagation du truc: " << getContext()->getName() << std::endl;
 // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
@@ -201,7 +201,7 @@ void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    sofa::simulation::TopologyChangeVisitor a(m_container, params);
+    sofa::simulation::TopologyChangeVisitor a(params /* PARAMS FIRST */, m_container);
 
 // std::cout << getName() << " propagation du truc: " << getContext()->getName() << std::endl;
 // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
@@ -236,7 +236,7 @@ void PointSetTopologyModifier::propagateStateChanges()
 {
     if (m_container->beginStateChange() == m_container->endStateChange()) return; // nothing to do if no event is stored
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    sofa::simulation::StateChangeVisitor a(m_container, params);
+    sofa::simulation::StateChangeVisitor a(params /* PARAMS FIRST */, m_container);
     getContext()->executeVisitor(&a);
 
     // remove the changes we just propagated, so that we don't send then again next time

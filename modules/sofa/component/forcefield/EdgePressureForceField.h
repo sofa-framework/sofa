@@ -106,8 +106,8 @@ public:
 
     virtual void init();
 
-    virtual void addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV, const sofa::core::MechanicalParams* /*mparams*/ ) ;
-    virtual void addDForce(DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */, const core::MechanicalParams* mparams)
+    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) ;
+    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
     {
         //TODO: remove this line (avoid warning message) ...
         mparams->kFactor();

@@ -55,7 +55,7 @@ void TubularMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
-void TubularMapping<TIn, TOut>::apply ( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* /* mparams */)
+void TubularMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn)
 {
     // Propagation of positions from the input DOFs to the output DOFs
 
@@ -130,7 +130,7 @@ void TubularMapping<TIn, TOut>::apply ( OutDataVecCoord& dOut, const InDataVecCo
 
 
 template <class TIn, class TOut>
-void TubularMapping<TIn, TOut>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* /* mparams */ )
+void TubularMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
 {
     // Propagation of velocities from the input DOFs to the output DOFs
     const InVecDeriv& in = dIn.getValue();
@@ -164,7 +164,7 @@ void TubularMapping<TIn, TOut>::applyJ( OutDataVecDeriv& dOut, const InDataVecDe
 
 
 template <class TIn, class TOut>
-void TubularMapping<TIn, TOut>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* /* mparams */ )
+void TubularMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
     // useful for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
     const OutVecDeriv& in = dIn.getValue();
@@ -198,7 +198,7 @@ void TubularMapping<TIn, TOut>::applyJT( InDataVecDeriv& dOut, const OutDataVecD
 }
 
 template <class TIn, class TOut>
-void TubularMapping<TIn, TOut>::applyJT( InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn, const core::ConstraintParams * /*cparams*/)
+void TubularMapping<TIn, TOut>::applyJT( const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn)
 {
     // useful for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
     const OutMatrixDeriv& in = dIn.getValue();

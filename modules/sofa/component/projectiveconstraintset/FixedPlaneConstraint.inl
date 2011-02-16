@@ -100,7 +100,7 @@ FixedPlaneConstraint<DataTypes>*  FixedPlaneConstraint<DataTypes>::removeConstra
 
 
 template <class DataTypes> template <class DataDeriv>
-void FixedPlaneConstraint<DataTypes>::projectResponseT(DataDeriv& res, const core::MechanicalParams* /*mparams*/)
+void FixedPlaneConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res)
 {
     Coord dir=direction.getValue();
 
@@ -112,28 +112,28 @@ void FixedPlaneConstraint<DataTypes>::projectResponseT(DataDeriv& res, const cor
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams)
+void FixedPlaneConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(res.wref(), mparams);
+    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
 }
 
 /// project dx to constrained space (dx models a velocity)
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectVelocity(DataVecDeriv& /*vData*/, const core::MechanicalParams* /*mparams*/)
+void FixedPlaneConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*vData*/)
 {
 
 }
 
 /// project x to constrained space (x models a position)
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectPosition(DataVecCoord& /*xData*/, const core::MechanicalParams* /*mparams*/)
+void FixedPlaneConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& /*xData*/)
 {
 
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams)
+void FixedPlaneConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
@@ -142,7 +142,7 @@ void FixedPlaneConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& cDa
 
     while (rowIt != rowItEnd)
     {
-        projectResponseT<MatrixDerivRowType>(rowIt.row(), mparams);
+        projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
         ++rowIt;
     }
 }
@@ -221,7 +221,7 @@ void FixedPlaneConstraint<DataTypes>::draw()
 
 #ifndef SOFA_FLOAT
 template <> template <class DataDeriv>
-void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(DataDeriv& /*res*/, const core::MechanicalParams* mparams);
+void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& /*res*/);
 
 template <>
 bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Coord /*p*/);
@@ -229,7 +229,7 @@ bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Coord /*p*/);
 
 #ifndef SOFA_DOUBLE
 template <> template <class DataDeriv>
-void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(DataDeriv& /*res*/, const core::MechanicalParams* mparams);
+void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& /*res*/);
 
 template <>
 bool FixedPlaneConstraint<Rigid3fTypes>::isPointInPlane(Coord /*p*/);

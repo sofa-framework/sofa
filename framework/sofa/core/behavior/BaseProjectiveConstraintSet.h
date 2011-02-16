@@ -76,19 +76,19 @@ public:
 
     /// Project dx to constrained space (dx models an acceleration).
     /// \param dxId output vector
-    virtual void projectResponse(MultiVecDerivId dxId, const MechanicalParams* mparams) = 0;
+    virtual void projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dxId) = 0;
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     /// \param cId output vector
-    virtual void projectJacobianMatrix(MultiMatrixDerivId cId, const MechanicalParams* mparams) = 0;
+    virtual void projectJacobianMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, MultiMatrixDerivId cId) = 0;
 
     /// Project v to constrained space (v models a velocity).
     /// \param vId output vector
-    virtual void projectVelocity(MultiVecDerivId vId, const MechanicalParams* mparams) = 0;
+    virtual void projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId vId) = 0;
 
     /// Project x to constrained space (x models a position).
     /// \param xId output vector
-    virtual void projectPosition(MultiVecCoordId xId, const MechanicalParams* mparams) = 0;
+    virtual void projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecCoordId xId) = 0;
 
     /// @}
 
@@ -97,13 +97,13 @@ public:
     /// @{
 
     /// Project the compliance Matrix to constrained space.
-    virtual void projectResponse(double **, const MechanicalParams* /*mparams*/) {};
+    virtual void projectResponse(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, double **) {};
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const behavior::MultiMatrixAccessor* /*matrix*/, const MechanicalParams* /*mparams*/) {};
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const behavior::MultiMatrixAccessor* /*matrix*/) {};
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(defaulttype::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/, const MechanicalParams* /*mparams*/) {};
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, defaulttype::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {};
 
     /// @}
 

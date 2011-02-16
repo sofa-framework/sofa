@@ -160,11 +160,11 @@ public:
 
     void init();
 
-    void apply(Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn, const core::MechanicalParams *mparams);
+    void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn);
 
-    void applyJ(Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn, const core::MechanicalParams *mparams);
+    void applyJ(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn);
 
-    //void applyJT(Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn, const core::MechanicalParams *mparams);
+    //void applyJT(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn);
 
     void draw();
 

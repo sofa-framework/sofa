@@ -441,13 +441,13 @@ __global__ void SPHFluidForceFieldCuda3t_computeDensity_kernel(int size, const i
             if (px < ghost)
             {
                 // actual particle -> compute interactions
-                SPHFluidInitDensity(xi, density, params);
+                SPHFluidInitDensity(params /* PARAMS FIRST */, xi, density);
 
                 int np = min(range.y-px0,BSIZE);
                 for (int i=0; i < np; ++i)
                 {
                     if (i != threadIdx.x)
-                        SPHFluidCalcDensity(xi, ((const CudaVec3<real>*)temp_x)[i], density, params);
+                        SPHFluidCalcDensity(params /* PARAMS FIRST */, xi, ((const CudaVec3<real>*)temp_x)[i], density);
                 }
             }
             __syncthreads();
@@ -471,7 +471,7 @@ __global__ void SPHFluidForceFieldCuda3t_computeDensity_kernel(int size, const i
                     int np = min(range.y-py0,BSIZE);
                     for (int i=0; i < np; ++i)
                     {
-                        SPHFluidCalcDensity(xi, ((const CudaVec3<real>*)temp_x)[i], density, params);
+                        SPHFluidCalcDensity(params /* PARAMS FIRST */, xi, ((const CudaVec3<real>*)temp_x)[i], density);
                     }
                 }
                 __syncthreads();
@@ -479,7 +479,7 @@ __global__ void SPHFluidForceFieldCuda3t_computeDensity_kernel(int size, const i
             if (px < ghost)
             {
                 // actual particle -> write computed density
-                SPHFluidFinalDensity(xi, density, params);
+                SPHFluidFinalDensity(params /* PARAMS FIRST */, xi, density);
                 CudaVec4<real> res = CudaVec4<real>::make(xi.x,xi.y,xi.z,density);
                 ((CudaVec4<real>*)pos4)[index] = res;
             }
@@ -537,7 +537,7 @@ __global__ void SPHFluidForceFieldCuda3t_addForce_kernel(int size, const int *ce
                 for (int i=0; i < np; ++i)
                 {
                     if (i != threadIdx.x)
-                        SPHFluidCalcForce<real,surface>(xi, vi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], force, params);
+                        SPHFluidCalcForce<real,surface>(params /* PARAMS FIRST */, xi, vi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], force);
                 }
             }
             __syncthreads();
@@ -566,7 +566,7 @@ __global__ void SPHFluidForceFieldCuda3t_addForce_kernel(int size, const int *ce
                     int np = min(range.y-py0,BSIZE);
                     for (int i=0; i < np; ++i)
                     {
-                        SPHFluidCalcForce<real,surface>(xi, vi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], force, params);
+                        SPHFluidCalcForce<real,surface>(params /* PARAMS FIRST */, xi, vi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], force);
                     }
                 }
                 __syncthreads();
@@ -636,7 +636,7 @@ __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int *c
                 for (int i=0; i < np; ++i)
                 {
                     if (i != threadIdx.x)
-                        SPHFluidCalcDForce(xi, vi, dxi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], ((const CudaVec3<real>*)temp_dx)[i], dforce, params);
+                        SPHFluidCalcDForce(params /* PARAMS FIRST */, xi, vi, dxi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], ((const CudaVec3<real>*)temp_dx)[i], dforce);
                 }
             }
             __syncthreads();
@@ -669,7 +669,7 @@ __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int *c
                     int np = min(range.y-py0,BSIZE);
                     for (int i=0; i < np; ++i)
                     {
-                        SPHFluidCalcDForce(xi, vi, dxi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], ((const CudaVec3<real>*)temp_dx)[i], dforce, params);
+                        SPHFluidCalcDForce(params /* PARAMS FIRST */, xi, vi, dxi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], ((const CudaVec3<real>*)temp_dx)[i], dforce);
                     }
                 }
                 __syncthreads();

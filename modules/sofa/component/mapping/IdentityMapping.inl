@@ -204,7 +204,7 @@ extern void peq(defaulttype::RigidCoord<N,real1>& dest, const defaulttype::Vec<N
 //}
 
 template <class TIn, class TOut>
-void IdentityMapping<TIn, TOut>::apply(Data<VecCoord>& dOut, const Data<InVecCoord>& dIn, const core::MechanicalParams * /*mparams*/)
+void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<VecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     helper::WriteAccessor< Data<VecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
@@ -218,7 +218,7 @@ void IdentityMapping<TIn, TOut>::apply(Data<VecCoord>& dOut, const Data<InVecCoo
 }
 
 template <class TIn, class TOut>
-void IdentityMapping<TIn, TOut>::applyJ(Data<VecDeriv>& dOut, const Data<InVecDeriv>& dIn, const core::MechanicalParams * /*mparams*/)
+void IdentityMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<VecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
     helper::WriteAccessor< Data<VecDeriv> > out = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
@@ -246,7 +246,7 @@ void IdentityMapping<TIn, TOut>::applyJ(Data<VecDeriv>& dOut, const Data<InVecDe
 }
 
 template<class TIn, class TOut>
-void IdentityMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<VecDeriv>& dIn, const core::MechanicalParams * /*mparams*/)
+void IdentityMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<InVecDeriv>& dOut, const Data<VecDeriv>& dIn)
 {
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<VecDeriv> > in = dIn;
@@ -274,7 +274,7 @@ void IdentityMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<VecD
 }
 
 template <class TIn, class TOut>
-void IdentityMapping<TIn, TOut>::applyJT(Data<InMatrixDeriv>& dOut, const Data<MatrixDeriv>& dIn, const core::ConstraintParams * /*cparams*/)
+void IdentityMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, Data<InMatrixDeriv>& dOut, const Data<MatrixDeriv>& dIn)
 {
     InMatrixDeriv& out = *dOut.beginEdit();
     const MatrixDeriv& in = dIn.getValue();

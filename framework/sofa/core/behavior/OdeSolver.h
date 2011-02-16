@@ -75,13 +75,13 @@ public:
     ///
     /// Specify and execute all computation for timestep integration, i.e.
     /// advancing the state from time t to t+dt, putting the resulting position and velocity in the provided vectors.
-    virtual void solve(double /*dt*/, MultiVecCoordId /*xResult*/, MultiVecDerivId /*vResult*/, const core::ExecParams* /*params*/) = 0; // { serr << "ERROR: " << getClassName() << " don't implement solve on custom x and v" << sendl; }
+    virtual void solve(const core::ExecParams* /*params*/ /* PARAMS FIRST */, double /*dt*/, MultiVecCoordId /*xResult*/, MultiVecDerivId /*vResult*/) = 0; // { serr << "ERROR: " << getClassName() << " don't implement solve on custom x and v" << sendl; }
 
     /// Main computation method.
     ///
     /// Specify and execute all computation for timestep integration, i.e.
     /// advancing the state from time t to t+dt.
-    virtual void solve (double dt, const core::ExecParams* params) { solve(dt, VecCoordId::position(), VecDerivId::velocity(), params); }
+    virtual void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt) { solve(params /* PARAMS FIRST */, dt, VecCoordId::position(), VecDerivId::velocity()); }
 
 
 

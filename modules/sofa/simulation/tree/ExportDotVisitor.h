@@ -66,7 +66,7 @@ public:
     bool labelObjectName;
     bool labelObjectClass;
 
-    ExportDotVisitor(std::ostream* out, const sofa::core::ExecParams* params);
+    ExportDotVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, std::ostream* out);
     ~ExportDotVisitor();
 
     void processObject(GNode* node, core::objectmodel::BaseObject* obj);

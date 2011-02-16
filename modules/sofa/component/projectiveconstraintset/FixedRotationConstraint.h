@@ -70,10 +70,10 @@ public:
 
     void init();
 
-    void projectResponse(DataVecDeriv& dx, const core::MechanicalParams* mparams);
-    void projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* mparams);
-    void projectPosition(DataVecCoord& x,  const core::MechanicalParams* mparams);
-    void projectJacobianMatrix(DataMatrixDeriv& c, const core::MechanicalParams* mparams);
+    void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx);
+    void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx);
+    void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x);
+    void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& c);
 
     virtual void draw();
 

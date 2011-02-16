@@ -115,17 +115,17 @@ public:
 
     virtual void init();
 
-    virtual void apply(Data<OutVecCoord>& out, const Data<InVecCoord>& in, const core::MechanicalParams *mparams);
+    virtual void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
 
-    virtual void applyJ(Data<OutVecDeriv>& out, const Data<InVecDeriv>& in, const core::MechanicalParams *mparams);
+    virtual void applyJ(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
 
-    virtual void applyJT(Data<InVecDeriv>& out, const Data<OutVecDeriv>& in, const core::MechanicalParams *mparams);
+    virtual void applyJT(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in);
 
-    virtual void applyJT(Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in, const core::ConstraintParams *cparams);
+    virtual void applyJT(const core::ConstraintParams *cparams /* PARAMS FIRST */, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
 
-    virtual void computeAccFromMapping(Data<OutVecDeriv>& acc_out, const Data<InVecDeriv>& v_in, const Data<InVecDeriv>& acc_in, const core::MechanicalParams *mparams);
+    virtual void computeAccFromMapping(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecDeriv>& acc_out, const Data<InVecDeriv>& v_in, const Data<InVecDeriv>& acc_in);
 
-    virtual void applyDJT(core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce, const core::MechanicalParams* mparams = core::MechanicalParams::defaultInstance() );
+    virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
     void draw();
 

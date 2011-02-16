@@ -52,7 +52,7 @@ public:
 
     CentralDifferenceSolver();
 
-    void solve (double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params);
+    void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
     Data<double> f_rayleighMass;
 

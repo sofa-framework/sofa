@@ -76,7 +76,7 @@ void EulerImplicitSolver::init()
     sofa::core::behavior::OdeSolver::init();
 }
 
-void EulerImplicitSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params)
+void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SolverVectorAllocation");

@@ -46,7 +46,7 @@ namespace forcefield
 {
 
 template<class DataTypes>
-void ConicalForceField<DataTypes>::addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV, const sofa::core::MechanicalParams* /*mparams*/ )
+void ConicalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV )
 {
     VecDeriv& f1 = *(dataF.beginEdit());
     const VecCoord& p1=dataX.getValue();
@@ -133,7 +133,7 @@ void ConicalForceField<DataTypes>::addForce(DataVecDeriv &  dataF, const DataVec
 }
 
 template<class DataTypes>
-void ConicalForceField<DataTypes>::addDForce(DataVecDeriv& datadF , const DataVecDeriv& datadX , const sofa::core::MechanicalParams* mparams)
+void ConicalForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& datadF , const DataVecDeriv& datadX)
 {
     VecDeriv& df1 = *(datadF.beginEdit());
     const VecCoord& dx1=datadX.getValue();

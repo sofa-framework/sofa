@@ -206,9 +206,9 @@ public:
     virtual ~TriangularFEMForceField();
     virtual void init();
     virtual void reinit();
-    virtual void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
-    virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams);
-    virtual double getPotentialEnergy(const DataVecCoord& x, const core::MechanicalParams* mparams) const;
+    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
+    virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
     virtual void handleTopologyChange();
 
     void draw();

@@ -173,9 +173,9 @@ public:
     virtual void init();
     virtual void reinit();
 
-    virtual void addForce (DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
+    virtual void addForce (const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    virtual void addDForce (DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams);
+    virtual void addDForce (const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
 
     // handle topological changes
     virtual void handleTopologyChange();

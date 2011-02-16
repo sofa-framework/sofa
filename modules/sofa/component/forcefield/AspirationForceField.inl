@@ -61,7 +61,7 @@ AspirationForceField<DataTypes>::AspirationForceField()
 
 
 template<class DataTypes>
-void AspirationForceField<DataTypes>::addForce(DataVecDeriv& f1, const DataVecCoord& p1, const DataVecDeriv&, const core::MechanicalParams* /*params*/)
+void AspirationForceField<DataTypes>::addForce(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, DataVecDeriv& f1, const DataVecCoord& p1, const DataVecDeriv&)
 {
     const VecCoord & x = *this->mstate->getX();
     RigidCoord position = f_positionRigid.getValue();
@@ -95,7 +95,7 @@ void AspirationForceField<DataTypes>::addForce(DataVecDeriv& f1, const DataVecCo
 }
 
 template<class DataTypes>
-void AspirationForceField<DataTypes>::addDForce(DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */, const core::MechanicalParams* mparams)
+void AspirationForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
 {
     //TODO: remove this line (avoid warning message) ...
     mparams->kFactor();

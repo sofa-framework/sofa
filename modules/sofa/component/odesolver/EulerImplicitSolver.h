@@ -106,7 +106,7 @@ public:
 
     void init();
 
-    void solve (double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params);
+    void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
     ///

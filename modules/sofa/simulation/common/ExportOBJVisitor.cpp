@@ -34,12 +34,12 @@ namespace simulation
 {
 
 
-ExportOBJVisitor::ExportOBJVisitor(std::ostream* out, const core::ExecParams* params)
+ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params /* PARAMS FIRST */, std::ostream* out)
     : Visitor(params) , out(out), mtl(NULL), ID(0), vindex(0), nindex(0), tindex(0)
 {
 }
 
-ExportOBJVisitor::ExportOBJVisitor(std::ostream* out,std::ostream* mtl, const core::ExecParams* params)
+ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params /* PARAMS FIRST */, std::ostream* out,std::ostream* mtl)
     : Visitor(params) , out(out), mtl(mtl), ID(0), vindex(0), nindex(0), tindex(0)
 {
 }
@@ -65,7 +65,7 @@ simulation::Visitor::Result ExportOBJVisitor::processNodeTopDown(Node* node)
     for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
     {
         simulation::Node *child=*itChild;
-        ExportOBJVisitor act (out,mtl, params);
+        ExportOBJVisitor act (params /* PARAMS FIRST */, out,mtl);
         child->execute ( &act );
     }
 

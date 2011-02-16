@@ -92,8 +92,8 @@ public:
     void setGridMax(const InCoord& val) { mGridMax.setValue(val); }
     void setGridMax(double x, double y, double z) { mGridMax.setValue( InCoord((InReal)x,(InReal)y,(InReal)z)); }
 
-    void apply(Data<OutVecCoord>& out, const Data<InVecCoord>& in, const core::MechanicalParams *mparams);
-    void applyJ(Data<OutVecDeriv>& out, const Data<InVecDeriv>& in, const core::MechanicalParams *mparams);
+    void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
+    void applyJ(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
 
     //void applyJT( InVecDeriv& out, const OutVecDeriv& in );
 protected:

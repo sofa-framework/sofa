@@ -106,11 +106,11 @@ public:
 
     virtual void init();
 
-    virtual void buildConstraintMatrix(DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
-            , const DataVecCoord &x1, const DataVecCoord &x2, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
+    virtual void buildConstraintMatrix(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
+            , const DataVecCoord &x1, const DataVecCoord &x2);
 
-    void getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
-            , const DataVecDeriv &v1, const DataVecDeriv &v2, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
+    void getConstraintViolation(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+            , const DataVecDeriv &v1, const DataVecDeriv &v2);
 
 #ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);

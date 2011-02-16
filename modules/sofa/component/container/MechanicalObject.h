@@ -283,51 +283,51 @@ public:
 
     virtual void beginIntegration(Real dt);
 
-    virtual void endIntegration(Real dt, const core::ExecParams* params);
+    virtual void endIntegration(const core::ExecParams* params /* PARAMS FIRST */, Real dt);
 
     virtual void accumulateForce(const core::ExecParams* params);
 
     /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
-    virtual void vAvail(core::VecCoordId& v, const core::ExecParams* params);
+    virtual void vAvail(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId& v);
     /// Increment the index of the given VecDerivId, so that all 'allocated' vectors in this state have a lower index
-    virtual void vAvail(core::VecDerivId& v, const core::ExecParams* params);
+    virtual void vAvail(const core::ExecParams* params /* PARAMS FIRST */, core::VecDerivId& v);
     /// Increment the index of the given MatrixDerivId, so that all 'allocated' vectors in this state have a lower index
     //virtual void vAvail(core::MatrixDerivId& v);
 
     /// Allocate a new temporary vector
-    virtual void vAlloc(core::VecCoordId v, const core::ExecParams* params);
+    virtual void vAlloc(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId v);
     /// Allocate a new temporary vector
-    virtual void vAlloc(core::VecDerivId v, const core::ExecParams* params);
+    virtual void vAlloc(const core::ExecParams* params /* PARAMS FIRST */, core::VecDerivId v);
     /// Allocate a new temporary vector
     //virtual void vAlloc(core::MatrixDerivId v);
 
     /// Free a temporary vector
-    virtual void vFree(core::VecCoordId v, const core::ExecParams* params);
+    virtual void vFree(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId v);
     /// Free a temporary vector
-    virtual void vFree(core::VecDerivId v, const core::ExecParams* params);
+    virtual void vFree(const core::ExecParams* params /* PARAMS FIRST */, core::VecDerivId v);
     /// Free a temporary vector
     //virtual void vFree(core::MatrixDerivId v);
 
     /// Initialize an unset vector
-    virtual void vInit(core::VecCoordId v, core::ConstVecCoordId vSrc, const core::ExecParams* params);
+    virtual void vInit(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId v, core::ConstVecCoordId vSrc);
     /// Initialize an unset vector
-    virtual void vInit(core::VecDerivId v, core::ConstVecDerivId vSrc, const core::ExecParams* params);
+    virtual void vInit(const core::ExecParams* params /* PARAMS FIRST */, core::VecDerivId v, core::ConstVecDerivId vSrc);
     /// Initialize an unset vector
-    //virtual void vInit(core::MatrixDerivId v, core::ConstMatrixDerivId vSrc, const core::ExecParams* params);
+    //virtual void vInit(const core::ExecParams* params /* PARAMS FIRST */, core::MatrixDerivId v, core::ConstMatrixDerivId vSrc);
 
-    virtual void vOp(core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), double f=1.0, const core::ExecParams* params= core::ExecParams::defaultInstance());
+    virtual void vOp(const core::ExecParams* params /* PARAMS FIRST = core::ExecParams::defaultInstance()*/, core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), double f=1.0);
 
 #ifdef SOFA_SMP
-    virtual void vOp(core::VecId, core::ConstVecId, core::ConstVecId, double f, a1::Shared<double> *fSh, const core::ExecParams* params);
-    virtual void vOpMEq(core::VecId, core::ConstVecId  = core::ConstVecId::null(), a1::Shared<double> * =NULL, const core::ExecParams* params = core::ExecParams::defaultInstance());
-    virtual void vDot(a1::Shared<double> *, core::ConstVecId , core::ConstVecId, const core::ExecParams* params);
+    virtual void vOp(const core::ExecParams* params /* PARAMS FIRST */, core::VecId, core::ConstVecId, core::ConstVecId, double f, a1::Shared<double> *fSh);
+    virtual void vOpMEq(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, core::VecId, core::ConstVecId  = core::ConstVecId::null(), a1::Shared<double> * =NULL);
+    virtual void vDot(const core::ExecParams* params /* PARAMS FIRST */, a1::Shared<double> *, core::ConstVecId , core::ConstVecId);
 #endif
 
-    virtual void vMultiOp(const VMultiOp& ops, const core::ExecParams* params);
+    virtual void vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops);
 
     virtual void vThreshold(core::VecId a, double threshold );
 
-    virtual double vDot(core::ConstVecId a, core::ConstVecId b, const core::ExecParams* params);
+    virtual double vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b);
 
     virtual void resetForce(const core::ExecParams* params);
 
@@ -353,8 +353,8 @@ public:
     /// Find mechanical particles hit by the given ray.
     /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
     /// Returns false if this object does not support picking
-    virtual bool pickParticles(double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
-            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles, const core::ExecParams* params);
+    virtual bool pickParticles(const core::ExecParams* params /* PARAMS FIRST */, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
+            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles);
 
 protected :
 

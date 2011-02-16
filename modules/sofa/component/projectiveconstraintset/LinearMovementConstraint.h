@@ -126,10 +126,10 @@ public :
     void init();
     void reset();
 
-    void projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams);
-    void projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* mparams);
-    void projectPosition(DataVecCoord& xData, const core::MechanicalParams* mparams);
-    void projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams);
+    void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
+    void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
+    void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
+    void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
 
     /// Handle topological changes
     virtual void handleTopologyChange();
@@ -138,7 +138,7 @@ public :
 
 protected:
     template <class DataDeriv>
-    void projectResponseT(DataDeriv& dx, const core::MechanicalParams* mparams);
+    void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
 
     template <class MyCoord>
     void interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);

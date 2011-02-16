@@ -114,32 +114,32 @@ void Mapping<In,Out>::init()
     if(toModel != NULL && !testMechanicalState(toModel))
         setNonMechanical();
 
-    apply(VecCoordId::position(), ConstVecCoordId::position(), MechanicalParams::defaultInstance());
-    applyJ(VecDerivId::velocity(), ConstVecDerivId::velocity(), MechanicalParams::defaultInstance());
+    apply(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecCoordId::position(), ConstVecCoordId::position());
+    applyJ(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecDerivId::velocity(), ConstVecDerivId::velocity());
 }
 
 #ifdef SOFA_SMP
 template<class T>
 struct ParallelMappingApply
 {
-    void operator()(void *m, Shared_rw< objectmodel::Data< typename T::Out::VecCoord > > out, Shared_r< objectmodel::Data< typename T::In::VecCoord > > in, const MechanicalParams* mparams)
+    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, void *m, Shared_rw< objectmodel::Data< typename T::Out::VecCoord > > out, Shared_r< objectmodel::Data< typename T::In::VecCoord > > in)
     {
-        ((T *)m)->apply(out.access(), in.read(), mparams);
+        ((T *)m)->apply(mparams /* PARAMS FIRST */, out.access(), in.read());
     }
 };
 
 template<class T>
 struct ParallelMappingApplyJ
 {
-    void operator()(void *m, Shared_rw< objectmodel::Data< typename T::Out::VecDeriv> > out, Shared_r< objectmodel::Data< typename T::In::VecDeriv> > in, const MechanicalParams* mparams)
+    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, void *m, Shared_rw< objectmodel::Data< typename T::Out::VecDeriv> > out, Shared_r< objectmodel::Data< typename T::In::VecDeriv> > in)
     {
-        ((T *)m)->applyJ(out.access(), in.read(), mparams);
+        ((T *)m)->applyJ(mparams /* PARAMS FIRST */, out.access(), in.read());
     }
 };
 #endif /* SOFA_SMP */
 
 template <class In, class Out>
-void Mapping<In,Out>::apply(MultiVecCoordId outPos, ConstMultiVecCoordId inPos, const MechanicalParams* mparams)
+void Mapping<In,Out>::apply(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
 {
     if(this->fromModel && this->toModel)
     {
@@ -149,17 +149,17 @@ void Mapping<In,Out>::apply(MultiVecCoordId outPos, ConstMultiVecCoordId inPos, 
         {
 #ifdef SOFA_SMP
             if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-                Task<ParallelMappingApply< Mapping<In,Out> > >(this,
-                        **defaulttype::getShared(*out), **defaulttype::getShared(*in), mparams);
+                Task<ParallelMappingApply< Mapping<In,Out> > >(mparams /* PARAMS FIRST */, this,
+                        **defaulttype::getShared(*out), **defaulttype::getShared(*in));
             else
 #endif /* SOFA_SMP */
-                this->apply(*out, *in, mparams);
+                this->apply(mparams /* PARAMS FIRST */, *out, *in);
         }
     }
 }// Mapping::apply
 
 template <class In, class Out>
-void Mapping<In,Out>::applyJ(MultiVecDerivId outVel, ConstMultiVecDerivId inVel, const MechanicalParams* mparams)
+void Mapping<In,Out>::applyJ(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
 {
     if(this->fromModel && this->toModel)
     {
@@ -173,18 +173,18 @@ void Mapping<In,Out>::applyJ(MultiVecDerivId outVel, ConstMultiVecDerivId inVel,
             {
 #ifdef SOFA_SMP
                 if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-                    Task<ParallelMappingApplyJ< Mapping<In,Out> > >(this,
-                            **defaulttype::getShared(*out), **defaulttype::getShared(*in), mparams);
+                    Task<ParallelMappingApplyJ< Mapping<In,Out> > >(mparams /* PARAMS FIRST */, this,
+                            **defaulttype::getShared(*out), **defaulttype::getShared(*in));
                 else
 #endif /* SOFA_SMP */
-                    this->applyJ(*out, *in, mparams);
+                    this->applyJ(mparams /* PARAMS FIRST */, *out, *in);
             }
         }
     }
 }// Mapping::applyJ
 
 template <class In, class Out>
-void Mapping<In,Out>::applyJT(MultiVecDerivId inForce, ConstMultiVecDerivId outForce, const MechanicalParams *mparams)
+void Mapping<In,Out>::applyJT(const MechanicalParams *mparams /* PARAMS FIRST */, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
 {
     if(this->fromModel && this->toModel)
     {
@@ -195,7 +195,7 @@ void Mapping<In,Out>::applyJT(MultiVecDerivId inForce, ConstMultiVecDerivId outF
             if (this->isMechanical() && this->f_checkJacobian.getValue())
                 checkApplyJT(*out->beginEdit(), in->getValue(), this->getJ(mparams));
             else
-                this->applyJT(*out, *in, mparams);
+                this->applyJT(mparams /* PARAMS FIRST */, *out, *in);
         }
     }
 }// Mapping::applyJT

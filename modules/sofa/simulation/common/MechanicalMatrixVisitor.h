@@ -69,9 +69,9 @@ public:
     unsigned int * const nbCol;
     sofa::core::behavior::MultiMatrixAccessor* matrix;
 
-    MechanicalGetMatrixDimensionVisitor(unsigned int * const _nbRow, unsigned int * const _nbCol,
-            sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL,
-            const core::ExecParams* params = core::ExecParams::defaultInstance() )
+    MechanicalGetMatrixDimensionVisitor(
+        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, unsigned int * const _nbRow, unsigned int * const _nbCol,
+        sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
     {}
 
@@ -110,7 +110,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalAddMBK_ToMatrixVisitor : public Mecha
 public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
 
-    MechanicalAddMBK_ToMatrixVisitor(const sofa::core::behavior::MultiMatrixAccessor* _matrix, const core::MechanicalParams* mparams = core::MechanicalParams::defaultInstance() )
+    MechanicalAddMBK_ToMatrixVisitor(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
         : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
     {
     }
@@ -129,7 +129,7 @@ public:
     {
         if (matrix != NULL)
         {
-            ff->addMBKToMatrix(matrix,this->mparams);
+            ff->addMBKToMatrix(this->mparams /* PARAMS FIRST */, matrix);
         }
 
         return RESULT_CONTINUE;
@@ -141,7 +141,7 @@ public:
     {
         if (matrix != NULL)
         {
-            c->applyConstraint(matrix,this->mparams);
+            c->applyConstraint(this->mparams /* PARAMS FIRST */, matrix);
         }
 
         return RESULT_CONTINUE;
@@ -160,9 +160,9 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalMultiVector2BaseVectorVisitor"; }
 
-    MechanicalMultiVectorToBaseVectorVisitor( ConstMultiVecId _src, defaulttype::BaseVector * _vect,
-            const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL,
-            const core::ExecParams* params = core::ExecParams::defaultInstance() )
+    MechanicalMultiVectorToBaseVectorVisitor(
+        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, ConstMultiVecId _src, defaulttype::BaseVector * _vect,
+        const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , src(_src), vect(_vect), matrix(_matrix), offset(0)
     {
     }
@@ -193,9 +193,9 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalMultiVectorPeqBaseVectorVisitor"; }
 
-    MechanicalMultiVectorPeqBaseVectorVisitor(MultiVecDerivId _dest, defaulttype::BaseVector * _src,
-            const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL,
-            const core::ExecParams* params = core::ExecParams::defaultInstance() )
+    MechanicalMultiVectorPeqBaseVectorVisitor(
+        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, MultiVecDerivId _dest, defaulttype::BaseVector * _src,
+        const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
     {
     }
@@ -227,10 +227,10 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalMultiVectorFromBaseVectorVisitor"; }
 
-    MechanicalMultiVectorFromBaseVectorVisitor(MultiVecId _dest,
-            defaulttype::BaseVector * _src,
-            const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL,
-            const core::ExecParams* params = core::ExecParams::defaultInstance() )
+    MechanicalMultiVectorFromBaseVectorVisitor(
+        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, MultiVecId _dest,
+        defaulttype::BaseVector * _src,
+        const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
     {
     }

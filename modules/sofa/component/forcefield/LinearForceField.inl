@@ -99,7 +99,7 @@ void LinearForceField<DataTypes>::clearKeyForces()
 }// LinearForceField::clearKeyForces
 
 template<class DataTypes>
-void LinearForceField<DataTypes>::addForce(DataVecDeriv& f1, const DataVecCoord& /*p1*/, const DataVecDeriv&, const core::MechanicalParams* /*mparams*/)
+void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f1, const DataVecCoord& /*p1*/, const DataVecDeriv&)
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f1;
 
@@ -151,7 +151,7 @@ void LinearForceField<DataTypes>::addForce(DataVecDeriv& f1, const DataVecCoord&
 }// LinearForceField::addForce
 
 template<class DataTypes>
-double LinearForceField<DataTypes>::getPotentialEnergy(const DataVecCoord& x, const core::MechanicalParams* /*mparams*/) const
+double LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& x) const
 {
     Real cT = (Real) this->getContext()->getTime();
     const VecCoord& _x = x.getValue();
@@ -175,16 +175,16 @@ double LinearForceField<DataTypes>::getPotentialEnergy(const DataVecCoord& x, co
 
 #ifndef SOFA_FLOAT
 template <>
-double LinearForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* ) const;
+double LinearForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
 template <>
-double LinearForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* ) const;
+double LinearForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
 #endif
 
 #ifndef SOFA_DOUBLE
 template <>
-double LinearForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* ) const;
+double LinearForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
 template <>
-double LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* ) const;
+double LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
 #endif
 
 

@@ -119,10 +119,10 @@ public:
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
-    virtual void apply (MultiVecCoordId outPos, ConstMultiVecCoordId inPos, const MechanicalParams* mparams = MechanicalParams::defaultInstance() ) ;
+    virtual void apply (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) ;
 
     /// This method must be reimplemented by all mappings.
-    virtual void apply( OutDataVecCoord& out, const InDataVecCoord& in, const MechanicalParams* /* mparams */)
+    virtual void apply( const MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -140,10 +140,10 @@ public:
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
-    virtual void applyJ(MultiVecDerivId outVel, ConstMultiVecDerivId inVel, const MechanicalParams* mparams = MechanicalParams::defaultInstance() );
+    virtual void applyJ(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
 
     /// This method must be reimplemented by all mappings.
-    virtual void applyJ( OutDataVecDeriv& out, const InDataVecDeriv& in, const MechanicalParams* /* mparams */)
+    virtual void applyJ( const MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -161,10 +161,10 @@ public:
     ///
     /// If the MechanicalMapping can be represented as a matrix J, this method computes
     /// $ out += J^t in $
-    virtual void applyJT(MultiVecDerivId inForce, ConstMultiVecDerivId outForce, const MechanicalParams* mparams = MechanicalParams::defaultInstance() );
+    virtual void applyJT(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId inForce, ConstMultiVecDerivId outForce );
 
     /// This method must be reimplemented by all mappings.
-    virtual void applyJT( InDataVecDeriv& out, const OutDataVecDeriv& in, const MechanicalParams* /* mparams */)
+    virtual void applyJT( const MechanicalParams* /* mparams */ /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
@@ -184,12 +184,12 @@ public:
     /// If the MechanicalMapping can be represented as a matrix J, this method computes
     /// $ parentForce += dJ^t childForce $
     /// This requires that the child force vector has remained unchanged since the last computation of the force.
-    virtual void applyDJT(MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/, const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ ) {}
+    virtual void applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ /* PARAMS FIRST */, MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) {}
 
 
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst, const ConstraintParams* cparams = ConstraintParams::defaultInstance() )
+    virtual void applyJT(const ConstraintParams* cparams /* PARAMS FIRST  = ConstraintParams::defaultInstance()*/, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
     {
         if(this->fromModel && this->toModel)
         {
@@ -200,12 +200,12 @@ public:
                 if (this->isMechanical() && this->f_checkJacobian.getValue())
                     checkApplyJT(*out->beginEdit(), in->getValue(), this->getJ());
                 else
-                    this->applyJT(*out, *in, cparams);
+                    this->applyJT(cparams /* PARAMS FIRST */, *out, *in);
             }
         }
     }
     /// This method must be reimplemented by all mappings if they need to support constraints.
-    virtual void applyJT( InDataMatrixDeriv& out, const OutDataMatrixDeriv& in, const ConstraintParams* /* mparams */)
+    virtual void applyJT( const ConstraintParams* /* mparams */ /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in)
 #ifdef SOFA_DEPRECATE_OLD_API
     {
         serr << "This mapping does not support constraints" << sendl;
@@ -227,7 +227,7 @@ public:
     /// If the mapping input has a rotation velocity, it computes the subsequent acceleration
     /// created by the derivative terms
     /// $ a_out = w^(w^rel_pos)	$
-    virtual void computeAccFromMapping(MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc, const MechanicalParams* mparams = MechanicalParams::defaultInstance() )
+    virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
     {
         if(this->fromModel && this->toModel)
         {
@@ -235,11 +235,11 @@ public:
             const InDataVecDeriv* inV = inVel[fromModel].read();
             const InDataVecDeriv* inA = inAcc[fromModel].read();
             if(out && inV && inA)
-                this->computeAccFromMapping(*out, *inV, *inA, mparams);
+                this->computeAccFromMapping(mparams /* PARAMS FIRST */, *out, *inV, *inA);
         }
     }
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
-    virtual void computeAccFromMapping(OutDataVecDeriv& accOut, const InDataVecDeriv& vIn, const InDataVecDeriv& accIn, const MechanicalParams* /* mparams */)
+    virtual void computeAccFromMapping(const MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecDeriv& accOut, const InDataVecDeriv& vIn, const InDataVecDeriv& accIn)
 #ifdef SOFA_DEPRECATE_OLD_API
     {
 

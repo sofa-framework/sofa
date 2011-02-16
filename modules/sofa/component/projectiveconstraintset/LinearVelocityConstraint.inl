@@ -169,13 +169,13 @@ void LinearVelocityConstraint<TDataTypes>::init()
 
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::projectResponse(DataVecDeriv& /*resData*/, const core::MechanicalParams* /*mparams*/)
+void LinearVelocityConstraint<TDataTypes>::projectResponse(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*resData*/)
 {
 
 }
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* /*mparams*/)
+void LinearVelocityConstraint<TDataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> dx = vData;
     Real cT = (Real) this->getContext()->getTime();
@@ -244,7 +244,7 @@ void LinearVelocityConstraint<TDataTypes>::projectVelocity(DataVecDeriv& vData, 
 
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::projectPosition(DataVecCoord& xData, const core::MechanicalParams* /*mparams*/)
+void LinearVelocityConstraint<TDataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
     //initialize initial Dofs positions, if it's not done
@@ -329,7 +329,7 @@ void LinearVelocityConstraint<TDataTypes>::projectPosition(DataVecCoord& xData, 
 }
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(DataMatrixDeriv& /*cData*/, const core::MechanicalParams* /*mparams*/)
+void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& /*cData*/)
 {
 
 }

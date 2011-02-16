@@ -177,7 +177,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         {
             beta = rho / rho_1;
             //p = p*beta + r; //z;
-            cgstep_beta(p,r,beta, params);
+            cgstep_beta(params /* PARAMS FIRST */, p,r,beta);
         }
 
         if( verbose )
@@ -212,7 +212,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         alpha = rho/den;
         //x.peq(p,alpha);                 // x = x + alpha p
         //r.peq(q,-alpha);                // r = r - alpha q
-        cgstep_alpha(x,r,p,q,alpha, params);
+        cgstep_alpha(params /* PARAMS FIRST */, x,r,p,q,alpha);
         if( verbose )
         {
             serr<<"den = "<<den<<", alpha = "<<alpha<<sendl;
@@ -252,13 +252,13 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 }
 
 template<>
-inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta, const core::ExecParams* /*params*/)
+inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* /*params*/ /* PARAMS FIRST */, Vector& p, Vector& r, double beta)
 {
     p.eq(r,p,beta); // p = p*beta + r
 }
 
 template<>
-inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha, const core::ExecParams* params)
+inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params /* PARAMS FIRST */, Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
 {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     x.peq(p,alpha);                 // x = x + alpha p
@@ -273,7 +273,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
     ops[1].first = (MultiVecDerivId)r;
     ops[1].second.push_back(std::make_pair((MultiVecDerivId)r,1.0));
     ops[1].second.push_back(std::make_pair((MultiVecDerivId)q,-alpha));
-    this->executeVisitor(simulation::MechanicalVMultiOpVisitor(ops, params));
+    this->executeVisitor(simulation::MechanicalVMultiOpVisitor(params /* PARAMS FIRST */, ops));
 #endif
 }
 

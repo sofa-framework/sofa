@@ -150,7 +150,7 @@ void FrameFixedConstraint<DataTypes>::init()
 
 
 template <class DataTypes>
-void FrameFixedConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* /*mparams*/)
+void FrameFixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
     const vector<unsigned> & indices = f_index.getValue();
@@ -169,7 +169,7 @@ void FrameFixedConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, con
 }
 
 //template <class DataTypes>
-//void FrameFixedConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams)
+//void FrameFixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 //{
 //    helper::WriteAccessor<DataMatrixDeriv> c = cData;
 //
@@ -178,7 +178,7 @@ void FrameFixedConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, con
 //
 //    while (rowIt != rowItEnd)
 //    {
-//        projectResponseT<MatrixDerivRowType>(rowIt.row(), mparams);
+//        projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
 //        ++rowIt;
 //    }
 //}
@@ -188,7 +188,7 @@ void FrameFixedConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, con
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
 // But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
 template <class DataTypes>
-void FrameFixedConstraint<DataTypes>::projectVelocity(DataVecDeriv& /*vData*/, const core::MechanicalParams* /*mparams*/)
+void FrameFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*vData*/)
 {
 #if 0 /// @TODO ADD A FLAG FOR THIS
     const SetIndexArray & indices = f_indices.getValue().getArray();
@@ -211,7 +211,7 @@ void FrameFixedConstraint<DataTypes>::projectVelocity(DataVecDeriv& /*vData*/, c
 }
 
 template <class DataTypes>
-void FrameFixedConstraint<DataTypes>::projectPosition(DataVecCoord& /*xData*/, const core::MechanicalParams* /*mparams*/)
+void FrameFixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& /*xData*/)
 {
 
 }

@@ -40,7 +40,7 @@ namespace interactionforcefield
 
 
 template<class DataTypes>
-void RepulsiveSpringForceField<DataTypes>::addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* /*mparams*/ )
+void RepulsiveSpringForceField<DataTypes>::addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
 {
 
     VecDeriv&       f1 = *data_f1.beginEdit();
@@ -104,7 +104,7 @@ void RepulsiveSpringForceField<DataTypes>::addForce(DataVecDeriv& data_f1, DataV
 }
 
 template <class DataTypes>
-double RepulsiveSpringForceField<DataTypes>::getPotentialEnergy(const DataVecCoord&, const DataVecCoord&, const core::MechanicalParams* ) const
+double RepulsiveSpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const
 {
     serr<<"RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

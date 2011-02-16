@@ -109,10 +109,10 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 
 
 template<class DataTypes1, class DataTypes2>
-void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(DataVecDeriv1& data_violation, DataVecDeriv2& /*data_f2*/,
-        const DataVecCoord1& /*data_lambda*/ , const DataVecCoord2& /*data_p2*/,
-        const DataVecDeriv1& , const DataVecDeriv2& /*data_v2*/,
-        const MechanicalParams* /*mparams*/)
+void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(
+    const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv1& data_violation, DataVecDeriv2& /*data_f2*/,
+    const DataVecCoord1& /*data_lambda*/ , const DataVecCoord2& /*data_p2*/,
+    const DataVecDeriv1& , const DataVecDeriv2& /*data_v2*/)
 {
     helper::WriteAccessor< DataVecDeriv1 > violation = data_violation;
     using linearsolver::FullVector;
@@ -160,9 +160,9 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(DataVecDeri
 
 
 template<class DataTypes1, class DataTypes2>
-void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(DataVecDeriv1& data_dViolation, DataVecDeriv2& data_df2,
-        const DataVecDeriv1& data_dLambda, const DataVecDeriv2& data_dx2,
-        const MechanicalParams* mparams)
+void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(
+    const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& data_dViolation, DataVecDeriv2& data_df2,
+    const DataVecDeriv1& data_dLambda, const DataVecDeriv2& data_dx2)
 {
 
     helper::WriteAccessor< DataVecDeriv1 > dViolation = data_dViolation;

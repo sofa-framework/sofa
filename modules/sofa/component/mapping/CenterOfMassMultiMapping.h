@@ -59,7 +59,7 @@ public:
     virtual void apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos );
     virtual void applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv);
     virtual void applyJT( const helper::vector<InVecDeriv*>& outDeriv , const helper::vector<const OutVecDeriv*>& inDeriv );
-    virtual void applyDJT(core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/, const core::MechanicalParams* /*mparams*/) {}
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
 
     virtual void init();
     void draw();

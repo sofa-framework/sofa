@@ -153,7 +153,7 @@ void PendulumMapping<In,Out>::applyJT( MatrixInDeriv& parentJacobians, const Mat
 }
 
 template <class In, class Out>
-void PendulumMapping<In,Out>::applyDJT(core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId, const core::MechanicalParams* mparams )
+void PendulumMapping<In,Out>::applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST */, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId )
 {
 
     ReadAccessor<Data<VecOutDeriv> > childForce (*mparams->readF(this->toModel));

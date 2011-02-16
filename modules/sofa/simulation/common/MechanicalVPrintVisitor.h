@@ -47,7 +47,7 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API MechanicalVPrintVisitor : public Visitor
 {
 public:
-    MechanicalVPrintVisitor(ConstMultiVecId v, std::ostream& =std::cerr, const core::ExecParams* params = core::ExecParams::defaultInstance() );
+    MechanicalVPrintVisitor(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, ConstMultiVecId v, std::ostream& =std::cerr );
     virtual Result processNodeTopDown(simulation::Node* node);
 
     virtual const char* getClassName() const { return "MechanicalVPrintVisitor"; }
@@ -66,7 +66,7 @@ protected:
     unsigned time_;
     std::ostream& out_;
 public:
-    MechanicalVPrintWithElapsedTimeVisitor(ConstMultiVecId vid, unsigned time, std::ostream& =std::cerr, const core::ExecParams* params = core::ExecParams::defaultInstance() );
+    MechanicalVPrintWithElapsedTimeVisitor(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, ConstMultiVecId vid, unsigned time, std::ostream& =std::cerr );
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "MechanicalVPrintWithElapsedTimeVisitor"; }
 };

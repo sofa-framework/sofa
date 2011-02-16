@@ -103,7 +103,7 @@ public:
 
     double getPotentialEnergy(const VecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    void addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams);
+    void addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, core::MultiVecDerivId vid);
 
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset);

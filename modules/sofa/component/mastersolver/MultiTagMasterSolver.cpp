@@ -65,7 +65,7 @@ void MultiTagMasterSolver::init()
 
 
 
-void MultiTagMasterSolver::step(double dt, const sofa::core::ExecParams* params)
+void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
 {
 
     sofa::core::objectmodel::TagSet::iterator it;
@@ -81,7 +81,7 @@ void MultiTagMasterSolver::step(double dt, const sofa::core::ExecParams* params)
         computeCollision(params);
         if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end collision" << sendl;
         if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin integration  for tag: "<< *it << sendl;
-        integrate(dt, params);
+        integrate(params /* PARAMS FIRST */, dt);
         if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end integration" << sendl;
 
         this->removeTag (*it);

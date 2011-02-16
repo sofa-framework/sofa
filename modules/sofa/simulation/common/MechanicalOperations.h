@@ -23,9 +23,9 @@ public:
     core::MechanicalParams mparams;
     core::objectmodel::BaseContext* ctx;
 
-    MechanicalOperations(core::objectmodel::BaseContext* ctx, const core::MechanicalParams* mparams = core::MechanicalParams::defaultInstance());
+    MechanicalOperations(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::objectmodel::BaseContext* ctx);
 
-    MechanicalOperations(core::objectmodel::BaseContext* ctx, const core::ExecParams* params);
+    MechanicalOperations(const core::ExecParams* params /* PARAMS FIRST */, core::objectmodel::BaseContext* ctx);
 
     core::MechanicalParams* operator->() { return &mparams; }
     operator const core::MechanicalParams*() { return &mparams; }

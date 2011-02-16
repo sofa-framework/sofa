@@ -158,7 +158,7 @@ void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
     for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
     {
         simulation::Node *child=*itChild;
-        XMLPrintVisitor printVisualChild(m_out,compact,params); printVisualChild.setLevel(level);
+        XMLPrintVisitor printVisualChild(params /* PARAMS FIRST */, m_out,compact); printVisualChild.setLevel(level);
         child->executeVisitor(&printVisualChild);
     }
 

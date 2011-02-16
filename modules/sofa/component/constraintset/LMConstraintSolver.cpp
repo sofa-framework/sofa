@@ -140,7 +140,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::Const
         if (!constraintAcc.getValue()) return false;
         if (needPriorStatePropagation(order))
         {
-            simulation::MechanicalPropagateDxVisitor propagateState(core::VecDerivId(vid), false, false, &mparams);
+            simulation::MechanicalPropagateDxVisitor propagateState(&mparams /* PARAMS FIRST */, core::VecDerivId(vid), false, false);
             propagateState.execute(this->getContext());
         }
         // calling writeConstraintEquations
@@ -184,7 +184,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::Const
 
         if (needPriorStatePropagation(order))
         {
-            simulation::MechanicalPropagateXVisitor propagateState(core::VecCoordId(vid), false, &mparams);
+            simulation::MechanicalPropagateXVisitor propagateState(&mparams /* PARAMS FIRST */, core::VecCoordId(vid), false);
             propagateState.execute(this->getContext());
         }
         else

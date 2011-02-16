@@ -67,42 +67,42 @@ void ForceField<DataTypes>::init()
 template<class DataTypes>
 struct ParallelForceFieldAddForce
 {
-    void operator()(ForceField< DataTypes > *ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv > > _f,Shared_r< objectmodel::Data< typename DataTypes::VecCoord > > _x,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _v, const MechanicalParams *mparams)
+    void operator()(const MechanicalParams *mparams /* PARAMS FIRST */, ForceField< DataTypes > *ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv > > _f,Shared_r< objectmodel::Data< typename DataTypes::VecCoord > > _x,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _v)
     {
-        ff->addForce(_f.access(),_x.read(),_v.read(), mparams);
+        ff->addForce(mparams /* PARAMS FIRST */, _f.access(),_x.read(),_v.read());
     }
 };
 
 template<class DataTypes>
 struct ParallelForceFieldAddDForce
 {
-    void operator()(ForceField< DataTypes >*ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _df,Shared_r<objectmodel::Data< typename DataTypes::VecDeriv> > _dx, const MechanicalParams *mparams)
+    void operator()(const MechanicalParams *mparams /* PARAMS FIRST */, ForceField< DataTypes >*ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _df,Shared_r<objectmodel::Data< typename DataTypes::VecDeriv> > _dx)
     {
-        ff->addDForce(_df.access(),_dx.read(), mparams);
+        ff->addDForce(mparams /* PARAMS FIRST */, _df.access(),_dx.read());
     }
 };
 #endif /* SOFA_SMP */
 
 
 template<class DataTypes>
-void ForceField<DataTypes>::addForce(MultiVecDerivId fId , const MechanicalParams* mparams )
+void ForceField<DataTypes>::addForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fId )
 {
     if (mparams)
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            // Task<ParallelForceFieldAddForce< DataTypes > >(this, sofa::defaulttype::getShared(*fId[mstate].write()),
-            // 	defaulttype::getShared(*mparams->readX(mstate)), defaulttype::getShared(*mparams->readV(mstate)), mparams);
-            Task<ParallelForceFieldAddForce< DataTypes > >(this, **defaulttype::getShared(*fId[mstate].write()),
-                    **defaulttype::getShared(*mparams->readX(mstate)), **defaulttype::getShared(*mparams->readV(mstate)), mparams);
+            // Task<ParallelForceFieldAddForce< DataTypes > >(mparams /* PARAMS FIRST */, this, sofa::defaulttype::getShared(*fId[mstate].write()),
+            // 	defaulttype::getShared(*mparams->readX(mstate)), defaulttype::getShared(*mparams->readV(mstate)));
+            Task<ParallelForceFieldAddForce< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*fId[mstate].write()),
+                    **defaulttype::getShared(*mparams->readX(mstate)), **defaulttype::getShared(*mparams->readV(mstate)));
         else
 #endif /* SOFA_SMP */
-            addForce(*fId[mstate].write() , *mparams->readX(mstate), *mparams->readV(mstate) , mparams);
+            addForce(mparams /* PARAMS FIRST */, *fId[mstate].write() , *mparams->readX(mstate), *mparams->readV(mstate));
     }
 }
 #ifndef SOFA_DEPRECATE_OLD_API
 template<class DataTypes>
-void ForceField<DataTypes>::addForce(DataVecDeriv &  f, const DataVecCoord &  x , const DataVecDeriv & v, const MechanicalParams* /*mparams*/ )
+void ForceField<DataTypes>::addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  f, const DataVecCoord &  x , const DataVecDeriv & v )
 {
     if (mstate)
     {
@@ -121,19 +121,19 @@ void ForceField<DataTypes>::addForce(VecDeriv& , const VecCoord& , const VecDeri
 
 
 template<class DataTypes>
-void ForceField<DataTypes>::addDForce(MultiVecDerivId dfId , const MechanicalParams* mparams )
+void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId )
 {
     if (mparams)
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelForceFieldAddDForce< DataTypes > >(this, **defaulttype::getShared(*dfId[mstate].write()), **defaulttype::getShared(*mparams->readDx(mstate)), mparams);
+            Task<ParallelForceFieldAddDForce< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*dfId[mstate].write()), **defaulttype::getShared(*mparams->readDx(mstate)));
         else
 #endif /* SOFA_SMP */
 
             mparams->setKFactorUsed(false);
 
-        addDForce(*dfId[mstate].write(), *mparams->readDx(mstate), mparams);
+        addDForce(mparams /* PARAMS FIRST */, *dfId[mstate].write(), *mparams->readDx(mstate));
 
         if (!mparams->getKFactorUsed())
             serr << "WARNING " << getClassName() << " (in ForceField<DataTypes>::addDForce): please use mparams->kFactor() in addDForce" << sendl;
@@ -142,7 +142,7 @@ void ForceField<DataTypes>::addDForce(MultiVecDerivId dfId , const MechanicalPar
 
 #ifndef SOFA_DEPRECATE_OLD_API
 template<class DataTypes>
-void ForceField<DataTypes>::addDForce(DataVecDeriv & df, const DataVecDeriv & dx , const MechanicalParams* mparams )
+void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv & df, const DataVecDeriv & dx )
 {
     if (mstate)
     {
@@ -192,15 +192,15 @@ template<class DataTypes>
 double ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
-        return getPotentialEnergy(*mparams->readX(mstate), mparams);
+        return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(mstate));
     return 0;
 }
 
 #ifndef SOFA_DEPRECATE_OLD_API
 template<class DataTypes>
-double ForceField<DataTypes>::getPotentialEnergy( const DataVecCoord& x, const MechanicalParams* /*mparams*/ ) const
+double ForceField<DataTypes>::getPotentialEnergy( const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& x ) const
 {
-    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy(const DataVecCoord&, const MechanicalParams*) not implemented." << sendl;
+    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy(const MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&) not implemented." << sendl;
     return getPotentialEnergy(x.getValue());
 }
 template<class DataTypes>
@@ -213,7 +213,7 @@ double ForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
 
 
 template<class DataTypes>
-void ForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams )
+void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
@@ -228,7 +228,7 @@ void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/
 
 
 template<class DataTypes>
-void ForceField<DataTypes>::addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams)
+void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)

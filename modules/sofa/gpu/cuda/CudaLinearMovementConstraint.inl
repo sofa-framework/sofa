@@ -444,7 +444,7 @@ void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::removeIndex(unsigned
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectResponse(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& dx)
 {
     VecDeriv& _dx = *dx.beginEdit();
     data->projectResponse(this, _dx);
@@ -452,13 +452,13 @@ void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectResponse(Data
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectJacobianMatrix(DataMatrixDeriv& /*dx*/, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectJacobianMatrix(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataMatrixDeriv& /*dx*/)
 {
     /*  data.projectResponseT(this, index); */
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectPosition(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecCoord& x)
 {
     VecCoord& _x = *x.beginEdit();
     data->projectPosition(this, _x);
@@ -466,7 +466,7 @@ void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectPosition(Data
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectVelocity(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& dx)
 {
     VecDeriv& _dx = *dx.beginEdit();
     data->projectVelocity(this, _dx);
@@ -486,7 +486,7 @@ void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::removeIndex(unsign
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectResponse(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& dx)
 {
     VecDeriv& _dx = *dx.beginEdit();
     data->projectResponse(this, _dx);
@@ -494,13 +494,13 @@ void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectResponse(Da
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectJacobianMatrix(DataMatrixDeriv& /*dx*/, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectJacobianMatrix(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataMatrixDeriv& /*dx*/)
 {
     /*  data.projectResponseT(this, index); */
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectPosition(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecCoord& x)
 {
     VecCoord& _x = *x.beginEdit();
     data->projectPosition(this, _x);
@@ -508,7 +508,7 @@ void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectPosition(Da
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectVelocity(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& dx)
 {
     VecDeriv& _dx = *dx.beginEdit();
     data->projectVelocity(this, _dx);
@@ -535,7 +535,7 @@ void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::removeIndex(unsigned
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectResponse(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& dx)
 {
     VecDeriv& _dx = *dx.beginEdit();
     data->projectResponse(this, _dx);
@@ -543,13 +543,13 @@ void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectResponse(Data
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectJacobianMatrix(DataMatrixDeriv& /*dx*/, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectJacobianMatrix(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataMatrixDeriv& /*dx*/)
 {
     /*  data.projectResponseT(this, index); */
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectPosition(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecCoord& x)
 {
     VecCoord& _x = *x.beginEdit();
     data->projectPosition(this, _x);
@@ -557,7 +557,7 @@ void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectPosition(Data
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectVelocity(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& dx)
 {
     VecDeriv& _dx = *dx.beginEdit();
     data->projectVelocity(this, _dx);
@@ -577,7 +577,7 @@ void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::removeIndex(unsign
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectResponse(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& dx)
 {
     VecDeriv& _dx = *dx.beginEdit();
     data->projectResponse(this, _dx);
@@ -585,13 +585,13 @@ void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectResponse(Da
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectJacobianMatrix(DataMatrixDeriv& /*dx*/, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectJacobianMatrix(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataMatrixDeriv& /*dx*/)
 {
     /*  data.projectResponseT(this, index); */
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectPosition(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecCoord& x)
 {
     VecCoord& _x = *x.beginEdit();
     data->projectPosition(this, _x);
@@ -599,7 +599,7 @@ void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectPosition(Da
 }
 
 template<>
-void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectVelocity(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& dx)
 {
     VecDeriv& _dx = *dx.beginEdit();
     data->projectVelocity(this, _dx);

@@ -38,7 +38,7 @@ class SOFA_SIMULATION_COMMON_API StateChangeVisitor : public Visitor
 {
 
 public:
-    StateChangeVisitor(core::topology::Topology* source, const sofa::core::ExecParams* params);
+    StateChangeVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, core::topology::Topology* source);
 
     virtual void processStateChange(core::behavior::BaseMechanicalState* obj);
 

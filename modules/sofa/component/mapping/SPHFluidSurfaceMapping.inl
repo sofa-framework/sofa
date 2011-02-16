@@ -155,7 +155,7 @@ void SPHFluidSurfaceMapping<In,Out>::createFaces(OutVecCoord& out, OutVecDeriv* 
 }
 
 template <class In, class Out>
-void SPHFluidSurfaceMapping<In,Out>::apply(Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn, const core::MechanicalParams * /*mparams*/)
+void SPHFluidSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     OutVecCoord& out = *dOut.beginEdit();
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
@@ -398,7 +398,7 @@ void SPHFluidSurfaceMapping<In,Out>::apply(Data<OutVecCoord>& dOut, const Data<I
 }
 
 template <class In, class Out>
-void SPHFluidSurfaceMapping<In,Out>::applyJ(Data<OutVecDeriv>& /*dOut*/, const Data<InVecDeriv>& /*dIn*/, const core::MechanicalParams * /*mparams*/)
+void SPHFluidSurfaceMapping<In,Out>::applyJ(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<OutVecDeriv>& /*dOut*/, const Data<InVecDeriv>& /*dIn*/)
 {
 }
 

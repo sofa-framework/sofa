@@ -230,7 +230,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
 }
 
 template <class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
+void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -306,7 +306,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(DataVecDeriv& d_f
 
 
 template <class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
+void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();

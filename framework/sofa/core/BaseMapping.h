@@ -68,8 +68,8 @@ public:
     Data<bool> f_mapMasses;
 
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
-    virtual void apply (MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position(), const MechanicalParams* mparams = MechanicalParams::defaultInstance() ) = 0;
-    virtual void applyJ(MultiVecDerivId outVel = VecDerivId::velocity(), ConstMultiVecDerivId inVel = ConstVecDerivId::velocity(), const MechanicalParams* mparams = MechanicalParams::defaultInstance() ) = 0;
+    virtual void apply (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
+    virtual void applyJ(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel = VecDerivId::velocity(), ConstMultiVecDerivId inVel = ConstVecDerivId::velocity() ) = 0;
 
     /// Accessor to the input model of this mapping
     virtual helper::vector<BaseState*> getFrom() = 0;
@@ -78,10 +78,10 @@ public:
     virtual helper::vector<BaseState*> getTo() = 0;
 
     // BaseMechanicalMapping
-    virtual void applyJT(MultiVecDerivId inForce, ConstMultiVecDerivId outForce, const MechanicalParams* mparams) = 0;
-    virtual void applyDJT(MultiVecDerivId inForce, ConstMultiVecDerivId outForce, const MechanicalParams* mparams) = 0;
-    virtual void applyJT(MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst, const ConstraintParams* mparams) = 0;
-    virtual void computeAccFromMapping(MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc, const MechanicalParams* mparams) = 0;
+    virtual void applyJT(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
+    virtual void applyDJT(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
+    virtual void applyJT(const ConstraintParams* mparams /* PARAMS FIRST */, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst) = 0;
+    virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) = 0;
 
     virtual bool areForcesMapped() const;
     virtual bool areConstraintsMapped() const;

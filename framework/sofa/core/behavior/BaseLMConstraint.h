@@ -158,7 +158,7 @@ public:
 
 
     /// Get Right Hand Term
-    virtual void getConstraintViolation(defaulttype::BaseVector * /*v*/, const sofa::core::ConstraintParams* );
+    virtual void getConstraintViolation(const sofa::core::ConstraintParams* /* PARAMS FIRST */, defaulttype::BaseVector * /*v*/ );
 
     // Override used in LMConstraintSolver::buildSystem method
     void getConstraintViolation(defaulttype::BaseVector *v, const core::ConstraintParams::ConstOrder );

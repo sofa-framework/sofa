@@ -66,11 +66,11 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::init()
 template<class DataTypes1, class DataTypes2>
 struct ParallelMixedInteractionForceFieldAddForce
 {
-    void	operator()(MixedInteractionForceField<DataTypes1, DataTypes2> *ff,
-            Shared_rw< objectmodel::Data< typename DataTypes1::VecDeriv> > _f1,Shared_rw< objectmodel::Data< typename DataTypes2::VecDeriv> > _f2,
-            Shared_r< objectmodel::Data< typename DataTypes1::VecCoord> > _x1,Shared_r< objectmodel::Data< typename DataTypes2::VecCoord> > _x2,
-            Shared_r< objectmodel::Data< typename DataTypes1::VecDeriv> > _v1,Shared_r< objectmodel::Data< typename DataTypes2::VecDeriv> > _v2,
-            const MechanicalParams* mparams)
+    void	operator()(
+        const MechanicalParams* mparams /* PARAMS FIRST */, MixedInteractionForceField<DataTypes1, DataTypes2> *ff,
+        Shared_rw< objectmodel::Data< typename DataTypes1::VecDeriv> > _f1,Shared_rw< objectmodel::Data< typename DataTypes2::VecDeriv> > _f2,
+        Shared_r< objectmodel::Data< typename DataTypes1::VecCoord> > _x1,Shared_r< objectmodel::Data< typename DataTypes2::VecCoord> > _x2,
+        Shared_r< objectmodel::Data< typename DataTypes1::VecDeriv> > _v1,Shared_r< objectmodel::Data< typename DataTypes2::VecDeriv> > _v2)
     {
         helper::WriteAccessor< objectmodel::Data<typename DataTypes1::VecDeriv> > f1= _f1.access();
         helper::WriteAccessor< objectmodel::Data<typename DataTypes2::VecDeriv> > f2= _f2.access();
@@ -88,7 +88,7 @@ struct ParallelMixedInteractionForceFieldAddForce
             // f2.zero();
         }
         // mparams->setKFactor(1.0);
-        ff->addForce(_f1.access(),_f2.access(),_x1.read(),_x2.read(),_v1.read(),_v2.read(),mparams);
+        ff->addForce(mparams /* PARAMS FIRST */, _f1.access(),_f2.access(),_x1.read(),_x2.read(),_v1.read(),_v2.read());
     }
 
 };
@@ -96,10 +96,10 @@ struct ParallelMixedInteractionForceFieldAddForce
 template<class DataTypes1, class DataTypes2>
 struct ParallelMixedInteractionForceFieldAddDForce
 {
-    void	operator()(MixedInteractionForceField<DataTypes1, DataTypes2> *ff,
-            Shared_rw< objectmodel::Data< typename DataTypes1::VecDeriv> > _df1,Shared_rw< objectmodel::Data< typename DataTypes2::VecDeriv > > _df2,
-            Shared_r< objectmodel::Data< typename DataTypes1::VecDeriv > > _dx1,Shared_r< objectmodel::Data< typename DataTypes2::VecDeriv > > _dx2,
-            const MechanicalParams* mparams)
+    void	operator()(
+        const MechanicalParams* mparams /* PARAMS FIRST */, MixedInteractionForceField<DataTypes1, DataTypes2> *ff,
+        Shared_rw< objectmodel::Data< typename DataTypes1::VecDeriv> > _df1,Shared_rw< objectmodel::Data< typename DataTypes2::VecDeriv > > _df2,
+        Shared_r< objectmodel::Data< typename DataTypes1::VecDeriv > > _dx1,Shared_r< objectmodel::Data< typename DataTypes2::VecDeriv > > _dx2)
     {
         helper::WriteAccessor< objectmodel::Data<typename DataTypes1::VecDeriv> > df1 = _df1.access();
         helper::WriteAccessor< objectmodel::Data<typename DataTypes2::VecDeriv> > df2 = _df2.access();
@@ -116,7 +116,7 @@ struct ParallelMixedInteractionForceFieldAddDForce
             //df2.zero();
         }
         // mparams->setKFactor(1.0);
-        ff->addDForce(_df1.access(),_df2.access(),_dx1.read(),_dx2.read(),mparams);
+        ff->addDForce(mparams /* PARAMS FIRST */, _df1.access(),_df2.access(),_dx1.read(),_dx2.read());
     }
 
 };
@@ -125,7 +125,7 @@ struct ParallelMixedInteractionForceFieldAddDForce
 
 
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(MultiVecDerivId fId , const MechanicalParams* mparams )
+void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fId )
 {
 
     if (mstate1 && mstate2)
@@ -134,32 +134,32 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(MultiVecDerivI
         mstate2->forceMask.setInUse(this->useMask());
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelMixedInteractionForceFieldAddForce< DataTypes1, DataTypes2> >(this,
+            Task<ParallelMixedInteractionForceFieldAddForce< DataTypes1, DataTypes2> >(mparams /* PARAMS FIRST */, this,
                     **defaulttype::getShared(*fId[mstate1].write()), **defaulttype::getShared(*fId[mstate2].write()),
                     **defaulttype::getShared(*mparams->readX(mstate1)), **defaulttype::getShared(*mparams->readX(mstate2)),
-                    **defaulttype::getShared(*mparams->readV(mstate1)), **defaulttype::getShared(*mparams->readV(mstate2)), mparams);
+                    **defaulttype::getShared(*mparams->readV(mstate1)), **defaulttype::getShared(*mparams->readV(mstate2)));
         else
 #endif /*ifdef SOFA_SMP*/
-            addForce( *fId[mstate1].write()   , *fId[mstate2].write()   ,
+            addForce( mparams /* PARAMS FIRST */, *fId[mstate1].write()   , *fId[mstate2].write()   ,
                     *mparams->readX(mstate1), *mparams->readX(mstate2),
-                    *mparams->readV(mstate1), *mparams->readV(mstate2), mparams );
+                    *mparams->readV(mstate1), *mparams->readV(mstate2) );
     }
 }
 
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(MultiVecDerivId dfId , const MechanicalParams* mparams )
+void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId )
 {
     if (mstate1 && mstate2)
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelMixedInteractionForceFieldAddDForce<DataTypes1, DataTypes2> >(this,
+            Task<ParallelMixedInteractionForceFieldAddDForce<DataTypes1, DataTypes2> >(mparams /* PARAMS FIRST */, this,
                     **defaulttype::getShared(*dfId[mstate1].write()), **defaulttype::getShared(*dfId[mstate2].write()),
-                    **defaulttype::getShared(*mparams->readDx(mstate1)) , **defaulttype::getShared(*mparams->readDx(mstate2)), mparams);
+                    **defaulttype::getShared(*mparams->readDx(mstate1)) , **defaulttype::getShared(*mparams->readDx(mstate2)));
         else
 #endif /*ifdef SOFA_SMP*/
-            addDForce( *dfId[mstate1].write()    , *dfId[mstate2].write()   ,
-                    *mparams->readDx(mstate1) , *mparams->readDx(mstate2), mparams );
+            addDForce( mparams /* PARAMS FIRST */, *dfId[mstate1].write()    , *dfId[mstate2].write()   ,
+                    *mparams->readDx(mstate1) , *mparams->readDx(mstate2) );
     }
 }
 
@@ -169,13 +169,13 @@ template<class DataTypes1, class DataTypes2>
 double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (mstate1 && mstate2)
-        return getPotentialEnergy(*mparams->readX(mstate1),*mparams->readX(mstate2),mparams);
+        return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(mstate1),*mparams->readX(mstate2));
     else return 0;
 }
 
 /*
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2, const MechanicalParams* )
+void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const MechanicalParams*  // PARAMS FIRST //, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2 )
 {
     addForce( *f1.beginEdit() , *f2.beginEdit(),
 			  x1.getValue()   , x2.getValue()  ,
@@ -192,7 +192,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(VecDeriv1& , V
 
 /*
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2, const MechanicalParams* mparams)
+void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const MechanicalParams* mparams  // PARAMS FIRST //, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)
 {
     	addDForce(*df1.beginEdit(), *df2.beginEdit(), dx1.getValue(), dx2.getValue(),mparams->kFactor(),mparams->bFactor());
     	df1.endEdit(); df2.endEdit();
@@ -240,7 +240,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1& , 
 
 /*
 template<class DataTypes1, class DataTypes2>
-double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const DataVecCoord1& x1, const DataVecCoord2& x2, const MechanicalParams*) const
+double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams*  // PARAMS FIRST //, const DataVecCoord1& x1, const DataVecCoord2& x2) const
 {
 	return getPotentialEnergy( x1.getValue() , x2.getValue() );
 }

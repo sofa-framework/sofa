@@ -165,7 +165,7 @@ void SubsetMapping<TIn, TOut>::postInit()
 }
 
 template <class TIn, class TOut>
-void SubsetMapping<TIn, TOut>::apply ( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* /*mparams*/ )
+void SubsetMapping<TIn, TOut>::apply ( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn )
 {
     const IndexArray& indices = f_indices.getValue();
 
@@ -182,7 +182,7 @@ void SubsetMapping<TIn, TOut>::apply ( OutDataVecCoord& dOut, const InDataVecCoo
 }
 
 template <class TIn, class TOut>
-void SubsetMapping<TIn, TOut>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* /*mparams*/ )
+void SubsetMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
 {
     const IndexArray& indices = f_indices.getValue();
 
@@ -199,7 +199,7 @@ void SubsetMapping<TIn, TOut>::applyJ( OutDataVecDeriv& dOut, const InDataVecDer
 }
 
 template <class TIn, class TOut>
-void SubsetMapping<TIn, TOut>::applyJT ( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* /*mparams*/ )
+void SubsetMapping<TIn, TOut>::applyJT ( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
     const IndexArray& indices = f_indices.getValue();
 
@@ -218,7 +218,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( InDataVecDeriv& dOut, const OutDataVecD
 }
 
 template <class TIn, class TOut>
-void SubsetMapping<TIn, TOut>::applyJT ( InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn, const core::ConstraintParams * /*cparams*/)
+void SubsetMapping<TIn, TOut>::applyJT ( const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn)
 {
     const IndexArray& indices = f_indices.getValue();
 

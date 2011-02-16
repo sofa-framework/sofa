@@ -44,7 +44,7 @@ void CPUSPHFluidForceField::vectorAddForce(unsigned int gsize, const int*cells, 
             {
                 if(px!=py)
                 {
-                    force = SPHFluidCalcForce(pos4[cells[px]], v[cells[px]], pos4[cells[py]], v[cells[py]], force, params);
+                    force = SPHFluidCalcForce(params /* PARAMS FIRST */, pos4[cells[px]], v[cells[px]], pos4[cells[py]], v[cells[py]], force);
                 }
             }
             f[cells[px]]+=force;

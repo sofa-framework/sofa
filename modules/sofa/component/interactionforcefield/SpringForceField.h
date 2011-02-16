@@ -148,9 +148,9 @@ public:
     virtual void reinit();
     virtual void init();
 
-    virtual void addForce(DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2, const core::MechanicalParams* mparams);
-    virtual void addDForce(DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2, const core::MechanicalParams* );
-    virtual double getPotentialEnergy(const DataVecCoord&, const DataVecCoord&, const core::MechanicalParams* ) const { return m_potentialEnergy; }
+    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2);
+    virtual void addDForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2 );
+    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
 
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/);

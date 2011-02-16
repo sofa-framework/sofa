@@ -1100,13 +1100,13 @@ public:
 
     void reinit();
 
-    void apply(Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in, const core::MechanicalParams *mparams);
+    void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in);
 
-    void applyJ(Data< typename Out::VecDeriv >& out, const Data< typename In::VecDeriv >& in, const core::MechanicalParams *mparams);
+    void applyJ(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data< typename Out::VecDeriv >& out, const Data< typename In::VecDeriv >& in);
 
-    void applyJT(Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in, const core::MechanicalParams *mparams);
+    void applyJT(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in);
 
-    void applyJT(Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in, const core::ConstraintParams *cparams);
+    void applyJT(const core::ConstraintParams *cparams /* PARAMS FIRST */, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in);
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 

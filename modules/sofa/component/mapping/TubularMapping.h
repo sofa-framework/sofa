@@ -100,13 +100,13 @@ public:
 
     void init();
 
-    virtual void apply ( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams );
+    virtual void apply ( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
 
-    virtual void applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams );
+    virtual void applyJ( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn );
 
-    virtual void applyJT ( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams );
+    virtual void applyJT ( const core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn );
 
-    virtual void applyJT ( InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn, const core::ConstraintParams* /*cparams*/ );
+    virtual void applyJT ( const core::ConstraintParams* /*cparams*/ /* PARAMS FIRST */, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn );
 
     Data<unsigned int> m_nbPointsOnEachCircle; // number of points along the circles around each point of the input object (10 by default)
     Data<double> m_radius; // radius of the circles around each point of the input object (1 by default)

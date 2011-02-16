@@ -61,13 +61,13 @@ int FrameConstantForceFieldClass = core::RegisterObject("Attach given particles 
 
 #ifndef SOFA_FLOAT
 template <>
-double ConstantForceField<Affine3dTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* /*params*/ ) const
+double ConstantForceField<Affine3dTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, const DataVecCoord& ) const
 {
     serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 template <>
-double ConstantForceField<Quadratic3dTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* /*params*/ ) const
+double ConstantForceField<Quadratic3dTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, const DataVecCoord& ) const
 {
     serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
@@ -76,14 +76,14 @@ double ConstantForceField<Quadratic3dTypes>::getPotentialEnergy(const DataVecCoo
 
 #ifndef SOFA_DOUBLE
 template <>
-double ConstantForceField<Affine3fTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* /*params*/ ) const
+double ConstantForceField<Affine3fTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, const DataVecCoord& ) const
 {
     serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 
 template <>
-double ConstantForceField<Quadratic3fTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* /*params*/ ) const
+double ConstantForceField<Quadratic3fTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, const DataVecCoord& ) const
 {
     serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

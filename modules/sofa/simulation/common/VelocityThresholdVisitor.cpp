@@ -38,7 +38,7 @@ namespace simulation
 using std::cerr;
 using std::endl;
 
-VelocityThresholdVisitor::VelocityThresholdVisitor( core::MultiVecId v, double t, const core::ExecParams* params  )
+VelocityThresholdVisitor::VelocityThresholdVisitor( const core::ExecParams* params /* PARAMS FIRST */, core::MultiVecId v, double t  )
     : Visitor(params), vid(v), threshold(t)
 {
 }

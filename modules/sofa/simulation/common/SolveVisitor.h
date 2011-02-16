@@ -44,8 +44,8 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API SolveVisitor : public Visitor
 {
 public:
-    SolveVisitor(double _dt, const sofa::core::ExecParams* params) : Visitor(params), dt(_dt), freeMotion(false) {}
-    SolveVisitor(double _dt, bool free, const sofa::core::ExecParams* params) : Visitor(params), dt(_dt), freeMotion(free) {}
+    SolveVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, double _dt) : Visitor(params), dt(_dt), freeMotion(false) {}
+    SolveVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, double _dt, bool free) : Visitor(params), dt(_dt), freeMotion(free) {}
     virtual void processSolver(simulation::Node* node, core::behavior::OdeSolver* b);
     virtual Result processNodeTopDown(simulation::Node* node);
 

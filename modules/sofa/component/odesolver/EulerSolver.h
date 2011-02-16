@@ -48,7 +48,7 @@ public:
     SOFA_CLASS(EulerSolver, sofa::core::behavior::OdeSolver);
 
     EulerSolver();
-    void solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params);
+    void solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
     Data<bool> symplectic;
 

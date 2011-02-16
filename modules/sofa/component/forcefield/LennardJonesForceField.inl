@@ -71,7 +71,7 @@ void LennardJonesForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void LennardJonesForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
+void LennardJonesForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     VecDeriv& f1 = *d_f.beginEdit();
     const VecCoord& p1 = d_x.getValue();
@@ -120,7 +120,7 @@ void LennardJonesForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVe
 }
 
 template<class DataTypes>
-void LennardJonesForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
+void LennardJonesForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     VecDeriv& df1 = *d_df.beginEdit();
     const VecDeriv& dx1 = d_dx.getValue();
