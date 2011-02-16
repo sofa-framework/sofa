@@ -110,6 +110,8 @@ void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::resoluti
 template< class DataTypes >
 void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::store(int line, double* force, bool /*convergence*/)
 {
+    m_constraint = 0;
+
     if(_active)
     {
         *_active = (force[line] != 0);
