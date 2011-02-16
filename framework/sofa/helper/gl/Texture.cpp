@@ -222,7 +222,98 @@ static bool isPowerOfTwo(unsigned a)
     return a > 0 && !(a & (a - 1));
 }
 
-void Texture::init(void)
+
+
+
+
+
+void Texture::update()
+{
+    io::Image::TextureType textureType = image->getTextureType();
+    target = targetTable[textureType];
+    unsigned format = formatTable[image->getChannelFormat()];
+    unsigned type = typeTable[image->getDataType()];
+    unsigned mipmaps = image->getMipmapCount();
+    unsigned internalFormat = internalFormatTable[image->getDataType()][image->getChannelFormat()];
+
+    if (srgbColorspace)
+    {
+        unsigned internalFormatSRGB = internalFormatTableSRGB[image->getDataType()][image->getChannelFormat()];
+        if (internalFormatSRGB)
+        {
+#if defined(GLEW_EXT_texture_sRGB) && defined(GLEW_ARB_framebuffer_sRGB)
+            if (GLEW_EXT_texture_sRGB && GLEW_ARB_framebuffer_sRGB)
+                internalFormat = internalFormatSRGB;
+            else
+#endif
+            {
+                std::cerr << "sofa::helper::gl::Texture::init: SRGB colorspace is unsupported, "
+                        "GLEW_EXT_texture_srgb or GLEW_ARB_framebuffer_sRGB is missing." << std::endl;
+            }
+        }
+        else
+        {
+            std::cerr << "sofa::helper::gl::Texture::init: SRGB colorspace "
+                    "isn't supported with the given texture format." << std::endl;
+        }
+    }
+
+    glBindTexture(target, id);
+
+    switch (textureType)
+    {
+    case io::Image::TEXTURE_2D:
+#if defined(GLEW_VERSION_1_3)
+        if (image->getDataType() == io::Image::UCOMPRESSED)
+            for (unsigned i = 0; i < mipmaps; i++)
+                glCompressedTexImage2D(target, i, internalFormat, image->getWidth(i), image->getHeight(i), 0,
+                        image->getMipmapSize(i), image->getMipmapPixels(i));
+        else
+#endif
+            for (unsigned i = 0; i < mipmaps; i++)
+                glTexImage2D(target, i, internalFormat, image->getWidth(i), image->getHeight(i), 0,
+                        format, type, image->getMipmapPixels(i));
+        break;
+
+    case io::Image::TEXTURE_3D:
+#if defined(GLEW_VERSION_1_2)
+#if defined(GLEW_VERSION_1_3)
+        if (image->getDataType() == io::Image::UCOMPRESSED)
+            for (unsigned i = 0; i < mipmaps; i++)
+                glCompressedTexImage3D(target, i, internalFormat, image->getWidth(i), image->getHeight(i),
+                        image->getDepth(i), 0, image->getMipmapSize(i), image->getMipmapPixels(i));
+        else
+#endif
+            for (unsigned i = 0; i < mipmaps; i++)
+                glTexImage3D(target, i, internalFormat, image->getWidth(i), image->getHeight(i),
+                        image->getDepth(i), 0, format, type, image->getMipmapPixels(i));
+#endif
+        break;
+
+    case io::Image::TEXTURE_CUBE:
+#if defined(GLEW_VERSION_1_3)
+        if (image->getDataType() == io::Image::UCOMPRESSED)
+            for (unsigned j = 0; j < 6; j++)
+                for (unsigned i = 0; i < mipmaps; i++)
+                    glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, i, internalFormat,
+                            image->getWidth(i), image->getHeight(i), 0, image->getMipmapSize(i) / 6,
+                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : 0);
+        else
+            for (unsigned j = 0; j < 6; j++)
+                for (unsigned i = 0; i < mipmaps; i++)
+                    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, i, internalFormat,
+                            image->getWidth(i), image->getHeight(i), 0, format, type,
+                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : 0);
+#endif
+        break;
+
+    default:;
+    }
+
+}
+
+
+void Texture::init()
 {
     io::Image::TextureType textureType = image->getTextureType();
     target = GL_TEXTURE_2D; // Default value in case the format is not supported.
@@ -378,36 +469,11 @@ void Texture::init(void)
         // Always supported.
     }
 
-    target = targetTable[textureType];
-    unsigned format = formatTable[image->getChannelFormat()];
-    unsigned type = typeTable[image->getDataType()];
     unsigned mipmaps = image->getMipmapCount();
-    unsigned internalFormat = internalFormatTable[image->getDataType()][image->getChannelFormat()];
-
-    if (srgbColorspace)
-    {
-        unsigned internalFormatSRGB = internalFormatTableSRGB[image->getDataType()][image->getChannelFormat()];
-        if (internalFormatSRGB)
-        {
-#if defined(GLEW_EXT_texture_sRGB) && defined(GLEW_ARB_framebuffer_sRGB)
-            if (GLEW_EXT_texture_sRGB && GLEW_ARB_framebuffer_sRGB)
-                internalFormat = internalFormatSRGB;
-            else
-#endif
-            {
-                std::cerr << "sofa::helper::gl::Texture::init: SRGB colorspace is unsupported, "
-                        "GLEW_EXT_texture_srgb or GLEW_ARB_framebuffer_sRGB is missing." << std::endl;
-            }
-        }
-        else
-        {
-            std::cerr << "sofa::helper::gl::Texture::init: SRGB colorspace "
-                    "isn't supported with the given texture format." << std::endl;
-        }
-    }
 
     glGenTextures(1, &id); // Create the texture.
-    glBindTexture(target, id);
+    update();
+
 
 #if defined(GLEW_VERSION_1_4)
     if (GLEW_VERSION_1_4 && generateMipmaps)
@@ -415,56 +481,6 @@ void Texture::init(void)
     else
 #endif
         generateMipmaps = false;
-
-    switch (textureType)
-    {
-    case io::Image::TEXTURE_2D:
-#if defined(GLEW_VERSION_1_3)
-        if (image->getDataType() == io::Image::UCOMPRESSED)
-            for (unsigned i = 0; i < mipmaps; i++)
-                glCompressedTexImage2D(target, i, internalFormat, image->getWidth(i), image->getHeight(i), 0,
-                        image->getMipmapSize(i), image->getMipmapPixels(i));
-        else
-#endif
-            for (unsigned i = 0; i < mipmaps; i++)
-                glTexImage2D(target, i, internalFormat, image->getWidth(i), image->getHeight(i), 0,
-                        format, type, image->getMipmapPixels(i));
-        break;
-
-    case io::Image::TEXTURE_3D:
-#if defined(GLEW_VERSION_1_2)
-#if defined(GLEW_VERSION_1_3)
-        if (image->getDataType() == io::Image::UCOMPRESSED)
-            for (unsigned i = 0; i < mipmaps; i++)
-                glCompressedTexImage3D(target, i, internalFormat, image->getWidth(i), image->getHeight(i),
-                        image->getDepth(i), 0, image->getMipmapSize(i), image->getMipmapPixels(i));
-        else
-#endif
-            for (unsigned i = 0; i < mipmaps; i++)
-                glTexImage3D(target, i, internalFormat, image->getWidth(i), image->getHeight(i),
-                        image->getDepth(i), 0, format, type, image->getMipmapPixels(i));
-#endif
-        break;
-
-    case io::Image::TEXTURE_CUBE:
-#if defined(GLEW_VERSION_1_3)
-        if (image->getDataType() == io::Image::UCOMPRESSED)
-            for (unsigned j = 0; j < 6; j++)
-                for (unsigned i = 0; i < mipmaps; i++)
-                    glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, i, internalFormat,
-                            image->getWidth(i), image->getHeight(i), 0, image->getMipmapSize(i) / 6,
-                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : 0);
-        else
-            for (unsigned j = 0; j < 6; j++)
-                for (unsigned i = 0; i < mipmaps; i++)
-                    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, i, internalFormat,
-                            image->getWidth(i), image->getHeight(i), 0, format, type,
-                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : 0);
-#endif
-        break;
-
-    default:;
-    }
 
     if (linearInterpolation)
     {

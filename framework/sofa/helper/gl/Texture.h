@@ -88,7 +88,8 @@ public:
     GLuint getTarget() const { return target; }
     void   bind(void);
     void   unbind(void);
-    void   init (void);
+    void   init ();
+    void   update ();	// to use for dynamic change of the texture image (no memory overhead due to multiple texture creation)
     ~Texture();
 };
 
