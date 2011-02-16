@@ -10,4 +10,4 @@ echo ''
 echo 'WARNING: Your files will be modified. Use at your own risk !'
 echo 'Press Enter to continue, or Ctrl+C to abort.'
 read || exit 1
-find ${@:-.} \( -iname '*.h' -o -iname '*.hpp' -o -iname '*.cpp' -o -iname '*.inl' -o -iname '*.c' -o -iname '*.cu' -o -iname '*.cuh' \) -print -exec sed -i'~' -f $SCRIPTS/set-paramsfirst.sed '{}' ';'
+find ${@:-.} \( -iname '*.h' -o -iname '*.hpp' -o -iname '*.cpp' -o -iname '*.inl' -o -iname '*.c' \) -print -exec sed -i'~' -f $SCRIPTS/set-paramsfirst.sed '{}' ';'
