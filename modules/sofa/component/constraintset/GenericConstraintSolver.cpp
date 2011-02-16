@@ -141,7 +141,11 @@ bool GenericConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::Const
     // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
     // calling buildConstraintMatrix
-    simulation::MechanicalAccumulateConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
+    //simulation::MechanicalAccumulateConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
+
+    MechanicalSetConstraint(&cparams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
+    MechanicalAccumulateConstraint2(&cparams, core::MatrixDerivId::holonomicC()).execute(context);
+
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
