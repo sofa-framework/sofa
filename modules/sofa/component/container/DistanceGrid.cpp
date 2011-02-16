@@ -94,6 +94,7 @@ bool DistanceGrid::release()
 
 DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
+    double absscale=fabs(scale);
     if (filename == "#cube")
     {
         float dim = (float)scale;
@@ -162,8 +163,8 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
         nx = mesh.distmap->nx;
         ny = mesh.distmap->ny;
         nz = mesh.distmap->nz;
-        ftl::Vec3f fpmin = ftl::transform(mesh.distmap->mat,ftl::Vec3f(0,0,0))*(float)scale;
-        ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f((float)(nx-1),(float)(ny-1),(float)(nz-1)))*(float)scale;
+        ftl::Vec3f fpmin = ftl::transform(mesh.distmap->mat,ftl::Vec3f(0,0,0))*(float)absscale;
+        ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f((float)(nx-1),(float)(ny-1),(float)(nz-1)))*(float)absscale;
         pmin = Coord(fpmin.ptr());
         pmax = Coord(fpmax.ptr());
         std::cout << "Copying "<<nx<<"x"<<ny<<"x"<<nz<<" distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
@@ -187,7 +188,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
             {
                 int p0 = mesh.getGP0(i);
                 if (p0 >= 0)
-                    grid->meshPts[p++] = Coord(mesh.getPP(p0).ptr())*scale;
+                    grid->meshPts[p++] = Coord(mesh.getPP(p0).ptr())*absscale;
             }
         }
         else
@@ -196,9 +197,15 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
             std::cout << "Copying "<<nbpos<<" mesh vertices."<<std::endl;
             grid->meshPts.resize(nbpos);
             for (int i=0; i<nbpos; i++)
-                grid->meshPts[i] = Coord(mesh.getPP(i).ptr())*scale;
+                grid->meshPts[i] = Coord(mesh.getPP(i).ptr())*absscale;
         }
-        grid->computeBBox();
+        if (scale < 0)
+        {
+            grid->bbmin = grid->pmin;
+            grid->bbmax = grid->pmax;
+        }
+        else
+            grid->computeBBox();
         std::cout << "Distance grid creation DONE."<<std::endl;
         return grid;
     }
@@ -220,8 +227,8 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
                     if (vertices[i][c] < bbmin[c]) bbmin[c] = (SReal)vertices[i][c];
                     else if (vertices[i][c] > bbmax[c]) bbmax[c] = (SReal)vertices[i][c];
             }
-            bbmin *= scale;
-            bbmax *= scale;
+            bbmin *= absscale;
+            bbmax *= absscale;
         }
         std::cout << "bbox = <"<<bbmin<<">-<"<<bbmax<<">"<<std::endl;
 
@@ -252,7 +259,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
             std::cout << "Copying "<<vertices.size()<<" mesh vertices."<<std::endl;
             grid->meshPts.resize(vertices.size());
             for(unsigned int i=0; i<vertices.size(); i++)
-                grid->meshPts[i] = vertices[i]*scale;
+                grid->meshPts[i] = vertices[i]*absscale;
         }
         grid->computeBBox();
         std::cout << "Distance grid creation DONE."<<std::endl;
