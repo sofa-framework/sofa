@@ -153,6 +153,107 @@ private:
     unsigned int _offset;
 };
 
+class SOFA_COMPONENT_CONSTRAINTSET_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
+{
+public:
+    MechanicalSetConstraint(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res, unsigned int &_contactId)
+        : simulation::BaseMechanicalVisitor(_cparams)
+        , res(_res)
+        , contactId(_contactId)
+        , cparams(_cparams)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
+    {
+        ctime_t t0 = begin(node, c);
+
+        c->buildConstraintMatrix(cparams, res, contactId);
+
+        end(node, c, t0);
+        return RESULT_CONTINUE;
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const
+    {
+        return "MechanicalSetConstraint";
+    }
+
+    virtual bool isThreadSafe() const
+    {
+        return false;
+    }
+
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    {
+        return false; // !map->isMechanical();
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
+
+protected:
+
+    sofa::core::MultiMatrixDerivId res;
+    unsigned int &contactId;
+    const sofa::core::ConstraintParams *cparams;
+};
+
+
+class SOFA_COMPONENT_CONSTRAINTSET_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
+{
+public:
+    MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
+        : simulation::BaseMechanicalVisitor(_cparams)
+        , res(_res)
+        , cparams(_cparams)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+    {
+        ctime_t t0 = begin(node, map);
+        map->applyJT(cparams, res, res);
+        end(node, map, t0);
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAccumulateConstraint2"; }
+
+    virtual bool isThreadSafe() const
+    {
+        return false;
+    }
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    {
+        return false; // !map->isMechanical();
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
+
+protected:
+    core::MultiMatrixDerivId res;
+    const sofa::core::ConstraintParams *cparams;
+};
+
 } // namespace constraintset
 
 } // namespace component
