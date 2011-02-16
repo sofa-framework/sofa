@@ -227,19 +227,19 @@ void PersistentContactRigidMapping<TIn, TOut>::applyLinearizedPosition()
     Data< InVecCoord > prevXFree;
     prevXFree.setValue(m_previousFreePosition);
 
-    this->apply(newXFree, prevXFree, 0);
+    this->apply(0, newXFree, prevXFree);
 
     // We need to apply the previous position to obtain the right linearization
     Data< VecCoord > tempValue;
     Data< InVecCoord > prevX;
     prevX.setValue(m_previousPosition);
-    this->apply(tempValue, prevX, 0);
+    this->apply(0, tempValue, prevX);
 
     Data< VecDeriv > newDx;
     Data< InVecDeriv > prevDx;
     prevDx.setValue(m_previousDx);
 
-    this->applyJ(newDx, prevDx, 0);
+    this->applyJ(0, newDx, prevDx);
 
     Data< VecCoord >* newPos_d = this->toModel->write(core::VecCoordId::position());
     VecCoord &newPos = *newPos_d->beginEdit();

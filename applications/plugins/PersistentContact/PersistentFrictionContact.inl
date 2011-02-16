@@ -490,7 +490,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
     else
     {
         map1->applyLinearizedPosition();
-        dynamic_cast< core::BaseMapping* >(map1)->apply(sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
+        dynamic_cast< core::BaseMapping* >(map1)->apply(0, sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
     }
 
     if (use_mapper_for_state2)
@@ -504,7 +504,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
     else
     {
         map2->applyLinearizedPosition();
-        dynamic_cast< core::BaseMapping* >(map2)->apply(sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
+        dynamic_cast< core::BaseMapping* >(map2)->apply(0, sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
     }
 }
 
