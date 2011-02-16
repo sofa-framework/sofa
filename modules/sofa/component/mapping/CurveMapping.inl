@@ -171,8 +171,8 @@ void CurveMapping<TIn, TOut>::init()
     //apply(*this->toModel->getX(), *this->fromModel->getX());
     //apply(*this->toModel->getXfree(), *this->fromModel->getXfree());
 
-    Inherit::apply(core::VecCoordId::position(),     core::ConstVecCoordId::position());
-    Inherit::apply(core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+    Inherit::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(),     core::ConstVecCoordId::position());
+    Inherit::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
 
     /*
 

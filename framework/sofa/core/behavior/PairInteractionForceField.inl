@@ -294,7 +294,7 @@ void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mpa
 
 /*
 template<class DataTypes>
-void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams*  // PARAMS FIRST //, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2 )
+void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams*, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2 )
 {
     addForce( *f1.beginEdit() , *f2.beginEdit(),
 			  x1.getValue()   , x2.getValue()  ,
@@ -311,7 +311,7 @@ void PairInteractionForceField<DataTypes>::addForce(VecDeriv& , VecDeriv& , cons
 
 /*
 template<class DataTypes>
-void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mparams  // PARAMS FIRST //, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2)
+void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2)
 {
 	addDForce(*df1.beginEdit(), *df2.beginEdit(), dx1.getValue(), dx2.getValue(),mparams->kFactor(),mparams->bFactor());
 	df1.endEdit(); df2.endEdit();
@@ -380,7 +380,7 @@ double PairInteractionForceField<DataTypes>::getPotentialEnergy(const Mechanical
 
 /*
 template<class DataTypes>
-double PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams*  // PARAMS FIRST //, const DataVecCoord& x1, const DataVecCoord& x2 ) const
+double PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams*, const DataVecCoord& x1, const DataVecCoord& x2 ) const
 {
 	return getPotentialEnergy( x1.getValue() , x2.getValue() );
 }

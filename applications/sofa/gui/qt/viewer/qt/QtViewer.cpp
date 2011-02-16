@@ -1084,7 +1084,7 @@ void QtViewer::keyPressEvent(QKeyEvent * e)
             if (groot)
             {
                 sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-                groot->propagateEvent(&keyEvent);
+                groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
             }
             return;
         }
@@ -1106,7 +1106,7 @@ void QtViewer::keyPressEvent(QKeyEvent * e)
             if (groot)
             {
                 sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-                groot->propagateEvent(&keyEvent);
+                groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
             }
     }
     else
@@ -1153,7 +1153,7 @@ void QtViewer::keyReleaseEvent(QKeyEvent * e)
     if(m_grabActived)
     {
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
-        if (groot) groot->propagateEvent(&keyEvent);
+        if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
         return;
     }
 #endif
@@ -1166,7 +1166,7 @@ void QtViewer::wheelEvent(QWheelEvent* e)
     if(m_grabActived)
     {
         sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
-        if (groot) groot->propagateEvent(&mouseEvent);
+        if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
         return;
     }
 #endif
@@ -1188,17 +1188,17 @@ void QtViewer::mousePressEvent(QMouseEvent * e)
             if (e->button() == Qt::LeftButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed);
-                if (groot)groot->propagateEvent(&mouseEvent);
+                if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::RightButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed);
-                if (groot)groot->propagateEvent(&mouseEvent);
+                if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::MidButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed);
-                if (groot) groot->propagateEvent(&mouseEvent);
+                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
             }
             return;
         }
@@ -1219,17 +1219,17 @@ void QtViewer::mouseReleaseEvent(QMouseEvent * e)
             if (e->button() == Qt::LeftButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased);
-                if (groot) groot->propagateEvent(&mouseEvent);
+                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::RightButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased);
-                if (groot) groot->propagateEvent(&mouseEvent);
+                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::MidButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased);
-                if (groot) groot->propagateEvent(&mouseEvent);
+                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
             }
             return;
         }
@@ -1250,7 +1250,7 @@ void QtViewer::mouseMoveEvent(QMouseEvent * e)
         QPoint c = QCursor::pos();
         sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move,c.x() - p.x(),c.y() - p.y());
         QCursor::setPos(p);
-        if (groot)groot->propagateEvent(&mouseEvent);
+        if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
         return;
     }
 #endif
@@ -1268,7 +1268,7 @@ void QtViewer::mouseMoveEvent(QMouseEvent * e)
             }
 
             sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move,e->x()-savedX,e->y()-savedY);
-            groot->propagateEvent(&mouseEvent);
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
             QCursor::setPos(mapToGlobal(QPoint(savedX, savedY)));
         }
     }

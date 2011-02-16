@@ -292,20 +292,20 @@ using sofa::core::objectmodel::BaseContext;
 /*
 void MechanicalOperations::solveConstraint(double dt, MultiVecDerivId id, core::ConstraintParams::ConstOrder order )
 {
-  core::ConstraintParams cparams(mparams  // PARAMS FIRST //, order);
+  core::ConstraintParams cparams(mparams    // PARAMS FIRST //, order);
   mparams.setDt(dt);
   assert( order == core::ConstraintParams::VEL || order == core::ConstraintParams::ACC);
   cparams.setV( id);
-  solveConstraint(&cparams  // PARAMS FIRST //, id);
+  solveConstraint(&cparams    // PARAMS FIRST //, id);
 }
 
 void MechanicalOperations::solveConstraint(double dt, MultiVecCoordId id, core::ConstraintParams::ConstOrder order)
 {
-  core::ConstraintParams cparams(mparams  // PARAMS FIRST //, order);
+  core::ConstraintParams cparams(mparams    // PARAMS FIRST //, order);
   mparams.setDt(dt);
   assert( order == core::ConstraintParams::POS);
   cparams.setX( id);
-  solveConstraint(&cparams  // PARAMS FIRST //, id);
+  solveConstraint(&cparams    // PARAMS FIRST //, id);
 }
 */
 

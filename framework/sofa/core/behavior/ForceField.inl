@@ -159,8 +159,8 @@ void ForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx, double k
     else if (kFactor != 0.0)
     {
         VecDerivId vtmp( VecDerivId::V_FIRST_DYNAMIC_INDEX);
-        mstate->vAvail(vtmp);
-        mstate->vAlloc(vtmp);
+        mstate->vAvail(core::ExecParams::defaultInstance(), vtmp);
+        mstate->vAlloc(core::ExecParams::defaultInstance(), vtmp);
         VecDerivId vdx(0);
         /// @TODO: Add a better way to get the current VecId of dx
         for (vdx.index=0; vdx.index<vtmp.index; ++vdx.index)
@@ -173,11 +173,11 @@ void ForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx, double k
             }
         }
 
-        mstate->vOp(vtmp, VecId::null(), vdx, kFactor);
+        mstate->vOp(core::ExecParams::defaultInstance(), vtmp, VecId::null(), vdx, kFactor);
         //addDForce(df, *mstate->getVecDeriv(vtmp.index));
         addDForce(df, mstate->read(ConstVecDerivId(vtmp))->getValue());
 
-        mstate->vFree(vtmp);
+        mstate->vFree(core::ExecParams::defaultInstance(), vtmp);
     }
 }
 

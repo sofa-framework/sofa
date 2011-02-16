@@ -56,8 +56,8 @@ void AttachBodyPerformer<DataTypes>::start()
     ray.setOrigin(ray.origin() + ray.direction()*distanceFromMouse);
     sofa::core::BaseMapping *mapping;
     this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->apply();
-    mapping->applyJ();
+    mapping->apply(core::MechanicalParams::defaultInstance());
+    mapping->applyJ(core::MechanicalParams::defaultInstance());
     forcefield->init();
     this->interactor->setMouseAttached(true);
 }
@@ -69,8 +69,8 @@ void AttachBodyPerformer<DataTypes>::execute()
 {
     sofa::core::BaseMapping *mapping;
     this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->apply();
-    mapping->applyJ();
+    mapping->apply(core::MechanicalParams::defaultInstance());
+    mapping->applyJ(core::MechanicalParams::defaultInstance());
     this->interactor->setMouseAttached(true);
 }
 

@@ -55,7 +55,7 @@ SOFA_DECL_CLASS(RungeKutta4);
 void RungeKutta4Solver::solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( this->getContext() );
+    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(false); // this solver is explicit only
     //sout << "RK4 Init"<<sendl;
     // Get the Ids of the state vectors

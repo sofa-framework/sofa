@@ -895,18 +895,6 @@ Visitor::Result MechanicalAccFromFVisitor::fwdMass(simulation::Node* /*node*/, c
 
 
 
-
-MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams) : MechanicalVisitor(mparams), t(0), x(VecCoordId::position()), v(VecDerivId::velocity()),
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    a(VecDerivId::dx()),
-#endif
-    ignoreMask(true)
-{
-#ifdef SOFA_DUMP_VISITOR_INFO
-    setReadWriteVectors();
-#endif
-}
-
 MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVelocityVisitor(
     const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */,
     double time, MultiVecCoordId x, MultiVecDerivId v,
@@ -955,7 +943,7 @@ Visitor::Result MechanicalAddMDxVisitor::fwdMechanicalMapping(simulation::Node* 
 
 Visitor::Result MechanicalAddMDxVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    mm->resetForce(res.getId(mm));
+    mm->resetForce(mparams /* PARAMS FIRST */, res.getId(mm));
     return RESULT_CONTINUE;
 }
 
@@ -1070,7 +1058,7 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalStat
     //mm->setV(v);
 #ifdef SOFA_SUPPORT_MAPPED_MASS
 //    mm->setDx(a);
-    mm->resetAcc(a.getId(mm));
+    mm->resetAcc(mparams /* PARAMS FIRST */, a.getId(mm));
 #endif
     return RESULT_CONTINUE;
 }
@@ -1147,7 +1135,7 @@ Visitor::Result MechanicalSetPositionAndVelocityVisitor::fwdMechanicalState(simu
     //mm->setV(v);
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     //mm->setDx(a);
-    mm->resetAcc(a.getId(mm));
+    mm->resetAcc(mparams /* PARAMS FIRST */, a.getId(mm));
 #endif
     return RESULT_CONTINUE;
 }

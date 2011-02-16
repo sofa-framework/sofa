@@ -1869,7 +1869,7 @@ void SimpleGUI::keyPressEvent ( int k )
     {
         //cerr<<"SimpleGUI::keyPressEvent, key = "<<k<<" with Control pressed "<<endl;
         sofa::core::objectmodel::KeypressedEvent keyEvent(k);
-        groot->propagateEvent(&keyEvent);
+        groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
     }
     else  // control the GUI
         switch(k)
@@ -2009,7 +2009,7 @@ void SimpleGUI::keyReleaseEvent ( int k )
     if( isControlPressed() ) // pass event to the scene data structure
     {
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(k);
-        groot->propagateEvent(&keyEvent);
+        groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
     }
 }
 

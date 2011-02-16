@@ -61,7 +61,7 @@ bool LCPConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::Cons
     sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
     // const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     last_lcp = lcp;
-    simulation::MechanicalVOpVisitor((VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
+    simulation::MechanicalVOpVisitor(core::ExecParams::defaultInstance(), (VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
     //simulation::MechanicalPropagateDxVisitor(dx_id,true,true).execute( context); //Propagate dX //ignore the mask here
 
     if( f_printLog.getValue())

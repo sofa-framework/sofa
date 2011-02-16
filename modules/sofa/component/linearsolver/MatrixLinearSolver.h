@@ -500,7 +500,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemRHVector(core::MultiVecDerivId 
     {
         setGroup(g);
         //this->multiVector2BaseVector(v, currentGroup->systemRHVector, &(currentGroup->matrixAccessor));
-        executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor(v, currentGroup->systemRHVector, &(currentGroup->matrixAccessor)) );
+        executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor(core::ExecParams::defaultInstance(), v, currentGroup->systemRHVector, &(currentGroup->matrixAccessor)) );
     }
 }
 
@@ -512,7 +512,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(core::MultiVecDerivId 
         setGroup(g);
         currentGroup->solutionVecId = v;
         //this->multiVector2BaseVector(v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor));
-        executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
+        executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( core::ExecParams::defaultInstance(), v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
     }
 }
 
@@ -532,7 +532,7 @@ void MatrixLinearSolver<Matrix,Vector>::solveSystem()
         {
             //v_clear(currentGroup->solutionVecId);
             //multiVectorPeqBaseVector(currentGroup->solutionVecId, currentGroup->systemLHVector, &(currentGroup->matrixAccessor));
-            executeVisitor( simulation::MechanicalMultiVectorFromBaseVectorVisitor(currentGroup->solutionVecId, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
+            executeVisitor( simulation::MechanicalMultiVectorFromBaseVectorVisitor(core::ExecParams::defaultInstance(), currentGroup->solutionVecId, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
         }
     }
 }
@@ -680,7 +680,7 @@ public:
     simulation::common::MechanicalOperations mops;
     GraphScatteredMatrix* matrix;
     TempVectorContainer(MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* p, const core::ExecParams* params, GraphScatteredMatrix& M, GraphScatteredVector& x, GraphScatteredVector& b)
-        : parent(p), vops(params, p->getContext()), mops(p->getContext(), M.mparams.setExecParams(params)), matrix(&M)
+        : parent(p), vops(params, p->getContext()), mops(M.mparams.setExecParams(params), p->getContext()), matrix(&M)
     {
         x.setOps( &vops );
         b.setOps( &vops );

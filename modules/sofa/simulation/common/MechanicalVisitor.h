@@ -1363,7 +1363,6 @@ public:
     MultiVecCoordId x;
     MultiVecDerivId v;
 
-    MechanicalPropagatePositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams);
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     // compute the acceleration created by the input velocity and the derivative of the mapping
     MultiVecDerivId a;

@@ -128,8 +128,8 @@ void MultiMapping<In,Out>::init()
     ///<TO REMOVE>
     //this->updateMapping();
     ///???
-    apply(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecId::position(), ConstVecId::position());
-    applyJ(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecId::velocity(), ConstVecId::velocity());
+    apply(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecId::position(), ConstVecId::position());
+    applyJ(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecId::velocity(), ConstVecId::velocity());
 
 }
 
@@ -137,9 +137,9 @@ void MultiMapping<In,Out>::init()
 template<class T>
 struct ParallelMultiMappingApply
 {
-    void operator()(const MechanicalParams* mparams /* PARAMS FIRST */, void *m, Shared_rw<defaulttype::SharedVector<typename T::Out::VecCoord*> > out, Shared_r<defaulttype::SharedVector<const typename T::In::VecCoord*> > in)
+    void operator()(const MechanicalParams* mparams  /* PARAMS FIRST */, void *m, Shared_rw<defaulttype::SharedVector<typename T::Out::VecCoord*> > out, Shared_r<defaulttype::SharedVector<const typename T::In::VecCoord*> > in)
     {
-        ((T *)m)->apply(mparams /* PARAMS FIRST */, out.access(), in.read());
+        ((T *)m)->apply(mparams  /* PARAMS FIRST */, out.access(), in.read());
     }
 };
 

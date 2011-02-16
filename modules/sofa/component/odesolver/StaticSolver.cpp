@@ -59,7 +59,7 @@ StaticSolver::StaticSolver()
 void StaticSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId /*vResult*/)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( this->getContext() );
+    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv force(&vop, core::VecDerivId::force() );
     MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );

@@ -99,13 +99,13 @@ public:
 
     void applyLinearizedPosition();
 
-    void applyJT(const core::ConstraintParams *cparams /* PARAMS FIRST */, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
+    void applyJT(const core::ConstraintParams *cparams  /* PARAMS FIRST */, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
     {
         m_previousPosition = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
 //         std::cout<<"applyJT   m_previousPosition = "<<m_previousPosition<<std::endl;
 
-        Inherit::applyJT(cparams /* PARAMS FIRST */, out, in);
+        Inherit::applyJT(cparams  /* PARAMS FIRST */, out, in);
     }
 
 protected:

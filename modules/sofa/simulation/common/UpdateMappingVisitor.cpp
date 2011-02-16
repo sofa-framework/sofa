@@ -34,8 +34,8 @@ namespace simulation
 
 void UpdateMappingVisitor::processMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
 {
-    obj->apply(core::VecCoordId::position(), core::ConstVecCoordId::position());
-    obj->applyJ(core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+    obj->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+    obj->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
 }
 
 void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, core::BaseMapping* /*obj*/)

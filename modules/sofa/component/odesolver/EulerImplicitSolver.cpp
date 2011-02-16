@@ -82,7 +82,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
     sofa::simulation::Visitor::printNode("SolverVectorAllocation");
 #endif
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( this->getContext() );
+    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
     MultiVecDeriv f(&vop, core::VecDerivId::force() );

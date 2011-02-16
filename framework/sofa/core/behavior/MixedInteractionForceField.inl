@@ -175,7 +175,7 @@ double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(co
 
 /*
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const MechanicalParams*  // PARAMS FIRST //, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2 )
+void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const MechanicalParams*, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2 )
 {
     addForce( *f1.beginEdit() , *f2.beginEdit(),
 			  x1.getValue()   , x2.getValue()  ,
@@ -192,7 +192,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(VecDeriv1& , V
 
 /*
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const MechanicalParams* mparams  // PARAMS FIRST //, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)
+void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const MechanicalParams* mparams, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)
 {
     	addDForce(*df1.beginEdit(), *df2.beginEdit(), dx1.getValue(), dx2.getValue(),mparams->kFactor(),mparams->bFactor());
     	df1.endEdit(); df2.endEdit();
@@ -240,7 +240,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1& , 
 
 /*
 template<class DataTypes1, class DataTypes2>
-double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams*  // PARAMS FIRST //, const DataVecCoord1& x1, const DataVecCoord2& x2) const
+double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams*, const DataVecCoord1& x1, const DataVecCoord2& x2) const
 {
 	return getPotentialEnergy( x1.getValue() , x2.getValue() );
 }

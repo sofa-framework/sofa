@@ -970,7 +970,7 @@ void MechanicalObject<DataTypes>::init()
     //case if X0 has been set but not X
     if (getX0()->size() > x_wA.size())
     {
-        vOp(VecId::position(), VecId::restPosition());
+        vOp(core::ExecParams::defaultInstance(), VecId::position(), VecId::restPosition());
     }
 
     if (x_wA.size() != (std::size_t)vsize || v_wA.size() != (std::size_t)vsize)
@@ -1130,7 +1130,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::storeResetState()
 {
     // Save initial state for reset button
-    vOp(VecId::resetPosition(), VecId::position());
+    vOp(core::ExecParams::defaultInstance(), VecId::resetPosition(), VecId::position());
 
     //vOp(VecId::resetVelocity(), VecId::velocity());
     // we only store a resetVelocity if the velocity is not zero
@@ -1144,7 +1144,7 @@ void MechanicalObject<DataTypes>::storeResetState()
         if (!zero) break;
     }
     if (!zero)
-        vOp(VecId::resetVelocity(), VecId::velocity());
+        vOp(core::ExecParams::defaultInstance(), VecId::resetVelocity(), VecId::velocity());
 }
 
 //
@@ -1157,19 +1157,19 @@ void MechanicalObject<DataTypes>::reset()
     if (!reset_position.isSet())
         return;
 
-    vOp(VecId::position(), VecId::resetPosition());
+    vOp(core::ExecParams::defaultInstance(), VecId::position(), VecId::resetPosition());
 
     if (!reset_velocity.isSet())
     {
-        vOp(VecId::velocity());
+        vOp(core::ExecParams::defaultInstance(), VecId::velocity());
     }
     else
     {
-        vOp(VecId::velocity(), VecId::resetVelocity());
+        vOp(core::ExecParams::defaultInstance(), VecId::velocity(), VecId::resetVelocity());
     }
 
-    vOp(VecId::freePosition(), VecId::position());
-    vOp(VecId::freeVelocity(), VecId::velocity());
+    vOp(core::ExecParams::defaultInstance(), VecId::freePosition(), VecId::position());
+    vOp(core::ExecParams::defaultInstance(), VecId::freeVelocity(), VecId::velocity());
 }
 
 template <class DataTypes>
@@ -1727,7 +1727,7 @@ void MechanicalObject<DataTypes>::vFree(const core::ExecParams* /* params */ /* 
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vInit(const core::ExecParams* /* params */ /* PARAMS FIRST */, VecCoordId vId, ConstVecCoordId vSrcId)
+void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS FIRST */, VecCoordId vId, ConstVecCoordId vSrcId)
 {
     Data< VecCoord >* vec_d = this->write(vId);
 
@@ -1736,12 +1736,12 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* /* params */ /* 
         vec_d->forceSet();
 
         if (vSrcId != ConstVecCoordId::null())
-            vOp(vId, vSrcId);
+            vOp(params, vId, vSrcId);
     }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vInit(const core::ExecParams* /* params */ /* PARAMS FIRST */, VecDerivId vId, ConstVecDerivId vSrcId)
+void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS FIRST */, VecDerivId vId, ConstVecDerivId vSrcId)
 {
     Data< VecDeriv >* vec_d = this->write(vId);
 
@@ -1750,7 +1750,7 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* /* params */ /* 
         vec_d->forceSet();
 
         if (vSrcId != ConstVecDerivId::null())
-            vOp(vId, vSrcId);
+            vOp(params, vId, vSrcId);
     }
 }
 
@@ -2140,7 +2140,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams*
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* /* params */ /* PARAMS FIRST */, const VMultiOp& ops)
+void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops)
 {
     // optimize common integration case: v += a*dt, x += v*dt
     if (ops.size() == 2
@@ -2203,7 +2203,7 @@ void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* /* params */ 
         }
     }
     else // no optimization for now for other cases
-        Inherited::vMultiOp(ops);
+        Inherited::vMultiOp(params, ops);
 }
 
 template <class T> inline void clear( T& t )
