@@ -54,8 +54,6 @@ HEADERS += \
            NewMaterial.h \
            NewHookeMaterial.h \
            NewHookeMaterial.inl \
-           Interpolater.h \
-           Interpolater.inl \
            #TetrahedronFEMForceFieldWithExternalMaterial.h \
            #TetrahedronFEMForceFieldWithExternalMaterial.inl
 
@@ -74,6 +72,5 @@ SOURCES += \
            FrameMechanicalObject.cpp \
            GridMaterial.cpp \
            NewHookeMaterial.cpp \
-           Interpolater.cpp \
            #TetrahedronFEMForceFieldWithExternalMaterial.cpp
 
