@@ -4,7 +4,6 @@ $!{
 N
 /\n$/!b loop
 }
-s~CUBA~CUDA~g
 s~// PARAMS FIRST //~/\* PARAMS FIRST \*/~g
 s/,\([ \t\n\r]*\(const [A-Za-z:][A-Za-z:]*Params *\*[^,()]*\(([^()]*)[^()]*\)*\)[ \t\n\r]*\))/,@@@@\1@@@@)/g
 s/,\([ \t\n\r]*\(&\?\(this->\)\?m\?_\?[a-z]\?[pP]arams\)[ \t\n\r]*\))/,@@@@\1@@@@)/g
