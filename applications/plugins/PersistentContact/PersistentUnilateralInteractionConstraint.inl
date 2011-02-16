@@ -71,8 +71,8 @@ void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::resoluti
         force[line]=0; force[line+1]=0; force[line+2]=0;
 
         ///@TODO OPTIMIZATION
-        if (m_constraint)
-            m_constraint->setContactState(line, NONE);
+        /*if (m_constraint)
+        	m_constraint->setContactState(line, NONE);*/
 
         return;
     }
@@ -90,26 +90,49 @@ void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::resoluti
         force[line+2] *= _mu*force[line]/normFt;
 
         ///@TODO OPTIMIZATION
-        if (m_constraint)
+        /*if (m_constraint)
         {
-            m_constraint->setContactState(line, SLIDING);
-            m_constraint->setContactForce(line, Deriv(force[line], force[line+1], force[line+2]));
-        }
+        	m_constraint->setContactState(line, SLIDING);
+        	m_constraint->setContactForce(line, Deriv(force[line], force[line+1], force[line+2]));
+        }*/
     }
     else
     {
         ///@TODO OPTIMIZATION
-        if (m_constraint)
+        /*if (m_constraint)
         {
-            m_constraint->setContactState(line, STICKY);
-            m_constraint->setContactForce(line, Deriv(force[line], force[line+1], force[line+2]));
-        }
+        	m_constraint->setContactState(line, STICKY);
+        	m_constraint->setContactForce(line, Deriv(force[line], force[line+1], force[line+2]));
+        }*/
     }
 }
 
 template< class DataTypes >
 void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::store(int line, double* force, bool /*convergence*/)
 {
+    if (m_constraint)
+    {
+        if(force[line] < 0)
+        {
+            m_constraint->setContactState(line, NONE);
+        }
+        else
+        {
+            double normFt = sqrt(force[line+1]*force[line+1] + force[line+2]*force[line+2]);
+
+            if(normFt > _mu*force[line])
+            {
+                m_constraint->setContactState(line, SLIDING);
+                m_constraint->setContactForce(line, Deriv(force[line], force[line+1], force[line+2]));
+            }
+            else
+            {
+                m_constraint->setContactState(line, STICKY);
+                m_constraint->setContactForce(line, Deriv(force[line], force[line+1], force[line+2]));
+            }
+        }
+    }
+
     m_constraint = 0;
 
     if(_active)
