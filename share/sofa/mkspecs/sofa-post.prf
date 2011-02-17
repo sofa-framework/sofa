@@ -1,0 +1,52 @@
+########################################################################
+# SOFA build system configuration
+#   This file should be included at the end of each pro file 
+########################################################################
+
+########################################################################
+# Definition of artifacts directories
+########################################################################
+
+contains(TEMPLATE, lib) {
+	DESTDIR = $$LIB_DESTDIR
+}
+contains(TEMPLATE, app) {
+	DESTDIR = $$APP_DESTDIR
+}
+
+########################################################################
+# Definition of make install
+########################################################################
+
+contains(TEMPLATE, lib) {
+	INSTALLS += target headers features
+	target.path    = $$SOFA_INSTALL_ROOT/lib
+	headers.files  = $$HEADERS
+	headers.path   = $$SOFA_INSTALL_ROOT/include/sofa/$$SUBDIR_PATH
+	features.files = $${TARGET}.prf
+	features.path  = $$SOFA_INSTALL_ROOT/$$SOFA_FEATURES_PATH
+}
+
+contains(TEMPLATE, app) {
+	INSTALLS += target
+	target.path = $$SOFA_INSTALL_ROOT/bin/
+}
+
+equals(ROOT_PATH, .) {
+	INSTALLS += features
+	features.files = \
+		$$SOFA_FEATURES_PATH/sofa-pre.prf \
+		$$SOFA_FEATURES_PATH/sofa-post.prf \
+		$$ROOT_BUILD_DIR/sofa-pre-custom.prf
+	features.path = $$SOFA_INSTALL_ROOT/$$SOFA_FEATURES_PATH
+}
+
+########################################################################
+# Definition of other targets
+########################################################################
+
+#QMAKE_EXTRA_TARGETS += maintainer-clean
+#maintainer-clean.CONFIG = recursive
+#maintainer-clean.commands = $(DEL_DIR) $$OBJECTS_DIR $$escape_expand(\\n\\t) \
+#                            $(DEL_DIR) OBJ
+#maintainer-clean.depends = distclean

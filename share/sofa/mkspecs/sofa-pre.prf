@@ -1,0 +1,220 @@
+########################################################################
+# SOFA build system configuration
+#   This file should be included at the very beginning of each pro file 
+########################################################################
+
+########################################################################
+# Build system path variables
+#		Warning: trying to modify these variables is pointless, they just
+#		describe where the build system is running.
+########################################################################
+
+FEATURES_DIR = $$IN_PWD
+
+## assumes this .prf file is located in $$SOFA_DIR/share/sofa/mkspecs
+SOFA_DIR = $$replace(FEATURES_DIR, /\\w+/\\w+/\\w+$, )
+
+ROOT_BUILD_DIR = $$(PWD)
+BUILD_DIR = $$OUT_PWD
+
+#ROOT_SRC_DIR = $$SOFA_DIR
+#SRC_DIR = $$ROOT_SRC_DIR/$$SUBDIR_PATH
+#SRC_DIR = $$replace(SRC_DIR, /.$, )
+
+SUBDIR_PATH = $$replace(BUILD_DIR, $$ROOT_BUILD_DIR, .)
+SUBDIR_PATH = $$replace(SUBDIR_PATH, ^\\./,)
+
+ROOT_PATH = $$replace(SUBDIR_PATH, [^/]+/, ../)
+ROOT_PATH = $$replace(ROOT_PATH, \\w+, ..)
+
+message(SOFA_DIR = $$SOFA_DIR)
+message(ROOT_BUILD_DIR = $$ROOT_BUILD_DIR)
+message(BUILD_DIR = $$BUILD_DIR)
+message(SUBDIR_PATH = $$SUBDIR_PATH)
+message(ROOT_PATH = $$ROOT_PATH)
+
+########################################################################
+# Other descriptive variables
+########################################################################
+
+contains(CONFIG, release, debug|release) {
+	CONFIGDEBUG = release
+} else {
+	CONFIGDEBUG = debug
+}
+
+########################################################################
+# Extension point:
+#		If needed, create a file name sofa-pre-custom.prf at the root of
+#		your build dir (where you run qmake), and set any variable you need.
+#		Values defined there will override default values.
+#		If you run "make install" this file will be installed.
+########################################################################
+
+CUSTOM_FEATURES_FILE = $$ROOT_BUILD_DIR/sofa-pre-custom
+exists($${CUSTOM_FEATURES_FILE}.prf) {
+	load($$CUSTOM_FEATURES_FILE)
+}
+
+INSTALLED_FEATURE_FILE = $$FEATURES_DIR/sofa-pre-custom
+exists($${INSTALLED_FEATURE_FILE}.prf) {
+	load($$INSTALLED_FEATURE_FILE)
+}
+
+########################################################################
+# Other configuration variables
+########################################################################
+
+contains (CONFIGDEBUG, debug) {
+	LIBSUFFIX = d
+}
+
+########################################################################
+# Definition of Qt standard paths for intermediate files
+########################################################################
+
+isEmpty(OBJECTS_DIR) {
+	OBJECTS_DIR = OBJ/$$CONFIGDEBUG
+}
+
+isEmpty(RCC_DIR) {
+	RCC_DIR = RCC
+}
+
+#isEmpty(MOC_DIR) {
+#	MOC_DIR = MOC
+#}
+
+#UI_DIR
+
+########################################################################
+# Definition of SOFA-specific paths
+########################################################################
+
+isEmpty(SOFA_INSTALL_ROOT) {
+		SOFA_INSTALL_ROOT = /usr/local
+}
+
+isEmpty(SOFA_FEATURES_PATH) {
+	SOFA_FEATURES_PATH = share/sofa/mkspecs
+}
+
+########################################################################
+# Some configuration
+########################################################################
+
+isEmpty(CONFIGLIBRARIES) {
+	CONFIGLIBRARIES=dynamiclib
+}
+
+isEmpty(LIB_DESTDIR) {
+	LIB_DESTDIR = $$ROOT_PATH/lib
+}
+
+isEmpty(APP_DESTDIR) {
+	APP_DESTDIR = $$ROOT_PATH/bin
+}
+
+CONFIG += $$CONFIGLIBRARIES
+
+
+########################################################################
+# Dependency management functions
+########################################################################
+
+defineTest(addSubdirs) {
+	for(subdirs, 1) {
+		entries = $$files($$subdirs)
+		for(entry, entries) {
+			name = $$replace(entry, [/\\\\], _)
+			SUBDIRS += $$name
+			eval ($${name}.subdir = $$entry)
+
+			for(dep, 2) {
+				eval ($${name}.depends += $$replace(dep, [/\\\\], _))
+			}
+			export ($${name}.subdir)
+			export ($${name}.depends)
+		}
+	}
+	export (SUBDIRS)
+}
+
+
+defineTest(isLibraryInstalled) {
+	name = $$1
+	exists($$FEATURES_DIR/$${name}.prf) {
+		return (true)
+	}	else {
+		return (false)
+	} 
+}
+
+defineTest(isSourceAvailable) {
+	name = $$1
+	dir  = $$2
+	exists($$SOFA_DIR/$$dir/$${name}.pro) {
+		return (true)
+	}	else {
+		return (false)
+	}
+}
+
+defineTest(activateLib) {
+	name = $$1
+	dir  = $$2
+	deps = $$3
+	isSourceAvailable($$name, $$dir) {
+		addSubdirs($$dir, $$deps)
+	} else {
+		!isLibraryInstalled($$name) {
+			error(Cannot find $$name library)
+		}
+	}
+}
+
+defineTest(activateApp) {
+	name = $$1
+	dir  = $$2
+	deps = $$3
+	addSubdirs($$dir, $$deps)
+}
+
+defineTest(requireLib) {
+	name = $$1
+	dir  = $$2
+	isSourceAvailable($$name, $$dir) {
+		message(Using shipped version of $$name)
+		INCLUDEPATH *= $$SOFA_DIR/$$dir
+		LIBS *= -L$$LIB_DESTDIR
+		#load($$SOFA_DIR/$$dir/$$name)
+	} else {
+		message(Using installed version of $$name)
+		INCLUDEPATH *= $$SOFA_DIR/include/sofa/$$dir
+		LIBS *= -L$$SOFA_DIR/lib
+		#load($$name)
+	}
+	LIBS *= -l$$name$$LIBSUFFIX
+
+	export (INCLUDEPATH)
+	export (LIBS)
+}
+
+defineTest(requireSofaLib) {
+	name = $$1
+	dir  = $$2
+	sourcedir = $$replace($$dir, (applications|framework|modules)/.+, \\1)
+	message(sourcedir = $$sourcedir)
+
+	isSourceAvailable($$name, $$dir) {
+		INCLUDEPATH *= $$SOFA_DIR/$$sourcedir
+		LIBS *= -L$$LIB_DESTDIR
+	} else {
+		INCLUDEPATH *= $$SOFA_DIR/include/sofa/$$sourcedir
+		LIBS *= -L$$SOFA_DIR/lib
+	}
+	LIBS *= -l$$name$$LIBSUFFIX
+
+	export (INCLUDEPATH)
+	export (LIBS)
+}
