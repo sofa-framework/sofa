@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="1" showBoundingCollisionModels="1" showForceFields="0" gravity="0 -20 -1">
-    <Object type="CollisionPipeline" depth="6" verbose="1" draw="0"/>
+    <Object type="CollisionPipeline" depth="2" verbose="1" draw="0"/>
     <Object type="BruteForceDetection" name="N2" />
     <Object type="LocalMinDistance" name="localmindistance" alarmDistance="0.3" contactDistance="0.2" />
     <Object type="CollisionResponse" name="Response" response="default" />

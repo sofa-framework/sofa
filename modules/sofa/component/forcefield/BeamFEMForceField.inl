@@ -88,12 +88,12 @@ void BeamFEMForceField<DataTypes>::init()
         _indexedElements = &_topology->getEdges();
         if (_list_segment.getValue().size() == 0)
         {
-            std::cout<<"Forcefield named "<<this->getName()<<" applies to the wholo topo"<<std::endl;
+            sout<<"Forcefield named "<<this->getName()<<" applies to the wholo topo"<<sendl;
             _partial_list_segment = false;
         }
         else
         {
-            std::cout<<"Forcefield named "<<this->getName()<<" applies to a subset of edges"<<std::endl;
+            sout<<"Forcefield named "<<this->getName()<<" applies to a subset of edges"<<sendl;
             _partial_list_segment = true;
 
             for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
