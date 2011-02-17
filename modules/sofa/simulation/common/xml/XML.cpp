@@ -81,7 +81,12 @@ int numDefault=0;
 BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot = false)
 {
     //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return NULL;
-    if (root->Type() != TiXmlNode::ELEMENT) return NULL;
+
+    // TinyXml API changed in 2.6.0, ELEMENT was replaced with TINYXML_ELEMENT
+    // As the version number is not available as a macro, the most portable was is to
+    // replace these constants with checks of the return value of ToElement()
+    // (which is already done here). -- Jeremie A. 02/07/2011
+    // if (root->Type() != TiXmlNode::ELEMENT) return NULL;
     TiXmlElement* element = root->ToElement();
     if (!element || !element->Value() || !element->Value()[0]) return NULL;
 
@@ -268,23 +273,29 @@ BaseElement* loadFromFile(const char *filename)
     // library used.
     //
 
-    TiXmlDocument doc; // the resulting document tree
+    TiXmlDocument* doc = new TiXmlDocument; // the resulting document tree
 
     // xmlSubstituteEntitiesDefault(1);
 
-    if (!(doc.LoadFile(filename)))
+    if (!(doc->LoadFile(filename)))
     {
-        std::cerr << "Failed to open " << filename << "\n" << doc.ErrorDesc() << " at line " << doc.ErrorRow() << " row " << doc.ErrorCol() << std::endl;
+        std::cerr << "Failed to open " << filename << "\n" << doc->ErrorDesc() << " at line " << doc->ErrorRow() << " row " << doc->ErrorCol() << std::endl;
+        delete doc;
         return NULL;
     }
-    return processXMLLoading(filename, doc);
-
+    BaseElement* r = processXMLLoading(filename, *doc);
+    doc->Print();
+    std::cerr << "clear doc"<<std::endl;
+    doc->Clear();
+    std::cerr << "delete doc"<<std::endl;
+    delete doc;
+    std::cerr << "<loadFromFile"<<std::endl;
+    return r;
 }
 
 
 BaseElement* includeNode(TiXmlNode* root,const char *basefilename)
 {
-    //if (root->Type != TiXmlNode::NodeType::ELEMENT) return NULL;
     TiXmlElement* element = root->ToElement();
     if (!element) return NULL;
 

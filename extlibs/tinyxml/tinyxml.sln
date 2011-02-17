@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual C++ Express 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyXmlTest", "tinyXmlTest.vcproj", "{34719950-09E8-457E-BE23-8F1CE3A1F1F6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C406DAEC-0886-4771-8DEA-9D7329B46CC1} = {C406DAEC-0886-4771-8DEA-9D7329B46CC1}
