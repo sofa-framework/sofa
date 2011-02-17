@@ -1,14 +1,15 @@
 <?xml version="1.0"?>
-<Node name="root" dt="0.01" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="0" showForceFields="0">
+<Node name="root" dt="0.01" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="1" showForceFields="0"  gravity="0 -7  0">
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
 	<CollisionResponse name="Response" response="default" />
 	<CollisionGroup name="Group" />
+
 	<Node name="beam">
 		<EulerImplicit rayleighStiffness="0" printLog="false" />
 		<BTDLinearSolver printLog="false" verbose="false" />
-		<MechanicalObject template="Rigid" name="DOFs" position="0 0 0 0 0 0 1  5 0 0 0 0 0 1  10 0 0 0 0 0 1" />		
+		<MechanicalObject template="Rigid" name="DOFs" position="0 0 0 0 0 0 1  10 0 0 0 0 0 1  20 0 0 0 0 0 1" />		
 		<EdgeSetTopologyContainer edges="0 1 1 2"/>
 		<FixedConstraint name="FixedConstraint" indices="0" />
 		<UniformMass />
@@ -18,13 +19,15 @@
 			<EdgeSetTopologyContainer name="targetTopology"/>
 	      		<EdgeSetTopologyModifier name="Modifier"/>
 			<MechanicalObject template="Vec3d"  name="splineMapped"/>
-			<BeamBsplineMapping isMechanical="true" input="@../DOFs" output="@splineMapped" BezierSplitting="3"/>
+			<!--by default, a discrete Bezier curve have 4 points (0_level of splitting). Each time splitting, one curve split in two-->
+			<BeamBsplineMapping isMechanical="true" input="@../DOFs" output="@splineMapped" SplittingLevel="0"/>
 			<Line />
 		</Node>
 	</Node>
 
 	<Node name="Points">
-		<MechanicalObject name="DOFs1" position="0 -1 0 1 -1 0 2 -1 0 3 -1 0 4 -1 0 5 -1 0 6 -1 0 7 -1 0 8 -1 0 9 -1 0 " />		
-		<Point/>
+		<MechanicalObject name="DOFs1" position="4 -2 0 8 -2 0 16 -2 0 20 -2 0" />	
+		<PointSetTopologyContainer name="targetTopology"/>	
+		<SphereModel radius="0.3"/>
 	</Node>
 </Node>
