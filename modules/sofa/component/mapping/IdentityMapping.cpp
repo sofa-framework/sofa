@@ -50,10 +50,12 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
         .add< IdentityMapping< Vec3dTypes, Vec3dTypes > >()
         .add< IdentityMapping< Vec2dTypes, Vec2dTypes > >()
         .add< IdentityMapping< Vec1dTypes, Vec1dTypes > >()
+        .add< IdentityMapping< Vec6dTypes, Vec3dTypes > >()
         .add< IdentityMapping< Vec6dTypes, Vec6dTypes > >()
         .add< IdentityMapping< Rigid3dTypes, Rigid3dTypes > >()
         .add< IdentityMapping< Rigid2dTypes, Rigid2dTypes > >()
         .add< IdentityMapping< Vec3dTypes, ExtVec3fTypes > >()
+        .add< IdentityMapping< Vec6dTypes, ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< IdentityMapping< Vec3fTypes, Vec3fTypes > >()
@@ -99,8 +101,10 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3dTypes, Vec3dTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2dTypes, Vec2dTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1dTypes, Vec1dTypes >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec3dTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec6dTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3dTypes, ExtVec3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, ExtVec3fTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Rigid3dTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2dTypes, Rigid2dTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Vec3dTypes >;
@@ -128,8 +132,10 @@ template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2dTypes, Vec2fType
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2fTypes, Vec2dTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1dTypes, Vec1fTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1fTypes, Vec1dTypes >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec3fTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec6fTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6fTypes, Vec6dTypes >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6fTypes, Vec3dTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, Rigid3dTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Rigid3fTypes >;
 template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2dTypes, Rigid2fTypes >;
