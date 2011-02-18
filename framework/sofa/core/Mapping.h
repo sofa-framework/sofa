@@ -74,9 +74,9 @@ public:
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
 protected:
-    /// Input Model
+    /// Input Model, also called parent
     State< In >* fromModel;
-    /// Output Model
+    /// Output Model, also called child
     State< Out >* toModel;
 public:
     /// Name of the Input Model
@@ -178,12 +178,13 @@ public:
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyDJT (Force)///
-    /// Apply the change of force due to the nonlinearity of the mapping.
+    /// Apply the change of force due to the nonlinearity of the mapping and the last propagated displacement.
     /// The default implementation does nothing, assuming a linear mapping.
     ///
     /// If the MechanicalMapping can be represented as a matrix J, this method computes
-    /// $ parentForce += dJ^t childForce $
-    /// This requires that the child force vector has remained unchanged since the last computation of the force.
+    /// \f$ f_p += dJ^t f_c \f$, where \f$ f_p \f$ is the parent force and  \f$ f_c \f$ is the child force.
+    /// The child force is accessed in the child state using mparams->readF() .  This requires that the child force vector is used by the solver to compute the force \f$ f(x,v)\f$ corresponding to the current positions and velocities, and not to store auxiliary values.
+    /// The displacement is accessed in the parent state using mparams->readDx() .
     virtual void applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ /* PARAMS FIRST */, MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) {}
 
 
@@ -224,9 +225,10 @@ public:
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// computeAccFromMapping
-    /// If the mapping input has a rotation velocity, it computes the subsequent acceleration
-    /// created by the derivative terms
-    /// $ a_out = w^(w^rel_pos)	$
+    /// Compute the acceleration of the child, based on the acceleration and the velocity of the parent.
+    /// Let \f$ v_c = J v_p \f$ be the velocity of the child given the velocity of the parent, then the acceleration is \f$ a_c = J a_p + dJ v_p \f$.
+    /// The second term is null in linear mappings, otherwise it encodes the acceleration due to the change of mapping at constant parent velocity.
+    /// For instance, in a rigid mapping with angular velocity\f$ w \f$,  the second term is $ w^(w^rel_pos) $
     virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
     {
         if(this->fromModel && this->toModel)
