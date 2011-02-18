@@ -27,7 +27,8 @@
 
 #include <sofa/component/projectiveconstraintset/PartialLinearMovementConstraint.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/Constraint.inl>
+#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
@@ -81,11 +82,20 @@ void PartialLinearMovementConstraint<DataTypes>::FCRemovalFunction(int pointInde
 
 template <class DataTypes>
 PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
-    : core::behavior::Constraint<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
     , m_keyMovements(  initData(&m_keyMovements,"movements","movements corresponding to the key times") )
     , movedDirections( initData(&movedDirections,"movedDirections","for each direction, 1 if moved, 0 if free") )
+    , showMovement( initData(&showMovement, (bool)false, "showMovement", "Visualization of the movement to be applied to constrained dofs."))
+    , linearMovementBetweenNodesInIndices( initData(&linearMovementBetweenNodesInIndices, (bool)false, "linearMovementBetweenNodesInIndices", "Take into account the linear movement between the constrained points"))
+    , mainIndice( initData(&mainIndice, "mainIndice", "The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes "))
+    , minDepIndice( initData(&minDepIndice, "minDepIndice", "The indice node in the list of constrained nodes, which is imposed the minimum displacment "))
+    , maxDepIndice( initData(&maxDepIndice, "maxDepIndice", "The indice node in the list of constrained nodes, which is imposed the maximum displacment "))
+    , m_imposedDisplacmentOnMacroNodes(  initData(&m_imposedDisplacmentOnMacroNodes,"imposedDisplacmentOnMacroNodes","The imposed displacment on macro nodes") )
+    , X0 ( initData ( &X0,(Real) 0.0,"X0","Size of specimen in X-direction" ) )
+    , Y0 ( initData ( &Y0,(Real) 0.0,"Y0","Size of specimen in Y-direction" ) )
+    , Z0 ( initData ( &Z0,(Real) 0.0,"Z0","Size of specimen in Z-direction" ) )
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -96,7 +106,7 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
     m_keyTimes.endEdit();
     m_keyMovements.beginEdit()->push_back( Deriv() );
     m_keyMovements.endEdit();
-    Vec6Bool movedDirection;
+    VecBool movedDirection;
     for( unsigned i=0; i<NumDimensions; i++)
         movedDirection[i] = true;
     movedDirections.setValue(movedDirection);
@@ -163,7 +173,7 @@ void PartialLinearMovementConstraint<DataTypes>::addKeyMovement(Real time, Deriv
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::init()
 {
-    this->core::behavior::Constraint<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
     topology = this->getContext()->getMeshTopology();
 
@@ -199,7 +209,7 @@ template <class DataTypes> template <class DataDeriv>
 void PartialLinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx)
 {
     Real cT = (Real) this->getContext()->getTime();
-    Vec6Bool movedDirection = movedDirections.getValue();
+    VecBool movedDirection = movedDirections.getValue();
     if ((cT != currentTime) || !finished)
     {
         findKeyTimes();
@@ -270,7 +280,7 @@ void PartialLinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
     {
         findKeyTimes();
     }
-    Vec6Bool movedDirection = movedDirections.getValue();
+    VecBool movedDirection = movedDirections.getValue();
     //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
     if(finished && nextT != prevT)
     {
@@ -280,10 +290,76 @@ void PartialLinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
         Deriv m = prevM + (nextM-prevM)*dt;
 
         //set the motion to the Dofs
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        if(linearMovementBetweenNodesInIndices.getValue())
         {
-            for( unsigned j=0; j< NumDimensions; j++)
-                if(movedDirection[j]) x[*it][j] = x0[*it][j] + m[j] ;
+
+            const helper::vector<Real> &imposedDisplacmentOnMacroNodes = this->m_imposedDisplacmentOnMacroNodes.getValue();
+            Real a = X0.getValue();
+            Real b = Y0.getValue();
+            Real c = Z0.getValue();
+            bool case2d=false;
+            if((a==0.0)||(b==0.0)||(c==0.0)) case2d=true;
+            if(a==0.0) {a=b; b=c;}
+            if(b==0.0) {b=c;}
+
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                for( unsigned j=0; j< NumDimensions; j++)
+                {
+                    if(movedDirection[j])
+                    {
+                        if(case2d)
+                        {
+                            x[*it][j] = x0[*it][j] + (1.0/(a*b))*((a-x0[*it][0])*(b-x0[*it][1])*imposedDisplacmentOnMacroNodes[0]+   ///< N1
+                                    x0[*it][0]*(b-x0[*it][1])*imposedDisplacmentOnMacroNodes[1]+         ///< N2
+                                    x0[*it][0]*x0[*it][1]*imposedDisplacmentOnMacroNodes[2]+              ///< N3
+                                    (a-x0[*it][0])*x0[*it][1]*imposedDisplacmentOnMacroNodes[3])*m[j];    ///< N4
+                            /*   4|----------------|3
+                                  |                |
+                                  |                |
+                                  |                |
+                                 1|----------------|2     */
+                        }
+                        else ///< case3d
+                        {
+                            //        |Y
+                            // 	      5---------8
+                            //       /|	       /|
+                            //      / |	      / |
+                            //     6--|------7  |
+                            //     |  |/	 |  |
+                            //     |  1------|--4--->X
+                            //     | / 	     | /
+                            //     |/	     |/
+                            //     2---------3
+                            //   Z/
+                            //
+
+                            x[*it][j] = x0[*it][j] + (1.0/(a*b*c))*(
+                                    (a-x0[*it][0])*(b-x0[*it][1])*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[0]+    ///< N1
+                                    (a-x0[*it][0])*(b-x0[*it][1])*x0[*it][2]*imposedDisplacmentOnMacroNodes[1]+        ///< N2
+                                    x0[*it][0]*(b-x0[*it][1])*x0[*it][2]*imposedDisplacmentOnMacroNodes[2]+            ///< N3
+                                    x0[*it][0]*(b-x0[*it][1])*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[3]+        ///< N4
+                                    (a-x0[*it][0])*x0[*it][1]*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[4]+        ///< N5
+                                    (a-x0[*it][0])*x0[*it][1]*x0[*it][2]*imposedDisplacmentOnMacroNodes[5]+            ///< N6
+                                    x0[*it][0]*x0[*it][1]*x0[*it][2]*imposedDisplacmentOnMacroNodes[6]+                ///< N7
+                                    x0[*it][0]*x0[*it][1]*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[7]             ///< N8
+
+                                    )*m[j];
+
+                        }
+                    }
+                }
+            }
+
+        }
+        else
+        {
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                for( unsigned j=0; j< NumDimensions; j++)
+                    if(movedDirection[j]) x[*it][j] = x0[*it][j] + m[j] ;
+            }
         }
     }
 }
@@ -329,20 +405,52 @@ template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (1,0.5,0.5,1);
-    glBegin (GL_LINES);
-    const SetIndexArray & indices = m_indices.getValue().getArray();
-    for (unsigned int i=0 ; i<m_keyMovements.getValue().size()-1 ; i++)
+    if (showMovement.getValue())
     {
+        glDisable (GL_LIGHTING);
+        glPointSize(10);
+        glColor4f (1,0.5,0.5,1);
+        glBegin (GL_LINES);
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+        if(linearMovementBetweenNodesInIndices.getValue())
+        {
+            const VecCoord& x = *this->mstate->getX();
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                gl::glVertexT(x0[*it]);
+                gl::glVertexT(x[*it]);
+            }
+
+        }
+        else
+        {
+
+            for (unsigned int i=0 ; i<m_keyMovements.getValue().size()-1 ; i++)
+            {
+                for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+                {
+                    gl::glVertexT(x0[*it]+m_keyMovements.getValue()[i]);
+                    gl::glVertexT(x0[*it]+m_keyMovements.getValue()[i+1]);
+                }
+            }
+        }
+        glEnd();
+    }
+    else
+    {
+        const VecCoord& x = *this->mstate->getX();
+
+        sofa::helper::vector< Vector3 > points;
+        Vector3 point;
+        unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
+        const SetIndexArray & indices = m_indices.getValue().getArray();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            gl::glVertexT(x0[*it]+m_keyMovements.getValue()[i]);
-            gl::glVertexT(x0[*it]+m_keyMovements.getValue()[i+1]);
+            for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
+            points.push_back(point);
         }
+        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
-    glEnd();
 }
 
 // Specialization for rigids

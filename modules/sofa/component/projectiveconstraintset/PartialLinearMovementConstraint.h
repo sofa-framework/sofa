@@ -51,14 +51,17 @@ using core::objectmodel::Data;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 
-/** impose a motion to given DOFs (translation and rotation)
+/** impose a motion to given DOFs (translation and rotation) in some directions only.
+  The moved and free directioons are the same for all the particles, defined  in the movedDirections attribute.
 	The motion between 2 key times is linearly interpolated
 */
+
+
 template <class DataTypes>
 class PartialLinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PartialLinearMovementConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::Constraint, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PartialLinearMovementConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -77,6 +80,10 @@ public :
     /// the motions corresponding to the key frames
     Data<VecDeriv > m_keyMovements;
 
+    /// attributes to precise display
+    /// if showMovement is true we display the expected movement
+    /// otherwise we show which are the fixed dofs
+    Data< bool > showMovement;
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
     ///the motions corresponding to the surrouding key times
@@ -84,9 +91,17 @@ public :
     ///initial constrained DOFs position
     VecCoord x0;
 
+    Data<bool> linearMovementBetweenNodesInIndices;
+    Data<unsigned> mainIndice;
+    Data<unsigned> minDepIndice;
+    Data<unsigned> maxDepIndice;
+    Data<helper::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
+    ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
+    Data<Real> X0,Y0,Z0;
+
     enum { NumDimensions = Deriv::total_size };
-    typedef sofa::helper::fixed_array<bool,NumDimensions> Vec6Bool;
-    Data<Vec6Bool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
+    typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
+    Data<VecBool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
 
     PartialLinearMovementConstraint();
 
