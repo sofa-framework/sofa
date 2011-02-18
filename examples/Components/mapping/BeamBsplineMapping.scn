@@ -20,7 +20,7 @@
 	      		<EdgeSetTopologyModifier name="Modifier"/>
 			<MechanicalObject template="Vec3d"  name="splineMapped"/>
 			<!--by default, a discrete Bezier curve have 4 points (0_level of splitting). Each time splitting, one curve split in two-->
-			<BeamBsplineMapping isMechanical="true" input="@../DOFs" output="@splineMapped" SplittingLevel="1"/>
+			<BeamBsplineMapping isMechanical="true" input="@../DOFs" output="@splineMapped" SplittingLevel="0" Draw="1"/>
 			<Line />
 		</Node>
 	</Node>
