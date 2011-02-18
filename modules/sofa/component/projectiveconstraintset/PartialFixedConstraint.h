@@ -90,8 +90,8 @@ public:
     Data<bool> f_fixAll;
     Data<double> _drawSize;
     enum { NumDimensions = Deriv::total_size };
-    typedef sofa::helper::fixed_array<bool,NumDimensions> Vec6Bool;
-    Data<Vec6Bool> fixedDirections;  ///< Defines the directions in which the particles are fixed: true (or 1) for fixed, false (or 0) for free.
+    typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
+    Data<VecBool> fixedDirections;  ///< Defines the directions in which the particles are fixed: true (or 1) for fixed, false (or 0) for free.
 
     PartialFixedConstraint();
 

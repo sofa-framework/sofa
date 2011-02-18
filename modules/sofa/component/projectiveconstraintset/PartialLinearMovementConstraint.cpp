@@ -176,14 +176,14 @@ int PartialLinearMovementConstraintClass = core::RegisterObject("translate given
         .add< PartialLinearMovementConstraint<Vec3dTypes> >()
         .add< PartialLinearMovementConstraint<Vec2dTypes> >()
         .add< PartialLinearMovementConstraint<Vec1dTypes> >()
-//.add< PartialLinearMovementConstraint<Vec6dTypes> >()
+        .add< PartialLinearMovementConstraint<Vec6dTypes> >()
         .add< PartialLinearMovementConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< PartialLinearMovementConstraint<Vec3fTypes> >()
         .add< PartialLinearMovementConstraint<Vec2fTypes> >()
         .add< PartialLinearMovementConstraint<Vec1fTypes> >()
-//.add< PartialLinearMovementConstraint<Vec6fTypes> >()
+        .add< PartialLinearMovementConstraint<Vec6fTypes> >()
         .add< PartialLinearMovementConstraint<Rigid3fTypes> >()
 #endif
         ;
@@ -192,14 +192,14 @@ int PartialLinearMovementConstraintClass = core::RegisterObject("translate given
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec3dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec2dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec1dTypes>;
-//template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec6dTypes>;
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec6dTypes>;// Phuoc
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec3fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec2fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec1fTypes>;
-//template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec6fTypes>;
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec6fTypes>; //Phuoc
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Rigid3fTypes>;
 #endif
 
