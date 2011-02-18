@@ -317,23 +317,24 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             for (unsigned int i = 0; i < dof_on_node; i++)
             {
                 unitary_force.clear();
+
                 //serr<<"dof n:"<<i<<sendl;
                 unitary_force[i]=1.0;
                 force[f] = unitary_force;
+
                 ////// reset Position and Velocities ///////
                 velocity.clear();
                 velocity.resize(nbNodes);
                 for (unsigned int n=0; n<nbNodes; n++)
                     pos[n] = pos0[n];
-                ////////////////////////////////////////////
-                //serr<<"pos0 set"<<sendl;
 
-                /*	if (f*dof_on_node+i < 2)
-                	{
-                		eulerSolver->f_verbose.setValue(true);
-                		eulerSolver->f_printLog.setValue(true);
-                	//	serr<<"getF : "<<force<<sendl;
-                	}*/
+                /*
+                if (f*dof_on_node+i < 2)
+                {
+                	eulerSolver->f_verbose.setValue(true);
+                	eulerSolver->f_printLog.setValue(true);
+                }
+                */
 
                 double fact = 1.0; // christian : it is not a compliance... but an admittance that is computed !
                 if (eulerSolver)
@@ -351,14 +352,16 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
                 velocity = *mstate->getV();
                 fact /= unitary_force[i];
+                fact /= dt;
 
-                /*	if (f*dof_on_node+i < 2)
-                	{
-                		//eulerSolver->solve(core::ExecParams::defaultInstance()   // PARAMS FIRST //, dt, core::VecCoordId::position(), core::VecDerivId::velocity());
-                		eulerSolver->f_verbose.setValue(false);
-                		eulerSolver->f_printLog.setValue(false);
-                	//	serr<<"getV : "<<velocity<<sendl;
-                	}*/
+                /*
+                if (f*dof_on_node+i < 2)
+                {
+                //	eulerSolver->solve(core::ExecParams::defaultInstance()   // PARAMS FIRST //, dt, core::VecCoordId::position(), core::VecDerivId::velocity());
+                	eulerSolver->f_verbose.setValue(false);
+                	eulerSolver->f_printLog.setValue(false);
+                }
+                */
 
                 for (unsigned int v=0; v<nbNodes; v++)
                 {
