@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<Node name="root" dt="0.01" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="1" showForceFields="0"  gravity="0 -7  0">
+<Node name="root" dt="0.01" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="1" showForceFields="0"  gravity="0 -5  0">
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
-	<MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+	<MinProximityIntersection name="Proximity" alarmDistance="0.05" contactDistance="0.02" />
 	<CollisionResponse name="Response" response="default" />
 	<CollisionGroup name="Group" />
 
@@ -20,13 +20,13 @@
 	      		<EdgeSetTopologyModifier name="Modifier"/>
 			<MechanicalObject template="Vec3d"  name="splineMapped"/>
 			<!--by default, a discrete Bezier curve have 4 points (0_level of splitting). Each time splitting, one curve split in two-->
-			<BeamBsplineMapping isMechanical="true" input="@../DOFs" output="@splineMapped" SplittingLevel="0"/>
+			<BeamBsplineMapping isMechanical="true" input="@../DOFs" output="@splineMapped" SplittingLevel="1"/>
 			<Line />
 		</Node>
 	</Node>
 
 	<Node name="Points">
-		<MechanicalObject name="DOFs1" position="4 -2 0 8 -2 0 16 -2 0 20 -2 0" />	
+		<MechanicalObject name="DOFs1" position="4 -3 0 8 -3 0 12 -3 0 16 -3 0 20 -3 0" />	
 		<PointSetTopologyContainer name="targetTopology"/>	
 		<SphereModel radius="0.3"/>
 	</Node>
