@@ -12,7 +12,7 @@
 		<MechanicalObject name="dofs" />
                 <FixedConstraint name="FixedConstraint" indices="3 39 64" />
 		<DiagonalMass massDensity="1" name="computed using mass density"/>
-		<TetrahedralCorotationalFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/> 
+		<TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/> 
 		<Node name="TetraTopology2">
 			<TetrahedronSetTopologyContainer name="Container2"/>
 			<TetrahedronSetTopologyModifier/>

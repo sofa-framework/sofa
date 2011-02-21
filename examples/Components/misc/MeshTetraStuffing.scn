@@ -19,14 +19,14 @@
         <!-- Algorithms: used in DiagonalMass to compute the mass -->
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo"  />
         <DiagonalMass massDensity="1" name="computed using mass density" />
-        <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" method="large" />
+        <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" method="large" />
         <BoxConstraint box="-6 0 -2 -2 1.5 3" />
         <!--<Sphere radius="0.4" />-->
 <!--
         <Node name="Surface">
 	  <include href="Objects/TriangleSetTopology.xml" />
 	  <Tetra2TriangleTopologicalMapping object1="../../volume" object2="Container"/>
-          <TriangularFEMForceField name="FEM" youngModulus="10" poissonRatio="0.3" method="large" /> 
+          <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" /> 
         </Node>
 -->
         <Node name="VM">
@@ -49,7 +49,7 @@
         <Mesh name="volume" points="@../input/stuffing.outputPoints" tetras="@../input/stuffing.outputTetras"/>
         <MechanicalObject template="CudaVec3f" />
         <UniformMass totalmass="5" name="mass" />
-        <TetrahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" method="large" />
+        <TetrahedronFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" method="large" />
         <BoxConstraint box="-6 0 -2 -2 1.5 3" />
 <!--
         <Node name="Surface">
@@ -57,7 +57,7 @@
 	  <Tetra2TriangleTopologicalMapping object1="../../volume" object2="Container"/>
           <MechanicalObject/>
           <IdentityMapping/>
-          <TriangularFEMForceField name="FEM" youngModulus="10" poissonRatio="0.3" method="large" /> 
+          <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" /> 
         </Node>
 -->
         <Node name="VM">
