@@ -378,8 +378,8 @@ public:
                 object1Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object1",NULL));
                 //context->serr << "Deprecated use of attribute " << "object1" << context->sendl;
                 //context->serr << "Use now : input=\"@"
-                        << object1Path
-                                << "\""<< context->sendl;
+                //              << object1Path
+                //              << "\""<< context->sendl;
                 bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
             }
 
