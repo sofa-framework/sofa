@@ -294,12 +294,12 @@ void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mpa
 
 /*
 template<class DataTypes>
-void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams*, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2 )
+void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2 )
 {
-    addForce( *f1.beginEdit() , *f2.beginEdit(),
-			  x1.getValue()   , x2.getValue()  ,
-			  v1.getValue()   , v2.getValue() );
-	f1.endEdit(); f2.endEdit();
+    addForce( *f1.beginEdit(mparams) , *f2.beginEdit(mparams),
+			  x1.getValue(mparams)   , x2.getValue(mparams)  ,
+			  v1.getValue(mparams)   , v2.getValue(mparams) );
+	f1.endEdit(mparams); f2.endEdit(mparams);
 }
 template<class DataTypes>
 void PairInteractionForceField<DataTypes>::addForce(VecDeriv& , VecDeriv& , const VecCoord& , const VecCoord& , const VecDeriv& , const VecDeriv& )
@@ -313,8 +313,8 @@ void PairInteractionForceField<DataTypes>::addForce(VecDeriv& , VecDeriv& , cons
 template<class DataTypes>
 void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2)
 {
-	addDForce(*df1.beginEdit(), *df2.beginEdit(), dx1.getValue(), dx2.getValue(),mparams->kFactor(),mparams->bFactor());
-	df1.endEdit(); df2.endEdit();
+	addDForce(*df1.beginEdit(mparams), *df2.beginEdit(mparams), dx1.getValue(mparams), dx2.getValue(mparams),mparams->kFactor(),mparams->bFactor());
+	df1.endEdit(mparams); df2.endEdit(mparams);
 }
 template<class DataTypes>
 void PairInteractionForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double)
@@ -380,9 +380,9 @@ double PairInteractionForceField<DataTypes>::getPotentialEnergy(const Mechanical
 
 /*
 template<class DataTypes>
-double PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams*, const DataVecCoord& x1, const DataVecCoord& x2 ) const
+double PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x1, const DataVecCoord& x2 ) const
 {
-	return getPotentialEnergy( x1.getValue() , x2.getValue() );
+	return getPotentialEnergy( x1.getValue(mparams) , x2.getValue(mparams) );
 }
 template<class DataTypes>
 double PairInteractionForceField<DataTypes>::getPotentialEnergy(const VecCoord& , const VecCoord& ) const

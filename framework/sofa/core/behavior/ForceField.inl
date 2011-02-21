@@ -102,13 +102,13 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams /* PARAMS F
 }
 #ifndef SOFA_DEPRECATE_OLD_API
 template<class DataTypes>
-void ForceField<DataTypes>::addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  f, const DataVecCoord &  x , const DataVecDeriv & v )
+void ForceField<DataTypes>::addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv &  f, const DataVecCoord &  x , const DataVecDeriv & v )
 {
     if (mstate)
     {
         mstate->forceMask.setInUse(this->useMask());
-        addForce( *f.beginEdit() , x.getValue(), v.getValue());
-        f.endEdit();
+        addForce( *f.beginEdit(mparams) , x.getValue(mparams), v.getValue(mparams));
+        f.endEdit(mparams);
     }
 }
 template<class DataTypes>
@@ -146,8 +146,8 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS 
 {
     if (mstate)
     {
-        addDForce( *df.beginEdit() , dx.getValue(), mparams->kFactor() ,mparams->bFactor());
-        df.endEdit();
+        addDForce( *df.beginEdit(mparams) , dx.getValue(mparams), mparams->kFactor() ,mparams->bFactor());
+        df.endEdit(mparams);
     }
 }
 
@@ -198,10 +198,10 @@ double ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams
 
 #ifndef SOFA_DEPRECATE_OLD_API
 template<class DataTypes>
-double ForceField<DataTypes>::getPotentialEnergy( const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& x ) const
+double ForceField<DataTypes>::getPotentialEnergy( const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x ) const
 {
     serr << "ERROR("<<getClassName()<<"): getPotentialEnergy(const MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&) not implemented." << sendl;
-    return getPotentialEnergy(x.getValue());
+    return getPotentialEnergy(x.getValue(mparams));
 }
 template<class DataTypes>
 double ForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const

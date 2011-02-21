@@ -122,13 +122,13 @@ public:
     virtual void apply (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) ;
 
     /// This method must be reimplemented by all mappings.
-    virtual void apply( const MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in)
+    virtual void apply( const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
     {
-        this->apply(*out.beginEdit(), in.getValue());
-        out.endEdit();
+        this->apply(*out.beginEdit(mparams), in.getValue(mparams));
+        out.endEdit(mparams);
     }
     /// Compat Method
     /// @deprecated
@@ -143,17 +143,17 @@ public:
     virtual void applyJ(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
 
     /// This method must be reimplemented by all mappings.
-    virtual void applyJ( const MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in)
+    virtual void applyJ( const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
     {
-        this->applyJ(*out.beginEdit(), in.getValue());
-        out.endEdit();
+        this->applyJ(*out.beginEdit(mparams), in.getValue(mparams));
+        out.endEdit(mparams);
     }
     /// Compat Method
     /// @deprecated
-    virtual void applyJ( OutVecDeriv& /* out */, const InVecDeriv& /* in */) { };
+    virtual void applyJ( OutVecDeriv& /* out */, const InVecDeriv& /* in */) { }
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJT (Force)///
@@ -164,17 +164,17 @@ public:
     virtual void applyJT(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId inForce, ConstMultiVecDerivId outForce );
 
     /// This method must be reimplemented by all mappings.
-    virtual void applyJT( const MechanicalParams* /* mparams */ /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in)
+    virtual void applyJT( const MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
     {
-        this->applyJT(*out.beginEdit(), in.getValue());
-        out.endEdit();
+        this->applyJT(*out.beginEdit(mparams), in.getValue(mparams));
+        out.endEdit(mparams);
     }
     /// Compat Method
     /// @deprecated
-    virtual void applyJT( InVecDeriv& /* out */, const OutVecDeriv& /* in */) { };
+    virtual void applyJT( InVecDeriv& /* out */, const OutVecDeriv& /* in */) { }
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyDJT (Force)///
@@ -187,8 +187,6 @@ public:
     /// The displacement is accessed in the parent state using mparams->readDx() .
     virtual void applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ /* PARAMS FIRST */, MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) {}
 
-
-
     /// ApplyJT (Constraint)///
     virtual void applyJT(const ConstraintParams* cparams /* PARAMS FIRST  = ConstraintParams::defaultInstance()*/, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
     {
@@ -199,22 +197,25 @@ public:
             if(out && in)
             {
                 if (this->isMechanical() && this->f_checkJacobian.getValue())
-                    checkApplyJT(*out->beginEdit(), in->getValue(), this->getJ());
+                {
+                    checkApplyJT(*out->beginEdit(cparams), in->getValue(cparams), this->getJ());
+                    out->endEdit(cparams);
+                }
                 else
                     this->applyJT(cparams /* PARAMS FIRST */, *out, *in);
             }
         }
     }
     /// This method must be reimplemented by all mappings if they need to support constraints.
-    virtual void applyJT( const ConstraintParams* /* mparams */ /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in)
+    virtual void applyJT( const ConstraintParams* mparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in)
 #ifdef SOFA_DEPRECATE_OLD_API
     {
         serr << "This mapping does not support constraints" << sendl;
     }
 #else
     {
-        this->applyJT(*out.beginEdit(), in.getValue());
-        out.endEdit();
+        this->applyJT(*out.beginEdit(mparams), in.getValue(mparams));
+        out.endEdit(mparams);
     }
     /// Compat Method
     /// @deprecated
@@ -241,15 +242,14 @@ public:
         }
     }
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
-    virtual void computeAccFromMapping(const MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecDeriv& accOut, const InDataVecDeriv& vIn, const InDataVecDeriv& accIn)
+    virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& accOut, const InDataVecDeriv& vIn, const InDataVecDeriv& accIn)
 #ifdef SOFA_DEPRECATE_OLD_API
     {
-
     }
 #else
     {
-        this->computeAccFromMapping(*accOut.beginEdit(), vIn.getValue(), accIn.getValue());
-        accOut.endEdit();
+        this->computeAccFromMapping(*accOut.beginEdit(mparams), vIn.getValue(mparams), accIn.getValue(mparams));
+        accOut.endEdit(mparams);
     }
     /// Compat Method
     /// @deprecated

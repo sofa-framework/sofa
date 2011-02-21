@@ -180,31 +180,31 @@ protected:
 };
 
 template <class T, bool COW>
-class DataContainer;
+class DataValue;
 
 template <class T>
-class DataContainer<T, false>
+class DataValue<T, false>
 {
 protected:
     T data;
 public:
 
-    DataContainer()
+    DataValue()
         : data(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
     {
     }
 
-    DataContainer(const T &value)
+    DataValue(const T &value)
         : data(value)
     {
     }
 
-    DataContainer(const DataContainer<T, false>& dc)
+    DataValue(const DataValue<T, false>& dc)
         : data(dc.getValue())
     {
     }
 
-    DataContainer<T, false>& operator=(const DataContainer<T, false>& dc )
+    DataValue<T, false>& operator=(const DataValue<T, false>& dc )
     {
         data = dc.getValue();
         return *this;
@@ -223,7 +223,7 @@ public:
 
 
 template <class T>
-class DataContainer<T, true>
+class DataValue<T, true>
 {
     //TODO: change this to be atomic
     typedef unsigned int Counter;
@@ -233,26 +233,26 @@ protected:
     Counter* cpt;
 public:
 
-    DataContainer()
+    DataValue()
         : data(new T(T())) // BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
         , cpt(new Counter(1))
     {
     }
 
-    DataContainer(const T& value)
+    DataValue(const T& value)
         : data(new T(value))
         , cpt(new Counter(1))
     {
     }
 
-    DataContainer(const DataContainer& dc)
+    DataValue(const DataValue& dc)
         : data(dc.data)
         , cpt(dc.cpt)
     {
         ++(*cpt);
     }
 
-    ~DataContainer()
+    ~DataValue()
     {
         if ((--(*cpt)) == 0) // last ref to data
         {
@@ -261,7 +261,7 @@ public:
         }
     }
 
-    DataContainer<T, true>& operator=(const DataContainer<T, true>& dc )
+    DataValue<T, true>& operator=(const DataValue<T, true>& dc )
     {
         //avoid self reference
         if(&dc != this)
@@ -340,6 +340,9 @@ class Data : public TData<T>
 {
 public:
 
+    /// @name Construction / destruction
+    /// @{
+
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
     class InitData : public BaseData::BaseInitData
     {
@@ -402,6 +405,11 @@ public:
     virtual ~Data()
     {}
 
+    /// @}
+
+    /// @name Simple edition and retrieval API
+    /// @{
+
     inline T* beginEdit()
     {
         this->updateIfDirty();
@@ -410,6 +418,7 @@ public:
         BaseData::setDirtyOutputs();
         return m_value.beginEdit();
     }
+
     inline void endEdit()
     {
         m_value.endEdit();
@@ -427,6 +436,36 @@ public:
         return m_value.getValue();
     }
 
+    /// @}
+
+    /// @name Optimized edition and retrieval API (for multi-threading performances)
+    /// @{
+
+    inline T* beginEdit(const core::ExecParams* /*params*/)
+    {
+        return beginEdit();
+    }
+
+    inline void endEdit(const core::ExecParams* /*params*/)
+    {
+        endEdit();
+    }
+
+    inline void setValue(const core::ExecParams* /*params*/, const T& value)
+    {
+        setValue(value);
+    }
+
+    inline const T& getValue(const core::ExecParams* /*params*/) const
+    {
+        return getValue();
+    }
+
+    /// @}
+
+    /// @name Virtual edition and retrieval API (for generic TData parent API, deprecated)
+    /// @{
+
     virtual const T& virtualGetValue() const { return getValue(); }
     virtual void virtualSetValue(const T& v) { setValue(v); }
 
@@ -439,6 +478,9 @@ public:
 
     virtual T* virtualBeginEdit() { return beginEdit(); }
     virtual void virtualEndEdit() { endEdit(); }
+
+
+    /// @}
 
     inline friend std::ostream & operator << (std::ostream &out, const Data& df)
     {
@@ -465,9 +507,9 @@ protected:
 
     /// Value
     //T m_value;
-    DataContainer<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> m_value;
-    //DataContainer<T, false> m_value;
-    //DataContainer<T, true> m_value;
+    DataValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> m_value;
+    //DataValue<T, false> m_value;
+    //DataValue<T, true> m_value;
 public:
     mutable void* shared;
 };
@@ -538,6 +580,9 @@ protected:
     const data_container_type& data;
 public:
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()), data(d) {}
+    ReadAccessor(const data_container_type* d) : Inherit(d->getValue()), data(*d) {}
+    ReadAccessor(const core::ExecParams* params, const data_container_type& d) : Inherit(d.getValue(params)), data(d) {}
+    ReadAccessor(const core::ExecParams* params, const data_container_type* d) : Inherit(d->getValue(params)), data(*d) {}
     ~ReadAccessor() {}
 };
 
@@ -551,10 +596,14 @@ public:
 
 protected:
     data_container_type& data;
+    const core::ExecParams* dparams;
 
 public:
-    WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
-    ~WriteAccessor() { data.endEdit(); }
+    WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d), dparams(NULL) {}
+    WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d), dparams(NULL) {}
+    WriteAccessor(const core::ExecParams* params, data_container_type& d) : Inherit(*d.beginEdit(params)), data(d), dparams(params) {}
+    WriteAccessor(const core::ExecParams* params, data_container_type* d) : Inherit(*d->beginEdit(params)), data(*d), dparams(params) {}
+    ~WriteAccessor() { if (dparams) data.endEdit(dparams); else data.endEdit(); }
 };
 
 } // namespace helper

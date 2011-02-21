@@ -52,14 +52,14 @@ echo ========== Clean Source Directory ==========
 echo
 
 $SVN revert -R .
-$SVN status --no-ignore | grep '^?' | $COLRMSTATS | xargs -d '\n' rm -rf
+$SVN status --no-ignore | grep '^\(I\|?\)' | $COLRMSTATS | xargs -d '\n' rm -rf
 
 echo
 echo ========== Update Source Directory to $SVN_REVB ==========
 echo
 
 $SVN update -r $SVN_REVB
-$SVN status --no-ignore | grep '^?' | $COLRMSTATS | xargs -d '\n' rm -rf
+$SVN status --no-ignore | grep '^\(I\|?\)' | $COLRMSTATS | xargs -d '\n' rm -rf
 
 echo
 echo ========== Filter Source Directory ==========
@@ -74,14 +74,14 @@ echo ========== Clean Branch Directory ==========
 echo
 
 $SVN revert -R .
-$SVN status --no-ignore | grep '^?' | $COLRMSTATS | xargs -d '\n' rm -rf
+$SVN status --no-ignore | grep '^\(I\|?\)' | $COLRMSTATS | xargs -d '\n' rm -rf
 
 echo
 echo ========== Update Branch Directory ==========
 echo
 
 $SVN update || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
-$SVN status --no-ignore | grep '^?' | $COLRMSTATS | xargs -d '\n' rm -rf
+$SVN status --no-ignore | grep '^\(I\|?\)' | $COLRMSTATS | xargs -d '\n' rm -rf
 
 echo
 echo ========== Merge r$SVN_REVA:$SVN_REVB, ignoring conflicts ==========
@@ -95,8 +95,7 @@ if [ ${SVNV:0:1} -gt 1 -o ${SVNV:2:1} -gt 5 ]; then
 echo
 echo '========== Deleting tree conflicts (SVN 1.6+) =========='
 echo
-
-$SVN status --no-ignore | grep '^!' | $COLRMSTATS | xargs -d '\n' $SVN revert -R
+$SVN status --no-ignore | grep '^\(!\|      C\)' | $COLRMSTATS | xargs -d '\n' $SVN revert -R
 
 fi
 
