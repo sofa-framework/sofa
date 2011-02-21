@@ -14,7 +14,7 @@
 		<!-- Algorithms: used in DiagonalMass to compute the mass -->
 		<Object type="TetrahedronSetGeometryAlgorithms" name="GeomAlgo"  />
 		<Object type="DiagonalMass" massDensity="1" name="computed using mass density"/>
-		<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/> 
+		<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/> 
                 <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
 		<!-- Moving dof 15 along the X around a min pos  (2,0,0) with an amplitude of (1,0,0), 5 in pulsation, and 10 in phase -->
                 <Object type="OscillatorConstraint" name="OscillatingConstraint" oscillators="15 2 0 0 1 0 0 5 10" />

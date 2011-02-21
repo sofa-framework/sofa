@@ -18,7 +18,7 @@
     <Object type="DiagonalMass" massDensity="0.5" />
     <Object type="FixedPlaneConstraint" direction="0 0 1" dmin="-0.1" dmax="0.1"/>
     <Object type="FixedConstraint" indices="0" />		
-    <Object type="TetrahedralCorotationalFEMForceField" name="CFEM" youngModulus="60" poissonRatio="0.3" method="large" />
+    <Object type="TetrahedralCorotationalFEMForceField" name="CFEM" youngModulus="360" poissonRatio="0.3" method="large" />
 
     <Node name="T">
       <include href="Objects/TriangleSetTopology.xml" />

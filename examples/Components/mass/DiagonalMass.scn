@@ -15,7 +15,7 @@
 		<!-- Algorithms: used in DiagonalMass to compute the mass -->
 		<Object type="TetrahedronSetGeometryAlgorithms" name="GeomAlgo"  />
 		<Object type="DiagonalMass" massDensity="1" name="computed using mass density"/>
-		<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/> 
+		<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/> 
                 <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
 
 		<Node name="Visu">

@@ -18,10 +18,10 @@
 		<UniformMass totalmass="0.05" />
 		<MechanicalObject template="Vec3d" name="TrussMO"/>
 		<BoxConstraint box="-0.001 -0.001 -0.001 0.001 0.011 0.011"/>
-		<TetrahedronFEMForceField name="FEM" youngModulus="50000" poissonRatio="0.45" method="large" />
+		<TetrahedronFEMForceField name="FEM" youngModulus="300000" poissonRatio="0.45" method="large" />
        	        <BoxConstantForceField box="0.099 -0.001 -0.001 0.11 0.011 0.011" force="0 -0.1 0"/>
 
-		<!--<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="160000" assembling="0"/>-->
+		<!--<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="960000" assembling="0"/>-->
        	        <!--<ConstantForceField points="449 459 549 559" forces="1000000 0 0"/>-->
        	        <!--<BoxConstantForceField box="4.99 -5.01 -5.01 5.01 5.01 5.01" force="-100000 0 0"/>-->
 
@@ -42,7 +42,7 @@
                 	<FixedConstraint name="BeamFixedConstraint" indices="0" />
 			<UniformMass mass="0.001 0.001 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" totalMass="0.01"/>
 			<!--<UniformMass totalMass="1"/>-->
-			<BeamFEMForceField name="BeamFEM" radius="0.005" youngModulus="500000000" poissonRatio="0.45"/>
+			<BeamFEMForceField name="BeamFEM" radius="0.005" youngModulus="3000000000" poissonRatio="0.45"/>
 			<ConstantForceField points="5" forces="0 0 0 -10 0 0"/>
 
 			<!--<MechanicalObject template="Rigid" name="BeamMO" position="0 0 0  0 0.0704 0.7036 0.7071  0 0.05 0 0    0.0704    0.7036    0.7071 0 0.1 0 0    0.0704    0.7036    0.7071"/>-->
@@ -70,7 +70,7 @@
                         <Mesh name="BeamMesh" lines="0 1 1 2"/>
                         <FixedConstraint name="BeamFixedConstraint" indices="0" />
                         <UniformMass mass="0.001 0.001 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" totalMass="1"/>
-                        <BeamFEMForceField name="BeamFEM" radius="0.1" youngModulus="150" poissonRatio="0.45"/>
+                        <BeamFEMForceField name="BeamFEM" radius="0.1" youngModulus="900" poissonRatio="0.45"/>
                         <ConstantForceField points="2" forces="0 -1 0 0 0 0"/>
 		</Node>-->
 

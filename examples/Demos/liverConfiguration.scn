@@ -11,7 +11,7 @@
 		<MechanicalObject template="Vec3d" name="dofs"  useMask="1"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  internalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1" />
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 		<DiagonalMass template="Vec3d" name="computed using mass density"  massDensity="1" />
-		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="500"  computeGlobalMatrix="0" />
+		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="3000"  computeGlobalMatrix="0" />
 		<FixedConstraint template="Vec3d" name="FixedConstraint"  indices="3 39 64" />
 		<Node 	name="Visu" tags="Visual" gravity="0 -9.81 0"  >
 			<OglModel template="ExtVec3f" name="VisualModel"  fileMesh="mesh/liver-smooth.obj" />

@@ -12,7 +12,7 @@
 		<MechanicalObject template="Vec3d" name="dofs" />
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 		<DiagonalMass template="Vec3d" name="computed using mass density"  massDensity="2.0" />
-		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="500"  computeGlobalMatrix="0" />
+		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="3000"  computeGlobalMatrix="0" />
 		<FixedConstraint template="Vec3d" indices="0 4 8 12" />
 
 		<Node name="InOutTool">

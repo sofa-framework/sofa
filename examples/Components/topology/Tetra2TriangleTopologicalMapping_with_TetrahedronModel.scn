@@ -17,14 +17,14 @@
 		<FixedPlaneConstraint template="Vec3d" name="default4"  direction="0 0 1"  dmin="-0.1"  dmax="0.1" />
 		<FixedConstraint template="Vec3d" name="default5"  indices="0" />
 		<TetrahedronModel/>
-		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60"  assembling="0" />
+		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="360"  assembling="0" />
 		<Node 	name="T" gravity="0 -9.81 0"  >
 			<TriangleSetTopologyContainer name="Container"  tags="meca" />
 			<TriangleSetTopologyModifier name="Modifier"  tags="meca" />
 			<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"  tags="meca" />
 			<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  tags="meca" />
 			<Tetra2TriangleTopologicalMapping name="default6"  object1="../../Container"  object2="Container" />
-			<TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="10" />
+			<TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
 			<TriangularBendingSprings template="Vec3d" name="FEM-Bend"  stiffness="300"  damping="1" />
 			<TrianglePressureForceField template="Vec3d" name="default7"  pressure="0.4 0 0"  normal="0 0 1"  dmin="0.9"  dmax="1.1" />
 			<Node 	name="Visu" gravity="0 -9.81 0"  >
