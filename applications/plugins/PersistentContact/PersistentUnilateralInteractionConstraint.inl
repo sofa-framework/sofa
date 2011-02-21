@@ -255,7 +255,8 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::getConstraintResoluti
     for(unsigned int i=0; i<this->contacts.size(); i++)
     {
         Contact& c = this->contacts[i];
-        if(c.mu > 0.0)
+
+        if (c.mu > 0.0)
         {
             PersistentUnilateralConstraintResolutionWithFriction<DataTypes> *cRes = new PersistentUnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, &this->contactsStatus[i]);
             cRes->setConstraint(this);
@@ -288,6 +289,28 @@ bool PersistentUnilateralInteractionConstraint<DataTypes>::isSticked(int _contac
     else
         return false;
 }
+
+
+template<class DataTypes>
+bool PersistentUnilateralInteractionConstraint<DataTypes>::isSliding(int _contactId)
+{
+    typename sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
+    typename sofa::helper::vector< Contact >::iterator itEnd = this->contacts.end();
+
+    while (it != itEnd)
+    {
+        if (it->contactId == _contactId)
+            break;
+
+        ++it;
+    }
+
+    if (it != itEnd)
+        return (contactStates[it->id] == PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::SLIDING);
+    else
+        return false;
+}
+
 
 template<class DataTypes>
 void PersistentUnilateralInteractionConstraint<DataTypes>::setContactState(int id, ContactState s)
@@ -353,24 +376,24 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::clearContactForces()
 }
 
 template<class DataTypes>
-void PersistentUnilateralInteractionConstraint<DataTypes>::setInitForce(int id, Deriv f)
+void PersistentUnilateralInteractionConstraint<DataTypes>::setInitForce(int _contactId, Deriv f)
 {
-    if (initForces.find(id) != initForces.end())
+    if (initForces.find(_contactId) != initForces.end())
     {
-        initForces[id] = f;
+        initForces[_contactId] = f;
     }
     else
     {
-        initForces.insert(std::make_pair(id, f));
+        initForces.insert(std::make_pair(_contactId, f));
     }
 }
 
 template<class DataTypes>
-typename PersistentUnilateralInteractionConstraint<DataTypes>::Deriv PersistentUnilateralInteractionConstraint<DataTypes>::getInitForce(int id)
+typename PersistentUnilateralInteractionConstraint<DataTypes>::Deriv PersistentUnilateralInteractionConstraint<DataTypes>::getInitForce(int _contactId)
 {
-    if (initForces.find(id) != initForces.end())
+    if (initForces.find(_contactId) != initForces.end())
     {
-        return initForces[id];
+        return initForces[_contactId];
     }
 
     return Deriv();

@@ -29,6 +29,8 @@
 
 #include "PersistentContactMapping.h"
 
+//#define DEBUG_INACTIVE_CONTACTS
+
 namespace sofa
 {
 
@@ -139,6 +141,10 @@ public:
 
     void init();
 
+#ifdef DEBUG_INACTIVE_CONTACTS
+    void draw();
+#endif
+
 protected:
 
     std::pair<bool,bool> findMappingOrUseMapper();
@@ -167,6 +173,10 @@ protected:
     /// according to the previous contact resolution.
     bool isSticked(sofa::core::collision::DetectionOutput*);
 
+    /// Checks if the DetectionOutput is corresponding to a sliding contact
+    /// according to the previous contact resolution.
+    bool isSliding(sofa::core::collision::DetectionOutput*);
+
     bool use_mapper_for_state1;
     bool use_mapper_for_state2;
 
@@ -184,6 +194,11 @@ protected:
 
     MappedContactsMap m_generatedContacts;
     MappedContactsMap m_stickedContacts;
+    MappedContactsMap m_slidingContacts;
+
+#ifdef DEBUG_INACTIVE_CONTACTS
+    DetectionOutputVector m_inactiveContacts;
+#endif
 };
 
 
