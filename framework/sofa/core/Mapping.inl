@@ -167,8 +167,11 @@ void Mapping<In,Out>::applyJ(const MechanicalParams* mparams /* PARAMS FIRST */,
         const InDataVecDeriv* in = inVel[fromModel].read();
         if(out && in)
         {
-            if (this->isMechanical() && this->f_checkJacobian.getValue())
-                checkApplyJ(*out->beginEdit(), in->getValue(), this->getJ(mparams));
+            if (this->isMechanical() && this->f_checkJacobian.getValue(mparams))
+            {
+                checkApplyJ(*out->beginEdit(mparams), in->getValue(mparams), this->getJ(mparams));
+                out->endEdit(mparams);
+            }
             else
             {
 #ifdef SOFA_SMP
@@ -192,8 +195,11 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams /* PARAMS FIRST */
         const OutDataVecDeriv* in = outForce[toModel].read();
         if(out && in)
         {
-            if (this->isMechanical() && this->f_checkJacobian.getValue())
-                checkApplyJT(*out->beginEdit(), in->getValue(), this->getJ(mparams));
+            if (this->isMechanical() && this->f_checkJacobian.getValue(mparams))
+            {
+                checkApplyJT(*out->beginEdit(mparams), in->getValue(mparams), this->getJ(mparams));
+                out->endEdit(mparams);
+            }
             else
                 this->applyJT(mparams /* PARAMS FIRST */, *out, *in);
         }

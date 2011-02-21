@@ -125,13 +125,13 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectResponse() method.
-    virtual void projectResponse(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& dx)
+    virtual void projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
     {
-        projectResponse(*dx.beginEdit());
-        dx.endEdit();
+        projectResponse(*dx.beginEdit(mparams));
+        dx.endEdit(mparams);
     }
     /// @deprecated use instead projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx)
     virtual void projectResponse(VecDeriv& /*dx*/) {}
@@ -141,13 +141,13 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectVelocity() method.
-    virtual void projectVelocity(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& v)
+    virtual void projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& v)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
     {
-        projectVelocity(*v.beginEdit());
-        v.endEdit();
+        projectVelocity(*v.beginEdit(mparams));
+        v.endEdit(mparams);
     }
     /// @deprecated use instead projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& v)
     virtual void projectVelocity(VecDeriv& /*v*/) {}
@@ -157,13 +157,13 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectPosition() method.
-    virtual void projectPosition(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& x)
+    virtual void projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x)
 #ifdef SOFA_DEPRECATE_OLD_API
         = 0;
 #else
     {
-        projectPosition(*x.beginEdit());
-        x.endEdit();
+        projectPosition(*x.beginEdit(mparams));
+        x.endEdit(mparams);
     }
     /// @deprecated use instead  projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x)
     virtual void projectPosition(VecCoord& /*x*/) {}

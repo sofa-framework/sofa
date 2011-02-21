@@ -35,6 +35,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <sofa/core/core.h>
+#include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
@@ -192,6 +193,27 @@ public:
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
     int getCounter() const { return m_counter; }
+
+
+    /// @name Optimized edition and retrieval API (for multi-threading performances)
+    /// @{
+
+    /// True if the value has been modified
+    /// If this data is linked, the value of this data will be considered as modified
+    /// (even if the parent's value has not been modified)
+    bool isSet(const core::ExecParams* /*params*/) const { return isSet(); }
+
+    /// Reset the isSet flag to false, to indicate that the current value is the default for this Data.
+    void unset(const core::ExecParams* /*params*/) { unset(); }
+
+    /// Reset the isSet flag to true, to indicate that the current value has been modified.
+    void forceSet(const core::ExecParams* /*params*/) { forceSet(); }
+
+    /// Return the number of changes since creation
+    /// This can be used to efficiently detect changes
+    int getCounter(const core::ExecParams* /*params*/) const { return getCounter(); }
+
+    /// @}
 
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.
     virtual bool setParent(BaseData* parent);

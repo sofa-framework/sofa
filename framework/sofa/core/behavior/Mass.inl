@@ -107,13 +107,13 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams /* PARAMS FIRST */,
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDx(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx , double factor )
+void Mass<DataTypes>::addMDx(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx , double factor )
 {
     if (this->mstate)
     {
         this->mstate->forceMask.setInUse(this->useMask());
-        addMDx( *f.beginEdit() , dx.getValue(), factor);
-        f.endEdit();
+        addMDx( *f.beginEdit(mparams) , dx.getValue(mparams), factor);
+        f.endEdit(mparams);
     }
 }
 
@@ -138,13 +138,13 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST *
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f)
+void Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f)
 {
     if (this->mstate)
     {
         this->mstate->forceMask.setInUse(this->useMask());
-        accFromF( *a.beginEdit() , f.getValue());
-        a.endEdit();
+        accFromF( *a.beginEdit(mparams) , f.getValue(mparams));
+        a.endEdit(mparams);
     }
 }
 
@@ -181,9 +181,9 @@ double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams) const
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecDeriv& v) const
+double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecDeriv& v) const
 {
-    return getKineticEnergy(v.getValue());
+    return getKineticEnergy(v.getValue(mparams));
 }
 
 template<class DataTypes>
@@ -202,9 +202,9 @@ double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) cons
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& x) const
+double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const
 {
-    return getPotentialEnergy(x.getValue());
+    return getPotentialEnergy(x.getValue(mparams));
 }
 
 template<class DataTypes>
