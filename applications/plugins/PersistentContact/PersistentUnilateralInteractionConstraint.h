@@ -154,6 +154,8 @@ public:
 
     bool isSticked(int id);
 
+    bool isSliding(int id);
+
     void setContactState(int id, ContactState s);
 
     void clearContactStates();

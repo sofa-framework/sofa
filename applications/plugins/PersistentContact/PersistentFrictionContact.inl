@@ -121,26 +121,44 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::filterDuplica
 {
     const double MinDist2 = 0.00000001f;
 
+#ifdef DEBUG_INACTIVE_CONTACTS
+    m_inactiveContacts.clear();
+#endif
+
     int inputVectorSize = input.size();
 
     for (int cpt = 0; cpt < inputVectorSize; cpt++)
     {
-        DetectionOutput* o = &input[cpt];
+        DetectionOutput* input_do = &input[cpt];
 
         bool found = false;
 
         for (unsigned int i = 0; i < output.size() && !found; i++)
         {
-            DetectionOutput* p = output[i];
+            DetectionOutput* output_do = output[i];
 
-            if ((o->point[0] - p->point[0]).norm2() + (o->point[1] - p->point[1]).norm2() < MinDist2)
+            if (input_do->id == output_do->id)
             {
+                if ((input_do->point[1] - input_do->point[0]).norm2() > (output_do->point[1] - output_do->point[0]).norm2())
+                {
+#ifdef DEBUG_INACTIVE_CONTACTS
+                    m_inactiveContacts.push_back(input_do);
+#endif
+                    found = true;
+                }
+            }
+
+            if (((input_do->point[0] - output_do->point[0]).norm2() + (input_do->point[1] - output_do->point[1]).norm2()) < MinDist2)
+            {
+#ifdef DEBUG_INACTIVE_CONTACTS
+                m_inactiveContacts.push_back(input_do);
+#endif
                 found = true;
             }
         }
 
         if (!found)
-            output.push_back(o);
+            output.push_back(input_do);
     }
 }
 
@@ -154,6 +172,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyCon
     typedef constraintset::PersistentUnilateralInteractionConstraint< Vec3Types > PersistentConstraint;
 
     m_stickedContacts.clear();
+    m_slidingContacts.clear();
 
     if (this->m_constraint)
     {
@@ -200,6 +219,26 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyCon
                         }
 
                         m_stickedContacts[*it].m_initForce = cc->getContactForce(oldContact.m_contactId);
+
+                        // Remove related detection output info from old lists
+                        m_generatedContacts.erase(itOld);
+
+                        break;
+                    }
+                }
+                else if (cc->isSliding(oldContact.m_contactId))
+                {
+                    if ((oldContact.getFirstPrimitive() == (*it)->elem.first)
+                        && (oldContact.getSecondPrimitive() == (*it)->elem.second))
+                    {
+                        if (this->f_printLog.getValue())
+                        {
+                            std::cout << (*it)->id << " -> Found a sliding contact between " << (*it)->elem.first.getCollisionModel()->getName()
+                                    << " and " << (*it)->elem.second.getCollisionModel()->getName() << "\n";
+                        }
+
+                        m_slidingContacts.insert(std::make_pair(*it, ContactInfo()));
+                        m_slidingContacts[*it].m_initForce = cc->getContactForce(oldContact.m_contactId);
 
                         // Remove related detection output info from old lists
                         m_generatedContacts.erase(itOld);
@@ -424,6 +463,11 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
         double distance = d0;
         Vec3d f;
 
+        if (isSticked(o))
+            f = m_stickedContacts[o].m_initForce;
+        else if (isSliding(o))
+            f = m_slidingContacts[o].m_initForce;
+
         typename DataTypes1::Real r1 = 0.0;
         typename DataTypes2::Real r2 = 0.0;
         //double constraintValue = ((o->point[1] - o->point[0]) * o->normal) - intersectionMethod->getContactDistance();
@@ -440,7 +484,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             if (isSticked(o))
             {
                 index1 = this->keepThePersistentContact(m_stickedContacts[o].m_index1, true);
-                f = m_stickedContacts[o].m_initForce;
             }
             else
             {
@@ -465,7 +508,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             if (isSticked(o))
             {
                 index2 = this->keepThePersistentContact(m_stickedContacts[o].m_index2, false);
-                f = m_stickedContacts[o].m_initForce;
             }
             else
             {
@@ -548,6 +590,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
                 PersistentConstraint *persistent_constraint = static_cast< PersistentConstraint * >(this->m_constraint);
 
                 persistent_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id/*, isSticked(o)*/);
+
                 persistent_constraint->setInitForce(index, initForce);
 
                 // Store generated contact detectionOutput data and contact id
@@ -626,6 +669,12 @@ bool PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::isSticked(sof
     return m_stickedContacts.find(o) != m_stickedContacts.end();
 }
 
+template < class TCollisionModel1, class TCollisionModel2 >
+bool PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::isSliding(sofa::core::collision::DetectionOutput *o)
+{
+    return m_slidingContacts.find(o) != m_slidingContacts.end();
+}
+
 
 template < class TCollisionModel1, class TCollisionModel2 >
 int PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepThePersistentContact(int index, bool case1)
@@ -639,6 +688,30 @@ int PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepThePersist
         return map2->keepContactPointFromInputMapping(index);
     }
 }
+
+#ifdef DEBUG_INACTIVE_CONTACTS
+template < class TCollisionModel1, class TCollisionModel2 >
+void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::draw()
+{
+    if (!this->getContext()->getShowInteractionForceFields()) return;
+
+    glDisable(GL_LIGHTING);
+
+    for (unsigned int i=0; i< this->m_inactiveContacts.size(); i++)
+    {
+        glLineWidth(3);
+        glBegin(GL_LINES);
+        glColor4f(0.6,0.2,0.2,1);
+
+        helper::gl::glVertexT(m_inactiveContacts[i]->point[0]);
+        helper::gl::glVertexT(m_inactiveContacts[i]->point[1]);
+
+        glEnd();
+
+        glLineWidth(1);
+    }
+}
+#endif
 
 } // namespace collision
 
