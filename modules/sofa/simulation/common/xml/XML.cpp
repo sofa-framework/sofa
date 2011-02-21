@@ -284,12 +284,12 @@ BaseElement* loadFromFile(const char *filename)
         return NULL;
     }
     BaseElement* r = processXMLLoading(filename, *doc);
-    doc->Print();
-    std::cerr << "clear doc"<<std::endl;
+    //doc->Print();
+    //std::cerr << "clear doc"<<std::endl;
     doc->Clear();
-    std::cerr << "delete doc"<<std::endl;
+    //std::cerr << "delete doc"<<std::endl;
     delete doc;
-    std::cerr << "<loadFromFile"<<std::endl;
+    //std::cerr << "<loadFromFile"<<std::endl;
     return r;
 }
 
