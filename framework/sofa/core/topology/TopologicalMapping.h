@@ -228,18 +228,18 @@ public:
                 if(arg->getAttribute("object1",NULL) == NULL && arg->getAttribute("input",NULL) == NULL)
                 {
                     object1Path = "..";
-                    context->serr << "Deprecated use of implicit value for input" << context->sendl;
-                    context->serr << "Use now : input=\"@" << object1Path << "\" "<< context->sendl;
+                    //context->serr << "Deprecated use of implicit value for input" << context->sendl;
+                    //context->serr << "Use now : input=\"@" << object1Path << "\" "<< context->sendl;
                     bobjInput = arg->findObject("../..");
                 }
 
                 if(arg->getAttribute("object1",NULL) != NULL)
                 {
                     object1Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object1",NULL));
-                    context->serr << "Deprecated use of attribute " << "object1" << context->sendl;
-                    context->serr << "Use now : input=\"@"
-                            << object1Path
-                            << "\""<< context->sendl;
+                    //context->serr << "Deprecated use of attribute " << "object1" << context->sendl;
+                    //context->serr << "Use now : input=\"@"
+                    //              << object1Path
+                    //              << "\""<< context->sendl;
                     bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
                 }
 
@@ -256,18 +256,18 @@ public:
                 if(arg->getAttribute("object2",NULL) == NULL && arg->getAttribute("output",NULL) == NULL)
                 {
                     object2Path = ".";
-                    context->serr << "Deprecated use of implicit value for output" << context->sendl;
-                    context->serr << "Use now : output=\"@" << object2Path << "\" "<< context->sendl;
+                    //context->serr << "Deprecated use of implicit value for output" << context->sendl;
+                    //context->serr << "Use now : output=\"@" << object2Path << "\" "<< context->sendl;
                     bobjOutput = arg->findObject("..");
                 }
 
                 if(arg->getAttribute("object2",NULL) != NULL)
                 {
                     object2Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object2",NULL));
-                    context->serr << "Deprecated use of attribute " << "object2" << context->sendl;
-                    context->serr << "Use now : output=\"@"
-                            << object2Path
-                            << "\""<< context->sendl;
+                    //context->serr << "Deprecated use of attribute " << "object2" << context->sendl;
+                    //context->serr << "Use now : output=\"@"
+                    //              << object2Path
+                    //              << "\""<< context->sendl;
                     bobjOutput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object2", arg);
                 }
 

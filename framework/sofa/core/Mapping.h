@@ -351,106 +351,105 @@ public:
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
+        State<In>* stin = NULL;
+        State<Out>* stout = NULL;
+
+#ifndef SOFA_DEPRECATE_OLD_API
+        ////Deprecated check
+        std::string object1Path;
+        std::string object2Path;
+
+        Base* bobjInput = NULL;
+        Base* bobjOutput = NULL;
+
+        if(arg != NULL )
+        {
+            //Input
+            if(arg->getAttribute("object1",NULL) == NULL && arg->getAttribute("input",NULL) == NULL)
+            {
+                object1Path = "..";
+                //context->serr << "Deprecated use of implicit value for input" << context->sendl;
+                //context->serr << "Use now : input=\"@" << object1Path << "\" "<< context->sendl;
+                bobjInput = arg->findObject("../..");
+            }
+
+            if(arg->getAttribute("object1",NULL) != NULL)
+            {
+                object1Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object1",NULL));
+                //context->serr << "Deprecated use of attribute " << "object1" << context->sendl;
+                //context->serr << "Use now : input=\"@"
+                        << object1Path
+                                << "\""<< context->sendl;
+                bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
+            }
+
+            if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjInput))
+            {
+                stin = dynamic_cast< State<In>* >(bo);
+            }
+            else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjInput))
+            {
+                stin = dynamic_cast< State<In>* >(bc->getState());
+            }
+
+            //Output
+            if(arg->getAttribute("object2",NULL) == NULL && arg->getAttribute("output",NULL) == NULL)
+            {
+                object2Path = ".";
+                //context->serr << "Deprecated use of implicit value for output" << context->sendl;
+                //context->serr << "Use now : output=\"@" << object2Path << "\" "<< context->sendl;
+                bobjOutput = arg->findObject("..");
+            }
+
+            if(arg->getAttribute("object2",NULL) != NULL)
+            {
+                object2Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object2",NULL));
+                //context->serr << "Deprecated use of attribute " << "object2" << context->sendl;
+                //context->serr << "Use now : output=\"@"
+                //              << object2Path
+                //              << "\""<< context->sendl;
+                bobjOutput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object2", arg);
+            }
+
+            if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjOutput))
+            {
+                stout = dynamic_cast< State<Out>* >(bo);
+            }
+            else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjOutput))
+            {
+                stout = dynamic_cast< State<Out>* >(bc->getState());
+            }
+
+            /////
+        }
+
+        if (stin == NULL && stout == NULL)
+#endif // SOFA_DEPRECATE_OLD_API
+        {
+            if (arg)
+            {
+                stin = sofa::core::objectmodel::ObjectRef::parse< State<In> >("input", arg);
+                stout = sofa::core::objectmodel::ObjectRef::parse< State<Out> >("output", arg);
+            }
+        }
+
 #ifdef SOFA_SMP_NUMA
         if(context&&context->getProcessor()!=-1)
         {
             obj = new(numa_alloc_onnode(sizeof(T),context->getProcessor()/2)) T(
-                (arg?dynamic_cast< State< In >* >(arg->findObject(arg->getAttribute("object1","../.."))):NULL),
-                (arg?dynamic_cast< State< Out >* >(arg->findObject(arg->getAttribute("object2",".."))):NULL));
+                (arg?stin:NULL), (arg?stout:NULL));
         }
         else
 #endif
         {
-            State<In>* stin = NULL;
-            State<Out>* stout = NULL;
-
-#ifndef SOFA_DEPRECATE_OLD_API
-            ////Deprecated check
-            std::string object1Path;
-            std::string object2Path;
-
-            Base* bobjInput = NULL;
-            Base* bobjOutput = NULL;
-
-            if(arg != NULL )
-            {
-                //Input
-                if(arg->getAttribute("object1",NULL) == NULL && arg->getAttribute("input",NULL) == NULL)
-                {
-                    object1Path = "..";
-                    context->serr << "Deprecated use of implicit value for input" << context->sendl;
-                    context->serr << "Use now : input=\"@" << object1Path << "\" "<< context->sendl;
-                    bobjInput = arg->findObject("../..");
-                }
-
-                if(arg->getAttribute("object1",NULL) != NULL)
-                {
-                    object1Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object1",NULL));
-                    context->serr << "Deprecated use of attribute " << "object1" << context->sendl;
-                    context->serr << "Use now : input=\"@"
-                            << object1Path
-                            << "\""<< context->sendl;
-                    bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
-                }
-
-                if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjInput))
-                {
-                    stin = dynamic_cast< State<In>* >(bo);
-                }
-                else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjInput))
-                {
-                    stin = dynamic_cast< State<In>* >(bc->getState());
-                }
-
-                //Output
-                if(arg->getAttribute("object2",NULL) == NULL && arg->getAttribute("output",NULL) == NULL)
-                {
-                    object2Path = ".";
-                    context->serr << "Deprecated use of implicit value for output" << context->sendl;
-                    context->serr << "Use now : output=\"@" << object2Path << "\" "<< context->sendl;
-                    bobjOutput = arg->findObject("..");
-                }
-
-                if(arg->getAttribute("object2",NULL) != NULL)
-                {
-                    object2Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object2",NULL));
-                    context->serr << "Deprecated use of attribute " << "object2" << context->sendl;
-                    context->serr << "Use now : output=\"@"
-                            << object2Path
-                            << "\""<< context->sendl;
-                    bobjOutput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object2", arg);
-                }
-
-                if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjOutput))
-                {
-                    stout = dynamic_cast< State<Out>* >(bo);
-                }
-                else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjOutput))
-                {
-                    stout = dynamic_cast< State<Out>* >(bc->getState());
-                }
-
-                /////
-            }
-
-            if(stin == NULL && stout == NULL)
-#endif // SOFA_DEPRECATE_OLD_API
-            {
-                if(arg)
-                {
-                    stin = sofa::core::objectmodel::ObjectRef::parse< State<In> >("input", arg);
-                    stout = sofa::core::objectmodel::ObjectRef::parse< State<Out> >("output", arg);
-                }
-            }
-
             obj = new T( (arg?stin:NULL), (arg?stout:NULL));
-#ifndef SOFA_DEPRECATE_OLD_API
-            if (!object1Path.empty())
-                obj->m_inputObject.setValue( object1Path );
-            if (!object2Path.empty())
-                obj->m_outputObject.setValue( object2Path );
-#endif // SOFA_DEPRECATE_OLD_API
         }
+#ifndef SOFA_DEPRECATE_OLD_API
+        if (!object1Path.empty())
+            obj->m_inputObject.setValue( object1Path );
+        if (!object2Path.empty())
+            obj->m_outputObject.setValue( object2Path );
+#endif // SOFA_DEPRECATE_OLD_API
 
         if (context)
             context->addObject(obj);
