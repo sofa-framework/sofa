@@ -47,16 +47,18 @@ Creator<Contact::Factory, PersistentFrictionContact<TriangleModel, PointModel> >
 template<>
 int PersistentFrictionContact<PointModel, PointModel>::mapThePersistentContact(Vector3 &/*baryCoord*/, int index, Vector3 &pos, bool case1)
 {
-    std::vector<std::pair<int, double> > barycentricData;
+    std::vector< std::pair<int, double> > barycentricData(1);
 
     if (case1)
     {
-        barycentricData.push_back( std::pair<int, double> (index,1.0) );
+        barycentricData[0] = std::pair<int, double> (index,1.0);
+
         return map1->addContactPointFromInputMapping(pos, barycentricData);
     }
     else
     {
-        barycentricData.push_back( std::pair<int, double> (index,1.0) );
+        barycentricData[0] = std::pair<int, double> (index,1.0);
+
         return map2->addContactPointFromInputMapping(pos, barycentricData);
     }
 }
@@ -64,18 +66,21 @@ int PersistentFrictionContact<PointModel, PointModel>::mapThePersistentContact(V
 template<>
 int PersistentFrictionContact<LineModel, PointModel>::mapThePersistentContact(Vector3 &baryCoord, int index, Vector3 &pos, bool case1)
 {
-    std::vector<std::pair<int, double> > barycentricData;
-
     if (case1)
     {
-        Line *l=new Line(this->model1, index);
-        barycentricData.push_back( std::pair<int, double> (l->i1(),1.0-baryCoord[0]) );
-        barycentricData.push_back( std::pair<int, double> (l->i2(),baryCoord[0]) );
+        Line l(this->model1, index);
+
+        std::vector< std::pair<int, double> > barycentricData(2);
+        barycentricData[0] = std::pair<int, double> (l.i1(), 1.0 - baryCoord[0]);
+        barycentricData[1] = std::pair<int, double> (l.i2(), baryCoord[0]);
+
         return map1->addContactPointFromInputMapping(pos, barycentricData);
     }
     else
     {
-        barycentricData.push_back( std::pair<int, double> (index,1.0) );
+        std::vector< std::pair<int, double> > barycentricData(1);
+        barycentricData[0] = std::pair<int, double> (index,1.0);
+
         return map2->addContactPointFromInputMapping(pos, barycentricData);
     }
 }
@@ -83,20 +88,23 @@ int PersistentFrictionContact<LineModel, PointModel>::mapThePersistentContact(Ve
 template<>
 int PersistentFrictionContact<LineModel, LineModel>::mapThePersistentContact(Vector3 & baryCoord, int index, Vector3 &pos, bool case1)
 {
-    std::vector<std::pair<int, double> > barycentricData;
+    std::vector< std::pair<int, double> > barycentricData(2);
 
     if (case1)
     {
-        Line *l=new Line(this->model1, index);
-        barycentricData.push_back( std::pair<int, double> (l->i1(),1.0-baryCoord[0]) );
-        barycentricData.push_back( std::pair<int, double> (l->i2(),baryCoord[0]) );
+        Line l(this->model1, index);
+
+        barycentricData[0] = std::pair<int, double> (l.i1(), 1.0 - baryCoord[0]);
+        barycentricData[1] = std::pair<int, double> (l.i2(), baryCoord[0]);
+
         return map1->addContactPointFromInputMapping(pos, barycentricData);
     }
     else
     {
-        Line *l=new Line(this->model2, index);
-        barycentricData.push_back( std::pair<int, double> (l->i1(),1.0-baryCoord[0]) );
-        barycentricData.push_back( std::pair<int, double> (l->i2(),baryCoord[0]) );
+        Line l(this->model2, index);
+        barycentricData[0] = std::pair<int, double> (l.i1(), 1.0 - baryCoord[0]);
+        barycentricData[1] = std::pair<int, double> (l.i2(), baryCoord[0]);
+
         return map2->addContactPointFromInputMapping(pos, barycentricData);
     }
 }
@@ -108,15 +116,20 @@ int PersistentFrictionContact<TriangleModel, PointModel>::mapThePersistentContac
 
     if (case1)
     {
-        Triangle *t=new Triangle(this->model1, index);
-        barycentricData.push_back( std::pair<int, double> (t->p1Index(),1.0-baryCoord[0]-baryCoord[1]) );
-        barycentricData.push_back( std::pair<int, double> (t->p2Index(),baryCoord[0]) );
-        barycentricData.push_back( std::pair<int, double> (t->p3Index(),baryCoord[1]) );
+        Triangle t(this->model1, index);
+
+        std::vector<std::pair<int, double> > barycentricData(3);
+        barycentricData[0] = std::pair<int, double> (t.p1Index(), 1.0 - baryCoord[0] - baryCoord[1]);
+        barycentricData[1] = std::pair<int, double> (t.p2Index(), baryCoord[0]);
+        barycentricData[2] = std::pair<int, double> (t.p3Index(), baryCoord[1]);
+
         return map1->addContactPointFromInputMapping(pos, barycentricData);
     }
     else
     {
-        barycentricData.push_back( std::pair<int, double> (index,1.0) );
+        std::vector<std::pair<int, double> > barycentricData(1);
+        barycentricData[0] = std::pair<int, double> (index,1.0);
+
         return map2->addContactPointFromInputMapping(pos, barycentricData);
     }
 }
