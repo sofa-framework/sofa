@@ -307,10 +307,10 @@ CUDA_SOURCES += CudaSPHFluidForceField.cu
 HEADERS += scan.h
 CUDA_SOURCES += scan.cu
 
-HEADERS += radixsort.cuh radixsort_kernel.cu
-CUDA_SOURCES += radixsort.cu
+!contains(DEFINES,SOFA_GPU_CUDPP){
+	HEADERS += radixsort.cuh radixsort_kernel.cu
+	CUDA_SOURCES += radixsort.cu
+}
 
-#HEADERS += radixsort.h
-#CUDA_SOURCES += radixsort.cu
 
 } # END SOFA_DEV
