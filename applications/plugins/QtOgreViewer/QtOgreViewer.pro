@@ -93,7 +93,7 @@ HEADERS += DotSceneLoader.h \
                 LIBS += OgreMain_d.lib
             }
             else{
-			    QMAKE_LIBDIR += $${OGRE_HOME}/lib/RelWithDebInfo/
+			    QMAKE_LIBDIR += $${OGRE_HOME}/lib/release/
                 LIBS += OgreMain.lib
             }
         }
