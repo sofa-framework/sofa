@@ -8,7 +8,7 @@ BUILD_SYSTEM_FILES = \
 	$$SOFA_FEATURES_PATH/sofa-post.prf
 
 ########################################################################
-# Definition of artifacts directories
+# Definition of artifacts directories and name
 ########################################################################
 
 contains(TEMPLATE, lib) {
@@ -16,6 +16,16 @@ contains(TEMPLATE, lib) {
 }
 contains(TEMPLATE, app) {
 	DESTDIR = $$APP_DESTDIR
+}
+
+contains(TEMPLATE, lib) {
+	SUFFIX = $$LIBSUFFIX
+}
+contains(TEMPLATE, app) {
+	SUFFIX = $$APPSUFFIX
+}
+!isEmpty(SUFFIX) {
+	TARGET = $$TARGET$$SUFFIX
 }
 
 ########################################################################
@@ -75,7 +85,7 @@ contains(TEMPLATE, subdirs) {
 # Each makefile will copy the files it knows in the DIST_DIR, recreating a
 # parallel directory hierarchy.
 addCommand(fulldist.commands, $(CHK_DIR_EXISTS) $$DIST_DIR || $(MKDIR) $$DIST_DIR)
-addCommand(fulldist.commands, (cd $$ROOT_SRC_DIR && $(COPY_FILE) --parents $$DIST_FILES $$DIST_DIR))
+addCommand(fulldist.commands, (cd $$ROOT_SRC_DIR && rsync -R $$DIST_FILES $$DIST_DIR))
 
 # In the root makefile, we copy feature files, pack everything and remove the DIST_DIR
 equals(ROOT_PATH, .) {
@@ -86,8 +96,7 @@ equals(ROOT_PATH, .) {
 		dist.depends = fulldist
 	}
 	exists($$ROOT_SRC_DIR/$$SOFA_FEATURES_PATH) {
-		message(BUILD SYSTEM FOUND)
-		addCommand(fulldist.commands, (cd $$ROOT_SRC_DIR && $(COPY_FILE) --parents $$BUILD_SYSTEM_FILES $$DIST_DIR))
+		addCommand(fulldist.commands, (cd $$ROOT_SRC_DIR && rsync -R $$BUILD_SYSTEM_FILES $$DIST_DIR))
 	}
 	addCommand(fulldist.commands, tar -czvf $$PACKAGE-$${VERSION}.tar.gz $$PACKAGE-$$VERSION/)
 	addCommand(fulldist.commands, $(DEL_FILE) -r $$PACKAGE-$$VERSION/)
@@ -111,9 +120,9 @@ contains(TEMPLATE, subdirs) {
 }
 
 # Remove the directories where we put intermediate files
-addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$OBJECTS_DIR && $(DEL_DIR) --parents $$OBJECTS_DIR; true))
-addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$RCC_DIR     && $(DEL_DIR) --parents $$RCC_DIR; true))
-addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$MOC_DIR     && $(DEL_DIR) --parents $$MOC_DIR; true))
+addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$OBJECTS_DIR && $(DEL_DIR) -p $$OBJECTS_DIR; true))
+addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$RCC_DIR     && $(DEL_DIR) -p $$RCC_DIR; true))
+addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$MOC_DIR     && $(DEL_DIR) -p $$MOC_DIR; true))
 
 # In the root makefile we destroy the directories for libraries and applications
 equals(ROOT_PATH, .) {
@@ -122,12 +131,12 @@ equals(ROOT_PATH, .) {
 	LOCAL_LIB_DESTDIR = $$replace(LOCAL_LIB_DESTDIR, $$ROOT_BUILD_DIR/, )
 	LOCAL_APP_DESTDIR = $$replace(LOCAL_APP_DESTDIR, $$ROOT_BUILD_DIR/, )
 
-	addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$LOCAL_LIB_DESTDIR && $(DEL_DIR) --parents $$LOCAL_LIB_DESTDIR; true))
-	addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$LOCAL_APP_DESTDIR && $(DEL_DIR) --parents $$LOCAL_APP_DESTDIR; true))
+	addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$LOCAL_LIB_DESTDIR && $(DEL_DIR) -p $$LOCAL_LIB_DESTDIR; true))
+	addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$LOCAL_APP_DESTDIR && $(DEL_DIR) -p $$LOCAL_APP_DESTDIR; true))
 }
 
 # In case of out-of-source build we destroy the parallel directory hierarchy created by qmake
-!equals(BUILD_DIR, SRC_DIR) {
+!equals(BUILD_DIR, $$SRC_DIR) {
 	contains(TEMPLATE, subdirs) {
 		# Create the list of directories
 		for(dir, SUBDIRS) {
@@ -139,6 +148,6 @@ equals(ROOT_PATH, .) {
 				SUBDIRS_PATH += $$dir
 			}
 		}
-		addCommand(maintainer-clean.commands, $(DEL_DIR) --parents $$SUBDIRS_PATH; true)
+		addCommand(maintainer-clean.commands, $(DEL_DIR) -p $$SUBDIRS_PATH; true)
 	}
 }

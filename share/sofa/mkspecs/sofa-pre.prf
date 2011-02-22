@@ -39,16 +39,6 @@ message(SUBDIR_PATH   $$escape_expand(\\t)= $$SUBDIR_PATH)
 message(ROOT_PATH     $$escape_expand(\\t)= $$ROOT_PATH)
 
 ########################################################################
-# Other descriptive variables
-########################################################################
-
-contains(CONFIG, release, debug|release) {
-	CONFIGDEBUG = release
-} else {
-	CONFIGDEBUG = debug
-}
-
-########################################################################
 # Extension point:
 #		If needed, create a file name sofa-pre-custom.prf at the root of
 #		your build dir (where you run qmake), and set any variable you need.
@@ -67,11 +57,22 @@ exists($${INSTALLED_FEATURE_FILE}.prf) {
 }
 
 ########################################################################
+# Other descriptive variables
+########################################################################
+
+contains(CONFIG, release, debug|release) {
+	CONFIGDEBUG = release
+} else {
+	CONFIGDEBUG = debug
+}
+
+########################################################################
 # Other configuration variables
 ########################################################################
 
-contains (CONFIGDEBUG, debug) {
+contains(CONFIGDEBUG, debug) {
 	LIBSUFFIX = d
+	APPSUFFIX = d
 }
 
 ########################################################################
@@ -243,9 +244,11 @@ defineTest(requireSofaLib) {
 	sourcedir = $$replace(dir, (applications|framework|modules)/.+, \\1)
 
 	isSourceAvailable($$name, $$dir) {
+		message(Using shipped version of $$name)
 		INCLUDEPATH *= $$SOFA_DIR/$$sourcedir
 		LIBS *= -L$$LIB_DESTDIR
 	} else {
+		message(Using installed version of $$name)
 		INCLUDEPATH *= $$SOFA_DIR/include/sofa/$$sourcedir
 		LIBS *= -L$$SOFA_DIR/lib
 	}
