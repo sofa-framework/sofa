@@ -28,6 +28,7 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/Factory.inl>
 #include <stdio.h>
+#include <string.h>
 
 namespace sofa
 {
