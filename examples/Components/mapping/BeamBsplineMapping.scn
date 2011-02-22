@@ -2,7 +2,7 @@
 <Node name="root" dt="0.01" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="1" showForceFields="0" showMappings="1" gravity="0 -5  0">
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
-	<MinProximityIntersection name="Proximity" alarmDistance="0.05" contactDistance="0.02" />
+	<LocalMinDistance name="Proximity" alarmDistance="0.5" contactDistance="0.2" />
 	<CollisionResponse name="Response" response="default" />
 	<CollisionGroup name="Group" />
 
@@ -27,7 +27,10 @@
 
 	<Node name="Points">
 		<MechanicalObject name="DOFs1" position="4 -3 0 8 -3 0 12 -3 0 16 -3 0 20 -3 0" />	
-		<PointSetTopologyContainer name="pointsTopology"/>	
+		<PointSetTopologyContainer name="pointsTopology"/>
+		<Point/>	
+<!--
 		<SphereModel radius="0.3"/>
+-->
 	</Node>
 </Node>

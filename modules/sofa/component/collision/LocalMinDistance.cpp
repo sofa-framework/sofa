@@ -1545,7 +1545,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Point& e1, Outpu
 
                 squareDistance=QP.norm2();
                 alpha += i*dt;
-                std::cout<<i<<" iseg LocalMinDistance::1538  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex() <<  std::endl
+                std::cout<<i<<" iseg LocalMinDistance::1547  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
                         <<"P" <<P <<"  Q" <<Q <<std::endl;//////////////////////////////////
             }
         }
@@ -1564,6 +1564,10 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Point& e1, Outpu
         if (!testValidity(e2, QP))
             return 0;
     }
+
+
+    std::cout<<"LocalMinDistance::1568  result   e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
+            <<"P" <<P <<"  Q" <<Q <<std::endl;//////////////////////////////////
 
 
     // end filter
