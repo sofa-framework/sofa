@@ -117,7 +117,14 @@ protected:
     sofa::helper::vector<Deriv> m_debugForce;
     sofa::helper::vector<Deriv> m_debugPosition;
 
+    Coord      m_fluidSurfaceOrigin; //in case of a box, indicates which face is the surface
+    Coord      m_fluidSurfaceDirection; //in case of a box, indicates which face is the surface
 
+    Deriv       m_gravity; //store the local gravity to check if it changes during the simulation
+    Real         m_gravityNorm;
+
+    Coord       m_minBoxPrev;
+    Coord       m_maxBoxPrev;
 
 public:
 
@@ -140,16 +147,20 @@ protected:
     /**
      * @brief Returns true if the x parameters belongs to the liquid modeled as a box.
      */
-    inline bool isPointInFluid(const Coord& /*x*/) const;
+    inline bool isPointInFluid(const Coord& /*x*/);
     /**
      * @brief Returns the number of point of a tetra included in the liquid
      */
-    inline int isTetraInFluid(const Tetra& /*tetra*/, const VecCoord& x) const;
-    inline int isTriangleInFluid(const Triangle& /*tetra*/, const VecCoord& x) const;
+    inline int isTetraInFluid(const Tetra& /*tetra*/, const VecCoord& x);
+    inline int isTriangleInFluid(const Triangle& /*tetra*/, const VecCoord& x);
 
-    inline Real getImmersedVolume(const Tetra &tetra, const VecCoord& x) const;
+    inline Real getImmersedVolume(const Tetra &tetra, const VecCoord& x);
 
     inline bool isCornerInTetra(const Tetra &tetra, const VecCoord& x) const;
+
+    inline Real distanceFromFluidSurface(const Deriv& x);
+
+    inline bool checkParameters();
 };
 
 

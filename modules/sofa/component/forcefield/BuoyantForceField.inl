@@ -56,14 +56,7 @@ BuoyantForceField<DataTypes>::BuoyantForceField():
     m_enableViscosity(initData(&m_enableViscosity, true, "enableViscosity", "enable the effects of viscosity")),
     m_turbulentFlow(initData(&m_turbulentFlow, false, "turbulentFlow", "true for turbulent flow, false for laminar"))
 {
-    if (m_fluidModel == 2.0f)
-    {
-        fluidModel = BOX;
-    }
-    else
-    {
-        fluidModel = PLANE;
-    }
+
 }
 
 
@@ -74,11 +67,124 @@ BuoyantForceField<DataTypes>::~BuoyantForceField()
 
 }
 
+//check if some useful parameters changed and adjust the others depending on them
+template <class DataTypes>
+bool BuoyantForceField<DataTypes>::checkParameters()
+{
+    bool change = false;
+    bool recomputeFluidSurface = false;
 
+    if (m_fluidModel == 2.0f)
+    {
+        if (fluidModel != BOX)
+        {
+            fluidModel = BOX;
+            change = true;
+        }
+    }
+    else
+    {
+        if (fluidModel != PLANE)
+        {
+            fluidModel = PLANE;
+            change = true;
+        }
+    }
+
+    if ( m_minBoxPrev != m_minBox.getValue() ||  m_maxBoxPrev!= m_maxBox.getValue())
+    {
+        for ( unsigned int i = 0 ; i < 3 ; i++)
+        {
+            if (m_minBox.getValue()[i] > m_maxBox.getValue()[i])
+            {
+                std::cout << "Switch value " << i << " between min and max" << std::endl;
+
+                Coord tempMin = m_minBox.getValue();
+                tempMin[i] = m_maxBox.getValue()[i];
+
+                Coord tempMax = m_maxBox.getValue();
+                tempMax[i] = m_minBox.getValue()[i];
+
+                m_minBox.setValue(tempMin);
+                m_maxBox.setValue(tempMax);
+            }
+        }
+        m_minBoxPrev = m_minBox.getValue();
+        m_maxBoxPrev = m_maxBox.getValue();
+
+        recomputeFluidSurface = true;
+        change = true;
+    }
+
+
+    if (m_gravity!= this->getContext()->getLocalGravity())
+    {
+        m_gravity = this->getContext()->getLocalGravity();
+        m_gravityNorm = m_gravity.norm();
+        recomputeFluidSurface = true;
+        change = true;
+    }
+
+    if (recomputeFluidSurface)
+    {
+        //the surface in a box is the upper face defined by the gravity
+        //it's the one with the minimum angle between the normal and the gravity
+
+        if (!m_gravityNorm)
+        {
+            std::cout << "ERROR(BuoyantForceField::init()) : unable to determine fluid surface because there is no gravity" << std::endl;
+        }
+        else
+        {
+            Deriv direction1 = Coord(m_maxBox.getValue()[0], m_minBox.getValue()[1], m_minBox.getValue()[2])
+                    - m_minBox.getValue();
+            Deriv direction2 = Coord(m_minBox.getValue()[0], m_maxBox.getValue()[1], m_minBox.getValue()[2])
+                    - m_minBox.getValue();
+            Deriv direction3 = Coord(m_minBox.getValue()[0], m_minBox.getValue()[1], m_maxBox.getValue()[2])
+                    - m_minBox.getValue();
+
+            Real angle1 = fabs(dot(direction1, m_gravity)/( m_gravityNorm * direction1.norm()));
+            Real angle2 = fabs(dot(direction2, m_gravity)/( m_gravityNorm * direction2.norm()));
+            Real angle3 = fabs(dot(direction3, m_gravity)/( m_gravityNorm * direction3.norm()));
+
+            Deriv minDirection;
+            if (angle1 >= angle2 && angle1 >= angle3)
+            {
+                minDirection = direction1 ;
+            }
+            else if (angle2 >= angle1 && angle2 >= angle3)
+            {
+                minDirection = direction2 ;
+            }
+            else if (angle3 >= angle1 && angle3 >= angle1)
+            {
+                minDirection = direction3;
+            }
+            else
+            {
+                std::cout << "ERROR(BuoyantForceField) : case not anticipated in init()" << std::endl;
+            }
+
+            Deriv origin = m_minBox.getValue();
+
+            //as the box is axis-oriented
+            if (   dot(minDirection, m_gravity) < 0 )
+            {
+                origin += minDirection;
+            }
+
+            m_fluidSurfaceOrigin = Coord(origin[0], origin[1], origin[2]);
+            m_fluidSurfaceDirection = Coord(minDirection[0], minDirection[1], minDirection[2]);
+        }
+    }
+    return change;
+}
 
 template <class DataTypes>
 void BuoyantForceField<DataTypes>::init()
 {
+    checkParameters();
+
     this->core::behavior::ForceField<DataTypes>::init();
 //	m_TetraTopo = this->getContext()->getMeshTopology();
     this->getContext()->get(m_tetraTopology);
@@ -134,9 +240,12 @@ void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpa
 
     if (m_tetraContainer)
     {
+        checkParameters();
+
         m_debugForce.clear();
         m_debugPosition.clear();
 
+        //get number of tetrahedra
         int nbTetrahedra = m_tetraContainer->getNbTetrahedra();
 
         if (!nbTetrahedra)
@@ -145,15 +254,14 @@ void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpa
         }
         else
         {
-            //get the gravity
-            Deriv gravity = this->getContext()->getLocalGravity();
-            Real gravityNorm = gravity.norm();
-            if (!gravityNorm)
+            if (!m_gravityNorm)
             {
                 serr << "Error(BuoyantForceField):Buoyancy works with gravity, but gravity is null  here" << sendl;
+                d_f.endEdit();
+                return;
             }
 
-            //compute the immersed volume
+            //compute the immersed volume but maybe useless
             Real immersedVolume = static_cast<Real>(0.0f);
             for (int i = 0 ; i < m_tetraContainer->getNbTetras() ; i++)
             {
@@ -165,9 +273,7 @@ void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpa
                     immersedVolume += m_tetraGeo->computeTetrahedronVolume(i);
                 }
             }
-
             m_immersedVolume.setValue(immersedVolume);
-
 //		           std::cout << "Immersed Volume >> " << m_immersedVolume.getValue() << std::endl;
 
             //if there is a part of the volume of the object immersed
@@ -188,14 +294,15 @@ void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpa
                         Deriv centreTriangle =  m_tetraGeo->computeTriangleCenter(m_surfaceTriangles[i]);
 
                         //get the distance between the centroid and the surface of the fluid
-                        Real z = fabs(dot(gravity/ gravityNorm, centreTriangle) + m_heightPlane.getValue());
+                        Real z = fabs(distanceFromFluidSurface(centreTriangle) );
 
                         //the pressure applied by the fluid on the current triangle
-                        Real pressure = m_atmosphericPressure.getValue() + m_fluidDensity.getValue() * gravityNorm * z;
+                        Real pressure = m_atmosphericPressure.getValue() + m_fluidDensity.getValue() * m_gravityNorm * z;
                         //the force acting on the triangle due to the pressure
                         Deriv triangleForcePressure = normal * (  area * pressure /  normal.norm() );
                         //the force acting on the points of the triangle due to the pressure
                         Deriv pointForcePressure = triangleForcePressure / static_cast<Real>(3.0f);
+                        //std::cout << "pointForcePressure = " << pointForcePressure << std::endl;
 
                         //the drag force
                         Real dragForce = (Real)0.f;
@@ -232,8 +339,8 @@ void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpa
 //                                           m_debugForce.push_back(velocity  * ( dragForce ));
                                 }
                             }
-                            m_debugForce.push_back(pointForcePressure);
                             //push back the force for debug
+                            m_debugForce.push_back(pointForcePressure);
                             m_debugPosition.push_back(x[tri[j]]);
                         }
                     }
@@ -248,7 +355,23 @@ void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpa
 }
 
 template <class DataTypes>
-bool BuoyantForceField<DataTypes>::isPointInFluid(const Coord &x) const
+typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::distanceFromFluidSurface(const Deriv &x)
+{
+    if (fluidModel == BOX)
+    {
+        Deriv originToPoint = x - m_fluidSurfaceOrigin;
+        Deriv projectedOfPointOnDirection = m_fluidSurfaceDirection * dot(m_fluidSurfaceDirection, originToPoint) / m_fluidSurfaceDirection.norm2();
+
+        return projectedOfPointOnDirection.norm();
+    }
+    else
+    {
+        return (dot(m_gravity/ m_gravityNorm, x) + m_heightPlane.getValue());
+    }
+}
+
+template <class DataTypes>
+bool BuoyantForceField<DataTypes>::isPointInFluid(const Coord &x)
 {
     if ( fluidModel == BOX)
     {
@@ -265,10 +388,8 @@ bool BuoyantForceField<DataTypes>::isPointInFluid(const Coord &x) const
     }
     else
     {
-        Deriv gravity = this->getContext()->getLocalGravity();
-
         //signed distance between the current point and the surface of the fluid
-        Real distance = dot(gravity / gravity.norm(), x)+ m_heightPlane.getValue();
+        Real distance = distanceFromFluidSurface(x);
 
         if ( distance > 0 )
         {
@@ -279,7 +400,7 @@ bool BuoyantForceField<DataTypes>::isPointInFluid(const Coord &x) const
 }
 
 template <class DataTypes>
-int BuoyantForceField<DataTypes>::isTriangleInFluid(const Triangle &tri, const VecCoord& x) const
+int BuoyantForceField<DataTypes>::isTriangleInFluid(const Triangle &tri, const VecCoord& x)
 {
     int nbPointsInFluid = 0;
 
@@ -295,7 +416,7 @@ int BuoyantForceField<DataTypes>::isTriangleInFluid(const Triangle &tri, const V
 }
 
 template <class DataTypes>
-int BuoyantForceField<DataTypes>::isTetraInFluid(const Tetra &tetra, const VecCoord& x) const
+int BuoyantForceField<DataTypes>::isTetraInFluid(const Tetra &tetra, const VecCoord& x)
 {
     int nbPointsInFluid = 0;
 
@@ -353,7 +474,7 @@ bool BuoyantForceField<DataTypes>::isCornerInTetra(const Tetra &tetra, const Vec
 }
 
 template <class DataTypes>
-typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::getImmersedVolume(const Tetra &tetra, const VecCoord& x) const
+typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::getImmersedVolume(const Tetra &tetra, const VecCoord& x)
 {
     Real immersedVolume = static_cast<Real>(0.f);
 
@@ -416,7 +537,6 @@ void BuoyantForceField<DataTypes>::draw()
     if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-
     glDisable(GL_LIGHTING);
 
     if ( fluidModel == BOX)
@@ -459,6 +579,14 @@ void BuoyantForceField<DataTypes>::draw()
         glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
         glEnd();
 
+        glColor4f(1.f, 0.f, 0.0f, 1.f);
+        glBegin(GL_LINES);
+        glVertex3d(m_fluidSurfaceOrigin[0],m_fluidSurfaceOrigin[1],m_fluidSurfaceOrigin[2]);
+        glVertex3d(m_fluidSurfaceOrigin[0] +m_fluidSurfaceDirection[0],
+                m_fluidSurfaceOrigin[1] +m_fluidSurfaceDirection[1],
+                m_fluidSurfaceOrigin[2] +m_fluidSurfaceDirection[2]);
+        glEnd();
+
         glColor4f(0.f, 1.f, 1.0f, 1.f);
 
         glPointSize(10.0f);
@@ -471,6 +599,8 @@ void BuoyantForceField<DataTypes>::draw()
         glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
         glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
         glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
+        glColor4f(1.f, 0.f, 0.0f, 1.f); glPointSize(20.0f);
+        glVertex3d(m_fluidSurfaceOrigin[0],m_fluidSurfaceOrigin[1],m_fluidSurfaceOrigin[2]);
         glEnd();
     }
 
