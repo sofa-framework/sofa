@@ -454,15 +454,15 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::draw()
         switch (contactStates[c.id])
         {
         case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::NONE :
-            glColor4f(1,0,0,1);
+            glColor4f(1,1,1,1);
             break;
 
         case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::SLIDING :
-            glColor4f(0,0,1,1);
+            glColor4f(0.6f,0.2f,0.2f,1);
             break;
 
         case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::STICKY :
-            glColor4f(0,1,0,1);
+            glColor4f(1,0,0,1);
             break;
         }
 
@@ -471,10 +471,10 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::draw()
 
         glEnd();
 
-        glLineWidth(1);
+        glLineWidth(2);
         glBegin(GL_LINES);
 
-        glColor4f(1,1,1,1);
+        glColor4f(0,1,0,1);
         helper::gl::glVertexT(c.Pfree);
         helper::gl::glVertexT(c.Qfree);
 
