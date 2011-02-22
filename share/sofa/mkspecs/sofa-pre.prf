@@ -86,9 +86,9 @@ isEmpty(RCC_DIR) {
 	RCC_DIR = RCC
 }
 
-#isEmpty(MOC_DIR) {
-#	MOC_DIR = MOC
-#}
+isEmpty(MOC_DIR) {
+	MOC_DIR = MOC
+}
 
 #UI_DIR
 
@@ -97,7 +97,7 @@ isEmpty(RCC_DIR) {
 ########################################################################
 
 isEmpty(SOFA_INSTALL_ROOT) {
-		SOFA_INSTALL_ROOT = /usr/local
+	SOFA_INSTALL_ROOT = /usr/local
 }
 
 isEmpty(SOFA_FEATURES_PATH) {
@@ -114,6 +114,10 @@ isEmpty(PACKAGE) {
 
 isEmpty(VERSION) {
 	VERSION = 1.0.0
+}
+
+isEmpty(DIST_DIR) {
+	DIST_DIR = $$ROOT_BUILD_DIR/$$PACKAGE-$$VERSION
 }
 
 isEmpty(CONFIGLIBRARIES) {
@@ -137,6 +141,17 @@ CONFIG += $$CONFIGLIBRARIES
 defineReplace(filename) {
 	path = $$eval($$1)
 	return($$replace(path, $$dirname(path)/, ))
+}
+
+defineTest(addCommand) {
+	cmdvar = $$1
+	command = $$2
+	isEmpty($$cmdvar) {
+		$$cmdvar = $$command
+	} else {
+		$$cmdvar += $$escape_expand(\\n\\t)$$command
+	}
+	export($$cmdvar)
 }
 
 ########################################################################
@@ -226,7 +241,6 @@ defineTest(requireSofaLib) {
 	name = $$1
 	dir  = $$2
 	sourcedir = $$replace(dir, (applications|framework|modules)/.+, \\1)
-	message(sourcedir = $$sourcedir)
 
 	isSourceAvailable($$name, $$dir) {
 		INCLUDEPATH *= $$SOFA_DIR/$$sourcedir
