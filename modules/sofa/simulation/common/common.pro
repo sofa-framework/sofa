@@ -30,11 +30,12 @@ HEADERS += common.h \
 	   MechanicalMatrixVisitor.h \
 	       MechanicalOperations.h \
            MechanicalVPrintVisitor.h \
-           MechanicalVisitor.h \  
+           MechanicalVisitor.h \
            MutationListener.h \
            ParallelVisitorScheduler.h \
            PauseEvent.h \
            PipelineImpl.h \
+           PositionEvent.h\
            PrintVisitor.h \
            PropagateEventVisitor.h \
            ResetVisitor.h \
@@ -89,6 +90,7 @@ SOURCES += Node.cpp \
            ParallelVisitorScheduler.cpp \
            PauseEvent.cpp \
            PipelineImpl.cpp \
+           PositionEvent.cpp\
            PrintVisitor.cpp \
            PropagateEventVisitor.cpp \
            ResetVisitor.cpp \
