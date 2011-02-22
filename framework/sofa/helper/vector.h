@@ -64,7 +64,7 @@ namespace helper
 
 void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type);
 
-DEBUG_OUT_V(extern int cptid);
+DEBUG_OUT_V(extern SOFA_HELPER_API int cptid);
 
 template <class T, class MemoryManager = CPUMemoryManager<T> >
 class vector
