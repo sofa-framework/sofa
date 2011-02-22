@@ -270,6 +270,13 @@ void QtOgreViewer::setupResources()
     const std::vector< std::string > &paths=sofa::helper::system::DataRepository.getPaths();
     for (unsigned int i=0; i<paths.size(); ++i)  Ogre::ResourceGroupManager::getSingleton().addResourceLocation(paths[i] ,"FileSystem","General");
 
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(helper::system::SetDirectory::GetCurrentDir(),"FileSystem","General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sofa::helper::system::DataRepository.getFirstPath() +"/config","FileSystem","General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sofa::helper::system::DataRepository.getFirstPath() +"/textures","FileSystem","General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sofa::helper::system::DataRepository.getFirstPath() +"/materials/programs","FileSystem","General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sofa::helper::system::DataRepository.getFirstPath() +"/materials/scripts","FileSystem","General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sofa::helper::system::DataRepository.getFirstPath() +"/materials/textures","FileSystem","General");
+
     std::string resourceCfgFile = "config/ogreResources.cfg";
     if( sofa::helper::system::DataRepository.findFile(resourceCfgFile) )
     {
@@ -578,7 +585,7 @@ void QtOgreViewer::setupView()
 #endif
     //Finally create our window.
     std::cout<< "createRenderWindow :" << width() << "x" << height() << "...";
-    mRenderWindow = mRoot->createRenderWindow(&params /* PARAMS FIRST */, "OgreWindow", width(), height(), false);
+    mRenderWindow = mRoot->createRenderWindow( "OgreWindow", width(), height(), false, &params );
     std::cout<< "done.";
 
 
