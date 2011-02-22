@@ -161,6 +161,21 @@ Image::~Image()
     clear();
 }
 
+Image::Image(const Image& rhs)
+    :data(NULL)
+{
+    init(rhs.width,rhs.height,rhs.depth,rhs.mipmaps,rhs.dataType,rhs.channelFormat);
+    memcpy(data,rhs.data,getImageSize());
+}
+
+Image& Image::operator=(const Image& rhs)
+{
+    clear();
+    init(rhs.width,rhs.height,rhs.depth,rhs.mipmaps,rhs.dataType,rhs.channelFormat);
+    memcpy(data,rhs.data,getImageSize());
+    return *this;
+}
+
 unsigned Image::getWidth(unsigned mipmap) const
 {
     unsigned result = width >> mipmap;
