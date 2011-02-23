@@ -70,7 +70,8 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename In::Real InReal;
     typedef typename In::Deriv InDeriv;
-    typedef typename In::DRot DRot;
+    typedef typename InDeriv::Pos DPos;
+    typedef typename InDeriv::Rot DRot;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::MatrixDeriv InMatrixDeriv;

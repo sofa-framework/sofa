@@ -457,8 +457,8 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     Vec3 fb2 = x[a].getOrientation().rotate(Vec3d(force[9],force[10],force[11]));
 
 
-    f[a] += Deriv(-fa1[0],-fa1[1],-fa1[2], -fa2[0],-fa2[1],-fa2[2]);
-    f[b] += Deriv(-fb1[0],-fb1[1],-fb1[2], -fb2[0],-fb2[1],-fb2[2]);
+    f[a] += Deriv(-fa1, -fa2);
+    f[b] += Deriv(-fb1, -fb2);
 
 }
 
@@ -499,10 +499,8 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
     Vec3 fb1 = q.rotate(Vec3d(local_force[6],local_force[7] ,local_force[8] ));
     Vec3 fb2 = q.rotate(Vec3d(local_force[9],local_force[10],local_force[11]));
 
-//	df[a] += Deriv(-fa1,-fa2) * fact;
-//        df[b] += Deriv(-fb1,-fb2) * fact;
-    df[a] += Deriv(-fa1[0],-fa1[1],-fa1[2], -fa2[0],-fa2[1],-fa2[2]) * fact;
-    df[b] += Deriv(-fb1[0],-fb1[1],-fb1[2], -fb2[0],-fb2[1],-fb2[2]) * fact;
+    df[a] += Deriv(-fa1,-fa2) * fact;
+    df[b] += Deriv(-fb1,-fb2) * fact;
 }
 
 template<class DataTypes>

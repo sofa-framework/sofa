@@ -663,7 +663,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 
         for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
         {
-            Deriv v;
+            DPos v;
             DRot omega = DRot();
 
             typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
@@ -709,7 +709,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 
             for (unsigned int ito = 0; ito < numDofs; ito++)
             {
-                Deriv v;
+                DPos v;
                 DRot omega = DRot();
                 bool needToInsert = false;
 
@@ -753,7 +753,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 
             for (unsigned int ito = 0; ito < numDofs; ito++)
             {
-                Deriv v;
+                DPos v;
                 DRot omega = DRot();
                 bool needToInsert = false;
 

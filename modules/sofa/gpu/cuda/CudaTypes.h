@@ -867,7 +867,7 @@ class CudaRigidTypes<3, real>
 public:
     typedef real Real;
     typedef sofa::defaulttype::RigidCoord<3,real> Coord;
-    typedef sofa::defaulttype::Vec<6,real> Deriv;
+    typedef sofa::defaulttype::RigidDeriv<3,real> Deriv;
     typedef typename Coord::Vec3 Vec3;
     typedef typename Coord::Quat Quat;
     typedef CudaVector<Coord> VecCoord;
