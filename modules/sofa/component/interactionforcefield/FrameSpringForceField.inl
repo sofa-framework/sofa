@@ -99,8 +99,8 @@ void FrameSpringForceField<DataTypes>::addSpringForce ( double& /*potentialEnerg
     VecN C1 = fR + cross( Mr01 * ( spring.vec1), fT) + damping.linearProduct ( getVOrientation(Vp1p2) );
     VecN C2 = fR + cross( Mr02 * ( spring.vec2), fT) + damping.linearProduct ( -getVOrientation(Vp1p2) );
 
-    f1[a] += Deriv ( fT[0],fT[1],fT[2], C1[0],C1[1],C1[2]);
-    f2[b] -= Deriv ( fT[0],fT[1],fT[2], C2[0],C2[1],C2[2]);
+    f1[a] += Deriv ( fT, C1);
+    f2[b] -= Deriv ( fT, C2);
 
     /*serr << "f1: " << fT1 << ", " << fR1 << endl;
     serr << "f2: " << fT2 << ", " << fR2 << endl;
@@ -127,7 +127,7 @@ void FrameSpringForceField<DataTypes>::addSpringDForce ( VecDeriv& f1, const Vec
     //compute rotational force
     VecN dR0 = Mr01 * ( ksr.linearProduct ( Mr10* getVOrientation(Mdx1dx2) ) );
 
-    const Deriv dforce ( df0[0],df0[1],df0[2], dR0[0],dR0[1],dR0[2] );
+    const Deriv dforce ( df0, dR0 );
 
     f1[a] += dforce;
     f2[b] -= dforce;

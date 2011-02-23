@@ -42,166 +42,131 @@ namespace mapping
 {
 
 template<class T1, class T2>
-extern void eq(T1& dest, const T2& src)
+static inline void eq(T1& dest, const T2& src)
 {
-    dest = (T1)(src);
-}
-template<class T1, class T2>
-extern void eq(defaulttype::Vec<3,T1>& dest, const defaulttype::Vec<6,T2>& src)
-{
-    dest = defaulttype::Vec<3,T1>(src[0],src[2],src[3]);
-}
-template<class T1, class T2>
-extern void eq(defaulttype::Vec<6,T1>& dest, const defaulttype::Vec<3,T2>& src)
-{
-    dest = defaulttype::Vec<6,T1>(src[0],src[1],src[2],0,0,0);
-}
-template<class T1, class T2>
-extern void eq(defaulttype::Vec<2,T1>& dest, const defaulttype::Vec<3,T2>& src)
-{
-    dest = defaulttype::Vec<2,T1>(src[0],src[1]);
-}
-template<class T1, class T2>
-extern void eq(defaulttype::Vec<3,T1>& dest, const defaulttype::Vec<2,T2>& src)
-{
-    dest = defaulttype::Vec<3,T1>(src[0],src[1],0);
+    dest = src;
 }
 
 template<class T1, class T2>
-extern void peq(T1& dest, const T2& src)
+static inline void peq(T1& dest, const T2& src)
 {
-    dest += (T1)(src);
-}
-template<class T1, class T2>
-extern void peq(defaulttype::Vec<3,T1>& dest, const defaulttype::Vec<6,T2>& src)
-{
-    dest += defaulttype::Vec<3,T1>(src[0],src[2],src[3]);
-}
-template<class T1, class T2>
-extern void peq(defaulttype::Vec<6,T1>& dest, const defaulttype::Vec<3,T2>& src)
-{
-    dest += defaulttype::Vec<6,T1>(src[0],src[1],src[2],0,0,0);
-}
-template<class T1, class T2>
-extern void peq(defaulttype::Vec<2,T1>& dest, const defaulttype::Vec<3,T2>& src)
-{
-    dest += defaulttype::Vec<2,T1>(src[0],src[2]);
-}
-template<class T1, class T2>
-extern void peq(defaulttype::Vec<3,T1>& dest, const defaulttype::Vec<2,T2>& src)
-{
-    dest += defaulttype::Vec<3,T1>(src[0],src[2],0);
+    dest += src;
 }
 
-template<int N, typename real1, typename real2>
-extern void eq(defaulttype::RigidCoord<N,real1>& dest, const defaulttype::RigidCoord<N,real2>& src)
+// float <-> double (to remove warnings)
+
+//template<>
+static inline void eq(float& dest, const double& src)
+{
+    dest = (float)src;
+}
+
+//template<>
+static inline void peq(float& dest, const double& src)
+{
+    dest += (float)src;
+}
+
+// Vec <-> Vec
+
+template<int N1, int N2, class T1, class T2>
+static inline void eq(defaulttype::Vec<N1,T1>& dest, const defaulttype::Vec<N2,T2>& src)
+{
+    dest = src;
+}
+
+template<int N1, int N2, class T1, class T2>
+static inline void peq(defaulttype::Vec<N1,T1>& dest, const defaulttype::Vec<N2,T2>& src)
+{
+    for (unsigned int i=0; i<(N1>N2?N2:N1); i++)
+        dest[i] += (T1)src[i];
+}
+
+// RigidDeriv <-> RigidDeriv
+
+template<int N, class T1, class T2>
+static inline void eq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
+{
+    dest.getVCenter() = src.getVCenter();
+    dest.getVOrientation() = src.getVOrientation();
+}
+
+template<int N, class T1, class T2>
+static inline void peq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
+{
+    dest.getVCenter() += src.getVCenter();
+    dest.getVOrientation() += src.getVOrientation();
+}
+
+// RigidCoord <-> RigidCoord
+
+template<int N, class T1, class T2>
+static inline void eq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
 {
     dest.getCenter() = src.getCenter();
     dest.getOrientation() = src.getOrientation();
 }
 
-template<typename real1, typename real2>
-extern void eq(defaulttype::RigidCoord<2,real1>& dest, const defaulttype::RigidCoord<2,real2>& src)
-{
-    dest.getCenter() = src.getCenter();
-    dest.getOrientation() = (real1)src.getOrientation();
-}
-
-template<int N, typename real1, typename real2>
-extern void peq(defaulttype::RigidCoord<N,real1>& dest, const defaulttype::RigidCoord<N,real2>& src)
+template<int N, class T1, class T2>
+static inline void peq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
 {
     dest.getCenter() += src.getCenter();
     dest.getOrientation() += src.getOrientation();
 }
 
-template<typename real1, typename real2>
-extern void peq(defaulttype::RigidCoord<2,real1>& dest, const defaulttype::RigidCoord<2,real2>& src)
+// RigidDeriv <-> Vec
+
+template<int N, class T1, class T2>
+static inline void eq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
 {
-    dest.getCenter() += src.getCenter();
-    dest.getOrientation() += (real1)src.getOrientation();
+    dest = src.getVCenter();
 }
 
-// template<typename real1, typename real2>
-// extern void eq(defaulttype::Vec<3,real1>& dest, const defaulttype::Vec<3,real2>& src)
-// {
-//     getVCenter(dest) = getVCenter(src);
-//     getVOrientation(dest) = getVOrientation(src);
-// }
-template<typename real1, typename real2>
-extern void eq(defaulttype::Vec<6,real1>& dest, const defaulttype::Vec<6,real2>& src)
+template<int N, class T1, class T2>
+static inline void peq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
 {
-    getVCenter(dest) = getVCenter(src);
-    getVOrientation(dest) = getVOrientation(src);
+    dest += src.getVCenter();
 }
 
-//template<typename real1, typename real2>
-//extern void eq(defaulttype::Vec<3,real1>& dest, const defaulttype::Vec<3,real2>& src)
-//{
-//    getVCenter(dest) = getVCenter(src);
-//    getVOrientation(dest) = (real1)getVOrientation(src);
-//}
-
-template<typename real1, typename real2>
-extern void peq(defaulttype::Vec<6,real1>& dest, const defaulttype::Vec<6,real2>& src)
+template<int N, class T1, class T2>
+static inline void eq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
 {
-    getVCenter(dest) += getVCenter(src);
-    getVOrientation(dest) += getVOrientation(src);
+    dest.getVCenter() = src;
+    //dest.getVOrientation() = defaulttype::RigidDeriv<N,T1>::Rot(); //.clear();
 }
 
-// template<typename real1, typename real2>
-// extern void peq(defaulttype::Vec<3,real1>& dest, const defaulttype::Vec<3,real2>& src)
-// {
-//     getVCenter(dest) += getVCenter(src);
-//     getVOrientation(dest) += (real1)getVOrientation(src);
-// }
+template<int N, class T1, class T2>
+static inline void peq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
+{
+    dest.getVCenter() += src;
+}
 
-template<int N, typename real1, typename real2>
-extern void eq(defaulttype::Vec<N,real1>& dest, const defaulttype::RigidCoord<N,real2>& src)
+// RigidCoord <-> Vec
+
+template<int N, class T1, class T2>
+static inline void eq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
 {
     dest = src.getCenter();
 }
 
-template<int N, typename real1, typename real2>
-extern void peq(defaulttype::Vec<N,real1>& dest, const defaulttype::RigidCoord<N,real2>& src)
+template<int N, class T1, class T2>
+static inline void peq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
 {
     dest += src.getCenter();
 }
 
-//template<int N, typename real1, typename real2>
-//extern void eq(defaulttype::Vec<N,real1>& dest, const defaulttype::Vec<N,real2>& src)
-//{
-//    dest = src.getVCenter();
-//}
-
-//template<int N, typename real1, typename real2>
-//extern void peq(defaulttype::Vec<N,real1>& dest, const defaulttype::Vec<N,real2>& src)
-//{
-//    dest += src.getVCenter();
-//}
-
-template<int N, typename real1, typename real2>
-extern void eq(defaulttype::RigidCoord<N,real1>& dest, const defaulttype::Vec<N,real2>& src)
+template<int N, class T1, class T2>
+static inline void eq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
 {
     dest.getCenter() = src;
+    //dest.getOrientation() = defaulttype::RigidCoord<N,T1>::Rot(); //.clear();
 }
 
-template<int N, typename real1, typename real2>
-extern void peq(defaulttype::RigidCoord<N,real1>& dest, const defaulttype::Vec<N,real2>& src)
+template<int N, class T1, class T2>
+static inline void peq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
 {
     dest.getCenter() += src;
 }
-
-//template<int N, typename real1, typename real2>
-//extern void eq(defaulttype::Vec<N,real1>& dest, const defaulttype::Vec<N,real2>& src)
-//{
-//    getVCenter(dest) = src;
-//}
-
-//template<int N, typename real1, typename real2>
-//extern void peq(defaulttype::Vec<N,real1>& dest, const defaulttype::Vec<N,real2>& src)
-//{
-//    getVCenter(dest) += src;
-//}
 
 template <class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<VecCoord>& dOut, const Data<InVecCoord>& dIn)

@@ -78,7 +78,7 @@ public:
 };
 
 template<typename Real>
-class AddMToMatrixFunctor< defaulttype::Vec<6,Real>, defaulttype::RigidMass<3,Real> >
+class AddMToMatrixFunctor< defaulttype::RigidDeriv<3,Real>, defaulttype::RigidMass<3,Real> >
 {
 public:
     enum { N=3 };
@@ -97,7 +97,7 @@ public:
 };
 
 template<typename Real>
-class AddMToMatrixFunctor< defaulttype::Vec<3,Real>, defaulttype::RigidMass<2,Real> >
+class AddMToMatrixFunctor< defaulttype::RigidDeriv<2,Real>, defaulttype::RigidMass<2,Real> >
 {
 public:
     enum { N=2 };
