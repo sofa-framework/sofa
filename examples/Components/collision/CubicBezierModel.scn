@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="1" showBoundingCollisionModels="1" showForceFields="0" gravity="0 -20 0">
-    <CollisionPipeline depth="2" verbose="1" draw="0"/>
+    <CollisionPipeline depth="8" verbose="1" draw="0"/>
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="localmindistance" alarmDistance="0.5" contactDistance="0.2" />
     <CollisionResponse name="Response" response="BSplineContact" />
@@ -19,7 +19,7 @@
 		<FixedConstraint name="FixedConstraint" indices="0" />
 		<UniformMass  printLog="false" />
 		<BeamFEMForceField name="FEM" radius="0.1" youngModulus="20000000" />
-		<BSplineModel  SplittingLevel="4"/>
+		<BSplineModel  SplittingLevel="7"/>
 	</Node>
 
 	<Node name="Point">
