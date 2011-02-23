@@ -68,7 +68,7 @@ void StaticSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, doub
 //    MultiVecDeriv b(&vop);
     MultiVecDeriv x(&vop);
 
-    mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to add G to v separately from the other forces.
 
     // compute the right-hand term of the equation system
     mop.computeForce(force);             // b = f0
@@ -93,7 +93,7 @@ void StaticSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, doub
 
     if( f_printLog.getValue() )
         serr<<"StaticSolver, opposite solution = "<< x <<sendl;
-    pos2.eq( pos, x, -1 );
+    pos2.eq( pos, x, -dt );
 
     mop.solveConstraint(dt,pos2,core::ConstraintParams::POS);
 
