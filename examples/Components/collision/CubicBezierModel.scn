@@ -19,7 +19,7 @@
 		<FixedConstraint name="FixedConstraint" indices="0" />
 		<UniformMass  printLog="false" />
 		<BeamFEMForceField name="FEM" radius="0.1" youngModulus="20000000" />
-		<BSplineModel  SplittingLevel="7"/>
+		<BSplineModel  SplittingLevel="0"/>
 	</Node>
 
 	<Node name="Point">

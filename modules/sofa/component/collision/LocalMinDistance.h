@@ -112,16 +112,16 @@ public:
     bool testValidity(Line&, const Vector3&);
     bool testValidity(Triangle&, const Vector3&);
 
-#ifdef SOFA_DEV
-    //Copy of Line computation. TODO_Spline : finding adaptive and optimized computation for Spline
-    bool testValidity(CubicBezierCurve&, const Vector3&);
-    bool testIntersection(CubicBezierCurve&, Point&);
-    int computeIntersection(CubicBezierCurve&, Point&, OutputVector*);
-    bool testIntersection(CubicBezierCurve&, Sphere&);
-    int computeIntersection(CubicBezierCurve&, Sphere&, OutputVector*);
-    //bool testIntersection(CubicBezierCurve&, Sphere&);
-    //bool testIntersection(CubicBezierCurve&, CubicBezierCurve&);
-#endif // SOFA_DEV
+//#ifdef SOFA_DEV
+//	//Copy of Line computation. TODO_Spline : finding adaptive and optimized computation for Spline
+//	bool testValidity(CubicBezierCurve&, const Vector3&);
+//    bool testIntersection(CubicBezierCurve&, Point&);
+//    int computeIntersection(CubicBezierCurve&, Point&, OutputVector*);
+//    bool testIntersection(CubicBezierCurve&, Sphere&);
+//    int computeIntersection(CubicBezierCurve&, Sphere&, OutputVector*);
+//    //bool testIntersection(CubicBezierCurve&, Sphere&);
+//    //bool testIntersection(CubicBezierCurve&, CubicBezierCurve&);
+//#endif // SOFA_DEV
 
     void draw();
 
