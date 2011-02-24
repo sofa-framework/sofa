@@ -540,9 +540,10 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
             }
             getVCenter(out[outIdx]) += in[inIdx];
             getVOrientation(out[outIdx]) +=  cross(rotatedPoints[inIdx], in[inIdx]);
-            //            cerr<<"RigidMapping<TIn, TOut>::applyJT, in[inIdx] = "<< in[inIdx] << endl;
-            //            cerr<<"RigidMapping<TIn, TOut>::applyJT, getVCenter(out[outIdx]) = "<< getVCenter(out[outIdx]) << endl;
-            //            cerr<<"RigidMapping<TIn, TOut>::applyJT, getVOrientation(out[outIdx]) = "<< getVOrientation(out[outIdx]) << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, in[inIdx] = "<< in[inIdx] << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, cross(rotatedPoints[inIdx], in[inIdx]) = "<< cross(rotatedPoints[inIdx], in[inIdx]) << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, getVCenter(out[outIdx]) = "<< getVCenter(out[outIdx]) << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, getVOrientation(out[outIdx]) = "<< getVOrientation(out[outIdx]) << endl;
 
         }
         if (isMaskInUse)
@@ -551,6 +552,38 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
         }
     }
 }
+
+//            using defaulttype::Vec;
+//
+//            /** Symmetric cross cross product.
+//              Let [a×(.×c)] be the linear operator such that: a×(b×c) = [a×(.×c)]b, where × denotes the cross product.
+//              This operator is not symmetric, and can mess up conjugate gradient solutions.
+//              This method computes sym([a×(.×c)])b , where sym(M) = (M+M^T)/2
+//              */
+//            template<class Rp, class Rc>  // p for parent, c for child
+//            Vec<3,Rp> symCrossCross( const Vec<3,Rc>& a,  const Vec<3,Rp>& b,  const Vec<3,Rc>& c  )
+//            {
+////                Rp m00 = a[1]*c[1]+a[2]*c[2], m01= -0.5*(a[1]*c[0]+a[0]*c[1]), m02 = -0.5*(a[2]*c[0]+a[0]*c[2]) ;
+////                Rp                            m11=  a[0]*c[0]+a[2]*c[2],       m12 = -0.5*(a[2]*c[1]+a[1]*c[2]) ;
+////                Rp                                                             m22=  a[0]*c[0]+a[1]*c[1];
+//                Rp m00 = a[1]*c[1]+a[2]*c[2], m01= 0, m02 = 0 ;
+//                Rp                            m11=  a[0]*c[0]+a[2]*c[2],       m12 = 0 ;
+//                Rp                                                             m22=  a[0]*c[0]+a[1]*c[1];
+//                return Vec<3,Rp>(
+//                        m00*b[0] + m01*b[1] + m02*b[2],
+//                        m01*b[0] + m11*b[1] + m12*b[2],
+//                        m02*b[0] + m12*b[1] + m22*b[2]
+//                        );
+//            }
+//
+//            /** Symmetric cross cross product in 2D (see doc in 3D)
+//              In 2D, this operator is a scalar so it is symmetric.
+//              */
+//            template<class Rp, class Rc> // p for parent, c for child
+//            Rp symCrossCross( const Vec<2,Rc>& a,  const Rp& b,  const Vec<2,Rc>& c  )
+//            {
+//                return (a*c)*b;
+//            }
 
 
 template <class TIn, class TOut>
@@ -621,12 +654,18 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
             }
             typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIdx]);
             const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIdx]);
-            parentTorque -=  TIn::crosscross( childForces[childIdx], parentRotation, rotatedPoints[childIdx]) * kfactor;
-//                                    cerr<<"RigidMapping<TIn, TOut>::applyJT, childForces[childIdx] = "<< childForces[childIdx] << endl;
-//                                    cerr<<"RigidMapping<TIn, TOut>::applyJT, parentRotation = "<< parentRotation << endl;
-//                                    cerr<<"RigidMapping<TIn, TOut>::applyJT, rotatedPoints[childIdx] = "<< rotatedPoints[childIdx] << endl;
-//                                    cerr<<"RigidMapping<TIn, TOut>::applyJT,  kfactor = "<<  kfactor << endl;
-//                                    cerr<<"RigidMapping<TIn, TOut>::applyJT, parentTorque = "<< parentTorque << endl;
+//                        const typename TIn::AngularVector& torqueDecrement = symCrossCross( childForces[childIdx], parentRotation, rotatedPoints[childIdx]) * kfactor;
+            const typename TIn::AngularVector& torqueDecrement = TIn::crosscross( childForces[childIdx], parentRotation, rotatedPoints[childIdx]) * kfactor;
+            parentTorque -=  torqueDecrement;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, childForces[childIdx] = "<< childForces[childIdx] << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentRotation = "<< parentRotation << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, rotatedPoints[childIdx] = "<< rotatedPoints[childIdx] << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT,  kfactor = "<<  kfactor << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentTorque increment = "<< -torqueDecrement << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyDJT, parentTorque = "<< parentTorque << endl;
+
+
+
 
         }
         if (isMaskInUse)

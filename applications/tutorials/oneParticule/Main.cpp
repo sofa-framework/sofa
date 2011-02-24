@@ -79,10 +79,10 @@ int main(int argc, char** argv)
     particule_node->addObject(particle);
     particle->resize(1);
     // get write access the particle positions vector
-    WriteAccessor< Data<typename MechanicalObject3::VecCoord> > positions = *particle->write( VecId::position() );
+    WriteAccessor< Data<MechanicalObject3::VecCoord> > positions = *particle->write( VecId::position() );
     positions[0] = Coord3(0,0,0);
     // get write access the particle velocities vector
-    WriteAccessor< Data<typename MechanicalObject3::VecDeriv> > velocities = *particle->write( VecId::velocity() );
+    WriteAccessor< Data<MechanicalObject3::VecDeriv> > velocities = *particle->write( VecId::velocity() );
     velocities[0] = Deriv3(0,0,0);
 
     // Its properties, i.e, a simple mass node

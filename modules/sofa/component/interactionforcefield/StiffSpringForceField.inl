@@ -48,9 +48,16 @@ void StiffSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addSpringForce(double& potentialEnergy, VecDeriv& f1,const  VecCoord& p1,const VecDeriv& v1,
-        VecDeriv& f2,const  VecCoord& p2,const  VecDeriv& v2,
-        int i, const Spring& spring)
+void StiffSpringForceField<DataTypes>::addSpringForce(
+    double& potentialEnergy,
+    VecDeriv& f1,
+    const  VecCoord& p1,
+    const VecDeriv& v1,
+    VecDeriv& f2,
+    const  VecCoord& p2,
+    const  VecDeriv& v2,
+    int i,
+    const Spring& spring)
 //addSpringForce( double& potentialEnergy, RDataRefVecDeriv& f1, RDataRefVecCoord& p1, RDataRefVecDeriv& v1, RDataRefVecDeriv& f2, RDataRefVecCoord& p2, RDataRefVecDeriv& v2, int i, const Spring& spring)
 {
     int a = spring.m1;
@@ -63,9 +70,9 @@ void StiffSpringForceField<DataTypes>::addSpringForce(double& potentialEnergy, V
         u *= inverseLength;
         Real elongation = (Real)(d - spring.initpos);
         potentialEnergy += elongation * elongation * spring.ks / 2;
-        /*                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<sendl;
-                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<sendl;
-                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;*/
+//                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<sendl;
+//                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<sendl;
+//                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;
         Deriv relativeVelocity = v2[b]-v1[a];
         Real elongationVelocity = dot(u,relativeVelocity);
         Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
@@ -109,9 +116,11 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecD
     const Coord d = dx2[b]-dx1[a];
     Deriv dforce = this->dfdx[i]*d;
     dforce *= kFactor;
+//                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dx1 ="<<  dx1 <<", dx2 ="<<  dx2 <<sendl;
+//                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
     df1[a]+=dforce;
     df2[b]-=dforce;
-    //serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
+//                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", df1 after ="<<df1<<", df2 after ="<<df2<<sendl;
 }
 
 template<class DataTypes>

@@ -185,6 +185,7 @@ public:
     /// \f$ f_p += dJ^t f_c \f$, where \f$ f_p \f$ is the parent force and  \f$ f_c \f$ is the child force.
     /// The child force is accessed in the child state using mparams->readF() .  This requires that the child force vector is used by the solver to compute the force \f$ f(x,v)\f$ corresponding to the current positions and velocities, and not to store auxiliary values.
     /// The displacement is accessed in the parent state using mparams->readDx() .
+    /// This method corresponds to a non-symmetric matrix. Thus, it is called only if the symmetry flag is not set in the MechanicalParam
     virtual void applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ /* PARAMS FIRST */, MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) {}
 
     /// ApplyJT (Constraint)///
