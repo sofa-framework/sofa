@@ -59,6 +59,9 @@ public:
     /// Stiffness matrix contributions factor (for implicit schemes)
     double kFactor() const { setKFactorUsed(true); return m_kFactor; }
 
+    /// Symmetric matrix flag, for solvers specialized on symmetric matrices
+    bool symmetricMatrix() const { return m_symmetricMatrix; }
+
     /// Should the kinematic and potential energies be computed ?
     bool energy() const { return m_energy; }
 
@@ -114,6 +117,9 @@ public:
 
     /// Set Stiffness matrix contributions factor (for implicit schemes)
     MechanicalParams& setKFactor(double v) { m_kFactor = v; return *this; }
+
+    /// Set the symmetric matrix flag (for implicit schemes), for solvers specialized on symmetric matrices
+    MechanicalParams& setSymmetricMatrix(bool b) { m_symmetricMatrix = b; return *this; }
 
     /// Checks wether or nor kFactor is used in ForceFields. Temporary here for compatiblity reasons
     void setKFactorUsed(bool b) const { m_kFactorUsed = b; }
@@ -183,6 +189,7 @@ public:
         , m_mFactor(0)
         , m_bFactor(0)
         , m_kFactor(0)
+        , m_symmetricMatrix(true)
     {
     }
 
@@ -237,6 +244,9 @@ protected:
 
     /// Checks if the stiffness matrix contributions factor has been accessed
     mutable bool m_kFactorUsed;
+
+    /// True if a symmetric matrix is assumed in the left-hand term of the dynamics equations, for solvers specialized on symmetric matrices
+    double m_symmetricMatrix;
 };
 
 } // namespace core
