@@ -109,7 +109,10 @@ Context::Context()
 bool Context::isActive() const {return is_activated.getValue();}
 
 /// State of the context
-void Context::setActive(bool val) { is_activated.setValue(val);}
+void Context::setActive(bool val)
+{
+    is_activated.setValue(val);
+}
 
 /// Projection from the local coordinate system to the world coordinate system.
 const Context::Frame& Context::getPositionInWorld() const
