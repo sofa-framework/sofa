@@ -110,7 +110,6 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , ignoreLoader(initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader"))
     , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors"))
     , vsize(0)
-    , data(this)
     , m_gnuplotFileX(NULL)
     , m_gnuplotFileV(NULL)
 {
@@ -121,6 +120,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
     }
 
     m_initialized = false;
+
+    data = MechanicalObjectInternalData<DataTypes>(this);
 
     x				.setGroup("Vector");
     v				.setGroup("Vector");

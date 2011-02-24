@@ -147,7 +147,7 @@ bool GenerateBenchSolver<TMatrix,TVector>::addJMInvJt(RMatrix& /*result*/, JMatr
             for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
             {
                 cols[n_val] = i1->first;
-                vals[n_val] = i1->second;
+                vals[n_val] = (Real)i1->second;
                 n_val++;
             }
 
