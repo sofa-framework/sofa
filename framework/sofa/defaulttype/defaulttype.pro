@@ -32,6 +32,7 @@ HEADERS += \
           Quat.h \
           Quat.inl \
           RigidTypes.h \
+          RigidVec6Types.h \
           SolidTypes.h \
           SolidTypes.inl \
           #SparseConstraintTypes.h \
