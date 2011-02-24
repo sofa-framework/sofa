@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="1" showBoundingCollisionModels="1" showForceFields="0" gravity="0 -20 0">
-    <CollisionPipeline depth="8" verbose="1" draw="0"/>
-    <BruteForceDetection name="N2" />
-    <LocalMinDistance name="localmindistance" alarmDistance="0.5" contactDistance="0.2" />
-    <CollisionResponse name="Response" response="BSplineContact" />
-    <CollisionGroup name="Group" />
+<Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="1" showBoundingCollisionModels="1" showForceFields="0" gravity="0 -9 0">
+	<CollisionPipeline depth="6" verbose="1" draw="0"/>
+	<BruteForceDetection name="N2" />
+	<LocalMinDistance name="localmindistance" alarmDistance="0.2" contactDistance="0.05" />
+	<CollisionResponse name="Response" response="default" />
+	<CollisionGroup name="Group" />
 
 
 	<Node name="beam">
@@ -19,19 +19,20 @@
 		<FixedConstraint name="FixedConstraint" indices="0" />
 		<UniformMass  printLog="false" />
 		<BeamFEMForceField name="FEM" radius="0.1" youngModulus="20000000" />
-		<BSplineModel  SplittingLevel="0"/>
+		<BSplineModel  SplittingLevel="2"/>
 	</Node>
 
 	<Node name="Point">
-		<MechanicalObject name="DOFs1" position="4 -1 0 6 -2 0 8 -3 0" />		
+		<MechanicalObject name="DOFs1" position="4 -1 0 6 -1 0 8 -1 0" />		
 		<FixedConstraint name="m_fixedConstraint" indices="0" />
-
-			<Point/>
-		<!--
 		<SphereModel radius="0.3"/>
+		<!--
+		<Point/>
+
 			<MechanicalObject position="5 -1 0" />		
 			<FixedConstraint name="FixedConstraint" indices="0" />
 			<FixedConstraint name="FixedConstraint" indices="0" />
+
 		-->
 	</Node>
 
