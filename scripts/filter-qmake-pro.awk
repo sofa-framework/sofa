@@ -62,13 +62,19 @@ blk_dev>0 {
 	    infilelist=1;
 	    f0=3; # first file is in 3rd field
 	}
+	else if ($1~"###") {
+	    #print "#infilelist " $1
+	    infilelist=1;
+	    f0=2; # first file is in 3rd field
+	}
     }
     if (infilelist) {
 	for(f=f0;f<=nf && !(f==nf && $f~/^[:space:]*\\[:space:]*$/);f++) {
 	    fname=$f
 	    gsub(/[\r\n]/,"",fname);
 	    gsub(/\\[:space:]*$/,"",fname);
-	    if (fname != "#") print fname > "/dev/stderr";
+	    gsub(/^##*/,"",fname);
+	    if (fname != "") print fname > "/dev/stderr";
 	}
 	if (f>nf && (nf==0 || $nf!~/\\[:space:]*$/)) { # no "\\" is put at the end of the line -> end of list
 	    #print "#end"
