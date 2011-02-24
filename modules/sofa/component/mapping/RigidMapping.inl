@@ -592,7 +592,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
     helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
     helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
-    InReal kfactor = mparams->kFactor();
+    InReal kfactor = (InReal)mparams->kFactor();
 
     const VecCoord& pts = this->getPoints();
 
