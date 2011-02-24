@@ -189,6 +189,9 @@ protected:
     sofa::component::mapping::PersistentContactMapping *map1;
     sofa::component::mapping::PersistentContactMapping *map2;
 
+    sofa::core::BaseMapping *base_map1;
+    sofa::core::BaseMapping *base_map2;
+
     std::vector< Vector3 > barycentricValues1;
     std::vector< Vector3 > barycentricValues2;
 

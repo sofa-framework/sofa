@@ -52,6 +52,8 @@ PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::PersistentFriction
     , constraintModel2(NULL)
     , map1(NULL)
     , map2(NULL)
+    , base_map1(NULL)
+    , base_map2(NULL)
 {
     mstate1 = model1->getMechanicalState();
     mstate2 = model2->getMechanicalState();
@@ -85,6 +87,9 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::init()
 
     use_mapper_for_state1 = !findMappingOrUseMapper(mstate1, constraintModel1, map1);
     use_mapper_for_state2 = !findMappingOrUseMapper(mstate2, constraintModel2, map2);
+
+    base_map1 = dynamic_cast< core::BaseMapping * >(map1);
+    base_map2 = dynamic_cast< core::BaseMapping * >(map2);
 }
 
 
@@ -102,6 +107,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
         constraintModel1 = NULL;
         map1->beginAddContactPoint();
         map1 = NULL;
+        base_map1 = NULL;
     }
 
     if (constraintModel2)
@@ -110,6 +116,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
         constraintModel2 = NULL;
         map2->beginAddContactPoint();
         map2 = NULL;
+        base_map2 = NULL;
     }
 
     Inherit::cleanup();
@@ -532,7 +539,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
     else
     {
         map1->applyLinearizedPosition();
-        dynamic_cast< core::BaseMapping* >(map1)->apply(0, sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
+        base_map1->apply(0, sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
     }
 
     if (use_mapper_for_state2)
@@ -546,7 +553,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
     else
     {
         map2->applyLinearizedPosition();
-        dynamic_cast< core::BaseMapping* >(map2)->apply(0, sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
+        base_map2->apply(0, sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
     }
 }
 
