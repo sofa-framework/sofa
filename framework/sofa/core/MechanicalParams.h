@@ -246,7 +246,7 @@ protected:
     mutable bool m_kFactorUsed;
 
     /// True if a symmetric matrix is assumed in the left-hand term of the dynamics equations, for solvers specialized on symmetric matrices
-    double m_symmetricMatrix;
+    bool m_symmetricMatrix;
 };
 
 } // namespace core
