@@ -28,6 +28,17 @@ contains(TEMPLATE, app) {
 	TARGET = $$TARGET$$SUFFIX
 }
 
+win32 {
+	CONFIG += exceptions rtti thread
+	contains(TEMPLATE, app) {
+		CONFIG += console
+	}
+	contains(TEMPLATE, lib) {
+		CONFIG += static
+		# TODO: support for shared libraries
+	}
+}
+
 ########################################################################
 # Definition of make install
 ########################################################################
@@ -68,10 +79,11 @@ QMAKE_EXTRA_TARGETS += fulldist
 # We distribute the .pro file and any file listed in DISTFILES (standard qmake variable)
 # All filenames in DIST_FILES must be relative to the root source directory,
 # that's why we append SUBDIR_PATH to local filenames defined in each .pro
-DIST_FILES  = $$replace(_PRO_FILE_, $$ROOT_SRC_DIR/, )
+PRO_FILE = $$normalizePath($$_PRO_FILE_)
+DIST_FILES  = $$replace(PRO_FILE, $$ROOT_SRC_DIR/, )
 DIST_FILES += $$join(DISTFILES, " $$SUBDIR_PATH/", $$SUBDIR_PATH/)
 
-fulldist.files = $$filename(_PRO_FILE_) $$DISTFILES
+fulldist.files = $$basename(PRO_FILE) $$DISTFILES
 
 contains(TEMPLATE, subdirs) {
 	fulldist.CONFIG = recursive
@@ -98,8 +110,8 @@ equals(ROOT_PATH, .) {
 	exists($$ROOT_SRC_DIR/$$SOFA_FEATURES_PATH) {
 		addCommand(fulldist.commands, (cd $$ROOT_SRC_DIR && rsync -R $$BUILD_SYSTEM_FILES $$DIST_DIR))
 	}
-	addCommand(fulldist.commands, tar -czvf $$PACKAGE-$${VERSION}.tar.gz $$PACKAGE-$$VERSION/)
-	addCommand(fulldist.commands, $(DEL_FILE) -r $$PACKAGE-$$VERSION/)
+	addCommand(fulldist.commands, tar -czvf $$PACKAGE-$${RELEASE}.tar.gz $$PACKAGE-$$RELEASE/)
+	addCommand(fulldist.commands, $(DEL_FILE) -r $$PACKAGE-$$RELEASE/)
 }
 
 ########################################################################
