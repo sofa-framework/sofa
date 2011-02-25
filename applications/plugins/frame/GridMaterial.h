@@ -225,7 +225,7 @@ protected:
 
 
     /*********************************/
-    /*         Grid data   		  */
+    /*           Grid data           */
     /*********************************/
     Data< SCoord > voxelSize;
     Data< SCoord > origin;
@@ -235,6 +235,12 @@ protected:
     unsigned int gridOffset; // Use to enlarge weight interpolation
     unsigned int nbVoxels;
 
+public:
+    CImg<voxelType>& getGrid() {return grid;}
+    const GCoord& getDimension() const {return dimension.getValue();}
+    const SCoord& getVoxelSize() const {return voxelSize.getValue();}
+
+protected:
     // material properties
     Data<mapLabelType> labelToStiffnessPairs;
     Data<mapLabelType> labelToDensityPairs;
@@ -279,6 +285,7 @@ protected:
     Data<vector<Real> > density;
     Data<vector<Real> > poissonRatio;
 
+public:
     // return the linearly interpolated value from the label/stiffness pairs
     Real getStiffness(const voxelType label) const;
     // return the linearly interpolated value from the label/density pairs
@@ -292,6 +299,7 @@ protected:
     /*   Compute distances/weights   */
     /*********************************/
 
+protected:
     Data<OptionsGroup> distanceType;  ///< Geodesic, HeatDiffusion, AnisotropicHeatDiffusion
     Data<bool> biasDistances;
     Data<Real> distanceBiasFactor; Real biasFactor;
