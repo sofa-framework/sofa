@@ -70,7 +70,12 @@ Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionMod
 
 
 
+#ifdef SOFA_DEV
+// ctn_DEV
+Creator<Contact::Factory, BarycentricPenalityContact<BSplineModel, PointModel> > BSplinePointDefaultContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<BSplineModel, SphereModel> > BSplineSphereDefaultContactClass("default", true);
 
+#endif
 
 
 } // namespace collision
