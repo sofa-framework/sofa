@@ -3,7 +3,11 @@
 	<CollisionPipeline depth="3" verbose="1" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="localmindistance" alarmDistance="0.2" contactDistance="0.05" />
-	<CollisionResponse name="Response" response="friction" />
+	<!--
+	<CollisionResponse name="Response" response="default" />
+	<CollisionResponse name="Response" response="Friction" />
+	-->
+	<CollisionResponse name="Response" response="BSplineContact" />
 	<CollisionGroup name="Group" />
 
 
