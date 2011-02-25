@@ -69,6 +69,10 @@ Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionMod
 Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleContactClass("default", true);
 
 
+
+
+
+
 } // namespace collision
 
 } // namespace component

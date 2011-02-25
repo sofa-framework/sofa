@@ -40,6 +40,9 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/LineModel.h>
+#ifdef SOFA_DEV
+#include <sofa/component/collision/BSplineModel.h> //ctn_DEV
+#endif
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/mapping/IdentityMapping.h>
@@ -205,6 +208,43 @@ public:
         return i;
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+#ifdef SOFA_DEV
+
+/// ctn_DEV Mapper for BSplineModel
+template <class DataTypes>
+class ContactMapper<BSplineModel,DataTypes> : public RigidContactMapper<BSplineModel,DataTypes>
+{
+public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef RigidContactMapper<BSplineModel,DataTypes> Inherit;
+    typedef typename Inherit::MMechanicalState MMechanicalState;
+    typedef typename Inherit::MCollisionModel MCollisionModel;
+    MMechanicalState* createMapping(const char* name="contactPoints");
+
+    int addPoint(const Coord& P, int index, Real& r)
+    {
+        int i = Inherit::addPoint(P, index, r);
+        return i;
+    }
+};
+
+
+#endif
 
 
 #if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_COLLISION)
