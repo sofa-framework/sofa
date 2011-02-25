@@ -51,12 +51,13 @@ HEADERS += \
            FrameMechanicalObject.h \
            GridMaterial.h \
            GridMaterial.inl \
+           #MeshGenerater.h \
+           #MeshGenerater.inl \
            NewMaterial.h \
            NewHookeMaterial.h \
-           NewHookeMaterial.inl \
+           NewHookeMaterial.inl
            #TetrahedronFEMForceFieldWithExternalMaterial.h \
            #TetrahedronFEMForceFieldWithExternalMaterial.inl
-
 SOURCES += \
            initFrame.cpp \
            CorotationalForceField.cpp \
@@ -71,6 +72,7 @@ SOURCES += \
            FrameRigidConstraint.cpp \
            FrameMechanicalObject.cpp \
            GridMaterial.cpp \
-           NewHookeMaterial.cpp \
+           #MeshGenerater.cpp \
+           NewHookeMaterial.cpp
            #TetrahedronFEMForceFieldWithExternalMaterial.cpp
 
