@@ -24,7 +24,7 @@ namespace boost {
     typedef typename graph_traits<Graph>::vertices_size_type size_type;
     size_type b = 0;
     typename graph_traits<Graph>::out_edge_iterator e, end;
-    for (tie(e, end) = out_edges(i, g); e != end; ++e) {
+    for (boost::tie(e, end) = out_edges(i, g); e != end; ++e) {
       int f_i = get(index, i);
       int f_j = get(index, target(*e, g));
       using namespace std; // to call abs() unqualified
@@ -49,7 +49,7 @@ namespace boost {
     BOOST_USING_STD_MAX();
     typename graph_traits<Graph>::vertices_size_type b = 0;
     typename graph_traits<Graph>::vertex_iterator i, end;
-    for (tie(i, end) = vertices(g); i != end; ++i)
+    for (boost::tie(i, end) = vertices(g); i != end; ++i)
         b = max BOOST_PREVENT_MACRO_SUBSTITUTION (b, ith_bandwidth(*i, g, index));
     return b;
   }
@@ -69,7 +69,7 @@ namespace boost {
     typedef typename detail::numeric_traits<size_type>::difference_type diff_t;
     size_type sum = 0;
     typename graph_traits<Graph>::edge_iterator i, end;
-    for (tie(i, end) = edges(g); i != end; ++i) {
+    for (boost::tie(i, end) = edges(g); i != end; ++i) {
       diff_t f_u = get(index_map, source(*i, g));
       diff_t f_v = get(index_map, target(*i, g));
       using namespace std; // to call abs() unqualified

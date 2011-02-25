@@ -21,6 +21,13 @@
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/visitors.hpp>
 #include <boost/graph/named_function_params.hpp>
+#include <boost/graph/overloading.hpp>
+#include <boost/graph/graph_concepts.hpp>
+#include <boost/graph/two_bit_color_map.hpp>
+
+#ifdef BOOST_GRAPH_USE_MPI
+#include <boost/graph/distributed/concepts.hpp>
+#endif // BOOST_GRAPH_USE_MPI
 
 namespace boost {
 
@@ -66,7 +73,7 @@ namespace boost {
     Q.push(s);
     while (! Q.empty()) {
       Vertex u = Q.top(); Q.pop();            vis.examine_vertex(u, g);
-      for (tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei) {
+      for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei) {
         Vertex v = target(*ei, g);            vis.examine_edge(*ei, g);
         ColorValue v_color = get(color, v);
         if (v_color == Color::white()) {      vis.tree_edge(*ei, g);
@@ -93,12 +100,14 @@ namespace boost {
     typedef typename property_traits<ColorMap>::value_type ColorValue;
     typedef color_traits<ColorValue> Color;
     typename boost::graph_traits<VertexListGraph>::vertex_iterator i, i_end;
-    for (tie(i, i_end) = vertices(g); i != i_end; ++i) {
+    for (boost::tie(i, i_end) = vertices(g); i != i_end; ++i) {
       vis.initialize_vertex(*i, g);
       put(color, *i, Color::white());
     }
     breadth_first_visit(g, s, Q, vis, color);
   }
+
+  namespace graph { struct bfs_visitor_event_not_overridden {}; }
 
 
   template <class Visitors = null_visitor>
@@ -108,40 +117,75 @@ namespace boost {
     bfs_visitor(Visitors vis) : m_vis(vis) { }
 
     template <class Vertex, class Graph>
-    void initialize_vertex(Vertex u, Graph& g) {
+    graph::bfs_visitor_event_not_overridden
+    initialize_vertex(Vertex u, Graph& g)
+    {
       invoke_visitors(m_vis, u, g, ::boost::on_initialize_vertex());
+      return graph::bfs_visitor_event_not_overridden();
     }
+
     template <class Vertex, class Graph>
-    void discover_vertex(Vertex u, Graph& g) {
+    graph::bfs_visitor_event_not_overridden
+    discover_vertex(Vertex u, Graph& g)
+    {
       invoke_visitors(m_vis, u, g, ::boost::on_discover_vertex());
+      return graph::bfs_visitor_event_not_overridden();
     }
+
     template <class Vertex, class Graph>
-    void examine_vertex(Vertex u, Graph& g) {
+    graph::bfs_visitor_event_not_overridden
+    examine_vertex(Vertex u, Graph& g)
+    {
       invoke_visitors(m_vis, u, g, ::boost::on_examine_vertex());
+      return graph::bfs_visitor_event_not_overridden();
     }
+
     template <class Edge, class Graph>
-    void examine_edge(Edge e, Graph& g) {
+    graph::bfs_visitor_event_not_overridden
+    examine_edge(Edge e, Graph& g)
+    {
       invoke_visitors(m_vis, e, g, ::boost::on_examine_edge());
+      return graph::bfs_visitor_event_not_overridden();
     }
+
     template <class Edge, class Graph>
-    void tree_edge(Edge e, Graph& g) {
+    graph::bfs_visitor_event_not_overridden
+    tree_edge(Edge e, Graph& g)
+    {
       invoke_visitors(m_vis, e, g, ::boost::on_tree_edge());
+      return graph::bfs_visitor_event_not_overridden();
     }
+
     template <class Edge, class Graph>
-    void non_tree_edge(Edge e, Graph& g) {
+    graph::bfs_visitor_event_not_overridden
+    non_tree_edge(Edge e, Graph& g)
+    {
       invoke_visitors(m_vis, e, g, ::boost::on_non_tree_edge());
+      return graph::bfs_visitor_event_not_overridden();
     }
+
     template <class Edge, class Graph>
-    void gray_target(Edge e, Graph& g) {
+    graph::bfs_visitor_event_not_overridden
+    gray_target(Edge e, Graph& g)
+    {
       invoke_visitors(m_vis, e, g, ::boost::on_gray_target());
+      return graph::bfs_visitor_event_not_overridden();
     }
+
     template <class Edge, class Graph>
-    void black_target(Edge e, Graph& g) {
+    graph::bfs_visitor_event_not_overridden
+    black_target(Edge e, Graph& g)
+    {
       invoke_visitors(m_vis, e, g, ::boost::on_black_target());
+      return graph::bfs_visitor_event_not_overridden();
     }
+
     template <class Vertex, class Graph>
-    void finish_vertex(Vertex u, Graph& g) {
+    graph::bfs_visitor_event_not_overridden
+    finish_vertex(Vertex u, Graph& g)
+    {
       invoke_visitors(m_vis, u, g, ::boost::on_finish_vertex());
+      return graph::bfs_visitor_event_not_overridden();
     }
 
     BOOST_GRAPH_EVENT_STUB(on_initialize_vertex,bfs)
@@ -174,19 +218,33 @@ namespace boost {
        typename graph_traits<VertexListGraph>::vertex_descriptor s,
        ColorMap color,
        BFSVisitor vis,
-       const bgl_named_params<P, T, R>& params)
+       const bgl_named_params<P, T, R>& params,
+       BOOST_GRAPH_ENABLE_IF_MODELS(VertexListGraph, vertex_list_graph_tag,
+                                    void)* = 0)
     {
       typedef graph_traits<VertexListGraph> Traits;
       // Buffer default
       typedef typename Traits::vertex_descriptor Vertex;
       typedef boost::queue<Vertex> queue_t;
       queue_t Q;
-      detail::wrap_ref<queue_t> Qref(Q);
       breadth_first_search
         (g, s,
-         choose_param(get_param(params, buffer_param_t()), Qref).ref,
+         choose_param(get_param(params, buffer_param_t()), boost::ref(Q)).get(),
          vis, color);
     }
+
+#ifdef BOOST_GRAPH_USE_MPI
+    template <class DistributedGraph, class ColorMap, class BFSVisitor,
+              class P, class T, class R>
+    void bfs_helper
+      (DistributedGraph& g,
+       typename graph_traits<DistributedGraph>::vertex_descriptor s,
+       ColorMap color,
+       BFSVisitor vis,
+       const bgl_named_params<P, T, R>& params,
+       BOOST_GRAPH_ENABLE_IF_MODELS(DistributedGraph, distributed_graph_tag,
+                                    void)* = 0);
+#endif // BOOST_GRAPH_USE_MPI
 
     //-------------------------------------------------------------------------
     // Choose between default color and color parameters. Using
@@ -219,16 +277,14 @@ namespace boost {
        const bgl_named_params<P, T, R>& params,
        detail::error_property_not_found)
       {
-        std::vector<default_color_type> color_vec(num_vertices(g));
-        default_color_type c = white_color;
         null_visitor null_vis;
 
         bfs_helper
           (g, s,
-           make_iterator_property_map
-           (color_vec.begin(),
+           make_two_bit_color_map
+           (num_vertices(g),
             choose_const_pmap(get_param(params, vertex_index),
-                              g, vertex_index), c),
+                              g, vertex_index)),
            choose_param(get_param(params, graph_visitor),
                         make_bfs_visitor(null_vis)),
            params);
@@ -276,11 +332,10 @@ namespace boost {
     typedef typename Traits::vertex_descriptor vertex_descriptor;
     typedef boost::queue<vertex_descriptor> queue_t;
     queue_t Q;
-    detail::wrap_ref<queue_t> Qref(Q);
 
     breadth_first_visit
       (ng, s,
-       choose_param(get_param(params, buffer_param_t()), Qref).ref,
+       choose_param(get_param(params, buffer_param_t()), boost::ref(Q)).get(),
        choose_param(get_param(params, graph_visitor),
                     make_bfs_visitor(null_visitor())),
        choose_pmap(get_param(params, vertex_color), ng, vertex_color)
@@ -288,6 +343,10 @@ namespace boost {
   }
 
 } // namespace boost
+
+#ifdef BOOST_GRAPH_USE_MPI
+#  include <boost/graph/distributed/breadth_first_search.hpp>
+#endif
 
 #endif // BOOST_GRAPH_BREADTH_FIRST_SEARCH_HPP
 

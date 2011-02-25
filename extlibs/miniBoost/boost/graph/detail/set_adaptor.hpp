@@ -7,11 +7,17 @@
 #define BOOST_SET_ADAPTOR_HPP
 
 #include <set>
+#include <boost/unordered_set.hpp>
 
 namespace boost {
 
     template <class K, class C, class A, class T>
     bool set_contains(const std::set<K,C,A>& s, const T& x) {
+      return s.find(x) != s.end();
+    }
+    
+    template <class K, class H, class C, class A, class T>
+    bool set_contains(const boost::unordered_set<K,H,C,A>& s, const T& x) {
       return s.find(x) != s.end();
     }
     

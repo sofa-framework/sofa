@@ -57,11 +57,11 @@ template< typename T >
 struct alignment_of_impl
 {
 #if defined(BOOST_MSVC) && (BOOST_MSVC >= 1400)
-	//
-	// With MSVC both the native __alignof operator
-	// and our own logic gets things wrong from time to time :-(
-	// Using a combination of the two seems to make the most of a bad job:
-	//
+    //
+    // With MSVC both the native __alignof operator
+    // and our own logic gets things wrong from time to time :-(
+    // Using a combination of the two seems to make the most of a bad job:
+    //
     BOOST_STATIC_CONSTANT(std::size_t, value =
         (::boost::detail::alignment_logic<
             sizeof(::boost::detail::alignment_of_hack<T>) - sizeof(T),

@@ -1,5 +1,5 @@
 
-// Copyright (C) 2008 Daniel James.
+// Copyright (C) 2008-2009 Daniel James.
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
@@ -17,36 +17,36 @@
 
 namespace boost
 {
-    template <class Key,
+    template <class K,
         class T,
-        class Hash = hash<Key>,
-        class Pred = std::equal_to<Key>,
-        class Alloc = std::allocator<std::pair<const Key, T> > >
+        class H = hash<K>,
+        class P = std::equal_to<K>,
+        class A = std::allocator<std::pair<const K, T> > >
     class unordered_map;
     template <class K, class T, class H, class P, class A>
-    bool operator==(unordered_map<K, T, H, P, A> const&,
+    inline bool operator==(unordered_map<K, T, H, P, A> const&,
         unordered_map<K, T, H, P, A> const&);
     template <class K, class T, class H, class P, class A>
-    bool operator!=(unordered_map<K, T, H, P, A> const&,
+    inline bool operator!=(unordered_map<K, T, H, P, A> const&,
         unordered_map<K, T, H, P, A> const&);
     template <class K, class T, class H, class P, class A>
-    void swap(unordered_map<K, T, H, P, A>&,
+    inline void swap(unordered_map<K, T, H, P, A>&,
             unordered_map<K, T, H, P, A>&);
 
-    template <class Key,
+    template <class K,
         class T,
-        class Hash = hash<Key>,
-        class Pred = std::equal_to<Key>,
-        class Alloc = std::allocator<std::pair<const Key, T> > >
+        class H = hash<K>,
+        class P = std::equal_to<K>,
+        class A = std::allocator<std::pair<const K, T> > >
     class unordered_multimap;
     template <class K, class T, class H, class P, class A>
-    bool operator==(unordered_multimap<K, T, H, P, A> const&,
+    inline bool operator==(unordered_multimap<K, T, H, P, A> const&,
         unordered_multimap<K, T, H, P, A> const&);
     template <class K, class T, class H, class P, class A>
-    bool operator!=(unordered_multimap<K, T, H, P, A> const&,
+    inline bool operator!=(unordered_multimap<K, T, H, P, A> const&,
         unordered_multimap<K, T, H, P, A> const&);
     template <class K, class T, class H, class P, class A>
-    void swap(unordered_multimap<K, T, H, P, A>&,
+    inline void swap(unordered_multimap<K, T, H, P, A>&,
             unordered_multimap<K, T, H, P, A>&);
 }
 
