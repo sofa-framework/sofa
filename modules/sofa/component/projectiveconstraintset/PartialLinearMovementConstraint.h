@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_H
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_H
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_H
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -35,6 +35,8 @@
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <boost/type_traits/is_same.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <set>
 
 namespace sofa
@@ -46,31 +48,43 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using helper::vector;
 using core::objectmodel::Data;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 
+template<class DataTypes>
+class PartialLinearMovementConstraintInternalData
+{
+};
+
 /** impose a motion to given DOFs (translation and rotation) in some directions only.
   The moved and free directioons are the same for all the particles, defined  in the movedDirections attribute.
-	The motion between 2 key times is linearly interpolated
+    The motion between 2 key times is linearly interpolated
 */
-
-
-template <class DataTypes>
-class PartialLinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+template <class TDataTypes>
+class PartialLinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PartialLinearMovementConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PartialLinearMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
 
+    typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename DataTypes::Real Real;
+    typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef typename MatrixDeriv::RowType MatrixDerivRowType;
+    typedef Data<VecCoord> DataVecCoord;
+    typedef Data<VecDeriv> DataVecDeriv;
+    typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
+
+protected:
+    PartialLinearMovementConstraintInternalData<DataTypes> *data;
+    friend class PartialLinearMovementConstraintInternalData<DataTypes>;
 
 public :
     /// indices of the DOFs the constraint is applied to
@@ -84,6 +98,7 @@ public :
     /// if showMovement is true we display the expected movement
     /// otherwise we show which are the fixed dofs
     Data< bool > showMovement;
+
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
     ///the motions corresponding to the surrouding key times
@@ -102,7 +117,6 @@ public :
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
     Data<VecBool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
-
     PartialLinearMovementConstraint();
 
     virtual ~PartialLinearMovementConstraint();
@@ -123,23 +137,25 @@ public :
     /// -- Constraint interface
     void init();
     void reset();
-    template <class DataDeriv>
-    void projectResponseT(DataDeriv& dx);
-    void projectResponse(VecDeriv& dx);
-    void projectResponse(SparseVecDeriv& dx);
 
-    virtual void projectVelocity(VecDeriv& dx); ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
+    void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
+    void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
+    void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
+    void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
 
     /// Handle topological changes
     virtual void handleTopologyChange();
 
     virtual void draw();
 
-    /// this constraint is holonomic
-    bool isHolonomic() {return true;}
-
 protected:
+    template <class DataDeriv>
+    void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
+
+    template <class MyCoord>
+    void interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
+    template <class MyCoord>
+    void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
 
     sofa::core::topology::BaseMeshTopology* topology;
 
@@ -162,19 +178,19 @@ private:
 };
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec2dTypes>;
 extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec1dTypes>;
-//extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec6dTypes>;
+extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec6dTypes>;
 extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec3fTypes>;
 extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec2fTypes>;
 extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec1fTypes>;
-//extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec6fTypes>;
+extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec6fTypes>;
 extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Rigid3fTypes>;
 #endif
 #endif
