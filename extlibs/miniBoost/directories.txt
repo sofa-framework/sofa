@@ -24,3 +24,7 @@ boost/weak_ptr.hpp
 # headers within boost/preprocessor are sometimes included with macros which are not parsed correctly by our scripts
 boost/preprocessor
 boost/utility
+boost/mpl/aux_/preprocessed/plain
+boost/mpl/aux_/preprocessed/gcc
+boost/mpl/aux_/preprocessed/msvc70
+boost/mpl/vector
