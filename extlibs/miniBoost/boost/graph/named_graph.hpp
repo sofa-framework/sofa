@@ -1,4 +1,4 @@
-// Copyright (C) 2007 Douglas Gregor 
+// Copyright (C) 2007 Douglas Gregor
 
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -33,7 +33,7 @@ namespace boost { namespace graph {
  * To enable the use of internal vertex names in a graph type,
  * specialize the @c internal_vertex_name trait for your graph
  * property (e.g., @c a City class, which stores information about the
- * vertices in a road map). 
+ * vertices in a road map).
  */
 template<typename VertexProperty>
 struct internal_vertex_name
@@ -80,9 +80,9 @@ public:
   typedef vertex_name_type argument_type;
   typedef VertexProperty result_type;
 
-  VertexProperty operator()(const vertex_name_type& name) 
-  { 
-    return VertexProperty(name); 
+  VertexProperty operator()(const vertex_name_type& name)
+  {
+    return VertexProperty(name);
   }
 };
 
@@ -105,8 +105,8 @@ public:
   typedef vertex_name_type argument_type;
   typedef VertexProperty result_type;
 
-  VertexProperty operator()(const vertex_name_type& name) 
-  { 
+  VertexProperty operator()(const vertex_name_type& name)
+  {
       boost::throw_exception(std::runtime_error("add_vertex: "
                                                 "unable to create a vertex from its name"));
   }
@@ -159,9 +159,7 @@ struct internal_vertex_constructor<property<Tag, T, Base> >
  * Named graph-specific metafunctions                              *
  *******************************************************************/
 namespace detail {
-  /**
-   * INTERNAL ONLY
-   *
+  /** @internal
    * Extracts the type of a bundled vertex property from a vertex
    * property. The primary template matches when we have hit the end
    * of the @c property<> list.
@@ -172,18 +170,14 @@ namespace detail {
     typedef VertexProperty type;
   };
 
-  /**
-   * 
-   * INTERNAL ONLY
-   *
+  /** @internal
    * Recursively extract the bundled vertex property from a vertex
    * property.
    */
   template<typename Tag, typename T, typename Base>
   struct extract_bundled_vertex<property<Tag, T, Base> >
     : extract_bundled_vertex<Base>
-  {
-  };
+  { };
 
   /**
    * We have found the bundled vertex property type, marked with
@@ -253,11 +247,11 @@ public:
 
 private:
   /// Key extractor for use with the multi_index_container
-  struct extract_name_from_vertex 
+  struct extract_name_from_vertex
   {
     typedef vertex_name_type result_type;
 
-    extract_name_from_vertex(Graph& graph, const extract_name_type& extract) 
+    extract_name_from_vertex(Graph& graph, const extract_name_type& extract)
       : graph(graph), extract(extract) { }
 
     const result_type& operator()(Vertex vertex) const
@@ -274,7 +268,7 @@ public:
   typedef multi_index::multi_index_container<
             Vertex,
             multi_index::indexed_by<
-              multi_index::hashed_unique<multi_index::tag<vertex_name_t>, 
+              multi_index::hashed_unique<multi_index::tag<vertex_name_t>,
                                          extract_name_from_vertex> >
           > named_vertices_type;
 
@@ -297,7 +291,7 @@ public:
   /// vertex. The name of the vertex will be removed from the mapping.
   void removing_vertex(Vertex vertex);
 
-  /// Notify the named_graph that we are clearing the graph. 
+  /// Notify the named_graph that we are clearing the graph.
   /// This will clear out all of the name->vertex mappings
   void clearing_graph();
 
@@ -306,17 +300,17 @@ public:
   const Graph& derived() const { return static_cast<const Graph&>(*this); }
 
   /// Extract the name from a vertex property instance
-  typename extract_name_type::result_type 
+  typename extract_name_type::result_type
   extract_name(const bundled_vertex_property_type& property);
 
   /// Search for a vertex that has the given property (based on its
   /// name)
-  optional<vertex_descriptor> 
+  optional<vertex_descriptor>
   vertex_by_property(const bundled_vertex_property_type& property);
 
   /// Mapping from names to vertices
   named_vertices_type named_vertices;
-  
+
   /// Constructs a vertex from the name of that vertex
   vertex_constructor_type vertex_constructor;
 };
@@ -362,14 +356,14 @@ inline void BGL_NAMED_GRAPH::clearing_graph()
 }
 
 template<BGL_NAMED_GRAPH_PARAMS>
-typename BGL_NAMED_GRAPH::extract_name_type::result_type 
+typename BGL_NAMED_GRAPH::extract_name_type::result_type
 BGL_NAMED_GRAPH::extract_name(const bundled_vertex_property_type& property)
 {
   return named_vertices.key_extractor().extract(property);
 }
 
 template<BGL_NAMED_GRAPH_PARAMS>
-optional<typename BGL_NAMED_GRAPH::vertex_descriptor> 
+optional<typename BGL_NAMED_GRAPH::vertex_descriptor>
 BGL_NAMED_GRAPH::
 vertex_by_property(const bundled_vertex_property_type& property)
 {
@@ -378,7 +372,7 @@ vertex_by_property(const bundled_vertex_property_type& property)
 
 /// Retrieve the vertex associated with the given name
 template<BGL_NAMED_GRAPH_PARAMS>
-optional<Vertex> 
+optional<Vertex>
 find_vertex(typename BGL_NAMED_GRAPH::vertex_name_type const& name,
             const BGL_NAMED_GRAPH& g)
 {
@@ -386,13 +380,13 @@ find_vertex(typename BGL_NAMED_GRAPH::vertex_name_type const& name,
     vertices_by_name_type;
 
   // Retrieve the set of vertices indexed by name
-  vertices_by_name_type const& vertices_by_name 
+  vertices_by_name_type const& vertices_by_name
     = g.named_vertices.template get<vertex_name_t>();
 
   /// Look for a vertex with the given name
   typename vertices_by_name_type::const_iterator iter
     = vertices_by_name.find(name);
-  
+
   if (iter == vertices_by_name.end())
     return optional<Vertex>(); // vertex not found
   else
@@ -421,8 +415,8 @@ add_edge(typename BGL_NAMED_GRAPH::vertex_name_type const& u_name,
          typename BGL_NAMED_GRAPH::vertex_name_type const& v_name,
          BGL_NAMED_GRAPH& g)
 {
-  return add_edge(add_vertex(u_name, g.derived()), 
-                  add_vertex(v_name, g.derived()), 
+  return add_edge(add_vertex(u_name, g.derived()),
+                  add_vertex(v_name, g.derived()),
                   g.derived());
 }
 
@@ -433,8 +427,8 @@ add_edge(typename BGL_NAMED_GRAPH::vertex_descriptor const& u,
          typename BGL_NAMED_GRAPH::vertex_name_type const& v_name,
          BGL_NAMED_GRAPH& g)
 {
-  return add_edge(u, 
-                  add_vertex(v_name, g.derived()), 
+  return add_edge(u,
+                  add_vertex(v_name, g.derived()),
                   g.derived());
 }
 
@@ -446,7 +440,7 @@ add_edge(typename BGL_NAMED_GRAPH::vertex_name_type const& u_name,
          BGL_NAMED_GRAPH& g)
 {
   return add_edge(add_vertex(u_name, g.derived()),
-                  v, 
+                  v,
                   g.derived());
 }
 
@@ -461,13 +455,13 @@ add_edge(typename BGL_NAMED_GRAPH::vertex_name_type const& u_name,
 /**
  * A graph mixin that can provide a mapping from names to vertices,
  * and use that mapping to simplify creation and manipulation of
- * graphs. 
+ * graphs.
  */
 template<typename Graph, typename Vertex, typename VertexProperty,
-         typename ExtractName 
+         typename ExtractName
            = typename internal_vertex_name<VertexProperty>::type>
-struct maybe_named_graph : public named_graph<Graph, Vertex, VertexProperty> 
-{ 
+struct maybe_named_graph : public named_graph<Graph, Vertex, VertexProperty>
+{
 };
 
 /**
@@ -477,8 +471,8 @@ struct maybe_named_graph : public named_graph<Graph, Vertex, VertexProperty>
  * when the @c VertexProperty does not have an internal vertex name.
  */
 template<typename Graph, typename Vertex, typename VertexProperty>
-struct maybe_named_graph<Graph, Vertex, VertexProperty, void> 
-{ 
+struct maybe_named_graph<Graph, Vertex, VertexProperty, void>
+{
   /// The type of the "bundled" property, from which the name can be
   /// extracted.
   typedef typename detail::extract_bundled_vertex<VertexProperty>::type
@@ -498,7 +492,7 @@ struct maybe_named_graph<Graph, Vertex, VertexProperty, void>
 
   /// Search for a vertex that has the given property (based on its
   /// name). This always returns an empty optional<>
-  optional<Vertex> 
+  optional<Vertex>
   vertex_by_property(const bundled_vertex_property_type&)
   {
     return optional<Vertex>();
@@ -506,10 +500,10 @@ struct maybe_named_graph<Graph, Vertex, VertexProperty, void>
 };
 #else
 template<typename Graph, typename Vertex, typename VertexProperty,
-         typename ExtractName 
+         typename ExtractName
            = typename internal_vertex_name<VertexProperty>::type>
-struct maybe_named_graph 
-{ 
+struct maybe_named_graph
+{
   /// The type of the "bundled" property, from which the name can be
   /// extracted.
   typedef typename detail::extract_bundled_vertex<VertexProperty>::type
@@ -530,7 +524,7 @@ struct maybe_named_graph
   /// Search for a vertex that has the given property (based on its
   /// name). This always returns an empty optional<>
   template<typename Property>
-  optional<Vertex> 
+  optional<Vertex>
   vertex_by_property(const bundled_vertex_property_type&)
   {
     return optional<Vertex>();

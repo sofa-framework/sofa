@@ -1,4 +1,4 @@
-//  (C) Copyright Jeremy Siek 2004 
+//  (C) Copyright Jeremy Siek 2004
 //  Distributed under the Boost Software License, Version 1.0. (See
 //  accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
@@ -6,11 +6,11 @@
 #ifndef BOOST_PROPERTY_HPP
 #define BOOST_PROPERTY_HPP
 
-#include <boost/pending/ct_if.hpp>
+#include <boost/mpl/bool.hpp>
 
 namespace boost {
 
-  struct no_property { 
+  struct no_property {
     typedef no_property tag_type;
     typedef no_property next_type;
     typedef no_property value_type;
@@ -47,15 +47,9 @@ namespace boost {
   };
 
   template <class P>
-  struct has_property { 
-    BOOST_STATIC_CONSTANT(bool, value = true);
-    typedef true_type type;
-  };
+  struct has_property : boost::mpl::true_ {};
   template <>
-  struct has_property<no_property> { 
-    BOOST_STATIC_CONSTANT(bool, value = false); 
-    typedef false_type type; 
-  };
+  struct has_property<no_property> : boost::mpl::false_ {};
 
 } // namespace boost
 
@@ -72,7 +66,7 @@ namespace boost {
     typedef typename detail::build_property_tag_value_alist<PropertyList>::type AList;
     typedef typename detail::ev_selector<AList>::type Extractor;
     typedef typename Extractor::template bind_<AList,Tag>::type type;
-#endif  
+#endif
   };
 
   template <class Tag2>
@@ -82,9 +76,9 @@ namespace boost {
   }
 
   template <class Tag1, class Tag2, class T1, class Base>
-  inline typename property_value<property<Tag1,T1,Base>, Tag2>::type& 
+  inline typename property_value<property<Tag1,T1,Base>, Tag2>::type&
   get_property_value(property<Tag1,T1,Base>& p, Tag2 tag2) {
-    BOOST_STATIC_CONSTANT(bool, 
+    BOOST_STATIC_CONSTANT(bool,
                           match = (detail::same_property<Tag1,Tag2>::value));
     typedef property<Tag1,T1,Base> Prop;
     typedef typename property_value<Prop, Tag2>::type T2;
@@ -94,9 +88,9 @@ namespace boost {
   }
   template <class Tag1, class Tag2, class T1, class Base>
   inline
-  const typename property_value<property<Tag1,T1,Base>, Tag2>::type& 
+  const typename property_value<property<Tag1,T1,Base>, Tag2>::type&
   get_property_value(const property<Tag1,T1,Base>& p, Tag2 tag2) {
-    BOOST_STATIC_CONSTANT(bool, 
+    BOOST_STATIC_CONSTANT(bool,
                           match = (detail::same_property<Tag1,Tag2>::value));
     typedef property<Tag1,T1,Base> Prop;
     typedef typename property_value<Prop, Tag2>::type T2;
@@ -106,33 +100,68 @@ namespace boost {
   }
 
  namespace detail {
+
+     /** This trait returns true if T is no_property. */
+    template <typename T>
+    struct is_no_property
+        : mpl::bool_<is_same<T, no_property>::value>
+    { };
+
 #if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
-   template<typename FinalTag, typename FinalType>
-   struct retag_property_list
-   {
-     typedef property<FinalTag, FinalType> type;
-     typedef FinalType retagged;
-   };
+    /** @internal @name Retag Property List
+     * This metafunction is used internally to normalize a property if it is
+     * actually modeling a property. Specifically this is used in Boost.Graph
+     * to map user-provided classes into bundled properties.
+     */
+    //@{
+    // One base case of the recursive form (see below). This matches any
+    // retag request that does not include a property<...> or no_property as
+    // the FinalType. This is used for generating bundles in Boost.Graph.
+    template<typename FinalTag, typename FinalType>
+    struct retag_property_list
+    {
+        typedef property<FinalTag, FinalType> type;
+        typedef FinalType retagged;
+    };
 
-   template<typename FinalTag, typename Tag, typename T, typename Base>
-   struct retag_property_list<FinalTag, property<Tag, T, Base> >
-   {
-   private:
-     typedef retag_property_list<FinalTag, Base> next;
+    // Recursively retag the nested property list.
+    template<typename FinalTag, typename Tag, typename T, typename Base>
+    struct retag_property_list<FinalTag, property<Tag, T, Base> >
+    {
+    private:
+        typedef retag_property_list<FinalTag, Base> next;
 
-   public:
-     typedef property<Tag, T, typename next::type> type;
-     typedef typename next::retagged retagged;
-   };
+    public:
+        typedef property<Tag, T, typename next::type> type;
+        typedef typename next::retagged retagged;
+    };
 
-   template<typename FinalTag>
-   struct retag_property_list<FinalTag, no_property>
-   {
-     typedef no_property type;
-     typedef no_property retagged;
-   };
+    // This base case will correctly deduce the final property type if the
+    // retagged property is given in property form. This should not hide
+    // the base case below.
+    // NOTE: This addresses a problem of layering bundled properties in the BGL
+    // where multiple retaggings will fail to deduce the correct retagged
+    // type.
+    template<typename FinalTag, typename FinalType>
+    struct retag_property_list<FinalTag, property<FinalTag, FinalType> >
+    {
+    public:
+        typedef property<FinalTag, FinalType> type;
+        typedef FinalType retagged;
+    };
+
+    // A final base case of the retag_property_list, this will terminate a
+    // properly structured list.
+    template<typename FinalTag>
+    struct retag_property_list<FinalTag, no_property>
+    {
+        typedef no_property type;
+        typedef no_property retagged;
+    };
+    //@}
 #endif
-  }
+} // namespace detail
+
 } // namesapce boost
 
 #endif /* BOOST_PROPERTY_HPP */

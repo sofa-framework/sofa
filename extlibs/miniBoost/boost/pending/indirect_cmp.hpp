@@ -14,7 +14,7 @@
 
 #include <functional>
 #include <boost/config.hpp>
-#include <boost/property_map.hpp>
+#include <boost/property_map/property_map.hpp>
 
 namespace boost {
 
@@ -65,7 +65,7 @@ namespace boost {
     inline indirect_pmap(const ReadablePropertyMap& df)
       : d(df) { }
 
-    inline bool operator()(const K& u) const {
+    inline T operator()(const K& u) const {
       return get(d, u);
     }
   protected:

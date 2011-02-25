@@ -1,0 +1,3 @@
+# Here we put directories and files in boost that we should not include because they are too big or require compiled binaries
+boost/thread
+boost/spirit

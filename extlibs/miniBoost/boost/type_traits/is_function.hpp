@@ -65,7 +65,7 @@ struct is_function_impl
 template <typename T>
 struct is_function_impl
 {
-#if BOOST_WORKAROUND(_MSC_FULL_VER, >= 140050000)
+#if BOOST_WORKAROUND(BOOST_MSVC_FULL_VER, >= 140050000)
 #pragma warning(push)
 #pragma warning(disable:6334)
 #endif
@@ -74,7 +74,7 @@ struct is_function_impl
         bool, value = sizeof(::boost::type_traits::is_function_ptr_tester(t))
         == sizeof(::boost::type_traits::yes_type)
         );
-#if BOOST_WORKAROUND(_MSC_FULL_VER, >= 140050000)
+#if BOOST_WORKAROUND(BOOST_MSVC_FULL_VER, >= 140050000)
 #pragma warning(pop)
 #endif
 };
@@ -95,6 +95,9 @@ struct is_function_impl<T&> : public false_type
 BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_function,T,__is_function(T))
 #else
 BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_function,T,::boost::detail::is_function_impl<T>::value)
+#ifndef BOOST_NO_RVALUE_REFERENCES
+BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_1(typename T,is_function,T&&,false)
+#endif
 #endif
 } // namespace boost
 

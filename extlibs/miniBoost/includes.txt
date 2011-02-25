@@ -1,0 +1,23 @@
+# This file contains the list of boost headers used in Sofa when SOFA_HAVE_BOOST is not set
+# When updating miniboost to a new version, only these headers add their dependencies should be included
+# framework
+boost/static_assert.hpp
+# modules
+# modules/sofa/simulation/common/Node
+boost/graph/adjacency_list.hpp
+boost/graph/topological_sort.hpp
+# modules/sofa/simulation/bgl
+boost/version.hpp
+boost/property_map/vector_property_map.hpp
+boost/graph/depth_first_search.hpp
+boost/graph/breadth_first_search.hpp
+boost/graph/adjacency_list.hpp
+# modules/sofa/component/topology/*EdgeSetTopology
+boost/config.hpp
+boost/graph/adjacency_list.hpp
+boost/graph/connected_components.hpp
+boost/graph/cuthill_mckee_ordering.hpp
+boost/graph/bandwidth.hpp
+# modules/sofa/component/projectiveconstraintset/LinearMovementConstraint
+boost/type_traits/is_same.hpp
+boost/utility/enable_if.hpp

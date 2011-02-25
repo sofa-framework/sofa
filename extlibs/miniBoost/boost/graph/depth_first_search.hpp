@@ -19,7 +19,6 @@
 #include <boost/graph/properties.hpp>
 #include <boost/graph/visitors.hpp>
 #include <boost/graph/named_function_params.hpp>
-
 #include <boost/ref.hpp>
 #include <boost/implicit_cast.hpp>
 
@@ -101,7 +100,7 @@ namespace boost {
 
       put(color, u, Color::gray());
       vis.discover_vertex(u, g);
-      tie(ei, ei_end) = out_edges(u, g);
+      boost::tie(ei, ei_end) = out_edges(u, g);
       // Variable is needed to workaround a borland bug.
       TF& fn = static_cast<TF&>(func);
       if (fn(u, g)) {
@@ -113,7 +112,7 @@ namespace boost {
       while (!stack.empty()) {
         VertexInfo& back = stack.back();
         u = back.first;
-        tie(ei, ei_end) = back.second;
+        boost::tie(ei, ei_end) = back.second;
         stack.pop_back();
         while (ei != ei_end) {
           Vertex v = target(*ei, g);
@@ -125,7 +124,7 @@ namespace boost {
             u = v;
             put(color, u, Color::gray());
             vis.discover_vertex(u, g);
-            tie(ei, ei_end) = out_edges(u, g);
+            boost::tie(ei, ei_end) = out_edges(u, g);
             if (fn(u, g)) {
                 ei = ei_end;
             }
@@ -167,7 +166,7 @@ namespace boost {
       // Variable is needed to workaround a borland bug.
       TF& fn = static_cast<TF&>(func);
       if (!fn(u, g))
-        for (tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei) {
+        for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei) {
           Vertex v = target(*ei, g);           vis.examine_edge(*ei, g);
           ColorValue v_color = get(color, v);
           if (v_color == Color::white()) {     vis.tree_edge(*ei, g);
@@ -193,8 +192,9 @@ namespace boost {
     typedef color_traits<ColorValue> Color;
 
     typename graph_traits<VertexListGraph>::vertex_iterator ui, ui_end;
-    for (tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui) {
-      put(color, *ui, Color::white());       vis.initialize_vertex(*ui, g);
+    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui) {
+      Vertex u = implicit_cast<Vertex>(*ui);
+      put(color, u, Color::white()); vis.initialize_vertex(u, g);
     }
 
     if (start_vertex != implicit_cast<Vertex>(*vertices(g).first)){ vis.start_vertex(start_vertex, g);
@@ -202,10 +202,11 @@ namespace boost {
                                      detail::nontruth2());
     }
 
-    for (tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui) {
-      ColorValue u_color = get(color, *ui);
-      if (u_color == Color::white()) {       vis.start_vertex(*ui, g);
-        detail::depth_first_visit_impl(g, *ui, vis, color, detail::nontruth2());
+    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui) {
+      Vertex u = implicit_cast<Vertex>(*ui);
+      ColorValue u_color = get(color, u);
+      if (u_color == Color::white()) {       vis.start_vertex(u, g);
+        detail::depth_first_visit_impl(g, u, vis, color, detail::nontruth2());
       }
     }
   }
@@ -214,48 +215,13 @@ namespace boost {
   void
   depth_first_search(const VertexListGraph& g, DFSVisitor vis, ColorMap color)
   {
-    if (vertices(g).first == vertices(g).second)
+    typedef typename boost::graph_traits<VertexListGraph>::vertex_iterator vi;
+    std::pair<vi, vi> verts = vertices(g);
+    if (verts.first == verts.second)
       return;
 
-    depth_first_search(g, vis, color, *vertices(g).first);
+    depth_first_search(g, vis, color, *verts.first);
   }
-
-  namespace detail {
-    template <class ColorMap>
-    struct dfs_dispatch {
-
-      template <class VertexListGraph, class Vertex, class DFSVisitor,
-                class P, class T, class R>
-      static void
-      apply(const VertexListGraph& g, DFSVisitor vis, Vertex start_vertex,
-            const bgl_named_params<P, T, R>&,
-            ColorMap color)
-      {
-        depth_first_search(g, vis, color, start_vertex);
-      }
-    };
-
-    template <>
-    struct dfs_dispatch<detail::error_property_not_found> {
-      template <class VertexListGraph, class Vertex, class DFSVisitor,
-                class P, class T, class R>
-      static void
-      apply(const VertexListGraph& g, DFSVisitor vis, Vertex start_vertex,
-            const bgl_named_params<P, T, R>& params,
-            detail::error_property_not_found)
-      {
-        std::vector<default_color_type> color_vec(num_vertices(g));
-        default_color_type c = white_color; // avoid warning about un-init
-        depth_first_search
-          (g, vis, make_iterator_property_map
-           (color_vec.begin(),
-            choose_const_pmap(get_param(params, vertex_index),
-                              g, vertex_index), c),
-           start_vertex);
-      }
-    };
-  } // namespace detail
-
 
   template <class Visitors = null_visitor>
   class dfs_visitor {
@@ -315,26 +281,25 @@ namespace boost {
   }
   typedef dfs_visitor<> default_dfs_visitor;
 
-
   // Named Parameter Variant
   template <class VertexListGraph, class P, class T, class R>
   void
   depth_first_search(const VertexListGraph& g,
                      const bgl_named_params<P, T, R>& params)
   {
-    typedef typename property_value< bgl_named_params<P, T, R>,
-      vertex_color_t>::type C;
-    if (vertices(g).first == vertices(g).second)
+    typedef typename boost::graph_traits<VertexListGraph>::vertex_iterator vi;
+    std::pair<vi, vi> verts = vertices(g);
+    if (verts.first == verts.second)
       return;
-    detail::dfs_dispatch<C>::apply
+    using namespace boost::graph::keywords;
+    typedef bgl_named_params<P, T, R> params_type;
+    BOOST_GRAPH_DECLARE_CONVERTED_PARAMETERS(params_type, params)
+    depth_first_search
       (g,
-       choose_param(get_param(params, graph_visitor),
-                    make_dfs_visitor(null_visitor())),
-       choose_param(get_param(params, root_vertex_t()),
-                    *vertices(g).first),
-       params,
-       get_param(params, vertex_color)
-       );
+       arg_pack[_visitor | make_dfs_visitor(null_visitor())],
+       boost::detail::make_color_map_from_arg_pack(g, arg_pack),
+       arg_pack[_root_vertex | *vertices(g).first]
+      );
   }
 
   template <class IncidenceGraph, class DFSVisitor, class ColorMap>
@@ -357,9 +322,10 @@ namespace boost {
     vis.start_vertex(u, g);
     detail::depth_first_visit_impl(g, u, vis, color, func);
   }
-
-
 } // namespace boost
 
+#ifdef BOOST_GRAPH_USE_MPI
+#  include <boost/graph/distributed/depth_first_search.hpp>
+#endif
 
 #endif
