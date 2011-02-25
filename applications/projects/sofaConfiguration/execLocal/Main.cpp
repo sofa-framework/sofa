@@ -34,9 +34,10 @@
 #include <shellapi.h>
 #endif
 #if defined (__APPLE__)
+// fix deprecated warnings
+#define _ARCHITECTURE_BYTE_ORDER_H_
 #include <sys/param.h>
 #include <mach-o/dyld.h>
-#include <CoreFoundation/CoreFoundation.h>
 #endif
 
 
@@ -61,12 +62,23 @@ std::string GetProcessFullPath(const char* filename)
 #if defined (WIN32)
     if (!filename || !filename[0])
     {
+//       //return __argv[0];
+//       int n=0;
+        //LPWSTR wpath = *CommandLineToArgvW(GetCommandLineW(),&n);
+        //if (wpath)
+        //{
+        //    char path[1024];
+        //    memset(path,0,sizeof(path));
+        //    wcstombs(path, wpath, sizeof(path)-1);
+        //    //std::cout << "Current process: "<<path<<std::endl;
+        //    if (path[0]) return path;
+        //   }
         TCHAR tpath[1024];
         GetModuleFileName(NULL,tpath,1024);
         std::wstring wprocessPath = tpath;
         std::string processPath;
         processPath.assign(wprocessPath.begin(), wprocessPath.end() );
-        std::cout << "Current process: "<<processPath<<std::endl;
+        //std::cout << "Current process: "<<processPath<<std::endl;
         return processPath;
     }
     /// \TODO use GetCommandLineW and/or CommandLineToArgvW. This is however not strictly necessary, as argv[0] already contains the full path in most cases.
@@ -75,9 +87,10 @@ std::string GetProcessFullPath(const char* filename)
     {
         char path[1024];
         memset(path,0,sizeof(path));
-        ssize_t l=readlink("/proc/self/exe",path,sizeof(path)-1);
+        if (readlink("/proc/self/exe",path,sizeof(path)-1) == -1)
+            std::cerr <<"Error: can't read the contents of the link." << std::endl;
 // 		std::cout << "Current process: "<< path <<std::endl;
-        if (l != -1 && path[0])
+        if (path[0])
             return path;
         else
             std::cout << "ERROR: can't get current process path..." << std::endl;
@@ -85,22 +98,18 @@ std::string GetProcessFullPath(const char* filename)
 #elif defined (__APPLE__)
     if (!filename || filename[0]!='/')
     {
-        char path[1024];
-        CFBundleRef mainBundle = CFBundleGetMainBundle();
-        assert(mainBundle);
-
-        CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
-        assert(mainBundleURL);
-
-        CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
-        assert(cfStringRef);
-
-        CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
-
-        CFRelease(mainBundleURL);
-        CFRelease(cfStringRef);
-
-        return std::string(path);
+        char* path = new char[4096];
+        uint32_t size;
+        if ( _NSGetExecutablePath( path, &size ) != 0)
+        {
+            //realloc
+            delete [] path;
+            path = new char[size];
+            _NSGetExecutablePath( path, &size );
+        }
+        std::string finalPath(path);
+        delete [] path;
+        return finalPath;
     }
 #endif
 

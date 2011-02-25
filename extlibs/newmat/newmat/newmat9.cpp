@@ -38,7 +38,7 @@ ostream& operator<<(ostream& s, const BaseMatrix& X)
 ostream& operator<<(ostream& s, const GeneralMatrix& X)
 {
    MatrixRow mr((GeneralMatrix*)&X, LoadOnEntry);
-   int w = s.width();  int nr = X.Nrows();  ios_format_flags f = s.flags();
+   int w = (int)s.width();  int nr = (int)X.Nrows();  ios_format_flags f = s.flags();
    s.setf(ios::fixed, ios::floatfield);
    for (int i=1; i<=nr; i++)
    {
