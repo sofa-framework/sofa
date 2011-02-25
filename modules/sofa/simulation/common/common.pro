@@ -27,7 +27,7 @@ HEADERS += common.h \
            LocalStorage.h \
            MasterSolverImpl.h \
            MechanicalComputeEnergyVisitor.h \
-	   MechanicalMatrixVisitor.h \
+		   MechanicalMatrixVisitor.h \
 	       MechanicalOperations.h \
            MechanicalVPrintVisitor.h \
            MechanicalVisitor.h \
@@ -61,6 +61,7 @@ HEADERS += common.h \
            xml/initXml.h \
            xml/NodeElement.h \
            xml/ObjectElement.h \
+		   xml/MultiMappingElement.h \
            xml/AttributeElement.h \
            xml/DataElement.h \
            xml/XML.h 
@@ -83,7 +84,7 @@ SOURCES += Node.cpp \
            MasterSolverImpl.cpp \
            MechanicalComputeEnergyVisitor.cpp \
 		   MechanicalOperations.cpp \
-	   MechanicalMatrixVisitor.cpp \
+	       MechanicalMatrixVisitor.cpp \
            MechanicalVPrintVisitor.cpp \
            MechanicalVisitor.cpp \   
            MutationListener.cpp \ 
@@ -113,6 +114,7 @@ SOURCES += Node.cpp \
            xml/initXml.cpp \
            xml/NodeElement.cpp \
            xml/ObjectElement.cpp \
+		   xml/MultiMappingElement.cpp \
            xml/AttributeElement.cpp \
            xml/DataElement.cpp \
            xml/XML.cpp 
