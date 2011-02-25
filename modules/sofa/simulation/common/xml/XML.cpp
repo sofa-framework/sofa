@@ -43,6 +43,9 @@ namespace simulation
 namespace xml
 {
 
+const std::string multimappingName  = "MultiMapping";
+const std::string multi2mappingName = "Multi2Mapping";
+
 using std::cout;
 using std::endl;
 
@@ -70,6 +73,26 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
         ++it;
     }
 }
+
+bool deriveFromMultiMapping( const std::string& className)
+{
+    if( sofa::core::ObjectFactory::HasCreator(className) )
+    {
+        sofa::core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(className);
+        sofa::core::ObjectFactory::CreatorList::const_iterator iter;
+        for( iter = entry->creatorList.begin(); iter != entry->creatorList.end(); ++iter )
+        {
+            const std::string& name = iter->first;
+            if(name.substr(0,multimappingName.size()) == multimappingName
+               || name.substr(0,multi2mappingName.size()) == multi2mappingName)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 
 #ifdef SOFA_XML_PARSER_TINYXML
 
@@ -110,7 +133,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
     else
     {
         name = "default";
-// 		static int num = 0;
+        // 		static int num = 0;
         char buf[16];
         sprintf(buf, "%d", numDefault);
         ++numDefault;
@@ -147,6 +170,10 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
             element->RemoveAttribute("type");
             return includeNode(root, basefilename);
         }
+    }
+    if( deriveFromMultiMapping(type))
+    {
+        classType = "MultiMappingObject";
     }
     BaseElement* node = BaseElement::Create(classType,name,type);
     if (node==NULL)
@@ -400,7 +427,7 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
     else
     {
         name = "default";
-// 		static int num = 0;
+        // 		static int num = 0;
         char buf[16];
         sprintf(buf, "%d", numDefault);
         ++numDefault;
