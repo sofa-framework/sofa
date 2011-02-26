@@ -43,10 +43,8 @@ extern "C"
     void FixedConstraintCuda3f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
     void FixedConstraintCuda3f1_projectResponseContiguous(unsigned int size, void* dx);
     void FixedConstraintCuda3f1_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
-#ifdef SOFA_DEV
     void FixedConstraintCudaRigid3f_projectResponseContiguous(unsigned int size, void* dx);
     void FixedConstraintCudaRigid3f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
-#endif // SOFA_DEV
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
@@ -54,10 +52,8 @@ extern "C"
     void FixedConstraintCuda3d_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
     void FixedConstraintCuda3d1_projectResponseContiguous(unsigned int size, void* dx);
     void FixedConstraintCuda3d1_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
-#ifdef SOFA_DEV
     void FixedConstraintCudaRigid3d_projectResponseContiguous(unsigned int size, void* dx);
     void FixedConstraintCudaRigid3d_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
-#endif // SOFA_DEV
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
@@ -202,7 +198,6 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
     }
 }
 
-#ifdef SOFA_DEV
 template<int N, class real>
 void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Main* m)
 {
@@ -332,7 +327,6 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
 }
 
 
-#endif // SOFA_DEV
 
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Main* m, VecDeriv& dx)
@@ -358,7 +352,6 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Ma
         FixedConstraintCuda3f1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
-#ifdef SOFA_DEV
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
@@ -370,7 +363,6 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(M
     else
         FixedConstraintCudaRigid3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
-#endif // SOFA_DEV
 
 // Handle topological changes
 template <>
@@ -420,7 +412,6 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3d1Types>::projectResponse(Ma
         FixedConstraintCuda3d1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
-#ifdef SOFA_DEV
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
@@ -432,7 +423,6 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(M
     else
         FixedConstraintCudaRigid3d_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
-#endif // SOFA_DEV
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
@@ -453,17 +443,13 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(M
 
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3f1Types);
-#ifdef SOFA_DEV
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaRigid3fTypes);
-#endif // SOFA_DEV
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3dTypes);
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3d1Types);
-#ifdef SOFA_DEV
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaRigid3dTypes);
-#endif // SOFA_DEV
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 

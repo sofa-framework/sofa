@@ -53,6 +53,8 @@ HEADERS += mycuda.h \
            CudaCommon.h \
            CudaMath.h \
            CudaMath.inl \
+	   CudaMathRigid.h \
+	   CudaMathRigid.inl \
            CudaMechanicalObject.h \
            CudaMechanicalObject.inl \
            CudaUniformMass.h \
@@ -165,8 +167,6 @@ HEADERS += \
            CudaFixedPlaneConstraint.h \
            CudaFixedPlaneConstraint.inl \
 	   	CudaLCP.h \
-			CudaMathRigid.h \
-			CudaMathRigid.inl \
 	   	CudaMatrixUtils.h \
 	   	CudaDiagonalMatrix.h \
         CudaRotationMatrix.h \
