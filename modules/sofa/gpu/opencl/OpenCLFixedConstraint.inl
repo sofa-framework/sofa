@@ -446,8 +446,12 @@ void FixedConstraintInternalData<gpu::opencl::OpenCLRigid3dTypes>::projectRespon
 	{ data.addConstraint(this, index); } \
 	template<> void FixedConstraint< T >::removeConstraint(unsigned int index) \
 	{ data.removeConstraint(this, index); } \
-	template<> void FixedConstraint< T >::projectResponse(VecDeriv& dx) \
-	{ data.projectResponse(this, dx); }
+    template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_resData) \
+    {  \
+        VecDeriv &resData = *d_resData.beginEdit(mparams); \
+        data.projectResponse(this, resData);               \
+        d_resData.endEdit(mparams);                        \
+    }
 
 OpenCLFixedConstraint_ImplMethods(gpu::opencl::OpenCLVec3fTypes);
 OpenCLFixedConstraint_ImplMethods(gpu::opencl::OpenCLVec3f1Types);

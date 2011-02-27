@@ -99,7 +99,7 @@ public:
 	template<> void FixedConstraint< T >::init(); \
 	template<> void FixedConstraint< T >::addConstraint(unsigned int index); \
 	template<> void FixedConstraint< T >::removeConstraint(unsigned int index); \
-	template<> void FixedConstraint< T >::projectResponse(VecDeriv& dx);
+	template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
 
 OpenCLFixedConstraint_DeclMethods(gpu::opencl::OpenCLVec3fTypes);
 OpenCLFixedConstraint_DeclMethods(gpu::opencl::OpenCLVec3f1Types);

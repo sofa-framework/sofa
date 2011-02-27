@@ -73,30 +73,30 @@ public:
 };
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
 
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
 }
 }

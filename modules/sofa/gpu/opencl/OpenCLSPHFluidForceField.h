@@ -108,21 +108,20 @@ public:
     void Kernels_addDForce(int gsize, const gpu::opencl::_device_pointer cells, const gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer f, const gpu::opencl::_device_pointer pos4, const gpu::opencl::_device_pointer dx, const gpu::opencl::_device_pointer vel);
 };
 
-/*
 template <>
-void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-*/
+void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+
 template <>
-void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
 template <>
 void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::draw();
 
 template <>
-void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
 template <>
-void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
 
 } // namespace forcefield

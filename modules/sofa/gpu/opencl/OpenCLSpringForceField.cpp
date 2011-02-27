@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "OpenCLTypes.h"
 #include "OpenCLSpringForceField.inl"
-#include <sofa/component/forcefield/BoxStiffSpringForceField.inl>
+#include <sofa/component/interactionforcefield/BoxStiffSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include "OpenCLProgram.h"
@@ -38,7 +38,7 @@ namespace sofa
 namespace component
 {
 
-namespace forcefield
+namespace interactionforcefield
 {
 
 template class SpringForceField<sofa::gpu::opencl::OpenCLVec3fTypes>;
@@ -61,7 +61,7 @@ template class StiffSpringForceField<sofa::gpu::opencl::OpenCLVec3d1Types>;
 template class MeshSpringForceField<sofa::gpu::opencl::OpenCLVec3d1Types>;
 template class BoxStiffSpringForceField<gpu::opencl::OpenCLVec3d1Types>;
 
-} // namespace forcefield
+} // namespace interactionforcefield
 
 } // namespace component
 
@@ -75,45 +75,45 @@ SOFA_DECL_CLASS(OpenCLSpringForceField)
 SOFA_DECL_CLASS(OpenCLBoxStiffSpringForceField)
 
 int SpringForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
-        .add< component::forcefield::SpringForceField<OpenCLVec3fTypes> >()
-        .add< component::forcefield::SpringForceField<OpenCLVec3f1Types> >()
-        .add< component::forcefield::SpringForceField<OpenCLVec3dTypes> >()
-        .add< component::forcefield::SpringForceField<OpenCLVec3d1Types> >()
+        .add< component::interactionforcefield::SpringForceField<OpenCLVec3fTypes> >()
+        .add< component::interactionforcefield::SpringForceField<OpenCLVec3f1Types> >()
+        .add< component::interactionforcefield::SpringForceField<OpenCLVec3dTypes> >()
+        .add< component::interactionforcefield::SpringForceField<OpenCLVec3d1Types> >()
         ;
 
 int StiffSpringForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
-        .add< component::forcefield::StiffSpringForceField<OpenCLVec3fTypes> >()
-        .add< component::forcefield::StiffSpringForceField<OpenCLVec3f1Types> >()
-        .add< component::forcefield::StiffSpringForceField<OpenCLVec3dTypes> >()
-        .add< component::forcefield::StiffSpringForceField<OpenCLVec3d1Types> >()
+        .add< component::interactionforcefield::StiffSpringForceField<OpenCLVec3fTypes> >()
+        .add< component::interactionforcefield::StiffSpringForceField<OpenCLVec3f1Types> >()
+        .add< component::interactionforcefield::StiffSpringForceField<OpenCLVec3dTypes> >()
+        .add< component::interactionforcefield::StiffSpringForceField<OpenCLVec3d1Types> >()
         ;
 
 int MeshSpringForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
-        .add< component::forcefield::MeshSpringForceField<OpenCLVec3fTypes> >()
-        .add< component::forcefield::MeshSpringForceField<OpenCLVec3f1Types> >()
-        .add< component::forcefield::MeshSpringForceField<OpenCLVec3dTypes> >()
-        .add< component::forcefield::MeshSpringForceField<OpenCLVec3d1Types> >()
+        .add< component::interactionforcefield::MeshSpringForceField<OpenCLVec3fTypes> >()
+        .add< component::interactionforcefield::MeshSpringForceField<OpenCLVec3f1Types> >()
+        .add< component::interactionforcefield::MeshSpringForceField<OpenCLVec3dTypes> >()
+        .add< component::interactionforcefield::MeshSpringForceField<OpenCLVec3d1Types> >()
         ;
 
 int TriangleBendingSpringsOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
-        .add< component::forcefield::TriangleBendingSprings<OpenCLVec3fTypes> >()
-        .add< component::forcefield::TriangleBendingSprings<OpenCLVec3f1Types> >()
-        .add< component::forcefield::TriangleBendingSprings<OpenCLVec3dTypes> >()
-        .add< component::forcefield::TriangleBendingSprings<OpenCLVec3d1Types> >()
+        .add< component::interactionforcefield::TriangleBendingSprings<OpenCLVec3fTypes> >()
+        .add< component::interactionforcefield::TriangleBendingSprings<OpenCLVec3f1Types> >()
+        .add< component::interactionforcefield::TriangleBendingSprings<OpenCLVec3dTypes> >()
+        .add< component::interactionforcefield::TriangleBendingSprings<OpenCLVec3d1Types> >()
         ;
 
 int QuadBendingSpringsOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
-        .add< component::forcefield::QuadBendingSprings<OpenCLVec3fTypes> >()
-        .add< component::forcefield::QuadBendingSprings<OpenCLVec3f1Types> >()
-        .add< component::forcefield::QuadBendingSprings<OpenCLVec3dTypes> >()
-        .add< component::forcefield::QuadBendingSprings<OpenCLVec3d1Types> >()
+        .add< component::interactionforcefield::QuadBendingSprings<OpenCLVec3fTypes> >()
+        .add< component::interactionforcefield::QuadBendingSprings<OpenCLVec3f1Types> >()
+        .add< component::interactionforcefield::QuadBendingSprings<OpenCLVec3dTypes> >()
+        .add< component::interactionforcefield::QuadBendingSprings<OpenCLVec3d1Types> >()
         ;
 
 int BoxStiffSpringForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
-        .add< component::forcefield::BoxStiffSpringForceField<OpenCLVec3fTypes> >()
-        .add< component::forcefield::BoxStiffSpringForceField<OpenCLVec3f1Types> >()
-        .add< component::forcefield::BoxStiffSpringForceField<OpenCLVec3dTypes> >()
-        .add< component::forcefield::BoxStiffSpringForceField<OpenCLVec3d1Types> >()
+        .add< component::interactionforcefield::BoxStiffSpringForceField<OpenCLVec3fTypes> >()
+        .add< component::interactionforcefield::BoxStiffSpringForceField<OpenCLVec3f1Types> >()
+        .add< component::interactionforcefield::BoxStiffSpringForceField<OpenCLVec3dTypes> >()
+        .add< component::interactionforcefield::BoxStiffSpringForceField<OpenCLVec3d1Types> >()
         ;
 
 
@@ -176,7 +176,7 @@ sofa::helper::OpenCLKernel * StiffSpringForceFieldOpenCL3f_addForce_kernel;
 void StiffSpringForceFieldOpenCL3f_addForce(unsigned int size, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v, _device_pointer dfdx)
 {
 
-    int BSIZE = component::forcefield::SpringForceFieldInternalData<sofa::gpu::opencl::OpenCLVec3fTypes>::BSIZE;
+    int BSIZE = component::interactionforcefield::SpringForceFieldInternalData<sofa::gpu::opencl::OpenCLVec3fTypes>::BSIZE;
     DEBUG_TEXT("StiffSpringForceFieldOpenCL3f_addForce");
     SpringForceField_CreateProgramWithFloat();
     if(StiffSpringForceFieldOpenCL3f_addForce_kernel==NULL)StiffSpringForceFieldOpenCL3f_addForce_kernel
@@ -204,7 +204,7 @@ void StiffSpringForceFieldOpenCL3f_addForce(unsigned int size, unsigned int nbSp
 sofa::helper::OpenCLKernel * StiffSpringForceFieldOpenCL3f_addDForce_kernel;
 void StiffSpringForceFieldOpenCL3f_addDForce(unsigned int size, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, float factor)
 {
-    int BSIZE = component::forcefield::SpringForceFieldInternalData<sofa::gpu::opencl::OpenCLVec3fTypes>::BSIZE;
+    int BSIZE = component::interactionforcefield::SpringForceFieldInternalData<sofa::gpu::opencl::OpenCLVec3fTypes>::BSIZE;
     DEBUG_TEXT("StiffSpringForceFieldOpenCL3f_addDForce");
 
 

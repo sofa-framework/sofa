@@ -67,10 +67,10 @@ public:
 };
 
 template <>
-void SphereForceField<gpu::opencl::OpenCLVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+void SphereForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
 template <>
-void SphereForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+void SphereForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
 template <>
 class SphereForceFieldInternalData<gpu::opencl::OpenCLVec3f1Types>
@@ -81,10 +81,10 @@ public:
 };
 
 template <>
-void SphereForceField<gpu::opencl::OpenCLVec3f1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+void SphereForceField<gpu::opencl::OpenCLVec3f1Types>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
 template <>
-void SphereForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+void SphereForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
 } // namespace forcefield
 
