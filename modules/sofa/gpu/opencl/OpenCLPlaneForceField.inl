@@ -71,8 +71,12 @@ using namespace gpu::opencl;
 
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     data.plane.normal = planeNormal.getValue();
     data.plane.d = planeD.getValue();
     data.plane.stiffness = stiffness.getValue();
@@ -80,24 +84,36 @@ void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(VecDeriv& f, const
     f.resize(x.size());
     data.penetration.resize(x.size());
     PlaneForceFieldOpenCL3f_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     df.resize(dx.size());
     double stiff = data.plane.stiffness;
     data.plane.stiffness *= (Real)kFactor;
     PlaneForceFieldOpenCL3f_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
     data.plane.stiffness = (Real)stiff;
+
+    d_df.endEdit();
 }
 
 
 
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     data.plane.normal = planeNormal.getValue();
     data.plane.d = planeD.getValue();
     data.plane.stiffness = stiffness.getValue();
@@ -105,23 +121,35 @@ void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addForce(VecDeriv& f, cons
     f.resize(x.size());
     data.penetration.resize(x.size());
     PlaneForceFieldOpenCL3f1_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     df.resize(dx.size());
     double stiff = data.plane.stiffness;
     data.plane.stiffness *= (Real)kFactor;
     PlaneForceFieldOpenCL3f1_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
     data.plane.stiffness = (Real)stiff;
+
+    d_df.endEdit();
 }
 
 
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     data.plane.normal = planeNormal.getValue();
     data.plane.d = planeD.getValue();
     data.plane.stiffness = stiffness.getValue();
@@ -129,22 +157,34 @@ void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addForce(VecDeriv& f, const
     f.resize(x.size());
     data.penetration.resize(x.size());
     PlaneForceFieldOpenCL3d_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     df.resize(dx.size());
     double stiff = data.plane.stiffness;
     data.plane.stiffness *= (Real)kFactor;
     PlaneForceFieldOpenCL3d_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
     data.plane.stiffness = (Real)stiff;
+
+    d_df.endEdit();
 }
 
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     data.plane.normal = planeNormal.getValue();
     data.plane.d = planeD.getValue();
     data.plane.stiffness = stiffness.getValue();
@@ -152,16 +192,24 @@ void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addForce(VecDeriv& f, cons
     f.resize(x.size());
     data.penetration.resize(x.size());
     PlaneForceFieldOpenCL3d1_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     df.resize(dx.size());
     double stiff = data.plane.stiffness;
     data.plane.stiffness *= (Real)kFactor;
     PlaneForceFieldOpenCL3d1_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
     data.plane.stiffness = (Real)stiff;
+
+    d_df.endEdit();
 }
 
 } // namespace forcefield

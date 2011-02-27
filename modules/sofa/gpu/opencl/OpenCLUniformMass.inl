@@ -59,7 +59,7 @@ extern "C"
 
 }
 
-} // namespace OpenCL
+} // namespace opencl
 
 } // namespace gpu
 
@@ -69,31 +69,46 @@ namespace component
 namespace mass
 {
 
-
 using namespace gpu::opencl;
 
 // -- Mass interface
 template <>
-void UniformMass<OpenCLVec3fTypes, float>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+void UniformMass<OpenCLVec3fTypes, float>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
 {
-    UniformMassOpenCL3f_addMDx(dx.size(), (float)(mass.getValue()*factor), res.deviceWrite(), dx.deviceRead());
+    VecDeriv& f = *d_f.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+
+    UniformMassOpenCL3f_addMDx(dx.size(), (float)(mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void UniformMass<OpenCLVec3fTypes, float>::accFromF(VecDeriv& a, const VecDeriv& f)
+void UniformMass<OpenCLVec3fTypes, float>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
+    VecDeriv& a = *d_a.beginEdit();
+    const VecDeriv& f = d_f.getValue();
+
     UniformMassOpenCL3f_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+
+    d_a.endEdit();
 }
 
 template <>
-void UniformMass<OpenCLVec3fTypes, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&)
+void UniformMass<OpenCLVec3fTypes, float>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    //const VecCoord& x = d_x.getValue();
+    //const VecDeriv& v = d_v.getValue();
+
     // weight
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass.getValue();
     UniformMassOpenCL3f_addForce(f.size(), mg.ptr(), f.deviceWrite());
+
+    d_f.endEdit();
 }
 
 template <>
@@ -115,26 +130,42 @@ bool UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::addBBox(double* minBBox,
 }
 
 template <>
-void UniformMass<OpenCLVec3f1Types, float>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+void UniformMass<OpenCLVec3f1Types, float>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
 {
-    UniformMassOpenCL3f1_addMDx(dx.size(), (float)(mass.getValue()*factor), res.deviceWrite(), dx.deviceRead());
+    VecDeriv& f = *d_f.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+
+    UniformMassOpenCL3f1_addMDx(dx.size(), (float)(mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void UniformMass<OpenCLVec3f1Types, float>::accFromF(VecDeriv& a, const VecDeriv& f)
+void UniformMass<OpenCLVec3f1Types, float>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
+    VecDeriv& a = *d_a.beginEdit();
+    const VecDeriv& f = d_f.getValue();
+
     UniformMassOpenCL3f1_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+
+    d_a.endEdit();
 }
 
 template <>
-void UniformMass<OpenCLVec3f1Types, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&)
+void UniformMass<OpenCLVec3f1Types, float>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    //const VecCoord& x = d_x.getValue();
+    //const VecDeriv& v = d_v.getValue();
+
     // weight
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass.getValue();
     UniformMassOpenCL3f1_addForce(f.size(), mg.ptr(), f.deviceWrite());
+
+    d_f.endEdit();
 }
 
 template <>
@@ -156,8 +187,10 @@ bool UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addBBox(double* minBBox
 }
 
 template <>
-double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x ) const
+double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
 {
+    const VecCoord& x = d_x.getValue();
+
     double e = 0;
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
@@ -206,26 +239,42 @@ void UniformMass<gpu::opencl::OpenCLRigid3fTypes, Rigid3fMass>::draw()
 
 // -- Mass interface
 template <>
-void UniformMass<OpenCLVec3dTypes, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+void UniformMass<OpenCLVec3dTypes, double>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
 {
-    UniformMassOpenCL3d_addMDx(dx.size(), (double)(mass.getValue()*factor), res.deviceWrite(), dx.deviceRead());
+    VecDeriv& f = *d_f.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+
+    UniformMassOpenCL3d_addMDx(dx.size(), (double)(mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void UniformMass<OpenCLVec3dTypes, double>::accFromF(VecDeriv& a, const VecDeriv& f)
+void UniformMass<OpenCLVec3dTypes, double>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
+    VecDeriv& a = *d_a.beginEdit();
+    const VecDeriv& f = d_f.getValue();
+
     UniformMassOpenCL3d_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+
+    d_a.endEdit();
 }
 
 template <>
-void UniformMass<OpenCLVec3dTypes, double>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&)
+void UniformMass<OpenCLVec3dTypes, double>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    //const VecCoord& x = d_x.getValue();
+    //const VecDeriv& v = d_v.getValue();
+
     // weight
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass.getValue();
     UniformMassOpenCL3d_addForce(f.size(), mg.ptr(), f.deviceWrite());
+
+    d_f.endEdit();
 }
 
 template <>
@@ -247,26 +296,42 @@ bool UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::addBBox(double* minBBox
 }
 
 template <>
-void UniformMass<OpenCLVec3d1Types, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+void UniformMass<OpenCLVec3d1Types, double>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
 {
-    UniformMassOpenCL3d1_addMDx(dx.size(), (double)(mass.getValue()*factor), res.deviceWrite(), dx.deviceRead());
+    VecDeriv& f = *d_f.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+
+    UniformMassOpenCL3d1_addMDx(dx.size(), (double)(mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void UniformMass<OpenCLVec3d1Types, double>::accFromF(VecDeriv& a, const VecDeriv& f)
+void UniformMass<OpenCLVec3d1Types, double>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
+    VecDeriv& a = *d_a.beginEdit();
+    const VecDeriv& f = d_f.getValue();
+
     UniformMassOpenCL3d1_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+
+    d_a.endEdit();
 }
 
 template <>
-void UniformMass<OpenCLVec3d1Types, double>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&)
+void UniformMass<OpenCLVec3d1Types, double>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    //const VecCoord& x = d_x.getValue();
+    //const VecDeriv& v = d_v.getValue();
+
     // weight
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass.getValue();
     UniformMassOpenCL3d1_addForce(f.size(), mg.ptr(), f.deviceWrite());
+
+    d_f.endEdit();
 }
 
 template <>
@@ -288,8 +353,10 @@ bool UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addBBox(double* minBBo
 }
 
 template <>
-double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy( const VecCoord& x ) const
+double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
 {
+    const VecCoord& x = d_x.getValue();
+
     double e = 0;
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );

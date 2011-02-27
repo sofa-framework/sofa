@@ -26,9 +26,9 @@
 #define SOFA_GPU_OPENCL_OPENCLSPRINGFORCEFIELD_H
 
 #include "OpenCLTypes.h"
-#include <sofa/component/forcefield/SpringForceField.h>
-#include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/forcefield/MeshSpringForceField.h>
+#include <sofa/component/interactionforcefield/SpringForceField.h>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <sofa/component/interactionforcefield/MeshSpringForceField.h>
 
 
 namespace sofa
@@ -43,14 +43,14 @@ namespace opencl
 template<class DataTypes>
 class OpenCLKernelsSpringForceField;
 
-} // namespace cuda
+} // namespace opencl
 
 } // namespace gpu
 
 namespace component
 {
 
-namespace forcefield
+namespace interactionforcefield
 {
 
 template <class TCoord, class TDeriv, class TReal>
@@ -148,13 +148,11 @@ public:
 
 // I know using macros is bad design but this is the only way not to repeat the code for all OpenCL types
 #define OpenCLSpringForceField_DeclMethods(T) \
-	template<> void SpringForceField< T >::init(); \
-	template<> void SpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2); \
-	template<> void StiffSpringForceField< T >::init(); \
-	template<> void StiffSpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2); \
-	template<> void StiffSpringForceField< T >::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
-
-
+    template<> inline void SpringForceField< T >::init(); \
+    template<> inline void SpringForceField< T >::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2); \
+    template<> inline void StiffSpringForceField< T >::init(); \
+    template<> inline void StiffSpringForceField< T >::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2); \
+    template<> inline void StiffSpringForceField< T >::addDForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2 );
 
 OpenCLSpringForceField_DeclMethods(gpu::opencl::OpenCLVec3fTypes);
 OpenCLSpringForceField_DeclMethods(gpu::opencl::OpenCLVec3f1Types);
@@ -163,7 +161,7 @@ OpenCLSpringForceField_DeclMethods(gpu::opencl::OpenCLVec3d1Types);
 
 #undef OpenCLSpringForceField_DeclMethods
 
-} // namespace forcefield
+} // namespace interactionforcefield
 
 } // namespace component
 

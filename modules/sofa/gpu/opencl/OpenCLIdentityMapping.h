@@ -27,9 +27,7 @@
 
 #include "OpenCLTypes.h"
 #include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalMapping.h>
 
 namespace sofa
 {
@@ -40,40 +38,25 @@ namespace component
 namespace mapping
 {
 
+template <>
+void IdentityMapping<gpu::opencl::OpenCLVec3fTypes, gpu::opencl::OpenCLVec3fTypes>::apply( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
 
 template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
+void IdentityMapping<gpu::opencl::OpenCLVec3fTypes, gpu::opencl::OpenCLVec3fTypes>::applyJ( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn );
 
 template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-
-template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-
-template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
-
-template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-
+void IdentityMapping<gpu::opencl::OpenCLVec3fTypes, gpu::opencl::OpenCLVec3fTypes>::applyJT( const core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn );
 
 //////// OpenCLVec3f1
 
 template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
+void IdentityMapping<gpu::opencl::OpenCLVec3f1Types, gpu::opencl::OpenCLVec3f1Types>::apply( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
 
 template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+void IdentityMapping<gpu::opencl::OpenCLVec3f1Types, gpu::opencl::OpenCLVec3f1Types>::applyJ( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn );
 
 template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-
-template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
-
-template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-
+void IdentityMapping<gpu::opencl::OpenCLVec3f1Types, gpu::opencl::OpenCLVec3f1Types>::applyJT( const core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn );
 
 } // namespace mapping
 

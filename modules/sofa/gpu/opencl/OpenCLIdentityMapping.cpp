@@ -26,9 +26,7 @@
 #include "OpenCLIdentityMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/core/Mapping.inl>
 
 namespace sofa
@@ -45,39 +43,32 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::gpu::opencl;
 
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3fTypes>, MechanicalState<OpenCLVec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<OpenCLVec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<OpenCLVec3fTypes> > >;
+template class  IdentityMapping< OpenCLVec3fTypes, OpenCLVec3fTypes>;
+template class  IdentityMapping< OpenCLVec3fTypes, Vec3fTypes>;
+template class  IdentityMapping< OpenCLVec3fTypes, Vec3dTypes>;
+template class  IdentityMapping< Vec3fTypes, OpenCLVec3fTypes>;
+template class  IdentityMapping< Vec3dTypes, OpenCLVec3fTypes>;
 
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3fTypes>, MechanicalState<OpenCLVec3dTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3dTypes>, MechanicalState<OpenCLVec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3dTypes>, MechanicalState<OpenCLVec3dTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3dTypes>, MechanicalState<Vec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<OpenCLVec3dTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<OpenCLVec3dTypes> > >;
+template class  IdentityMapping< OpenCLVec3fTypes, OpenCLVec3dTypes>;
+template class  IdentityMapping< OpenCLVec3dTypes, OpenCLVec3fTypes>;
+template class  IdentityMapping< OpenCLVec3dTypes, OpenCLVec3dTypes>;
+template class  IdentityMapping< OpenCLVec3dTypes, Vec3fTypes>;
+template class  IdentityMapping< OpenCLVec3dTypes, Vec3dTypes>;
+template class  IdentityMapping< Vec3fTypes, OpenCLVec3dTypes>;
+template class  IdentityMapping< Vec3dTypes, OpenCLVec3dTypes>;
 
-template class  IdentityMapping< Mapping< State<OpenCLVec3d1Types>, MappedModel<ExtVec3dTypes> > >;
-template class  IdentityMapping< Mapping< State<OpenCLVec3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class  IdentityMapping< OpenCLVec3d1Types, ExtVec3fTypes>;
+template class  IdentityMapping< OpenCLVec3dTypes, ExtVec3fTypes>;
 
-// template class  IdentityMapping< Mapping< State<OpenCLVec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-template class  IdentityMapping< Mapping< State<OpenCLVec3fTypes>, MappedModel<ExtVec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3f1Types>, MechanicalState<OpenCLVec3f1Types> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3f1Types>, MechanicalState<Vec3dTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3f1Types>, MechanicalState<Vec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<OpenCLVec3f1Types> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<OpenCLVec3f1Types> > >;
-template class  IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<OpenCLVec3f1Types> > >;
-template class  IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<Vec3dTypes> > >;
-template class  IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<Vec3fTypes> > >;
-// template class  IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<ExtVec3dTypes> > >;
-template class  IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<ExtVec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3f1Types>, MechanicalState<OpenCLVec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3fTypes>, MechanicalState<OpenCLVec3f1Types> > >;
-template class  IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<OpenCLVec3fTypes> > >;
-template class  IdentityMapping< Mapping< State<OpenCLVec3fTypes>, MappedModel<OpenCLVec3f1Types> > >;
+template class  IdentityMapping< OpenCLVec3fTypes, ExtVec3fTypes>;
+template class  IdentityMapping< OpenCLVec3f1Types, OpenCLVec3f1Types>;
+template class  IdentityMapping< OpenCLVec3f1Types, Vec3dTypes>;
+template class  IdentityMapping< OpenCLVec3f1Types, Vec3fTypes>;
+template class  IdentityMapping< Vec3dTypes, OpenCLVec3f1Types>;
+template class  IdentityMapping< Vec3fTypes, OpenCLVec3f1Types>;
+template class  IdentityMapping< OpenCLVec3f1Types, ExtVec3fTypes>;
+template class  IdentityMapping< OpenCLVec3f1Types, OpenCLVec3fTypes>;
+template class  IdentityMapping< OpenCLVec3fTypes, OpenCLVec3f1Types>;
 
 } // namespace mapping
 
@@ -97,39 +88,32 @@ using namespace sofa::component::mapping;
 SOFA_DECL_CLASS(OpenCLIdentityMapping)
 
 int IdentityMappingOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3fTypes>, MechanicalState<OpenCLVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<OpenCLVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<OpenCLVec3fTypes> > > >()
+        .add< IdentityMapping< OpenCLVec3fTypes, OpenCLVec3fTypes> >()
+        .add< IdentityMapping< OpenCLVec3fTypes, Vec3fTypes> >()
+        .add< IdentityMapping< OpenCLVec3fTypes, Vec3dTypes> >()
+        .add< IdentityMapping< Vec3fTypes, OpenCLVec3fTypes> >()
+        .add< IdentityMapping< Vec3dTypes, OpenCLVec3fTypes> >()
 
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3fTypes>, MechanicalState<OpenCLVec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3dTypes>, MechanicalState<OpenCLVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3dTypes>, MechanicalState<OpenCLVec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<OpenCLVec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<OpenCLVec3dTypes> > > >()
+        .add< IdentityMapping< OpenCLVec3fTypes, OpenCLVec3dTypes> >()
+        .add< IdentityMapping< OpenCLVec3dTypes, OpenCLVec3fTypes> >()
+        .add< IdentityMapping< OpenCLVec3dTypes, OpenCLVec3dTypes> >()
+        .add< IdentityMapping< OpenCLVec3dTypes, Vec3fTypes> >()
+        .add< IdentityMapping< OpenCLVec3dTypes, Vec3dTypes> >()
+        .add< IdentityMapping< Vec3fTypes, OpenCLVec3dTypes> >()
+        .add< IdentityMapping< Vec3dTypes, OpenCLVec3dTypes> >()
 
-        .add< IdentityMapping< Mapping< State<OpenCLVec3d1Types>, MappedModel<ExtVec3fTypes> > > >()
-        .add< IdentityMapping< Mapping< State<OpenCLVec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< IdentityMapping< OpenCLVec3d1Types, ExtVec3fTypes> >()
+        .add< IdentityMapping< OpenCLVec3dTypes, ExtVec3fTypes> >()
 
-// .add< IdentityMapping< Mapping< State<OpenCLVec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<OpenCLVec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3f1Types>, MechanicalState<OpenCLVec3f1Types> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3f1Types>, MechanicalState<Vec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3f1Types>, MechanicalState<Vec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<OpenCLVec3f1Types> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<OpenCLVec3f1Types> > > >()
-        .add< IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<OpenCLVec3f1Types> > > >()
-        .add< IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<Vec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<Vec3fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<ExtVec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<ExtVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3f1Types>, MechanicalState<OpenCLVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<OpenCLVec3fTypes>, MechanicalState<OpenCLVec3f1Types> > > >()
-        .add< IdentityMapping< Mapping< State<OpenCLVec3f1Types>, MappedModel<OpenCLVec3fTypes> > > >()
-        .add< IdentityMapping< Mapping< State<OpenCLVec3fTypes>, MappedModel<OpenCLVec3f1Types> > > >()
+        .add< IdentityMapping< OpenCLVec3fTypes, ExtVec3fTypes> >()
+        .add< IdentityMapping< OpenCLVec3f1Types, OpenCLVec3f1Types> >()
+        .add< IdentityMapping< OpenCLVec3f1Types, Vec3dTypes> >()
+        .add< IdentityMapping< OpenCLVec3f1Types, Vec3fTypes> >()
+        .add< IdentityMapping< Vec3dTypes, OpenCLVec3f1Types> >()
+        .add< IdentityMapping< Vec3fTypes, OpenCLVec3f1Types> >()
+        .add< IdentityMapping< OpenCLVec3f1Types, ExtVec3fTypes> >()
+        .add< IdentityMapping< OpenCLVec3f1Types, OpenCLVec3fTypes> >()
+        .add< IdentityMapping< OpenCLVec3fTypes, OpenCLVec3f1Types> >()
         ;
 
 } // namespace opencl

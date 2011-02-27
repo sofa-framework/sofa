@@ -59,74 +59,64 @@ namespace mapping
 using namespace gpu::opencl;
 
 template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+void IdentityMapping<gpu::opencl::OpenCLVec3fTypes, gpu::opencl::OpenCLVec3fTypes>::apply( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn )
 {
+    OutVecCoord& out = *dOut.beginEdit(mparams);
+    const InVecCoord& in = dIn.getValue(mparams);
     out.fastResize(in.size());
     gpu::opencl::MechanicalObjectOpenCLVec3f_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit(mparams);
 }
 
 template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void IdentityMapping<gpu::opencl::OpenCLVec3fTypes, gpu::opencl::OpenCLVec3fTypes>::applyJ( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
 {
+    OutVecDeriv& out = *dOut.beginEdit(mparams);
+    const InVecDeriv& in = dIn.getValue(mparams);
     out.fastResize(in.size());
     gpu::opencl::MechanicalObjectOpenCLVec3f_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit(mparams);
 }
 
 template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void IdentityMapping<gpu::opencl::OpenCLVec3fTypes, gpu::opencl::OpenCLVec3fTypes>::applyJT( const core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
+    InVecDeriv& out = *dOut.beginEdit(mparams);
+    const OutVecDeriv& in = dIn.getValue(mparams);
     gpu::opencl::MechanicalObjectOpenCLVec3f_vPEq(out.size(), out.deviceWrite(), in.deviceRead());
-}
-
-template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{
-    out.fastResize(in.size());
-    gpu::opencl::MechanicalObjectOpenCLVec3f_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
-}
-
-template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    out.fastResize(in.size());
-    gpu::opencl::MechanicalObjectOpenCLVec3f_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit(mparams);
 }
 
 
 //////// OpenCLVec3f1
 
 template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+void IdentityMapping<gpu::opencl::OpenCLVec3f1Types, gpu::opencl::OpenCLVec3f1Types>::apply( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn )
 {
+    OutVecCoord& out = *dOut.beginEdit(mparams);
+    const InVecCoord& in = dIn.getValue(mparams);
     out.fastResize(in.size());
     gpu::opencl::MechanicalObjectOpenCLVec3f1_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit(mparams);
 }
 
 template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void IdentityMapping<gpu::opencl::OpenCLVec3f1Types, gpu::opencl::OpenCLVec3f1Types>::applyJ( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
 {
+    OutVecDeriv& out = *dOut.beginEdit(mparams);
+    const InVecDeriv& in = dIn.getValue(mparams);
     out.fastResize(in.size());
     gpu::opencl::MechanicalObjectOpenCLVec3f1_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit(mparams);
 }
 
 template <>
-void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void IdentityMapping<gpu::opencl::OpenCLVec3f1Types, gpu::opencl::OpenCLVec3f1Types>::applyJT( const core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
+    InVecDeriv& out = *dOut.beginEdit(mparams);
+    const OutVecDeriv& in = dIn.getValue(mparams);
     gpu::opencl::MechanicalObjectOpenCLVec3f1_vPEq(out.size(), out.deviceWrite(), in.deviceRead());
-}
-
-template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{
-    out.fastResize(in.size());
-    gpu::opencl::MechanicalObjectOpenCLVec3f1_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
-}
-
-template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    out.fastResize(in.size());
-    gpu::opencl::MechanicalObjectOpenCLVec3f1_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit(mparams);
 }
 
 } // namespace mapping

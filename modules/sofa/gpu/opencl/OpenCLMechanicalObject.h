@@ -59,7 +59,8 @@ class MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv
 public:
     typedef gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> DataTypes;
     typedef MechanicalObject<DataTypes> Main;
-    typedef typename Main::VecId VecId;
+    typedef core::VecId VecId;
+    typedef core::ConstVecId ConstVecId;
     typedef typename Main::VMultiOp VMultiOp;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -73,26 +74,26 @@ public:
     /// Temporary storate for dot product operation
     VecDeriv tmpdot;
 
+    MechanicalObjectInternalData(MechanicalObject< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >* = NULL)
+    {}
     static void accumulateForce(Main* m);
     static void addDxToCollisionModel(Main* m);
     static void vAlloc(Main* m, VecId v);
-    static void vOp(Main* m, VecId v, VecId a, VecId b, double f);
-    static void vMultiOp(Main* m, const VMultiOp& ops);
-    static double vDot(Main* m, VecId a, VecId b);
+    static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f);
+    static void vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops);
+    static double vDot(Main* m, ConstVecId a, ConstVecId b);
     static void resetForce(Main* m);
 };
 
 
 // I know using macros is bad design but this is the only way not to repeat the code for all OpenCL types
 #define OpenCLMechanicalObject_DeclMethods(T) \
-	template<> double MechanicalObject< T >::vDot(VecId a, VecId b);					\
-	template<> void MechanicalObject< T >::vOp(VecId v, VecId a, VecId b, double f);	\
-	template<> void MechanicalObject< T >::accumulateForce();							\
-	template <> void MechanicalObject< T >::addDxToCollisionModel();					\
-	template<> void MechanicalObject< T >::resetForce();								\
-	template<> void MechanicalObject< T >::vMultiOp(const VMultiOp& ops);				\
-//*/
-
+    template<> inline void MechanicalObject< T >::accumulateForce(const core::ExecParams* params); \
+    template<> inline void MechanicalObject< T >::vOp(const core::ExecParams* params /* PARAMS FIRST */, core::VecId v, core::ConstVecId a, core::ConstVecId b, double f); \
+    template<> inline void MechanicalObject< T >::vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops); \
+    template<> inline double MechanicalObject< T >::vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b); \
+    template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params); \
+    template<> inline void MechanicalObject< T >::addDxToCollisionModel();
 
 OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3fTypes);
 OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3f1Types);
@@ -100,8 +101,6 @@ OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3dTypes);
 OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3d1Types);
 
 #undef OpenCLMechanicalObject_DeclMethods
-
-//*/
 
 } // namespace container
 

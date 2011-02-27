@@ -780,8 +780,8 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     // v += b*f
                     if (v.type == sofa::core::V_COORD)
                     {
-                        Data<VecDeriv>* d_vv = m->write((VecCoordId)v);
-                        VecDeriv* vv = d_vv->beginEdit();
+                        Data<VecCoord>* d_vv = m->write((VecCoordId)v);
+                        VecCoord* vv = d_vv->beginEdit();
                         if (b.type == sofa::core::V_COORD)
                         {
                             const Data<VecCoord>* d_vb = m->read((ConstVecCoordId)b);
@@ -1120,9 +1120,8 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 {
     Data<VecDeriv>* d_f = m->write(VecDerivId::force());
     VecDeriv& f = *d_f->beginEdit();
-
-    if (f.size() == 0) return;
-    Kernels::vClear(f.size(), f.deviceWrite());
+    if (f.size() > 0)
+        Kernels::vClear(f.size(), f.deviceWrite());
     d_f->endEdit();
 }
 

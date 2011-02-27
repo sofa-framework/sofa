@@ -26,11 +26,11 @@
 #define SOFA_GPU_OPENCL_OPENCLSPRINGFORCEFIELD_INL
 
 #include "OpenCLSpringForceField.h"
-#include <sofa/component/forcefield/SpringForceField.inl>
-#include <sofa/component/forcefield/StiffSpringForceField.inl>
-#include <sofa/component/forcefield/MeshSpringForceField.inl>
-#include <sofa/component/forcefield/TriangleBendingSprings.inl>
-#include <sofa/component/forcefield/QuadBendingSprings.inl>
+#include <sofa/component/interactionforcefield/SpringForceField.inl>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
+#include <sofa/component/interactionforcefield/MeshSpringForceField.inl>
+#include <sofa/component/interactionforcefield/TriangleBendingSprings.inl>
+#include <sofa/component/interactionforcefield/QuadBendingSprings.inl>
 
 #define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
@@ -42,7 +42,6 @@ namespace gpu
 
 namespace opencl
 {
-
 
 extern "C"
 {
@@ -75,8 +74,6 @@ extern "C"
     extern void StiffSpringForceFieldOpenCL3d1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx);
     extern void StiffSpringForceFieldOpenCL3d1_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor);
     extern void StiffSpringForceFieldOpenCL3d1_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor);
-
-
 
 } // extern "C"
 
@@ -157,14 +154,14 @@ public:
 
 
 
-} // namespace OpenCL
+} // namespace opencl
 
 } // namespace gpu
 
 namespace component
 {
 
-namespace forcefield
+namespace interactionforcefield
 {
 
 
@@ -415,14 +412,42 @@ void SpringForceFieldInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 #define OpenCLSpringForceField_ImplMethods(T) \
 	template<> void SpringForceField< T >::init() \
 	{data.init(this, false); } \
-	template<> void SpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2) \
-	{data.addForce(this, false, f1, f2, x1, x2, v1, v2); } \
-	template<> void StiffSpringForceField< T >::init() \
-	{data.init(this, true); } \
-	template<> void StiffSpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2) \
-	{data.addForce(this, true, f1, f2, x1, x2, v1, v2); } \
-	template<> void StiffSpringForceField< T >::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor) \
-	{data.addDForce(this, true, df1, df2, dx1, dx2, kFactor, bFactor); }
+    template<> void SpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2) \
+    { \
+		VecDeriv& f1 = *d_f1.beginEdit(); \
+		const VecCoord& x1 = d_x1.getValue(); \
+		const VecDeriv& v1 = d_v1.getValue(); \
+		VecDeriv& f2 = *d_f2.beginEdit(); \
+		const VecCoord& x2 = d_x2.getValue(); \
+		const VecDeriv& v2 = d_v2.getValue(); \
+		data.addForce(this, false, f1, f2, x1, x2, v1, v2);\
+		d_f1.endEdit(); \
+		d_f2.endEdit(); \
+	} \
+    template<> void StiffSpringForceField< T >::init() \
+    { data.init(this, true); } \
+    template<> void StiffSpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2) \
+    { \
+		VecDeriv& f1 = *d_f1.beginEdit(); \
+		const VecCoord& x1 = d_x1.getValue(); \
+		const VecDeriv& v1 = d_v1.getValue(); \
+		VecDeriv& f2 = *d_f2.beginEdit(); \
+		const VecCoord& x2 = d_x2.getValue(); \
+		const VecDeriv& v2 = d_v2.getValue(); \
+		data.addForce(this, true, f1, f2, x1, x2, v1, v2); \
+		d_f1.endEdit(); \
+		d_f2.endEdit(); \
+	} \
+    template<> void StiffSpringForceField< T >::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2) \
+    { \
+		VecDeriv& df1 = *d_df1.beginEdit(); \
+		const VecDeriv& dx1 = d_dx1.getValue(); \
+		VecDeriv& df2 = *d_df2.beginEdit(); \
+		const VecDeriv& dx2 = d_dx2.getValue(); \
+		data.addDForce(this, true, df1, df2, dx1, dx2, mparams->kFactor(), mparams->bFactor()); \
+		d_df1.endEdit(); \
+		d_df2.endEdit(); \
+	}
 
 
 OpenCLSpringForceField_ImplMethods(gpu::opencl::OpenCLVec3fTypes);
@@ -432,7 +457,7 @@ OpenCLSpringForceField_ImplMethods(gpu::opencl::OpenCLVec3d1Types);
 
 //#undef OpenCLSpringForceField_ImplMethods
 
-} // namespace forcefield
+} // namespace interactionforcefield
 
 } // namespace component
 
