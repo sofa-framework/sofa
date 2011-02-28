@@ -1591,7 +1591,9 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Point& e1, Outpu
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->elem.first = e2;
+    detection->elem.second = e1;
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
@@ -1608,7 +1610,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Point& e1, Outpu
     detection->value -= contactDist;
 
 
-    std::cout<<" LocalMinDistance::1607  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
+    std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1607  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
             <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
 
     return 1;
@@ -1689,7 +1691,9 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Sphere& e1, Outp
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->elem.first = e2;
+    detection->elem.second = e1;
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
@@ -1698,7 +1702,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Sphere& e1, Outp
     detection->normal /= detection->value;
     detection->value -= contactDist;
 
-    std::cout<<" LocalMinDistance::1607  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
+    std::cout<<" LocalMinDistance::1704  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
             <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
     return 1;
 }

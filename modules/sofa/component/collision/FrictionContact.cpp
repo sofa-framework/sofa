@@ -79,6 +79,12 @@ Creator<Contact::Factory, FrictionContact<FFDDistanceGridCollisionModel, SphereM
 Creator<Contact::Factory, FrictionContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleFrictionContactClass("FrictionContact", true);
 
 
+#ifdef SOFA_DEV
+Creator<Contact::Factory, FrictionContact<BSplineModel, PointModel> > BSplinePointFrictionContactClass("FrictionContact", true);
+Creator<Contact::Factory, FrictionContact<BSplineModel, SphereModel> > BSplineSphereFrictionContactClass("FrictionContact", true);
+#endif
+
+
 } // namespace collision
 
 } // namespace component
