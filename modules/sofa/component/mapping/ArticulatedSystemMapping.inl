@@ -493,11 +493,11 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
 
             if ((*a)->rotation.getValue())
             {
-                out[ind].x() += (Real)dot(axis, getVOrientation(T));
+                out[ind].x() += (InReal)dot(axis, getVOrientation(T));
             }
             if ((*a)->translation.getValue())
             {
-                out[ind].x() += (Real)dot(axis, getVCenter(T));
+                out[ind].x() += (InReal)dot(axis, getVCenter(T));
             }
         }
     }
@@ -594,12 +594,12 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
 
                         if ((*a)->rotation.getValue())
                         {
-                            data = (Real)dot(axis, getVOrientation(T));
+                            data = (InReal)dot(axis, getVOrientation(T));
                         }
 
                         if ((*a)->translation.getValue())
                         {
-                            data = (Real)dot(axis, getVCenter(T));
+                            data = (InReal)dot(axis, getVCenter(T));
                         }
 
                         o.addCol(ind, data);

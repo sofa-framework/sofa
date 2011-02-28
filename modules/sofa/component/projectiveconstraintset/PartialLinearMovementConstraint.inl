@@ -311,7 +311,7 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
                 {
                     if(case2d)
                     {
-                        x[*it][j] = x0[*it][j] + (1.0/(a*b))*((a-x0[*it][0])*(b-x0[*it][1])*imposedDisplacmentOnMacroNodes[0]+   ///< N1
+                        x[*it][j] = x0[*it][j] + ((Real)1.0/(a*b))*((a-x0[*it][0])*(b-x0[*it][1])*imposedDisplacmentOnMacroNodes[0]+   ///< N1
                                 x0[*it][0]*(b-x0[*it][1])*imposedDisplacmentOnMacroNodes[1]+         ///< N2
                                 x0[*it][0]*x0[*it][1]*imposedDisplacmentOnMacroNodes[2]+              ///< N3
                                 (a-x0[*it][0])*x0[*it][1]*imposedDisplacmentOnMacroNodes[3])*m[j];    ///< N4
@@ -336,7 +336,7 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
                         //   Z/
                         //
 
-                        x[*it][j] = x0[*it][j] + (1.0/(a*b*c))*(
+                        x[*it][j] = x0[*it][j] + ((Real)1.0/(a*b*c))*(
                                 (a-x0[*it][0])*(b-x0[*it][1])*(c-x0[*it][2])*imposedDisplacmentOnMacroNodes[0]+    ///< N1
                                 (a-x0[*it][0])*(b-x0[*it][1])*x0[*it][2]*imposedDisplacmentOnMacroNodes[1]+        ///< N2
                                 x0[*it][0]*(b-x0[*it][1])*x0[*it][2]*imposedDisplacmentOnMacroNodes[2]+            ///< N3
