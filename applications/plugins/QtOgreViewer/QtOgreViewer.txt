@@ -28,6 +28,7 @@ The plugin has been tested using OGRE SDK 1.7.2 and visual studio 2008 SP1.
 
 - Download OGRE source for your version of visual studio and dependencies at 
 http://www.ogre3d.org/download/source
+- Download and install CMake http://www.cmake.org/ 
 - Follow the build instructions it is really straightforward. 
 - Build in release mode. 
 - Build in debug mode if you want to be able to build the plugin in debug mode. 
@@ -87,7 +88,9 @@ and another viewer can cause a crash.
 - Most of the limitations could be overcome by having a cleaner VisualModelImpl 
 API (for material handling notably, which are difficult to extend for Ogre)
 - Finally we could use Ogre::HardwareVertexBuffers and Ogre::HardwareIndexBuffers
-instead of Ogre pseudo direct mode to draw the primitives.
+instead of Ogre pseudo direct mode to draw the primitives. It is probably 
+faster, and should provide a cleaner code, much similar to the existing one in 
+OglModel.
 
 
 
