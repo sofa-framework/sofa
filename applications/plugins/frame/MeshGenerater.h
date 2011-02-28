@@ -51,11 +51,23 @@ namespace sofa
 namespace component
 {
 
-namespace engine
+namespace topology
 {
 
 //TODO change the img value in gridMaterial on topological changes
 //TODO init and update voxelIndexInRegularGrid & voxelIDInRegularGrid2IndexInTopo
+
+class PointSetTopologyContainer;
+class PointSetTopologyModifier;
+template<class T> class PointSetGeometryAlgorithms;
+class TriangleSetTopologyContainer;
+class TriangleSetTopologyModifier;
+template<class T> class TriangleSetGeometryAlgorithms;
+
+}
+
+namespace engine
+{
 
 using namespace sofa::defaulttype;
 
@@ -70,13 +82,6 @@ using sofa::helper::set;
 using std::map;
 using sofa::component::material::GridMaterial;
 using sofa::component::material::Material3d;
-
-class PointSetTopologyContainer;
-class PointSetTopologyModifier;
-template<class T> class PointSetGeometryAlgorithms;
-class TriangleSetTopologyContainer;
-class TriangleSetTopologyModifier;
-template<class T> class TriangleSetGeometryAlgorithms;
 
 /**
 * This class, called MeshGenerater, generate a triangular mesh from a voxel array :
@@ -163,7 +168,11 @@ public:
     * reflect the effects of the first topology changes on the second topology.
     *
     */
-    virtual void updateTopologicalMappingTopDown();
+    //virtual void updateTopologicalMappingTopDown();
+
+    virtual void removeVoxels ( const sofa::helper::vector<unsigned int>& removedHexahedraID ); // This method must be called to init the topological changes process
+
+    virtual void update();
 
     /// return true if the output topology subdivide the input one. (the topology uses the Loc2GlobVec/Glob2LocMap/In2OutMap structs and share the same DOFs)
     virtual bool isTheOutputTopologySubdividingTheInputOne() { return false;}
@@ -187,20 +196,6 @@ protected:
     Data<Vec3d> from_translation_offset;
 
 
-
-
-
-    /**** Output ****/
-    // Coord output
-    Data<VecCoord> to_rest_position;
-    Data<VecCoord> to_position;
-    // Topology output
-    Data<helper::vector<Edge> > to_edges;
-    Data<helper::vector<Triangle> > to_triangles;
-
-
-
-
     /**** Utils ****/
     MarchingCubeUtility marchingCubes;
 
@@ -211,6 +206,11 @@ protected:
     // Connexion maps
     Data< vector< vector< HexaIDInRegularGrid > > > triangleIndexInRegularGrid;
     Data< map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > > > triangleIDInRegularGrid2IndexInTopo;
+
+    TriangleSetTopologyContainer* _to_topo;
+    TriangleSetGeometryAlgorithms<DataTypes>* _to_geomAlgo;
+    TriangleSetTopologyModifier *_to_tstm;
+    MState* _to_DOFs;
 
     Data<unsigned int> smoothIterations;
     PointData<typename DataTypes::Coord> smoothedMesh0;
@@ -238,7 +238,7 @@ protected:
     *
     * @param removedHexaID ID of the removed hexahedra
     */
-    void removeOldMesh ( sofa::helper::vector<BaseMeshTopology::HexaID>& removedHexahedraID, const sofa::helper::vector<BaseMeshTopology::HexaID> &tab );
+    void removeOldMesh ( const sofa::helper::vector<unsigned int>& removedHexahedraID );
 
     /** \brief localy remesh
     *

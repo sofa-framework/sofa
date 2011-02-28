@@ -51,8 +51,8 @@ HEADERS += \
            FrameMechanicalObject.h \
            GridMaterial.h \
            GridMaterial.inl \
-           #MeshGenerater.h \
-           #MeshGenerater.inl \
+           MeshGenerater.h \
+           MeshGenerater.inl \
            NewMaterial.h \
            NewHookeMaterial.h \
            NewHookeMaterial.inl
@@ -72,7 +72,7 @@ SOURCES += \
            FrameRigidConstraint.cpp \
            FrameMechanicalObject.cpp \
            GridMaterial.cpp \
-           #MeshGenerater.cpp \
+           MeshGenerater.cpp \
            NewHookeMaterial.cpp
            #TetrahedronFEMForceFieldWithExternalMaterial.cpp
 

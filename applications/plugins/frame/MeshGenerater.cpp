@@ -27,6 +27,7 @@
 #include "MeshGenerater.inl"
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Vec.h>
 
 
 namespace sofa
@@ -50,7 +51,7 @@ SOFA_DECL_CLASS ( MeshGenerater );
 
 // Register in the Factory
 int MeshGeneraterClass = core::RegisterObject ( "Special case of mapping where HexahedronSetTopology is converted to QuadSetTopology" )
-        .add< MeshGenerater>()
+        .add< MeshGenerater<Vec3dTypes> >()
         ;
 
 
