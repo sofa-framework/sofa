@@ -11,29 +11,32 @@ BUILD_SYSTEM_FILES = \
 # Definition of artifacts directories and name
 ########################################################################
 
-contains(TEMPLATE, lib) {
+contains(TEMPLATE, lib) | contains(TEMPLATE, vclib) {
 	DESTDIR = $$LIB_DESTDIR
 }
-contains(TEMPLATE, app) {
+contains(TEMPLATE, app) | contains(TEMPLATE, vcapp) {
 	DESTDIR = $$APP_DESTDIR
 }
 
-contains(TEMPLATE, lib) {
+contains(TEMPLATE, lib) | contains(TEMPLATE, vclib) {
 	SUFFIX = $$LIBSUFFIX
 }
-contains(TEMPLATE, app) {
+contains(TEMPLATE, app) | contains(TEMPLATE, vcapp) {
 	SUFFIX = $$APPSUFFIX
 }
 !isEmpty(SUFFIX) {
 	TARGET = $$TARGET$$SUFFIX
 }
 
-win32 {
-	CONFIG += exceptions rtti thread
-	contains(TEMPLATE, app) {
-		CONFIG += console
+isEmpty(OBJMOC) {
+	contains(TEMPLATE, vclib) | contains(TEMPLATE, vcapp) {
+	} else {
+		unset(MOC_DIR)
 	}
-	contains(TEMPLATE, lib) {
+}
+
+win32 {
+	contains(TEMPLATE, lib) | contains(TEMPLATE, vclib) {
 		CONFIG += static
 		# TODO: support for shared libraries
 	}

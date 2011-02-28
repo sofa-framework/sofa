@@ -11,6 +11,17 @@ defineReplace(normalizePath) {
 }
 
 ########################################################################
+# Default options
+########################################################################
+
+CONFIG += exceptions rtti
+
+win32 {
+	QMAKE_CXXFLAGS_DEBUG = -Gm -ZI
+	QMAKE_CXXFLAGS_RELEASE = -MP
+}
+
+########################################################################
 # Build system path variables
 #		Warning: trying to modify these variables is pointless, they just
 #		describe where the build system is running.
