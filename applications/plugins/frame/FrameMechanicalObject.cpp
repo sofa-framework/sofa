@@ -185,21 +185,21 @@ void MechanicalObject<Quadratic3dTypes>::draw()
     }
 }
 
-template<> class MechanicalObjectInternalData<DeformationGradient331dTypes>
-{
-public:
-    typedef MechanicalObject<DeformationGradient331dTypes> Main;
-
-    Data<bool> showDefTensors;
-    Data<bool> showDefTensorsValues;
-    Data<double> showDefTensorScale;
-
-    MechanicalObjectInternalData ( Main* mObj = NULL )
-        : showDefTensors ( mObj->initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
-        , showDefTensorsValues ( mObj->initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
-        , showDefTensorScale ( mObj->initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
-    {}
-};
+//            template<> class MechanicalObjectInternalData<DeformationGradient331dTypes>
+//            {
+//            public:
+//                typedef MechanicalObject<DeformationGradient331dTypes> Main;
+//
+//                Data<bool> showDefTensors;
+//                Data<bool> showDefTensorsValues;
+//                Data<double> showDefTensorScale;
+//
+//                MechanicalObjectInternalData ( Main* mObj = NULL )
+//                        : showDefTensors ( mObj->initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
+//                        , showDefTensorsValues ( mObj->initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
+//                        , showDefTensorScale ( mObj->initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
+//                {}
+//            };
 
 template <>
 void MechanicalObject<DeformationGradient331dTypes>::draw()
@@ -271,21 +271,21 @@ void MechanicalObject<DeformationGradient331dTypes>::draw()
     }
 }
 
-template<> class MechanicalObjectInternalData<DeformationGradient332dTypes>
-{
-public:
-    typedef MechanicalObject<DeformationGradient332dTypes> Main;
-
-    Data<bool> showDefTensors;
-    Data<bool> showDefTensorsValues;
-    Data<double> showDefTensorScale;
-
-    MechanicalObjectInternalData ( Main* mObj = NULL )
-        : showDefTensors ( mObj->initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
-        , showDefTensorsValues ( mObj->initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
-        , showDefTensorScale ( mObj->initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
-    {}
-};
+//            template<> class MechanicalObjectInternalData<DeformationGradient332dTypes>
+//            {
+//            public:
+//                typedef MechanicalObject<DeformationGradient332dTypes> Main;
+//
+//                Data<bool> showDefTensors;
+//                Data<bool> showDefTensorsValues;
+//                Data<double> showDefTensorScale;
+//
+//                MechanicalObjectInternalData ( Main* mObj = NULL )
+//                        : showDefTensors ( mObj->initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
+//                        , showDefTensorsValues ( mObj->initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
+//                        , showDefTensorScale ( mObj->initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
+//                {}
+//            };
 
 template <>
 void MechanicalObject<DeformationGradient332dTypes >::draw()
