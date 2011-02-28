@@ -51,10 +51,11 @@ BuoyantForceField<DataTypes>::BuoyantForceField():
     m_maxBox(initData(&m_maxBox, Coord(100.0, 100,0.0), "max", "Upper bound of the liquid box")),
     m_heightPlane(initData(&m_heightPlane, (Real)0.0f, "heightPlane", "height of the fluid orthogonal to the gravity")),
     m_fluidDensity(initData(&m_fluidDensity, (Real)1.0f, "fluidDensity", "Fluid Density")),
-    m_fluidViscosity(initData(&m_fluidViscosity, (Real)1e-3, "fluidViscosity", "Fluid Density")),
+    m_fluidViscosity(initData(&m_fluidViscosity, (Real)1e-3, "fluidViscosity", "Fluid Viscosity")),
     m_atmosphericPressure(initData(&m_atmosphericPressure, (Real)101325.0f, "atmosphericPressure", "atmospheric pressure")),
     m_enableViscosity(initData(&m_enableViscosity, true, "enableViscosity", "enable the effects of viscosity")),
-    m_turbulentFlow(initData(&m_turbulentFlow, false, "turbulentFlow", "true for turbulent flow, false for laminar"))
+    m_turbulentFlow(initData(&m_turbulentFlow, false, "turbulentFlow", "true for turbulent flow, false for laminar")),
+    m_flipNormals(initData(&m_flipNormals, false, "flipNormals", "flip normals to inverse the forces applied on the object"))
 {
 
 }
@@ -80,6 +81,11 @@ bool BuoyantForceField<DataTypes>::checkParameters()
         {
             fluidModel = BOX;
             change = true;
+
+            if (this->f_printLog.getValue())
+            {
+                std::cout << "BuoyantForceField:: " << this->getName() << " fluid is modeled now with a box" << std::endl;
+            }
         }
     }
     else
@@ -88,6 +94,10 @@ bool BuoyantForceField<DataTypes>::checkParameters()
         {
             fluidModel = PLANE;
             change = true;
+            if (this->f_printLog.getValue())
+            {
+                std::cout << "BuoyantForceField:: " << this->getName() << " fluid is modeled now with a plane" << std::endl;
+            }
         }
     }
 
@@ -114,6 +124,11 @@ bool BuoyantForceField<DataTypes>::checkParameters()
 
         recomputeFluidSurface = true;
         change = true;
+
+        if (this->f_printLog.getValue())
+        {
+            std::cout << "BuoyantForceField:: " << this->getName() << " change bounding box: <" <<  m_minBox.getValue() << "> - <" << m_maxBox.getValue() << ">"<< std::endl;
+        }
     }
 
 
@@ -123,6 +138,11 @@ bool BuoyantForceField<DataTypes>::checkParameters()
         m_gravityNorm = m_gravity.norm();
         recomputeFluidSurface = true;
         change = true;
+
+        if (this->f_printLog.getValue())
+        {
+            std::cout << "BuoyantForceField:: " << this->getName() << " new gravity : " << m_gravity << std::endl;
+        }
     }
 
     if (recomputeFluidSurface)
@@ -189,12 +209,22 @@ void BuoyantForceField<DataTypes>::init()
 //	m_TetraTopo = this->getContext()->getMeshTopology();
     this->getContext()->get(m_tetraTopology);
 
+    if (this->f_printLog.getValue())
+    {
+        std::cout << "BuoyantForceField " << this->getName() << " coupled with " << m_tetraTopology->getName() << std::endl;
+    }
+
     if (!m_tetraTopology)
     {
         std::cout << "WARNING: BuoyantForceField requires tetrahedral topology" <<std::endl;
     }
     else
     {
+        if (this->f_printLog.getValue())
+        {
+            std::cout << "BuoyantForceField::" << this->getName() <<  " The topology " << m_tetraTopology->getName() << " is well tetrahedrical" << std::endl;
+        }
+
         m_tetraTopology->getContext()->get(m_tetraGeo);
         if (!m_tetraGeo)
         {
@@ -217,6 +247,11 @@ void BuoyantForceField<DataTypes>::init()
         //get all the triangles from the tetrahedral topology
         const sofa::helper::vector<Triangle> &triangleArray=m_tetraTopology->getTriangles();
 
+        if (this->f_printLog.getValue())
+        {
+            std::cout << "BuoyantForceField::" << this->getName() << " There are " << triangleArray.size()<< " triangles in the topology" << std::endl;
+        }
+
         unsigned int nb_surface_triangles = 0;
         for (unsigned int i=0; i<triangleArray.size(); ++i)
         {
@@ -225,6 +260,18 @@ void BuoyantForceField<DataTypes>::init()
                 m_surfaceTriangles.push_back(i);
                 nb_surface_triangles+=1;
             }
+        }
+
+        if (this->f_printLog.getValue())
+        {
+            std::cout << "BuoyantForceField::" << this->getName() << " There are " << nb_surface_triangles << " triangles on the surface of the topology" << std::endl;
+        }
+    }
+    if (this->f_printLog.getValue())
+    {
+        if (m_flipNormals.getValue())
+        {
+            std::cout << "BuoyantForceField::" << this->getName() << " Normals are flipped to inverse the forces" << std::endl;
         }
     }
 }
@@ -288,6 +335,10 @@ void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpa
                     {
                         //get the normal and the area of the triangle
                         Deriv normal = m_tetraGeo->computeTriangleNormal(m_surfaceTriangles[i]);
+                        if (m_flipNormals.getValue())
+                        {
+                            normal = -normal;
+                        }
                         Real area = m_tetraGeo->computeTriangleArea(m_surfaceTriangles[i]);
 
                         //get the centroid of the current triangle
@@ -340,8 +391,11 @@ void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpa
                                 }
                             }
                             //push back the force for debug
-                            m_debugForce.push_back(pointForcePressure);
-                            m_debugPosition.push_back(x[tri[j]]);
+                            if (this->f_printLog.getValue())
+                            {
+                                m_debugForce.push_back(pointForcePressure);
+                                m_debugPosition.push_back(x[tri[j]]);
+                            }
                         }
                     }
                 }
@@ -531,94 +585,97 @@ typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::getImm
 template<class DataTypes>
 void BuoyantForceField<DataTypes>::draw()
 {
-    if (!this->getContext()->getShowForceFields()) return;
-    if (!this->mstate) return;
-
-    if (this->getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    glDisable(GL_LIGHTING);
-
-    if ( fluidModel == BOX)
+    if (this->f_printLog.getValue())
     {
-        glEnable (GL_BLEND);
-        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        if (!this->getContext()->getShowForceFields()) return;
+        if (!this->mstate) return;
 
-        glColor4f(0.f, 0.f, 1.0f, 0.1f);
+        if (this->getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-        glBegin(GL_QUADS);
+        glDisable(GL_LIGHTING);
 
-        glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
-        glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
-
-        glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
-        glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
-
-        glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
-
-        glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
-
-        glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
-        glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
-
-        glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
-        glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
-        glEnd();
-
-        glColor4f(1.f, 0.f, 0.0f, 1.f);
-        glBegin(GL_LINES);
-        glVertex3d(m_fluidSurfaceOrigin[0],m_fluidSurfaceOrigin[1],m_fluidSurfaceOrigin[2]);
-        glVertex3d(m_fluidSurfaceOrigin[0] +m_fluidSurfaceDirection[0],
-                m_fluidSurfaceOrigin[1] +m_fluidSurfaceDirection[1],
-                m_fluidSurfaceOrigin[2] +m_fluidSurfaceDirection[2]);
-        glEnd();
-
-        glColor4f(0.f, 1.f, 1.0f, 1.f);
-
-        glPointSize(10.0f);
-        glBegin(GL_POINTS);
-        glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
-        glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
-        glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
-        glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
-        glColor4f(1.f, 0.f, 0.0f, 1.f); glPointSize(20.0f);
-        glVertex3d(m_fluidSurfaceOrigin[0],m_fluidSurfaceOrigin[1],m_fluidSurfaceOrigin[2]);
-        glEnd();
-    }
-
-    if ( m_tetraTopology)
-    {
-        glColor4f(1.f, 0.f, 0.0f, 1.0f);
-
-        glBegin(GL_LINES);
-        for ( unsigned int i = 0 ; i < m_debugPosition.size() ; i++)
+        if ( fluidModel == BOX)
         {
-            glVertex3d(m_debugPosition[i][0], m_debugPosition[i][1], m_debugPosition[i][2]);
-            glVertex3d(m_debugPosition[i][0] - m_debugForce[i][0], m_debugPosition[i][1] -  m_debugForce[i][1], m_debugPosition[i][2] - m_debugForce[i][2]);
-        }
-        glEnd();
-    }
+            glEnable (GL_BLEND);
+            glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    if (this->getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            glColor4f(0.f, 0.f, 1.0f, 0.1f);
+
+            glBegin(GL_QUADS);
+
+            glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
+            glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
+
+            glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
+            glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
+
+            glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
+
+            glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
+
+            glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
+            glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
+
+            glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
+            glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
+            glEnd();
+
+            glColor4f(1.f, 0.f, 0.0f, 1.f);
+            glBegin(GL_LINES);
+            glVertex3d(m_fluidSurfaceOrigin[0],m_fluidSurfaceOrigin[1],m_fluidSurfaceOrigin[2]);
+            glVertex3d(m_fluidSurfaceOrigin[0] +m_fluidSurfaceDirection[0],
+                    m_fluidSurfaceOrigin[1] +m_fluidSurfaceDirection[1],
+                    m_fluidSurfaceOrigin[2] +m_fluidSurfaceDirection[2]);
+            glEnd();
+
+            glColor4f(0.f, 1.f, 1.0f, 1.f);
+
+            glPointSize(10.0f);
+            glBegin(GL_POINTS);
+            glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_minBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
+            glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_minBox.getValue()[2]);
+            glVertex3d(m_minBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_minBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_minBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
+            glVertex3d(m_maxBox.getValue()[0],m_maxBox.getValue()[1],m_maxBox.getValue()[2]);
+            glColor4f(1.f, 0.f, 0.0f, 1.f); glPointSize(20.0f);
+            glVertex3d(m_fluidSurfaceOrigin[0],m_fluidSurfaceOrigin[1],m_fluidSurfaceOrigin[2]);
+            glEnd();
+        }
+
+        if ( m_tetraTopology)
+        {
+            glColor4f(1.f, 0.f, 0.0f, 1.0f);
+
+            glBegin(GL_LINES);
+            for ( unsigned int i = 0 ; i < m_debugPosition.size() ; i++)
+            {
+                glVertex3d(m_debugPosition[i][0], m_debugPosition[i][1], m_debugPosition[i][2]);
+                glVertex3d(m_debugPosition[i][0] - m_debugForce[i][0], m_debugPosition[i][1] -  m_debugForce[i][1], m_debugPosition[i][2] - m_debugForce[i][2]);
+            }
+            glEnd();
+        }
+
+        if (this->getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
 }
 
 } // namespace forcefield

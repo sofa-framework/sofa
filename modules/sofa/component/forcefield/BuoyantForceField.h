@@ -109,6 +109,8 @@ protected:
     Data<Real>      m_immersedArea;
     Data<Real>      m_globalForce;
 
+    Data<bool>      m_flipNormals;
+
     sofa::core::topology::BaseMeshTopology* m_tetraTopology;
 
     sofa::component::topology::TetrahedronSetTopologyContainer* m_tetraContainer;

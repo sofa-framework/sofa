@@ -657,7 +657,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
     if (doubleBuffer.getValue() && bufCP1)
     {
         if (debug)
-            sout << "Gauss-Seidel solver is called on problem of size" << CP2.getSize() << sendl;
+            sout << "Gauss-Seidel solver is called on problem of size " << CP2.getSize() << sendl;
         if(schemeCorrection.getValue())
             (*CP2.getF())*=0.0;
 
@@ -666,7 +666,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
     else
     {
         if (debug)
-            sout << "Gauss-Seidel solver is called on problem of size" << CP2.getSize() << sendl;
+            sout << "Gauss-Seidel solver is called on problem of size " << CP1.getSize() << sendl;
         if(schemeCorrection.getValue())
             (*CP1.getF())*=0.0;
 
