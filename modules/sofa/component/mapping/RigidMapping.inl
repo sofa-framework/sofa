@@ -539,7 +539,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
                 ++it;
             }
             getVCenter(out[outIdx]) += in[inIdx];
-            getVOrientation(out[outIdx]) +=  (InDeriv::Rot)cross(rotatedPoints[inIdx], in[inIdx]);
+            getVOrientation(out[outIdx]) +=  (typename InDeriv::Rot)cross(rotatedPoints[inIdx], in[inIdx]);
 //                        cerr<<"RigidMapping<TIn, TOut>::applyJT, in[inIdx] = "<< in[inIdx] << endl;
 //                        cerr<<"RigidMapping<TIn, TOut>::applyJT, cross(rotatedPoints[inIdx], in[inIdx]) = "<< cross(rotatedPoints[inIdx], in[inIdx]) << endl;
 //                        cerr<<"RigidMapping<TIn, TOut>::applyJT, getVCenter(out[outIdx]) = "<< getVCenter(out[outIdx]) << endl;
