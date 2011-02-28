@@ -88,14 +88,14 @@ template<int N, class T1, class T2>
 static inline void eq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
 {
     dest.getVCenter() = src.getVCenter();
-    dest.getVOrientation() = src.getVOrientation();
+    dest.getVOrientation() = (defaulttype::RigidDeriv<N,T1>::Rot)src.getVOrientation();
 }
 
 template<int N, class T1, class T2>
 static inline void peq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
 {
     dest.getVCenter() += src.getVCenter();
-    dest.getVOrientation() += src.getVOrientation();
+    dest.getVOrientation() += (defaulttype::RigidDeriv<N,T1>::Rot)src.getVOrientation();
 }
 
 // RigidCoord <-> RigidCoord
@@ -104,7 +104,7 @@ template<int N, class T1, class T2>
 static inline void eq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
 {
     dest.getCenter() = src.getCenter();
-    dest.getOrientation() = src.getOrientation();
+    dest.getOrientation() = (defaulttype::RigidCoord<N,T1>::Rot)src.getOrientation();
 }
 
 template<int N, class T1, class T2>
