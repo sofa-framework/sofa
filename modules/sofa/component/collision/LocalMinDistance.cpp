@@ -1601,7 +1601,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Point& e1, Outpu
     detection->baryCoords[0][0]=0;
     //alpha here is the barycentric coordinate of the local spline (littler)
     //need to be transforme to the barycentric coordinate of the globale spline on the Edge
-    alpha*=(e2.t0() - e2.t1()); alpha+=e2.t0();
+    alpha=e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
     detection->baryCoords[1][0]=alpha;
 #endif
     detection->normal=QP;
