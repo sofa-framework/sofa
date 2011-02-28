@@ -77,32 +77,34 @@ HEADERS += DotSceneLoader.h \
 		   SubMesh.h
 
 
-#README_FILE = PluginMeshSTEPLoader.txt
+README_FILE = QtOgreViewer.txt
 
       macx {
-                QMAKE_CXXFLAGS += -Wno-unused
-                LIBS += -framework Ogre -framework CoreFoundation
+          QMAKE_CXXFLAGS += -Wno-unused
+          LIBS += -framework Ogre -framework CoreFoundation
         }
 
         win32 {
-            OGRE_HOME= E:\dev\ogre_src_v1-7-2\VCBuild\sdk
+            
             INCLUDEPATH += $${OGRE_HOME}/include/OGRE/
             
             contains (CONFIGDEBUG, debug) {
-				QMAKE_LIBDIR += $${OGRE_HOME}/lib/debug/
-                LIBS += OgreMain_d.lib
+              QMAKE_LIBDIR += $${OGRE_HOME}/lib/debug/
+              LIBS += OgreMain_d.lib
             }
             else{
-			    QMAKE_LIBDIR += $${OGRE_HOME}/lib/release/
-                LIBS += OgreMain.lib
+              QMAKE_LIBDIR += $${OGRE_HOME}/lib/release/
+              LIBS += OgreMain.lib
             }
+           QMAKE_POST_LINK = copy \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"
         }
 
 
         unix {
-                !macx: {
-                 QMAKE_CXXFLAGS += $$system(pkg-config --cflags OGRE )
-                 LIBS += $$system(pkg-config --libs OGRE )
-                }
+            !macx: {
+              QMAKE_CXXFLAGS += $$system(pkg-config --cflags OGRE )
+              LIBS += $$system(pkg-config --libs OGRE )
+              }
+            QMAKE_POST_LINK = copy \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"
         }
 
