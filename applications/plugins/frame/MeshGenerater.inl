@@ -66,6 +66,11 @@ namespace component
 
 namespace engine
 {
+using namespace sofa::component::topology;
+using namespace sofa::core::topology;
+using namespace sofa::core;
+using namespace sofa::helper::gl;
+using namespace sofa::simulation;
 
 template <class DataTypes>
 MeshGenerater<DataTypes>::MeshGenerater ()
@@ -94,7 +99,42 @@ MeshGenerater<DataTypes>::~MeshGenerater()
 template <class DataTypes>
 void MeshGenerater<DataTypes>::init()
 {
-    this->getContext()->get ( gridMat );
+    addInput(&roi);
+    addInput(&mIsoValue);
+    addInput(&mCubeSeeds);
+    addInput(&from_translation_offset);
+
+    sout << "Hexa2TriangleTopologicalMapping::init(): Begin." << sendl;
+
+    this->getContext()->get(_to_topo);
+    if ( !_to_topo )
+    {
+        serr << "Hexa2TriangleTopologicalMapping::init(): Error. You must use a TriangleSetTopologyContainer as target in the Hexa2TriangleTopologicalMapping." <<sendl;
+        return;
+    }
+
+    this->getContext()->get ( _to_tstm );
+    if ( !_to_tstm )
+    {
+        serr << "Hexa2TriangleTopologicalMapping::init(): Error. Can not find the TriangleSetTopologyModifier." << sendl;
+        return;
+    }
+
+    this->getContext()->get ( _to_geomAlgo );
+    if ( !_to_geomAlgo )
+    {
+        serr << "Hexa2TriangleTopologicalMapping::init(). Error: can not find the TriangleSetGeometryAlgorithms." << sendl;
+        return;
+    }
+
+    this->_to_DOFs = _to_geomAlgo->getDOF();
+    if ( !_to_DOFs )
+    {
+        serr << "Hexa2TriangleTopologicalMapping::init(). Error: can not find the DOFs of the triangular topology." << sendl;
+        return;
+    }
+
+    this->getContext()->get ( gridMat, core::objectmodel::BaseContext::SearchRoot );
     if ( !gridMat )
     {
         serr << "GridMaterial not found." << sendl;
@@ -126,8 +166,8 @@ void MeshGenerater<DataTypes>::init()
 
     if ( triangleIndexInRegularGrid.getValue().empty() )
     {
-        helper::WriteAccessor<Data<DataTypes::VecCoord> > xto = * _to_DOFs->write(core::VecCoordId::position());
-        helper::WriteAccessor<Data<DataTypes::VecCoord> > xtoInRestedPos = * _to_DOFs->write(core::VecCoordId::restPosition());
+        helper::WriteAccessor<Data<typename DataTypes::VecCoord> > xto = * _to_DOFs->write(core::VecCoordId::position());
+        helper::WriteAccessor<Data<typename DataTypes::VecCoord> > xtoInRestedPos = * _to_DOFs->write(core::VecCoordId::restPosition());
 
         sofa::helper::vector<Vector3> vertices;
         sofa::helper::vector<unsigned int> triangles;
@@ -187,6 +227,8 @@ void MeshGenerater<DataTypes>::init()
         _to_tstm->notifyEndingEvent();
     }
     sout << "End." << sendl;
+
+    setDirtyValue();
 }
 
 
@@ -194,6 +236,8 @@ template <class DataTypes>
 void MeshGenerater<DataTypes>::initVoxels()
 {
     const Vec3i& res = gridMat->getDimension();
+    valueData.resize(res[0]*res[1]*res[2]);
+    segmentIDData.resize(res[0]*res[1]*res[2]);
     CImg<VoxelType>& grid = gridMat->getGrid();
     for (int x = 0; x < res[0]; ++x)
         for (int y = 0; y < res[1]; ++y)
@@ -210,7 +254,7 @@ void MeshGenerater<DataTypes>::initOglAttributes()
 {
     sofa::helper::vector< OglFloatAttribute* > vecFloatAttribute;
     segmentationID = NULL;
-    toModel->getContext()->get<OglFloatAttribute> ( &vecFloatAttribute, core::objectmodel::BaseContext::SearchDown );
+    static_cast<simulation::Node*>(this->getContext())->get<OglFloatAttribute> ( &vecFloatAttribute, core::objectmodel::BaseContext::SearchDown );
     for ( unsigned int i=0; i<vecFloatAttribute.size(); ++i )
     {
         if ( vecFloatAttribute[i]->getId() == "segmentation" )
@@ -228,7 +272,7 @@ void MeshGenerater<DataTypes>::initOglAttributes()
     sofa::helper::vector< OglFloat3Attribute* > vecFloat3Attribute;
     restPosition = NULL;
     restNormal = NULL;
-    toModel->getContext()->get<OglFloat3Attribute> ( &vecFloat3Attribute, core::objectmodel::BaseContext::SearchDown );
+    static_cast<simulation::Node*>(this->getContext())->get<OglFloat3Attribute> ( &vecFloat3Attribute, core::objectmodel::BaseContext::SearchDown );
     for ( unsigned int i=0; i<vecFloat3Attribute.size(); ++i )
     {
         if ( vecFloat3Attribute[i]->getId() == "restPosition" )
@@ -304,74 +348,93 @@ void MeshGenerater<DataTypes>::handleTopologyChange(core::topology::Topology* t)
 }
 
 
+/*
 template <class DataTypes>
 void MeshGenerater<DataTypes>::updateTopologicalMappingTopDown()
 {
-    // Handle topological changes on the hexa topology
-    std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+        // Handle topological changes on the hexa topology
+        std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
+        std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
-    while ( itBegin != itEnd )
-    {
-        TopologyChangeType changeType = ( *itBegin )->getChangeType();
-
-        switch ( changeType )
+        while ( itBegin != itEnd )
         {
+                TopologyChangeType changeType = ( *itBegin )->getChangeType();
 
-        case core::topology::ENDING_EVENT:
-        {
-            // sout << "INFO_print : MeshGenerater - ENDING_EVENT" << sendl;
-            _to_tstm->propagateTopologicalChanges();
-            _to_tstm->notifyEndingEvent();
-            _to_tstm->propagateTopologicalChanges();
-            break;
+                switch ( changeType )
+                {
+
+                case core::topology::ENDING_EVENT:
+                        {
+                                // sout << "INFO_print : MeshGenerater - ENDING_EVENT" << sendl;
+                                _to_tstm->propagateTopologicalChanges();
+                                _to_tstm->notifyEndingEvent();
+                                _to_tstm->propagateTopologicalChanges();
+                                break;
+                        }
+
+                case core::topology::TRIANGLESREMOVED:
+                        {
+                                //sout << "INFO_print : MeshGenerater - TRIANGLESREMOVED" << sendl;
+                                // Nothing to do.
+                                break;
+                        }
+
+                case core::topology::HEXAHEDRAREMOVED:
+                        {
+                                const sofa::helper::vector<BaseMeshTopology::PointID> &tab = ( static_cast< const HexahedraRemoved *> ( *itBegin ) )->getArray();
+                                vector<BaseMeshTopology::PointID> removedHexahedraID;
+
+                                removeOldMesh( removedHexahedraID, tab);
+                                localyRemesh ( removedHexahedraID );
+                                break;
+                        }
+
+                case core::topology::POINTSREMOVED:
+                        {
+                                // sout << "INFO_print : MeshGenerater - POINTSREMOVED" << sendl;
+                                // do nothing
+                                break;
+                        }
+
+                case core::topology::POINTSRENUMBERING:
+                        {
+                                // sout << "INFO_print : MeshGenerater - POINTSRENUMBERING" << sendl;
+                                // do nothing
+                                break;
+                        }
+
+                default:
+                        // Ignore events that are not Triangle related.
+                        break;
+                };
+
+                ++itBegin;
         }
+        _to_tstm->propagateTopologicalChanges();
+}
+*/
 
-        case core::topology::TRIANGLESREMOVED:
-        {
-            //sout << "INFO_print : MeshGenerater - TRIANGLESREMOVED" << sendl;
-            // Nothing to do.
-            break;
-        }
+template <class DataTypes>
+void MeshGenerater<DataTypes>::removeVoxels ( const sofa::helper::vector<unsigned int>& removedHexahedraID )
+{
+    removeOldMesh( removedHexahedraID );
+    localyRemesh ( removedHexahedraID );
 
-        case core::topology::HEXAHEDRAREMOVED:
-        {
-            const sofa::helper::vector<BaseMeshTopology::PointID> &tab = ( static_cast< const HexahedraRemoved *> ( *itBegin ) )->getArray();
-            vector<BaseMeshTopology::PointID> removedHexahedraID;
-
-            removeOldMesh( removedHexahedraID, tab);
-            localyRemesh ( removedHexahedraID );
-            break;
-        }
-
-        case core::topology::POINTSREMOVED:
-        {
-            // sout << "INFO_print : MeshGenerater - POINTSREMOVED" << sendl;
-            // do nothing
-            break;
-        }
-
-        case core::topology::POINTSRENUMBERING:
-        {
-            // sout << "INFO_print : MeshGenerater - POINTSRENUMBERING" << sendl;
-            // do nothing
-            break;
-        }
-
-        default:
-            // Ignore events that are not Triangle related.
-            break;
-        };
-
-        ++itBegin;
-    }
     _to_tstm->propagateTopologicalChanges();
-    return;
+    _to_tstm->notifyEndingEvent();
+    _to_tstm->propagateTopologicalChanges();
 }
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::removeOldMesh ( sofa::helper::vector<BaseMeshTopology::PointID>& /*removedHexahedraID*/, const sofa::helper::vector<BaseMeshTopology::PointID> &/*tab*/ )
+void MeshGenerater<DataTypes>::update()
+{
+// TODO
+}
+
+
+template <class DataTypes>
+void MeshGenerater<DataTypes>::removeOldMesh ( const sofa::helper::vector<unsigned int>& removedHexahedraID )
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Remove_old_mesh");
@@ -379,10 +442,8 @@ void MeshGenerater<DataTypes>::removeOldMesh ( sofa::helper::vector<BaseMeshTopo
 #endif
     // List all the triangles corresponding to the removed hexahedra
     set< BaseMeshTopology::TriangleID > trianglesToRemoveSet;
-    const vector<unsigned int>& regularGridID = _from_topo->idxInRegularGrid.getValue();
-    for ( vector<BaseMeshTopology::PointID>::const_iterator itHexaRemoved = tab.begin(); itHexaRemoved != tab.end(); itHexaRemoved++ )
+    for ( vector<unsigned int>::const_iterator itHexaRemoved = removedHexahedraID.begin(); itHexaRemoved != removedHexahedraID.end(); itHexaRemoved++ )
     {
-        removedHexahedraID.push_back( regularGridID[ *itHexaRemoved]);
         vector<unsigned int> toIndices;
         getToIndex ( toIndices, *itHexaRemoved );
         for( vector<unsigned int>::iterator itTriangleToRemove = toIndices.begin(); itTriangleToRemove != toIndices.end(); itTriangleToRemove++)
@@ -412,7 +473,7 @@ void MeshGenerater<DataTypes>::removeOldMesh ( sofa::helper::vector<BaseMeshTopo
         vector< HexaIDInRegularGrid >& idirgSet = triIDirg[*itTriRemoved];
         for( vector< HexaIDInRegularGrid >::iterator itIDirg =  idirgSet.begin(); itIDirg != idirgSet.end(); itIDirg++)
         {
-            map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::iterator itMap = triIDirg2iit.find( *itIDirg);
+            typename map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::iterator itMap = triIDirg2iit.find( *itIDirg);
             if( itMap != triIDirg2iit.end())
             {
                 itMap->second.erase( *itTriRemoved);
@@ -426,7 +487,7 @@ void MeshGenerater<DataTypes>::removeOldMesh ( sofa::helper::vector<BaseMeshTopo
             idirgSet = triIDirg[lastElt];
             for( vector< HexaIDInRegularGrid >::iterator itIDirg =  idirgSet.begin(); itIDirg != idirgSet.end(); itIDirg++)
             {
-                map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::iterator itMap = triIDirg2iit.find( *itIDirg);
+                typename map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::iterator itMap = triIDirg2iit.find( *itIDirg);
                 if( itMap != triIDirg2iit.end())
                 {
                     itMap->second.erase( lastElt);
@@ -565,29 +626,25 @@ void MeshGenerater<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
         hexaNeighbors.erase( *it);
 
     // Get the local vertices
-    const MState::VecCoord& xto0 = *_to_DOFs->getX0();
+    const typename DataTypes::VecCoord& xto0 = *_to_DOFs->getX0();
     vector< Vector3 > tmpVertices;
     std::map< Vector3, PointID> map_vertices;
-    const std::map< unsigned int, BaseMeshTopology::PointID>& iirg2iit = _from_topo->idInRegularGrid2IndexInTopo.getValue();
     const SeqTriangles& seqTriangles = _to_topo->getTriangles();
     for( set<unsigned int>::iterator itHexa = hexaNeighbors.begin(); itHexa != hexaNeighbors.end(); itHexa++)
     {
-        std::map< unsigned int, BaseMeshTopology::PointID>::const_iterator itHexaIdinTopo = iirg2iit.find( *itHexa);
-        if( itHexaIdinTopo != iirg2iit.end())
+        //TODO there were changes !
+        vector<unsigned int> triangleSet;
+        getToIndex( triangleSet, *itHexa);
+        for( vector<unsigned int>::const_iterator itTri = triangleSet.begin(); itTri != triangleSet.end(); itTri++)
         {
-            vector<unsigned int> triangleSet;
-            getToIndex( triangleSet, itHexaIdinTopo->second);
-            for( vector<unsigned int>::const_iterator itTri = triangleSet.begin(); itTri != triangleSet.end(); itTri++)
+            const Triangle& pointSet = seqTriangles[*itTri];
+            for( Triangle::const_iterator itPoint = pointSet.begin(); itPoint != pointSet.end(); itPoint++)
             {
-                const Triangle& pointSet = seqTriangles[*itTri];
-                for( Triangle::const_iterator itPoint = pointSet.begin(); itPoint != pointSet.end(); itPoint++)
+                Vec3d tmpCoord = Vec3d ( int ( xto0[*itPoint][0] * PRECISION ) / PRECISION, int ( xto0[*itPoint][1] * PRECISION ) / PRECISION, int ( xto0[*itPoint][2] * PRECISION ) / PRECISION );
+                if( map_vertices.find( tmpCoord) == map_vertices.end())
                 {
-                    Vec3d tmpCoord = Vec3d ( int ( xto0[*itPoint][0] * PRECISION ) / PRECISION, int ( xto0[*itPoint][1] * PRECISION ) / PRECISION, int ( xto0[*itPoint][2] * PRECISION ) / PRECISION );
-                    if( map_vertices.find( tmpCoord) == map_vertices.end())
-                    {
-                        tmpVertices.push_back( tmpCoord);
-                        map_vertices.insert ( std::make_pair ( tmpCoord, *itPoint ) );
-                    }
+                    tmpVertices.push_back( tmpCoord);
+                    map_vertices.insert ( std::make_pair ( tmpCoord, *itPoint ) );
                 }
             }
         }
@@ -630,10 +687,8 @@ void MeshGenerater<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
     // run sans propagate.
     unsigned int oldVerticesSize = tmpVertices.size();
     vector< vector<unsigned int> > triangleIndexInRegularGrid;
-    sofa::helper::vector<unsigned char> &values=*_from_topo->valuesIndexedInRegularGrid.beginEdit();
     marchingCubes.setVerticesIndexOffset( xto0.size() - oldVerticesSize);
-    marchingCubes.run ( &values[0], mCubeSeeds.getValue(), mIsoValue.getValue(), triangles, tmpVertices, map_vertices, &triangleIndexInRegularGrid, false );
-    _from_topo->valuesIndexedInRegularGrid.endEdit();
+    marchingCubes.run ( &valueData[0], mCubeSeeds.getValue(), mIsoValue.getValue(), triangles, tmpVertices, map_vertices, &triangleIndexInRegularGrid, false );
 
     // Copy all the new vertices
     for( unsigned int i = oldVerticesSize; i < tmpVertices.size(); i++)
@@ -656,8 +711,8 @@ void MeshGenerater<DataTypes>::addNewEltsInTopology ( const sofa::helper::vector
     simulation::Visitor::printNode("Add_points_In_Topology");
 #endif
 
-    helper::WriteAccessor<Data<MechanicalBarycentricMapping::OutDataTypes::VecCoord> > xto = * _to_DOFs->write(core::VecCoordId::position());
-    helper::WriteAccessor<Data<MechanicalBarycentricMapping::OutDataTypes::VecCoord> > xtoInRestedPos = * _to_DOFs->write(core::VecCoordId::restPosition());
+    helper::WriteAccessor<Data<typename DataTypes::VecCoord> > xto = * _to_DOFs->write(core::VecCoordId::position());
+    helper::WriteAccessor<Data<typename DataTypes::VecCoord> > xtoInRestedPos = * _to_DOFs->write(core::VecCoordId::restPosition());
     unsigned int oldVertSize = xto.size();
 
     _to_tstm->addPointsProcess ( vertices.size() );
@@ -676,7 +731,7 @@ void MeshGenerater<DataTypes>::addNewEltsInTopology ( const sofa::helper::vector
 #endif
 
     // Init the triangular topology (= Insert faces)
-    int nb_elems = toModel->getNbTriangles();
+    int nb_elems = _to_topo->getNumberOfTriangles();
     sofa::helper::vector< Triangle > triangles_to_create;
     sofa::helper::vector< TriangleID > trianglesIndexList;
 
@@ -706,9 +761,9 @@ void MeshGenerater<DataTypes>::smoothMesh ( const unsigned int oldVertSize, cons
     simulation::Visitor::printNode("smooth_Mesh");
 #endif
     // Get points around the new mesh
-    helper::WriteAccessor<Data<MState::VecCoord> > xto = * _to_DOFs->write(core::VecCoordId::position());
+    helper::WriteAccessor<Data<typename DataTypes::VecCoord> > xto = * _to_DOFs->write(core::VecCoordId::position());
     //helper::WriteAccessor<Data<MState::VecCoord> > xtoInRestedPos = * _to_DOFs->write(core::VecCoordId::restPosition());
-    const MState::VecCoord& xto0 = *_to_DOFs->getX0();
+    const typename DataTypes::VecCoord& xto0 = *_to_DOFs->getX0();
     const SeqTriangles& triSeq = _to_topo->getTriangles();
 
     helper::vector<unsigned int> border;
@@ -729,8 +784,8 @@ void MeshGenerater<DataTypes>::smoothMesh ( const unsigned int oldVertSize, cons
         std::set_difference( newPatchVertices.begin(), newPatchVertices.end(), newVertices.begin(), newVertices.end(), std::back_inserter(border));
     }//*/
 
-    const MState::VecCoord& smoothedxto0 = smoothedMesh0.getValue();
-    MState::VecCoord vrestposCpy;
+    const typename DataTypes::VecCoord& smoothedxto0 = smoothedMesh0.getValue();
+    typename DataTypes::VecCoord vrestposCpy;
     vrestposCpy.resize( _to_topo->getNumberOfTriangles());
     for ( helper::vector<unsigned int>::iterator itPoints = border.begin(); itPoints != border.end(); itPoints++ )
         vrestposCpy[*itPoints] = smoothedxto0[*itPoints];
@@ -757,7 +812,7 @@ void MeshGenerater<DataTypes>::smoothMesh ( const unsigned int oldVertSize, cons
 
 #ifndef SOFA_SMP
     // Update smoothedMeshxto0 with new smoothed mesh at rest
-    MState::VecCoord& smoothedMeshxto0 = *(smoothedMesh0.beginEdit());
+    typename DataTypes::VecCoord& smoothedMeshxto0 = *(smoothedMesh0.beginEdit());
     smoothedMeshxto0.resize ( xto.size() );
     for ( unsigned int i = oldVertSize; i < xto.size(); i++ )
         smoothedMeshxto0[i] = xto[i];
@@ -777,7 +832,7 @@ void MeshGenerater<DataTypes>::updateOglAttributes ( const unsigned int oldVertS
     simulation::Visitor::printNode("UpdateOglAttributes");
 #endif
     //const MState::VecCoord& xto0 = *_to_DOFs->getX0();
-    const MState::VecCoord& xto = *_to_DOFs->getX();
+    const typename DataTypes::VecCoord& xto = *_to_DOFs->getX();
     const SeqTriangles& triSeq = _to_topo->getTriangles();
     if ( segmentationID )
     {
@@ -789,17 +844,18 @@ void MeshGenerater<DataTypes>::updateOglAttributes ( const unsigned int oldVertS
 
         segmentID.resize ( xto.size() );
 
-        const sofa::helper::vector<BaseMeshTopology::PointID>& iirg = _from_topo->idxInRegularGrid.getValue();
-        DataTypes::Coord coord;
+        typename DataTypes::Coord coord;
         unsigned int element;
-        Vector3 coef;
-        DataTypes::Real distance;
+        const typename GridMat::GCoord& gridDim = gridMat->getDimension();
+        const typename GridMat::SCoord& voxelSize = gridMat->getVoxelSize();
         for ( unsigned int i = oldVertSize; i < xto.size(); i++ )
         {
+            //TODO there were changes here !
             coord = _to_geomAlgo->getPointRestPosition ( i );
-            element = _from_geomAlgo->findNearestElementInRestPos ( coord,coef,distance );
-
-            segmentID[i] = segmentIDData ? segmentIDData[iirg[element]] : 0;
+            for (unsigned int j = 0; j < 3; ++j)
+                coord[j] = (coord[j] - from_translation_offset.getValue()[j]) / voxelSize[j];
+            element = coord[0] + coord[1] * gridDim[0] + coord[2] * gridDim[0] * gridDim[1];
+            segmentID[i] = segmentIDData[element];
         }
         segmentationID->endEdit();
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -887,72 +943,75 @@ void MeshGenerater<DataTypes>::draw()
 
     //if ( !getContext()->getShowMappings() ) return;
 
-    const double& scaleFactor = showTextScaleFactor.getValue();
+    //const double& scaleFactor = showTextScaleFactor.getValue();
 
+
+    /*// TODO redo this part with valueData instead of from_topo
     if( showHexas2Tri.getValue())
     {
-        // Display the connecting map H2T.
-        glDisable ( GL_LIGHTING );
-        glPointSize ( 10 );
-        glBegin ( GL_LINES );
-        for ( int i = 0; i < _from_topo->getNbHexahedra(); ++i)
-        {
-            Vec3d hexaCoord = _from_geomAlgo->computeHexahedronCenter ( i );
-            vector<unsigned int> triID;
-            getToIndex( triID, i);
-            for ( vector<unsigned int>::const_iterator itTri = triID.begin(); itTri != triID.end(); itTri++)
+            // Display the connecting map H2T.
+            glDisable ( GL_LIGHTING );
+            glPointSize ( 10 );
+            glBegin ( GL_LINES );
+            for ( int i = 0; i < _from_topo->getNbHexahedra(); ++i)
             {
-                Vec3d triCoord = _to_geomAlgo->computeTriangleCenter ( *itTri );
+                    Vec3d hexaCoord = _from_geomAlgo->computeHexahedronCenter ( i );
+                    vector<unsigned int> triID;
+                    getToIndex( triID, i);
+                    for ( vector<unsigned int>::const_iterator itTri = triID.begin(); itTri != triID.end(); itTri++)
+                    {
+                            Vec3d triCoord = _to_geomAlgo->computeTriangleCenter ( *itTri );
 
-                glColor3f ( 1,1,1 );
-                helper::gl::glVertexT ( hexaCoord );
-                glColor3f ( 0,0,1 );
-                helper::gl::glVertexT ( triCoord );
+                            glColor3f ( 1,1,1 );
+                            helper::gl::glVertexT ( hexaCoord );
+                            glColor3f ( 0,0,1 );
+                            helper::gl::glVertexT ( triCoord );
+                    }
             }
-        }
-        glEnd();
+            glEnd();
     }
 
     if( showTri2Hexas.getValue())
     {
-        // Display the connecting vector T2H.
-        glDisable ( GL_LIGHTING );
-        glPointSize ( 10 );
-        glBegin ( GL_LINES );
-        for ( int i = 0; i < toModel->getNbTriangles(); ++i)
-        {
-            Vec3d triCoord = _to_geomAlgo->computeTriangleCenter ( i );
-            vector<unsigned int> hexaID;
-            getFromIndex( hexaID, i);
-            for ( vector<unsigned int>::const_iterator itHex = hexaID.begin(); itHex != hexaID.end(); itHex++ )
+            // Display the connecting vector T2H.
+            glDisable ( GL_LIGHTING );
+            glPointSize ( 10 );
+            glBegin ( GL_LINES );
+            for ( int i = 0; i < toModel->getNbTriangles(); ++i)
             {
-                Vec3d hexaCoord = _from_geomAlgo->computeHexahedronCenter ( *itHex );
+                    Vec3d triCoord = _to_geomAlgo->computeTriangleCenter ( i );
+                    vector<unsigned int> hexaID;
+                    getFromIndex( hexaID, i);
+                    for ( vector<unsigned int>::const_iterator itHex = hexaID.begin(); itHex != hexaID.end(); itHex++ )
+                    {
+                            Vec3d hexaCoord = _from_geomAlgo->computeHexahedronCenter ( *itHex );
 
-                glColor3f ( 1,1,1 );
-                helper::gl::glVertexT ( hexaCoord );
-                glColor3f ( 0,0,1 );
-                helper::gl::glVertexT ( triCoord );
+                            glColor3f ( 1,1,1 );
+                            helper::gl::glVertexT ( hexaCoord );
+                            glColor3f ( 0,0,1 );
+                            helper::gl::glVertexT ( triCoord );
+                    }
             }
-        }
-        glEnd();
+            glEnd();
     }
 
     if( showRegularGridIndices.getValue())
     {
-        // Display the regular grid indices
-        glColor4f ( 1,1,0,1 );
-        unsigned int nbHexahedra = _from_topo->getNbHexahedra();
-        for ( unsigned int i = 0; i < nbHexahedra; i++)
-        {
-            Vec3d hexaCoord = _from_geomAlgo->computeHexahedronCenter ( i );
-            GlText::draw ( _from_topo->idxInRegularGrid.getValue()[i], hexaCoord, scaleFactor );
-        }
+            // Display the regular grid indices
+            glColor4f ( 1,1,0,1 );
+            unsigned int nbHexahedra = _from_topo->getNbHexahedra();
+            for ( unsigned int i = 0; i < nbHexahedra; i++)
+            {
+                    Vec3d hexaCoord = _from_geomAlgo->computeHexahedronCenter ( i );
+                    GlText::draw ( _from_topo->idxInRegularGrid.getValue()[i], hexaCoord, scaleFactor );
+            }
     }
+    */
 }
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::handleEvent ( core::objectmodel::Event *event )
+void MeshGenerater<DataTypes>::handleEvent ( core::objectmodel::Event * /*event*/ )
 {
     std::list<const TopologyChange *>::const_iterator itBegin= _to_topo->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd= _to_topo->endChange();
@@ -986,11 +1045,11 @@ void MeshGenerater<DataTypes>::dispMaps() const
     }
 
     serr << "triangleIDInRegularGrid2IndexInTopo:" << sendl;
-    for( map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::const_iterator it = triangleIDInRegularGrid2IndexInTopo.getValue().begin(); it != triangleIDInRegularGrid2IndexInTopo.getValue().end(); it++)
+    for( typename map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::const_iterator it = triangleIDInRegularGrid2IndexInTopo.getValue().begin(); it != triangleIDInRegularGrid2IndexInTopo.getValue().end(); it++)
     {
         const ElementSet< BaseMeshTopology::TriangleID >& tmp = it->second;
         serr << it->first << " - ";
-        for( ElementSet< BaseMeshTopology::TriangleID >::const_iterator itTmp = tmp.begin(); itTmp != tmp.end(); itTmp++)
+        for( typename ElementSet< BaseMeshTopology::TriangleID >::const_iterator itTmp = tmp.begin(); itTmp != tmp.end(); itTmp++)
         {
             serr << *itTmp << " ";
         }
