@@ -172,6 +172,9 @@ isEmpty(APP_DESTDIR) {
 	APP_DESTDIR = $$ROOT_PATH/bin
 }
 
+INSTALL_INCLUDE_DIR = $$SOFA_DIR/include/sofa
+INSTALL_LIB_DIR     = $$SOFA_DIR/lib
+
 ########################################################################
 # Utility functions
 ########################################################################
@@ -209,8 +212,12 @@ defineTest(addSubdirs) {
 	export (SUBDIRS)
 }
 
-
-defineTest(isLibraryInstalled) {
+##
+# This functions tests whether a module is installed.
+# A module is considered installed if a feature file having the specified name
+# exists in the feature directory (which also contain this sofa-pre.prf file).
+#
+defineTest(isInstalled) {
 	name = $$1
 	exists($$FEATURES_DIR/$${name}.prf) {
 		return (true)
@@ -219,17 +226,27 @@ defineTest(isLibraryInstalled) {
 	} 
 }
 
+##
+# This function tests whether sources of the specified module are available.
+# Sources are considered available if a project file having the specified name
+# exists in the specified directory.
+#
 defineTest(isSourceAvailable) {
 	name = $$1
 	dir  = $$2
 	proname = $$basename(dir)
-	exists($$SOFA_DIR/$$dir/$${proname}.pro) {
+	exists($$ROOT_SRC_DIR/$$dir/$${proname}.pro) {
 		return (true)
 	}	else {
 		return (false)
 	}
 }
 
+##
+# This function activates the compilation of the specified library if available.
+# If it is not available for compilation it looks for an installed version, and
+# will complains if the library is missing.
+#
 defineTest(activateLib) {
 	name = $$1
 	dir  = $$2
@@ -237,7 +254,7 @@ defineTest(activateLib) {
 	isSourceAvailable($$name, $$dir) {
 		addSubdirs($$dir, $$deps)
 	} else {
-		!isLibraryInstalled($$name) {
+		!isInstalled($$name) {
 			error(Cannot find $$name library)
 		}
 	}
@@ -250,26 +267,66 @@ defineTest(activateApp) {
 	addSubdirs($$dir, $$deps)
 }
 
+##
+# This function configures the current artifact build parameters to compile and
+# link using the specified library.
+# It can work either when sources are available in the same source tree as the
+# client artifact, or when just the installed version is available.
+#
+# Parameters:
+#		name	the name of the library
+#		dir		the subdirectory from include tree root and/or source tree root
+#
+# This function makes several assumption by default to configure the include path,
+# library path and library name. Nevertheless, you can customize things in the
+# library feature file. This file should be named <name>.prf file and created in
+# the  <dir> directory of your source tree.
+# In this file, you can set MY_INCLUDEPATH, MY_LIBRARYPATH and MY_LIBS variables
+# to override default values. You can also define other variables, but you
+# will have to export them using export(VAR)
+#
 defineTest(requireLib) {
 	name = $$1
 	dir  = $$2
+	OLD_INCLUDEPATH = $$INCLUDEPATH
+	OLD_LIBS = $$LIBS
+
 	isSourceAvailable($$name, $$dir) {
 		message(Using shipped version of $$name)
-		INCLUDEPATH *= $$SOFA_DIR/$$dir
-		LIBS *= -L$$LIB_DESTDIR
-		#load($$SOFA_DIR/$$dir/$$name)
+		MY_FEATUREFILE = $$ROOT_SRC_DIR/$$dir/$${name}
+		MY_INCLUDEPATH = $$ROOT_SRC_DIR/$$dir
+		MY_LIBRARYPATH = -L$$LIB_DESTDIR
 	} else {
 		message(Using installed version of $$name)
-		INCLUDEPATH *= $$SOFA_DIR/include/sofa/$$dir
-		LIBS *= -L$$SOFA_DIR/lib
-		#load($$name)
+		MY_FEATUREFILE = $$FEATURES_DIR/$${name}
+		MY_INCLUDEPATH = $$INSTALL_INCLUDE_DIR/$$dir
+		MY_LIBRARYPATH = -L$$INSTALL_LIB_DIR
 	}
-	LIBS *= -l$$name$$LIBSUFFIX
+	MY_LIBS = -l$$name$$LIBSUFFIX
+
+	load($$MY_FEATUREFILE)
+
+	equals(OLD_INCLUDEPATH, $$INCLUDEPATH) {
+		INCLUDEPATH *= $$MY_INCLUDEPATH
+	}
+	equals(OLD_LIBS, $$LIBS) {
+		LIBS *= $$MY_LIBRARYPATH $$MY_LIBS
+	}
 
 	export (INCLUDEPATH)
 	export (LIBS)
 }
 
+##
+# This function configures the current artifact build parameters to compile and
+# link using the specified SOFA library.
+# It can work either when sources are available in the same source tree as the
+# client artifact, or when just the installed version is available.
+#
+# Parameters:
+#		name	the name of the library
+#		dir		the subdirectory from include tree root and/or source tree root
+#
 defineTest(requireSofaLib) {
 	name = $$1
 	dir  = $$2
@@ -277,12 +334,12 @@ defineTest(requireSofaLib) {
 
 	isSourceAvailable($$name, $$dir) {
 		message(Using shipped version of $$name)
-		INCLUDEPATH *= $$SOFA_DIR/$$sourcedir
+		INCLUDEPATH *= $$ROOT_SRC_DIR/$$sourcedir
 		LIBS *= -L$$LIB_DESTDIR
 	} else {
 		message(Using installed version of $$name)
-		INCLUDEPATH *= $$SOFA_DIR/include/sofa/$$sourcedir
-		LIBS *= -L$$SOFA_DIR/lib
+		INCLUDEPATH *= $$INSTALL_INCLUDE_DIR/$$sourcedir
+		LIBS *= -L$$INSTALL_LIB_DIR
 	}
 	LIBS *= -l$$name$$LIBSUFFIX
 
