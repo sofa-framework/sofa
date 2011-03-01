@@ -69,15 +69,6 @@ Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionMod
 Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleContactClass("default", true);
 
 
-
-#ifdef SOFA_DEV
-// ctn_DEV
-Creator<Contact::Factory, BarycentricPenalityContact<BSplineModel, PointModel> > BSplinePointDefaultContactClass("default", true);
-Creator<Contact::Factory, BarycentricPenalityContact<BSplineModel, SphereModel> > BSplineSphereDefaultContactClass("default", true);
-
-#endif
-
-
 } // namespace collision
 
 } // namespace component
