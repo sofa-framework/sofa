@@ -81,6 +81,7 @@ public:
     Data<double> massCoef;
     Data<double> dampingCoef;
     Data<double> stiffnessCoef;
+    Data<bool> applyIncrementFactor; ///< multiply the solution by dt. Default: false
 };
 
 } // namespace odesolver
