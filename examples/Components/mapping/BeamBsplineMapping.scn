@@ -20,16 +20,16 @@
 	      		<EdgeSetTopologyModifier name="Modifier"/>
 			<MechanicalObject template="Vec3d"  name="splineMapped"/>
 			<!--by default, a discrete Bezier curve have 4 points (0_level of splitting). Each time splitting, one curve split in two-->
-			<BeamBsplineMapping isMechanical="true" input="@../DOFs" output="@splineMapped" SplittingLevel="3"/>
-			<Line />
+			<BeamBsplineMapping isMechanical="true" input="@../DOFs" output="@splineMapped" baryCoords="0.5 0.5" elements="0 1"/>
+		<Point/>	
 		</Node>
 	</Node>
 
+<!--
 	<Node name="Points">
 		<MechanicalObject name="DOFs1" position="4 -3 0 8 -3 0 12 -3 0 16 -3 0 20 -3 0" />	
 		<PointSetTopologyContainer name="pointsTopology"/>
-		<Point/>	
-<!--
+			<Line />
 		<SphereModel radius="0.3"/>
 -->
 	</Node>

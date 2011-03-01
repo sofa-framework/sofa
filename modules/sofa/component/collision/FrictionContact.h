@@ -35,6 +35,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
+//#include <sofa/component/collision/BeamBsplineContactMapper.inl>
 
 namespace sofa
 {
