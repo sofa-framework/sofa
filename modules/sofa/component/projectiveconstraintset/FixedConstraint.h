@@ -82,9 +82,6 @@ protected:
     FixedConstraintInternalData<DataTypes> data;
     friend class FixedConstraintInternalData<DataTypes>;
 
-    template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
-
 public:
     Data<SetIndex> f_indices;
     Data<bool> f_fixAll;

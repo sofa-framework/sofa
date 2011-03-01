@@ -171,15 +171,16 @@ void FixedConstraint<DataTypes>::init()
 }
 
 template <class DataTypes>
-template <class DataDeriv>
-void FixedConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
+void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
-    //serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<dx.size()<<sendl;
-    if( f_fixAll.getValue()==true )    // fix everyting
+    helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
+    const SetIndexArray & indices = f_indices.getValue(mparams).getArray();
+    //serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
+    if( f_fixAll.getValue(mparams) )
     {
+        // fix everything
         for( int i=0; i<topology->getNbPoints(); ++i )
-            dx[i] = Deriv();
+            res[i] = Deriv();
     }
     else
     {
@@ -187,31 +188,41 @@ void FixedConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* 
                 it != indices.end();
                 ++it)
         {
-            dx[*it] = Deriv();
+            res[*it] = Deriv();
         }
     }
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
-{
-    helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
-//  serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<dx.size()<<sendl;
-}
-
-template <class DataTypes>
 void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 {
-    helper::WriteAccessor<DataMatrixDeriv> c = cData;
+    helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
+    const SetIndexArray & indices = f_indices.getValue(mparams).getArray();
 
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();
 
-    while (rowIt != rowItEnd)
+    if( f_fixAll.getValue(mparams) )
     {
-        projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
-        ++rowIt;
+        // fix everything
+        while (rowIt != rowItEnd)
+        {
+            rowIt.row().clear();
+            ++rowIt;
+        }
+    }
+    else
+    {
+        while (rowIt != rowItEnd)
+        {
+            for (SetIndexArray::const_iterator it = indices.begin();
+                    it != indices.end();
+                    ++it)
+            {
+                rowIt.row().erase(*it);
+            }
+            ++rowIt;
+        }
     }
 }
 
