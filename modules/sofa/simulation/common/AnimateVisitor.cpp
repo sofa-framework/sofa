@@ -136,6 +136,9 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         ctime_t t0 = begin(node, node->masterSolver);
         processMasterSolver(node, node->masterSolver);
         end(node, node->masterSolver, t0);
+        // In case the timestep was changed by the MasterSolver, we would like the simulation
+        // to use the new one to compute the next simulation time.
+        setDt(node->getDt());
         return RESULT_PRUNE;
     }
     if (node->collisionPipeline != NULL)
