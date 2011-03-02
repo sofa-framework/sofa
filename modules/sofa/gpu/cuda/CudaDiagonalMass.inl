@@ -99,12 +99,12 @@ void DiagonalMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams*
     //const VecCoord& x = d_x.getValue();
     //const VecDeriv& v = d_v.getValue();
 
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     const MassVector &masses= f_mass.getValue();
     DiagonalMassCuda_addForcef(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
 
 //     // gravity
-//     Vec3d g ( this->getContext()->getLocalGravity() );
+//     Vec3d g ( this->getContext()->getGravity() );
 //     Deriv theGravity;
 //     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 //
@@ -180,7 +180,7 @@ void DiagonalMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     const MassVector &masses= f_mass.getValue();
     DiagonalMassCuda_addForced(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
 

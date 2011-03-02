@@ -104,7 +104,7 @@ void UniformMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams* 
     //const VecDeriv& v = d_v.getValue();
 
     // weight
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass.getValue();
@@ -161,7 +161,7 @@ void UniformMass<CudaVec3f1Types, float>::addForce(const core::MechanicalParams*
     //const VecDeriv& v = d_v.getValue();
 
     // weight
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass.getValue();
@@ -195,7 +195,7 @@ double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::
 
     double e = 0;
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     for (unsigned int i=0; i<x.size(); i++)
     {
         e += g*mass.getValue().mass*x[i].getCenter();
@@ -271,7 +271,7 @@ void UniformMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams*
     const VecDeriv& v = d_v.getValue();
 
     // weight
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass.getValue();
@@ -328,7 +328,7 @@ void UniformMass<CudaVec3d1Types, double>::addForce(const core::MechanicalParams
     const VecDeriv& v = d_v.getValue();
 
     // weight
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass.getValue();
@@ -362,7 +362,7 @@ double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::
 
     double e = 0;
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     for (unsigned int i=0; i<x.size(); i++)
     {
         e += g*mass.getValue().mass*x[i].getCenter();
