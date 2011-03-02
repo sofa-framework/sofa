@@ -1598,11 +1598,10 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Point& e1, Outpu
     detection->point[0]=Q;
     detection->point[1]=P;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
     //alpha here is the barycentric coordinate of the local spline (littler)
     //need to be transforme to the barycentric coordinate of the globale spline on the Edge
-    alpha=e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
-    detection->baryCoords[1][0]=alpha;
+    double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
+    detection->baryCoords[0][0]=t;
 #endif
     detection->normal=QP;
     detection->value = detection->normal.norm();
@@ -1610,8 +1609,9 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Point& e1, Outpu
     detection->value -= contactDist;
 
 
-    std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1607  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
-            <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
+//	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1607  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
+//			 << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
+//			 <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
 
     return 1;
 }
@@ -1697,13 +1697,18 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Sphere& e1, Outp
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
+    double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
+    detection->baryCoords[0][0]=t;
     detection->normal=QP;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
     detection->value -= contactDist;
 
-    std::cout<<" LocalMinDistance::1704  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
-            <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
+//	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1706  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
+//			 << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
+//			 <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
+
+
     return 1;
 }
 

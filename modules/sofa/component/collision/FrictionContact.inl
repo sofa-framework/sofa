@@ -172,8 +172,8 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::activateMappers()
         int index2 = elem2.getIndex();
         //std::cout<<" indices :"<<index1<<" - "<<index2<<std::endl;
 
-        typename DataTypes1::Real r1 = 0.0;
-        typename DataTypes2::Real r2 = 0.0;
+        typename DataTypes1::Real r1 = o->baryCoords[0][0];
+        typename DataTypes2::Real r2 = o->baryCoords[1][0];
         //double constraintValue = ((o->point[1] - o->point[0]) * o->normal) - intersectionMethod->getContactDistance();
 
         // Create mapping for first point
