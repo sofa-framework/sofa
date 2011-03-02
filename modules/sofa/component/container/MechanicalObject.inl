@@ -998,7 +998,7 @@ void MechanicalObject<DataTypes>::init()
     {
         if (!ignoreLoader.getValue())
         {
-            MeshLoader* m_loader;
+            MeshLoader* m_loader=NULL;
             this->getContext()->get(m_loader);
 
             if (m_loader && m_loader->getFillMState())

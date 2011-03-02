@@ -1359,7 +1359,7 @@ This action is typically applied after time integration of the independent degre
 class SOFA_SIMULATION_COMMON_API MechanicalPropagatePositionAndVelocityVisitor : public MechanicalVisitor
 {
 public:
-    double t;
+    double currentTime;
     MultiVecCoordId x;
     MultiVecDerivId v;
 

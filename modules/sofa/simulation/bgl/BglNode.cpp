@@ -468,66 +468,66 @@ void BglNode::initVisualContext()
 {
     if (!parents.empty())
     {
-        this->worldGravity_.setDisplayed(false); //only display gravity for the root: it will be propagated at each time step
-        if (showVisualModels_.getValue() == -1)
+        this->setDisplayWorldGravity(false); //only display gravity for the root: it will be propagated at each time step
+        if (getShowVisualModels() == -1)
         {
-            showVisualModels_.setValue(0);
+            setShowVisualModels(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showVisualModels_.setValue(showVisualModels_.getValue()!=0 || (*it)->showVisualModels_.getValue()!=0);
+                setShowVisualModels(getShowVisualModels()!=0 || (*it)->getShowVisualModels()!=0);
         }
-        if (showBehaviorModels_.getValue() == -1)
+        if (getShowBehaviorModels() == -1)
         {
-            showBehaviorModels_.setValue(0);
+            setShowBehaviorModels(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showBehaviorModels_.setValue(showBehaviorModels_.getValue()==1 || (*it)->showBehaviorModels_.getValue()==1);
+                setShowBehaviorModels(getShowBehaviorModels()==1 || (*it)->getShowBehaviorModels()==1);
         }
-        if (showCollisionModels_.getValue()== -1)
+        if (getShowCollisionModels()== -1)
         {
-            showCollisionModels_.setValue(0);
+            setShowCollisionModels(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showCollisionModels_.setValue(showCollisionModels_.getValue()==1 || (*it)->showCollisionModels_.getValue()==1);
+                setShowCollisionModels(getShowCollisionModels()==1 || (*it)->getShowCollisionModels()==1);
         }
-        if (showBoundingCollisionModels_.getValue()== -1)
+        if (getShowBoundingCollisionModels()== -1)
         {
-            showBoundingCollisionModels_.setValue(0);
+            setShowBoundingCollisionModels(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue()==1 || (*it)->showBoundingCollisionModels_.getValue()==1);
+                setShowBoundingCollisionModels(getShowBoundingCollisionModels()==1 || (*it)->getShowBoundingCollisionModels()==1);
         }
-        if (showMappings_.getValue()== -1)
+        if (getShowMappings()== -1)
         {
-            showMappings_.setValue(0);
+            setShowMappings(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showMappings_.setValue(showMappings_.getValue()==1 || (*it)->showMappings_.getValue()==1);
+                setShowMappings(getShowMappings()==1 || (*it)->getShowMappings()==1);
         }
-        if (showMechanicalMappings_.getValue()== -1)
+        if (getShowMechanicalMappings()== -1)
         {
-            showMechanicalMappings_.setValue(0);
+            setShowMechanicalMappings(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showMechanicalMappings_.setValue(showMechanicalMappings_.getValue()==1 || (*it)->showMechanicalMappings_.getValue()==1);
+                setShowMechanicalMappings(getShowMechanicalMappings()==1 || (*it)->getShowMechanicalMappings()==1);
         }
-        if (showForceFields_.getValue()== -1)
+        if (getShowForceFields()== -1)
         {
-            showForceFields_.setValue(0);
+            setShowForceFields(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showForceFields_.setValue(showForceFields_.getValue()==1 || (*it)->showForceFields_.getValue()==1);
+                setShowForceFields(getShowForceFields()==1 || (*it)->getShowForceFields()==1);
         }
-        if (showInteractionForceFields_.getValue()== -1)
+        if (getShowInteractionForceFields()== -1)
         {
-            showInteractionForceFields_.setValue(0);
+            setShowInteractionForceFields(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showInteractionForceFields_.setValue(showInteractionForceFields_.getValue()==1 || (*it)->showInteractionForceFields_.getValue()==1);
+                setShowInteractionForceFields(getShowInteractionForceFields()==1 || (*it)->getShowInteractionForceFields()==1);
         }
-        if (showWireFrame_.getValue()== -1)
+        if (getShowWireFrame()== -1)
         {
-            showWireFrame_.setValue(0);
+            setShowWireFrame(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showWireFrame_.setValue(showWireFrame_.getValue()==1 || (*it)->showWireFrame_.getValue()==1);
+                setShowWireFrame(getShowWireFrame()==1 || (*it)->getShowWireFrame()==1);
         }
-        if (showNormals_.getValue()== -1)
+        if (getShowNormals()== -1)
         {
-            showNormals_.setValue(0);
+            setShowNormals(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showNormals_.setValue(showNormals_.getValue()==1 || (*it)->showNormals_.getValue()==1);
+                setShowNormals(getShowNormals()==1 || (*it)->getShowNormals()==1);
         }
     }
 }
@@ -539,54 +539,54 @@ void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
         switch (FILTER)
         {
         case VISUALMODELS:
-            showVisualModels_.setValue(0);
+            setShowVisualModels(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showVisualModels_.setValue( (*it)->showVisualModels_.getValue());
+                setShowVisualModels( (*it)->getShowVisualModels());
             break;
         case BEHAVIORMODELS:
-            showBehaviorModels_.setValue(0);
+            setShowBehaviorModels(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showBehaviorModels_.setValue( (*it)->showBehaviorModels_.getValue());
+                setShowBehaviorModels( (*it)->getShowBehaviorModels());
             break;
         case COLLISIONMODELS:
-            showCollisionModels_.setValue(0);
+            setShowCollisionModels(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showCollisionModels_.setValue( (*it)->showCollisionModels_.getValue());
+                setShowCollisionModels( (*it)->getShowCollisionModels());
             break;
         case BOUNDINGCOLLISIONMODELS:
-            showBoundingCollisionModels_.setValue(0);
+            setShowBoundingCollisionModels(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showBoundingCollisionModels_.setValue( (*it)->showBoundingCollisionModels_.getValue());
+                setShowBoundingCollisionModels( (*it)->getShowBoundingCollisionModels());
             break;
         case MAPPINGS:
-            showMappings_.setValue(0);
+            setShowMappings(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showMappings_.setValue( (*it)->showMappings_.getValue());
+                setShowMappings( (*it)->getShowMappings());
             break;
         case MECHANICALMAPPINGS:
-            showMechanicalMappings_.setValue(0);
+            setShowMechanicalMappings(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showMechanicalMappings_.setValue( (*it)->showMechanicalMappings_.getValue());
+                setShowMechanicalMappings( (*it)->getShowMechanicalMappings());
             break;
         case FORCEFIELDS:
-            showForceFields_.setValue(0);
+            setShowForceFields(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showForceFields_.setValue( (*it)->showForceFields_.getValue());
+                setShowForceFields( (*it)->getShowForceFields());
             break;
         case INTERACTIONFORCEFIELDS:
-            showInteractionForceFields_.setValue(0);
+            setShowInteractionForceFields(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showInteractionForceFields_.setValue( (*it)->showInteractionForceFields_.getValue());
+                setShowInteractionForceFields( (*it)->getShowInteractionForceFields());
             break;
         case WIREFRAME:
-            showWireFrame_.setValue(0);
+            setShowWireFrame(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showWireFrame_.setValue( (*it)->showWireFrame_.getValue());
+                setShowWireFrame( (*it)->getShowWireFrame());
             break;
         case NORMALS:
-            showNormals_.setValue(0);
+            setShowNormals(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showNormals_.setValue( (*it)->showNormals_.getValue());
+                setShowNormals( (*it)->getShowNormals());
             break;
         case ALLFLAGS:
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
@@ -597,7 +597,7 @@ void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
 #ifdef SOFA_SMP
         case PROCESSORCOLOR:
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showProcessorColor_.setValue((*it)->showProcessorColor_.getValue());
+                setShowProcessorColor((*it)->getShowProcessorColor());
             break;
 #endif
         }

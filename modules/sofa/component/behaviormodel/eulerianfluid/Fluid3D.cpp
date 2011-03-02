@@ -100,7 +100,7 @@ void Fluid3D::reset()
 
 void Fluid3D::updatePosition(double dt)
 {
-    fnext->gravity = getContext()->getLocalGravity()/f_cellwidth.getValue();
+    fnext->gravity = getContext()->getGravity()/f_cellwidth.getValue();
     fnext->step(fluid, ftemp, (real)dt);
     Grid3D* p = fluid; fluid=fnext; fnext=p;
 }

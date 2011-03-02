@@ -36,10 +36,11 @@ namespace simulation
 Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 {
     glPushMatrix();
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
     double glMatrix[16];
     node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
     glMultMatrixd( glMatrix );
-
+#endif
     hasShader = (node->getShader()!=NULL);
 
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::fwdVisualModel);

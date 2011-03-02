@@ -47,7 +47,7 @@ double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const core::
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
@@ -65,7 +65,7 @@ double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const core::
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
@@ -223,7 +223,7 @@ double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const core::
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
@@ -242,7 +242,7 @@ double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const core::
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);

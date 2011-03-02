@@ -219,7 +219,7 @@ void UniformMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParam
     {
         VecDeriv& v = *d_v.beginEdit();
 
-        const SReal* g = this->getContext()->getLocalGravity().ptr();
+        const SReal* g = this->getContext()->getGravity().ptr();
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2] );
         Deriv hg = theGravity * ( Real ) (mparams->dt());
@@ -245,9 +245,11 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams* 
 #endif
 #endif
 {
+#ifndef SOFA_SUPPORT_MOVING_FRAMES
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if ( this->m_separateGravity.getValue() )
         return;
+#endif
 
     helper::WriteAccessor<DataVecDeriv> f = vf;
 
@@ -261,7 +263,7 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams* 
         iend = localRange.getValue() [1]+1;
 
     // weight
-    const SReal* g = this->getContext()->getLocalGravity().ptr();
+    const SReal* g = this->getContext()->getGravity().ptr();
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2] );
@@ -292,16 +294,24 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams* 
 
 
     // add weight and inertia force
-    for ( unsigned int i=ibegin; i<iend; i++ )
-    {
+    if (this->m_separateGravity.getValue() ) for ( unsigned int i=ibegin; i<iend; i++ )
+        {
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
-        f[i] += mg + core::behavior::inertiaForce ( vframe,aframe,m,x[i],v[i] );
-#else
-        f[i] += mg;
+            f[i] += core::behavior::inertiaForce ( vframe,aframe,m,x[i],v[i] );
 #endif
-        //serr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<sendl;
-        //serr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<sendl;
-    }
+            //serr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<sendl;
+            //serr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<sendl;
+        }
+    else for ( unsigned int i=ibegin; i<iend; i++ )
+        {
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+            f[i] += mg + core::behavior::inertiaForce ( vframe,aframe,m,x[i],v[i] );
+#else
+            f[i] += mg;
+#endif
+            //serr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<sendl;
+            //serr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<sendl;
+        }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     if ( compute_mapping_inertia.getValue() )
@@ -361,7 +371,7 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::Mechan
     double e = 0;
     const MassType& m = mass.getValue();
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2] );

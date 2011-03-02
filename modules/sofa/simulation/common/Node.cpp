@@ -501,16 +501,16 @@ const core::objectmodel::BaseContext* Node::getContext() const
 
 void Node::setDefaultVisualContextValue()
 {
-    if (showVisualModels_.getValue() == -1)            showVisualModels_.setValue(true);
-    if (showBehaviorModels_.getValue() == -1)          showBehaviorModels_.setValue(false);
-    if (showCollisionModels_.getValue() == -1)         showCollisionModels_.setValue(false);
-    if (showBoundingCollisionModels_.getValue() == -1) showBoundingCollisionModels_.setValue(false);
-    if (showMappings_.getValue() == -1)                showMappings_.setValue(false);
-    if (showMechanicalMappings_.getValue() == -1)      showMechanicalMappings_.setValue(false);
-    if (showForceFields_.getValue() == -1)             showForceFields_.setValue(false);
-    if (showInteractionForceFields_.getValue() == -1)  showInteractionForceFields_.setValue(false);
-    if (showWireFrame_.getValue() == -1)               showWireFrame_.setValue(false);
-    if (showNormals_.getValue() == -1)                 showNormals_.setValue(false);
+    if (getShowVisualModels() == -1)            setShowVisualModels(true);
+    if (getShowBehaviorModels() == -1)          setShowBehaviorModels(false);
+    if (getShowCollisionModels() == -1)         setShowCollisionModels(false);
+    if (getShowBoundingCollisionModels() == -1) setShowBoundingCollisionModels(false);
+    if (getShowMappings() == -1)                setShowMappings(false);
+    if (getShowMechanicalMappings() == -1)      setShowMechanicalMappings(false);
+    if (getShowForceFields() == -1)             setShowForceFields(false);
+    if (getShowInteractionForceFields() == -1)  setShowInteractionForceFields(false);
+    if (getShowWireFrame() == -1)               setShowWireFrame(false);
+    if (getShowNormals() == -1)                 setShowNormals(false);
 #ifdef SOFA_SMP
     if (showProcessorColor_.getValue() == -1)                 showProcessorColor_.setValue(false);
 #endif
@@ -591,7 +591,7 @@ void Node::updateVisualContext(VISUAL_FLAG/* FILTER*/)
 /// Execute a recursive action starting from this node
 void Node::executeVisitor(Visitor* action)
 {
-    if (!this->is_activated.getValue()) return;
+    if (!this->isActive()) return;
 
 #ifdef DEBUG_VISITOR
     static int level = 0;

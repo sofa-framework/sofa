@@ -138,7 +138,7 @@ void MatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams
         VecDeriv& v = *d_v.beginEdit();
 
         // gravity
-        Vec3d g ( this->getContext()->getLocalGravity() * (mparams->dt()) );
+        Vec3d g ( this->getContext()->getGravity() * (mparams->dt()) );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * (mparams->dt());
@@ -152,6 +152,7 @@ void MatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams
     }
 }
 
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
 template <class DataTypes, class MassType>
 void MatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
@@ -161,14 +162,15 @@ void MatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*m
 
     const VecMass &masses= *_usedMassMatrices;
     helper::WriteAccessor< DataVecDeriv > _f = f;
-    helper::ReadAccessor< DataVecCoord > _x = x;
-    helper::ReadAccessor< DataVecDeriv > _v = v;
 
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
+
+    helper::ReadAccessor< DataVecCoord > _x = x;
+    helper::ReadAccessor< DataVecDeriv > _v = v;
     // velocity-based stuff
     core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
     core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
@@ -183,6 +185,31 @@ void MatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*m
         _f[i] += masses[i]*theGravity + core::behavior::inertiaForce(vframe,aframe,masses[i],_x[i],_v[i]);
     }
 }
+#else
+
+template <class DataTypes, class MassType>
+void MatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
+{
+    //if gravity was added separately (in solver's "solve" method), then nothing to do here
+    if(this->m_separateGravity.getValue())
+        return;
+
+    const VecMass &masses= *_usedMassMatrices;
+    helper::WriteAccessor< DataVecDeriv > _f = f;
+
+    // gravity
+    Vec3d g ( this->getContext()->getGravity() );
+    Deriv theGravity;
+    DataTypes::set ( theGravity, g[0], g[1], g[2]);
+
+
+    // add weight
+    for (unsigned int i=0; i<masses.size(); i++)
+    {
+        _f[i] += masses[i]*theGravity;
+    }
+}
+#endif
 
 template <class DataTypes, class MassType>
 void MatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)

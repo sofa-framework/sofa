@@ -70,10 +70,13 @@ Context::Context()
     partition_(0)
 #endif
 {
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
     setPositionInWorld(objectmodel::BaseContext::getPositionInWorld());
-    setGravityInWorld(objectmodel::BaseContext::getLocalGravity());
+    setGravity(objectmodel::BaseContext::getLocalGravity());
     setVelocityInWorld(objectmodel::BaseContext::getVelocityInWorld());
     setVelocityBasedLinearAccelerationInWorld(objectmodel::BaseContext::getVelocityBasedLinearAccelerationInWorld());
+#endif
+
 #ifdef SOFA_SMP
     is_partition_.setValue(false);
 #endif
@@ -114,6 +117,7 @@ void Context::setActive(bool val)
     is_activated.setValue(val);
 }
 
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
 /// Projection from the local coordinate system to the world coordinate system.
 const Context::Frame& Context::getPositionInWorld() const
 {
@@ -146,7 +150,18 @@ void Context::setVelocityBasedLinearAccelerationInWorld(const Vec3& a )
 {
     velocityBasedLinearAccelerationInWorld_ = a;
 }
+/// Gravity vector in local coordinates
+// const Context::Vec3& Context::getGravity() const
+// {
+// 	return gravity_;
+// }
 
+/// Gravity vector in local coordinates
+Context::Vec3 Context::getLocalGravity() const
+{
+    return getPositionInWorld().backProjectVector(worldGravity_.getValue());
+}
+#endif
 
 
 /// Simulation timestep
@@ -161,20 +176,9 @@ double Context::getTime() const
     return time_.getValue();
 }
 
-/// Gravity vector in local coordinates
-// const Context::Vec3& Context::getGravity() const
-// {
-// 	return gravity_;
-// }
-
-/// Gravity vector in local coordinates
-Context::Vec3 Context::getLocalGravity() const
-{
-    return getPositionInWorld().backProjectVector(worldGravity_.getValue());
-}
 
 /// Gravity vector in world coordinates
-const Context::Vec3& Context::getGravityInWorld() const
+const Context::Vec3& Context::getGravity() const
 {
     return worldGravity_.getValue();
 }
@@ -305,7 +309,7 @@ void Context::setTime(double val)
 // }
 
 /// Gravity vector
-void Context::setGravityInWorld(const Vec3& g)
+void Context::setGravity(const Vec3& g)
 {
     worldGravity_ .setValue(g);
 }
@@ -440,18 +444,20 @@ void Context::setProcessor(int p)
 
 void Context::copySimulationContext(const Context& c)
 {
-    worldGravity_.setValue(c.worldGravity_.getValue());  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
-    dt_.setValue(c.dt_.getValue());
-    time_.setValue(c.time_.getValue());
-    animate_.setValue(c.animate_.getValue());
+    worldGravity_.setValue(c.getGravity());  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    setDt(c.getDt());
+    setTime(c.getTime());
+    setAnimate(c.getAnimate());
 #ifdef SOFA_SMP
     if(c.gpuPrioritary.getValue())
         gpuPrioritary.setValue(true);
 #endif
 
-    localFrame_ = c.localFrame_;
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+    setLocalFrame( c.getLocalFrame());
     spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
     velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
+#endif
 
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
@@ -495,7 +501,7 @@ void Context::copySimulationContext(const Context& c)
 
 void Context::copyVisualContext(const Context& c)
 {
-    showCollisionModels_.setValue(c.showCollisionModels_.getValue());
+    setShowCollisionModels(c.getShowCollisionModels());
     showBoundingCollisionModels_.setValue(c.showBoundingCollisionModels_.getValue());
     showBehaviorModels_.setValue(c.showBehaviorModels_.getValue());
     showVisualModels_.setValue(c.showVisualModels_.getValue());

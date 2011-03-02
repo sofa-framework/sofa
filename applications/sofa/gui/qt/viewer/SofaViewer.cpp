@@ -178,7 +178,7 @@ void SofaViewer::newView()
     if (!currentCamera || !groot)
         return;
 
-    currentCamera->setDefaultView(groot->getGravityInWorld());
+    currentCamera->setDefaultView(groot->getGravity());
 }
 
 void SofaViewer::resetView()
