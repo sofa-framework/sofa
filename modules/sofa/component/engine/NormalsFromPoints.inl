@@ -117,10 +117,8 @@ void NormalsFromPoints<DataTypes>::update()
         waNormals[raQuads[i][3]] += n4;
     }
 
-    for (unsigned int i = 0; i < waNormals.size(); i++)
-    {
-        waNormals[i].normalize();
-    }
+    if(invertNormals.getValue())	  for (unsigned int i = 0; i < waNormals.size(); i++)		  waNormals[i]*=-1.;
+    for (unsigned int i = 0; i < waNormals.size(); i++)		  waNormals[i].normalize();
 }
 
 } // namespace engine
