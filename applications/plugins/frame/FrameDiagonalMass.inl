@@ -147,7 +147,7 @@ double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoo
     double e = 0;
     const MassVector& masses = f_mass.getValue();
     // gravity
-    Vec3 g ( this->getContext()->getLocalGravity() );
+    Vec3 g ( this->getContext()->getGravity() );
     VecIn theGravity;
     theGravity[0]=g[0], theGravity[1]=g[1], theGravity[2]=g[2];
     for ( unsigned int i=0; i<x.size(); i++ )
@@ -260,7 +260,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addGravityToV (const core::Mechanic
         helper::WriteAccessor< DataVecDeriv > v = *vid[this->mstate].write();
 
         // gravity
-        Vec3 g ( this->getContext()->getLocalGravity() );
+        Vec3 g ( this->getContext()->getGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2] );
         Deriv hg = theGravity * ( typename DataTypes::Real ) mparams->dt();
@@ -297,17 +297,17 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
         return;
 
     // gravity
-    Vec3 g ( this->getContext()->getLocalGravity() );
+    Vec3 g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2] );
 
-    // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-
-    // project back to local frame
-    vframe = this->getContext()->getPositionInWorld() / vframe;
-    aframe = this->getContext()->getPositionInWorld().backProjectVector ( aframe );
+//    // velocity-based stuff
+//    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
+//    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
+//
+//    // project back to local frame
+//    vframe = this->getContext()->getPositionInWorld() / vframe;
+//    aframe = this->getContext()->getPositionInWorld().backProjectVector ( aframe );
 
     // add weight and inertia force
     const double& invDt = 1./this->getContext()->getDt();

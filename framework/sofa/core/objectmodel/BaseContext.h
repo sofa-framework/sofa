@@ -176,7 +176,7 @@ public:
 
     /// @}
 
-
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
     /// @name Local Coordinate System
     /// @{
     /// Projection from the local coordinate system to the world coordinate system.
@@ -196,17 +196,17 @@ public:
     /// Linear acceleration of the origin induced by the angular velocity of the ancestors
     virtual void setVelocityBasedLinearAccelerationInWorld(const Vec3& )
     {}
-    /// @}
-
-
-    /// Gravity in local coordinates
+    /// Gravity in local coordinates  TODO: replace with world coordinates
     virtual Vec3 getLocalGravity() const;
     ///// Gravity in local coordinates
     //virtual void setGravity( const Vec3& ) { }
-    /// Gravity in world coordinates
-    virtual const Vec3& getGravityInWorld() const;
-    /// Gravity in world coordinates
-    virtual void setGravityInWorld( const Vec3& )
+    /// @}
+#endif
+
+    /// Gravity in local coordinates
+    virtual const Vec3& getGravity() const;
+    /// Gravity in local coordinates
+    virtual void setGravity( const Vec3& )
     { }
 
     /// @name Containers
@@ -261,6 +261,7 @@ public:
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
     virtual void getObjects(const ClassInfo& class_info, GetObjectsCallBack& container, const TagSet& tags, SearchDirection dir = SearchUp) const;
+
 
     /// Generic object access template wrapper, possibly searching up or down from the current context
     template<class T>

@@ -132,9 +132,9 @@ bool BuoyantForceField<DataTypes>::checkParameters()
     }
 
 
-    if (m_gravity!= this->getContext()->getLocalGravity())
+    if (m_gravity!= this->getContext()->getGravity())
     {
-        m_gravity = this->getContext()->getLocalGravity();
+        m_gravity = this->getContext()->getGravity();
         m_gravityNorm = m_gravity.norm();
         recomputeFluidSurface = true;
         change = true;

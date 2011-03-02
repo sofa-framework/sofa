@@ -215,9 +215,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         invM->data = new Real[nbRows * nbCols];
 
         // for the intial computation, the gravity has to be put at 0
-        const Vec3d gravity = this->getContext()->getGravityInWorld();
+        const Vec3d gravity = this->getContext()->getGravity();
         const Vec3d gravity_zero(0.0,0.0,0.0);
-        this->getContext()->setGravityInWorld(gravity_zero);
+        this->getContext()->setGravity(gravity_zero);
 
         EulerImplicitSolver* eulerSolver;
         CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >* cgLinearSolver;
@@ -380,7 +380,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
         // gravity is reset at its previous value
-        this->getContext()->setGravityInWorld(gravity);
+        this->getContext()->setGravity(gravity);
         if (cgLinearSolver)
         {
             cgLinearSolver->f_tolerance.setValue(buf_tolerance);

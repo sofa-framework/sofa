@@ -902,7 +902,7 @@ MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVel
     MultiVecDerivId a,
 #endif
     bool m)
-    : MechanicalVisitor(mparams), t(time), x(x), v(v),
+    : MechanicalVisitor(mparams), currentTime(time), x(x), v(v),
 #ifdef SOFA_SUPPORT_MAPPED_MASS
       a(a),
 #endif

@@ -58,11 +58,8 @@ class SOFA_CORE_API Context : public BaseContext
 public:
     SOFA_CLASS(Context, BaseContext);
 
-    typedef BaseContext::Frame Frame;
-    typedef BaseContext::Vec3 Vec3;
-    typedef BaseContext::Quat Quat;
-    typedef BaseContext::SpatialVector SpatialVector;
 
+private:
     Data<bool> is_activated;
     Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     Data<double> dt_;
@@ -100,10 +97,8 @@ public:
     Iterative::IterativePartition *partition_;
 #endif
 
-    Frame localFrame_;
-    SpatialVector spatialVelocityInWorld_;
-    Vec3 velocityBasedLinearAccelerationInWorld_;
 
+public:
     Context();
     virtual ~Context()
     {}
@@ -116,14 +111,11 @@ public:
     virtual bool isActive() const;
     /// State of the context
     virtual void setActive(bool val);
-    /// Gravity in the local coordinate system
-    virtual Vec3 getLocalGravity() const;
-    /// Gravity in the local coordinate system
-    //virtual void setGravity(const Vec3& );
-    /// Gravity in world coordinates
-    virtual const Vec3& getGravityInWorld() const;
-    /// Gravity in world coordinates
-    virtual void setGravityInWorld( const Vec3& );
+
+    /// Gravity in local coordinates
+    virtual const Vec3& getGravity() const;
+    /// Gravity in local coordinates
+    virtual void setGravity( const Vec3& );
 
     /// Simulation timestep
     virtual double getDt() const;
@@ -183,8 +175,17 @@ public:
     /// @}
 
 
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
     /// @name Local Coordinate System
     /// @{
+    typedef BaseContext::Frame Frame;
+    typedef BaseContext::Vec3 Vec3;
+    typedef BaseContext::Quat Quat;
+    typedef BaseContext::SpatialVector SpatialVector;
+
+    Frame localFrame_;
+    SpatialVector spatialVelocityInWorld_;
+    Vec3 velocityBasedLinearAccelerationInWorld_;
     /// Projection from the local coordinate system to the world coordinate system.
     virtual const Frame& getPositionInWorld() const;
     /// Projection from the local coordinate system to the world coordinate system.
@@ -199,7 +200,13 @@ public:
     virtual const Vec3& getVelocityBasedLinearAccelerationInWorld() const;
     /// Linear acceleration of the origin induced by the angular velocity of the ancestors
     virtual void setVelocityBasedLinearAccelerationInWorld(const Vec3& );
+
+    /// Gravity in the local coordinate system  TODO: replace with world coordinates
+    virtual Vec3 getLocalGravity() const;
+    /// Gravity in the local coordinate system
+    //virtual void setGravity(const Vec3& );
     /// @}
+#endif
 
     /// @name Parameters Setters
     /// @{
@@ -242,6 +249,9 @@ public:
 
     /// Display flags: Normals
     virtual void setShowNormals(bool val);
+
+    /// Display flags: Gravity
+    virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }
 
 #ifdef SOFA_SMP
     virtual void setShowProcessorColor(bool val);

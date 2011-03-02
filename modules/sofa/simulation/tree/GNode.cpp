@@ -400,30 +400,30 @@ void GNode::initVisualContext()
 {
     if (getParent() != NULL)
     {
-        this->worldGravity_.setDisplayed(false); //only display gravity for the root: it will be propagated at each time step
-        if (showVisualModels_.getValue() == -1)
-            showVisualModels_.setValue(static_cast<GNode *>(getParent())->showVisualModels_.getValue());
-        if (showBehaviorModels_.getValue() == -1)
-            showBehaviorModels_.setValue(static_cast<GNode *>(getParent())->showBehaviorModels_.getValue());
-        if (showCollisionModels_.getValue() == -1)
-            showCollisionModels_.setValue(static_cast<GNode *>(getParent())->showCollisionModels_.getValue());
-        if (showBoundingCollisionModels_.getValue() == -1)
-            showBoundingCollisionModels_.setValue(static_cast<GNode *>(getParent())->showBoundingCollisionModels_.getValue());
-        if (showMappings_.getValue() == -1)
-            showMappings_.setValue(static_cast<GNode *>(getParent())->showMappings_.getValue());
-        if (showMechanicalMappings_.getValue() == -1)
-            showMechanicalMappings_.setValue(static_cast<GNode *>(getParent())->showMechanicalMappings_.getValue());
-        if (showForceFields_.getValue() == -1)
-            showForceFields_.setValue(static_cast<GNode *>(getParent())->showForceFields_.getValue());
-        if (showInteractionForceFields_.getValue() == -1)
-            showInteractionForceFields_.setValue(static_cast<GNode *>(getParent())->showInteractionForceFields_.getValue());
-        if (showWireFrame_.getValue() == -1)
-            showWireFrame_.setValue(static_cast<GNode *>(getParent())->showWireFrame_.getValue());
-        if (showNormals_.getValue() == -1)
-            showNormals_.setValue(static_cast<GNode *>(getParent())->showNormals_.getValue());
+        this->setDisplayWorldGravity(false); //only display gravity for the root: it will be propagated at each time step
+        if (getShowVisualModels() == -1)
+            setShowVisualModels(static_cast<GNode *>(getParent())->getShowVisualModels());
+        if (getShowBehaviorModels() == -1)
+            setShowBehaviorModels(static_cast<GNode *>(getParent())->getShowBehaviorModels());
+        if (getShowCollisionModels() == -1)
+            setShowCollisionModels(static_cast<GNode *>(getParent())->getShowCollisionModels());
+        if (getShowBoundingCollisionModels() == -1)
+            setShowBoundingCollisionModels(static_cast<GNode *>(getParent())->getShowBoundingCollisionModels());
+        if (getShowMappings() == -1)
+            setShowMappings(static_cast<GNode *>(getParent())->getShowMappings());
+        if (getShowMechanicalMappings() == -1)
+            setShowMechanicalMappings(static_cast<GNode *>(getParent())->getShowMechanicalMappings());
+        if (getShowForceFields() == -1)
+            setShowForceFields(static_cast<GNode *>(getParent())->getShowForceFields());
+        if (getShowInteractionForceFields() == -1)
+            setShowInteractionForceFields(static_cast<GNode *>(getParent())->getShowInteractionForceFields());
+        if (getShowWireFrame() == -1)
+            setShowWireFrame(static_cast<GNode *>(getParent())->getShowWireFrame());
+        if (getShowNormals() == -1)
+            setShowNormals(static_cast<GNode *>(getParent())->getShowNormals());
 #ifdef SOFA_SMP
-        if (showProcessorColor_.getValue() == -1)
-            showProcessorColor_.setValue(static_cast<GNode *>(getParent())->showProcessorColor_.getValue());
+        if (getShowProcessorColor() == -1)
+            setShowProcessorColor(static_cast<GNode *>(getParent())->getShowProcessorColor());
 #endif
     }
 }
@@ -461,41 +461,41 @@ void GNode::updateVisualContext(VISUAL_FLAG FILTER)
         switch (FILTER)
         {
         case VISUALMODELS:
-            showVisualModels_.setValue((*parent).showVisualModels_.getValue());
+            setShowVisualModels((*parent).getShowVisualModels());
             break;
         case BEHAVIORMODELS:
-            showBehaviorModels_.setValue((*parent).showBehaviorModels_.getValue());
+            setShowBehaviorModels((*parent).getShowBehaviorModels());
             break;
         case COLLISIONMODELS:
-            showCollisionModels_.setValue((*parent).showCollisionModels_.getValue());
+            setShowCollisionModels((*parent).getShowCollisionModels());
             break;
         case BOUNDINGCOLLISIONMODELS:
-            showBoundingCollisionModels_.setValue((*parent).showBoundingCollisionModels_.getValue());
+            setShowBoundingCollisionModels((*parent).getShowBoundingCollisionModels());
             break;
         case MAPPINGS:
-            showMappings_.setValue((*parent).showMappings_.getValue());
+            setShowMappings((*parent).getShowMappings());
             break;
         case MECHANICALMAPPINGS:
-            showMechanicalMappings_.setValue((*parent).showMechanicalMappings_.getValue());
+            setShowMechanicalMappings((*parent).getShowMechanicalMappings());
             break;
         case FORCEFIELDS:
-            showForceFields_.setValue((*parent).showForceFields_.getValue());
+            setShowForceFields((*parent).getShowForceFields());
             break;
         case INTERACTIONFORCEFIELDS:
-            showInteractionForceFields_.setValue((*parent).showInteractionForceFields_.getValue());
+            setShowInteractionForceFields((*parent).getShowInteractionForceFields());
             break;
         case WIREFRAME:
-            showWireFrame_.setValue((*parent).showWireFrame_.getValue());
+            setShowWireFrame((*parent).getShowWireFrame());
             break;
         case NORMALS:
-            showNormals_.setValue((*parent).showNormals_.getValue());
+            setShowNormals((*parent).getShowNormals());
             break;
         case ALLFLAGS:
             copyVisualContext(*parent);
             break;
 #ifdef SOFA_SMP
         case PROCESSORCOLOR:
-            showProcessorColor_.setValue((*parent).showProcessorColor_.getValue());
+            setShowProcessorColor((*parent).getShowProcessorColor());
             break;
 #endif
         }

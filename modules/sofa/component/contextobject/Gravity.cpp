@@ -48,7 +48,7 @@ Gravity::Gravity()
 
 void Gravity::apply()
 {
-    getContext()->setGravityInWorld( f_gravity.getValue() );
+    getContext()->setGravity( f_gravity.getValue() );
 }
 
 SOFA_DECL_CLASS(Gravity)

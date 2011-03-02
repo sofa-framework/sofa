@@ -65,7 +65,7 @@ void DeactivationVisitor::processNodeBottomUp(simulation::Node* node)
 {
     if (!active)
     {
-        node->is_activated.setValue(active);
+        node->setActive(active);
 
         if (!node->nodeInVisualGraph.empty())
         {

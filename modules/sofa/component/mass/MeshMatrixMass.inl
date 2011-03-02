@@ -901,17 +901,10 @@ void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*
     return;
 }
 
-
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& vf, const DataVecCoord& vx, const DataVecDeriv& vv)
 {
-
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if(this->m_separateGravity.getValue())
-        return ;
-//    else
-//        return; // add to avoid the function
-
     helper::WriteAccessor< DataVecDeriv > f = vf;
     helper::ReadAccessor< DataVecCoord > x = vx;
     helper::ReadAccessor< DataVecDeriv > v = vv;
@@ -919,7 +912,7 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
     const MassVector &vertexMass= vertexMassInfo.getValue();
 
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
@@ -932,10 +925,35 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
     aframe = this->getContext()->getPositionInWorld().backProjectVector( aframe );
 
     // add weight and inertia force
-    for (unsigned int i=0; i<x.size(); ++i)
-        f[i] += theGravity * vertexMass[i] * massLumpingCoeff + core::behavior::inertiaForce(vframe,aframe,vertexMass[i] * massLumpingCoeff ,x[i],v[i]);
+    if(this->m_separateGravity.getValue())
+        for (unsigned int i=0; i<x.size(); ++i)
+            f[i] += massLumpingCoeff + core::behavior::inertiaForce(vframe,aframe,vertexMass[i] * massLumpingCoeff ,x[i],v[i]);
+    else for (unsigned int i=0; i<x.size(); ++i)
+            f[i] += theGravity * vertexMass[i] * massLumpingCoeff + core::behavior::inertiaForce(vframe,aframe,vertexMass[i] * massLumpingCoeff ,x[i],v[i]);
 }
+#else
+template <class DataTypes, class MassType>
+void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& vf, const DataVecCoord& , const DataVecDeriv& )
+{
 
+    //if gravity was added separately (in solver's "solve" method), then nothing to do here
+    if(this->m_separateGravity.getValue())
+        return ;
+
+    helper::WriteAccessor< DataVecDeriv > f = vf;
+
+    const MassVector &vertexMass= vertexMassInfo.getValue();
+
+    // gravity
+    Vec3d g ( this->getContext()->getGravity() );
+    Deriv theGravity;
+    DataTypes::set ( theGravity, g[0], g[1], g[2]);
+
+    // add weight and inertia force
+    for (unsigned int i=0; i<f.size(); ++i)
+        f[i] += theGravity * vertexMass[i] * massLumpingCoeff;
+}
+#endif
 
 
 template <class DataTypes, class MassType>
@@ -977,7 +995,7 @@ double MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::Mech
 
     SReal e = 0;
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
@@ -997,7 +1015,7 @@ void MeshMatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPa
         VecDeriv& v = *d_v.beginEdit();
 
         // gravity
-        Vec3d g ( this->getContext()->getLocalGravity() );
+        Vec3d g ( this->getContext()->getGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * (typename DataTypes::Real)(mparams->dt());

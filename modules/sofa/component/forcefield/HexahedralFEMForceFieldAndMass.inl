@@ -581,7 +581,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addGravityToV(const core::Mechan
 
         for (unsigned int i=0; i<_particleMasses.getValue().size(); i++)
         {
-            v[i] +=this->getContext()->getLocalGravity()*_dt;
+            v[i] +=this->getContext()->getGravity()*_dt;
         }
         d_v.beginEdit();
     }
@@ -600,7 +600,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addForce(const core::MechanicalP
     helper::WriteAccessor< DataVecDeriv > _f = f;
     for (unsigned int i=0; i<_particleMasses.getValue().size(); i++)
     {
-        _f[i] += this->getContext()->getLocalGravity()*_particleMasses.getValue()[i];
+        _f[i] += this->getContext()->getGravity()*_particleMasses.getValue()[i];
     }
 }
 

@@ -535,7 +535,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(const core::Mech
         {
             VecDeriv& v = *d_v.beginEdit();
 
-            const SReal* g = this->getContext()->getLocalGravity().ptr();
+            const SReal* g = this->getContext()->getGravity().ptr();
             Deriv theGravity;
             T::set( theGravity, (Real)g[0], (Real)g[1], (Real)g[2]);
             Deriv hg = theGravity * (mparams->dt());
@@ -559,7 +559,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addForce(const core::Mechanica
 
         helper::WriteAccessor<DataVecDeriv> _f = f;
 
-        const SReal* g = this->getContext()->getLocalGravity().ptr();
+        const SReal* g = this->getContext()->getGravity().ptr();
         Deriv theGravity;
         T::set( theGravity, g[0], g[1], g[2]);
 

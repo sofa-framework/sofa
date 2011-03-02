@@ -359,7 +359,7 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechan
     helper::ReadAccessor< DataVecCoord > _x = x;
     SReal e = 0;
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<masses.size(); i++)
@@ -573,7 +573,7 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPara
     {
         VecDeriv& v = *d_v.beginEdit();
         // gravity
-        Vec3d g ( this->getContext()->getLocalGravity() );
+        Vec3d g ( this->getContext()->getGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * (typename DataTypes::Real)mparams->dt();
@@ -586,12 +586,11 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPara
     }
 }
 
+
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if(this->m_separateGravity.getValue())
-        return;
 
     const MassVector &masses= f_mass.getValue();
     helper::WriteAccessor< DataVecDeriv > _f = f;
@@ -599,7 +598,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
     helper::ReadAccessor< DataVecDeriv > _v = v;
 
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
@@ -612,11 +611,39 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
     aframe = this->getContext()->getPositionInWorld().backProjectVector( aframe );
 
     // add weight and inertia force
+    if(this->m_separateGravity.getValue()) for (unsigned int i=0; i<masses.size(); i++)
+        {
+            _f[i] += core::behavior::inertiaForce(vframe,aframe,masses[i],_x[i],_v[i]);
+        }
+    else for (unsigned int i=0; i<masses.size(); i++)
+        {
+            _f[i] += theGravity*masses[i] + core::behavior::inertiaForce(vframe,aframe,masses[i],_x[i],_v[i]);
+        }
+}
+#else
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& , const DataVecDeriv& )
+{
+    //if gravity was added separately (in solver's "solve" method), then nothing to do here
+    if(this->m_separateGravity.getValue())
+        return;
+
+    const MassVector &masses= f_mass.getValue();
+    helper::WriteAccessor< DataVecDeriv > _f = f;
+
+    // gravity
+    Vec3d g ( this->getContext()->getGravity() );
+    Deriv theGravity;
+    DataTypes::set ( theGravity, g[0], g[1], g[2]);
+
+
+    // add weight and inertia force
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        _f[i] += theGravity*masses[i] + core::behavior::inertiaForce(vframe,aframe,masses[i],_x[i],_v[i]);
+        _f[i] += theGravity*masses[i];
     }
 }
+#endif
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw()

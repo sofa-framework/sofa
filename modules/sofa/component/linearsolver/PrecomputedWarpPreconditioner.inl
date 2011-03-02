@@ -354,9 +354,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     this->getContext()->get(EulerSolver);
 
     // for the initial computation, the gravity has to be put at 0
-    const Vec3d gravity = this->getContext()->getGravityInWorld();
+    const Vec3d gravity = this->getContext()->getGravity();
     const Vec3d gravity_zero(0.0,0.0,0.0);
-    this->getContext()->setGravityInWorld(gravity_zero);
+    this->getContext()->setGravity(gravity_zero);
 
     PCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* PCGlinearSolver;
     CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
@@ -527,7 +527,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
     ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
     // gravity is reset at its previous value
-    this->getContext()->setGravityInWorld(gravity);
+    this->getContext()->setGravity(gravity);
 
     if(CGlinearSolver)
     {
