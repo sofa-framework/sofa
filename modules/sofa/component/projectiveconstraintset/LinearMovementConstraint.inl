@@ -274,7 +274,7 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
     Real dt = (cT - prevT) / (nextT - prevT);
     Deriv m = prevM + (nextM-prevM)*dt;
 
-    cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, current X = "<< x << endl;
+    // cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, current X = "<< x << endl;
 
     //set the motion to the Dofs
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -282,10 +282,10 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
         x[*it] = x0[*it] + m ;
     }
 
-    cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, prevT = "<< prevT <<", prevM = "<< prevM << endl;
-    cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, nextT = "<< nextT <<", nextM = "<< nextM << endl;
-    cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, t = "<< cT <<", M = "<< m << endl;
-    cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, new X = "<< x << endl;
+    // cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, prevT = "<< prevT <<", prevM = "<< prevM << endl;
+    // cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, nextT = "<< nextT <<", nextM = "<< nextM << endl;
+    // cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, t = "<< cT <<", M = "<< m << endl;
+    // cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, new X = "<< x << endl;
 }
 
 template <class DataTypes>
