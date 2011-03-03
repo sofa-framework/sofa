@@ -502,33 +502,33 @@ void Context::copySimulationContext(const Context& c)
 void Context::copyVisualContext(const Context& c)
 {
     setShowCollisionModels(c.getShowCollisionModels());
-    showBoundingCollisionModels_.setValue(c.showBoundingCollisionModels_.getValue());
-    showBehaviorModels_.setValue(c.showBehaviorModels_.getValue());
-    showVisualModels_.setValue(c.showVisualModels_.getValue());
-    showMappings_.setValue(c.showMappings_.getValue());
-    showMechanicalMappings_.setValue(c.showMechanicalMappings_.getValue());
-    showForceFields_.setValue(c.showForceFields_.getValue());
-    showInteractionForceFields_.setValue(c.showInteractionForceFields_.getValue());
-    showWireFrame_.setValue(c.showWireFrame_.getValue());
-    showNormals_.setValue(c.showNormals_.getValue());
+    setShowBoundingCollisionModels(c.getShowBoundingCollisionModels());
+    setShowBehaviorModels(c.getShowBehaviorModels());
+    setShowVisualModels(c.getShowVisualModels());
+    setShowMappings(c.getShowMappings());
+    setShowMechanicalMappings(c.getShowMechanicalMappings());
+    setShowForceFields(c.getShowForceFields());
+    setShowInteractionForceFields(c.getShowInteractionForceFields());
+    setShowWireFrame(c.getShowWireFrame());
+    setShowNormals(c.getShowNormals());
 #ifdef SOFA_SMP
-    showProcessorColor_.setValue(c.showProcessorColor_.getValue());
+    setShowProcessorColor(c.getShowProcessorColor());
 #endif
 }
 
 
 void Context::fusionVisualContext(const Context& c)
 {
-    showCollisionModels_.setValue(showCollisionModels_.getValue() || c.showCollisionModels_.getValue());
-    showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue() || c.showBoundingCollisionModels_.getValue());
-    showBehaviorModels_.setValue(showBehaviorModels_.getValue() || c.showBehaviorModels_.getValue());
-    showVisualModels_.setValue(showVisualModels_.getValue() || c.showVisualModels_.getValue());
-    showMappings_.setValue(showMappings_.getValue() || c.showMappings_.getValue());
-    showMechanicalMappings_.setValue(showMechanicalMappings_.getValue() || c.showMechanicalMappings_.getValue());
-    showForceFields_.setValue(showForceFields_.getValue() || c.showForceFields_.getValue());
-    showInteractionForceFields_.setValue(showInteractionForceFields_.getValue() || c.showInteractionForceFields_.getValue());
-    showWireFrame_.setValue(showWireFrame_.getValue() || c.showWireFrame_.getValue());
-    showNormals_.setValue(showNormals_.getValue() || c.showNormals_.getValue());
+    setShowCollisionModels(getShowCollisionModels() || c.getShowCollisionModels());
+    setShowBoundingCollisionModels(getShowBoundingCollisionModels() || c.getShowBoundingCollisionModels());
+    setShowBehaviorModels(getShowBehaviorModels() || c.getShowBehaviorModels());
+    setShowVisualModels(getShowVisualModels() || c.getShowVisualModels());
+    setShowMappings(getShowMappings() || c.getShowMappings());
+    setShowMechanicalMappings(getShowMechanicalMappings() || c.getShowMechanicalMappings());
+    setShowForceFields(getShowForceFields() || c.getShowForceFields());
+    setShowInteractionForceFields(getShowInteractionForceFields() || c.getShowInteractionForceFields());
+    setShowWireFrame(getShowWireFrame() || c.getShowWireFrame());
+    setShowNormals(getShowNormals() || c.getShowNormals());
 }
 
 

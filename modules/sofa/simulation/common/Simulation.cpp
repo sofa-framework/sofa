@@ -89,8 +89,8 @@ Simulation::Simulation()
       instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used")),
       paused(false),mDrawUtility(0l)
 {
-/// By default, initialise the Viewer with openGL
-/// We can switch Viewer between GL, OGRE and OSG with the setDrawUtility method
+    /// By default, initialise the Viewer with openGL
+    /// We can switch Viewer between GL, OGRE and OSG with the setDrawUtility method
     this->setDrawUtility(new sofa::helper::gl::DrawManagerGL() );
 }
 
@@ -163,15 +163,15 @@ void Simulation::init ( Node* root )
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
     setContext( root->getContext());
+
+    // apply the init() and bwdInit() methods to all the components.
+    // and put the VisualModels in a separate graph, rooted at getVisualRoot()
     root->execute<InitVisitor>(params);
 
     {
+        // Why do we need  a copy of the params here ?
         sofa::core::MechanicalParams mparams(*params);
         root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
-        /*sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
-        mparams.x() = xfree;
-        MechanicalPropagatePositionVisitor act(&mparams   // PARAMS FIRST //, 0, xfree, true);
-        root->execute(act);*/
     }
 
     // Save reset state for later uses in reset()
@@ -179,6 +179,10 @@ void Simulation::init ( Node* root )
 
     //Get the list of instruments present in the scene graph
     getInstruments(root);
+
+    // propagate the visualization settings (showVisualModels, etc.) in the whole graph
+    updateVisualContext(root,Node::ALLFLAGS);
+    updateVisualContext(getVisualRoot(),Node::ALLFLAGS);
 }
 
 
