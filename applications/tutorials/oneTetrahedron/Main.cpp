@@ -70,7 +70,7 @@ int main(int argc, char** argv)
     // The graph root node : gravity already exists in a GNode by default
     GNode* groot = new GNode;
     groot->setName( "root" );
-    groot->setGravityInWorld( Coord3(0,-10,0) );
+    groot->setGravity( Coord3(0,-10,0) );
 
     // One solver for all the graph
     EulerSolver* solver = new EulerSolver;

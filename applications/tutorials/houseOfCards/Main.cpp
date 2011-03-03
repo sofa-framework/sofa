@@ -239,7 +239,7 @@ int main(int argc, char** argv)
 
     // The graph root node
     Node* root = sofa::ObjectCreator::CreateRootWithCollisionPipeline(simulationType,"distanceLMConstraint");
-    root->setGravityInWorld( Coord3(0,-10,0) );
+    root->setGravity( Coord3(0,-10,0) );
     root->setDt(0.001);
 
     sofa::component::collision::MinProximityIntersection *intersection;
