@@ -115,7 +115,7 @@ int main(int argc, char** argv)
 
     // The graph root node
     Node* root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
-    root->setGravityInWorld( Coord3(0,0,0) );
+    root->setGravity( Coord3(0,0,0) );
 
     root->addChild(solverNode);
 
