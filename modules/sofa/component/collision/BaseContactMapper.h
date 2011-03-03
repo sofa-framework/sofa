@@ -55,6 +55,7 @@ public:
     virtual MMechanicalState* createMapping(const char* name = "contactPoints") = 0;
     virtual void cleanup() = 0;
     virtual void resize(int size) = 0;
+    //
     virtual int addPoint(const Coord& c, int index, Real& r) = 0;
     virtual void update() = 0;
     virtual void updateXfree() = 0;
