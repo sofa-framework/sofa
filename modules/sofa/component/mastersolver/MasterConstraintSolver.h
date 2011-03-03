@@ -211,7 +211,7 @@ protected:
 
 public:
     ConstraintProblem(bool printLog=false);
-    ~ConstraintProblem();
+    virtual ~ConstraintProblem();
     virtual void clear(int dim, const double &tol);
 
     inline int getSize(void) {return _dim;};
