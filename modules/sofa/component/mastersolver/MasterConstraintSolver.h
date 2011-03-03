@@ -200,7 +200,7 @@ protected:
 
 class SOFA_COMPONENT_MASTERSOLVER_API ConstraintProblem
 {
-private:
+protected:
     LPtrFullMatrix<double> _W;
     FullVector<double> _dFree, _force, _d, _df;              // cf. These Duriez + _df for scheme correction
     std::vector<core::behavior::ConstraintResolution*> _constraintsResolutions;
@@ -212,7 +212,7 @@ private:
 public:
     ConstraintProblem(bool printLog=false);
     ~ConstraintProblem();
-    void clear(int dim, const double &tol);
+    virtual void clear(int dim, const double &tol);
 
     inline int getSize(void) {return _dim;};
     inline LPtrFullMatrix<double>* getW(void) {return &_W;};
@@ -255,7 +255,7 @@ public:
 
     ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;};
 
-private:
+protected:
     void launchCollisionDetection(const core::ExecParams* params);
     void freeMotion(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, double &dt);
     void setConstraintEquations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context);
@@ -276,7 +276,7 @@ private:
     void getIndividualConstraintSolvingProcess(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context);
 
     /// 4.calling getCompliance projected in the contact space => getDelassusOperator(_W) = H*C*Ht
-    void computeComplianceInConstraintSpace();
+    virtual void computeComplianceInConstraintSpace();
 
 
     /// method for predictive scheme:
@@ -289,14 +289,24 @@ private:
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 
 
-    bool bufCP1;
-    ConstraintProblem CP1, CP2;
+    virtual ConstraintProblem *getCP()
+    {
+        if (doubleBuffer.getValue() && bufCP1)
+            return &CP2;
+        else
+            return &CP1;
+    }
 
     CTime *timer;
     double timeScale, time ;
     bool debug;
 
     unsigned int numConstraints;
+
+    bool bufCP1;
+
+private:
+    ConstraintProblem CP1, CP2;
 };
 
 } // namespace mastersolver
