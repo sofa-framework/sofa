@@ -70,12 +70,14 @@ Context::Context()
     partition_(0)
 #endif
 {
+#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     setPositionInWorld(objectmodel::BaseContext::getPositionInWorld());
     setGravity(objectmodel::BaseContext::getLocalGravity());
     setVelocityInWorld(objectmodel::BaseContext::getVelocityInWorld());
     setVelocityBasedLinearAccelerationInWorld(objectmodel::BaseContext::getVelocityBasedLinearAccelerationInWorld());
 #endif
+#endif // SOFA_DEV
 
 #ifdef SOFA_SMP
     is_partition_.setValue(false);
@@ -117,6 +119,7 @@ void Context::setActive(bool val)
     is_activated.setValue(val);
 }
 
+#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 /// Projection from the local coordinate system to the world coordinate system.
 const Context::Frame& Context::getPositionInWorld() const
@@ -162,6 +165,7 @@ Context::Vec3 Context::getLocalGravity() const
     return getPositionInWorld().backProjectVector(worldGravity_.getValue());
 }
 #endif
+#endif // SOFA_DEV
 
 
 /// Simulation timestep
@@ -453,11 +457,13 @@ void Context::copySimulationContext(const Context& c)
         gpuPrioritary.setValue(true);
 #endif
 
+#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     setLocalFrame( c.getLocalFrame());
     spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
     velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
 #endif
+#endif // SOFA_DEV
 
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
