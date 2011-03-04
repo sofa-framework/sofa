@@ -4,7 +4,7 @@
 	<FreeMotionMasterSolver />
 	<CollisionPipeline depth="6" verbose="1" draw="0"/>
 	<BruteForceDetection name="N2" />
-	<LocalMinDistance name="localmindistance" alarmDistance="0.05" contactDistance="0.02" />
+	<LocalMinDistance name="localmindistance" alarmDistance="0.5" contactDistance="0.2" />
 	<CollisionResponse name="Response" response="FrictionContact" />
 	<CollisionGroup name="Group" />
 
@@ -21,11 +21,11 @@
 		<FixedConstraint name="FixedConstraint" indices="0" />
 		<UniformMass  printLog="false" />
 		<BeamFEMForceField name="FEM" radius="0.1" youngModulus="20000000" />
-		<BSplineModel  SplittingLevel="2"/>
+		<BSplineModel  SplittingLevel="2" r="0.5"/>
 		<LinearSolverConstraintCorrection />
 	</Node>
 	<Node name="Points">
-		<MechanicalObject name="DOFs1" position="1 -2 0 3 -2 0 6 -3 0 8 -3 0" />		
+		<MechanicalObject name="DOFs1" position="1 -2 0 3 -2 0 6 -2 0 8 -2 0" />		
 		<FixedConstraint name="m_fixedConstraint" indices="0 1 2 3" />
 
 		<Point/>
