@@ -28,9 +28,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {

@@ -175,6 +175,7 @@ public:
     /// @}
 
 
+#ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     /// @name Local Coordinate System
     /// @{
@@ -207,6 +208,7 @@ public:
     //virtual void setGravity(const Vec3& );
     /// @}
 #endif
+#endif // SOFA_DEV
 
     /// @name Parameters Setters
     /// @{
