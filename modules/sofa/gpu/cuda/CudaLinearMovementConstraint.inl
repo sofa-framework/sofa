@@ -233,7 +233,7 @@ void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     Real cT = (Real) m->getContext()->getTime();
 
     // initialize initial Dofs positions, if it's not done
-    if (m->x0.size() == 0)
+    if (data.x0.size() == 0)
     {
         data.init(m, x);
     }
@@ -372,7 +372,7 @@ void LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >:
     Real cT = (Real) m->getContext()->getTime();
 
     // initialize initial Dofs positions, if it's not done
-    if (m->x0.size() == 0)
+    if (data.x0.size() == 0)
     {
         data.init(m, x);
     }
