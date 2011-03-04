@@ -37,6 +37,8 @@ namespace component
 namespace collision
 {
 
+using sofa::defaulttype::Vector3;
+
 /// This class will be specialized to whatever mapper is required
 template < class TCollisionModel, class DataTypes = typename TCollisionModel::DataTypes >
 class ContactMapper;
@@ -55,8 +57,23 @@ public:
     virtual MMechanicalState* createMapping(const char* name = "contactPoints") = 0;
     virtual void cleanup() = 0;
     virtual void resize(int size) = 0;
-    //
-    virtual int addPoint(const Coord& c, int index, Real& r) = 0;
+
+    //after detecting a point in collide, this point need to be added to the mapping
+    //There are two way for adding the point, by its nature of referentiel : global or local.
+
+    //Adding a point of the global referentiel to the mapping
+    virtual int addPoint(const Coord& /*P*/, int /*elementId*/, Real& /*r*/)
+    {
+        std::cout << "WARNING[BaseContactMapper] addPoint is called but not implemented" << std::endl; return -1;
+    }
+    //Adding a point of the local referentiel(barycentric coordinate) to the mapping
+    //TODO use this functions for barycentric contact mapper
+    virtual int addBaryPoint(const Vector3& /*baryP*/, int /*elementId*/, Real& /*r*/)
+    {
+        std::cout << "WARNING[BaseContactMapper] addBaryPoint is called but not implemented" << std::endl; return -1;
+    }
+
+
     virtual void update() = 0;
     virtual void updateXfree() = 0;
 

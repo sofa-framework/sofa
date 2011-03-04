@@ -124,15 +124,15 @@ void FrictionContact<BSplineModel, PointModel>::activateMappers()
         int index2 = elem2.getIndex();
         //std::cout<<" indices :"<<index1<<" - "<<index2<<std::endl;
 
-        DataTypes1::Real r1 = o->baryCoords[0][0];
-        DataTypes2::Real r2 = o->baryCoords[1][0];
+        DataTypes1::Real r1 = 0.;
+        DataTypes2::Real r2 = 0.;
         //double constraintValue = ((o->point[1] - o->point[0]) * o->normal) - intersectionMethod->getContactDistance();
 
         // Create mapping for first point
-        index1 = mapper1.addPoint(o->point[0], index1, r1);
+        index1 = mapper1.addBaryPoint(o->baryCoords[0], index1, r1);
         // Create mapping for second point
         index2 = selfCollision ? mapper1.addPoint(o->point[1], index2, r2) : mapper2.addPoint(o->point[1], index2, r2);
-        double distance = d0;
+        double distance = d0 + r1 + r2;
 
         mappedContacts[i].first.first = index1;
         mappedContacts[i].first.second = index2;
@@ -186,15 +186,15 @@ void FrictionContact<BSplineModel, SphereModel>::activateMappers()
         int index2 = elem2.getIndex();
         //std::cout<<" indices :"<<index1<<" - "<<index2<<std::endl;
 
-        DataTypes1::Real r1 = o->baryCoords[0][0];
-        DataTypes2::Real r2 = o->baryCoords[1][0];
+        DataTypes1::Real r1 = 0.;
+        DataTypes2::Real r2 = 0.;
         //double constraintValue = ((o->point[1] - o->point[0]) * o->normal) - intersectionMethod->getContactDistance();
 
         // Create mapping for first point
-        index1 = mapper1.addPoint(o->point[0], index1, r1);
+        index1 = mapper1.addBaryPoint(o->baryCoords[0], index1, r1);
         // Create mapping for second point
         index2 = selfCollision ? mapper1.addPoint(o->point[1], index2, r2) : mapper2.addPoint(o->point[1], index2, r2);
-        double distance = d0;
+        double distance = d0 + r1 + r2;
 
         mappedContacts[i].first.first = index1;
         mappedContacts[i].first.second = index2;
