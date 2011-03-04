@@ -202,7 +202,7 @@ public:
     typedef double Real;
     static __inline__ __device__ __host__ CudaRigidCoord3<double> make(Real x, Real y, Real z, Real rx, Real ry, Real rz, Real rw)
     {
-        CudaRigidCoord3<double> r; r.pos[0] = x; r.pos[1] = y; r.pos[2] = y; r.rot[0] = rx; r.rot[1] = ry; r.rot[2] = rz; r.rot[3] = rw; return r;
+        CudaRigidCoord3<double> r; r.pos[0] = x; r.pos[1] = y; r.pos[2] = z; r.rot[0] = rx; r.rot[1] = ry; r.rot[2] = rz; r.rot[3] = rw; return r;
     }
     static __inline__ __device__ __host__ CudaRigidCoord3<double> make(CudaRigidCoord3<double> v)
     {
