@@ -1439,9 +1439,9 @@ void LocalMinDistance::draw()
 #ifdef SOFA_DEV
 
 //Copy of Line computation. TODO_Spline : finding adaptive and optimized computation for Spline
-bool LocalMinDistance::testValidity(CubicBezierCurve& /*spline*/, const Vector3& /*PQ*/)
+bool LocalMinDistance::testValidity(CubicBezierCurve& spline, const Vector3& /*PQ*/)
 {
-    return true;
+    return spline.isActivated();
 }
 
 
@@ -1450,7 +1450,7 @@ bool LocalMinDistance::testIntersection(CubicBezierCurve& e2, Point& e1)
 {
 
 
-    if(!e1.activated(e2.getCollisionModel()) || !e2.activated(e1.getCollisionModel()))
+    if(!e1.activated(e2.getCollisionModel()) || !e2.activated(e1.getCollisionModel()) || !e2.isActivated())
         return false;
 
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
