@@ -1,0 +1,157 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                              SOFA :: Framework                              *
+*                                                                             *
+* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#ifndef SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_H
+#define SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_H
+
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/MechanicalState.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
+
+namespace sofa
+{
+
+namespace core
+{
+
+namespace behavior
+{
+
+/**
+ * Component computing contact forces within a simulated body using the compliance method.
+ */
+template<class TDataTypes>
+class ConstraintCorrection : public BaseConstraintCorrection
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(ConstraintCorrection, TDataTypes), BaseConstraintCorrection);
+
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowConstIterator MatrixDerivRowConstIterator;
+    typedef typename DataTypes::MatrixDeriv::ColConstIterator MatrixDerivColConstIterator;
+    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
+
+    /// Default Constructor
+    ConstraintCorrection(core::behavior::MechanicalState< DataTypes > *ms = NULL)
+        : mstate(ms)
+    {
+    };
+
+    /// Default Destructor
+    virtual ~ConstraintCorrection()
+    {
+    };
+
+    void init();
+
+    /// Compute position correction from the constraint resolution (LCP) calculated force
+    ///
+    /// @param cparams
+    /// @param res is the position result VecId
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecCoordId /*res*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
+
+    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * /*cparams*/, Data< VecCoord > &/*res*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) {};
+
+    /// Compute velocity correction from the constraint resolution (LCP) calculated force
+    ///
+    /// @param cparams
+    /// @param res is the velocity result VecId
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*res*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
+
+    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &/*res*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) {};
+
+    /// Converts constraint force from the constraints space to the motion space and stores it in f vector
+    ///
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    void setConstraintForceInMotionSpace(Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/);
+
+    /// Converts constraint force from the constraints space to the motion space and accumulates it in f vector
+    ///
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    void addConstraintForceInMotionSpace(Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/);
+
+
+    /// Pre-construction check method called by ObjectFactory.
+    template< class T >
+    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    {
+        if (dynamic_cast<behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            return false;
+
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const ConstraintCorrection<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
+protected:
+    behavior::MechanicalState<DataTypes> *mstate;
+};
+
+
+#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
+
+using namespace sofa::defaulttype;
+
+extern template class SOFA_CORE_API ConstraintCorrection< Vec3dTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< Vec3fTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< Vec1dTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< Vec1fTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< Rigid3dTypes >;
+extern template class SOFA_CORE_API ConstraintCorrection< Rigid3fTypes >;
+
+#endif
+
+} // namespace behavior
+
+} // namespace core
+
+} // namespace sofa
+
+#endif // SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_H
