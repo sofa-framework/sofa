@@ -168,14 +168,13 @@ void Simulation::init ( Node* root )
     // and put the VisualModels in a separate graph, rooted at getVisualRoot()
     root->execute<InitVisitor>(params);
 
+    // Save reset state for later uses in reset()
+    root->execute<StoreResetStateVisitor>(params);
     {
         // Why do we need  a copy of the params here ?
         sofa::core::MechanicalParams mparams(*params);
         root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
     }
-
-    // Save reset state for later uses in reset()
-    root->execute<StoreResetStateVisitor>(params);
 
     //Get the list of instruments present in the scene graph
     getInstruments(root);
