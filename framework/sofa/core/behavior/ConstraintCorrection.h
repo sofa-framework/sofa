@@ -65,7 +65,7 @@ public:
     typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
 
     /// Default Constructor
-    ConstraintCorrection(core::behavior::MechanicalState< DataTypes > *ms = NULL)
+    ConstraintCorrection(MechanicalState< DataTypes > *ms = NULL)
         : mstate(ms)
     {
     };
@@ -77,25 +77,45 @@ public:
 
     void init();
 
+    /// Compute motion correction from the constraint resolution (LCP) calculated force
+    ///
+    /// @param cparams
+    /// @param x is the position result VecId
+    /// @param v is the velocity result VecId
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    virtual void computeAndApplyMotionCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecCoordId /*x*/, core::MultiVecDerivId /*v*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
+
+    virtual void computeAndApplyMotionCorrection(const core::ConstraintParams * /*cparams*/, Data< VecCoord > &/*x*/, Data< VecDeriv > &/*v*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) {};
+
     /// Compute position correction from the constraint resolution (LCP) calculated force
     ///
     /// @param cparams
-    /// @param res is the position result VecId
+    /// @param x is the position result VecId
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecCoordId /*res*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
+    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecCoordId /*x*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
 
-    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * /*cparams*/, Data< VecCoord > &/*res*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) {};
+    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * /*cparams*/, Data< VecCoord > &/*x*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) {};
 
     /// Compute velocity correction from the constraint resolution (LCP) calculated force
     ///
     /// @param cparams
-    /// @param res is the velocity result VecId
+    /// @param v is the velocity result VecId
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*res*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
+    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*v*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/);
 
-    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &/*res*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) {};
+    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &/*v*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) {};
+
+    /// Apply predictive constraint force
+    ///
+    /// @param cparams
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    virtual void applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector *lambda);
+
+    virtual void applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) {};
 
     /// Converts constraint force from the constraints space to the motion space and stores it in f vector
     ///
@@ -109,12 +129,26 @@ public:
     /// @param lambda is the constraint space force vector
     void addConstraintForceInMotionSpace(Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/);
 
+    /// Converts constraint force from the constraints space to the motion space and stores it in f vector
+    ///
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    /// @param activeDofs stores constrained dofs indices
+    void setConstraintForceInMotionSpace(Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/, std::list< int > &activeDofs);
+
+    /// Converts constraint force from the constraints space to the motion space and accumulates it in f vector
+    ///
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    /// @param activeDofs stores constrained dofs indices
+    void addConstraintForceInMotionSpace(Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/, std::list< int > &activeDofs);
+
 
     /// Pre-construction check method called by ObjectFactory.
     template< class T >
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast< MechanicalState<DataTypes>* >(context->getMechanicalState()) == NULL)
             return false;
 
         return BaseObject::canCreate(obj, context, arg);
@@ -130,8 +164,18 @@ public:
         return DataTypes::Name();
     }
 
+    MechanicalState<DataTypes> *getMState() const
+    {
+        return mstate;
+    }
+
+    void setMState(MechanicalState<DataTypes> *_mstate)
+    {
+        mstate = _mstate;
+    }
+
 protected:
-    behavior::MechanicalState<DataTypes> *mstate;
+    MechanicalState<DataTypes> *mstate;
 };
 
 

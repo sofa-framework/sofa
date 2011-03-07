@@ -48,10 +48,25 @@ void ConstraintCorrection< DataTypes >::init()
 
 
 template< class DataTypes >
+void ConstraintCorrection< DataTypes >::computeAndApplyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda)
+{
+    if (mstate)
+    {
+        Data< VecCoord > *x_d = x[mstate].write();
+        Data< VecDeriv > *v_d = v[mstate].write();
+        Data< VecDeriv > *f_d = f[mstate].write();
+
+        if (x_d && v_d && f_d)
+        {
+            computeAndApplyMotionCorrection(cparams, *x_d, *v_d, *f_d, lambda);
+        }
+    }
+}
+
+
+template< class DataTypes >
 void ConstraintCorrection< DataTypes >::computeAndApplyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId res, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda)
 {
-    std::cout << "computeAndApplyPositionCorrection\n";
-
     if (mstate)
     {
         Data< VecCoord > *res_d = res[mstate].write();
@@ -76,6 +91,21 @@ void ConstraintCorrection< DataTypes >::computeAndApplyVelocityCorrection(const 
         if (res_d && f_d)
         {
             computeAndApplyVelocityCorrection(cparams, *res_d, *f_d, lambda);
+        }
+    }
+}
+
+
+template< class DataTypes >
+void ConstraintCorrection< DataTypes >::applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda)
+{
+    if (mstate)
+    {
+        Data< VecDeriv > *f_d = f[mstate].write();
+
+        if (f_d)
+        {
+            applyPredictiveConstraintForce(cparams, *f_d, lambda);
         }
     }
 }
@@ -151,6 +181,87 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< Ve
     }
 
     f.endEdit();
+}
+
+
+template< class DataTypes >
+void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector *lambda, std::list< int > &activeDofs)
+{
+    VecDeriv& force = *f.beginEdit();
+
+    const unsigned int numDOFs = mstate->getSize();
+
+    force.clear();
+    force.resize(numDOFs);
+    for (unsigned int i = 0; i < numDOFs; i++)
+        force[i] = Deriv();
+
+    const MatrixDeriv& c = *mstate->getC();
+
+    MatrixDerivRowConstIterator rowItEnd = c.end();
+
+    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        const double fC1 = lambda->element(rowIt.index());
+
+        if (fC1 != 0.0)
+        {
+            MatrixDerivColConstIterator colItEnd = rowIt.end();
+
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+            {
+                force[colIt.index()] += colIt.val() * fC1;
+                activeDofs.push_back(colIt.index());
+            }
+        }
+    }
+
+    f.endEdit();
+
+    activeDofs.sort();
+    activeDofs.unique();
+}
+
+
+template< class DataTypes >
+void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector *lambda, std::list< int > &activeDofs)
+{
+    VecDeriv& force = *f.beginEdit();
+
+    const unsigned int numDOFs = mstate->getSize();
+    const unsigned int fPrevSize = force.size();
+
+    if (numDOFs > fPrevSize)
+    {
+        force.resize(numDOFs);
+        for (unsigned int i = fPrevSize; i < numDOFs; i++)
+            force[i] = Deriv();
+    }
+
+    const MatrixDeriv& c = *mstate->getC();
+
+    MatrixDerivRowConstIterator rowItEnd = c.end();
+
+    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        const double fC1 = lambda->element(rowIt.index());
+
+        if (fC1 != 0.0)
+        {
+            MatrixDerivColConstIterator colItEnd = rowIt.end();
+
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+            {
+                force[colIt.index()] += colIt.val() * fC1;
+                activeDofs.push_back(colIt.index());
+            }
+        }
+    }
+
+    f.endEdit();
+
+    activeDofs.sort();
+    activeDofs.unique();
 }
 
 
