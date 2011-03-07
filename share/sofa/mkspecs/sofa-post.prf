@@ -3,6 +3,10 @@
 #   This file should be included at the end of each pro file 
 ########################################################################
 
+!contains(TEMPLATE, subdirs) {
+	loadDependencies()
+}
+
 BUILD_SYSTEM_FILES = \
 	$$SOFA_FEATURES_PATH/sofa-pre.prf \
 	$$SOFA_FEATURES_PATH/sofa-post.prf

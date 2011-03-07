@@ -86,11 +86,16 @@ message(ROOT_PATH     $$escape_expand(\\t)= $$ROOT_PATH)
 ########################################################################
 
 CUSTOM_FEATURES_FILE = $$ROOT_BUILD_DIR/sofa-local
+INSTALLED_FEATURE_FILE = $$FEATURES_DIR/sofa-local
+
+DEFAULT_DEPENDENCY_FILE = $$ROOT_SRC_DIR/dependencies.pri
+CUSTOM_DEPENDENCY_FILE = $$ROOT_BUILD_DIR/dependencies-local.pri
+
+
 exists($${CUSTOM_FEATURES_FILE}.prf) {
 	load($$CUSTOM_FEATURES_FILE)
 }
 
-INSTALLED_FEATURE_FILE = $$FEATURES_DIR/sofa-local
 exists($${INSTALLED_FEATURE_FILE}.prf) {
 	load($$INSTALLED_FEATURE_FILE)
 }
@@ -263,11 +268,11 @@ defineTest(isSourceAvailable) {
 }
 
 ##
-# This function activates the compilation of the specified library if available.
+# This function activates the compilation of the specified artifact if available.
 # If it is not available for compilation it looks for an installed version, and
-# will complains if the library is missing.
+# will complains if the artifact is missing.
 #
-defineTest(activateLib) {
+defineTest(addInstallableSubdir) {
 	name = $$1
 	dir  = $$2
 	deps = $$3
@@ -278,13 +283,6 @@ defineTest(activateLib) {
 			error(activateLib: Cannot find $$name library)
 		}
 	}
-}
-
-defineTest(activateApp) {
-	name = $$1
-	dir  = $$2
-	deps = $$3
-	addSubdirs($$dir, $$deps)
 }
 
 ##
@@ -383,4 +381,52 @@ defineTest(requireSofaLib) {
 
 	export (INCLUDEPATH)
 	export (LIBS)
+}
+
+defineTest(declare) {
+	varname = $$1
+	project = $$2
+	dependencies = $$3
+
+	eval($${varname}.name = $$varname)
+	eval($${varname}.project = $$project)
+	eval($${varname}.deps = $$dependencies)
+	
+	export($${varname}.name)
+	export($${varname}.project)
+	export($${varname}.deps)
+}
+
+defineTest(enable) {
+	name = $$1
+	!equals(name, $$eval($${name}.name)): error(undeclared artifact $$name)
+	project = $$eval($${name}.project)
+	deps = $$eval($${name}.deps)
+	for(dep, deps) {
+		deps_dirs += $$eval($${dep}.project)
+	}
+	addInstallableSubdir($$name, $$project, $$deps_dirs)
+}
+
+defineTest(loadDependencies) {
+	dependencies = $$eval($${TARGET}.deps)
+	for(dep, dependencies) {
+		name = $$eval($${dep}.name)
+		project = $$eval($${dep}.project)
+		sofasrc = find(project, ^applications|framework|modules/.+$)
+		isEmpty(sofasrc) {
+			requireLib($$name, $$project)
+		} else {
+			requireSofaLib($$name, $$project)
+		}
+	}
+}
+
+########################################################################
+# Loading dependencies declarations
+########################################################################
+
+include($$DEFAULT_DEPENDENCY_FILE)
+exists($$CUSTOM_DEPENDENCY_FILE) {
+	include($$CUSTOM_DEPENDENCY_FILE)
 }
