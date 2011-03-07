@@ -164,13 +164,46 @@ void LinearVelocityConstraint<TDataTypes>::init()
     my_subset.setRemovalParameter( (void *) this );
 
     x0.resize(0);
+    xP.resize(0);
     nextV = prevV = Deriv();
+
+    currentTime = -1.0;
+    finished = false;
+}
+
+template <class DataTypes>
+void LinearVelocityConstraint<DataTypes>::reset()
+{
+    nextT = prevT = 0.0;
+    nextV = prevV = Deriv();
+
+    currentTime = -1.0;
+    finished = false;
 }
 
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::projectResponse(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*resData*/)
+void LinearVelocityConstraint<TDataTypes>::projectResponse(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& resData)
 {
+    helper::WriteAccessor<DataVecDeriv> res = resData;
+    VecDeriv& dx = res.wref();
+
+    Real cT = (Real) this->getContext()->getTime();
+    if ((cT != currentTime) || !finished)
+    {
+        findKeyTimes();
+    }
+
+    if (finished && nextT != prevT)
+    {
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+
+        //set the motion to the Dofs
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            dx[*it] = Deriv();
+        }
+    }
 
 }
 
@@ -180,62 +213,34 @@ void LinearVelocityConstraint<TDataTypes>::projectVelocity(const core::Mechanica
     helper::WriteAccessor<DataVecDeriv> dx = vData;
     Real cT = (Real) this->getContext()->getTime();
 
-    if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin() && nextT!=prevT)
+    if ((cT != currentTime) || !finished)
     {
-        nextT = *m_keyTimes.getValue().begin();
-        prevT = nextT;
+        findKeyTimes();
+    }
 
-        bool finished=false;
+    if (finished && nextT != prevT)
+    {
+        //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
+        Deriv v = ((nextV - prevV)*((cT - prevT)/(nextT - prevT))) + prevV;
 
-        typename helper::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
-        typename VecDeriv::const_iterator it_m = m_keyVelocities.getValue().begin();
-
-        //WARNING : we consider that the key-events are in chronological order
-        //here we search between which keyTimes we are, to know which are the motion to interpolate
-        while( it_t != m_keyTimes.getValue().end() && !finished)
-        {
-            if( *it_t <= cT)
-            {
-                prevT = *it_t;
-                prevV = *it_m;
-            }
-            else
-            {
-                nextT = *it_t;
-                nextV = *it_m;
-                finished = true;
-            }
-            it_t++;
-            it_m++;
-        }
         const SetIndexArray & indices = m_indices.getValue().getArray();
         const SetIndexArray & coordinates = m_coordinates.getValue().getArray();
 
-        if (finished)
+        if (coordinates.size() == 0)
         {
-            //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
-            Deriv v = ((nextV - prevV)*((cT - prevT)/(nextT - prevT))) + prevV;
-
-#if 0
-            std::cout<<"LinearVelocityConstraint::projectVelocity, TIME = "<<cT<<", v = "<<v<<std::endl;
-#endif
-
-            if (coordinates.size() == 0)
+            //set the motion to the Dofs
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
-                //set the motion to the Dofs
-                for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-                {
-                    dx[*it] = v;
-                }
+                dx[*it] = v;
             }
-            else
+        }
+        else
+        {
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
-                for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+                for(SetIndexArray::const_iterator itInd = coordinates.begin(); itInd != coordinates.end(); ++itInd)
                 {
-                    for(SetIndexArray::const_iterator itInd = coordinates.begin(); itInd != coordinates.end(); ++itInd)
-                    {
-                        dx[*it][*itInd] = v[*itInd];
-                    }
+                    dx[*it][*itInd] = v[*itInd];
                 }
             }
         }
@@ -247,28 +252,75 @@ template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
+
     //initialize initial Dofs positions, if it's not done
     if (x0.size() == 0)
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
         x0.resize( x.size() );
+        xP.resize( x.size() );
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
             x0[*it] = x[*it];
+            xP[*it] = x0[*it];
+        }
     }
 
     Real cT = (Real) this->getContext()->getTime();
 
-    //if we found 2 keyTimes, we have to interpolate a position (linear interpolation)
+    if ((cT != currentTime) || !finished)
+    {
+        findKeyTimes();
+    }
+
+
+    Real dTsimu = (Real) this->getContext()->getDt();
+
+
+    if(finished)
+    {
+        Real dt = (cT - prevT) / (nextT - prevT);
+        Deriv m = (nextV-prevV)*dt + prevV;
+
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & coordinates = m_coordinates.getValue().getArray();
+
+        if (coordinates.size() == 0)
+        {
+            //set the motion to the Dofs
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                x[*it] = xP[*it] + m*dTsimu;
+                xP[*it] = x[*it];
+            }
+        }
+        else
+        {
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                for(SetIndexArray::const_iterator itInd = coordinates.begin(); itInd != coordinates.end(); ++itInd)
+                {
+                    x[*it][*itInd] = xP[*it][*itInd] + m[*itInd]*dTsimu;
+                    xP[*it] = x[*it];
+                }
+            }
+        }
+    }
+}
+
+template <class DataTypes>
+void LinearVelocityConstraint<DataTypes>::findKeyTimes()
+{
+    Real cT = (Real) this->getContext()->getTime();
+    finished = false;
+
     if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())
     {
-
         nextT = *m_keyTimes.getValue().begin();
         prevT = nextT;
 
-        bool finished=false;
-
         typename helper::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
-        typename VecDeriv::const_iterator it_m = m_keyVelocities.getValue().begin();
+        typename VecDeriv::const_iterator it_v = m_keyVelocities.getValue().begin();
 
         //WARNING : we consider that the key-events are in chronological order
         //here we search between which keyTimes we are, to know which are the motion to interpolate
@@ -277,56 +329,19 @@ void LinearVelocityConstraint<TDataTypes>::projectPosition(const core::Mechanica
             if( *it_t <= cT)
             {
                 prevT = *it_t;
-                prevV = *it_m;
+                prevV = *it_v;
             }
             else
             {
                 nextT = *it_t;
-                nextV = *it_m;
+                nextV = *it_v;
                 finished = true;
             }
             it_t++;
-            it_m++;
-        }
-
-        const SetIndexArray & indices = m_indices.getValue().getArray();
-        const SetIndexArray & coordinates = m_coordinates.getValue().getArray();
-        Real dTsimu = (Real) this->getContext()->getDt();
-
-
-        if(finished)
-        {
-            Real dt = (cT - prevT) / (nextT - prevT);
-            Deriv m = (nextV-prevV)*dt + prevV;
-
-#if 0
-            std::cout<<"LinearVelocityConstraint::projectPosition, TIME = "<<cT<<", m = "<<m<<", dTsimu = "<<dTsimu<<std::endl;
-#endif
-
-            if (coordinates.size() == 0)
-            {
-                //set the motion to the Dofs
-                for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-                {
-                    x[*it] = x[*it] + m*dTsimu;
-                }
-            }
-            else
-            {
-                for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-                {
-                    for(SetIndexArray::const_iterator itInd = coordinates.begin(); itInd != coordinates.end(); ++itInd)
-                    {
-                        x[*it][*itInd] = x[*it][*itInd] + m[*itInd]*dTsimu;
-#if 0
-                        std::cout<<"LinearVelocityConstraint::projectPosition x["<<*it<<"] = "<<x[*it][*itInd]<<std::endl;
-#endif
-                    }
-                }
-            }
+            it_v++;
         }
     }
-}
+}// LinearVelocityConstraint::findKeyTimes
 
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& /*cData*/)

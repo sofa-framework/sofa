@@ -82,8 +82,10 @@ public :
     Real prevT, nextT;
     ///the velocities corresponding to the surrouding key times
     Deriv prevV, nextV;
-    ///position at the previous step for constrained DOFs position
+    ///position at the initial step for constrained DOFs position
     VecCoord x0;
+    ///position at the previous step for constrained DOFs position
+    VecCoord xP;
 
     LinearVelocityConstraint();
 
@@ -104,6 +106,7 @@ public :
 
     /// -- Constraint interface
     void init();
+    void reset();
     void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
     void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
@@ -123,6 +126,17 @@ protected:
 
     /// Define RemovalFunction (for topology changes)
     static void FCRemovalFunction ( int , void*);
+
+private:
+
+    /// to keep the time corresponding to the key times
+    Real currentTime;
+
+    /// to know if we found the key times
+    bool finished;
+
+    /// find previous and next time keys
+    void findKeyTimes();
 };
 
 
