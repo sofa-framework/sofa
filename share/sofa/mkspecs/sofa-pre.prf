@@ -85,12 +85,12 @@ message(ROOT_PATH     $$escape_expand(\\t)= $$ROOT_PATH)
 #		If you run "make install" this file will be installed.
 ########################################################################
 
-CUSTOM_FEATURES_FILE = $$ROOT_BUILD_DIR/sofa-pre-custom
+CUSTOM_FEATURES_FILE = $$ROOT_BUILD_DIR/sofa-local
 exists($${CUSTOM_FEATURES_FILE}.prf) {
 	load($$CUSTOM_FEATURES_FILE)
 }
 
-INSTALLED_FEATURE_FILE = $$FEATURES_DIR/sofa-pre-custom
+INSTALLED_FEATURE_FILE = $$FEATURES_DIR/sofa-local
 exists($${INSTALLED_FEATURE_FILE}.prf) {
 	load($$INSTALLED_FEATURE_FILE)
 }
@@ -194,18 +194,33 @@ defineTest(addCommand) {
 # Dependency management functions
 ########################################################################
 
+defineTest(isProjectFile) {
+	path = $$eval($$1)
+	match = $$find(path, ^.+\\.pro$)
+	isEmpty(match) {
+		return(false)
+	} else {
+		return(true)
+	}
+}
+
 defineTest(addSubdirs) {
 	for(subdirs, 1) {
 		entries = $$files($$subdirs)
 		for(entry, entries) {
-			name = $$replace(entry, [/\\\\], _)
+			name = $$replace(entry, [/\\\\\\.], _)
 			SUBDIRS += $$name
-			eval ($${name}.subdir = $$entry)
+			isProjectFile(entry) {
+				eval  ($${name}.file = $$entry)
+				export($${name}.file)
+			} else {
+				eval  ($${name}.subdir = $$entry)
+				export($${name}.subdir)
+			}
 
 			for(dep, 2) {
-				eval ($${name}.depends += $$replace(dep, [/\\\\], _))
+				eval ($${name}.depends += $$replace(dep, [/\\\\\\.], _))
 			}
-			export ($${name}.subdir)
 			export ($${name}.depends)
 		}
 	}
@@ -235,7 +250,12 @@ defineTest(isSourceAvailable) {
 	name = $$1
 	dir  = $$2
 	proname = $$basename(dir)
-	exists($$ROOT_SRC_DIR/$$dir/$${proname}.pro) {
+	isProjectFile(proname) {
+		dir = $$dirname(dir)
+	} else {
+		proname = $${proname}.pro
+	}
+	exists($$ROOT_SRC_DIR/$$dir/$$proname) {
 		return (true)
 	}	else {
 		return (false)
@@ -255,7 +275,7 @@ defineTest(activateLib) {
 		addSubdirs($$dir, $$deps)
 	} else {
 		!isInstalled($$name) {
-			error(Cannot find $$name library)
+			error(activateLib: Cannot find $$name library)
 		}
 	}
 }
@@ -287,16 +307,28 @@ defineTest(activateApp) {
 #
 defineTest(requireLib) {
 	name = $$1
-	dir  = $$2
+	project  = $$2
+	isEmpty(name)   : error(missing name parameter in requireLib)
+	isEmpty(project): error(missing project parameter in requireLib)
+
 	OLD_INCLUDEPATH = $$INCLUDEPATH
 	OLD_LIBS = $$LIBS
 
-	isSourceAvailable($$name, $$dir) {
+	isProjectFile(project) {
+		dir = $$dirname(project)
+	} else {
+		dir = $$project
+	}
+
+	isSourceAvailable($$name, $$project) {
 		message(Using shipped version of $$name)
 		MY_FEATUREFILE = $$ROOT_SRC_DIR/$$dir/$${name}
 		MY_INCLUDEPATH = $$ROOT_SRC_DIR/$$dir
 		MY_LIBRARYPATH = -L$$LIB_DESTDIR
 	} else {
+		!isInstalled($$name) {
+			error(requireLib: Cannot find $$name library)
+		}
 		message(Using installed version of $$name)
 		MY_FEATUREFILE = $$FEATURES_DIR/$${name}
 		MY_INCLUDEPATH = $$INSTALL_INCLUDE_DIR/$$dir
@@ -329,14 +361,20 @@ defineTest(requireLib) {
 #
 defineTest(requireSofaLib) {
 	name = $$1
-	dir  = $$2
-	sourcedir = $$replace(dir, (applications|framework|modules)/.+, \\1)
+	project = $$2
+	isEmpty(name)   : error(missing name parameter in requireSofaLib)
+	isEmpty(project): error(missing project parameter in requireSofaLib)
 
-	isSourceAvailable($$name, $$dir) {
+	sourcedir = $$replace(project, (applications|framework|modules)/.+, \\1)
+
+	isSourceAvailable($$name, $$project) {
 		message(Using shipped version of $$name)
 		INCLUDEPATH *= $$ROOT_SRC_DIR/$$sourcedir
 		LIBS *= -L$$LIB_DESTDIR
 	} else {
+		!isInstalled($$name) {
+			error(requireSofaLib: Cannot find $$name library)
+		}
 		message(Using installed version of $$name)
 		INCLUDEPATH *= $$INSTALL_INCLUDE_DIR/$$sourcedir
 		LIBS *= -L$$INSTALL_LIB_DIR
