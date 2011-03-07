@@ -52,12 +52,12 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MechanicalObject
-typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdRigidTypes<2,float> > MechanicalObjectRigid2f;
-typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdRigidTypes<3,float> > MechanicalObjectRigid3f;
-typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > MechanicalObject1f;
-typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > MechanicalObject2f;
-typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > MechanicalObject3f;
-typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > MechanicalObject6f;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<2, float> > MechanicalObjectRigid2f;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, float> > MechanicalObjectRigid3f;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > MechanicalObject1f;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > MechanicalObject2f;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MechanicalObject3f;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > MechanicalObject6f;
 
 
 
