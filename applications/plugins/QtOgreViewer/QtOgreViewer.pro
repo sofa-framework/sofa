@@ -105,6 +105,6 @@ README_FILE = QtOgreViewer.txt
               QMAKE_CXXFLAGS += $$system(pkg-config --cflags OGRE )
               LIBS += $$system(pkg-config --libs OGRE )
               }
-            QMAKE_POST_LINK = copy \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"
+            QMAKE_POST_LINK = cp \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"
         }
 

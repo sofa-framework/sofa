@@ -1,0 +1,35 @@
+<Node name="root" dt="0.02" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1" gravity="0 -10 0">
+	
+	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
+	<Object type="BruteForceDetection" name="N2" />
+	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
+	<Object type="CollisionResponse" name="Response" response="default" />
+	<Object type="CollisionGroup" name="Group" />
+	
+	<Node name="M1">
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		
+<!-- 		<Object type="SparseLUSolver" printLog="1" verbose="0" /> -->
+<!-- 		<Object type="SparseLDLSolver" printLog="1" verbose="0" /> -->
+		<Object type="SparseCholeskySolver" printLog="1" verbose="0" />
+<!-- 		<Object type="CGLinearSolver" iterations="10" threshold="1.0e-9" printLog="1" verbose="0" /> -->
+		<!--<Object type="CGLinearSolver" iterations="1000" threshold="1.0e-9" printLog="1" verbose="0" template="CompressedRowSparseMatrix3d" tags="M" />-->
+		<!--<Object type="PCGLinearSolver" iterations="1000" threshold="1.0e-9" printLog="0" refresh="0" verbose="0" />-->
+		<!--<Object type="JacobiPreconditioner" name="Jacobi Preconditioner" />-->
+		<!--<Object type="BlockJacobiPreconditioner" name="Block Jacobi Preconditioner" bandWidth="2"/>-->
+		<!--<Object type="SSORPreconditioner" name="SSOR Preconditioner" template="CompressedRowSparseMatrix3d" />-->
+		<!--<Object type="CholeskySolver" name="Cholesky Preconditioner" />-->
+		<!--<Object type="PrecomputedConstraintCorrectionPreconditioner" name="PrecomputedConstraintCorrectionPreconditioner Preconditioner"/>-->
+		
+		<Object type="MechanicalObject" />
+		<Object type="UniformMass" mass="1" />
+		<Object type="RegularGrid"
+			nx="4" ny="4" nz="20"
+			xmin="-9" xmax="-6"
+			ymin="0" ymax="3"
+			zmin="0" zmax="19"
+		/>
+		<Object type="FixedConstraint" indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
+		<Object type="HexahedronFEMForceField" name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
+	</Node>
+</Node>

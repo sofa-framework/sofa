@@ -254,7 +254,7 @@ void Simulation::animate ( Node* root, double dt )
         root->execute ( act );
         root->setTime ( startTime + (i+1)* act.getDt() );
         getVisualRoot()->setTime ( root->getTime() );
-        root->execute<UpdateSimulationContextVisitor>(params);
+        root->execute<UpdateSimulationContextVisitor>(params);  // propagate time
         getVisualRoot()->execute<UpdateSimulationContextVisitor>(params);
     }
 

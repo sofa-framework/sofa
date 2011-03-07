@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<Node 	name="root" gravity="0 -9.81 0" dt="0.02" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0"  >
+<Node 	name="root" gravity="0 -9.81 0" dt="0.02"   >
 	<DefaultPipeline name="CollisionPipeline"  verbose="0" />
 	<BruteForceDetection name="N2" />
 	<DefaultContactManager name="collision response"  response="default" />
-	<Node 	name="Liver" gravity="0 -9.81 0" depend="topo dofs"  >
+	<Node 	name="Liver" gravity="0 -9.81 0" depend="topo dofs"  showVisualModels="0" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
 		<EulerImplicitSolver name="cg_odesolver"  printLog="0" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-09"  threshold="1e-09" />
 		<MeshLoader name="meshLoader"  filename="mesh/liver.msh" />
@@ -13,7 +13,7 @@
 		<DiagonalMass template="Vec3d" name="computed using mass density"  massDensity="1" />
 		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="3000"  computeGlobalMatrix="0" />
 		<FixedConstraint template="Vec3d" name="FixedConstraint"  indices="3 39 64" />
-		<Node 	name="Visu" tags="Visual" gravity="0 -9.81 0"  >
+		<Node 	name="Visu" tags="Visual" gravity="0 -9.81 0"  showVisualModels="0" >
 			<OglModel template="ExtVec3f" name="VisualModel"  fileMesh="mesh/liver-smooth.obj" />
 			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping"  input="@../dofs"  output="@VisualModel" />
 		</Node>
