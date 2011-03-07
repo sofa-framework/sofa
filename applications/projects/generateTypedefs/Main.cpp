@@ -629,6 +629,7 @@ int main(int , char** )
     bannedComponents.insert(std::pair<std::string,std::string>("Controller","TetrahedronCuttingManager") );
     bannedComponents.insert(std::pair<std::string,std::string>("VisualModel","FlowVisualModel") );
 #endif
+    bannedComponents.insert(std::make_pair("ProjectiveConstraintSet","PartialLinearMovementConstraint"));
 
     sofa::component::init();
     SofaLibrary library; library.build();
