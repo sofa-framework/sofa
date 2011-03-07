@@ -53,13 +53,13 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for PrecomputedWarpPreconditioner
-typedef  sofa::component::linearsolver::PrecomputedWarpPreconditioner< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > PrecomputedWarpPreconditioner3d;
+typedef sofa::component::linearsolver::PrecomputedWarpPreconditioner<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PrecomputedWarpPreconditioner3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for WarpPreconditioner
-typedef  sofa::component::linearsolver::WarpPreconditioner< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > WarpPreconditioner3d;
+typedef sofa::component::linearsolver::WarpPreconditioner<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > WarpPreconditioner3d;
 
 
 

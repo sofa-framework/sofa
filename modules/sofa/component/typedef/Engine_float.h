@@ -56,6 +56,7 @@
 #include <sofa/component/engine/JoinPoints.h>
 #include <sofa/component/engine/MergePoints.h>
 #include <sofa/component/engine/MeshBarycentricMapperEngine.h>
+#include <sofa/component/engine/NormalsFromPoints.h>
 #include <sofa/component/engine/PlaneROI.h>
 #include <sofa/component/engine/PointsFromIndices.h>
 #include <sofa/component/engine/RandomPointDistributionInSurface.h>
@@ -73,148 +74,154 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for AverageCoord
-typedef  sofa::component::engine::AverageCoord< sofa::defaulttype::StdRigidTypes<2,float> > AverageCoordRigid2f;
-typedef  sofa::component::engine::AverageCoord< sofa::defaulttype::StdRigidTypes<3,float> > AverageCoordRigid3f;
-typedef  sofa::component::engine::AverageCoord< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > AverageCoord2f;
-typedef  sofa::component::engine::AverageCoord< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > AverageCoord3f;
+typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdRigidTypes<2, float> > AverageCoordRigid2f;
+typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdRigidTypes<3, float> > AverageCoordRigid3f;
+typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > AverageCoord2f;
+typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > AverageCoord3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for BoxROI
-typedef  sofa::component::engine::BoxROI< sofa::defaulttype::StdRigidTypes<3,float> > BoxROIRigid3f;
-typedef  sofa::component::engine::BoxROI< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > BoxROI3f;
+typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdRigidTypes<3, float> > BoxROIRigid3f;
+typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BoxROI3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for Distances
-typedef  sofa::component::engine::Distances< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > Distances3f;
+typedef sofa::component::engine::Distances<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > Distances3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ExtrudeSurface
-typedef  sofa::component::engine::ExtrudeSurface< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ExtrudeSurface3f;
+typedef sofa::component::engine::ExtrudeSurface<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ExtrudeSurface3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for GenerateRigidMass
-typedef  sofa::component::engine::GenerateRigidMass< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::RigidMass<3,float> > GenerateRigidMassRigid3f;
+typedef sofa::component::engine::GenerateRigidMass<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::RigidMass<3, float> > GenerateRigidMassRigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for GroupFilterYoungModulus
-typedef  sofa::component::engine::GroupFilterYoungModulus< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > GroupFilterYoungModulus3f;
+typedef sofa::component::engine::GroupFilterYoungModulus<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > GroupFilterYoungModulus3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for IndexValueMapper
-typedef  sofa::component::engine::IndexValueMapper< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > IndexValueMapper3f;
+typedef sofa::component::engine::IndexValueMapper<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IndexValueMapper3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for JoinPoints
-typedef  sofa::component::engine::JoinPoints< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > JoinPoints3f;
+typedef sofa::component::engine::JoinPoints<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > JoinPoints3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MergePoints
-typedef  sofa::component::engine::MergePoints< sofa::defaulttype::StdRigidTypes<3,float> > MergePointsRigid3f;
-typedef  sofa::component::engine::MergePoints< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > MergePoints3f;
+typedef sofa::component::engine::MergePoints<sofa::defaulttype::StdRigidTypes<3, float> > MergePointsRigid3f;
+typedef sofa::component::engine::MergePoints<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MergePoints3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MeshBarycentricMapperEngine
-typedef  sofa::component::engine::MeshBarycentricMapperEngine< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > MeshBarycentricMapperEngine3f;
+typedef sofa::component::engine::MeshBarycentricMapperEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MeshBarycentricMapperEngine3f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for NormalsFromPoints
+typedef sofa::component::engine::NormalsFromPoints<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > NormalsFromPoints3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for PlaneROI
-typedef  sofa::component::engine::PlaneROI< sofa::defaulttype::StdRigidTypes<3,float> > PlaneROIRigid3f;
-typedef  sofa::component::engine::PlaneROI< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > PlaneROI3f;
+typedef sofa::component::engine::PlaneROI<sofa::defaulttype::StdRigidTypes<3, float> > PlaneROIRigid3f;
+typedef sofa::component::engine::PlaneROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PlaneROI3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for PointsFromIndices
-typedef  sofa::component::engine::PointsFromIndices< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > PointsFromIndices3f;
+typedef sofa::component::engine::PointsFromIndices<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PointsFromIndices3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for RandomPointDistributionInSurface
-typedef  sofa::component::engine::RandomPointDistributionInSurface< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > RandomPointDistributionInSurface3f;
+typedef sofa::component::engine::RandomPointDistributionInSurface<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RandomPointDistributionInSurface3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for RigidEngine
-typedef  sofa::component::engine::RigidEngine< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > RigidEngine3f;
+typedef sofa::component::engine::RigidEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RigidEngine3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SphereROI
-typedef  sofa::component::engine::SphereROI< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SphereROI3f;
+typedef sofa::component::engine::SphereROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SphereROI3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for Spiral
-typedef  sofa::component::engine::Spiral< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > Spiral3f;
+typedef sofa::component::engine::Spiral<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > Spiral3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SubsetTopology
-typedef  sofa::component::engine::SubsetTopology< sofa::defaulttype::StdRigidTypes<3,float> > SubsetTopologyRigid3f;
-typedef  sofa::component::engine::SubsetTopology< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SubsetTopology3f;
+typedef sofa::component::engine::SubsetTopology<sofa::defaulttype::StdRigidTypes<3, float> > SubsetTopologyRigid3f;
+typedef sofa::component::engine::SubsetTopology<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SubsetTopology3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TextureInterpolation
-typedef  sofa::component::engine::TextureInterpolation< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > TextureInterpolation1f;
-typedef  sofa::component::engine::TextureInterpolation< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > TextureInterpolation2f;
-typedef  sofa::component::engine::TextureInterpolation< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > TextureInterpolation3f;
+typedef sofa::component::engine::TextureInterpolation<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > TextureInterpolation1f;
+typedef sofa::component::engine::TextureInterpolation<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > TextureInterpolation2f;
+typedef sofa::component::engine::TextureInterpolation<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TextureInterpolation3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TransformEngine
-typedef  sofa::component::engine::TransformEngine< sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > TransformEngineExt3f;
-typedef  sofa::component::engine::TransformEngine< sofa::defaulttype::StdRigidTypes<2,float> > TransformEngineRigid2f;
-typedef  sofa::component::engine::TransformEngine< sofa::defaulttype::StdRigidTypes<3,float> > TransformEngineRigid3f;
-typedef  sofa::component::engine::TransformEngine< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > TransformEngine1f;
-typedef  sofa::component::engine::TransformEngine< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > TransformEngine2f;
-typedef  sofa::component::engine::TransformEngine< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > TransformEngine3f;
+typedef sofa::component::engine::TransformEngine<sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TransformEngineExt3f;
+typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdRigidTypes<2, float> > TransformEngineRigid2f;
+typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdRigidTypes<3, float> > TransformEngineRigid3f;
+typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > TransformEngine1f;
+typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > TransformEngine2f;
+typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TransformEngine3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TransformPosition
-typedef  sofa::component::engine::TransformPosition< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > TransformPosition3f;
+typedef sofa::component::engine::TransformPosition<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TransformPosition3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ValuesFromPositions
-typedef  sofa::component::engine::ValuesFromPositions< sofa::defaulttype::StdRigidTypes<3,float> > ValuesFromPositionsRigid3f;
-typedef  sofa::component::engine::ValuesFromPositions< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ValuesFromPositions3f;
+typedef sofa::component::engine::ValuesFromPositions<sofa::defaulttype::StdRigidTypes<3, float> > ValuesFromPositionsRigid3f;
+typedef sofa::component::engine::ValuesFromPositions<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ValuesFromPositions3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for Vertex2Frame
-typedef  sofa::component::engine::Vertex2Frame< sofa::defaulttype::StdRigidTypes<3,float> > Vertex2FrameRigid3f;
+typedef sofa::component::engine::Vertex2Frame<sofa::defaulttype::StdRigidTypes<3, float> > Vertex2FrameRigid3f;
 
 
 
@@ -236,6 +243,7 @@ typedef JoinPoints3f JoinPoints3;
 typedef MergePointsRigid3f MergePointsRigid3;
 typedef MergePoints3f MergePoints3;
 typedef MeshBarycentricMapperEngine3f MeshBarycentricMapperEngine3;
+typedef NormalsFromPoints3f NormalsFromPoints3;
 typedef PlaneROIRigid3f PlaneROIRigid3;
 typedef PlaneROI3f PlaneROI3;
 typedef PointsFromIndices3f PointsFromIndices3;

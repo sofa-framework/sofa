@@ -46,6 +46,8 @@
 #endif
 
 
+#include <sofa/component/collision/ComplianceMatrixUpdateManager.h>
+#include <sofa/component/collision/ComplianceMatrixUpdateManagerCarving.h>
 #include <sofa/component/controller/EdgeSetController.h>
 #include <sofa/component/controller/HandStateController.h>
 #include <sofa/component/controller/JointSpringController.h>
@@ -55,41 +57,55 @@
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for ComplianceMatrixUpdateManager
+typedef sofa::component::collision::ComplianceMatrixUpdateManager<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ComplianceMatrixUpdateManager3f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for ComplianceMatrixUpdateManagerCarving
+typedef sofa::component::collision::ComplianceMatrixUpdateManagerCarving<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ComplianceMatrixUpdateManagerCarving3f;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for EdgeSetController
-typedef  sofa::component::controller::EdgeSetController< sofa::defaulttype::StdRigidTypes<3,float> > EdgeSetControllerRigid3f;
+typedef sofa::component::controller::EdgeSetController<sofa::defaulttype::StdRigidTypes<3, float> > EdgeSetControllerRigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for HandStateController
-typedef  sofa::component::controller::HandStateController< sofa::defaulttype::StdRigidTypes<3,float> > HandStateControllerRigid3f;
-typedef  sofa::component::controller::HandStateController< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > HandStateController1f;
+typedef sofa::component::controller::HandStateController<sofa::defaulttype::StdRigidTypes<3, float> > HandStateControllerRigid3f;
+typedef sofa::component::controller::HandStateController<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > HandStateController1f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for JointSpringController
-typedef  sofa::component::controller::JointSpringController< sofa::defaulttype::StdRigidTypes<3,float> > JointSpringControllerRigid3f;
+typedef sofa::component::controller::JointSpringController<sofa::defaulttype::StdRigidTypes<3, float> > JointSpringControllerRigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for LCPForceFeedback
-typedef  sofa::component::controller::LCPForceFeedback< sofa::defaulttype::StdRigidTypes<3,float> > LCPForceFeedbackRigid3f;
-typedef  sofa::component::controller::LCPForceFeedback< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > LCPForceFeedback1f;
+typedef sofa::component::controller::LCPForceFeedback<sofa::defaulttype::StdRigidTypes<3, float> > LCPForceFeedbackRigid3f;
+typedef sofa::component::controller::LCPForceFeedback<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > LCPForceFeedback1f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MechanicalStateController
-typedef  sofa::component::controller::MechanicalStateController< sofa::defaulttype::StdRigidTypes<3,float> > MechanicalStateControllerRigid3f;
-typedef  sofa::component::controller::MechanicalStateController< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > MechanicalStateController1f;
+typedef sofa::component::controller::MechanicalStateController<sofa::defaulttype::StdRigidTypes<3, float> > MechanicalStateControllerRigid3f;
+typedef sofa::component::controller::MechanicalStateController<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > MechanicalStateController1f;
 
 
 
 
 
 #ifdef SOFA_FLOAT
+typedef ComplianceMatrixUpdateManager3f ComplianceMatrixUpdateManager3;
+typedef ComplianceMatrixUpdateManagerCarving3f ComplianceMatrixUpdateManagerCarving3;
 typedef EdgeSetControllerRigid3f EdgeSetControllerRigid3;
 typedef HandStateControllerRigid3f HandStateControllerRigid3;
 typedef HandStateController1f HandStateController1;
