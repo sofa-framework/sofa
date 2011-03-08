@@ -13,8 +13,8 @@
 				<Object type="IdentityMapping" object1="../.." object2="Visual"/>
 			</Node>
 			<Node name="Surf">
-				<Object type="Sphere" filename="mesh/smCube27.sph" />
 				<MechanicalObject/>
+				<Object type="Sphere" filename="mesh/smCube27.sph" />
 				<Object type="IdentityMapping" />
 			</Node>
 		</Node>
@@ -25,8 +25,8 @@
 				<Object type="MechanicalObject" template="Vec3d" filename="BehaviorModels/smCube27.xs3"/>
 				<Object type="RigidMapping"/>
 				<Node name="Surf">
-					<Object type="Sphere" filename="mesh/smCube27.sph" />
 					<MechanicalObject/>
+					<Object type="Sphere" filename="mesh/smCube27.sph" />
 					<Object type="IdentityMapping" />
 				</Node>
 			</Node>
@@ -44,8 +44,8 @@
 				<Object type="IdentityMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf">
-				<Object type="Sphere" filename="mesh/smCube27.sph" />
 				<MechanicalObject/>
+				<Object type="Sphere" filename="mesh/smCube27.sph" />
 				<Object type="IdentityMapping" />
 			</Node>
 		</Node>
@@ -60,8 +60,8 @@
 					<Object type="IdentityMapping" object1="../.." object2="Visual" />
 				</Node>
 				<Node name="Surf">
-					<Object type="Sphere" filename="mesh/smCube27.sph" />
 					<MechanicalObject/>
+					<Object type="Sphere" filename="mesh/smCube27.sph" />
 					<Object type="IdentityMapping" />
 				</Node>
 			</Node>
@@ -75,8 +75,8 @@
 				<Object type="IdentityMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf">
-				<Object type="Sphere" filename="mesh/smCube27.sph" />
 				<MechanicalObject/>
+				<Object type="Sphere" filename="mesh/smCube27.sph" />
 				<Object type="IdentityMapping" />
 			</Node>
 		</Node>
@@ -92,8 +92,8 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf">
-				<Object type="Sphere" filename="mesh/dragon.sph" />
 				<MechanicalObject/>
+				<Object type="Sphere" filename="mesh/dragon.sph" />
 				<Object type="RigidMapping" />
 			</Node>
 		</Node>

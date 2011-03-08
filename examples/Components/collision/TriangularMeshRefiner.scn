@@ -30,8 +30,8 @@
 		<Object type="MechanicalObject" name="Instrument" template="Rigid" position="4 1 -5 0 0 0 1"/>
 		<Object type="MechanicalStateController"  mainDirection="0.0 0.0 1.0" template="Rigid" listening="true" handleEventTriggersUpdate="true"/>
 		<Node name="Collision">
-			<Object type="Sphere" template="Rigid" contactStiffness="0" radius="0.2"/>
 			<Object type="MechanicalObject" name="CollisionModelInstrument"/>
+			<Object type="Sphere" template="Rigid" contactStiffness="0" radius="0.2"/>
 			<Object type="RigidMapping" />
 		</Node>
 		<Node name="Visual">

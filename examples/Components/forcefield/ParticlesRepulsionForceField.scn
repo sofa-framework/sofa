@@ -48,8 +48,8 @@
 			ymin="7" ymax="7"
 			zmin="-12" zmax="12" />
 			/>
-			<Object type="SphereModel" radius="1.0" contactStiffness="1" />
 			<MechanicalObject/>
+			<Object type="SphereModel" radius="1.0" contactStiffness="1" />
 			<Object type="SubsetMapping" />
 		</Node>
 		<!--

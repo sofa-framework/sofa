@@ -20,8 +20,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 			<MechanicalObject dx="0" dy="-10.5" dz="0"/>
+			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -42,8 +42,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 			<MechanicalObject dx="0" dy="0" dz="0"/>
+			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -64,8 +64,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 			<MechanicalObject dx="0" dy="10.5" dz="-4"/>
+			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -86,8 +86,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 			<MechanicalObject dx="0" dy="21" dz="0"/>
+			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -109,13 +109,13 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Sphere" filename="mesh/smCube27b.sph" />
 			<MechanicalObject/>
+			<Object type="Sphere" filename="mesh/smCube27b.sph" />
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
 	-->
-	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" />
 	<MechanicalObject  dy="-20"/>
+	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" />
 	<Object type="OglModel" name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" dy="-20" />
 </Node>

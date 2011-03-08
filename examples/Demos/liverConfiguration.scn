@@ -18,8 +18,8 @@
 			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping"  object1="../.."  object2="VisualModel" />
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0"  >
-			<TSphereModel template="Vec3d" name="CollisionModel"  fileSphere="mesh/liver.sph" />
 			<MechanicalObject template="Vec3d" name="default3"  useMask="1"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  internalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1" />
+			<TSphereModel template="Vec3d" name="CollisionModel"  fileSphere="mesh/liver.sph" />
 			<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="sphere mapping" />
 		</Node>
 	</Node>

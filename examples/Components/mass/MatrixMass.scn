@@ -25,8 +25,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Sphere" filename="mesh/dragon.sph" />
 			<MechanicalObject/>
+			<Object type="Sphere" filename="mesh/dragon.sph" />
 			<Object type="BarycentricMapping"  />
 		</Node>
 	</Node>

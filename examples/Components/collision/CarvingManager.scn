@@ -27,8 +27,8 @@
 			<Object type="RigidMapping" name="MM->VM mapping" object1="instrumentState" object2="InstrumentVisualModel" />
 		</Node>
 		<Node name="CollisionTip">
-			<Object type="SphereModel" radius="0.15" active="0" />
 			<MechanicalObject name="sphere_tip" />
+			<Object type="SphereModel" radius="0.15" active="0" />
 			<Object type="RigidMapping" isMechanical="false"  object1="instrumentState" object2="sphere_tip" index="0" />
 		</Node>
 	</Node>

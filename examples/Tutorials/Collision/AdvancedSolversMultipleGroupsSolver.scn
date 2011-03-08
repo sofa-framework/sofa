@@ -9,8 +9,8 @@
   <Node name="SolverNode">
     <EulerImplicitSolver  name="EulerImplicit" />
     <CGLinearSolver       name="CG Solver" /> 
-    <Node name="CubeSphere1">   
       <MechanicalObject     name="Particles" template="Vec3d"
+    <Node name="CubeSphere1">   
                             position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" 
                             translation="-2 1 2" />
       <MeshTopology         name="Topology" hexas="0 4 6 2 1 5 7 3" />    
@@ -20,8 +20,8 @@
       <SphereModel          name="Spheres Cube1" radius="0.4"/>
     </Node>
 
-    <Node name="CubeSphere2">
       <MechanicalObject     name="Particles" template="Vec3d"
+    <Node name="CubeSphere2">
                             position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" 
                             translation="0 0 6"/>
       <MeshTopology         name="Topology" hexas="0 4 6 2 1 5 7 3" />

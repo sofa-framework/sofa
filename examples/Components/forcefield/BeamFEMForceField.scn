@@ -26,8 +26,8 @@
 -->
 <!--
       <Node name="Collision">
-        <Object type="Sphere" radius=".2" position="0 0 0 0 0 0" />
         <MechanicalObject/>
+        <Object type="Sphere" radius=".2" position="0 0 0 0 0 0" />
         <Object type="RigidMapping" index="7" />
       </Node>
 -->
@@ -57,8 +57,8 @@
       <Object type="ExternalForceField" forces="0 10 0 0 0 0" indices="1" />
 -->
       <Node name="Collision">
-        <Object type="Sphere" radius=".2" position="0 0 0 0 0 0" />
 		<MechanicalObject/>
+        <Object type="Sphere" radius=".2" position="0 0 0 0 0 0" />
         <Object type="RigidMapping" index="1" />
       </Node>
    </Node>

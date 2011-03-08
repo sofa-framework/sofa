@@ -50,8 +50,8 @@
 			ymin="7" ymax="7"
 			zmin="-12" zmax="12" />
 			/>
-			<Object type="CudaSphereModel" radius="1.0" contactStiffness="1" />
 			<MechanicalObject template="CudaVec3f"/>
+			<Object type="CudaSphereModel" radius="1.0" contactStiffness="1" />
 			<Object type="SubsetMapping" />
 		</Node>
 		<!--
