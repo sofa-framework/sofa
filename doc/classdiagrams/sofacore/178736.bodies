@@ -1,5 +1,0 @@
-class DataFileName
-!!!322352.cpp!!!	updatePath() : void
-    fullpath = m_value.getValue();
-    if (!fullpath.empty())
-        helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));

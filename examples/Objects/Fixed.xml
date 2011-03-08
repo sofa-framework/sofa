@@ -1,9 +1,0 @@
-  <Node name="Obstacle">       
-    <MeshLoader filename="file"/>
-    <Mesh/>        
-    <MechanicalObject  name="Obstacle"  translation="0 0 0" rotation="0 0 0" scale3d="1 1 1"/>
-    <Triangle moving="0" simulated="0" contactStiffness="200" contactFriction="0.01"/> 
-    <Line     moving="0" simulated="0" contactStiffness="@[-1].contactStiffness" contactFriction="@[-1].contactFriction"/>        
-    <Point    moving="0" simulated="0" contactStiffness="@[-1].contactStiffness" contactFriction="@[-1].contactFriction"/>        
-    <OglModel color="0.500 0.500 0.500" filename="file" name="Visual" translation="@[-4].translation" rotation="@[-4].rotation" scale3d="@[-4].scale3d"/>       
-  </Node>              
