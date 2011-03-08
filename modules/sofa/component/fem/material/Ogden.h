@@ -38,6 +38,7 @@
 #ifdef SOFA_HAVE_EIGEN2
 //#include <Eigen/Core>
 #include <Eigen/QR>
+#include <Eigen/Eigenvalues>
 #endif
 namespace sofa
 {
