@@ -8,8 +8,8 @@
 
 	<Node name="beam">
 		<EulerImplicit rayleighStiffness="0" printLog="false" />
-		<BTDLinearSolver printLog="false" verbose="false" />
 		<MechanicalObject template="Rigid" name="DOFs" position="0 0 0 0 0 0 1  10 0 0 0 0 0 1  20 0 0 0 0 0 1" />		
+		<BTDLinearSolver printLog="false" verbose="false" />
 		<EdgeSetTopologyContainer edges="0 1 1 2"/>
 		<FixedConstraint name="FixedConstraint" indices="0" />
 		<UniformMass />
@@ -20,8 +20,8 @@
 	      		<EdgeSetTopologyModifier name="Modifier"/>
 			<MechanicalObject template="Vec3d"  name="splineMapped"/>
 			<!--by default, a discrete Bezier curve have 4 points (0_level of splitting). Each time splitting, one curve split in two-->
-			<BeamBsplineMapping isMechanical="true" input="@../DOFs" output="@splineMapped" baryCoords="0.5 0.5" elements="0 1"/>
-		<Point/>	
+			<BeamBsplineMapping isMechanical="true" input="@../DOFs" output="@splineMapped" baryCoords="0.5 0. 0. 0.5 1. 1." elements="0 0" drawCurv="5" drawProject="1"/>
+			<Point/>	
 		</Node>
 	</Node>
 
@@ -31,6 +31,6 @@
 		<PointSetTopologyContainer name="pointsTopology"/>
 			<Line />
 		<SphereModel radius="0.3"/>
--->
 	</Node>
+-->
 </Node>
