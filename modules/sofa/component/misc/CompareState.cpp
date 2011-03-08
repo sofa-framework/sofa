@@ -91,11 +91,12 @@ std::string lookForValidCompareStateFile( const std::string& sceneName,
 
     for( int i = 0; i<numDefault; ++i)
     {
-        std::ostringstream testFile;
-        testFile << sceneName << "_" << counterCompareState << "_default" << i << "_mstate" << extension ;
-        if(DataRepository.findFile(testFile.str(),"",&errorlog))
+        std::ostringstream oss;
+        oss << sceneName << "_" << counterCompareState << "_default" << i << "_mstate" << extension ;
+        std::string testFile = oss.str();
+        if(DataRepository.findFile(testFile,"",&errorlog))
         {
-            result = testFile.str();
+            result = testFile;
             break;
         }
     }
