@@ -30,6 +30,11 @@
 #include <sofa/helper/map.h>
 #include <sofa/helper/set.h>
 
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/TriangleSetTopologyChange.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -50,21 +55,6 @@ namespace sofa
 
 namespace component
 {
-
-namespace topology
-{
-
-//TODO change the img value in gridMaterial on topological changes
-//TODO init and update voxelIndexInRegularGrid & voxelIDInRegularGrid2IndexInTopo
-
-class PointSetTopologyContainer;
-class PointSetTopologyModifier;
-template<class T> class PointSetGeometryAlgorithms;
-class TriangleSetTopologyContainer;
-class TriangleSetTopologyModifier;
-template<class T> class TriangleSetGeometryAlgorithms;
-
-}
 
 namespace engine
 {
@@ -102,6 +92,8 @@ using sofa::component::material::Material3d;
 template <class DataTypes>
 class MeshGenerater : public core::DataEngine
 {
+public:
+    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef defaulttype::Vec<3, int> Vec3i;
     typedef defaulttype::Vec<6, int> Vec6i;
@@ -113,11 +105,13 @@ class MeshGenerater : public core::DataEngine
     typedef GridMaterial<Material3d> GridMat;
     typedef GridMat::voxelType VoxelType;
 
+    typedef GridMat::GCoord GCoord;
+    typedef GridMat::SCoord SCoord;
+
     typedef unsigned int PointID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
 
-public:
     SOFA_CLASS(MeshGenerater, core::DataEngine);
 
     template <class T>
@@ -188,12 +182,13 @@ public:
     virtual void handleTopologyChange(core::topology::Topology* t);
     void handleEvent ( core::objectmodel::Event * );
 
+    virtual TriangleSetTopologyContainer* getTo() {return _to_topo;};
+
 protected:
     /**** Input ****/
     Data< Vec6i > roi;
     Data< float > mIsoValue;
     Data< vector<Vec<3, int> > > mCubeSeeds;
-    Data<Vec3d> from_translation_offset;
 
 
     /**** Utils ****/
@@ -223,9 +218,16 @@ protected:
     Data<bool> showRegularGridIndices;
     Data<double> showTextScaleFactor;
 
+public:
     GridMat* gridMat;
+    Data< SCoord > voxelSize;
+    Data< SCoord > voxelOrigin;
+    Data< GCoord > voxelDimension;
 
 
+    void getHexaCoord( Coord& coord, const unsigned int hexaID) const;
+
+protected:
     /** \brief init the voxels from the GridMaterial.
     */
     void initVoxels();

@@ -50,7 +50,6 @@ FrameDiagonalMass<DataTypes, MassType>::FrameDiagonalMass()
     , showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
     , damping ( initData ( &damping, 0.0f, "damping", "add a force which is \"- damping * speed\"" ) )
-    , _topo( NULL)
 {
     this->addAlias(&fileMass,"filename");
 }
@@ -196,10 +195,6 @@ template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::init()
 {
     if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
-
-    this->getContext()->get(_topo);
-    if (!_topo)
-        serr << "Can't find the topology of the Frames" << sendl;
 
     Inherited::init();
 }
@@ -366,50 +361,6 @@ bool FrameDiagonalMass<DataTypes, MassType>::load ( const char *filename )
         return loader.load ( filename );
     }
     else return false;
-}
-
-
-template<class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::handleTopologyChange(core::topology::Topology* t)
-{
-    if( t == _topo)
-    {
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin= _topo->beginChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd= _topo->endChange();
-        // TODO
-        //f_mass0.handleTopologyEvents(itBegin, itEnd);
-        //f_mass.handleTopologyEvents(itBegin, itEnd);
-
-        // For a renumbering
-        //  Switch lines and column in each block.
-    }
-}
-
-
-template<class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::handleEvent ( core::objectmodel::Event */*event*/ )
-{
-    /* // TODO
-    if ( BBcenter && dynamic_cast<simulation::AnimateEndEvent*> ( event ) )
-    {
-            Vec3d minBBox, maxBBox; // this has to be Vec3d as addBBox expects double* params
-            _from_DOFs->addBBox ( &minBBox[0], &maxBBox[0] );
-            BBcenter->setValue ( ( maxBBox + minBBox ) *0.5 );
-    }
-
-    std::list<const TopologyChange *>::const_iterator itBegin= _to_topo->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd= _to_topo->endChange();
-    while( itBegin != itEnd)
-    {
-            TopologyChangeType changeType = ( *itBegin )->getChangeType();
-            if( changeType == core::topology::TRIANGLESREMOVED)
-                    serr << " ################ Triangles removed" << sendl;
-            if( changeType == core::topology::POINTSREMOVED || changeType == core::topology::POINTSRENUMBERING)
-                    serr << " ################ Points removed" << sendl;
-            ++itBegin;
-    }
-    smoothedMesh0.handleTopologyEvents(itBegin, itEnd);
-    */
 }
 
 

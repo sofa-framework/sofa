@@ -76,3 +76,13 @@ SOURCES += \
            NewHookeMaterial.cpp
            #TetrahedronFEMForceFieldWithExternalMaterial.cpp
 
+contains(DEFINES,SOFA_GPU_CUDA){ # BEGIN SOFA_GPU_CUDA
+LIBS += -lsofagpucuda$$LIBSUFFIX
+
+HEADERS += \
+           HexaRemover.h \
+           HexaRemover.inl
+
+SOURCES += \
+           HexaRemover.cpp
+}

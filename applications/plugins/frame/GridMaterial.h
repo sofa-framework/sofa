@@ -227,6 +227,7 @@ protected:
     /*********************************/
     /*           Grid data           */
     /*********************************/
+public:
     Data< SCoord > voxelSize;
     Data< SCoord > origin;
     Data< GCoord > dimension;
@@ -235,10 +236,7 @@ protected:
     unsigned int gridOffset; // Use to enlarge weight interpolation
     unsigned int nbVoxels;
 
-public:
     CImg<voxelType>& getGrid() {return grid;}
-    const GCoord& getDimension() const {return dimension.getValue();}
-    const SCoord& getVoxelSize() const {return voxelSize.getValue();}
 
 protected:
     // material properties
