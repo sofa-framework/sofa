@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="1" showBoundingCollisionModels="1" showForceFields="0" gravity="0 -9.8 0">
+<Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="1" showBoundingCollisionModels="1" showForceFields="0" gravity="0 -20 0">
 	<GenericConstraintSolver tolerance="1e-6"/>
 	<FreeMotionMasterSolver />
 	<CollisionPipeline depth="6" verbose="1" draw="0"/>
@@ -20,13 +20,13 @@
 		-->
 		<FixedConstraint name="FixedConstraint" indices="0" />
 		<UniformMass  printLog="false" />
-		<BeamFEMForceField name="FEM" radius="0.1" youngModulus="20000000" />
-		<BSplineModel  SplittingLevel="2" r="0.5" unactivation="4 5 6"/>
+		<BeamFEMForceField name="FEM" radius="0.6" youngModulus="10000" poissonRatio="0.4" />
+		<BSplineModel  SplittingLevel="1" r="0.4" />
 		<LinearSolverConstraintCorrection />
 	</Node>
 	<Node name="Points">
-		<MechanicalObject name="DOFs1" position="1 -2 0 3 -2 0 6 -2 0 8 -2 0" />		
-		<FixedConstraint name="m_fixedConstraint" indices="0 1 2 3" />
+		<MechanicalObject name="DOFs1" position="4.5 -1.0 0.4" />		
+		<FixedConstraint name="m_fixedConstraint" indices="0" />
 
 		<Point/>
 		<!--

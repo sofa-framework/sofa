@@ -1597,16 +1597,25 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Point& e1, Outpu
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
+    detection->normal=QP;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
+    detection->value -= contactDist;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
     //alpha here is the barycentric coordinate of the local spline (littler)
     //need to be transforme to the barycentric coordinate of the globale spline on the Edge
     double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
     detection->baryCoords[0][0]=t;
+
+    CubicBezierCurve::Quat qt = e2.quat(alpha);
+    Vector3 e_X = qt.rotate(Vector3(0.,1.,0.));
+    Vector3 e_Y = qt.rotate(Vector3(0.,0.,1.));
+    double projectX = dot(QP,e_X);
+    double projectY = dot(QP,e_Y);
+
+    detection->baryCoords[0][1]=projectX;
+    detection->baryCoords[0][2]=projectY;
 #endif
-    detection->normal=QP;
-    detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
-    detection->value -= contactDist;
 
 
 //	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1607  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
@@ -1661,7 +1670,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Sphere& e1, Outp
     if(!e2.activated(e1.getCollisionModel()))
         return 0;
 
-    const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const double alarmDist = getAlarmDistance() + e1.r() + e2.r() + e1.getProximity() + e2.getProximity();
 
     const Vector3 x32 = e2[0]-e2[3];
     const Vector3 x31 = e1.center()-e2[3];
@@ -1697,13 +1706,26 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Sphere& e1, Outp
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
-    double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
-    detection->baryCoords[0][0]=t;
     detection->normal=QP;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
     detection->value -= contactDist;
 
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+    //alpha here is the barycentric coordinate of the local spline (littler)
+    //need to be transforme to the barycentric coordinate of the globale spline on the Edge
+    double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
+    detection->baryCoords[0][0]=t;
+
+    CubicBezierCurve::Quat qt = e2.quat(alpha);
+    Vector3 e_X = qt.rotate(Vector3(0.,1.,0.));
+    Vector3 e_Y = qt.rotate(Vector3(0.,0.,1.));
+    double projectX = dot(QP,e_X);
+    double projectY = dot(QP,e_Y);
+
+    detection->baryCoords[0][1]=projectX;
+    detection->baryCoords[0][2]=projectY;
+#endif
 //	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1706  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
 //			 << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
 //			 <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
