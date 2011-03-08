@@ -793,8 +793,6 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
     Vec3i bboxMax = Vec3i ( bbox.max / cubeStep );
     Vec3i gridSize = Vec3i ( dataResolution /cubeStep );
 
-    Vec3i dataGridStep ( dataResolution[0]/gridSize[0],dataResolution[1]/gridSize[1],dataResolution[2]/gridSize[2] );
-
     unsigned int index;
     for ( int k=bboxMin[2]; k<bboxMax[2]-1; k++ )
         for ( int j=bboxMin[1]; j<bboxMax[1]-1; j++ )

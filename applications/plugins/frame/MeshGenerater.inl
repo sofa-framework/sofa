@@ -26,10 +26,6 @@
 #define SOFA_FRAME_MESHGENERATER_INL
 
 #include "MeshGenerater.h"
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/TriangleSetTopologyChange.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 #include <sofa/component/topology/PointSetTopologyModifier.h>
@@ -84,7 +80,10 @@ MeshGenerater<DataTypes>::MeshGenerater ()
       showTri2Hexas ( initData ( &showTri2Hexas, false, "showTri2Hexas", "Show tri to hexas relations." ) ),
       showRegularGridIndices ( initData ( &showRegularGridIndices, false, "showRegularGridIndices", "Show regular grid indices." ) ),
       showTextScaleFactor ( initData ( &showTextScaleFactor, 0.001, "showTextScaleFactor","Scale to apply on the text." ) ),
-      gridMat(NULL)
+      gridMat(NULL),
+      voxelSize ( initData ( &voxelSize, SCoord(), "voxelSize","Size of the voxels." ) ),
+      voxelOrigin ( initData ( &voxelOrigin, SCoord(), "voxelOrigin","Origin of the voxels array." ) ),
+      voxelDimension ( initData ( &voxelDimension, GCoord(), "voxelDimension","Dimension of the voxels array." ) )
 {
     smoothedMesh0.setDisplayed( false);
 }
@@ -102,7 +101,6 @@ void MeshGenerater<DataTypes>::init()
     addInput(&roi);
     addInput(&mIsoValue);
     addInput(&mCubeSeeds);
-    addInput(&from_translation_offset);
 
     sout << "Hexa2TriangleTopologicalMapping::init(): Begin." << sendl;
 
@@ -141,14 +139,18 @@ void MeshGenerater<DataTypes>::init()
         return;
     }
 
+    voxelSize.setParent ( &gridMat->voxelSize);
+    voxelOrigin.setParent ( &gridMat->origin);
+    voxelDimension.setParent ( &gridMat->dimension);
+
     roi.setValue ( Vec6i ( -1,-1,-1,0xFF,0xFF,0xFF ) ); // TODO
-    const Vec3i& res = gridMat->getDimension();
+    const Vec3i& res = voxelDimension.getValue();
 
     initVoxels();
 
     initOglAttributes();
 
-    const defaulttype::Vector3& voxelSize = gridMat->getVoxelSize();
+    const defaulttype::Vector3& vSize = voxelSize.getValue();
     const Vec6i &roiValue=roi.getValue();
 
     // Configuration of the Marching Cubes algorithm
@@ -158,11 +160,11 @@ void MeshGenerater<DataTypes>::init()
         marchingCubes.setROI ( Vector3 ( roiValue[0],roiValue[1],roiValue[2] ), Vector3 ( roiValue[3],roiValue[4],roiValue[5] ) );
         marchingCubes.setBoundingBox ( roiValue );
     }
-    marchingCubes.setDataVoxelSize ( Vector3 ( voxelSize[0], voxelSize[1], voxelSize[2] ) );
+    marchingCubes.setDataVoxelSize ( Vector3 ( vSize[0], vSize[1], vSize[2] ) );
     marchingCubes.setStep ( 1 );
-    marchingCubes.setConvolutionSize ( 0 ); //apply Smoothing if convolutionSize > 0
+    marchingCubes.setConvolutionSize ( 0 ); //apply Smoothing on data if convolutionSize > 0
     //sofa::component::container::MechanicalObject<DataTypes>* inputDOFs = static_cast<sofa::component::container::MechanicalObject<DataTypes>*>(_from_DOFs);
-    marchingCubes.setVerticesTranslation (from_translation_offset.getValue()); // Translation of the input DOFs (TODO directly link with MObject)
+    marchingCubes.setVerticesTranslation (voxelOrigin.getValue()); // Translation of the input DOFs (TODO directly link with MObject)
 
     if ( triangleIndexInRegularGrid.getValue().empty() )
     {
@@ -235,16 +237,18 @@ void MeshGenerater<DataTypes>::init()
 template <class DataTypes>
 void MeshGenerater<DataTypes>::initVoxels()
 {
-    const Vec3i& res = gridMat->getDimension();
+    const Vec3i& res = voxelDimension.getValue();
     valueData.resize(res[0]*res[1]*res[2]);
     segmentIDData.resize(res[0]*res[1]*res[2]);
     CImg<VoxelType>& grid = gridMat->getGrid();
-    for (int x = 0; x < res[0]; ++x)
+    unsigned int i = 0;
+    for (int z = 0; z < res[2]; ++z)
         for (int y = 0; y < res[1]; ++y)
-            for (int z = 0; z < res[2]; ++z)
+            for (int x = 0; x < res[0]; ++x)
             {
-                (grid(x,y,z)==0)?valueData.push_back(0):valueData.push_back(255);
-                segmentIDData.push_back(grid(x,y,z));
+                (grid(x,y,z)==0)?valueData[i]=0:valueData[i]=255;
+                segmentIDData[i] = grid(x,y,z);
+                ++i;
             }
 }
 
@@ -300,39 +304,23 @@ void MeshGenerater<DataTypes>::initOglAttributes()
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::getFromIndex ( vector<unsigned int>& /*fromIndices*/, const unsigned int /*toIndex*/ ) const
+void MeshGenerater<DataTypes>::getFromIndex ( vector<unsigned int>& fromIndices, const unsigned int toIndex ) const
 {
-    /* TODO
-        fromIndices.clear();
-        const vector< vector< HexaIDInRegularGrid > >& triIRG = triangleIndexInRegularGrid.getValue();
-        const vector< HexaIDInRegularGrid >& hexaID = triIRG[toIndex];
-        const std::map< unsigned int, BaseMeshTopology::PointID>& iirg2iit = _from_topo->idInRegularGrid2IndexInTopo.getValue();
-        for( vector< HexaIDInRegularGrid >::const_iterator it = hexaID.begin(); it != hexaID.end(); it++)
-        {
-                std::map< unsigned int, BaseMeshTopology::PointID>::const_iterator itHexa = iirg2iit.find( *it);
-                if( itHexa != iirg2iit.end()) fromIndices.push_back ( itHexa->second );
-        }
-    */
+    fromIndices.clear();
+    const vector< vector< HexaIDInRegularGrid > >& triIRG = triangleIndexInRegularGrid.getValue();
+    fromIndices = triIRG[toIndex];
 }
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::getToIndex ( vector<unsigned int>& /*toIndices*/, const unsigned int /*fromIndex*/ ) const
+void MeshGenerater<DataTypes>::getToIndex ( vector<unsigned int>& toIndices, const unsigned int fromIndex ) const
 {
-    /* TODO
-        toIndices.clear();
-        const sofa::helper::vector<BaseMeshTopology::PointID>& iirg = _from_topo->idxInRegularGrid.getValue();
-        unsigned int hexaID = iirg[fromIndex];
-        const map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >& triIDirg2iit = triangleIDInRegularGrid2IndexInTopo.getValue();
-        map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::const_iterator itTri = triIDirg2iit.find( hexaID);
-        if( itTri != triIDirg2iit.end())
-        {
-                for( ElementSet< BaseMeshTopology::TriangleID >::const_iterator it = itTri->second.begin(); it != itTri->second.end(); it++)
-                {
-                        toIndices.push_back( *it);
-                }
-        }
-    */
+    toIndices.clear();
+    const map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >& triIDirg2iit = triangleIDInRegularGrid2IndexInTopo.getValue();
+    typename map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::const_iterator itTri = triIDirg2iit.find( fromIndex);
+    if( itTri != triIDirg2iit.end())
+        for( typename ElementSet< BaseMeshTopology::TriangleID >::const_iterator it = itTri->second.begin(); it != itTri->second.end(); it++)
+            toIndices.push_back( *it);
 }
 
 
@@ -553,7 +541,7 @@ void MeshGenerater<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
 #endif
     //Copy data ever existing: vertices and triangles data.
     //container::MechanicalObject<MechanicalBarycentricMapping::OutDataTypes>::VecCoord& xtoInRestedPos = *_to_DOFs->getX0();
-    Vec3i resolution = gridMat->getDimension();
+    Vec3i resolution = voxelDimension.getValue();
 
     // Find the 1 neighbor ring of removed hexahedra.
     set<unsigned int> hexaNeighbors;
@@ -846,14 +834,14 @@ void MeshGenerater<DataTypes>::updateOglAttributes ( const unsigned int oldVertS
 
         typename DataTypes::Coord coord;
         unsigned int element;
-        const typename GridMat::GCoord& gridDim = gridMat->getDimension();
-        const typename GridMat::SCoord& voxelSize = gridMat->getVoxelSize();
+        const typename GridMat::GCoord& gridDim = voxelDimension.getValue();
+        const typename GridMat::SCoord& vSize = voxelSize.getValue();
         for ( unsigned int i = oldVertSize; i < xto.size(); i++ )
         {
             //TODO there were changes here !
             coord = _to_geomAlgo->getPointRestPosition ( i );
             for (unsigned int j = 0; j < 3; ++j)
-                coord[j] = (coord[j] - from_translation_offset.getValue()[j]) / voxelSize[j];
+                coord[j] = (coord[j] - voxelOrigin.getValue()[j]) / vSize[j];
             element = coord[0] + coord[1] * gridDim[0] + coord[2] * gridDim[0] * gridDim[1];
             segmentID[i] = segmentIDData[element];
         }
@@ -1056,6 +1044,21 @@ void MeshGenerater<DataTypes>::dispMaps() const
         serr << sendl;
     }
 
+}
+
+
+template <class DataTypes>
+void MeshGenerater<DataTypes>::getHexaCoord( Coord& coord, const unsigned int hexaID) const
+{
+    const SCoord& fromOffset = voxelOrigin.getValue();
+    const SCoord& vSize = voxelSize.getValue();
+    const GCoord& dim = voxelDimension.getValue();
+
+    unsigned int z = ((unsigned int)( hexaID / (dim[0]*dim[1]))) * vSize[2] + fromOffset[2];
+    unsigned int remain = ( hexaID % (dim[0]*dim[1]));
+    unsigned int y = ((unsigned int)( remain / dim[0])) * vSize[1] + fromOffset[1];
+    unsigned int x = (remain % dim[0]) * vSize[0] + fromOffset[0];
+    coord = Coord( x, y, z);
 }
 
 

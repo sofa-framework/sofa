@@ -94,9 +94,6 @@ public:
 
     void resize(int vsize);
 
-    virtual void handleTopologyChange(core::topology::Topology* t);
-    void handleEvent ( core::objectmodel::Event * );
-
     // -- Mass interface
     void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
 
@@ -141,7 +138,6 @@ protected:
 
 private:
     FData* frameData; // Storage and computation of the mass blocks
-    PointSetTopologyContainer* _topo;
 
     void updateMass();
     void computeRelRot (Mat33& relRot, const Quat& q, const Quat& q0);
