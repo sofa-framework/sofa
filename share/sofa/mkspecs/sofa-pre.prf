@@ -69,13 +69,13 @@ for(dir, DIR_LIST) {
 isEmpty(SUBDIR_PATH): SUBDIR_PATH = .
 isEmpty(ROOT_PATH): ROOT_PATH = .
 
-message(SOFA_DIR      $$escape_expand(\\t)= $$SOFA_DIR)
-message(ROOT_SRC_DIR  $$escape_expand(\\t)= $$ROOT_SRC_DIR)
-message(SRC_DIR       $$escape_expand(\\t)= $$SRC_DIR)
-message(ROOT_BUILD_DIR$$escape_expand(\\t)= $$ROOT_BUILD_DIR)
-message(BUILD_DIR     $$escape_expand(\\t)= $$BUILD_DIR)
-message(SUBDIR_PATH   $$escape_expand(\\t)= $$SUBDIR_PATH)
-message(ROOT_PATH     $$escape_expand(\\t)= $$ROOT_PATH)
+#message(SOFA_DIR      $$escape_expand(\\t)= $$SOFA_DIR)
+#message(ROOT_SRC_DIR  $$escape_expand(\\t)= $$ROOT_SRC_DIR)
+#message(SRC_DIR       $$escape_expand(\\t)= $$SRC_DIR)
+#message(ROOT_BUILD_DIR$$escape_expand(\\t)= $$ROOT_BUILD_DIR)
+#message(BUILD_DIR     $$escape_expand(\\t)= $$BUILD_DIR)
+#message(SUBDIR_PATH   $$escape_expand(\\t)= $$SUBDIR_PATH)
+#message(ROOT_PATH     $$escape_expand(\\t)= $$ROOT_PATH)
 
 ########################################################################
 # Extension point:
@@ -366,14 +366,14 @@ defineTest(requireSofaLib) {
 	sourcedir = $$replace(project, (applications|framework|modules)/.+, \\1)
 
 	isSourceAvailable($$name, $$project) {
-		message(Using shipped version of $$name)
+		message(Using shipped version of Sofa library: $$name)
 		INCLUDEPATH *= $$ROOT_SRC_DIR/$$sourcedir
 		LIBS *= -L$$LIB_DESTDIR
 	} else {
 		!isInstalled($$name) {
 			error(requireSofaLib: Cannot find $$name library)
 		}
-		message(Using installed version of $$name)
+		message(Using installed version of Sofa library: $$name)
 		INCLUDEPATH *= $$INSTALL_INCLUDE_DIR/$$sourcedir
 		LIBS *= -L$$INSTALL_LIB_DIR
 	}
@@ -403,6 +403,7 @@ defineTest(enable) {
 	project = $$eval($${name}.project)
 	deps = $$eval($${name}.deps)
 	for(dep, deps) {
+		!equals(dep, $$eval($${dep}.name)): error(undeclared dependency $$dep)
 		deps_dirs += $$eval($${dep}.project)
 	}
 	addInstallableSubdir($$name, $$project, $$deps_dirs)
@@ -412,8 +413,9 @@ defineTest(loadDependencies) {
 	dependencies = $$eval($${TARGET}.deps)
 	for(dep, dependencies) {
 		name = $$eval($${dep}.name)
+		!equals(dep, $$name): error(undeclared dependency $$dep)
 		project = $$eval($${dep}.project)
-		sofasrc = find(project, ^applications|framework|modules/.+$)
+		sofasrc = $$find(project, ^applications|framework|modules/.+$)
 		isEmpty(sofasrc) {
 			requireLib($$name, $$project)
 		} else {
