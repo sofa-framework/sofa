@@ -17,8 +17,8 @@
 			<Object type="MeshLoader" filename="mesh/smCube27.mesh"/>
 			<Object type="Mesh" />
 			<Node name="Surf">
-				<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 				<MechanicalObject dz="-21.0"/>
+				<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 				<Object type="BarycentricMapping" />
 			</Node>
 		</Node>
@@ -30,8 +30,8 @@
 				<Object type="RigidMapping"/>
 			</Node>
 			<Node name="Surf">
-				<Object type="Sphere" filename="mesh/smCube27b.sph" />
 				<MechanicalObject/>
+				<Object type="Sphere" filename="mesh/smCube27b.sph" />
 				<Object type="RigidMapping" />
 			</Node>
 			<Node name="Visu">
@@ -50,8 +50,8 @@
 			<Object type="MeshLoader" filename="mesh/smCube27.mesh"/>
 			<Object type="Mesh" />
 			<Node name="Surf">
-				<Object type="Sphere" filename="mesh/smCube27b.sph" />
 				<MechanicalObject/>
+				<Object type="Sphere" filename="mesh/smCube27b.sph" />
 				<Object type="BarycentricMapping" />
 			</Node>
 		</Node>
@@ -67,8 +67,8 @@
 				</Node>
 			</Node>
 			<Node name="Surf">
-				<Object type="Sphere" filename="mesh/smCube27b.sph" />
 				<MechanicalObject/>
+				<Object type="Sphere" filename="mesh/smCube27b.sph" />
 				<Object type="RigidMapping" />
 			</Node>
 		</Node>
@@ -83,8 +83,8 @@
 			<Object type="MeshLoader" filename="mesh/smCube27.mesh"/>
 			<Object type="Mesh"/>
 			<Node name="Surf">
-				<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 				<MechanicalObject dz="21"/>
+				<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 				<Object type="BarycentricMapping" />
 			</Node>
 		</Node>
@@ -100,8 +100,8 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf">
-				<Object type="Sphere" filename="mesh/dragon.sph" />
 				<MechanicalObject/>
+				<Object type="Sphere" filename="mesh/dragon.sph" />
 				<Object type="RigidMapping" />
 			</Node>
 		</Node>
@@ -111,7 +111,7 @@
 		<Object type="StiffSpringForceField" name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="M4/Points" object2="M5" />
 		<Object type="StiffSpringForceField" name="ExternalSprings5" filename="BehaviorModels/linkSmCube27.xs3" object1="M5" object2="M6/Points" />
 	</Node>
-	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" />
 	<MechanicalObject dy="-20"/>
+	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" />
 	<Object type="OglModel" name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" dy="-20" />
 </Node>

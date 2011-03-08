@@ -36,8 +36,8 @@
 				ymin="0.75" ymax="2.25"
 				zmin="-5.5" zmax="6.5"
 			/>
-			<Object type="SphereModel" radius="1.0" />
 			<MechanicalObject/>
+			<Object type="SphereModel" radius="1.0" />
 			<Object type="BarycentricMapping" />
 		</Node>
 		<Node>

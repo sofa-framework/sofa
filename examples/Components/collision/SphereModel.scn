@@ -20,12 +20,12 @@
 			<Object type="SurfaceIdentityMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 			<MechanicalObject/>
+			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
-	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" contactStiffness="1000"/>
 	<MechanicalObject dy="-12.5" />
+	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" contactStiffness="1000"/>
 	<Object type="OglModel" name="FloorV" fileMesh="mesh/floor2.obj" texturename="textures/floor2.bmp" dy="-12.5" />
 </Node>

@@ -26,8 +26,8 @@
 		</Node>
 
 		<Node name="Surf">
-			<Sphere name="CollisionModel" filename="mesh/liver.sph" />
 			<MechanicalObject  />
+			<Sphere name="CollisionModel" filename="mesh/liver.sph" />
 			<BarycentricMapping name="sphere mapping"  />
 		</Node>
 	</Node>

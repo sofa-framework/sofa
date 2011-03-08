@@ -21,8 +21,8 @@
 			<BarycentricMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Collision Surface">
-			<Sphere name="Surf" filename="mesh/liver.sph"/>
 			<MechanicalObject dx="-5"/>
+			<Sphere name="Surf" filename="mesh/liver.sph"/>
 			<BarycentricMapping />
 		</Node>
 	</Node>
@@ -45,8 +45,8 @@
 			<BarycentricMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Collision Surface">
-			<Sphere name="Surf" filename="mesh/liver.sph" />
 			<MechanicalObject dx="5"/>
+			<Sphere name="Surf" filename="mesh/liver.sph" />
 			<BarycentricMapping />
 		</Node>
 	</Node>

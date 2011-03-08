@@ -21,8 +21,8 @@
 			<BarycentricMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Sphere filename="mesh/dragon.sph" />
 			<MechanicalObject/>
+			<Sphere filename="mesh/dragon.sph" />
 			<BarycentricMapping  />
 		</Node>
 	</Node>
@@ -43,8 +43,8 @@
 			<BarycentricMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Sphere filename="mesh/dragon.sph"/>
 			<MechanicalObject/>
+			<Sphere filename="mesh/dragon.sph"/>
 			<BarycentricMapping  />
 		</Node>
 	</Node>
@@ -65,8 +65,8 @@
 			<BarycentricMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Sphere filename="mesh/dragon.sph" />
 			<MechanicalObject/>
+			<Sphere filename="mesh/dragon.sph" />
 			<BarycentricMapping  />
 		</Node>
 	</Node>
