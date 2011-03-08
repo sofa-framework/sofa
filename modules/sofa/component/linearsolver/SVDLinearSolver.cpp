@@ -110,6 +110,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     {
         x[i] = solution(i);
     }
+
     if( printLog )
     {
 #ifdef DISPLAY_TIME

@@ -34,9 +34,8 @@
 
 
 #include <sofa/component/linearsolver/EigenMatrixManipulator.h>
-
-#include <Eigen/Core>
-#include <Eigen/Sparse>
+//#include <Eigen/Core>
+//#include <Eigen/Sparse>
 
 namespace sofa
 {

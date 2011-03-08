@@ -314,11 +314,11 @@ void LMConstraintDirectSolver::buildLeftRectangularMatrix(const DofToMatrix& inv
         const SparseMatrixEigen &L =LMatrix[dofs];
         const SparseMatrixEigen &LT=LTMatrix[dofs];
 
-        const SparseMatrixEigen &invMass_LT=invMass*LT.transpose();
+        SparseMatrixEigen invMass_LT=invMass*LT.transpose();
 
         invMass_Ltrans.insert(std::make_pair(dofs, invMass_LT));
-        const SparseColMajorMatrixEigen& temp=L*invMass_LT;
-        LeftMatrix += temp;
+        //SparseColMajorMatrixEigen temp=L*invMass_LT;
+        LeftMatrix += L*invMass_LT;
     }
 }
 int LMConstraintDirectSolverClass = core::RegisterObject("A Direct Constraint Solver working specifically with LMConstraint based components")
