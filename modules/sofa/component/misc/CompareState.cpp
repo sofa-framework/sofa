@@ -30,8 +30,13 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/SetDirectory.h>
+
 #include <sstream>
 #include <sofa/core/ObjectFactory.h>
+
+#include <sofa/simulation/common/xml/XML.h>
 
 namespace sofa
 {
@@ -41,6 +46,64 @@ namespace component
 
 namespace misc
 {
+
+namespace
+{
+/*anonymous namespace for utility functions*/
+
+
+
+
+
+/*
+look for potential CompareStateFile formatted likewise
+%0_%1_%2_mstate.txt.gz
+with
+- %0 the current scene name
+- %1 the current comparestate counter value
+- %2 the name of the mstate which will undergo comparizons.
+*/
+std::string lookForValidCompareStateFile( const std::string& sceneName,
+        const std::string& mstateName,
+        const int counterCompareState,
+        const std::string& extension)
+{
+    using namespace sofa::helper::system;
+
+    std::ostringstream ofilename;
+    ofilename << sceneName << "_" << counterCompareState << "_" << mstateName  << "_mstate" << extension ;
+
+    std::string result;
+    std::string testFilename = ofilename.str();
+    std::ostringstream errorlog;
+    if( DataRepository.findFile(testFilename,"",&errorlog ) )
+    {
+        result = ofilename.str();
+        return result;
+    }
+
+    // from here we look for a closest match in terms of mstateName.
+
+    std::string parentDir = SetDirectory::GetParentDir(testFilename.c_str());
+    std::string fileName  = SetDirectory::GetFileName(testFilename.c_str());
+
+    const int& numDefault = sofa::simulation::xml::numDefault;
+
+    for( int i = 0; i<numDefault; ++i)
+    {
+        std::ostringstream testFile;
+        testFile << sceneName << "_" << counterCompareState << "_default" << i << "_mstate" << extension ;
+        if(DataRepository.findFile(testFile.str(),"",&errorlog))
+        {
+            result = testFile.str();
+            break;
+        }
+    }
+
+    return result;
+}
+
+}
 
 
 
@@ -168,10 +231,11 @@ void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalSt
             rs = new sofa::component::misc::CompareState(); gnode->addObject(rs);
         }
 
-        std::ostringstream ofilename;
-        ofilename << sceneName << "_" << counterCompareState << "_" << ms->getName()  << "_mstate" << extension ;
 
-        rs->f_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Deactivated only called by extern functions
+
+        std::string validFilename = lookForValidCompareStateFile(sceneName, ms->getName(), counterCompareState, extension);
+
+        rs->f_filename.setValue(validFilename);  rs->f_listening.setValue(false); //Deactivated only called by extern functions
         if (init) rs->init();
 
         ++counterCompareState;
