@@ -1,5 +1,0 @@
-class HatEvent
-!!!330032.cpp!!!	getIndex() : int
-	return m_index;
-!!!330160.cpp!!!	getState() : State
-	return m_state;

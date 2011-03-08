@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="config.xsd">
-	  <Path strScenesPath="/disc/bousquet/dev/Sofa/examples/Demos" strSofaPath="/disc/bousquet/dev/Sofa"/>  
-	  <Files strNomCompletDerniereSceneImport="/disc/bousquet/dev/Sofa/examples/Demos" strNomCompletExecutableSofa="/disc/bousquet/dev/Sofa/bin/runSofa"/>  
-  </Config>
