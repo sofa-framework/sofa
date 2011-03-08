@@ -70,6 +70,7 @@
 																	 9 10 100 5 1"/>
 
 		<Node name="col">
+			<Object type="MechanicalObject"/>
 			<Object type="Sphere" radius=".5"/>
 			<Object type="IdentityMapping"/>
 		</Node>		
@@ -107,6 +108,7 @@
 				  9 10 100 5 1"/>
 		
 		<Node name="col">
+			<Object type="MechanicalObject"/>
 			<Object type="Sphere" radius=".5"/>
 			<Object type="IdentityMapping"/>
 		</Node>		
@@ -142,6 +144,7 @@
 				  9 10 100 5 1"/>
 		
 		<Node name="col">
+			<Object type="MechanicalObject"/>
 			<Object type="Sphere" radius=".5"/>
 			<Object type="IdentityMapping"/>
 		</Node>		
