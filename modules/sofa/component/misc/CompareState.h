@@ -96,6 +96,7 @@ public:
     virtual const char* getClassName() const { return "CompareStateCreator"; }
 
 protected:
+
     void addCompareState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
     std::string sceneName;
     std::string extension;
