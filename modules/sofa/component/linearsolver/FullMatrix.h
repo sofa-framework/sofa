@@ -327,8 +327,12 @@ public:
         return out;
     }
 
-    static const char* Name() { return "FullMatrix"; }
+    static const char* Name();
 };
+
+template<> inline const char* FullMatrix<double>::Name() { return "FullMatrix"; }
+template<> inline const char* FullMatrix<float>::Name() { return "FullMatrixf"; }
+
 
 /// Simple full matrix container, with an additionnal pointer per line, to be able do get a T** pointer and use [i][j] directly
 template<typename T>
