@@ -250,6 +250,7 @@ public:
     Data<bool> _allVerified;
     Data<double> _sor;
     Data<bool> schemeCorrection;
+    Data<bool> _realTimeCompensation;
 
     Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors, _graphConstraints, _graphForces;
 
@@ -304,6 +305,7 @@ protected:
     unsigned int numConstraints;
 
     bool bufCP1;
+    double compTime, iterationTime;
 
 private:
     ConstraintProblem CP1, CP2;

@@ -229,6 +229,7 @@ MasterConstraintSolver::MasterConstraintSolver()
      _allVerified( initData(&_allVerified, false, "allVerified","All contraints must be verified (each constraint's error < tolerance)")),
      _sor( initData(&_sor, 1.0, "sor","Successive Over Relaxation parameter (0-2)")),
      schemeCorrection( initData(&schemeCorrection, false, "schemeCorrection","Apply new scheme where compliance is progressively corrected")),
+     _realTimeCompensation( initData(&_realTimeCompensation, false, "realTimeCompensation","If the total computational time T < dt, sleep(dt-T)")),
      _graphErrors( initData(&_graphErrors,"graphErrors","Sum of the constraints' errors at each iteration")),
      _graphConstraints( initData(&_graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution")),
      _graphForces( initData(&_graphForces,"graphForces","Graph of each constraint's force at each step of the resolution"))
@@ -339,6 +340,7 @@ void MasterConstraintSolver::freeMotion(const core::ExecParams* params /* PARAMS
 
     ////////propagate acceleration ? //////
 
+    //this is done to set dx to zero in subgraph
     core::MultiVecDerivId dx_id = core::VecDerivId::dx();
     simulation::MechanicalVOpVisitor(params /* PARAMS FIRST */, dx_id, ConstVecId::null(), ConstVecId::null(), 1.0 ).setMapped(true).execute(context);
 
@@ -546,6 +548,30 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
     {
         // SWAP BUFFER:
         bufCP1 = !bufCP1;
+    }
+
+    if (_realTimeCompensation.getValue())
+    {
+        if (timer == 0)
+        {
+            timer = new CTime();
+            compTime = iterationTime = (double)timer->getTime();
+        }
+        else
+        {
+            double actTime = double(timer->getTime());
+            double compTimeDiff = actTime - compTime;
+            double iterationTimeDiff = actTime - iterationTime;
+            iterationTime = actTime;
+            std::cout << "Total time = " << iterationTimeDiff << std::endl;
+            int toSleep = floor(dt*1000000-compTimeDiff);
+            //std::cout << "To sleep: " << toSleep << std::endl;
+            if (toSleep > 0)
+                usleep(toSleep);
+            else
+                serr << "Cannot achieve frequency for dt = " << dt << sendl;
+            compTime = (double)timer->getTime();
+        }
     }
 
     debug = this->f_printLog.getValue();
