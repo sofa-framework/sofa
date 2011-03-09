@@ -550,6 +550,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
         bufCP1 = !bufCP1;
     }
 
+#ifndef WIN32
     if (_realTimeCompensation.getValue())
     {
         if (timer == 0)
@@ -573,6 +574,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
             compTime = (double)timer->getTime();
         }
     }
+#endif
 
     debug = this->f_printLog.getValue();
 
