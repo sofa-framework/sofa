@@ -412,12 +412,12 @@ void main()
 		if (spotEffect > gl_LightSource[0].spotCosCutoff)
 		{
 			spotEffect = smoothstep(gl_LightSource[0].spotCosCutoff, 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
-			att = spotEffect / (gl_LightSource[0].constantAttenuation +
+			att = spotEffect /* / (gl_LightSource[0].constantAttenuation +
 					gl_LightSource[0].linearAttenuation * dist +
-					gl_LightSource[0].quadraticAttenuation * dist * dist);
+					gl_LightSource[0].quadraticAttenuation * dist * dist) */;
 	
 			//phong_color += (diffuse * NdotL) /* * att */;
-			phong_color.rgb += (diffuse.rgb * NdotL);//  * att ;
+			phong_color.rgb += (diffuse.rgb * NdotL) * att ;
 		}
 	}
 
