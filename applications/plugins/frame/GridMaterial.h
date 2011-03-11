@@ -255,7 +255,11 @@ protected:
     // voxel data
     vector<VRefReal> v_weights;
     vector<VRef> v_index;
+public:
+    inline void getWeights( VRefReal& weights, const unsigned int& index) { weights = v_weights[index];};
+    inline void getIndices( VRef& indices, const unsigned int& index) { indices = v_index[index];};
 
+protected:
     int showedrepartition; // to improve visualization (no need to paste weights on each draw)
     int showederror; // to improve visualization (no need to recompute error on each draw)
 
@@ -354,6 +358,7 @@ protected:
     /*         Utils				  */
     /*********************************/
 
+public:
     inline int getIndex(const GCoord& icoord) const;
     inline int getIndex(const SCoord& coord) const;
     inline bool getiCoord(const SCoord& coord, GCoord& icoord) const;
@@ -363,6 +368,7 @@ protected:
     inline bool get6Neighbors ( const int& index, VUI& neighbors ) const;
     inline bool get18Neighbors ( const int& index, VUI& neighbors ) const;
     inline bool get26Neighbors ( const int& index, VUI& neighbors ) const;
+protected:
     inline Real findWeightInRepartition(const unsigned int& pointIndex, const unsigned int& frameIndex);
     inline bool areRepsSimilar(const unsigned int i1,const unsigned int i2);
 
@@ -389,8 +395,11 @@ protected:
     GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)
     GLuint vboValuesId2; // ID of VBO for 3DValues index array
 
+public:
     float getLabel (const int&x, const int& y, const int& z) const;
     void getColor( float* color, const float& label) const;
+
+protected:
     void genListCube ();
     void drawCube (const double& x, const double& y, const double& z) const;
     GLuint createVBO (const void* data, int dataSize, GLenum target, GLenum usage);

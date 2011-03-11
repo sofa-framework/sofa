@@ -27,6 +27,7 @@
 
 #include "FrameBlendingMapping.h"
 #include "FrameDQBlendingMapping.cpp"
+#include "GridMaterial.inl"
 #include <sofa/core/Mapping.inl>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Color.h>
@@ -206,6 +207,32 @@ void FrameBlendingMapping<TIn, TOut>::init()
     }
 
     Inherit::init();
+}
+
+
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::apply( typename SampleData<TOut>::MaterialCoord& coord, const typename SampleData<TOut>::MaterialCoord& restCoord)
+{
+    if(!gridMaterial) { serr << "No GridMaterial !! on single point apply call" << sendl; return;}
+
+    Vec<nbRef,InReal> w;
+    Vec<nbRef,unsigned int> reps;
+    unsigned int hexaID = gridMaterial->getIndex( (MaterialCoord)restCoord);
+
+    gridMaterial->getWeights( w, hexaID );
+    gridMaterial->getIndices( reps, hexaID );
+
+    // Allocates and initialises mapping data.
+    defaulttype::LinearBlendTypes<In,Vec3dTypes,GridMat,nbRef, 0 > map;
+    defaulttype::DualQuatBlendTypes<In,Vec3dTypes,GridMat,nbRef, 0 > dqmap;
+    if(useDQ.getValue()) dqmap.init(restCoord,reps,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
+    else map.init(restCoord,reps,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
+
+    // Transforms the point depending of the current 'in' position.
+    ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+    if(useDQ.getValue()) {coord = dqmap.apply( in.ref());}
+    else {coord = map.apply( in.ref());}
 }
 
 

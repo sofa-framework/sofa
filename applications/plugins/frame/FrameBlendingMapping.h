@@ -119,6 +119,7 @@ public:
 
     virtual void draw();
 
+    virtual void apply( typename SampleData<TOut>::MaterialCoord& coord, const typename SampleData<TOut>::MaterialCoord& restCoord);
     virtual void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
     virtual void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
     virtual void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
