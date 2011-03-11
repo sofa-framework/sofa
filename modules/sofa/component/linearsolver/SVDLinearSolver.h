@@ -58,6 +58,7 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
     Data<bool> f_verbose;
+    Data<Real> f_minSingularValue;
     SVDLinearSolver();
 
     /// Solve Mx=b
