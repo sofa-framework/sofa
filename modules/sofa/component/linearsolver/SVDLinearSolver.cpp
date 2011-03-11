@@ -55,6 +55,7 @@ using sofa::helper::system::thread::CTime;
 template<class TMatrix, class TVector>
 SVDLinearSolver<TMatrix,TVector>::SVDLinearSolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+    , f_minSingularValue( initData(&f_minSingularValue,(Real)1.0e-6,"minSingularValue","Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.") )
     , f_conditionNumber( initData(&f_conditionNumber,(Real)0.0,"conditionNumber","Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.") )
 {
 #ifdef DISPLAY_TIME
@@ -105,7 +106,20 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     }
 
     /// Solve the equation system and copy the solution to the SOFA vector
-    Eigen::VectorXd solution = svd.solve(rhs);
+//    Eigen::VectorXd solution = svd.solve(rhs);
+//    for(unsigned i=0; i<M.rowSize(); i++ ){
+//        x[i] = solution(i);
+//    }
+    Eigen::VectorXd Ut_b = svd.matrixU().transpose() *  rhs;
+    Eigen::VectorXd S_Ut_b(M.colSize());
+    for( unsigned i=0; i<M.colSize(); i++ )   /// product with the diagonal matrix, using the threshold for near-null values
+    {
+        if( svd.singularValues()[i] > f_minSingularValue.getValue() )
+            S_Ut_b[i] = Ut_b[i]/svd.singularValues()[i];
+        else
+            S_Ut_b[i] = (Real)0.0 ;
+    }
+    Eigen::VectorXd solution = svd.matrixV() * S_Ut_b;
     for(unsigned i=0; i<M.rowSize(); i++ )
     {
         x[i] = solution(i);
