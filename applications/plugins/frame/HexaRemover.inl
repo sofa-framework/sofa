@@ -204,7 +204,7 @@ bool HexaRemover<DataTypes>::removeVoxels()
     sofa::helper::vector<unsigned int> vitems;
     vitems.reserve ( items.size() );
     vitems.insert ( vitems.end(), items.rbegin(), items.rend() );
-    S
+
     meshGen->removeVoxels( vitems);
 
     infos.clear();
