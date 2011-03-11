@@ -1448,71 +1448,104 @@ bool LocalMinDistance::testValidity(CubicBezierCurve& spline, const Vector3& /*P
 
 bool LocalMinDistance::testIntersection(CubicBezierCurve& e2, Point& e1)
 {
-
-
     if(!e1.activated(e2.getCollisionModel()) || !e2.activated(e1.getCollisionModel()) || !e2.isActivated())
         return false;
 
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2[3]-e2[0];
-    const Vector3 AP = e1.p()-e2[0];
+    bool isCollided=false;
+    Vector3 AB;
+    Vector3 AP;
+    Vector3 P,Q,PQ;
+    double alpha;
+
+    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
 
     double A;
     double b;
-    A = AB*AB;
-    b = AP*AB;
 
-    double alpha = 0.5;
-
-    //if (A < -0.000001 || A > 0.000001)
+    if(e2.isStraightLine() )//The case where e2 is taged as a straight line, computation behave exactly as a lineModel
     {
-        alpha = b/A;
-        if (alpha < 0.000001 || alpha > 0.999999)
-            return false;
-    }
+        AB = e2[3]-e2[0];
+        AP = e1.p()-e2[0];
+        A = AB*AB;
+        b = AP*AB;
 
-    Vector3 P,Q,PQ;
-    P = e1.p();
-    Q = e2[0] + AB * alpha;
-    PQ = Q-P;
+        alpha = 0.5;
 
-    if (PQ.norm2() < alarmDist*alarmDist)
-    {
-        // filter for LMD
-
-        if (!useLMDFilters.getValue())
+        //if (A < -0.000001 || A > 0.000001)
         {
-            if (!testValidity(e1, PQ))
+            alpha = b/A;
+            if (alpha < 0.000001 || alpha > 0.999999)
                 return false;
+        }
 
-            Vector3 QP = -PQ;
-            return testValidity(e2, QP);
+        P = e1.p();
+        Q = e2[0] + AB * alpha;
+        PQ = Q-P;
+
+        if (PQ.norm2() < alarmDist*alarmDist)
+        {
+            // filter for LMD
+
+            if (!useLMDFilters.getValue())
+            {
+                if (!testValidity(e1, PQ))
+                    return false;
+
+                Vector3 QP = -PQ;
+                return testValidity(e2, QP);
+            }
+            else
+            {
+                return true;
+            }// end filter
         }
         else
-        {
-            /*
-            core::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
-            if (e1_cfa != 0)
-            {
-            	if (!e1_cfa->validate(e1, PQ))
-            		return false;
-            }
-
-            core::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
-            if (e2_cfa != 0)
-            {
-            	Vector3 QP = -PQ;
-            	return e2_cfa->validate(e2, QP);
-            }
-            */
-
-            return true;
-        }
-
-        // end filter
+            return false;
     }
-    else
-        return false;
+    else if( e2.isCubicBezier () )
+    {
+        //The case where e2 is taged as a cubic curve, computation behave discretly as 3 Lines
+        //Todo implementation for continuous curve
+        for(int i=0; i<3; i++)
+        {
+            AB = e2[i+1]-e2[i];
+            AP = e1.p()-e2[i];
+            A = AB*AB;
+            b = AP*AB;
+            double _alpha = b/A;
+            if (_alpha < 0.000001 || _alpha > 0.999999)
+                continue;
+
+            alpha = _alpha;
+            P = e1.p();
+            Q = e2[i] + AB * alpha;
+            PQ = Q-P;
+
+            if (PQ.norm2() < alarmDist*alarmDist)
+            {
+                // filter for LMD
+
+                if (!useLMDFilters.getValue())
+                {
+                    if (!testValidity(e1, PQ))
+                        continue;
+
+                    Vector3 QP = -PQ;
+                    if (!testValidity(e2, QP))
+                        continue;
+                    else
+                        isCollided =true;
+                }
+                else
+                {
+                    isCollided = true;
+                }// end filter
+            }
+            else
+                continue;
+        }
+    }
+    return isCollided;
 }
 
 int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Point& e1, OutputVector* contacts)
@@ -1520,107 +1553,157 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Point& e1, Outpu
     if(!e1.activated(e2.getCollisionModel()) || !e2.activated(e1.getCollisionModel()))
         return 0;
 
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2[3]-e2[0];
-    const Vector3 AP = e1.p()-e2[0];
-
+    Vector3 AB;
+    Vector3 AP;
+    Vector3 P, Q, PQ, QP;
+    double alpha;
+    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     double A;
     double b;
-    A = AB*AB;
-    b = AP*AB;
 
-    double alpha = 0.5;
-
-    //if (A < -0.000001 || A > 0.000001)
+    if(e2.isStraightLine() )//The case where e2 is taged as a straight line, computation behave exactly as a lineModel
     {
-        alpha = b/A;
-        if (alpha < 0.000001 || alpha > 0.999999)
-            return 0;
-    }
+        AB = e2[3]-e2[0];
+        AP = e1.p()-e2[0];
+        A = AB*AB;
+        b = AP*AB;
 
-    Vector3 P,Q;
-    P = e1.p();
-    Q = e2[0] + AB * alpha;
-    Vector3 PQ = Q - P;
-    Vector3 QP = -PQ;
+        alpha = 0.5;
 
-    if (PQ.norm2() >= alarmDist*alarmDist)
-        return 0;
-
-    ///// debug
-    //BaseMeshTopology* topology = e2.getCollisionModel()->getMeshTopology();
-    //const sofa::helper::vector<unsigned int>& trianglesAroundEdge = topology->getTrianglesAroundEdge(e2.getIndex());
-    //if (trianglesAroundEdge.size() == 0)
-    //	std::cout<<"intersection line / point active while triangle Edge Shell = 0"<<std::endl;
-    //// end debug
-
-
-    // filter for LMD
-
-    if (!useLMDFilters.getValue())
-    {
-        if (!testValidity(e1, PQ))
-            return 0;
-
-        if (!testValidity(e2, QP))
-            return 0;
-    }
-    else
-    {
-        /*
-        core::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
-        if (e1_cfa != 0)
+        //if (A < -0.000001 || A > 0.000001)
         {
-        	if (!e1_cfa->validate(e1, PQ))
-        		return 0;
+            alpha = b/A;
+            if (alpha < 0.000001 || alpha > 0.999999)
+                return 0;
         }
 
-        core::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
-        if (e2_cfa != 0)
+        P = e1.p();
+        Q = e2[0] + AB * alpha;
+        PQ = Q - P;
+        QP = -PQ;
+
+        if (PQ.norm2() >= alarmDist*alarmDist)
+            return 0;
+
+        if (!useLMDFilters.getValue())
         {
-        	if (!e2_cfa->validate(e2, QP))
-        		return 0;
+            if (!testValidity(e1, PQ))
+                return 0;
+
+            if (!testValidity(e2, QP))
+                return 0;
         }
-        */
-    }
+        else
+        {
 
-    // end filter
+        }// end filter
+        contacts->resize(contacts->size()+1);
+        DetectionOutput *detection = &*(contacts->end()-1);
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
+        const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
-    detection->elem.first = e2;
-    detection->elem.second = e1;
-    detection->id = e1.getIndex();
-    detection->point[0]=Q;
-    detection->point[1]=P;
-    detection->normal=QP;
-    detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
-    detection->value -= contactDist;
+        //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+        detection->elem.first = e2;
+        detection->elem.second = e1;
+        detection->id = e1.getIndex();
+        detection->point[0]=Q;
+        detection->point[1]=P;
+        detection->normal=QP;
+        detection->value = detection->normal.norm();
+        detection->normal /= detection->value;
+        detection->value -= contactDist;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    //alpha here is the barycentric coordinate of the local spline (littler)
-    //need to be transforme to the barycentric coordinate of the globale spline on the Edge
-    double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
-    detection->baryCoords[0][0]=t;
+        //alpha here is the barycentric coordinate of the local spline (littler)
+        //need to be transforme to the barycentric coordinate of the globale spline on the Edge
+        double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
+        detection->baryCoords[0][0]=t;
 
-    CubicBezierCurve::Quat qt = e2.quat(alpha);
-    Vector3 e_X = qt.rotate(Vector3(0.,1.,0.));
-    Vector3 e_Y = qt.rotate(Vector3(0.,0.,1.));
-    double projectX = dot(QP,e_X);
-    double projectY = dot(QP,e_Y);
+        CubicBezierCurve::Quat qt = e2.quat(alpha);
+        Vector3 e_X = qt.rotate(Vector3(0.,1.,0.));
+        Vector3 e_Y = qt.rotate(Vector3(0.,0.,1.));
+        double projectX = dot(QP,e_X);
+        double projectY = dot(QP,e_Y);
 
-    detection->baryCoords[0][1]=projectX;
-    detection->baryCoords[0][2]=projectY;
+        detection->baryCoords[0][1]=projectX;
+        detection->baryCoords[0][2]=projectY;
 #endif
+        //	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1607  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
+        //			 << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
+        //			 <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
+    }
+    else if ( e2.isCubicBezier () )
+    {
+        //The case where e2 is taged as a cubic curve, computation behave discretly as 3 Lines
+        //Todo implementation for continuous curve
+        for(int i=0; i<3; i++)
+        {
+            AB = e2[i+1]-e2[i];
+            AP = e1.p()-e2[i];
+            A = AB*AB;
+            b = AP*AB;
 
+            double _alpha = 0.5;
+            _alpha = b/A;
+            if (_alpha < 0.000001 || _alpha > 0.999999)
+                continue;
+            alpha = _alpha;
 
-//	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1607  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
-//			 << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
-//			 <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
+            P = e1.p();
+            Q = e2[i] + AB * alpha;
+            PQ = Q - P;
+            QP = -PQ;
+
+            if (PQ.norm2() >= alarmDist*alarmDist)
+                return 0;
+
+            if (!useLMDFilters.getValue())
+            {
+                if (!testValidity(e1, PQ))
+                    return 0;
+
+                if (!testValidity(e2, QP))
+                    return 0;
+            }
+            else
+            {
+
+            }// end filter
+            contacts->resize(contacts->size()+1);
+            DetectionOutput *detection = &*(contacts->end()-1);
+
+            const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+
+            //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+            detection->elem.first = e2;
+            detection->elem.second = e1;
+            detection->id = e1.getIndex();
+            detection->point[0]=Q;
+            detection->point[1]=P;
+            detection->normal=QP;
+            detection->value = detection->normal.norm();
+            detection->normal /= detection->value;
+            detection->value -= contactDist;
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+            //alpha here is the barycentric coordinate of the local spline (littler)
+            //need to be transforme to the barycentric coordinate of the globale spline on the Edge
+            double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
+            detection->baryCoords[0][0]=t;
+
+            CubicBezierCurve::Quat qt = e2.quat(alpha);
+            Vector3 e_X = qt.rotate(Vector3(0.,1.,0.));
+            Vector3 e_Y = qt.rotate(Vector3(0.,0.,1.));
+            double projectX = dot(QP,e_X);
+            double projectY = dot(QP,e_Y);
+
+            detection->baryCoords[0][1]=projectX;
+            detection->baryCoords[0][2]=projectY;
+#endif
+            //	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1607  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
+            //			 << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
+            //			 <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
+        }
+    }
+
 
     return 1;
 }
@@ -1628,107 +1711,222 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Point& e1, Outpu
 /////////////////////////////////////////////////////////////////
 bool LocalMinDistance::testIntersection(CubicBezierCurve& e2, Sphere& e1)
 {
-
-    if(!e2.activated(e1.getCollisionModel()))
+    if(!e2.activated(e1.getCollisionModel()) || !e2.isActivated())
         return false;
+
+    bool isCollided=false;
+    Vector3 x32;
+    Vector3 x31;
+    Vector3 P,Q,PQ;
+    double alpha;
 
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
-
-    const Vector3 x32 = e2[0]-e2[3];
-    const Vector3 x31 = e1.center()-e2[3];
     double A;
     double b;
-    A = x32*x32;
-    b = x32*x31;
 
-    double alpha = 0.5;
-
-    //if (A < -0.000001 || A > 0.000001)
+    if(e2.isStraightLine() )//The case where e2 is taged as a straight line, computation behave exactly as a lineModel
     {
-        alpha = b/A;
-        if (alpha < 0.000001 || alpha > 0.999999)
+
+        x32 = e2[0]-e2[3];
+        x31 = e1.center()-e2[3];
+        A = x32*x32;
+        b = x32*x31;
+
+        alpha = 0.5;
+        //if (A < -0.000001 || A > 0.000001)
+        {
+            alpha = b/A;
+            if (alpha < 0.000001 || alpha > 0.999999)
+                return false;
+        }
+
+
+        P = e1.center();
+        Q = e2[0] - x32 * alpha;
+        PQ = Q-P;
+
+        if (PQ.norm2() < alarmDist*alarmDist)
+        {
+            return true;
+        }
+        else
             return false;
+
     }
-
-    Vector3 P,Q,PQ;
-    P = e1.center();
-    Q = e2[0] - x32 * alpha;
-    PQ = Q-P;
-
-    if (PQ.norm2() < alarmDist*alarmDist)
+    else if( e2.isCubicBezier () )
     {
-        return true;
-    }
-    else
-        return false;
+        //The case where e2 is taged as a cubic curve, computation behave discretly as 3 Lines
+        //Todo implementation for continuous curve
+        for(int i=0; i<3; i++)
+        {
+            x32 = e2[i]-e2[i+1];
+            x31 = e1.center()-e2[i+1];
+            A = x32*x32;
+            b = x32*x31;
 
+            alpha = 0.5;
+            alpha = b/A;
+            if (alpha < 0.000001 || alpha > 0.999999)
+                continue;
+
+            P = e1.center();
+            Q = e2[i] - x32 * alpha;
+            PQ = Q-P;
+
+            if (PQ.norm2() < alarmDist*alarmDist)
+            {
+                isCollided = true;
+            }
+            else
+                continue;
+        }
+    }
+    return isCollided;
 }
 
 int LocalMinDistance::computeIntersection(CubicBezierCurve& e2, Sphere& e1, OutputVector* contacts)
 {
 
-    if(!e2.activated(e1.getCollisionModel()))
+    if(!e2.activated(e1.getCollisionModel()) || !e2.isActivated() )
         return 0;
 
+    Vector3 x32;
+    Vector3 x31;
+    Vector3 P, Q, PQ, QP;
+    double alpha;
     const double alarmDist = getAlarmDistance() + e1.r() + e2.r() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 x32 = e2[0]-e2[3];
-    const Vector3 x31 = e1.center()-e2[3];
     double A;
     double b;
-    A = x32*x32;
-    b = x32*x31;
 
-    double alpha = 0.5;
 
-    //if (A < -0.000001 || A > 0.000001)
+    if(e2.isStraightLine() )//The case where e2 is taged as a straight line, computation behave exactly as a lineModel
     {
-        alpha = b/A;
-        if (alpha < 0.000001 || alpha > 0.999999)
+
+        x32 = e2[0]-e2[3];
+        x31 = e1.center()-e2[3];
+        A = x32*x32;
+        b = x32*x31;
+
+        alpha = 0.5;
+
+        //if (A < -0.000001 || A > 0.000001)
+        {
+            alpha = b/A;
+            if (alpha < 0.000001 || alpha > 0.999999)
+                return 0;
+        }
+
+        P = e1.center();
+        Q = e2[0] - x32 * alpha;
+        QP = P-Q;
+        PQ = Q-P;
+
+        if (QP.norm2() >= alarmDist*alarmDist)
             return 0;
-    }
 
-    Vector3 P = e1.center();
-    Vector3 Q = e2[0] - x32 * alpha;
-    Vector3 QP = P-Q;
-    Vector3 PQ = Q-P;
+        const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    if (QP.norm2() >= alarmDist*alarmDist)
-        return 0;
-
-    const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
-
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
-    detection->elem.first = e2;
-    detection->elem.second = e1;
-    detection->id = e1.getIndex();
-    detection->point[0]=Q;
-    detection->point[1]=P;
-    detection->normal=QP;
-    detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
-    detection->value -= contactDist;
+        contacts->resize(contacts->size()+1);
+        DetectionOutput *detection = &*(contacts->end()-1);
+        //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+        detection->elem.first = e2;
+        detection->elem.second = e1;
+        detection->id = e1.getIndex();
+        detection->point[0]=Q;
+        detection->point[1]=P;
+        detection->normal=QP;
+        detection->value = detection->normal.norm();
+        detection->normal /= detection->value;
+        detection->value -= contactDist;
 
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    //alpha here is the barycentric coordinate of the local spline (littler)
-    //need to be transforme to the barycentric coordinate of the globale spline on the Edge
-    double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
-    detection->baryCoords[0][0]=t;
+        //alpha here is the barycentric coordinate of the local spline (littler)
+        //need to be transforme to the barycentric coordinate of the globale spline on the Edge
+        double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
+        detection->baryCoords[0][0]=t;
 
-    CubicBezierCurve::Quat qt = e2.quat(alpha);
-    Vector3 e_X = qt.rotate(Vector3(0.,1.,0.));
-    Vector3 e_Y = qt.rotate(Vector3(0.,0.,1.));
-    double projectX = dot(QP,e_X);
-    double projectY = dot(QP,e_Y);
+        CubicBezierCurve::Quat qt = e2.quat(alpha);
+        Vector3 e_X = qt.rotate(Vector3(0.,1.,0.));
+        Vector3 e_Y = qt.rotate(Vector3(0.,0.,1.));
+        double projectX = dot(QP,e_X);
+        double projectY = dot(QP,e_Y);
 
-    detection->baryCoords[0][1]=projectX;
-    detection->baryCoords[0][2]=projectY;
+        detection->baryCoords[0][1]=projectX;
+        detection->baryCoords[0][2]=projectY;
 #endif
-//	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1706  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
-//			 << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
-//			 <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
+        //	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1706  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
+        //			 << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
+        //			 <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
+    }
+    else if( e2.isCubicBezier () )
+    {
+        //The case where e2 is taged as a cubic curve, computation behave discretly as 3 Lines
+        //Todo implementation for continuous curve
+        for(int i=0; i<3; i++)
+        {
+
+            x32 = e2[i]-e2[i+1];
+            x31 = e1.center()-e2[i+1];
+            A = x32*x32;
+            b = x32*x31;
+
+            alpha = 0.5;
+
+            //if (A < -0.000001 || A > 0.000001)
+            {
+                alpha = b/A;
+                if (alpha < 0.000001 || alpha > 0.999999)
+                    continue;
+            }
+
+            P = e1.center();
+            Q = e2[i] - x32 * alpha;
+            QP = P-Q;
+            PQ = Q-P;
+
+            if (QP.norm2() >= alarmDist*alarmDist)
+                continue;
+
+            const double contactDist = getContactDistance() +e2.r() +e1.r() + e1.getProximity() + e2.getProximity();
+
+            contacts->resize(contacts->size()+1);
+            DetectionOutput *detection = &*(contacts->end()-1);
+            //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+            detection->elem.first = e2;
+            detection->elem.second = e1;
+            detection->id = e1.getIndex();
+            detection->point[0]=Q;
+            detection->point[1]=P;
+            detection->normal=QP;
+            detection->value = detection->normal.norm();
+            detection->normal /= detection->value;
+            detection->value -= contactDist;
+
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+            //alpha here is the barycentric coordinate of the local spline (littler)
+            //need to be transforme to the barycentric coordinate of the globale spline on the Edge
+            double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
+            detection->baryCoords[0][0]=t;
+
+            CubicBezierCurve::Quat qt = e2.quat(alpha);
+            Vector3 e_X = qt.rotate(Vector3(0.,1.,0.));
+            Vector3 e_Y = qt.rotate(Vector3(0.,0.,1.));
+            double projectX = dot(QP,e_X);
+            double projectY = dot(QP,e_Y);
+
+            detection->baryCoords[0][1]=projectX;
+            detection->baryCoords[0][2]=projectY;
+#endif
+            //	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1706  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
+            //			 << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
+            //			 <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
+
+        }
+    }
+
+
+
 
 
     return 1;
