@@ -4,7 +4,6 @@
 
 #include "HexaRemover.h"
 #include "MeshGenerater.inl"
-#include <sofa/component/topology/DynamicSparseGridTopologyModifier.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
 
@@ -62,6 +61,9 @@ void HexaRemover<DataTypes>::init ()
         return;
     }
     meshGen = v[0];
+    meshGen->getContext()->get ( sData, core::objectmodel::BaseContext::Local );
+    if ( !sData ) {serr << "Init(): Can't find the mechanical mapping" << sendl; return;}
+
     meshGen->getContext()->get ( triGeoAlgo );
     if ( !triGeoAlgo ) {serr << "Init(): Can't find the triangle geoAlgo component" << sendl; return;}
 
@@ -95,7 +97,7 @@ bool HexaRemover<DataTypes>::isTheModelInteresting ( MTopology* model ) const
 
 
 template <class DataTypes>
-void HexaRemover<DataTypes>::findTheCollidedVoxels ( unsigned int triangleID, const Vector3& minBBVolume, const Vector3& maxBBVolume )
+void HexaRemover<DataTypes>::findTheCollidedVoxels ( unsigned int triangleID)
 {
     sofa::helper::vector< unsigned int > hexasID;
     meshGen->getFromIndex ( hexasID, triangleID );
@@ -104,14 +106,14 @@ void HexaRemover<DataTypes>::findTheCollidedVoxels ( unsigned int triangleID, co
     for ( sofa::helper::vector< unsigned int >::const_iterator itHexaID = hexasID.begin(); itHexaID != hexasID.end(); ++itHexaID )
     {
         // Propagate to find the hexas to remove
-        propagateFrom ( *itHexaID, minBBVolume,maxBBVolume );
+        propagateFrom ( *itHexaID);
     }
 }
 
 
 
 template <class DataTypes>
-void HexaRemover<DataTypes>::propagateFrom ( const unsigned int hexa, const Vector3& minBBVolume, const Vector3& maxBBVolume )
+void HexaRemover<DataTypes>::propagateFrom ( const unsigned int hexa)
 {
     helper::set<unsigned int>& hexaToRemove = this->contactInfos[meshGen].getHexaToRemove();
     helper::set<unsigned int> parsedHexas;
@@ -119,9 +121,8 @@ void HexaRemover<DataTypes>::propagateFrom ( const unsigned int hexa, const Vect
     unsigned int hexaID;
     std::stack<unsigned int> hexasToParse; // Stack of hexas to parse.
     hexasToParse.push ( hexa ); // Adds the first given hexa.
-    const SCoord& halfVSize = meshGen->voxelSize.getValue() / 2.0;
-    const float sphereRadius = sqrt( halfVSize[0] * halfVSize[0] + halfVSize[1] * halfVSize[1] + halfVSize[2] * halfVSize[2]);
-
+    //const SCoord& halfVSize = meshGen->voxelSize.getValue() / 2.0;
+    //const float sphereRadius = sqrt( halfVSize[0] * halfVSize[0] + halfVSize[1] * halfVSize[1] + halfVSize[2] * halfVSize[2]);
 
     // While the propagation is not finished
     while ( !hexasToParse.empty() )
@@ -132,26 +133,28 @@ void HexaRemover<DataTypes>::propagateFrom ( const unsigned int hexa, const Vect
         if ( parsedHexas.find ( hexaID ) != parsedHexas.end() )   continue; // if this hexa is ever parsed, continue
         if ( hexaToRemove.find ( hexaID ) != hexaToRemove.end() ) continue; // if this hexa has ever been removed, continue
 
-        // TODO // Update the hexas position (if using sleeping bary mapping.
-        // Update the mechanical Coords before computing AABB box.
-        //VecCoord& out = *fromDOFs->getX();
-        //VecCoord& in = *toDOFs->getX();
-        //mapper->applyOnePoint( hexaID, out, in);
-
+        // Compute the current voxel position with the mechanical mapping.
         Coord hexaCoord;
-        meshGen->getHexaCoord( hexaCoord, hexaID );
+        std::map<unsigned int, Vec3d>::iterator itMappedCoord = voxelMappedCoord.find( hexaID);
+        if( itMappedCoord == voxelMappedCoord.end())
+        {
+            Coord hexaRestCoord;
+            meshGen->getHexaCoord( hexaRestCoord, hexaID );
+            sData->apply(hexaCoord, hexaRestCoord);
+            voxelMappedCoord.insert( std::make_pair(hexaID,hexaCoord));
+        }
+        else
+        {
+            hexaCoord = itMappedCoord->second;
+        }
+
         parsedHexas.insert ( hexaID );
         if (showElements.getValue())
             parsedHexasCoords.insert ( hexaCoord );
 
-        // Compute and compare bounding volumes of the hexas and of the intersection volume.
-#if 1
-        if ( !isCrossingSphere ( minBBVolume, maxBBVolume, hexaCoord, sphereRadius ) )
+        if ( !isPointInside ( hexaCoord ) )
             continue;
-#else
-        if ( !isInsideAABB ( minBBVolume, maxBBVolume, hexaCoord ) )
-            continue;
-#endif
+
         hexaToRemove.insert ( hexaID );
         if (showElements.getValue())
             removedHexasCoords.insert ( hexaCoord );
@@ -171,25 +174,25 @@ template <class DataTypes>
 void HexaRemover<DataTypes>::getNeighbors ( const unsigned int hexaID, helper::set<unsigned int>& neighbors ) const
 {
     const GCoord& dim = meshGen->voxelDimension.getValue();
+    GCoord gCoord;
+    meshGen->gridMat->getiCoord( hexaID, gCoord);
 
-    unsigned int z = ((unsigned int)( hexaID / (dim[0]*dim[1])));
-    unsigned int remain = ( hexaID % (dim[0]*dim[1]));
-    unsigned int y = ((unsigned int)( remain / dim[0]));
-    unsigned int x = (remain % dim[0]);
+    const unsigned int& x = gCoord[0];
+    const unsigned int& y = gCoord[1];
+    const unsigned int& z = gCoord[2];
 
     if (x > (unsigned int) 0) neighbors.insert ( hexaID-1 );
-    if (x < (unsigned int) dim[0]) neighbors.insert ( hexaID+1 );
-    if (y > (unsigned int) 0) neighbors.insert ( hexaID-dim[1] );
-    if (y < (unsigned int) dim[1]) neighbors.insert ( hexaID+dim[1] );
+    if (x < (unsigned int) dim[0]-1) neighbors.insert ( hexaID+1 );
+    if (y > (unsigned int) 0) neighbors.insert ( hexaID-dim[0] );
+    if (y < (unsigned int) dim[1]-1) neighbors.insert ( hexaID+dim[0] );
     if (z > (unsigned int) 0) neighbors.insert ( hexaID-dim[1]*dim[0] );
-    if (z < (unsigned int) dim[2]) neighbors.insert ( hexaID+dim[1]*dim[0] );
+    if (z < (unsigned int) dim[2]-1) neighbors.insert ( hexaID+dim[1]*dim[0] );
 }
 
 
 template <class DataTypes>
 bool HexaRemover<DataTypes>::removeVoxels()
 {
-    //TODO clean this method !!
     ContactInfos &infos=this->contactInfos[meshGen];
     std::set< unsigned int > items = infos.getHexaToRemove();
     if ( items.empty() )
@@ -198,42 +201,10 @@ bool HexaRemover<DataTypes>::removeVoxels()
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode ( "removeVoxels" );
 #endif
-    simulation::Node *node_curr = dynamic_cast<simulation::Node*> ( meshGen->getContext() );
-
-    bool is_topoMap = true;
-
-    while ( is_topoMap )
-    {
-        is_topoMap = false;
-        std::vector< core::objectmodel::BaseObject * > listObject;
-        node_curr->get<core::objectmodel::BaseObject> ( &listObject, core::objectmodel::BaseContext::Local );
-        for ( unsigned int i=0; i<listObject.size(); ++i )
-        {
-            MeshGen *meshGen = dynamic_cast<MeshGen *> ( listObject[i] );
-            if ( meshGen != NULL )
-            {
-                is_topoMap = true;
-                std::set< unsigned int > loc_items = items;
-                items.clear();
-                for ( std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it )
-                {
-                    vector<unsigned int> indices;
-                    meshGen->getFromIndex ( indices, *it );
-                    for ( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); itIndices++ )
-                    {
-                        //std::cout << *it << " -> " << *itIndices << std::endl;
-                        items.insert ( *itIndices );
-                    }
-                }
-                break;
-            }
-        }
-    }
-
     sofa::helper::vector<unsigned int> vitems;
     vitems.reserve ( items.size() );
     vitems.insert ( vitems.end(), items.rbegin(), items.rend() );
-
+    S
     meshGen->removeVoxels( vitems);
 
     infos.clear();
@@ -251,6 +222,18 @@ void HexaRemover<DataTypes>::detectVoxels()
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode ( "detectVoxels" );
 #endif
+    buildCollisionVolumes();
+    for ( std::set<unsigned int>::const_iterator it = trianglesToParse.begin(); it != trianglesToParse.end(); ++it)
+        findTheCollidedVoxels ( *it );
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode ( "detectVoxels" );
+#endif
+}
+
+template <class DataTypes>
+void HexaRemover<DataTypes>::buildCollisionVolumes()
+{
     MTopology *current_model;
     const gpu::cuda::CudaVector<gpu::cuda::Object>& ldiObjects = rasterizer->ldiObjects;
     const LDI* ldiDir = rasterizer->ldiDir;
@@ -277,9 +260,11 @@ void HexaRemover<DataTypes>::detectVoxels()
     {
 #endif
         const LDI& ldi = ldiDir[axis];
+        /*
         const int iX = ( axis+1 ) %3;
         const int iY = ( axis+2 ) %3;
         const int iZ =  axis     ;
+        */
         if ( ldi.nbcu==0 ) continue;
 
         for ( int bx=0; bx < ldi.nbcu; ++bx )
@@ -291,10 +276,14 @@ void HexaRemover<DataTypes>::detectVoxels()
             const Cell& cell = ldi.cells[bx];
             if ( cell.nbLayers == 0 ) continue;
             static helper::vector<int> layers;
+            static helper::vector<int> inLayers;
             static helper::vector<int> inobjs;
+            static helper::vector<unsigned int> inobjs_tid;
             //                                                const CellCountLayer& counts = ldi.cellCounts[bx];
             layers.resize ( cell.nbLayers );
             inobjs.resize ( cell.nbLayers );
+            inLayers.resize ( cell.nbLayers );
+            inobjs_tid.resize ( cell.nbLayers );
 
             for ( int i=0, l = cell.firstLayer; i<cell.nbLayers; ++i )
             {
@@ -353,7 +342,11 @@ void HexaRemover<DataTypes>::detectVoxels()
                         if ( front )
                         {
                             if ( incount >= 0 )
+                            {
                                 inobjs[incount] = obj;
+                                inLayers[incount] = layer;
+                                inobjs_tid[incount] = tid;
+                            }
                             ++incount;
                         }
                         else
@@ -361,9 +354,18 @@ void HexaRemover<DataTypes>::detectVoxels()
                             --incount;
                             if ( first_front &&
                                     ( //( obj == first_obj && incount > 0 && obj == inobjs[incount-1] ) || // self-collision
-                                            //( obj == first_obj && incount && obj != inobjs[incount-1]) || // collision inside another object
+                                            ( obj == first_obj && incount && obj != inobjs[incount-1]) || // collision inside another object
                                             ( obj != first_obj ) ) ) // collision
                             {
+                                bool insideAnotherObj = false;
+                                if (obj == first_obj) // Allow to correctly add the trianglesToParse in the case 'collision inside another object'
+                                {
+                                    first_obj = inobjs[incount-1];
+                                    insideAnotherObj = true;
+                                    //first_tid = inobjs_tid[incount-1];
+                                    //first_layer = inLayers[incount-1];
+                                }
+
                                 MTopology* first_model = rasterizer->vmtopology[first_obj];
                                 current_model = rasterizer->vmtopology[obj];
                                 if ( ! ( ( isTheModelInteresting ( current_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), first_model ) != cuttingModels.end() ) ||
@@ -387,19 +389,15 @@ void HexaRemover<DataTypes>::detectVoxels()
                                     maxDepth = z0;
                                 }
 
-                                BoundingBox collisionVol;
-                                collisionVol.first[iX] = x - ( psize*0.5 );
-                                collisionVol.first[iY] = y - ( psize*0.5 );
-                                collisionVol.first[iZ] = minDepth;
-                                collisionVol.second[iX] = x + ( psize*0.5 );
-                                collisionVol.second[iY] = y + ( psize*0.5 );
-                                collisionVol.second[iZ] = maxDepth;
-                                if (showVolumes.getValue())
-                                    collisionVolumesCoords[axis].insert ( collisionVol );
-                                if ( isTheModelInteresting ( current_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), first_model ) != cuttingModels.end() )
-                                    findTheCollidedVoxels ( tid, collisionVol.first, collisionVol.second );
-                                else if ( isTheModelInteresting ( first_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), current_model ) != cuttingModels.end() )
-                                    findTheCollidedVoxels ( first_tid, collisionVol.first, collisionVol.second );
+                                // Store the collision volume and the triangle ID
+                                addVolume( collisionVolumes[axis], x, y, minDepth, maxDepth);
+                                if ( !insideAnotherObj)
+                                {
+                                    if ( isTheModelInteresting ( current_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), first_model ) != cuttingModels.end() )
+                                        trianglesToParse.insert( tid);
+                                    else if ( isTheModelInteresting ( first_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), current_model ) != cuttingModels.end() )
+                                        trianglesToParse.insert( first_tid);
+                                }
                             }
                         }
                         first_front = front;
@@ -412,39 +410,94 @@ void HexaRemover<DataTypes>::detectVoxels()
             glEnd();
         }
     }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printCloseNode ( "detectVoxels" );
-#endif
 }
 
-template <class DataTypes>
-bool HexaRemover<DataTypes>::isCrossingAABB ( const Vector3& min1, const Vector3& max1, const Vector3& min2, const Vector3& max2 ) const
-{
-    if ( min1[0] < max2[0] && min1[1] < max2[1] && min1[2] < max2[2] &&
-            min2[0] < max1[0] && min2[1] < max1[1] && min2[2] < max1[2] ) return true;
-    return false;
-}
+
 
 template <class DataTypes>
-bool HexaRemover<DataTypes>::isInsideAABB ( const Vector3& min1, const Vector3& max1, const Vector3& point ) const
+void HexaRemover<DataTypes>::addVolume( RasterizedVol& rasterizedVolume, double x, double y, double zMin, double zMax)
 {
-    if ( min1[0] < point[0] && min1[1] < point[1] && min1[2] < point[2] &&
-            point[0] < max1[0] && point[1] < max1[1] && point[2] < max1[2] ) return true;
-    return false;
+    RasterizedVol::iterator it = rasterizedVolume.find( x);
+    if (it != rasterizedVolume.end())
+    {
+        it->second.insert( std::pair<double, std::pair<double, double> >( y, std::make_pair<double, double>(zMin, zMax)));
+    }
+    else
+    {
+        std::multimap<double, std::pair< double, double> > temp;
+        temp.insert( std::pair<double, std::pair<double, double> >( y, std::make_pair<double, double>(zMin, zMax)));
+        rasterizedVolume.insert( std::make_pair<double, std::multimap<double, std::pair<double, double> > >( x, temp));
+    }
 }
 
+
 template <class DataTypes>
-bool HexaRemover<DataTypes>::isCrossingSphere(const Vector3& min1, const Vector3& max1, const Vector3& sCenter, const float& radius ) const
+bool HexaRemover<DataTypes>::isCrossingCube( const Vector3& point, const float& radius ) const
 {
-    float dist_squared = radius * radius;
-    if (sCenter[0] < min1[0]) dist_squared -= squared(sCenter[0] - min1[0]);
-    else if (sCenter[0] > max1[0]) dist_squared -= squared(sCenter[0] - max1[0]);
-    if (sCenter[1] < min1[1]) dist_squared -= squared(sCenter[1] - min1[1]);
-    else if (sCenter[1] > max1[1]) dist_squared -= squared(sCenter[1] - max1[1]);
-    if (sCenter[2] < min1[2]) dist_squared -= squared(sCenter[2] - min1[2]);
-    else if (sCenter[2] > max1[2]) dist_squared -= squared(sCenter[2] - max1[2]);
-    return dist_squared > 0;
+    for ( unsigned int axis=0; axis<3; ++axis )
+    {
+        bool crossing = false;
+        const int iX = ( axis+1 ) %3;
+        const int iY = ( axis+2 ) %3;
+        const int iZ = axis;
+
+        const Real psize = rasterizer->pixelSize.getValue();
+        const double& xMin = (point[iX]-radius) - psize*0.5;
+        const double& xMax = (point[iX]+radius) + psize*0.5;
+        const double& yMin = (point[iY]-radius) - psize*0.5;
+        const double& yMax = (point[iY]+radius) + psize*0.5;
+        const double& zMin = (point[iZ]-radius);
+        const double& zMax = (point[iZ]+radius);
+        RasterizedVol::const_iterator itMax = collisionVolumes[axis].upper_bound(xMax);
+        for (RasterizedVol::const_iterator it = collisionVolumes[axis].lower_bound( xMin); it != itMax; ++it)
+        {
+            if (crossing) break;
+            std::multimap<double, std::pair< double, double> >::const_iterator it2Max = it->second.upper_bound(yMax);
+            for (std::multimap<double, std::pair< double, double> >::const_iterator it2 = it->second.lower_bound( yMin); it2 != it2Max; ++it2)
+                if (zMin > it2->second.first && zMax < it2->second.second)
+                {
+                    crossing = true;
+                    break;
+                }
+        }
+        if (!crossing) return false;
+    }
+    return true;
+}
+
+
+
+template <class DataTypes>
+bool HexaRemover<DataTypes>::isPointInside( const Vector3& point ) const
+{
+    for ( unsigned int axis=0; axis<3; ++axis )
+    {
+        bool crossing = false;
+        const int iX = ( axis+1 ) %3;
+        const int iY = ( axis+2 ) %3;
+        const int iZ = axis;
+
+        const Real psize = rasterizer->pixelSize.getValue();
+        const double& xMin = point[iX] - psize*0.5;
+        const double& xMax = point[iX] + psize*0.5;
+        const double& yMin = point[iY] - psize*0.5;
+        const double& yMax = point[iY] + psize*0.5;
+        const double& z = point[iZ];
+        RasterizedVol::const_iterator itMax = collisionVolumes[axis].upper_bound(xMax);
+        for (RasterizedVol::const_iterator it = collisionVolumes[axis].lower_bound( xMin); it != itMax; ++it)
+        {
+            if (crossing) break;
+            std::multimap<double, std::pair< double, double> >::const_iterator it2Max = it->second.upper_bound(yMax);
+            for (std::multimap<double, std::pair< double, double> >::const_iterator it2 = it->second.lower_bound( yMin); it2 != it2Max; ++it2)
+                if (z > it2->second.first && z < it2->second.second)
+                {
+                    crossing = true;
+                    break;
+                }
+        }
+        if (!crossing) return false;
+    }
+    return true;
 }
 
 
@@ -454,6 +507,9 @@ void HexaRemover<DataTypes>::clear()
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode ( "clear" );
 #endif
+    for( unsigned int i = 0; i < 3; ++i) collisionVolumes[i].clear();
+    trianglesToParse.clear();
+    voxelMappedCoord.clear();
     contactInfos[meshGen].clear();
     clearDebugVectors();
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -468,7 +524,6 @@ void HexaRemover<DataTypes>::clearDebugVectors()
     parsedHexasCoords.clear();
     removedHexasCoords.clear();
     collisionTrianglesCoords.clear();
-    for ( unsigned int i = 0; i < 3; i++ ) collisionVolumesCoords[i].clear();
 }
 
 
@@ -528,28 +583,121 @@ void HexaRemover<DataTypes>::drawCollisionTriangles()
 }
 
 
+
 template <class DataTypes>
 void HexaRemover<DataTypes>::drawCollisionVolumes()
 {
-    glPushAttrib ( GL_ENABLE_BIT );
-    glDisable ( GL_LIGHTING );
-    glDisable ( GL_COLOR_MATERIAL );
-    glDisable ( GL_TEXTURE_2D );
-    glEnable ( GL_BLEND );
-    glEnable ( GL_DEPTH_TEST );
-    glColor3f ( 0,0,1 );
-    glPointSize ( 10 );
-    for ( unsigned int i = 0; i < 3; i++ )
-        for ( std::set<BoundingBox>::iterator it = collisionVolumesCoords[i].begin(); it != collisionVolumesCoords[i].end(); it++ )
+    const double& psize = rasterizer->psize;
+    for ( unsigned int axis=0; axis<3; ++axis )
+    {
+        //if ((showWhichAxis.getValue() != 0) && showWhichAxis.getValue() != axis+1) continue;
+        const int iX = ( axis+1 ) %3;
+        const int iY = ( axis+2 ) %3;
+        const int iZ =  axis;
+
+        if ( axis == 0)
+            glColor3f( 1, 0, 0);
+        else if ( axis == 1)
+            glColor3f( 0, 1, 0);
+        else if ( axis == 2)
+            glColor3f( 0, 0, 1);
+
+        RasterizedVol& rasterizedVolume = collisionVolumes[axis];
+        for (RasterizedVol::const_iterator it = rasterizedVolume.begin(); it != rasterizedVolume.end(); ++it)
         {
-            if ( i==0 ) glColor4f ( 0.82, 0.04, 0.07, 1.0 );
-            else if ( i==1 ) glColor4f ( 0.88, 0.78, 0.17, 1.0 );
-            else if ( i==2 ) glColor4f ( 0.23, 0.18, 0.83, 1.0 );
-            drawBoundingBox ( *it );
+            double x = it->first;
+            const std::multimap<double, std::pair< double, double> >& multiMap = it->second;
+            for (std::multimap<double, std::pair< double, double> >::const_iterator it2 = multiMap.begin(); it2 != multiMap.end(); ++it2)
+            {
+                double y = it2->first;
+                double zMin = it2->second.first;
+                double zMax = it2->second.second;
+
+                BBox box;
+                box[0][iX] = x - ( psize*0.5 );
+                box[0][iY] = y - ( psize*0.5 );
+                box[0][iZ] = zMin;
+                box[1][iX] = x + ( psize*0.5 );
+                box[1][iY] = y + ( psize*0.5 );
+                box[1][iZ] = zMax;
+                if ( axis == 0)
+                {
+                    glBegin( GL_QUADS);
+                    // z min face
+                    glVertex3f( box[0][0], box[0][1], box[0][2]);
+                    glVertex3f( box[0][0], box[0][1], box[1][2]);
+                    glVertex3f( box[0][0], box[1][1], box[1][2]);
+                    glVertex3f( box[0][0], box[1][1], box[0][2]);
+
+                    // z max face
+                    glVertex3f( box[1][0], box[0][1], box[0][2]);
+                    glVertex3f( box[1][0], box[0][1], box[1][2]);
+                    glVertex3f( box[1][0], box[1][1], box[1][2]);
+                    glVertex3f( box[1][0], box[1][1], box[0][2]);
+                    glEnd();
+                }
+                else if ( axis == 1)
+                {
+                    glBegin( GL_QUADS);
+                    // z min face
+                    glVertex3f( box[0][0], box[0][1], box[0][2]);
+                    glVertex3f( box[1][0], box[0][1], box[0][2]);
+                    glVertex3f( box[1][0], box[0][1], box[1][2]);
+                    glVertex3f( box[0][0], box[0][1], box[1][2]);
+
+                    // z max face
+                    glVertex3f( box[0][0], box[1][1], box[0][2]);
+                    glVertex3f( box[1][0], box[1][1], box[0][2]);
+                    glVertex3f( box[1][0], box[1][1], box[1][2]);
+                    glVertex3f( box[0][0], box[1][1], box[1][2]);
+                    glEnd();
+                }
+                else if ( axis == 2)
+                {
+                    glBegin( GL_QUADS);
+                    // z min face
+                    glVertex3f( box[0][0], box[0][1], box[0][2]);
+                    glVertex3f( box[0][0], box[1][1], box[0][2]);
+                    glVertex3f( box[1][0], box[1][1], box[0][2]);
+                    glVertex3f( box[1][0], box[0][1], box[0][2]);
+
+                    // z max face
+                    glVertex3f( box[0][0], box[0][1], box[1][2]);
+                    glVertex3f( box[0][0], box[1][1], box[1][2]);
+                    glVertex3f( box[1][0], box[1][1], box[1][2]);
+                    glVertex3f( box[1][0], box[0][1], box[1][2]);
+                    glEnd();
+                }
+            }
         }
-    glPopAttrib();
+    }
 }
 
+
+
+/*
+                        template <class DataTypes>
+                        void HexaRemover<DataTypes>::drawCollisionVolumes()
+			{
+				glPushAttrib ( GL_ENABLE_BIT );
+				glDisable ( GL_LIGHTING );
+				glDisable ( GL_COLOR_MATERIAL );
+				glDisable ( GL_TEXTURE_2D );
+				glEnable ( GL_BLEND );
+				glEnable ( GL_DEPTH_TEST );
+				glColor3f ( 0,0,1 );
+				glPointSize ( 10 );
+				for ( unsigned int i = 0; i < 3; i++ )
+                                    for ( std::set<BoundingBox>::iterator it = collisionVolumesCoords[i].begin(); it != collisionVolumesCoords[i].end(); it++ )
+					{
+						if ( i==0 ) glColor4f ( 0.82, 0.04, 0.07, 1.0 );
+						else if ( i==1 ) glColor4f ( 0.88, 0.78, 0.17, 1.0 );
+						else if ( i==2 ) glColor4f ( 0.23, 0.18, 0.83, 1.0 );
+						drawBoundingBox ( *it );
+					}
+				glPopAttrib();
+			}
+*/
 
 template <class DataTypes>
 void HexaRemover<DataTypes>::drawBoundingBox ( const BoundingBox& bbox )

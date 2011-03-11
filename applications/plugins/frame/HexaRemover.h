@@ -1,9 +1,8 @@
 #ifndef SOFA_FRAME_HEXA_REMOVER_H
 #define SOFA_FRAME_HEXA_REMOVER_H
 
-#include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.h>
-#include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
 #include "FrameBlendingMapping.h"
+#include "MappingTypes.h"
 #include "MeshGenerater.h"
 #include <sofa/gpu/cuda/CudaRasterizer.h>
 #include <map>
@@ -45,6 +44,11 @@ class HexaRemover: public core::objectmodel::BaseObject
     typedef typename MeshGen::GCoord GCoord;
     typedef typename MeshGen::SCoord SCoord;
 
+    typedef SampleData<DataTypes> SData; // = FrameBlendingMapping
+    typedef std::multimap< double, std::multimap<double, std::pair< double, double> > > RasterizedVol; // map< x, map< y, pair< zMin, zMax> > >
+    typedef typename defaulttype::Vec3f FPoint;
+    typedef typename helper::fixed_array<FPoint, 2> BBox;
+
 public:
     SOFA_CLASS(HexaRemover,core::objectmodel::BaseObject);
 
@@ -70,7 +74,7 @@ public:
 
     void init ();
     inline bool isTheModelInteresting ( MTopology* model ) const;
-    void findTheCollidedVoxels ( unsigned int triangleID, const Vector3& minBBVolume, const Vector3& maxBBVolume );
+    void findTheCollidedVoxels ( unsigned int triangleID);
     bool removeVoxels();
     void clear();
     virtual void draw();
@@ -104,23 +108,29 @@ protected:
 
     inline float squared( const float& number) const {return number*number;};
     inline void detectVoxels();
-    inline void propagateFrom ( const unsigned int hexa, const Vector3& minBBVolume, const Vector3& maxBBVolume );
+    inline void buildCollisionVolumes();
+    inline void propagateFrom ( const unsigned int hexa);
+    inline void addVolume( RasterizedVol& rasterizedVolume, double x, double y, double zMin, double zMax);
     inline void getNeighbors ( const unsigned int hexaID, helper::set<unsigned int>& neighbors ) const;
-    inline bool isCrossingAABB ( const Vector3& min1, const Vector3& max1, const Vector3& min2, const Vector3& max2 ) const;
-    inline bool isInsideAABB ( const Vector3& min1, const Vector3& max1, const Vector3& point ) const;
-    inline bool isCrossingSphere(const Vector3& min1, const Vector3& max1, const Vector3& point, const float& radius ) const;
+    inline bool isCrossingCube( const Vector3& point, const float& radius ) const;
+    inline bool isPointInside( const Vector3& point ) const;
+
 private:
     Rasterizer* rasterizer;
     MeshGen* meshGen; // TODO delete this one and replace by those in contactInfos
+    SData* sData;
     TriangleSetGeometryAlgorithms<DataTypes>* triGeoAlgo;
 
     sofa::helper::vector<MTopology*> cuttingModels;
 
+    RasterizedVol collisionVolumes[3]; // for each axis
+    std::set<unsigned int> trianglesToParse;
+
     // Debug purpose
+    std::map<unsigned int, Vec3d> voxelMappedCoord; // coords up to date
     sofa::helper::set<Coord> parsedHexasCoords;
     sofa::helper::set<Coord> removedHexasCoords;
     sofa::helper::set<Coord> collisionTrianglesCoords;
-    std::set<BoundingBox> collisionVolumesCoords[3];
     Data<bool> showElements;
     Data<bool> showVolumes;
 };

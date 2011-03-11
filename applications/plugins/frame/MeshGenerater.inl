@@ -50,6 +50,8 @@
 #include <algorithm>
 #include <sofa/simulation/common/Node.h>
 
+#include "GridMaterial.inl"
+
 
 #define PRECISION 16384.0  // See Marching Cubes PRECISION
 
@@ -405,6 +407,7 @@ void MeshGenerater<DataTypes>::updateTopologicalMappingTopDown()
 template <class DataTypes>
 void MeshGenerater<DataTypes>::removeVoxels ( const sofa::helper::vector<unsigned int>& removedHexahedraID )
 {
+    serr << "donc, je dois passer ici" << sendl;
     removeOldMesh( removedHexahedraID );
     localyRemesh ( removedHexahedraID );
 
@@ -928,73 +931,78 @@ void MeshGenerater<DataTypes>::updateTrianglesInfos( const vector< vector<unsign
 template <class DataTypes>
 void MeshGenerater<DataTypes>::draw()
 {
-
     //if ( !getContext()->getShowMappings() ) return;
 
-    //const double& scaleFactor = showTextScaleFactor.getValue();
+    const double& scaleFactor = showTextScaleFactor.getValue();
 
-
-    /*// TODO redo this part with valueData instead of from_topo
     if( showHexas2Tri.getValue())
     {
-            // Display the connecting map H2T.
-            glDisable ( GL_LIGHTING );
-            glPointSize ( 10 );
-            glBegin ( GL_LINES );
-            for ( int i = 0; i < _from_topo->getNbHexahedra(); ++i)
+        // Display the connecting map H2T.
+        glDisable ( GL_LIGHTING );
+        glPointSize ( 10 );
+        glBegin ( GL_LINES );
+        unsigned int nbVoxels = voxelDimension.getValue()[0] * voxelDimension.getValue()[1] * voxelDimension.getValue()[2];
+        for ( unsigned int i = 0; i < nbVoxels; ++i)
+        {
+            Vec3d hexaCoord;
+            if( !gridMat->getCoord( i, hexaCoord)) continue;
+            vector<unsigned int> triID;
+            getToIndex( triID, i);
+            for ( vector<unsigned int>::const_iterator itTri = triID.begin(); itTri != triID.end(); itTri++)
             {
-                    Vec3d hexaCoord = _from_geomAlgo->computeHexahedronCenter ( i );
-                    vector<unsigned int> triID;
-                    getToIndex( triID, i);
-                    for ( vector<unsigned int>::const_iterator itTri = triID.begin(); itTri != triID.end(); itTri++)
-                    {
-                            Vec3d triCoord = _to_geomAlgo->computeTriangleCenter ( *itTri );
+                Vec3d triCoord = _to_geomAlgo->computeTriangleCenter ( *itTri );
 
-                            glColor3f ( 1,1,1 );
-                            helper::gl::glVertexT ( hexaCoord );
-                            glColor3f ( 0,0,1 );
-                            helper::gl::glVertexT ( triCoord );
-                    }
+                glColor3f ( 1,1,1 );
+                helper::gl::glVertexT ( hexaCoord );
+                glColor3f ( 0,0,1 );
+                helper::gl::glVertexT ( triCoord );
             }
-            glEnd();
+        }
+        glEnd();
+        glPointSize ( 1 );
     }
 
     if( showTri2Hexas.getValue())
     {
-            // Display the connecting vector T2H.
-            glDisable ( GL_LIGHTING );
-            glPointSize ( 10 );
-            glBegin ( GL_LINES );
-            for ( int i = 0; i < toModel->getNbTriangles(); ++i)
+        // Display the connecting vector T2H.
+        glDisable ( GL_LIGHTING );
+        glPointSize ( 10 );
+        glBegin ( GL_LINES );
+        for ( int i = 0; i < _to_topo->getNbTriangles(); ++i)
+        {
+            Vec3d triCoord = _to_geomAlgo->computeTriangleCenter ( i );
+            vector<unsigned int> hexaID;
+            getFromIndex( hexaID, i);
+            for ( vector<unsigned int>::const_iterator itHex = hexaID.begin(); itHex != hexaID.end(); itHex++ )
             {
-                    Vec3d triCoord = _to_geomAlgo->computeTriangleCenter ( i );
-                    vector<unsigned int> hexaID;
-                    getFromIndex( hexaID, i);
-                    for ( vector<unsigned int>::const_iterator itHex = hexaID.begin(); itHex != hexaID.end(); itHex++ )
-                    {
-                            Vec3d hexaCoord = _from_geomAlgo->computeHexahedronCenter ( *itHex );
+                Vec3d hexaCoord;
+                if( !gridMat->getCoord( *itHex, hexaCoord)) continue;
 
-                            glColor3f ( 1,1,1 );
-                            helper::gl::glVertexT ( hexaCoord );
-                            glColor3f ( 0,0,1 );
-                            helper::gl::glVertexT ( triCoord );
-                    }
+                glColor3f ( 1,1,1 );
+                helper::gl::glVertexT ( hexaCoord );
+                glColor3f ( 0,0,1 );
+                helper::gl::glVertexT ( triCoord );
             }
-            glEnd();
+        }
+        glEnd();
+        glPointSize ( 1 );
     }
 
     if( showRegularGridIndices.getValue())
     {
-            // Display the regular grid indices
-            glColor4f ( 1,1,0,1 );
-            unsigned int nbHexahedra = _from_topo->getNbHexahedra();
-            for ( unsigned int i = 0; i < nbHexahedra; i++)
-            {
-                    Vec3d hexaCoord = _from_geomAlgo->computeHexahedronCenter ( i );
-                    GlText::draw ( _from_topo->idxInRegularGrid.getValue()[i], hexaCoord, scaleFactor );
-            }
+        // Display the regular grid indices
+        glColor4f ( 1,1,0,1 );
+        unsigned int nbVoxels = voxelDimension.getValue()[0] * voxelDimension.getValue()[1] * voxelDimension.getValue()[2];
+        for ( unsigned int i = 0; i < nbVoxels; i++)
+        {
+            Vec3i gCoord;
+            Vec3d hexaCoord;
+            gridMat->getiCoord( i, gCoord);
+            int label = gridMat->grid( gCoord[0], gCoord[1], gCoord[2]);
+            if( !gridMat->getCoord( i, hexaCoord) || (label==0)) continue;
+            GlText::draw ( i, hexaCoord, scaleFactor );
+        }
     }
-    */
 }
 
 
@@ -1050,15 +1058,10 @@ void MeshGenerater<DataTypes>::dispMaps() const
 template <class DataTypes>
 void MeshGenerater<DataTypes>::getHexaCoord( Coord& coord, const unsigned int hexaID) const
 {
-    const SCoord& fromOffset = voxelOrigin.getValue();
-    const SCoord& vSize = voxelSize.getValue();
-    const GCoord& dim = voxelDimension.getValue();
+    SCoord sCoord;
+    if( !gridMat->getCoord( hexaID, sCoord)) serr << "Warning: unexisting coord ID." << sendl;
 
-    unsigned int z = ((unsigned int)( hexaID / (dim[0]*dim[1]))) * vSize[2] + fromOffset[2];
-    unsigned int remain = ( hexaID % (dim[0]*dim[1]));
-    unsigned int y = ((unsigned int)( remain / dim[0])) * vSize[1] + fromOffset[1];
-    unsigned int x = (remain % dim[0]) * vSize[0] + fromOffset[0];
-    coord = Coord( x, y, z);
+    for (unsigned int i = 0; i < 3; ++i) coord[i] = sCoord[i];
 }
 
 

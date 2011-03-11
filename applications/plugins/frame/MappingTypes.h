@@ -69,7 +69,8 @@ template< class Primitive>
 class OutDataTypesInfo
 {
 public:
-    typedef vector<Vec<3,typename Primitive::Real> > VecMaterialCoord;
+    typedef Vec<3,typename Primitive::Real> MaterialCoord;
+    typedef vector<MaterialCoord> VecMaterialCoord;
     enum {primitive_order = 0};
 };
 
@@ -79,6 +80,7 @@ template< class Real, int Dim, int Order>
 class OutDataTypesInfo<DeformationGradientTypes<Dim,Dim,Order,Real> >
 {
 public:
+    typedef typename DeformationGradientTypes<Dim,Dim,Order,Real>::MaterialCoord MaterialCoord;
     typedef typename DeformationGradientTypes<Dim,Dim,Order,Real>::VecMaterialCoord VecMaterialCoord;
     enum {primitive_order = DeformationGradientTypes<Dim,Dim,Order,Real>::order};
 };
@@ -111,6 +113,7 @@ class SampleData : public  virtual core::objectmodel::BaseObject
 public:
     // Output types
     typedef TOut Out;
+    typedef typename OutDataTypesInfo<Out>::MaterialCoord MaterialCoord;
     typedef typename OutDataTypesInfo<Out>::VecMaterialCoord VecMaterialCoord;
 
     Data<VecMaterialCoord> f_materialPoints;
@@ -119,6 +122,8 @@ public:
         : f_materialPoints ( initData ( &f_materialPoints,"materialPoints","Coordinates of the samples in object space" ) )
     {
     }
+
+    virtual void apply( MaterialCoord& coord, const MaterialCoord& restCoord) = 0; // Allow to tranfsorm a voxel from restPos for example
 };
 
 } // namespace defaulttype
