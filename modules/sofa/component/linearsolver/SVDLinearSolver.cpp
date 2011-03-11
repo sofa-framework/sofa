@@ -133,6 +133,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 #endif
         serr << "SVDLinearSolver<TMatrix,TVector>::solve, rhs vector = " << sendl << rhs.transpose() << sendl;
         serr << "SVDLinearSolver<TMatrix,TVector>::solve, solution = " << sendl << x << sendl;
+        serr << "SVDLinearSolver<TMatrix,TVector>::solve, verification, mx - b = " << sendl << (m * solution - rhs ).transpose() << sendl;
     }
 }
 
