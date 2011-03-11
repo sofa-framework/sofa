@@ -34,7 +34,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/helper/gl/template.h>
 
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -45,7 +45,7 @@ namespace component
 namespace mapping
 {
 
-using sofa::simulation::tree::GNode;
+using sofa::simulation::Node;
 
 template <class TIn, class TInRoot, class TOut>
 ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping (helper::vector< core::State<TIn>* > from,
@@ -76,7 +76,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     m_fromModel = this->getFromModels1()[0];
     m_toModel = this->getToModels()[0];
 
-    GNode* context = dynamic_cast<GNode*>(m_fromModel->getContext());
+    Node* context = dynamic_cast<Node*>(m_fromModel->getContext());
     context->getNodeObject(ahc);
     articulationCenters = ahc->getArticulationCenters();
 
