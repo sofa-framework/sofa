@@ -1156,6 +1156,20 @@ void GridMaterial< MaterialTypes>::normalizeWeightRepartion()
 
 
 
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::removeVoxels( const vector<unsigned int>& voxelsToRemove)
+{
+    GCoord gCoord;
+    for (vector<unsigned int>::const_iterator it = voxelsToRemove.begin(); it != voxelsToRemove.end(); ++it)
+    {
+        getiCoord( *it, gCoord);
+        grid(gCoord[0], gCoord[1], gCoord[2]) = 0;
+    }
+
+    // TODO recompute needed data...
+}
+
+
 
 template < class MaterialTypes>
 typename GridMaterial< MaterialTypes>::Real GridMaterial< MaterialTypes>::getDistance(const unsigned int& index1,const unsigned int& index2,const int fromLabel)

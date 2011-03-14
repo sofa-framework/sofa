@@ -33,6 +33,7 @@
 #include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/component/container/MeshLoader.h>
+//#include <sofa/core/topology/BaseMeshTopology.h>
 
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
@@ -57,6 +58,7 @@ using sofa::component::material::GridMaterial;
 using defaulttype::FrameData;
 using defaulttype::SampleData;
 using sofa::component::container::MeshLoader;
+using sofa::component::topology::PointData;
 
 
 /** Linear blend skinning, from a variety of input types to a variety of output types.
@@ -127,6 +129,11 @@ public:
 
     inline void findIndexInRepartition( bool& influenced, unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
 
+    virtual void addSamples( const unsigned int& nbNewVertices);
+    virtual void removeSamples( const vector<unsigned int>& samplesID);
+
+    virtual void handleTopologyChange(core::topology::Topology* t);
+
 protected:
     inline void initSamples();
     inline void initFrames();
@@ -135,22 +142,22 @@ protected:
     inline void normalizeWeights();
     virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass);
 
-    vector<InOut> inout;  ///< Data specific to the conversion between the types
-    vector<DQInOut> dqinout;  ///< Data specific to the conversion between the types
+    PointData<InOut> inout;  ///< Data specific to the conversion between the types
+    PointData<DQInOut> dqinout;  ///< Data specific to the conversion between the types
     Data<bool> useDQ;  // use dual quat blending instead of linear blending
 
 
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
-    Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
-    Data< vector<Vec<nbRef,unsigned int> > > f_index;   ///< The numChildren * numRefs column indices. index[j][i] is the index of the j-th parent influencing child i.
+    PointData<OutCoord> f_initPos;            // initial child coordinates in the world reference frame
+    PointData<Vec<nbRef,unsigned int> > f_index;   ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
 
-    Data< vector<Vec<nbRef,InReal> > >       weight;
-    Data< vector<Vec<nbRef,MaterialCoord> > > weightDeriv;
-    Data< vector<Vec<nbRef,MaterialMat> > >   weightDeriv2;
+    PointData<Vec<nbRef,InReal> >       weight;
+    PointData<Vec<nbRef,MaterialCoord> > weightDeriv;
+    PointData<Vec<nbRef,MaterialMat> >   weightDeriv2;
 
-
+    core::topology::BaseMeshTopology* to_topo; // Used to manage topological changes
 
 
 public:

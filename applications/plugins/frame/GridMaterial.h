@@ -381,9 +381,17 @@ protected:
     inline void normalizeWeightRepartion();
 
     /*********************************/
+    /*         Adaptivity                 */
+    /*********************************/
+
+public:
+    void removeVoxels( const vector<unsigned int>& voxelsToRemove);
+
+    /*********************************/
     /*   draw                        */
     /*********************************/
 
+protected:
     Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
     Data<unsigned int> showWeightIndex;    ///
     GLuint cubeList; GLuint wcubeList;            // storage for the display list

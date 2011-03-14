@@ -145,7 +145,7 @@ void MeshGenerater<DataTypes>::init()
     voxelOrigin.setParent ( &gridMat->origin);
     voxelDimension.setParent ( &gridMat->dimension);
 
-    roi.setValue ( Vec6i ( -1,-1,-1,0xFF,0xFF,0xFF ) ); // TODO
+    roi.setValue ( Vec6i ( -1,-1,-1,0xFF,0xFF,0xFF ) );
     const Vec3i& res = voxelDimension.getValue();
 
     initVoxels();
@@ -166,7 +166,7 @@ void MeshGenerater<DataTypes>::init()
     marchingCubes.setStep ( 1 );
     marchingCubes.setConvolutionSize ( 0 ); //apply Smoothing on data if convolutionSize > 0
     //sofa::component::container::MechanicalObject<DataTypes>* inputDOFs = static_cast<sofa::component::container::MechanicalObject<DataTypes>*>(_from_DOFs);
-    marchingCubes.setVerticesTranslation (voxelOrigin.getValue()); // Translation of the input DOFs (TODO directly link with MObject)
+    marchingCubes.setVerticesTranslation (voxelOrigin.getValue() - vSize / 2.0);
 
     if ( triangleIndexInRegularGrid.getValue().empty() )
     {
@@ -407,7 +407,15 @@ void MeshGenerater<DataTypes>::updateTopologicalMappingTopDown()
 template <class DataTypes>
 void MeshGenerater<DataTypes>::removeVoxels ( const sofa::helper::vector<unsigned int>& removedHexahedraID )
 {
-    serr << "donc, je dois passer ici" << sendl;
+    // Delete voxels
+    gridMat->removeVoxels( removedHexahedraID);
+    for (sofa::helper::vector<unsigned int>::const_iterator it = removedHexahedraID.begin(); it != removedHexahedraID.end(); ++it)
+    {
+        valueData[*it] = 0;
+        segmentIDData[*it] = 0;
+    }
+
+    // Update mesh
     removeOldMesh( removedHexahedraID );
     localyRemesh ( removedHexahedraID );
 
@@ -420,7 +428,7 @@ void MeshGenerater<DataTypes>::removeVoxels ( const sofa::helper::vector<unsigne
 template <class DataTypes>
 void MeshGenerater<DataTypes>::update()
 {
-// TODO
+    // Not implemented. As the voxel array is not an input data, the method 'removeVoxels' must be explicit called to update the ouput topology.
 }
 
 
@@ -495,13 +503,6 @@ void MeshGenerater<DataTypes>::removeOldMesh ( const sofa::helper::vector<unsign
     triangleIDInRegularGrid2IndexInTopo.endEdit();
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Update_Struct_Related_To_Triangle");
-    simulation::Visitor::printNode("Update_Struct_Related_To_Voxels");
-#endif
-
-    //TODO renumber voxels struct depending on tab.
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printCloseNode("Update_Struct_Related_To_Voxels");
     simulation::Visitor::printCloseNode("Remove_old_mesh");
 #endif
 }
@@ -520,7 +521,7 @@ void MeshGenerater<DataTypes>::localyRemesh ( const sofa::helper::vector<BaseMes
 
     computeNewMesh ( vertices, triangles, removedHexaID );
 
-    addNewEltsInTopology ( vertices, triangles );
+    addNewEltsInTopology (vertices, triangles );
 
     smoothMesh ( oldVertSize, oldTriSize);
 
@@ -623,7 +624,6 @@ void MeshGenerater<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
     const SeqTriangles& seqTriangles = _to_topo->getTriangles();
     for( set<unsigned int>::iterator itHexa = hexaNeighbors.begin(); itHexa != hexaNeighbors.end(); itHexa++)
     {
-        //TODO there were changes !
         vector<unsigned int> triangleSet;
         getToIndex( triangleSet, *itHexa);
         for( vector<unsigned int>::const_iterator itTri = triangleSet.begin(); itTri != triangleSet.end(); itTri++)
@@ -708,13 +708,14 @@ void MeshGenerater<DataTypes>::addNewEltsInTopology ( const sofa::helper::vector
 
     _to_tstm->addPointsProcess ( vertices.size() );
     _to_tstm->addPointsWarning ( vertices.size() );
-    _to_tstm->propagateTopologicalChanges();
 
     for ( unsigned int i = 0; i < vertices.size(); i++ )
     {
         xtoInRestedPos[i+oldVertSize] = vertices[i];
         xto[i+oldVertSize] = vertices[i];
     }
+
+    _to_tstm->propagateTopologicalChanges();
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Add_points_In_Topology");
@@ -841,7 +842,6 @@ void MeshGenerater<DataTypes>::updateOglAttributes ( const unsigned int oldVertS
         const typename GridMat::SCoord& vSize = voxelSize.getValue();
         for ( unsigned int i = oldVertSize; i < xto.size(); i++ )
         {
-            //TODO there were changes here !
             coord = _to_geomAlgo->getPointRestPosition ( i );
             for (unsigned int j = 0; j < 3; ++j)
                 coord[j] = (coord[j] - voxelOrigin.getValue()[j]) / vSize[j];

@@ -47,7 +47,7 @@
 #include <sofa/component/container/MechanicalObject.h>
 
 #include "GridMaterial.h"
-//#include "FrameBlendingMapping.h"
+#include "MappingTypes.h"
 #include <sofa/component/topology/PointData.h>
 
 namespace sofa
@@ -101,7 +101,7 @@ public:
 
     typedef typename core::behavior::MechanicalState<DataTypes> MState;
     typedef typename sofa::component::container::MechanicalObject<DataTypes> MObject;
-    //typedef sofa::component::mapping::FrameBlendingMapping<InDataTypes,OutDataTypes> MechanicalBarycentricMapping;
+
     typedef GridMaterial<Material3d> GridMat;
     typedef GridMat::voxelType VoxelType;
 
