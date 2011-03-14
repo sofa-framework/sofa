@@ -300,12 +300,7 @@ void HexaRemover<DataTypes>::buildCollisionVolumes()
             int cl0 = ( ( ldi.cy0+cy ) << Rasterizer::CELL_YSHIFT );
             int cc0 = ( ( ldi.cx0+cx ) << Rasterizer::CELL_XSHIFT );
 
-
             const CellCountLayer& counts = ldi.cellCounts[bx];
-            bool first_front = false;
-            int first_layer = 0;
-            int first_obj = 0;
-            int first_tid = -1;
             for ( int l=0; l < Rasterizer::CELL_NY; ++l )
             {
                 //                                                    Real y = (Real)(cl0 + l) * psize;
@@ -319,6 +314,10 @@ void HexaRemover<DataTypes>::buildCollisionVolumes()
                     int incount = 0;
                     int nl = counts[l][c];
                     if (nl > (int)layers.size()) nl = layers.size();
+                    bool first_front = false;
+                    int first_layer = 0;
+                    int first_obj = 0;
+                    int first_tid = -1;
                     for ( int li=0; li<nl  ; ++li )
                     {
                         int layer = layers[li];
@@ -354,7 +353,7 @@ void HexaRemover<DataTypes>::buildCollisionVolumes()
                             --incount;
                             if ( first_front &&
                                     ( //( obj == first_obj && incount > 0 && obj == inobjs[incount-1] ) || // self-collision
-                                            ( obj == first_obj && incount && obj != inobjs[incount-1]) || // collision inside another object
+                                            ( obj == first_obj && incount > 0 && obj != inobjs[incount-1]) || // collision inside another object
                                             ( obj != first_obj ) ) ) // collision
                             {
                                 bool insideAnotherObj = false;
