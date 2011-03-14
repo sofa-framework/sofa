@@ -478,21 +478,27 @@ bool OglModel::loadTextures()
     for (unsigned int i = 0 ; i < this->materials.getValue().size() ; i++)
     {
         //we count only the texture with an activated material
-
         if (this->materials.getValue()[i].useTexture && this->materials.getValue()[i].activated)
         {
-            sofa::core::objectmodel::DataFileName texturepath(this->materials.getValue()[i].textureFilename);
-            std::string textureFullPath(texturepath.getFullPath());
+            std::string textureFile(this->materials.getValue()[i].textureFilename);
 
-            if (!sofa::helper::system::DataRepository.findFile(textureFullPath))
+            if (!sofa::helper::system::DataRepository.findFile(textureFile))
             {
-                serr << "Texture \"" << this->materials.getValue()[i].textureFilename << "\" not found"
-                        << " in material " << this->materials.getValue()[i].name << " for OglModel " << this->name
-                        << "(\""<< this->fileMesh.getFullPath() << "\")" << sendl;
-                break;
+                textureFile = this->fileMesh.getFullPath();
+                unsigned int position = textureFile.rfind("/");
+                textureFile.replace (position+1,textureFile.length() - position, this->materials.getValue()[i].textureFilename);
+//                std::cout << "Loading texture: " << textureFile << std::endl;
+
+                if (!sofa::helper::system::DataRepository.findFile(textureFile))
+                {
+                    serr << "Texture \"" << this->materials.getValue()[i].textureFilename << "\" not found"
+                            << " in material " << this->materials.getValue()[i].name << " for OglModel " << this->name
+                            << "(\""<< this->fileMesh.getFullPath() << "\")" << sendl;
+                    break;
+                }
             }
 
-            helper::io::Image *img = helper::io::Image::Create(textureFullPath);
+            helper::io::Image *img = helper::io::Image::Create(textureFile);
             if (!img)
             {
                 std::cerr << "Error:OglModel:loadTextures: couldn't create an image from file " << this->materials.getValue()[i].textureFilename << std::endl;
@@ -501,8 +507,11 @@ bool OglModel::loadTextures()
             helper::gl::Texture * text = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
             materialTextureIdMap.insert(std::pair<int, int>(i,textures.size()));
             textures.push_back( text );
+            std::cout << "\r\033[K" << i+1 << "/" << this->materials.getValue().size() << " textures loaded for OglModel " << this->getName()
+                    << "(loading "<<textureFile << ")"<< std::flush;
         }
     }
+    std::cout << "\r\033[K" << std::flush;
     return true;
 }
 
