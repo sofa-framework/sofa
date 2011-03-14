@@ -1185,7 +1185,7 @@ void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topol
 {
     if (t == to_topo)
     {
-        // Handle topological changes on the hexa topology
+        // Handle topological changes on the mapped topology
         std::list<const core::topology::TopologyChange *>::const_iterator itBegin=to_topo->beginChange();
         std::list<const core::topology::TopologyChange *>::const_iterator itEnd=to_topo->endChange();
 
@@ -1209,14 +1209,6 @@ void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topol
             {
                 break;
             }
-            case core::topology::TRIANGLESREMOVED:
-            {
-                break;
-            }
-            case core::topology::HEXAHEDRAREMOVED:
-            {
-                break;
-            }
             case core::topology::POINTSADDED:
             {
                 const unsigned int& nbNewVertices = ( static_cast< const typename component::topology::PointsAdded *> ( *itBegin ) )->getNbAddedVertices();
@@ -1231,7 +1223,6 @@ void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topol
             }
             case core::topology::POINTSRENUMBERING:
             default:
-                // Ignore events that are not Triangle related.
                 break;
             };
 
