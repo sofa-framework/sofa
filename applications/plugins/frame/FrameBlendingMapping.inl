@@ -34,6 +34,8 @@
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/component/topology/PointData.inl>
 #include <iostream>
 
 namespace sofa
@@ -153,7 +155,8 @@ void FrameBlendingMapping<TIn, TOut>::init()
     //   unsigned int numParents = this->fromModel->getSize();
     unsigned int numChildren = this->toModel->getSize();
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-    WriteAccessor<Data<VecOutCoord> > initPos(this->f_initPos);
+    //WriteAccessor<PointData<OutCoord> > initPos(this->f_initPos);
+    vector<OutCoord>& initPos = *(f_initPos.beginEdit());
 
     if( this->f_initPos.getValue().size() != numChildren )
     {
@@ -161,6 +164,7 @@ void FrameBlendingMapping<TIn, TOut>::init()
         for(unsigned int i=0; i<out.size(); i++ )
             initPos[i] = out[i];
     }
+    f_initPos.endEdit();
 
 
     // init weights and sample info (mass, moments) todo: ask the Material
@@ -169,10 +173,11 @@ void FrameBlendingMapping<TIn, TOut>::init()
     // init jacobians for mapping
     if(useDQ.getValue())
     {
-        dqinout.resize( out.size() );
+        vector<DQInOut>& dqInOut = *(dqinout.beginEdit());
+        dqInOut.resize( out.size() );
         for(unsigned int i=0; i<out.size(); i++ )
         {
-            dqinout[i].init(
+            dqInOut[i].init(
                 this->f_initPos.getValue()[i],
                 f_index.getValue()[i],
                 this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
@@ -181,13 +186,15 @@ void FrameBlendingMapping<TIn, TOut>::init()
                 weightDeriv2.getValue()[i]
             );
         }
+        inout.endEdit();
     }
     else
     {
-        inout.resize( out.size() );
+        vector<InOut>& inOut = *(inout.beginEdit());
+        inOut.resize( out.size() );
         for(unsigned int i=0; i<out.size(); i++ )
         {
-            inout[i].init(
+            inOut[i].init(
                 this->f_initPos.getValue()[i],
                 f_index.getValue()[i],
                 this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
@@ -196,6 +203,7 @@ void FrameBlendingMapping<TIn, TOut>::init()
                 weightDeriv2.getValue()[i]
             );
         }
+        inout.endEdit();
     }
 
     // Get the topology of toModel to display the weights and the strain tensors on the triangular model.
@@ -205,6 +213,8 @@ void FrameBlendingMapping<TIn, TOut>::init()
     {
         meshLoader->getTriangles(triangles);
     }
+
+    this->getToModel()->getContext()->get(to_topo); // Get the output model topology to manage eventualy changes
 
     Inherit::init();
 }
@@ -516,7 +526,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 {
-    ReadAccessor<Data<VecOutCoord> > xto (this->f_initPos);
+    const vector<OutCoord>& xto = f_initPos.getValue();
     ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
     WriteAccessor<Data<vector<Vec<nbRef,InReal> > > >       m_weights  ( weight );
     WriteAccessor<Data<vector<Vec<nbRef,MaterialDeriv> > > > m_dweight  ( weightDeriv );
@@ -1098,6 +1108,137 @@ void FrameBlendingMapping<TIn, TOut>::findIndexInRepartition( bool& influenced, 
             return;
         }
     }
+}
+
+
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::addSamples( const unsigned int& /*nbNewVertices*/)
+{
+    // TODO
+    // Compute only the data for the inserted points.
+    // Here, all is recomputed
+    // This method is used for non physical mappings
+
+    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
+
+    // Compute initPos
+    vector<OutCoord>& initPos = *(f_initPos.beginEdit());
+    initPos.resize(out.size());
+    for(unsigned int i=0; i<out.size(); i++ )
+        initPos[i] = out[i];
+    f_initPos.endEdit();
+
+
+    // init weights and sample info (mass, moments) todo: ask the Material
+    updateWeights();
+
+    // init jacobians for mapping
+    if(useDQ.getValue())
+    {
+        vector<DQInOut>& dqInOut = *(dqinout.beginEdit());
+        dqInOut.resize( out.size() );
+        for(unsigned int i=0; i<out.size(); i++ )
+        {
+            dqInOut[i].init(
+                this->f_initPos.getValue()[i],
+                f_index.getValue()[i],
+                this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
+                weight.getValue()[i],
+                weightDeriv.getValue()[i],
+                weightDeriv2.getValue()[i]
+            );
+        }
+        inout.endEdit();
+    }
+    else
+    {
+        vector<InOut>& inOut = *(inout.beginEdit());
+        inOut.resize( out.size() );
+        for(unsigned int i=0; i<out.size(); i++ )
+        {
+            inOut[i].init(
+                this->f_initPos.getValue()[i],
+                f_index.getValue()[i],
+                this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
+                weight.getValue()[i],
+                weightDeriv.getValue()[i],
+                weightDeriv2.getValue()[i]
+            );
+        }
+        inout.endEdit();
+    }
+}
+
+
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::removeSamples( const vector<unsigned int>& /*samplesID*/)
+{
+    // Nothing for the moment. The pointData are automatically reorganized by handleTopologyEvents.
+}
+
+
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
+{
+    if (t == to_topo)
+    {
+        // Handle topological changes on the hexa topology
+        std::list<const core::topology::TopologyChange *>::const_iterator itBegin=to_topo->beginChange();
+        std::list<const core::topology::TopologyChange *>::const_iterator itEnd=to_topo->endChange();
+
+        // Handle topological changes for PointData
+        if (!useDQ.getValue()) inout.handleTopologyEvents(itBegin, itEnd);
+        else dqinout.handleTopologyEvents(itBegin, itEnd);
+        f_initPos.handleTopologyEvents(itBegin, itEnd);
+        f_index.handleTopologyEvents(itBegin, itEnd);
+        weight.handleTopologyEvents(itBegin, itEnd);
+        weightDeriv.handleTopologyEvents(itBegin, itEnd);
+        weightDeriv2.handleTopologyEvents(itBegin, itEnd);
+
+        while ( itBegin != itEnd )
+        {
+            core::topology::TopologyChangeType changeType = ( *itBegin )->getChangeType();
+
+            switch ( changeType )
+            {
+
+            case core::topology::ENDING_EVENT:
+            {
+                break;
+            }
+            case core::topology::TRIANGLESREMOVED:
+            {
+                break;
+            }
+            case core::topology::HEXAHEDRAREMOVED:
+            {
+                break;
+            }
+            case core::topology::POINTSADDED:
+            {
+                const unsigned int& nbNewVertices = ( static_cast< const typename component::topology::PointsAdded *> ( *itBegin ) )->getNbAddedVertices();
+                addSamples( nbNewVertices);
+                break;
+            }
+            case core::topology::POINTSREMOVED:
+            {
+                const sofa::helper::vector<core::topology::BaseMeshTopology::PointID> &tab = ( static_cast< const typename component::topology::PointsRemoved *> ( *itBegin ) )->getArray();
+                removeSamples( tab);
+                break;
+            }
+            case core::topology::POINTSRENUMBERING:
+            default:
+                // Ignore events that are not Triangle related.
+                break;
+            };
+
+            ++itBegin;
+        }
+    }
+    return;
 }
 
 

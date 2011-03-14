@@ -124,6 +124,8 @@ public:
     }
 
     virtual void apply( MaterialCoord& coord, const MaterialCoord& restCoord) = 0; // Allow to tranfsorm a voxel from restPos for example
+    //virtual void addSamples( const unsigned int& nbNewVertices) = 0;
+    //virtual void removeSamples( const vector<unsigned int>& samplesID) = 0;
 };
 
 } // namespace defaulttype

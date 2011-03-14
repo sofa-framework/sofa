@@ -171,6 +171,17 @@ struct LinearBlendTypes<
         }
     }
 
+    inline friend std::ostream& operator<< ( std::ostream& o, const LinearBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return o;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& i, LinearBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return i;
+    }
 
 };
 
@@ -296,6 +307,17 @@ struct LinearBlendTypes<
             }
             parentJacobianRow.addCol(index[i],parentJacobianVec);
         }
+    }
+    inline friend std::ostream& operator<< ( std::ostream& o, const LinearBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return o;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& i, LinearBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return i;
     }
 };
 
@@ -433,6 +455,17 @@ struct LinearBlendTypes<
         }
     }
 
+    inline friend std::ostream& operator<< ( std::ostream& o, const LinearBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return o;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& i, LinearBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return i;
+    }
 };
 
 
@@ -530,6 +563,17 @@ struct LinearBlendTypes<
         }
     }
 
+    inline friend std::ostream& operator<< ( std::ostream& o, const LinearBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return o;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& i, LinearBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return i;
+    }
 };
 
 
@@ -671,6 +715,17 @@ struct LinearBlendTypes<
             }
             parentJacobianRow.addCol(index[i],parentJacobianVec);
         }
+    }
+    inline friend std::ostream& operator<< ( std::ostream& o, const LinearBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return o;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& i, LinearBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return i;
     }
 };
 
@@ -828,6 +883,17 @@ struct LinearBlendTypes<
             parentJacobianRow.addCol(index[i],parentJacobianVec);
         }
     }
+    inline friend std::ostream& operator<< ( std::ostream& o, const LinearBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return o;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& i, LinearBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return i;
+    }
 };
 
 
@@ -927,6 +993,17 @@ struct LinearBlendTypes<
             getAngular(parentJacobianVec) += cross(Jb[i].Pa, childJacobianVec);
             parentJacobianRow.addCol(index[i],parentJacobianVec);
         }
+    }
+    inline friend std::ostream& operator<< ( std::ostream& o, const LinearBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return o;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& i, LinearBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return i;
     }
 
 };
@@ -1071,6 +1148,17 @@ struct LinearBlendTypes<
             getAngular(parentJacobianVec)[2] += dot(Jb[i].Fa[0],childJacobianVec.getMaterialFrame()[1]) - dot(Jb[i].Fa[1],childJacobianVec.getMaterialFrame()[0]);
             parentJacobianRow.addCol(index[i],parentJacobianVec);
         }
+    }
+    inline friend std::ostream& operator<< ( std::ostream& o, const LinearBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return o;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& i, LinearBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return i;
     }
 
 };
@@ -1252,6 +1340,17 @@ struct LinearBlendTypes<
             }
             parentJacobianRow.addCol(index[i],parentJacobianVec);
         }
+    }
+    inline friend std::ostream& operator<< ( std::ostream& o, const LinearBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return o;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& i, LinearBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return i;
     }
 
 };
