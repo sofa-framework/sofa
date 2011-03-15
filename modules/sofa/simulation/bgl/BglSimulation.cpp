@@ -64,6 +64,8 @@ BglSimulation::BglSimulation()
 
     sofa::core::ObjectFactory::AddAlias("CollisionGroup",
             "BglCollisionGroupManager", true, 0);
+
+    sofa::simulation::xml::BaseElement::NodeFactory::DuplicateEntry("BglNodeMultiMapping","MultiMappingObject");
 }
 
 

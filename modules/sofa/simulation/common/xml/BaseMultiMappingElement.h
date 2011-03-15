@@ -28,17 +28,29 @@
 
 namespace sofa
 {
+namespace core
+{
+class BaseMapping;
+}
 namespace simulation
 {
+class Node;
 namespace xml
 {
 
-class SOFA_SIMULATION_COMMON_API MultiMappingElement : public ObjectElement
+class SOFA_SIMULATION_COMMON_API BaseMultiMappingElement : public ObjectElement
 {
 public:
-    MultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
-    virtual bool initNode();
-    virtual const char* getClass() const;
+    BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
+    bool initNode();
+
+protected:
+    virtual void updateSceneGraph(
+        sofa::core::BaseMapping* multiMapping,
+        const helper::vector<simulation::Node*>& ancestorInputs,
+        helper::vector<simulation::Node*>& otherInputs,
+        helper::vector<simulation::Node*>& outputs
+    ) = 0;
 };
 }
 }

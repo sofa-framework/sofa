@@ -1,4 +1,4 @@
-#include <sofa/simulation/common/xml/MultiMappingElement.h>
+#include <sofa/simulation/common/xml/BaseMultiMappingElement.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -12,13 +12,13 @@ namespace simulation
 {
 namespace xml
 {
-MultiMappingElement::MultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent/* =NULL */)
+BaseMultiMappingElement::BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent/* =NULL */)
     :ObjectElement(name,type,parent)
 {
 
 }
 
-bool MultiMappingElement::initNode()
+bool BaseMultiMappingElement::initNode()
 {
     using namespace core::objectmodel;
     using namespace core;
@@ -56,45 +56,28 @@ bool MultiMappingElement::initNode()
         BaseNode* currentBaseNode;
 
         /* filter out inputNodes which already belong to the currentNode ancestors */
-        helper::vector<simulation::Node*> filteredInputNodes;
+        helper::vector<simulation::Node*> otherInputNodes;
+        helper::vector<simulation::Node*> ancestorInputNodes;
         iterNode = inputNodes.begin();
         currentBaseNode = currentNode;
         for( iterNode = inputNodes.begin(); iterNode != inputNodes.end(); ++iterNode)
         {
             if( !currentBaseNode->hasAncestor(*iterNode) )
             {
-                filteredInputNodes.push_back(*iterNode);
+                otherInputNodes.push_back(*iterNode);
             }
-        }
-
-        /* add the currentNode to the filteredInputNodes child list */
-        for( iterNode = filteredInputNodes.begin(); iterNode != filteredInputNodes.end(); ++iterNode )
-        {
-            (*iterNode)->addChild(currentNode);
-        }
-
-        /* add the outputNodes to the currentNode child list */
-        for( iterNode = outputNodes.begin(); iterNode != outputNodes.end(); ++iterNode)
-        {
-            if( *iterNode != currentNode)
+            else
             {
-                currentNode->addChild(*iterNode);
+                ancestorInputNodes.push_back(*iterNode);
             }
         }
+
+        updateSceneGraph(multimapping, ancestorInputNodes, otherInputNodes, outputNodes );
+
     }
 
     return result;
 }
-
-SOFA_DECL_CLASS(MultiMappingObject)
-
-Creator<BaseElement::NodeFactory, MultiMappingElement> MultiMappingNodeClass("MultiMappingObject");
-
-const char* MultiMappingElement::getClass() const
-{
-    return MultiMappingNodeClass.c_str();
-}
-
 
 }
 }

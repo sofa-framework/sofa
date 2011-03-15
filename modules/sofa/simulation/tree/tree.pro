@@ -7,12 +7,15 @@ HEADERS += tree.h \
            ExportDotVisitor.h \
            GNode.h \
            GNodeVisitor.h \
+		   GNodeMultiMappingElement.h \
            TreeSimulation.h \
 
 SOURCES += ExportDotVisitor.cpp \
            GNode.cpp \   
            GNodeVisitor.cpp \
-           TreeSimulation.cpp
+           GNodeMultiMappingElement.cpp \
+		   TreeSimulation.cpp \
+		   
 
 SOFA_DIR =../../../..
 TEMPLATE = lib

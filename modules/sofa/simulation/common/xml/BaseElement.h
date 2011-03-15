@@ -238,6 +238,10 @@ public:
 
 };
 
+#if defined(WIN32) && !defined(SOFA_BUILD_SIMULATION_COMMON)
+extern template class SOFA_SIMULATION_COMMON_API helper::Factory< std::string, BaseElement, std::pair<std::string, std::string> >;
+#endif
+
 } // namespace xml
 
 } // namespace simulation

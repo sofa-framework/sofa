@@ -8,12 +8,14 @@ HEADERS += bgl.h \
            dfs_adapter.h \
            dfv_adapter.h \
            BglNode.h \
+		   BglMultiMappingElement.h \
            BglSimulation.h \
            BglGraphManager.h \
            BglGraphManager.inl \
            GetObjectsVisitor.h
 
 SOURCES += BglNode.cpp \
+		   BglMultiMappingElement.cpp \
            BglSimulation.cpp \
            BglGraphManager.cpp  \
            GetObjectsVisitor.cpp
