@@ -147,7 +147,7 @@ bool Factory<TKey, TObject, TArgument>::duplicateEntry( Key existing, Key duplic
         ++it;
     }
 
-    helper::vector<Creator*>::const_iterator iter;
+    typename helper::vector<Creator*>::const_iterator iter;
     for( iter = entries.begin(); iter != entries.end() ; ++iter)
     {
         registry.insert(std::make_pair(duplicate,*iter));
