@@ -61,7 +61,7 @@ HEADERS += common.h \
            xml/initXml.h \
            xml/NodeElement.h \
            xml/ObjectElement.h \
-		   xml/MultiMappingElement.h \
+		   xml/BaseMultiMappingElement.h \
            xml/AttributeElement.h \
            xml/DataElement.h \
            xml/XML.h 
@@ -114,7 +114,7 @@ SOURCES += Node.cpp \
            xml/initXml.cpp \
            xml/NodeElement.cpp \
            xml/ObjectElement.cpp \
-		   xml/MultiMappingElement.cpp \
+		   xml/BaseMultiMappingElement.cpp \
            xml/AttributeElement.cpp \
            xml/DataElement.cpp \
            xml/XML.cpp 

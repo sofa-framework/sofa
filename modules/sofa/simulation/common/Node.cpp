@@ -46,6 +46,7 @@
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 
 #include <sofa/helper/Factory.inl>
+#include <sofa/simulation/common/xml/Element.inl>
 #include <iostream>
 
 #include <boost/graph/adjacency_list.hpp>

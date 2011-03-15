@@ -25,6 +25,8 @@
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/tree/GNode.h>
 
+#include <sofa/simulation/common/xml/BaseElement.h>
+#include <sofa/helper/Factory.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -56,6 +58,15 @@ TreeSimulation::TreeSimulation(): visualNode(NULL)
 
     sofa::core::ObjectFactory::AddAlias("CollisionGroup",
             "TreeCollisionGroupManager", true, 0);
+
+
+
+    sofa::simulation::xml::BaseElement::NodeFactory::DuplicateEntry("GNodeMultiMapping","MultiMappingObject");
+}
+
+TreeSimulation::~TreeSimulation()
+{
+
 }
 
 Node *TreeSimulation::getVisualRoot()

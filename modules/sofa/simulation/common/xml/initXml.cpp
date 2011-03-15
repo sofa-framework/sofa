@@ -54,5 +54,6 @@ void initXml()
 
 SOFA_LINK_CLASS(Attribute)
 SOFA_LINK_CLASS(Data)
-SOFA_LINK_CLASS(Node)
+SOFA_LINK_CLASS(NodeElement)
 SOFA_LINK_CLASS(Object)
+

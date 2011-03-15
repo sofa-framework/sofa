@@ -43,14 +43,43 @@ namespace simulation
 namespace xml
 {
 
-const std::string multimappingName  = "MultiMapping";
-const std::string multi2mappingName = "Multi2Mapping";
-
 using std::cout;
 using std::endl;
 
+
 #define is(n1, n2) (! xmlStrcmp((const xmlChar*)n1,(const xmlChar*)n2))
 #define getProp(n) ( xmlGetProp(cur, (const xmlChar*)n) )
+
+namespace // namespace anonymous
+{
+
+const std::string multimappingName  = "MultiMapping";
+const std::string multi2mappingName = "Multi2Mapping";
+
+bool deriveFromMultiMapping( const std::string& className)
+{
+    if( sofa::core::ObjectFactory::HasCreator(className) )
+    {
+        sofa::core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(className);
+        sofa::core::ObjectFactory::CreatorList::const_iterator iter;
+        for( iter = entry->creatorList.begin(); iter != entry->creatorList.end(); ++iter )
+        {
+            const std::string& name = iter->first;
+            if(name.substr(0,multimappingName.size()) == multimappingName
+               || name.substr(0,multi2mappingName.size()) == multi2mappingName)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+} // namespace anonymous
+
+
+
+
 
 void recReplaceAttribute(BaseElement* node, const char* attr, const char* value, const char* nodename=NULL)
 {
@@ -74,24 +103,6 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
     }
 }
 
-bool deriveFromMultiMapping( const std::string& className)
-{
-    if( sofa::core::ObjectFactory::HasCreator(className) )
-    {
-        sofa::core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(className);
-        sofa::core::ObjectFactory::CreatorList::const_iterator iter;
-        for( iter = entry->creatorList.begin(); iter != entry->creatorList.end(); ++iter )
-        {
-            const std::string& name = iter->first;
-            if(name.substr(0,multimappingName.size()) == multimappingName
-               || name.substr(0,multi2mappingName.size()) == multi2mappingName)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
 
 
 #ifdef SOFA_XML_PARSER_TINYXML
@@ -247,7 +258,6 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc)
         std::cerr << "empty document" << std::endl;
         return NULL;
     }
-
     //std::cout << "Creating XML graph"<<std::endl;
     std::string basefilename =
         sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
