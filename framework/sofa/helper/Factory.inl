@@ -34,6 +34,7 @@
 // added by Sylvere F.
 // this inclusion must be done but not in this part of code. For the moment, I don't know where ;)
 #include <string>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -119,6 +120,56 @@ Factory<TKey, TObject, TArgument>* Factory<TKey, TObject, TArgument>::getInstanc
     static Factory<Key, Object, Argument> instance;
     return &instance;
 }
+
+
+template <typename TKey, class TObject, typename TArgument>
+bool Factory<TKey, TObject, TArgument>::duplicateEntry( Key existing, Key duplicate)
+{
+    if( !hasKey(existing) )
+    {
+        std::cerr << "ERROR: entry " << existing << " unknown in factory." << std::endl;
+        return false;
+    }
+
+    if( hasKey(duplicate) )
+    {
+        std::cerr << "ERROR: Cannot duplicate "<< duplicate << ", it already exists." << std::endl;
+        std::cerr << "ERROR: must call resetEntry(" << duplicate << "," << existing << ") first." << std::endl;
+        return false;
+    }
+
+    typename std::multimap<Key, Creator*>::const_iterator it = registry.lower_bound(existing);
+    typename std::multimap<Key, Creator*>::const_iterator end = registry.upper_bound(existing);
+    helper::vector<Creator*> entries;
+    while (it != end)
+    {
+        entries.push_back(it->second);
+        ++it;
+    }
+
+    helper::vector<Creator*>::const_iterator iter;
+    for( iter = entries.begin(); iter != entries.end() ; ++iter)
+    {
+        registry.insert(std::make_pair(duplicate,*iter));
+    }
+    return true;
+}
+
+template <typename TKey, class TObject, typename TArgument>
+bool Factory<TKey, TObject, TArgument>::resetEntry( Key existingKey)
+{
+    if( !hasKey(existingKey) )
+    {
+        std::cerr << "ERROR: Cannot reset entry " << existingKey << ", it does not exist." << std::endl;
+        return false;
+    }
+
+    registry.erase(existingKey);
+
+    return true;
+
+}
+
 
 } // namespace helper
 

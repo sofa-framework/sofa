@@ -65,6 +65,7 @@ public:
     typedef TObject Object;
     typedef TArgument Argument;
     typedef BaseCreator<Object, Argument> Creator;
+    typedef std::multimap<Key, Creator> Registry;
 
 protected:
     std::multimap<Key, Creator*> registry;
@@ -88,6 +89,8 @@ public:
     void uniqueKeys(OutIterator out);
 
     bool hasKey(Key key);
+    bool duplicateEntry( Key existing, Key duplicate);
+    bool resetEntry( Key existingKey);
 
     static Factory<Key, Object, Argument>* getInstance();
 
@@ -105,6 +108,17 @@ public:
     {
         return getInstance()->hasKey(key);
     }
+
+    static bool DuplicateEntry(Key existing,Key duplicate )
+    {
+        return getInstance()->duplicateEntry(existing, duplicate);
+    }
+
+    static bool ResetEntry(Key existing)
+    {
+        return getInstance()->resetEntry(existing);
+    }
+
 
     typedef typename std::multimap<Key, Creator*>::iterator iterator;
     iterator begin() { return registry.begin(); }
