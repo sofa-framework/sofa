@@ -41,7 +41,7 @@ namespace xml
 
 
 template<class Object>
-class Element : public BaseElement
+class SOFA_SIMULATION_COMMON_API Element : public BaseElement
 {
 private:
     Object* object;

@@ -5,7 +5,6 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
 #include <sofa/simulation/common/xml/Element.inl>
-
 namespace sofa
 {
 namespace simulation
