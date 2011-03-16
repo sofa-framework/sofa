@@ -57,12 +57,19 @@ class GenericConstraintSolver;
 class SOFA_COMPONENT_CONSTRAINTSET_API GenericConstraintProblem : public ConstraintProblem
 {
 public:
-    FullVector<double> _d, _df;
+    FullVector<double> _d;
     std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
     bool scaleTolerance, allVerified;
     double sor;
 
-    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0) {}
+    // For unbuilt version :
+    SparseMatrix<double> Wdiag;
+    std::list<int> constraints_sequence;
+    bool change_sequence;
+    std::vector<core::behavior::BaseConstraintCorrection*> cclist_elem1, cclist_elem2;
+
+    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
+        , change_sequence(false) {}
     ~GenericConstraintProblem() { freeConstraintResolutions(); }
 
     void clear(int nbConstraints);
@@ -70,6 +77,7 @@ public:
     void solveTimed(double tol, int maxIt, double timeout);
 
     void gaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
+    void unbuiltGaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
 };
 
 class SOFA_COMPONENT_CONSTRAINTSET_API GenericConstraintSolver : public ConstraintSolverImpl
@@ -95,6 +103,7 @@ public:
     Data<int> maxIt;
     Data<double> tolerance, sor;
     Data<bool> scaleTolerance, allVerified, schemeCorrection;
+    Data<bool> unbuilt;
     Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors, graphConstraints /*, graphForces */;
 
     ConstraintProblem* getConstraintProblem();
@@ -105,8 +114,6 @@ private:
     GenericConstraintProblem cp1, cp2, cp3;
     GenericConstraintProblem *current_cp, *last_cp;
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
-
-    void build_LCP();
 
     simulation::Node *context;
 
