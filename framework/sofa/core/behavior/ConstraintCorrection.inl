@@ -180,15 +180,15 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< Ve
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        const double fC1 = lambda->element(rowIt.index());
+        const double lambdaC1 = lambda->element(rowIt.index());
 
-        if (fC1 != 0.0)
+        if (lambdaC1 != 0.0)
         {
             MatrixDerivColConstIterator colItEnd = rowIt.end();
 
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                force[colIt.index()] += colIt.val() * fC1;
+                force[colIt.index()] += colIt.val() * lambdaC1;
             }
         }
     }
@@ -266,15 +266,15 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< Ve
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        const double fC1 = lambda->element(rowIt.index());
+        const double lambdaC1 = lambda->element(rowIt.index());
 
-        if (fC1 != 0.0)
+        if (lambdaC1 != 0.0)
         {
             MatrixDerivColConstIterator colItEnd = rowIt.end();
 
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                force[colIt.index()] += colIt.val() * fC1;
+                force[colIt.index()] += colIt.val() * lambdaC1;
                 activeDofs.push_back(colIt.index());
             }
         }
