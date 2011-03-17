@@ -114,16 +114,16 @@ public:
 
 #ifdef SOFA_DEV
     //Copy of Line computation. TODO_Spline : finding adaptive and optimized computation for Spline
-    bool testValidity(CubicBezierCurve&, const Vector3&);
+    template<int FLAG> bool testValidity(CubicBezierCurve<FLAG>&, const Vector3&);
 
-    bool testIntersection(CubicBezierCurve&, Point&);
-    int computeIntersection(CubicBezierCurve&, Point&, OutputVector*);
+    template<int FLAG> bool testIntersection(CubicBezierCurve<FLAG>&, Point&);
+    template<int FLAG> int computeIntersection(CubicBezierCurve<FLAG>&, Point&, OutputVector*);
 
-    bool testIntersection(CubicBezierCurve&, Sphere&);
-    int computeIntersection(CubicBezierCurve&, Sphere&, OutputVector*);
+    template<int FLAG> bool testIntersection(CubicBezierCurve<FLAG>&, Sphere&);
+    template<int FLAG> int computeIntersection(CubicBezierCurve<FLAG>&, Sphere&, OutputVector*);
 
-    //bool testIntersection(CubicBezierCurve&, Sphere&);
-    //bool testIntersection(CubicBezierCurve&, CubicBezierCurve&);
+    //bool testIntersection(CubicBezierCurve<FLAG>&, Sphere&);
+    //bool testIntersection(CubicBezierCurve<FLAG>&, CubicBezierCurve<FLAG>&);
 #endif // SOFA_DEV
 
     void draw();
@@ -148,4 +148,4 @@ private:
 
 } // namespace sofa
 
-#endif
+#endif /* SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_H */
