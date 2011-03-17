@@ -37,7 +37,13 @@ namespace behavior
 {
 
 BaseMechanicalState::BaseMechanicalState()
-    : useMask(initData(&useMask, true, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings"))
+    : useMask(initData(&useMask,
+#ifdef SOFA_USE_MASK_BY_DEFAULT
+            true,
+#else
+            false,
+#endif
+            "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings"))
     , forceMask(&useMask)
 {
 }
