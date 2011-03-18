@@ -136,7 +136,6 @@ private:
     // new :  for non building the constraint system during solving process //
     VecDeriv constraint_disp, constraint_force;
     std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
-    std::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
 
     //std::vector< std::vector<int> >  dof_constraint_table;   // table of indices of each point involved with each constraint
 };
