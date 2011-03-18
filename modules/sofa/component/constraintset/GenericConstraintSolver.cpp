@@ -176,7 +176,7 @@ bool GenericConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::Const
         // for each contact, the pair of constraint correction that is involved with the contact is memorized
         current_cp->cclist_elem1.resize(numConstraints);
         current_cp->cclist_elem2.resize(numConstraints);
-        int nbObjects = 0;
+        unsigned int nbObjects = 0;
         for(unsigned int i=0; i<numConstraints;)
         {
             nbObjects++;
