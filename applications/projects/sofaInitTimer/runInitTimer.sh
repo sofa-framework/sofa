@@ -9,7 +9,7 @@ iniFile=initTimer.ini
 resetMode=0
 addMode=0
 defaultDirectory=1
-defaultPlugins="/disc/bousquet/dev/Sofa/lib/sofa-plugins/libsofaframe.so"
+defaultPlugins="libsofaframe.so"
 
 #----------------------------------------------------------------------------------------------
 #Interpreting the command line
