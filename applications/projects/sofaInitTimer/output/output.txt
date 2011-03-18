@@ -1,0 +1,31 @@
+
+
+
+File: scenes/steak.pscn using steak-seg.ppm 3 6
+Lloyd_iteration 0.23
+Lloyd_iteration 0.25
+Lloyd_iteration 0.24
+computeUniformSampling: 0.96
+computeWeights: 1.97
+computeLinearRegionsSampling: 0.04
+updateSampleMaterialProperties: 0
+
+
+File: scenes/steak.pscn using steak-seg.ppm 3 10
+Lloyd_iteration 0.22
+Lloyd_iteration 0.25
+Lloyd_iteration 0.24
+computeUniformSampling: 0.95
+computeWeights: 1.97
+computeLinearRegionsSampling: 0.03
+updateSampleMaterialProperties: 0.01
+
+
+File: scenes/steak.pscn using steak-seg.ppm 3 20
+Lloyd_iteration 0.24
+Lloyd_iteration 0.24
+Lloyd_iteration 0.24
+computeUniformSampling: 0.95
+computeWeights: 1.95
+computeLinearRegionsSampling: 0.04
+updateSampleMaterialProperties: 0.01
