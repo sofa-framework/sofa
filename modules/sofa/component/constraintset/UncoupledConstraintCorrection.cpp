@@ -340,9 +340,8 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 
     for (int id = begin; id <= end; id++)
     {
-        int c = id_to_localIndex[id];
 
-        MatrixDerivRowConstIterator curConstraint = constraints.readLine(c);
+        MatrixDerivRowConstIterator curConstraint = constraints.readLine(id);
 
         if (curConstraint != constraints.end())
         {
@@ -381,13 +380,15 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
     const MatrixDeriv& constraints = *mstate->getC();
     const VecReal usedComp = compliance.getValue();
 
+    if (this->f_printLog.getValue()) // debug
+        std::cout<<"getBlockDiagonalCompliance called for lines and columns "<< begin<< " to "<< end <<std::endl;
+
     Deriv weightedNormal, C_n;
 
     for (int id1 = begin; id1 <= end; id1++)
     {
-        int c1 = id_to_localIndex[id1];
 
-        MatrixDerivRowConstIterator curConstraint = constraints.readLine(c1);
+        MatrixDerivRowConstIterator curConstraint = constraints.readLine(id1);
 
         if (curConstraint != constraints.end())
         {
@@ -408,9 +409,8 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 
                 for (int id2 = id1; id2 <= end; id2++)
                 {
-                    int c2 = id_to_localIndex[id2];
 
-                    MatrixDerivRowConstIterator curConstraint2 = constraints.readLine(c2);
+                    MatrixDerivRowConstIterator curConstraint2 = constraints.readLine(id2);
 
                     if (curConstraint2 != constraints.end())
                     {

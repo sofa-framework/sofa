@@ -250,6 +250,8 @@ void UncoupledConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMa
 {
     const MatrixDeriv& constraints = *mstate->getC();
 
+    // std::cout<<"getCompliance : constraints= \n" <<constraints<<std::endl;
+
     MatrixDerivRowConstIterator rowItEnd = constraints.end();
 
     for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
@@ -458,23 +460,12 @@ void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double 
     constraint_force.resize(mstate->getSize());
 
     constraint_dofs.clear();
-    id_to_localIndex.clear();
 
-    int maxIndex = -1;
-    int c = 0; // Warning !!! Why do we have to use this ?
+
 
     for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != constraints.end(); ++rowIt)
     {
         int indexC = rowIt.index();
-
-        if (indexC > maxIndex)
-        {
-            id_to_localIndex.resize(indexC + 1, -1);   // debug : -1 value allows to know if the table is badly filled
-            maxIndex = indexC;
-        }
-
-        // buf the table of local indices
-        id_to_localIndex[indexC] = c;
 
         // buf the value of force applied on concerned dof : constraint_force
         // buf a table of indice of involved dof : constraint_dofs
@@ -489,8 +480,6 @@ void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double 
                 constraint_dofs.push_back(dof);
             }
         }
-
-        c++;
     }
 
     // constraint_dofs buff the DOF that are involved with the constraints
@@ -509,9 +498,7 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(double 
 
     for (int id = begin; id <= end; id++)
     {
-        int c = id_to_localIndex[id];
-
-        MatrixDerivRowConstIterator curConstraint = constraints.readLine(c);
+        MatrixDerivRowConstIterator curConstraint = constraints.readLine(id);
 
         if (curConstraint != constraints.end())
         {
@@ -544,9 +531,8 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
 
     for (int id = begin; id <= end; id++)
     {
-        int c = id_to_localIndex[id];
 
-        MatrixDerivRowConstIterator curConstraint = constraints.readLine(c);
+        MatrixDerivRowConstIterator curConstraint = constraints.readLine(id);
 
         if (curConstraint != constraints.end())
         {
@@ -577,9 +563,8 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
 
     for (int id1 = begin; id1 <= end; id1++)
     {
-        int c1 = id_to_localIndex[id1];
 
-        MatrixDerivRowConstIterator curConstraint = constraints.readLine(c1);
+        MatrixDerivRowConstIterator curConstraint = constraints.readLine(id1);
 
         if (curConstraint != constraints.end())
         {
@@ -593,9 +578,7 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
 
                 for (int id2 = id1; id2 <= end; id2++)
                 {
-                    int c2 = id_to_localIndex[id2];
-
-                    MatrixDerivRowConstIterator curConstraint2 = constraints.readLine(c2);
+                    MatrixDerivRowConstIterator curConstraint2 = constraints.readLine(id2);
 
                     if (curConstraint2 != constraints.end())
                     {
