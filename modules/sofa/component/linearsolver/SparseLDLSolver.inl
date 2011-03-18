@@ -39,7 +39,8 @@
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.inl>
 
 extern "C" {
-#include <metis.h>
+//#include <metis.h>
+#include <../../../../extlibs/metis/Lib/metis.h>
 }
 
 namespace sofa
