@@ -1,0 +1,119 @@
+Comparison on a set of the steak scenes (data: 100 x 75 x 9)
+
+
+3F-6E:
+3 Lloyds: 0.23 0.23 0.24 (0.7 total)
+computeWeights: 1.91
+ComputeLinearRegionSampling: 0.04
+UpdateSampleMaterialProperties: 0
+
+
+3F-10E:
+3 Lloyds: 0.23 0.23 0.24 (0.7 total)
+computeWeights: 1.89
+ComputeLinearRegionSampling: 0.1
+UpdateSampleMaterialProperties: 0.01
+
+
+3F-20E:
+3 Lloyds: 0.22 0.24 0.23 (0.69 total)
+computeWeights: 1.92
+ComputeLinearRegionSampling: 0.19
+UpdateSampleMaterialProperties: 0.01
+
+
+3F-50E:
+3 Lloyds: 0.24 0.23 0.22 (0.69 total)
+computeWeights: 1.91
+ComputeLinearRegionSampling: 0.32
+UpdateSampleMaterialProperties: 0.02
+
+
+
+5F-6E:
+5 Lloyds: 0.24 0.23 0.25 0.24 0.24 (1.2 total)
+computeWeights: 2.91
+ComputeLinearRegionSampling: 0.07
+UpdateSampleMaterialProperties: 0
+
+
+5F-10E:
+5 Lloyds: 0.24 0.24 0.23 0.24 0.25 (1.18 total)
+computeWeights: 2.95
+ComputeLinearRegionSampling: 0.07
+UpdateSampleMaterialProperties: 0
+
+
+5F-20E:
+5 Lloyds: 0.23 0.24 0.23 0.24 0.23 (1.17 total)
+computeWeights: 2.91
+ComputeLinearRegionSampling: 0.1
+UpdateSampleMaterialProperties: 0.01
+
+
+5F-50E:
+5 Lloyds: 0.24 0.24 0.24 0.24 0.24 (1.2 total)
+computeWeights: 2.95
+ComputeLinearRegionSampling: 0.32
+UpdateSampleMaterialProperties: 0.01
+
+
+
+10F-6E:
+7 Lloyds: 0.25 0.24 0.25 0.25 0.24 0.25 0.24 (1.72 total)
+computeWeights: 4.85
+ComputeLinearRegionSampling: 0.13
+UpdateSampleMaterialProperties: 0.01
+
+
+10F-10E:
+7 Lloyds: 0.25 0.25 0.24 0.25 0.24 0.25 0.24 (1.72 total)
+computeWeights: 4.85
+ComputeLinearRegionSampling: 0.12
+UpdateSampleMaterialProperties: 0.02
+
+
+10F-20E:
+7 Lloyds: 0.25 0.24 0.25 0.24 0.24 0.24 0.24 (1.7 total)
+computeWeights: 4.93
+ComputeLinearRegionSampling: 0.13
+UpdateSampleMaterialProperties: 0.01
+
+
+10F-50E:
+7 Lloyds: 0.25 0.25 0.24 0.24 0.24 0.25 0.25 (1.72 total)
+computeWeights: 4.85
+ComputeLinearRegionSampling: 0.12
+UpdateSampleMaterialProperties: 0.02
+
+
+
+20F-6E:
+9 Lloyds: 0.27 0.27 0.28 0.27 0.27 0.27 0.27 0.27 0.27 (2.44 total)
+computeWeights: 7.89
+ComputeLinearRegionSampling: 0.29
+UpdateSampleMaterialProperties: 0.05
+
+
+20F-10E:
+9 Lloyds: 0.27 0.27 0.27 0.26 0.27 0.27 0.27 0.27 0.26 (2.41 total)
+computeWeights: 7.98
+ComputeLinearRegionSampling: 0.27
+UpdateSampleMaterialProperties: 0.06
+
+
+20F-20E:
+9 Lloyds: 0.28 0.28 0.27 0.27 0.27 0.27 0.26 0.27 0.27 (2.44 total)
+computeWeights: 7.88
+ComputeLinearRegionSampling: 0.28
+UpdateSampleMaterialProperties: 0.05
+
+
+20F-50E:
+9 Lloyds: 0.27 0.27 0.27 0.27 0.26 0.27 0.27 0.26 0.27 (2.41 total)
+computeWeights: 7.88
+ComputeLinearRegionSampling: 0.27
+UpdateSampleMaterialProperties: 0.05
+
+
+
