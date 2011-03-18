@@ -83,7 +83,7 @@ bool loadPlugin(const char* filename)
 // ---
 // ---------------------------------------------------------------------
 
-void apply(const std::string& directory, std::vector<std::string>& files, bool reinit)
+void apply(const std::string& /*directory*/, std::vector<std::string>& files, bool /*reinit*/)
 {
 
     sofa::component::init(); // ensures all components are initialized, also introduce a dependency to all libraries, avoiding problems with -Wl,--as-needed flag
