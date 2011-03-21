@@ -17,13 +17,13 @@
 		<Object name="GConstraint" type="BoxConstraint" box="-8.5 0 -2.5 -5 3 2" />
 		<RegularGridSpringForceField name="Springs" stiffness="400" damping="4" />
 		<Node name="Visu">
-			<OglModel name="Visual" fileMesh="mesh/liver-smooth.obj" color="red" dx="-5"/>
-			<BarycentricMapping object1="../.." object2="Visual" />
+			<OglModel name="Visual" fileMesh="mesh/liver-smooth.obj" color="red" translation="-5 0 0"/>
+			<BarycentricMapping input="@.." output="@Visual" />
 		</Node>
 		<Node name="Collision Surface">
-			<MechanicalObject dx="-5"/>
-			<Sphere name="Surf" filename="mesh/liver.sph"/>
-			<BarycentricMapping />
+			<MechanicalObject />
+			<Sphere name="Surf" filename="mesh/liver.sph" translation="-5 0 0"/>
+			<BarycentricMapping input="@.." output="@."/>
 		</Node>
 	</Node>
 	
@@ -41,13 +41,13 @@
 		<Object name="GConstraint" type="BoxConstraint" box="2.5 0 -2.5 5 3 2" />
 		<RegularGridSpringForceField name="Springs" stiffness="100" damping="4" />
 		<Node name="Visu">
-			<OglModel name="Visual" fileMesh="mesh/liver-smooth.obj" color="red" dx="5"/>
-			<BarycentricMapping object1="../.." object2="Visual" />
+			<OglModel name="Visual" fileMesh="mesh/liver-smooth.obj" color="red" translation="5 0 0"/>
+			<BarycentricMapping input="@.." output="@Visual" />
 		</Node>
 		<Node name="Collision Surface">
-			<MechanicalObject dx="5"/>
-			<Sphere name="Surf" filename="mesh/liver.sph" />
-			<BarycentricMapping />
+			<MechanicalObject translation="5 0 0"/>
+			<Sphere name="Surf" filename="mesh/liver.sph" translation="5 0 0"/>
+			<BarycentricMapping input="@.." output="@."/>
 		</Node>
 	</Node>
 </Node>
