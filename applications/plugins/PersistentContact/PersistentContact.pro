@@ -24,14 +24,16 @@ LIBS += $$SOFA_EXT_LIBS
 
 INCLUDEPATH += $$SOFA_DIR/extlibs
 
-SOURCES = PersistentContactMapping.cpp \
+SOURCES = FreeMotionVelocityMasterSolver.cpp \
+		  PersistentContactMapping.cpp \
 		  PersistentFrictionContact.cpp \
 		  PersistentUnilateralInteractionConstraint.cpp \
 		  PersistentContactBarycentricMapping.cpp \
 		  PersistentContactRigidMapping.cpp \
 	      initPersistentContact.cpp
 
-HEADERS = PersistentContact.h \
+HEADERS = FreeMotionVelocityMasterSolver.h \
+		  PersistentContact.h \
 		  PersistentContactMapping.h \
 		  PersistentFrictionContact.h \
 		  PersistentFrictionContact.inl \

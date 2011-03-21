@@ -189,7 +189,6 @@ HEADERS += \
                CudaJointSpringForceField.h \
                CudaJointSpringForceField.inl \
 		CudaTetrahedronSuperTLEDForceField.h \
-       	CudaUncoupledConstraintCorrection.h \
 		CudaRasterizer.h \
 		CudaRasterizer.inl \
 		CudaLDIPenalityContactForceField.h \
@@ -225,7 +224,6 @@ SOURCES += \
                CudaJointSpringForceField.cpp \
 		CudaPairInteractionForceField.cpp \
 		CudaTetrahedronSuperTLEDForceField.cpp \
-       	CudaUncoupledConstraintCorrection.cpp \
 		CudaRasterizer.cpp \
 		CudaLDIPenalityContactForceField.cpp \
 		CudaLDISimpleContactConstraint.cpp \

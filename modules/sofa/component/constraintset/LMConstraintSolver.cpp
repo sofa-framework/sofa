@@ -118,7 +118,7 @@ bool LMConstraintSolver::needPriorStatePropagation(core::ConstraintParams::Const
     return needPriorPropagation;
 }
 
-bool LMConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::ConstraintParams::ConstOrder order)
+bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, MultiVecId id, MultiVecId /*res2*/)
 {
     //Get the matrices through mappings
     //************************************************************
@@ -133,12 +133,12 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::Const
 
     VecId vid = id.getDefaultId();
 
-    orderState=order;
+    orderState=cparams->constOrder();
     LMConstraintVisitor.setMultiVecId(id);
-    if      (order==core::ConstraintParams::ACC)
+    if      (orderState==core::ConstraintParams::ACC)
     {
         if (!constraintAcc.getValue()) return false;
-        if (needPriorStatePropagation(order))
+        if (needPriorStatePropagation(orderState))
         {
             simulation::MechanicalPropagateDxVisitor propagateState(&mparams /* PARAMS FIRST */, core::VecDerivId(vid), false, false);
             propagateState.execute(this->getContext());
@@ -152,10 +152,10 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::Const
         arg.push_back(std::make_pair("Order", "Acceleration"));
 #endif
     }
-    else if (order==core::ConstraintParams::VEL)
+    else if (orderState==core::ConstraintParams::VEL)
     {
         if (!constraintVel.getValue()) return false;
-        if (needPriorStatePropagation(order))
+        if (needPriorStatePropagation(orderState))
         {
             simulation::MechanicalPropagateVVisitor propagateState(&mparams,core::VecDerivId(vid),false);
             propagateState.execute(this->getContext());
@@ -182,7 +182,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::Const
     {
         if (!constraintPos.getValue()) return false;
 
-        if (needPriorStatePropagation(order))
+        if (needPriorStatePropagation(orderState))
         {
             simulation::MechanicalPropagateXVisitor propagateState(&mparams /* PARAMS FIRST */, core::VecCoordId(vid), false);
             propagateState.execute(this->getContext());
@@ -239,7 +239,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::Const
     return true;
 }
 
-bool LMConstraintSolver::buildSystem(double /*dt*/, MultiVecId id, core::ConstraintParams::ConstOrder order)
+bool LMConstraintSolver::buildSystem(const core::ConstraintParams *cParams, MultiVecId id, MultiVecId /*res2*/)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SystemCreation");
@@ -252,7 +252,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, MultiVecId id, core::Constra
     for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)
     {
         BaseLMConstraint *constraint=LMConstraints[mat];
-        if (constraint->getNumConstraint(order))
+        if (constraint->getNumConstraint(cParams->constOrder()))
         {
             setDofs.insert(constraint->getSimulatedMechModel1());
             setDofs.insert(constraint->getSimulatedMechModel2());
@@ -346,7 +346,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, MultiVecId id, core::Constra
     return true;
 }
 
-bool LMConstraintSolver::solveSystem(double /*dt*/, MultiVecId id, core::ConstraintParams::ConstOrder order)
+bool LMConstraintSolver::solveSystem(const core::ConstraintParams* cParams, MultiVecId id, MultiVecId /*res2*/)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SystemConstraintSolution");
@@ -367,7 +367,7 @@ bool LMConstraintSolver::solveSystem(double /*dt*/, MultiVecId id, core::Constra
 
     //"Cold" start
     Lambda=VectorEigen::Zero(numConstraint);
-    bool solutionFound=solveConstraintSystemUsingGaussSeidel(id, order, LMConstraints,
+    bool solutionFound=solveConstraintSystemUsingGaussSeidel(id, cParams->constOrder(), LMConstraints,
             W, c, Lambda);
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printCloseNode("SystemConstraintSolution");
@@ -375,7 +375,7 @@ bool LMConstraintSolver::solveSystem(double /*dt*/, MultiVecId id, core::Constra
     return solutionFound;
 }
 
-bool LMConstraintSolver::applyCorrection(double /*dt*/, MultiVecId id, core::ConstraintParams::ConstOrder order)
+bool LMConstraintSolver::applyCorrection(const core::ConstraintParams* cparams, MultiVecId id, MultiVecId /*res2*/)
 {
     //************************************************************
     // Constraint Correction
@@ -391,7 +391,7 @@ bool LMConstraintSolver::applyCorrection(double /*dt*/, MultiVecId id, core::Con
         sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         bool updateVelocities=!constraintVel.getValue();
         VecId v = id.getId(dofs);
-        constraintStateCorrection(v, order, updateVelocities,invMass_Ltrans[dofs] , Lambda, dofUsed[dofs], dofs);
+        constraintStateCorrection(v, cparams->constOrder(), updateVelocities,invMass_Ltrans[dofs] , Lambda, dofUsed[dofs], dofs);
 
 #ifdef SOFA_DUMP_VISITOR_INFO
         if (sofa::simulation::Visitor::IsExportStateVectorEnabled())
@@ -883,7 +883,11 @@ void LMConstraintSolver::computeKineticEnergy(MultiVecId id)
 {
     helper::vector<double> &vError=(*graphKineticEnergy.beginEdit())["KineticEnergy"];
 
-    applyCorrection(0, id, core::ConstraintParams::VEL);
+    core::ConstraintParams cparam;
+    cparam.setOrder(core::ConstraintParams::VEL);
+
+    applyCorrection(&cparam, id);
+
     double kineticEnergy=0;
     for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
     {

@@ -94,10 +94,10 @@ public:
 
     void init();
 
-    bool prepareStates(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
-    bool buildSystem(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
-    bool solveSystem(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
-    bool applyCorrection(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
+    bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
 
     Data<bool> displayTime;
     Data<int> maxIt;

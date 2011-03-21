@@ -23,13 +23,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/mastersolver/MasterConstraintSolver.h>
-#include <sofa/component/constraintset/LCPConstraintSolver.h>
 
-#include <sofa/simulation/common/AnimateVisitor.h>
+#include <sofa/component/constraintset/ConstraintSolverImpl.h>
+
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/SolveVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/common/MechanicalOperations.h>
+
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
 
@@ -313,13 +315,16 @@ void MasterConstraintSolver::freeMotion(const core::ExecParams* params /* PARAMS
     ///////////
     if(schemeCorrection.getValue())
     {
+        sofa::core::ConstraintParams cparams(*params);
+        sofa::core::MultiVecDerivId f =  core::VecDerivId::externalForce();
+
         for (unsigned int i=0; i<constraintCorrections.size(); i++ )
         {
             core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-            cc->applyPredictiveConstraintForce(getCP()->getF());
+            cc->applyPredictiveConstraintForce(&cparams, f, getCP()->getF());
 
             /*if (doubleBuffer.getValue() && bufCP1)
-                cc->applyPredictiveConstraintForce(CP2.getF());
+                cc->applyPredictiveConstraintForce(&cparams, f, CP2.getF());
             else
                 cc->applyPredictiveConstraintForce(CP1.getF());*/
 
@@ -327,7 +332,7 @@ void MasterConstraintSolver::freeMotion(const core::ExecParams* params /* PARAMS
     }
 
     simulation::SolveVisitor(params /* PARAMS FIRST */, dt, true).execute(context);
-    //simulation::MechanicalPropagateFreePositionVisitor().execute(context);
+
     {
         sofa::core::MechanicalParams mparams(*params);
         sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
@@ -342,7 +347,7 @@ void MasterConstraintSolver::freeMotion(const core::ExecParams* params /* PARAMS
 
     //this is done to set dx to zero in subgraph
     core::MultiVecDerivId dx_id = core::VecDerivId::dx();
-    simulation::MechanicalVOpVisitor(params /* PARAMS FIRST */, dx_id, ConstVecId::null(), ConstVecId::null(), 1.0 ).setMapped(true).execute(context);
+    simulation::MechanicalVOpVisitor(params /* PARAMS FIRST */, dx_id, core::ConstVecId::null(), core::ConstVecId::null(), 1.0 ).setMapped(true).execute(context);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -443,7 +448,6 @@ void MasterConstraintSolver::getIndividualConstraintViolations(const core::ExecP
     cparams.setV(core::ConstVecDerivId::freeVelocity());
 
     constraintset::MechanicalGetConstraintValueVisitor(&cparams, getCP()->getDfree()).execute(context);
-
 }
 
 void MasterConstraintSolver::getIndividualConstraintSolvingProcess(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
@@ -514,9 +518,14 @@ void MasterConstraintSolver::correctiveMotion(const core::ExecParams* params /* 
         }
     }
 
-    core::MechanicalParams mparams(*params);
-    simulation::MechanicalPropagateAndAddDxVisitor(&mparams).execute(context);
-    //simulation::MechanicalPropagatePositionAndVelocityVisitor().execute(context);
+    simulation::common::MechanicalOperations mop(params, this->getContext());
+
+    mop.propagateV(core::VecDerivId::velocity());
+
+    mop.propagateDx(core::VecDerivId::dx());
+
+    // "mapped" x = xfree + dx
+    simulation::MechanicalVOpVisitor(params, core::VecCoordId::position(), core::ConstVecCoordId::freePosition(), core::ConstVecDerivId::dx(), 1.0 ).setOnlyMapped(true).execute(context);
 
 
     if(!schemeCorrection.getValue())
@@ -527,6 +536,7 @@ void MasterConstraintSolver::correctiveMotion(const core::ExecParams* params /* 
             cc->resetContactForce();
         }
     }
+
     sofa::helper::AdvancedTimer::stepEnd ("Corrective Motion");
 }
 
@@ -585,8 +595,8 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
 
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
-    simulation::MechanicalVInitVisitor<V_COORD>(params, VecCoordId::freePosition(), ConstVecCoordId::position(), true).execute(context);
-    simulation::MechanicalVInitVisitor<V_DERIV>(params, VecDerivId::freeVelocity(), ConstVecDerivId::velocity()).execute(context);
+    simulation::MechanicalVInitVisitor<core::V_COORD>(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(context);
+    simulation::MechanicalVInitVisitor<core::V_DERIV>(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity()).execute(context);
 
     if (doCollisionsFirst.getValue())
     {
@@ -664,7 +674,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
 
     //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
     core::MechanicalParams mparams(*params);
-    simulation::MechanicalPropagatePositionVisitor(&mparams /* PARAMS FIRST */, 0, VecCoordId::position(), true).execute(context);
+    simulation::MechanicalPropagatePositionVisitor(&mparams /* PARAMS FIRST */, 0, core::VecCoordId::position(), true).execute(context);
 
 
     /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION

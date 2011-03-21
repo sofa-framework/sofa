@@ -582,13 +582,6 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDxToCollisionModel(Main* m)
-{
-    Kernels::vAdd(m->xfree.getValue().size(), m->x.beginEdit()->deviceWrite(), m->xfree.getValue().deviceRead(), m->dx.getValue().deviceRead());
-    m->x.endEdit();
-}
-
-template<class TCoord, class TDeriv, class TReal>
 void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::vAlloc(Main* m, VecId v)
 {
     if (v.type == sofa::core::V_COORD && v.index >= VecCoordId::V_FIRST_DYNAMIC_INDEX)
@@ -1360,12 +1353,6 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::accumul
     //else std::cout << "NO external forces" << std::endl;
 }
 
-template<int N, class real>
-void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addDxToCollisionModel(Main* m)
-{
-    Kernels::vAddCoordDeriv(m->xfree.getValue().size(), m->x.beginEdit()->deviceWrite(), m->xfree.getValue().deviceRead(), m->dx.getValue().deviceRead());
-    m->x.endEdit();
-}
 
 template<int N, class real>
 void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vAlloc(Main* m, VecId v)
@@ -2076,8 +2063,6 @@ template<> double MechanicalObject< T >::vDot(const core::ExecParams* /* params 
 { return data.vDot(this, a, b); }				    \
 template<> void MechanicalObject< T >::resetForce(const core::ExecParams* /* params */) \
 { data.resetForce(this); } \
-template<> void MechanicalObject< T >::addDxToCollisionModel() \
-{ data.addDxToCollisionModel(this); } \
 template<> void MechanicalObject< T >::copyToBaseVector(defaulttype::BaseVector * dest, core::ConstVecId src, unsigned int &offset) \
 { if (CudaBaseVector<Real> * vec = dynamic_cast<CudaBaseVector<Real> *>(dest)) data.copyToCudaBaseVector(this, vec,src,offset); \
 else data.copyToBaseVector(this, dest,src,offset); } \

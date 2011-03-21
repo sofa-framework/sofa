@@ -29,6 +29,7 @@
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/SolveVisitor.h>
+#include <sofa/simulation/common/VectorOperations.h>
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
@@ -100,52 +101,75 @@ void GenericConstraintSolver::init()
     context = (simulation::Node*) getContext();
 }
 
-bool GenericConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::ConstraintParams::ConstOrder)
+bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-    if (id.getDefaultId() != VecId::freePosition()) return false;
     sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
 
     last_cp = current_cp;
-    simulation::MechanicalVOpVisitor(core::ExecParams::defaultInstance(), (VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
-    //simulation::MechanicalPropagateDxVisitor(dx_id,true,true).execute( context); //Propagate dX //ignore the mask here
-
-    if( f_printLog.getValue())
-        serr<<" propagate DXn performed - collision called"<<sendl;
 
     time = 0.0;
-    timeTotal=0.0;
+    timeTotal = 0.0;
     timeScale = 1000.0 / (double)CTime::getTicksPerSec();
 
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
-    {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->resetContactForce();
-    }
+    simulation::common::VectorOperations vop(cParams, this->getContext());
+    vop.v_clear(this->m_fId);
+    vop.v_clear(this->m_dxId);
 
     if ( displayTime.getValue() )
     {
         time = (double) timer.getTime();
         timeTotal = (double) timerTotal.getTime();
     }
+
     return true;
 }
 
-bool GenericConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::ConstraintParams::ConstOrder)
+
+void afficheLCP(double *q, double **M, double *f, int dim)
+{
+    int compteur, compteur2;
+    // affichage de la matrice du LCP
+    printf("\n M = [");
+    for(compteur=0; compteur<dim; compteur++)
+    {
+        for(compteur2=0; compteur2<dim; compteur2++)
+        {
+            printf("\t%.9f",M[compteur][compteur2]);
+        }
+        printf("\n");
+    }
+    printf("      ];\n\n");
+
+    // affichage de q
+    printf("q = [");
+    for(compteur=0; compteur<dim; compteur++)
+    {
+        printf("\t%.9f\n",q[compteur]);
+    }
+    printf("      ];\n\n");
+
+    // affichage de f
+    printf("f = [");
+    for(compteur=0; compteur<dim; compteur++)
+    {
+        printf("\t%.9f\n",f[compteur]);
+    }
+    printf("      ];\n\n");
+}
+
+
+bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     unsigned int numConstraints = 0;
-    core::ConstraintParams cparams;
-
-    cparams.setX(core::ConstVecCoordId::freePosition());
-    cparams.setV(core::ConstVecDerivId::freeVelocity());
 
     sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
     // mechanical action executed from root node to propagate the constraints
-    simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
+    simulation::MechanicalResetConstraintVisitor(cParams).execute(context);
     // calling buildConstraintMatrix
     //simulation::MechanicalAccumulateConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
 
-    MechanicalSetConstraint(&cparams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
-    MechanicalAccumulateConstraint2(&cparams, core::MatrixDerivId::holonomicC()).execute(context);
+    MechanicalSetConstraint(cParams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
+    MechanicalAccumulateConstraint2(cParams, core::MatrixDerivId::holonomicC()).execute(context);
 
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
@@ -153,11 +177,11 @@ bool GenericConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::Const
     current_cp->clear(numConstraints);
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
-    MechanicalGetConstraintValueVisitor(&cparams /* PARAMS FIRST */, &current_cp->dFree).execute(context);
+    MechanicalGetConstraintValueVisitor(cParams /* PARAMS FIRST */, &current_cp->dFree).execute(context);
     sofa::helper::AdvancedTimer::stepEnd ("Get Constraint Value");
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Resolutions");
-    MechanicalGetConstraintResolutionVisitor(&cparams /* PARAMS FIRST */, current_cp->constraintsResolutions).execute(context);
+    MechanicalGetConstraintResolutionVisitor(cParams /* PARAMS FIRST */, current_cp->constraintsResolutions).execute(context);
     sofa::helper::AdvancedTimer::stepEnd("Get Constraint Resolutions");
 
     if (this->f_printLog.getValue()) sout<<"GenericConstraintSolver: "<<numConstraints<<" constraints"<<sendl;
@@ -237,6 +261,7 @@ bool GenericConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::Const
         if (this->f_printLog.getValue()) sout<<" computeCompliance_done "  <<sendl;
     }
 
+
     if ( displayTime.getValue() )
     {
         sout<<" build_LCP " << ( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
@@ -245,40 +270,9 @@ bool GenericConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::Const
     return true;
 }
 
-void afficheLCP(double *q, double **M, double *f, int dim)
-{
-    int compteur, compteur2;
-    // affichage de la matrice du LCP
-    printf("\n M = [");
-    for(compteur=0; compteur<dim; compteur++)
-    {
-        for(compteur2=0; compteur2<dim; compteur2++)
-        {
-            printf("\t%.9f",M[compteur][compteur2]);
-        }
-        printf("\n");
-    }
-    printf("      ];\n\n");
 
-    // affichage de q
-    printf("q = [");
-    for(compteur=0; compteur<dim; compteur++)
-    {
-        printf("\t%.9f\n",q[compteur]);
-    }
-    printf("      ];\n\n");
 
-    // affichage de f
-    printf("f = [");
-    for(compteur=0; compteur<dim; compteur++)
-    {
-        printf("\t%.9f\n",f[compteur]);
-    }
-    printf("      ];\n\n");
-
-}
-
-bool GenericConstraintSolver::solveSystem(double /*dt*/, MultiVecId, core::ConstraintParams::ConstOrder)
+bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     current_cp->tolerance = tolerance.getValue();
     current_cp->maxIterations = maxIt.getValue();
@@ -311,45 +305,58 @@ bool GenericConstraintSolver::solveSystem(double /*dt*/, MultiVecId, core::Const
     return true;
 }
 
-bool GenericConstraintSolver::applyCorrection(double /*dt*/, MultiVecId , core::ConstraintParams::ConstOrder)
+bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cParams, MultiVecId res1, MultiVecId res2)
 {
-    if(this->f_printLog.getValue())
-        serr<<"keepContactForces done"<<sendl;
+    using sofa::helper::AdvancedTimer;
+    using core::behavior::BaseConstraintCorrection;
 
-    sofa::helper::AdvancedTimer::stepBegin("Apply Contact Force");
-    //	MechanicalApplyContactForceVisitor(_result).execute(context);
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    if (this->f_printLog.getValue())
+        serr << "KeepContactForces done" << sendl;
+
+    AdvancedTimer::stepBegin("Compute And Apply Motion Correction");
+
+    if (cParams->constOrder() == core::ConstraintParams::POS_AND_VEL)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->applyContactForce(&current_cp->f);
+        core::MultiVecCoordId xId(res1);
+        core::MultiVecDerivId vId(res2);
+        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+        {
+            BaseConstraintCorrection* cc = constraintCorrections[i];
+            cc->computeAndApplyMotionCorrection(cParams, xId, vId, this->m_fId, &current_cp->f);
+        }
     }
-    sofa::helper::AdvancedTimer::stepEnd  ("Apply Contact Force");
-
-    if(this->f_printLog.getValue())
-        serr<<"applyContactForce in constraintCorrection done"<<sendl;
-
-    sofa::helper::AdvancedTimer::stepBegin("Propagate Contact Dx");
-    core::MechanicalParams mparams;
-    simulation::MechanicalPropagateAndAddDxVisitor(&mparams).execute( context);
-    sofa::helper::AdvancedTimer::stepEnd  ("Propagate Contact Dx");
-
-    if(this->f_printLog.getValue())
-        serr<<"propagate corrective motion done"<<sendl;
-
-    sofa::helper::AdvancedTimer::stepBegin("Reset Contact Force");
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    else if (cParams->constOrder() == core::ConstraintParams::POS)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->resetContactForce();
+        core::MultiVecCoordId xId(res1);
+        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+        {
+            BaseConstraintCorrection* cc = constraintCorrections[i];
+            cc->computeAndApplyPositionCorrection(cParams, xId, this->m_fId, &current_cp->f);
+        }
     }
-    sofa::helper::AdvancedTimer::stepEnd ("Reset Contact Force");
+    else if (cParams->constOrder() == core::ConstraintParams::VEL)
+    {
+        core::MultiVecDerivId vId(res1);
+        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+        {
+            BaseConstraintCorrection* cc = constraintCorrections[i];
+            cc->computeAndApplyVelocityCorrection(cParams, vId, this->m_fId, &current_cp->f);
+        }
+    }
+
+    AdvancedTimer::stepEnd("Compute And Apply Motion Correction");
+
+    if (this->f_printLog.getValue())
+        serr << "Compute And Apply Motion Correction in constraintCorrection done" << sendl;
 
     if (displayTime.getValue())
     {
-        sout<<" TotalTime " <<( (double) timerTotal.getTime() - timeTotal)*timeScale <<" ms" <<sendl;
+        sout << " TotalTime " << ((double) timerTotal.getTime() - timeTotal) * timeScale << " ms" << sendl;
     }
+
     return true;
 }
+
 
 ConstraintProblem* GenericConstraintSolver::getConstraintProblem()
 {
@@ -633,6 +640,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     }
 }
 
+
 void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstraintSolver* solver)
 {
     if(!dimension)
@@ -837,6 +845,8 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         solver->graphConstraints.endEdit();
     }
 }
+
+
 
 int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
         .add< GenericConstraintSolver >();

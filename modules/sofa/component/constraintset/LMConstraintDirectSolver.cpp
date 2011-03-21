@@ -48,20 +48,20 @@ LMConstraintDirectSolver::LMConstraintDirectSolver()
 }
 
 
-bool LMConstraintDirectSolver::buildSystem(double dt, VecId id, core::ConstraintParams::ConstOrder order)
+bool LMConstraintDirectSolver::buildSystem(const core::ConstraintParams* cParams, MultiVecId res1, MultiVecId res2)
 {
-    bool sucess=LMConstraintSolver::buildSystem(dt,id,order);
+    bool sucess = LMConstraintSolver::buildSystem(cParams, res1, res2);
 
     return sucess;
 }
 
-bool LMConstraintDirectSolver::solveSystem(double dt, VecId id, core::ConstraintParams::ConstOrder order)
+bool LMConstraintDirectSolver::solveSystem(const core::ConstraintParams* cParams, MultiVecId res1, MultiVecId res2)
 {
     //First, do n iterations of Gauss Seidel
-    bool success=LMConstraintSolver::solveSystem(dt,id,order);
+    bool success = LMConstraintSolver::solveSystem(cParams, res1, res2);
 
 
-    if (order != core::ConstraintParams::VEL) return success;
+    if (cParams->constOrder() != core::ConstraintParams::VEL) return success;
 
 
     //Then process to a direct solution of the system
@@ -86,7 +86,7 @@ bool LMConstraintDirectSolver::solveSystem(double dt, VecId id, core::Constraint
     JacobianRows rowsLT; rowsLT.reserve(numConstraint);
     helper::vector< unsigned int > rightHandElements;
 
-    analyseConstraints(LMConstraints, order,
+    analyseConstraints(LMConstraints, cParams->constOrder(),
             rowsL, rowsLT, rightHandElements);
 
 #ifdef SOFA_DUMP_VISITOR_INFO

@@ -25,13 +25,11 @@
 #ifndef SOFA_CORE_COLLISION_CONTACTCORRECTION_H
 #define SOFA_CORE_COLLISION_CONTACTCORRECTION_H
 
-#include <sofa/core/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/component/forcefield/TriangularFEMForceField.h>
-#include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
+#include <sofa/core/behavior/ConstraintCorrection.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/component/linearsolver/FullMatrix.h>
+
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -46,17 +44,17 @@ namespace constraintset
 
 using namespace sofa::core;
 using namespace sofa::defaulttype;
+
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class PrecomputedConstraintCorrection : public behavior::BaseConstraintCorrection
+class PrecomputedConstraintCorrection : public behavior::ConstraintCorrection< TDataTypes >
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PrecomputedConstraintCorrection,TDataTypes),behavior::BaseConstraintCorrection);
+    SOFA_CLASS(SOFA_TEMPLATE(PrecomputedConstraintCorrection,TDataTypes), SOFA_TEMPLATE(core::behavior::ConstraintCorrection, TDataTypes));
 
     typedef TDataTypes DataTypes;
-    typedef typename behavior::BaseConstraintCorrection Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -67,7 +65,8 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
 
-    /// element rotation matrix
+    typedef behavior::ConstraintCorrection< TDataTypes > Inherit;
+
     typedef typename Coord::value_type Real;
     typedef MatNoInit<3, 3, Real> Transformation;
 
@@ -77,7 +76,6 @@ public:
     Data<bool> recompute;
     Data<std::string> filePrefix;
     Data<double> debugViewFrameScale;
-    //Data<bool> newUnbuilt;
     sofa::core::objectmodel::DataFileName f_fileCompliance;
 
     PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
@@ -86,22 +84,35 @@ public:
 
     virtual void bwdInit();
 
-    /// Retrieve the associated MechanicalState
-    behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
-
     virtual void getCompliance(defaulttype::BaseMatrix* W);
+
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const;
+
+    virtual void computeAndApplyMotionCorrection(const ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &f, const BaseVector *lambda);
+
+    virtual void computeAndApplyPositionCorrection(const ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &f, const BaseVector *lambda);
+
+    virtual void computeAndApplyVelocityCorrection(const ConstraintParams *cparams, Data< VecDeriv > &v, Data< VecDeriv > &f, const BaseVector *lambda);
+
+    virtual void applyPredictiveConstraintForce(const ConstraintParams *cparams, Data< VecDeriv > &f, const BaseVector *lambda);
+
+    /// @name Deprecated API
+    /// @{
+
     virtual void applyContactForce(const defaulttype::BaseVector *f);
-    virtual void applyPredictiveConstraintForce(const defaulttype::BaseVector *f);
+
+    virtual void resetContactForce();
+
+    /// @}
 
     virtual void rotateConstraints(bool back);
+
     virtual void rotateResponse();
-    virtual void resetContactForce();
 
     virtual void draw();
 
-
-    // new API for non building the constraint system during solving process //
+    /// @name Unbuilt constraint system during resolution
+    /// @{
 
     virtual void resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)  ;
 
@@ -112,31 +123,10 @@ public:
     virtual void setConstraintDForce(double *df, int begin, int end, bool update) ;
 
     virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) ;
-    /////////////////////////////////////////////////////////////////////////////////
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-            return false;
-        return BaseObject::canCreate(obj, context, arg);
-    }
+    /// @}
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const PrecomputedConstraintCorrection<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-//protected:
 public:
-    behavior::MechanicalState<DataTypes> *mstate;
 
     struct InverseStorage
     {
@@ -164,21 +154,6 @@ public:
     helper::vector<int> _indexNodeSparseCompliance;
     helper::vector<Deriv> _sparseCompliance;
     Real Fbuf[6], DXbuf;
-
-
-
-    /* optimization : buf of result = Compliance * MatrixDeriv on a sparse structure
-    	typedef struct {
-    		Deriv Cn;
-    		int nodeId;
-    		int constraintId;
-    	}SparseCompliance;
-
-    	SparseCompliance _sparseCompliance[10000];
-    	*/
-
-    //Deriv **_sparseCompliance;
-
 
     // new :  for non building the constraint system during solving process //
     //VecDeriv constraint_disp, constraint_force;
@@ -219,25 +194,24 @@ protected:
      * @brief Builds the compliance file name using the SOFA component internal data.
      */
     std::string buildFileName();
+
+    /**
+     * @brief Compute dx correction from motion space force vector.
+     */
+    void computeDx(const Data< VecDeriv > &f, std::list< int > &activeDofs);
 };
 
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec2dTypes>;
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec6dTypes>;
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec2fTypes>;
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec6fTypes>;
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

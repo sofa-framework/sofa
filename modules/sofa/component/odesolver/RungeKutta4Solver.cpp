@@ -200,8 +200,8 @@ void RungeKutta4Solver::solve(const core::ExecParams* params /* PARAMS FIRST */,
         ops[1].second.push_back(std::make_pair(k4a.id(),stepBy6));
         vop.v_multiop(ops);
 
-        mop.solveConstraint(dt, pos, core::ConstraintParams::POS);
-        mop.solveConstraint(dt, vel, core::ConstraintParams::VEL);
+        mop.solveConstraint(pos, core::ConstraintParams::POS);
+        mop.solveConstraint(vel, core::ConstraintParams::VEL);
     }
 #endif
 

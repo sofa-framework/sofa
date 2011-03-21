@@ -52,6 +52,8 @@ HEADERS += \
 		  behavior/BaseVectorOperations.h \
           behavior/Constraint.h \
           behavior/Constraint.inl \
+		  behavior/ConstraintCorrection.h \
+		  behavior/ConstraintCorrection.inl \
           behavior/ConstraintSolver.h \
           behavior/ForceField.h \
           behavior/ForceField.inl \
@@ -187,6 +189,7 @@ SOURCES +=  \
           behavior/LMConstraint.cpp \
           behavior/Mass.cpp \
           behavior/Constraint.cpp \
+		  behavior/ConstraintCorrection.cpp \
           behavior/PairInteractionForceField.cpp \
           behavior/MixedInteractionForceField.cpp \
           behavior/PairInteractionConstraint.cpp \

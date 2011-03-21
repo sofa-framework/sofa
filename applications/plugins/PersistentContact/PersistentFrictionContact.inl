@@ -708,10 +708,38 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::draw()
     {
         glLineWidth(3);
         glBegin(GL_LINES);
-        glColor4f(0.6,0.2,0.2,1);
+        glColor4f(0.6f,0.2f,0.2f,1.f);
 
         helper::gl::glVertexT(m_inactiveContacts[i]->point[0]);
         helper::gl::glVertexT(m_inactiveContacts[i]->point[1]);
+
+        glEnd();
+
+        glLineWidth(1);
+    }
+
+    for (MappedContactsMap::iterator it=m_stickedContacts.begin(); it!=m_stickedContacts.end(); ++it)
+    {
+        glLineWidth(3);
+        glBegin(GL_LINES);
+        glColor4f(0.2f,0.6f,0.2f,1.f);
+
+        helper::gl::glVertexT(it->first->point[0]);
+        helper::gl::glVertexT(it->first->point[1]);
+
+        glEnd();
+
+        glLineWidth(1);
+    }
+
+    for (MappedContactsMap::iterator it=m_slidingContacts.begin(); it!=m_slidingContacts.end(); ++it)
+    {
+        glLineWidth(3);
+        glBegin(GL_LINES);
+        glColor4f(0.2f,0.2f,0.6f,1.f);
+
+        helper::gl::glVertexT(it->first->point[0]);
+        helper::gl::glVertexT(it->first->point[1]);
 
         glEnd();
 

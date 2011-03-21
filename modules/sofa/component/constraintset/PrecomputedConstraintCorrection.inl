@@ -26,7 +26,9 @@
 #define SOFA_CORE_COLLISION_CONTACTCORRECTION_INL
 
 #include "PrecomputedConstraintCorrection.h"
-#include <sofa/defaulttype/RigidTypes.h>
+
+#include <sofa/core/behavior/ConstraintCorrection.inl>
+
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
@@ -34,6 +36,8 @@
 
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
+
+#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 
 #include <sofa/component/container/RotationFinder.h>
 
@@ -71,18 +75,17 @@ using namespace sofa::simulation;
 
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
-    : m_rotations(initData(&m_rotations, false, "rotations", ""))
+    : Inherit(mm)
+    , m_rotations(initData(&m_rotations, false, "rotations", ""))
     , m_restRotations(initData(&m_restRotations, false, "restDeformations", ""))
     , recompute(initData(&recompute, false, "recompute", "if true, always recompute the compliance"))
-//	, filePrefix(initData(&filePrefix, "filePrefix","if not empty, the prefix used for the file containing the compliance matrix"))
     , debugViewFrameScale(initData(&debugViewFrameScale, 1.0, "debugViewFrameScale", "Scale on computed node's frame"))
     , f_fileCompliance(initData(&f_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
-    , mstate(mm)
     , invM(NULL)
     , appCompliance(NULL)
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
 {
-    addAlias(&f_fileCompliance, "filePrefix");
+    this->addAlias(&f_fileCompliance, "filePrefix");
 }
 
 template<class DataTypes>
@@ -187,8 +190,9 @@ void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::strin
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 {
-    mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    const VecDeriv& v0 = *mstate->getV();
+    Inherit::init();
+
+    const VecDeriv& v0 = *this->mstate->getV();
 
     nbNodes = v0.size();
 
@@ -268,7 +272,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 #endif
 
         //complianceLoaded = true;
-        helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::externalForce());
+        helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
         VecDeriv& force = forceData.wref();
         force.clear();
         force.resize(nbNodes);
@@ -288,11 +292,11 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////
 
-        helper::WriteAccessor<Data<VecDeriv> > velocityData = *mstate->write(core::VecDerivId::velocity());
+        helper::WriteAccessor<Data<VecDeriv> > velocityData = *this->mstate->write(core::VecDerivId::velocity());
         VecDeriv& velocity = velocityData.wref();
         VecDeriv velocity0 = velocity;
 
-        helper::WriteAccessor<Data<VecCoord> > posData = *mstate->write(core::VecCoordId::position());
+        helper::WriteAccessor<Data<VecCoord> > posData = *this->mstate->write(core::VecCoordId::position());
         VecCoord& pos = posData.wref();
         VecCoord  pos0 = pos;
 
@@ -350,7 +354,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
                 //serr<<"solve reussi"<<sendl;
 
-                velocity = *mstate->getV();
+                velocity = *this->mstate->getV();
                 fact /= unitary_force[i];
                 fact /= dt;
 
@@ -470,7 +474,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::getCompliance(defaulttype::BaseMatrix* W)
 {
-    const MatrixDeriv& c = *mstate->getC();
+    const MatrixDeriv& c = *this->mstate->getC();
 
     /////////// The constraints are modified using a rotation value at each node/////
     if (m_rotations.getValue())
@@ -598,7 +602,7 @@ void PrecomputedConstraintCorrection< DataTypes >::getCompliance(defaulttype::Ba
         //Compliance matrix is symetric ?
         for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
         {
-        	int indexCurColConst = mstate->getConstraintId()[curColConst];
+        	int indexCurColConst = this->mstate->getConstraintId()[curColConst];
         	W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
         }
         */
@@ -609,25 +613,158 @@ void PrecomputedConstraintCorrection< DataTypes >::getCompliance(defaulttype::Ba
 
 
 template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > &f_d, std::list< int > &activeDofs)
+{
+    const VecDeriv& force = f_d.getValue();
+
+    Data< VecDeriv > &dx_d = *this->mstate->write(core::VecDerivId::dx());
+    VecDeriv& dx = *dx_d.beginEdit();
+
+    dx.clear();
+    dx.resize(force.size());
+
+    std::list<int>::iterator IterateurListe;
+    unsigned int i, offset, offset2;
+
+    for (IterateurListe = activeDofs.begin(); IterateurListe != activeDofs.end(); IterateurListe++)
+    {
+        int f = (*IterateurListe);
+
+        for (i = 0; i < dof_on_node; i++)
+        {
+            Fbuf[i] = force[f][i];
+        }
+
+        for (unsigned int v = 0 ; v < dx.size() ; v++)
+        {
+            offset =  v * dof_on_node * nbCols + f * dof_on_node;
+            for (unsigned int j = 0; j < dof_on_node; j++)
+            {
+                offset2 = offset + j * nbCols;
+                DXbuf = 0.0;
+
+                for (i = 0; i < dof_on_node; i++)
+                {
+                    DXbuf += appCompliance[ offset2 + i ] * Fbuf[i];
+                }
+
+                dx[v][j] += DXbuf;
+            }
+        }
+    }
+
+    dx_d.endEdit();
+}
+
+
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const ConstraintParams * /*cparams*/
+        , Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
+{
+    std::list< int > activeDof;
+
+    this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
+
+    computeDx(f_d, activeDof);
+
+    VecCoord& x = *x_d.beginEdit();
+    VecDeriv& v = *v_d.beginEdit();
+
+    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+    const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
+    const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
+
+    const double invDt = 1.0 / this->getContext()->getDt();
+
+    if (m_rotations.getValue())
+        rotateResponse();
+
+    for (unsigned int i=0; i< dx.size(); i++)
+    {
+        x[i] = x_free[i];
+        v[i] = v_free[i];
+
+        x[i] += dx[i];
+        v[i] += dx[i] * invDt;
+    }
+
+    x_d.endEdit();
+    v_d.endEdit();
+}
+
+
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const ConstraintParams * /*cparams*/, Data< VecCoord > &x_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
+{
+    std::list< int > activeDof;
+
+    this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
+
+    computeDx(f_d, activeDof);
+
+    VecCoord& x = *x_d.beginEdit();
+
+    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+    const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
+
+    if (m_rotations.getValue())
+        rotateResponse();
+
+    for (unsigned int i=0; i< dx.size(); i++)
+    {
+        x[i] = x_free[i] + dx[i];
+    }
+
+    x_d.endEdit();
+}
+
+
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const ConstraintParams * /*cparams*/, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
+{
+    std::list< int > activeDof;
+
+    this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
+
+    computeDx(f_d, activeDof);
+
+    VecDeriv& v = *v_d.beginEdit();
+
+    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+    const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
+
+    const double invDt = 1.0 / this->getContext()->getDt();
+
+    if (m_rotations.getValue())
+        rotateResponse();
+
+    for (unsigned int i=0; i< dx.size(); i++)
+    {
+        v[i] = v_free[i] + dx[i] * invDt;
+    }
+
+    v_d.endEdit();
+}
+
+
+template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const defaulttype::BaseVector *f)
 {
-    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::force());
-    helper::WriteAccessor<Data<VecDeriv> > dxData    = *mstate->write(core::VecDerivId::dx());
-    helper::WriteAccessor<Data<VecCoord> > xData     = *mstate->write(core::VecCoordId::position());
-    helper::WriteAccessor<Data<VecDeriv> > vData     = *mstate->write(core::VecDerivId::velocity());
+    helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::force());
+    helper::WriteAccessor<Data<VecDeriv> > dxData    = *this->mstate->write(core::VecDerivId::dx());
+    helper::WriteAccessor<Data<VecCoord> > xData     = *this->mstate->write(core::VecCoordId::position());
+    helper::WriteAccessor<Data<VecDeriv> > vData     = *this->mstate->write(core::VecDerivId::velocity());
     VecDeriv& force = forceData.wref();
     VecDeriv& dx = dxData.wref();
     VecCoord& x = xData.wref();
     VecDeriv& v = vData.wref();
 
-    const VecDeriv& v_free = mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
-    const VecCoord& x_free = mstate->read(core::ConstVecCoordId::freePosition())->getValue();
-    const MatrixDeriv& c = mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
+    const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
+    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 
     double dt = this->getContext()->getDt();
 
-    // ici on fait comme avant
-    // Euler integration... will be done in the "integrator" as soon as it exists !
     dx.clear();
     dx.resize(v.size());
 
@@ -658,8 +795,6 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
     activeDof.sort();
     activeDof.unique();
 
-    //for (unsigned int i=0; i< force.size(); i++)
-    //    sout << "f("<<i<<")="<<force[i]<<sendl;
 
     std::list<int>::iterator IterateurListe;
     unsigned int i;
@@ -722,51 +857,16 @@ void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const defaulttype::BaseVector *f)
+void PrecomputedConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
 {
-    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::externalForce());
-    VecDeriv& force = forceData.wref();
-
-    const unsigned int numDOFs = mstate->getSize();
-
-    force.clear();
-    force.resize(numDOFs);
-    for (unsigned int i=0; i< numDOFs; i++)
-        force[i] = Deriv();
-
-//    if(this->m_rotations.getValue()){
-//
-//        this->rotateConstraints(true);
-//    }
-
-    const MatrixDeriv& c = *mstate->getC();
-    std::cout.precision(7);
-
-    MatrixDerivRowConstIterator rowItEnd = c.end();
-
-    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
-    {
-        double fC1 = (Real)f->element(rowIt.index());
-
-        if (fC1 != 0.0)
-        {
-            MatrixDerivColConstIterator colItEnd = rowIt.end();
-
-            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
-            {
-                force[colIt.index()] += colIt.val() * fC1;
-            }
-        }
-    }
-
-    std::cout << "Predictive External Forces: " << force << std::endl;
+    setConstraintForceInMotionSpace(f_d, lambda);
 }
 
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 {
-    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::force());
+    helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::force());
     VecDeriv& force = forceData.wref();
     for( unsigned i=0; i<force.size(); ++i )
         force[i] = Deriv();
@@ -776,7 +876,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::draw()
 {
-    if (!getContext()->getShowBehaviorModels() || !m_rotations.getValue())
+    if (!this->getContext()->getShowBehaviorModels() || !m_rotations.getValue())
         return;
 
     using sofa::component::forcefield::TetrahedronFEMForceField;
@@ -784,7 +884,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw()
 
     // we draw the rotations associated to each node //
 
-    simulation::Node *node = dynamic_cast< simulation::Node* >(getContext());
+    simulation::Node *node = dynamic_cast< simulation::Node* >(this->getContext());
 
     TetrahedronFEMForceField< DataTypes >* forceField = NULL;
     RotationFinder< DataTypes >* rotationFinder = NULL;
@@ -803,7 +903,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw()
         }
     }
 
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = *this->mstate->getX();
     for (unsigned int i=0; i< x.size(); i++)
     {
         Transformation Ri;
@@ -839,10 +939,10 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
     using sofa::component::forcefield::TetrahedronFEMForceField;
     using sofa::component::container::RotationFinder;
 
-    helper::WriteAccessor<Data<MatrixDeriv> > cData = *mstate->write(core::MatrixDerivId::holonomicC());
+    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::holonomicC());
     MatrixDeriv& c = cData.wref();
 
-    simulation::Node *node = dynamic_cast< simulation::Node * >(getContext());
+    simulation::Node *node = dynamic_cast< simulation::Node * >(this->getContext());
 
     TetrahedronFEMForceField< DataTypes >* forceField = NULL;
     RotationFinder< DataTypes >* rotationFinder = NULL;
@@ -904,7 +1004,7 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 {
-    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
+    simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<DataTypes>* forceField = NULL;
     sofa::component::container::RotationFinder<DataTypes>* rotationFinder = NULL;
@@ -929,7 +1029,7 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
         return;
     }
 
-    helper::WriteAccessor<Data<VecDeriv> > dxData = *mstate->write(core::VecDerivId::dx());
+    helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = dxData.wref();
     for(unsigned int j = 0; j < dx.size(); j++)
     {
@@ -954,14 +1054,14 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)
 {
     constraint_force = f;
-    const MatrixDeriv& c = *mstate->getC();
+    const MatrixDeriv& c = *this->mstate->getC();
 
 #ifdef NEW_METHOD_UNBUILT
     constraint_D.clear();
-    constraint_D.resize(mstate->getSize());
+    constraint_D.resize(this->mstate->getSize());
 
     constraint_F.clear();
-    constraint_F.resize(mstate->getSize());
+    constraint_F.resize(this->mstate->getSize());
 
     constraint_dofs.clear();
 
@@ -1126,7 +1226,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         //Compliance matrix is symetric ?
         for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
         {
-        	int indexCurColConst = mstate->getConstraintId()[curColConst];
+        	int indexCurColConst = this->mstate->getConstraintId()[curColConst];
         	W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
         }
         */
@@ -1149,7 +1249,7 @@ void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(doubl
 {
 #ifdef NEW_METHOD_UNBUILT
 
-    const MatrixDeriv& c = *mstate->getC();
+    const MatrixDeriv& c = *this->mstate->getC();
 
     for (int i = begin; i <= end; i++)
     {
@@ -1202,7 +1302,7 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*
     /// if update is true, it computes the displacements due to this delta of force.
     /// As the contact are uncoupled, a displacement is obtained only on dof involved with the constraints
 
-    const MatrixDeriv& c = *mstate->getC();
+    const MatrixDeriv& c = *this->mstate->getC();
 
     if (!update)
         return;
@@ -1261,7 +1361,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
 {
 #ifdef NEW_METHOD_UNBUILT
 
-    const MatrixDeriv& c = *mstate->getC();
+    const MatrixDeriv& c = *this->mstate->getC();
     int numLocalConstraints = 0;
 
     std::list<int> localActiveDof;

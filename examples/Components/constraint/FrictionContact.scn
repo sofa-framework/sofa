@@ -1,4 +1,4 @@
-<Node name="root"  dt="0.03" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0"  showMappings="0" showForceFields="0" showWireFrame="0">
+<Node name="root"  dt="0.03" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0"  showMappings="0" showForceFields="0" showWireFrame="0"  gravity="0 -9.810 0">
 	<Object type="GenericConstraintSolver" tolerance="1e-6"/>
 	<Object type="FreeMotionMasterSolver" />
 	<Object type="CollisionPipeline" depth="15" verbose="0" draw="0"/>

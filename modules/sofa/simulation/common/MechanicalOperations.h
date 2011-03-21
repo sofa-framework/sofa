@@ -5,6 +5,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/simulation/common/VisitorExecuteFunc.h>
 
@@ -21,6 +22,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalOperations
 {
 public:
     core::MechanicalParams mparams;
+    core::ConstraintParams cparams;
     core::objectmodel::BaseContext* ctx;
 
     MechanicalOperations(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::objectmodel::BaseContext* ctx);
@@ -39,6 +41,10 @@ public:
     void propagateDxAndResetDf(core::MultiVecDerivId dx, core::MultiVecDerivId df);
     /// Propagate the given position through all mappings
     void propagateX(core::MultiVecCoordId x);
+    /// Propagate the given velocity through all mappings
+    void propagateV(core::MultiVecDerivId v);
+    /// Propagate the given position and velocity through all mappings
+    void propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v);
     /// Propagate the given position through all mappings and reset the current force delta
     void propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f);
     /// Apply projective constraints to the given vector
@@ -83,7 +89,7 @@ public:
 
     /** Find all the Constraint present in the scene graph, build the constraint equation system, solve and apply the correction
     **/
-    void solveConstraint(double dt, MultiVecId id, core::ConstraintParams::ConstOrder order);
+    void solveConstraint(MultiVecId id, core::ConstraintParams::ConstOrder order);
 
 
 

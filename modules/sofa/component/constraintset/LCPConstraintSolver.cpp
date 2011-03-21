@@ -55,14 +55,12 @@ void LCPConstraintProblem::solveTimed(double tolerance, int maxIt, double timeou
     helper::nlcp_gaussseidelTimed(dimension, getDfree(), getW(), getF(), mu, tolerance, maxIt, true, timeout);
 }
 
-bool LCPConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::ConstraintParams::ConstOrder)
+bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-    if (id.getDefaultId() != VecId::freePosition()) return false;
     sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
-    // const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+
     last_lcp = lcp;
     simulation::MechanicalVOpVisitor(core::ExecParams::defaultInstance(), (VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
-    //simulation::MechanicalPropagateDxVisitor(dx_id,true,true).execute( context); //Propagate dX //ignore the mask here
 
     if( f_printLog.getValue())
         serr<<" propagate DXn performed - collision called"<<sendl;
@@ -85,7 +83,7 @@ bool LCPConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::Cons
     return true;
 }
 
-bool LCPConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::ConstraintParams::ConstOrder)
+bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     //sout<<"constraintCorrections is called"<<sendl;
 
@@ -113,7 +111,7 @@ bool LCPConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::Constrain
     return true;
 }
 
-bool LCPConstraintSolver::solveSystem(double /*dt*/, MultiVecId, core::ConstraintParams::ConstOrder)
+bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     if (build_lcp.getValue())
     {
@@ -227,17 +225,17 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, MultiVecId, core::Constrain
     return true;
 }
 
-bool LCPConstraintSolver::applyCorrection(double /*dt*/, core::MultiVecId , core::ConstraintParams::ConstOrder)
+bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     if (initial_guess.getValue())
         keepContactForcesValue();
 
-    if(this->f_printLog.getValue())
-        serr<<"keepContactForces done"<<sendl;
+    if (this->f_printLog.getValue())
+        serr << "keepContactForces done" << sendl;
 
     sofa::helper::AdvancedTimer::stepBegin("Apply Contact Force");
-    //	MechanicalApplyContactForceVisitor(_result).execute(context);
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+
+    for (unsigned int i = 0; i < constraintCorrections.size(); i++)
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->applyContactForce(_result);
@@ -247,26 +245,11 @@ bool LCPConstraintSolver::applyCorrection(double /*dt*/, core::MultiVecId , core
     if(this->f_printLog.getValue())
         serr<<"applyContactForce in constraintCorrection done"<<sendl;
 
-    sofa::helper::AdvancedTimer::stepBegin("Propagate Contact Dx");
-    core::MechanicalParams mparams;
-    simulation::MechanicalPropagateAndAddDxVisitor(&mparams).execute( context);
-    sofa::helper::AdvancedTimer::stepEnd  ("Propagate Contact Dx");
-
-    if(this->f_printLog.getValue())
-        serr<<"propagate corrective motion done"<<sendl;
-
-    sofa::helper::AdvancedTimer::stepBegin("Reset Contact Force");
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
-    {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->resetContactForce();
-    }
-    sofa::helper::AdvancedTimer::stepEnd ("Reset Contact Force");
-
     if (displayTime.getValue())
     {
         sout<<" TotalTime " <<( (double) timerTotal.getTime() - timeTotal)*timeScale <<" ms" <<sendl;
     }
+
     return true;
 }
 
@@ -360,7 +343,6 @@ void LCPConstraintSolver::build_LCP()
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
     MechanicalGetConstraintValueVisitor(&cparams /* PARAMS FIRST */, _dFree).execute(context);
     sofa::helper::AdvancedTimer::stepEnd("Get Constraint Value");
-    //	simulation::MechanicalComputeComplianceVisitor(_W).execute(context);
 
     if (this->f_printLog.getValue())
         sout<<"LCPConstraintSolver: "<<_numConstraints<<" constraints, mu = "<<_mu<<sendl;

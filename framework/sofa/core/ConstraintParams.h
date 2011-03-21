@@ -47,13 +47,16 @@ public:
     {
         POS = 0,
         VEL,
-        ACC
+        ACC,
+        POS_AND_VEL
     };
 
     /// @name Flags and parameters getters
     /// @{
 
     ConstOrder constOrder() const { return m_constOrder; }
+
+    ConstraintParams& setOrder(ConstOrder o) { m_constOrder = o;   return *this; }
 
     /// @}
 
@@ -70,6 +73,9 @@ public:
             break;
         case ACC :
             result += "ACCELERATION";
+            break;
+        case POS_AND_VEL :
+            result += "POSITION AND VELOCITY";
             break;
         default :
             assert(false);
@@ -124,6 +130,7 @@ public:
         : sofa::core::ExecParams(p)
         , m_x (ConstVecCoordId::position())
         , m_v (ConstVecDerivId::velocity())
+        , m_constOrder (POS_AND_VEL)
     {
     }
 

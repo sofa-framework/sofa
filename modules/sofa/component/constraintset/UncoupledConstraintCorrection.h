@@ -25,14 +25,9 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_H
 #define SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_H
 
-#include <sofa/core/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ConstraintCorrection.h>
 
 #include <sofa/component/component.h>
-
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
 
 namespace sofa
 {
@@ -44,14 +39,16 @@ namespace constraintset
 {
 
 using namespace sofa::core;
+using namespace sofa::defaulttype;
+
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class UncoupledConstraintCorrection : public behavior::BaseConstraintCorrection
+class UncoupledConstraintCorrection : public behavior::ConstraintCorrection< TDataTypes >
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(UncoupledConstraintCorrection,TDataTypes), core::behavior::BaseConstraintCorrection);
+    SOFA_CLASS(SOFA_TEMPLATE(UncoupledConstraintCorrection,TDataTypes), SOFA_TEMPLATE(core::behavior::ConstraintCorrection, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -63,9 +60,11 @@ public:
     typedef typename DataTypes::MatrixDeriv::ColConstIterator MatrixDerivColConstIterator;
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
-
     typedef typename Coord::value_type Real;
+
     typedef helper::vector<Real> VecReal;
+
+    typedef behavior::ConstraintCorrection< TDataTypes > Inherit;
 
     UncoupledConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
 
@@ -76,23 +75,39 @@ public:
     /// Handle Topological Changes.
     void handleTopologyChange();
 
-    /// Retrieve the associated MechanicalState
-    behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
-
     virtual void getCompliance(defaulttype::BaseMatrix *W);
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
 
     // for multigrid approach => constraints are merged
-    virtual void  getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge);
+    virtual void getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge);
+
+
+    /// @name Correction API
+    /// @{
+
+    virtual void computeAndApplyMotionCorrection(const ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &f, const BaseVector *lambda);
+
+    virtual void computeAndApplyPositionCorrection(const ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &f, const BaseVector *lambda);
+
+    virtual void computeAndApplyVelocityCorrection(const ConstraintParams *cparams, Data< VecDeriv > &v, Data< VecDeriv > &f, const BaseVector *lambda);
+
+    virtual void applyPredictiveConstraintForce(const ConstraintParams *cparams, Data< VecDeriv > &f, const BaseVector *lambda);
+
+    /// @}
+
+
+    /// @name Deprecated API
+    /// @{
 
     virtual void applyContactForce(const defaulttype::BaseVector *f);
 
-    virtual void applyPredictiveConstraintForce(const defaulttype::BaseVector *f);
-
     virtual void resetContactForce();
 
+    /// @}
 
-    // new API for non building the constraint system during solving process //
+
+    /// @name Unbuilt constraint system during resolution
+    /// @{
 
     virtual bool hasConstraintNumber(int index) ;  // virtual ???
 
@@ -103,33 +118,9 @@ public:
     virtual void setConstraintDForce(double *df, int begin, int end, bool update) ;
 
     virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) ;
-    /////////////////////////////////////////////////////////////////////////////////
 
+    /// @}
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-            return false;
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const UncoupledConstraintCorrection<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-protected:
-    behavior::MechanicalState<DataTypes> *mstate;
-
-public:
     Data< VecReal > compliance;
 
 private:
@@ -138,24 +129,24 @@ private:
     std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
 
     //std::vector< std::vector<int> >  dof_constraint_table;   // table of indices of each point involved with each constraint
+
+protected:
+    /**
+     * @brief Compute dx correction from motion space force vector.
+     */
+    void computeDx(const Data< VecDeriv > &f);
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Vec3dTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Vec2dTypes>;
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Vec1dTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Vec6dTypes>;
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Vec3fTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Vec2fTypes>;
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Vec1fTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Vec6fTypes>;
 extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

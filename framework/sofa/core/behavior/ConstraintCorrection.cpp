@@ -16,59 +16,37 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTDIRECTSOLVER_H
-#define SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTDIRECTSOLVER_H
-
-#include <sofa/component/constraintset/LMConstraintSolver.h>
-#include <sofa/helper/OptionsGroup.h>
+#include <sofa/core/behavior/ConstraintCorrection.inl>
 
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-namespace constraintset
+namespace behavior
 {
 
-using core::behavior::BaseLMConstraint;
-using core::behavior::ConstraintGroup;
+using namespace sofa::defaulttype;
 
-class SOFA_COMPONENT_CONSTRAINTSET_API LMConstraintDirectSolver : public LMConstraintSolver
-{
-    typedef Eigen::DynamicSparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
+template class SOFA_CORE_API ConstraintCorrection< Vec3dTypes >;
+template class SOFA_CORE_API ConstraintCorrection< Vec3fTypes >;
+template class SOFA_CORE_API ConstraintCorrection< Vec1dTypes >;
+template class SOFA_CORE_API ConstraintCorrection< Vec1fTypes >;
+template class SOFA_CORE_API ConstraintCorrection< Rigid3dTypes >;
+template class SOFA_CORE_API ConstraintCorrection< Rigid3fTypes >;
 
-    typedef helper::vector<linearsolver::LLineManipulator> JacobianRows;
 
-public:
-    SOFA_CLASS(LMConstraintDirectSolver, LMConstraintSolver);
-    LMConstraintDirectSolver();
+} // namespace behavior
 
-    virtual bool buildSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-    virtual bool solveSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-
-protected:
-
-    void analyseConstraints(const helper::vector< BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
-            JacobianRows &rowsL,JacobianRows &rowsLT, helper::vector< unsigned int > &rightHandElements) const;
-
-    void buildLeftRectangularMatrix(const DofToMatrix& invMassMatrix,
-            DofToMatrix& LMatrix, DofToMatrix& LTMatrix,
-            SparseColMajorMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const;
-
-    Data<sofa::helper::OptionsGroup> solverAlgorithm;
-};
-
-} // namespace constraintset
-
-} // namespace component
+} // namespace core
 
 } // namespace sofa
-
-#endif

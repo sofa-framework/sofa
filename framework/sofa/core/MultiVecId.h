@@ -227,12 +227,12 @@ class TMultiVecId
 public:
     typedef TVecId<vtype, vaccess> MyVecId;
 
-protected:
-    MyVecId defaultId;
-
     typedef std::map<const BaseState*, MyVecId> IdMap;
     typedef typename IdMap::iterator IdMap_iterator;
     typedef typename IdMap::const_iterator IdMap_const_iterator;
+
+protected:
+    MyVecId defaultId;
     IdMap idMap;
 
 public:
@@ -254,7 +254,8 @@ public:
     //// other kinds of TMultiVecIds, namely MultiVecCoordId, MultiVecDerivId...
     //// In other cases, the copy constructor takes a TMultiVecId of the same type
     //// ie copy construct a MultiVecCoordId from a const MultiVecCoordId& or a
-    //// ConstMultiVecCoordId&.
+    //// ConstMultiVecCoordId&. Other conversions should be done with the
+    //// next constructor that can only be used if requested explicitly.
     template< VecType vtype2, VecAccess vaccess2>
     TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv) : defaultId( mv.getDefaultId() )
     {
@@ -262,6 +263,19 @@ public:
         BOOST_STATIC_ASSERT( vtype == V_ALL || vtype2 == vtype );
 
         std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(idMap, idMap.begin()) );
+    }
+    //// Provides explicit conversions from MultiVecId to MultiVecCoordId/...
+    //// The explicit keyword forbid the compiler to use it automatically, as
+    //// the user should check the type of the source vector before using this
+    //// conversion.
+    template< VecAccess vaccess2>
+    explicit TMultiVecId( const TMultiVecId<V_ALL,vaccess2>& mv) : defaultId( MyVecId(mv.getDefaultId()) )
+    {
+        BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
+        BOOST_STATIC_ASSERT( !(vtype == V_ALL) ); // for V_ALL vectors, this constructor is redundant with the previous one
+        for (typename TMultiVecId<V_ALL,vaccess2>::IdMap_const_iterator it = mv.getIdMap().begin(), itend = mv.getIdMap().end();
+                it != itend; ++it)
+            idMap[it->first] = MyVecId(it->second);
     }
 
     void setDefaultId(const MyVecId& id)
@@ -392,12 +406,13 @@ class TMultiVecId<V_ALL, vaccess>
 public:
     typedef TVecId<V_ALL, vaccess> MyVecId;
 
-protected:
-    MyVecId defaultId;
-
     typedef std::map<const BaseState*, MyVecId> IdMap;
     typedef typename IdMap::iterator IdMap_iterator;
     typedef typename IdMap::const_iterator IdMap_const_iterator;
+
+protected:
+    MyVecId defaultId;
+
     IdMap idMap;
 
 public:
@@ -459,7 +474,7 @@ public:
         else                   return defaultId;
     }
 
-    const std::map<const BaseState*, MyVecId>& getIdMap() const
+    const IdMap& getIdMap() const
     {
         return idMap;
     }

@@ -46,41 +46,69 @@ namespace behavior
  */
 class SOFA_CORE_API ConstraintSolver : public virtual objectmodel::BaseObject
 {
-    typedef ConstraintParams::ConstOrder ConstOrder;
-
 public:
+
     SOFA_CLASS(ConstraintSolver, objectmodel::BaseObject);
 
     ConstraintSolver();
+
     virtual ~ConstraintSolver();
 
-    /** Launch the sequence of operations in order to solve the constraints
-     * @param Id order of the constraint to be solved
-     * @param isPositionChangesUpdateVelocity boolean indication if we need to propagate the change of position to a modification of velocity dv=dx/dt
-     **/
-    virtual void solveConstraint(double /*dt*/, MultiVecId, ConstOrder order);
-
-
+    /**
+     * Launch the sequence of operations in order to solve the constraints
+     */
+    virtual void solveConstraint(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
 
     /**
      * Do the precomputation: compute free state, or propagate the states to the mapped mechanical states, where the constraint can be expressed
      */
-    virtual bool prepareStates(double /*dt*/, MultiVecId, ConstOrder order)=0;
+    virtual bool prepareStates(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
 
     /**
      * Create the system corresponding to the constraints
      */
-    virtual bool buildSystem(double /*dt*/, MultiVecId, ConstOrder order)=0;
+    virtual bool buildSystem(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
 
     /**
      * Use the system previously built and solve it with the appropriate algorithm
      */
-    virtual bool solveSystem(double /*dt*/, MultiVecId, ConstOrder order)=0;
+    virtual bool solveSystem(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
 
     /**
      * Correct the Mechanical State with the solution found
      */
-    virtual bool applyCorrection(double /*dt*/, MultiVecId, ConstOrder order)=0;
+    virtual bool applyCorrection(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
+
+
+    /// @name Resolution DOFs vectors API
+    /// @{
+
+    VecDerivId getForce() const
+    {
+        return m_fId;
+    }
+
+    void setForce(VecDerivId id)
+    {
+        m_fId = id;
+    }
+
+    VecDerivId getDx() const
+    {
+        return m_dxId;
+    }
+
+    void setDx(VecDerivId id)
+    {
+        m_dxId = id;
+    }
+
+    /// @}
+
+protected:
+
+    VecDerivId m_fId;
+    VecDerivId m_dxId;
 };
 
 } // namespace behavior

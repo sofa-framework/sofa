@@ -939,18 +939,6 @@ void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(VecId dest, con
 
 }
 
-template <class DataTypes>
-void MechanicalObject<DataTypes>::addDxToCollisionModel()
-{
-    helper::WriteAccessor< Data<VecCoord> > x_wa = *this->write(VecCoordId::position());
-    helper::ReadAccessor< Data<VecCoord> > xfree_ra = *this->read(ConstVecCoordId::freePosition());
-    helper::ReadAccessor< Data<VecDeriv> > dx_ra =  *this->read(ConstVecDerivId::dx());
-
-    for (unsigned int i = 0; i < xfree_ra.size(); i++)
-    {
-        x_wa[i] = xfree_ra[i] + dx_ra[i];
-    }
-}
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()

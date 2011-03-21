@@ -48,7 +48,7 @@ using namespace sofa::defaulttype;
 template<>
 SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init()
 {
-    mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    Inherit::init();
 
     double dt = this->getContext()->getDt();
 
@@ -110,7 +110,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 template<>
 SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getCompliance(defaulttype::BaseMatrix *W)
 {
-    const MatrixDeriv& constraints = *mstate->getC();
+    const MatrixDeriv& constraints = *this->mstate->getC();
 
     Deriv weightedNormal;
     Deriv comp_wN;
@@ -139,7 +139,6 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
             getVCenter(weightedNormal) = getVCenter(n);
             getVOrientation(weightedNormal) = getVOrientation(n);
 
-            // compliance * weightedNormal
             getVCenter(comp_wN) = getVCenter(weightedNormal) * usedComp[0];
 
             const double wn3 = weightedNormal[3];
@@ -149,12 +148,6 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
             comp_wN[3] =  usedComp[1] * wn3 +  usedComp[2] * wn4 +  usedComp[3] * wn5;
             comp_wN[4] =  usedComp[2] * wn3 +  usedComp[4] * wn4 +  usedComp[5] * wn5;
             comp_wN[5] =  usedComp[3] * wn3 +  usedComp[5] * wn4 +  usedComp[6] * wn5;
-
-
-//            std::cout<<" normal"<<indexCurRowConst<<" = ["<<weightedNormal<<"];  comp_wN"<<indexCurRowConst<<" = ["<<comp_wN<<"];"<<std::endl;
-            // serr << " - " << weightedNormal << sendl;
-            // InvM_wN = weightedNormal / (*massValue);
-            // InvM_wN *= dt * dt ;
 
             MatrixDerivRowConstIterator rowIt2 = rowIt;
 
@@ -249,18 +242,42 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 
 
 template<>
+SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::computeDx(const Data< VecDeriv > &f_d)
+{
+    const VecDeriv& f = f_d.getValue();
+
+    Data< VecDeriv > &dx_d = *this->mstate->write(core::VecDerivId::dx());
+    VecDeriv& dx = *dx_d.beginEdit();
+
+    VecReal usedComp = compliance.getValue();
+
+    dx.resize(f.size());
+
+    for (unsigned int i = 0; i < dx.size(); i++)
+    {
+        getVCenter(dx[i]) = getVCenter(f[i]) * usedComp[0];
+        dx[i][3] =  usedComp[1] * f[i][3] +  usedComp[2] * f[i][4] +  usedComp[3] * f[i][5];
+        dx[i][4] =  usedComp[2] * f[i][3] +  usedComp[4] * f[i][4] +  usedComp[5] * f[i][5];
+        dx[i][5] =  usedComp[3] * f[i][3] +  usedComp[5] * f[i][4] +  usedComp[6] * f[i][5];
+    }
+
+    dx_d.endEdit();
+}
+
+
+template<>
 SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::applyContactForce(const defaulttype::BaseVector *f)
 {
-    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::externalForce());
+    helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
     VecDeriv& force = forceData.wref();
-    const MatrixDeriv& constraints = *mstate->getC();
+    const MatrixDeriv& constraints = *this->mstate->getC();
 
     unsigned int dof;
     Deriv weightedNormal;
 
     VecReal usedComp = compliance.getValue();
 
-    force.resize((*mstate->getX()).size());
+    force.resize((*this->mstate->getX()).size());
 
     MatrixDerivRowConstIterator rowIt = constraints.begin();
     MatrixDerivRowConstIterator rowItEnd = constraints.end();
@@ -289,17 +306,15 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
         ++rowIt;
     }
 
-    // std::cout << "force -- resultante: " << force[0].getVCenter() << "   -- moment: " << force[0].getVOrientation() << std::endl;
-
-    helper::WriteAccessor<Data<VecDeriv> > dxData = *mstate->write(core::VecDerivId::dx());
+    helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = dxData.wref();
-    helper::WriteAccessor<Data<VecCoord> > xData = *mstate->write(core::VecCoordId::position());
+    helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::VecCoordId::position());
     VecCoord& x = xData.wref();
-    helper::WriteAccessor<Data<VecDeriv> > vData = *mstate->write(core::VecDerivId::velocity());
+    helper::WriteAccessor<Data<VecDeriv> > vData = *this->mstate->write(core::VecDerivId::velocity());
     VecDeriv& v = vData.wref();
 
-    const VecDeriv& v_free = *mstate->getVfree();
-    const VecCoord& x_free = *mstate->getXfree();
+    const VecDeriv& v_free = *this->mstate->getVfree();
+    const VecCoord& x_free = *this->mstate->getXfree();
 
     const double dt = this->getContext()->getDt();
 
@@ -321,18 +336,13 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
         dx[i] *= dt;
         x[i] += dx[i];
     }
-
-//    std::cout << "dx "<< dx << std::endl;
-//	std::cout << "UncoupledConstraintCorrection<defaulttype::Rigid3Types>: x = " << x << " \n        xfree = " << x_free << std::endl;
-//	simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(this->getContext());
-////////////////////////////////////////////////////////////////////
 }
 
 
 template<>
 SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * df, int begin, int end, bool update)
 {
-    const MatrixDeriv& constraints = *mstate->getC();
+    const MatrixDeriv& constraints = *this->mstate->getC();
     const VecReal usedComp = compliance.getValue();
 
     if (!update)
@@ -377,7 +387,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 template<>
 SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
 {
-    const MatrixDeriv& constraints = *mstate->getC();
+    const MatrixDeriv& constraints = *this->mstate->getC();
     const VecReal usedComp = compliance.getValue();
 
     if (this->f_printLog.getValue()) // debug
@@ -449,36 +459,24 @@ SOFA_DECL_CLASS(UncoupledConstraintCorrection)
 int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
 #ifndef SOFA_FLOAT
         .add< UncoupledConstraintCorrection< Vec1dTypes > >()
-//.add< UncoupledConstraintCorrection< Vec2dTypes > >()
         .add< UncoupledConstraintCorrection< Vec3dTypes > >()
-//.add< UncoupledConstraintCorrection< Vec6dTypes > >()
-//.add< UncoupledConstraintCorrection< Rigid2dTypes > >()
         .add< UncoupledConstraintCorrection< Rigid3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< UncoupledConstraintCorrection< Vec1fTypes > >()
-//.add< UncoupledConstraintCorrection< Vec2fTypes > >()
         .add< UncoupledConstraintCorrection< Vec3fTypes > >()
-//.add< UncoupledConstraintCorrection< Vec6fTypes > >()
-//.add< UncoupledConstraintCorrection< Rigid2fTypes > >()
         .add< UncoupledConstraintCorrection< Rigid3fTypes > >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec1dTypes >;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec2dTypes >;
 template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec3dTypes >;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec6dTypes >;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Rigid2dTypes >;
 template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec1fTypes >;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec2fTypes >;
 template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec3fTypes >;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec6fTypes >;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Rigid2fTypes >;
 template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Rigid3fTypes >;
 #endif
 
