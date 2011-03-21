@@ -270,11 +270,16 @@ template <class MyCoord>
 void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
+//                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition,  current time cT = "<<cT<<endl;
+//                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition,  prevT = "<<prevT<<" ,prevM= "<<prevM<<endl;
+//                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition,  nextT = "<<nextT<<" ,nextM= "<<nextM<<endl;
+    //cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, current x = "<<x<<endl;
 
     Real dt = (cT - prevT) / (nextT - prevT);
+//                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, dt = "<<dt<<endl;
     Deriv m = prevM + (nextM-prevM)*dt;
 
-    // cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, current X = "<< x << endl;
+    //cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, movement m = "<<m<<endl;
 
     //set the motion to the Dofs
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -282,10 +287,7 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
         x[*it] = x0[*it] + m ;
     }
 
-    // cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, prevT = "<< prevT <<", prevM = "<< prevM << endl;
-    // cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, nextT = "<< nextT <<", nextM = "<< nextM << endl;
-    // cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, t = "<< cT <<", M = "<< m << endl;
-    // cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, new X = "<< x << endl;
+    //cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, new x = "<<x<<endl<<endl<<endl;
 }
 
 template <class DataTypes>
@@ -357,6 +359,38 @@ void LinearMovementConstraint<DataTypes>::findKeyTimes()
     }
 }
 
+// Matrix Integration interface
+template <class DataTypes>
+void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
+{
+    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
+    const unsigned int N = Deriv::size();
+    const SetIndexArray & indices = m_indices.getValue().getArray();
+
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    {
+        // Reset Fixed Row and Col
+        for (unsigned int c=0; c<N; ++c)
+            mat->clearRowCol(offset + N * (*it) + c);
+        // Set Fixed Vertex
+        for (unsigned int c=0; c<N; ++c)
+            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+    }
+}
+
+template <class DataTypes>
+void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
+{
+    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
+    const unsigned int N = Deriv::size();
+
+    const SetIndexArray & indices = m_indices.getValue().getArray();
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    {
+        for (unsigned int c=0; c<N; ++c)
+            vect->clear(offset + N * (*it) + c);
+    }
+}
 
 //display the path the constrained dofs will go through
 template <class DataTypes>

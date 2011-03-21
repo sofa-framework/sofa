@@ -173,6 +173,7 @@ void FixedConstraint<DataTypes>::init()
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
 {
+    //cerr<<"FixedConstraint<DataTypes>::projectResponse is called "<<endl;
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     const SetIndexArray & indices = f_indices.getValue(mparams).getArray();
     //serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
@@ -191,6 +192,7 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
             res[*it] = Deriv();
         }
     }
+    //cerr<<"FixedConstraint<DataTypes>::projectResponse is called  res = "<<endl<<res<<endl;
 }
 
 template <class DataTypes>
@@ -224,6 +226,7 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
             ++rowIt;
         }
     }
+    //cerr<<"FixedConstraint<DataTypes>::projectJacobianMatrix : helper::WriteAccessor<DataMatrixDeriv> c =  "<<endl<< c<<endl;
 }
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
@@ -264,6 +267,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
+    //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
@@ -281,6 +285,7 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, u
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
 {
+    //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
 

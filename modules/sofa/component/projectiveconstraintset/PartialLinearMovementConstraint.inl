@@ -286,9 +286,14 @@ template <class MyCoord>
 void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
-
+    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  current time cT = "<<cT<<endl;
+    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  prevT = "<<prevT<<" ,prevM= "<<prevM<<endl;
+    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  nextT = "<<nextT<<" ,nextM= "<<nextM<<endl;
+    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, current x = "<<x<<endl;
     Real dt = (cT - prevT) / (nextT - prevT);
+    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, dt = "<<dt<<endl;
     Deriv m = prevM + (nextM-prevM)*dt;
+    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, movement m = "<<m<<endl;
     VecBool movedDirection = movedDirections.getValue();
     //set the motion to the Dofs
     if(linearMovementBetweenNodesInIndices.getValue())
@@ -361,6 +366,7 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
             for( unsigned j=0; j< NumDimensions; j++)
                 if(movedDirection[j]) x[*it][j] = x0[*it][j] + m[j] ;
         }
+        //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, new x = "<<x<<endl<<endl<<endl;
     }
 
 }
@@ -387,6 +393,7 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 {
+
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
     MatrixDerivRowIterator rowIt = c->begin();
@@ -397,6 +404,7 @@ void PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix(const cor
         projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
         ++rowIt;
     }
+    //cerr<<" PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix c= "<<endl<<c<<endl;
 }
 
 template <class DataTypes>
@@ -434,6 +442,51 @@ void PartialLinearMovementConstraint<DataTypes>::findKeyTimes()
     }
 }
 
+// Matrix Integration interface
+template <class DataTypes>
+void PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
+{
+    //cerr<<"PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
+    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
+    //const unsigned int N = Deriv::size();
+    const SetIndexArray & indices = m_indices.getValue().getArray();
+
+    VecBool movedDirection = movedDirections.getValue();
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    {
+        // Reset Fixed Row and Col
+        for (unsigned int c=0; c<NumDimensions; ++c)
+        {
+            if( movedDirection[c] ) mat->clearRowCol(offset + NumDimensions * (*it) + c);
+        }
+        // Set Fixed Vertex
+        for (unsigned int c=0; c<NumDimensions; ++c)
+        {
+            if( movedDirection[c] ) mat->set(offset + NumDimensions * (*it) + c, offset + NumDimensions * (*it) + c, 1.0);
+        }
+    }
+}
+
+template <class DataTypes>
+void PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
+{
+    //cerr<<"PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
+    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
+    //const unsigned int N = Deriv::size();
+
+    VecBool movedDirection = movedDirections.getValue();
+    const SetIndexArray & indices = m_indices.getValue().getArray();
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    {
+        for (unsigned int c = 0; c < NumDimensions; ++c)
+        {
+            if (movedDirection[c])
+            {
+                vect->clear(offset + NumDimensions * (*it) + c);
+            }
+        }
+    }
+}
 
 //display the path the constrained dofs will go through
 template <class DataTypes>
