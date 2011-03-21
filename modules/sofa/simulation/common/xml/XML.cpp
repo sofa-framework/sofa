@@ -143,12 +143,8 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
     }
     else
     {
-        name = "default";
-        // 		static int num = 0;
-        char buf[16];
-        sprintf(buf, "%d", numDefault);
+        name = "";
         ++numDefault;
-        name += buf;
     }
 
     const char* ptype = element->Attribute("type");

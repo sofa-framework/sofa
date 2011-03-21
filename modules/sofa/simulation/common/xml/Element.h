@@ -57,8 +57,6 @@ public:
     /// Get the associated object
     virtual core::objectmodel::Base* getObject();
 
-    virtual bool initNode();
-
     typedef helper::Factory< std::string, Object, Element<Object>* > Factory;
 
 };

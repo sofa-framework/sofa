@@ -37,7 +37,10 @@ namespace xml
 {
 
 using namespace sofa::defaulttype;
-
+namespace
+{
+int counterDefault = 0;
+}
 
 NodeElement::NodeElement(const std::string& name, const std::string& type, BaseElement* parent)
     : Element<core::objectmodel::BaseNode>(name, type, parent)
@@ -58,14 +61,29 @@ bool NodeElement::setParent(BaseElement* newParent)
 
 bool NodeElement::initNode()
 {
-    if (!Element<core::objectmodel::BaseNode>::initNode()) return false;
-    if (getTypedObject()!=NULL && getParentElement()!=NULL && dynamic_cast<core::objectmodel::BaseNode*>(getParentElement()->getObject())!=NULL)
+    core::objectmodel::BaseNode *obj = Factory::CreateObject(this->getType(), this);
+    if (obj != NULL)
     {
-// 		std::cout << "Adding Child "<<getName()<<" to "<<getParentElement()->getName()<<std::endl;
-        dynamic_cast<core::objectmodel::BaseNode*>(getParentElement()->getObject())->addChild(getTypedObject());
-    }
+        setObject(obj);
+        if(getName().empty() )
+        {
+            std::ostringstream oss;
+            oss << obj->getClass()->shortName << counterDefault++;
+            setName(oss.str());
+        }
 
-    return true;
+        obj->setName(getName());
+        if (getTypedObject()!=NULL && getParentElement()!=NULL && dynamic_cast<core::objectmodel::BaseNode*>(getParentElement()->getObject())!=NULL)
+        {
+            // 		std::cout << "Adding Child "<<getName()<<" to "<<getParentElement()->getName()<<std::endl;
+            dynamic_cast<core::objectmodel::BaseNode*>(getParentElement()->getObject())->addChild(getTypedObject());
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool NodeElement::init()
@@ -73,29 +91,13 @@ bool NodeElement::init()
     bool res = Element<core::objectmodel::BaseNode>::init();
     //Store the warnings created by the objects
     for (unsigned int i=0; i<warnings.size(); ++i) getObject()->serr << warnings[i] << getObject()->sendl;
-    /*
-    if (getTypedObject()!=NULL)
-    {
-    	for (child_iterator<> it = begin();
-    				it != end(); ++it)
-    	{
-    		objectmodel::BaseObject* obj = dynamic_cast<objectmodel::BaseObject*>(it->getTypedObject());
-    		if (obj!=NULL)
-    		{
-    			std::cout << "Adding Object "<<it->getName()<<" to "<<getName()<<std::endl;
-    			getTypedObject()->addObject(obj);
-    		}
-    	}
-    }
-    */
+
     return res;
 }
 
 SOFA_DECL_CLASS(NodeElement)
 
 helper::Creator<BaseElement::NodeFactory, NodeElement> NodeNodeClass("Node");
-//helper::Creator<BaseElement::NodeFactory, NodeElement> NodeBodyClass("Body");
-//helper::Creator<BaseElement::NodeFactory, NodeElement> NodeGClass("G");
 
 const char* NodeElement::getClass() const
 {

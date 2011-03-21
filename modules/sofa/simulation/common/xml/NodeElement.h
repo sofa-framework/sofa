@@ -53,6 +53,8 @@ public:
     virtual bool init();
 
     virtual const char* getClass() const;
+
+    typedef Element<core::objectmodel::BaseNode>::Factory Factory;
 };
 
 } // namespace xml

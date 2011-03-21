@@ -113,8 +113,6 @@ public:
     ///// Get an attribute given its name (return defaultVal if not present)
     //const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
 
-    /// Set an attribute. Override any existing value
-    virtual void setAttribute(const std::string& attr, const char* val);
 
     /// Verify the presence of an attribute
     virtual bool presenceAttribute(const std::string& s);

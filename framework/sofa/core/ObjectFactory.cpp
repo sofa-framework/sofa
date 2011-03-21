@@ -92,6 +92,24 @@ bool ObjectFactory::hasCreator(std::string classname)
     return (!entry->creatorMap.empty());
 }
 
+std::string ObjectFactory::shortName(std::string classname)
+{
+    std::string shortname;
+
+    ClassEntryMap::iterator it = registry.find(classname);
+    if (it != registry.end())
+    {
+        ClassEntry* entry = it->second;
+        if(!entry->creatorMap.empty())
+        {
+            CreatorMap::iterator it = entry->creatorMap.begin();
+            Creator* c = it->second;
+            shortname = c->getClass()->shortName;
+        }
+    }
+    return shortname;
+}
+
 bool ObjectFactory::addAlias(std::string name, std::string result, bool force, ClassEntry** previous)
 {
     ClassEntry*& p = registry[name];

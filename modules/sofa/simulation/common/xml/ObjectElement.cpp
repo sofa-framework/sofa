@@ -40,7 +40,10 @@ using namespace sofa::defaulttype;
 using helper::Creator;
 
 //template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
-
+namespace
+{
+int counterDefault = 0;
+}
 ObjectElement::ObjectElement(const std::string& name, const std::string& type, BaseElement* parent)
     : Element<core::objectmodel::BaseObject>(name, type, parent)
 {
@@ -63,18 +66,11 @@ bool ObjectElement::init()
     return initNode();
 }
 
-/// Set an attribute. Override any existing value
-void ObjectElement::setAttribute(const std::string& attr, const char* val)
-{
-    attributes[attr] = val;
-}
+
 
 bool ObjectElement::initNode()
 {
-    //if (!Element<core::objectmodel::BaseObject>::initNode()) return false;
     core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(getParent()->getObject());
-
-//    std::cout << "ObjectElement: creating "<<getAttribute( "type", "" )<<std::endl;
 
     for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
     {
@@ -82,6 +78,12 @@ bool ObjectElement::initNode()
         {
             setAttribute(it->first,replaceAttribute[it->first].c_str());
         }
+    }
+    if( getName().empty() )
+    {
+        std::ostringstream oss;
+        oss << core::ObjectFactory::ShortName(this->getType()) <<  counterDefault++ ;
+        setName(oss.str());
     }
 
     core::objectmodel::BaseObject *obj = core::ObjectFactory::CreateObject(ctx, this);
