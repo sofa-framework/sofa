@@ -650,15 +650,15 @@ void VisualModelImpl::init()
 
 void VisualModelImpl::computeNormals()
 {
-    if (!m_updateNormals.getValue() && (m_vnormals.getValue()).size() != (m_vertices.getValue()).size()) return;
+    const ResizableExtVector<Coord>& vertices = getVertices();
+    if (!m_updateNormals.getValue() && (m_vnormals.getValue()).size() != (vertices).size()) return;
 
-    const ResizableExtVector<Coord>& vertices = m_vertices.getValue();
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
 
     if (vertNormIdx.empty())
     {
-        int nbn = (m_vertices.getValue()).size();
+        int nbn = (vertices).size();
 
         ResizableExtVector<Deriv>& normals = *(m_vnormals.beginEdit());
 

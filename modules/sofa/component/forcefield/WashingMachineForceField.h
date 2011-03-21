@@ -37,6 +37,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/VisualModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/forcefield/PlaneForceField.h>
 #include <vector>
@@ -52,10 +53,10 @@ namespace forcefield
 
 /// A box of 6 PlaneForceField that can rotate
 template<class DataTypes>
-class WashingMachineForceField : public core::behavior::ForceField<DataTypes>
+class WashingMachineForceField : public core::behavior::ForceField<DataTypes>, public core::VisualModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(WashingMachineForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(WashingMachineForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), core::VisualModel);
 
     typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -63,11 +64,14 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef PlaneForceField<DataTypes> PlaneForceFieldT;
 protected:
     core::objectmodel::Data<Coord> _center;
     core::objectmodel::Data<Deriv> _size;
     core::objectmodel::Data<Real> _speed;
+    core::objectmodel::Data<Deriv> _axis;
 
     core::objectmodel::Data<Real> _stiffness;
     core::objectmodel::Data<Real> _damping;
@@ -80,6 +84,7 @@ public:
         , _center(initData(&_center, Coord(0,0,0), "center", "box center"))
         , _size(initData(&_size, Deriv(1,1,1), "size", "box size"))
         , _speed(initData(&_speed, (Real)0.001, "speed", "rotation speed"))
+        , _axis(initData(&_axis, Deriv(1,0,0), "axis", "rotation axis"))
         , _stiffness(initData(&_stiffness, (Real)500.0, "stiffness", "penality force stiffness"))
         , _damping(initData(&_damping, (Real)5.0, "damping", "penality force damping"))
     {
@@ -128,12 +133,38 @@ public:
 
     }
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void reinit()
+    {
+        Inherit::reinit();
 
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+        for(int i=0; i<6; ++i)
+        {
+            _planes[i]->setStiffness(_stiffness.getValue());
+            _planes[i]->setDamping(_damping.getValue());
+            _planes[i]->setMState( this->mstate );
+        }
 
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+        Deriv diff = _center.getValue() - _size.getValue() * .5;
+        Deriv diff2 = - _center.getValue() - _size.getValue() * .5;
 
+        _planes[0]->setPlane( Deriv( 0, 1, 0), diff[1]  ); // sud
+        _planes[1]->setPlane( Deriv( 0, -1, 0), diff2[1]  ); // nord
+        _planes[2]->setPlane( Deriv( -1, 0, 0), diff2[0]  ); // ouest
+        _planes[3]->setPlane( Deriv( 1, 0, 0), diff[0]  ); // est
+        _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2]  ); // derriere
+        _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2]  ); //devant
+
+        _planes[0]->color.setValue( Coord( 0.5f,0.4f,0.4f ) );
+        _planes[1]->color.setValue( Coord( 0.4f,0.5f,0.4f ) );
+        _planes[2]->color.setValue( Coord( 0.4f,0.4f,0.5f ) );
+        _planes[3]->color.setValue( Coord( 0.5f,0.5f,0.4f ) );
+        _planes[4]->color.setValue( Coord( 0.5f,0.4f,0.5f ) );
+        _planes[5]->color.setValue( Coord( 0.4f,0.5f,0.5f ) );
+
+    }
+
+    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
 
     void draw();
     bool addBBox(double* minBBox, double* maxBBox);
