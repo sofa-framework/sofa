@@ -34,8 +34,7 @@
 
 
 #include <sofa/component/linearsolver/EigenMatrixManipulator.h>
-//#include <Eigen/Core>
-//#include <Eigen/Sparse>
+
 
 namespace sofa
 {
@@ -74,10 +73,10 @@ public:
     virtual void reinit() {graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());};
 
 
-    virtual bool prepareStates(double dt, MultiVecId, core::ConstraintParams::ConstOrder);
-    virtual bool buildSystem(double dt, MultiVecId, core::ConstraintParams::ConstOrder);
-    virtual bool solveSystem(double dt, MultiVecId, core::ConstraintParams::ConstOrder);
-    virtual bool applyCorrection(double dt, MultiVecId, core::ConstraintParams::ConstOrder);
+    virtual bool prepareStates(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    virtual bool buildSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    virtual bool solveSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    virtual bool applyCorrection(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
 
     virtual void handleEvent( core::objectmodel::Event *e);
 

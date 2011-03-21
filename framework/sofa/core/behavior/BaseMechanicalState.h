@@ -231,16 +231,6 @@ public:
     virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int /*line*/, ConstVecId /*id*/)
     {  this->serr << "NOT IMPLEMENTED YET" << this->sendl; return (SReal)0;  }
 
-    /// new : get compliance on the constraints
-    virtual void getCompliance(double ** /*w*/) { }
-    /// apply contact force AND compute the subsequent dX
-    virtual void applyContactForce(double * /*f*/) { }
-
-    virtual void resetContactForce(void) {}
-
-    virtual void addDxToCollisionModel( ConstVecId dx = ConstVecId::dx() )
-    { vOp( core::ExecParams::defaultInstance(), VecId::position(), ConstVecId::freePosition(), dx ); }
-
     /// @}
 
     /// @name events

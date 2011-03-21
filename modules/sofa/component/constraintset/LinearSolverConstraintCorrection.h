@@ -25,12 +25,14 @@
 #ifndef SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_H
 #define SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_H
 
-#include <sofa/core/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ConstraintCorrection.h>
+
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
+
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 
@@ -47,7 +49,6 @@ using namespace sofa::core;
 using namespace sofa::defaulttype;
 
 
-
 /// to avoid compilation problem under gcc3.3
 extern inline behavior::OdeSolver* getOdeSolver(objectmodel::BaseContext* context)
 {
@@ -58,14 +59,13 @@ extern inline behavior::OdeSolver* getOdeSolver(objectmodel::BaseContext* contex
  *  \brief Component computing contact forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class LinearSolverConstraintCorrection : public behavior::BaseConstraintCorrection
+class LinearSolverConstraintCorrection : public behavior::ConstraintCorrection< TDataTypes >
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(LinearSolverConstraintCorrection,TDataTypes),behavior::BaseConstraintCorrection);
+    SOFA_CLASS(SOFA_TEMPLATE(LinearSolverConstraintCorrection, TDataTypes), SOFA_TEMPLATE(behavior::ConstraintCorrection, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
-    typedef typename behavior::BaseConstraintCorrection Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -75,7 +75,9 @@ public:
     typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+
     typedef std::list<int> ListIndex;
+    typedef behavior::ConstraintCorrection< TDataTypes > Inherit;
 
     LinearSolverConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
 
@@ -83,19 +85,36 @@ public:
 
     virtual void init();
 
-    /// Retrieve the associated MechanicalState
-    behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
-
     virtual void getCompliance(defaulttype::BaseMatrix* W);
+
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
+
+    virtual void computeAndApplyMotionCorrection(const ConstraintParams *cparams, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId f, const BaseVector * lambda);
+
+    virtual void computeAndApplyPositionCorrection(const ConstraintParams *cparams, MultiVecCoordId x, MultiVecDerivId f, const BaseVector *lambda);
+
+    virtual void computeAndApplyVelocityCorrection(const ConstraintParams *cparams, MultiVecDerivId v, MultiVecDerivId f, const BaseVector *lambda);
+
+    virtual void computeAndApplyMotionCorrection(const ConstraintParams * /*cparams*/, Data< VecCoord > &/*x*/, Data< VecDeriv > &/*v*/, Data< VecDeriv > &/*f*/, const BaseVector * /*lambda*/) {};
+
+    virtual void computeAndApplyPositionCorrection(const ConstraintParams * /*cparams*/, Data< VecCoord > &/*x*/, Data< VecDeriv > &/*f*/, const BaseVector * /*lambda*/) {};
+
+    virtual void computeAndApplyVelocityCorrection(const ConstraintParams * /*cparams*/, Data< VecDeriv > &/*v*/, Data< VecDeriv > &/*f*/, const BaseVector * /*lambda*/) {};
+
+    virtual void applyPredictiveConstraintForce(const ConstraintParams *cparams, Data< VecDeriv > &f, const defaulttype::BaseVector *lambda);
+
+    /// @name Deprecated API
+    /// @{
 
     virtual void applyContactForce(const defaulttype::BaseVector *f);
 
-    virtual void applyPredictiveConstraintForce(const defaulttype::BaseVector *f);
-
     virtual void resetContactForce();
 
-    // new API for non building the constraint system during solving process //
+    /// @}
+
+    /// @name Unbuilt constraint system during resolution
+    /// @{
+
     Data< bool > wire_optimization;
     Data< helper::vector< std::string > >  solverName;
 
@@ -110,41 +129,22 @@ public:
     virtual void setConstraintDForce(double *df, int begin, int end, bool update) ;
 
     virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) ;
-    /////////////////////////////////////////////////////////////////////////////////
+
+    /// @}
 
 
     /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (getOdeSolver(context) == NULL)
             return false;
-        if( getOdeSolver(context)==NULL )
-            return false;
-        //if( getLinearSolver(context)==NULL )
-        //	return false;
-//         if (context->get<behavior::OdeSolver>() == NULL)
-//             return false;
-// 		if (context->get<behavior::LinearSolver>() == NULL)
-//             return false;
-        return BaseObject::canCreate(obj, context, arg);
-    }
 
-
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const LinearSolverConstraintCorrection<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
+        return Inherit::canCreate(obj, context, arg);
     }
 
 protected:
-    behavior::MechanicalState<DataTypes> *mstate;
+
     behavior::OdeSolver* odesolver;
     std::vector<sofa::core::behavior::LinearSolver*> linearsolvers;
 
@@ -154,7 +154,10 @@ protected:
     linearsolver::FullMatrix<SReal> refMinv; ///< reference inverse matrix
 #endif
 
-
+    /**
+     * @brief Compute dx correction from motion space force vector.
+     */
+    void computeDx(MultiVecDerivId f);
 
 private:
     // new :  for non building the constraint system during solving process //

@@ -100,7 +100,7 @@ void StaticSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, doub
     else
         pos2.eq( pos, x, -1 );
 
-    mop.solveConstraint(dt,pos2,core::ConstraintParams::POS);
+    mop.solveConstraint(pos2, core::ConstraintParams::POS);
 
     /*    serr<<"StaticSolver::solve, new pos = "<<pos2<<sendl;*/
 }

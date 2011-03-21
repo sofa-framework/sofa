@@ -29,7 +29,7 @@
 
 #include "PersistentContactMapping.h"
 
-//#define DEBUG_INACTIVE_CONTACTS
+#define DEBUG_INACTIVE_CONTACTS
 
 namespace sofa
 {

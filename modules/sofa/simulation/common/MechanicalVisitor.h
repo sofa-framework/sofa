@@ -621,8 +621,9 @@ public:
     ConstMultiVecId b;
     double f;
     bool mapped;
+    bool only_mapped;
     MechanicalVOpVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, MultiVecId v, ConstMultiVecId a = ConstMultiVecId::null(), ConstMultiVecId b = ConstMultiVecId::null(), double f=1.0 )
-        : BaseMechanicalVisitor(params) , v(v), a(a), b(b), f(f), mapped(false)
+        : BaseMechanicalVisitor(params) , v(v), a(a), b(b), f(f), mapped(false), only_mapped(false)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -630,6 +631,7 @@ public:
     }
 
     MechanicalVOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
+    MechanicalVOpVisitor& setOnlyMapped(bool m = true) { only_mapped = m; return *this; }
 
     virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
@@ -1057,52 +1059,6 @@ public:
     {
         addReadWriteVector(x);
         addWriteVector(f);
-    }
-#endif
-};
-
-
-
-class SOFA_SIMULATION_COMMON_API MechanicalPropagateAndAddDxVisitor : public MechanicalVisitor
-{
-public:
-    MultiVecDerivId dx, v;
-    bool ignoreMask;
-
-    MechanicalPropagateAndAddDxVisitor(const sofa::core::MechanicalParams* mparams , MultiVecDerivId dx = VecDerivId::dx(), MultiVecDerivId v =VecDerivId::velocity(), bool m=true)
-        : MechanicalVisitor(mparams) , dx(dx) , v(v),ignoreMask(m)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateAndAddDxVisitor"; }
-    virtual std::string getInfos() const { std::string name= "["+dx.getName()+"]"; return name; }
-
-
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
-    {
-        return true;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-        addReadWriteVector(v);
-        addReadWriteVector(dx);
     }
 #endif
 };
@@ -2051,39 +2007,6 @@ public:
 #endif
 };
 
-
-
-// ACTION : Compute Compliance on mechanical models
-class SOFA_SIMULATION_COMMON_API MechanicalComputeComplianceVisitor : public MechanicalVisitor
-{
-public:
-    MechanicalComputeComplianceVisitor(const sofa::core::MechanicalParams* m_mparams , double **W)
-        : MechanicalVisitor(m_mparams) , _W(W)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms);
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalComputeComplianceVisitor"; }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-    }
-#endif
-private:
-    double **_W;
-};
 
 
 /** Accumulate only the contact forces computed in applyContactForce.

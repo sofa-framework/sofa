@@ -565,7 +565,8 @@ std::string  MechanicalVFreeVisitor<vtype>::getInfos() const
 Visitor::Result MechanicalVOpVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
 {
     //cerr<<"    MechanicalVOpVisitor::fwdMechanicalState, model "<<mm->getName()<<endl;
-    mm->vOp(this->params /* PARAMS FIRST */, v.getId(mm) ,a.getId(mm),b.getId(mm),((ctx->nodeData && *ctx->nodeData != 1.0) ? *ctx->nodeData * f : f) );
+    if (!only_mapped)
+        mm->vOp(this->params /* PARAMS FIRST */, v.getId(mm) ,a.getId(mm),b.getId(mm),((ctx->nodeData && *ctx->nodeData != 1.0) ? *ctx->nodeData * f : f) );
     return RESULT_CONTINUE;
 }
 
@@ -573,8 +574,10 @@ Visitor::Result MechanicalVOpVisitor::fwdMechanicalState(VisitorContext* ctx, co
 Visitor::Result MechanicalVOpVisitor::fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
 {
     //cerr<<"    MechanicalVOpVisitor::fwdMappedMechanicalState, model "<<mm->getName()<<endl;
-    if (mapped)
+    if (mapped || only_mapped)
+    {
         mm->vOp(this->params /* PARAMS FIRST */, v.getId(mm) ,a.getId(mm),b.getId(mm),((ctx->nodeData && *ctx->nodeData != 1.0) ? *ctx->nodeData * f : f) );
+    }
     return RESULT_CONTINUE;
 }
 
@@ -824,41 +827,6 @@ Visitor::Result MechanicalPropagateXAndResetForceVisitor::fwdMappedMechanicalSta
     return RESULT_CONTINUE;
 }
 
-
-Visitor::Result MechanicalPropagateAndAddDxVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
-{
-    if (!ignoreMask)
-    {
-        ForceMaskActivate(map->getMechFrom() );
-        ForceMaskActivate(map->getMechTo() );
-    }
-
-    //map->propagateDx();
-    //map->propagateV();
-    map->applyJ(mparams /* PARAMS FIRST */, dx, dx);
-    map->applyJ(mparams /* PARAMS FIRST */, v, v);
-
-    if (!ignoreMask)
-    {
-        ForceMaskDeactivate(map->getMechTo() );
-    }
-
-    return RESULT_CONTINUE;
-}
-
-
-void MechanicalPropagateAndAddDxVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
-{
-    mm->forceMask.activate(false);
-}
-
-
-Visitor::Result MechanicalPropagateAndAddDxVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-{
-    ////mm->printDOF(VecId::dx());
-    mm->addDxToCollisionModel();
-    return RESULT_CONTINUE;
-}
 
 
 Visitor::Result MechanicalAddMDxVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
@@ -1420,20 +1388,6 @@ Visitor::Result MechanicalEndIntegrationVisitor::fwdMechanicalState(simulation::
 Visitor::Result MechanicalEndIntegrationVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     mm->endIntegration(params /* PARAMS FIRST */, dt);
-    return RESULT_CONTINUE;
-}
-
-
-Visitor::Result MechanicalComputeComplianceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
-{
-    ms->getCompliance(_W);
-    return RESULT_PRUNE;
-}
-
-
-Visitor::Result MechanicalComputeComplianceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
-{
-    ms->getCompliance(_W);
     return RESULT_CONTINUE;
 }
 

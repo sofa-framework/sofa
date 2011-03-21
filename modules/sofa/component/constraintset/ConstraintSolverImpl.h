@@ -27,11 +27,9 @@
 
 #include <sofa/core/behavior/ConstraintSolver.h>
 
-#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
 #include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
 
 namespace sofa
 {
@@ -44,7 +42,6 @@ namespace constraintset
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::linearsolver;
-using namespace helper::system::thread;
 
 class ConstraintProblem
 {
@@ -70,112 +67,18 @@ protected:
     int dimension;
 };
 
+
 class SOFA_COMPONENT_CONSTRAINTSET_API ConstraintSolverImpl : public sofa::core::behavior::ConstraintSolver
 {
 public:
     virtual ConstraintProblem* getConstraintProblem() = 0;
-    virtual void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=NULL) = 0; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
-    /*
-    	bool prepareStates(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
-    	bool buildSystem(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
-    	bool solveSystem(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
-    	bool applyCorrection(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
-    */
-};
 
-class MechanicalResetContactForceVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-    //core::MultiVecDerivId force;
-    MechanicalResetContactForceVisitor(/*core::MultiVecDerivId force,*/ const core::ExecParams* params)
-        : simulation::BaseMechanicalVisitor(params)
-        //	, force(force)
-    {
-    }
-
-    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
-    {
-        ctime_t t0 = begin(node, ms);
-        ms->resetContactForce(/*force*/);
-        end(node, ms, t0);
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
-    {
-        ctime_t t0 = begin(node, ms);
-        ms->resetForce(this->params /*, force*/);
-        end(node, ms, t0);
-        return RESULT_CONTINUE;
-    }
-
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalResetContactForceVisitor";}
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-    }
-#endif
+    /// Do not use the following LCPs until the next call to this function.
+    /// This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread.
+    virtual void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=NULL) = 0;
 };
 
 
-/// Apply the Contact Forces on mechanical models & Compute displacements
-class SOFA_COMPONENT_MASTERSOLVER_API MechanicalApplyContactForceVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-    //VecId force;
-    MechanicalApplyContactForceVisitor(const core::ExecParams* params /* PARAMS FIRST */, double *f)
-        : simulation::BaseMechanicalVisitor(params)
-        , _f(f)
-    {
-    }
-
-    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
-    {
-        ctime_t t0 = begin(node, ms);
-        ms->applyContactForce(_f);
-        end(node, ms, t0);
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
-    {
-        ctime_t t0 = begin(node, ms);
-        ms->applyContactForce(_f);
-        end(node, ms, t0);
-        return RESULT_CONTINUE;
-    }
-
-
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalApplyContactForceVisitor";}
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-    }
-#endif
-
-private:
-    double *_f; // vector of contact forces from lcp //
-    // to be multiplied by constraint direction in mechanical models //
-
-};
 
 /// Gets the vector of constraint values
 class MechanicalGetConstraintValueVisitor : public simulation::BaseMechanicalVisitor

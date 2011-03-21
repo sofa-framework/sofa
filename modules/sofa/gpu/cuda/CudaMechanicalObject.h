@@ -75,7 +75,6 @@ public:
     MechanicalObjectInternalData(MechanicalObject< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >* = NULL)
     {}
     static void accumulateForce(Main* m);
-    static void addDxToCollisionModel(Main* m);
     static void vAlloc(Main* m, VecId v);
     static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f);
     static void vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops);
@@ -122,7 +121,6 @@ public:
     MechanicalObjectInternalData(MechanicalObject< gpu::cuda::CudaRigidTypes<N, real > >* = NULL)
     {}
     static void accumulateForce(Main* m);
-    static void addDxToCollisionModel(Main* m);
     static void vAlloc(Main* m, VecId v);
     static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f);
     static void vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops);
@@ -154,7 +152,6 @@ public:
     template<> inline void MechanicalObject< T >::vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops); \
     template<> inline double MechanicalObject< T >::vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b); \
     template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params); \
-    template<> inline void MechanicalObject< T >::addDxToCollisionModel(); \
     template<> inline void MechanicalObject< T >::copyToBaseVector(defaulttype::BaseVector * dest, core::ConstVecId src, unsigned int &offset); \
     template<> inline void MechanicalObject< T >::copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector * src,  unsigned int &offset); \
     template<> inline void MechanicalObject< T >::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector *src, unsigned int &offset);

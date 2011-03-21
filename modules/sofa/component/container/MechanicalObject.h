@@ -272,8 +272,6 @@ public:
 
     std::string getFilename() {return filename.getValue();};
 
-    virtual void addDxToCollisionModel(void);
-
     /// Renumber the constraint ids with the given permutation vector
     void renumberConstraintId(const sofa::helper::vector< unsigned >& renumbering);
 

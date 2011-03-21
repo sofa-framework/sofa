@@ -109,6 +109,25 @@ void MechanicalOperations::propagateX(core::MultiVecCoordId x)
                   );
 }
 
+/// Propagate the given velocity through all mappings
+void MechanicalOperations::propagateV(core::MultiVecDerivId v)
+{
+    setV(v);
+    executeVisitor( MechanicalPropagateVVisitor(&mparams /* PARAMS FIRST */, v, false) //Don't ignore the masks
+                  );
+}
+
+/// Propagate the given position and velocity through all mappings
+void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v)
+{
+    setX(x);
+    setV(v);
+    executeVisitor( MechanicalPropagateXVisitor(&mparams /* PARAMS FIRST */, x, false) //Don't ignore the masks
+                  );
+    executeVisitor( MechanicalPropagateVVisitor(&mparams /* PARAMS FIRST */, v, false) //Don't ignore the masks
+                  );
+}
+
 
 /// Propagate the given position through all mappings and reset the current force delta
 void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f)
@@ -309,9 +328,9 @@ void MechanicalOperations::solveConstraint(double dt, MultiVecCoordId id, core::
 }
 */
 
-void MechanicalOperations::solveConstraint(double dt, MultiVecId id, core::ConstraintParams::ConstOrder order)
+void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams::ConstOrder order)
 {
-    mparams.setDt(dt);
+    cparams.setOrder(order);
 
     ctx->serr<<"MechanicalOperations::solveConstraint"<<std::endl;
     helper::vector< core::behavior::ConstraintSolver* > constraintSolverList;
@@ -322,12 +341,14 @@ void MechanicalOperations::solveConstraint(double dt, MultiVecId id, core::Const
         ctx->sout << "No ConstraintSolver found."<<ctx->sendl;
         return;
     }
+
     ctx->serr<<"MechanicalOperations::solveConstraint found solvers"<<std::endl;
     for (helper::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
     {
-        (*it)->solveConstraint(dt, id,  order);
+        (*it)->solveConstraint(&cparams, id);
     }
 }
+
 void MechanicalOperations::m_resetSystem()
 {
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);

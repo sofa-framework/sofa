@@ -25,19 +25,6 @@
 
 #include <sofa/component/constraintset/ConstraintSolverImpl.h>
 
-#include <sofa/simulation/common/AnimateVisitor.h>
-#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/SolveVisitor.h>
-
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/AdvancedTimer.h>
-#include <sofa/helper/system/thread/CTime.h>
-#include <math.h>
-#include <iostream>
-
-#include <sofa/core/ObjectFactory.h>
-
 namespace sofa
 {
 

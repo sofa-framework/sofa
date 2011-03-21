@@ -23,14 +23,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP
+
 #include "PrecomputedConstraintCorrection.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace constraintset
 {
 
@@ -39,9 +42,9 @@ namespace constraintset
 template<>
 SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection< defaulttype::Rigid3dTypes >::rotateConstraints(bool back)
 {
-    const VecCoord& x = *mstate->getX();
-    const VecCoord& x0 = *mstate->getX0();
-    helper::WriteAccessor<Data<MatrixDeriv> > cData = *mstate->write(core::MatrixDerivId::holonomicC());
+    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x0 = *this->mstate->getX0();
+    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::holonomicC());
     MatrixDeriv& c = cData.wref();
 
     // On fait tourner les normales (en les ramenant dans le "pseudo" repere initial)
@@ -91,11 +94,10 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
 template<>
 SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse()
 {
-
-    helper::WriteAccessor<Data<VecDeriv> > dxData = *mstate->write(core::VecDerivId::dx());
+    helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = dxData.wref();
-    const VecCoord& x = *mstate->getX();
-    const VecCoord& x0 = *mstate->getX0();
+    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x0 = *this->mstate->getX0();
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         // on passe les deplacements du repere local (au repos) au repere global
@@ -137,9 +139,9 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
 template<>
 SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection< defaulttype::Rigid3fTypes >::rotateConstraints(bool back)
 {
-    const VecCoord& x = *mstate->getX();
-    const VecCoord& x0 = *mstate->getX0();
-    helper::WriteAccessor<Data<MatrixDeriv> > cData = *mstate->write(core::MatrixDerivId::holonomicC());
+    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x0 = *this->mstate->getX0();
+    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::holonomicC());
     MatrixDeriv& c = cData.wref();
 
     // On fait tourner les normales (en les ramenant dans le "pseudo" repere initial)
@@ -188,10 +190,10 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
 template<>
 SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse()
 {
-    helper::WriteAccessor<Data<VecDeriv> > dxData = *mstate->write(core::VecDerivId::dx());
+    helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = dxData.wref();
-    const VecCoord& x = *mstate->getX();
-    const VecCoord& x0 = *mstate->getX0();
+    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x0 = *this->mstate->getX0();
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         // on passe les deplacements du repere local (au repos) au repere global
@@ -233,13 +235,11 @@ SOFA_DECL_CLASS(PrecomputedConstraintCorrection)
 int PrecomputedConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
 #ifndef SOFA_FLOAT
         .add< PrecomputedConstraintCorrection<Vec3dTypes> >()
-//     .add< PrecomputedConstraintCorrection<Vec2dTypes> >()
         .add< PrecomputedConstraintCorrection<Vec1dTypes> >()
         .add< PrecomputedConstraintCorrection<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< PrecomputedConstraintCorrection<Vec3fTypes> >()
-//     .add< PrecomputedConstraintCorrection<Vec2fTypes> >()
         .add< PrecomputedConstraintCorrection<Vec1fTypes> >()
         .add< PrecomputedConstraintCorrection<Rigid3fTypes> >()
 #endif
@@ -247,19 +247,13 @@ int PrecomputedConstraintCorrectionClass = core::RegisterObject("Component compu
 
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec3dTypes>;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec2dTypes>;
 template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec1dTypes>;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec6dTypes>;
 template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Rigid3dTypes>;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec3fTypes>;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec2fTypes>;
 template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec1fTypes>;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec6fTypes>;
 template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Rigid3fTypes>;
-//template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Rigid2fTypes>;
 #endif
 
 } // namespace collision

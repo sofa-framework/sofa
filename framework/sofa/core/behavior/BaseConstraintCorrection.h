@@ -29,6 +29,8 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
+#include <sofa/core/ConstraintParams.h>
+
 namespace sofa
 {
 namespace defaulttype
@@ -59,13 +61,16 @@ public:
 
     virtual ~BaseConstraintCorrection() {}
 
+    /// @name Compliance Matrix API
+    /// @{
+
     virtual void getCompliance(defaulttype::BaseMatrix* W) = 0;
 
-    //Fill the matrix m with the full Compliance Matrix
+    /// Fill the matrix m with the full Compliance Matrix
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const = 0;
 
-    // for multigrid approach => constraints are merged
-    virtual void  getComplianceWithConstraintMerge(defaulttype::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/)
+    /// For multigrid approach => constraints are merged
+    virtual void getComplianceWithConstraintMerge(defaulttype::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/)
     {
         sout << "getComplianceWithConstraintMerge is not implemented yet " << sendl;
     }
@@ -76,13 +81,55 @@ public:
         getCompliance(W); // par defaut si la methode cuda n'est pas implementé on resoud sur CPU
     }
 
-    virtual void applyContactForce(const defaulttype::BaseVector *f) = 0; //=> new name: computeAndApplyMotionOfConstraintCorrection ?
+    /// @}
 
-    virtual void applyPredictiveConstraintForce(const defaulttype::BaseVector *f) = 0;
+
+    /// Compute motion correction from the constraint resolution (LCP) calculated force
+    ///
+    /// @param cparams
+    /// @param x is the position result VecId
+    /// @param v is the velocity result VecId
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    virtual void computeAndApplyMotionCorrection(const ConstraintParams * /*cparams*/, MultiVecCoordId /*x*/, MultiVecDerivId /*v*/, MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/) = 0;
+
+    /// Compute position correction from the constraint resolution (LCP) calculated force
+    ///
+    /// @param cparams
+    /// @param x is the position result VecId
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    virtual void computeAndApplyPositionCorrection(const ConstraintParams * /*cparams*/, MultiVecCoordId /*x*/, MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/) = 0;
+
+    /// Compute velocity correction from the constraint resolution (LCP) calculated force
+    ///
+    /// @param cparams
+    /// @param v is the velocity result VecId
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    virtual void computeAndApplyVelocityCorrection(const ConstraintParams * /*cparams*/, MultiVecDerivId /*v*/, MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/) = 0;
+
+    /// Apply predictive constraint force
+    ///
+    /// @param cparams
+    /// @param f is the motion space force vector
+    /// @param lambda is the constraint space force vector
+    virtual void applyPredictiveConstraintForce(const ConstraintParams * /*cparams*/, MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/) = 0;
+
+
+    /// @name Deprecated API
+    /// @{
+
+    virtual void applyContactForce(const defaulttype::BaseVector *f) = 0;
 
     virtual void resetContactForce() = 0;
 
-    // NEW : for non building the constraint system during solving/////////////////
+    /// @}
+
+
+    /// @name Unbuilt constraint system during resolution
+    /// @{
+
     virtual bool hasConstraintNumber(int /*index*/) {return true;}
 
     virtual void resetForUnbuiltResolution(double * /*f*/, std::list<int>& /*renumbering*/) {}
@@ -95,7 +142,8 @@ public:
     {
         sout << "warning : getBlockDiagonalCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() << sendl;
     }
-    /////////////////////////////////////////////////////////////////////////////////
+
+    /// @}
 };
 
 } // namespace behavior

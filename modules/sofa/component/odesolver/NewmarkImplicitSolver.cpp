@@ -182,8 +182,8 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST
     ops[1].second.push_back(std::make_pair(aResult.id(),h*gamma));//v(t+h)=vt+at*h*(1-gamma)+a(t+h)*h*gamma
     vop.v_multiop(ops);
 
-    mop.solveConstraint(dt,vResult,core::ConstraintParams::VEL);
-    mop.solveConstraint(dt,xResult,core::ConstraintParams::POS);
+    mop.solveConstraint(vResult,core::ConstraintParams::VEL);
+    mop.solveConstraint(xResult,core::ConstraintParams::POS);
 
 #endif
 

@@ -26,6 +26,7 @@
 #define SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_INL
 
 #include "LinearSolverConstraintCorrection.h"
+#include <sofa/core/behavior/ConstraintCorrection.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
@@ -46,9 +47,10 @@ namespace constraintset
 
 template<class DataTypes>
 LinearSolverConstraintCorrection<DataTypes>::LinearSolverConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
-    : wire_optimization(initData(&wire_optimization, false, "wire_optimization", "constraints are reordered along a wire-like topology (from tip to base)"))
+    : Inherit(mm)
+    , wire_optimization(initData(&wire_optimization, false, "wire_optimization", "constraints are reordered along a wire-like topology (from tip to base)"))
     , solverName( initData(&solverName, "solverName", "name of the constraint solver") )
-    , mstate(mm), odesolver(NULL)
+    , odesolver(NULL)
 {
 }
 
@@ -66,11 +68,12 @@ LinearSolverConstraintCorrection<DataTypes>::~LinearSolverConstraintCorrection()
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::init()
 {
-    mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    Inherit::init();
+
     objectmodel::BaseContext* c = this->getContext();
-    //     odesolver = c->get< behavior::OdeSolver >();
-    //     linearsolver = c->get< behavior::LinearSolver >();
+
     odesolver=getOdeSolver(c);
+
     const helper::vector<std::string>& solverNames = solverName.getValue();
     if (solverNames.size() == 0)
     {
@@ -119,14 +122,14 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMatrix* W)
 {
-    if (!mstate || !odesolver || (linearsolvers.size()==0)) return;
+    if (!this->mstate || !odesolver || (linearsolvers.size()==0)) return;
 
     // use the OdeSolver to get the position integration factor
     //const double factor = 1.0;
     //const double factor = odesolver->getPositionIntegrationFactor(); // dt
     const double factor = odesolver->getPositionIntegrationFactor(); //*odesolver->getPositionIntegrationFactor(); // dt*dt
 
-    const unsigned int numDOFs = mstate->getSize();
+    const unsigned int numDOFs = this->mstate->getSize();
     const unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs*N;
 #if 0 // refMinv is not use in normal case    
@@ -162,7 +165,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
     }
 #endif
     // Compute J
-    const MatrixDeriv& c = *mstate->getC();
+    const MatrixDeriv& c = *this->mstate->getC();
     const unsigned int totalNumConstraints = W->rowSize();
 
     J.resize(totalNumConstraints, numDOFReals);
@@ -194,14 +197,14 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix* Minv) const
 {
-    if (!mstate || !odesolver || (linearsolvers.size()==0)) return;
+    if (!this->mstate || !odesolver || (linearsolvers.size()==0)) return;
 
     // use the OdeSolver to get the position integration factor
     //const double factor = 1.0;
     //const double factor = odesolver->getPositionIntegrationFactor(); // dt
     const double factor = odesolver->getPositionIntegrationFactor(); //*odesolver->getPositionIntegrationFactor(); // dt*dt
 
-    const unsigned int numDOFs = mstate->getSize();
+    const unsigned int numDOFs = this->mstate->getSize();
     const unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs*N;
     static linearsolver::SparseMatrix<SReal> J; //local J
@@ -237,21 +240,140 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttyp
 #endif
 }
 
+
+template< class DataTypes >
+void LinearSolverConstraintCorrection< DataTypes >::computeDx(MultiVecDerivId fId)
+{
+    if (this->mstate)
+    {
+        Data< VecDeriv > &dx_d = *this->mstate->write(core::VecDerivId::dx());
+        VecDeriv& dx = *dx_d.beginEdit();
+
+        const unsigned int numDOFs = this->mstate->getSize();
+
+        dx.clear();
+        dx.resize(numDOFs);
+        for (unsigned int i=0; i< numDOFs; i++)
+            dx[i] = Deriv();
+
+        linearsolvers[0]->setSystemRHVector(fId);
+        linearsolvers[0]->setSystemLHVector(core::VecDerivId::dx());
+        linearsolvers[0]->solveSystem();
+
+        dx_d.endEdit();
+    }
+}
+
+
+template< class DataTypes >
+void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyMotionCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId fId, const defaulttype::BaseVector *lambda)
+{
+    this->setConstraintForceInMotionSpace(fId, lambda);
+
+    computeDx(fId);
+
+    if (this->mstate)
+    {
+        const unsigned int numDOFs = this->mstate->getSize();
+
+        VecCoord& x = *(xId[this->mstate].write()->beginEdit());
+        VecDeriv& v = *(vId[this->mstate].write()->beginEdit());
+
+        VecDeriv& dx = *(this->mstate->write(core::VecDerivId::dx())->beginEdit());
+        const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
+        const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
+
+        const double positionFactor = odesolver->getPositionIntegrationFactor();
+        const double velocityFactor = odesolver->getVelocityIntegrationFactor();
+
+        for (unsigned int i = 0; i < numDOFs; i++)
+        {
+            Deriv dxi = dx[i] * positionFactor;
+            Deriv dvi = dx[i] * velocityFactor;
+            x[i] = x_free[i] + dxi;
+            v[i] = v_free[i] + dvi;
+            dx[i] = dxi;
+
+            if (this->f_printLog.getValue())
+                std::cout << "dx[" << i << "] = " << dx[i] << std::endl;
+        }
+
+        xId[this->mstate].write()->endEdit();
+        vId[this->mstate].write()->endEdit();
+        this->mstate->write(core::VecDerivId::dx())->endEdit();
+    }
+}
+
+
+template< class DataTypes >
+void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyPositionCorrection(const ConstraintParams * /*cparams*/, MultiVecCoordId xId, MultiVecDerivId fId, const BaseVector *lambda)
+{
+    this->setConstraintForceInMotionSpace(fId, lambda);
+
+    computeDx(fId);
+
+    if (this->mstate)
+    {
+        const unsigned int numDOFs = this->mstate->getSize();
+
+        VecCoord& x = *(xId[this->mstate].write()->beginEdit());
+
+        VecDeriv& dx = *(this->mstate->write(core::VecDerivId::dx())->beginEdit());
+        const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
+
+        const double positionFactor = odesolver->getPositionIntegrationFactor();
+
+        for (unsigned int i = 0; i < numDOFs; i++)
+        {
+            Deriv dxi = dx[i] * positionFactor;
+            x[i] = x_free[i] + dxi;
+            dx[i] = dxi;
+        }
+
+        xId[this->mstate].write()->endEdit();
+        this->mstate->write(core::VecDerivId::dx())->endEdit();
+    }
+}
+
+
+template< class DataTypes >
+void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyVelocityCorrection(const ConstraintParams * /*cparams*/, MultiVecDerivId vId, MultiVecDerivId fId, const BaseVector *lambda)
+{
+    this->setConstraintForceInMotionSpace(fId, lambda);
+
+    computeDx(fId);
+
+    if (this->mstate)
+    {
+        const unsigned int numDOFs = this->mstate->getSize();
+
+        VecDeriv& v = *(vId[this->mstate].write()->beginEdit());
+
+        const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+        const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
+
+        const double velocityFactor = odesolver->getVelocityIntegrationFactor();
+
+        for (unsigned int i = 0; i < numDOFs; i++)
+        {
+            Deriv dvi = dx[i] * velocityFactor;
+            v[i] = v_free[i] + dvi;
+        }
+
+        vId[this->mstate].write()->endEdit();
+    }
+}
+
+
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaulttype::BaseVector *f)
 {
     core::VecDerivId forceID(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
     core::VecDerivId dxID = core::VecDerivId::dx();
 
-//     mstate->vAlloc(forceID);
-//     mstate->vOp(forceID);
-    //    mstate->vAlloc(dxID);
+    const unsigned int numDOFs = this->mstate->getSize();
 
-    //double dt = this->getContext()->getDt();
-
-    const unsigned int numDOFs = mstate->getSize();
-
-    Data<VecDeriv>& dataDx = *mstate->write(dxID);
+    Data<VecDeriv>& dataDx = *this->mstate->write(dxID);
     VecDeriv& dx = *dataDx.beginEdit();
 
     dx.clear();
@@ -259,7 +381,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     for (unsigned int i=0; i< numDOFs; i++)
         dx[i] = Deriv();
 
-    Data<VecDeriv>& dataForce = *mstate->write(forceID);
+    Data<VecDeriv>& dataForce = *this->mstate->write(forceID);
     VecDeriv& force = *dataForce.beginEdit();
 
     force.clear();
@@ -279,7 +401,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
         for (unsigned int r=0; r<N; ++r)
             force[i][r] = F[i*N+r];
 #else
-    const MatrixDeriv& c = *mstate->getC();
+    const MatrixDeriv& c = *this->mstate->getC();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -312,10 +434,10 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     // use the OdeSolver to get the position integration factor
     const double velocityFactor = odesolver->getVelocityIntegrationFactor();
 
-    Data<VecCoord>& xData     = *mstate->write(core::VecCoordId::position());
-    Data<VecDeriv>& vData     = *mstate->write(core::VecDerivId::velocity());
-    const Data<VecCoord> & xfreeData = *mstate->read(core::ConstVecCoordId::freePosition());
-    const Data<VecDeriv> & vfreeData = *mstate->read(core::ConstVecDerivId::freeVelocity());
+    Data<VecCoord>& xData     = *this->mstate->write(core::VecCoordId::position());
+    Data<VecDeriv>& vData     = *this->mstate->write(core::VecDerivId::velocity());
+    const Data<VecCoord> & xfreeData = *this->mstate->read(core::ConstVecCoordId::freePosition());
+    const Data<VecDeriv> & vfreeData = *this->mstate->read(core::ConstVecDerivId::freeVelocity());
     VecCoord& x = *xData.beginEdit();
     VecDeriv& v = *vData.beginEdit();
     const VecCoord& x_free = xfreeData.getValue();
@@ -340,49 +462,21 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     /// @TODO: freeing forceID here is incorrect as it was not allocated
     /// Maybe the call to vAlloc at the beginning of this method should be enabled...
     /// -- JeremieA, 2011-02-16
-    mstate->vFree(core::ExecParams::defaultInstance(), forceID);
+    this->mstate->vFree(core::ExecParams::defaultInstance(), forceID);
 }
 
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const defaulttype::BaseVector *f)
+void LinearSolverConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
 {
-    Data<VecDeriv>& forceData = *mstate->write(core::VecDerivId::externalForce());
-    VecDeriv& force = *forceData.beginEdit();
-
-    const unsigned int numDOFs = mstate->getSize();
-
-    force.clear();
-    force.resize(numDOFs);
-    for (unsigned int i=0; i< numDOFs; i++)
-        force[i] = Deriv();
-
-    const MatrixDeriv& c = *mstate->getC();
-
-    MatrixDerivRowConstIterator rowItEnd = c.end();
-
-    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
-    {
-        const double fC1 = f->element(rowIt.index());
-
-        if (fC1 != 0.0)
-        {
-            MatrixDerivColConstIterator colItEnd = rowIt.end();
-
-            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
-            {
-                force[colIt.index()] += colIt.val() * fC1;
-            }
-        }
-    }
-    forceData.endEdit();
+    setConstraintForceInMotionSpace(f_d, lambda);
 }
 
 
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::resetContactForce()
 {
-    Data<VecDeriv>& forceData = *mstate->write(core::VecDerivId::force());
+    Data<VecDeriv>& forceData = *this->mstate->write(core::VecDerivId::force());
     VecDeriv& force = *forceData.beginEdit();
     for( unsigned i=0; i<force.size(); ++i )
         force[i] = Deriv();
@@ -393,7 +487,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetContactForce()
 template<class DataTypes>
 bool LinearSolverConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 {
-    const MatrixDeriv& c = *mstate->getC();
+    const MatrixDeriv& c = *this->mstate->getC();
 
     return c.readLine(index) != c.end();
 }
@@ -410,13 +504,13 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 {
     verify_constraints();
 
-    const MatrixDeriv& constraints = *mstate->getC();
+    const MatrixDeriv& constraints = *this->mstate->getC();
 
     constraint_disp.clear();
-    constraint_disp.resize(mstate->getSize());
+    constraint_disp.resize(this->mstate->getSize());
 
     constraint_force.clear();
-    constraint_force.resize(mstate->getSize());
+    constraint_force.resize(this->mstate->getSize());
 
     constraint_dofs.clear();
     id_to_localIndex.clear();
@@ -489,7 +583,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
                     VecMaxDof[c] = dof;
         }*/
 
-        VecMinDof[c] = mstate->getSize()+1;
+        VecMinDof[c] = this->mstate->getSize()+1;
 
         for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
@@ -505,7 +599,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     if (wire_optimization.getValue())
     {
         std::vector< std::vector<int> > ordering_per_dof;
-        ordering_per_dof.resize(mstate->getSize());
+        ordering_per_dof.resize(this->mstate->getSize());
 
         MatrixDerivRowConstIterator rowItEnd = constraints.end();
         unsigned int c = 0;
@@ -518,7 +612,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
         renumbering.clear();
 
-        for (int dof = 0; dof < mstate->getSize(); dof++)
+        for (int dof = 0; dof < this->mstate->getSize(); dof++)
         {
             for (unsigned int c = 0; c < ordering_per_dof[dof].size(); c++)
             {
@@ -562,12 +656,12 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     // systemRHVector_buf is set to constraint_force;
     //std::cerr<<"WARNING: resize is called"<<std::endl;
     const unsigned int derivDim = Deriv::size();
-    const unsigned int systemSize = mstate->getSize() * derivDim;
+    const unsigned int systemSize = this->mstate->getSize() * derivDim;
     systemRHVector_buf->resize(systemSize) ;
     systemLHVector_buf->resize(systemSize) ;
     //std::cerr<<"resize ok"<<std::endl;
 
-    for ( int i=0; i<mstate->getSize(); i++)
+    for ( int i=0; i<this->mstate->getSize(); i++)
     {
         for  (unsigned int j=0; j<derivDim; j++)
             systemRHVector_buf->set(i*derivDim+j, constraint_force[i][j]);
@@ -590,7 +684,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin, int end)
 {
-    const MatrixDeriv& constraints = *mstate->getC();
+    const MatrixDeriv& constraints = *this->mstate->getC();
     const unsigned int derivDim = Deriv::size();
 
     last_disp = begin;
@@ -626,7 +720,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df, int begin, int end, bool update)
 {
-    const MatrixDeriv& constraints = *mstate->getC();
+    const MatrixDeriv& constraints = *this->mstate->getC();
     const unsigned int derivDim = Deriv::size();
 
     if (!update)
@@ -678,17 +772,17 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
 {
-    if (!mstate || !odesolver || (linearsolvers.size()==0)) return;
+    if (!this->mstate || !odesolver || (linearsolvers.size()==0)) return;
 
     // use the OdeSolver to get the position integration factor
     const double factor = odesolver->getPositionIntegrationFactor(); //*odesolver->getPositionIntegrationFactor(); // dt*dt
 
-    const unsigned int numDOFs = mstate->getSize();
+    const unsigned int numDOFs = this->mstate->getSize();
     const unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs*N;
 
     // Compute J
-    const MatrixDeriv& constraints = *mstate->getC();
+    const MatrixDeriv& constraints = *this->mstate->getC();
     const unsigned int totalNumConstraints = W->rowSize();
 
     J.resize(totalNumConstraints, numDOFReals);

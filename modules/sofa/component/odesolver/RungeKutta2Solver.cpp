@@ -121,8 +121,8 @@ void RungeKutta2Solver::solve(const core::ExecParams* params /* PARAMS FIRST */,
         ops[1].second.push_back(std::make_pair(acc.id(),dt));
         vop.v_multiop(ops);
 
-        mop.solveConstraint(dt,vel2,core::ConstraintParams::VEL);
-        mop.solveConstraint(dt,pos2,core::ConstraintParams::POS);
+        mop.solveConstraint(vel2,core::ConstraintParams::VEL);
+        mop.solveConstraint(pos2,core::ConstraintParams::POS);
     }
 #endif
 
