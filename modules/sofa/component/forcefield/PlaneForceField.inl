@@ -156,6 +156,7 @@ void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
     defaulttype::Vec3d axe3d(1,1,1); axe3d = axe;
     defaulttype::Vec3d normal3d; normal3d = planeNormal.getValue();
     defaulttype::Vec3d v = normal3d.cross(axe3d);
+    if (v.norm2() < 1.0e-10) return;
     v.normalize();
     v = normal3d * cos ( angle ) + v * sin ( angle );
     *planeNormal.beginEdit() = v;

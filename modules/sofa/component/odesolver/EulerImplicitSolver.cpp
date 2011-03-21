@@ -258,9 +258,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
 
         vop.v_multiop(ops);
         sofa::helper::AdvancedTimer::stepNext ("UpdateVAndX", "CorrectV");
-        mop.solveConstraint(dt,newVel,core::ConstraintParams::VEL);
+        mop.solveConstraint(newVel,core::ConstraintParams::VEL);
         sofa::helper::AdvancedTimer::stepNext ("CorrectV", "CorrectX");
-        mop.solveConstraint(dt,newPos,core::ConstraintParams::POS);
+        mop.solveConstraint(newPos,core::ConstraintParams::POS);
         sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
 #endif
