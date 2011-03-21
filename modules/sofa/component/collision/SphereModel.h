@@ -210,7 +210,7 @@ inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->ms
 template<class DataTypes>
 inline void TSphere<DataTypes>::translate(double dx, double dy, double dz)
 {
-    helper::WriteAccessor<Data<TSphere::VecCoord> > xData = *this->model->mstate->write(core::VecCoordId::position());
+    helper::WriteAccessor<Data<VecCoord> > xData = *this->model->mstate->write(core::VecCoordId::position());
     Coord& center = xData.wref()[index];
     center.x() += (Real)dx;
     center.y() += (Real)dy;
