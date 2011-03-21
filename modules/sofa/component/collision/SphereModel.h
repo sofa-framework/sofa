@@ -31,8 +31,8 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/accessor.h>
 
-#include <vector>
 
 namespace sofa
 {
@@ -170,8 +170,9 @@ public:
 
     Data< VecReal > radius;
     Data< SReal > defaultRadius;
-    sofa::core::objectmodel::DataFileName filename;
     Data< Vector3 > translation;
+    sofa::core::objectmodel::DataFileName filename;
+
 
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
@@ -208,16 +209,16 @@ template<class DataTypes>
 inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 template<class DataTypes>
-inline void TSphere<DataTypes>::translate(double dx, double dy, double dz)
+void TSphere<DataTypes>::translate(double dx, double dy, double dz)
 {
     helper::WriteAccessor<Data<VecCoord> > xData = *this->model->mstate->write(core::VecCoordId::position());
-    Coord& center = xData.wref()[index];
-    center.x() += (Real)dx;
-    center.y() += (Real)dy;
-    center.z() += (Real)dz;
+    Coord& pos = xData.wref()[this->index];
+    pos.x() += (SReal)dx;
+    pos.y() += (SReal)dy;
+    pos.z() += (SReal)dz;
 }
 
-using namespace sofa::defaulttype;
+
 typedef TSphereModel<Vec3Types> SphereModel;
 typedef TSphere<Vec3Types> Sphere;
 
