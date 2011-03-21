@@ -91,11 +91,6 @@ bool BaseElement::isFileRoot()
 // 	return attributes;
 // }
 
-/// Set an attribute. Override any existing value
-void BaseElement::setAttribute(const std::string& attr, const char* val)
-{
-    attributes[attr] = val;
-}
 
 bool BaseElement::presenceAttribute(const std::string& s)
 {

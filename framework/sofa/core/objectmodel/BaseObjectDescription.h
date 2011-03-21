@@ -83,6 +83,9 @@ public:
     /// Get the object instance name
     virtual std::string getName();
 
+    /// Set the object instance name
+    virtual void setName(const std::string& name);
+
     /// Get the parent node
     virtual BaseObjectDescription* getParent() const;
 
@@ -109,6 +112,9 @@ public:
     /// Get an attribute given its name (return defaultVal if not present)
     virtual const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
 
+    /// Set an attribute. Override any existing value
+    virtual void setAttribute(const std::string& attr, const char* val);
+
     /// Remove an attribute given its name
     virtual bool removeAttribute(const std::string& attr);
 
@@ -116,6 +122,7 @@ public:
     virtual std::string getFullName();
 
     virtual void logWarning(std::string s) {warnings.push_back(s);};
+
 protected:
     AttributeMap attributes;
     std::vector< std::string > warnings;

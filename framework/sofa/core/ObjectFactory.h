@@ -108,6 +108,8 @@ public:
         /// BaseClass structure associated with the type of intanciated objects.
         virtual const objectmodel::BaseClass* getClass() = 0;
 
+        virtual std::string shortName(objectmodel::BaseObjectDescription* arg) = 0;
+
         /// The name of the library or executable containing the binary code for this component
         virtual const char* getTarget() = 0;
     };
@@ -153,6 +155,10 @@ public:
 
     /// Test if a creator exists for a given classname
     bool hasCreator(std::string classname);
+
+    /// Return the shortname for this classname. Empty string if
+    /// no creator exists for this classname.
+    std::string shortName(std::string classname);
 
     /// Fill the given vector with all the registered classes
     void getAllEntries(std::vector<ClassEntry*>& result);
@@ -201,6 +207,11 @@ public:
         return getInstance()->hasCreator(classname);
     }
 
+    static std::string ShortName(std::string classname)
+    {
+        return getInstance()->shortName(classname);
+    }
+
     /// Dump the content of the factory to a text stream.
     void dump(std::ostream& out = std::cout);
 
@@ -245,6 +256,12 @@ public:
 #else
         return "";
 #endif
+    }
+
+    virtual std::string shortName(objectmodel::BaseObjectDescription* arg)
+    {
+        RealObject* instance = NULL;
+        return RealObject::shortName(instance,arg);
     }
 
 };

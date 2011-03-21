@@ -68,18 +68,6 @@ core::objectmodel::Base* Element<Object>::getObject()
     return object;
 }
 
-template<class Object>
-bool Element<Object>::initNode()
-{
-    Object *obj = Factory::CreateObject(this->getType(), this);
-    if (obj != NULL)
-    {
-        setObject(obj);
-        obj->setName(getName());
-        return true;
-    }
-    else return false;
-}
 
 //template<class Object> class Factory< std::string, Object, Node<Object>* >;
 

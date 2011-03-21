@@ -60,6 +60,7 @@ public:
     std::string namespaceName;
     std::string className;
     std::string templateName;
+    std::string shortName;
     //std::string targetName;
     helper::vector<const BaseClass*> parents;
 
@@ -229,6 +230,7 @@ protected:
         namespaceName = T::namespaceName(ptr);
         className = T::className(ptr);
         templateName = T::templateName(ptr);
+        shortName = T::shortName(ptr);
 //#ifdef SOFA_TARGET
 //        targetName = sofa_tostring(SOFA_TARGET);
 //#endif

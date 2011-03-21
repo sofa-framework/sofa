@@ -68,6 +68,11 @@ std::string BaseObjectDescription::getName()
     return std::string(getAttribute("name",""));
 }
 
+void BaseObjectDescription::setName(const std::string& name)
+{
+    setAttribute("name",name.c_str());
+}
+
 /// Get the parent node
 BaseObjectDescription* BaseObjectDescription::getParent() const
 {
@@ -106,6 +111,12 @@ const char* BaseObjectDescription::getAttribute(const std::string& attr, const c
         return defaultVal;
     else
         return it->second.c_str();
+}
+
+/// Set an attribute. Override any existing value
+void BaseObjectDescription::setAttribute(const std::string& attr, const char* val)
+{
+    attributes[attr] = val;
 }
 
 std::string BaseObjectDescription::getFullName()

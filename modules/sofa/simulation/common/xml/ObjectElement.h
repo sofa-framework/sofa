@@ -48,8 +48,6 @@ public:
 
     virtual bool init();
 
-    void setAttribute(const std::string& attr, const char* val);
-
     virtual const char* getClass() const;
 };
 

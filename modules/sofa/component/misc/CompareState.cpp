@@ -66,7 +66,8 @@ with
 std::string lookForValidCompareStateFile( const std::string& sceneName,
         const std::string& mstateName,
         const int counterCompareState,
-        const std::string& extension)
+        const std::string& extension,
+        const std::string defaultName ="default")
 {
     using namespace sofa::helper::system;
 
@@ -92,7 +93,7 @@ std::string lookForValidCompareStateFile( const std::string& sceneName,
     for( int i = 0; i<numDefault; ++i)
     {
         std::ostringstream oss;
-        oss << sceneName << "_" << counterCompareState << "_default" << i << "_mstate" << extension ;
+        oss << sceneName << "_" << counterCompareState << "_" << defaultName << i << "_mstate" << extension ;
         std::string testFile = oss.str();
         if(DataRepository.findFile(testFile,"",&errorlog))
         {
@@ -232,10 +233,14 @@ void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalSt
             rs = new sofa::component::misc::CompareState(); gnode->addObject(rs);
         }
 
-
-
+        // compatibility:
         std::string validFilename = lookForValidCompareStateFile(sceneName, ms->getName(), counterCompareState, extension);
-
+        if(validFilename.empty())
+        {
+            // look for a file which closest match the shortName of this mechanicalState.
+            validFilename = lookForValidCompareStateFile(sceneName, ms->getName(), counterCompareState, extension,
+                    ms->getClass()->shortName);
+        }
         rs->f_filename.setValue(validFilename);  rs->f_listening.setValue(false); //Deactivated only called by extern functions
         if (init) rs->init();
 
