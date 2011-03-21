@@ -192,6 +192,7 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
             }
         }
     }
+//    cerr<<"PartialFixedConstraint<DataTypes>::projectResponse is called  res = "<<endl<<res<<endl;
 }
 
 template <class DataTypes>
@@ -251,6 +252,7 @@ void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::Mechan
         projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
         ++rowIt;
     }
+    //cerr<<"PartialFixedConstraint<DataTypes>::projectJacobianMatrix : helper::WriteAccessor<DataMatrixDeriv> c =  "<<endl<< c<<endl;
 }
 
 // Matrix Integration interface
@@ -258,6 +260,8 @@ template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
+    //cerr<<" PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
+
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
@@ -281,6 +285,7 @@ template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
 {
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
+    //cerr<<"PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
     const unsigned int N = Deriv::size();
 
     VecBool blockedDirection = fixedDirections.getValue();
