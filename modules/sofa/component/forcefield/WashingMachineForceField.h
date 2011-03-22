@@ -53,10 +53,10 @@ namespace forcefield
 
 /// A box of 6 PlaneForceField that can rotate
 template<class DataTypes>
-class WashingMachineForceField : public core::behavior::ForceField<DataTypes>, public core::VisualModel
+class WashingMachineForceField : public core::behavior::ForceField<DataTypes>//, public core::VisualModel
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(WashingMachineForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), core::VisualModel);
+    SOFA_CLASS(SOFA_TEMPLATE(WashingMachineForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
