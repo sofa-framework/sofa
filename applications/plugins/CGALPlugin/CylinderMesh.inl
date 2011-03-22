@@ -119,6 +119,7 @@ void CylinderMesh<DataTypes>::update()
 
     //generate the points
     VecCoord indices;
+    //hexa vertices
     for(int k = 0; k <= m; ++k)
     {
         for(int j = 0; j <= n; ++j)
@@ -138,6 +139,7 @@ void CylinderMesh<DataTypes>::update()
     int numPoints = points.size();
     std::cout << "num of points = " << numPoints << std::endl;
 
+    //hexa centers
     double offset = 0.5*m_interval;
     for(int k = 0; k < m; ++k)
     {
@@ -154,6 +156,30 @@ void CylinderMesh<DataTypes>::update()
     }
     int numCenters = points.size() - numPoints;
     std::cout << "num of centers = " << numCenters << std::endl;
+
+    //boundary centers
+    //i = 0
+    for(int k = 0; k < m; ++k)
+    {
+        for(int j = 0; j < n; ++j)
+        {
+            Point p(0.0, j*m_interval+offset, k*m_interval+offset);
+            Coord index(0, j, k);
+            points.push_back(p);
+            indices.push_back(index);
+        }
+    }
+    //i = n-1
+    for(int k = 0; k < m; ++k)
+    {
+        for(int j = 0; j < n; ++j)
+        {
+            Point p(r, j*m_interval+offset, k*m_interval+offset);
+            Coord index(n-1, j, k);
+            points.push_back(p);
+            indices.push_back(index);
+        }
+    }
 
     //generate tetrahedra between tetra(i,j,k) and tetra(i+1,j,k)
     for(int k = 0; k < m; ++k)
