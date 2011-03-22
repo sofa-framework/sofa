@@ -109,8 +109,10 @@ public:
     virtual ~CudaHexahedronTLEDForceField();
     void init();
     void reinit();
-    void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
-    void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/);
+//    void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
+    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& dataF, const DataVecCoord& dataX, const DataVecDeriv& /*dataV*/ ) ;
+//    void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/);
+    virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& datadF, const DataVecDeriv& datadX ) ;
     double getPotentialEnergy(const VecCoord&)  const { return 0.0; }
 
     // Computes lambda and mu based on Young's modulus and Poisson ratio

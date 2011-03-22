@@ -320,8 +320,11 @@ void CudaHexahedronTLEDForceField::reinit()
 // --------------------------------------------------------------------------------------
 // Compute internal forces
 // --------------------------------------------------------------------------------------
-void CudaHexahedronTLEDForceField::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
+void CudaHexahedronTLEDForceField::addForce (const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& dataF, const DataVecCoord& dataX, const DataVecDeriv& /*dataV*/)
 {
+    VecDeriv& f        = *(dataF.beginEdit());
+    const VecCoord& x  =   dataX.getValue()  ;
+
     // Gets initial positions (allow to compute displacements by doing the difference between initial and current positions)
     const VecCoord& x0 = *mstate->getX0();
 
@@ -337,12 +340,14 @@ void CudaHexahedronTLEDForceField::addForce (VecDeriv& f, const VecCoord& x, con
         x.deviceRead(),
         x0.deviceRead(),
         f.deviceWrite());
+
+    dataF.endEdit();
 }
 
 // --------------------------------------------------------------------------------------
 // Only useful for implicit formulations
 // --------------------------------------------------------------------------------------
-void CudaHexahedronTLEDForceField::addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/)
+void CudaHexahedronTLEDForceField::addDForce (const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& /*datadF*/, const DataVecDeriv& /*datadX*/)
 {
 
 }
