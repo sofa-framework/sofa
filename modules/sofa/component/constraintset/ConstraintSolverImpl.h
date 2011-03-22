@@ -80,12 +80,12 @@ public:
 
 
 
-/// Gets the vector of constraint values
-class MechanicalGetConstraintValueVisitor : public simulation::BaseMechanicalVisitor
+/// Gets the vector of constraint violation values
+class MechanicalGetConstraintViolationVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
 
-    MechanicalGetConstraintValueVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, BaseVector *v)
+    MechanicalGetConstraintViolationVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, BaseVector *v)
         : simulation::BaseMechanicalVisitor(params)
         , cparams(params)
         , m_v(v)
@@ -114,7 +114,7 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetConstraintValueVisitor";}
+    virtual const char* getClassName() const { return "MechanicalGetConstraintViolationVisitor";}
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()

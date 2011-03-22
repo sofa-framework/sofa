@@ -177,7 +177,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     current_cp->clear(numConstraints);
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
-    MechanicalGetConstraintValueVisitor(cParams /* PARAMS FIRST */, &current_cp->dFree).execute(context);
+    MechanicalGetConstraintViolationVisitor(cParams /* PARAMS FIRST */, &current_cp->dFree).execute(context);
     sofa::helper::AdvancedTimer::stepEnd ("Get Constraint Value");
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Resolutions");
