@@ -94,7 +94,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
     /// Compute the SVD decomposition and the condition number
     Eigen::JacobiSVD<Eigen::MatrixXd> svd(m, Eigen::ComputeThinU | Eigen::ComputeThinV);
-    f_conditionNumber.setValue( svd.singularValues()(0) / svd.singularValues()(M.rowSize()-1) );
+    f_conditionNumber.setValue( (Real)(svd.singularValues()(0) / svd.singularValues()(M.rowSize()-1)) );
     if(printLog)
     {
         serr << "SVDLinearSolver<TMatrix,TVector>::solve, the singular values are:" << sendl << svd.singularValues() << sendl;
@@ -122,7 +122,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     Eigen::VectorXd solution = svd.matrixV() * S_Ut_b;
     for(unsigned i=0; i<M.rowSize(); i++ )
     {
-        x[i] = solution(i);
+        x[i] = (Real) solution(i);
     }
 
     if( printLog )

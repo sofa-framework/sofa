@@ -482,17 +482,15 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
         {
 
             Hexahedron the_hexa = hexaArray[i];
-            Coord baryCoord;
+            Vec3f center;
 
             for (unsigned int j = 0; j<8; j++)
             {
-                Coord vertex = coords[ the_hexa[j] ];
-
-                for (unsigned int k = 0; k<3; k++)
-                    baryCoord[k] += vertex[k];
+                Vec3f vertex; vertex = DataTypes::getCPos(coords[ the_hexa[j] ]);
+                center += vertex;
             }
 
-            baryCoord = baryCoord/8;
+            center = center/8;
 
             std::ostringstream oss;
             oss << i;
@@ -500,7 +498,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
             const char* s = tmp.c_str();
             glPushMatrix();
 
-            glTranslatef(baryCoord[0], baryCoord[1], baryCoord[2]);
+            glTranslatef(center[0], center[1], center[2]);
             glScalef(scale,scale,scale);
 
             // Makes text always face the viewer by removing the scene rotation
@@ -508,8 +506,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(baryCoord[0], baryCoord[1], baryCoord[2]);
-            temp = modelviewM.transform(temp);
+            Vec3f temp = modelviewM.transform(center);
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
@@ -529,7 +526,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
     }
 
 
-    //Draw triangles
+    //Draw hexahedra
     if (_draw.getValue())
     {
         const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexahedra();
@@ -545,21 +542,24 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
             for (unsigned int i = 0; i<hexaArray.size(); i++)
             {
                 const Hexahedron& H = hexaArray[i];
-                sofa::helper::vector <Coord> hexaCoord;
+                sofa::helper::vector <Vec3f> hexaCoord;
 
                 for (unsigned int j = 0; j<8; j++)
-                    hexaCoord.push_back (coords[H[j]]);
+                {
+                    Vec3f p; p = DataTypes::getCPos(coords[H[j]]);
+                    hexaCoord.push_back(p);
+                }
 
                 for (unsigned int j = 0; j<4; j++)
                 {
-                    glVertex3d(hexaCoord[j][0], hexaCoord[j][1], hexaCoord[j][2]);
-                    glVertex3d(hexaCoord[(j+1)%4][0], hexaCoord[(j+1)%4][1], hexaCoord[(j+1)%4][2]);
+                    glVertex3f(hexaCoord[j][0], hexaCoord[j][1], hexaCoord[j][2]);
+                    glVertex3f(hexaCoord[(j+1)%4][0], hexaCoord[(j+1)%4][1], hexaCoord[(j+1)%4][2]);
 
-                    glVertex3d(hexaCoord[j+4][0], hexaCoord[j+4][1], hexaCoord[j+4][2]);
-                    glVertex3d(hexaCoord[(j+1)%4 +4][0], hexaCoord[(j+1)%4 +4][1], hexaCoord[(j+1)%4 +4][2]);
+                    glVertex3f(hexaCoord[j+4][0], hexaCoord[j+4][1], hexaCoord[j+4][2]);
+                    glVertex3f(hexaCoord[(j+1)%4 +4][0], hexaCoord[(j+1)%4 +4][1], hexaCoord[(j+1)%4 +4][2]);
 
-                    glVertex3d(hexaCoord[j][0], hexaCoord[j][1], hexaCoord[j][2]);
-                    glVertex3d(hexaCoord[j+4][0], hexaCoord[j+4][1], hexaCoord[j+4][2]);
+                    glVertex3f(hexaCoord[j][0], hexaCoord[j][1], hexaCoord[j][2]);
+                    glVertex3f(hexaCoord[j+4][0], hexaCoord[j+4][1], hexaCoord[j+4][2]);
                 }
             }
             glEnd();

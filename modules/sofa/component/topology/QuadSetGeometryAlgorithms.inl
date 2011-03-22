@@ -371,14 +371,11 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw()
         {
 
             Quad the_quad = quadArray[i];
-            Coord baryCoord;
             Coord vertex1 = coords[ the_quad[0] ];
             Coord vertex2 = coords[ the_quad[1] ];
             Coord vertex3 = coords[ the_quad[2] ];
             Coord vertex4 = coords[ the_quad[3] ];
-
-            for (unsigned int k = 0; k<3; k++)
-                baryCoord[k] = (vertex1[k]+vertex2[k]+vertex3[k]+vertex4[k])/4;
+            Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
 
             std::ostringstream oss;
             oss << i;
@@ -386,7 +383,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw()
             const char* s = tmp.c_str();
             glPushMatrix();
 
-            glTranslatef(baryCoord[0], baryCoord[1], baryCoord[2]);
+            glTranslatef(center[0], center[1], center[2]);
             glScalef(scale,scale,scale);
 
             // Makes text always face the viewer by removing the scene rotation
@@ -394,8 +391,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw()
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(baryCoord[0], baryCoord[1], baryCoord[2]);
-            temp = modelviewM.transform(temp);
+            Vec3f temp = modelviewM.transform(center);
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
@@ -434,8 +430,8 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw()
 
                 for (unsigned int j = 0; j<4; j++)
                 {
-                    Coord coordP = coords[q[j]];
-                    glVertex3d(coordP[0], coordP[1], coordP[2]);
+                    Vec3f coordP; coordP = DataTypes::getCPos(coords[q[j]]);
+                    glVertex3f(coordP[0], coordP[1], coordP[2]);
                 }
             }
             glEnd();
@@ -449,10 +445,10 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw()
                 for (unsigned int i = 0; i<edgeArray.size(); i++)
                 {
                     const Edge& e = edgeArray[i];
-                    Coord coordP1 = coords[e[0]];
-                    Coord coordP2 = coords[e[1]];
-                    glVertex3d(coordP1[0], coordP1[1], coordP1[2]);
-                    glVertex3d(coordP2[0], coordP2[1], coordP2[2]);
+                    Vec3f coordP1; coordP1 = DataTypes::getCPos(coords[e[0]]);
+                    Vec3f coordP2; coordP2 = DataTypes::getCPos(coords[e[1]]);
+                    glVertex3f(coordP1[0], coordP1[1], coordP1[2]);
+                    glVertex3f(coordP2[0], coordP2[1], coordP2[2]);
                 }
             }
             else
@@ -460,15 +456,18 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw()
                 for (unsigned int i = 0; i<quadArray.size(); i++)
                 {
                     const Quad& q = quadArray[i];
-                    sofa::helper::vector <Coord> quadCoord;
-
-                    for (unsigned int j = 0; j<4; j++)
-                        quadCoord.push_back (coords[q[j]]);
+                    sofa::helper::vector <Vec3f> quadCoord;
 
                     for (unsigned int j = 0; j<4; j++)
                     {
-                        glVertex3d(quadCoord[j][0], quadCoord[j][1], quadCoord[j][2]);
-                        glVertex3d(quadCoord[(j+1)%4][0], quadCoord[(j+1)%4][1], quadCoord[(j+1)%4][2]);
+                        Vec3f p; p = DataTypes::getCPos(coords[q[j]]);
+                        quadCoord.push_back(p);
+                    }
+
+                    for (unsigned int j = 0; j<4; j++)
+                    {
+                        glVertex3f(quadCoord[j][0], quadCoord[j][1], quadCoord[j][2]);
+                        glVertex3f(quadCoord[(j+1)%4][0], quadCoord[(j+1)%4][1], quadCoord[(j+1)%4][2]);
                     }
                 }
             }

@@ -571,14 +571,11 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
         {
 
             Tetrahedron the_tetra = tetraArray[i];
-            Coord baryCoord;
             Coord vertex1 = coords[ the_tetra[0] ];
             Coord vertex2 = coords[ the_tetra[1] ];
             Coord vertex3 = coords[ the_tetra[2] ];
             Coord vertex4 = coords[ the_tetra[3] ];
-
-            for (unsigned int k = 0; k<3; k++)
-                baryCoord[k] = (vertex1[k]+vertex2[k]+vertex3[k]+vertex4[k])/4;
+            Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
 
             std::ostringstream oss;
             oss << i;
@@ -586,7 +583,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
             const char* s = tmp.c_str();
             glPushMatrix();
 
-            glTranslatef(baryCoord[0], baryCoord[1], baryCoord[2]);
+            glTranslatef(center[0], center[1], center[2]);
             glScalef(scale,scale,scale);
 
             // Makes text always face the viewer by removing the scene rotation
@@ -594,8 +591,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(baryCoord[0], baryCoord[1], baryCoord[2]);
-            temp = modelviewM.transform(temp);
+            Vec3f temp = modelviewM.transform(center);
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
@@ -631,22 +627,25 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
             for (unsigned int i = 0; i<tetraArray.size(); i++)
             {
                 const Tetrahedron& tet = tetraArray[i];
-                sofa::helper::vector <Coord> tetraCoord;
-
-                for (unsigned int j = 0; j<4; j++)
-                    tetraCoord.push_back (coords[tet[j]]);
+                sofa::helper::vector <Vec3f> tetraCoord;
 
                 for (unsigned int j = 0; j<4; j++)
                 {
-                    glVertex3d(tetraCoord[j][0], tetraCoord[j][1], tetraCoord[j][2]);
-                    glVertex3d(tetraCoord[(j+1)%4][0], tetraCoord[(j+1)%4][1], tetraCoord[(j+1)%4][2]);
+                    Vec3f p; p = DataTypes::getCPos(coords[tet[j]]);
+                    tetraCoord.push_back(p);
                 }
 
-                glVertex3d(tetraCoord[0][0], tetraCoord[0][1], tetraCoord[0][2]);
-                glVertex3d(tetraCoord[2][0], tetraCoord[2][1], tetraCoord[2][2]);
+                for (unsigned int j = 0; j<4; j++)
+                {
+                    glVertex3f(tetraCoord[j][0], tetraCoord[j][1], tetraCoord[j][2]);
+                    glVertex3f(tetraCoord[(j+1)%4][0], tetraCoord[(j+1)%4][1], tetraCoord[(j+1)%4][2]);
+                }
 
-                glVertex3d(tetraCoord[1][0], tetraCoord[1][1], tetraCoord[1][2]);
-                glVertex3d(tetraCoord[3][0], tetraCoord[3][1], tetraCoord[3][2]);
+                glVertex3f(tetraCoord[0][0], tetraCoord[0][1], tetraCoord[0][2]);
+                glVertex3f(tetraCoord[2][0], tetraCoord[2][1], tetraCoord[2][2]);
+
+                glVertex3f(tetraCoord[1][0], tetraCoord[1][1], tetraCoord[1][2]);
+                glVertex3f(tetraCoord[3][0], tetraCoord[3][1], tetraCoord[3][2]);
             }
             glEnd();
         }

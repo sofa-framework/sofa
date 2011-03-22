@@ -525,9 +525,9 @@ public:
     {
         BOOST_STATIC_ASSERT(N == 3);
         return Vec(
-                (*this)[1]*b[2] - (*this)[2]*b[1],
-                (*this)[2]*b[0] - (*this)[0]*b[2],
-                (*this)[0]*b[1] - (*this)[1]*b[0]
+                (real)((*this)[1]*b[2] - (*this)[2]*b[1]),
+                (real)((*this)[2]*b[0] - (*this)[0]*b[2]),
+                (real)((*this)[0]*b[1] - (*this)[1]*b[0])
                 );
     }
 
@@ -616,16 +616,16 @@ std::ostream& operator << ( std::ostream& out, const Vec<N,Real>& v )
 template<typename real1, typename real2 >
 inline Vec<3,real1> cross(const Vec<3,real1>& a, const Vec<3,real2>& b)
 {
-    return Vec<3,real1>(a.y()*b.z() - a.z()*b.y(),
-            a.z()*b.x() - a.x()*b.z(),
-            a.x()*b.y() - a.y()*b.x());
+    return Vec<3,real1>((real1)(a.y()*b.z() - a.z()*b.y()),
+            (real1)(a.z()*b.x() - a.x()*b.z()),
+            (real1)(a.x()*b.y() - a.y()*b.x()));
 }
 
 /// Cross product for 2-elements vectors.
 template <typename real1, typename real2>
 real1 cross(const defaulttype::Vec<2,real1>& a, const defaulttype::Vec<2,real2>& b )
 {
-    return a[0]*b[1] - a[1]*b[0];
+    return (real1)(a[0]*b[1] - a[1]*b[0]);
 }
 
 /// Dot product (alias for operator*)
