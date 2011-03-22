@@ -44,8 +44,8 @@ const char* GNodeMultiMappingElement::getClass() const
 }
 
 
-}
+} // namespace tree
 
-}
+} // namespace simulation
 
-}
+} // namespace sofa

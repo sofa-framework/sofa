@@ -1,5 +1,5 @@
-#ifndef SOFA_SIMULATION_BGL_BGLMUTLIMAPPINGELEMENT
-#define SOFA_SIMULATION_BGL_BGLMUTLIMAPPINGELEMENT
+#ifndef SOFA_SIMULATION_BGL_BGLMUTLIMAPPINGELEMENT_H
+#define SOFA_SIMULATION_BGL_BGLMUTLIMAPPINGELEMENT_H
 
 #include <sofa/simulation/common/xml/BaseMultiMappingElement.h>
 
@@ -24,10 +24,10 @@ protected:
 
 };
 
-}
+} // namespace bgl
 
-}
+} // namespace simulation
 
-}
+} // namespace sofa
 
-#endif // SOFA_SIMULATION_BGL_BGLMUTLIMAPPINGELEMENT
+#endif // SOFA_SIMULATION_BGL_BGLMUTLIMAPPINGELEMENT_H

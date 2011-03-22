@@ -323,8 +323,11 @@ bool DistanceLMContactConstraint<DataTypes>::isCorrectionComputedWithSimulatedDO
     switch(order)
     {
     case core::ConstraintParams::ACC :
-    case core::ConstraintParams::VEL : return true;
-    case core::ConstraintParams::POS : return false;
+    case core::ConstraintParams::VEL :
+        return true;
+    case core::ConstraintParams::POS :
+    case core::ConstraintParams::POS_AND_VEL :
+        return false;
     }
     return false;
 }

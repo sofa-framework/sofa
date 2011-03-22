@@ -575,7 +575,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
             double iterationTimeDiff = actTime - iterationTime;
             iterationTime = actTime;
             std::cout << "Total time = " << iterationTimeDiff << std::endl;
-            int toSleep = floor(dt*1000000-compTimeDiff);
+            int toSleep = (int)floor(dt*1000000-compTimeDiff);
             //std::cout << "To sleep: " << toSleep << std::endl;
             if (toSleep > 0)
                 usleep(toSleep);
