@@ -231,6 +231,7 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
 {
     switch (group->getOrder())
     {
+    case core::ConstraintParams::ACC :
     case core::ConstraintParams::VEL :
     {
         Contact &out=*(this->constraintGroupToContact[group]);
@@ -300,6 +301,7 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
         break;
     }
     case core::ConstraintParams::POS :
+    case core::ConstraintParams::POS_AND_VEL :
     {
         //The force cannot be attractive!
         if (Lambda[0] < 0)

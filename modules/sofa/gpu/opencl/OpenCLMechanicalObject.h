@@ -77,7 +77,6 @@ public:
     MechanicalObjectInternalData(MechanicalObject< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >* = NULL)
     {}
     static void accumulateForce(Main* m);
-    static void addDxToCollisionModel(Main* m);
     static void vAlloc(Main* m, VecId v);
     static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f);
     static void vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops);
@@ -92,8 +91,7 @@ public:
     template<> inline void MechanicalObject< T >::vOp(const core::ExecParams* params /* PARAMS FIRST */, core::VecId v, core::ConstVecId a, core::ConstVecId b, double f); \
     template<> inline void MechanicalObject< T >::vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops); \
     template<> inline double MechanicalObject< T >::vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b); \
-    template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params); \
-    template<> inline void MechanicalObject< T >::addDxToCollisionModel();
+    template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params);
 
 OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3fTypes);
 OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3f1Types);
