@@ -387,7 +387,7 @@ void MasterConstraintSolver::setConstraintEquations(const core::ExecParams* para
     core::MechanicalParams mparams = core::MechanicalParams(*params);
     simulation::MechanicalProjectJacobianMatrixVisitor(&mparams).execute(context);
 
-    /// calling GetConstraintValueVisitor: each constraint provides its present violation
+    /// calling GetConstraintViolationVisitor: each constraint provides its present violation
     /// for a given state (by default: free_position TODO: add VecId to make this method more generic)
     getIndividualConstraintViolations(params /* PARAMS FIRST */, context);
 
@@ -447,7 +447,7 @@ void MasterConstraintSolver::getIndividualConstraintViolations(const core::ExecP
     cparams.setX(core::ConstVecCoordId::freePosition());
     cparams.setV(core::ConstVecDerivId::freeVelocity());
 
-    constraintset::MechanicalGetConstraintValueVisitor(&cparams, getCP()->getDfree()).execute(context);
+    constraintset::MechanicalGetConstraintViolationVisitor(&cparams, getCP()->getDfree()).execute(context);
 }
 
 void MasterConstraintSolver::getIndividualConstraintSolvingProcess(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)

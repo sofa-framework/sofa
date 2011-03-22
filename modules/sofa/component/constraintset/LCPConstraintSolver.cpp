@@ -341,7 +341,7 @@ void LCPConstraintSolver::build_LCP()
     lcp->clear(_numConstraints);
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
-    MechanicalGetConstraintValueVisitor(&cparams /* PARAMS FIRST */, _dFree).execute(context);
+    MechanicalGetConstraintViolationVisitor(&cparams /* PARAMS FIRST */, _dFree).execute(context);
     sofa::helper::AdvancedTimer::stepEnd("Get Constraint Value");
 
     if (this->f_printLog.getValue())
@@ -746,7 +746,7 @@ void LCPConstraintSolver::build_problem_info()
     //std::cout<<" resize done "  <<std::endl;
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
-    MechanicalGetConstraintValueVisitor(&cparams /* PARAMS FIRST */, _dFree).execute(context);
+    MechanicalGetConstraintViolationVisitor(&cparams /* PARAMS FIRST */, _dFree).execute(context);
     sofa::helper::AdvancedTimer::stepEnd  ("Get Constraint Value");
 
     if (this->f_printLog.getValue()) sout<<"LCPConstraintSolver: "<<_numConstraints<<" constraints, mu = "<<_mu<<sendl;

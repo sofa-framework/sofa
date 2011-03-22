@@ -269,7 +269,7 @@ protected:
     /// and resize the constraint problem that will be solved
     void writeAndAccumulateAndCountConstraintDirections(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, unsigned int &numConstraints);
 
-    /// 2.calling GetConstraintValueVisitor: each constraint provides its present violation
+    /// 2.calling GetConstraintViolationVisitor: each constraint provides its present violation
     /// for a given state (by default: free_position TODO: add VecId to make this method more generic)
     void getIndividualConstraintViolations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context);
 
