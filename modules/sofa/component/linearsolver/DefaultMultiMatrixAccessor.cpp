@@ -26,7 +26,7 @@
 #include <sofa/component/linearsolver/DefaultMultiMatrixAccessor.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
-//#define MULTIMATRIX_VERBOSE
+#define MULTIMATRIX_VERBOSE
 
 namespace sofa
 {
@@ -44,8 +44,7 @@ DefaultMultiMatrixAccessor::DefaultMultiMatrixAccessor()
 
 DefaultMultiMatrixAccessor::~DefaultMultiMatrixAccessor()
 {
-    for (std::set< defaulttype::BaseMatrix* >::const_iterator it = tempMatrices.begin(), itend = tempMatrices.end(); it != itend; ++it)
-        delete *it;
+    clear();
 }
 
 void DefaultMultiMatrixAccessor::clear()
@@ -54,6 +53,9 @@ void DefaultMultiMatrixAccessor::clear()
     //globalOffsets.clear();
     for (std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = globalOffsets.begin(), itend = globalOffsets.end(); it != itend; ++it)
         it->second = -1;
+    for (std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
+        if (it->second != NULL) delete it->second;
+    mappedMatrices.clear();
 }
 
 void DefaultMultiMatrixAccessor::setGlobalMatrix(defaulttype::BaseMatrix* matrix)
@@ -76,14 +78,12 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(const sofa::core::BaseMapp
     /// @TODO support for mapped matrices
 }
 
-#ifdef MULTIMATRIX_VERBOSE
 void DefaultMultiMatrixAccessor::addMappedMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate)
 {
     /// @TODO support for mapped matrices
-    std::cout << "DefaultMultiMatrixAccessor: Mapped state " << mstate->getName() << " ignored. It will not contribute to the final mechanical matrix." << std::endl;
-#else
-void DefaultMultiMatrixAccessor::addMappedMechanicalState(const sofa::core::behavior::BaseMechanicalState* )
-{
+    mappedMatrices[mstate] = NULL;
+#ifdef MULTIMATRIX_VERBOSE
+    //std::cout << "DefaultMultiMatrixAccessor: Mapped state " << mstate->getName() << " ignored. It will not contribute to the final mechanical matrix." << std::endl;
 #endif
 }
 
@@ -138,21 +138,47 @@ int DefaultMultiMatrixAccessor::getGlobalOffset(const sofa::core::behavior::Base
 
 DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const
 {
-    std::map< const sofa::core::behavior::BaseMechanicalState*, MatrixRef >::const_iterator it = localMatrixMap.find(mstate);
-    if (it != localMatrixMap.end())
     {
-        MatrixRef r = it->second;
+        std::map< const sofa::core::behavior::BaseMechanicalState*, MatrixRef >::const_iterator it = localMatrixMap.find(mstate);
+        if (it != localMatrixMap.end())
+        {
+            MatrixRef r = it->second;
 #ifdef MULTIMATRIX_VERBOSE
-        if (r)
-            std::cout << "DefaultMultiMatrixAccessor: valid " << r.matrix->rowSize() << "x" << r.matrix->colSize() << " matrix found for " << mstate->getName() << " using offset " << r.offset << std::endl;
-        else
-            std::cout << "DefaultMultiMatrixAccessor: NULL matrix found for " << mstate->getName() << std::endl;
+            if (r)
+                std::cout << "DefaultMultiMatrixAccessor: valid " << r.matrix->rowSize() << "x" << r.matrix->colSize() << " matrix found for " << mstate->getName() << " using offset " << r.offset << std::endl;
+            else
+                std::cout << "DefaultMultiMatrixAccessor: NULL matrix found for " << mstate->getName() << std::endl;
 #endif
-        return r;
+            return r;
+        }
     }
+    {
+        std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix*>::iterator it = mappedMatrices.find(mstate);
+        if (it != mappedMatrices.end()) // this state is mapped
+        {
+            if (it->second == NULL) // we need to create the matrix
+            {
+                it->second = createMatrix(mstate);
 #ifdef MULTIMATRIX_VERBOSE
-    else
-        std::cout << "DefaultMultiMatrixAccessor: NO matrix found for " << mstate->getName() << std::endl;
+                if (it->second != NULL)
+                    std::cout << "DefaultMultiMatrixAccessor: Mapped state " << mstate->getName() << " " << it->second->rowSize() << "x" << it->second->colSize() << " matrix created." << std::endl;
+                else
+                    std::cout << "DefaultMultiMatrixAccessor: Mapped state " << mstate->getName() << " ignored. It will not contribute to the final mechanical matrix." << std::endl;
+#endif
+            }
+            MatrixRef ref;
+            if (it->second != NULL)
+            {
+                ref.matrix = it->second;
+                ref.offset = 0;
+            }
+            localMatrixMap[mstate] = ref;
+            return ref;
+        }
+    }
+
+#ifdef MULTIMATRIX_VERBOSE
+    std::cout << "DefaultMultiMatrixAccessor: NO matrix found for " << mstate->getName() << std::endl;
 #endif
 
     return MatrixRef();
@@ -196,13 +222,13 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
     //    std::cout << "DefaultMultiMatrixAccessor: final matrix: " << *globalMatrix << std::endl;
 }
 
-defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* /*mstate*/)
+defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* /*mstate*/) const
 {
     /// @TODO support for mapped matrices
     return NULL;
 }
 
-defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createInteractionMatrix(const sofa::core::behavior::BaseMechanicalState* /*mstate1*/, const sofa::core::behavior::BaseMechanicalState* /*mstate2*/)
+defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createInteractionMatrix(const sofa::core::behavior::BaseMechanicalState* /*mstate1*/, const sofa::core::behavior::BaseMechanicalState* /*mstate2*/) const
 {
     /// @TODO support for mapped matrices
     return NULL;
