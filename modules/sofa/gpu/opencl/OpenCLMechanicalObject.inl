@@ -306,14 +306,6 @@ void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::addDxToCollisionModel(Main* m)
-{
-    DEBUG_TEXT("*MechanicalObjectInternalData::addDxToCollisionModel ");
-    Kernels::vAdd(m->xfree.getValue().size(), m->x.beginEdit()->deviceWrite(), m->xfree.getValue().deviceRead(), m->dx.getValue().deviceRead());
-    m->x.endEdit();
-}
-
-template<class TCoord, class TDeriv, class TReal>
 void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::vAlloc(Main* m, VecId v)
 {
     DEBUG_TEXT("*MechanicalObjectInternalData::vAlloc ");
@@ -851,9 +843,7 @@ template<> void MechanicalObject< T >::vMultiOp(const core::ExecParams* params /
 template<> double MechanicalObject< T >::vDot(const core::ExecParams* /* params */ /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b) \
 { return data.vDot(this, a, b); }				    \
 template<> void MechanicalObject< T >::resetForce(const core::ExecParams* /* params */) \
-{ data.resetForce(this); } \
-template<> void MechanicalObject< T >::addDxToCollisionModel() \
-{ data.addDxToCollisionModel(this); }
+{ data.resetForce(this); }
 
 OpenCLMechanicalObject_ImplMethods(gpu::opencl::OpenCLVec3fTypes);
 OpenCLMechanicalObject_ImplMethods(gpu::opencl::OpenCLVec3f1Types);
