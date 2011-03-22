@@ -170,6 +170,7 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lin
             break;
         }
         case core::ConstraintParams::POS :
+        case core::ConstraintParams::POS_AND_VEL :
         {
             const VecCoord &x1 = this->constrainedObject1->read(core::ConstVecCoordId(id.getId(this->constrainedObject1) ))->getValue();
             const VecCoord &x2 = this->constrainedObject2->read(core::ConstVecCoordId(id.getId(this->constrainedObject2) ))->getValue();

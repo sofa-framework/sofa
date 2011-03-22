@@ -628,6 +628,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
         orderName="Velocity";
         break;
     case core::ConstraintParams::POS :
+    case core::ConstraintParams::POS_AND_VEL :
         orderName="Position";
         break;
     }

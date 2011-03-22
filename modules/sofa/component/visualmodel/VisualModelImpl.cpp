@@ -713,7 +713,7 @@ void VisualModelImpl::computeNormals()
             if (vertNormIdx[i] >= nbn)
                 nbn = vertNormIdx[i]+1;
         }
-        serr << "CN1("<<nbn<<")"<<sendl;
+        //serr << "CN1("<<nbn<<")"<<sendl;
 
         normals.resize(nbn);
         for (int i = 0; i < nbn; i++)

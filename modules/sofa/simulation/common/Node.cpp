@@ -502,19 +502,22 @@ const core::objectmodel::BaseContext* Node::getContext() const
 
 void Node::setDefaultVisualContextValue()
 {
-    if (getShowVisualModels() == -1)            setShowVisualModels(true);
-    if (getShowBehaviorModels() == -1)          setShowBehaviorModels(false);
-    if (getShowCollisionModels() == -1)         setShowCollisionModels(false);
-    if (getShowBoundingCollisionModels() == -1) setShowBoundingCollisionModels(false);
-    if (getShowMappings() == -1)                setShowMappings(false);
-    if (getShowMechanicalMappings() == -1)      setShowMechanicalMappings(false);
-    if (getShowForceFields() == -1)             setShowForceFields(false);
-    if (getShowInteractionForceFields() == -1)  setShowInteractionForceFields(false);
-    if (getShowWireFrame() == -1)               setShowWireFrame(false);
-    if (getShowNormals() == -1)                 setShowNormals(false);
-#ifdef SOFA_SMP
-    if (showProcessorColor_.getValue() == -1)                 showProcessorColor_.setValue(false);
-#endif
+    /// @TODO: This method is now broken because getShow*() methods never return -1
+    /*
+        if (getShowVisualModels() == -1)            setShowVisualModels(true);
+        if (getShowBehaviorModels() == -1)          setShowBehaviorModels(false);
+        if (getShowCollisionModels() == -1)         setShowCollisionModels(false);
+        if (getShowBoundingCollisionModels() == -1) setShowBoundingCollisionModels(false);
+        if (getShowMappings() == -1)                setShowMappings(false);
+        if (getShowMechanicalMappings() == -1)      setShowMechanicalMappings(false);
+        if (getShowForceFields() == -1)             setShowForceFields(false);
+        if (getShowInteractionForceFields() == -1)  setShowInteractionForceFields(false);
+        if (getShowWireFrame() == -1)               setShowWireFrame(false);
+        if (getShowNormals() == -1)                 setShowNormals(false);
+    #ifdef SOFA_SMP
+        if (showProcessorColor_.getValue() == -1)                 showProcessorColor_.setValue(false);
+    #endif
+    */
 }
 
 void Node::initialize()
