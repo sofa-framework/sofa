@@ -84,14 +84,11 @@ void CylinderMesh<DataTypes>::update()
     m_interval = d / n;
     int m = ceil(l/m_interval);
     l = m_interval * m;
+    Real t = m_interval / 2;
 
     std::cout << "diameter = " << d << std::endl;
     std::cout << "length = " << l << std::endl;
     std::cout << "interval = " << m_interval << std::endl;
-
-    n *= 2;
-    m *= 2;
-    Real t = m_interval / 2;
 
     std::cout << "n = " << n << std::endl;
     std::cout << "m = " << m << std::endl;
@@ -106,11 +103,11 @@ void CylinderMesh<DataTypes>::update()
     //generate the points
     int count = 0;
     //hexa vertices
-    for(int k = 0; k <= m; k+=2)
+    for(int k = -m; k <= m; k+=2)
     {
-        for(int j = 0; j <= n; j+=2)
+        for(int j = -n; j <= n; j+=2)
         {
-            for(int i = 0; i <= n; i+=2)
+            for(int i = -n; i <= n; i+=2)
             {
                 Point p(i*t, j*t, k*t);
                 points.push_back(p);
@@ -125,11 +122,11 @@ void CylinderMesh<DataTypes>::update()
     std::cout << "num of vertices = " << m_nbVertices << std::endl;
 
     //hexa centers
-    for(int k = 1; k < m; k+=2)
+    for(int k = -m+1; k < m; k+=2)
     {
-        for(int j = 1; j < n; j+=2)
+        for(int j = -n+1; j < n; j+=2)
         {
-            for(int i = 1; i < n; i+=2)
+            for(int i = -n+1; i < n; i+=2)
             {
                 Point p(i*t, j*t, k*t);
                 points.push_back(p);
@@ -145,24 +142,24 @@ void CylinderMesh<DataTypes>::update()
 
     //boundary centers
     //i = 0
-    for(int k = 1; k <= m; k+=2)
+    for(int k = -m+1; k < m; k+=2)
     {
-        for(int j = 1; j <= n; j+=2)
+        for(int j = -n+1; j < n; j+=2)
         {
-            Point p(0, j*t, k*t);
+            Point p(-n*t, j*t, k*t);
             points.push_back(p);
-            Index g(0,j,k);
+            Index g(-n,j,k);
             m_ptID.insert(std::make_pair(g,count));
             //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
             ++count;
         }
     }
     //i = n
-    for(int k = 1; k < m; k+=2)
+    for(int k = -m+1; k < m; k+=2)
     {
-        for(int j = 1; j < n; j+=2)
+        for(int j = -n+1; j < n; j+=2)
         {
-            Point p(d, j*t, k*t);
+            Point p(n*t, j*t, k*t);
             points.push_back(p);
             Index g(n,j,k);
             m_ptID.insert(std::make_pair(g,count));
@@ -171,24 +168,24 @@ void CylinderMesh<DataTypes>::update()
         }
     }
     //j = 0
-    for(int k = 1; k < m; k+=2)
+    for(int k = -m+1; k < m; k+=2)
     {
-        for(int i = 1; i < n; i+=2)
+        for(int i = -n+1; i < n; i+=2)
         {
-            Point p(i*t, 0, k*t);
+            Point p(i*t, -n*t, k*t);
             points.push_back(p);
-            Index g(i,0,k);
+            Index g(i,-n,k);
             m_ptID.insert(std::make_pair(g,count));
             //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
             ++count;
         }
     }
     //j = n
-    for(int k = 1; k < m; k+=2)
+    for(int k = -m+1; k < m; k+=2)
     {
-        for(int i = 1; i < n; i+=2)
+        for(int i = -n+1; i < n; i+=2)
         {
-            Point p(i*t, d, k*t);
+            Point p(i*t, n*t, k*t);
             points.push_back(p);
             Index g(i,n,k);
             m_ptID.insert(std::make_pair(g,count));
@@ -197,24 +194,24 @@ void CylinderMesh<DataTypes>::update()
         }
     }
     //k = 0
-    for(int j = 1; j < n; j+=2)
+    for(int j = -n+1; j < n; j+=2)
     {
-        for(int i = 1; i < n; i+=2)
+        for(int i = -n+1; i < n; i+=2)
         {
-            Point p(i*t, j*t, 0);
+            Point p(i*t, j*t, -m*t);
             points.push_back(p);
-            Index g(i,j,0);
+            Index g(i,j,-m);
             m_ptID.insert(std::make_pair(g,count));
             //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
             ++count;
         }
     }
     //k = m
-    for(int j = 1; j < n; j+=2)
+    for(int j = -n+1; j < n; j+=2)
     {
-        for(int i = 1; i < n; i+=2)
+        for(int i = -n+1; i < n; i+=2)
         {
-            Point p(i*t, j*t, l);
+            Point p(i*t, j*t, m*t);
             points.push_back(p);
             Index g(i,j,m);
             m_ptID.insert(std::make_pair(g,count));
@@ -226,15 +223,15 @@ void CylinderMesh<DataTypes>::update()
     std::cout << "num of boundary centers = " << m_nbBDCenters << std::endl;
 
 
-    //generate tetrahedra between p(2i+1,2j+1,2k+1) and p(2i+3,2j+1,2k+1)
-    for(int k = 0; k < m/2; ++k)
+    //generate tetrahedra between c(i,j,k) and c(i+2,j,k) (i,j,k are odd numbers)
+    for(int k = -m+1; k < m; k+=2)
     {
-        for(int j = 0; j < n/2; ++j)
+        for(int j = -n+1; j < n; j+=2)
         {
-            for(int i = 0; i < n/2-1; ++i)
+            for(int i = -n+1; i < n-2; i+=2)
             {
-                Index c1(2*i+1, 2*j+1, 2*k+1), c2(2*i+3, 2*j+1, 2*k+1);
-                Index p1(2*i+2, 2*j, 2*k), p2(2*i+2, 2*j+2, 2*k), p3(2*i+2, 2*j+2, 2*k+2), p4(2*i+2, 2*j, 2*k+2);
+                Index c1(i,j,k), c2(i+2,j,k);
+                Index p1(i+1,j-1,k-1), p2(i+1,j+1,k-1), p3(i+1,j+1,k+1), p4(i+1,j-1,k+1);
                 Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
                 tetras.push_back(t1);
                 Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
@@ -246,15 +243,15 @@ void CylinderMesh<DataTypes>::update()
             }
         }
     }
-    //generate tetrahedra between p(2i+1,2j+1,2k+1) and p(2i+1,2j+3,2k+1)
-    for(int k = 0; k < m/2; ++k)
+    //generate tetrahedra between c(i,j,k) and c(i,j+2,k) (i,j,k are odd numbers)
+    for(int k = -m+1; k < m; k+=2)
     {
-        for(int i = 0; i < n/2; ++i)
+        for(int i = -n+1; i < n; i+=2)
         {
-            for(int j = 0; j < n/2-1; ++j)
+            for(int j = -n+1; j < n-2; j+=2)
             {
-                Index c1(2*i+1, 2*j+1, 2*k+1), c2(2*i+1, 2*j+3, 2*k+1);
-                Index p1(2*i, 2*j+2, 2*k), p2(2*i, 2*j+2, 2*k+2), p3(2*i+2, 2*j+2, 2*k+2), p4(2*i+2, 2*j+2, 2*k);
+                Index c1(i,j,k), c2(i,j+2,k);
+                Index p1(i-1,j+1,k-1), p2(i+1,j+1,k-1), p3(i+1,j+1,k+1), p4(i-1,j+1,k+1);
                 Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
                 tetras.push_back(t1);
                 Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
@@ -266,15 +263,15 @@ void CylinderMesh<DataTypes>::update()
             }
         }
     }
-    //generate tetrahedra between p(2i+1,2j+1,2k+1) and p(2i+1,2j+1,2k+3)
-    for(int i = 0; i < n/2; ++i)
+    //generate tetrahedra between c(i,j,k) and c(i,j,k+2) (i,j,k are odd numbers)
+    for(int i = -n+1; i < n; i+=2)
     {
-        for(int j = 0; j < n/2; ++j)
+        for(int j = -n+1; j < n; j+=2)
         {
-            for(int k = 0; k < m/2-1; ++k)
+            for(int k = -m+1; k < m-2; k+=2)
             {
-                Index c1(2*i+1, 2*j+1, 2*k+1), c2(2*i+1, 2*j+1, 2*k+3);
-                Index p1(2*i, 2*j, 2*k+2), p2(2*i, 2*j+2, 2*k+2), p3(2*i+2, 2*j+2, 2*k+2), p4(2*i+2, 2*j, 2*k+2);
+                Index c1(i,j,k), c2(i,j,k+2);
+                Index p1(i-1,j-1,k+1), p2(i+1,j-1,k+1), p3(i+1,j+1,k+1), p4(i-1,j+1,k+1);
                 Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
                 tetras.push_back(t1);
                 Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
@@ -286,13 +283,13 @@ void CylinderMesh<DataTypes>::update()
             }
         }
     }
-    //generate tetrahedra on the boundary i = 0
-    for(int k = 0; k < m/2; ++k)
+    //generate tetrahedra on the boundary i = -n
+    for(int k = -m+1; k < m; k+=2)
     {
-        for(int j = 0; j < n/2; ++j)
+        for(int j = -n+1; j < n; j+=2)
         {
-            Index c1(1, 2*j+1, 2*k+1), c2(0, 2*j+1, 2*k+1);
-            Index p1(0, 2*j, 2*k), p2(0, 2*j+2, 2*k), p3(0, 2*j+2, 2*k+2), p4(0, 2*j, 2*k+2);
+            Index c1(-n+1,j,k), c2(-n,j,k);
+            Index p1(-n,j-1,k-1), p2(-n,j+1,k-1), p3(-n,j+1,k+1), p4(-n,j-1,k+1);
             Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
             tetras.push_back(t1);
             Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
@@ -301,15 +298,16 @@ void CylinderMesh<DataTypes>::update()
             tetras.push_back(t3);
             Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
             tetras.push_back(t4);
+
         }
     }
     //generate tetrahedra on the boundary i = n
-    for(int k = 0; k < m/2; ++k)
+    for(int k = -m+1; k < m; k+=2)
     {
-        for(int j = 0; j < n/2; ++j)
+        for(int j = -n+1; j < n; j+=2)
         {
-            Index c1(n-1, 2*j+1, 2*k+1), c2(n, 2*j+1, 2*k+1);
-            Index p1(n, 2*j, 2*k), p2(n, 2*j+2, 2*k), p3(n, 2*j+2, 2*k+2), p4(n, 2*j, 2*k+2);
+            Index c1(n-1,j,k), c2(n,j,k);
+            Index p1(n,j-1,k-1), p2(n,j+1,k-1), p3(n,j+1,k+1), p4(n,j-1,k+1);
             Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
             tetras.push_back(t1);
             Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
@@ -318,15 +316,16 @@ void CylinderMesh<DataTypes>::update()
             tetras.push_back(t3);
             Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
             tetras.push_back(t4);
+
         }
     }
-    //generate tetrahedra on the boundary j = 0
-    for(int k = 0; k < m/2; ++k)
+    //generate tetrahedra on the boundary j = -n
+    for(int k = -m+1; k < m; k+=2)
     {
-        for(int i = 0; i < n/2; ++i)
+        for(int i = -n+1; i < n; i+=2)
         {
-            Index c1(2*i+1, 1, 2*k+1), c2(2*i+1, 0, 2*k+1);
-            Index p1(2*i, 0, 2*k), p2(2*i, 0, 2*k+2), p3(2*i+2, 0, 2*k+2), p4(2*i+2, 0, 2*k);
+            Index c1(i,-n+1,k), c2(i,-n,k);
+            Index p1(i-1,-n,k-1), p2(i+1,-n,k-1), p3(i+1,-n,k+1), p4(i-1,-n,k+1);
             Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
             tetras.push_back(t1);
             Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
@@ -338,12 +337,12 @@ void CylinderMesh<DataTypes>::update()
         }
     }
     //generate tetrahedra on the boundary j = n
-    for(int k = 0; k < m/2; ++k)
+    for(int k = -m+1; k < m; k+=2)
     {
-        for(int i = 0; i < n/2; ++i)
+        for(int i = -n+1; i < n; i+=2)
         {
-            Index c1(2*i+1, n-1, 2*k+1), c2(2*i+1, n, 2*k+1);
-            Index p1(2*i, n, 2*k), p2(2*i, n, 2*k+2), p3(2*i+2, n, 2*k+2), p4(2*i+2, n, 2*k);
+            Index c1(i,n-1,k), c2(i,n,k);
+            Index p1(i-1,n,k-1), p2(i+1,n,k-1), p3(i+1,n,k+1), p4(i-1,n,k+1);
             Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
             tetras.push_back(t1);
             Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
@@ -354,13 +353,13 @@ void CylinderMesh<DataTypes>::update()
             tetras.push_back(t4);
         }
     }
-    //generate tetrahedra on the boundary k = 0
-    for(int i = 0; i < n/2; ++i)
+    //generate tetrahedra on the boundary k = -m
+    for(int i = -n+1; i < n; i+=2)
     {
-        for(int j = 0; j < n/2; ++j)
+        for(int j = -n+1; j < n; j+=2)
         {
-            Index c1(2*i+1, 2*j+1, 1), c2(2*i+1, 2*j+1, 0);
-            Index p1(2*i, 2*j, 0), p2(2*i, 2*j+2, 0), p3(2*i+2, 2*j+2, 0), p4(2*i+2, 2*j, 0);
+            Index c1(i,j,-m+1), c2(i,j,-m);
+            Index p1(i-1,j-1,-m), p2(i+1,j-1,-m), p3(i+1,j+1,-m), p4(i-1,j+1,-m);
             Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
             tetras.push_back(t1);
             Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
@@ -372,12 +371,12 @@ void CylinderMesh<DataTypes>::update()
         }
     }
     //generate tetrahedra on the boundary k = m
-    for(int i = 0; i < n/2; ++i)
+    for(int i = -n+1; i < n; i+=2)
     {
-        for(int j = 0; j < n/2; ++j)
+        for(int j = -n+1; j < n; j+=2)
         {
-            Index c1(2*i+1, 2*j+1, m-1), c2(2*i+1, 2*j+1, m);
-            Index p1(2*i, 2*j, m), p2(2*i, 2*j+2, m), p3(2*i+2, 2*j+2, m), p4(2*i+2, 2*j, m);
+            Index c1(i,j,m-1), c2(i,j,m);
+            Index p1(i-1,j-1,m), p2(i+1,j-1,m), p3(i+1,j+1,m), p4(i-1,j+1,m);
             Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
             tetras.push_back(t1);
             Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
@@ -429,12 +428,12 @@ void CylinderMesh<DataTypes>::draw()
         glDisable(GL_LIGHTING);
         glColor3f(1.0, 1.0, 1.0);
         glBegin(GL_LINES);
-        for(int i = 0 ; i < m_nbTetras ; ++i)
+        for(int i = 0; i < m_nbTetras; ++i)
         {
 //        unsigned int i = 1;
-            for(int j = 0 ; j < 3 ; ++j)
+            for(int j = 0; j < 3; ++j)
             {
-                for(int k = j+1 ; k < 4 ; ++k)
+                for(int k = j+1; k < 4; ++k)
                 {
                     sofa::helper::gl::glVertexT(points[tetras[i][j]]);
                     sofa::helper::gl::glVertexT(points[tetras[i][k]]);
