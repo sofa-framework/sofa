@@ -2130,13 +2130,10 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
         {
 
             Triangle the_tri = triangleArray[i];
-            Coord baryCoord;
             Coord vertex1 = coords[ the_tri[0] ];
             Coord vertex2 = coords[ the_tri[1] ];
             Coord vertex3 = coords[ the_tri[2] ];
-
-            for (unsigned int k = 0; k<3; k++)
-                baryCoord[k] = (vertex1[k]+vertex2[k]+vertex3[k])/3;
+            Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3;
 
             std::ostringstream oss;
             oss << i;
@@ -2144,7 +2141,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
             const char* s = tmp.c_str();
             glPushMatrix();
 
-            glTranslatef(baryCoord[0], baryCoord[1], baryCoord[2]);
+            glTranslatef(center[0], center[1], center[2]);
             glScalef(scale,scale,scale);
 
             // Makes text always face the viewer by removing the scene rotation
@@ -2152,8 +2149,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(baryCoord[0], baryCoord[1], baryCoord[2]);
-            temp = modelviewM.transform(temp);
+            Vec3f temp = modelviewM.transform(center);
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
@@ -2192,8 +2188,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
 
                 for (unsigned int j = 0; j<3; j++)
                 {
-                    Coord coordP = coords[t[j]];
-                    glVertex3d(coordP[0], coordP[1], coordP[2]);
+                    Vec3f coordP; coordP = DataTypes::getCPos(coords[t[j]]);
+                    glVertex3f(coordP[0], coordP[1], coordP[2]);
                 }
             }
             glEnd();
@@ -2207,10 +2203,10 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
                 for (unsigned int i = 0; i<edgeArray.size(); i++)
                 {
                     const Edge& e = edgeArray[i];
-                    Coord coordP1 = coords[e[0]];
-                    Coord coordP2 = coords[e[1]];
-                    glVertex3d(coordP1[0], coordP1[1], coordP1[2]);
-                    glVertex3d(coordP2[0], coordP2[1], coordP2[2]);
+                    Vec3f coordP1; coordP1 = DataTypes::getCPos(coords[e[0]]);
+                    Vec3f coordP2; coordP2 = DataTypes::getCPos(coords[e[1]]);
+                    glVertex3f(coordP1[0], coordP1[1], coordP1[2]);
+                    glVertex3f(coordP2[0], coordP2[1], coordP2[2]);
                 }
             }
             else
@@ -2218,15 +2214,18 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
                 for (unsigned int i = 0; i<triangleArray.size(); i++)
                 {
                     const Triangle& t = triangleArray[i];
-                    sofa::helper::vector <Coord> triCoord;
-
-                    for (unsigned int j = 0; j<3; j++)
-                        triCoord.push_back (coords[t[j]]);
+                    sofa::helper::vector <Vec3f> triCoord;
 
                     for (unsigned int j = 0; j<3; j++)
                     {
-                        glVertex3d(triCoord[j][0], triCoord[j][1], triCoord[j][2]);
-                        glVertex3d(triCoord[(j+1)%3][0], triCoord[(j+1)%3][1], triCoord[(j+1)%3][2]);
+                        Vec3f p; p = DataTypes::getCPos(coords[t[j]]);
+                        triCoord.push_back(p);
+                    }
+
+                    for (unsigned int j = 0; j<3; j++)
+                    {
+                        glVertex3f(triCoord[j][0], triCoord[j][1], triCoord[j][2]);
+                        glVertex3f(triCoord[(j+1)%3][0], triCoord[(j+1)%3][1], triCoord[(j+1)%3][2]);
                     }
                 }
             }
@@ -2237,13 +2236,13 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
 
     if (_drawNormals.getValue())
     {
+        const VecCoord& coords = *(this->object->getX());
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
         unsigned int nbrTtri = triangleArray.size();
 
         Coord point2;
         Vec<3,double> colors;
         SReal normalLength = _drawNormalLength.getValue();
-        unsigned int _size = sizeof(point2)/sizeof(SReal);
 
         glDisable(GL_LIGHTING);
         glBegin(GL_LINES);
@@ -2255,20 +2254,18 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
             normal.normalize();
 
             // compute bary triangle
-            Coord point1 = this->getPointPosition(_tri[0]);
-            for (unsigned int j = 1; j<3; j++)
-                point1 += this->getPointPosition(_tri[j]);
-            point1 = point1/3;
-
-            for(unsigned int j=0; j<_size; j++)
-                point2[j] = point1[j] + normal[j]*normalLength;
+            Coord vertex1 = coords[ _tri[0] ];
+            Coord vertex2 = coords[ _tri[1] ];
+            Coord vertex3 = coords[ _tri[2] ];
+            Vec3d center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3;
+            Vec3d point2 = center + normal*normalLength;
 
             for(unsigned int j=0; j<3; j++)
                 colors[j] = fabs (normal[j]);
 
             glColor3f (colors[0], colors[1], colors[2]);
 
-            glVertex3d(point1[0], point1[1], point1[2]);
+            glVertex3d(center[0], center[1], center[2]);
             glVertex3d(point2[0], point2[1], point2[2]);
         }
         glEnd();

@@ -77,7 +77,7 @@ bool AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPic
     spring.setInitLength(this->interactor->getMouseRayModel()->getRay(0).direction()*restLength);
     spring.setSoftStiffnessTranslation((float)stiffness);
     jointspringforcefield->addSpring(spring);
-    jointspringforcefield->showFactorSize.setValue(showFactorSize);
+    jointspringforcefield->showFactorSize.setValue((float)showFactorSize);
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
         jointspringforcefield->addTag(*it);

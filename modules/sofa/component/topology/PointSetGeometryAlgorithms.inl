@@ -208,8 +208,8 @@ void PointSetGeometryAlgorithms<DataTypes>::draw()
             std::string tmp = oss.str();
             const char* s = tmp.c_str();
             glPushMatrix();
-
-            glTranslatef(coords[i][0], coords[i][1], coords[i][2]);
+            Vec3f center; center = DataTypes::getCPos(coords[i]);
+            glTranslatef(center[0], center[1], center[2]);
             glScalef(PointIndicesScale,PointIndicesScale,PointIndicesScale);
 
             // Makes text always face the viewer by removing the scene rotation
@@ -217,8 +217,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw()
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(coords[i][0], coords[i][1], coords[i][2]);
-            temp = modelviewM.transform(temp);
+            Vec3f temp = modelviewM.transform(center);
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();

@@ -517,12 +517,9 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
         {
 
             Edge the_edge = edgeArray[i];
-            Coord baryCoord;
             Coord vertex1 = coords[ the_edge[0] ];
             Coord vertex2 = coords[ the_edge[1] ];
-
-            for (unsigned int k = 0; k<3; k++)
-                baryCoord[k] = (vertex1[k]+vertex2[k])/2;
+            Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2))/2;
 
             std::ostringstream oss;
             oss << i;
@@ -530,7 +527,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
             const char* s = tmp.c_str();
             glPushMatrix();
 
-            glTranslatef(baryCoord[0], baryCoord[1], baryCoord[2]);
+            glTranslatef(center[0], center[1], center[2]);
             glScalef(scale,scale,scale);
 
             // Makes text always face the viewer by removing the scene rotation
@@ -538,8 +535,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(baryCoord[0], baryCoord[1], baryCoord[2]);
-            temp = modelviewM.transform(temp);
+            Vec3f temp = modelviewM.transform(center);
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
@@ -575,10 +571,10 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
             for (unsigned int i = 0; i<edgeArray.size(); i++)
             {
                 const Edge& e = edgeArray[i];
-                Coord coordP1 = coords[e[0]];
-                Coord coordP2 = coords[e[1]];
-                glVertex3d(coordP1[0], coordP1[1], coordP1[2]);
-                glVertex3d(coordP2[0], coordP2[1], coordP2[2]);
+                Vec3f coordP1; coordP1 = DataTypes::getCPos(coords[e[0]]);
+                Vec3f coordP2; coordP2 = DataTypes::getCPos(coords[e[1]]);
+                glVertex3f(coordP1[0], coordP1[1], coordP1[2]);
+                glVertex3f(coordP2[0], coordP2[1], coordP2[2]);
             }
             glEnd();
         }

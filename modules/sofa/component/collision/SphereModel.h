@@ -213,9 +213,9 @@ void TSphere<DataTypes>::translate(double dx, double dy, double dz)
 {
     helper::WriteAccessor<Data<VecCoord> > xData = *this->model->mstate->write(core::VecCoordId::position());
     Coord& pos = xData.wref()[this->index];
-    pos.x() += (SReal)dx;
-    pos.y() += (SReal)dy;
-    pos.z() += (SReal)dz;
+    pos.x() += (Real)dx;
+    pos.y() += (Real)dy;
+    pos.z() += (Real)dz;
 }
 
 
