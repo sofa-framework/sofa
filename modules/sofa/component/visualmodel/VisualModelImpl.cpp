@@ -318,6 +318,8 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         nbVOut += s;
     }
 
+    sout << nbVIn << " input positions, " << nbVOut << " final vertices." << sendl;
+
     if (nbVIn != nbVOut)
         vsplit = true;
 
@@ -651,7 +653,8 @@ void VisualModelImpl::init()
 void VisualModelImpl::computeNormals()
 {
     const ResizableExtVector<Coord>& vertices = getVertices();
-    if (!m_updateNormals.getValue() && (m_vnormals.getValue()).size() != (vertices).size()) return;
+    //const ResizableExtVector<Coord>& vertices = m_vertices.getValue();
+    if (vertices.empty() || (!m_updateNormals.getValue() && (m_vnormals.getValue()).size() != (vertices).size())) return;
 
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
@@ -659,6 +662,7 @@ void VisualModelImpl::computeNormals()
     if (vertNormIdx.empty())
     {
         int nbn = (vertices).size();
+        //serr << "CN0("<<nbn<<")"<<sendl;
 
         ResizableExtVector<Deriv>& normals = *(m_vnormals.beginEdit());
 
@@ -709,6 +713,7 @@ void VisualModelImpl::computeNormals()
             if (vertNormIdx[i] >= nbn)
                 nbn = vertNormIdx[i]+1;
         }
+        serr << "CN1("<<nbn<<")"<<sendl;
 
         normals.resize(nbn);
         for (int i = 0; i < nbn; i++)
