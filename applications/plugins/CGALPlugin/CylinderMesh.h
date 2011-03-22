@@ -15,6 +15,7 @@
 #include <sofa/helper/gl/template.h>
 
 #include <math.h>
+#include   <algorithm>
 
 namespace cgal
 {

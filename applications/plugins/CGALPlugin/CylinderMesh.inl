@@ -9,35 +9,9 @@
 #define CGALPLUGIN_CYLINDERMESH_INL
 #include "CylinderMesh.h"
 
-//#define CGAL_MESH_2_VERBOSE
-//
-//#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
-//#include <CGAL/Constrained_Delaunay_triangulation_2.h>
-//#include <CGAL/Constrained_triangulation_plus_2.h>
-//#include <CGAL/Delaunay_mesher_2.h>
-//#include <CGAL/Delaunay_mesh_face_base_2.h>
-//#include <CGAL/Delaunay_mesh_size_criteria_2.h>
-//#include <CGAL/Triangulation_vertex_base_with_id_2.h>
-//#include <CGAL/Triangulation_vertex_base_with_info_2.h>
-//#include <CGAL/Triangulation_face_base_with_info_2.h>
-//// IO
-//#include <CGAL/IO/Polyhedron_iostream.h>
 
-
-//#define CINDEX(i, j, k, n) (i+j*n+k*n*n)
-//#define PINDEX(i, j, k, n) (i+j*(n+1)+k*(n+1)*(n+1))
-//
-//#define PINDEX_0(i, j, k, n) PINDEX(i, j, k, n)
-//#define PINDEX_1(i, j, k, n) PINDEX((i+1), j, k, n)
-//#define PINDEX_2(i, j, k, n) PINDEX((i+1), (j+1), k, n)
-//#define PINDEX_3(i, j, k, n) PINDEX(i, (j+1), k, n)
-//#define PINDEX_4(i, j, k, n) PINDEX(i, j, (k+1), n)
-//#define PINDEX_5(i, j, k, n) PINDEX((i+1), j, (k+1), n)
-//#define PINDEX_6(i, j, k, n) PINDEX((i+1), (j+1), (k+1), n)
-//#define PINDEX_7(i, j, k, n) PINDEX(i, (j+1), (k+1), n)
-
-//CGAL
-//struct K: public CGAL::Exact_predicates_inexact_constructions_kernel {};
+#define MAX(a,b) ( (a)>(b) ? (a):(b))
+#define MIN(a,b) ( (a)<(b) ? (a):(b))
 
 using namespace sofa;
 
@@ -85,6 +59,7 @@ void CylinderMesh<DataTypes>::update()
     int m = ceil(l/m_interval);
     l = m_interval * m;
     Real t = m_interval / 2;
+    int a = ceil((d/2) / (sqrt(2)*t)); //parameters for cutting the corner
 
     std::cout << "diameter = " << d << std::endl;
     std::cout << "length = " << l << std::endl;
@@ -102,12 +77,14 @@ void CylinderMesh<DataTypes>::update()
 
     //generate the points
     int count = 0;
+    int b1, b2;
     //hexa vertices
     for(int k = -m; k <= m; k+=2)
     {
         for(int j = -n; j <= n; j+=2)
         {
-            for(int i = -n; i <= n; i+=2)
+            b1 = MAX(-n, MAX(-2*a-j, j-2*a)), b2 = MIN(n, MIN(2*a-j, j+2*a));
+            for(int i = b1; i <= b2; i+=2)
             {
                 Point p(i*t, j*t, k*t);
                 points.push_back(p);
@@ -126,7 +103,10 @@ void CylinderMesh<DataTypes>::update()
     {
         for(int j = -n+1; j < n; j+=2)
         {
-            for(int i = -n+1; i < n; i+=2)
+            b1 = MAX(-n, MAX(-2*a-j, j-2*a)), b2 = MIN(n, MIN(2*a-j, j+2*a));
+            if(b1%2 == 0)
+                --b1;
+            for(int i = b1; i <= b2; i+=2)
             {
                 Point p(i*t, j*t, k*t);
                 points.push_back(p);
@@ -141,10 +121,12 @@ void CylinderMesh<DataTypes>::update()
     std::cout << "num of centers = " << m_nbCenters << std::endl;
 
     //boundary centers
-    //i = 0
+    //i = -n
+    b1 = MAX(-n+1, n-2*a+1), b2 = MIN(n, 2*a-n);
     for(int k = -m+1; k < m; k+=2)
     {
-        for(int j = -n+1; j < n; j+=2)
+        for(int j = b1; j < b2; j+=2)
+            //for(int j = -n+1; j < n; j+=2)
         {
             Point p(-n*t, j*t, k*t);
             points.push_back(p);
@@ -157,7 +139,8 @@ void CylinderMesh<DataTypes>::update()
     //i = n
     for(int k = -m+1; k < m; k+=2)
     {
-        for(int j = -n+1; j < n; j+=2)
+        for(int j = b1; j < b2; j+=2)
+            //for(int j = -n+1; j < n; j+=2)
         {
             Point p(n*t, j*t, k*t);
             points.push_back(p);
@@ -167,10 +150,11 @@ void CylinderMesh<DataTypes>::update()
             ++count;
         }
     }
-    //j = 0
+    //j = -n
     for(int k = -m+1; k < m; k+=2)
     {
-        for(int i = -n+1; i < n; i+=2)
+        for(int i = b1; i < b2; i+=2)
+            //for(int i = -n+1; i < n; i+=2)
         {
             Point p(i*t, -n*t, k*t);
             points.push_back(p);
@@ -183,7 +167,8 @@ void CylinderMesh<DataTypes>::update()
     //j = n
     for(int k = -m+1; k < m; k+=2)
     {
-        for(int i = -n+1; i < n; i+=2)
+        for(int i = b1; i < b2; i+=2)
+            //for(int i = -n+1; i < n; i+=2)
         {
             Point p(i*t, n*t, k*t);
             points.push_back(p);
@@ -193,10 +178,14 @@ void CylinderMesh<DataTypes>::update()
             ++count;
         }
     }
-    //k = 0
+    //k = -m
     for(int j = -n+1; j < n; j+=2)
     {
-        for(int i = -n+1; i < n; i+=2)
+        b1 = MAX(-n, MAX(-2*a-j, -2*a+j)), b2 = MIN(n, MIN(2*a-j, 2*a+j));
+        if(b1%2 == 0)
+            --b1;
+        for(int i = b1; i <= b2; i+=2)
+            //for(int i = -n+1; i < n; i+=2)
         {
             Point p(i*t, j*t, -m*t);
             points.push_back(p);
@@ -209,7 +198,11 @@ void CylinderMesh<DataTypes>::update()
     //k = m
     for(int j = -n+1; j < n; j+=2)
     {
-        for(int i = -n+1; i < n; i+=2)
+        b1 = MAX(-n, MAX(-2*a-j, -2*a+j)), b2 = MIN(n, MIN(2*a-j, 2*a+j));
+        if(b1%2 == 0)
+            --b1;
+        for(int i = b1; i <= b2; i+=2)
+            //for(int i = -n+1; i < n; i+=2)
         {
             Point p(i*t, j*t, m*t);
             points.push_back(p);
@@ -228,6 +221,10 @@ void CylinderMesh<DataTypes>::update()
     {
         for(int j = -n+1; j < n; j+=2)
         {
+//            b1 = MAX(-n+1, MAX(-2*a-j, j-2*a)), b2 = MIN(n-2, MIN(2*a-j, j+2*a));
+//            if(b1%2 == 0)
+//                --b1;
+//            for(int i = b1; i <= b2; i+=2)
             for(int i = -n+1; i < n-2; i+=2)
             {
                 Index c1(i,j,k), c2(i+2,j,k);
@@ -248,6 +245,10 @@ void CylinderMesh<DataTypes>::update()
     {
         for(int i = -n+1; i < n; i+=2)
         {
+//            b1 = MAX(-n+1, MAX(-2*a-i, i-2*a)), b2 = MIN(n-2, MIN(2*a-i, i+2*a));
+//            if(b1%2 == 0)
+//                --b1;
+//            for(int j = b1; j < b2; j+=2)
             for(int j = -n+1; j < n-2; j+=2)
             {
                 Index c1(i,j,k), c2(i,j+2,k);
@@ -266,6 +267,10 @@ void CylinderMesh<DataTypes>::update()
     //generate tetrahedra between c(i,j,k) and c(i,j,k+2) (i,j,k are odd numbers)
     for(int i = -n+1; i < n; i+=2)
     {
+//        b1 = MAX(-n+1, MAX(-2*a-i, i-2*a)), b2 = MIN(n-2, MIN(2*a-i, i+2*a));
+//        if(b1%2 == 0)
+//            --b1;
+//        for(int j = b1; j < b2; j+=2)
         for(int j = -n+1; j < n; j+=2)
         {
             for(int k = -m+1; k < m-2; k+=2)
