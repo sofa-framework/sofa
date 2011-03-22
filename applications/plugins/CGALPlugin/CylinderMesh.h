@@ -29,9 +29,10 @@ public:
     typedef typename DataTypes::Coord Point;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
+    typedef sofa::helper::fixed_array<int, 3> Index;
     //    typedef sofa::helper::vector<Real> VecReal;
 
-    typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
+//        typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
     //    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     //    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     //    typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
@@ -67,9 +68,9 @@ public:
     }
 
     //Inputs
-    Data<double> m_radius;
+    Data<double> m_diameter;
     Data<double> m_length;
-    Data<int> m_num;
+    Data<int> m_number;
     Data<bool> m_viewPoints;
     Data<bool> m_viewTetras;
 
@@ -79,6 +80,8 @@ public:
 
     //Parameters
     Real m_interval;
+    int m_nbVertices, m_nbCenters, m_nbBDCenters, m_nbTetras;
+    std::map<Index, int> m_ptID;
 
 
 };
