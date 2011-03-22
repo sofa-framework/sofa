@@ -196,6 +196,7 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNu
             break;
         }
         case core::ConstraintParams::POS :
+        case core::ConstraintParams::POS_AND_VEL :
         {
             ConstVecId xid = id.getId(this->constrainedObject1);
             helper::ReadAccessor<Data<VecCoord> > x = *this->constrainedObject1->read((ConstVecCoordId)xid);

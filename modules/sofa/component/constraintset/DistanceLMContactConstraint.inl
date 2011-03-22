@@ -194,6 +194,7 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned i
             break;
         }
         case core::ConstraintParams::POS :
+        case core::ConstraintParams::POS_AND_VEL :
         {
             SReal minDistance = 0;
 
