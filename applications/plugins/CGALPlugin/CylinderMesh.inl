@@ -47,8 +47,8 @@ void CylinderMesh<DataTypes>::reinit()
 template <class DataTypes>
 void CylinderMesh<DataTypes>::update()
 {
-    Real d = m_diameter.getValue();
-    Real l = m_length.getValue();
+    d = m_diameter.getValue();
+    l = m_length.getValue();
     n = m_number.getValue();
     if(d <=0 || l <=0 || n<=0)
     {
@@ -418,6 +418,25 @@ void CylinderMesh<DataTypes>::update()
     }
     m_nbTetras = tetras.size();
     std::cout << "num of tetras = " << m_nbTetras << std::endl;
+
+    scale();
+}
+
+template <class DataTypes>
+void CylinderMesh<DataTypes>::scale()
+{
+    Real lim = 4*a*t/d-1;
+    helper::WriteAccessor< Data< VecCoord > > points = m_points;
+    for (unsigned int i = 0; i < points.size(); ++i)
+    {
+        Real x = points[i][0], y = points[i][1];
+        Real tg = y/x;
+        if(tg < -lim)
+        {
+            Real factor = sqrt(1+tg*tg);
+            points[i][0] /= factor, points[i][1] /= factor;
+        }
+    }
 }
 
 template <class DataTypes>
@@ -431,15 +450,15 @@ void CylinderMesh<DataTypes>::draw()
         glBegin(GL_POINTS);
         //vertices
         glColor3f(0.0, 0.0, 1.0);
-        for (int i = 0 ; i < m_nbVertices ; ++i)
+        for (int i = 0; i < m_nbVertices; ++i)
             sofa::helper::gl::glVertexT(points[i]);
         //centers
         glColor3f(1.0, 0.0, 0.0);
-        for (int i = m_nbVertices ; i < m_nbVertices+m_nbCenters ; ++i)
+        for (int i = m_nbVertices; i < m_nbVertices+m_nbCenters; ++i)
             sofa::helper::gl::glVertexT(points[i]);
         //boundary centers
         glColor3f(0.0, 1.0, 0.0);
-        for (unsigned int i = m_nbVertices+m_nbCenters ; i < points.size(); ++i)
+        for (unsigned int i = m_nbVertices+m_nbCenters; i < points.size(); ++i)
             sofa::helper::gl::glVertexT(points[i]);
         glEnd();
 
