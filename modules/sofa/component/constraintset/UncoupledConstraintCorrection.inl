@@ -357,7 +357,7 @@ void UncoupledConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > 
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const core::ConstraintParams * /*cparams*/, Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
+void UncoupledConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
 {
     this->addConstraintForceInMotionSpace(f_d, lambda);
 
@@ -367,8 +367,9 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(c
     VecDeriv& v = *v_d.beginEdit();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
-    const VecDeriv& v_free = *this->mstate->getVfree();
-    const VecCoord& x_free = *this->mstate->getXfree();
+
+    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
+    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
     const double invDt = 1.0 / this->getContext()->getDt();
 
@@ -386,7 +387,7 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(c
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const core::ConstraintParams * /*cparams*/, Data< VecCoord > &x_d, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
+void UncoupledConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
 {
     this->addConstraintForceInMotionSpace(f_d, lambda);
 
@@ -394,7 +395,8 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection
 
     VecCoord& x = *x_d.beginEdit();
 
-    const VecCoord& x_free = *this->mstate->getXfree();
+    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
+
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
 
     for (unsigned int i = 0; i < dx.size(); i++)
@@ -407,7 +409,7 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
+void UncoupledConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const core::ConstraintParams *cparams, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
 {
     this->addConstraintForceInMotionSpace(f_d, lambda);
 
@@ -415,7 +417,8 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection
 
     VecDeriv& v = *v_d.beginEdit();
 
-    const VecDeriv& v_free = *this->mstate->getVfree();
+    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
+
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
     const double invDt = 1.0 / this->getContext()->getDt();
 

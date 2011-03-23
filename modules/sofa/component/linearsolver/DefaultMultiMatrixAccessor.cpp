@@ -26,7 +26,7 @@
 #include <sofa/component/linearsolver/DefaultMultiMatrixAccessor.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
-#define MULTIMATRIX_VERBOSE
+//#define MULTIMATRIX_VERBOSE
 
 namespace sofa
 {
