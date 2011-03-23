@@ -266,7 +266,7 @@ void LinearSolverConstraintCorrection< DataTypes >::computeDx(MultiVecDerivId fI
 
 
 template< class DataTypes >
-void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyMotionCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId fId, const defaulttype::BaseVector *lambda)
+void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId fId, const defaulttype::BaseVector *lambda)
 {
     this->setConstraintForceInMotionSpace(fId, lambda);
 
@@ -280,8 +280,8 @@ void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyMotionCorrect
         VecDeriv& v = *(vId[this->mstate].write()->beginEdit());
 
         VecDeriv& dx = *(this->mstate->write(core::VecDerivId::dx())->beginEdit());
-        const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
-        const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
+        const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
+        const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
         const double positionFactor = odesolver->getPositionIntegrationFactor();
         const double velocityFactor = odesolver->getVelocityIntegrationFactor();
@@ -306,7 +306,7 @@ void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyMotionCorrect
 
 
 template< class DataTypes >
-void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyPositionCorrection(const ConstraintParams * /*cparams*/, MultiVecCoordId xId, MultiVecDerivId fId, const BaseVector *lambda)
+void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyPositionCorrection(const ConstraintParams *cparams, MultiVecCoordId xId, MultiVecDerivId fId, const BaseVector *lambda)
 {
     this->setConstraintForceInMotionSpace(fId, lambda);
 
@@ -319,7 +319,7 @@ void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyPositionCorre
         VecCoord& x = *(xId[this->mstate].write()->beginEdit());
 
         VecDeriv& dx = *(this->mstate->write(core::VecDerivId::dx())->beginEdit());
-        const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
+        const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
 
         const double positionFactor = odesolver->getPositionIntegrationFactor();
 
@@ -337,7 +337,7 @@ void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyPositionCorre
 
 
 template< class DataTypes >
-void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyVelocityCorrection(const ConstraintParams * /*cparams*/, MultiVecDerivId vId, MultiVecDerivId fId, const BaseVector *lambda)
+void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyVelocityCorrection(const ConstraintParams *cparams, MultiVecDerivId vId, MultiVecDerivId fId, const BaseVector *lambda)
 {
     this->setConstraintForceInMotionSpace(fId, lambda);
 
@@ -350,7 +350,7 @@ void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyVelocityCorre
         VecDeriv& v = *(vId[this->mstate].write()->beginEdit());
 
         const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
-        const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
+        const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
         const double velocityFactor = odesolver->getVelocityIntegrationFactor();
 

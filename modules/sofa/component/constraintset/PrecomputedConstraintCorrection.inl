@@ -658,7 +658,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv 
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const ConstraintParams * /*cparams*/
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const ConstraintParams *cparams
         , Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
 {
     std::list< int > activeDof;
@@ -671,8 +671,9 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection
     VecDeriv& v = *v_d.beginEdit();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
-    const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
-    const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
+
+    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
+    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
     const double invDt = 1.0 / this->getContext()->getDt();
 
@@ -694,7 +695,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const ConstraintParams * /*cparams*/, Data< VecCoord > &x_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
 {
     std::list< int > activeDof;
 
@@ -705,7 +706,8 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrecti
     VecCoord& x = *x_d.beginEdit();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
-    const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
+
+    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
 
     if (m_rotations.getValue())
         rotateResponse();
@@ -720,7 +722,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrecti
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const ConstraintParams * /*cparams*/, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const ConstraintParams *cparams, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
 {
     std::list< int > activeDof;
 
@@ -731,7 +733,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrecti
     VecDeriv& v = *v_d.beginEdit();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
-    const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
+    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
     const double invDt = 1.0 / this->getContext()->getDt();
 
