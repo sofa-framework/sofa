@@ -342,7 +342,8 @@ protected:
         Vector* systemRHVector;
         Vector* systemLHVector;
         core::MultiVecDerivId solutionVecId;
-        DefaultMultiMatrixAccessor matrixAccessor;
+        //DefaultMultiMatrixAccessor matrixAccessor;
+        MappedMultiMatrixAccessor matrixAccessor;
         GroupData()
             : systemSize(0), needInvert(true), systemMatrix(NULL), systemRHVector(NULL), systemLHVector(NULL), solutionVecId(core::MultiVecDerivId::null())
         {}
