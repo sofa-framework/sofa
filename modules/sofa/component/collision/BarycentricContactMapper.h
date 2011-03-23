@@ -114,6 +114,7 @@ public:
         if (mapping!=NULL)
         {
             ((core::BaseMapping*)mapping)->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+            ((core::BaseMapping*)mapping)->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::freeVelocity(), core::ConstVecDerivId::freeVelocity());
         }
     }
 };

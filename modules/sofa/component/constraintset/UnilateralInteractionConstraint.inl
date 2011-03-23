@@ -108,115 +108,37 @@ void UnilateralConstraintResolutionWithFriction::store(int line, double* force, 
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id, PersistentID localid)
 {
-    // compute dt and delta
-    Real delta = dot(P-Q, norm) - contactDistance;
-    Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
-    Real dt;
-    int i = contacts.size();
-    contacts.resize(i+1);
-    Contact& c = contacts[i];
+    contacts.resize(contacts.size() + 1);
+    Contact &c = contacts.back();
+
+    c.P			= P;
+    c.Q			= Q;
+    c.Pfree		= Pfree;
+    c.Qfree		= Qfree;
+    c.Pvfree	= this->getMState1()->read(core::ConstVecDerivId::freeVelocity())->getValue()[m1];
+    c.Qvfree	= this->getMState2()->read(core::ConstVecDerivId::freeVelocity())->getValue()[m2];
+    c.m1		= m1;
+    c.m2		= m2;
+    c.norm		= norm;
+    c.t			= Deriv(norm.z(), norm.x(), norm.y());
+    c.s			= cross(norm, c.t);
+    c.s			= c.s / c.s.norm();
+    c.t			= cross((-norm), c.s);
+    c.mu		= mu;
+    c.contactId = id;
+    c.localId	= localid;
+    c.contactDistance = contactDistance;
 
     if (this->f_printLog.getValue())
     {
-        std::cout << "delta : " << delta << " - deltaFree : " << deltaFree << std::endl;
         std::cout << "P : " << P << " - PFree : " << Pfree << std::endl;
         std::cout << "Q : " << Q << " - QFree : " << Qfree << std::endl;
     }
-
-// for visu
-    c.P = P;
-    c.Q = Q;
-    c.Pfree = Pfree;
-    c.Qfree = Qfree;
-//
-    c.m1 = m1;
-    c.m2 = m2;
-    c.norm = norm;
-    c.delta = delta;
-    c.t = Deriv(norm.z(), norm.x(), norm.y());
-    c.s = cross(norm,c.t);
-    c.s = c.s / c.s.norm();
-    c.t = cross((-norm), c.s);
-    c.mu = mu;
-    c.contactId = id;
-    c.localId = localid;
-
-    Deriv PPfree = Pfree-P;
-    Deriv QQfree = Qfree-Q;
-    Real ref_dist = PPfree.norm()+QQfree.norm();
-
-    if (helper::rabs(delta) < 0.00001*ref_dist && helper::rabs(deltaFree) < 0.00001*ref_dist  )
-    {
-
-        if (this->f_printLog.getValue())
-            std::cout<<" case0 "<<std::endl;
-
-        dt=0.0;
-        c.dfree = deltaFree;
-        c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
-        c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
-
-        return;
-
-    }
-
-    if (helper::rabs(delta - deltaFree) > 0.001 * delta)
-    {
-        dt = delta / (delta - deltaFree);
-        if (dt > 0.0 && dt < 1.0  )
-        {
-            if (this->f_printLog.getValue())
-                std::cout<<" case1 : dt = "<<dt<<std::endl;
-
-            sofa::defaulttype::Vector3 Qt, Pt;
-            Qt = Q*(1-dt) + Qfree*dt;
-            Pt = P*(1-dt) + Pfree*dt;
-            c.dfree = deltaFree;// dot(Pfree-Pt, c.norm) - dot(Qfree-Qt, c.norm);
-            c.dfree_t = dot(Pfree-Pt, c.t) - dot(Qfree-Qt, c.t);
-            c.dfree_s = dot(Pfree-Pt, c.s) - dot(Qfree-Qt, c.s);
-            //printf("\n ! dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
-        }
-        else
-        {
-            if (deltaFree < 0.0)
-            {
-                if (this->f_printLog.getValue())
-                    std::cout<<" case2 "<<std::endl;
-                dt=0.0;
-                c.dfree = deltaFree; // dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
-                //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
-                c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
-                c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
-            }
-            else
-            {
-                if (this->f_printLog.getValue())
-                    std::cout<<" case3 "<<std::endl;
-                dt=1.0;
-                c.dfree = deltaFree;
-                c.dfree_t = 0;
-                c.dfree_s = 0;
-            }
-        }
-    }
-    else
-    {
-        if (this->f_printLog.getValue())
-            std::cout<<" case4 "<<std::endl;
-        dt = 0;
-        c.dfree = deltaFree;
-        c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
-        c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
-        //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
-    }
-
-
-    //sout<<"R_nts = ["<<c.norm<<" ; "<<c.t<<" ; "<<c.s<<" ];"<<sendl;
 }
 
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &contactId
+void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams *, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &contactId
         , const DataVecCoord &, const DataVecCoord &)
 {
     assert(this->mstate1);
@@ -233,10 +155,7 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const cor
             c.id = contactId++;
 
             MatrixDerivRowIterator c1_it = c1.writeLine(c.id);
-            /*
-            c1_it.addCol(c.m1, Deriv(1,0,0) * (-c.norm * Deriv(1,0,0)));
-            c1_it.addCol(c.m2, Deriv(1,0,0) * (c.norm * Deriv(1,0,0)));
-            */
+
             c1_it.addCol(c.m1, -c.norm);
             c1_it.addCol(c.m2, c.norm);
 
@@ -267,18 +186,12 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const cor
 
             c.id = contactId++;
 
-//			std::cout << c.norm << std::endl;
-
             const Deriv u(1,0,0);
-
-//			std::cout << c.norm.linearProduct(u) << std::endl;
 
             MatrixDerivRowIterator c1_it = c1.writeLine(c.id);
             c1_it.addCol(c.m1, -c.norm);
-            //	c1_it.addCol(c.m1, -c.norm.linearProduct(u));
 
             MatrixDerivRowIterator c2_it = c2.writeLine(c.id);
-            //	c2_it.addCol(c.m2, c.norm.linearProduct(u));
             c2_it.addCol(c.m2, c.norm);
 
             if (c.mu > 0.0)
@@ -306,22 +219,119 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const cor
 
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &, const DataVecCoord &
-        , const DataVecDeriv &, const DataVecDeriv &)
+void UnilateralInteractionConstraint<DataTypes>::getPositionViolation(defaulttype::BaseVector *v)
 {
-    for (unsigned int i=0; i<contacts.size(); i++)
-    {
-        Contact& c = contacts[i]; // get each contact detected
+    Real dfree = (Real)0.0;
+    Real dfree_t = (Real)0.0;
+    Real dfree_s = (Real)0.0;
 
-        v->set(c.id, c.dfree);
+    const unsigned int cSize = contacts.size();
+
+    for (unsigned int i = 0; i < cSize; i++)
+    {
+        const Contact& c = contacts[i];
+
+        // Compute dfree, dfree_t and d_free_s
+
+        const Coord PPfree = c.Pfree - c.P;
+        const Coord QQfree = c.Qfree - c.Q;
+        const Real ref_dist = PPfree.norm() + QQfree.norm();
+
+        dfree = dot(c.Pfree - c.Qfree, c.norm) - c.contactDistance;
+        const Real delta = dot(c.P - c.Q, c.norm) - c.contactDistance;
+
+        if ((helper::rabs(delta) < 0.00001 * ref_dist) && (helper::rabs(dfree) < 0.00001 * ref_dist))
+        {
+            dfree_t = dot(PPfree, c.t) - dot(QQfree, c.t);
+            dfree_s = dot(PPfree, c.s) - dot(QQfree, c.s);
+        }
+        else if (helper::rabs(delta - dfree) > 0.001 * delta)
+        {
+            const Real dt = delta / (delta - dfree);
+
+            if (dt > 0.0 && dt < 1.0)
+            {
+                const Coord Pt		= c.P * (1 - dt) + c.Pfree * dt;
+                const Coord Qt		= c.Q * (1 - dt) + c.Qfree * dt;
+                const Coord PtPfree = c.Pfree - Pt;
+                const Coord QtQfree = c.Qfree - Qt;
+
+                dfree_t = dot(PtPfree, c.t) - dot(QtQfree, c.t);
+                dfree_s = dot(PtPfree, c.s) - dot(QtQfree, c.s);
+            }
+            else if (dfree < 0.0)
+            {
+                dfree_t = dot(PPfree, c.t) - dot(QQfree, c.t);
+                dfree_s = dot(PPfree, c.s) - dot(QQfree, c.s);
+            }
+            else
+            {
+                dfree_t = 0;
+                dfree_s = 0;
+            }
+        }
+        else
+        {
+            dfree_t = dot(PPfree, c.t) - dot(QQfree, c.t);
+            dfree_s = dot(PPfree, c.s) - dot(QQfree, c.s);
+        }
+
+        // Sets dfree in global violation vector
+
+        v->set(c.id, dfree);
+
+        c.dfree = dfree; // PJ : For isActive() method. Don't know if it's still usefull.
 
         if (c.mu > 0.0)
         {
-            v->set(c.id+1,c.dfree_t); // dfree_t & dfree_s are added to v to compute the friction
-            v->set(c.id+2,c.dfree_s);
-
-            //    std::cout<<"constraint ["<<i<<"] => dfree = ["<<c.dfree<<" "<<c.dfree_t<<" "<<c.dfree_s<<"]"<<std::endl;
+            v->set(c.id + 1, dfree_t);
+            v->set(c.id + 2, dfree_s);
         }
+    }
+}
+
+
+template<class DataTypes>
+void UnilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype::BaseVector *v)
+{
+    const unsigned int cSize = contacts.size();
+
+    for (unsigned int i = 0; i < cSize; i++)
+    {
+        const Contact& c = contacts[i];
+
+        const Deriv QP_vfree = c.Pvfree - c.Qvfree;
+
+        v->set(c.id, dot(QP_vfree, c.norm)); // dfree
+
+        if (c.mu > 0.0)
+        {
+            v->set(c.id + 1, dot(QP_vfree, c.t)); // dfree_t
+            v->set(c.id + 2, dot(QP_vfree, c.s)); // dfree_s
+        }
+    }
+}
+
+
+template<class DataTypes>
+void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams *cparams, defaulttype::BaseVector *v, const DataVecCoord &, const DataVecCoord &
+        , const DataVecDeriv &, const DataVecDeriv &)
+{
+    switch (cparams->constOrder())
+    {
+    case core::ConstraintParams::POS_AND_VEL :
+    case core::ConstraintParams::POS :
+        getPositionViolation(v);
+        break;
+
+    case core::ConstraintParams::ACC :
+    case core::ConstraintParams::VEL :
+        getVelocityViolation(v);
+        break;
+
+    default :
+        serr << "UnilateralInteractionConstraint doesn't implement " << cparams->getName() << " constraint violation\n";
+        break;
     }
 }
 
@@ -387,19 +397,10 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::ve
 template<class DataTypes>
 bool UnilateralInteractionConstraint<DataTypes>::isActive()
 {
-//	if(!contactsStatus)
-    {
-        for(unsigned int i=0; i<contacts.size(); i++)
-            if(contacts[i].dfree < 0)
-                return true;
+    for(unsigned int i = 0; i < contacts.size(); i++)
+        if(contacts[i].dfree < 0)
+            return true;
 
-        return false;
-    }
-    /*
-    	for(unsigned int i=0; i<contacts.size(); i++)
-    		if(contactsStatus[i])
-    			return true;
-    */
     return false;
 }
 #endif
