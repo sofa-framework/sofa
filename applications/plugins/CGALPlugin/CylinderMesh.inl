@@ -77,6 +77,7 @@ void CylinderMesh<DataTypes>::update()
     m_ptID.clear();
 
     //generate the points
+    std::cout << "generate points..." << std::endl;
     int count = 0;
     int b1, b2;
     //hexa vertices
@@ -210,6 +211,7 @@ void CylinderMesh<DataTypes>::update()
     m_nbBDCenters = count - m_nbVertices - m_nbCenters;
     std::cout << "num of boundary centers = " << m_nbBDCenters << std::endl;
 
+    std::cout << "generate tetras..." << std::endl;
     //generate tetrahedra between c(i,j,k) and c(i+2,j,k) ((i+n), (j+n), (k+m) are odd numbers))
     for(int k = -m+1; k <= m-1; k+=2)
     {
@@ -419,23 +421,52 @@ void CylinderMesh<DataTypes>::update()
     m_nbTetras = tetras.size();
     std::cout << "num of tetras = " << m_nbTetras << std::endl;
 
+    std::cout << "scale..." << std::endl;
     scale();
+
+    std::cout << "finished!" << std::endl;
 }
 
 template <class DataTypes>
 void CylinderMesh<DataTypes>::scale()
 {
-    Real lim = 4*a*t/d-1;
+    double lim = 2*(double)a/(double)n-1;
     helper::WriteAccessor< Data< VecCoord > > points = m_points;
     for (unsigned int i = 0; i < points.size(); ++i)
     {
-        Real x = points[i][0], y = points[i][1];
-        Real tg = y/x;
-        if(tg < -lim)
+        double x = points[i][0], y = points[i][1];
+        if(fabs(y) < 1e-20)
+            continue;
+        double tg = x/y;
+        if(tg>-1.0/lim && tg<-lim)
         {
-            Real factor = sqrt(1+tg*tg);
-            points[i][0] /= factor, points[i][1] /= factor;
+            double k = d/(4*t*(double)a) * fabs(1-tg) / sqrt(1+tg*tg);
+            //std::cout << "k = "  << k << std::endl;
+            points[i][0] *= k, points[i][1] *= k;
+            continue;
         }
+        if(fabs(tg) < lim)
+        {
+            double k = 1 / sqrt(1+tg*tg);
+            //std::cout << "k = "  << k << std::endl;
+            points[i][0] *= k, points[i][1] *= k;
+            continue;
+        }
+        if(tg>lim && tg<1.0/lim)
+        {
+            double k = d/(4*t*(double)a) * fabs(1+tg) / sqrt(1+tg*tg);
+            //std::cout << "k = "  << k << std::endl;
+            points[i][0] *= k, points[i][1] *= k;
+            continue;
+        }
+        if(fabs(tg)>1.0/lim)
+        {
+            double k = 1 / sqrt(1+1.0/(tg*tg));
+            //std::cout << "k = "  << k << std::endl;
+            points[i][0] *= k, points[i][1] *= k;
+            continue;
+        }
+
     }
 }
 
@@ -502,6 +533,25 @@ void CylinderMesh<DataTypes>::draw()
         glVertex3f((n-2*a)*t, n*t, -m*t);
         glVertex3f((n-2*a)*t, n*t, m*t);
         glEnd();
+
+//        glBegin(GL_LINES);
+//        glVertex3f(0.0, 0.0, m*t);
+//        glVertex3f((2*a-n)*t, n*t, m*t);
+//        glVertex3f(0.0, 0.0, m*t);
+//        glVertex3f(n*t, (2*a-n)*t, m*t);
+//        glVertex3f(0.0, 0.0, m*t);
+//        glVertex3f(n*t, (n-2*a)*t, m*t);
+//        glVertex3f(0.0, 0.0, m*t);
+//        glVertex3f((2*a-n)*t, -n*t, m*t);
+//        glVertex3f(0.0, 0.0, m*t);
+//        glVertex3f((n-2*a)*t, -n*t, m*t);
+//        glVertex3f(0.0, 0.0, m*t);
+//        glVertex3f(-n*t, (n-2*a)*t, m*t);
+//        glVertex3f(0.0, 0.0, m*t);
+//        glVertex3f(-n*t, (2*a-n)*t, m*t);
+//        glVertex3f(0.0, 0.0, m*t);
+//        glVertex3f((n-2*a)*t, n*t, m*t);
+//        glEnd();
         glPointSize(1);
         glEnable(GL_LIGHTING);
     }
