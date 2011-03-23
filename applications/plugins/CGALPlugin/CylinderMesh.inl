@@ -210,186 +210,214 @@ void CylinderMesh<DataTypes>::update()
     m_nbBDCenters = count - m_nbVertices - m_nbCenters;
     std::cout << "num of boundary centers = " << m_nbBDCenters << std::endl;
 
-
-    //generate tetrahedra between c(i,j,k) and c(i+2,j,k) (i,j,k are odd numbers)
-    for(int k = -m+1; k < m; k+=2)
+    //generate tetrahedra between c(i,j,k) and c(i+2,j,k) ((i+n), (j+n), (k+m) are odd numbers))
+    for(int k = -m+1; k <= m-1; k+=2)
     {
-        for(int j = -n+1; j < n; j+=2)
+        for(int j = -n+1; j <= n-1; j+=2)
         {
-            b1 = MAX(-n+1, MAX(-2*a-j, j-2*a)), b2 = MIN(n-2, MIN(2*a-j, j+2*a));
+            b1 = MAX(-n+1, MAX(-2*a-j, -2*a+j)), b2 = MIN(n-3, MIN(2*a-j-2, j+2*a-2));
             for(int i = b1; i <= b2; i+=2)
                 //for(int i = -n+1; i < n-2; i+=2)
             {
                 Index c1(i,j,k), c2(i+2,j,k);
-                Index p1(i+1,j-1,k-1), p2(i+1,j+1,k-1), p3(i+1,j+1,k+1), p4(i+1,j-1,k+1);
-                Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
-                tetras.push_back(t1);
-                Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
-                tetras.push_back(t2);
-                Tetra t3(m_ptID[c1], m_ptID[c2], m_ptID[p3], m_ptID[p4]);
-                tetras.push_back(t3);
-                Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
-                tetras.push_back(t4);
+                if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
+                    std::cout << "ERROR: tetrahedron is out of boundary. c "<< std::endl;
+                Index p[4] = {Index(i+1,j-1,k-1), Index(i+1,j+1,k-1), Index(i+1,j+1,k+1), Index(i+1,j-1,k+1)};
+                for(int s = 0; s < 4; ++s)
+                {
+                    if(m_ptID.find(p[s]) == m_ptID.end() || m_ptID.find(p[(s+1)%4]) == m_ptID.end())
+                        std::cout << "ERROR: tetrahedron is out of boundary. p "<< std::endl;
+                    Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
+                    tetras.push_back(t);
+                }
             }
         }
     }
-//    //generate tetrahedra between c(i,j,k) and c(i,j+2,k) (i,j,k are odd numbers)
-//    for(int k = -m+1; k < m; k+=2)
-//    {
-//        for(int i = -n+1; i < n; i+=2)
-//        {
-////            b1 = MAX(-n+1, MAX(-2*a-i, i-2*a)), b2 = MIN(n-2, MIN(2*a-i, i+2*a));
-////            if(b1%2 == 0)
-////                --b1;
-////            for(int j = b1; j < b2; j+=2)
-//            for(int j = -n+1; j < n-2; j+=2)
-//            {
-//                Index c1(i,j,k), c2(i,j+2,k);
-//                Index p1(i-1,j+1,k-1), p2(i+1,j+1,k-1), p3(i+1,j+1,k+1), p4(i-1,j+1,k+1);
-//                Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
-//                tetras.push_back(t1);
-//                Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
-//                tetras.push_back(t2);
-//                Tetra t3(m_ptID[c1], m_ptID[c2], m_ptID[p3], m_ptID[p4]);
-//                tetras.push_back(t3);
-//                Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
-//                tetras.push_back(t4);
-//            }
-//        }
-//    }
-//    //generate tetrahedra between c(i,j,k) and c(i,j,k+2) (i,j,k are odd numbers)
-//    for(int i = -n+1; i < n; i+=2)
-//    {
-////        b1 = MAX(-n+1, MAX(-2*a-i, i-2*a)), b2 = MIN(n-2, MIN(2*a-i, i+2*a));
-////        if(b1%2 == 0)
-////            --b1;
-////        for(int j = b1; j < b2; j+=2)
-//        for(int j = -n+1; j < n; j+=2)
-//        {
-//            for(int k = -m+1; k < m-2; k+=2)
-//            {
-//                Index c1(i,j,k), c2(i,j,k+2);
-//                Index p1(i-1,j-1,k+1), p2(i+1,j-1,k+1), p3(i+1,j+1,k+1), p4(i-1,j+1,k+1);
-//                Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
-//                tetras.push_back(t1);
-//                Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
-//                tetras.push_back(t2);
-//                Tetra t3(m_ptID[c1], m_ptID[c2], m_ptID[p3], m_ptID[p4]);
-//                tetras.push_back(t3);
-//                Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
-//                tetras.push_back(t4);
-//            }
-//        }
-//    }
-//    //generate tetrahedra on the boundary i = -n
-//    for(int k = -m+1; k < m; k+=2)
-//    {
-//        for(int j = -n+1; j < n; j+=2)
-//        {
-//            Index c1(-n+1,j,k), c2(-n,j,k);
-//            Index p1(-n,j-1,k-1), p2(-n,j+1,k-1), p3(-n,j+1,k+1), p4(-n,j-1,k+1);
-//            Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
-//            tetras.push_back(t1);
-//            Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
-//            tetras.push_back(t2);
-//            Tetra t3(m_ptID[c1], m_ptID[c2], m_ptID[p3], m_ptID[p4]);
-//            tetras.push_back(t3);
-//            Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
-//            tetras.push_back(t4);
-//
-//        }
-//    }
-//    //generate tetrahedra on the boundary i = n
-//    for(int k = -m+1; k < m; k+=2)
-//    {
-//        for(int j = -n+1; j < n; j+=2)
-//        {
-//            Index c1(n-1,j,k), c2(n,j,k);
-//            Index p1(n,j-1,k-1), p2(n,j+1,k-1), p3(n,j+1,k+1), p4(n,j-1,k+1);
-//            Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
-//            tetras.push_back(t1);
-//            Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
-//            tetras.push_back(t2);
-//            Tetra t3(m_ptID[c1], m_ptID[c2], m_ptID[p3], m_ptID[p4]);
-//            tetras.push_back(t3);
-//            Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
-//            tetras.push_back(t4);
-//
-//        }
-//    }
-//    //generate tetrahedra on the boundary j = -n
-//    for(int k = -m+1; k < m; k+=2)
-//    {
-//        for(int i = -n+1; i < n; i+=2)
-//        {
-//            Index c1(i,-n+1,k), c2(i,-n,k);
-//            Index p1(i-1,-n,k-1), p2(i+1,-n,k-1), p3(i+1,-n,k+1), p4(i-1,-n,k+1);
-//            Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
-//            tetras.push_back(t1);
-//            Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
-//            tetras.push_back(t2);
-//            Tetra t3(m_ptID[c1], m_ptID[c2], m_ptID[p3], m_ptID[p4]);
-//            tetras.push_back(t3);
-//            Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
-//            tetras.push_back(t4);
-//        }
-//    }
-//    //generate tetrahedra on the boundary j = n
-//    for(int k = -m+1; k < m; k+=2)
-//    {
-//        for(int i = -n+1; i < n; i+=2)
-//        {
-//            Index c1(i,n-1,k), c2(i,n,k);
-//            Index p1(i-1,n,k-1), p2(i+1,n,k-1), p3(i+1,n,k+1), p4(i-1,n,k+1);
-//            Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
-//            tetras.push_back(t1);
-//            Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
-//            tetras.push_back(t2);
-//            Tetra t3(m_ptID[c1], m_ptID[c2], m_ptID[p3], m_ptID[p4]);
-//            tetras.push_back(t3);
-//            Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
-//            tetras.push_back(t4);
-//        }
-//    }
-//    //generate tetrahedra on the boundary k = -m
-//    for(int i = -n+1; i < n; i+=2)
-//    {
-//        for(int j = -n+1; j < n; j+=2)
-//        {
-//            Index c1(i,j,-m+1), c2(i,j,-m);
-//            Index p1(i-1,j-1,-m), p2(i+1,j-1,-m), p3(i+1,j+1,-m), p4(i-1,j+1,-m);
-//            Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
-//            tetras.push_back(t1);
-//            Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
-//            tetras.push_back(t2);
-//            Tetra t3(m_ptID[c1], m_ptID[c2], m_ptID[p3], m_ptID[p4]);
-//            tetras.push_back(t3);
-//            Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
-//            tetras.push_back(t4);
-//        }
-//    }
-//    //generate tetrahedra on the boundary k = m
-//    for(int i = -n+1; i < n; i+=2)
-//    {
-//        for(int j = -n+1; j < n; j+=2)
-//        {
-//            Index c1(i,j,m-1), c2(i,j,m);
-//            Index p1(i-1,j-1,m), p2(i+1,j-1,m), p3(i+1,j+1,m), p4(i-1,j+1,m);
-//            Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
-//            tetras.push_back(t1);
-//            Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
-//            tetras.push_back(t2);
-//            Tetra t3(m_ptID[c1], m_ptID[c2], m_ptID[p3], m_ptID[p4]);
-//            tetras.push_back(t3);
-//            Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
-//            tetras.push_back(t4);
-//        }
-//    }
-//    m_nbTetras = tetras.size();
-//    std::cout << "num of tetras = " << m_nbTetras << std::endl;
+    //generate tetrahedra between c(i,j,k) and c(i,j+2,k) ((i+n), (j+n), (k+m) are odd numbers))
+    for(int k = -m+1; k <= m-1; k+=2)
+    {
+        for(int i = -n+1; i <= n-1; i+=2)
+        {
+            b1 = MAX(-n+1, MAX(-2*a-i, -2*a+i)), b2 = MIN(n-3, MIN(2*a-i-2, 2*a+i-2));
+            for(int j = b1; j <= b2; j+=2)
+                //for(int j = -n+1; j < n-2; j+=2)
+            {
+                Index c1(i,j,k), c2(i,j+2,k);
+                if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
+                    std::cout << "ERROR: tetrahedron is out of boundary. c"<< std::endl;
+                Index p[4] = {Index(i-1,j+1,k-1), Index(i+1,j+1,k-1), Index(i+1,j+1,k+1), Index(i-1,j+1,k+1)};
+                for(int s = 0; s < 4; ++s)
+                {
+                    if(m_ptID.find(p[s]) == m_ptID.end() || m_ptID.find(p[(s+1)%4]) == m_ptID.end())
+                        std::cout << "ERROR: tetrahedron is out of boundary. p"<< std::endl;
+                    Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
+                    tetras.push_back(t);
+                }
+            }
+        }
+    }
+    //generate tetrahedra between c(i,j,k) and c(i,j,k+2) ((i+n), (j+n), (k+m) are odd numbers))
+    for(int i = -n+1; i <= n-1; i+=2)
+    {
+        b1 = MAX(-n+1, MAX(-2*a-i, -2*a+i)), b2 = MIN(n-1, MIN(2*a-i, 2*a+i));
+        for(int j = b1; j <= b2; j+=2)
+            //for(int j = -n+1; j < n; j+=2)
+        {
+            for(int k = -m+1; k <= m-3; k+=2)
+            {
+                Index c1(i,j,k), c2(i,j,k+2);
+                Index p[4] = {Index(i-1,j-1,k+1), Index(i+1,j-1,k+1), Index(i+1,j+1,k+1), Index(i-1,j+1,k+1)};
+                if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
+                    std::cout << "ERROR: tetrahedron is out of boundary. c"<< std::endl;
+                bool flag[4] = {true, true, true, true};
+                for(int s = 0; s < 4; ++s)
+                    if(m_ptID.find(p[s]) == m_ptID.end())
+                        flag[s] = false; //p[s] does not exist.
+                for(int s = 0; s < 4; ++s)
+                {
+                    if(flag[s] && flag[(s+1)%4])
+                    {
+                        Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
+                        tetras.push_back(t);
+                    }
+                }
+            }
+        }
+    }
+    //generate tetrahedra on the boundary i = -n & i = n
+    b1 = MAX(-n+1, n-2*a+1), b2 = MIN(n-1, 2*a-n-1);
+    for(int k = -m+1; k <= m-1; k+=2)
+    {
+        for(int j = b1; j <= b2; j+=2)
+            //for(int j = -n+1; j <= n-1; j+=2)
+        {
+            Index c1(-n+1,j,k), c2(-n,j,k);
+            if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
+                std::cout << "ERROR: tetrahedron is out of boundary."<< std::endl;
+            Index p[4] = {Index(-n,j-1,k-1), Index(-n,j+1,k-1), Index(-n,j+1,k+1), Index(-n,j-1,k+1)};
+            for(int s = 0; s < 4; ++s)
+            {
+                if(m_ptID.find(p[s]) == m_ptID.end() || m_ptID.find(p[(s+1)%4]) == m_ptID.end())
+                    std::cout << "ERROR: tetrahedron is out of boundary."<< std::endl;
+                Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
+                tetras.push_back(t);
+            }
 
+        }
+    }
+    for(int k = -m+1; k <= m-1; k+=2)
+    {
+        for(int j = b1; j <= b2; j+=2)
+            //for(int j = -n+1; j < n; j+=2)
+        {
+            Index c1(n-1,j,k), c2(n,j,k);
+            if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
+                std::cout << "ERROR: tetrahedron is out of boundary."<< std::endl;
+            Index p[4] = {Index(n,j-1,k-1), Index(n,j+1,k-1), Index(n,j+1,k+1), Index(n,j-1,k+1)};
+            for(int s = 0; s < 4; ++s)
+            {
+                if(m_ptID.find(p[s]) == m_ptID.end() || m_ptID.find(p[(s+1)%4]) == m_ptID.end())
+                    std::cout << "ERROR: tetrahedron is out of boundary."<< std::endl;
+                Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
+                tetras.push_back(t);
+            }
 
+        }
+    }
+    //generate tetrahedra on the boundary j = -n & j = n
+    for(int k = -m+1; k <= m-1; k+=2)
+    {
+        for(int i = b1; i <= b2; i+=2)
+            //for(int i = -n+1; i < n; i+=2)
+        {
+            Index c1(i,-n+1,k), c2(i,-n,k);
+            if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
+                std::cout << "ERROR: tetrahedron is out of boundary."<< std::endl;
+            Index p[4] = {Index(i-1,-n,k-1), Index(i+1,-n,k-1), Index(i+1,-n,k+1), Index(i-1,-n,k+1)};
+            for(int s = 0; s < 4; ++s)
+            {
+                if(m_ptID.find(p[s]) == m_ptID.end() || m_ptID.find(p[(s+1)%4]) == m_ptID.end())
+                    std::cout << "ERROR: tetrahedron is out of boundary."<< std::endl;
+                Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
+                tetras.push_back(t);
+            }
+        }
+    }
+    for(int k = -m+1; k <= m-1; k+=2)
+    {
+        for(int i = b1; i <= b2; i+=2)
+            //for(int i = -n+1; i < n; i+=2)
+        {
+            Index c1(i,n-1,k), c2(i,n,k);
+            if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
+                std::cout << "ERROR: tetrahedron is out of boundary."<< std::endl;
+            Index p[4] = {Index(i-1,n,k-1), Index(i+1,n,k-1), Index(i+1,n,k+1), Index(i-1,n,k+1)};
+            for(int s = 0; s < 4; ++s)
+            {
+                if(m_ptID.find(p[s]) == m_ptID.end() || m_ptID.find(p[(s+1)%4]) == m_ptID.end())
+                    std::cout << "ERROR: tetrahedron is out of boundary."<< std::endl;
+                Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
+                tetras.push_back(t);
+            }
+        }
+    }
+    //generate tetrahedra on the boundary k = -m & k = m
+    for(int i = -n+1; i <= n-1; i+=2)
+    {
+        b1 = MAX(-n+1, MAX(-2*a-i, -2*a+i)), b2 = MIN(n-1, MIN(2*a-i, 2*a+i));
+        for(int j = b1; j <= b2; j+=2)
+            //for(int j = -n+1; j < n; j+=2)
+        {
+            Index c1(i,j,-m+1), c2(i,j,-m);
+            if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
+                std::cout << "ERROR: tetrahedron is out of boundary. c"<< std::endl;
+            Index p[4] = {Index(i-1,j-1,-m), Index(i+1,j-1,-m), Index(i+1,j+1,-m), Index(i-1,j+1,-m)};
+            bool flag[4] = {true, true, true, true};
+            for(int s = 0; s < 4; ++s)
+                if(m_ptID.find(p[s]) == m_ptID.end())
+                {
+                    flag[s] = false; //p[s] does not exist.
+                    //std::cout << "false"<< std::endl;
+                }
+            for(int s = 0; s < 4; ++s)
+            {
+                if(flag[s] && flag[(s+1)%4])
+                {
+                    Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
+                    tetras.push_back(t);
+                }
+            }
 
+        }
+    }
+    for(int i = -n+1; i <= n-1; i+=2)
+    {
+        b1 = MAX(-n+1, MAX(-2*a-i, -2*a+i)), b2 = MIN(n-1, MIN(2*a-i, 2*a+i));
+        for(int j = b1; j <= b2; j+=2)
+        {
+            Index c1(i,j,m-1), c2(i,j,m);
+            if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
+                std::cout << "ERROR: tetrahedron is out of boundary."<< std::endl;
+            Index p[4] = {Index(i-1,j-1,m), Index(i+1,j-1,m), Index(i+1,j+1,m), Index(i-1,j+1,m)};
+            bool flag[4] = {true, true, true, true};
+            for(int s = 0; s < 4; ++s)
+                if(m_ptID.find(p[s]) == m_ptID.end())
+                {
+                    flag[s] = false; //p[s] does not exist.
+                    //std::cout << "false"<< std::endl;
+                }
+            for(int s = 0; s < 4; ++s)
+            {
+                if(flag[s] && flag[(s+1)%4])
+                {
+                    Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
+                    tetras.push_back(t);
+                }
+            }
+        }
+    }
+    m_nbTetras = tetras.size();
+    std::cout << "num of tetras = " << m_nbTetras << std::endl;
 }
 
 template <class DataTypes>
@@ -467,7 +495,7 @@ void CylinderMesh<DataTypes>::draw()
         glDisable(GL_LIGHTING);
         glColor3f(0.5, 0.5, 0.5);
         glBegin(GL_LINES);
-        for(int i = 0; i < m_nbTetras; ++i)
+        for(int i = 0; i < /*4*/m_nbTetras; ++i)
         {
 //        unsigned int i = 1;
             for(int j = 0; j < 3; ++j)
