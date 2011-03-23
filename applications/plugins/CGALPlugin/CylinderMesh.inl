@@ -209,32 +209,30 @@ void CylinderMesh<DataTypes>::update()
     }
     m_nbBDCenters = count - m_nbVertices - m_nbCenters;
     std::cout << "num of boundary centers = " << m_nbBDCenters << std::endl;
-//
-//
-//    //generate tetrahedra between c(i,j,k) and c(i+2,j,k) (i,j,k are odd numbers)
-//    for(int k = -m+1; k < m; k+=2)
-//    {
-//        for(int j = -n+1; j < n; j+=2)
-//        {
-////            b1 = MAX(-n+1, MAX(-2*a-j, j-2*a)), b2 = MIN(n-2, MIN(2*a-j, j+2*a));
-////            if(b1%2 == 0)
-////                --b1;
-////            for(int i = b1; i <= b2; i+=2)
-//            for(int i = -n+1; i < n-2; i+=2)
-//            {
-//                Index c1(i,j,k), c2(i+2,j,k);
-//                Index p1(i+1,j-1,k-1), p2(i+1,j+1,k-1), p3(i+1,j+1,k+1), p4(i+1,j-1,k+1);
-//                Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
-//                tetras.push_back(t1);
-//                Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
-//                tetras.push_back(t2);
-//                Tetra t3(m_ptID[c1], m_ptID[c2], m_ptID[p3], m_ptID[p4]);
-//                tetras.push_back(t3);
-//                Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
-//                tetras.push_back(t4);
-//            }
-//        }
-//    }
+
+
+    //generate tetrahedra between c(i,j,k) and c(i+2,j,k) (i,j,k are odd numbers)
+    for(int k = -m+1; k < m; k+=2)
+    {
+        for(int j = -n+1; j < n; j+=2)
+        {
+            b1 = MAX(-n+1, MAX(-2*a-j, j-2*a)), b2 = MIN(n-2, MIN(2*a-j, j+2*a));
+            for(int i = b1; i <= b2; i+=2)
+                //for(int i = -n+1; i < n-2; i+=2)
+            {
+                Index c1(i,j,k), c2(i+2,j,k);
+                Index p1(i+1,j-1,k-1), p2(i+1,j+1,k-1), p3(i+1,j+1,k+1), p4(i+1,j-1,k+1);
+                Tetra t1(m_ptID[c1], m_ptID[c2], m_ptID[p1], m_ptID[p2]);
+                tetras.push_back(t1);
+                Tetra t2(m_ptID[c1], m_ptID[c2], m_ptID[p2], m_ptID[p3]);
+                tetras.push_back(t2);
+                Tetra t3(m_ptID[c1], m_ptID[c2], m_ptID[p3], m_ptID[p4]);
+                tetras.push_back(t3);
+                Tetra t4(m_ptID[c1], m_ptID[c2], m_ptID[p4], m_ptID[p1]);
+                tetras.push_back(t4);
+            }
+        }
+    }
 //    //generate tetrahedra between c(i,j,k) and c(i,j+2,k) (i,j,k are odd numbers)
 //    for(int k = -m+1; k < m; k+=2)
 //    {
