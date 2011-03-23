@@ -171,7 +171,7 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::defaulttype
 //
 template<class DataTypes>
 sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(
-    const Vec<3,double> &p,
+    const sofa::defaulttype::Vec<3,double> &p,
     unsigned int ind_p1,
     unsigned int ind_p2) const
 {
@@ -183,8 +183,8 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::compute2Poi
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
 
-    Vec<3,double> a; DataTypes::get(a[0], a[1], a[2], c0);
-    Vec<3,double> b; DataTypes::get(b[0], b[1], b[2], c1);
+    sofa::defaulttype::Vec<3,double> a; DataTypes::get(a[0], a[1], a[2], c0);
+    sofa::defaulttype::Vec<3,double> b; DataTypes::get(b[0], b[1], b[2], c1);
 
     double dis = (b - a).norm();
     double coef_a, coef_b;
@@ -262,7 +262,7 @@ bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
 
 template<class DataTypes>
 sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
-    const Vec<3,double> &p,
+    const sofa::defaulttype::Vec<3,double> &p,
     unsigned int ind_p1,
     unsigned int ind_p2) const
 {
@@ -274,8 +274,8 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computeRest
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
 
-    Vec<3,double> a; DataTypes::get(a[0], a[1], a[2], c0);
-    Vec<3,double> b; DataTypes::get(b[0], b[1], b[2], c1);
+    sofa::defaulttype::Vec<3,double> a; DataTypes::get(a[0], a[1], a[2], c0);
+    sofa::defaulttype::Vec<3,double> b; DataTypes::get(b[0], b[1], b[2], c1);
 
     double dis = (b - a).norm();
     double coef_a, coef_b;
@@ -375,12 +375,12 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePoin
 }
 
 template<class DataTypes>
-bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgePlaneIntersection (EdgeID edgeID, Vec<3,Real> pointOnPlane, Vec<3,Real> normalOfPlane, Vec<3,Real>& intersection)
+bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgePlaneIntersection (EdgeID edgeID, sofa::defaulttype::Vec<3,Real> pointOnPlane, sofa::defaulttype::Vec<3,Real> normalOfPlane, sofa::defaulttype::Vec<3,Real>& intersection)
 {
     const Edge &e = this->m_topology->getEdge(edgeID);
     const VecCoord& p = *(this->object->getX());
 
-    Vec<3,Real> p1,p2;
+    sofa::defaulttype::Vec<3,Real> p1,p2;
     p1[0]=p[e[0]][0]; p1[1]=p[e[0]][1]; p1[2]=p[e[0]][2];
     p2[0]=p[e[1]][0]; p2[1]=p[e[1]][1]; p2[2]=p[e[1]][2];
 
@@ -400,12 +400,12 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgePlaneIntersection (EdgeID 
 }
 
 template<class DataTypes>
-bool EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgePlaneIntersection (EdgeID edgeID, Vec<3,Real> pointOnPlane, Vec<3,Real> normalOfPlane, Vec<3,Real>& intersection)
+bool EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgePlaneIntersection (EdgeID edgeID, sofa::defaulttype::Vec<3,Real> pointOnPlane, sofa::defaulttype::Vec<3,Real> normalOfPlane, sofa::defaulttype::Vec<3,Real>& intersection)
 {
     const Edge &e = this->m_topology->getEdge(edgeID);
     const VecCoord& p = *(this->object->getX0());
 
-    Vec<3,Real> p1,p2;
+    sofa::defaulttype::Vec<3,Real> p1,p2;
     p1[0]=p[e[0]][0]; p1[1]=p[e[0]][1]; p1[2]=p[e[0]][2];
     p2[0]=p[e[1]][0]; p2[1]=p[e[1]][1]; p2[2]=p[e[1]][2];
 
@@ -503,7 +503,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
-        const Vector3& color = _drawColor.getValue();
+        const sofa::defaulttype::Vector3& color = _drawColor.getValue();
         glColor3f(color[0], color[1], color[2]);
         glDisable(GL_LIGHTING);
         float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
@@ -519,7 +519,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
             Edge the_edge = edgeArray[i];
             Coord vertex1 = coords[ the_edge[0] ];
             Coord vertex2 = coords[ the_edge[1] ];
-            Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2))/2;
+            sofa::defaulttype::Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2))/2;
 
             std::ostringstream oss;
             oss << i;
@@ -535,7 +535,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3f temp = modelviewM.transform(center);
+            sofa::defaulttype::Vec3f temp = modelviewM.transform(center);
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
@@ -562,7 +562,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
         if (!edgeArray.empty())
         {
             glDisable(GL_LIGHTING);
-            const Vector3& color = _drawColor.getValue();
+            const sofa::defaulttype::Vector3& color = _drawColor.getValue();
             glColor3f(color[0], color[1], color[2]);
 
             const VecCoord& coords = *(this->object->getX());
@@ -571,8 +571,8 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
             for (unsigned int i = 0; i<edgeArray.size(); i++)
             {
                 const Edge& e = edgeArray[i];
-                Vec3f coordP1; coordP1 = DataTypes::getCPos(coords[e[0]]);
-                Vec3f coordP2; coordP2 = DataTypes::getCPos(coords[e[1]]);
+                sofa::defaulttype::Vec3f coordP1; coordP1 = DataTypes::getCPos(coords[e[0]]);
+                sofa::defaulttype::Vec3f coordP2; coordP2 = DataTypes::getCPos(coords[e[1]]);
                 glVertex3f(coordP1[0], coordP1[1], coordP1[2]);
                 glVertex3f(coordP2[0], coordP2[1], coordP2[2]);
             }

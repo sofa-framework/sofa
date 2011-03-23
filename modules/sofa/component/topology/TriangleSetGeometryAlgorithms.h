@@ -63,7 +63,7 @@ public:
         : EdgeSetGeometryAlgorithms<DataTypes>()
         ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
-        , _drawColor(initData(&_drawColor, Vector3(0.2,1.0,1.0), "drawColorTriangles", "RGB code color used to draw edges."))
+        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vector3(0.2,1.0,1.0), "drawColorTriangles", "RGB code color used to draw edges."))
         , _drawNormals(initData(&_drawNormals, false, "drawNormals","if true, draw the triangles in the topology"))
         , _drawNormalLength (initData(&_drawNormalLength, (SReal)10, "drawNormalLength", "Fiber length visualisation."))
         , p_recomputeTrianglesOrientation(initData(&p_recomputeTrianglesOrientation, false, "recomputeTrianglesOrientation","if true, will recompute triangles orientation according to normals."))
@@ -111,7 +111,7 @@ public:
     /** \brief Computes barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
     *
     */
-    sofa::helper::vector< double > computeTriangleBarycoefs(const TriangleID ind_t, const Vec<3,double> &p) const;
+    sofa::helper::vector< double > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::defaulttype::Vec<3,double> &p) const;
 
     /** \brief Computes barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
      *
@@ -246,7 +246,7 @@ public:
             unsigned int& ind_ta, unsigned int& ind_tb,
             sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
             sofa::helper::vector<unsigned int>& indices_list,
-            sofa::helper::vector< Vec<3, double> >& coords_list) const;
+            sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list) const;
 
 
     /** \brief Get the triangle in a given direction from a point.
@@ -266,7 +266,7 @@ public:
 protected:
     Data<bool> showTriangleIndices;
     Data<bool> _draw;
-    Data<Vector3> _drawColor;
+    Data<sofa::defaulttype::Vector3> _drawColor;
     Data<bool> _drawNormals;
     Data <SReal> _drawNormalLength;
     Data<bool> p_recomputeTrianglesOrientation;
@@ -281,8 +281,8 @@ protected:
   const sofa::defaulttype::Vec<3,Real>& b,
   const sofa::defaulttype::Vec<3,Real>& c);*/
 template<class Real>
-bool is_point_in_triangle(const Vec<3,Real>& p,
-        const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c);
+bool is_point_in_triangle(const sofa::defaulttype::Vec<3,Real>& p,
+        const sofa::defaulttype::Vec<3,Real>& a, const sofa::defaulttype::Vec<3,Real>& b, const sofa::defaulttype::Vec<3,Real>& c);
 
 
 template< class Real>

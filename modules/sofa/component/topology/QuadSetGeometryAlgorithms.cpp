@@ -39,11 +39,11 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(QuadSetGeometryAlgorithms)
 int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry algorithms")
 #ifdef SOFA_FLOAT
-        .add< QuadSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
+        .add< QuadSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >(true) // default template
 #else
-        .add< QuadSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
+        .add< QuadSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes> >(true) // default template
 #ifndef SOFA_DOUBLE
-        .add< QuadSetGeometryAlgorithms<Vec3fTypes> >() // default template
+        .add< QuadSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >() // default template
 #endif
 #endif
 #ifndef SOFA_FLOAT
@@ -57,13 +57,13 @@ int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry alg
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec2dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec2fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec1fTypes>;
 #endif

@@ -67,7 +67,7 @@ public:
         : TriangleSetGeometryAlgorithms<DataTypes>()
         ,showTetrahedraIndices (core::objectmodel::Base::initData(&showTetrahedraIndices, (bool) false, "showTetrahedraIndices", "Debug : view Tetrahedrons indices"))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
-        , _drawColor(initData(&_drawColor, Vector3(1.0,1.0,0.0), "drawColorTetrahedra", "RGB code color used to draw tetrahedra."))
+        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vector3(1.0,1.0,0.0), "drawColorTetrahedra", "RGB code color used to draw tetrahedra."))
     {
         core::objectmodel::Base::addAlias(&showTetrahedraIndices, "showTetrasIndices");
     }
@@ -82,10 +82,10 @@ public:
 
     Coord computeTetrahedronCircumcenter(const TetraID i) const;
 
-    bool isPointInTetrahedron(const TetraID i, const Vec<3,Real>& p) const;
+    bool isPointInTetrahedron(const TetraID i, const sofa::defaulttype::Vec<3,Real>& p) const;
 
     /// return (if the point is in the tetrahedron) the barycentric coordinates of the point in the tetrahedron
-    bool isPointInTetrahedron(const TetraID ind_t, const Vec<3,Real>& pTest, Vec<4,Real>& barycentricCoordinates) const;
+    bool isPointInTetrahedron(const TetraID ind_t, const sofa::defaulttype::Vec<3,Real>& pTest, sofa::defaulttype::Vec<4,Real>& barycentricCoordinates) const;
 
     void getTetrahedronVertexCoordinates(const TetraID i, Coord[4]) const;
 
@@ -115,17 +115,17 @@ public:
     void writeMSHfile(const char *filename) const;
 
     /// finds the intersection point with plane which is defined by c and normal
-    void getIntersectionPointWithPlane(const TetraID ind_ta, Vec<3,Real>& c, Vec<3,Real>& normal, sofa::helper::vector< Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge);
+    void getIntersectionPointWithPlane(const TetraID ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, sofa::helper::vector< sofa::defaulttype::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge);
 
     /// finds the intersection point between edge and plane
-    bool computeIntersectionEdgeWithPlane(Vec<3,Real>& p1, Vec<3,Real>& p2, Vec<3,Real>& c, Vec<3,Real>& normal, Vec<3,Real>& intersection);
+    bool computeIntersectionEdgeWithPlane(Vec<3,Real>& p1, sofa::defaulttype::Vec<3,Real>& p2, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, sofa::defaulttype::Vec<3,Real>& intersection);
 
     bool checkNodeSequence(Tetra& tetra);
 
 protected:
     Data<bool> showTetrahedraIndices;
     Data<bool> _draw;
-    Data<Vector3> _drawColor;
+    Data<sofa::defaulttype::Vector3> _drawColor;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)

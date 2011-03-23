@@ -137,7 +137,7 @@ typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getRestPoi
 
 template<class DataTypes>
 typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getRestPointPositionInHexahedron(const HexaID h,
-        const Vector3& baryC) const
+        const sofa::defaulttype::Vector3& baryC) const
 {
     Coord	p[8];
     getRestHexahedronVertexCoordinates(h, p);
@@ -183,7 +183,7 @@ typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getPointPo
 
 template<class DataTypes>
 typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getPointPositionInHexahedron(const HexaID h,
-        const Vector3& baryC) const
+        const sofa::defaulttype::Vector3& baryC) const
 {
     Coord	p[8];
     getHexahedronVertexCoordinates(h, p);
@@ -205,18 +205,18 @@ typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getPointPo
 }
 
 template<class DataTypes>
-Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronRestBarycentricCoeficients(const HexaID h,
+sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronRestBarycentricCoeficients(const HexaID h,
         const Coord& pos) const
 {
     Coord	p[8];
     getRestHexahedronVertexCoordinates(h, p);
 
-    Vector3 origin;
+    sofa::defaulttype::Vector3 origin;
     origin[0] = p[0][0];
     origin[1] = p[0][1];
     origin[2] = p[0][2];
 
-    Vector3 p1, p3, p4;
+    sofa::defaulttype::Vector3 p1, p3, p4;
     p1[0] = p[1][0];
     p1[1] = p[1][1];
     p1[2] = p[1][2];
@@ -236,7 +236,7 @@ Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronRestBarycen
     mt.transpose(m);
     base.invert(mt);
 
-    Vector3 pnt;
+    sofa::defaulttype::Vector3 pnt;
     pnt[0] = pos[0];
     pnt[1] = pos[1];
     pnt[2] = pos[2];
@@ -245,7 +245,7 @@ Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronRestBarycen
 }
 
 template<class DataTypes>
-Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronBarycentricCoeficients(const HexaID h,
+sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronBarycentricCoeficients(const HexaID h,
         const Coord& pos) const
 {
     // Warning: this is only correct if the hexahedron is not deformed
@@ -255,12 +255,12 @@ Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronBarycentric
     Coord	p[8];
     getHexahedronVertexCoordinates(h, p);
 
-    Vector3 origin;
+    sofa::defaulttype::Vector3 origin;
     origin[0] = p[0][0];
     origin[1] = p[0][1];
     origin[2] = p[0][2];
 
-    Vector3 p1, p3, p4;
+    sofa::defaulttype::Vector3 p1, p3, p4;
     p1[0] = p[1][0];
     p1[1] = p[1][1];
     p1[2] = p[1][2];
@@ -280,7 +280,7 @@ Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronBarycentric
     mt.transpose(m);
     base.invert(mt);
 
-    Vector3 pnt;
+    sofa::defaulttype::Vector3 pnt;
     pnt[0] = pos[0];
     pnt[1] = pos[1];
     pnt[2] = pos[2];
@@ -293,7 +293,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeEl
 {
     typedef typename DataTypes::Real Real;
 
-    const Vector3 v = computeHexahedronBarycentricCoeficients(h, pos);
+    const sofa::defaulttype::Vector3 v = computeHexahedronBarycentricCoeficients(h, pos);
 
     Real d = (Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
 
@@ -308,7 +308,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeEl
 {
     typedef typename DataTypes::Real Real;
 
-    const Vector3 v = computeHexahedronRestBarycentricCoeficients(h, pos);
+    const sofa::defaulttype::Vector3 v = computeHexahedronRestBarycentricCoeficients(h, pos);
 
     Real d = (Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
 
@@ -319,7 +319,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeEl
 }
 
 template< class DataTypes>
-int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord& pos, Vector3& baryC, Real& distance) const
+int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const
 {
     int index=-1;
     distance = 1e10;
@@ -354,7 +354,7 @@ void HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElements(const Vec
 }
 
 template< class DataTypes>
-int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const
+int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const
 {
     int index=-1;
     distance = 1e10;
@@ -468,7 +468,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
-        const Vector3& color = _drawColor.getValue();
+        const sofa::defaulttype::Vector3& color = _drawColor.getValue();
         glColor3f(color[0], color[1], color[2]);
         glDisable(GL_LIGHTING);
         float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
@@ -482,11 +482,11 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
         {
 
             Hexahedron the_hexa = hexaArray[i];
-            Vec3f center;
+            sofa::defaulttype::Vec3f center;
 
             for (unsigned int j = 0; j<8; j++)
             {
-                Vec3f vertex; vertex = DataTypes::getCPos(coords[ the_hexa[j] ]);
+                sofa::defaulttype::Vec3f vertex; vertex = DataTypes::getCPos(coords[ the_hexa[j] ]);
                 center += vertex;
             }
 
@@ -506,7 +506,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3f temp = modelviewM.transform(center);
+            sofa::defaulttype::Vec3f temp = modelviewM.transform(center);
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
@@ -534,7 +534,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
         if (!hexaArray.empty())
         {
             glDisable(GL_LIGHTING);
-            const Vector3& color = _drawColor.getValue();
+            const sofa::defaulttype::Vector3& color = _drawColor.getValue();
             glColor3f(color[0], color[1], color[2]);
             glBegin(GL_LINES);
             const VecCoord& coords = *(this->object->getX());
@@ -542,11 +542,11 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
             for (unsigned int i = 0; i<hexaArray.size(); i++)
             {
                 const Hexahedron& H = hexaArray[i];
-                sofa::helper::vector <Vec3f> hexaCoord;
+                sofa::helper::vector <sofa::defaulttype::Vec3f> hexaCoord;
 
                 for (unsigned int j = 0; j<8; j++)
                 {
-                    Vec3f p; p = DataTypes::getCPos(coords[H[j]]);
+                    sofa::defaulttype::Vec3f p; p = DataTypes::getCPos(coords[H[j]]);
                     hexaCoord.push_back(p);
                 }
 

@@ -70,12 +70,12 @@ typename DataTypes::Coord TetrahedronSetGeometryAlgorithms<DataTypes>::computeTe
     Coord t1 = p[t[1]] - p[t[0]];
     Coord t2 = p[t[2]] - p[t[0]];
     Coord t3 = p[t[3]] - p[t[0]];
-    Vec<3,Real> a(t1[0], t1[1], t1[2]);
-    Vec<3,Real> b(t2[0], t2[1], t2[2]);
-    Vec<3,Real> c(t3[0], t3[1], t3[2]);
+    sofa::defaulttype::Vec<3,Real> a(t1[0], t1[1], t1[2]);
+    sofa::defaulttype::Vec<3,Real> b(t2[0], t2[1], t2[2]);
+    sofa::defaulttype::Vec<3,Real> c(t3[0], t3[1], t3[2]);
 
 //		using namespace sofa::defaulttype;
-    Vec<3,Real> d = (cross(b, c) * a.norm2() + cross(c, a) * b.norm2() + cross(a, b) * c.norm2()) / (12* computeTetrahedronVolume(i));
+    sofa::defaulttype::Vec<3,Real> d = (cross(b, c) * a.norm2() + cross(c, a) * b.norm2() + cross(a, b) * c.norm2()) / (12* computeTetrahedronVolume(i));
 
     center[0] += d[0];
     center[1] += d[1];
@@ -85,17 +85,17 @@ typename DataTypes::Coord TetrahedronSetGeometryAlgorithms<DataTypes>::computeTe
 }
 
 template< class DataTypes>
-bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const TetraID ind_t, const Vec<3,Real>& pTest) const
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const TetraID ind_t, const sofa::defaulttype::Vec<3,Real>& pTest) const
 {
     const double ZERO = 1e-15;
 
     const Tetrahedron t = this->m_topology->getTetrahedron(ind_t);
     const typename DataTypes::VecCoord& p = *(this->object->getX());
 
-    const Vec<3,Real> t0(p[t[0]][0], p[t[0]][1], p[t[0]][2]);
-    const Vec<3,Real> t1(p[t[1]][0], p[t[1]][1], p[t[1]][2]);
-    const Vec<3,Real> t2(p[t[2]][0], p[t[2]][1], p[t[2]][2]);
-    const Vec<3,Real> t3(p[t[3]][0], p[t[3]][1], p[t[3]][2]);
+    const sofa::defaulttype::Vec<3,Real> t0(p[t[0]][0], p[t[0]][1], p[t[0]][2]);
+    const sofa::defaulttype::Vec<3,Real> t1(p[t[1]][0], p[t[1]][1], p[t[1]][2]);
+    const sofa::defaulttype::Vec<3,Real> t2(p[t[2]][0], p[t[2]][1], p[t[2]][2]);
+    const sofa::defaulttype::Vec<3,Real> t3(p[t[3]][0], p[t[3]][1], p[t[3]][2]);
 
     double v0 = tripleProduct(t1-pTest, t2-pTest, t3-pTest);
     double v1 = tripleProduct(pTest-t0, t2-t0, t3-t0);
@@ -111,17 +111,17 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const T
 }
 
 template< class DataTypes>
-bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const TetraID ind_t, const Vec<3,Real>& pTest, Vec<4,Real>& shapeFunctions) const
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const TetraID ind_t, const sofa::defaulttype::Vec<3,Real>& pTest, sofa::defaulttype::Vec<4,Real>& shapeFunctions) const
 {
     const double ZERO = 1e-15;
 
     const Tetrahedron t = this->m_topology->getTetrahedron(ind_t);
     const typename DataTypes::VecCoord& p = *(this->object->getX());
 
-    const Vec<3,Real> t0(p[t[0]][0], p[t[0]][1], p[t[0]][2]);
-    const Vec<3,Real> t1(p[t[1]][0], p[t[1]][1], p[t[1]][2]);
-    const Vec<3,Real> t2(p[t[2]][0], p[t[2]][1], p[t[2]][2]);
-    const Vec<3,Real> t3(p[t[3]][0], p[t[3]][1], p[t[3]][2]);
+    const sofa::defaulttype::Vec<3,Real> t0(p[t[0]][0], p[t[0]][1], p[t[0]][2]);
+    const sofa::defaulttype::Vec<3,Real> t1(p[t[1]][0], p[t[1]][1], p[t[1]][2]);
+    const sofa::defaulttype::Vec<3,Real> t2(p[t[2]][0], p[t[2]][1], p[t[2]][2]);
+    const sofa::defaulttype::Vec<3,Real> t3(p[t[3]][0], p[t[3]][1], p[t[3]][2]);
 
     double v0 = tripleProduct(t1-pTest, t2-pTest, t3-pTest);
     double v1 = tripleProduct(pTest-t0, t2-t0, t3-t0);
@@ -229,8 +229,8 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
 
     const typename DataTypes::Coord& ca=(vect_c[ta[0]]+vect_c[ta[1]]+vect_c[ta[2]]+vect_c[ta[3]])*0.25;
     const typename DataTypes::Coord& cb=(vect_c[tb[0]]+vect_c[tb[1]]+vect_c[tb[2]]+vect_c[tb[3]])*0.25;
-    Vec<3,Real> pa;
-    Vec<3,Real> pb;
+    sofa::defaulttype::Vec<3,Real> pa;
+    sofa::defaulttype::Vec<3,Real> pb;
     pa[0] = (Real) (ca[0]);
     pa[1] = (Real) (ca[1]);
     pa[2] = (Real) (ca[2]);
@@ -253,7 +253,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
     const typename DataTypes::Coord& ca=(vect_c[ta[0]]+vect_c[ta[1]]+vect_c[ta[2]]+vect_c[ta[3]])*0.25;
 
-    Vec<3,Real> pa;
+    sofa::defaulttype::Vec<3,Real> pa;
     pa[0] = (Real) (ca[0]);
     pa[1] = (Real) (ca[1]);
     pa[2] = (Real) (ca[2]);
@@ -303,7 +303,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
                                 + vect_c[tc[1]]
                                 + vect_c[tc[2]]
                                 + vect_c[tc[3]]) * 0.25;
-                        Vec<3,Real> pc;
+                        sofa::defaulttype::Vec<3,Real> pc;
                         pc[0] = (Real) (cc[0]);
                         pc[1] = (Real) (cc[1]);
                         pc[2] = (Real) (cc[2]);
@@ -336,7 +336,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
         sofa::helper::vector<unsigned int> &indices) const
 {
     TetraID ind_ta = core::topology::BaseMeshTopology::InvalidID;
-    Vec<3,Real> pa;
+    sofa::defaulttype::Vec<3,Real> pa;
     pa[0] = (Real) (c[0]);
     pa[1] = (Real) (c[1]);
     pa[2] = (Real) (c[2]);
@@ -399,7 +399,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
                                 + vect_c[tc[1]]
                                 + vect_c[tc[2]]
                                 + vect_c[tc[3]]) * 0.25;
-                        Vec<3,Real> pc;
+                        sofa::defaulttype::Vec<3,Real> pc;
                         pc[0] = (Real) (cc[0]);
                         pc[1] = (Real) (cc[1]);
                         pc[2] = (Real) (cc[2]);
@@ -428,15 +428,15 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
 
 /// Compute intersection point with plane which is defined by c and normal
 template <typename DataTypes>
-void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(const TetraID ind_ta, Vec<3,Real>& c, Vec<3,Real>& normal, sofa::helper::vector< Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge)
+void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(const TetraID ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, sofa::helper::vector< sofa::defaulttype::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge)
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX0());
     const Tetrahedron ta=this->m_topology->getTetrahedron(ind_ta);
     const EdgesInTetrahedron edgesInTetra=this->m_topology->getEdgesInTetrahedron(ind_ta);
     const SeqEdges edges=this->m_topology->getEdges();
 
-    Vec<3,Real> p1,p2;
-    Vec<3,Real> intersection;
+    sofa::defaulttype::Vec<3,Real> p1,p2;
+    sofa::defaulttype::Vec<3,Real> intersection;
 
     //intersection with edge
     for(unsigned int i=0; i<edgesInTetra.size(); i++)
@@ -466,7 +466,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
 }
 
 template <typename DataTypes>
-bool TetrahedronSetGeometryAlgorithms<DataTypes>::computeIntersectionEdgeWithPlane(Vec<3,Real>& p1, Vec<3,Real>& p2, Vec<3,Real>& c, Vec<3,Real>& normal, Vec<3,Real>& intersection)
+bool TetrahedronSetGeometryAlgorithms<DataTypes>::computeIntersectionEdgeWithPlane(Vec<3,Real>& p1, sofa::defaulttype::Vec<3,Real>& p2, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, sofa::defaulttype::Vec<3,Real>& intersection)
 {
     //plane equation
     normal.normalize();
@@ -491,7 +491,7 @@ template <typename DataTypes>
 bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(Tetra& tetra)
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX0());
-    Vec<3,Real> vec[3];
+    sofa::defaulttype::Vec<3,Real> vec[3];
     for(int i=1; i<4; i++)
     {
         vec[i-1]=vect_c[tetra[i]]-vect_c[tetra[0]];
@@ -557,7 +557,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
-        const Vector3& color = _drawColor.getValue();
+        const sofa::defaulttype::Vector3& color = _drawColor.getValue();
         glColor3f(color[0], color[1], color[2]);
         glDisable(GL_LIGHTING);
         float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
@@ -575,7 +575,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
             Coord vertex2 = coords[ the_tetra[1] ];
             Coord vertex3 = coords[ the_tetra[2] ];
             Coord vertex4 = coords[ the_tetra[3] ];
-            Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
+            sofa::defaulttype::Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
 
             std::ostringstream oss;
             oss << i;
@@ -591,7 +591,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3f temp = modelviewM.transform(center);
+            sofa::defaulttype::Vec3f temp = modelviewM.transform(center);
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
@@ -619,7 +619,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
         if (!tetraArray.empty())
         {
             glDisable(GL_LIGHTING);
-            const Vector3& color = _drawColor.getValue();
+            const sofa::defaulttype::Vector3& color = _drawColor.getValue();
             glColor3f(color[0], color[1], color[2]);
             glBegin(GL_LINES);
             const VecCoord& coords = *(this->object->getX());
@@ -627,11 +627,11 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
             for (unsigned int i = 0; i<tetraArray.size(); i++)
             {
                 const Tetrahedron& tet = tetraArray[i];
-                sofa::helper::vector <Vec3f> tetraCoord;
+                sofa::helper::vector <sofa::defaulttype::Vec3f> tetraCoord;
 
                 for (unsigned int j = 0; j<4; j++)
                 {
-                    Vec3f p; p = DataTypes::getCPos(coords[tet[j]]);
+                    sofa::defaulttype::Vec3f p; p = DataTypes::getCPos(coords[tet[j]]);
                     tetraCoord.push_back(p);
                 }
 

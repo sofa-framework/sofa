@@ -102,7 +102,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleCircumcenterBaryCo
     baryCoord[1] = c2*(a2+b2-c2) / n;
 
     // barycentric coordinates are defined as
-    //baryCoord = Vec<3,Real>(a2*(-a2+b2+c2) / n, b2*(a2-b2+c2) / n, c2*(a2+b2-c2) / n);
+    //baryCoord = sofa::defaulttype::Vec<3,Real>(a2*(-a2+b2+c2) / n, b2*(a2-b2+c2) / n, c2*(a2+b2-c2) / n);
 }
 
 template<class DataTypes>
@@ -111,7 +111,7 @@ typename DataTypes::Coord TriangleSetGeometryAlgorithms<DataTypes>::computeTrian
     const Triangle &t = this->m_topology->getTriangle(i);
     const typename DataTypes::VecCoord& p = *(this->object->getX());
 
-    Vec<3,Real> barycentricCoords;
+    sofa::defaulttype::Vec<3,Real> barycentricCoords;
     computeTriangleCircumcenterBaryCoefs(barycentricCoords, i);
 
     return (p[t[0]]*barycentricCoords[0] + p[t[1]]*barycentricCoords[1] + p[t[2]]*barycentricCoords[2]);
@@ -175,30 +175,30 @@ void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleArea( BasicArrayIn
 
 // Computes the point defined by 2 indices of vertex and 1 barycentric coordinate
 template<class DataTypes>
-Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(unsigned int p0, unsigned int p1, double coord_p) const
+sofa::defaulttype::Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(unsigned int p0, unsigned int p1, double coord_p) const
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
-    Vec<3,double> c0; c0 = vect_c[p0];
-    Vec<3,double> c1; c1 = vect_c[p1];
+    sofa::defaulttype::Vec<3,double> c0; c0 = vect_c[p0];
+    sofa::defaulttype::Vec<3,double> c1; c1 = vect_c[p1];
     return c0*(1-coord_p) + c1*coord_p;
 }
 
 template<class DataTypes>
-Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryTrianglePoint(unsigned int p0, unsigned int p1, unsigned int p2, sofa::defaulttype::Vec<3,double>& coord_p) const
+sofa::defaulttype::Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryTrianglePoint(unsigned int p0, unsigned int p1, unsigned int p2, sofa::defaulttype::Vec<3,double>& coord_p) const
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
-    Vec<3,double> c0; c0 = vect_c[p0];
-    Vec<3,double> c1; c1 = vect_c[p1];
-    Vec<3,double> c2; c2 = vect_c[p2];
+    sofa::defaulttype::Vec<3,double> c0; c0 = vect_c[p0];
+    sofa::defaulttype::Vec<3,double> c1; c1 = vect_c[p1];
+    sofa::defaulttype::Vec<3,double> c2; c2 = vect_c[p2];
     return c0*coord_p[0] + c1*coord_p[1] + c2*coord_p[2];
 }
 
 
 // Computes the opposite point to ind_p
 template<class DataTypes>
-Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(unsigned int ind_p,
+sofa::defaulttype::Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(unsigned int ind_p,
         const Edge& indices,
         double coord_p) const
 {
@@ -207,7 +207,7 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(unsig
     const typename DataTypes::Coord& c1 = vect_c[indices[0]];
     const typename DataTypes::Coord& c2 = vect_c[indices[1]];
 
-    Vec<3,Real> p;
+    sofa::defaulttype::Vec<3,Real> p;
 
     if(ind_p == indices[0])
     {
@@ -236,7 +236,7 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(unsig
 
 // Computes the normal vector of a triangle indexed by ind_t (not normed)
 template<class DataTypes>
-Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(const TriangleID ind_t) const
+sofa::defaulttype::Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(const TriangleID ind_t) const
 {
     const Triangle &t = this->m_topology->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
@@ -245,20 +245,20 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(
     const typename DataTypes::Coord& c1 = vect_c[t[1]];
     const typename DataTypes::Coord& c2 = vect_c[t[2]];
 
-    Vec<3,Real> p0;
+    sofa::defaulttype::Vec<3,Real> p0;
     p0[0] = (Real) (c0[0]);
     p0[1] = (Real) (c0[1]);
     p0[2] = (Real) (c0[2]);
-    Vec<3,Real> p1;
+    sofa::defaulttype::Vec<3,Real> p1;
     p1[0] = (Real) (c1[0]);
     p1[1] = (Real) (c1[1]);
     p1[2] = (Real) (c1[2]);
-    Vec<3,Real> p2;
+    sofa::defaulttype::Vec<3,Real> p2;
     p2[0] = (Real) (c2[0]);
     p2[1] = (Real) (c2[1]);
     p2[2] = (Real) (c2[2]);
 
-    Vec<3,Real> normal_t=(p1-p0).cross( p2-p0);
+    sofa::defaulttype::Vec<3,Real> normal_t=(p1-p0).cross( p2-p0);
 
     return ((Vec<3,double>) normal_t);
 }
@@ -267,7 +267,7 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(
 template<class DataTypes>
 sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleBarycoefs(
     const TriangleID ind_t,
-    const Vec<3,double> &p) const
+    const sofa::defaulttype::Vec<3,double> &p) const
 {
     const Triangle &t=this->m_topology->getTriangle(ind_t);
     return compute3PointsBarycoefs(p, t[0], t[1], t[2]);
@@ -276,7 +276,7 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
 // barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
 template<class DataTypes>
 sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compute3PointsBarycoefs(
-    const Vec<3,double> &p,
+    const sofa::defaulttype::Vec<3,double> &p,
     unsigned int ind_p1,
     unsigned int ind_p2,
     unsigned int ind_p3) const
@@ -290,20 +290,20 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
     const typename DataTypes::Coord& c2 = vect_c[ind_p3];
 
-    Vec<3,Real> a;
+    sofa::defaulttype::Vec<3,Real> a;
     a[0] = (Real) (c0[0]);
     a[1] = (Real) (c0[1]);
     a[2] = (Real) (c0[2]);
-    Vec<3,Real> b;
+    sofa::defaulttype::Vec<3,Real> b;
     b[0] = (Real) (c1[0]);
     b[1] = (Real) (c1[1]);
     b[2] = (Real) (c1[2]);
-    Vec<3,Real> c;
+    sofa::defaulttype::Vec<3,Real> c;
     c[0] = (Real) (c2[0]);
     c[1] = (Real) (c2[1]);
     c[2] = (Real) (c2[2]);
 
-    Vec<3,double> M = (Vec<3,double>) (b-a).cross(c-a);
+    sofa::defaulttype::Vec<3,double> M = (Vec<3,double>) (b-a).cross(c-a);
     double norm2_M = M*(M);
 
     double coef_a, coef_b, coef_c;
@@ -317,7 +317,7 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
     }
     else
     {
-        Vec<3,Real> N =  M/norm2_M;
+        sofa::defaulttype::Vec<3,Real> N =  M/norm2_M;
 
         coef_a = N*((b-p).cross(c-p));
         coef_b = N*((c-p).cross(a-p));
@@ -347,7 +347,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::computeClosestIndexPair(const T
     for(unsigned int i=0; i<3; i++)
     {
         const typename DataTypes::Coord& ca=vect_c[ta[i]];
-        Vec<3,Real> pa;
+        sofa::defaulttype::Vec<3,Real> pa;
         pa[0] = (Real) (ca[0]);
         pa[1] = (Real) (ca[1]);
         pa[2] = (Real) (ca[2]);
@@ -355,7 +355,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::computeClosestIndexPair(const T
         for(unsigned int j=0; j!=i && j<3; j++)
         {
             const typename DataTypes::Coord& cb=vect_c[tb[i]];
-            Vec<3,Real> pb;
+            sofa::defaulttype::Vec<3,Real> pb;
             pb[0] = (Real) (cb[0]);
             pb[1] = (Real) (cb[1]);
             pb[2] = (Real) (cb[2]);
@@ -387,7 +387,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::computeClosestIndexPair(const T
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const TriangleID ind_t,
         bool is_tested,
-        const Vec<3,Real>& p,
+        const sofa::defaulttype::Vec<3,Real>& p,
         unsigned int &ind_t_test) const
 {
     const double ZERO = -1e-12;
@@ -398,29 +398,29 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
     const typename DataTypes::Coord& c1=vect_c[t[1]];
     const typename DataTypes::Coord& c2=vect_c[t[2]];
 
-    Vec<3,Real> ptest = p;
+    sofa::defaulttype::Vec<3,Real> ptest = p;
 
-    Vec<3,Real> p0;
+    sofa::defaulttype::Vec<3,Real> p0;
     p0[0] = (Real) (c0[0]);
     p0[1] = (Real) (c0[1]);
     p0[2] = (Real) (c0[2]);
-    Vec<3,Real> p1;
+    sofa::defaulttype::Vec<3,Real> p1;
     p1[0] = (Real) (c1[0]);
     p1[1] = (Real) (c1[1]);
     p1[2] = (Real) (c1[2]);
-    Vec<3,Real> p2;
+    sofa::defaulttype::Vec<3,Real> p2;
     p2[0] = (Real) (c2[0]);
     p2[1] = (Real) (c2[1]);
     p2[2] = (Real) (c2[2]);
 
-    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
+    sofa::defaulttype::Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
 
     Real norm_v_normal = v_normal*(v_normal);
     if(norm_v_normal != 0.0)
     {
-        Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
-        Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
-        Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+        sofa::defaulttype::Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
+        sofa::defaulttype::Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
+        sofa::defaulttype::Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
 
         double v_01 = (double) ((ptest-p0)*(n_01));
         double v_12 = (double) ((ptest-p1)*(n_12));
@@ -524,7 +524,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const TriangleID ind_t,
         bool is_tested,
-        const Vec<3,Real>& p,
+        const sofa::defaulttype::Vec<3,Real>& p,
         unsigned int &ind_t_test) const
 {
     const double ZERO = 1e-12;
@@ -535,30 +535,30 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
     const typename DataTypes::Coord& c1=vect_c[t[1]];
     const typename DataTypes::Coord& c2=vect_c[t[2]];
 
-    Vec<3,Real> ptest = p;
+    sofa::defaulttype::Vec<3,Real> ptest = p;
 
-    Vec<3,Real> p0;
+    sofa::defaulttype::Vec<3,Real> p0;
     p0[0] = (Real) (c0[0]);
     p0[1] = (Real) (c0[1]);
     p0[2] = (Real) (c0[2]);
-    Vec<3,Real> p1;
+    sofa::defaulttype::Vec<3,Real> p1;
     p1[0] = (Real) (c1[0]);
     p1[1] = (Real) (c1[1]);
     p1[2] = (Real) (c1[2]);
-    Vec<3,Real> p2;
+    sofa::defaulttype::Vec<3,Real> p2;
     p2[0] = (Real) (c2[0]);
     p2[1] = (Real) (c2[1]);
     p2[2] = (Real) (c2[2]);
 
-    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
+    sofa::defaulttype::Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
 
     Real norm_v_normal = v_normal*(v_normal);
     //if(norm_v_normal != 0.0)
     if(norm_v_normal > ZERO)
     {
-        Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
-        Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
-        Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+        sofa::defaulttype::Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
+        sofa::defaulttype::Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
+        sofa::defaulttype::Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
 
         double v_01 = (double) ((ptest-p0)*(n_01));
         double v_12 = (double) ((ptest-p1)*(n_12));
@@ -722,7 +722,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
             return false;
     }
 
-    Vec<3,double> G = (A+B+C)/3.0;
+    sofa::defaulttype::Vec<3,double> G = (A+B+C)/3.0;
 
     if((G-C)*(G-C) <= (G-D)*(G-D))
         return true;
@@ -807,7 +807,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isDiagonalsIntersectionInQuad (
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::isTriangleInPlane(const TriangleID ind_t,
         const unsigned int ind_p,
-        const Vec<3,Real>&plane_vect) const
+        const sofa::defaulttype::Vec<3,Real>&plane_vect) const
 {
     const Triangle &t=this->m_topology->getTriangle(ind_t);
 
@@ -841,15 +841,15 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isTriangleInPlane(const Triangl
     const typename DataTypes::Coord& c1=vect_c[ind_1];
     const typename DataTypes::Coord& c2=vect_c[ind_2];
 
-    Vec<3,Real> p0;
+    sofa::defaulttype::Vec<3,Real> p0;
     p0[0] = (Real) (c0[0]);
     p0[1] = (Real) (c0[1]);
     p0[2] = (Real) (c0[2]);
-    Vec<3,Real> p1;
+    sofa::defaulttype::Vec<3,Real> p1;
     p1[0] = (Real) (c1[0]);
     p1[1] = (Real) (c1[1]);
     p1[2] = (Real) (c1[2]);
-    Vec<3,Real> p2;
+    sofa::defaulttype::Vec<3,Real> p2;
     p2[0] = (Real) (c2[0]);
     p2[1] = (Real) (c2[1]);
     p2[2] = (Real) (c2[2]);
@@ -874,28 +874,28 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c_p = vect_c[ind_p];
-    Vec<3,Real> point_p;
+    sofa::defaulttype::Vec<3,Real> point_p;
     point_p[0]= (Real) c_p[0];
     point_p[1]= (Real) c_p[1];
     point_p[2]= (Real) c_p[2];
 
-    Vec<3,Real> point_from=(Vec<3,Real>) getOppositePoint(ind_p, indices_from, coord_from);
-    Vec<3,Real> point_to=(Vec<3,Real>) getOppositePoint(ind_p, indices_to, coord_to);
+    sofa::defaulttype::Vec<3,Real> point_from=(Vec<3,Real>) getOppositePoint(ind_p, indices_from, coord_from);
+    sofa::defaulttype::Vec<3,Real> point_to=(Vec<3,Real>) getOppositePoint(ind_p, indices_to, coord_to);
 
     //Vec<3,Real> point_from=(Vec<3,Real>) computeBaryEdgePoint((sofa::helper::vector< unsigned int>&) indices_from, coord_from);
     //Vec<3,Real> point_to=(Vec<3,Real>) computeBaryEdgePoint((sofa::helper::vector< unsigned int>&) indices_to, coord_to);
 
-    Vec<3,Real> vect_from = point_from - point_p;
-    Vec<3,Real> vect_to = point_p - point_to;
+    sofa::defaulttype::Vec<3,Real> vect_from = point_from - point_p;
+    sofa::defaulttype::Vec<3,Real> vect_to = point_p - point_to;
 
     //sout << "INFO_print : vect_from = " << vect_from <<  sendl;
     //sout << "INFO_print : vect_to = " << vect_to <<  sendl;
 
-    Vec<3,Real> normal_from;
-    Vec<3,Real> normal_to;
+    sofa::defaulttype::Vec<3,Real> normal_from;
+    sofa::defaulttype::Vec<3,Real> normal_to;
 
-    Vec<3,Real> plane_from;
-    Vec<3,Real> plane_to;
+    sofa::defaulttype::Vec<3,Real> plane_from;
+    sofa::defaulttype::Vec<3,Real> plane_to;
 
     if((coord_from!=0.0) && (coord_from!=1.0))
     {
@@ -943,8 +943,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
 
             if(is_in_next_triangle)
             {
-                Vec<3,Real> normal_from_1=(Vec<3,Real>) computeTriangleNormal(ind_triangle);
-                Vec<3,Real> normal_from_2=(Vec<3,Real>) computeTriangleNormal(ind_t_from);
+                sofa::defaulttype::Vec<3,Real> normal_from_1=(Vec<3,Real>) computeTriangleNormal(ind_triangle);
+                sofa::defaulttype::Vec<3,Real> normal_from_2=(Vec<3,Real>) computeTriangleNormal(ind_t_from);
 
                 normal_from=(normal_from_1+normal_from_2)/2.0;
                 plane_from=vect_from.cross( normal_from);
@@ -1003,8 +1003,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
 
             if(is_in_next_triangle)
             {
-                Vec<3,Real> normal_to_1=(Vec<3,Real>) computeTriangleNormal(ind_triangle);
-                Vec<3,Real> normal_to_2=(Vec<3,Real>) computeTriangleNormal(ind_t_to);
+                sofa::defaulttype::Vec<3,Real> normal_to_1=(Vec<3,Real>) computeTriangleNormal(ind_triangle);
+                sofa::defaulttype::Vec<3,Real> normal_to_2=(Vec<3,Real>) computeTriangleNormal(ind_t_to);
 
                 normal_to=(normal_to_1+normal_to_2)/2.0;
                 plane_to=vect_to.cross( normal_to);
@@ -1027,7 +1027,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
 
         if(shell.size()>1)
         {
-            Vec<3,Real> normal_test = plane_from.cross( plane_to);
+            sofa::defaulttype::Vec<3,Real> normal_test = plane_from.cross( plane_to);
             Real value_test =   normal_test*(normal_from+normal_to);
 
             if(value_test<=0.0)
@@ -1039,8 +1039,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
                 {
                     ind_triangle=shell[i];
 
-                    is_in_plane_from=isTriangleInPlane(ind_triangle,ind_p, (const Vec<3,double>&) plane_from);
-                    is_in_plane_to=isTriangleInPlane(ind_triangle,ind_p, (const Vec<3,double>&) plane_to);
+                    is_in_plane_from=isTriangleInPlane(ind_triangle,ind_p, (const sofa::defaulttype::Vec<3,double>&) plane_from);
+                    is_in_plane_to=isTriangleInPlane(ind_triangle,ind_p, (const sofa::defaulttype::Vec<3,double>&) plane_to);
 
                     if((ind_triangle != ind_t_from) && (ind_triangle != ind_t_to))
                     {
@@ -1065,8 +1065,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
                 {
                     ind_triangle=shell[i];
 
-                    is_in_plane_from=isTriangleInPlane(ind_triangle,ind_p, (const Vec<3,double>&) plane_from);
-                    is_in_plane_to=isTriangleInPlane(ind_triangle,ind_p, (const Vec<3,double>&) plane_to);
+                    is_in_plane_from=isTriangleInPlane(ind_triangle,ind_p, (const sofa::defaulttype::Vec<3,double>&) plane_from);
+                    is_in_plane_to=isTriangleInPlane(ind_triangle,ind_p, (const sofa::defaulttype::Vec<3,double>&) plane_to);
 
                     if((ind_triangle != ind_t_from) && (ind_triangle != ind_t_to))
                     {
@@ -1097,8 +1097,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
 // Computes the intersection of the segment from point a to point b and the triangle indexed by t
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersection(bool is_entered,
-        const Vec<3,double>& a,
-        const Vec<3,double>& b,
+        const sofa::defaulttype::Vec<3,double>& a,
+        const sofa::defaulttype::Vec<3,double>& b,
         const TriangleID ind_t,
         sofa::helper::vector<unsigned int> &indices,
         double &baryCoef, double& coord_kmin) const
@@ -1135,29 +1135,29 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     const typename DataTypes::Coord& c1=vect_c[t[1]];
     const typename DataTypes::Coord& c2=vect_c[t[2]];
 
-    Vec<3,Real> p0;
+    sofa::defaulttype::Vec<3,Real> p0;
     p0[0] = (Real) (c0[0]);
     p0[1] = (Real) (c0[1]);
     p0[2] = (Real) (c0[2]);
-    Vec<3,Real> p1;
+    sofa::defaulttype::Vec<3,Real> p1;
     p1[0] = (Real) (c1[0]);
     p1[1] = (Real) (c1[1]);
     p1[2] = (Real) (c1[2]);
-    Vec<3,Real> p2;
+    sofa::defaulttype::Vec<3,Real> p2;
     p2[0] = (Real) (c2[0]);
     p2[1] = (Real) (c2[1]);
     p2[2] = (Real) (c2[2]);
 
-    Vec<3,Real> pa;
+    sofa::defaulttype::Vec<3,Real> pa;
     pa[0] = (Real) (a[0]);
     pa[1] = (Real) (a[1]);
     pa[2] = (Real) (a[2]);
-    Vec<3,Real> pb;
+    sofa::defaulttype::Vec<3,Real> pb;
     pb[0] = (Real) (b[0]);
     pb[1] = (Real) (b[1]);
     pb[2] = (Real) (b[2]);
 
-    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
+    sofa::defaulttype::Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
     //Vec<3,Real> v_normal = (Vec<3,Real>) computeTriangleNormal(ind_t);
 
     Real norm_v_normal = v_normal.norm(); // WARN : square root COST
@@ -1167,19 +1167,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
         v_normal/=norm_v_normal;
 
-        Vec<3,Real> v_ab = pb-pa;
-        Vec<3,Real> v_ab_proj = v_ab - v_normal * dot(v_ab,v_normal); // projection (same values if incision in the plan)
-        Vec<3,Real> pb_proj = v_ab_proj + pa;
+        sofa::defaulttype::Vec<3,Real> v_ab = pb-pa;
+        sofa::defaulttype::Vec<3,Real> v_ab_proj = v_ab - v_normal * dot(v_ab,v_normal); // projection (same values if incision in the plan)
+        sofa::defaulttype::Vec<3,Real> pb_proj = v_ab_proj + pa;
 
-        Vec<3,Real> v_01 = p1-p0;
-        Vec<3,Real> v_12 = p2-p1;
-        Vec<3,Real> v_20 = p0-p2;
+        sofa::defaulttype::Vec<3,Real> v_01 = p1-p0;
+        sofa::defaulttype::Vec<3,Real> v_12 = p2-p1;
+        sofa::defaulttype::Vec<3,Real> v_20 = p0-p2;
 
-        Vec<3,Real> n_proj =v_ab_proj.cross(v_normal);
+        sofa::defaulttype::Vec<3,Real> n_proj =v_ab_proj.cross(v_normal);
 
-        Vec<3,Real> n_01 = v_01.cross(v_normal);
-        Vec<3,Real> n_12 = v_12.cross(v_normal);
-        Vec<3,Real> n_20 = v_20.cross(v_normal);
+        sofa::defaulttype::Vec<3,Real> n_01 = v_01.cross(v_normal);
+        sofa::defaulttype::Vec<3,Real> n_12 = v_12.cross(v_normal);
+        sofa::defaulttype::Vec<3,Real> n_20 = v_20.cross(v_normal);
 
         Real norm2_v_ab_proj = v_ab_proj*(v_ab_proj); //dot product WARNING
 
@@ -1405,8 +1405,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 // and the triangular mesh
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(const PointID last_point,
-        const Vec<3,double>& a,
-        const Vec<3,double>& b,
+        const sofa::defaulttype::Vec<3,double>& a,
+        const sofa::defaulttype::Vec<3,double>& b,
         unsigned int& ind_ta,
         unsigned int& ind_tb,
         sofa::helper::vector< unsigned int > &triangles_list,
@@ -1418,7 +1418,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     bool is_validated=true;
     bool is_intersected=true;
 
-    Vec<3,double> c_t_test = a;
+    sofa::defaulttype::Vec<3,double> c_t_test = a;
 
     is_on_boundary = false;
 
@@ -1429,7 +1429,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     double coord_k_test=0.0;
     double dist_min=0.0;
 
-    Vec<3,double> p_current=a;
+    sofa::defaulttype::Vec<3,double> p_current=a;
 
     TriangleID ind_t_current=ind_ta;
     EdgeID ind_edge;
@@ -1496,14 +1496,14 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
         const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
-        Vec<3,double> c_t_current; // WARNING : conversion from 'double' to 'float', possible loss of data ! // typename DataTypes::Coord
+        sofa::defaulttype::Vec<3,double> c_t_current; // WARNING : conversion from 'double' to 'float', possible loss of data ! // typename DataTypes::Coord
         c_t_current[0]=(double) ((1.0-coord_t)*((double) (vect_c[indices[0]][0]))+coord_t*((double) (vect_c[indices[1]][0])));
         c_t_current[1]=(double) ((1.0-coord_t)*((double) (vect_c[indices[0]][1]))+coord_t*((double) (vect_c[indices[1]][1])));
         c_t_current[2]=(double) ((1.0-coord_t)*((double) (vect_c[indices[0]][2]))+coord_t*((double) (vect_c[indices[1]][2])));
 
         p_current=c_t_current;
 
-        Vec<3,Real> p_t_aux;
+        sofa::defaulttype::Vec<3,Real> p_t_aux;
         p_t_aux[0] = (Real) (c_t_current[0]);
         p_t_aux[1] = (Real) (c_t_current[1]);
         p_t_aux[2] = (Real) (c_t_current[2]);
@@ -1549,15 +1549,15 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                             const typename DataTypes::Coord& c1=vect_c[t[1]];
                             const typename DataTypes::Coord& c2=vect_c[t[2]];
 
-                            Vec<3,Real> p0_aux;
+                            sofa::defaulttype::Vec<3,Real> p0_aux;
                             p0_aux[0] = (Real) (c0[0]);
                             p0_aux[1] = (Real) (c0[1]);
                             p0_aux[2] = (Real) (c0[2]);
-                            Vec<3,Real> p1_aux;
+                            sofa::defaulttype::Vec<3,Real> p1_aux;
                             p1_aux[0] = (Real) (c1[0]);
                             p1_aux[1] = (Real) (c1[1]);
                             p1_aux[2] = (Real) (c1[2]);
-                            Vec<3,Real> p2_aux;
+                            sofa::defaulttype::Vec<3,Real> p2_aux;
                             p2_aux[0] = (Real) (c2[0]);
                             p2_aux[1] = (Real) (c2[1]);
                             p2_aux[2] = (Real) (c2[2]);
@@ -1566,7 +1566,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
                             if(is_intersected)
                             {
-                                Vec<3,double> c_t_test; // WARNING : conversion from 'double' to 'float', possible loss of data ! // typename DataTypes::Coord
+                                sofa::defaulttype::Vec<3,double> c_t_test; // WARNING : conversion from 'double' to 'float', possible loss of data ! // typename DataTypes::Coord
                                 c_t_test[0]=(double) ((1.0-coord_t)*((double) (vect_c[indices[0]][0]))+coord_t*((double) (vect_c[indices[1]][0])));
                                 c_t_test[1]=(double) ((1.0-coord_t)*((double) (vect_c[indices[0]][1]))+coord_t*((double) (vect_c[indices[1]][1])));
                                 c_t_test[2]=(double) ((1.0-coord_t)*((double) (vect_c[indices[0]][2]))+coord_t*((double) (vect_c[indices[1]][2])));
@@ -1640,15 +1640,15 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                             const typename DataTypes::Coord& c1=vect_c[t[1]];
                             const typename DataTypes::Coord& c2=vect_c[t[2]];
 
-                            Vec<3,Real> p0_aux;
+                            sofa::defaulttype::Vec<3,Real> p0_aux;
                             p0_aux[0] = (Real) (c0[0]);
                             p0_aux[1] = (Real) (c0[1]);
                             p0_aux[2] = (Real) (c0[2]);
-                            Vec<3,Real> p1_aux;
+                            sofa::defaulttype::Vec<3,Real> p1_aux;
                             p1_aux[0] = (Real) (c1[0]);
                             p1_aux[1] = (Real) (c1[1]);
                             p1_aux[2] = (Real) (c1[2]);
-                            Vec<3,Real> p2_aux;
+                            sofa::defaulttype::Vec<3,Real> p2_aux;
                             p2_aux[0] = (Real) (c2[0]);
                             p2_aux[1] = (Real) (c2[1]);
                             p2_aux[2] = (Real) (c2[2]);
@@ -1741,7 +1741,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         unsigned int& ind_ta, unsigned int& ind_tb,// A verifier pourquoi la ref!
         sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
         sofa::helper::vector<unsigned int>& indices_list,
-        sofa::helper::vector< Vec<3, double> >& coords_list) const
+        sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list) const
 {
     //// QUICK FIX TO USE THE NEW PATH DECLARATION (WITH ONLY EDGES COMING FROM PREVIOUS FUNCTION)
     //// ** TODO: create the real function handle different objects intersection **
@@ -1761,7 +1761,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     if (pathOK)
     {
         // creating new declaration path:
-        Vec<3,double> baryCoords;
+        sofa::defaulttype::Vec<3,double> baryCoords;
 
         // 1 - First point a (for the moment: always a point in a triangle)
         if (last_point != BaseMeshTopology::InvalidID)
@@ -1833,7 +1833,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::getTriangleInDirection(PointID p, 
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
     const sofa::helper::vector<TriangleID> &shell=this->m_topology->getTrianglesAroundVertex(p);
-    Vec<3,Real> dtest = dir;
+    sofa::defaulttype::Vec<3,Real> dtest = dir;
     for (unsigned int i=0; i<shell.size(); ++i)
     {
         unsigned int ind_t = shell[i];
@@ -1843,30 +1843,30 @@ int TriangleSetGeometryAlgorithms<DataTypes>::getTriangleInDirection(PointID p, 
         const typename DataTypes::Coord& c1=vect_c[t[1]];
         const typename DataTypes::Coord& c2=vect_c[t[2]];
 
-        Vec<3,Real> p0;
+        sofa::defaulttype::Vec<3,Real> p0;
         p0[0] = (Real) (c0[0]);
         p0[1] = (Real) (c0[1]);
         p0[2] = (Real) (c0[2]);
-        Vec<3,Real> p1;
+        sofa::defaulttype::Vec<3,Real> p1;
         p1[0] = (Real) (c1[0]);
         p1[1] = (Real) (c1[1]);
         p1[2] = (Real) (c1[2]);
-        Vec<3,Real> p2;
+        sofa::defaulttype::Vec<3,Real> p2;
         p2[0] = (Real) (c2[0]);
         p2[1] = (Real) (c2[1]);
         p2[2] = (Real) (c2[2]);
 
-        Vec<3,Real> e1, e2;
+        sofa::defaulttype::Vec<3,Real> e1, e2;
         if (t[0] == p) { e1 = p1-p0; e2 = p2-p0; }
         else if (t[1] == p) { e1 = p2-p1; e2 = p0-p1; }
         else { e1 = p0-p2; e2 = p1-p2; }
 
-        Vec<3,Real> v_normal = (e2).cross(e1);
+        sofa::defaulttype::Vec<3,Real> v_normal = (e2).cross(e1);
 
         if(v_normal.norm2() > 1e-20)
         {
-            Vec<3,Real> n_01 = e1.cross(v_normal);
-            Vec<3,Real> n_02 = e2.cross(v_normal);
+            sofa::defaulttype::Vec<3,Real> n_01 = e1.cross(v_normal);
+            sofa::defaulttype::Vec<3,Real> n_02 = e2.cross(v_normal);
 
             double v_01 = (double) ((dtest)*(n_01));
             double v_02 = (double) ((dtest)*(n_02));
@@ -1923,7 +1923,7 @@ template <typename DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNormals()
 {
     std::cout << "reorderTrianglesOrientationFromNormals" << std::endl;
-    Vec<3,Real> firstNormal = computeTriangleNormal(0);
+    sofa::defaulttype::Vec<3,Real> firstNormal = computeTriangleNormal(0);
     std::cout << "firstNormal: "<< firstNormal << std::endl;
     if (p_flipNormals.getValue())
         firstNormal = -firstNormal;
@@ -1932,7 +1932,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
     sofa::helper::vector<TriangleID> _neighTri = this->m_topology->getElementAroundElement(0);
     sofa::helper::vector<TriangleID> _neighTri2, buffK, buffKK;
     unsigned int cpt_secu = 0, max = this->m_topology->getNbTriangles();
-    Vec<3,Real> triNormal;
+    sofa::defaulttype::Vec<3,Real> triNormal;
     bool pair = true;
 
 
@@ -2011,16 +2011,16 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
 
 
 template<class Real>
-bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c)
+bool is_point_in_triangle(const sofa::defaulttype::Vec<3,Real>& p, const sofa::defaulttype::Vec<3,Real>& a, const sofa::defaulttype::Vec<3,Real>& b, const sofa::defaulttype::Vec<3,Real>& c)
 {
     const double ZERO = 1e-6;
 
-    Vec<3,Real> ptest = p;
-    Vec<3,Real> p0 = a;
-    Vec<3,Real> p1 = b;
-    Vec<3,Real> p2 = c;
+    sofa::defaulttype::Vec<3,Real> ptest = p;
+    sofa::defaulttype::Vec<3,Real> p0 = a;
+    sofa::defaulttype::Vec<3,Real> p1 = b;
+    sofa::defaulttype::Vec<3,Real> p2 = c;
 
-    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
+    sofa::defaulttype::Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
 
     Real norm_v_normal = v_normal*(v_normal);
     if(norm_v_normal > ZERO)
@@ -2028,9 +2028,9 @@ bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<
         if(fabs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p1,p2)
         {
 
-            Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
-            Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
-            Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+            sofa::defaulttype::Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
+            sofa::defaulttype::Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
+            sofa::defaulttype::Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
 
             return (((ptest-p0)*(n_01) > -ZERO) && ((ptest-p1)*(n_12) > -ZERO) && ((ptest-p2)*(n_20) > -ZERO));
 
@@ -2053,17 +2053,17 @@ bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<
 /// Test if a point p is in the right halfplane
 
 template<class Real>
-bool is_point_in_halfplane(const Vec<3,Real>& p, unsigned int e0, unsigned int e1,
-        const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c,
+bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p, unsigned int e0, unsigned int e1,
+        const sofa::defaulttype::Vec<3,Real>& a, const sofa::defaulttype::Vec<3,Real>& b, const sofa::defaulttype::Vec<3,Real>& c,
         unsigned int ind_p0, unsigned int ind_p1, unsigned int ind_p2)
 {
-    Vec<3,Real> ptest = p;
+    sofa::defaulttype::Vec<3,Real> ptest = p;
 
-    Vec<3,Real> p0 = a;
-    Vec<3,Real> p1 = b;
-    Vec<3,Real> p2 = c;
+    sofa::defaulttype::Vec<3,Real> p0 = a;
+    sofa::defaulttype::Vec<3,Real> p1 = b;
+    sofa::defaulttype::Vec<3,Real> p2 = c;
 
-    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
+    sofa::defaulttype::Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
 
     Real norm_v_normal = (v_normal)*(v_normal);
 
@@ -2073,21 +2073,21 @@ bool is_point_in_halfplane(const Vec<3,Real>& p, unsigned int e0, unsigned int e
 
         if(ind_p0==e0 || ind_p0==e1)
         {
-            Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
+            sofa::defaulttype::Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
             return ((ptest-p1)*(n_12) >= 0.0);
         }
         else
         {
             if(ind_p1==e0 || ind_p1==e1)
             {
-                Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+                sofa::defaulttype::Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
                 return ((ptest-p2)*(n_20) >= 0.0);
             }
             else
             {
                 if(ind_p2==e0 || ind_p2==e1)
                 {
-                    Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
+                    sofa::defaulttype::Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
                     return ((ptest-p0)*(n_01) >= 0.0);
                 }
                 else
@@ -2116,7 +2116,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
-        const Vector3& color = _drawColor.getValue();
+        const sofa::defaulttype::Vector3& color = _drawColor.getValue();
         glColor3f(color[0]-0.2, color[1]-0.2, color[2]-0.2);
         glDisable(GL_LIGHTING);
         float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
@@ -2133,7 +2133,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
             Coord vertex1 = coords[ the_tri[0] ];
             Coord vertex2 = coords[ the_tri[1] ];
             Coord vertex3 = coords[ the_tri[2] ];
-            Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3;
+            sofa::defaulttype::Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3;
 
             std::ostringstream oss;
             oss << i;
@@ -2149,7 +2149,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3f temp = modelviewM.transform(center);
+            sofa::defaulttype::Vec3f temp = modelviewM.transform(center);
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
@@ -2179,7 +2179,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
             const VecCoord& coords = *(this->object->getX());
 
             glDisable(GL_LIGHTING);
-            const Vector3& color = _drawColor.getValue();
+            const sofa::defaulttype::Vector3& color = _drawColor.getValue();
             glColor3f(color[0], color[1], color[2]);
             glBegin(GL_TRIANGLES);
             for (unsigned int i = 0; i<triangleArray.size(); i++)
@@ -2188,7 +2188,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
 
                 for (unsigned int j = 0; j<3; j++)
                 {
-                    Vec3f coordP; coordP = DataTypes::getCPos(coords[t[j]]);
+                    sofa::defaulttype::Vec3f coordP; coordP = DataTypes::getCPos(coords[t[j]]);
                     glVertex3f(coordP[0], coordP[1], coordP[2]);
                 }
             }
@@ -2203,8 +2203,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
                 for (unsigned int i = 0; i<edgeArray.size(); i++)
                 {
                     const Edge& e = edgeArray[i];
-                    Vec3f coordP1; coordP1 = DataTypes::getCPos(coords[e[0]]);
-                    Vec3f coordP2; coordP2 = DataTypes::getCPos(coords[e[1]]);
+                    sofa::defaulttype::Vec3f coordP1; coordP1 = DataTypes::getCPos(coords[e[0]]);
+                    sofa::defaulttype::Vec3f coordP2; coordP2 = DataTypes::getCPos(coords[e[1]]);
                     glVertex3f(coordP1[0], coordP1[1], coordP1[2]);
                     glVertex3f(coordP2[0], coordP2[1], coordP2[2]);
                 }
@@ -2214,11 +2214,11 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
                 for (unsigned int i = 0; i<triangleArray.size(); i++)
                 {
                     const Triangle& t = triangleArray[i];
-                    sofa::helper::vector <Vec3f> triCoord;
+                    sofa::helper::vector <sofa::defaulttype::Vec3f> triCoord;
 
                     for (unsigned int j = 0; j<3; j++)
                     {
-                        Vec3f p; p = DataTypes::getCPos(coords[t[j]]);
+                        sofa::defaulttype::Vec3f p; p = DataTypes::getCPos(coords[t[j]]);
                         triCoord.push_back(p);
                     }
 
@@ -2241,7 +2241,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
         unsigned int nbrTtri = triangleArray.size();
 
         Coord point2;
-        Vec<3,double> colors;
+        sofa::defaulttype::Vec<3,double> colors;
         SReal normalLength = _drawNormalLength.getValue();
 
         glDisable(GL_LIGHTING);
@@ -2257,8 +2257,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
             Coord vertex1 = coords[ _tri[0] ];
             Coord vertex2 = coords[ _tri[1] ];
             Coord vertex3 = coords[ _tri[2] ];
-            Vec3d center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3;
-            Vec3d point2 = center + normal*normalLength;
+            sofa::defaulttype::Vec3d center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3;
+            sofa::defaulttype::Vec3d point2 = center + normal*normalLength;
 
             for(unsigned int j=0; j<3; j++)
                 colors[j] = fabs (normal[j]);

@@ -40,11 +40,11 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(TriangleSetGeometryAlgorithms)
 int TriangleSetGeometryAlgorithmsClass = core::RegisterObject("Triangle set geometry algorithms")
 #ifdef SOFA_FLOAT
-        .add< TriangleSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
+        .add< TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >(true) // default template
 #else
-        .add< TriangleSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
+        .add< TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes> >(true) // default template
 #ifndef SOFA_DOUBLE
-        .add< TriangleSetGeometryAlgorithms<Vec3fTypes> >() // default template
+        .add< TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >() // default template
 #endif
 #endif
 #ifndef SOFA_FLOAT
@@ -58,13 +58,13 @@ int TriangleSetGeometryAlgorithmsClass = core::RegisterObject("Triangle set geom
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1fTypes>;
 #endif

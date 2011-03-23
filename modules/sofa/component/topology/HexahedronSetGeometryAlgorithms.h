@@ -64,7 +64,7 @@ public:
         : QuadSetGeometryAlgorithms<DataTypes>()
         , showHexaIndices(core::objectmodel::Base::initData(&showHexaIndices, (bool) false, "showHexaIndices", "Debug : view Hexa indices"))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawHexa","if true, draw the Hexahedron in the topology"))
-        , _drawColor(initData(&_drawColor, Vector3(1.0,0.5,0.0), "drawColorHexahedra", "RGB code color used to draw hexahedra."))
+        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vector3(1.0,0.5,0.0), "drawColorHexahedra", "RGB code color used to draw hexahedra."))
     {}
 
     virtual ~HexahedronSetGeometryAlgorithms() {}
@@ -133,7 +133,7 @@ public:
 protected:
     Data<bool> showHexaIndices;
     Data<bool> _draw;
-    Data<Vector3> _drawColor;
+    Data<sofa::defaulttype::Vector3> _drawColor;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)

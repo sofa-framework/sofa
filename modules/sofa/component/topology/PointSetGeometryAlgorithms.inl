@@ -63,7 +63,7 @@ void PointSetGeometryAlgorithms< DataTypes >::reinit()
 template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::computeIndicesScale()
 {
-    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+    sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
     sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
     PointIndicesScale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
@@ -189,7 +189,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw()
     if (showPointIndices.getValue())
     {
         Mat<4,4, GLfloat> modelviewM;
-        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+        sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
         const VecCoord& coords = *(this->object->getX());
 
         sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
@@ -208,7 +208,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw()
             std::string tmp = oss.str();
             const char* s = tmp.c_str();
             glPushMatrix();
-            Vec3f center; center = DataTypes::getCPos(coords[i]);
+            sofa::defaulttype::Vec3f center; center = DataTypes::getCPos(coords[i]);
             glTranslatef(center[0], center[1], center[2]);
             glScalef(PointIndicesScale,PointIndicesScale,PointIndicesScale);
 
@@ -217,7 +217,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw()
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3f temp = modelviewM.transform(center);
+            sofa::defaulttype::Vec3f temp = modelviewM.transform(center);
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();

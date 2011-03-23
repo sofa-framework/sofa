@@ -39,11 +39,11 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(HexahedronSetGeometryAlgorithms)
 int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set geometry algorithms")
 #ifdef SOFA_FLOAT
-        .add< HexahedronSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
+        .add< HexahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >(true) // default template
 #else
-        .add< HexahedronSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
+        .add< HexahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes> >(true) // default template
 #ifndef SOFA_DOUBLE
-        .add< HexahedronSetGeometryAlgorithms<Vec3fTypes> >() // default template
+        .add< HexahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >() // default template
 #endif
 #endif
 #ifndef SOFA_FLOAT
@@ -57,13 +57,13 @@ int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1fTypes>;
 #endif

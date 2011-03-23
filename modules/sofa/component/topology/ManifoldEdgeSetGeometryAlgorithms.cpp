@@ -40,11 +40,11 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(ManifoldEdgeSetGeometryAlgorithms)
 int ManifoldEdgeSetGeometryAlgorithmsClass = core::RegisterObject("ManifoldEdge set geometry algorithms")
 #ifdef SOFA_FLOAT
-        .add< ManifoldEdgeSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
+        .add< ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >(true) // default template
 #else
-        .add< ManifoldEdgeSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
+        .add< ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes> >(true) // default template
 #ifndef SOFA_DOUBLE
-        .add< ManifoldEdgeSetGeometryAlgorithms<Vec3fTypes> >() // default template
+        .add< ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >() // default template
 #endif
 #endif
 #ifndef SOFA_FLOAT
@@ -62,7 +62,7 @@ int ManifoldEdgeSetGeometryAlgorithmsClass = core::RegisterObject("ManifoldEdge 
         ;
 
 #ifndef SOFA_FLOAT
-template class ManifoldEdgeSetGeometryAlgorithms<Vec3dTypes>;
+template class ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
 template class ManifoldEdgeSetGeometryAlgorithms<Vec2dTypes>;
 template class ManifoldEdgeSetGeometryAlgorithms<Vec1dTypes>;
 template class ManifoldEdgeSetGeometryAlgorithms<Rigid3dTypes>;
@@ -70,7 +70,7 @@ template class ManifoldEdgeSetGeometryAlgorithms<Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class ManifoldEdgeSetGeometryAlgorithms<Vec3fTypes>;
+template class ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
 template class ManifoldEdgeSetGeometryAlgorithms<Vec2fTypes>;
 template class ManifoldEdgeSetGeometryAlgorithms<Vec1fTypes>;
 template class ManifoldEdgeSetGeometryAlgorithms<Rigid3fTypes>;
