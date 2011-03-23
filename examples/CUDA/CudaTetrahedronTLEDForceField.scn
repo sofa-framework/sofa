@@ -1,0 +1,50 @@
+<Node name="root" dt="0.0012" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="0" showBoundingTree="0" showVisualModels="1" gravity="9.81 0 0">
+<MultiStepMasterSolver integrationSteps="10"/>
+
+    <Node name="Liver_surface">
+        <MeshObjLoader name="surfaceOBJ" filename="mesh/liver05f_m.obj"/>
+        <TriangleSetTopologyContainer src="@surfaceOBJ" name="surfaceTopology"/>
+        <MeshTetraStuffing name="stuffing" snapPoints="true" splitTetras="true" draw="false" size="0.030"  alphaLong="0.3" alphaShort="0.2"  inputPoints="@surfaceTopology.points" inputTriangles="@surfaceTopology.triangles" printLog="false"/>
+    </Node>
+
+    <Node name="Liver_parenchyma">
+        <CentralDifferenceSolver rayleighMass="5" />
+        <TetrahedronSetTopologyContainer name="volume" points="@../Liver_surface/stuffing.outputPoints" tetras="@../Liver_surface/stuffing.outputTetras"/>
+        <MechanicalObject name="TetraLiverMO" template="CudaVec3f"/>
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="CudaVec3f"/>
+	<UniformMass mass="1 1 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" printLog="false" totalmass="1.5" />
+        <CudaTetrahedronTLEDForceField name="FEM" youngModulus="6567" poissonRatio="0.45" isViscoelastic="0" isAnisotropic="0" preferredDirection="0 0.707 0.707"/>
+
+	<!-- Constraints -->
+        <BoxROI name="box_roi" box="0.150 0.130 0.100 0.200 0.180 0.140 " drawSize="0"/>
+        <FixedConstraint name="VeinEntrance" indices="@box_roi.indices" drawSize="0.002"/>
+        <FixedConstraint name="Ligament1" indices="373 409 267 269 442" drawSize="0.002"/>
+        <FixedConstraint name="Ligament2" indices="443 441 438 286 287" drawSize="0.002"/>
+        <FixedConstraint name="Ligament3" indices="444 446 447" drawSize="0.002"/>
+	<FixedConstraint name="Ligament4" indices="475 295 293 460 458 278" drawSize="0.002"/>
+
+	<!-- Visual -->
+        <Node name="Liver_visualModel">
+	      <OglShader vertFilename="shaders/generalRenderingShader.vert" fragFilename="shaders/generalRenderingShader.frag"/>
+              <OglShaderDefineMacro id="TRI_TEXTURING" />
+              <OglShaderDefineMacro id="PHONG" />
+              <OglShaderDefineMacro id="BUMP_MAPPING" />
+              <OglFloat2Variable name="scaleTexture" id="scaleTexture" value="0.2 0.2" />
+              <OglFloatVariable name="showDebug" id="showDebug" value="0.0" />
+              <OglFloatVariable name="bumpFactor" id="bumpFactor" value="0.5" />
+              <OglTexture name="textureX" id="planarTextureX" textureFilename="textures/liver-texture-square.png" textureUnit="1" repeat="true"/>
+              <OglTexture name="textureY" id="planarTextureY" textureFilename="textures/liver-texture-square.png" textureUnit="2" repeat="true"/>
+              <OglTexture name="textureZ" id="planarTextureZ" textureFilename="textures/liver-texture-square.png" textureUnit="3" repeat="true"/>
+              <OglTexture name="textureNormal" id="normalMap" textureFilename="textures/liver-cyrrhosis-NM.png" textureUnit="4" repeat="true"/>
+
+              <OglShaderVisualModel filename="mesh/liver05f_m.obj"  name="visualModel" scale="1.0" dx="0.0" dy="0.0" dz="0.0" material="texture Ambient 1 0.2 0.2 0.2 1.0 Diffuse 1 1.0 1.0 1.0 1.0 Specular 1 1.0 1.0 1.0 1.0 Emissive 0 0.15 0.05 0.05 0.0 Shininess 1 500"/>
+              <BarycentricMapping input="@../TetraLiverMO" output="@visualModel" />
+        </Node>
+   </Node>
+   
+  <!-- Visual for ribs -->
+  <Node name="BoneVisual" tags="Visual" showWireFrame="1">
+    <OglModel name="LiverVisualModel" filename="mesh/bone_fragment2_05m.obj"/>
+  </Node>
+
+</Node>
