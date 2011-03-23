@@ -75,7 +75,7 @@ public:
         : PointSetGeometryAlgorithms<DataTypes>()
         , showEdgeIndices(core::objectmodel::Base::initData(&showEdgeIndices, (bool) false, "showEdgeIndices", "Debug : view Edge indices."))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawEdges","if true, draw the edges in the topology."))
-        , _drawColor(initData(&_drawColor, Vector3(0.4,1.0,0.3), "drawColorEdges", "RGB code color used to draw edges."))
+        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vector3(0.4,1.0,0.3), "drawColorEdges", "RGB code color used to draw edges."))
     {
     }
 
@@ -112,8 +112,8 @@ public:
     bool isPointOnEdge(const sofa::defaulttype::Vec<3,double> &pt, const unsigned int ind_e) const;
 
     // compute barycentric coefficients
-    sofa::helper::vector< double > compute2PointsBarycoefs(const Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
-    sofa::helper::vector< double > computeRest2PointsBarycoefs(const Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
+    sofa::helper::vector< double > compute2PointsBarycoefs(const sofa::defaulttype::Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
+    sofa::helper::vector< double > computeRest2PointsBarycoefs(const sofa::defaulttype::Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
 
     /** \brief Compute the projection coordinate of a point C on the edge i. Using compute2EdgesIntersection().
      * @param i edgeID on which point is projected.
@@ -131,15 +131,15 @@ public:
      */
     Coord compute2EdgesIntersection (const Coord edge1[2], const Coord edge2[2], bool& intersected);
 
-    bool computeEdgePlaneIntersection (EdgeID edgeID, Vec<3,Real> pointOnPlane, Vec<3,Real> normalOfPlane, Vec<3,Real>& intersection);
-    bool computeRestEdgePlaneIntersection (EdgeID edgeID, Vec<3,Real> pointOnPlane, Vec<3,Real> normalOfPlane, Vec<3,Real>& intersection);
+    bool computeEdgePlaneIntersection (EdgeID edgeID, sofa::defaulttype::Vec<3,Real> pointOnPlane, sofa::defaulttype::Vec<3,Real> normalOfPlane, sofa::defaulttype::Vec<3,Real>& intersection);
+    bool computeRestEdgePlaneIntersection (EdgeID edgeID, sofa::defaulttype::Vec<3,Real> pointOnPlane, sofa::defaulttype::Vec<3,Real> normalOfPlane, sofa::defaulttype::Vec<3,Real>& intersection);
 
     void writeMSHfile(const char *filename) const;
 
 protected:
     Data<bool> showEdgeIndices;
     Data<bool> _draw;
-    Data<Vector3> _drawColor;
+    Data<sofa::defaulttype::Vector3> _drawColor;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)

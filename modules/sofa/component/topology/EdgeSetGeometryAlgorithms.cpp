@@ -42,11 +42,11 @@ SOFA_DECL_CLASS(EdgeSetGeometryAlgorithms)
 int EdgeSetGeometryAlgorithmsClass = core::RegisterObject("Edge set geometry algorithms")
 
 #ifdef SOFA_FLOAT
-        .add< EdgeSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
+        .add< EdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >(true) // default template
 #else
-        .add< EdgeSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
+        .add< EdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes> >(true) // default template
 #ifndef SOFA_DOUBLE
-        .add< EdgeSetGeometryAlgorithms<Vec3fTypes> >() // default template
+        .add< EdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >() // default template
 #endif
 #endif
 #ifndef SOFA_FLOAT
@@ -64,7 +64,7 @@ int EdgeSetGeometryAlgorithmsClass = core::RegisterObject("Edge set geometry alg
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec2dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec1dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid3dTypes>;
@@ -72,7 +72,7 @@ template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid2dType
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec2fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec1fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid3fTypes>;

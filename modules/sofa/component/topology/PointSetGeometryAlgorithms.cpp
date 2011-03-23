@@ -38,11 +38,11 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(PointSetGeometryAlgorithms)
 int PointSetGeometryAlgorithmsClass = core::RegisterObject("Point set geometry algorithms")
 #ifdef SOFA_FLOAT
-        .add< PointSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
+        .add< PointSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >(true) // default template
 #else
-        .add< PointSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
+        .add< PointSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes> >(true) // default template
 #ifndef SOFA_DOUBLE
-        .add< PointSetGeometryAlgorithms<Vec3fTypes> >() // default template
+        .add< PointSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >() // default template
 #endif
 #endif
 #ifndef SOFA_FLOAT
@@ -56,7 +56,7 @@ int PointSetGeometryAlgorithmsClass = core::RegisterObject("Point set geometry a
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<Vec2dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<Vec1dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<Rigid3dTypes>;
@@ -64,7 +64,7 @@ template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<Rigid2dTyp
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<Vec2fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<Vec1fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<Rigid3fTypes>;

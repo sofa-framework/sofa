@@ -76,13 +76,13 @@ unsigned int DynamicSparseGridGeometryAlgorithms<DataTypes>::getRegularGridIndex
 }
 
 template < class DataTypes >
-int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const
+int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const
 {
     int index = -1;
     distance = 1e10;
 
     Vec3i resolution = topoContainer->resolution.getValue();
-    const Vec3d& translation = dof->getTranslation();
+    const sofa::defaulttype::Vec3d& translation = dof->getTranslation();
     Vec3i currentIndex = Vec3i( (int)((pos[0] - translation[0]) / topoContainer->voxelSize.getValue()[0]), (int)((pos[1] - translation[1]) / topoContainer->voxelSize.getValue()[1]), (int)((pos[2] - translation[2]) / topoContainer->voxelSize.getValue()[2]));
 
 //        std::cout << "Find Nearest : " << pos << " ; " << baryC << " distance " << distance << " : " << resolution << " : resolution " << currentIndex << " : currentIndex\n";
@@ -140,18 +140,18 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
 
 #ifndef SOFA_FLOAT
 template <>
-int DynamicSparseGridGeometryAlgorithms<Vec2dTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const;
+int DynamicSparseGridGeometryAlgorithms<Vec2dTypes>::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const;
 
 template <>
-int DynamicSparseGridGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const;
+int DynamicSparseGridGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const;
 #endif
 
 #ifndef SOFA_DOUBLE
 template <>
-int DynamicSparseGridGeometryAlgorithms<Vec2fTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const;
+int DynamicSparseGridGeometryAlgorithms<Vec2fTypes>::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const;
 
 template <>
-int DynamicSparseGridGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const;
+int DynamicSparseGridGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const;
 #endif
 
 } // namespace topology
