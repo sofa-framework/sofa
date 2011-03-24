@@ -24,7 +24,7 @@
 				triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="0.2 0.2 0.2" valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw"
 				infoFileName="beam-Affine-Vec-seg.nfo" useROI="true"/>
 		<GridMaterial name="gridmaterial" 
-				imageFile="@VoxelLoader.segmentationFileName"
+				imageFile="femur.raw"
 				labelToStiffnessPairs="1 1000"  
 				labelToDensityPairs="1 3000"
 				distanceType="Geodesic"

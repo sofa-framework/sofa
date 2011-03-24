@@ -214,6 +214,7 @@ struct DualQuatBlendTypes<
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord result;
+        result.getAffine().fill(0);
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             result.getCenter() += d[index[i]].getCenter() * Jb[i].Pt + d[index[i]].getAffine() * Jb[i].Pa.getCenter();
@@ -350,7 +351,7 @@ struct DualQuatBlendTypes<
             A += d[index[i]].getAffine() * Jb[i].Pa.getAffine();
         }
         polar_decomp(A, R, S);
-        S.invert(Sinv);
+        Sinv.invert(S);
         result.getOrientation().fromMatrix(R);
         return result;
     }
@@ -902,6 +903,7 @@ struct DualQuatBlendTypes<
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord result;
+        result.getAffine().fill(0);
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             result.getCenter() += d[index[i]].getCenter() * Jb[i].Pt + d[index[i]].getQuadratic() * Jb[i].PaT;
@@ -1514,6 +1516,7 @@ struct DualQuatBlendTypes<
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord res;
+        res.getAffine().fill(0);
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
@@ -1578,6 +1581,167 @@ struct DualQuatBlendTypes<
     }
 
     inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return i;
+    }
+};
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////  Specialization on Rigid -> Rigid =  -> Affine with polarDecomposition
+//////////////////////////////////////////////////////////////////////////////////
+
+/// TO DO!!!!!
+
+template<class Out, class _Material, int nbRef>
+struct DualQuatBlendTypes<
+        StdRigidTypes<3,typename _Material::Real>,
+        Out, _Material, nbRef, 4
+        >
+{
+    typedef _Material Material;
+    typedef typename Material::Real InReal;
+    typedef typename Out::Real OutReal;
+    typedef InReal Real;
+    typedef typename Material::SGradient MaterialDeriv;
+    typedef typename Material::SHessian MaterialMat;
+    typedef StdRigidTypes<3,InReal> In;
+    typedef Vec<Out::spatial_dimensions, InReal> SpatialCoord; // = Vec3
+    typedef typename In::Coord InCoord;
+    typedef typename Out::Coord OutCoord;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename In::VecCoord VecInCoord;
+    typedef typename In::VecDeriv VecInDeriv;
+    typedef Mat<3,3,Real> Mat33;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
+    typedef typename StdAffineTypes<3,OutReal>::Coord Affine;
+
+    struct JacobianBlock
+    {
+        /** Linear blend skinning: A = \sum_i w_i M_i \bar M_i A_0  where \bar M_i is the inverse of M_i in the reference configuration, and A_0 is the position of A in the reference configuration.
+        The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+        */
+        Affine Pa0;    ///< = dA = dMa_i (w_i \bar M_i A_0)  : affine part
+        Affine Pa;    ///< = dA =  Omega_i x [ Ma_i (w_i \bar M_i A_0) ]  : affine part
+        Real Pt;      ///< = dA = dMt_i (w_i)  : translation part
+    };
+
+    Vec<nbRef,unsigned int> index;
+    Vec<nbRef,JacobianBlock> Jb;
+    Mat33 A,R,S,Sinv;
+
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned int>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
+    {
+        index = Index;
+        unsigned int i=0;
+        for ( ; i<nbRef && w[i]>0; i++ )
+        {
+
+            Mat33 InitialTransform33;
+            InitialTransform[index[i]].getOrientation().toMatrix(InitialTransform33);
+            InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
+            Mat33 inverseInitialTransform33;
+            inverseInitialTransform.getOrientation().toMatrix(inverseInitialTransform33);
+            Mat33 inverseInitialTransformT = inverseInitialTransform33.transposed();
+
+            const SpatialCoord& vectorInLocalCoordinates = inverseInitialTransform.pointToParent(InitialPos.getCenter());
+            Jb[i].Pa0.getCenter()=vectorInLocalCoordinates*w[i];
+            Jb[i].Pa.getCenter()=(InitialPos.getCenter() - InitialTransform[index[i]].getCenter() )*w[i];
+            Jb[i].Pt=w[i];
+
+            Jb[i].Pa0.getAffine()= inverseInitialTransform33 * w[i];
+            Jb[i].Pa.getAffine()= InitialTransform33 * Jb[i].Pa0.getAffine();
+        }
+        if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+    }
+
+    OutCoord apply( const VecInCoord& d )  // Called in Apply
+    {
+        OutCoord res;
+        A.fill(0);
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+
+
+            Jb[i].Pa.getCenter() =d[index[i]].rotate(Jb[i].Pa0.getCenter()); // = update of J according to current transform
+            res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + Jb[i].Pa.getCenter();
+
+            Mat33 Transform33;
+            d[index[i]].getOrientation().toMatrix(Transform33);
+            Jb[i].Pa.getAffine() = Transform33 * Jb[i].Pa0.getAffine();
+            A += Jb[i].Pa.getAffine();
+        }
+        polar_decomp(A, R, S);
+        Sinv.invert(S);
+        res.getOrientation().fromMatrix(R);
+        return res;
+    }
+
+    OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
+    {
+        OutDeriv res;
+        Mat33 Adot;
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+
+            res.getVCenter() +=  getLinear( d[index[i]] ) * Jb[i].Pt +  cross(getAngular(d[index[i]]), Jb[i].Pa.getCenter());
+            const Mat33& Wx=crossProductMatrix(getAngular(d[index[i]]));
+            Adot += Wx * Jb[i].Pa.getAffine();
+        }
+        //Adot ~ w x S
+        Quat q; q.fromMatrix(Adot*Sinv);
+        Real phi; q.quatToAxis(res.getAngular(), phi);
+        res.getAngular()*=phi;
+
+        return res;
+    }
+
+    void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
+    {
+        /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
+        */
+        //Adot ~ w x S
+        Mat33 Adot=crossProductMatrix(d.getAngular())*S;
+
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        {
+            getLinear(res[index[i]]) +=  d.getVCenter() * Jb[i].Pt;
+            getAngular(res[index[i]]) += cross(Jb[i].Pa.getCenter(), d.getVCenter());
+            getAngular(res[index[i]])[0] += dot(Jb[i].Pa.getAffine()[1],Adot[2]) - dot(Jb[i].Pa.getAffine()[2],Adot[1]);
+            getAngular(res[index[i]])[1] += dot(Jb[i].Pa.getAffine()[2],Adot[0]) - dot(Jb[i].Pa.getAffine()[0],Adot[2]);
+            getAngular(res[index[i]])[2] += dot(Jb[i].Pa.getAffine()[0],Adot[1]) - dot(Jb[i].Pa.getAffine()[1],Adot[0]);
+        }
+    }
+
+    void addMultTranspose( ParentJacobianRow& parentJacobianRow, const OutDeriv& childJacobianVec ) // Called in ApplyJT to build a contraint equation on the independent DOF
+    {
+        //Adot ~ w x S
+        Mat33 Adot=crossProductMatrix(childJacobianVec.getAngular())*S;
+
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        {
+            InDeriv parentJacobianVec;
+            getLinear(parentJacobianVec) +=  childJacobianVec.getVCenter() * Jb[i].Pt;
+            getAngular(parentJacobianVec) += cross(Jb[i].Pa.getCenter(), childJacobianVec.getVCenter());
+            getAngular(parentJacobianVec)[0] += dot(Jb[i].Pa.getAffine()[1],Adot[2]) - dot(Jb[i].Pa.getAffine()[2],Adot[1]);
+            getAngular(parentJacobianVec)[1] += dot(Jb[i].Pa.getAffine()[2],Adot[0]) - dot(Jb[i].Pa.getAffine()[0],Adot[2]);
+            getAngular(parentJacobianVec)[2] += dot(Jb[i].Pa.getAffine()[0],Adot[1]) - dot(Jb[i].Pa.getAffine()[1],Adot[0]);
+            parentJacobianRow.addCol(index[i],parentJacobianVec);
+        }
+    }
+
+
+
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 4>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return o;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 4>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;

@@ -32,16 +32,13 @@
 		</Node>
 		
 		<Node name="AffineFrameMapping">
-			<MechanicalObject template="Affine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]"/>
+			<MechanicalObject template="Affine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]" showObject="1" showObjectScale="0.5"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Affine;" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>
-<!--
-			<Node name="RigidFrameMapping">
-			<MechanicalObject template="Rigid" name="MappedDOFs" useMask="0" position="0 0 0 0 0 0 1"/>
+		<Node name="RigidFrameMapping">
+			<MechanicalObject template="Rigid" name="MappedDOFs" useMask="0" position="0 0 0 0 0 0 1" showObject="1" showObjectScale="0.5"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Rigid;" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>
-	-->		
-		
 		
 	</Node>
 	
@@ -75,16 +72,14 @@
 		</Node>
 
 		<Node name="AffineFrameMapping">
-			<MechanicalObject template="Affine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]"/>
+			<MechanicalObject template="Affine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]" showObject="1" showObjectScale="0.5"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Affine;" useDQ="1" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>
-<!--
-			<Node name="RigidFrameMapping">
-			<MechanicalObject template="Rigid" name="MappedDOFs" useMask="0" position="0 0 0 0 0 0 1"/>
+		<Node name="RigidFrameMapping">
+			<MechanicalObject template="Rigid" name="MappedDOFs" useMask="0" position="0 0 0 0 0 0 1" showObject="1" showObjectScale="0.5"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Rigid;" useDQ="1" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>
-	-->		
-		
+
 	</Node>	
 </Node>
 

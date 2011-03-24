@@ -29,7 +29,7 @@
 		</Node>
 		
 		<Node name="AffineFrameMapping">
-			<MechanicalObject template="Affine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]"/>
+			<MechanicalObject template="Affine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]"  showObject="1" showObjectScale="0.5"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Quadratic,Affine;" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>
 <!--
