@@ -420,11 +420,11 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
-    const double invDt = 1.0 / this->getContext()->getDt();
+//	const double invDt = 1.0 / this->getContext()->getDt();
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        v[i] = v_free[i] + dx[i] * invDt;
+        v[i] = v_free[i] + dx[i]/* * invDt*/;
     }
 
     v_d.endEdit();

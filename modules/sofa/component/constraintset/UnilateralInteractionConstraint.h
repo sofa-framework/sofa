@@ -164,8 +164,6 @@ protected:
         double mu;		///< angle for friction
 
         Coord P, Q;
-        Coord Pfree, Qfree;
-        Deriv Pvfree, Qvfree; ///< to compute velocity violation
 
         mutable Real dfree;
     };
