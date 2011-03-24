@@ -1,6 +1,6 @@
-#include <sofa/gui/qt/PickHandlerCallBacks.h>
-#include <sofa/gui/qt/RealGUI.h>
-#include <sofa/gui/qt/viewer/SofaViewer.h>
+#include "PickHandlerCallBacks.h"
+#include "RealGUI.h"
+#include "viewer/SofaViewer.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/collision/MouseInteractor.h>
 

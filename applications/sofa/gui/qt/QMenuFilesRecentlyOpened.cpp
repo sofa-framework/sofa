@@ -25,7 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/gui/qt/QMenuFilesRecentlyOpened.h>
+#include "QMenuFilesRecentlyOpened.h"
 
 #include <sofa/helper/system/FileRepository.h>
 #include <fstream>

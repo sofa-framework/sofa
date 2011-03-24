@@ -3,7 +3,7 @@
 #include "AddObject.h"
 #include "ModifyObject.h"
 #include "GenGraphForm.h"
-#include <sofa/gui/qt/RealGUI.h>
+#include "RealGUI.h"
 #include <sofa/simulation/common/DeleteVisitor.h>
 
 #include <sofa/simulation/common/TransformationVisitor.h>

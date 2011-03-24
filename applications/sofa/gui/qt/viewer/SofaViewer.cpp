@@ -1,4 +1,4 @@
-#include <sofa/gui/qt/viewer/SofaViewer.h>
+#include "SofaViewer.h"
 #include <sofa/helper/Factory.inl>
 
 namespace sofa

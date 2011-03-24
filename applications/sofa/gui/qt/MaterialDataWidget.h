@@ -1,6 +1,6 @@
 #ifndef MATERIAL_DATAWIDGET_H
 #define MATERIAL_DATAWIDGET_H
-#include <sofa/gui/qt/DataWidget.h>
+#include "DataWidget.h"
 #include <sofa/core/loader/Material.h>
 #include <sofa/defaulttype/Vec.h>
 

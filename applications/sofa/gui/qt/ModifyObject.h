@@ -35,9 +35,9 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/misc/Monitor.h>
-#include <sofa/gui/qt/QTransformationWidget.h>
-#include <sofa/gui/qt/QEnergyStatWidget.h>
-#include <sofa/gui/qt/DisplayFlagWidget.h>
+#include "QTransformationWidget.h"
+#include "QEnergyStatWidget.h"
+#include "DisplayFlagWidget.h"
 #include "WDoubleLineEdit.h"
 
 #ifdef SOFA_QT4

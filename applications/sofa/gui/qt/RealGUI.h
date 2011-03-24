@@ -36,25 +36,25 @@ under the terms of the GNU General Public License as published by the Free  *
 #include "SofaGUIQt.h"
 #include <sofa/gui/SofaGUI.h>
 #include <time.h>
-#include <sofa/gui/qt/viewer/ViewerFactory.h>
-#include <sofa/gui/qt/QSofaListView.h>
-#include <sofa/gui/qt/GraphListenerQListView.h>
-#include <sofa/gui/qt/FileManagement.h>
-#include <sofa/gui/qt/viewer/SofaViewer.h>
-#include <sofa/gui/qt/AddObject.h>
-#include <sofa/gui/qt/ModifyObject.h>
-#include <sofa/gui/qt/DisplayFlagWidget.h>
-#include <sofa/gui/qt/QMenuFilesRecentlyOpened.h>
-#include <sofa/gui/qt/SofaPluginManager.h>
-#include <sofa/gui/qt/SofaMouseManager.h>
-#include <sofa/gui/qt/SofaVideoRecorderManager.h>
-#include <sofa/gui/qt/PickHandlerCallBacks.h>
+#include "viewer/ViewerFactory.h"
+#include "QSofaListView.h"
+#include "GraphListenerQListView.h"
+#include "FileManagement.h"
+#include "viewer/SofaViewer.h"
+#include "AddObject.h"
+#include "ModifyObject.h"
+#include "DisplayFlagWidget.h"
+#include "QMenuFilesRecentlyOpened.h"
+#include "SofaPluginManager.h"
+#include "SofaMouseManager.h"
+#include "SofaVideoRecorderManager.h"
+#include "PickHandlerCallBacks.h"
 #include <sofa/simulation/common/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-#include <sofa/gui/qt/WindowVisitor.h>
-#include <sofa/gui/qt/GraphVisitor.h>
+#include "WindowVisitor.h"
+#include "GraphVisitor.h"
 #endif
 
 #ifdef SOFA_QT4

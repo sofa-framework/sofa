@@ -28,14 +28,14 @@
 #define SOFA_GUI_QT_TABLEDATAWIDGET_H
 
 #include "SimpleDataWidget.h"
-#include <sofa/gui/qt/StructDataWidget.h>
+#include "StructDataWidget.h"
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/topology/PointData.h>
 
 #ifdef SOFA_QT4
-#include <sofa/gui/qt/QModelViewTableDataContainer.h>
+#include "QModelViewTableDataContainer.h"
 #else
-#include <sofa/gui/qt/QTableDataContainer.h>
+#include "QTableDataContainer.h"
 #endif
 
 namespace sofa

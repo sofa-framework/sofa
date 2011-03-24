@@ -1,5 +1,5 @@
 
-#include <sofa/gui/qt/QVisitorControlPanel.h>
+#include "QVisitorControlPanel.h"
 #include <sofa/simulation/common/Visitor.h>
 
 #ifdef SOFA_QT4

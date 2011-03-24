@@ -26,10 +26,10 @@
 ******************************************************************************/
 
 #include "GUIManager.h"
-#include <sofa/gui/SofaGUI.h>
-#include <sofa/gui/BatchGUI.h>
-#include <sofa/gui/qt/RealGUI.h>
-#include <sofa/gui/glut/SimpleGUI.h>
+#include "SofaGUI.h"
+#include "BatchGUI.h"
+#include "qt/RealGUI.h"
+#include "glut/SimpleGUI.h"
 #include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 

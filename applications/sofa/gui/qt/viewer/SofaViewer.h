@@ -52,7 +52,7 @@
 
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/helper/gl/Texture.h>
-#include <sofa/gui/qt/SofaVideoRecorderManager.h>
+#include "../SofaVideoRecorderManager.h"
 #ifdef SOFA_HAVE_FFMPEG
 #include <sofa/helper/gl/VideoRecorder.h>
 #endif //SOFA_HAVE_FFMPEG

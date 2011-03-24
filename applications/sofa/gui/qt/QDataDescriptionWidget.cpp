@@ -1,5 +1,5 @@
 
-#include <sofa/gui/qt/QDataDescriptionWidget.h>
+#include "QDataDescriptionWidget.h"
 
 #include <sofa/core/ObjectFactory.h>
 

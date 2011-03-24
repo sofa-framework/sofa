@@ -25,7 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/gui/qt/SimpleDataWidget.h>
+#include "SimpleDataWidget.h"
 #include <sofa/helper/Factory.inl>
 #include <sofa/core/objectmodel/Tag.h>
 #include <iostream>

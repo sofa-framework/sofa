@@ -27,9 +27,9 @@
 
 #include "ModifyObject.h"
 #include "DataWidget.h"
-#include <sofa/gui/qt/QDisplayDataWidget.h>
-#include <sofa/gui/qt/QDataDescriptionWidget.h>
-#include <sofa/gui/qt/QTabulationModifyObject.h>
+#include "QDisplayDataWidget.h"
+#include "QDataDescriptionWidget.h"
+#include "QTabulationModifyObject.h"
 
 #include <iostream>
 #ifdef SOFA_QT4

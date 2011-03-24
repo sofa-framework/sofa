@@ -24,14 +24,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gui/qt/RealGUI.h>
-#include <sofa/gui/qt/ImageQt.h>
+#include "RealGUI.h"
+#include "ImageQt.h"
 #ifndef SOFA_GUI_QT_NO_RECORDER
-#include <sofa/gui/qt/QSofaRecorder.h>
+#include "QSofaRecorder.h"
 #endif
-#include <sofa/gui/qt/QSofaStatWidget.h>
-#include <sofa/gui/qt/GenGraphForm.h>
-#include <sofa/gui/qt/QSofaListView.h>
+#include "QSofaStatWidget.h"
+#include "GenGraphForm.h"
+#include "QSofaListView.h"
 #include <algorithm>
 
 

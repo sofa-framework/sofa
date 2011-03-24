@@ -23,9 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/gui/qt/QMouseOperations.h>
-#include <sofa/gui/qt/QDisplayDataWidget.h>
-#include <sofa/gui/qt/DataWidget.h>
+#include "QMouseOperations.h"
+#include "QDisplayDataWidget.h"
+#include "DataWidget.h"
 #include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
 
 #ifdef SOFA_QT4

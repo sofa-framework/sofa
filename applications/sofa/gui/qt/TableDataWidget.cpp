@@ -25,7 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/gui/qt/TableDataWidget.h>
+#include "TableDataWidget.h"
 #include <sofa/helper/Factory.inl>
 #include <iostream>
 

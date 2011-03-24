@@ -1,4 +1,4 @@
-#include <sofa/gui/qt/MaterialDataWidget.h>
+#include "MaterialDataWidget.h"
 #include <limits>
 
 #ifndef SOFA_QT4

@@ -11,7 +11,7 @@
 #include <qlayout.h>
 #endif
 
-#include <sofa/gui/qt/DataWidget.h>
+#include "DataWidget.h"
 
 
 namespace sofa

@@ -27,7 +27,7 @@
 #ifndef SOFA_GUI_QT_STRUCTDATAWIDGET_H
 #define SOFA_GUI_QT_STRUCTDATAWIDGET_H
 
-#include <sofa/gui/qt/SimpleDataWidget.h>
+#include "SimpleDataWidget.h"
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/component/interactionforcefield/SpringForceField.h>

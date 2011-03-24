@@ -24,7 +24,7 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#include <sofa/gui/qt/SofaVideoRecorderManager.h>
+#include "SofaVideoRecorderManager.h"
 
 #include <iostream>
 #ifndef SOFA_QT4
