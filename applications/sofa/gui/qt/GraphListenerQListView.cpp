@@ -25,7 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/gui/qt/GraphListenerQListView.h>
+#include "GraphListenerQListView.h"
 #include <sofa/simulation/common/Colors.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include "iconmultinode.xpm"

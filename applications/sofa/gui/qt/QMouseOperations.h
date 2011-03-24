@@ -26,7 +26,7 @@
 #define SOFA_GUI_QT_QMOUSEOPERATIONS_H
 
 #include <sofa/gui/MouseOperations.h>
-#include <sofa/gui/qt/SofaMouseManager.h>
+#include "SofaMouseManager.h"
 
 #ifdef SOFA_QT4
 #include <QWidget>

@@ -1,8 +1,8 @@
-#include <sofa/gui/qt/QTabulationModifyObject.h>
+#include "QTabulationModifyObject.h"
 
-#include <sofa/gui/qt/QDisplayDataWidget.h>
+#include "QDisplayDataWidget.h"
 
-#include <sofa/gui/qt/ModifyObject.h>
+#include "ModifyObject.h"
 
 namespace sofa
 {

@@ -24,8 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gui/qt/SofaMouseManager.h>
-#include <sofa/gui/qt/QMouseOperations.h>
+#include "SofaMouseManager.h"
+#include "QMouseOperations.h"
 
 #include <sofa/gui/MouseOperations.h>
 #include <sofa/gui/OperationFactory.h>

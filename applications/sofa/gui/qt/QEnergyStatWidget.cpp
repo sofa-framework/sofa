@@ -1,5 +1,5 @@
 
-#include <sofa/gui/qt/QEnergyStatWidget.h>
+#include "QEnergyStatWidget.h"
 
 #include <qwt_legend.h>
 

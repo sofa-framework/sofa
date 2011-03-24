@@ -28,7 +28,7 @@
 #define SOFA_GUI_QT_SIMPLEDATAWIDGET_H
 
 #include "DataWidget.h"
-#include <sofa/gui/qt/ModifyObject.h>
+#include "ModifyObject.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 //#include <sofa/defaulttype/RigidTypes.h>

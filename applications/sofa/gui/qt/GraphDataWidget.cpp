@@ -25,7 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/gui/qt/GraphDataWidget.h>
+#include "GraphDataWidget.h"
 #include "DataWidget.h"
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/map.h>

@@ -27,8 +27,8 @@
 #ifndef SOFA_GUI_QT_GRAPHDATAWIDGET_H
 #define SOFA_GUI_QT_GRAPHDATAWIDGET_H
 
-#include <sofa/gui/qt/TableDataWidget.h>
-#include <sofa/gui/qt/FileManagement.h>
+#include "TableDataWidget.h"
+#include "FileManagement.h"
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/system/SetDirectory.h>

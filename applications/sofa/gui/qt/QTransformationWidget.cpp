@@ -1,5 +1,5 @@
 
-#include <sofa/gui/qt/QTransformationWidget.h>
+#include "QTransformationWidget.h"
 #include <sofa/simulation/common/TransformationVisitor.h>
 
 #ifdef SOFA_QT4

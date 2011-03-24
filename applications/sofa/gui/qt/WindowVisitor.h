@@ -27,9 +27,9 @@
 #ifndef SOFA_WINDOWVISITOR_H
 #define SOFA_WINDOWVISITOR_H
 
-#include <sofa/gui/qt/VisitorGUI.h>
-#include <sofa/gui/qt/PieWidget.h>
-#include <sofa/gui/qt/QVisitorControlPanel.h>
+#include "VisitorGUI.h"
+#include "PieWidget.h"
+#include "QVisitorControlPanel.h"
 
 #ifdef SOFA_QT4
 #include <Q3ListViewItem>
