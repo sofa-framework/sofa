@@ -1,19 +1,36 @@
-declare(newmat,		extlibs/newmat)
-declare(tinyxml,	extlibs/tinyxml)
-declare(eigen,		extlibs/eigen-3.0-beta4/eigen.pro)
+######################################################################
+# Extlibs
+######################################################################
+
+declare(newmat,		 extlibs/newmat)
+declare(tinyxml,	 extlibs/tinyxml)
+declare(eigen,		 extlibs/eigen-3.0-beta4/eigen.pro)
+declare(qwt,       extlibs/qwt-5.2.0/src)
+declare(qglviewer, extlibs/libQGLViewer-2.3.3/QGLViewer)
 
 !contains(DEFINES,SOFA_HAVE_FLOWVR){
 	declare(miniFlowVR, extlibs/miniFlowVR)
 }
 
+######################################################################
+# Framework
+######################################################################
 
 declare(sofahelper,				framework/sofa/helper,			newmat)
 declare(sofadefaulttype,	framework/sofa/defaulttype,	sofahelper)
 declare(sofacore,					framework/sofa/core, 				sofadefaulttype sofahelper)
 
+######################################################################
+# Modules
+######################################################################
+
 declare(sofasimulation,		modules/sofa/simulation/common,	sofacore)
 declare(sofatree,					modules/sofa/simulation/tree,		sofasimulation sofacore)
 declare(sofabgl,					modules/sofa/simulation/bgl,		sofasimulation sofacore)
+declare(sofapml,					modules/sofa/simulation/filemanager/sofapml, \
+	sofacomponentvisualmodel sofacomponentprojectiveconstraintset sofacomponentlinearsolver \
+	sofacomponentodesolver sofacomponentmass sofacomponentcollision \
+	sofacomponentforcefield sofacomponentmapping sofacomponentbase sofacore )
 
 declare(sofacomponentbase,					modules/sofa/component/libbase.pro,		sofatree sofacore miniFlowVR)
 declare(sofacomponentbehaviormodel,	modules/sofa/component/behaviormodel, sofatree sofacore)
@@ -71,3 +88,22 @@ declare(sofacomponent, modules/sofa/component/libcomponent.pro, \
 	sofacomponentprojectiveconstraintset sofacomponentconstraintset \
 	sofacomponentcollision sofacomponentmisc sofacomponentconfigurationsetting \
 	sofacomponentengine sofatree sofasimulation sofacore)
+
+######################################################################
+# Applications
+######################################################################
+
+declare(sofagui, applications/sofa/gui/libgui.pro, \
+	sofacomponentconfigurationsetting sofatree sofasimulation sofacore)
+	
+declare(sofaguiqt, applications/sofa/gui/qt, \
+	sofagui sofasimulation sofahelper qwt tinyxml qglviewer)
+	
+declare(sofaguimain, applications/sofa/gui/libguimain.pro, \
+	sofagui sofacomponentbase sofasimulation sofacore qglviewer qwt tinyxml)
+
+declare(sofaguiglut, applications/sofa/gui/glut, \
+	sofagui sofasimulation sofadefaulttype sofahelper)
+
+declare(sofaguifltk, applications/sofa/gui/fltk, \
+	sofaguiqt sofagui sofacomponentcollision sofasimulation sofahelper)
