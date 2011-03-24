@@ -286,7 +286,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw()
         for (int i = 0; i < vsize; ++i)
         {
             glPushMatrix();
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
+            //glTranslatef(getPX(i), getPY(i), getPZ(i));
             float glTransform[16];
             x[i].writeOpenGlMatrix( glTransform);
             glMultMatrixf( glTransform);
@@ -492,7 +492,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw()
         for (int i = 0; i < vsize; ++i)
         {
             glPushMatrix();
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
+            //glTranslatef(getPX(i), getPY(i), getPZ(i));
             float glTransform[16];
             x[i].writeOpenGlMatrix( glTransform);
             glMultMatrixf( glTransform);
