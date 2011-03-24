@@ -129,9 +129,8 @@ public:
 
     inline void findIndexInRepartition( bool& influenced, unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
 
-    virtual void addSamples( const unsigned int& nbNewVertices);
-    virtual void removeSamples( const vector<unsigned int>& samplesID);
-
+    // Adaptativity
+    virtual void checkForChanges();
     virtual void handleTopologyChange(core::topology::Topology* t);
 
 protected:
@@ -141,6 +140,10 @@ protected:
     inline void updateWeights ();
     inline void normalizeWeights();
     virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass);
+
+    // Adaptativity
+    virtual void addSamples( const unsigned int& nbNewVertices);
+    virtual void UpdateSamples();
 
     PointData<InOut> inout;  ///< Data specific to the conversion between the types
     PointData<DQInOut> dqinout;  ///< Data specific to the conversion between the types

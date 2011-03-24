@@ -265,6 +265,8 @@ void FrameBlendingMapping<TIn, TOut>::apply( typename SampleData<TOut>::Material
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
+    checkForChanges();
+
     //if( this->f_printLog.getValue() ){
     //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, in = "<< in << std::endl;
     //}
@@ -555,6 +557,14 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
     m_dweight.resize ( xto.size() );
     //if(primitiveorder > 1)
     m_ddweight.resize( xto.size() );
+
+    for (unsigned int i = 0; i < xto.size(); ++i)
+    {
+        index[i].clear();
+        m_weights[i].clear();
+        m_dweight[i].clear();
+        m_ddweight[i].clear();
+    }
 
     if(useLinearWeights.getValue())  // linear weights based on 2 closest primitives
     {
@@ -960,6 +970,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
                 }
             }
             glEnd();
+            glPointSize( 1);
         }
     }
 
@@ -1044,6 +1055,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
                     glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
                 }
                 glEnd();
+                glPointSize( 1);
             }
             glPopAttrib();
         }
@@ -1101,6 +1113,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
                     glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
                 }
                 glEnd();
+                glPointSize( 1);
             }
             glPopAttrib();
         }
@@ -1134,7 +1147,6 @@ void FrameBlendingMapping<TIn, TOut>::addSamples( const unsigned int& /*nbNewVer
     // TODO
     // Compute only the data for the inserted points.
     // Here, all is recomputed
-    // This method is used for non physical mappings
 
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
 
@@ -1144,7 +1156,6 @@ void FrameBlendingMapping<TIn, TOut>::addSamples( const unsigned int& /*nbNewVer
     for(unsigned int i=0; i<out.size(); i++ )
         initPos[i] = out[i];
     f_initPos.endEdit();
-
 
     // init weights and sample info (mass, moments) todo: ask the Material
     updateWeights();
@@ -1189,9 +1200,100 @@ void FrameBlendingMapping<TIn, TOut>::addSamples( const unsigned int& /*nbNewVer
 
 
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::removeSamples( const vector<unsigned int>& /*samplesID*/)
+void FrameBlendingMapping<TIn, TOut>::UpdateSamples()
 {
-    // Nothing for the moment. The pointData are automatically reorganized by handleTopologyEvents.
+    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
+
+    serr << "UpdateSamples Physical" << sendl;
+
+
+    //// Recompute Weights
+    WriteAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->write(core::VecCoordId::restPosition());
+    unsigned int num_points=xfrom0.size();
+
+    // retrieve initial frames
+    vector<SpatialCoord> points(num_points);
+    for ( unsigned int i=0; i<num_points; i++ )
+        for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
+            points[i][j]= xfrom0[i][j];
+
+    // Insert new frames and compute associated voxel weights
+    std::cout<<"Inserting "<<targetFrameNumber.getValue()-num_points<<" frames..."<<std::endl;
+    if(initializeFramesInRigidParts.getValue()) gridMaterial->rigidPartsSampling(points);
+    gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
+    std::cout<<"Computing weights in grid..."<<std::endl;
+    gridMaterial->computeWeights(points);
+
+
+    initSamples();
+
+
+    unsigned int numChildren = this->toModel->getSize();
+    //WriteAccessor<PointData<OutCoord> > initPos(this->f_initPos);
+    vector<OutCoord>& initPos = *(f_initPos.beginEdit());
+
+    if( this->f_initPos.getValue().size() != numChildren )
+    {
+        initPos.resize(out.size());
+        for(unsigned int i=0; i<out.size(); i++ )
+            initPos[i] = out[i];
+    }
+    f_initPos.endEdit();
+
+    // init weights and sample info (mass, moments) todo: ask the Material
+    updateWeights();
+
+    // init jacobians for mapping
+    if(useDQ.getValue())
+    {
+        vector<DQInOut>& dqInOut = *(dqinout.beginEdit());
+        dqInOut.resize( out.size() );
+        for(unsigned int i=0; i<out.size(); i++ )
+        {
+            dqInOut[i].init(
+                this->f_initPos.getValue()[i],
+                f_index.getValue()[i],
+                this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
+                weight.getValue()[i],
+                weightDeriv.getValue()[i],
+                weightDeriv2.getValue()[i]
+            );
+        }
+        inout.endEdit();
+    }
+    else
+    {
+        vector<InOut>& inOut = *(inout.beginEdit());
+        inOut.resize( out.size() );
+        for(unsigned int i=0; i<out.size(); i++ )
+        {
+            inOut[i].init(
+                this->f_initPos.getValue()[i],
+                f_index.getValue()[i],
+                this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
+                weight.getValue()[i],
+                weightDeriv.getValue()[i],
+                weightDeriv2.getValue()[i]
+            );
+        }
+        inout.endEdit();
+    }
+
+    gridMaterial->voxelsHaveChanged.setValue (false);
+}
+
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::checkForChanges()
+{
+    // Physical Samples have to be updated
+    if (this->isPhysical && gridMaterial->voxelsHaveChanged.getValue())
+    {
+        UpdateSamples();
+    }
+
+    // Changes on Frames
+    // TODO
 }
 
 
@@ -1233,8 +1335,8 @@ void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topol
             }
             case core::topology::POINTSREMOVED:
             {
-                const sofa::helper::vector<core::topology::BaseMeshTopology::PointID> &tab = ( static_cast< const typename component::topology::PointsRemoved *> ( *itBegin ) )->getArray();
-                removeSamples( tab);
+                //const sofa::helper::vector<core::topology::BaseMeshTopology::PointID> &tab = ( static_cast< const typename component::topology::PointsRemoved *> ( *itBegin ) )->getArray();
+                //removeSamples( tab);
                 break;
             }
             case core::topology::POINTSRENUMBERING:
