@@ -62,6 +62,7 @@ int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of
         .add< FrameBlendingMapping< Quadratic3dTypes, DeformationGradient332dTypes > >()
         .add< FrameBlendingMapping< Rigid3dTypes, Vec3dTypes > >()
         .add< FrameBlendingMapping< Rigid3dTypes, Affine3dTypes > >()
+        .add< FrameBlendingMapping< Rigid3dTypes, Rigid3dTypes > >()
         //.add< FrameBlendingMapping< Rigid3dTypes, ExtVec3dTypes > >()
         .add< FrameBlendingMapping< Rigid3dTypes, DeformationGradient331dTypes > >()
         .add< FrameBlendingMapping< Rigid3dTypes, DeformationGradient332dTypes > >()
@@ -79,14 +80,19 @@ int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of
 
 #ifndef SOFA_FLOAT
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3dTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Affine3dTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Rigid3dTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, ExtVec3dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, Vec3dTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, Affine3dTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, ExtVec3dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient331dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient332dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3dTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Affine3dTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Rigid3dTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, ExtVec3dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGradient331dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGradient332dTypes >;
