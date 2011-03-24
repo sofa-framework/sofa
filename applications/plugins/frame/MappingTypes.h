@@ -39,10 +39,10 @@ namespace defaulttype
 
 using sofa::defaulttype::FrameMass;
 
-template<class In, class Out, class Material, int nbRef, int order>
+template<class In, class Out, class Material, int nbRef, int type>
 class LinearBlendTypes;
 
-template<class In, class Out, class Material, int nbRef, int order>
+template<class In, class Out, class Material, int nbRef, int type>
 class DualQuatBlendTypes;
 
 
@@ -72,6 +72,7 @@ public:
     typedef Vec<3,typename Primitive::Real> MaterialCoord;
     typedef vector<MaterialCoord> VecMaterialCoord;
     enum {primitive_order = 0};
+    enum {type = 0};
 };
 
 template<int Spatial_dimensions, int Material_dimensions, int Order, typename Real> struct DeformationGradientTypes;
@@ -83,8 +84,39 @@ public:
     typedef typename DeformationGradientTypes<Dim,Dim,Order,Real>::MaterialCoord MaterialCoord;
     typedef typename DeformationGradientTypes<Dim,Dim,Order,Real>::VecMaterialCoord VecMaterialCoord;
     enum {primitive_order = DeformationGradientTypes<Dim,Dim,Order,Real>::order};
+    enum {type = DeformationGradientTypes<Dim,Dim,Order,Real>::order};
 };
 
+
+template< int N, typename real>
+class OutDataTypesInfo<StdAffineTypes<N,real> >
+{
+public:
+    typedef typename Vec<3,real> MaterialCoord;
+    typedef typename vector<MaterialCoord > VecMaterialCoord;
+    enum {primitive_order = 0};
+    enum {type = 3};
+};
+
+template< int N, typename real>
+class OutDataTypesInfo<StdRigidTypes<N,real> >
+{
+public:
+    typedef typename Vec<3,real> MaterialCoord;
+    typedef typename vector<MaterialCoord > VecMaterialCoord;
+    enum {primitive_order = 0};
+    enum {type = 4};
+};
+
+template< int N, typename real>
+class OutDataTypesInfo<StdQuadraticTypes<N,real> >
+{
+public:
+    typedef typename Vec<3,real> MaterialCoord;
+    typedef typename vector<MaterialCoord > VecMaterialCoord;
+    enum {primitive_order = 0};
+    enum {type = 5};
+};
 
 
 template<class TIn, bool IsPhysical>

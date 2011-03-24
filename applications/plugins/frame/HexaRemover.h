@@ -1,7 +1,6 @@
 #ifndef SOFA_FRAME_HEXA_REMOVER_H
 #define SOFA_FRAME_HEXA_REMOVER_H
 
-#include "FrameBlendingMapping.h"
 #include "MappingTypes.h"
 #include "MeshGenerater.h"
 #include <sofa/gpu/cuda/CudaRasterizer.h>

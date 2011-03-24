@@ -26,7 +26,8 @@
 #define SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_INL
 
 #include "FrameBlendingMapping.h"
-#include "FrameDQBlendingMapping.cpp"
+#include "LinearBlendTypes.inl"
+#include "DualQuatBlendTypes.inl"
 #include "GridMaterial.inl"
 #include <sofa/core/Mapping.inl>
 #include <sofa/helper/gl/Axis.h>
@@ -76,6 +77,20 @@ inline Vec<3,_Real>& center(Vec<3,_Real>& c)
     return c;
 }
 
+inline const Vec<3,double>& center(const StdAffineTypes<3,double>::Coord& c)
+{
+    return c.getCenter();
+}
+
+inline const Vec<3,double>& center(const StdRigidTypes<3,double>::Coord& c)
+{
+    return c.getCenter();
+}
+
+inline const Vec<3,double>& center(const StdQuadraticTypes<3,double>::Coord& c)
+{
+    return c.getCenter();
+}
 }
 
 namespace component
@@ -449,7 +464,8 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
             points[i][j]= xfrom0[i][j];
 
     // Insert new frames and compute associated voxel weights
-    std::cout<<"Inserting "<<targetFrameNumber.getValue()-num_points<<" frames..."<<std::endl;
+    if(num_points>=targetFrameNumber.getValue()) std::cout<<"Inserting 0 frames..."<<std::endl;
+    else std::cout<<"Inserting "<<targetFrameNumber.getValue()-num_points<<" frames..."<<std::endl;
     if(initializeFramesInRigidParts.getValue()) gridMaterial->rigidPartsSampling(points);
     gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
     std::cout<<"Computing weights in grid..."<<std::endl;

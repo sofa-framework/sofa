@@ -517,7 +517,7 @@ bool GridMaterial<MaterialTypes>::loadInfos()
         fileStream >> str; SCoord& origin = *this->origin.beginEdit();       fileStream >> origin;   this->origin.endEdit();
         fileStream >> str; SCoord& voxelsize = *this->voxelSize.beginEdit(); fileStream >> voxelsize; this->voxelSize.endEdit();
         fileStream.close();
-        std::cout << "Loaded info file "<< infoFile <<", dim = "<< dimension.getValue() <<", origin = " << this->origin.getValue() <<", voxelSize = " << this->voxelSize.getValue() << std::endl;
+        std::cout << "GridMaterial, Loaded info file "<< infoFile <<", dim = "<< dimension.getValue() <<", origin = " << this->origin.getValue() <<", voxelSize = " << this->voxelSize.getValue() << std::endl;
     }
     return true;
 }
@@ -529,10 +529,10 @@ bool GridMaterial< MaterialTypes>::saveInfos()
     std::ofstream fileStream (infoFile.c_str(), std::ofstream::out);
     if (!fileStream.is_open())
     {
-        serr << "Can not open " << infoFile << sendl;
+        serr << "GridMaterial, Can not open " << infoFile << sendl;
         return false;
     }
-    std::cout << "Writing info file " << infoFile << std::endl;
+    std::cout << "GridMaterial, Writing info file " << infoFile << std::endl;
     fileStream << "voxelType: " << CImg<voxelType>::pixel_type() << std::endl;
     fileStream << "dimensions: " << dimension.getValue() << std::endl;
     fileStream << "origin: " << origin.getValue() << std::endl;
@@ -597,7 +597,7 @@ bool GridMaterial< MaterialTypes>::loadImage()
     for(unsigned int i=0; i<this->nbVoxels; i++) if(grid.data()[i]) count++;
 
     updateMaxValues();
-    std::cout << "Loaded image "<< imageFile <<" of voxel type " << grid.pixel_type() << "( "<<count<<" non empty voxels)"<< std::endl;
+    std::cout << "GridMaterial, Loaded image "<< imageFile <<" of voxel type " << grid.pixel_type() << "( "<<count<<" non empty voxels)"<< std::endl;
     return true;
 }
 
@@ -648,7 +648,7 @@ bool GridMaterial<MaterialTypes>::loadWeightRepartion()
             fileStream >> v_weights[i][j];
         }
     fileStream.close();
-    std::cout << "Loaded weight file "<< weightFile << std::endl;
+    std::cout << "GridMaterial, Loaded weight file "<< weightFile << std::endl;
     showedrepartition=-1;
     return true;
 }
@@ -1184,7 +1184,7 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial< MaterialTypes>::getDis
     {
         if(isRigid(fromLabel) && isRigid(grid.data()[index2])) // does not allow communication accross rigid parts
         {
-            if(fromLabel!=grid.data()[index2]) return (Real)1E10; else  return (Real)0;
+            if(fromLabel!=grid.data()[index2]) return (Real)1E10; else  return (Real)1E-10;
         }
         Real meanstiff=(getStiffness(grid.data()[index1])+getStiffness(grid.data()[index2]))/2.;
         if(biasFactor!=(Real)1.) meanstiff=(Real)pow(meanstiff,biasFactor);
@@ -2034,7 +2034,7 @@ bool GridMaterial< MaterialTypes>::computeRegularSampling ( VecSCoord& points, c
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::isRigid(const voxelType label) const
 {
-    if(getStiffness(label)>=(Real)1.5E6) return true; // 15E6 N/cm^2 = bone stiffness
+    if(getStiffness(label)>=(Real)1.5E6) return true; // 1.5E6 N/cm^2 = bone stiffness
     else return false;
 }
 
