@@ -139,9 +139,10 @@ contains(TEMPLATE, subdirs) {
 }
 
 # Remove the directories where we put intermediate files
-addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$OBJECTS_DIR && $(DEL_DIR) -p $$OBJECTS_DIR; true))
-addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$RCC_DIR     && $(DEL_DIR) -p $$RCC_DIR; true))
-addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$MOC_DIR     && $(DEL_DIR) -p $$MOC_DIR; true))
+!isEmpty(OBJECTS_DIR): addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$OBJECTS_DIR && $(DEL_DIR) -p $$OBJECTS_DIR; true))
+!isEmpty(RCC_DIR):     addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$RCC_DIR     && $(DEL_DIR) -p $$RCC_DIR; true))
+!isEmpty(MOC_DIR):     addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$MOC_DIR     && $(DEL_DIR) -p $$MOC_DIR; true))
+!isEmpty(UI_DIR):      addCommand(maintainer-clean.commands, ($(CHK_DIR_EXISTS) $$UI_DIR      && $(DEL_DIR) -p $$UI_DIR; true))
 
 # In the root makefile we destroy the directories for libraries and applications
 equals(ROOT_PATH, .) {
