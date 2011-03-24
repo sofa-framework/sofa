@@ -113,10 +113,6 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
 
     c.P			= P;
     c.Q			= Q;
-    c.Pfree		= Pfree;
-    c.Qfree		= Qfree;
-    c.Pvfree	= this->getMState1()->read(core::ConstVecDerivId::freeVelocity())->getValue()[m1];
-    c.Qvfree	= this->getMState2()->read(core::ConstVecDerivId::freeVelocity())->getValue()[m2];
     c.m1		= m1;
     c.m2		= m2;
     c.norm		= norm;
@@ -129,11 +125,13 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     c.localId	= localid;
     c.contactDistance = contactDistance;
 
+    /*
     if (this->f_printLog.getValue())
     {
-        std::cout << "P : " << P << " - PFree : " << Pfree << std::endl;
-        std::cout << "Q : " << Q << " - QFree : " << Qfree << std::endl;
+    	std::cout << "P : " << P << " - PFree : " << Pfree << std::endl;
+    	std::cout << "Q : " << Q << " - QFree : " << Qfree << std::endl;
     }
+    */
 }
 
 
@@ -221,6 +219,9 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const cor
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::getPositionViolation(defaulttype::BaseVector *v)
 {
+    const VecCoord &PfreeVec = this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue();
+    const VecCoord &QfreeVec = this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue();
+
     Real dfree = (Real)0.0;
     Real dfree_t = (Real)0.0;
     Real dfree_s = (Real)0.0;
@@ -233,11 +234,15 @@ void UnilateralInteractionConstraint<DataTypes>::getPositionViolation(defaulttyp
 
         // Compute dfree, dfree_t and d_free_s
 
-        const Coord PPfree = c.Pfree - c.P;
-        const Coord QQfree = c.Qfree - c.Q;
+        const Coord &Pfree =  PfreeVec[c.m2];
+        const Coord &Qfree =  QfreeVec[c.m1];
+
+        const Coord PPfree = Pfree - c.P;
+        const Coord QQfree = Qfree - c.Q;
+
         const Real ref_dist = PPfree.norm() + QQfree.norm();
 
-        dfree = dot(c.Pfree - c.Qfree, c.norm) - c.contactDistance;
+        dfree = dot(Pfree - Qfree, c.norm) - c.contactDistance;
         const Real delta = dot(c.P - c.Q, c.norm) - c.contactDistance;
 
         if ((helper::rabs(delta) < 0.00001 * ref_dist) && (helper::rabs(dfree) < 0.00001 * ref_dist))
@@ -251,10 +256,10 @@ void UnilateralInteractionConstraint<DataTypes>::getPositionViolation(defaulttyp
 
             if (dt > 0.0 && dt < 1.0)
             {
-                const Coord Pt		= c.P * (1 - dt) + c.Pfree * dt;
-                const Coord Qt		= c.Q * (1 - dt) + c.Qfree * dt;
-                const Coord PtPfree = c.Pfree - Pt;
-                const Coord QtQfree = c.Qfree - Qt;
+                const Coord Pt		= c.P * (1 - dt) + Pfree * dt;
+                const Coord Qt		= c.Q * (1 - dt) + Qfree * dt;
+                const Coord PtPfree = Pfree - Pt;
+                const Coord QtQfree = Qfree - Qt;
 
                 dfree_t = dot(PtPfree, c.t) - dot(QtQfree, c.t);
                 dfree_s = dot(PtPfree, c.s) - dot(QtQfree, c.s);
@@ -294,13 +299,16 @@ void UnilateralInteractionConstraint<DataTypes>::getPositionViolation(defaulttyp
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype::BaseVector *v)
 {
+    const VecDeriv &PvfreeVec = this->getMState2()->read(core::ConstVecDerivId::freeVelocity())->getValue();
+    const VecDeriv &QvfreeVec = this->getMState1()->read(core::ConstVecDerivId::freeVelocity())->getValue();
+
     const unsigned int cSize = contacts.size();
 
     for (unsigned int i = 0; i < cSize; i++)
     {
         const Contact& c = contacts[i];
 
-        const Deriv QP_vfree = c.Pvfree - c.Qvfree;
+        const Deriv QP_vfree = PvfreeVec[c.m2] - QvfreeVec[c.m1];
 
         v->set(c.id, dot(QP_vfree, c.norm)); // dfree
 
@@ -434,9 +442,9 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
         glLineWidth(3);
         glBegin(GL_LINES);
 
-        glColor4f(0,0,1,1);
+        /*glColor4f(0,0,1,1);
         helper::gl::glVertexT(c.Pfree);
-        helper::gl::glVertexT(c.Qfree);
+        helper::gl::glVertexT(c.Qfree);*/
 
         glColor4f(1,1,1,1);
         helper::gl::glVertexT(c.P);
