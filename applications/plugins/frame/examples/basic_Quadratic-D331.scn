@@ -27,6 +27,18 @@
       		<Triangle />
 			<FrameBlendingMapping template="MechanicalMapping&lt;Quadratic,Vec3d&gt;" input="@../DOFs"  output="@PointSet" />
 		</Node>
+		
+		<Node name="AffineFrameMapping">
+			<MechanicalObject template="Affine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]"/>
+			<FrameBlendingMapping template="MechanicalMapping&lt;Quadratic,Affine;" input="@../DOFs"  output="@MappedDOFs" />
+		</Node>
+<!--
+			<Node name="RigidFrameMapping">
+			<MechanicalObject template="Rigid" name="MappedDOFs" useMask="0" position="0 0 0 0 0 0 1"/>
+			<FrameBlendingMapping template="MechanicalMapping&lt;Quadratic,Rigid;" input="@../DOFs"  output="@MappedDOFs" />
+		</Node>
+	-->	
+	
 	</Node>
 </Node>
 

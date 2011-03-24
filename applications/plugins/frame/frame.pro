@@ -39,6 +39,8 @@ HEADERS += \
            MappingTypes.h \
            FrameBlendingMapping.h \
            FrameBlendingMapping.inl \
+           LinearBlendTypes.inl \
+           DualQuatBlendTypes.inl \
            FrameConstantForceField.h \
            FrameMass.h \
            FrameDiagonalMass.h \
@@ -64,7 +66,6 @@ SOURCES += \
            GreenLagrangeForceField.cpp \
            FrameVolumePreservationForceField.cpp \
            FrameBlendingMapping.cpp \
-           FrameDQBlendingMapping.cpp \
            FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \
            FrameFixedConstraint.cpp \
