@@ -605,6 +605,9 @@ public:
 	nbp += s;
 	++nbg;
       }
+      if (s>1) // more that one point is created from a single position
+          mesh->setAttrib(Mesh::MESH_POINTS_GROUP,true);
+
     }
     
     // Then we can create the final arrays
@@ -615,9 +618,10 @@ public:
       mesh->points_t.resize(nbp);
     if (mesh->getAttrib(Mesh::MESH_POINTS_NORMAL))
       mesh->points_n.resize(nbp);
-    if (nbg != nbp)
+    //if (nbg != nbp)
+    if (mesh->getAttrib(Mesh::MESH_POINTS_GROUP))
     {
-      mesh->setAttrib(Mesh::MESH_POINTS_GROUP, true);
+      //mesh->setAttrib(Mesh::MESH_POINTS_GROUP, true);
       mesh->points_g.resize(nbp);
       //mesh->groups_p0.resize(nbg);
     }
@@ -643,7 +647,7 @@ public:
 	  mesh->points_n[j] = t_vn[(n & ((1<<SMOOTHGROUP_SHIFT)-1))];
 	if (mesh->getAttrib(Mesh::MESH_POINTS_GROUP))
 	{
-	  mesh->points_g[j] = pg0;
+	  mesh->points_g[j] = (int)mesh->groups_p0.size();
 	  if (n != last_n)
 	  {
 	    if ((int)mesh->groups_p0.size() == pg0)
@@ -675,10 +679,10 @@ public:
     std::cout<<mesh->nbp()<<" final points, "<<mesh->nbf()<<" triangles, "<<mesh->nbg()<<" normal groups"<<std::endl;
     std::cout<<mesh->nbmatg()<<" material groups"<<std::endl;
     
-    if (mesh->nbg()==mesh->nbp())
-    { // groups are not required
-      mesh->setAttrib(Mesh::MESH_POINTS_GROUP,false);
-    }
+    //if (mesh->nbg()==mesh->nbp())
+    //{ // groups are not required
+    //  mesh->setAttrib(Mesh::MESH_POINTS_GROUP,false);
+    //}
     
     // Computing normals
     mesh->calcNormals();
@@ -709,8 +713,16 @@ bool Mesh::saveObj(FILE* fp, int& v0, int &vn0, int &vt0) const
   bool normal   = getAttrib(MESH_POINTS_NORMAL);
   bool texcoord = getAttrib(MESH_POINTS_TEXCOORD);
   bool group    = getAttrib(MESH_POINTS_GROUP);
-  std::cout<<nbp()<<" points, "<<nbf()<<" faces"<<std::endl;
 
+  std::cout<<nbp()<<" points, "<<nbf()<<" faces"<<std::endl;
+  if (group)
+  {
+      int nbgpos = 0;
+      for (int i=0;i<nbg();i++)
+          if (getGP0(i) >= 0)
+              ++nbgpos;
+      std::cout << nbg() << " normal groups, " << nbgpos << " position groups" << std::endl;
+  }
   fprintf(fp,"# OBJ output by FlowVR Render\n");
 
   // first output material libs
