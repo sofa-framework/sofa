@@ -1,6 +1,6 @@
 declare(newmat,		extlibs/newmat)
 declare(tinyxml,	extlibs/tinyxml)
-declare(eigen,		extlibs/eigen-3.0-beta2/eigen.pro)
+declare(eigen,		extlibs/eigen-3.0-beta4/eigen.pro)
 
 !contains(DEFINES,SOFA_HAVE_FLOWVR){
 	declare(miniFlowVR, extlibs/miniFlowVR)
