@@ -349,7 +349,7 @@ void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyVelocityCorre
 
         VecDeriv& v = *(vId[this->mstate].write()->beginEdit());
 
-        const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+        VecDeriv& dx = *(this->mstate->write(core::VecDerivId::dx())->beginEdit());
         const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
         const double velocityFactor = odesolver->getVelocityIntegrationFactor();
@@ -358,9 +358,11 @@ void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyVelocityCorre
         {
             Deriv dvi = dx[i] * velocityFactor;
             v[i] = v_free[i] + dvi;
+            dx[i] = dvi;
         }
 
         vId[this->mstate].write()->endEdit();
+        this->mstate->write(core::VecDerivId::dx())->endEdit();
     }
 }
 
