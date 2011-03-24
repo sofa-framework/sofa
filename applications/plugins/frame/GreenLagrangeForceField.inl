@@ -116,11 +116,8 @@ void GreenLagrangeForceField<DataTypes>::addForce(const core::MechanicalParams* 
     ReadAccessor<DataVecDeriv> v(_v);
     WriteAccessor<DataVecDeriv> f(_f);
     ReadAccessor<Data<VecMaterialCoord> > out (sampleData->f_materialPoints);
-    stressStrainMatrices.resize(x.size());
-    //rotation.resize(x.size());
-    strain.resize(x.size());
-    strainRate.resize(x.size());
-    stress.resize(x.size());
+
+    updateFF( _x);
 
     // compute strains and strain rates
     for(unsigned int i=0; i<x.size(); i++)
@@ -191,6 +188,44 @@ void GreenLagrangeForceField<DataTypes>::addDForce(const core::MechanicalParams*
         {
             cerr<<"GreenLagrangeForceField<DataTypes>::addDForce, stress deformation gradient change after accumulating "<< kFactor<<"* df = " << df[i] << endl;
         }
+    }
+}
+
+
+
+template <class DataTypes>
+void GreenLagrangeForceField<DataTypes>::updateFF (const DataVecCoord& _x)
+{
+    ReadAccessor<Data<VecCoord> > out (*this->getMState()->read(core::ConstVecCoordId::restPosition()));
+    ReadAccessor<DataVecCoord> x(_x);
+
+    if (stressStrainMatrices.size() == x.size() && this->integFactors.size() == out.size()) return;
+
+    stressStrainMatrices.resize(x.size());
+    //rotation.resize(x.size());
+    strain.resize(x.size());
+    strainRate.resize(x.size());
+    stress.resize(x.size());
+
+    this->integFactors.resize(out.size());
+
+
+    for(unsigned int i=0; i<out.size(); i++) // treat each sample
+    {
+        typename DataTypes::SpatialCoord point;
+        DataTypes::get(point[0],point[1],point[2], out[i]) ;
+        if(material)
+        {
+            vector<Real> moments;
+            material->computeVolumeIntegrationFactors(i,point,StrainType::strainenergy_order,moments);  // lumpMoments
+            for(unsigned int j=0; j<moments.size() && j<this->integFactors[i].size() ; j++)
+                this->integFactors[i][j]=moments[j];
+        }
+        else
+            this->integFactors[i][0]=1; // default value when there is no material
+
+        if( this->f_printLog.getValue() )
+            std::cout<<"GreenLagrangeForceField<DataTypes>::IntegFactor["<<i<<"](coord "<<point<<")="<<integFactors[i]<<std::endl;
     }
 }
 

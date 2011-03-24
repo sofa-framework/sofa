@@ -501,6 +501,11 @@ void MeshGenerater<DataTypes>::removeOldMesh ( const sofa::helper::vector<unsign
 
     triangleIndexInRegularGrid.endEdit();
     triangleIDInRegularGrid2IndexInTopo.endEdit();
+
+
+    if (_to_topo->getNumberOfTriangles() != triangleIndexInRegularGrid.getValue().size())
+        serr << "Error when removing !! triangleIndexInRegularGrid has a wrong size. tri in topo: " << _to_topo->getNumberOfTriangles() << ", TidInRG: " << triangleIndexInRegularGrid.getValue().size() << sendl;
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Update_Struct_Related_To_Triangle");
     simulation::Visitor::printCloseNode("Remove_old_mesh");
@@ -685,6 +690,10 @@ void MeshGenerater<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
     for( unsigned int i = oldVerticesSize; i < tmpVertices.size(); i++)
         vertices.push_back( tmpVertices[i]);
 
+    serr << "trInRG size: " <<  this->triangleIndexInRegularGrid.getValue().size() << sendl;
+    serr << "triangles to insert: " <<  triangles.size() << sendl;
+    serr << "trInRG to insert: " <<  triangleIndexInRegularGrid.size() << sendl;
+
     updateTrianglesInfos( triangleIndexInRegularGrid);
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -722,6 +731,8 @@ void MeshGenerater<DataTypes>::addNewEltsInTopology ( const sofa::helper::vector
     simulation::Visitor::printNode("Add_triangles_In_Topology");
 #endif
 
+    serr << "Nb tri in topo: " <<  _to_topo->getNumberOfTriangles() << sendl;
+
     // Init the triangular topology (= Insert faces)
     int nb_elems = _to_topo->getNumberOfTriangles();
     sofa::helper::vector< Triangle > triangles_to_create;
@@ -738,6 +749,9 @@ void MeshGenerater<DataTypes>::addNewEltsInTopology ( const sofa::helper::vector
     _to_tstm->addTrianglesProcess ( triangles_to_create );
     _to_tstm->addTrianglesWarning ( triangles_to_create.size(), triangles_to_create, trianglesIndexList );
     _to_tstm->propagateTopologicalChanges();
+
+    if (_to_topo->getNumberOfTriangles() != triangleIndexInRegularGrid.getValue().size())
+        serr << "Error when inserting !! triangleIndexInRegularGrid has a wrong size. tri in topo: " << _to_topo->getNumberOfTriangles() << ", TidInRG: " << triangleIndexInRegularGrid.getValue().size() << sendl;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Add_triangles_In_Topology");

@@ -92,8 +92,8 @@ template< int N, typename real>
 class OutDataTypesInfo<StdAffineTypes<N,real> >
 {
 public:
-    typedef typename Vec<3,real> MaterialCoord;
-    typedef typename vector<MaterialCoord > VecMaterialCoord;
+    typedef Vec<3,real> MaterialCoord;
+    typedef vector<MaterialCoord > VecMaterialCoord;
     enum {primitive_order = 0};
     enum {type = 3};
 };
@@ -102,8 +102,8 @@ template< int N, typename real>
 class OutDataTypesInfo<StdRigidTypes<N,real> >
 {
 public:
-    typedef typename Vec<3,real> MaterialCoord;
-    typedef typename vector<MaterialCoord > VecMaterialCoord;
+    typedef Vec<3,real> MaterialCoord;
+    typedef vector<MaterialCoord > VecMaterialCoord;
     enum {primitive_order = 0};
     enum {type = 4};
 };
@@ -112,8 +112,8 @@ template< int N, typename real>
 class OutDataTypesInfo<StdQuadraticTypes<N,real> >
 {
 public:
-    typedef typename Vec<3,real> MaterialCoord;
-    typedef typename vector<MaterialCoord > VecMaterialCoord;
+    typedef Vec<3,real> MaterialCoord;
+    typedef vector<MaterialCoord > VecMaterialCoord;
     enum {primitive_order = 0};
     enum {type = 5};
 };

@@ -249,7 +249,6 @@ void HexaRemover<DataTypes>::buildCollisionVolumes()
                 tgobj.push_back(obj);
         }
 
-    int nbcoll = 0;
     const Real psize = rasterizer->pixelSize.getValue();
 
 #ifdef DRAW_ONE_LDI
@@ -356,21 +355,11 @@ void HexaRemover<DataTypes>::buildCollisionVolumes()
                                             ( obj == first_obj && incount > 0 && obj != inobjs[incount-1]) || // collision inside another object
                                             ( obj != first_obj ) ) ) // collision
                             {
-                                bool insideAnotherObj = false;
-                                if (obj == first_obj) // Allow to correctly add the trianglesToParse in the case 'collision inside another object'
-                                {
-                                    first_obj = inobjs[incount-1];
-                                    insideAnotherObj = true;
-                                    //first_tid = inobjs_tid[incount-1];
-                                    //first_layer = inLayers[incount-1];
-                                }
-
-                                MTopology* first_model = rasterizer->vmtopology[first_obj];
+                                MTopology* first_model = (obj != first_obj) ? rasterizer->vmtopology[first_obj]: rasterizer->vmtopology[inobjs[incount-1]]; // Allow to correctly add the trianglesToParse in the case 'collision inside another object'
                                 current_model = rasterizer->vmtopology[obj];
                                 if ( ! ( ( isTheModelInteresting ( current_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), first_model ) != cuttingModels.end() ) ||
                                         ( isTheModelInteresting ( first_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), current_model ) != cuttingModels.end() ) ) )
                                     continue;
-                                ++nbcoll;
                                 Real y = ( Real ) ( cl0 + l ) * psize;
                                 Real x = ( Real ) ( cc0 + c ) * psize;
                                 Real z0 = ldi.cellLayers[first_layer][l][c].z;
@@ -390,7 +379,7 @@ void HexaRemover<DataTypes>::buildCollisionVolumes()
 
                                 // Store the collision volume and the triangle ID
                                 addVolume( collisionVolumes[axis], x, y, minDepth, maxDepth);
-                                if ( !insideAnotherObj)
+                                if ( obj != first_obj)
                                 {
                                     if ( isTheModelInteresting ( current_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), first_model ) != cuttingModels.end() )
                                         trianglesToParse.insert( tid);
@@ -541,6 +530,7 @@ void HexaRemover<DataTypes>::drawParsedHexas()
     for ( typename helper::set<Coord>::iterator it = parsedHexasCoords.begin(); it != parsedHexasCoords.end(); it++ )
         helper::gl::glVertexT ( *it );
     glEnd();
+    glPointSize ( 1 );
     glPopAttrib();
 }
 
@@ -559,6 +549,7 @@ void HexaRemover<DataTypes>::drawRemovedHexas()
     for ( typename helper::set<Coord>::iterator it = removedHexasCoords.begin(); it != removedHexasCoords.end(); it++ )
         helper::gl::glVertexT ( *it );
     glEnd();
+    glPointSize ( 1 );
     glPopAttrib();
 }
 
@@ -578,6 +569,7 @@ void HexaRemover<DataTypes>::drawCollisionTriangles()
     for ( typename helper::set<Coord>::iterator it = collisionTrianglesCoords.begin(); it != collisionTrianglesCoords.end(); it++ )
         helper::gl::glVertexT ( *it );
     glEnd();
+    glPointSize ( 1 );
     glPopAttrib();
 }
 
@@ -694,7 +686,8 @@ void HexaRemover<DataTypes>::drawCollisionVolumes()
 						else if ( i==2 ) glColor4f ( 0.23, 0.18, 0.83, 1.0 );
 						drawBoundingBox ( *it );
 					}
-				glPopAttrib();
+                                glPointSize ( 1 );
+                                glPopAttrib();
 			}
 */
 

@@ -359,6 +359,8 @@ protected:
     /*********************************/
 
 public:
+    Data<bool> verbose;
+
     inline int getIndex(const GCoord& icoord) const;
     inline int getIndex(const SCoord& coord) const;
     inline bool getiCoord(const SCoord& coord, GCoord& icoord) const;
@@ -385,6 +387,8 @@ protected:
     /*********************************/
 
 public:
+    Data<bool> voxelsHaveChanged;
+
     void removeVoxels( const vector<unsigned int>& voxelsToRemove);
 
     /*********************************/
@@ -399,7 +403,7 @@ protected:
     bool showWireframe;
     float maxValues[11];
     Data<float> show3DValuesHeight;
-    bool vboSupported;
+    Data<bool> vboSupported;
     GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)
     GLuint vboValuesId2; // ID of VBO for 3DValues index array
 

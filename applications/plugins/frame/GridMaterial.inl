@@ -32,6 +32,7 @@
 #include <list>
 #include <string>
 //#include <omp.h>
+#include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
 {
@@ -69,14 +70,18 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , useDistanceScaleFactor ( initData ( &useDistanceScaleFactor,false, "useDistanceScaleFactor","useDistanceScaleFactor." ) )
     , weightSupport ( initData ( &weightSupport,(Real)2., "weightSupport","Support of the weight function (2=interpolating, >2 = approximating)." ) )
     , nbVoronoiSubdivisions ( initData ( &nbVoronoiSubdivisions,(unsigned int)0, "nbVoronoiSubdivisions","number of subdvisions of the voronoi during weight computation (1 by default)." ) )
+    , verbose ( initData ( &verbose, false, "verbose","Set the verbose mode" ) )
+    , voxelsHaveChanged ( initData ( &voxelsHaveChanged, false, "voxelsHaveChanged","Voxels Have Changed." ) )
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
     , showWeightIndex ( initData ( &showWeightIndex, ( unsigned int ) 0, "showWeightIndex","Weight index." ) )
     , showPlane ( initData ( &showPlane, GCoord ( -1,-1,-1 ), "showPlane","Indices of slices to be shown." ) )
     , show3DValuesHeight ( initData ( &show3DValuesHeight, (float)0.0, "show3DValuesHeight","When show plane is activated, values are displayed in 3D." ) )
-    , vboSupported(false)
+    , vboSupported ( initData ( &vboSupported, true, "vboSupported","Allow to disply 2.5D functions." ) )
     , vboValuesId1(0)
     , vboValuesId2(0)
 {
+    voxelsHaveChanged.setDisplayed (false);
+
     helper::OptionsGroup distanceTypeOptions(3,"Geodesic", "HeatDiffusion", "AnisotropicHeatDiffusion");
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
@@ -84,8 +89,6 @@ GridMaterial< MaterialTypes>::GridMaterial()
     helper::OptionsGroup showVoxelsOptions(11,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Poisson ratio", "Voronoi Samples", "Voronoi Frames", "Distances", "Weights","Linearity Error");
     showVoxelsOptions.setSelectedItem(SHOWVOXELS_NONE);
     showVoxels.setValue(showVoxelsOptions);
-
-
 }
 
 
@@ -343,6 +346,11 @@ void GridMaterial< MaterialTypes>::updateSampleMaterialProperties()
     if (!nbVoxels) return ;
     if (voronoi.size()!=nbVoxels) return ;
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Update_Sample_Material_Properties");
+#endif
+    clock_t timer = clock();
+
     unsigned int nbsamples=0;
     for(unsigned int i=0; i<nbVoxels; i++)
         if(voronoi[i]!=-1) if((unsigned int)voronoi[i]>nbsamples) nbsamples=(unsigned int)voronoi[i];
@@ -378,6 +386,12 @@ void GridMaterial< MaterialTypes>::updateSampleMaterialProperties()
             m_poissonRatio[sampleindex]/=(Real)count;
         }
     }
+
+    if (verbose.getValue())
+        std::cout << "INITTIME updateSampleMaterialProperties: " << (clock() - timer) / (float)CLOCKS_PER_SEC << " sec." << std::endl;
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Update_Sample_Material_Properties");
+#endif
 
 }
 
@@ -1051,6 +1065,11 @@ bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
 {
     // TO DO: add params as data? : GEODESIC factor, DIFFUSION fixdatavalue, DIFFUSION max_iterations, DIFFUSION precision
     if (!nbVoxels) return false;
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Compute_Weights");
+#endif
+    clock_t timer = clock();
+
     unsigned int i,dtype=this->distanceType.getValue().getSelectedId(),nbp=points.size();
 
     // init
@@ -1093,6 +1112,13 @@ bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
     showedrepartition=-1;
 
     updateMaxValues();
+
+    if (verbose.getValue())
+        std::cout << "INITTIME computeWeights: " << (clock() - timer) / (float)CLOCKS_PER_SEC << " sec." << std::endl;
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Compute_Weights");
+#endif
     return true;
 }
 
@@ -1166,7 +1192,7 @@ void GridMaterial< MaterialTypes>::removeVoxels( const vector<unsigned int>& vox
         grid(gCoord[0], gCoord[1], gCoord[2]) = 0;
     }
 
-    // TODO recompute needed data...
+    voxelsHaveChanged.setValue(true);
 }
 
 
@@ -1215,6 +1241,11 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index
     if (index<0 || index>=(int)nbVoxels) return false; // voxel out of grid
     int fromLabel=(int)grid.data()[index];
     if (!fromLabel) return false;  // voxel out of object
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Compute_Geodesical_Distances");
+#endif
+    clock_t timer = clock();
 
     VUI neighbors;
 
@@ -1288,6 +1319,13 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index
     }
 
     updateMaxValues();
+
+    if (verbose.getValue())
+        std::cout << "INITTIME computeWeights: " << (clock() - timer) / (float)CLOCKS_PER_SEC << " sec." << std::endl;
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Compute_Geodesical_Distances");
+#endif
     return true;
 }
 
@@ -1815,6 +1853,11 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
 {
     if (!nbVoxels) return false;
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Compute_Linear_Regions_Sampling");
+#endif
+    clock_t timer = clock();
+
     unsigned int i,j,ii,initial_num_points=points.size();
     int k;
 
@@ -1938,6 +1981,12 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
 
     //std::cout<<"Added " << indices.size()-initial_num_points << " samples"<<std::endl;
     updateMaxValues();
+    if (verbose.getValue())
+        std::cout << "INITTIME computeLinearRegionsSampling: " << (clock() - timer) / (float)CLOCKS_PER_SEC << " sec." << std::endl;
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Compute_Linear_Regions_Sampling");
+#endif
     return true;
 }
 
@@ -2102,6 +2151,11 @@ template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, const unsigned int num_points)
 {
     if (!nbVoxels) return false;
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Compute_Uniform_Sampling");
+#endif
+    clock_t timer = clock();
+
     unsigned int i,k,initial_num_points=points.size(),nb_points=num_points;
     if(initial_num_points>num_points) nb_points=initial_num_points;
 
@@ -2120,7 +2174,13 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
         while (grid.data()[indices[0]]==0)
         {
             indices[0]++;
-            if (indices[0]==(int)nbVoxels) return false;
+            if (indices[0]==(int)nbVoxels)
+            {
+#ifdef SOFA_DUMP_VISITOR_INFO
+                simulation::Visitor::printCloseNode("Compute_Uniform_Sampling");
+#endif
+                return false;
+            }
         }
     }
     else if(initial_num_points==nb_points) computeGeodesicalDistances(indices);
@@ -2142,6 +2202,9 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
             }
         if (indexmax==-1)
         {
+#ifdef SOFA_DUMP_VISITOR_INFO
+            simulation::Visitor::printCloseNode("Compute_Uniform_Sampling");
+#endif
             return false;    // unable to add point
         }
         indices[i]=indexmax;
@@ -2154,9 +2217,16 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
         bool ok=false,ok2;
         Real d,dmin;
         int indexmin;
+        clock_t lloydItTimeBegin = clock(), lloydTimeBegin = clock();
 
         while (!ok && nbiterations<maxLloydIterations.getValue())
         {
+#ifdef SOFA_DUMP_VISITOR_INFO
+            simulation::Visitor::printNode("Lloyd_iteration");
+#endif
+            if (verbose.getValue())
+                lloydItTimeBegin = clock();
+
             ok2=true;
             computeGeodesicalDistances(indices); // Voronoi
             vector<bool> flag((int)nbVoxels,false);
@@ -2206,7 +2276,18 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
             }
             ok=ok2;
             nbiterations++;
+
+            if (verbose.getValue())
+                std::cout << "INITTIME Lloyd_iteration " << (clock() - lloydItTimeBegin) / (float)CLOCKS_PER_SEC << " sec." << std::endl;
+#ifdef SOFA_DUMP_VISITOR_INFO
+            simulation::Visitor::printCloseNode("Lloyd_iteration");
+#endif
+
         }
+
+        if (verbose.getValue())
+            std::cout << "Lloyd total time " << (clock() - lloydTimeBegin) / (float)CLOCKS_PER_SEC << " sec." << std::endl;
+
         if (nbiterations==maxLloydIterations.getValue()) serr<<"Lloyd relaxation has not converged in "<<nbiterations<<" iterations"<<sendl;
         else std::cout<<"Lloyd relaxation completed in "<<nbiterations<<" iterations"<<std::endl;
     }
@@ -2219,6 +2300,12 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
 
     biasFactor=(Real)1.; // restore compliance distance
 
+    if (verbose.getValue())
+        std::cout << "INITTIME computeUniformSampling: " << (clock() - timer) / (float)CLOCKS_PER_SEC << std::endl;
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Compute_Uniform_Sampling");
+#endif
     return true;
 }
 
@@ -2601,7 +2688,7 @@ void GridMaterial< MaterialTypes>::draw()
         {
             displayValuesVBO();
         /*/
-        if (show3DValuesHeight.getValue() != 0 && slicedisplay)
+        if (show3DValuesHeight.getValue() != 0 && slicedisplay && vboSupported.getValue())
         {
             displayValues();
             //*/
@@ -2701,9 +2788,7 @@ void GridMaterial< MaterialTypes>::deleteVBO(const GLuint vboId)
 template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::initVBO()
 {
-    vboSupported = true; // TODO Check it later
-
-    if(vboSupported)
+    if(vboSupported.getValue())
     {
         int bufferSize;
 
