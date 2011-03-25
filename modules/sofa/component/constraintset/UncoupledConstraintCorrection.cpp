@@ -108,7 +108,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getCompliance(defaulttype::BaseMatrix *W)
+SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getCompliance(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
 

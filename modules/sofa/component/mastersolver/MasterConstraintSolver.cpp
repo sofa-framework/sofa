@@ -35,6 +35,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
 
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/helper/system/thread/CTime.h>
@@ -469,7 +470,7 @@ void MasterConstraintSolver::computeComplianceInConstraintSpace()
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->getCompliance(getCP()->getW());
+        cc->getCompliance(core::ConstraintParams::defaultInstance(), getCP()->getW());
 
         /*if (doubleBuffer.getValue() && bufCP1)
             cc->getCompliance(CP2.getW());

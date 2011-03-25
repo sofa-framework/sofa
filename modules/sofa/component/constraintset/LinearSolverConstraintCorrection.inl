@@ -120,18 +120,33 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMatrix* W)
+void LinearSolverConstraintCorrection<DataTypes>::getCompliance(const ConstraintParams *cparams, defaulttype::BaseMatrix* W)
 {
     if (!this->mstate || !odesolver || (linearsolvers.size()==0)) return;
 
     // use the OdeSolver to get the position integration factor
-    //const double factor = 1.0;
-    //const double factor = odesolver->getPositionIntegrationFactor(); // dt
-    const double factor = odesolver->getPositionIntegrationFactor(); //*odesolver->getPositionIntegrationFactor(); // dt*dt
+    double factor = 1.0;
+
+    switch (cparams->constOrder())
+    {
+    case core::ConstraintParams::POS_AND_VEL :
+    case core::ConstraintParams::POS :
+        factor = odesolver->getPositionIntegrationFactor();
+        break;
+
+    case core::ConstraintParams::ACC :
+    case core::ConstraintParams::VEL :
+        factor = odesolver->getVelocityIntegrationFactor();
+        break;
+
+    default :
+        break;
+    }
 
     const unsigned int numDOFs = this->mstate->getSize();
     const unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs*N;
+
 #if 0 // refMinv is not use in normal case    
     if (refMinv.rowSize() > 0)			// What's for ??
     {
@@ -164,6 +179,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
         refMinv.resize(0,0);
     }
 #endif
+
     // Compute J
     const MatrixDeriv& c = *this->mstate->getC();
     const unsigned int totalNumConstraints = W->rowSize();
@@ -191,7 +207,10 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
     }
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    for (unsigned i=0; i<linearsolvers.size(); i++) linearsolvers[i]->addJMInvJt(W, &J, factor);
+    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    {
+        linearsolvers[i]->addJMInvJt(W, &J, factor);
+    }
 }
 
 template<class DataTypes>

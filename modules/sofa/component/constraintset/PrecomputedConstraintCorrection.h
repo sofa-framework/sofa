@@ -84,7 +84,7 @@ public:
 
     virtual void bwdInit();
 
-    virtual void getCompliance(defaulttype::BaseMatrix* W);
+    virtual void getCompliance(const ConstraintParams *cparams, defaulttype::BaseMatrix* W);
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const;
 
