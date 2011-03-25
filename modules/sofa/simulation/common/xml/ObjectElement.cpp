@@ -79,12 +79,6 @@ bool ObjectElement::initNode()
             setAttribute(it->first,replaceAttribute[it->first].c_str());
         }
     }
-    if( getName().empty() )
-    {
-        std::ostringstream oss;
-        oss << core::ObjectFactory::ShortName(this->getType()) <<  counterDefault++ ;
-        setName(oss.str());
-    }
 
     core::objectmodel::BaseObject *obj = core::ObjectFactory::CreateObject(ctx, this);
 
@@ -96,8 +90,6 @@ bool ObjectElement::initNode()
         return false;
     }
     setObject(obj);
-    obj->setName(getName());
-
     // display any unused attributes
     std::string unused;
     for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)

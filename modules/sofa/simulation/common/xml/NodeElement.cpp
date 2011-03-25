@@ -65,14 +65,6 @@ bool NodeElement::initNode()
     if (obj != NULL)
     {
         setObject(obj);
-        if(getName().empty() )
-        {
-            std::ostringstream oss;
-            oss << obj->getClass()->shortName << counterDefault++;
-            setName(oss.str());
-        }
-
-        obj->setName(getName());
         if (getTypedObject()!=NULL && getParentElement()!=NULL && dynamic_cast<core::objectmodel::BaseNode*>(getParentElement()->getObject())!=NULL)
         {
             // 		std::cout << "Adding Child "<<getName()<<" to "<<getParentElement()->getName()<<std::endl;
