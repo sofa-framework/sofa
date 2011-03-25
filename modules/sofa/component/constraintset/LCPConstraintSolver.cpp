@@ -354,7 +354,7 @@ void LCPConstraintSolver::build_LCP()
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->getCompliance(_W);
+        cc->getCompliance(&cparams, _W);
     }
 
     if (this->f_printLog.getValue())

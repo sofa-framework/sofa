@@ -231,7 +231,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     }
 
     //////////// compliance computation call //////////
-    this->getCompliance(Wmerged);
+    this->getCompliance(ConstraintParams::defaultInstance(), Wmerged);
 
     /////////// BACK TO THE INITIAL CONSTRAINT SET//////////////
 
@@ -250,11 +250,9 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMatrix *W)
+void UncoupledConstraintCorrection<DataTypes>::getCompliance(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
-
-    // std::cout<<"getCompliance : constraints= \n" <<constraints<<std::endl;
 
     MatrixDerivRowConstIterator rowItEnd = constraints.end();
 
@@ -678,7 +676,7 @@ template<>
 void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init();
 
 template<>
-void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getCompliance(defaulttype::BaseMatrix * /*W*/);
+void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getCompliance(const ConstraintParams *cparams, defaulttype::BaseMatrix * /*W*/);
 
 template<>
 void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix * /*m*/) const;

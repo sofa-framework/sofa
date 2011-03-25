@@ -472,7 +472,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
 
 template< class DataTypes >
-void PrecomputedConstraintCorrection< DataTypes >::getCompliance(defaulttype::BaseMatrix* W)
+void PrecomputedConstraintCorrection< DataTypes >::getCompliance(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix* W)
 {
     const MatrixDeriv& c = *this->mstate->getC();
 

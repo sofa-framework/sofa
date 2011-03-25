@@ -255,7 +255,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         for (unsigned int i=0; i<constraintCorrections.size(); i++)
         {
             core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-            cc->getCompliance(&current_cp->W);
+            cc->getCompliance(cParams, &current_cp->W);
         }
         sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
         if (this->f_printLog.getValue()) sout<<" computeCompliance_done "  <<sendl;
