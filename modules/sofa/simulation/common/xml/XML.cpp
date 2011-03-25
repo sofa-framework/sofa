@@ -26,7 +26,7 @@
 #include <typeinfo>
 #include <stdlib.h>
 #include <sofa/simulation/common/xml/XML.h>
-#include <sofa/simulation/common/xml/ElementNameResolution.h>
+#include <sofa/simulation/common/xml/ElementNameHelper.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/core/ObjectFactory.h>
