@@ -26,6 +26,7 @@
 #include <typeinfo>
 #include <stdlib.h>
 #include <sofa/simulation/common/xml/XML.h>
+#include <sofa/simulation/common/xml/ElementNameResolution.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -77,10 +78,6 @@ bool deriveFromMultiMapping( const std::string& className)
 
 } // namespace anonymous
 
-
-
-
-
 void recReplaceAttribute(BaseElement* node, const char* attr, const char* value, const char* nodename=NULL)
 {
     if (nodename)
@@ -107,12 +104,12 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
 
 #ifdef SOFA_XML_PARSER_TINYXML
 
-BaseElement* includeNode  (TiXmlNode* root,const char *basefilename);
+BaseElement* includeNode  (TiXmlNode* root,const char *basefilename, ElementNameHelper& resolveElementName);
 BaseElement* attributeNode(TiXmlNode* root,const char *basefilename);
 
 int numDefault=0;
 
-BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot = false)
+BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHelper& elementNameHelper, bool isRoot = false)
 {
     //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return NULL;
 
@@ -128,7 +125,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
 
     if (std::string(element->Value())=="include")
     {
-        return includeNode(root, basefilename);
+        return includeNode(root, basefilename, elementNameHelper);
     }
 
     std::string classType,name, type;
@@ -175,13 +172,16 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
             // we found a replacement xml
             element->SetAttribute("href",filename.c_str());
             element->RemoveAttribute("type");
-            return includeNode(root, basefilename);
+            return includeNode(root, basefilename, elementNameHelper);
         }
     }
     if( deriveFromMultiMapping(type))
     {
         classType = "MultiMappingObject";
     }
+
+    name = elementNameHelper.resolveName(type,name);
+
     BaseElement* node = BaseElement::Create(classType,name,type);
     if (node==NULL)
     {
@@ -206,7 +206,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
 
     for (TiXmlNode* child = root->FirstChild() ; child != NULL; child = child->NextSibling())
     {
-        BaseElement* childnode = createNode(child, basefilename);
+        BaseElement* childnode = createNode(child, basefilename, elementNameHelper);
         if (childnode != NULL)
         {
             //  if the current node is an included node, with the special name Group, we only add the objects.
@@ -247,6 +247,7 @@ static void dumpNode(BaseElement* node, std::string prefix0="==", std::string pr
 
 BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc)
 {
+    ElementNameHelper resolveElementName;
     const TiXmlElement* hRoot = doc.RootElement();
 
     if (hRoot == NULL)
@@ -257,7 +258,7 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc)
     //std::cout << "Creating XML graph"<<std::endl;
     std::string basefilename =
         sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
-    BaseElement* graph = createNode((TiXmlElement*)hRoot, basefilename.c_str(), true);
+    BaseElement* graph = createNode((TiXmlElement*)hRoot, basefilename.c_str(),resolveElementName, true);
     //std::cout << "XML Graph created"<<std::endl;
     //xmlFreeDoc(doc);
     //xmlCleanupParser();
@@ -327,7 +328,7 @@ BaseElement* loadFromFile(const char *filename)
 }
 
 
-BaseElement* includeNode(TiXmlNode* root,const char *basefilename)
+BaseElement* includeNode(TiXmlNode* root,const char *basefilename, ElementNameHelper& resolveElementName)
 {
     TiXmlElement* element = root->ToElement();
     if (!element) return NULL;
@@ -359,7 +360,7 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename)
         //xmlFreeDoc(doc);
         return NULL;
     }
-    BaseElement* result = createNode(newroot, filename.c_str(), true);
+    BaseElement* result = createNode(newroot, filename.c_str(),resolveElementName, true);
     if (result)
     {
         if (result->getName() == "Group") result->setGroupType(true);
