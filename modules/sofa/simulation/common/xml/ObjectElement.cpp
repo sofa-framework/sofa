@@ -40,10 +40,7 @@ using namespace sofa::defaulttype;
 using helper::Creator;
 
 //template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
-namespace
-{
-int counterDefault = 0;
-}
+
 ObjectElement::ObjectElement(const std::string& name, const std::string& type, BaseElement* parent)
     : Element<core::objectmodel::BaseObject>(name, type, parent)
 {
