@@ -3,6 +3,7 @@
 
 
 #include <map>
+#include <string>
 
 namespace sofa
 {
