@@ -408,6 +408,21 @@ defineTest(requireSofaLib) {
 	export (LIBS)
 }
 
+##
+# This function declares the existence of an artifact to the dependency manager.
+# The artifact can be built from sources or just be an installed library. In the
+# latter case it will not need dependencies, but the project path (relative to
+# the root of the install include directory) will still be needed.
+#
+# Parameters:
+#   name		the name of the artifact. It must match the TARGET variable in the pro file.
+#		project	the path to the project file folder from the source root (or the
+#			project file itself if it does not have the same name as its directory
+#			(which is the default, recommended in Qt))
+#		dependencies	a list of the name of other artifacts, also declared with this
+#			function. Declaration order does not matter: the name of a dependent
+#			artifact can be used before it is declared.
+#
 defineTest(declare) {
 	varname = $$1
 	project = $$2
@@ -422,20 +437,77 @@ defineTest(declare) {
 	export($${varname}.deps)
 }
 
-defineTest(enable) {
+##
+# This function returns the list of dependencies (including transitive ones) for
+# the specified artifact.
+#
+# Parameters:
+#		name	the name of the artifact
+#
+defineReplace(computeTransitiveDependencies) {
 	name = $$1
-	!equals(name, $$eval($${name}.name)): error(undeclared artifact $$name)
-	project = $$eval($${name}.project)
-	deps = $$eval($${name}.deps)
-	for(dep, deps) {
-		!equals(dep, $$eval($${dep}.name)): error(undeclared dependency $$dep)
-		deps_dirs += $$eval($${dep}.project)
+
+	# Transitive dependencies involves recursivity but recursive functions does
+	# not work in qmake so we implement recursivity using a (pseudo) queue.
+	# Usually we loop until the queue is empty but while loops are not
+	# supported either so we use an iterative approach with 2 lists instead of a
+	# queue, and 2 nested for loops instead of a while loop.
+	# Maximum recursivity has to be arbitrarily defined, here we set it to 100.
+	queue = $$name
+	for(depth, 1..100) {
+	  isEmpty(queue): break() # Stop looping when there is no more dependencies
+	  # Loop on the current queue. A new queue will be filled for the next iteration.
+		for(dep, queue) {
+			# Ignore already analysed dependencies (to break circular dependencies)
+			!contains(analysed, $$dep) {
+				!equals(dep, $$eval($${dep}.name)) {
+					error(computeTransitiveDependencies: undeclared artifact $$dep)
+				}
+				deps = $$eval($${dep}.deps) # Retrieve the dependencies of the current artifact
+				newqueue *= $$deps					# Fill the next queue with these dependencies
+				tdeps *= $$deps							# Add them to the list of transitive dependencies
+				analysed *= $$dep						# Add the current artifact to the list of analysed ones
+			}
+		}
+		# Switch queues
+		queue = $$newqueue
+		newqueue = 
 	}
-	addInstallableSubdir($$name, $$project, $$deps_dirs)
+	return($$tdeps)
 }
 
+##
+# This function enables the compilation of the specified artifact.
+#
+defineTest(enable) {
+	name = $$1
+	project = $$eval($${name}.project)
+	tdeps = $$computeTransitiveDependencies($$name)
+	#message(enabling $$name with the following dependencies:)
+	for(dep, tdeps) {
+		#message($$escape_expand(\\t)$$dep)
+		deps_dirs += $$eval($${dep}.project)
+	}
+	addInstallableSubdir($$name, $$project, $$deps_dirs) 
+}
+
+##
+# This function loads all declared dependencies for the current artifact.
+# It will set the include path, the library path, and the library list to use
+# all these dependencies.
+#
+# Parameters:
+#   name the name of the current artifact
+#   recursivity if the value is "transitive" it will also load transitive dependencies
+#
 defineTest(loadDependencies) {
-	dependencies = $$eval($${TARGET}.deps)
+	target = $$1
+	rec = $$2
+	isEqual(rec, transitive) {
+		dependencies = $$computeTransitiveDependencies($$target)
+	} else {
+		dependencies = $$eval($${target}.deps)
+	}
 	for(dep, dependencies) {
 		name = $$eval($${dep}.name)
 		!equals(dep, $$name): error(undeclared dependency $$dep)

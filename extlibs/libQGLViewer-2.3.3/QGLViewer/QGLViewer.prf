@@ -1,2 +1,2 @@
 MY_INCLUDEPATH = $$MY_INCLUDEPATH/..
-MY_LIBS = -lQGLViewer
+#MY_LIBS = -lQGLViewer
