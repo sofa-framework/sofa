@@ -37,10 +37,7 @@ namespace xml
 {
 
 using namespace sofa::defaulttype;
-namespace
-{
-int counterDefault = 0;
-}
+
 
 NodeElement::NodeElement(const std::string& name, const std::string& type, BaseElement* parent)
     : Element<core::objectmodel::BaseNode>(name, type, parent)
