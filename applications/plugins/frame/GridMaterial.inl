@@ -784,11 +784,11 @@ bool GridMaterial< MaterialTypes>::computeVolumeIntegrationFactors(const unsigne
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sampleindex,const SCoord& point,VRef& reps,VRefReal& w,VRefGradient* dw,VRefHessian* /*ddw*/)
 {
-    if (!nbVoxels) return false;
-    if (voronoi.size()!=nbVoxels || v_weights.size()!=nbVoxels || v_index.size()!=nbVoxels) return false; // weights not computed
-
     unsigned int i,j,k;
     for (i=0; i<nbRef; i++) {reps[i]=0; w[i]=0;}
+
+    if (!nbVoxels) return false;
+    if (voronoi.size()!=nbVoxels || v_weights.size()!=nbVoxels || v_index.size()!=nbVoxels) return false; // weights not computed
 
     // get the nbrefs most relevant weights in the voronoi region
     unsigned int maxlabel=0;
@@ -991,6 +991,7 @@ void GridMaterial< MaterialTypes>::accumulateCovariance(const SCoord& p,const un
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const SCoord& point,VRef& reps,VRefReal& w,const int restrictToLabel)
 {
+    for (unsigned int i=0; i<nbRef; i++) {reps[i]=0; w[i]=0;}
     if (!nbVoxels) return false;
 
     int index=getIndex(point);
