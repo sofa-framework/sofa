@@ -75,7 +75,8 @@ public:
     /// Handle Topological Changes.
     void handleTopologyChange();
 
-    virtual void getCompliance(const ConstraintParams *cparams, defaulttype::BaseMatrix *W);
+    virtual void addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix *W);
+
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
 
     // for multigrid approach => constraints are merged

@@ -276,7 +276,7 @@ protected:
     /// 3.calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
     void getIndividualConstraintSolvingProcess(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context);
 
-    /// 4.calling getCompliance projected in the contact space => getDelassusOperator(_W) = H*C*Ht
+    /// 4.calling addComplianceInConstraintSpace projected in the contact space => getDelassusOperator(_W) = H*C*Ht
     virtual void computeComplianceInConstraintSpace();
 
 

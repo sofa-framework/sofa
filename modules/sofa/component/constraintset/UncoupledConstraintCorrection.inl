@@ -231,7 +231,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     }
 
     //////////// compliance computation call //////////
-    this->getCompliance(ConstraintParams::defaultInstance(), Wmerged);
+    this->addComplianceInConstraintSpace(ConstraintParams::defaultInstance(), Wmerged);
 
     /////////// BACK TO THE INITIAL CONSTRAINT SET//////////////
 
@@ -250,7 +250,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::getCompliance(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
+void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
 
@@ -676,7 +676,7 @@ template<>
 void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init();
 
 template<>
-void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getCompliance(const ConstraintParams *cparams, defaulttype::BaseMatrix * /*W*/);
+void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix * /*W*/);
 
 template<>
 void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix * /*m*/) const;

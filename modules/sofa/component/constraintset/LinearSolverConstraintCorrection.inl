@@ -120,7 +120,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::getCompliance(const ConstraintParams *cparams, defaulttype::BaseMatrix* W)
+void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W)
 {
     if (!this->mstate || !odesolver || (linearsolvers.size()==0)) return;
 

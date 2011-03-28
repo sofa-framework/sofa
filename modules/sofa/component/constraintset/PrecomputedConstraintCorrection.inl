@@ -355,7 +355,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 //serr<<"solve reussi"<<sendl;
 
                 velocity = *this->mstate->getV();
-                fact /= unitary_force[i];
+                //fact /= unitary_force[i];
                 fact /= dt;
 
                 /*
@@ -472,7 +472,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
 
 template< class DataTypes >
-void PrecomputedConstraintCorrection< DataTypes >::getCompliance(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix* W)
+void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix* W)
 {
     const MatrixDeriv& c = *this->mstate->getC();
 
