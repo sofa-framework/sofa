@@ -131,8 +131,11 @@ public:
     /// Number of mechanical steps within an animation step
     Data<unsigned> numMechSteps;
 
-    /// Number of steps of simulation
+    /// Number of animation steps completed
     Data<unsigned> nbSteps;
+
+    /// Number of mechanical steps completed
+    Data<unsigned> nbMechSteps;
 
     sofa::core::objectmodel::DataFileName gnuplotDirectory;
 

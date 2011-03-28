@@ -84,7 +84,8 @@ namespace simulation
 using namespace sofa::defaulttype;
 Simulation::Simulation()
     : numMechSteps( initData(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") ),
-      nbSteps( initData(&nbSteps, (unsigned)0, "nbSteps", "Steps number of computation", true, false)),
+      nbSteps( initData(&nbSteps, (unsigned)0, "nbSteps", "Number of animation steps completed", true, false)),
+      nbMechSteps( initData(&nbMechSteps, (unsigned)0, "nbMechSteps", "Number of mechanical steps completed", true, false)),
       gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved")),
       instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used")),
       paused(false),mDrawUtility(0l)
@@ -255,6 +256,7 @@ void Simulation::animate ( Node* root, double dt )
         getVisualRoot()->setTime ( root->getTime() );
         root->execute<UpdateSimulationContextVisitor>(params);  // propagate time
         getVisualRoot()->execute<UpdateSimulationContextVisitor>(params);
+        nbMechSteps.setValue(nbMechSteps.getValue() + 1);
     }
 
     {
@@ -276,8 +278,7 @@ void Simulation::animate ( Node* root, double dt )
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
-    *(nbSteps.beginEdit()) = nbSteps.getValue() + 1;
-    nbSteps.endEdit();
+    nbSteps.setValue(nbSteps.getValue() + 1);
 
     sofa::helper::AdvancedTimer::end("Animate");
 }
@@ -319,7 +320,9 @@ void Simulation::reset ( Node* root )
     root->execute<UpdateMappingVisitor>(params);
     root->execute<VisualUpdateVisitor>(params);
 
+    std::cout<<"Simulation::reset"<<std::endl;
     nbSteps.setValue(0);
+    nbMechSteps.setValue(0);
 }
 
 /// Initialize the textures
