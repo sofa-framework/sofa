@@ -41,8 +41,10 @@ namespace misc
 {
 
 template class ExtraMonitor<gpu::cuda::CudaRigid3fTypes>;
+template class ExtraMonitor<gpu::cuda::CudaVec6fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class ExtraMonitor<gpu::cuda::CudaRigid3dTypes>;
+template class ExtraMonitor<gpu::cuda::CudaVec6dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 }// namespace misc
@@ -60,8 +62,10 @@ SOFA_DECL_CLASS(CudaExtraMonitor)
 
 int ExtraMonitorCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
         .add< component::misc::ExtraMonitor<CudaRigid3fTypes> >()
+        .add< component::misc::ExtraMonitor<CudaVec6fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::misc::ExtraMonitor<CudaRigid3dTypes> >()
+        .add< component::misc::ExtraMonitor<CudaVec6dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
