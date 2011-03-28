@@ -64,6 +64,8 @@ ExtraMonitor<DataTypes>::ExtraMonitor()
     , maxX( initData( &maxX, -1, "maxCoord", "export minimum displacement on the given coordinate as gnuplot file instead of positions of all dofs" ) )
     , disp( initData( &disp, -1, "dispCoord", "export displacement on the given coordinate as gnuplot file" ) )
 {
+    saveGnuplotWcin = NULL;
+    saveGnuplotWext = NULL;
 }
 /////////////////////////// end Monitor ///////////////////////////////////
 
