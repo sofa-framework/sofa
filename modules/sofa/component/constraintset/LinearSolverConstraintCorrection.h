@@ -85,7 +85,7 @@ public:
 
     virtual void init();
 
-    virtual void getCompliance(const ConstraintParams *cparams, defaulttype::BaseMatrix* W);
+    virtual void addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W);
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
 

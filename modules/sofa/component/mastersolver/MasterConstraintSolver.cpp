@@ -470,7 +470,7 @@ void MasterConstraintSolver::computeComplianceInConstraintSpace()
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->getCompliance(core::ConstraintParams::defaultInstance(), getCP()->getW());
+        cc->addComplianceInConstraintSpace(core::ConstraintParams::defaultInstance(), getCP()->getW());
 
         /*if (doubleBuffer.getValue() && bufCP1)
             cc->getCompliance(CP2.getW());

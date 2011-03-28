@@ -81,7 +81,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
         {
             massValue = new Rigid3Mass();
             destroyMassValue = true;
-            serr << "\n WARNING : node is not found => massValue could be false in getCompliance function" << sendl;
+            serr << "\n WARNING : node is not found => massValue could be false in addComplianceInConstraintSpace function" << sendl;
         }
 
         const double dt2 = dt * dt;
@@ -108,7 +108,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getCompliance(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
+SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
 

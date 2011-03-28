@@ -64,7 +64,7 @@ public:
     /// @name Compliance Matrix API
     /// @{
 
-    virtual void getCompliance(const ConstraintParams *, defaulttype::BaseMatrix* W) = 0;
+    virtual void addComplianceInConstraintSpace(const ConstraintParams *, defaulttype::BaseMatrix* W) = 0;
 
     /// Fill the matrix m with the full Compliance Matrix
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const = 0;
@@ -78,7 +78,7 @@ public:
     virtual void CudaGetCompliance(defaulttype::BaseMatrix* W)
     {
         sout << "warning : CudaGetCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() << sendl;
-        getCompliance(ConstraintParams::defaultInstance(), W); // par defaut si la methode cuda n'est pas implementé on resoud sur CPU
+        addComplianceInConstraintSpace(ConstraintParams::defaultInstance(), W); // par defaut si la methode cuda n'est pas implementé on resoud sur CPU
     }
 
     /// @}
