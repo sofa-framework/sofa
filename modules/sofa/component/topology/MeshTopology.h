@@ -599,7 +599,11 @@ public:
 
     int revision;
 
-    Data< bool > _draw;
+    Data< bool > _drawEdges;
+    Data< bool > _drawTriangles;
+    Data< bool > _drawQuads;
+    Data< bool > _drawTetra;
+    Data< bool > _drawHexa;
 
     void invalidate();
 
