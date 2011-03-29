@@ -84,7 +84,7 @@ void DefaultMultiMatrixAccessor::addMappedMechanicalState(const sofa::core::beha
     /// @TODO support for mapped matrices
     mappedMatrices[mstate] = NULL;
 #ifdef MULTIMATRIX_VERBOSE
-    std::cout << "DefaultMultiMatrixAccessor: added mapped state " << mstate->getName() << " detected and added, a NULL-matrix is creating" << std::endl;
+    std::cout <<  "DefaultMultiMatrixAccessor: added state "  << mstate->getName() << " at a mapped matrix[NULL_matrix]" << std::endl;
 #endif
 }
 
@@ -193,6 +193,15 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
         r2.matrix = r.matrix;
         r2.offRow = r.offset;
         r2.offCol = r.offset;
+#ifdef MULTIMATRIX_VERBOSE
+        if (r.matrix != NULL)
+            std::cout << "DefaultMultiMatrixAccessor: valid " << r.matrix->rowSize() << "x" << r.matrix->colSize() << " matrix found for self-interaction "
+                    <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
+                    <<" at ("<<r2.offRow <<","<< r2.offCol<<")"<< std::endl;
+        else
+            std::cout << "DefaultMultiMatrixAccessor: NULL matrix found for self-interaction "<<
+                    mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" << std::endl;
+#endif
         return r2;
     }
 
@@ -201,6 +210,11 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
     {
         if(it->second.matrix != NULL)
         {
+#ifdef MULTIMATRIX_VERBOSE
+            std::cout << "DefaultMultiMatrixAccessor: valid " << it->second.matrix->rowSize() << "x" << it->second.matrix->colSize() << " matrix found for interaction "
+                    <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
+                    <<" at ("<<it->second.offRow <<","<< it->second.offCol<<")"<< std::endl;
+#endif
             return it->second;
         }
         else
@@ -230,6 +244,12 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
                     r.offRow = it1->second;
                     r.offCol = it2->second;
                     it->second = r;
+#ifdef MULTIMATRIX_VERBOSE
+                    if (r.matrix != NULL)
+                        std::cout << "DefaultMultiMatrixAccessor: set " << r.matrix->rowSize() << "x" << r.matrix->colSize() << " matrix for interaction "
+                                <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
+                                <<" at ("<<r.offRow <<","<< r.offCol<<")"<< std::endl;
+#endif
                     return r;
                 }
             }
@@ -245,6 +265,10 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
             return r;
         }
     }
+
+#ifdef MULTIMATRIX_VERBOSE
+    std::cout << "DefaultMultiMatrixAccessor: NO matrix found for interaction " << mstate1->getName()<<" --- "<<mstate2->getName() << std::endl;
+#endif
     return InteractionMatrixRef();
 }
 
@@ -280,7 +304,7 @@ defaulttype::BaseMatrix* MappedMultiMatrixAccessor::createMatrix(const sofa::cor
     m->resize( mstate->getMatrixSize(),mstate->getMatrixSize());
 
 #ifdef MULTIMATRIX_VERBOSE
-    std::cout << "====  MappedMultiMatrixAccessor: creating matrix["<< m->rowSize() <<"x"<< m->colSize() <<"]   for state " << mstate->getName() << " size [" << mstate->getMatrixSize()<<"]"<< std::endl;
+    std::cout << "MappedMultiMatrixAccessor: ++ creating matrix["<< m->rowSize() <<"x"<< m->colSize() <<"]   for state " << mstate->getName() << "[" << mstate->getMatrixSize()<<"]"<< std::endl;
 #endif
 
     return m;
@@ -293,9 +317,9 @@ defaulttype::BaseMatrix* MappedMultiMatrixAccessor::createInteractionMatrix(cons
     m->resize( mstate1->getMatrixSize(),mstate2->getMatrixSize() );
 
 #ifdef MULTIMATRIX_VERBOSE
-    std::cout << "=====  MappedMultiMatrixAccessor: creating interraction matrix["<< m->rowSize() <<"x"<< m->colSize()
-            <<"]   for state1 " << mstate1->getName() << " size[" << mstate1->getMatrixSize()
-            <<"]       state2 " << mstate2->getName() << " size[" << mstate2->getMatrixSize()<<"]" <<std::endl;
+    std::cout << "MappedMultiMatrixAccessor: ++ creating interraction matrix["<< m->rowSize() <<"x"<< m->colSize()
+            <<"] for interaction " << mstate1->getName() << "[" << mstate1->getMatrixSize()
+            <<"] --- "             << mstate2->getName() << "[" << mstate2->getMatrixSize()<<"]" <<std::endl;
 #endif
 
     return m;
