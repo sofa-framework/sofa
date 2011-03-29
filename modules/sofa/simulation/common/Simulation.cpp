@@ -320,7 +320,6 @@ void Simulation::reset ( Node* root )
     root->execute<UpdateMappingVisitor>(params);
     root->execute<VisualUpdateVisitor>(params);
 
-    std::cout<<"Simulation::reset"<<std::endl;
     nbSteps.setValue(0);
     nbMechSteps.setValue(0);
 }

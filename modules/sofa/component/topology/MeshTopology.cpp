@@ -2571,7 +2571,7 @@ void MeshTopology::draw()
     if (_drawEdges.getValue())
     {
         glDisable(GL_LIGHTING);
-        glColor3f(0.4,1.0,0.3);
+        glColor3f(0.4f,1.0f,0.3f);
 
         glPointSize(4);
         for (int i=0; i<getNbEdges(); ++i)
@@ -2595,7 +2595,7 @@ void MeshTopology::draw()
     if (_drawTriangles.getValue())
     {
         glDisable(GL_LIGHTING);
-        glColor3f(0.2,1.0,1.0);
+        glColor3f(0.2f,1.0f,1.0f);
 
         for (int i=0; i<getNbTriangles(); ++i)
         {
@@ -2620,7 +2620,7 @@ void MeshTopology::draw()
     if(_drawQuads.getValue())
     {
         glDisable(GL_LIGHTING);
-        glColor3f(0.0,0.4,0.4);
+        glColor3f(0.0f,0.4f,0.4f);
 
         for (int i=0; i<getNbQuads(); ++i)
         {
@@ -2641,11 +2641,11 @@ void MeshTopology::draw()
     }
 
 
-    //Draw Hexa
+    //Draw Tetra
     if (_drawHexa.getValue())
     {
         glDisable(GL_LIGHTING);
-        glColor3f(1.0,1.0,0.0);
+        glColor3f(1,1,0);
 
         glBegin(GL_LINES);
         for (int i=0; i<getNbTetrahedra(); ++i)
