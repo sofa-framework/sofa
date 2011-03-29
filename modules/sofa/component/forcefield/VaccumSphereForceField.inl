@@ -120,6 +120,7 @@ void VaccumSphereForceField<DataTypes>::addForce(const core::MechanicalParams* /
 template<class DataTypes>
 void VaccumSphereForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
+    mparams->kFactor();
     if (!active.getValue()) return;
 
     VecDeriv& df1 = *d_df.beginEdit();
