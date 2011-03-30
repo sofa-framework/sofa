@@ -16,13 +16,13 @@ declare(tinyxml,    extlibs/tinyxml)
 declare(eigen,      extlibs/eigen-3.0-beta4/eigen.pro)
 declare(qwt,        extlibs/qwt-5.2.0/src)
 declare(QGLViewer,  extlibs/libQGLViewer-2.3.3/QGLViewer)
-declare(miniFlowVR, extlibs/miniFlowVR)
+declare(miniFlowVR, extlibs/miniFlowVR, boost)
 
 ######################################################################
 # Framework
 ######################################################################
 
-declare(sofahelper,      framework/sofa/helper,      newmat glew glut libpng)
+declare(sofahelper,      framework/sofa/helper,      newmat glew glut libpng boost)
 declare(sofadefaulttype, framework/sofa/defaulttype, sofahelper)
 declare(sofacore,        framework/sofa/core,        sofadefaulttype)
 
