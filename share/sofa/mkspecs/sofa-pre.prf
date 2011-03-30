@@ -11,17 +11,6 @@ defineReplace(normalizePath) {
 }
 
 ########################################################################
-# Default options
-########################################################################
-
-CONFIG += exceptions rtti
-
-win32 {
-	QMAKE_CXXFLAGS_DEBUG = -Gm -ZI
-	QMAKE_CXXFLAGS_RELEASE = -MP
-}
-
-########################################################################
 # Build system path variables
 #		Warning: trying to modify these variables is pointless, they just
 #		describe where the build system is running.
@@ -121,13 +110,41 @@ exists($${INSTALLED_FEATURE_FILE}.prf) {
 }
 
 ########################################################################
+# Load SOFA-specific configuration
+########################################################################
+
+load($$FEATURES_DIR/sofa-config-pre)
+
+########################################################################
 # Other descriptive variables
 ########################################################################
 
-contains(CONFIG, release, debug|release) {
+*-32*|win32* {
+  # message("32 bits target")
+  TARGET_ARCH=32
+} else {
+  *-64*|win64* {
+    # message("64 bits target")
+    TARGET_ARCH=64
+  } else {
+    contains(QMAKE_HOST.arch, x86_64) {
+      # message("64 bits target (host default)")
+      TARGET_ARCH=64
+    } else {
+      # message("32 bits target (host default)")
+      TARGET_ARCH=32
+    }
+  }
+}
+
+CONFIG(release, debug|release) {
 	CONFIGDEBUG = release
 } else {
 	CONFIGDEBUG = debug
+}
+
+contains(QMAKE_CXXFLAGS, -pg) {
+  CONFIGDEBUG += profile
 }
 
 ########################################################################
@@ -137,6 +154,9 @@ contains(CONFIG, release, debug|release) {
 contains(CONFIGDEBUG, debug) {
 	LIBSUFFIX = d
 	APPSUFFIX = d
+}
+contains(CONFIGDEBUG, profile) {
+	APPSUFFIX = $${APPSUFFIX}p
 }
 
 ########################################################################
@@ -234,6 +254,16 @@ defineTest(isProjectFile) {
 	}
 }
 
+defineTest(isFeatureFile) {
+	path = $$eval($$1)
+	match = $$find(path, ^.+\\.prf$)
+	isEmpty(match) {
+		return(false)
+	} else {
+		return(true)
+	}
+}
+
 defineTest(addSubdirs) {
 	for(subdirs, 1) {
 		entries = $$files($$subdirs)
@@ -251,10 +281,10 @@ defineTest(addSubdirs) {
 			for(dep, 2) {
 				eval ($${name}.depends += $$replace(dep, [/\\\\\\.], _))
 			}
-			export ($${name}.depends)
+			export($${name}.depends)
 		}
 	}
-	export (SUBDIRS)
+	export(SUBDIRS)
 }
 
 ##
@@ -271,6 +301,15 @@ defineTest(isInstalled) {
 	} 
 }
 
+defineTest(isExternal) {
+	name = $$1
+	isFeatureFile($${name}.project) {
+		return(true)
+	} else {
+		return(false)
+	}
+}
+
 ##
 # This function tests whether sources of the specified module are available.
 # Sources are considered available if a project file having the specified name
@@ -278,14 +317,15 @@ defineTest(isInstalled) {
 #
 defineTest(isSourceAvailable) {
 	name = $$1
-	dir  = $$2
-	proname = $$basename(dir)
-	isProjectFile(proname) {
-		dir = $$dirname(dir)
+	project  = $$2
+	isFeatureFile(project) | isProjectFile(project) {
+		test_path = $$ROOT_SRC_DIR/$$project
 	} else {
-		proname = $${proname}.pro
+		dir = $$project 
+		proname = $$basename(project).pro
+		test_path = $$ROOT_SRC_DIR/$$dir/$$proname
 	}
-	exists($$ROOT_SRC_DIR/$$dir/$$proname) {
+	exists($$test_path) {
 		return (true)
 	}	else {
 		return (false)
@@ -337,7 +377,7 @@ defineTest(requireLib) {
 	OLD_INCLUDEPATH = $$INCLUDEPATH
 	OLD_LIBS = $$LIBS
 
-	isProjectFile(project) {
+	isProjectFile(project) | isFeatureFile(project) {
 		dir = $$dirname(project)
 	} else {
 		dir = $$project
@@ -368,8 +408,8 @@ defineTest(requireLib) {
 		LIBS *= $$MY_LIBRARYPATH $$MY_LIBS
 	}
 
-	export (INCLUDEPATH)
-	export (LIBS)
+	export(INCLUDEPATH)
+	export(LIBS)
 }
 
 ##
@@ -404,8 +444,8 @@ defineTest(requireSofaLib) {
 	}
 	LIBS *= -l$$name$$LIBSUFFIX
 
-	export (INCLUDEPATH)
-	export (LIBS)
+	export(INCLUDEPATH)
+	export(LIBS)
 }
 
 ##
@@ -481,13 +521,17 @@ defineReplace(computeTransitiveDependencies) {
 #
 defineTest(enable) {
 	name = $$1
-	project = $$eval($${name}.project)
+	
 	tdeps = $$computeTransitiveDependencies($$name)
 	#message(enabling $$name with the following dependencies:)
 	for(dep, tdeps) {
 		#message($$escape_expand(\\t)$$dep)
-		deps_dirs += $$eval($${dep}.project)
+		dep_project = $$eval($${dep}.project)
+		!isFeatureFile(dep_project) {
+			deps_dirs += $$dep_project
+		}
 	}
+	project = $$eval($${name}.project)
 	addInstallableSubdir($$name, $$project, $$deps_dirs) 
 }
 

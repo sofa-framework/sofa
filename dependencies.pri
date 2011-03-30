@@ -1,3 +1,12 @@
+declare(glut,   extlibs/glut.prf)
+declare(glew,   extlibs/glew.prf)
+declare(boost,  extlibs/boost.prf)
+declare(fltk,   extlibs/fltk.prf)
+declare(libpng, extlibs/libpng.prf)
+declare(libxml, extlibs/libxml.prf)
+declare(metis,  extlibs/metis.prf)
+declare(zlib,   extlibs/zlib.prf)
+
 ######################################################################
 # Extlibs
 ######################################################################
@@ -16,7 +25,7 @@ declare(QGLViewer, extlibs/libQGLViewer-2.3.3/QGLViewer)
 # Framework
 ######################################################################
 
-declare(sofahelper,      framework/sofa/helper,      newmat)
+declare(sofahelper,      framework/sofa/helper,      newmat glew glut libpng)
 declare(sofadefaulttype, framework/sofa/defaulttype, sofahelper)
 declare(sofacore,        framework/sofa/core,        sofadefaulttype)
 
@@ -24,7 +33,7 @@ declare(sofacore,        framework/sofa/core,        sofadefaulttype)
 # Modules
 ######################################################################
 
-declare(sofasimulation, modules/sofa/simulation/common, sofacore)
+declare(sofasimulation, modules/sofa/simulation/common, sofacore tinyxml)
 declare(sofatree,       modules/sofa/simulation/tree,   sofasimulation)
 declare(sofabgl,        modules/sofa/simulation/bgl,    sofasimulation)
 declare(sofapml,        modules/sofa/simulation/filemanager/sofapml, sofacomponentcollision)
@@ -35,11 +44,11 @@ declare(sofacomponentcontextobject, modules/sofa/component/contextobject, sofatr
 declare(sofacomponentengine,        modules/sofa/component/engine,        sofacomponentcollision)
 declare(sofacomponentfem,           modules/sofa/component/fem,           sofacomponentbase eigen)
 declare(sofacomponentforcefield,    modules/sofa/component/forcefield,    sofacomponentbase eigen)
-declare(sofacomponentloader,        modules/sofa/component/loader,        sofatree tinyxml)
+declare(sofacomponentloader,        modules/sofa/component/loader,        sofatree)
 declare(sofacomponentmapping,       modules/sofa/component/mapping,       sofacomponentforcefield sofacomponentvisualmodel)
 declare(sofacomponentmass,          modules/sofa/component/mass,          sofacomponentbase)
 declare(sofacomponentodesolver,     modules/sofa/component/odesolver,     sofatree)
-declare(sofacomponentvisualmodel,   modules/sofa/component/visualmodel,   sofacomponentbase tinyxml)
+declare(sofacomponentvisualmodel,   modules/sofa/component/visualmodel,   sofacomponentbase)
 
 declare(sofacomponentconstraintset, modules/sofa/component/constraintset, sofacomponentlinearsolver sofacomponentmass)
 declare(sofacomponentlinearsolver,  modules/sofa/component/linearsolver,  sofacomponentodesolver sofacomponentforcefield)
@@ -69,6 +78,8 @@ declare(sofacomponent, modules/sofa/component/libcomponent.pro, \
 
 declare(sofagui,     applications/sofa/gui/libgui.pro,     sofacomponentconfigurationsetting)
 declare(sofaguiqt,   applications/sofa/gui/qt,             sofagui qwt QGLViewer)
-declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt)
-declare(sofaguiglut, applications/sofa/gui/glut,           sofagui)
-declare(sofaguifltk, applications/sofa/gui/fltk,           sofaguiqt)
+declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut)
+declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
+declare(sofaguifltk, applications/sofa/gui/fltk,           sofaguiqt fltk)
+
+declare(runSofa,     applications/projects/runSofa, sofaguimain sofacomponent)
