@@ -220,6 +220,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         // for the intial computation, the gravity has to be put at 0
         const Vec3d gravity = this->getContext()->getGravity();
+
         const Vec3d gravity_zero(0.0,0.0,0.0);
         this->getContext()->setGravity(gravity_zero);
 
@@ -271,13 +272,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         }
 #endif
 
-        //complianceLoaded = true;
-        helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
-        VecDeriv& force = forceData.wref();
-        force.clear();
-        force.resize(nbNodes);
-
-        ///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
+        // Change the solver parameters
         double buf_tolerance = 0, buf_threshold = 0;
         int	   buf_maxIter = 0;
 
@@ -286,122 +281,108 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             buf_tolerance = (double) cgLinearSolver->f_tolerance.getValue();
             buf_maxIter   = (int) cgLinearSolver->f_maxIter.getValue();
             buf_threshold = (double) cgLinearSolver->f_smallDenominatorThreshold.getValue();
+
             cgLinearSolver->f_tolerance.setValue(1e-20);
             cgLinearSolver->f_maxIter.setValue(5000);
             cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-35);
         }
-        ///////////////////////////////////////////////////////////////////////////////////////////////
 
-        helper::WriteAccessor<Data<VecDeriv> > velocityData = *this->mstate->write(core::VecDerivId::velocity());
-        VecDeriv& velocity = velocityData.wref();
-        VecDeriv velocity0 = velocity;
 
-        helper::WriteAccessor<Data<VecCoord> > posData = *this->mstate->write(core::VecCoordId::position());
+        helper::WriteAccessor< Data< VecCoord > > posData = *this->mstate->write(core::VecCoordId::position());
         VecCoord& pos = posData.wref();
-        VecCoord  pos0 = pos;
+        const VecCoord prev_pos = pos;
+
+        helper::WriteAccessor< Data< VecDeriv > > velocityData = *this->mstate->write(core::VecDerivId::velocity());
+        VecDeriv& velocity = velocityData.wref();
+        const VecDeriv prev_velocity = velocity;
+
+        helper::WriteAccessor< Data< VecDeriv > > forceData = *this->mstate->write(core::VecDerivId::externalForce());
+        VecDeriv& force = forceData.wref();
+        force.clear();
+        force.resize(nbNodes);
 
         /// christian : it seems necessary to called the integration one time for initialization
         /// (avoid to have a line of 0 at the top of the matrix)
         if (eulerSolver)
         {
-            using core::behavior::BaseMechanicalState;
-            eulerSolver->solve(core::ExecParams::defaultInstance() /* PARAMS FIRST */, dt, core::VecCoordId::position(), core::VecDerivId::velocity());
+            eulerSolver->solve(core::ExecParams::defaultInstance(), dt, core::VecCoordId::position(), core::VecDerivId::velocity());
         }
+
+        Deriv unitary_force;
 
         for (unsigned int f = 0; f < nbNodes; f++)
         {
             std::streamsize prevPrecision = std::cout.precision();
             std::cout.precision(2);
-            std::cout << "Precomputing constraint correction : " << std::fixed << (float)f/(float)nbNodes*100.0f << " %   " << '\xd';
+            std::cout << "Precomputing constraint correction : " << std::fixed << (float)f / (float)nbNodes * 100.0f << " %   " << '\xd';
             std::cout.flush();
             std::cout.precision(prevPrecision);
-            //  serr << "inverse cols node : " << f << sendl;
-            Deriv unitary_force;
+
+            // Deriv unitary_force;
 
             for (unsigned int i = 0; i < dof_on_node; i++)
             {
                 unitary_force.clear();
+                unitary_force[i] = 1.0;
 
-                //serr<<"dof n:"<<i<<sendl;
-                unitary_force[i]=1.0;
                 force[f] = unitary_force;
 
-                ////// reset Position and Velocities ///////
+                // Reset positions and velocities
                 velocity.clear();
                 velocity.resize(nbNodes);
-                for (unsigned int n=0; n<nbNodes; n++)
-                    pos[n] = pos0[n];
 
-                /*
-                if (f*dof_on_node+i < 2)
-                {
-                	eulerSolver->f_verbose.setValue(true);
-                	eulerSolver->f_printLog.setValue(true);
-                }
-                */
+                for (unsigned int n = 0; n < nbNodes; n++)
+                    pos[n] = prev_pos[n];
 
-                double fact = 1.0; // christian : it is not a compliance... but an admittance that is computed !
+                double fact = 1.0 / dt; // christian : it is not a compliance... but an admittance that is computed !
+
                 if (eulerSolver)
-                    fact = eulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
-
-                if(eulerSolver)
                 {
-                    using core::behavior::BaseMechanicalState;
-                    eulerSolver->solve(core::ExecParams::defaultInstance() /* PARAMS FIRST */, dt, core::VecCoordId::position(), core::VecDerivId::velocity());
+                    fact *= eulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
+
+                    eulerSolver->solve(core::ExecParams::defaultInstance(), dt, core::VecCoordId::position(), core::VecDerivId::velocity());
+
                     if (linearSolver)
                         linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
                 }
 
-                //serr<<"solve reussi"<<sendl;
-
-                velocity = *this->mstate->getV();
-                //fact /= unitary_force[i];
-                fact /= dt;
-
-                /*
-                if (f*dof_on_node+i < 2)
+                for (unsigned int v = 0; v < nbNodes; v++)
                 {
-                //	eulerSolver->solve(core::ExecParams::defaultInstance()   // PARAMS FIRST //, dt, core::VecCoordId::position(), core::VecDerivId::velocity());
-                	eulerSolver->f_verbose.setValue(false);
-                	eulerSolver->f_printLog.setValue(false);
-                }
-                */
-
-                for (unsigned int v=0; v<nbNodes; v++)
-                {
-                    for (unsigned int j=0; j<dof_on_node; j++)
+                    for (unsigned int j = 0; j < dof_on_node; j++)
                     {
-                        invM->data[(v*dof_on_node+j)*nbCols + (f*dof_on_node+i) ] = (Real)(fact * velocity[v][j]);
+                        invM->data[(v * dof_on_node + j) * nbCols + (f * dof_on_node + i) ] = (Real)(fact * velocity[v][j]);
                     }
                 }
-                //serr<<"put in appComp"<<sendl;
             }
+
             unitary_force.clear();
             force[f] = unitary_force;
         }
-        if (linearSolver)
-            linearSolver->updateSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
 
-        ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
-        // gravity is reset at its previous value
+        // Do not recompute the matrix for the rest of the precomputation
+        if (linearSolver)
+            linearSolver->updateSystemMatrix();
+
+        saveCompliance(invName);
+
+        // Restore gravity
         this->getContext()->setGravity(gravity);
+
+        // Restore linear solver parameters
         if (cgLinearSolver)
         {
             cgLinearSolver->f_tolerance.setValue(buf_tolerance);
             cgLinearSolver->f_maxIter.setValue(buf_maxIter);
             cgLinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
         }
-        ///////////////////////////////////////////////////////////////////////////////////////////////
 
-        saveCompliance(invName);
+        // Retore velocity
+        for (unsigned int i = 0; i < velocity.size(); i++)
+            velocity[i] = prev_velocity[i];
 
-        //Reset the velocity
-        for (unsigned int i=0; i<velocity.size(); i++)
-            velocity[i] = velocity0[i];
-        //Reset the position
-        for (unsigned int i=0; i<pos.size(); i++)
-            pos[i] = pos0[i];
-
+        // Restore position
+        for (unsigned int i = 0; i < pos.size(); i++)
+            pos[i] = prev_pos[i];
 
 #ifdef SOFA_HAVE_EIGEN2
         for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
@@ -421,7 +402,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
     //_sparseCompliance.resize(v0.size()*MAX_NUM_CONSTRAINT_PER_NODE);
 
 
-    //  debug print 400 first row and column of the matrix
+    //  Print 400 first row and column of the matrix
     if (this->f_printLog.getValue())
     {
         serr << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
@@ -437,6 +418,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         serr << sendl;
     }
+
     //sout << "quit init "  << endl;
 
     //sout << "----------- Test Quaternions --------------" << sendl;
@@ -472,9 +454,28 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
 
 template< class DataTypes >
-void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix* W)
+void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W)
 {
     const MatrixDeriv& c = *this->mstate->getC();
+
+    double factor = 1.0;
+
+    switch (cparams->constOrder())
+    {
+    case core::ConstraintParams::POS_AND_VEL :
+    case core::ConstraintParams::POS :
+        // factor = eulerSolver->getPositionIntegrationFactor();
+        break;
+
+    case core::ConstraintParams::ACC :
+    case core::ConstraintParams::VEL :
+        factor = 1.0 / this->getContext()->getDt(); // @TODO : Consistency between ODESolver & Compliance and/or Admittance computation
+        break;
+
+    default :
+        break;
+    }
+
 
     /////////// The constraints are modified using a rotation value at each node/////
     if (m_rotations.getValue())
@@ -587,7 +588,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
             for (MatrixDerivRowConstIterator rowIt2 = rowIt; rowIt2 != rowItEnd; ++rowIt2)
             {
                 indexCurColConst = rowIt2.index();
-                double w = _sparseCompliance[temp + curColConst] * n1;
+                double w = _sparseCompliance[temp + curColConst] * n1 * factor;
 
                 W->add(indexCurRowConst, indexCurColConst, w);
 
