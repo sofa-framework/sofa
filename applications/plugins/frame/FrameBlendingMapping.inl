@@ -130,7 +130,7 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , targetFrameNumber ( initData ( &targetFrameNumber, ( unsigned int ) 0, "targetFrameNumber","Target frames number" ) )
     , initializeFramesInRigidParts ( initData ( &initializeFramesInRigidParts, false, "initializeFramesInRigidParts","Automatically initialize frames in rigid parts if stiffness>15E6." ) )
     , targetSampleNumber ( initData ( &targetSampleNumber, ( unsigned int ) 0, "targetSampleNumber","Target samples number" ) )
-    , restrictInterpolationToLabel ( initData ( &restrictInterpolationToLabel, ( int ) -1, "restrictInterpolationToLabel","Restrict interpolation to a label in gridmaterial." ) )
+    , restrictInterpolationToLabel ( initData ( &restrictInterpolationToLabel, "restrictInterpolationToLabel","Restrict interpolation to a label in gridmaterial." ) )
 {
     maskFrom = NULL;
     if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( from ) )
@@ -265,7 +265,7 @@ void FrameBlendingMapping<TIn, TOut>::apply( typename SampleData<TOut>::Material
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    checkForChanges();
+    //checkForChanges();
 
     //if( this->f_printLog.getValue() ){
     //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, in = "<< in << std::endl;
@@ -613,7 +613,14 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
             Out::get(point[0],point[1],point[2], xto[i]);
 
             if(!this->isPhysical)  // no gauss point here -> interpolate weights in the grid
-                gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i],restrictInterpolationToLabel.getValue());
+            {
+                if(restrictInterpolationToLabel.getValue().size()==0) // general case=no restriction
+                    gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i]);
+                else if(restrictInterpolationToLabel.getValue().size()==xto.size()) // restriction defined on each point
+                    gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i],restrictInterpolationToLabel.getValue()[i]);
+                else // global restriction for all points
+                    gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i],restrictInterpolationToLabel.getValue()[0]);
+            }
             else // gauss points generated -> approximate weights over a set of voxels by least squares fitting
                 gridMaterial->lumpWeightsRepartition(i,point,index[i],m_weights[i],&m_dweight[i],&m_ddweight[i]);
         }

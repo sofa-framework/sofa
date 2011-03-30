@@ -186,7 +186,7 @@ public:
     Data<unsigned int> targetFrameNumber;
     Data<bool> initializeFramesInRigidParts;  ///< Automatically initialize frames in rigid parts if stiffness>15E6
     Data<unsigned int> targetSampleNumber;
-    Data<int> restrictInterpolationToLabel;  ///< restrict interpolation to a certain label in the gridmaterial
+    Data<vector<int> > restrictInterpolationToLabel;  ///< restrict interpolation to a certain label in the gridmaterial
 };
 
 using sofa::defaulttype::Vec3dTypes;
