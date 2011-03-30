@@ -164,6 +164,10 @@ public:
 
     void readFromData(const data_type& d0)
     {
+        double minX;
+        double maxX;
+        double minY;
+        double maxY;
         currentData=d0;
         const data_type& d = currentData;
         int s = curve.size();
@@ -194,6 +198,10 @@ public:
                 curve.push_back(c);
                 cdata.push_back(cd);
                 s = i+1;
+                minX = c->minXValue();
+                maxX = c->maxXValue();
+                minY = c->minYValue();
+                maxY = c->maxYValue();
             }
             else
             {
@@ -205,9 +213,16 @@ public:
                     c->setTitle(s);
                 cd->setData(v);
                 c->setData(*cd);
+                minX = c->minXValue();
+                maxX = c->maxXValue();
+                minY = c->minYValue();
+                maxY = c->maxYValue();
+
             }
             rect = rect.unite(cdata[i]->boundingRect());
         }
+
+
         if (s != n)
         {
             for (int i=n; i < s; ++i)
@@ -222,10 +237,10 @@ public:
             cdata.resize(n);
             s = n;
         }
-        if (n > 0 && !rect.isNull())
+        if (n > 0)
         {
-            w->setAxisScale(Widget::yLeft, rect.top(), rect.bottom());
-            w->setAxisScale(Widget::xBottom, rect.left(), rect.right());
+            w->setAxisScale(Widget::yLeft, minY, maxY);
+            w->setAxisScale(Widget::xTop, minX, maxX);
         }
         w->replot();
     }
