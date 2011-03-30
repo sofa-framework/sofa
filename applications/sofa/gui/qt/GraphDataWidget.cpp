@@ -49,6 +49,7 @@ SOFA_DECL_CLASS(GraphDataWidget);
 
 Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::helper::vector<float> > > > DWClass_mapvectorf("graph",true);
 Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::helper::vector<double> > > > DWClass_mapvectord("graph",true);
+Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::helper::vector<Vec2d> > > > DWClass_mapvector2d("graph",true);
 
 
 
