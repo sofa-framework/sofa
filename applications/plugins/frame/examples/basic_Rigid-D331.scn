@@ -7,7 +7,6 @@
 		<FrameDiagonalMass template="RigidFrame3x6dMass" showAxisSizeFactor="0.2"/>
 		<HookeMaterial3 template="Material3" />
 
-		<FrameFixedConstraint template="Rigid" indices="0" allowed="0 0 0 0 0 0 0 0 0"/>
 
 		<Node name="Physics">
 <!--
@@ -15,6 +14,7 @@
 -->
 			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
      			<MechanicalObject  template="DeformationGradient331" name="PointSet"  useMask="0"  showObject="0" showObjectScale="0.05"/>
+		<FrameFixedConstraint template="Rigid" indices="0" allowed="0 0 0 0 0 0 0 0 0"/>
 
 			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,DeformationGradient331&gt;"  name="PMapping" input="@../DOFs"  output="@PointSet"  />
 			<GreenLagrangeForceField template="DeformationGradient331"   printLog="0" />
