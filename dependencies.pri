@@ -11,15 +11,12 @@ declare(zlib,   extlibs/zlib.prf)
 # Extlibs
 ######################################################################
 
-declare(newmat,    extlibs/newmat)
-declare(tinyxml,   extlibs/tinyxml)
-declare(eigen,     extlibs/eigen-3.0-beta4/eigen.pro)
-declare(qwt,       extlibs/qwt-5.2.0/src)
-declare(QGLViewer, extlibs/libQGLViewer-2.3.3/QGLViewer)
-
-!contains(DEFINES,SOFA_HAVE_FLOWVR){
-  declare(miniFlowVR, extlibs/miniFlowVR)
-}
+declare(newmat,     extlibs/newmat)
+declare(tinyxml,    extlibs/tinyxml)
+declare(eigen,      extlibs/eigen-3.0-beta4/eigen.pro)
+declare(qwt,        extlibs/qwt-5.2.0/src)
+declare(QGLViewer,  extlibs/libQGLViewer-2.3.3/QGLViewer)
+declare(miniFlowVR, extlibs/miniFlowVR)
 
 ######################################################################
 # Framework

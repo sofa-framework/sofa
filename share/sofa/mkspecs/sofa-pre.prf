@@ -464,17 +464,21 @@ defineTest(requireSofaLib) {
 #			artifact can be used before it is declared.
 #
 defineTest(declare) {
-	varname = $$1
+	artifact = $$1
 	project = $$2
 	dependencies = $$3
 
-	eval($${varname}.name = $$varname)
-	eval($${varname}.project = $$project)
-	eval($${varname}.deps = $$dependencies)
-	
-	export($${varname}.name)
-	export($${varname}.project)
-	export($${varname}.deps)
+	eval($${artifact}.name = $$artifact)
+	eval($${artifact}.project = $$project)
+	eval($${artifact}.deps = $$dependencies)
+	eval($${artifact}.enabled = false)
+	artifacts_registry += $$artifact
+
+	export($${artifact}.name)
+	export($${artifact}.project)
+	export($${artifact}.deps)
+	export($${artifact}.enabled)
+	export(artifacts_registry)
 }
 
 ##
@@ -519,20 +523,58 @@ defineReplace(computeTransitiveDependencies) {
 ##
 # This function enables the compilation of the specified artifact.
 #
+# Parameters:
+#		name	the name of the artifact (use "declare" first)
+#
 defineTest(enable) {
 	name = $$1
-	
-	tdeps = $$computeTransitiveDependencies($$name)
-	#message(enabling $$name with the following dependencies:)
-	for(dep, tdeps) {
-		#message($$escape_expand(\\t)$$dep)
-		dep_project = $$eval($${dep}.project)
-		!isFeatureFile(dep_project) {
-			deps_dirs += $$dep_project
+	eval($${name}.enabled = true)
+	export($${name}.enabled)
+}
+
+##
+# This function disables the compilation of the specified artifact.
+#
+# Parameters:
+#		name	the name of the artifact (use "declare" first)
+#
+defineTest(disable) {
+	name = $$1
+	eval($${name}.enabled = false)
+	export($${name}.enabled)
+}
+
+##
+# This function generates the SUBDIRS configuration to build all enabled artifacts
+# in the right order, using dependencies informations.
+#
+# Parameters:
+#		none
+#
+defineTest(buildEnabledArtifacts) {
+	for(artifact, artifacts_registry) {
+		message(hello $$artifact)
+		equals($${artifact}.enabled, true) {
+			message($$artifact enabled)
+			clear(deps_dirs)
+			clear(tdeps)
+			tdeps = $$computeTransitiveDependencies($$artifact)
+
+			#message(enabling $$name with the following dependencies:)
+			for(dep, tdeps) {
+				#message($$escape_expand(\\t)$$dep)
+				dep_project = $$eval($${dep}.project)
+				!isFeatureFile(dep_project) {
+					deps_dirs += $$dep_project
+				}
+			}
+
+			project = $$eval($${artifact}.project)
+			addInstallableSubdir($$artifact, $$project, $$deps_dirs) 
+		} else {
+			message($$artifact disabled)
 		}
 	}
-	project = $$eval($${name}.project)
-	addInstallableSubdir($$name, $$project, $$deps_dirs) 
 }
 
 ##
