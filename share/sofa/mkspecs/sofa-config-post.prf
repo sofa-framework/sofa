@@ -1,0 +1,11 @@
+
+########################################################################
+# Defines
+########################################################################
+
+# Class reflection / plugins system: define SOFA_TARGET macro
+contains(TEMPLATE, subdirs) | contains(TEMPLATE, vcsubdirs) {
+} else {
+	#!isEmpty(TARGET): message("TARGET: $$TARGET")
+	DEFINES *= SOFA_TARGET=$$TARGET
+}

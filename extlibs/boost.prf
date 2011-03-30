@@ -1,0 +1,6 @@
+contains(DEFINES, SOFA_HAVE_BOOST){
+  LIBS *= -lboost_thread -lboost_system
+} else {
+  # use miniBoost headers included in extlibs
+  INCLUDEPATH *= $$SOFA_DIR/extlibs/miniBoost
+}

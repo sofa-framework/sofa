@@ -1,0 +1,35 @@
+
+########################################################################
+# Default options
+########################################################################
+
+CONFIG += warn_on exceptions rtti stl thread
+
+win32 {
+	QMAKE_CXXFLAGS_DEBUG = -Gm -ZI
+	QMAKE_CXXFLAGS_RELEASE = -MP
+}
+
+########################################################################
+# Defines
+########################################################################
+
+# Auto-detect Qt 4.x
+# The QT variable was introduced in Qt 4
+!isEmpty(QT): DEFINES += SOFA_QT4
+
+!contains(DEFINES,SOFA_XML_PARSER_LIBXML){
+  DEFINES *= SOFA_XML_PARSER_TINYXML
+}
+
+contains(DEFINES, SOFA_GUI_QTVIEWER) {
+	DEFINES *= SOFA_GUI_QT
+}
+
+contains(DEFINES, SOFA_GUI_QGLVIEWER) {
+	DEFINES *= SOFA_GUI_QT
+}
+
+!contains(CONFIGDEBUG, debug) {
+	DEFINES += NDEBUG
+}
