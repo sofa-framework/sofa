@@ -553,9 +553,7 @@ defineTest(disable) {
 #
 defineTest(buildEnabledArtifacts) {
 	for(artifact, artifacts_registry) {
-		message(hello $$artifact)
 		equals($${artifact}.enabled, true) {
-			message($$artifact enabled)
 			clear(deps_dirs)
 			clear(tdeps)
 			tdeps = $$computeTransitiveDependencies($$artifact)
@@ -571,8 +569,6 @@ defineTest(buildEnabledArtifacts) {
 
 			project = $$eval($${artifact}.project)
 			addInstallableSubdir($$artifact, $$project, $$deps_dirs) 
-		} else {
-			message($$artifact disabled)
 		}
 	}
 }
