@@ -31,6 +31,7 @@
 #include <map>
 
 #include <sofa/core/BaseMapping.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -57,7 +58,7 @@ using namespace sofa::core;
 *
 */
 
-class Hexa2QuadTopologicalMapping : public TopologicalMapping
+class SOFA_COMPONENT_TOPOLOGY_API Hexa2QuadTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(Hexa2QuadTopologicalMapping,TopologicalMapping);

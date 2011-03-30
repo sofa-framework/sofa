@@ -27,6 +27,7 @@
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -51,7 +52,7 @@ using namespace sofa::core;
  *
 */
 
-class CenterPointTopologicalMapping : public TopologicalMapping
+class SOFA_COMPONENT_TOPOLOGY_API CenterPointTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(CenterPointTopologicalMapping,TopologicalMapping);

@@ -31,6 +31,7 @@
 #include <map>
 
 #include <sofa/core/BaseMapping.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -58,7 +59,7 @@ using namespace sofa::core;
  *
 */
 
-class Tetra2TriangleTopologicalMapping : public TopologicalMapping
+class SOFA_COMPONENT_TOPOLOGY_API Tetra2TriangleTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(Tetra2TriangleTopologicalMapping,TopologicalMapping);
