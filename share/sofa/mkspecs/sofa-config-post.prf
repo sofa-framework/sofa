@@ -9,3 +9,22 @@ contains(TEMPLATE, subdirs) | contains(TEMPLATE, vcsubdirs) {
 	#!isEmpty(TARGET): message("TARGET: $$TARGET")
 	DEFINES *= SOFA_TARGET=$$TARGET
 }
+
+########################################################################
+# System-specific configuration
+########################################################################
+
+win32-msvc* {
+	QMAKE_CXXFLAGS_DEBUG += -wd4250 -wd4251 -wd4275
+	QMAKE_CXXFLAGS_RELEASE += -wd4250 -wd4251 -wd4275
+}
+
+win32-msvc.net {
+	QMAKE_CXXFLAGS_DEBUG += -wd4675
+	QMAKE_CXXFLAGS_RELEASE += -wd4675
+}
+
+win32-msvc20* {
+	QMAKE_CXXFLAGS_DEBUG += -wd4996
+	QMAKE_CXXFLAGS_RELEASE += -wd4996
+}
