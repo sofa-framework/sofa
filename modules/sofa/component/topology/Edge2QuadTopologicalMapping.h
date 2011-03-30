@@ -33,6 +33,7 @@
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/component/component.h>
 
 
 namespace sofa
@@ -61,7 +62,7 @@ using namespace sofa::core::behavior;
 *
 */
 
-class Edge2QuadTopologicalMapping : public TopologicalMapping
+class SOFA_COMPONENT_TOPOLOGY_API Edge2QuadTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(Edge2QuadTopologicalMapping,TopologicalMapping);
