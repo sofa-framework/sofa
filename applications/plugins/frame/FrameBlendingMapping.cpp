@@ -73,7 +73,7 @@ int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of
 #ifndef SOFA_DOUBLE
         .add< FrameBlendingMapping< Affine3dTypes, ExtVec3fTypes > >()
         .add< FrameBlendingMapping< Quadratic3dTypes, ExtVec3fTypes > >()
-        .add< FrameBlendingMapping< Rigid3dTypes, ExtVec3fTypes > >()
+//                                            .add< FrameBlendingMapping< Rigid3dTypes, ExtVec3fTypes > >()
 #endif
 #endif
         ;
