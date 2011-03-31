@@ -22,6 +22,7 @@ SofaViewer::SofaViewer()
     , texLogo(NULL)
     , ambientColour(Vector3())
 {
+    colourPickingRenderCallBack = ColourPickingRenderCallBack(this);
 }
 
 SofaViewer::~SofaViewer()
