@@ -352,6 +352,42 @@ defineTest(addInstallableSubdir) {
 
 ##
 # This function configures the current artifact build parameters to compile and
+# link using the specified library installed on the system.
+# A feature file must describe the build parameters, it can be local or installed. 
+#
+# Parameters:
+#		name		the name of the library
+#		feature	the path to the feature file relative to the root source directory.
+#
+# The feature file can directly modify INCLUDEPATH and LIBS variables. If other
+# variables needs to be modified, the feature file will have to call export(VAR)
+# on them.
+defineTest(requireLib) {
+	name = $$1
+	feature = $$2
+	isEmpty(name)   : error(missing name parameter in requireLib)
+	isEmpty(feature): error(missing feature parameter in requireLib)
+
+	message(Using system lib $$name)
+
+	featureNoExt = $$replace(feature, ^(.+)\\.prf$, \\1)
+	isSourceAvailable($$name, $$feature) {
+		dir = $$dirname(feature)
+		MY_FEATUREFILE = $$ROOT_SRC_DIR/$$featureNoExt
+	} else {
+		!isInstalled($$name) {
+			error(requireLib: Cannot feature file for $$name)
+		}
+		MY_FEATUREFILE = $$FEATURES_DIR/$$basename(featureNoExt)
+	}
+	load($$MY_FEATUREFILE)
+
+	export(INCLUDEPATH)
+	export(LIBS)
+}
+
+##
+# This function configures the current artifact build parameters to compile and
 # link using the specified library.
 # It can work either when sources are available in the same source tree as the
 # client artifact, or when just the installed version is available.
@@ -368,11 +404,11 @@ defineTest(addInstallableSubdir) {
 # to override default values. You can also define other variables, but you
 # will have to export them using export(VAR)
 #
-defineTest(requireLib) {
+defineTest(requireExtLib) {
 	name = $$1
 	project  = $$2
-	isEmpty(name)   : error(missing name parameter in requireLib)
-	isEmpty(project): error(missing project parameter in requireLib)
+	isEmpty(name)   : error(missing name parameter in requireExtLib)
+	isEmpty(project): error(missing project parameter in requireExtLib)
 
 	OLD_INCLUDEPATH = $$INCLUDEPATH
 	OLD_LIBS = $$LIBS
@@ -390,7 +426,7 @@ defineTest(requireLib) {
 		MY_LIBRARYPATH = -L$$LIB_DESTDIR
 	} else {
 		!isInstalled($$name) {
-			error(requireLib: Cannot find $$name library)
+			error(requireExtLib: Cannot find $$name library)
 		}
 		message(Using installed version of $$name)
 		MY_FEATUREFILE = $$FEATURES_DIR/$${name}
@@ -594,11 +630,15 @@ defineTest(loadDependencies) {
 		name = $$eval($${dep}.name)
 		!equals(dep, $$name): error(undeclared dependency $$dep)
 		project = $$eval($${dep}.project)
-		sofasrc = $$find(project, ^applications|framework|modules/.+$)
-		isEmpty(sofasrc) {
+		isFeatureFile(project) {
 			requireLib($$name, $$project)
 		} else {
-			requireSofaLib($$name, $$project)
+			sofasrc = $$find(project, ^applications|framework|modules/.+$)
+			isEmpty(sofasrc) {
+				requireExtLib($$name, $$project)
+			} else {
+				requireSofaLib($$name, $$project)
+			}
 		}
 	}
 }

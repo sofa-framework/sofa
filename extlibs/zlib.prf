@@ -1,8 +1,8 @@
 contains(DEFINES, SOFA_HAVE_ZLIB) {
 	win32 {
-		LIBS *= -lzlib
+		MY_LIBS *= -lzlib
 	}
 	unix {
-		SOFA_EXT_LIBS *= -lz
+		MY_LIBS *= -lz
 	}
 }
