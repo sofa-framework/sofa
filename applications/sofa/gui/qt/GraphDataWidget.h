@@ -164,10 +164,10 @@ public:
 
     void readFromData(const data_type& d0)
     {
-        double minX;
-        double maxX;
-        double minY;
-        double maxY;
+        double minX = 0.0;
+        double maxX = 0.0;
+        double minY = 0.0;
+        double maxY = 0.0;
         currentData=d0;
         const data_type& d = currentData;
         int s = curve.size();
