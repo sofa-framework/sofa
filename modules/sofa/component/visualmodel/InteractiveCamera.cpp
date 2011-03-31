@@ -43,6 +43,11 @@ void InteractiveCamera::moveCamera(int x, int y)
     const unsigned int widthViewport = p_widthViewport.getValue();
     const unsigned int heightViewport = p_heightViewport.getValue();
 
+    //std::cout << "widthViewport: " << widthViewport << std::endl;
+    //std::cout << "heightViewport: " << heightViewport << std::endl;
+    //std::cout << "x: " << x << std::endl;
+    //std::cout << "y: " << y << std::endl;
+
     if (isMoving)
     {
         if (currentMode == TRACKBALL_MODE)
@@ -70,7 +75,7 @@ void InteractiveCamera::moveCamera(int x, int y)
             //pivot = (Vec3(x,y, p_distance.getValue()));
             //std::cout << "Pivot : " <<  pivot << std::endl;
             //rotateCameraAroundPoint(newQuat, pivot);
-            rotateWorldAroundPoint(newQuat, pivot);
+            rotateWorldAroundPoint(newQuat, pivot, this->getOrientation());
         }
         else if (currentMode == ZOOM_MODE)
         {

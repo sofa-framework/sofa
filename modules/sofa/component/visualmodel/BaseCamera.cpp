@@ -284,11 +284,11 @@ void BaseCamera::rotateCameraAroundPoint(Quat& rotation, const Vec3& point)
     p_position.endEdit();
 }
 
-void BaseCamera::rotateWorldAroundPoint(Quat& rotation, const Vec3&  point )
+void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const Vec3 &point, Quat orientationCam)
 {
     Vec3 tempAxis;
     SReal tempAngle;
-    Quat orientationCam = this->getOrientation();
+    //Quat orientationCam = this->getOrientation();
     Vec3& positionCam = *p_position.beginEdit();
 
     rotation.quatToAxis(tempAxis, tempAngle);
