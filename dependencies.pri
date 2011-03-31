@@ -75,8 +75,8 @@ declare(sofacomponent, modules/sofa/component/libcomponent.pro, \
 
 declare(sofagui,     applications/sofa/gui/libgui.pro,     sofacomponentconfigurationsetting)
 declare(sofaguiqt,   applications/sofa/gui/qt,             sofagui qwt QGLViewer)
-declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut)
+declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut sofacomponent)
 declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
 declare(sofaguifltk, applications/sofa/gui/fltk,           sofaguiqt fltk)
 
-declare(runSofa,     applications/projects/runSofa, sofaguimain sofacomponent)
+declare(runSofa,     applications/projects/runSofa, sofaguimain)
