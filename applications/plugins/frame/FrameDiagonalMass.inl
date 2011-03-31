@@ -274,8 +274,10 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
     const VecCoord& xfrom = *this->mstate->getX();
     const MassVector& vecMass0 = f_mass0.getValue();
     const MassVector& vecMass = f_mass.getValue();
-    if ( vecMass0.size() != xfrom.size())
+    if ( vecMass0.size() != xfrom.size() || frameData->mappingHasChanged) // TODO remove the first hypothesis when mappingHasChanged will be generalized
     {
+        serr << "recompute mass matrix" << sendl;
+
         // ReCompute the blocks
         this->resize ( fromSize );
         MassVector& mass0 = *f_mass0.beginEdit();
@@ -284,6 +286,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
         f_mass0.endEdit();
         f_mass .endEdit();
     }
+
 
     updateMass();
 

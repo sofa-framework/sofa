@@ -169,7 +169,7 @@ void FrameBlendingMapping<TIn, TOut>::init()
 
     //   unsigned int numParents = this->fromModel->getSize();
     unsigned int numChildren = this->toModel->getSize();
-    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
     //WriteAccessor<PointData<OutCoord> > initPos(this->f_initPos);
     vector<OutCoord>& initPos = *(f_initPos.beginEdit());
 
@@ -265,7 +265,7 @@ void FrameBlendingMapping<TIn, TOut>::apply( typename SampleData<TOut>::Material
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    //checkForChanges();
+    checkForChanges();
 
     //if( this->f_printLog.getValue() ){
     //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, in = "<< in << std::endl;
@@ -1209,10 +1209,7 @@ void FrameBlendingMapping<TIn, TOut>::addSamples( const unsigned int& /*nbNewVer
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::UpdateSamples()
 {
-    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
-
     serr << "UpdateSamples Physical" << sendl;
-
 
     //// Recompute Weights
     WriteAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->write(core::VecCoordId::restPosition());
@@ -1235,16 +1232,11 @@ void FrameBlendingMapping<TIn, TOut>::UpdateSamples()
     initSamples();
 
 
-    unsigned int numChildren = this->toModel->getSize();
-    //WriteAccessor<PointData<OutCoord> > initPos(this->f_initPos);
+    ReadAccessor<Data<VecOutCoord> > out  = *this->toModel->read(core::ConstVecCoordId::restPosition());
     vector<OutCoord>& initPos = *(f_initPos.beginEdit());
-
-    if( this->f_initPos.getValue().size() != numChildren )
-    {
-        initPos.resize(out.size());
-        for(unsigned int i=0; i<out.size(); i++ )
-            initPos[i] = out[i];
-    }
+    initPos.resize(out.size());
+    for(unsigned int i=0; i<out.size(); i++ )
+        initPos[i] = out[i];
     f_initPos.endEdit();
 
     // init weights and sample info (mass, moments) todo: ask the Material
@@ -1293,14 +1285,22 @@ void FrameBlendingMapping<TIn, TOut>::UpdateSamples()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::checkForChanges()
 {
+    if (this->mappingHasChanged) this->mappingHasChanged = false;
+
     // Physical Samples have to be updated
-    if (this->isPhysical && gridMaterial->voxelsHaveChanged.getValue())
+    if (this->isPhysical && gridMaterial && gridMaterial->voxelsHaveChanged.getValue())
     {
+        this->mappingHasChanged = true;
         UpdateSamples();
     }
 
     // Changes on Frames
-    // TODO
+    // if ()
+    // {
+    //     this->mappingHasChanged = true;
+    //     TODO
+    // }
+
 }
 
 
