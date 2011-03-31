@@ -3,6 +3,8 @@
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
+#include <sofa/helper/system/glut.h>
+
 namespace sofa
 {
 
@@ -26,13 +28,14 @@ RecordedCamera::RecordedCamera()
     , p_pivot(initData(&p_pivot, 0 , "pivot", "Pivot (0 => Scene center, 1 => World Center"))
     , currentMode(RecordedCamera::NONE_MODE)
     , isMoving(false)
-    , m_startTime(initData(&m_startTime, (SReal) 0.0 , "startTime", "Pan Speed"))
-    , m_endTime(initData(&m_endTime, (SReal)200 , "endTime", "Pan Speed"))
-    , m_rotationMode(initData(&m_rotationMode, (bool)true , "rotationMode", "Pan Speed"))
-    , m_rotationSpeed(initData(&m_rotationSpeed, (SReal)0.1 , "rotationSpeed", "Pan Speed"))
-    , m_rotationCenter(initData(&m_rotationCenter, "rotationCenter", "Pan Speed"))
-    , m_rotationStartPoint(initData(&m_rotationStartPoint, "rotationStartPoint", "Pan Speed"))
-    , m_rotationLookAt(initData(&m_rotationLookAt, "rotationLookAt", "Pan Speed"))
+    , m_startTime(initData(&m_startTime, (SReal) 0.0 , "startTime", "Time when the camera moves will start"))
+    , m_endTime(initData(&m_endTime, (SReal)200 , "endTime", "Time when the camera moves will end (or loop)"))
+    , m_rotationMode(initData(&m_rotationMode, (bool)true , "rotationMode", "If true, rotation will be performed"))
+    , m_rotationSpeed(initData(&m_rotationSpeed, (SReal)0.1 , "rotationSpeed", "rotation Speed"))
+    , m_rotationCenter(initData(&m_rotationCenter, "rotationCenter", "Rotation center coordinates"))
+    , m_rotationStartPoint(initData(&m_rotationStartPoint, "rotationStartPoint", "Rotation start position coordinates"))
+    , m_rotationLookAt(initData(&m_rotationLookAt, "rotationLookAt", "Position to be focused during rotation"))
+    , p_drawRotation(initData(&p_drawRotation, (bool)false , "drawRotation", "If true, will draw the rotation path"))
     //, m_translationSpeed(initData(&m_translationSpeed, (SReal)0.1 , "translationSpeed", "Pan Speed"))
     //, m_translationPositions(initData(&m_translationPositions, "translationPositions", "Pan Speed"))
     //, m_translationOrientations(initData(&m_translationOrientations, "translationOrientations", "Pan Speed"))
@@ -56,6 +59,18 @@ void RecordedCamera::init()
         m_rotationStartPoint = Vec3(0.0, 10.0, 50.0);
 
     m_nextStep = m_startTime.getValue();
+
+    if (p_drawRotation.getValue())
+        this->drawRotation();
+}
+
+
+void RecordedCamera::reinit()
+{
+    BaseCamera::reinit();
+
+    if (p_drawRotation.getValue())
+        this->drawRotation();
 }
 
 
@@ -336,10 +351,70 @@ void RecordedCamera::moveCamera_mouse(int x, int y)
 }
 
 
+void RecordedCamera::drawRotation()
+{
+    Vec3 _pos = m_rotationStartPoint.getValue();
+    Vec3 _center = m_rotationCenter.getValue();
+
+    double _initAngle = 0.0;
+
+    // Compute rotation settings: radius and init angle
+    m_radius = (_center - _pos).norm();
+
+    if (_pos[0]>=0)
+        _initAngle = asin(_pos[2]/m_radius);
+    else
+        _initAngle = PI - asin(_pos[2]/m_radius);
+
+    m_rotationPoints.resize(100);
+    double _angleStep = 2*PI/100;
+    for (unsigned int i = 0; i<100; ++i)
+    {
+        // Compute cartesian coordinates from cylindrical ones
+        _pos = m_rotationCenter.getValue();
+        _pos[2] += m_radius * cos((_angleStep*i - _initAngle));
+        _pos[0] += m_radius * sin((_angleStep*i - _initAngle));
+        m_rotationPoints[i] = _pos;
+    }
+
+    return;
+}
+
+
 void RecordedCamera::draw()
 {
+    if(p_drawRotation.getValue())
+    {
+        if (m_rotationPoints.empty())
+            return;
 
+        glDisable(GL_LIGHTING);
+        glColor3f(0,1,0.5);
+
+        // Camera positions
+        glBegin(GL_LINES);
+        for (unsigned int i=0; i<m_rotationPoints.size()-1; ++i)
+        {
+            glVertex3f(m_rotationPoints[i][0], m_rotationPoints[i][1], m_rotationPoints[i][2]);
+            glVertex3f(m_rotationPoints[i+1][0], m_rotationPoints[i+1][1], m_rotationPoints[i+1][2]);
+        }
+        glVertex3f(m_rotationPoints.back()[0], m_rotationPoints.back()[1], m_rotationPoints.back()[2]);
+        glVertex3f(m_rotationPoints[0][0], m_rotationPoints[0][1], m_rotationPoints[0][2]);
+        glEnd();
+
+        Vec3 _lookAt = m_rotationLookAt.getValue();
+        unsigned int dx = 4;
+        unsigned int ratio = m_rotationPoints.size()/dx;
+        glBegin(GL_LINES);
+        for (unsigned int i=0; i<dx; ++i)
+        {
+            glVertex3f(m_rotationPoints[i*ratio][0], m_rotationPoints[i*ratio][1], m_rotationPoints[i*ratio][2]);
+            glVertex3f(_lookAt[0], _lookAt[1], _lookAt[2]);
+        }
+        glEnd();
+    }
 }
+
 
 } // namespace visualmodel
 
