@@ -26,6 +26,8 @@ public:
 
     virtual void init();
 
+    virtual void reinit();
+
     virtual void handleEvent(sofa::core::objectmodel::Event *);
 
     //virtual void rotateWorldAroundPoint(Quat &rotation, const Vec3 &point);
@@ -53,6 +55,7 @@ private:
     void processMouseEvent(core::objectmodel::MouseEvent* me);
 
     void configureRotation();
+    void drawRotation();
 
 public:
     Data<SReal> m_startTime;
@@ -64,6 +67,8 @@ public:
     Data <Vec3> m_rotationStartPoint;
     Data <Vec3> m_rotationLookAt;
 
+    Data <bool> p_drawRotation;
+
     //Data <SReal> m_translationSpeed;
     //Data <sofa::helper::vector<Vec3> > m_translationPositions;
     //Data <sofa::helper::vector<Vec3> > m_translationOrientations;
@@ -74,6 +79,8 @@ protected:
     double m_initAngle;
     double m_radius;
     bool firstIteration;
+
+    sofa::helper::vector <Vec3> m_rotationPoints;
 };
 
 } // namespace visualmodel
