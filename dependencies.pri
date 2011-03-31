@@ -62,7 +62,7 @@ declare(sofacomponentcollision, modules/sofa/component/collision, \
 
 declare(sofacomponentmisc, modules/sofa/component/misc,  \
   sofacomponentcontroller sofacomponentcollision sofacomponentfem \
-  sofacomponentcontextobject sofacomponentbehaviormodel)
+  sofacomponentcontextobject sofacomponentbehaviormodel zlib)
 
 declare(sofacomponentconfigurationsetting, modules/sofa/component/configurationsetting, sofacomponentmisc)
 

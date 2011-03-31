@@ -3,7 +3,7 @@ contains(DEFINES, SOFA_HAVE_PNG) {
 		LIBS *= -llibpng
 	}
 	unix {
-		macx : LIBS *= -lpng12
+		macx  : LIBS *= -lpng12
 		!macx : LIBS *= -lpng
 	}
 }
