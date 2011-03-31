@@ -96,7 +96,7 @@ public:
     void moveCamera(const Vec3 &p, const Quat &q);
 
     void rotateCameraAroundPoint( Quat& rotation, const Vec3& point);
-    void rotateWorldAroundPoint( Quat& rotation, const Vec3& point);
+    virtual void rotateWorldAroundPoint( Quat& rotation, const Vec3& point, Quat orientationCam);
 
     Vec3 cameraToWorldCoordinates(const Vec3& p);
     Vec3 worldToCameraCoordinates(const Vec3& p);
