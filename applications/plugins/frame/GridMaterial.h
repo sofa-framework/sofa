@@ -51,6 +51,7 @@
 #define SHOWVOXELS_DISTANCES 8
 #define SHOWVOXELS_WEIGHTS 9
 #define SHOWVOXELS_LINEARITYERROR 10
+#define SHOWVOXELS_FRAMESINDICES 11
 
 namespace sofa
 {
@@ -86,7 +87,7 @@ public:
     static const unsigned int num_material_dimensions = 3;
     static const unsigned int num_spatial_dimensions = 3;
 
-    static const unsigned int nbRef = 4;
+    static const unsigned int nbRef = 2;
 
     typedef Vec<num_material_dimensions,Real> Coord;    ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
     typedef vector<Coord> VecCoord;
@@ -401,7 +402,7 @@ protected:
     GLuint cubeList; GLuint wcubeList;            // storage for the display list
     Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
     bool showWireframe;
-    float maxValues[11];
+    float maxValues[12];
     Data<float> show3DValuesHeight;
     Data<bool> vboSupported;
     GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)

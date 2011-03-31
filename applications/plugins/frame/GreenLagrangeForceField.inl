@@ -199,7 +199,9 @@ void GreenLagrangeForceField<DataTypes>::updateFF (const DataVecCoord& _x)
     ReadAccessor<Data<VecCoord> > out (*this->getMState()->read(core::ConstVecCoordId::restPosition()));
     ReadAccessor<DataVecCoord> x(_x);
 
-    if (stressStrainMatrices.size() == x.size() && this->integFactors.size() == out.size()) return;
+    if (stressStrainMatrices.size() == x.size() && this->integFactors.size() == out.size() && !sampleData->mappingHasChanged) return;
+
+    serr << "recompute stiffness matrix" << sendl;
 
     stressStrainMatrices.resize(x.size());
     //rotation.resize(x.size());

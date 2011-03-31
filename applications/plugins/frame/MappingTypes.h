@@ -119,8 +119,20 @@ public:
 };
 
 
+class BaseFrameBlendingMapping : public virtual core::objectmodel::BaseObject
+{
+public:
+    bool mappingHasChanged;
+
+    BaseFrameBlendingMapping ()
+        : mappingHasChanged(false)
+    {
+    }
+};
+
+
 template<class TIn, bool IsPhysical>
-class FrameData : public  virtual core::objectmodel::BaseObject
+class FrameData : public virtual BaseFrameBlendingMapping
 {
 public:
     // Input types
@@ -133,14 +145,17 @@ public:
     typedef sofa::component::topology::PointData<FrameMassType> VecMass;
     typedef helper::vector<FrameMassType> MassVector;
 
-    FrameData() {}
+    FrameData ()
+        : BaseFrameBlendingMapping ()
+    {
+    }
     virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass) = 0;
 };
 
 
 
 template<class TOut>
-class SampleData : public  virtual core::objectmodel::BaseObject
+class SampleData : public virtual BaseFrameBlendingMapping
 {
 public:
     // Output types
@@ -150,14 +165,13 @@ public:
 
     Data<VecMaterialCoord> f_materialPoints;
 
-    SampleData()
-        : f_materialPoints ( initData ( &f_materialPoints,"materialPoints","Coordinates of the samples in object space" ) )
+    SampleData ()
+        : BaseFrameBlendingMapping ()
+        , f_materialPoints ( initData ( &f_materialPoints,"materialPoints","Coordinates of the samples in object space" ) )
     {
     }
 
     virtual void apply( MaterialCoord& coord, const MaterialCoord& restCoord) = 0; // Allow to tranfsorm a voxel from restPos for example
-    //virtual void addSamples( const unsigned int& nbNewVertices) = 0;
-    //virtual void removeSamples( const vector<unsigned int>& samplesID) = 0;
 };
 
 } // namespace defaulttype
