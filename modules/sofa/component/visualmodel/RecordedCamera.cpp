@@ -80,8 +80,8 @@ void RecordedCamera::moveCamera_rotation()
 
     // Compute coordinate of point + dV to compute circle tangente
     Vec3 _poskk = m_rotationCenter.getValue();
-    _poskk[2] += m_radius * cos((m_angleStep - m_initAngle+0.001));
-    _poskk[0] += m_radius * sin((m_angleStep - m_initAngle+0.001));
+    _poskk[2] += m_radius * cos((m_angleStep - m_initAngle+0.00001));
+    _poskk[0] += m_radius * sin((m_angleStep - m_initAngle+0.00001));
 
 #ifdef my_debug
     std::cout << "totalTime: " << totalTime << std::endl;
@@ -281,7 +281,7 @@ void RecordedCamera::moveCamera_mouse(int x, int y)
             y1 = (heightViewport- 2.0f *heightViewport / 2.0f) /heightViewport;
             x2 = (2.0f * (x + (-lastMousePosX + widthViewport / 2.0f)) - widthViewport) / widthViewport;
             y2 = (heightViewport- 2.0f * (y + (-lastMousePosY +heightViewport / 2.0f))) /heightViewport;
-            std::cout << x1 << " " << y1 << " " << x2 << " " << y2 << std::endl;
+            //std::cout << x1 << " " << y1 << " " << x2 << " " << y2 << std::endl;
             currentTrackball.ComputeQuaternion(x1, y1, x2, y2);
             //fetch rotation
             newQuat = currentTrackball.GetQuaternion();
