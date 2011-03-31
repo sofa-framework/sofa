@@ -3,6 +3,6 @@ win32 {
 }
 
 unix {
-	macx  : LIBS *= -framework OpenGL -framework GLUT
+	macx  : LIBS += -framework OpenGL -framework GLUT
 	!macx : LIBS *= -lGL -lGLU -lglut
 }
