@@ -74,7 +74,7 @@ public:
     };
 
     virtual void addMechanicalState(const BaseMechanicalState* mstate);
-    virtual void addMechanicalMapping(const BaseMapping* mapping);
+    virtual void addMechanicalMapping(BaseMapping* mapping);
     virtual void addMappedMechanicalState(const BaseMechanicalState* mstate);
 
     virtual int getGlobalDimension() const = 0;

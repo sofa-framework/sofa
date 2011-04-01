@@ -51,7 +51,7 @@ public:
     virtual void setGlobalMatrix(defaulttype::BaseMatrix* matrix);
 
     virtual void addMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate);
-    virtual void addMechanicalMapping(const sofa::core::BaseMapping* mapping);
+    virtual void addMechanicalMapping(sofa::core::BaseMapping* mapping);
     virtual void addMappedMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate);
 
     virtual void setupMatrices();
