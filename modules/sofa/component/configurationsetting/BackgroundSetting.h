@@ -44,15 +44,10 @@ class SOFA_COMPONENT_CONFIGURATIONSETTING_API BackgroundSetting: public core::ob
 public:
     SOFA_CLASS(BackgroundSetting,core::objectmodel::ConfigurationSetting);
     BackgroundSetting();
-    void setColor(const defaulttype::Vector3& c) {color.setValue(c);}
-    const defaulttype::Vector3 &getColor() const {return color.getValue();}
 
-    void setImage(const std::string& f) {image.setValue(f);}
-    const std::string &getImage() const {return image.getFullPath();}
-
-protected:
     Data<defaulttype::Vector3> color;
     sofa::core::objectmodel::DataFileName image;
+
 };
 
 }

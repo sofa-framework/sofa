@@ -54,7 +54,7 @@ void DataFileNameWidget::writeToData()
 }
 
 
-void DataFileNameWidget::raiseFileDialog()
+void DataFileNameWidget::raiseDialog()
 {
     std::string fileName( openFilePath->text().ascii() );
 

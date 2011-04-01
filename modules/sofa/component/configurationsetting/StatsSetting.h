@@ -44,24 +44,13 @@ public:
     SOFA_CLASS(StatsSetting,core::objectmodel::ConfigurationSetting);
     StatsSetting();
 
-    void setDumpState(bool b)     {dumpState.setValue(b);}
-    bool getDumpState() const     {return dumpState.getValue();}
-    void setLogTime(bool b)       {logTime.setValue(b);}
-    bool getLogTime() const       {return logTime.getValue();}
-    void setExportState(bool b)   {exportState.setValue(b);}
-    bool getExportState() const   {return exportState.getValue();}
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setTraceVisitors(bool b) {traceVisitors.setValue(b);}
-    bool getTraceVisitors() const {return traceVisitors.getValue();}
-#endif
-
-protected:
     Data<bool> dumpState;
     Data<bool> logTime;
     Data<bool> exportState;
 #ifdef SOFA_DUMP_VISITOR_INFO
     Data<bool> traceVisitors;
 #endif
+
 };
 
 }

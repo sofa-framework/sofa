@@ -27,6 +27,8 @@
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+
 
 namespace sofa
 {
@@ -44,11 +46,9 @@ public:
     MouseButtonSetting();
     virtual std::string getOperationType()=0;
 
-    unsigned int getButton() const {return button.getValue().getSelectedId();}
-    void setButton(unsigned int id) {button.beginEdit()->setSelectedItem(id); button.endEdit();}
 
-protected:
-    Data<sofa::helper::OptionsGroup> button;
+    core::objectmodel::Data<sofa::helper::OptionsGroup> button;
+
 };
 
 }

@@ -60,11 +60,13 @@ void SofaGUI::configureGUI(sofa::simulation::Node *groot)
     groot->get(defaultPath, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (defaultPath)
     {
-        if (!defaultPath->getRecordPath().empty())
-            setRecordPath(defaultPath->getRecordPath());
+        if (!defaultPath->recordPath.getValue().empty())
+        {
+            setRecordPath(defaultPath->recordPath.getValue());
+        }
 
-        if (!defaultPath->getGnuplotPath().empty())
-            setGnuplotPath(defaultPath->getGnuplotPath());
+        if (!defaultPath->gnuplotPath.getValue().empty())
+            setGnuplotPath(defaultPath->gnuplotPath.getValue());
     }
 
 
@@ -73,10 +75,10 @@ void SofaGUI::configureGUI(sofa::simulation::Node *groot)
     groot->get(background, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (background)
     {
-        if (background->getImage().empty())
-            setBackgroundColor(background->getColor());
+        if (background->image.getValue().empty())
+            setBackgroundColor(background->color.getValue());
         else
-            setBackgroundImage(background->getImage());
+            setBackgroundImage(background->image.getFullPath());
     }
 
     //Stats
@@ -84,11 +86,11 @@ void SofaGUI::configureGUI(sofa::simulation::Node *groot)
     groot->get(stats, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (stats)
     {
-        setDumpState(stats->getDumpState());
-        setLogTime(stats->getLogTime());
-        setExportState(stats->getExportState());
+        setDumpState(stats->dumpState.getValue());
+        setLogTime(stats->logTime.getValue());
+        setExportState(stats->exportState.getValue());
 #ifdef SOFA_DUMP_VISITOR_INFO
-        setTraceVisitors(stats->getTraceVisitors());
+        setTraceVisitors(stats->traceVisitors.getValue());
 #endif
     }
 

@@ -43,8 +43,27 @@ protected:
     QPushButton* openFileButton;
 
 protected slots :
-    void raiseFileDialog();
+    virtual void raiseDialog();
 };
+
+//      class DataDirectoryWidget : public DataFileNameWidget
+//      {
+//        Q_OBJECT
+//      public:
+//        DataDirectoryWidget(QWidget* parent,
+//                            const char* name,
+//                            core::objectmodel::TData<std::string>* data)
+//        :DataFileNameWidget(parent,name,data)
+//        {}
+
+//      protected:
+//        virtual void readFromData();
+//        virtual void writeToData();
+
+//     protected slots:
+//        virtual void raiseDialog();
+
+//      };
 
 }
 }
