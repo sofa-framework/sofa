@@ -45,6 +45,7 @@ Mapping<In,Out>::Mapping(State<In>* from, State<Out>* to)
     , fromModel(from), toModel(to)
     , m_inputObject(initData(&m_inputObject, "input", "Input object to map"))
     , m_outputObject(initData(&m_outputObject, "output", "Output object to map"))
+    , f_checkJacobian( initData( &f_checkJacobian, false, "checkJacobian", "set to true to compare results of applyJ/applyJT methods with multiplication with the matrix given by getJ()" ) )
 {
     if(to != NULL && !testMechanicalState(to))
         setNonMechanical();
