@@ -74,7 +74,7 @@ void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::
 #endif
 }
 
-void DefaultMultiMatrixAccessor::addMechanicalMapping(const sofa::core::BaseMapping* /*mapping*/)
+void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* /*mapping*/)
 {
     /// @TODO support for mapped matrices
 }
