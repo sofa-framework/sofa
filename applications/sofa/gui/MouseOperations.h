@@ -64,8 +64,8 @@ public:
     Operation(): pickHandle(NULL), performer(NULL),button(NONE) {};
     virtual ~Operation() {};
     virtual void configure(PickHandler*picker, MOUSE_BUTTON b) {pickHandle=picker; button=b; }
-    virtual void configure(PickHandler* picker, sofa::component::configurationsetting::MouseButtonSetting* button)
-    {configure(picker,GetMouseId(button->getButton()));};
+    virtual void configure(PickHandler* picker, sofa::component::configurationsetting::MouseButtonSetting* setting)
+    { configure(picker,GetMouseId(setting->button.getValue().getSelectedId()));  }
     virtual void start() =0;                   /// This function is called each time the mouse is clicked.
     virtual void execution() =0;
     virtual void end() =0;                     /// This function is called after each mouse click.
@@ -123,8 +123,8 @@ public:
     virtual void execution() ;
     virtual void end() ;
 
-    void setStiffness(double s) {setting.setStiffness(s);}
-    virtual double getStiffness() const { return setting.getStiffness();}
+    void setStiffness(double s) {setting.stiffness.setValue(s); }
+    virtual double getStiffness() const { return setting.stiffness.getValue();}
 
     static std::string getDescription() {return "Fix Picked particle";}
 protected:

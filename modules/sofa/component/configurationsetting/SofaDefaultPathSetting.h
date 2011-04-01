@@ -27,16 +27,10 @@
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/component/component.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
-namespace core
-{
-namespace objectmodel
-{
-class BaseObjectDescription;
-}
-}
 
 namespace component
 {
@@ -50,18 +44,8 @@ public:
     SOFA_CLASS(SofaDefaultPathSetting,core::objectmodel::ConfigurationSetting);
     SofaDefaultPathSetting();
 
-    void setRecordPath(const std::string& f) {recordPath.setValue(f);}
-    const std::string &getRecordPath() const {return recordPath.getValue();}
-
-    void setGnuplotPath(const std::string& f) {gnuplotPath.setValue(f);}
-    const std::string &getGnuplotPath() const {return gnuplotPath.getValue();}
-
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
-
-protected:
-    Data<std::string> recordPath;
-    Data<std::string> gnuplotPath;
-    Data<helper::vector<std::string> > envPath;
+    sofa::core::objectmodel::Data<std::string> recordPath;
+    sofa::core::objectmodel::Data<std::string> gnuplotPath;
 };
 
 }

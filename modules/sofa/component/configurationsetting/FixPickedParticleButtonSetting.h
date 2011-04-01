@@ -45,14 +45,8 @@ public:
     FixPickedParticleButtonSetting();
 
     std::string getOperationType() {return "Fix";}
-
-    void setStiffness(SReal s) {stiffness.setValue(s);}
-    SReal getStiffness() const {return stiffness.getValue();};
-
-
-    Data<SReal> *getDataStiffness() {return &stiffness;};
-protected:
     Data<SReal> stiffness;
+
 };
 
 }

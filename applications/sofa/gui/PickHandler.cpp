@@ -151,10 +151,10 @@ void PickHandler::reset()
 
 Operation *PickHandler::changeOperation(sofa::component::configurationsetting::MouseButtonSetting* setting)
 {
-    if (operations[setting->getButton()]) delete operations[setting->getButton()];
+    if (operations[setting->button.getValue().getSelectedId()]) delete operations[setting->button.getValue().getSelectedId()];
     Operation *mouseOp=OperationFactory::Instanciate(setting->getOperationType());
     mouseOp->configure(this,setting);
-    operations[setting->getButton()]=mouseOp;
+    operations[setting->button.getValue().getSelectedId()]=mouseOp;
     return mouseOp;
 }
 

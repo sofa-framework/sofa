@@ -45,20 +45,6 @@ public:
     SOFA_CLASS(ViewerSetting,core::objectmodel::ConfigurationSetting);
     ViewerSetting();
 
-    void setResolution(const defaulttype::Vec<2,int>& d) {resolution.setValue(d);}
-    const defaulttype::Vec<2,int> &getResolution() const {return resolution.getValue();}
-
-    void setFullscreen(bool b) {fullscreen.setValue(b);}
-    bool getFullscreen() const {return fullscreen.getValue();}
-
-    std::string getCameraMode() const {return cameraMode.getValue().getSelectedItem();};
-    unsigned int getCameraModeId() const {return cameraMode.getValue().getSelectedId();};
-    void setCameraMode(const std::string &mode) {cameraMode.beginEdit()->setSelectedItem(mode); cameraMode.endEdit();}
-    std::string getPickingMethod() const {return objectPickingMethod.getValue().getSelectedItem();};
-    unsigned int getPickingMethodId() const {return objectPickingMethod.getValue().getSelectedId();};
-
-
-protected:
     Data<defaulttype::Vec<2,int> > resolution;
     Data<bool> fullscreen;
     Data<sofa::helper::OptionsGroup> cameraMode;

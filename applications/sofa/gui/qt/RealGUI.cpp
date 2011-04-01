@@ -1106,8 +1106,8 @@ void RealGUI::setGnuplotPath(const std::string &path)
 }
 void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf)
 {
-    const defaulttype::Vec<2,int> &res=viewerConf->getResolution();
-    if (viewerConf->getFullscreen()) setFullScreen();
+    const defaulttype::Vec<2,int> &res=viewerConf->resolution.getValue();
+    if (viewerConf->fullscreen.getValue()) setFullScreen();
     else setViewerResolution(res[0], res[1]);
     viewer->configure(viewerConf);
 }
