@@ -18,7 +18,6 @@ SOFA_DECL_CLASS(RecordedCamera)
 
 int RecordedCameraClass = core::RegisterObject("RecordedCamera")
         .add< RecordedCamera >()
-        .addAlias("Camera")
         ;
 
 
@@ -80,6 +79,7 @@ void RecordedCamera::moveCamera_rotation()
     double simuTime = this->getContext()->getTime();
     //double simuDT = this->getContext()->getDt();
     SReal totalTime = this->m_endTime.getValue();
+    simuTime -= m_startTime.getValue();
 
     if (totalTime == 0.0)
         totalTime = 200.0;
