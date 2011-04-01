@@ -180,8 +180,11 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
     if( f_fixAll.getValue(mparams) )
     {
         // fix everything
-        for( int i=0; i<topology->getNbPoints(); ++i )
-            res[i] = Deriv();
+        typename VecDeriv::iterator it;
+        for( it = res.begin(); it != res.end(); ++it )
+        {
+            *it = Deriv();
+        }
     }
     else
     {
