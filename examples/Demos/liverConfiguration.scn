@@ -6,14 +6,13 @@
 	<Node 	name="Settings" gravity="0 -9.81 0"  >
 		<SofaDefaultPathSetting/>
 		<Node 	name="Application" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-			<ViewerSetting fullscreen="0"  cameraMode="Orthographic"  objectPickingMethod="Selection buffer" />
+			<ViewerSetting fullscreen="0"  cameraMode="Orthographic"  objectPickingMethod="Ray casting" />
 			<BackgroundSetting color="0.2 0 0.2" />
 			<StatsSetting logTime="0"  traceVisitors="1" />
 		</Node>
 		<Node 	name="MouseConfiguration" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-			<AttachBodyButtonSetting button="Left"  stiffness="1000"  arrowSize="0.15" />
-			<FixPickedParticleButtonSetting button="Middle"  stiffness="10000" />
-			<AddFrameButtonSetting button="Right" />
+			<AttachBodyButtonSetting button="Right"  stiffness="5000"  arrowSize="0.2" />
+			<FixPickedParticleButtonSetting button="Left"  stiffness="10000" />
 		</Node>
 	</Node>
 	<Node 	name="Liver" gravity="0 -9.81 0" depend="topo dofs"  >
