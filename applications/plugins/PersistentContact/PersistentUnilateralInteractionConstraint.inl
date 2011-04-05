@@ -146,99 +146,131 @@ void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::store(in
 
 
 template<class DataTypes>
-void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id, PersistentID localid, bool isPersistent)
+void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Real cDist, int m1, int m2, long id, PersistentID localid)
 {
-    // Compute dt and delta
-    const Real delta = dot(P-Q, norm) - contactDistance;
-    const Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
-
-    if (this->f_printLog.getValue())
-    {
-        std::cout << "delta : " << delta << " - deltaFree : " << deltaFree << std::endl;
-        std::cout << "P : " << P << " - PFree : " << Pfree << std::endl;
-        std::cout << "Q : " << Q << " - QFree : " << Qfree << std::endl;
-    }
-
     unsigned int lastContactIndex = this->contacts.size();
     this->contacts.resize(lastContactIndex + 1);
 
     typename Inherited::Contact& c = this->contacts[lastContactIndex];
 
-    c.P				= P;
-    c.Q				= Q;
-    c.Pfree			= Pfree;
-    c.Qfree			= Qfree;
-    c.m1			= m1;
-    c.m2			= m2;
-    c.norm			= norm;
-    c.delta			= delta;
-    c.mu			= mu;
-    c.contactId		= id;
-    c.localId		= localid;
-    c.t				= Deriv(norm.z(), norm.x(), norm.y());
-    c.s				= cross(norm, c.t);
-    c.s				= c.s / c.s.norm();
-    c.t				= cross((-norm), c.s);
+    c.P					= this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2];
+    c.Q					= this->getMState1()->read(core::ConstVecCoordId::position())->getValue()[m1];
+    c.m1				= m1;
+    c.m2				= m2;
+    c.norm				= norm;
+    c.t					= Deriv(norm.z(), norm.x(), norm.y());
+    c.s					= cross(norm, c.t);
+    c.s					= c.s / c.s.norm();
+    c.t					= cross((-norm), c.s);
+    c.mu				= mu;
+    c.contactId			= id;
+    c.localId			= localid;
+    c.contactDistance	= cDist;
+}
 
-    const Deriv PPfree = Pfree - P;
-    const Deriv QQfree = Qfree - Q;
-    const Real REF_DIST = PPfree.norm() + QQfree.norm();
 
-    if (isPersistent)
+template<class DataTypes>
+void PersistentUnilateralInteractionConstraint<DataTypes>::getPositionViolation(defaulttype::BaseVector *v)
+{
+    const VecCoord &PfreeVec = this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue();
+    const VecCoord &QfreeVec = this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue();
+
+    Real dfree		= (Real)0.0;
+    Real dfree_t	= (Real)0.0;
+    Real dfree_s	= (Real)0.0;
+
+    const unsigned int cSize = contacts.size();
+
+    for (unsigned int i = 0; i < cSize; i++)
     {
+        const Contact& c = contacts[i];
 
-        std::cout << "Persistent contact: \nP : " << P << " - PFree : " << Pfree << std::endl;
-        std::cout << "Q : " << Q << " - QFree : " << Qfree << std::endl;
-        c.dfree		= deltaFree;
-        c.dfree_t	= dot(Pfree - Qfree, c.t);
-        c.dfree_s	= dot(Pfree - Qfree, c.s);
+        // Compute dfree, dfree_t and d_free_s
 
-        return;
-    }
+        const Coord &Pfree =  PfreeVec[c.m2];
+        const Coord &Qfree =  QfreeVec[c.m1];
 
-    if (helper::rabs(delta) < 0.00001 * REF_DIST)
-    {
-        c.dfree		= deltaFree;
-        c.dfree_t	= dot(PPfree, c.t) - dot(QQfree, c.t);
-        c.dfree_s	= dot(PPfree, c.s) - dot(QQfree, c.s);
+        const Coord PPfree = Pfree - c.P;
+        const Coord QQfree = Qfree - c.Q;
 
-        return;
-    }
+        const Real REF_DIST = PPfree.norm() + QQfree.norm();
 
-    if (helper::rabs(delta - deltaFree) > 0.001 * delta)
-    {
-        const Real dt = delta / (delta - deltaFree);
+        dfree = dot(Pfree - Qfree, c.norm) - c.contactDistance;
+        const Real delta = dot(c.P - c.Q, c.norm) - c.contactDistance;
 
-        if (dt > 0.0 && dt < 1.0)
+        if (helper::rabs(delta) < 0.00001 * REF_DIST)
         {
-            const sofa::defaulttype::Vector3 Qt = Q * (1-dt) + Qfree * dt;
-            const sofa::defaulttype::Vector3 Pt = P * (1-dt) + Pfree * dt;
-
-            c.dfree		= deltaFree;
-            c.dfree_t	= dot(Pfree-Pt, c.t) - dot(Qfree-Qt, c.t);
-            c.dfree_s	= dot(Pfree-Pt, c.s) - dot(Qfree-Qt, c.s);
+            dfree_t	= dot(PPfree, c.t) - dot(QQfree, c.t);
+            dfree_s	= dot(PPfree, c.s) - dot(QQfree, c.s);
         }
-        else
+        else if (helper::rabs(delta - dfree) > 0.001 * delta)
         {
-            if (deltaFree < 0.0)
+            const Real dt = delta / (delta - dfree);
+
+            if (dt > 0.0 && dt < 1.0)
             {
-                c.dfree		= deltaFree;
-                c.dfree_t	= dot(PPfree, c.t) - dot(QQfree, c.t);
-                c.dfree_s	= dot(PPfree, c.s) - dot(QQfree, c.s);
+                const sofa::defaulttype::Vector3 Qt = c.Q * (1-dt) + Qfree * dt;
+                const sofa::defaulttype::Vector3 Pt = c.P * (1-dt) + Pfree * dt;
+
+                dfree_t	= dot(Pfree-Pt, c.t) - dot(Qfree-Qt, c.t);
+                dfree_s	= dot(Pfree-Pt, c.s) - dot(Qfree-Qt, c.s);
             }
             else
             {
-                c.dfree		= deltaFree;
-                c.dfree_t	= 0;
-                c.dfree_s	= 0;
+                if (dfree < 0.0)
+                {
+                    dfree_t	= dot(PPfree, c.t) - dot(QQfree, c.t);
+                    dfree_s	= dot(PPfree, c.s) - dot(QQfree, c.s);
+                }
+                else
+                {
+                    dfree_t	= 0;
+                    dfree_s	= 0;
+                }
             }
         }
+        else
+        {
+            dfree_t	= dot(PPfree, c.t) - dot(QQfree, c.t);
+            dfree_s	= dot(PPfree, c.s) - dot(QQfree, c.s);
+        }
+
+        // Sets dfree in global violation vector
+
+        v->set(c.id, dfree);
+
+        c.dfree = dfree; // PJ : For isActive() method. Don't know if it's still usefull.
+
+        if (c.mu > 0.0)
+        {
+            v->set(c.id + 1, dfree_t);
+            v->set(c.id + 2, dfree_s);
+        }
     }
-    else
+}
+
+
+template<class DataTypes>
+void PersistentUnilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype::BaseVector *v)
+{
+    const VecDeriv &PvfreeVec = this->getMState2()->read(core::ConstVecDerivId::freeVelocity())->getValue();
+    const VecDeriv &QvfreeVec = this->getMState1()->read(core::ConstVecDerivId::freeVelocity())->getValue();
+
+    const unsigned int cSize = contacts.size();
+
+    for (unsigned int i = 0; i < cSize; i++)
     {
-        c.dfree		= deltaFree;
-        c.dfree_t	= dot(PPfree, c.t) - dot(QQfree, c.t);
-        c.dfree_s	= dot(PPfree, c.s) - dot(QQfree, c.s);
+        const Contact& c = contacts[i];
+
+        const Deriv QP_vfree = PvfreeVec[c.m2] - QvfreeVec[c.m1];
+
+        v->set(c.id, dot(QP_vfree, c.norm)); // dfree
+
+        if (c.mu > 0.0)
+        {
+            v->set(c.id + 1, dot(QP_vfree, c.t)); // dfree_t
+            v->set(c.id + 2, dot(QP_vfree, c.s)); // dfree_s
+        }
     }
 }
 
@@ -471,14 +503,14 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::draw()
 
         glEnd();
 
-        glLineWidth(2);
+        /*glLineWidth(2);
         glBegin(GL_LINES);
 
         glColor4f(0.8f,0.8f,0.8f,1.f);
         helper::gl::glVertexT(c.Pfree);
         helper::gl::glVertexT(c.Qfree);
 
-        glEnd();
+        glEnd();*/
 
         glLineWidth(1);
     }

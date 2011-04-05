@@ -596,7 +596,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
                 typedef constraintset::PersistentUnilateralInteractionConstraint<Vec3Types> PersistentConstraint;
                 PersistentConstraint *persistent_constraint = static_cast< PersistentConstraint * >(this->m_constraint);
 
-                persistent_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id/*, isSticked(o)*/);
+                persistent_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id);
 
                 persistent_constraint->setInitForce(index, initForce);
 

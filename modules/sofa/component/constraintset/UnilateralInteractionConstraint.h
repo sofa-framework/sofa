@@ -181,12 +181,12 @@ protected:
     /// Computes constraint violation in position and stores it into resolution global vector
     ///
     /// @param v Global resolution vector
-    void getPositionViolation(defaulttype::BaseVector *v);
+    virtual void getPositionViolation(defaulttype::BaseVector *v);
 
     ///Computes constraint violation in velocity and stores it into resolution global vector
     ///
     /// @param v Global resolution vector
-    void getVelocityViolation(defaulttype::BaseVector *v);
+    virtual void getVelocityViolation(defaulttype::BaseVector *v);
 
 public:
 
