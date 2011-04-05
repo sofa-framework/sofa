@@ -72,10 +72,10 @@ protected:
 
     //in the list of mapping, only mapping where its getJ give a non-NULL matrix is valid, this one is attached with true value
     //The one whose getJ not implemented will attache with the false value
-    mutable std::map<sofa::core::BaseMapping*, bool> mappingsContribution;
+    mutable std::map<sofa::core::BaseMapping*, bool> mappingsList;
 
     //mappingTree allows to find the mapping knowing its state of ToModel
-    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* > mappingsTree;
+    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* > mappingsContributionTree;
 
     mutable std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* > mappedMatrices;
 

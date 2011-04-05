@@ -85,7 +85,7 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* m
     {
         //The case where mapping is not a machanical mapping or do not construct the J matrix
         //This mapping will not contribute to the matrix construction
-        mappingsContribution[mapping] = false ;
+        mappingsList[mapping] = false ;
     }
     else
     {
@@ -96,33 +96,33 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* m
         if(itRootState != globalOffsets.end())
         {
             const sofa::core::behavior::BaseMechanicalState* outstate  = const_cast<const sofa::core::behavior::BaseMechanicalState*>(mapping->getMechTo()[0]);
-            mappingsContribution[mapping] = true;
-            mappingsTree[outstate] = mapping;
+            mappingsList[mapping] = true;
+            mappingsContributionTree[outstate] = mapping;
             return;
         }
 
-        std::map< const sofa::core::behavior::BaseMechanicalState*,  sofa::core::BaseMapping*>::const_iterator itmappedState = mappingsTree.find(instate);
-        if( itmappedState == mappingsTree.end() )
+        std::map< const sofa::core::behavior::BaseMechanicalState*,  sofa::core::BaseMapping*>::const_iterator itmappedState = mappingsContributionTree.find(instate);
+        if( itmappedState == mappingsContributionTree.end() )
         {
             //if the input state of the mapping not found in one of the root states
             //neither in the one of mapped state in the mappingTree, this mapping will not added for the matrix contribution
-            mappingsContribution[mapping] = false;
+            mappingsList[mapping] = false;
             return;
         }
         else
         {
             sofa::core::BaseMapping* parentMapping = itmappedState->second;
-            bool contributiveMapping = mappingsContribution[parentMapping];
+            bool contributiveMapping = mappingsList[parentMapping];
             if(contributiveMapping )
             {
                 const sofa::core::behavior::BaseMechanicalState* outstate  = const_cast<const sofa::core::behavior::BaseMechanicalState*>(mapping->getMechTo()[0]);
-                mappingsContribution[mapping] = true;
-                mappingsTree[outstate] = mapping;
+                mappingsList[mapping] = true;
+                mappingsContributionTree[outstate] = mapping;
                 return;
             }
             else
             {
-                mappingsContribution[mapping] = false;
+                mappingsList[mapping] = false;
                 return;
             }
         }
@@ -392,7 +392,9 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
 {
 #ifdef MULTIMATRIX_VERBOSE
 #endif
-    for(std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator rit = mappingsContribution.rbegin(); rit != mappingsContribution.rend(); ++rit)
+    std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator rit;
+    const std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator itEnd = mappingsList.rend();
+    for(rit = mappingsList.rbegin(); rit != mappingsList.rend(); ++rit)
     {
 //			std::cout << "MappedMultiMatrixAccessor: ----- registered mechanical mapping : "<< rit->first->getName();
 //		if(rit->second)
@@ -402,7 +404,6 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
 //		std::cout << " inputState "<< rit->first->getMechFrom()[0]->getName()
 //				  << " outputState "<< rit->first->getMechTo()[0]->getName()
 //				  <<std::endl;
-
     }
 }
 
