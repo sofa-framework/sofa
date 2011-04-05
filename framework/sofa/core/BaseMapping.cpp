@@ -107,7 +107,7 @@ const sofa::defaulttype::BaseMatrix* BaseMapping::getJ(const MechanicalParams* /
 
 const sofa::defaulttype::BaseMatrix* BaseMapping::getJ()
 {
-    serr << "BaseMechanicalMapping::getJ() NOT IMPLEMENTED BY " << getClassName() << sendl;
+    serr << "BaseMapping::getJ() NOT IMPLEMENTED BY " << getClassName() << sendl;
     return NULL;
 }
 
