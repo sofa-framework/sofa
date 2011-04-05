@@ -70,7 +70,13 @@ protected:
     unsigned int globalDim;
     std::map< const sofa::core::behavior::BaseMechanicalState*, int > globalOffsets;
 
-    unsigned int totalMappedDim;
+    //in the list of mapping, only mapping where its getJ give a non-NULL matrix is valid, this one is attached with true value
+    //The one whose getJ not implemented will attache with the false value
+    mutable std::map<sofa::core::BaseMapping*, bool> mappingsContribution;
+
+    //mappingTree allows to find the mapping knowing its state of ToModel
+    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* > mappingsTree;
+
     mutable std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* > mappedMatrices;
 
     mutable std::map< const sofa::core::behavior::BaseMechanicalState*, MatrixRef > localMatrixMap;
@@ -94,6 +100,7 @@ public:
 
     virtual defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const;
     virtual defaulttype::BaseMatrix* createInteractionMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2) const;
+    virtual void computeGlobalMatrix();
 
 };
 
