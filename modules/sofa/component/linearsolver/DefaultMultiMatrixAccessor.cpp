@@ -393,8 +393,9 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
 #ifdef MULTIMATRIX_VERBOSE
 #endif
     std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator rit;
+    const std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator itBegin = mappingsList.rbegin();
     const std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator itEnd = mappingsList.rend();
-    for(rit = mappingsList.rbegin(); rit != mappingsList.rend(); ++rit)
+    for(rit = itBegin; rit != itEnd; ++rit)
     {
 //			std::cout << "MappedMultiMatrixAccessor: ----- registered mechanical mapping : "<< rit->first->getName();
 //		if(rit->second)
