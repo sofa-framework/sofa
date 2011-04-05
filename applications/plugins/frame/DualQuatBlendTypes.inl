@@ -647,6 +647,68 @@ struct DualQuatBlendTypes<
 
 
 
+// Warning !!!! Onlly the declaration is done. The actual definitions of the methods come from Quadratic->Affine (type case 3)
+template<class Out, class _Material, int nbRef>
+struct DualQuatBlendTypes<
+        StdQuadraticTypes<3,typename _Material::Real>,
+        Out, _Material, nbRef,5
+        >
+{
+    typedef _Material Material;
+    typedef typename Material::Real InReal;
+    typedef typename Out::Real OutReal;
+    typedef InReal Real;
+    typedef typename Material::SGradient MaterialDeriv;
+    typedef typename Material::SHessian MaterialMat;
+    typedef StdQuadraticTypes<3,InReal> In;
+    typedef typename In::QuadraticCoord QuadraticCoord; // vec9
+    typedef typename In::Affine Affine;
+    typedef typename In::Coord InCoord;
+    typedef typename Out::Coord OutCoord;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename In::VecCoord VecInCoord;
+    typedef typename In::VecDeriv VecInDeriv;
+    typedef Mat<In::spatial_dimensions*In::spatial_dimensions,3,Real> QuadraticMat; // mat 9x3
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
+    void init( const OutCoord& /*InitialPos*/, const Vec<nbRef,unsigned int>& /*Index*/, const VecInCoord& /*InitialTransform*/, const Vec<nbRef,Real>& /*w*/, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
+    {
+    }
+
+    OutCoord apply( const VecInCoord& /*d*/ )  // Called in Apply
+    {
+        OutCoord result;
+        return result;
+    }
+
+    OutDeriv mult( const VecInDeriv& /*d*/ ) // Called in ApplyJ
+    {
+        OutDeriv result;
+        return result;
+    }
+
+    void addMultTranspose( VecInDeriv& /*res*/, const OutDeriv& /*d*/ ) // Called in ApplyJT
+    {
+    }
+
+    void addMultTranspose( ParentJacobianRow& /*parentJacobianRow*/, const OutDeriv& /*childJacobianVec*/ ) // Called in ApplyJT to build a contraint equation on the independent DOF
+    {
+    }
+
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 5>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return o;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 5>& /*e*/ )
+    {
+        // Not implemented !!  Just needed to compile
+        return i;
+    }
+};
+
+
 
 
 

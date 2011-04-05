@@ -121,6 +121,7 @@ public:
 
     virtual void draw();
 
+    virtual void apply( InCoord& coord, const InCoord& restCoord);
     virtual void apply( typename SampleData<TOut>::MaterialCoord& coord, const typename SampleData<TOut>::MaterialCoord& restCoord);
     virtual void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
     virtual void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
@@ -134,16 +135,15 @@ public:
     virtual void handleTopologyChange(core::topology::Topology* t);
 
 protected:
+    inline void initFrames (const bool& setFramePos = true, const bool& updateFramePosFromOldOne = false);
     inline void initSamples();
-    inline void initFrames();
     Data<bool> useLinearWeights;
     inline void updateWeights ();
     inline void normalizeWeights();
     virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass);
 
     // Adaptativity
-    virtual void addSamples( const unsigned int& nbNewVertices);
-    virtual void UpdateSamples();
+    virtual void updateMapping();
 
     PointData<InOut> inout;  ///< Data specific to the conversion between the types
     PointData<DQInOut> dqinout;  ///< Data specific to the conversion between the types
