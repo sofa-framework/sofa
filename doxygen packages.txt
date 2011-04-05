@@ -1,3 +1,4 @@
+applications/plugins/frame
 framework/sofa/helper
 framework/sofa/defaulttype
 framework/sofa/core

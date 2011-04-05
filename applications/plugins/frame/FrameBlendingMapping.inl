@@ -237,6 +237,33 @@ void FrameBlendingMapping<TIn, TOut>::init()
 
 
 template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::apply( InCoord& coord, const InCoord& restCoord)
+{
+    if(!gridMaterial) { serr << "No GridMaterial !! on single point apply call" << sendl; return;}
+
+    Vec<nbRef,InReal> w;
+    Vec<nbRef,unsigned int> reps;
+    MaterialCoord restPos = restCoord.getCenter();
+    unsigned int hexaID = gridMaterial->getIndex( restPos);
+
+    gridMaterial->getWeights( w, hexaID );
+    gridMaterial->getIndices( reps, hexaID );
+
+    // Allocates and initialises mapping data.
+    defaulttype::LinearBlendTypes<In,In,GridMat,nbRef, defaulttype::OutDataTypesInfo<In>::type > map;
+    defaulttype::DualQuatBlendTypes<In,In,GridMat,nbRef, defaulttype::OutDataTypesInfo<In>::type > dqmap;
+    if(useDQ.getValue()) dqmap.init(restCoord,reps,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
+    else map.init(restCoord,reps,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
+
+    // Transforms the point depending of the current 'in' position.
+    ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
+    if(useDQ.getValue()) {coord = dqmap.apply( in.ref());}
+    else {coord = map.apply( in.ref());}
+}
+
+
+
+template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::apply( typename SampleData<TOut>::MaterialCoord& coord, const typename SampleData<TOut>::MaterialCoord& restCoord)
 {
     if(!gridMaterial) { serr << "No GridMaterial !! on single point apply call" << sendl; return;}
@@ -435,7 +462,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parent
 
 
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::initFrames()
+void FrameBlendingMapping<TIn, TOut>::initFrames( const bool& setFramePos, const bool& updateFramePosFromOldOne)
 {
     if( targetFrameNumber.getValue() == 0) return; // use user-defined frames
 
@@ -445,18 +472,14 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
     WriteAccessor<Data<VecInCoord> >  xfromReset = *this->fromModel->write(core::VecCoordId::resetPosition());
     unsigned int num_points=xfrom0.size();
 
-    core::behavior::MechanicalState< In >* mstateFrom = dynamic_cast<core::behavior::MechanicalState< In >* >( this->fromModel);
-    if ( !mstateFrom)
+    if (setFramePos)
     {
-        serr << "Error: try to insert new frames, which are not mechanical states !" << sendl;
-        return;
-    }
-
-    // ignore if one frame initialized at 0 (done by the mechanical object, not the user)
-    if(num_points==1)
-    {
-        unsigned int i=0; while(i!=num_spatial_dimensions && xfrom0[0][i]==0) i++;
-        if(i==num_spatial_dimensions) num_points=0;
+        // ignore if one frame initialized at 0 (done by the mechanical object, not the user)
+        if(num_points==1)
+        {
+            unsigned int i=0; while(i!=num_spatial_dimensions && xfrom0[0][i]==0) i++;
+            if(i==num_spatial_dimensions) num_points=0;
+        }
     }
 
     // retrieve initial frames
@@ -473,11 +496,37 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
     std::cout<<"Computing weights in grid..."<<std::endl;
     gridMaterial->computeWeights(points);
 
-    //// copy
-    this->fromModel->resize(points.size());
-    for ( unsigned int i=num_points; i<points.size(); i++ )
-        for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
-            xfrom[i][j] = xfrom0[i][j] = xfromReset[i][j]=  points[i][j];
+    if (setFramePos)
+    {
+        if(updateFramePosFromOldOne)
+        {
+            vector<InCoord> newRestStates, newStates;
+            newRestStates.resize(points.size());
+            newStates.resize(points.size());
+            // Init restStates from points ( = new pos after lloyd)
+            for ( unsigned int i=0; i<points.size(); i++ )
+                for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
+                    newRestStates[i][j] = points[i][j];
+            // Transform these points to obtain the new deformation
+            for ( unsigned int i=0; i<points.size(); i++ )
+                apply( newStates[i], newRestStates[i]);
+            // Store the new DOFs
+            for ( unsigned int i=0; i<points.size(); i++ )
+            {
+                xfrom0[i] = xfromReset[i] = newRestStates[i];
+                xfrom[i] = newStates[i];
+            }
+        }
+        else
+        {
+            //// copy the position only
+            this->fromModel->resize(points.size());
+            for ( unsigned int i=num_points; i<points.size(); i++ )
+                for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
+                    xfrom[i][j] = xfrom0[i][j] = xfromReset[i][j]=  points[i][j];
+        }
+
+    }
 }
 
 
@@ -1147,90 +1196,24 @@ void FrameBlendingMapping<TIn, TOut>::findIndexInRepartition( bool& influenced, 
 }
 
 
-
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::addSamples( const unsigned int& /*nbNewVertices*/)
+void FrameBlendingMapping<TIn, TOut>::updateMapping()
 {
-    // TODO
-    // Compute only the data for the inserted points.
-    // Here, all is recomputed
+    serr << this->getName() << " (" << this->isPhysical << ") Update Mapping" << sendl;
 
-    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
-
-    // Compute initPos
-    vector<OutCoord>& initPos = *(f_initPos.beginEdit());
-    initPos.resize(out.size());
-    for(unsigned int i=0; i<out.size(); i++ )
-        initPos[i] = out[i];
-    f_initPos.endEdit();
-
-    // init weights and sample info (mass, moments) todo: ask the Material
-    updateWeights();
-
-    // init jacobians for mapping
-    if(useDQ.getValue())
+    if (this->isPhysical)
     {
-        vector<DQInOut>& dqInOut = *(dqinout.beginEdit());
-        dqInOut.resize( out.size() );
-        for(unsigned int i=0; i<out.size(); i++ )
-        {
-            dqInOut[i].init(
-                this->f_initPos.getValue()[i],
-                f_index.getValue()[i],
-                this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
-                weight.getValue()[i],
-                weightDeriv.getValue()[i],
-                weightDeriv2.getValue()[i]
-            );
-        }
-        inout.endEdit();
+        serr << "Update Frames" << sendl;
+
+        initFrames( true, true); // With lloyd on frames
+        //initFrames( false); // Without lloyd on frames
+
+        serr << "Update Samples" << sendl;
+
+        initSamples();
+
+        gridMaterial->voxelsHaveChanged.setValue (false);
     }
-    else
-    {
-        vector<InOut>& inOut = *(inout.beginEdit());
-        inOut.resize( out.size() );
-        for(unsigned int i=0; i<out.size(); i++ )
-        {
-            inOut[i].init(
-                this->f_initPos.getValue()[i],
-                f_index.getValue()[i],
-                this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
-                weight.getValue()[i],
-                weightDeriv.getValue()[i],
-                weightDeriv2.getValue()[i]
-            );
-        }
-        inout.endEdit();
-    }
-}
-
-
-
-template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::UpdateSamples()
-{
-    serr << "UpdateSamples Physical" << sendl;
-
-    //// Recompute Weights
-    WriteAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->write(core::VecCoordId::restPosition());
-    unsigned int num_points=xfrom0.size();
-
-    // retrieve initial frames
-    vector<SpatialCoord> points(num_points);
-    for ( unsigned int i=0; i<num_points; i++ )
-        for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
-            points[i][j]= xfrom0[i][j];
-
-    // Insert new frames and compute associated voxel weights
-    std::cout<<"Inserting "<<targetFrameNumber.getValue()-num_points<<" frames..."<<std::endl;
-    if(initializeFramesInRigidParts.getValue()) gridMaterial->rigidPartsSampling(points);
-    gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
-    std::cout<<"Computing weights in grid..."<<std::endl;
-    gridMaterial->computeWeights(points);
-
-
-    initSamples();
-
 
     ReadAccessor<Data<VecOutCoord> > out  = *this->toModel->read(core::ConstVecCoordId::restPosition());
     vector<OutCoord>& initPos = *(f_initPos.beginEdit());
@@ -1277,34 +1260,27 @@ void FrameBlendingMapping<TIn, TOut>::UpdateSamples()
         }
         inout.endEdit();
     }
-
-    gridMaterial->voxelsHaveChanged.setValue (false);
 }
 
 
+
+// This method is equivalent to handleTopologyChange() for physical mappings.
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::checkForChanges()
 {
     if (this->mappingHasChanged) this->mappingHasChanged = false;
 
     // Physical Samples have to be updated
-    if (this->isPhysical && gridMaterial && gridMaterial->voxelsHaveChanged.getValue())
+    if ( gridMaterial && gridMaterial->voxelsHaveChanged.getValue())
     {
         this->mappingHasChanged = true;
-        UpdateSamples();
+        updateMapping();
     }
-
-    // Changes on Frames
-    // if ()
-    // {
-    //     this->mappingHasChanged = true;
-    //     TODO
-    // }
-
 }
 
 
 
+// This method is only called on mappings handling collision and visual models. Physical ones are not based on a topology (see the method checkForChanges()).
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
 {
@@ -1336,8 +1312,8 @@ void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topol
             }
             case core::topology::POINTSADDED:
             {
-                const unsigned int& nbNewVertices = ( static_cast< const typename component::topology::PointsAdded *> ( *itBegin ) )->getNbAddedVertices();
-                addSamples( nbNewVertices);
+                //const unsigned int& nbNewVertices = ( static_cast< const typename component::topology::PointsAdded *> ( *itBegin ) )->getNbAddedVertices();
+                updateMapping();
                 break;
             }
             case core::topology::POINTSREMOVED:
