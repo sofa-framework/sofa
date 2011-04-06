@@ -1,11 +1,11 @@
-declare(glut,   extlibs/glut.prf)
-declare(glew,   extlibs/glew.prf)
-declare(boost,  extlibs/boost.prf)
-declare(fltk,   extlibs/fltk.prf)
-declare(libpng, extlibs/libpng.prf)
-declare(libxml, extlibs/libxml.prf)
-declare(metis,  extlibs/metis.prf)
-declare(zlib,   extlibs/zlib.prf)
+declare(glut,   glut.prf)
+declare(glew,   glew.prf)
+declare(boost,  boost.prf)
+declare(fltk,   fltk.prf)
+declare(libpng, libpng.prf)
+declare(libxml, libxml.prf)
+declare(metis,  metis.prf)
+declare(zlib,   zlib.prf)
 
 ######################################################################
 # Extlibs
@@ -80,3 +80,9 @@ declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
 declare(sofaguifltk, applications/sofa/gui/fltk,           sofaguiqt fltk)
 
 declare(runSofa,     applications/projects/runSofa, sofaguimain)
+
+######################################################################
+# Plugins
+######################################################################
+
+declare(TriangularMeshRefiner, applications/plugins/TriangularMeshRefiner, sofacomponentcollision)

@@ -3,13 +3,11 @@
 #   This file should be included at the end of each pro file 
 ########################################################################
 
-!contains(TEMPLATE, subdirs) {
+!contains(TEMPLATE, subdirs) : !contains(TEMPLATE, vcsubdirs) {
 	loadDependencies($$TARGET, transitive)
 }
 
-BUILD_SYSTEM_FILES = \
-	$$SOFA_FEATURES_PATH/sofa-pre.prf \
-	$$SOFA_FEATURES_PATH/sofa-post.prf
+BUILD_SYSTEM_FILES = $$files($$SOFA_FEATURES_DIR/*.prf)
 
 ########################################################################
 # Load SOFA-specific configuration
@@ -56,29 +54,50 @@ win32 {
 # Definition of make install
 ########################################################################
 
+# If the build system features files exist in the source dir, we install them.
+equals(ROOT_PATH, .) : exists($$ROOT_SRC_DIR/$$SOFA_FEATURES_PATH) {
+	
+	INSTALLS += buildsystem
+
+	buildsystem.files = \
+		$$BUILD_SYSTEM_FILES \
+		$$files($$BUILD_DIR/*.prf)
+
+	buildsystem.path = $$SOFA_INSTALL_ROOT/$$SOFA_FEATURES_PATH
+}
+
+contains(TEMPLATE, subdirs) {
+	features.files = $$files($$SRC_DIR/*.prf)
+	!isEmpty(features.files) {
+		features.path  = $$SOFA_INSTALL_ROOT/$$SOFA_FEATURES_PATH
+		INSTALLS += features
+	}
+}
+
 contains(TEMPLATE, lib) {
-	INSTALLS += target headers features
+	INSTALLS += target features headers
+
 	target.path    = $$SOFA_INSTALL_ROOT/lib
-	headers.files  = $$HEADERS
-	headers.path   = $$SOFA_INSTALL_ROOT/include/sofa/$$SUBDIR_PATH
 	features.files = $${TARGET}.prf
 	features.path  = $$SOFA_INSTALL_ROOT/$$SOFA_FEATURES_PATH
+	
+	headersList = $$join(HEADERS, " $$SUBDIR_PATH/", $$SUBDIR_PATH/, )
+
+	headers.path = $$SOFA_INSTALL_ROOT/include/sofa
+	addCommand(headers.commands, -(cd $$ROOT_SRC_DIR && rsync -R $$canonicalize($$headersList) $(INSTALL_ROOT)$$headers.path))
+
+	QMAKE_EXTRA_TARGETS += uninstall_headers
+	UNINSTALLDEPS += uninstall_headers
+
+	for(header, headersList) {
+		addCommand(uninstall_headers.commands, -$(DEL_FILE) $(INSTALL_ROOT)$$headers.path/$$header)
+	}
+	addCommand(uninstall_headers.commands, -$(DEL_DIR) $(INSTALL_ROOT)$$headers.path)
 }
 
 contains(TEMPLATE, app) {
 	INSTALLS += target
 	target.path = $$SOFA_INSTALL_ROOT/bin/
-}
-
-equals(ROOT_PATH, .) {
-	# If the build system features files exist in the source dir, we install them.
-	exists($$ROOT_SRC_DIR/$$SOFA_FEATURES_PATH) {
-		INSTALLS += features
-		features.files = \
-			$$BUILD_SYSTEM_FILES \
-			$$ROOT_BUILD_DIR/sofa-pre-custom.prf
-		features.path = $$SOFA_INSTALL_ROOT/$$SOFA_FEATURES_PATH
-	}
 }
 
 ########################################################################
