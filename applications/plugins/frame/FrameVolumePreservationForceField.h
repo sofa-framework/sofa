@@ -80,7 +80,7 @@ public:
 protected :
 
     Material* material;
-    typedef defaulttype::SampleData<DataTypes> SampleData;
+    typedef defaulttype::SampleData<DataTypes,true> SampleData;
     SampleData* sampleData;
     vector< Real > volume;
     vector< Frame > ddet;

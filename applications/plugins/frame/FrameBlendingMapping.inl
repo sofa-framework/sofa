@@ -104,7 +104,7 @@ using helper::ReadAccessor;
 
 template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
-    : Inherit ( from, to ), FData(), SampleData<TOut>()
+    : Inherit ( from, to ), FData(), SData()
     , useLinearWeights ( initData ( &useLinearWeights, false, "useLinearWeights","use linearly interpolated weights between the two closest frames." ) )
     , useDQ ( initData ( &useDQ, false, "useDQ","use dual quaternion blending instead of linear blending ." ) )
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
@@ -201,7 +201,7 @@ void FrameBlendingMapping<TIn, TOut>::init()
                 weightDeriv2.getValue()[i]
             );
         }
-        inout.endEdit();
+        dqinout.endEdit();
     }
     else
     {
@@ -264,7 +264,7 @@ void FrameBlendingMapping<TIn, TOut>::apply( InCoord& coord, const InCoord& rest
 
 
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::apply( typename SampleData<TOut>::MaterialCoord& coord, const typename SampleData<TOut>::MaterialCoord& restCoord)
+void FrameBlendingMapping<TIn, TOut>::apply( typename SData::MaterialCoord& coord, const typename SData::MaterialCoord& restCoord)
 {
     if(!gridMaterial) { serr << "No GridMaterial !! on single point apply call" << sendl; return;}
 
@@ -1241,7 +1241,7 @@ void FrameBlendingMapping<TIn, TOut>::updateMapping()
                 weightDeriv2.getValue()[i]
             );
         }
-        inout.endEdit();
+        dqinout.endEdit();
     }
     else
     {
@@ -1292,7 +1292,7 @@ void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topol
 
         // Handle topological changes for PointData
         if (!useDQ.getValue()) inout.handleTopologyEvents(itBegin, itEnd);
-        else dqinout.handleTopologyEvents(itBegin, itEnd);
+        //else dqinout.handleTopologyEvents(itBegin, itEnd);
         f_initPos.handleTopologyEvents(itBegin, itEnd);
         f_index.handleTopologyEvents(itBegin, itEnd);
         weight.handleTopologyEvents(itBegin, itEnd);
@@ -1332,6 +1332,23 @@ void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topol
     }
     return;
 }
+
+
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& /*restPos*/)
+{
+    serr << "insertFrame call !!" << sendl;
+}
+
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::removeFrame (const unsigned int /*index*/)
+{
+    serr << "removeFrame call !!" << sendl;
+}
+
+
 
 
 } // namespace mapping
