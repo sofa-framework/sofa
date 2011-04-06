@@ -135,7 +135,7 @@ public:
     // Adaptativity
     virtual void checkForChanges();
     virtual void handleTopologyChange(core::topology::Topology* t);
-    virtual void insertFrame( const Vec3d& restPos);
+    virtual void insertFrame( const Vec3d& pos);
     virtual void removeFrame( const unsigned int index);
 
 protected:

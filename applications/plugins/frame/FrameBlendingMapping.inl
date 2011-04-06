@@ -1269,10 +1269,13 @@ template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::checkForChanges()
 {
     if (this->mappingHasChanged) this->mappingHasChanged = false;
+    ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
-    // Physical Samples have to be updated
-    if ( gridMaterial && gridMaterial->voxelsHaveChanged.getValue())
+    // Mapping has to be updated
+    if ( (in.size() != targetFrameNumber.getValue()) || // In DOFs have changed
+            (gridMaterial && gridMaterial->voxelsHaveChanged.getValue())) // Voxels have changed
     {
+        targetFrameNumber.setValue(in.size());
         this->mappingHasChanged = true;
         updateMapping();
     }
@@ -1336,9 +1339,20 @@ void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topol
 
 
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& /*restPos*/)
+void FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
 {
-    serr << "insertFrame call !!" << sendl;
+    core::behavior::MechanicalState< In >* mstatefrom = static_cast<core::behavior::MechanicalState< In >* >( this->fromModel);
+    mstatefrom->resize( mstatefrom->getSize()+1);
+
+    WriteAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->write(core::VecCoordId::restPosition());
+    WriteAccessor<Data<VecInCoord> >  xfrom = *this->fromModel->write(core::VecCoordId::position());
+    WriteAccessor<Data<VecInCoord> >  xfromReset = *this->fromModel->write(core::VecCoordId::resetPosition());
+
+    //TODO inverseSkinning to obtain restPos from pos
+
+    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfrom0[xfrom0.size()-1][j] = pos[j];
+    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfrom[xfrom.size()-1][j] = pos[j];
+    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfromReset[xfromReset.size()-1][j] = pos[j];
 }
 
 
