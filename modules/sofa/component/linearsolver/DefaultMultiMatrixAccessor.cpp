@@ -391,21 +391,21 @@ defaulttype::BaseMatrix* MappedMultiMatrixAccessor::createInteractionMatrix(cons
 void MappedMultiMatrixAccessor::computeGlobalMatrix()
 {
 #ifdef MULTIMATRIX_VERBOSE
-#endif
     std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator rit;
     const std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator itBegin = mappingsList.rbegin();
     const std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator itEnd = mappingsList.rend();
     for(rit = itBegin; rit != itEnd; ++rit)
     {
-//			std::cout << "MappedMultiMatrixAccessor: ----- registered mechanical mapping : "<< rit->first->getName();
-//		if(rit->second)
-//			std::cout << " TRUE ";
-//		else
-//			std::cout << " FALSE ";
-//		std::cout << " inputState "<< rit->first->getMechFrom()[0]->getName()
-//				  << " outputState "<< rit->first->getMechTo()[0]->getName()
-//				  <<std::endl;
+        std::cout << "MappedMultiMatrixAccessor: ----- registered mechanical mapping : "<< rit->first->getName();
+        if(rit->second)
+            std::cout << " TRUE ";
+        else
+            std::cout << " FALSE ";
+        std::cout << " inputState "<< rit->first->getMechFrom()[0]->getName()
+                << " outputState "<< rit->first->getMechTo()[0]->getName()
+                <<std::endl;
     }
+#endif
 }
 
 
