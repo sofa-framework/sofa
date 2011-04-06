@@ -280,18 +280,16 @@ void IdentityMapping<TIn, TOut>::handleTopologyChange()
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* IdentityMapping<TIn, TOut>::getJ()
 {
-    const VecCoord& out = *this->toModel->getX();
-    const InVecCoord& in = *this->fromModel->getX();
-    assert(in.size() == out.size());
+    const unsigned int outStateSize = this->toModel->getX()->size();
+    const unsigned int  inStateSize = this->fromModel->getX()->size();
+    assert(outStateSize == inStateSize);
 
     if (matrixJ.get() == 0 || updateJ)
     {
         updateJ = false;
-        if (matrixJ.get() == 0 ||
-            matrixJ->rowBSize() != out.size() ||
-            matrixJ->colBSize() != in.size())
+        if (matrixJ.get() == 0 || matrixJ->rowBSize() != outStateSize || matrixJ->colBSize() != inStateSize)
         {
-            matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
+            matrixJ.reset(new MatrixType(outStateSize * NOut, inStateSize * NIn));
         }
         else
         {
@@ -304,7 +302,7 @@ const sofa::defaulttype::BaseMatrix* IdentityMapping<TIn, TOut>::getJ()
         const ParticleMask::InternalStorage& indices = maskTo->getEntries();
         ParticleMask::InternalStorage::const_iterator it = indices.begin();
 
-        for(unsigned i = 0; i < out.size() && !(isMaskInUse && it == indices.end()); i++)
+        for(unsigned i = 0; i < outStateSize && !(isMaskInUse && it == indices.end()); i++)
         {
             if (isMaskInUse)
             {
