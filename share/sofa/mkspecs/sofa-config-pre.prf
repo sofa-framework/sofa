@@ -33,3 +33,15 @@ contains(DEFINES, SOFA_GUI_QGLVIEWER) {
 !contains(CONFIGDEBUG, debug) {
 	DEFINES += NDEBUG
 }
+
+########################################################################
+# System-specific configuration
+########################################################################
+
+macx {
+	BUNDLE_RESOURCES_SHADERS.path = Contents/Resources/shaders
+	BUNDLE_RESOURCES_SHADERS.files = $$files($$ROOT_SRC_DIR/share/shaders/*)
+	BUNDLE_RESOURCES_TEXTURES.path = Contents/Resources/textures
+	BUNDLE_RESOURCES_TEXTURES.files = $$ROOT_SRC_DIR/share/textures/SOFA_logo.bmp $$files($$ROOT_SRC_DIR/share/textures/media*)
+	APP_BUNDLE_DATA += BUNDLE_RESOURCES_TEXTURES BUNDLE_RESOURCES_SHADERS
+}
