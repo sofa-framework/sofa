@@ -390,22 +390,60 @@ defaulttype::BaseMatrix* MappedMultiMatrixAccessor::createInteractionMatrix(cons
 
 void MappedMultiMatrixAccessor::computeGlobalMatrix()
 {
-#ifdef MULTIMATRIX_VERBOSE
-    std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator rit;
-    const std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator itBegin = mappingsList.rbegin();
-    const std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator itEnd = mappingsList.rend();
-    for(rit = itBegin; rit != itEnd; ++rit)
+//	std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator rit;
+//	const std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator itBegin = mappingsList.rbegin();
+//	const std::map<sofa::core::BaseMapping*, bool>::const_reverse_iterator itEnd = mappingsList.rend();
+//	for(rit = itBegin;rit != itEnd;++rit)
+//	{
+//			std::cout << "MappedMultiMatrixAccessor: ----- registered mechanical mapping : "<< rit->first->getName();
+//		if(rit->second)
+//			std::cout << " TRUE ";
+//		else
+//			std::cout << " FALSE ";
+//		std::cout << " inputState "<< rit->first->getMechFrom()[0]->getName()
+//				  << " outputState "<< rit->first->getMechTo()[0]->getName()
+//				  <<std::endl;
+//	}
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* >::const_reverse_iterator _rit;
+    const std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* >::const_reverse_iterator _itBegin = mappingsContributionTree.rbegin();
+    const std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* >::const_reverse_iterator _itEnd = mappingsContributionTree.rend();
+    for(_rit = _itBegin; _rit != _itEnd; ++_rit)
     {
-        std::cout << "MappedMultiMatrixAccessor: ----- registered mechanical mapping : "<< rit->first->getName();
-        if(rit->second)
-            std::cout << " TRUE ";
-        else
-            std::cout << " FALSE ";
-        std::cout << " inputState "<< rit->first->getMechFrom()[0]->getName()
-                << " outputState "<< rit->first->getMechTo()[0]->getName()
+//#ifdef MULTIMATRIX_VERBOSE
+//		std::cout << "MappedMultiMatrixAccessor: ----- contributed mechanical mapping : "<< _rit->second->getName()
+//				  << " inputState "<< _rit->second->getMechFrom()[0]->getName()
+//				  << " outputState "<< _rit->second->getMechTo()[0]->getName()
+//				  << " outputState mapped in contributive tree "<< _rit->first->getName()
+//				  <<std::endl;
+//#endif
+
+        const sofa::core::behavior::BaseMechanicalState* mstate1 = _rit->second->getMechFrom()[0];
+        const sofa::core::behavior::BaseMechanicalState* mstate2 = _rit->second->getMechTo()[0];
+
+        MatrixRef K1 = this->getMatrix(mstate1);
+        MatrixRef K2 = this->getMatrix(mstate2);
+        const defaulttype::BaseMatrix* matrixJ = _rit->second->getJ();
+
+#ifdef MULTIMATRIX_VERBOSE
+        std::cout << "MappedMultiMatrixAccessor: MAPPING "<<_rit->second->getName() <<"  MATRIX CONTRIBUTION : "
+                <<     "K1[" << K1.matrix->rowSize() <<"x" << K1.matrix->colSize() <<"]"
+                << "    K2[" << K2.matrix->rowSize() <<"x" << K2.matrix->colSize() <<"]"
+                << "     J[" <<   matrixJ->rowSize() <<"x" <<   matrixJ->colSize() <<"]"
                 <<std::endl;
-    }
 #endif
+
+
+
+
+    }
+
+
+
+
+
+
 }
 
 
