@@ -43,7 +43,7 @@ class HexaRemover: public core::objectmodel::BaseObject
     typedef typename MeshGen::GCoord GCoord;
     typedef typename MeshGen::SCoord SCoord;
 
-    typedef SampleData<DataTypes> SData; // = FrameBlendingMapping
+    typedef SampleData<DataTypes,false> SData; // = collision FrameBlendingMapping
     typedef std::multimap< double, std::multimap<double, std::pair< double, double> > > RasterizedVol; // map< x, map< y, pair< zMin, zMax> > >
     typedef typename defaulttype::Vec3f FPoint;
     typedef typename helper::fixed_array<FPoint, 2> BBox;

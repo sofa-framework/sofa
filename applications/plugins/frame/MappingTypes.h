@@ -119,26 +119,32 @@ public:
 };
 
 
+template<bool IsPhysical>
 class BaseFrameBlendingMapping : public virtual core::objectmodel::BaseObject
 {
 public:
+    typedef Vec<3,double> Vec3d;
+
+    static const bool isPhysical = IsPhysical;
     bool mappingHasChanged;
 
     BaseFrameBlendingMapping ()
         : mappingHasChanged(false)
     {
     }
+
+    virtual void insertFrame( const Vec3d& restPos) = 0;
+    virtual void removeFrame( const unsigned int index) = 0;
 };
 
 
 template<class TIn, bool IsPhysical>
-class FrameData : public virtual BaseFrameBlendingMapping
+class FrameData : public virtual BaseFrameBlendingMapping<IsPhysical>
 {
 public:
     // Input types
     typedef TIn In;
     typedef typename In::Real InReal;
-    static const bool isPhysical = IsPhysical;
     static const unsigned int num_spatial_dimensions=In::spatial_dimensions;
     enum {InVSize= defaulttype::InDataTypesInfo<In>::VSize};
     typedef FrameMass<num_spatial_dimensions,InVSize,InReal> FrameMassType;
@@ -146,7 +152,7 @@ public:
     typedef helper::vector<FrameMassType> MassVector;
 
     FrameData ()
-        : BaseFrameBlendingMapping ()
+        : BaseFrameBlendingMapping<IsPhysical> ()
     {
     }
     virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass) = 0;
@@ -154,8 +160,8 @@ public:
 
 
 
-template<class TOut>
-class SampleData : public virtual BaseFrameBlendingMapping
+template<class TOut, bool IsPhysical>
+class SampleData : public virtual BaseFrameBlendingMapping<IsPhysical>
 {
 public:
     // Output types
@@ -166,7 +172,7 @@ public:
     Data<VecMaterialCoord> f_materialPoints;
 
     SampleData ()
-        : BaseFrameBlendingMapping ()
+        : BaseFrameBlendingMapping<IsPhysical> ()
         , f_materialPoints ( initData ( &f_materialPoints,"materialPoints","Coordinates of the samples in object space" ) )
     {
     }

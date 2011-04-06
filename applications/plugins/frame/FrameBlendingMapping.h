@@ -64,10 +64,10 @@ using sofa::component::topology::PointData;
 /** Linear blend skinning, from a variety of input types to a variety of output types.
  */
 template <class TIn, class TOut>
-class FrameBlendingMapping : public core::Mapping<TIn, TOut>, public FrameData<TIn,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)>, public SampleData<TOut>
+class FrameBlendingMapping : public core::Mapping<TIn, TOut>, public FrameData<TIn,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)>, public SampleData<TOut,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)>
 {
 public:
-    SOFA_CLASS3(SOFA_TEMPLATE2(FrameBlendingMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut), SOFA_TEMPLATE2(FrameData,TIn,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)), SOFA_TEMPLATE(SampleData,TOut));
+    SOFA_CLASS3(SOFA_TEMPLATE2(FrameBlendingMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut), SOFA_TEMPLATE2(FrameData,TIn,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)), SOFA_TEMPLATE2(SampleData,TOut,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)));
 
     typedef core::Mapping<TIn, TOut> Inherit;
 
@@ -106,12 +106,14 @@ public:
     typedef typename FData::FrameMassType FrameMassType;
     typedef typename FData::VecMass VecMass;
     typedef typename FData::MassVector MassVector;
+    typedef SampleData<TOut,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)> SData;
 
     // Conversion types
     static const unsigned int nbRef = GridMat::nbRef;
     typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::type > InOut;
     typedef typename defaulttype::DualQuatBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::type > DQInOut;
 
+    typedef Vec<3,double> Vec3d;
 
 public:
     FrameBlendingMapping (core::State<In>* from, core::State<Out>* to );
@@ -122,7 +124,7 @@ public:
     virtual void draw();
 
     virtual void apply( InCoord& coord, const InCoord& restCoord);
-    virtual void apply( typename SampleData<TOut>::MaterialCoord& coord, const typename SampleData<TOut>::MaterialCoord& restCoord);
+    virtual void apply( typename SData::MaterialCoord& coord, const typename SData::MaterialCoord& restCoord);
     virtual void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
     virtual void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
     virtual void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
@@ -133,6 +135,8 @@ public:
     // Adaptativity
     virtual void checkForChanges();
     virtual void handleTopologyChange(core::topology::Topology* t);
+    virtual void insertFrame( const Vec3d& restPos);
+    virtual void removeFrame( const unsigned int index);
 
 protected:
     inline void initFrames (const bool& setFramePos = true, const bool& updateFramePosFromOldOne = false);
