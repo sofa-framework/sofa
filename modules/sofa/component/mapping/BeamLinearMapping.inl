@@ -49,6 +49,38 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+template<class Real>
+struct RigidMappingMatrixHelper<2, Real>
+{
+    template <class Matrix, class Vector>
+    static void setMatrix(Matrix& mat, const Vector& vec)
+    {
+        mat[0][0] = (Real) 1     ;    mat[1][0] = (Real) 0     ;
+        mat[0][1] = (Real) 0     ;    mat[1][1] = (Real) 1     ;
+        mat[0][2] = (Real)-vec[1];    mat[1][2] = (Real) vec[0];
+    }
+};
+
+template<class Real>
+struct RigidMappingMatrixHelper<3, Real>
+{
+    template <class Matrix, class Vector>
+    static void setMatrix(Matrix& mat, const Vector& vec)
+    {
+        // out = J in
+        // J = [ I -OM^ ]
+        mat[0][0] = (Real) 1     ;    mat[1][0] = (Real) 0     ;    mat[2][0] = (Real) 0     ;
+        mat[0][1] = (Real) 0     ;    mat[1][1] = (Real) 1     ;    mat[2][1] = (Real) 0     ;
+        mat[0][2] = (Real) 0     ;    mat[1][2] = (Real) 0     ;    mat[2][2] = (Real) 1     ;
+        mat[0][3] = (Real) 0     ;    mat[1][3] = (Real)-vec[2];    mat[2][3] = (Real) vec[1];
+        mat[0][4] = (Real) vec[2];    mat[1][4] = (Real) 0     ;    mat[2][4] = (Real)-vec[0];
+        mat[0][5] = (Real)-vec[1];    mat[1][5] = (Real) vec[0];    mat[2][5] = (Real) 0     ;
+    }
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::init()
 {
@@ -261,6 +293,64 @@ void BeamLinearMapping<TIn, TOut>::draw()
 
     simulation::getSimulation()->DrawUtility().drawPoints(points, 7, Vec<4,float>(1,1,0,1));
 }
+
+
+template <class TIn, class TOut>
+const sofa::defaulttype::BaseMatrix* BeamLinearMapping<TIn, TOut>::getJ()
+{
+
+    const unsigned int  inStateSize = this->fromModel->getSize();
+    const unsigned int outStateSize = this->toModel->getSize();
+
+    if (matrixJ.get() == 0 || updateJ)
+    {
+        updateJ = false;
+        if (matrixJ.get() == 0 || matrixJ->rowBSize() != outStateSize || matrixJ->colBSize() != inStateSize )
+        {
+            matrixJ.reset(new MatrixType(outStateSize * NOut, inStateSize * NIn));
+        }
+        else
+        {
+            matrixJ->clear();
+        }
+
+
+        for(unsigned int i=0; i<points.size(); i++)
+        {
+            // applyJ :
+            // out = J in
+            // J = [ I -OM^ ]
+            // out[i] =  v - cross(rotatedPoints[i],omega);
+
+            const unsigned int outIdx = i;
+            defaulttype::Vec<N, typename In::Real> inpos = points[i];
+            int in0 = helper::rfloor(inpos[0]);
+            if (in0<0) in0 = 0; else if (in0 > (int)inStateSize-2) in0 = inStateSize - 2;
+            inpos[0] -= in0;
+            const unsigned int in1 = in0+1;
+
+            Real fact = (Real)inpos[0];
+            fact = 3*(fact*fact)-2*(fact*fact*fact);
+
+//	        Deriv omega0 = getVOrientation(in[in0]);
+//	        Deriv out0 = getVCenter(in[in0]) - cross(rotatedPoints0[i], omega0);
+
+//	        Deriv omega1 = getVOrientation(in[in1]);
+//	        Deriv out1 = getVCenter(in[in1]) - cross(rotatedPoints1[i], omega1);
+
+            Coord rotatedPoint0 = rotatedPoints0[outIdx] * (1-fact);
+            MBloc& block0 = *matrixJ->wbloc(outIdx, in0, true);
+            RigidMappingMatrixHelper<N, Real>::setMatrix(block0, rotatedPoint0);
+
+            Coord rotatedPoint1 = rotatedPoints1[outIdx] * fact;
+            MBloc& block1 = *matrixJ->wbloc(outIdx, in1, true);
+            RigidMappingMatrixHelper<N, Real>::setMatrix(block1, rotatedPoint1);
+
+        }
+    }
+    return matrixJ.get();
+}
+
 
 } // namespace mapping
 
