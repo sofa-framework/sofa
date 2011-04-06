@@ -562,12 +562,19 @@ public:
     typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::MappingData1D MappingData;
 
+    enum { NIn = Inherit::NIn };
+    enum { NOut = Inherit::NOut };
+    typedef typename Inherit::MBloc MBloc;
+    typedef typename Inherit::MatrixType MatrixType;
+
 protected:
     topology::PointData< MappingData >  map;
     topology::EdgeSetTopologyContainer*			_fromContainer;
     topology::EdgeSetGeometryAlgorithms<In>*	_fromGeomAlgo;
     helper::ParticleMask *maskFrom;
     helper::ParticleMask *maskTo;
+    MatrixType* matrixJ;
+    bool updateJ;
 
 public:
     BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* fromTopology,
@@ -577,7 +584,10 @@ public:
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
-          maskFrom(_maskFrom), maskTo(_maskTo)
+          maskFrom(_maskFrom),
+          maskTo(_maskTo),
+          matrixJ(NULL),
+          updateJ(true)
     {}
 
     virtual ~BarycentricMapperEdgeSetTopology() {}
@@ -593,6 +603,9 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
+
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     // handle topology changes in the From topology
@@ -644,12 +657,20 @@ public:
     typedef typename Inherit::OutDeriv  OutDeriv;
     typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::MappingData2D MappingData;
+
+    enum { NIn = Inherit::NIn };
+    enum { NOut = Inherit::NOut };
+    typedef typename Inherit::MBloc MBloc;
+    typedef typename Inherit::MatrixType MatrixType;
+
 protected:
     topology::PointData< MappingData >		map;
     topology::TriangleSetTopologyContainer*			_fromContainer;
     topology::TriangleSetGeometryAlgorithms<In>*	_fromGeomAlgo;
     helper::ParticleMask *maskFrom;
     helper::ParticleMask *maskTo;
+    MatrixType* matrixJ;
+    bool updateJ;
 
 public:
     BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology,
@@ -659,7 +680,10 @@ public:
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
-          maskFrom(_maskFrom), maskTo(_maskTo)
+          maskFrom(_maskFrom),
+          maskTo(_maskTo),
+          matrixJ(NULL),
+          updateJ(true)
     {}
 
     virtual ~BarycentricMapperTriangleSetTopology() {}
@@ -675,6 +699,9 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
+
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     // handle topology changes in the From topology
@@ -726,12 +753,20 @@ public:
     typedef typename Inherit::OutDeriv  OutDeriv;
     typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::MappingData2D MappingData;
+
+    enum { NIn = Inherit::NIn };
+    enum { NOut = Inherit::NOut };
+    typedef typename Inherit::MBloc MBloc;
+    typedef typename Inherit::MatrixType MatrixType;
+
 protected:
     topology::PointData< MappingData >  map;
     topology::QuadSetTopologyContainer*			_fromContainer;
     topology::QuadSetGeometryAlgorithms<In>*	_fromGeomAlgo;
     helper::ParticleMask *maskFrom;
     helper::ParticleMask *maskTo;
+    MatrixType* matrixJ;
+    bool updateJ;
 
 public:
     BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* fromTopology,
@@ -741,7 +776,10 @@ public:
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
-          maskFrom(_maskFrom), maskTo(_maskTo)
+          maskFrom(_maskFrom),
+          maskTo(_maskTo),
+          matrixJ(NULL),
+          updateJ(true)
     {}
 
     virtual ~BarycentricMapperQuadSetTopology() {}
@@ -757,6 +795,9 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
+
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     // handle topology changes in the From topology
@@ -871,12 +912,11 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
+
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize)
-    {
-        return TopologyBarycentricMapper<In,Out>::getJ(outSize, inSize);
-    }
 
     // handle topology changes in the From topology
     virtual void handleTopologyChange();
@@ -929,6 +969,10 @@ public:
     typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::MappingData3D MappingData;
 
+    enum { NIn = Inherit::NIn };
+    enum { NOut = Inherit::NOut };
+    typedef typename Inherit::MBloc MBloc;
+    typedef typename Inherit::MatrixType MatrixType;
 
 protected:
     topology::PointData< MappingData >  map;
@@ -938,6 +982,8 @@ protected:
     std::set<int>	_invalidIndex;
     helper::ParticleMask *maskFrom;
     helper::ParticleMask *maskTo;
+    MatrixType* matrixJ;
+    bool updateJ;
 
 public:
     BarycentricMapperHexahedronSetTopology()
@@ -952,7 +998,10 @@ public:
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
-          maskFrom(_maskFrom), maskTo(_maskTo)
+          maskFrom(_maskFrom),
+          maskTo(_maskTo),
+          matrixJ(NULL),
+          updateJ(true)
     {}
 
     virtual ~BarycentricMapperHexahedronSetTopology() {}
@@ -969,6 +1018,9 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
+
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     //-- test mapping partiel
@@ -1010,6 +1062,8 @@ public:
 
         return out;
     }
+
+
 };
 
 
