@@ -26,7 +26,7 @@
 #include <sofa/component/linearsolver/DefaultMultiMatrixAccessor.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
-//#define MULTIMATRIX_VERBOSE
+#define MULTIMATRIX_VERBOSE
 
 namespace sofa
 {
@@ -408,7 +408,7 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* >::const_reverse_iterator _rit;
     const std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* >::const_reverse_iterator _itBegin = mappingsContributionTree.rbegin();
-    const std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* >::const_reverse_iterator _itEnd = mappingsContributionTree.rend();
+    const std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* >::const_reverse_iterator   _itEnd = mappingsContributionTree.rend();
     for(_rit = _itBegin; _rit != _itEnd; ++_rit)
     {
 //#ifdef MULTIMATRIX_VERBOSE
@@ -427,9 +427,21 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
         const defaulttype::BaseMatrix* matrixJ = _rit->second->getJ();
 
 #ifdef MULTIMATRIX_VERBOSE
-        std::cout << "MappedMultiMatrixAccessor: MAPPING "<<_rit->second->getName() <<"  MATRIX CONTRIBUTION : "
-                <<     "K1[" << K1.matrix->rowSize() <<"x" << K1.matrix->colSize() <<"]"
-                << "    K2[" << K2.matrix->rowSize() <<"x" << K2.matrix->colSize() <<"]"
+        std::cout << "MappedMultiMatrixAccessor: MAPPING "<<_rit->second->getName() <<"  MATRIX CONTRIBUTION : ";
+
+        std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate1);
+        if (itmapped != mappedMatrices.end())
+        {
+            // this state is mapped
+            std::cout <<     "mapped matrix K1[" << K1.matrix->rowSize() <<"x" << K1.matrix->colSize() <<"]";
+        }
+        else
+        {
+            std::cout <<     "local DOF matrix _K1[" << mstate1->getMatrixSize() <<"x" << mstate1->getMatrixSize()
+                    <<     "] in global matrix K["<<globalMatrix->rowSize()<<"x"<<globalMatrix->colSize()<<"] at offset "<<K1.offset;
+        }
+
+        std::cout << "    mapped matrix K2[" << K2.matrix->rowSize() <<"x" << K2.matrix->colSize() <<"]"
                 << "     J[" <<   matrixJ->rowSize() <<"x" <<   matrixJ->colSize() <<"]"
                 <<std::endl;
 #endif
