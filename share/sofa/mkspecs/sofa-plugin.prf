@@ -1,7 +1,6 @@
 !contains(TEMPLATE, lib): error(plugins should have the "lib" qmake template)
 
-DESTDIR = $$ROOT_BUILD_DIR/lib/sofa-plugins
-
 !contains(CONFIGSTATIC, static) {
-	CONFIGLIBRARIES = dll
+	CONFIG -= staticlib
+	CONFIG += dll
 }

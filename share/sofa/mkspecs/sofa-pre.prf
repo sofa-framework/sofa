@@ -97,10 +97,6 @@ SOFA_DIR = $$replace(FEATURES_DIR, /\\w+/\\w+/\\w+$, )
 CUSTOM_FEATURES_FILE = $$ROOT_BUILD_DIR/sofa-local
 INSTALLED_FEATURE_FILE = $$FEATURES_DIR/sofa-local
 
-DEFAULT_DEPENDENCY_FILE = $$ROOT_SRC_DIR/dependencies.pri
-CUSTOM_DEPENDENCY_FILE = $$ROOT_BUILD_DIR/dependencies-local.pri
-
-
 exists($${CUSTOM_FEATURES_FILE}.prf) {
 	load($$CUSTOM_FEATURES_FILE)
 }
@@ -193,6 +189,7 @@ isEmpty(SOFA_INSTALL_ROOT) {
 isEmpty(SOFA_FEATURES_PATH) {
 	SOFA_FEATURES_PATH = share/sofa/mkspecs
 }
+SOFA_FEATURES_DIR = $$ROOT_SRC_DIR/$$SOFA_FEATURES_PATH
 
 ########################################################################
 # Some configuration
@@ -262,6 +259,22 @@ defineTest(isFeatureFile) {
 	} else {
 		return(true)
 	}
+}
+
+defineReplace(canonicalize) {
+	filelist = $$1
+	filelist = $$replace(filelist, "/{2,}", /)
+	filelist = $$replace(filelist, /\\.\\.(?=/), /@)
+	for(iteration, 1..100) {
+		newfilelist = $$replace(filelist, /[^@/]+/@(?=/), )
+		equals(filelist, $$newfilelist) {
+			filelist = $$newfilelist
+			break()
+		}	else {
+			filelist = $$newfilelist
+		}
+	}
+	return($$filelist)
 }
 
 defineTest(addSubdirs) {
@@ -471,9 +484,6 @@ defineTest(requireSofaLib) {
 		INCLUDEPATH *= $$ROOT_SRC_DIR/$$sourcedir
 		LIBS *= -L$$LIB_DESTDIR
 	} else {
-		!isInstalled($$name) {
-			error(requireSofaLib: Cannot find $$name library)
-		}
 		message(Using installed version of Sofa library: $$name)
 		INCLUDEPATH *= $$INSTALL_INCLUDE_DIR/$$sourcedir
 		LIBS *= -L$$INSTALL_LIB_DIR
@@ -647,7 +657,8 @@ defineTest(loadDependencies) {
 # Loading dependencies declarations
 ########################################################################
 
-include($$DEFAULT_DEPENDENCY_FILE)
-exists($$CUSTOM_DEPENDENCY_FILE) {
-	include($$CUSTOM_DEPENDENCY_FILE)
-}
+DEFAULT_DEPENDENCY_FILES = $$files($$ROOT_SRC_DIR/*dependencies*)
+CUSTOM_DEPENDENCY_FILES  = $$files($$ROOT_BUILD_DIR/*dependencies*)
+
+!isEmpty(DEFAULT_DEPENDENCY_FILES): include($$DEFAULT_DEPENDENCY_FILES)
+!isEmpty(CUSTOM_DEPENDENCY_FILES) : include($$CUSTOM_DEPENDENCY_FILES)
