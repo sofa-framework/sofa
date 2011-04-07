@@ -1158,6 +1158,7 @@ void HexahedronFEMForceField<DataTypes>::draw()
 // 	serr<<"HexahedronFEMForceField<DataTypes>::draw()"<<sendl;
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
+    if (!f_drawing.getValue()) return;
 
 
     const VecCoord& x = *this->mstate->getX();
