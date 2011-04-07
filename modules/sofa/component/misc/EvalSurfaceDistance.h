@@ -47,6 +47,9 @@ namespace component
 namespace misc
 {
 
+
+using namespace core::behavior;
+
 /** Compute the distance between surfaces in two objects
 */
 template<class TDataTypes>
@@ -69,7 +72,7 @@ public:
 
     /** Default constructor
     */
-    EvalSurfaceDistance();
+    EvalSurfaceDistance(MechanicalState<DataTypes>* , MechanicalState<DataTypes>*);
     virtual ~EvalSurfaceDistance();
 
     /// Compute the error metric between two surfaces

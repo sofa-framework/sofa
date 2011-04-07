@@ -44,7 +44,7 @@ namespace misc
 {
 
 template<class DataTypes>
-EvalPointsDistance<DataTypes>::EvalPointsDistance()
+EvalPointsDistance<DataTypes>::EvalPointsDistance(MechanicalState<DataTypes>* ms1, MechanicalState<DataTypes>* ms2)
     : f_draw( initData(&f_draw, true, "draw", "activate rendering of lines between associated points"))
     , f_filename( initData(&f_filename, "filename", "output file name"))
     , f_period( initData(&f_period, 1.0, "period", "period between outputs"))
@@ -56,12 +56,18 @@ EvalPointsDistance<DataTypes>::EvalPointsDistance()
     , rdistMin( initData(&rdistMin, 1.0, "rdistMin", "min relative distance (OUTPUT)"))
     , rdistMax( initData(&rdistMax, 1.0, "rdistMax", "max relative distance (OUTPUT)"))
     , rdistDev( initData(&rdistDev, 1.0, "rdistDev", "relative distance standard deviation (OUTPUT)"))
-    , mstate1(NULL)
-    , mstate2(NULL)
+    , mstate1(ms1)
+    , mstate2(ms2)
     , outfile(NULL)
     , lastTime(0)
+    , m_msPath1(initData(&m_msPath1,"object1", "Mechanical state 1"))
+    , m_msPath2(initData(&m_msPath2,"object2", "Mechanical state 2"))
 {
     this->f_listening.setValue(true);
+    if (mstate1 == mstate2)
+    {
+        sout << "WARNING : Mechanical state1 and Mechanical state 2 is the same "<<sendl;
+    }
 }
 
 template<class DataTypes>
@@ -76,11 +82,23 @@ EvalPointsDistance<DataTypes>::~EvalPointsDistance()
 template<class DataTypes>
 void EvalPointsDistance<DataTypes>::init()
 {
-    if (!mstate1 || !mstate2)
-        mstate1 = mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+    if (!mstate1 )
+    {
+        mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+        serr << " Mechanical State object1 not found, this will be taken in the same context " << sendl;
+    }
+    if (!mstate2)
+    {
+        mstate2 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+        serr << " Mechanical State object2 not found, this will be taken in the same context " << sendl;
+    }
+
 
     if (!mstate1 || !mstate2)
+    {
+        serr << " ERROR Mechanical State object1 and object2 expected  " << sendl;
         return;
+    }
 
     const std::string& filename = f_filename.getFullPath();
     if (!filename.empty())
