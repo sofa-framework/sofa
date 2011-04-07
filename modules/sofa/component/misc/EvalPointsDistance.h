@@ -31,6 +31,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/objectmodel/ObjectRef.h>
 
 #include <fstream>
 
@@ -43,6 +44,7 @@ namespace component
 namespace misc
 {
 
+using namespace core::behavior;
 
 /** Compute the distance between point/node positions in two objects
 */
@@ -73,7 +75,7 @@ public:
 
     /** Default constructor
     */
-    EvalPointsDistance();
+    EvalPointsDistance(MechanicalState<DataTypes>* , MechanicalState<DataTypes>*);
     virtual ~EvalPointsDistance();
 
     /// Init the computation of the distances
@@ -107,18 +109,25 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
+        core::behavior::MechanicalState<DataTypes>* _ms0=NULL;
+        core::behavior::MechanicalState<DataTypes>* _ms1=NULL;
+        core::behavior::MechanicalState<DataTypes>* _ms2=NULL;
+
+
+        if(arg->getAttribute("object1",NULL) != NULL)
         {
-            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
-                return false;
-            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-                return false;
+            _ms1 = sofa::core::objectmodel::ObjectRef::parse< core::behavior::MechanicalState<TDataTypes> >("object1", arg);
         }
-        else
+
+        if(arg->getAttribute("object2",NULL) != NULL)
         {
-            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-                return false;
+            _ms2 = sofa::core::objectmodel::ObjectRef::parse< core::behavior::MechanicalState<TDataTypes> >("object2", arg);
         }
+
+        _ms0 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
+
+        if( (_ms0==NULL) && (_ms1==NULL) && (_ms2==NULL) )
+            return false;
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
@@ -126,18 +135,49 @@ public:
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        core::objectmodel::BaseObject::create(obj, context, arg);
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
+        core::behavior::MechanicalState<DataTypes>* _ms0=NULL;
+        core::behavior::MechanicalState<DataTypes>* _ms1=NULL;
+        core::behavior::MechanicalState<DataTypes>* _ms2=NULL;
+
+        std::string _msPath1;
+        std::string _msPath2;
+
+        if(arg)
         {
-            obj->mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->mstate2 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2","..")));
+
+            if(arg->getAttribute("object1",NULL) != NULL)
+            {
+                _ms1 = sofa::core::objectmodel::ObjectRef::parse< core::behavior::MechanicalState<TDataTypes> >("object1", arg);
+                _msPath1 = arg->getAttribute("object1");
+            }
+
+            if(arg->getAttribute("object2",NULL) != NULL)
+            {
+                _ms2 = sofa::core::objectmodel::ObjectRef::parse< core::behavior::MechanicalState<TDataTypes> >("object2", arg);
+                _msPath2 = arg->getAttribute("object2");
+            }
+
+            _ms0 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
         }
-        else if (context)
+
+        if(_ms1 == NULL)
         {
-            obj->mstate1 =
-                obj->mstate2 =
-                        dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
+            _ms1 = _ms0;
+            _msPath1.clear();
+            _msPath1 = "@" + _ms0->getName();
         }
+        if(_ms2 == NULL)
+        {
+            _ms2 = _ms0;
+            _msPath2.clear();
+            _msPath2 = "@" + _ms0->getName();
+        }
+
+        obj = new T(_ms1,_ms2);
+        obj->setPathToMS1(_msPath1);
+        obj->setPathToMS2(_msPath2);
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
     }
 
     virtual std::string getTemplateName() const
@@ -150,15 +190,20 @@ public:
         return DataTypes::Name();
     }
 
+    void setPathToMS1(const std::string &o) {m_msPath1.setValue(o);}
+    void setPathToMS2(const std::string &o) {m_msPath2.setValue(o);}
+
 protected:
     /// First model mechanical state
-    core::behavior::MechanicalState<DataTypes> *mstate1;
+    core::behavior::MechanicalState<DataTypes>* mstate1;
     /// Second model mechanical state
-    core::behavior::MechanicalState<DataTypes> *mstate2;
+    core::behavior::MechanicalState<DataTypes>* mstate2;
     /// output file
     std::ofstream* outfile;
     /// time value for the distance computations
     double lastTime;
+    sofa::core::objectmodel::DataObjectRef m_msPath1;
+    sofa::core::objectmodel::DataObjectRef m_msPath2;
 };
 
 } // namespace misc

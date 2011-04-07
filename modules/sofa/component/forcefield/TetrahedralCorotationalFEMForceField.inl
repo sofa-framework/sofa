@@ -1424,29 +1424,29 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::printStiffnessMatrix(int i
     computeStiffnessMatrix(JKJt,tmp,tetrahedronInf[idTetra].materialMatrix,tetrahedronInf[idTetra].strainDisplacementTransposedMatrix,Rot);
 
 
-    std::cout<<"TetrahedralCorotationalFEMForceField<DataTypes>::  Element "<<idTetra <<"   ===STIFNESSMATRIX===="<<std::endl;
-    for(int inode=0; inode<4; inode++)
-    {
-        for(int icomp=0; icomp<3; icomp++)
-        {
-            int imatrix=inode*3+icomp;
-
-            for(int jnode=0; jnode<4; jnode++)
-            {
-                std::cout<<"| ";
-                for(int jcomp=0; jcomp<3; jcomp++)
-                {
-                    int jmatrix=jnode*3+jcomp;
-                    std::cout<<JKJt[imatrix][jmatrix]<<" ";
-                }
-            }
-            std::cout<<" |"<<std::endl;
-        }
-        std::cout<<std::endl;
-    }
-
-    //<<JKJt<<std::endl
-    std::cout<<"==============================================================="<<std::endl;
+//	std::cout<<"TetrahedralCorotationalFEMForceField<DataTypes>::  Element "<<idTetra <<"   ===STIFNESSMATRIX===="<<std::endl;
+//	for(int inode=0;inode<4;inode++)
+//	{
+//		for(int icomp=0;icomp<3;icomp++)
+//		{
+//			int imatrix=inode*3+icomp;
+//
+//			for(int jnode=0;jnode<4;jnode++)
+//			{
+//				std::cout<<"| ";
+//				for(int jcomp=0;jcomp<3;jcomp++)
+//				{
+//					   int jmatrix=jnode*3+jcomp;
+//					std::cout<<JKJt[imatrix][jmatrix]<<" ";
+//				}
+//			}
+//			std::cout<<" |"<<std::endl;
+//		}
+//		std::cout<<std::endl;
+//	}
+//
+//	//<<JKJt<<std::endl
+//	std::cout<<"==============================================================="<<std::endl;
 
 }
 

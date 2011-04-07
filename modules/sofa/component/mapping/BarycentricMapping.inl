@@ -2994,7 +2994,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
         }
     }
     matrixJ->compress();
-    std::cout << "J = " << *matrixJ << std::endl;
+//	std::cout << "J = " << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
 }
@@ -3093,7 +3093,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
 #endif
     }
     //matrixJ->compress();
-    std::cout << "J = " << *matrixJ << std::endl;
+//	std::cout << "J = " << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
 }
@@ -3146,7 +3146,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperEdgeSetTopology<In,Out>::g
         }
     }
     //matrixJ->compress();
-    std::cout << "BarycentricMapperEdgeSetTopology  J = " << *matrixJ << std::endl;
+//	std::cout << "BarycentricMapperEdgeSetTopology  J = " << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
 }
@@ -3202,7 +3202,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTriangleSetTopology<In,Out
     }
 
     //matrixJ->compress();
-    std::cout << "BarycentricMapperTriangleSetTopology  J = " << *matrixJ << std::endl;
+//	std::cout << "BarycentricMapperTriangleSetTopology  J = " << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
 }
@@ -3261,7 +3261,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperQuadSetTopology<In,Out>::g
         }
     }
     //matrixJ->compress();
-    std::cout << "BarycentricMapperQuadSetTopology  J = " << std::endl<< *matrixJ << std::endl;
+//	std::cout << "BarycentricMapperQuadSetTopology  J = " << std::endl<< *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
 }
@@ -3322,7 +3322,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<In,
         }
     }
     //matrixJ->compress();
-    std::cout << "BarycentricMapperTetrahedronSetTopology  J = " << std::endl << *matrixJ << std::endl;
+//	std::cout << "BarycentricMapperTetrahedronSetTopology  J = " << std::endl << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
 }
@@ -3388,7 +3388,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,O
         }
     }
     //matrixJ->compress();
-    std::cout << "BarycentricMapperHexahedronSetTopology  J = " << std::endl << *matrixJ << std::endl;
+//	std::cout << "BarycentricMapperHexahedronSetTopology  J = " << std::endl << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
 }
