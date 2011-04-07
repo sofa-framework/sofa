@@ -419,67 +419,72 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
 //				  <<std::endl;
 //#endif
 
+
         const sofa::core::behavior::BaseMechanicalState* mstate1 = _rit->second->getMechFrom()[0];
         const sofa::core::behavior::BaseMechanicalState* mstate2 = _rit->second->getMechTo()[0];
 
-        MatrixRef K1 = this->getMatrix(mstate1);
-        MatrixRef K2 = this->getMatrix(mstate2);
-        const defaulttype::BaseMatrix* matrixJ = _rit->second->getJ();
+        std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* >::const_iterator itmapped = mappedMatrices.find(mstate2);
 
-        const unsigned int sizeK1 = mstate1->getMatrixSize();
-        const unsigned int sizeK2 = mstate2->getMatrixSize();
-
-        const unsigned int offset1 = K1.offset;
-        const unsigned int offset2 = K2.offset;
-
-        for(unsigned int i1 =0 ; i1 < sizeK1 ; ++i1)
+        // compute contribution only if the mapped matrix K2 is filled
+        if(itmapped != mappedMatrices.end() && itmapped->second != NULL )
         {
-            for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
+
+            MatrixRef K1 = this->getMatrix(mstate1);
+            MatrixRef K2 = this->getMatrix(mstate2);
+            const defaulttype::BaseMatrix* matrixJ = _rit->second->getJ();
+
+            const unsigned int sizeK1 = mstate1->getMatrixSize();
+            const unsigned int sizeK2 = mstate2->getMatrixSize();
+
+            const unsigned int offset1 = K1.offset;
+            const unsigned int offset2 = K2.offset;
+
+            for(unsigned int i1 =0 ; i1 < sizeK1 ; ++i1)
             {
-                double Jt_K2_J_i1j1 = 0;
-
-                for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
+                for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
                 {
-                    for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
-                    {
-                        const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
-                        for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
-                        {
-                            const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
-                            const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
+                    double Jt_K2_J_i1j1 = 0;
 
-                            Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
+                    for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
+                    {
+                        for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
+                        {
+                            const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
+                            for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
+                            {
+                                const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
+                                const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
+
+                                Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
+                            }
                         }
                     }
-                }
 
-                K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
+                    K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
+                }
             }
-        }
 
 #ifdef MULTIMATRIX_VERBOSE
-        std::cout << "MappedMultiMatrixAccessor: MAPPING "<<_rit->second->getName() <<"  MATRIX CONTRIBUTION : ";
+            std::cout << "MappedMultiMatrixAccessor: MAPPING "<<_rit->second->getName() <<"  MATRIX CONTRIBUTION : ";
 
-        std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate1);
-        if (itmapped != mappedMatrices.end())
-        {
-            // this state is mapped
-            std::cout <<     "mapped matrix K1[" << K1.matrix->rowSize() <<"x" << K1.matrix->colSize() <<"]";
-        }
-        else
-        {
-            std::cout <<     "local DOF matrix _K1[" << mstate1->getMatrixSize() <<"x" << mstate1->getMatrixSize()
-                    <<     "] in global matrix K["<<globalMatrix->rowSize()<<"x"<<globalMatrix->colSize()<<"] at offset "<<K1.offset;
-        }
+            std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate1);
+            if (itmapped != mappedMatrices.end())
+            {
+                // this state is mapped
+                std::cout <<     "mapped matrix K1[" << K1.matrix->rowSize() <<"x" << K1.matrix->colSize() <<"]";
+            }
+            else
+            {
+                std::cout <<     "local DOF matrix _K1[" << mstate1->getMatrixSize() <<"x" << mstate1->getMatrixSize()
+                        <<     "] in global matrix K["<<globalMatrix->rowSize()<<"x"<<globalMatrix->colSize()<<"] at offset "<<K1.offset;
+            }
 
-        std::cout << "    mapped matrix K2[" << K2.matrix->rowSize() <<"x" << K2.matrix->colSize() <<"]"
-                << "     J[" <<   matrixJ->rowSize() <<"x" <<   matrixJ->colSize() <<"]"
-                <<std::endl;
+            std::cout << "    mapped matrix K2[" << K2.matrix->rowSize() <<"x" << K2.matrix->colSize() <<"]"
+                    << "     J[" <<   matrixJ->rowSize() <<"x" <<   matrixJ->colSize() <<"]"
+                    <<std::endl;
 #endif
 
-
-
-
+        }
     }
 
 
