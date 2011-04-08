@@ -190,7 +190,7 @@ protected:
     sofa::core::topology::BaseMeshTopology* _topology;
     //const VecElement *_indexedElements;
     //Data< VecCoord > _initialPoints; ///< the intial positions of the points
-    const VecCoord* _initialPoints;
+    //const VecCoord* _initialPoints; //previously stored the mechanical state initial points but use it directly now
     //     int _method; ///< the computation method of the displacements
 
 

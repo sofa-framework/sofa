@@ -135,6 +135,11 @@ void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction(int triang
         const Triangle& t, const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
 {
+//        std::cout << "TriangularFEMForceField::TRQSTriangleCreationFunction" << std::endl;
+//        std::cout << "(TriangularFEMForceField::TRQSTriangleCreationFunction):Triangle index: " << triangleIndex << std::endl;
+//        std::cout << "(TriangularFEMForceField::TRQSTriangleCreationFunction):t=" << t << std::endl;
+
+
     TriangularFEMForceField<DataTypes> *ff= (TriangularFEMForceField<DataTypes> *)param;
     if (ff)
     {
@@ -253,8 +258,6 @@ void TriangularFEMForceField<DataTypes>::reinit()
     helper::vector<VertexInformation>& vi = *(vertexInfo.beginEdit());
     vi.resize(nbPoints);
     vertexInfo.endEdit();
-    // set initial position of the nodes
-    _initialPoints = this->mstate->getX0();
 
     for (int i=0; i<_topology->getNbTriangles(); ++i)
         TRQSTriangleCreationFunction(i, (void*) this, triangleInf[i],  _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0, (const sofa::helper::vector< double >)0);
@@ -288,6 +291,14 @@ void TriangularFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 #ifdef DEBUG_TRIANGLEFEM
     sout << "TriangularFEMForceField::computeRotationLarge"<<sendl;
 #endif
+
+    //check if a, b and c are < size of p
+    if (a >= p.size() || b >= p.size() || c >= p.size())
+    {
+        std::cout <<  "Error(TriangularFEMForceField::computeRotationLarge): indices given in parameters are wrong>> a=" << a << " b=" << b << " and c=" << c <<
+                " whereas the size of the vector p is " << p.size() << std::endl;
+        return;
+    }
 
     // first vector on first edge
     // second vector in the plane of the two first edges
@@ -450,9 +461,11 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Inde
         tinfo->rotatedInitialElements = m_rotatedInitialElements.getValue()[i];
     else
     {
-        tinfo->rotatedInitialElements[0] = (*_initialPoints)[a] - (*_initialPoints)[a]; // always (0,0,0)
-        tinfo->rotatedInitialElements[1] = (*_initialPoints)[b] - (*_initialPoints)[a];
-        tinfo->rotatedInitialElements[2] = (*_initialPoints)[c] - (*_initialPoints)[a];
+        const  VecCoord* initialPoints = (this->mstate->getX0());
+
+        tinfo->rotatedInitialElements[0] = (*initialPoints)[a] - (*initialPoints)[a]; // always (0,0,0)
+        tinfo->rotatedInitialElements[1] = (*initialPoints)[b] - (*initialPoints)[a];
+        tinfo->rotatedInitialElements[2] = (*initialPoints)[c] - (*initialPoints)[a];
     }
 
     computeStrainDisplacement(tinfo->strainDisplacementMatrix, i, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
@@ -473,6 +486,11 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
 
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
 
+    if ( i >= triangleInf.size())
+    {
+        std::cout << "Error(TriangularFEMForceField::initLarge): Try to access an element which indices bigger than the size of the vector: i=" << i << " and size=" << triangleInf.size()<< std::endl;
+    }
+
     TriangleInformation *tinfo = &triangleInf[i];
 
     if (m_initialTransformation.isSet() && m_rotatedInitialElements.isSet())
@@ -490,13 +508,26 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
         // third vector orthogonal to first and second
         Transformation R_0_1;
 
-        computeRotationLarge( R_0_1, (*_initialPoints), a, b, c );
+        const  VecCoord* initialPoints = (this->mstate->getX0());
+
+        computeRotationLarge( R_0_1, (*initialPoints), a, b, c );
 
         tinfo->initialTransformation = R_0_1;
 
-        tinfo->rotatedInitialElements[0] = R_0_1 * ((*_initialPoints)[a] - (*_initialPoints)[a]); // always (0,0,0)
-        tinfo->rotatedInitialElements[1] = R_0_1 * ((*_initialPoints)[b] - (*_initialPoints)[a]);
-        tinfo->rotatedInitialElements[2] = R_0_1 * ((*_initialPoints)[c] - (*_initialPoints)[a]);
+        if ( a >= (*initialPoints).size() || b >= (*initialPoints).size() || c >= (*initialPoints).size() )
+        {
+            std::cout << "Error(TriangularFEMForceField::initLarge): Try to access an element which indices bigger than the size of the vector: a=" <<a <<
+                    " b=" << b << " and c=" << c << " and size=" << (*initialPoints).size()<< std::endl;
+
+            initialPoints = this->mstate->getX0(); //reset initialPoints in case of a new pointer of the initial points of the mechanical state
+
+            std::cout << "Error(TriangularFEMForceField::initLarge): Now it's: a=" <<a <<
+                    " b=" << b << " and c=" << c << " and size=" << (*initialPoints).size()<< std::endl;
+        }
+
+        tinfo->rotatedInitialElements[0] = R_0_1 * ((*initialPoints)[a] - (*initialPoints)[a]); // always (0,0,0)
+        tinfo->rotatedInitialElements[1] = R_0_1 * ((*initialPoints)[b] - (*initialPoints)[a]);
+        tinfo->rotatedInitialElements[2] = R_0_1 * ((*initialPoints)[c] - (*initialPoints)[a]);
     }
 
     triangleInfo.endEdit();
@@ -1626,8 +1657,15 @@ void TriangularFEMForceField<DataTypes>::draw()
             Index b = _topology->getTriangle(i)[1];
             Index c = _topology->getTriangle(i)[2];
             float v = (float)fabs(triangleInf[i].maxStress);
-            v /= (float)(0.8*max);
-            if (v > 1.0) v=1.0;
+            if (max)
+            {
+                v /= (float)(0.8*max);
+                if (v > 1.0) v=1.0;
+            }
+            else
+            {
+                v = 0;
+            }
             Vec3d color = ColorMap[(int)(v*63)];
             glColor3dv(color.ptr());
             helper::gl::glVertexT(x[a]);

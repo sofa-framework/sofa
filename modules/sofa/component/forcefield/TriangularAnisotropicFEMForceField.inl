@@ -73,7 +73,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
 
 template< class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleCreationFunction (int triangleIndex, void* param,
-        TriangleInformation &/*tinfo*/,
+        Deriv &/*tinfo*/,
         const Triangle& /*t*/,
         const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
@@ -131,6 +131,10 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
     lfd.resize(_topology->getNbTriangles());
     localFiberDirection.endEdit();
     Inherited::reinit();
+
+//	localFiberDirection.setCreateFunction(TRQSTriangleCreationFunction);
+//	localFiberDirection.setCreateParameter( (void *) this );
+//	localFiberDirection.setDestroyParameter( (void *) this );
 }
 
 template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::handleTopologyChange()
@@ -138,8 +142,11 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::ha
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
-    localFiberDirection.handleTopologyEvents(itBegin,itEnd);
+    //std::cout << "Local Fiber Direction size = " <<  localFiberDirection.getValue().size() << std::endl;
+
     Inherited::handleTopologyChange();
+    localFiberDirection.handleTopologyEvents(itBegin,itEnd);
+    //std::cout << "Fibre direction size (handleTopologyChange): " << localFiberDirection.getValue().size() << std::endl;
 }
 
 template <class DataTypes>
@@ -164,6 +171,8 @@ void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Der
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index& v1, Index& v2, Index& v3)
 {
+    const  VecCoord* initialPoints = (this->mstate->getX0());
+
     Real Q11, Q12, Q22, Q66;
     Coord fiberDirGlobal;  // orientation of the fiber in the global frame of reference
 
@@ -173,6 +182,8 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     helper::vector<TriangleInformation>& triangleInf = *(Inherited::triangleInfo.beginEdit());
 
     TriangleInformation *tinfo = &triangleInf[i];
+
+    //std::cout << "(TriangularAnisotropicFEMForceField::computeMaterialStiffness):Size of Triangle Information : " << triangleInf.size() << std::endl;
 
     /*Q11 = Inherited::f_young.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q12 = Inherited::f_poisson.getValue()*f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
@@ -196,13 +207,19 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     //if (i >= (int) localFiberDirection.size())
     //	localFiberDirection.resize(i+1);
 
-    T[0] = (*Inherited::_initialPoints)[v2]-(*Inherited::_initialPoints)[v1];
-    T[1] = (*Inherited::_initialPoints)[v3]-(*Inherited::_initialPoints)[v1];
+    T[0] = (*initialPoints)[v2]-(*initialPoints)[v1];
+    T[1] = (*initialPoints)[v3]-(*initialPoints)[v1];
     T[2] = cross(T[0], T[1]);
+
+    if (T[2] == Coord())
+    {
+        std::cout << "Error(TriangularAnisotropicFEMForceField::computeMaterialStiffness): cannot compute material stiffness for a flat triangle >> return"<< std::endl;
+        return;
+    }
 
     if (!f_fiberCenter.getValue().empty()) // in case we have concentric fibers
     {
-        Coord tcenter = ((*Inherited::_initialPoints)[v1]+(*Inherited::_initialPoints)[v2]+(*Inherited::_initialPoints)[v3])*(Real)(1.0/3.0);
+        Coord tcenter = ((*initialPoints)[v1]+(*initialPoints)[v2]+(*initialPoints)[v3])*(Real)(1.0/3.0);
         Coord fcenter = f_fiberCenter.getValue()[0];
         fiberDirGlobal = cross(T[2], fcenter-tcenter);  // was fiberDir
     }
@@ -214,19 +231,36 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 
     helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
 
-    Deriv& fiberDirLocal = lfd[i]; // orientation of the fiber in the local frame of the element (orthonormal frame)
-    //[1] = cross(T[2], T[0]);
-    //T[0].normalize();
-    //T[1].normalize();
-    //T[2].normalize();
-    T.transpose();
-    Tinv.invert(T);
-    fiberDirLocal = Tinv * fiberDirGlobal;
-    fiberDirLocal[2] = 0;
-    fiberDirLocal.normalize();
+    if ((unsigned int)i >= lfd.size())
+    {
+        /* ********************************************************************************************
+         * this can happen after topology changes
+         * apparently, the topological changes are not propagated through localFiberDirection
+         * that's why we resize this vector to triangleInf size to hack the crash when we're looking for
+         * a element which index is more than the size
+         * This hack is probably useless if there would be a good topological propagation
+        ***********************************************************************************************/
+        std::cout << "Warning(TriangularAnisotropicFEMForceField::computeMaterialStiffness): get an element in localFiberDirection with index more than its size: i=" << i
+                << " and size=" << lfd.size() << ". The size should be "  <<  triangleInf.size() <<" (see comments in TriangularAnisotropicFEMForceField::computeMaterialStiffness)"<< std::endl;
+        lfd.resize(triangleInf.size() );
+        std::cout << "localFiberDirection resized to " << lfd.size() << std::endl;
+    }
+    else
+    {
+        Deriv& fiberDirLocal = lfd[i]; // orientation of the fiber in the local frame of the element (orthonormal frame)
+        //[1] = cross(T[2], T[0]);
+        //T[0].normalize();
+        //T[1].normalize();
+        //T[2].normalize();
+        T.transpose();
+        Tinv.invert(T);
+        fiberDirLocal = Tinv * fiberDirGlobal;
+        fiberDirLocal[2] = 0;
+        fiberDirLocal.normalize();
+    }
 
-    T[0] = (*Inherited::_initialPoints)[v2]-(*Inherited::_initialPoints)[v1];
-    T[1] = (*Inherited::_initialPoints)[v3]-(*Inherited::_initialPoints)[v1];
+    T[0] = (*initialPoints)[v2]-(*initialPoints)[v1];
+    T[1] = (*initialPoints)[v3]-(*initialPoints)[v1];
     T[2] = cross(T[0], T[1]);
     T[1] = cross(T[2], T[0]);
     T[0].normalize();
@@ -311,31 +345,35 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw()
 
         for(int i=0; i<nbTriangles; ++i)
         {
-            Index a = _topology->getTriangle(i)[0];
-            Index b = _topology->getTriangle(i)[1];
-            Index c = _topology->getTriangle(i)[2];
-            /*
-            Mat<3,3,Real> T;
 
-            T[0] = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
-            T[1] = (*Inherited::_initialPoints)[c]-(*Inherited::_initialPoints)[a];
-            T[2] = cross(T[0], T[1]);
-            T[1] = cross(T[2], T[0]);
-            T[1].normalize();
+            if ( (unsigned int)i < lfd.size())
+            {
+                Index a = _topology->getTriangle(i)[0];
+                Index b = _topology->getTriangle(i)[1];
+                Index c = _topology->getTriangle(i)[2];
+                /*
+                Mat<3,3,Real> T;
 
-            Coord y = T[1];
-            Coord ab = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
-            y *= ab.norm();*/
-            Coord center = (x[a]+x[b]+x[c])/3;
-            //Coord d = (x[b]-x[a])*localFiberDirection[i][0] + y*localFiberDirection[i][1];
-            Coord d = (x[b]-x[a])*lfd[i][0] + (x[c]-x[a])*lfd[i][1];
-            d*=0.25;
-            helper::gl::glVertexT(center-d);
-            helper::gl::glVertexT(center+d);
+                T[0] = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
+                T[1] = (*Inherited::_initialPoints)[c]-(*Inherited::_initialPoints)[a];
+                T[2] = cross(T[0], T[1]);
+                T[1] = cross(T[2], T[0]);
+                T[1].normalize();
 
-            //Coord testDir(1, 0, 0);
-            //Real s;
-            //computeStressAlongDirection(s, i, testDir, Inherited::triangleInfo[i].stress);
+                Coord y = T[1];
+                Coord ab = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
+                y *= ab.norm();*/
+                Coord center = (x[a]+x[b]+x[c])/3;
+                //Coord d = (x[b]-x[a])*localFiberDirection[i][0] + y*localFiberDirection[i][1];
+                Coord d = (x[b]-x[a])*lfd[i][0] + (x[c]-x[a])*lfd[i][1];
+                d*=0.25;
+                helper::gl::glVertexT(center-d);
+                helper::gl::glVertexT(center+d);
+
+                //Coord testDir(1, 0, 0);
+                //Real s;
+                //computeStressAlongDirection(s, i, testDir, Inherited::triangleInfo[i].stress);
+            }
         }
         glEnd();
     }
