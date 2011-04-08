@@ -31,7 +31,9 @@
 #include <sofa/component/collision/FixParticlePerformer.h>
 #include <sofa/component/collision/RemovePrimitivePerformer.h>
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
+#ifdef SOFA_DEV
 #include <sofa/component/collision/AddFramePerformer.h>
+#endif
 #include <sofa/component/collision/SuturePointPerformer.h>
 
 
