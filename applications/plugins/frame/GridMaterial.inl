@@ -790,6 +790,10 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels || v_weights.size()!=nbVoxels || v_index.size()!=nbVoxels) return false; // weights not computed
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Lump_Weights_Repartition");
+#endif
+
     // get the nbrefs most relevant weights in the voronoi region
     unsigned int maxFrameIndex=0;
     for (i=0; i<nbVoxels; i++) if(voronoi[i]==(int)sampleindex) for (j=0; j<nbRef; j++) { if(v_weights[i][j]!=0) if(v_index[i][j]>maxFrameIndex) maxFrameIndex=v_index[i][j]; }
@@ -835,6 +839,9 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
             else /*if(!ddw)*/ lumpWeights(neighbors,point,w[i],&(*dw)[i]);
             //else lumpWeights(neighbors,point,w[i],&(*dw)[i],&(*ddw)[i]);  // desctivated for speed... (weights are supposed to be linear and not quadratic)
         }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Lump_Weights_Repartition");
+#endif
     return true;
 }
 

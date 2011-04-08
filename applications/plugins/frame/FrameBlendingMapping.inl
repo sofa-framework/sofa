@@ -1199,6 +1199,10 @@ void FrameBlendingMapping<TIn, TOut>::findIndexInRepartition( bool& influenced, 
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::updateMapping()
 {
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Update_Mapping");
+#endif
+
     serr << this->getName() << " (" << this->isPhysical << ") Update Mapping" << sendl;
 
     if (this->isPhysical)
@@ -1260,6 +1264,9 @@ void FrameBlendingMapping<TIn, TOut>::updateMapping()
         }
         inout.endEdit();
     }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Update_Mapping");
+#endif
 }
 
 
