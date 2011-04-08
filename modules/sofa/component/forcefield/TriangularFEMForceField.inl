@@ -486,7 +486,7 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
 
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
 
-    if ( i >= triangleInf.size())
+    if ( (unsigned int)i >= triangleInf.size())
     {
         std::cout << "Error(TriangularFEMForceField::initLarge): Try to access an element which indices bigger than the size of the vector: i=" << i << " and size=" << triangleInf.size()<< std::endl;
     }
