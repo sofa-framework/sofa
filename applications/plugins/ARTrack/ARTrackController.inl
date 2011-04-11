@@ -29,6 +29,7 @@
 #include <ARTrackEvent.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/VecId.h>
 
 namespace sofa
 {
@@ -59,11 +60,13 @@ void ARTrackController<Vec3dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
     {
         if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
         {
+            helper::WriteAccessor<Data<VecCoord> > freePos = *mstate->write(core::VecCoordId::freePosition());
+            helper::WriteAccessor<Data<VecCoord> > pos = *mstate->write(core::VecCoordId::position());
             for (unsigned int i=0; i<3; ++i)
             {
                 std::cout<<"finger["<<i<<"] = "<<aev->getFingerposition(i)<<std::endl;
-                (*mstate->getXfree())[i] = aev->getFingerposition(i);
-                (*mstate->getX())[i] = aev->getFingerposition(i);
+                freePos[i] = aev->getFingerposition(i);
+                pos[i] = aev->getFingerposition(i);
             }
         }
     }
@@ -80,14 +83,17 @@ void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
             if(f_printLog.getValue())
                 std::cout<<" aev pos :"<<aev->getPosition()<<" aev quat :"<<aev->getOrientation()<<std::endl;
 
-            (*mstate->getXfree())[0].getCenter() = aev->getPosition();
-            (*mstate->getX())[0].getCenter() = aev->getPosition();
+            helper::WriteAccessor<Data<VecCoord> > freePos = *mstate->write(core::VecCoordId::freePosition());
+            helper::WriteAccessor<Data<VecCoord> > pos = *mstate->write(core::VecCoordId::position());
 
-            (*mstate->getXfree())[0].getOrientation() = aev->getOrientation();
-            (*mstate->getX())[0].getOrientation() = aev->getOrientation();
+            freePos[0].getCenter() = aev->getPosition();
+            pos[0].getCenter() = aev->getPosition();
 
-            (*mstate->getXfree())[0].getOrientation().normalize();
-            (*mstate->getX())[0].getOrientation().normalize();
+            freePos[0].getOrientation() = aev->getOrientation();
+            pos[0].getOrientation() = aev->getOrientation();
+
+            freePos[0].getOrientation().normalize();
+            pos[0].getOrientation().normalize();
 
         }
     }
@@ -106,9 +112,11 @@ void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
                 std::cout<<"pouce :"<<aev->getAngles()[0]<<"  index:"<<aev->getAngles()[1]<<"  autres:"<<aev->getAngles()[2]<<std::endl;
 
 
+            helper::WriteAccessor<Data<VecCoord> > restPos = *mstate->write(core::VecCoordId::restPosition());
+
             for (unsigned int i=6; i<9; ++i) // thumb
             {
-                (*mstate->getX0())[i].x() = (aev->getAngles()[0]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+                restPos[i].x() = (aev->getAngles()[0]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
                 /* if((*mstate->getX0())[i].x()<0)
                  {
@@ -119,7 +127,7 @@ void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
 
             for (unsigned int i=9; i<12; ++i) // index
             {
-                (*mstate->getX0())[i].x() = (aev->getAngles()[1]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+                restPos[i].x() = (aev->getAngles()[1]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
                 /* if((*mstate->getX0())[i].x()<0)
                  {
@@ -130,7 +138,7 @@ void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
 
             for(unsigned int i=12; i<21; ++i) // middle, ring, little.
             {
-                (*mstate->getX0())[i].x() = (aev->getAngles()[2]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+                restPos[i].x() = (aev->getAngles()[2]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
                 /*if((*mstate->getX0())[i].x()<0)
                 {
@@ -175,25 +183,25 @@ void ARTrackController<Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent *
             if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
             {
 
-
+                helper::WriteAccessor<Data<VecCoord> > restPos = *mstate->write(core::VecCoordId::restPosition());
 
                 for (unsigned int i=6; i<9; ++i) // thumb
                 {
-                    (*mstate->getX0())[i].x() += Delta;// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+                    restPos[i].x() += Delta;// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
 
                 }
 
                 for (unsigned int i=9; i<12; ++i) // index
                 {
-                    (*mstate->getX0())[i].x() += Delta;// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+                    restPos[i].x() += Delta;// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
 
                 }
 
                 for(unsigned int i=12; i<21; ++i) // middle, ring, little.
                 {
-                    (*mstate->getX0())[i].x() += Delta;// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+                    restPos[i].x() += Delta;// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
 
                 }
@@ -233,24 +241,27 @@ void ARTrackController<RigidTypes>::onMouseEvent(core::objectmodel::MouseEvent *
         break;
     }
 
+    helper::WriteAccessor<Data<VecCoord> > freePos = *mstate->write(core::VecCoordId::freePosition());
+    helper::WriteAccessor<Data<VecCoord> > pos = *mstate->write(core::VecCoordId::position());
+
     if(leftPressed)
     {
         endLocalPosition = Vec3d(mev->getPosX(), 0, mev->getPosY());
-        (*mstate->getXfree())[0].getCenter() += (endLocalPosition - beginLocalPosition);
-        (*mstate->getX())[0].getCenter() += (endLocalPosition - beginLocalPosition);
+        freePos[0].getCenter() += (endLocalPosition - beginLocalPosition);
+        pos[0].getCenter() += (endLocalPosition - beginLocalPosition);
         beginLocalPosition = endLocalPosition;
     }
     if(rightPressed)
     {
         endLocalPosition = Vec3d(0, -mev->getPosY(),0);
         //TODO: build a quat using mouse events to turn the hand.
-        (*mstate->getXfree())[0].getCenter() += (endLocalPosition - beginLocalPosition);
-        (*mstate->getX())[0].getCenter() +=(endLocalPosition- beginLocalPosition);
+        freePos[0].getCenter() += (endLocalPosition - beginLocalPosition);
+        pos[0].getCenter() +=(endLocalPosition- beginLocalPosition);
         beginLocalPosition = endLocalPosition;
     }
 
-    (*mstate->getXfree())[0].getOrientation() = Quat( 0.0,0.0, sin(3.14/2), cos(3.14/2));
-    (*mstate->getX())[0].getOrientation() = Quat( 0.0,0.0, sin(3.14/2), cos(3.14/2));
+    freePos[0].getOrientation() = Quat( 0.0,0.0, sin(3.14/2), cos(3.14/2));
+    pos[0].getOrientation() = Quat( 0.0,0.0, sin(3.14/2), cos(3.14/2));
 }
 
 template <class DataTypes>

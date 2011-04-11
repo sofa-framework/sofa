@@ -171,8 +171,8 @@ void ARTrackVirtualTimeController::onARTrackEvent(core::objectmodel::ARTrackEven
 void ARTrackVirtualTimeController::applyController()
 {
 
-    int dx = mousePosX;
-    int dy = mousePosY;
+    //int dx = mousePosX;
+    //int dy = mousePosY;
     //mousePosX = 0;
     //mousePosY = 0;
 
