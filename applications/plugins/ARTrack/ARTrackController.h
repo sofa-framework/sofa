@@ -105,6 +105,7 @@ template<class DataTypes>
 class ARTrackController : public virtual component::controller::Controller
 {
 public:
+    typedef typename DataTypes::VecCoord VecCoord;
     /**
      * @brief Default Constructor.
      */
