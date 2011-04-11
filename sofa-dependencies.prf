@@ -87,3 +87,4 @@ declare(runSofa,     applications/projects/runSofa, sofaguimain)
 
 declare(PluginExample, applications/plugins/PluginExample, sofaguiqt)
 declare(TriangularMeshRefiner, applications/plugins/TriangularMeshRefiner, sofacomponentcollision)
+declare(sofaframe, applications/plugins/frame, sofacomponentprojectiveconstraintset sofacomponentvisualmodel)
