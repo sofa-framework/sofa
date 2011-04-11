@@ -85,4 +85,5 @@ declare(runSofa,     applications/projects/runSofa, sofaguimain)
 # Plugins
 ######################################################################
 
+declare(PluginExample, applications/plugins/PluginExample, sofaguiqt)
 declare(TriangularMeshRefiner, applications/plugins/TriangularMeshRefiner, sofacomponentcollision)
