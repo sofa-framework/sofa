@@ -26,7 +26,6 @@
 #include <sofa/component/linearsolver/DefaultMultiMatrixAccessor.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
-//#define MULTIMATRIX_VERBOSE
 
 namespace sofa
 {
@@ -38,7 +37,7 @@ namespace linearsolver
 {
 
 DefaultMultiMatrixAccessor::DefaultMultiMatrixAccessor()
-    : globalMatrix(NULL), globalDim(0)
+    : globalMatrix(NULL), globalDim(0) ,MULTIMATRIX_VERBOSE(true)
 {
 }
 
@@ -71,9 +70,10 @@ void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::
     unsigned int dim = mstate->getMatrixSize();
     globalOffsets[mstate] = globalDim;
     globalDim += dim;
-#ifdef MULTIMATRIX_VERBOSE
-    std::cout << "DefaultMultiMatrixAccessor: added state " << mstate->getName() << " at offset " << globalOffsets[mstate] << " size " << dim << std::endl;
-#endif
+    if( MULTIMATRIX_VERBOSE)
+    {
+        std::cout << "DefaultMultiMatrixAccessor: added state " << mstate->getName() << " at offset " << globalOffsets[mstate] << " size " << dim << std::endl;
+    }
 }
 
 void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mapping)
@@ -138,15 +138,17 @@ void DefaultMultiMatrixAccessor::addMappedMechanicalState(const sofa::core::beha
     if(it == mappedMatrices.end() )
     {
         mappedMatrices[mstate] = NULL;
-#ifdef MULTIMATRIX_VERBOSE
-        std::cout <<  "DefaultMultiMatrixAccessor: added mapped state "  << mstate->getName() << " at a mapped matrix[NULL_matrix]" << std::endl;
-#endif
+        if( MULTIMATRIX_VERBOSE)
+        {
+            std::cout <<  "DefaultMultiMatrixAccessor: added mapped state "  << mstate->getName() << " at a mapped matrix[NULL_matrix]" << std::endl;
+        }
     }
     else
     {
-#ifdef MULTIMATRIX_VERBOSE
-        std::cout <<  "DefaultMultiMatrixAccessor: mapped state "  << mstate->getName() << " already added at a mapped matrix[NULL_matrix]" << std::endl;
-#endif
+        if( MULTIMATRIX_VERBOSE)
+        {
+            std::cout <<  "DefaultMultiMatrixAccessor: mapped state "  << mstate->getName() << " already added at a mapped matrix[NULL_matrix]" << std::endl;
+        }
         return;
     }
 }
@@ -173,9 +175,10 @@ void DefaultMultiMatrixAccessor::setupMatrices()
             ++it;
         }
     }
-#ifdef MULTIMATRIX_VERBOSE
-    std::cout << "DefaultMultiMatrixAccessor: Global Matrix size = " << globalDim << "x" << globalDim << " with " << globalOffsets.size() << " models." << std::endl;
-#endif
+    if( MULTIMATRIX_VERBOSE)
+    {
+        std::cout << "DefaultMultiMatrixAccessor: Global Matrix size = " << globalDim << "x" << globalDim << " with " << globalOffsets.size() << " models." << std::endl;
+    }
 #if 0 // the following code was used to debug resize issues in CompressedRowSparseMatrix
     if (globalMatrix)
     {
@@ -206,14 +209,16 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
     if (itlocal != localMatrixMap.end())
     {
         MatrixRef r = itlocal->second;
-#ifdef MULTIMATRIX_VERBOSE
-        if (r.matrix != NULL)
+
+        if( MULTIMATRIX_VERBOSE)
         {
-            std::cout << "DefaultMultiMatrixAccessor: valid " << r.matrix->rowSize() << "x" << r.matrix->colSize() << " matrix found for " << mstate->getName() << " using offset " << r.offset << std::endl;
+            if (r.matrix != NULL)
+            {
+                std::cout << "DefaultMultiMatrixAccessor: valid " << r.matrix->rowSize() << "x" << r.matrix->colSize() << " matrix found for " << mstate->getName() << " using offset " << r.offset << std::endl;
+            }
+            else
+                std::cout << "DefaultMultiMatrixAccessor: NULL matrix found for " << mstate->getName() << std::endl;
         }
-        else
-            std::cout << "DefaultMultiMatrixAccessor: NULL matrix found for " << mstate->getName() << std::endl;
-#endif
         return r;
     }
 
@@ -223,12 +228,13 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
         if (itmapped->second == NULL) // we need to create the matrix
         {
             itmapped->second = createMatrix(mstate);
-#ifdef MULTIMATRIX_VERBOSE
-            if (itmapped->second != NULL)
-                std::cout << "DefaultMultiMatrixAccessor: Mapped state " << mstate->getName() << " " << itmapped->second->rowSize() << "x" << itmapped->second->colSize() << " matrix already created." << std::endl;
-            else
-                std::cout << "DefaultMultiMatrixAccessor: Mapped state " << mstate->getName() << " ignored. It will not contribute to the final mechanical matrix." << std::endl;
-#endif
+            if( MULTIMATRIX_VERBOSE)
+            {
+                if (itmapped->second != NULL)
+                    std::cout << "DefaultMultiMatrixAccessor: Mapped state " << mstate->getName() << " " << itmapped->second->rowSize() << "x" << itmapped->second->colSize() << " matrix already created." << std::endl;
+                else
+                    std::cout << "DefaultMultiMatrixAccessor: Mapped state " << mstate->getName() << " ignored. It will not contribute to the final mechanical matrix." << std::endl;
+            }
         }
         MatrixRef ref;
         if (itmapped->second != NULL)
@@ -239,10 +245,10 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
         return ref;
     }
 
-
-#ifdef MULTIMATRIX_VERBOSE
-    std::cout << "DefaultMultiMatrixAccessor: NO matrix found for " << mstate->getName() << std::endl;
-#endif
+    if( MULTIMATRIX_VERBOSE)
+    {
+        std::cout << "DefaultMultiMatrixAccessor: NO matrix found for " << mstate->getName() << std::endl;
+    }
 
     return MatrixRef();
 }
@@ -256,15 +262,16 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
         r2.matrix = r.matrix;
         r2.offRow = r.offset;
         r2.offCol = r.offset;
-#ifdef MULTIMATRIX_VERBOSE
-        if (r.matrix != NULL)
-            std::cout << "DefaultMultiMatrixAccessor: valid " << r.matrix->rowSize() << "x" << r.matrix->colSize() << " matrix found for self-interaction "
-                    <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
-                    <<" at ("<<r2.offRow <<","<< r2.offCol<<")"<< std::endl;
-        else
-            std::cout << "DefaultMultiMatrixAccessor: NULL matrix found for self-interaction "<<
-                    mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" << std::endl;
-#endif
+        if( MULTIMATRIX_VERBOSE)
+        {
+            if (r.matrix != NULL)
+                std::cout << "DefaultMultiMatrixAccessor: valid " << r.matrix->rowSize() << "x" << r.matrix->colSize() << " matrix found for self-interaction "
+                        <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
+                        <<" at ("<<r2.offRow <<","<< r2.offCol<<")"<< std::endl;
+            else
+                std::cout << "DefaultMultiMatrixAccessor: NULL matrix found for self-interaction "<<
+                        mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" << std::endl;
+        }
         return r2;
     }
 
@@ -273,11 +280,12 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
     {
         if(it->second.matrix != NULL)
         {
-#ifdef MULTIMATRIX_VERBOSE
-            std::cout << "DefaultMultiMatrixAccessor: valid " << it->second.matrix->rowSize() << "x" << it->second.matrix->colSize() << " matrix found for interaction "
-                    <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
-                    <<" at ("<<it->second.offRow <<","<< it->second.offCol<<")"<< std::endl;
-#endif
+            if( MULTIMATRIX_VERBOSE)
+            {
+                std::cout << "DefaultMultiMatrixAccessor: valid " << it->second.matrix->rowSize() << "x" << it->second.matrix->colSize() << " matrix found for interaction "
+                        <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
+                        <<" at ("<<it->second.offRow <<","<< it->second.offCol<<")"<< std::endl;
+            }
             return it->second;
         }
         else
@@ -307,12 +315,13 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
                     r.offRow = it1->second;
                     r.offCol = it2->second;
                     it->second = r;
-#ifdef MULTIMATRIX_VERBOSE
-                    if (r.matrix != NULL)
-                        std::cout << "DefaultMultiMatrixAccessor: set " << r.matrix->rowSize() << "x" << r.matrix->colSize() << " matrix for interaction "
-                                <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
-                                <<" at ("<<r.offRow <<","<< r.offCol<<")"<< std::endl;
-#endif
+                    if( MULTIMATRIX_VERBOSE)
+                    {
+                        if (r.matrix != NULL)
+                            std::cout << "DefaultMultiMatrixAccessor: set " << r.matrix->rowSize() << "x" << r.matrix->colSize() << " matrix for interaction "
+                                    << mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
+                                    << " at ("<<r.offRow <<","<< r.offCol<<")"<< std::endl;
+                    }
                     return r;
                 }
             }
@@ -329,9 +338,10 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
         }
     }
 
-#ifdef MULTIMATRIX_VERBOSE
-    std::cout << "DefaultMultiMatrixAccessor: NO matrix found for interaction " << mstate1->getName()<<" --- "<<mstate2->getName() << std::endl;
-#endif
+    if( MULTIMATRIX_VERBOSE)
+    {
+        std::cout << "DefaultMultiMatrixAccessor: NO matrix found for interaction " << mstate1->getName()<<" --- "<<mstate2->getName() << std::endl;
+    }
     return InteractionMatrixRef();
 }
 
@@ -366,9 +376,10 @@ defaulttype::BaseMatrix* MappedMultiMatrixAccessor::createMatrix(const sofa::cor
     component::linearsolver::FullMatrix<SReal>* m = new component::linearsolver::FullMatrix<SReal>;
     m->resize( mstate->getMatrixSize(),mstate->getMatrixSize());
 
-#ifdef MULTIMATRIX_VERBOSE
-    std::cout << "MappedMultiMatrixAccessor: ++ creating matrix["<< m->rowSize() <<"x"<< m->colSize() <<"]   for state " << mstate->getName() << "[" << mstate->getMatrixSize()<<"]"<< std::endl;
-#endif
+    if( MULTIMATRIX_VERBOSE)
+    {
+        std::cout << "MappedMultiMatrixAccessor: ++ creating matrix["<< m->rowSize() <<"x"<< m->colSize() <<"]   for state " << mstate->getName() << "[" << mstate->getMatrixSize()<<"]"<< std::endl;
+    }
 
     return m;
 }
@@ -379,11 +390,12 @@ defaulttype::BaseMatrix* MappedMultiMatrixAccessor::createInteractionMatrix(cons
     component::linearsolver::FullMatrix<SReal>* m = new component::linearsolver::FullMatrix<SReal>;
     m->resize( mstate1->getMatrixSize(),mstate2->getMatrixSize() );
 
-#ifdef MULTIMATRIX_VERBOSE
-    std::cout << "MappedMultiMatrixAccessor: ++ creating interraction matrix["<< m->rowSize() <<"x"<< m->colSize()
-            <<"] for interaction " << mstate1->getName() << "[" << mstate1->getMatrixSize()
-            <<"] --- "             << mstate2->getName() << "[" << mstate2->getMatrixSize()<<"]" <<std::endl;
-#endif
+    if( MULTIMATRIX_VERBOSE)
+    {
+        std::cout << "MappedMultiMatrixAccessor: ++ creating interraction matrix["<< m->rowSize() <<"x"<< m->colSize()
+                << "] for interaction " << mstate1->getName() << "[" << mstate1->getMatrixSize()
+                << "] --- "             << mstate2->getName() << "[" << mstate2->getMatrixSize()<<"]" <<std::endl;
+    }
 
     return m;
 }
@@ -411,13 +423,14 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
     const std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* >::const_reverse_iterator   _itEnd = mappingsContributionTree.rend();
     for(_rit = _itBegin; _rit != _itEnd; ++_rit)
     {
-//#ifdef MULTIMATRIX_VERBOSE
-//		std::cout << "MappedMultiMatrixAccessor: ----- contributed mechanical mapping : "<< _rit->second->getName()
-//				  << " inputState "<< _rit->second->getMechFrom()[0]->getName()
-//				  << " outputState "<< _rit->second->getMechTo()[0]->getName()
-//				  << " outputState mapped in contributive tree "<< _rit->first->getName()
-//				  <<std::endl;
-//#endif
+//		if( MULTIMATRIX_VERBOSE)
+//		{
+//			std::cout << "MappedMultiMatrixAccessor: ----- contributed mechanical mapping : "<< _rit->second->getName()
+//						  << " inputState "<< _rit->second->getMechFrom()[0]->getName()
+//						  << " outputState "<< _rit->second->getMechTo()[0]->getName()
+//						  << " outputState mapped in contributive tree "<< _rit->first->getName()
+//						  <<std::endl;
+//		}
 
 
         const sofa::core::behavior::BaseMechanicalState* mstate1 = _rit->second->getMechFrom()[0];
@@ -439,50 +452,51 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
             const unsigned int offset1 = K1.offset;
             const unsigned int offset2 = K2.offset;
 
-            for(unsigned int i1 =0 ; i1 < sizeK1 ; ++i1)
+//			for(unsigned int i1 =0 ; i1 < sizeK1 ; ++i1)
+//			{
+//				for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
+//				{
+//					double Jt_K2_J_i1j1 = 0;
+//
+//					for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
+//					{
+//						for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
+//						{
+//							const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
+//							for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
+//							{
+//								const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
+//								const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
+//
+//								Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
+//							}
+//						}
+//					}
+//
+//					K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
+//				}
+//			}
+
+            if( MULTIMATRIX_VERBOSE)
             {
-                for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
+                std::cout << "MappedMultiMatrixAccessor: MAPPING "<<_rit->second->getName() <<"  MATRIX CONTRIBUTION : ";
+
+                std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate1);
+                if (itmapped != mappedMatrices.end())
                 {
-                    double Jt_K2_J_i1j1 = 0;
-
-                    for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
-                    {
-                        for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
-                        {
-                            const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
-                            for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
-                            {
-                                const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
-                                const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
-
-                                Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
-                            }
-                        }
-                    }
-
-                    K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
+                    // this state is mapped
+                    std::cout <<     "mapped matrix K1[" << K1.matrix->rowSize() <<"x" << K1.matrix->colSize() <<"]";
                 }
-            }
+                else
+                {
+                    std::cout <<     "local DOF matrix _K1[" << mstate1->getMatrixSize() <<"x" << mstate1->getMatrixSize()
+                            <<     "] in global matrix K["<<globalMatrix->rowSize()<<"x"<<globalMatrix->colSize()<<"] at offset "<<K1.offset;
+                }
 
-#ifdef MULTIMATRIX_VERBOSE
-            std::cout << "MappedMultiMatrixAccessor: MAPPING "<<_rit->second->getName() <<"  MATRIX CONTRIBUTION : ";
-
-            std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate1);
-            if (itmapped != mappedMatrices.end())
-            {
-                // this state is mapped
-                std::cout <<     "mapped matrix K1[" << K1.matrix->rowSize() <<"x" << K1.matrix->colSize() <<"]";
+                std::cout << "    mapped matrix K2[" << K2.matrix->rowSize() <<"x" << K2.matrix->colSize() <<"]"
+                        << "     J[" <<   matrixJ->rowSize() <<"x" <<   matrixJ->colSize() <<"]"
+                        <<std::endl;
             }
-            else
-            {
-                std::cout <<     "local DOF matrix _K1[" << mstate1->getMatrixSize() <<"x" << mstate1->getMatrixSize()
-                        <<     "] in global matrix K["<<globalMatrix->rowSize()<<"x"<<globalMatrix->colSize()<<"] at offset "<<K1.offset;
-            }
-
-            std::cout << "    mapped matrix K2[" << K2.matrix->rowSize() <<"x" << K2.matrix->colSize() <<"]"
-                    << "     J[" <<   matrixJ->rowSize() <<"x" <<   matrixJ->colSize() <<"]"
-                    <<std::endl;
-#endif
 
         }
     }
