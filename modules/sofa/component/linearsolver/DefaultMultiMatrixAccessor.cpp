@@ -37,7 +37,7 @@ namespace linearsolver
 {
 
 DefaultMultiMatrixAccessor::DefaultMultiMatrixAccessor()
-    : globalMatrix(NULL), globalDim(0) ,MULTIMATRIX_VERBOSE(true)
+    : globalMatrix(NULL), globalDim(0) ,MULTIMATRIX_VERBOSE(false)
 {
 }
 

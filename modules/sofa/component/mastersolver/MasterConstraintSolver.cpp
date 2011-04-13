@@ -734,10 +734,10 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
 
     /// CORRECTIVE MOTION
     correctiveMotion(params /* PARAMS FIRST */, context);
-    if (doubleBuffer.getValue() && bufCP1)
-        std::cout << " #C: " << CP2.getSize() << " constraints" << std::endl;
-    else
-        std::cout << " #C: " << CP1.getSize() << " constraints" << std::endl;
+//       if (doubleBuffer.getValue() && bufCP1)
+//           std::cout << " #C: " << CP2.getSize() << " constraints" << std::endl;
+//       else
+//           std::cout << " #C: " << CP1.getSize() << " constraints" << std::endl;
 
 
     if ( displayTime.getValue() )

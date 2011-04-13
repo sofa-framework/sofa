@@ -127,6 +127,11 @@ public:
 
     virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
+    virtual const sofa::defaulttype::BaseMatrix* getJ()
+    {
+        return NULL;
+    }
+
     void draw();
 
     void clear();
