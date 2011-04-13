@@ -59,6 +59,7 @@ public:
         defaulttype::BaseMatrix* operator->() const { return matrix; }
         bool operator!() const { return matrix == NULL; }
         operator bool() const { return matrix != NULL; }
+        void operator =(const MatrixRef& b) {offset = b.offset; matrix = b.matrix;}
     };
 
     /// Simple structure holding a reference to the submatrix related to the interactions between two MechanicalStates
@@ -71,6 +72,7 @@ public:
         defaulttype::BaseMatrix* operator->() const { return matrix; }
         bool operator!() const { return matrix == NULL; }
         operator bool() const { return matrix != NULL; }
+        void operator =(const InteractionMatrixRef& b) {offRow = b.offRow; offCol = b.offCol; matrix = b.matrix;}
     };
 
     virtual void addMechanicalState(const BaseMechanicalState* mstate);
