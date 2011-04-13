@@ -48,7 +48,7 @@ void VRPNTracker<RigidTypes>::update()
     sofa::helper::WriteAccessor< Data< VecCoord > > points = f_points;
     //std::cout << "read tracker " << this->getName() << std::endl;
     Coord pointIfNull;
-    if (tkr)
+    if (tkr.get() != 0)
     {
         //get infos
         trackerData.modified = false;

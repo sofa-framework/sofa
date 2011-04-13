@@ -18,6 +18,7 @@
 #include <VRPNDevice.h>
 
 #include <vrpn/vrpn_Tracker.h>
+#include <memory>
 
 namespace sofavrpn
 {
@@ -60,7 +61,7 @@ private:
 
 
     VRPNTrackerData trackerData;
-    vrpn_Tracker_Remote* tkr;
+    std::auto_ptr<vrpn_Tracker_Remote> tkr;
     sofa::helper::RandomGenerator rg;
     bool connectToServer();
     void update();
