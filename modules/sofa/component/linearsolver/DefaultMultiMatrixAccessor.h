@@ -31,6 +31,8 @@
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/GraphScatteredTypes.h>
+#include <vector>
+
 
 namespace sofa
 {
@@ -40,6 +42,9 @@ namespace component
 
 namespace linearsolver
 {
+
+using namespace sofa::core;
+using namespace sofa::core::behavior;
 
 class SOFA_COMPONENT_LINEARSOLVER_API DefaultMultiMatrixAccessor : public sofa::core::behavior::MultiMatrixAccessor
 {
@@ -60,7 +65,7 @@ public:
     virtual int getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const;
 
     virtual MatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const;
-    virtual InteractionMatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2) const;
+    virtual InteractionMatrixRef getMatrix(const BaseMechanicalState* mstate1, const BaseMechanicalState* mstate2) const;
 
     virtual void computeGlobalMatrix();
 
@@ -68,22 +73,22 @@ protected:
 
     defaulttype::BaseMatrix* globalMatrix;
     unsigned int globalDim;
-    std::map< const sofa::core::behavior::BaseMechanicalState*, int > globalOffsets;
-
-    //in the list of mapping, only mapping where its getJ give a non-NULL matrix is valid, this one is attached with true value
-    //The one whose getJ not implemented will attache with the false value
-    mutable std::map<sofa::core::BaseMapping*, bool> mappingsList;
+    std::map< const sofa::core::behavior::BaseMechanicalState*, int > realStateOffsets;
 
     //mappingTree allows to find the mapping knowing its state of ToModel
     mutable std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* > mappingsContributionTree;
 
-    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* > mappedMatrices;
+    mutable std::map< const BaseMechanicalState*, defaulttype::BaseMatrix* > mappedMatrices;
 
-    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, MatrixRef > localMatrixMap;
-    mutable std::map< std::pair<const sofa::core::behavior::BaseMechanicalState*, const sofa::core::behavior::BaseMechanicalState*>, InteractionMatrixRef > interactionMatrixMap;
+    mutable std::vector< std::pair< const BaseMechanicalState*, const BaseMechanicalState* > > interactionMappedTree;
 
-    virtual defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const;
-    virtual defaulttype::BaseMatrix* createInteractionMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2) const;
+
+    mutable std::map< const BaseMechanicalState*, MatrixRef > diagonalStiffnessBloc;
+    mutable std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef > interactionStiffnessBloc;
+
+
+    virtual defaulttype::BaseMatrix* createMatrix(const BaseMechanicalState* mstate) const;
+    virtual defaulttype::BaseMatrix* createInteractionMatrix(const BaseMechanicalState* mstate1, const BaseMechanicalState* mstate2) const;
 
     bool MULTIMATRIX_VERBOSE;
 };
