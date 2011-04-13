@@ -70,9 +70,9 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         u *= inverseLength;
         Real elongation = (Real)(d - spring.initpos);
         potentialEnergy += elongation * elongation * spring.ks / 2;
-//                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<sendl;
-//                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<sendl;
-//                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;
+        //                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<sendl;
+        //                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<sendl;
+        //                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;
         Deriv relativeVelocity = v2[b]-v1[a];
         Real elongationVelocity = dot(u,relativeVelocity);
         Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
@@ -116,11 +116,11 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecD
     const Coord d = dx2[b]-dx1[a];
     Deriv dforce = this->dfdx[i]*d;
     dforce *= kFactor;
-//                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dx1 ="<<  dx1 <<", dx2 ="<<  dx2 <<sendl;
-//                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
+    //                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dx1 ="<<  dx1 <<", dx2 ="<<  dx2 <<sendl;
+    //                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
     df1[a]+=dforce;
     df2[b]-=dforce;
-//                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", df1 after ="<<df1<<", df2 after ="<<df2<<sendl;
+    //                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", df1 after ="<<df1<<", df2 after ="<<df2<<sendl;
 }
 
 template<class DataTypes>
@@ -212,6 +212,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mpar
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat22 = matrix->getMatrix(this->mstate2);
         sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat12 = matrix->getMatrix(this->mstate1, this->mstate2);
         sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(this->mstate2, this->mstate1);
+
         if (!mat11 && !mat22 && !mat12 && !mat21) return;
         const sofa::helper::vector<Spring >& ss = this->springs.getValue();
         const unsigned int n = ss.size() < this->dfdx.size() ? ss.size() : this->dfdx.size();
@@ -222,13 +223,29 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mpar
             unsigned p2 = /*mat.offset+*/Deriv::total_size*s.m2;
             Mat m = this->dfdx[e]* (Real) kFact;
             if (mat11)
-                for(int i=0; i<N; i++) for (int j=0; j<N; j++) mat11.matrix->add(mat11.offset+p1+i,mat11.offset+p1+j, -(Real)m[i][j]);
+                for(int i=0; i<N; i++)
+                    for (int j=0; j<N; j++)
+                    {
+                        mat11.matrix->add(mat11.offset+p1+i,mat11.offset+p1+j, -(Real)m[i][j]);
+                    }
             if (mat12)
-                for(int i=0; i<N; i++) for (int j=0; j<N; j++) mat12.matrix->add(mat12.offRow+p1+i,mat12.offCol+p1+j,  (Real)m[i][j]);
+                for(int i=0; i<N; i++)
+                    for (int j=0; j<N; j++)
+                    {
+                        mat12.matrix->add(mat12.offRow+p1+i,mat12.offCol+p2+j,  (Real)m[i][j]);
+                    }
             if (mat21)
-                for(int i=0; i<N; i++) for (int j=0; j<N; j++) mat21.matrix->add(mat21.offRow+p1+i,mat21.offCol+p1+j,  (Real)m[i][j]);
+                for(int i=0; i<N; i++)
+                    for (int j=0; j<N; j++)
+                    {
+                        mat21.matrix->add(mat21.offRow+p1+i,mat21.offCol+p2+j,  (Real)m[i][j]);
+                    }
             if (mat22)
-                for(int i=0; i<N; i++) for (int j=0; j<N; j++) mat22.matrix->add(mat22.offset+p2+i,mat11.offset+p2+j, -(Real)m[i][j]);
+                for(int i=0; i<N; i++)
+                    for (int j=0; j<N; j++)
+                    {
+                        mat22.matrix->add(mat22.offset+p2+i,mat11.offset+p2+j, -(Real)m[i][j]);
+                    }
         }
     }
 }
