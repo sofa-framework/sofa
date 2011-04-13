@@ -48,7 +48,7 @@ VRPNTracker<DataTypes>::~VRPNTracker()
 template<class DataTypes>
 bool VRPNTracker<DataTypes>::connectToServer()
 {
-    tkr = new vrpn_Tracker_Remote(deviceURL.c_str());
+    tkr.reset(new vrpn_Tracker_Remote(deviceURL.c_str()));
     tkr->register_change_handler((void*) &trackerData, handle_tracker);
 
     tkr->reset_origin();
@@ -64,7 +64,7 @@ void VRPNTracker<DataTypes>::update()
     sofa::helper::WriteAccessor< Data< VecCoord > > points = f_points;
     //std::cout << "read tracker " << this->getName() << std::endl;
 
-    if (tkr)
+    if (tkr.get() != 0)
     {
         //get infos
         trackerData.modified = false;
