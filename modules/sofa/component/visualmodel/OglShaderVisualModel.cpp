@@ -180,6 +180,7 @@ void OglShaderVisualModel::handleTopologyChange()
 {
     vrestpositions.handleTopologyChange();
     vrestnormals.handleTopologyChange();
+    init();
 
     VisualModelImpl::handleTopologyChange();
     if (m_topology)
@@ -228,7 +229,6 @@ void OglShaderVisualModel::computeRestNormals()
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
     ResizableExtVector<Coord>& restNormals = * ( vrestnormals.beginEdit() );
-
     for (unsigned int i = 0; i < triangles.size() ; i++)
     {
         const Coord  v1 = vrestpos[triangles[i][0]];
