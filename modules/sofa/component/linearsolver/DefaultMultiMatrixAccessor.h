@@ -46,6 +46,15 @@ namespace linearsolver
 using namespace sofa::core;
 using namespace sofa::core::behavior;
 
+
+/* see all scenes in example/SanBox/MatrixContribution*  for diversity of test
+ *
+ *
+ * */
+
+
+
+
 class SOFA_COMPONENT_LINEARSOLVER_API DefaultMultiMatrixAccessor : public sofa::core::behavior::MultiMatrixAccessor
 {
 public:
