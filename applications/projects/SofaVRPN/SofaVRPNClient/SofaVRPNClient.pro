@@ -25,7 +25,7 @@ INCLUDEPATH += .
 LIBS += $$SOFA_GUI_LIBS
 LIBS += $$SOFA_LIBS
 
-LIBS += $$EXT_LIBS -lvrpn_client
+LIBS += $$EXT_LIBS -lvrpn_client$$LIBSUFFIX
 
 HEADERS +=  vrpnclient_config.h \
 			VRPNDevice.h \
