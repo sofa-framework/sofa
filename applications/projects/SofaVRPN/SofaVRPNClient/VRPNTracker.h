@@ -26,14 +26,6 @@ namespace sofavrpn
 namespace client
 {
 
-struct VRPNTrackerData
-{
-    sofa::helper::vector<vrpn_TRACKERCB> data;
-    bool modified;
-};
-
-void handle_tracker(void *userdata, const vrpn_TRACKERCB t);
-
 template<class DataTypes>
 class VRPNTracker :  public virtual VRPNDevice
 {
@@ -59,13 +51,14 @@ private:
     Data<Real> p_scale;
     Data<bool> p_nullPoint;
 
-
-    VRPNTrackerData trackerData;
     std::auto_ptr<vrpn_Tracker_Remote> tkr;
     sofa::helper::RandomGenerator rg;
+
     bool connectToServer();
     void update();
+    void updateCallback(const vrpn_TRACKERCB& t);
 
+    static void handle_tracker(void* userdata, const vrpn_TRACKERCB t);
     void handleEvent(sofa::core::objectmodel::Event* event);
     //DEBUG
     double angleX, angleY, angleZ;
