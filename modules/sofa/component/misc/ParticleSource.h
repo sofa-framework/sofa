@@ -77,15 +77,15 @@ public:
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
 
-    Data<Coord> f_translation;
-    Data<Real> f_scale;
+    Data< Coord > f_translation;
+    Data< Real > f_scale;
     Data< helper::vector<Coord> > f_center;
-    Data<Coord> f_radius;
-    Data<Deriv> f_velocity;
-    Data<Real> f_delay;
-    Data<Real> f_start;
-    Data<Real> f_stop;
-    bool m_canHaveEmptyVector;
+    Data< Coord > f_radius;
+    Data< Deriv > f_velocity;
+    Data< Real > f_delay;
+    Data< Real > f_start;
+    Data< Real > f_stop;
+    Data< bool > f_canHaveEmptyVector;
 
     ParticleSource()
         : f_translation(initData(&f_translation,Coord(),"translation","translation applied to center(s)") )
@@ -96,7 +96,7 @@ public:
         , f_delay(initData(&f_delay, (Real)0.01, "delay", "Delay between particles creation"))
         , f_start(initData(&f_start, (Real)0, "start", "Source starting time"))
         , f_stop(initData(&f_stop, (Real)1e10, "stop", "Source stopping time"))
-        , m_canHaveEmptyVector( false )
+        , f_canHaveEmptyVector(initData(&f_canHaveEmptyVector, (bool)false, "canHaveEmptyVector", ""))
     {
         this->f_listening.setValue(true);
         f_center.beginEdit()->push_back(Coord()); f_center.endEdit();
@@ -127,16 +127,25 @@ public:
         lastparticles.setTestParameter( (void *) this );
         lastparticles.setRemovalParameter( (void *) this );
 
-        sout << "ParticleSource: center="<<f_center.getValue()<<" radius="<<f_radius.getValue()<<" delay="<<f_delay.getValue()<<" start="<<f_start.getValue()<<" stop="<<f_stop.getValue()<<sendl;
+        sout << "ParticleSource: center = " << f_center.getValue()
+                << " radius = " << f_radius.getValue() << " delay = " << f_delay.getValue()
+                << " start = " << f_start.getValue() << " stop = " << f_stop.getValue() << sendl;
 
         int i0 = this->mstate->getX()->size();
-        if( !m_canHaveEmptyVector )
-            if (i0==1) i0=0; // ignore the first point if it is the only one
-        int ntotal = i0+((int)((f_stop.getValue() - f_start.getValue() - f_delay.getValue()) / f_delay.getValue()))*N;
+
+        if (!f_canHaveEmptyVector.getValue())
+        {
+            // ignore the first point if it is the only one
+            if (i0 == 1)
+                i0 = 0;
+        }
+
+        int ntotal = i0 + ((int)((f_stop.getValue() - f_start.getValue() - f_delay.getValue()) / f_delay.getValue())) * N;
+
         if (ntotal > 0)
         {
             this->mstate->resize(ntotal);
-            if( !m_canHaveEmptyVector )
+            if (!f_canHaveEmptyVector.getValue())
                 this->mstate->resize((i0==0) ? 1 : i0);
             else
                 this->mstate->resize(i0);
@@ -173,10 +182,11 @@ public:
 
         int i0 = this->mstate->getX()->size();
 
-        if( !m_canHaveEmptyVector )
+        if (!f_canHaveEmptyVector.getValue())
         {
+            // ignore the first point if it is the only one
             if (i0 == 1)
-                i0 = 0; // ignore the first point if it is the only one
+                i0 = 0;
         }
 
         int nbParticlesToCreate = (int)((time - lasttime) / f_delay.getValue());
@@ -192,6 +202,7 @@ public:
             if (pointMod != NULL)
             {
                 int n = i0 + nbParticlesToCreate * N - this->mstate->getX()->size();
+
                 pointMod->addPointsWarning(n);
                 pointMod->addPointsProcess(n);
                 pointMod->propagateTopologicalChanges();
@@ -345,6 +356,7 @@ protected :
 
     static void PSRemovalFunction (int index, void* p)
     {
+        std::cout << "PSRemovalFunction\n";
         ParticleSource* ps = (ParticleSource*)p;
         topology::PointSubset::const_iterator it = std::find(ps->lastparticles.begin(),ps->lastparticles.end(), (unsigned int)index);
         if (it != ps->lastparticles.end())
