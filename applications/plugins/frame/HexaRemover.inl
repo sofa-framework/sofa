@@ -275,14 +275,10 @@ void HexaRemover<DataTypes>::buildCollisionVolumes()
             const Cell& cell = ldi.cells[bx];
             if ( cell.nbLayers == 0 ) continue;
             static helper::vector<int> layers;
-            static helper::vector<int> inLayers;
             static helper::vector<int> inobjs;
-            static helper::vector<unsigned int> inobjs_tid;
             //                                                const CellCountLayer& counts = ldi.cellCounts[bx];
             layers.resize ( cell.nbLayers );
             inobjs.resize ( cell.nbLayers );
-            inLayers.resize ( cell.nbLayers );
-            inobjs_tid.resize ( cell.nbLayers );
 
             for ( int i=0, l = cell.firstLayer; i<cell.nbLayers; ++i )
             {
@@ -339,27 +335,23 @@ void HexaRemover<DataTypes>::buildCollisionVolumes()
 
                         if ( front )
                         {
-                            if ( incount >= 0 )
-                            {
-                                inobjs[incount] = obj;
-                                inLayers[incount] = layer;
-                                inobjs_tid[incount] = tid;
-                            }
+                            if ( incount >= 0 ) inobjs[incount] = obj;
                             ++incount;
                         }
                         else
                         {
                             --incount;
                             if ( first_front &&
-                                    ( //( obj == first_obj && incount > 0 && obj == inobjs[incount-1] ) || // self-collision
-                                            ( obj == first_obj && incount > 0 && obj != inobjs[incount-1]) || // collision inside another object
-                                            ( obj != first_obj ) ) ) // collision
+                                    ( ( obj != first_obj ) || // simple collision
+                                            ( obj == first_obj && incount > 0 && obj != inobjs[incount-1]) // collision inside another object
+                                    ))
                             {
                                 MTopology* first_model = (obj != first_obj) ? rasterizer->vmtopology[first_obj]: rasterizer->vmtopology[inobjs[incount-1]]; // Allow to correctly add the trianglesToParse in the case 'collision inside another object'
                                 current_model = rasterizer->vmtopology[obj];
                                 if ( ! ( ( isTheModelInteresting ( current_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), first_model ) != cuttingModels.end() ) ||
                                         ( isTheModelInteresting ( first_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), current_model ) != cuttingModels.end() ) ) )
                                     continue;
+
                                 Real y = ( Real ) ( cl0 + l ) * psize;
                                 Real x = ( Real ) ( cc0 + c ) * psize;
                                 Real z0 = ldi.cellLayers[first_layer][l][c].z;
@@ -379,13 +371,10 @@ void HexaRemover<DataTypes>::buildCollisionVolumes()
 
                                 // Store the collision volume and the triangle ID
                                 addVolume( collisionVolumes[axis], x, y, minDepth, maxDepth);
-                                if ( obj != first_obj)
-                                {
-                                    if ( isTheModelInteresting ( current_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), first_model ) != cuttingModels.end() )
-                                        trianglesToParse.insert( tid);
-                                    else if ( isTheModelInteresting ( first_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), current_model ) != cuttingModels.end() )
-                                        trianglesToParse.insert( first_tid);
-                                }
+                                if ( isTheModelInteresting ( current_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), first_model ) != cuttingModels.end() )
+                                    trianglesToParse.insert( tid);
+                                else if ( isTheModelInteresting ( first_model ) && std::find ( cuttingModels.begin(), cuttingModels.end(), current_model ) != cuttingModels.end() )
+                                    trianglesToParse.insert( first_tid);
                             }
                         }
                         first_front = front;

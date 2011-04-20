@@ -466,6 +466,9 @@ void FrameBlendingMapping<TIn, TOut>::initFrames( const bool& setFramePos, const
 {
     if( targetFrameNumber.getValue() == 0) return; // use user-defined frames
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Init_Frames");
+#endif
     // Get references
     WriteAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->write(core::VecCoordId::restPosition());
     WriteAccessor<Data<VecInCoord> >  xfrom = *this->fromModel->write(core::VecCoordId::position());
@@ -500,6 +503,9 @@ void FrameBlendingMapping<TIn, TOut>::initFrames( const bool& setFramePos, const
     {
         if(updateFramePosFromOldOne)
         {
+#ifdef SOFA_DUMP_VISITOR_INFO
+            simulation::Visitor::printNode("Map_new_Frame_State_From_Old_One");
+#endif
             vector<InCoord> newRestStates, newStates;
             newRestStates.resize(points.size());
             newStates.resize(points.size());
@@ -516,6 +522,9 @@ void FrameBlendingMapping<TIn, TOut>::initFrames( const bool& setFramePos, const
                 xfrom0[i] = xfromReset[i] = newRestStates[i];
                 xfrom[i] = newStates[i];
             }
+#ifdef SOFA_DUMP_VISITOR_INFO
+            simulation::Visitor::printCloseNode("Map_new_Frame_State_From_Old_One");
+#endif
         }
         else
         {
@@ -527,6 +536,9 @@ void FrameBlendingMapping<TIn, TOut>::initFrames( const bool& setFramePos, const
         }
 
     }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Init_Frames");
+#endif
 }
 
 
@@ -535,6 +547,9 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
 {
     if(!this->isPhysical)  return; // no gauss point -> use visual/collision or used-define points
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Init_Samples");
+#endif
     WriteAccessor<Data<VecOutCoord> >  xto0 = *this->toModel->write(core::VecCoordId::restPosition());
     WriteAccessor<Data<typename defaulttype::OutDataTypesInfo<Out>::VecMaterialCoord> >  points(this->f_materialPoints);
 
@@ -557,6 +572,9 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
         if ( !mstateto)
         {
             serr << "Error: try to insert new samples, which are not mechanical states !" << sendl;
+#ifdef SOFA_DUMP_VISITOR_INFO
+            simulation::Visitor::printCloseNode("Init_Samples");
+#endif
             return;
         }
 
@@ -586,6 +604,10 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
     for(unsigned int i=0; i<xto0.size(); i++ )
         for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
             points[i][j] = xto0[i][j];
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Init_Samples");
+#endif
 }
 
 
@@ -593,6 +615,9 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 {
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Update_Weights");
+#endif
     const vector<OutCoord>& xto = f_initPos.getValue();
     ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
     WriteAccessor<Data<vector<Vec<nbRef,InReal> > > >       m_weights  ( weight );
@@ -728,6 +753,10 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
     }
 
     normalizeWeights();
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Update_Weights");
+#endif
 }
 
 
@@ -1209,8 +1238,11 @@ void FrameBlendingMapping<TIn, TOut>::updateMapping()
     {
         serr << "Update Frames" << sendl;
 
+        //*
         initFrames( true, true); // With lloyd on frames
-        //initFrames( false); // Without lloyd on frames
+        /*/
+        initFrames( false); // Without lloyd on frames
+        //*/
 
         serr << "Update Samples" << sendl;
 
