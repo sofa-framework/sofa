@@ -1133,6 +1133,9 @@ template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::addWeightinRepartion(const unsigned int index)
 {
     if (!nbVoxels) return;
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Add_Weight_in_Repartion");
+#endif
     unsigned int j,k;
 
     for (unsigned int i=0; i<nbVoxels; i++)
@@ -1153,6 +1156,9 @@ void GridMaterial< MaterialTypes>::addWeightinRepartion(const unsigned int index
             }
         }
     showedrepartition=-1;
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Add_Weight_in_Repartion");
+#endif
 }
 
 
@@ -1172,6 +1178,9 @@ template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::normalizeWeightRepartion()
 {
     if (!nbVoxels) return;
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Normalize_Weight_Repartion");
+#endif
     unsigned int j;
     for (unsigned int i=0; i<nbVoxels; i++)
         //if (grid.data()[i])
@@ -1182,6 +1191,9 @@ void GridMaterial< MaterialTypes>::normalizeWeightRepartion()
             if (W!=0) for (j=0; j<nbRef  && v_weights[i][j]!=0; j++) v_weights[i][j]/=W;
         }
     showedrepartition=-1;
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Normalize_Weight_Repartion");
+#endif
 }
 
 
@@ -1679,6 +1691,10 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const u
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels) return false;
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Compute_Geodesical_Distances_To_Voronoi");
+#endif
+
     unsigned int i,j,index2;
     distances.resize(this->nbVoxels);
     if(ancestors) ancestors->resize(this->nbVoxels);
@@ -1778,6 +1794,11 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const u
     }
 
     updateMaxValues();
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Compute_Geodesical_Distances_To_Voronoi");
+#endif
+
     return true;
 }
 
@@ -2317,11 +2338,18 @@ bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( co
 /// linearly decreasing weight with support*dist(point,closestVoronoiBorder)
 {
     unsigned int i;
+    weights.resize(this->nbVoxels);
+    for (i=0; i<this->nbVoxels; i++)  weights[i]=0;
     if (!this->nbVoxels) return false;
     int index=getIndex(point);
     if(index==-1) return false;
     if (voronoi_frames.size()!=nbVoxels) return false;
     if (voronoi_frames[index]==-1) return false;
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Compute_Anisotropic_Linear_Weights_In_Voronoi");
+#endif
+
     unsigned int fromLabel=(unsigned int)grid.data()[index];
 
     // update voronoi of the considered frame
@@ -2332,8 +2360,6 @@ bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( co
 
     // update dmax in voronoi
     Real dmax=0; for (i=0; i<this->nbVoxels; i++) if(voronoi_frames[i]==voronoi_frames[index]) if(dmax<distances[i])  dmax=distances[i];
-    weights.resize(this->nbVoxels);
-    for (i=0; i<this->nbVoxels; i++)  weights[i]=0;
 
     vector<Real> backupdistance; backupdistance.clear();	backupdistance.insert(backupdistance.begin(),distances.begin(),distances.end());
 
@@ -2386,11 +2412,12 @@ bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( co
         }
     }
 
-
-
     distances.clear(); distances.insert(distances.begin(),backupdistance.begin(),backupdistance.end()); // store initial distances from frames
 
     showedrepartition=-1;
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Compute_Anisotropic_Linear_Weights_In_Voronoi");
+#endif
     return true;
 }
 
@@ -2425,18 +2452,22 @@ void GridMaterial< MaterialTypes>::offsetWeightsOutsideObject(unsigned int offes
     if (!this->nbVoxels) return;
     unsigned int i,j;
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Offset_Weights_Outside_Object");
+#endif
 
     // get voxels within offsetdist
     VUI neighbors;
     vector<unsigned int> update((int)nbVoxels,0);
+    // Liste l'ensemble des voxels null au bord du modele
     for (i=0; i<nbVoxels; i++)
         if(grid.data()[i])
         {
             get26Neighbors(i, neighbors);
             for (j=0; j<neighbors.size(); j++) if (!grid.data()[neighbors[j]]) update[neighbors[j]]=1;
         }
-    unsigned int nbiterations=0;
-    while (nbiterations<offestdist)
+    // Etend l'ensemble a offsetDist
+    for (unsigned int nbiterations = 0; nbiterations < offestdist; ++nbiterations)
     {
         for (i=0; i<nbVoxels; i++)
             if(update[i]==1)
@@ -2446,13 +2477,10 @@ void GridMaterial< MaterialTypes>::offsetWeightsOutsideObject(unsigned int offes
                 update[i]=3;
             }
         for (i=0; i<nbVoxels; i++) if(update[i]==2) update[i]=1;
-        nbiterations++;
     }
 
     // diffuse 2*offsetdist times for the selected voxels
-    nbiterations=0;
-    while (nbiterations<2*offestdist)
-    {
+    for (unsigned int nbiterations = 0; nbiterations < 2*offestdist; ++nbiterations)
         for (i=0; i<this->nbVoxels; i++)
             if (update[i])
             {
@@ -2466,8 +2494,9 @@ void GridMaterial< MaterialTypes>::offsetWeightsOutsideObject(unsigned int offes
                 if (W!=0) val=val/W; // normalize value
                 weights[i]=val;
             }
-        nbiterations++;
-    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Offset_Weights_Outside_Object");
+#endif
 }
 
 
@@ -3288,6 +3317,10 @@ void GridMaterial< MaterialTypes>::displayPlane( const int& axis) const
 template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::updateMaxValues()
 {
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Update_Max_Values");
+#endif
+
     // Determine max values
     unsigned int i;
     for (i=0; i < 11; ++i) maxValues[i] = -1.0f;
@@ -3312,6 +3345,10 @@ void GridMaterial< MaterialTypes>::updateMaxValues()
     maxValues[SHOWVOXELS_FRAMESINDICES]=nbRef+1.;
     for (unsigned int i = 0; i < showVoxels.getValue().size(); ++i)
         sout << "maxValues["<<showVoxels.getValue()[i]<<"]: " << maxValues[i] << sendl;
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Update_Max_Values");
+#endif
 }
 
 
