@@ -30,8 +30,6 @@ protected:
     sofa::core::behavior::BaseMechanicalState* mstate;
     unsigned int stepCounter;
 
-    std::ofstream* outfile;
-
     int nbFiles;
 
     std::string getMeshFilename(const char* ext);
