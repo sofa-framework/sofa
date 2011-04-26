@@ -25,7 +25,7 @@ int MeshExporterClass = core::RegisterObject("Export topology and positions into
         .add< MeshExporter >();
 
 MeshExporter::MeshExporter()
-    : stepCounter(0), outfile(NULL), nbFiles(0)
+    : stepCounter(0), nbFiles(0)
     , meshFilename( initData(&meshFilename, "filename", "output Mesh file name"))
     , fileFormat( initData(&fileFormat, sofa::helper::OptionsGroup(6,"ALL","vtkxml","vtk","netgen","tetgen","gmsh"), "format", "File format to use"))
     , position( initData(&position, "position", "points position (will use points from topology or mechanical state if this is empty)"))
@@ -44,8 +44,6 @@ MeshExporter::MeshExporter()
 
 MeshExporter::~MeshExporter()
 {
-    if (outfile)
-        delete outfile;
 }
 
 void MeshExporter::init()
@@ -73,17 +71,6 @@ void MeshExporter::init()
     }
 
     nbFiles = 0;
-// 	const std::string filename = meshFilename.getFullPath();
-// //	std::cout << filename << std::endl;
-//
-// 	outfile = new std::ofstream(filename.c_str());
-// 	if( !outfile->is_open() )
-// 	{
-// 		serr << "Error creating file "<<filename<<sendl;
-// 		delete outfile;
-// 		outfile = NULL;
-// 		return;
-// 	}
     /*
     	const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     	const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
@@ -173,12 +160,10 @@ void MeshExporter::writeMeshVTKXML()
 {
     std::string filename = getMeshFilename(".vtu");
 
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
+    std::ofstream outfile(filename.c_str());
+    if (!outfile.is_open())
     {
         serr << "Error creating file "<<filename<<sendl;
-        delete outfile;
-        outfile = NULL;
         return;
     }
     //const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
@@ -201,80 +186,80 @@ void MeshExporter::writeMeshVTKXML()
 // 				   +( (writeHexas.getValue()) ? 9 *topology->getNbHexas() : 0 );
 
     //write header
-    *outfile << "<?xml version=\"1.0\"?>" << std::endl;
-    *outfile << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
-    *outfile << "  <UnstructuredGrid>" << std::endl;
+    outfile << "<?xml version=\"1.0\"?>\n";
+    outfile << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">\n";
+    outfile << "  <UnstructuredGrid>\n";
     //write piece
-    *outfile << "    <Piece NumberOfPoints=\"" << nbp << "\" NumberOfCells=\""<< numberOfCells << "\">" << std::endl;
+    outfile << "    <Piece NumberOfPoints=\"" << nbp << "\" NumberOfCells=\""<< numberOfCells << "\">\n";
 
     /*
     	//write point data
     	if (!pointsData.empty())
     	{
-    		*outfile << "      <PointData>" << std::endl;
+    		outfile << "      <PointData>\n";
     		writeDataArray(pointsDataObject, pointsDataField, pointsDataName);
-    		*outfile << "      </PointData>" << std::endl;
+    		outfile << "      </PointData>\n";
     	}
     		//write cell data
     	if (!cellsData.empty())
     	{
-    		*outfile << "      <CellData>" << std::endl;
+    		outfile << "      <CellData>\n";
     		writeDataArray(cellsDataObject, cellsDataField, cellsDataName);
-    		*outfile << "      </CellData>" << std::endl;
+    		outfile << "      </CellData>\n";
     	}
 
     */
 
     //write points
-    *outfile << "      <Points>" << std::endl;
-    *outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">" << std::endl;
+    outfile << "      <Points>\n";
+    outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">\n";
     for (int i=0 ; i<nbp; i++)
     {
-        *outfile << "          " << pointsPos[i] << std::endl;
+        outfile << "          " << pointsPos[i] << "\n";
     }
-    *outfile << "        </DataArray>" << std::endl;
-    *outfile << "      </Points>" << std::endl;
+    outfile << "        </DataArray>\n";
+    outfile << "      </Points>\n";
     //write cells
-    *outfile << "      <Cells>" << std::endl;
+    outfile << "      <Cells>\n";
     //write connectivity
-    *outfile << "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">" << std::endl;
+    outfile << "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">\n";
     if (writeEdges.getValue())
     {
         for (int i=0 ; i<topology->getNbEdges() ; i++)
-            *outfile << "          " << topology->getEdge(i) << std::endl;
+            outfile << "          " << topology->getEdge(i) << "\n";
     }
 
     if (writeTriangles.getValue())
     {
         for (int i=0 ; i<topology->getNbTriangles() ; i++)
-            *outfile << "          " <<  topology->getTriangle(i) << std::endl;
+            outfile << "          " <<  topology->getTriangle(i) << "\n";
     }
     if (writeQuads.getValue())
     {
         for (int i=0 ; i<topology->getNbQuads() ; i++)
-            *outfile << "          " << topology->getQuad(i) << std::endl;
+            outfile << "          " << topology->getQuad(i) << "\n";
     }
     if (writeTetras.getValue())
     {
         for (int i=0 ; i<topology->getNbTetras() ; i++)
-            *outfile << "          " <<  topology->getTetra(i) << std::endl;
+            outfile << "          " <<  topology->getTetra(i) << "\n";
     }
     if (writeHexas.getValue())
     {
         for (int i=0 ; i<topology->getNbHexas() ; i++)
-            *outfile << "          " <<  topology->getHexa(i) << std::endl;
+            outfile << "          " <<  topology->getHexa(i) << "\n";
     }
-    *outfile << "        </DataArray>" << std::endl;
+    outfile << "        </DataArray>\n";
     //write offsets
     int num = 0;
-    *outfile << "        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">" << std::endl;
-    *outfile << "          ";
+    outfile << "        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">\n";
+    outfile << "          ";
     if (writeEdges.getValue())
     {
         for (int i=0 ; i<topology->getNbEdges() ; i++)
         {
             num += 2;
-            *outfile << num << ' ';
+            outfile << num << ' ';
         }
     }
     if (writeTriangles.getValue())
@@ -282,7 +267,7 @@ void MeshExporter::writeMeshVTKXML()
         for (int i=0 ; i<topology->getNbTriangles() ; i++)
         {
             num += 3;
-            *outfile << num << ' ';
+            outfile << num << ' ';
         }
     }
     if (writeQuads.getValue())
@@ -290,7 +275,7 @@ void MeshExporter::writeMeshVTKXML()
         for (int i=0 ; i<topology->getNbQuads() ; i++)
         {
             num += 4;
-            *outfile << num << ' ';
+            outfile << num << ' ';
         }
     }
     if (writeTetras.getValue())
@@ -298,7 +283,7 @@ void MeshExporter::writeMeshVTKXML()
         for (int i=0 ; i<topology->getNbTetras() ; i++)
         {
             num += 4;
-            *outfile << num << ' ';
+            outfile << num << ' ';
         }
     }
     if (writeHexas.getValue())
@@ -306,48 +291,48 @@ void MeshExporter::writeMeshVTKXML()
         for (int i=0 ; i<topology->getNbHexas() ; i++)
         {
             num += 6;
-            *outfile << num << ' ';
+            outfile << num << ' ';
         }
     }
-    *outfile << std::endl;
-    *outfile << "        </DataArray>" << std::endl;
+    outfile << "\n";
+    outfile << "        </DataArray>\n";
     //write types
-    *outfile << "        <DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">" << std::endl;
-    *outfile << "          ";
+    outfile << "        <DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">\n";
+    outfile << "          ";
     if (writeEdges.getValue())
     {
         for (int i=0 ; i<topology->getNbEdges() ; i++)
-            *outfile << 3 << ' ';
+            outfile << 3 << ' ';
     }
     if (writeTriangles.getValue())
     {
         for (int i=0 ; i<topology->getNbTriangles() ; i++)
-            *outfile << 5 << ' ';
+            outfile << 5 << ' ';
     }
     if (writeQuads.getValue())
     {
         for (int i=0 ; i<topology->getNbQuads() ; i++)
-            *outfile << 9 << ' ';
+            outfile << 9 << ' ';
     }
     if (writeTetras.getValue())
     {
         for (int i=0 ; i<topology->getNbTetras() ; i++)
-            *outfile << 10 << ' ';
+            outfile << 10 << ' ';
     }
     if (writeHexas.getValue())
     {
         for (int i=0 ; i<topology->getNbHexas() ; i++)
-            *outfile << 12 << ' ';
+            outfile << 12 << ' ';
     }
-    *outfile << std::endl;
-    *outfile << "        </DataArray>" << std::endl;
-    *outfile << "      </Cells>" << std::endl;
+    outfile << "\n";
+    outfile << "        </DataArray>\n";
+    outfile << "      </Cells>\n";
 
     //write end
-    *outfile << "    </Piece>" << std::endl;
-    *outfile << "  </UnstructuredGrid>" << std::endl;
-    *outfile << "</VTKFile>" << std::endl;
-    outfile->close();
+    outfile << "    </Piece>\n";
+    outfile << "  </UnstructuredGrid>\n";
+    outfile << "</VTKFile>\n";
+    outfile.close();
     sout << filename << " written" << sendl;
 }
 
@@ -355,12 +340,10 @@ void MeshExporter::writeMeshVTK()
 {
     std::string filename = getMeshFilename(".vtk");
 
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
+    std::ofstream outfile(filename.c_str());
+    if( !outfile.is_open() )
     {
         serr << "Error creating file "<<filename<<sendl;
-        delete outfile;
-        outfile = NULL;
         return;
     }
 
@@ -372,23 +355,23 @@ void MeshExporter::writeMeshVTK()
     const int nbp = pointsPos.size();
 
     //Write header
-    *outfile << "# vtk DataFile Version 2.0" << std::endl;
+    outfile << "# vtk DataFile Version 2.0\n";
 
     //write Title
-    *outfile << "SOFA Exported Mesh file" << std::endl;
+    outfile << "SOFA Exported Mesh file\n";
 
     //write Data type
-    *outfile << "ASCII" << std::endl;
+    outfile << "ASCII\n";
 
     //write dataset (geometry, unstructured grid)
-    *outfile << "DATASET " << "UNSTRUCTURED_GRID" << std::endl;
+    outfile << "DATASET " << "UNSTRUCTURED_GRID\n";
 
-    *outfile << "POINTS " << nbp << " float" << std::endl;
+    outfile << "POINTS " << nbp << " float\n";
 
     //Write Points
     for (int i=0 ; i<nbp; i++)
     {
-        *outfile << pointsPos[i] << std::endl;
+        outfile << pointsPos[i] << "\n";
     }
 
     //Write Cells
@@ -405,80 +388,79 @@ void MeshExporter::writeMeshVTK()
             +( (writeHexas.getValue()) ? 9 *topology->getNbHexas() : 0 );
 
 
-    *outfile << "CELLS " << numberOfCells << ' ' << totalSize << std::endl;
+    outfile << "CELLS " << numberOfCells << ' ' << totalSize << "\n";
 
     if (writeEdges.getValue())
     {
         for (int i=0 ; i<topology->getNbEdges() ; i++)
-            *outfile << 2 << ' ' << topology->getEdge(i) << std::endl;
+            outfile << 2 << ' ' << topology->getEdge(i) << "\n";
     }
 
     if (writeTriangles.getValue())
     {
         for (int i=0 ; i<topology->getNbTriangles() ; i++)
-            *outfile << 3 << ' ' <<  topology->getTriangle(i) << std::endl;
+            outfile << 3 << ' ' <<  topology->getTriangle(i) << "\n";
     }
     if (writeQuads.getValue())
     {
         for (int i=0 ; i<topology->getNbQuads() ; i++)
-            *outfile << 4 << ' ' << topology->getQuad(i) << std::endl;
+            outfile << 4 << ' ' << topology->getQuad(i) << "\n";
     }
 
     if (writeTetras.getValue())
     {
         for (int i=0 ; i<topology->getNbTetras() ; i++)
-            *outfile << 4 << ' ' <<  topology->getTetra(i) << std::endl;
+            outfile << 4 << ' ' <<  topology->getTetra(i) << "\n";
     }
     if (writeHexas.getValue())
     {
         for (int i=0 ; i<topology->getNbHexas() ; i++)
-            *outfile << 8 << ' ' <<  topology->getHexa(i) << std::endl;
+            outfile << 8 << ' ' <<  topology->getHexa(i) << "\n";
     }
 
-    *outfile << "CELL_TYPES " << numberOfCells << std::endl;
+    outfile << "CELL_TYPES " << numberOfCells << "\n";
 
     if (writeEdges.getValue())
     {
         for (int i=0 ; i<topology->getNbEdges() ; i++)
-            *outfile << 3 << std::endl;
+            outfile << 3 << "\n";
     }
 
     if (writeTriangles.getValue())
     {
         for (int i=0 ; i<topology->getNbTriangles() ; i++)
-            *outfile << 5 << std::endl;
+            outfile << 5 << "\n";
     }
     if (writeQuads.getValue())
     {
         for (int i=0 ; i<topology->getNbQuads() ; i++)
-            *outfile << 9 << std::endl;
+            outfile << 9 << "\n";
     }
 
     if (writeTetras.getValue())
     {
         for (int i=0 ; i<topology->getNbTetras() ; i++)
-            *outfile << 10 << std::endl;
+            outfile << 10 << "\n";
     }
     if (writeHexas.getValue())
     {
         for (int i=0 ; i<topology->getNbHexas() ; i++)
-            *outfile << 12 << std::endl;
+            outfile << 12 << "\n";
     }
     /*
     	//write dataset attributes
     	if (!pointsData.empty())
     	{
-    		*outfile << "POINT_DATA " << nbp << std::endl;
+    		outfile << "POINT_DATA " << nbp << "\n";
     		writeData(pointsDataObject, pointsDataField, pointsDataName);
     	}
 
     	if (!cellsData.empty())
     	{
-    		*outfile << "CELL_DATA " << numberOfCells << std::endl;
+    		outfile << "CELL_DATA " << numberOfCells << "\n";
     		writeData(cellsDataObject, cellsDataField, cellsDataName);
     	}
     */
-    outfile->close();
     sout << filename << " written" << sendl;
 }
 
@@ -487,12 +469,10 @@ void MeshExporter::writeMeshGmsh()
 {
     std::string filename = getMeshFilename(".gmsh");
 
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
+    std::ofstream outfile(filename.c_str());
+    if( !outfile.is_open() )
     {
         serr << "Error creating file "<<filename<<sendl;
-        delete outfile;
-        outfile = NULL;
         return;
     }
 
@@ -504,23 +484,23 @@ void MeshExporter::writeMeshGmsh()
     const int nbp = pointsPos.size();
 
     //Write header
-    *outfile << "$MeshFormat" << std::endl;
-    *outfile << "2.1" << ' ' << 0 << ' ' << 8 << std::endl;
-    *outfile << "$EndMeshFormat" << std::endl;
+    outfile << "$MeshFormat\n";
+    outfile << "2.1" << ' ' << 0 << ' ' << 8 << "\n";
+    outfile << "$EndMeshFormat\n";
 
     //Write Points
-    *outfile << "$Nodes" << std::endl;
+    outfile << "$Nodes\n";
 
-    *outfile << nbp << std::endl;
+    outfile << nbp << "\n";
     for (int i=0 ; i<nbp; i++)
     {
-        *outfile << 1+i << ' ' << pointsPos[i] << std::endl;
+        outfile << 1+i << ' ' << pointsPos[i] << "\n";
     }
 
-    *outfile << "$EndNodes" << std::endl;
+    outfile << "$EndNodes\n";
 
     //Write Cells
-    *outfile << "$Elements" << std::endl;
+    outfile << "$Elements\n";
     unsigned int numberOfCells, totalSize;
     numberOfCells = ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 )
             +( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )
@@ -534,17 +514,17 @@ void MeshExporter::writeMeshGmsh()
             +( (writeHexas.getValue()) ? 9 *topology->getNbHexas() : 0 );
 
 
-    *outfile << numberOfCells << std::endl;
+    outfile << numberOfCells << "\n";
     unsigned int elem = 0;
     if (writeEdges.getValue())
     {
         for (int i=0 ; i<topology->getNbEdges() ; i++)
         {
-            *outfile << ++elem << ' ' << 1 << ' ' << 0;
+            outfile << ++elem << ' ' << 1 << ' ' << 0;
             sofa::core::topology::BaseMeshTopology::Edge t = topology->getEdge(i);
             for (unsigned int j=0; j<t.size(); ++j)
-                *outfile << ' ' << 1+t[j];
-            *outfile << std::endl;
+                outfile << ' ' << 1+t[j];
+            outfile << "\n";
         }
     }
 
@@ -552,22 +532,22 @@ void MeshExporter::writeMeshGmsh()
     {
         for (int i=0 ; i<topology->getNbTriangles() ; i++)
         {
-            *outfile << ++elem << ' ' << 2 << ' ' << 0;
+            outfile << ++elem << ' ' << 2 << ' ' << 0;
             sofa::core::topology::BaseMeshTopology::Triangle t = topology->getTriangle(i);
             for (unsigned int j=0; j<t.size(); ++j)
-                *outfile << ' ' << 1+t[j];
-            *outfile << std::endl;
+                outfile << ' ' << 1+t[j];
+            outfile << "\n";
         }
     }
     if (writeQuads.getValue())
     {
         for (int i=0 ; i<topology->getNbQuads() ; i++)
         {
-            *outfile << ++elem << ' ' << 3 << ' ' << 0;
+            outfile << ++elem << ' ' << 3 << ' ' << 0;
             sofa::core::topology::BaseMeshTopology::Quad t = topology->getQuad(i);
             for (unsigned int j=0; j<t.size(); ++j)
-                *outfile << ' ' << 1+t[j];
-            *outfile << std::endl;
+                outfile << ' ' << 1+t[j];
+            outfile << "\n";
         }
     }
 
@@ -575,28 +555,27 @@ void MeshExporter::writeMeshGmsh()
     {
         for (int i=0 ; i<topology->getNbTetras() ; i++)
         {
-            *outfile << ++elem << ' ' << 4 << ' ' << 0;
+            outfile << ++elem << ' ' << 4 << ' ' << 0;
             sofa::core::topology::BaseMeshTopology::Tetra t = topology->getTetra(i);
             for (unsigned int j=0; j<t.size(); ++j)
-                *outfile << ' ' << 1+t[j];
-            *outfile << std::endl;
+                outfile << ' ' << 1+t[j];
+            outfile << "\n";
         }
     }
     if (writeHexas.getValue())
     {
         for (int i=0 ; i<topology->getNbHexas() ; i++)
         {
-            *outfile << ++elem << ' ' << 5 << ' ' << 0;
+            outfile << ++elem << ' ' << 5 << ' ' << 0;
             sofa::core::topology::BaseMeshTopology::Hexa t = topology->getHexa(i);
             for (unsigned int j=0; j<t.size(); ++j)
-                *outfile << ' ' << 1+t[j];
-            *outfile << std::endl;
+                outfile << ' ' << 1+t[j];
+            outfile << "\n";
         }
     }
 
-    *outfile << "$EndElements" << std::endl;
+    outfile << "$EndElements\n";
 
-    outfile->close();
     sout << filename << " written" << sendl;
 }
 
@@ -604,12 +583,10 @@ void MeshExporter::writeMeshNetgen()
 {
     std::string filename = getMeshFilename(".mesh");
 
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
+    std::ofstream outfile(filename.c_str());
+    if (!outfile.is_open())
     {
         serr << "Error creating file "<<filename<<sendl;
-        delete outfile;
-        outfile = NULL;
         return;
     }
 
@@ -621,23 +598,23 @@ void MeshExporter::writeMeshNetgen()
     const int nbp = pointsPos.size();
 
     //Write Points
-    *outfile << nbp << std::endl;
+    outfile << nbp << "\n";
     for (int i=0 ; i<nbp; i++)
     {
-        *outfile << pointsPos[i] << std::endl;
+        outfile << pointsPos[i] << "\n";
     }
 
     //Write Volume Elements
-    *outfile << ((writeTetras.getValue()) ? topology->getNbTetras() : 0) << std::endl;
+    outfile << ((writeTetras.getValue()) ? topology->getNbTetras() : 0) << "\n";
     if (writeTetras.getValue())
     {
         for (int i=0 ; i<topology->getNbTetras() ; i++)
         {
             sofa::core::topology::BaseMeshTopology::Tetra t = topology->getTetra(i);
-            *outfile << 0; // subdomain
+            outfile << 0; // subdomain
             for (unsigned int j = 0; j < t.size(); ++j)
-                *outfile << ' ' << 1+t[j];
-            *outfile << std::endl;
+                outfile << ' ' << 1+t[j];
+            outfile << "\n";
         }
     }
 
@@ -658,7 +635,7 @@ void MeshExporter::writeMeshNetgen()
             }
         }
     }
-    *outfile << nbtri << std::endl;
+    outfile << nbtri << "\n";
     if (writeTriangles.getValue())
     {
         if (topology->getNbTetras() == 0)
@@ -666,10 +643,10 @@ void MeshExporter::writeMeshNetgen()
             for (int i=0 ; i<topology->getNbTriangles() ; i++)
             {
                 sofa::core::topology::BaseMeshTopology::Triangle t = topology->getTriangle(i);
-                *outfile << 0; // subdomain
+                outfile << 0; // subdomain
                 for (unsigned int j = 0; j < t.size(); ++j)
-                    *outfile << ' ' << 1+t[j];
-                *outfile << std::endl;
+                    outfile << ' ' << 1+t[j];
+                outfile << "\n";
             }
         }
         else
@@ -679,14 +656,13 @@ void MeshExporter::writeMeshNetgen()
                 if (topology->getTetrahedraAroundTriangle(i).size() < 2)
                     ++nbtri;
                 sofa::core::topology::BaseMeshTopology::Triangle t = topology->getTriangle(i);
-                *outfile << 0; // subdomain
+                outfile << 0; // subdomain
                 for (unsigned int j = 0; j < t.size(); ++j)
-                    *outfile << ' ' << 1+t[j];
-                *outfile << std::endl;
+                    outfile << ' ' << 1+t[j];
+                outfile << "\n";
             }
         }
     }
-    outfile->close();
     sout << filename << " written" << sendl;
 }
 
@@ -695,12 +671,10 @@ void MeshExporter::writeMeshTetgen()
 {
     std::string filename = getMeshFilename(".node");
 
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
+    std::ofstream outfile(filename.c_str());
+    if(!outfile.is_open())
     {
         serr << "Error creating file "<<filename<<sendl;
-        delete outfile;
-        outfile = NULL;
         return;
     }
 
@@ -715,33 +689,30 @@ void MeshExporter::writeMeshTetgen()
 
     // http://tetgen.berlios.de/fformats.node.html
     // <# of points> <dimension (must be 3)> <# of attributes> <# of boundary markers (0 or 1)>
-    *outfile << nbp << ' ' << 3 << ' ' << 0 << ' ' << 0 << std::endl;
+    outfile << nbp << ' ' << 3 << ' ' << 0 << ' ' << 0 << "\n";
     // <point #> <x> <y> <z> [attributes] [boundary marker]
     for (int i=0 ; i<nbp; i++)
     {
-        *outfile << i+1 << ' ' << pointsPos[i] << std::endl;
+        outfile << i+1 << ' ' << pointsPos[i] << "\n";
     }
 
-    outfile->close();
+    outfile.close();
     sout << filename << " written" << sendl;
 
     //Write Volume Elements
 
     if (writeTetras.getValue())
     {
-        delete outfile;
         // http://tetgen.berlios.de/fformats.ele.html
         filename = getMeshFilename(".ele");
-        outfile = new std::ofstream(filename.c_str());
-        if( !outfile->is_open() )
+        std::ofstream outfile(filename.c_str());
+        if (!outfile.is_open())
         {
             serr << "Error creating file "<<filename<<sendl;
-            delete outfile;
-            outfile = NULL;
             return;
         }
         // <# of tetrahedra> <nodes per tetrahedron> <# of attributes>
-        *outfile << ((writeTetras.getValue()) ? topology->getNbTetras() : 0) << ' ' << 4 << ' ' << 0 << std::endl;
+        outfile << ((writeTetras.getValue()) ? topology->getNbTetras() : 0) << ' ' << 4 << ' ' << 0 << "\n";
         // <tetrahedron #> <node> <node> <node> <node> ... [attributes]
         if (writeTetras.getValue())
         {
@@ -755,28 +726,25 @@ void MeshExporter::writeMeshTetgen()
                     unsigned int tmp = t[3]; t[3] = t[2]; t[2] = tmp;
                 }
 
-                *outfile << 1+i; // id
+                outfile << 1+i; // id
                 for (unsigned int j = 0; j < t.size(); ++j)
-                    *outfile << ' ' << 1+t[j];
-                *outfile << std::endl;
+                    outfile << ' ' << 1+t[j];
+                outfile << "\n";
             }
         }
-        outfile->close();
+        outfile.close();
         sout << filename << " written" << sendl;
     }
 
     //Write Surface Elements
     if (writeTriangles.getValue())
     {
-        delete outfile;
         // http://tetgen.berlios.de/fformats.face.html
         filename = getMeshFilename(".face");
-        outfile = new std::ofstream(filename.c_str());
-        if( !outfile->is_open() )
+        std::ofstream outfile(filename.c_str());
+        if (!outfile.is_open())
         {
             serr << "Error creating file "<<filename<<sendl;
-            delete outfile;
-            outfile = NULL;
             return;
         }
         int nbtri = 0;
@@ -796,17 +764,17 @@ void MeshExporter::writeMeshTetgen()
             }
         }
         // <# of faces> <boundary marker (0 or 1)>
-        *outfile << nbtri << ' ' << 0 << std::endl;
+        outfile << nbtri << ' ' << 0 << "\n";
         // <face #> <node> <node> <node> [boundary marker]
         if (topology->getNbTetras() == 0)
         {
             for (int i=0 ; i<topology->getNbTriangles() ; i++)
             {
                 sofa::core::topology::BaseMeshTopology::Triangle t = topology->getTriangle(i);
-                *outfile << 1+i; // id
+                outfile << 1+i; // id
                 for (unsigned int j = 0; j < t.size(); ++j)
-                    *outfile << ' ' << 1+t[j];
-                *outfile << std::endl;
+                    outfile << ' ' << 1+t[j];
+                outfile << "\n";
             }
         }
         else
@@ -816,13 +784,13 @@ void MeshExporter::writeMeshTetgen()
                 if (topology->getTetrahedraAroundTriangle(i).size() < 2)
                     ++nbtri;
                 sofa::core::topology::BaseMeshTopology::Triangle t = topology->getTriangle(i);
-                *outfile << 1+i; // id
+                outfile << 1+i; // id
                 for (unsigned int j = 0; j < t.size(); ++j)
-                    *outfile << ' ' << 1+t[j];
-                *outfile << std::endl;
+                    outfile << ' ' << 1+t[j];
+                outfile << "\n";
             }
         }
-        outfile->close();
+        outfile.close();
         sout << filename << " written" << sendl;
     }
 }
