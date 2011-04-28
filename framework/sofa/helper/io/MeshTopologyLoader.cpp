@@ -547,6 +547,216 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
     return 	fileLoaded;
 }
 
+
+bool MeshTopologyLoader::loadCGAL(const char *filename)
+{
+    int npoints = 0;
+    int ntri = 0;
+    int ntetra = 0;
+    bool fileLoaded = false;
+    std::string cmd;
+    std::string line;
+
+    std::ifstream file(filename);
+    if (!file.good())
+        return false;
+
+    std::cout << "Loading CGAL mesh file " << filename << " ... " << std::endl;
+
+    std::getline(file, line);
+
+    if (line == "MeshVersionFormatted 1") // Reading CGAL 3.7 or 3.8 file
+    {
+        std::getline(file, line); // we don't care about this line
+        file >> cmd;
+        if (cmd == "Vertices")
+        {
+            file >> npoints;
+            setNbPoints(npoints);
+            for (int i=0; i<npoints; ++i)
+            {
+                double x,y,z,tmp;
+                file >> x >> y >> z >> tmp;
+                addPoint(x, y, z);
+            }
+        }
+
+        file >> cmd;
+        if (cmd == "Triangles")
+        {
+            file >> ntri;
+            setNbTriangles(ntri);
+            for (int i=0; i<ntri; ++i)
+            {
+                int j,k,l,tmp;
+                file >> j >> k >> l >> tmp;
+                addTriangle(j-1, k-1, l-1);
+            }
+        }
+
+        file >> cmd;
+        if (cmd == "Tetrahedra")
+        {
+            file >> ntetra;
+            setNbTetrahedra(ntetra);
+            for (int i=0; i<ntetra; ++i)
+            {
+                int j,k,l,m, tmp;
+                file >> j >> k >> l >> m >> tmp;
+                addTetra(j-1, k-1, l-1, m-1);
+            }
+        }
+
+        std::cout << "Loading CGAL topology complete:";
+        std::cout << "   " << npoints << " points";
+        std::cout << "   " << ntri   << " triangles";
+        std::cout << "   " << ntetra << " tetrahedra) ";
+        std::cout << std::endl;
+        fileLoaded = true;
+    }
+    else
+    {
+        std::cout << "Incorrect file format - not recognized as CGAL 'MeshVersionFormatted 1' - aborting..." << std::endl;
+    }
+
+    file.close();
+
+    return fileLoaded;
+}
+
+/*
+  std::vector<int> pmap;
+  for (int i=0; i<npoints; ++i)
+    {
+      int index = i;
+      double x,y,z;
+      file >> index >> x >> y >> z;
+      addPoint(x, y, z);
+      if ((int)pmap.size() <= index) pmap.resize(index+1);
+      pmap[index] = i;
+      //std::cout << "pmap[" << index << "] = " << pmap[index] << std::endl;
+    }
+
+  file >> cmd;
+  if (cmd != "$ENDNOD" && cmd != "$EndNodes")
+    {
+      std::cerr << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'" << std::endl;
+      return false;
+    }
+
+  file >> cmd;
+  if (cmd != "$ELM" && cmd != "$Elements")
+    {
+      std::cerr << "'$ELM' or '$Elements' expected, found '" << cmd << "'" << std::endl;
+      return false;
+    }
+
+
+
+    int nelems = 0;
+    file >> nelems;
+    for (int i=0; i<nelems; ++i)
+      {
+        int index, etype, rphys, relem, nnodes, ntags, tag;
+        if (gmshFormat==1)
+          {
+            // version 1.0 format is
+            // elm-number elm-type reg-phys reg-elem number-of-nodes <node-number-list ...>
+            file >> index >> etype >> rphys >> relem >> nnodes;
+          }
+        else if (gmshFormat == 2)
+          {
+            // version 2.0 format is
+            // elm-number elm-type number-of-tags < tag > ... node-number-list
+            file >> index >> etype >> ntags;
+
+            for (int t=0; t<ntags; t++)
+              {
+                file >> tag;
+                // read the tag but don't use it
+              }
+
+            switch (etype)
+              {
+              case 1: // Line
+                nnodes = 2;
+                break;
+              case 2: // Triangle
+                nnodes = 3;
+                break;
+              case 3: // Quad
+                nnodes = 4;
+                break;
+              case 4: // Tetra
+                nnodes = 4;
+                break;
+              case 5: // Hexa
+                nnodes = 8;
+                break;
+			  case 15: // Point
+				nnodes = 1;
+				break;
+              default:
+                std::cerr << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found." << std::endl;
+                //fclose(file);
+                //return false;
+                nnodes = 0;
+              }
+          }
+
+        helper::vector<int> nodes;
+        nodes.resize(nnodes);
+        for (int n=0; n<nnodes; ++n)
+          {
+            int t = 0;
+            file >> t;
+            nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
+            // std::cout << "nodes[" << n << "] = " << nodes[n] << std::endl;
+          }
+        switch (etype)
+          {
+          case 1: // Line
+            addLine(nodes[0], nodes[1]);
+            ++nlines;
+            break;
+          case 2: // Triangle
+            addTriangle(nodes[0], nodes[1], nodes[2]);
+            //std::cout << "Adding triangle (" << nodes[0] << ", " << nodes[1] << ", " << nodes[2] << ")" << std::endl;
+            ++ntris;
+            break;
+          case 3: // Quad
+            addQuad(nodes[0], nodes[1], nodes[2], nodes[3]);
+            ++nquads;
+            break;
+          case 4: // Tetra
+            addTetra(nodes[0], nodes[1], nodes[2], nodes[3]);
+            ++ntetrahedra;
+            break;
+          case 5: // Hexa
+            addCube(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4], nodes[5], nodes[6], nodes[7]);
+            ++ncubes;
+            break;
+		  default:
+			//if the type is not handled, skip rest of the line
+			std::string tmp;
+			std::getline(file, tmp);
+          }
+      }
+
+    file >> cmd;
+    if (cmd != "$ENDELM" && cmd!="$EndElements")
+      {
+        std::cerr << "'$ENDELM' or '$EndElements' expected, found '" << cmd << "'" << std::endl;
+        return false;
+      }
+    else
+      {
+        // 			std::cout << "Done parsing Gmsh file." << std::endl;
+      }
+*/
+
+
+/////////////////////////////////////////////////////////////////////////
 class BaseVTKDataIO
 {
 public:
@@ -884,6 +1094,8 @@ bool MeshTopologyLoader::load(const char *filename)
         fileLoaded = loadVtk(fname.c_str());
     else if (strlen(filename)>9 && !strcmp(filename+strlen(filename)-9,".vtk_swap"))
         fileLoaded = loadVtk(fname.c_str());
+    else if (strlen(filename)>5 && !strcmp(filename+strlen(filename)-5,".mesh"))
+        fileLoaded = loadCGAL(fname.c_str());
     else
         fileLoaded = loadMeshFile(fname.c_str());
 
