@@ -67,6 +67,8 @@ private:
     bool loadGmsh(std::ifstream &file, const int);
     bool loadXsp(std::ifstream &file, bool);
     bool loadMesh(std::ifstream &file);
+    bool loadCGAL(const char *filename);
+
 protected:
     helper::io::Mesh* mesh;
 };
