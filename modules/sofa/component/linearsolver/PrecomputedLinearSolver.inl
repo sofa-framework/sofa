@@ -85,7 +85,6 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
     {
         Inherit::setSystemMBKMatrix(mparams);
         loadMatrix();
-        first = false;
     }
 
     this->currentGroup->needInvert = usePrecond;
@@ -102,6 +101,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVe
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
 {
+    first = false;
     unsigned systemSize = this->currentGroup->systemMatrix->rowSize();
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
@@ -195,6 +195,12 @@ void PrecomputedLinearSolver<TMatrix,TVector>::invert(TMatrix& /*M*/) {}
 template<class TMatrix,class TVector>
 bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
 {
+    if (first)
+    {
+        loadMatrix();
+    }
+
+
     if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
     {
         ComputeResult(result, *j, (float) fact);
