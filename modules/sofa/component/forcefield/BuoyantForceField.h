@@ -82,7 +82,7 @@ public:
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
 
-    enum FLUID { BOX, PLANE };
+    enum FLUID { AABOX, PLANE, OBOX };
 
 protected:
 
@@ -111,12 +111,17 @@ protected:
 
     Data<bool>      m_flipNormals;
 
+    Data<bool>      m_showPressureForces;
+    Data<bool>      m_showViscosityForces;
+    Data<bool>      m_showBoxOrPlane;
+
     sofa::core::topology::BaseMeshTopology* m_tetraTopology;
 
     sofa::component::topology::TetrahedronSetTopologyContainer* m_tetraContainer;
     sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>* m_tetraGeo;
 
     sofa::helper::vector<Deriv> m_debugForce;
+    sofa::helper::vector<Deriv> m_debugViscosityForce;
     sofa::helper::vector<Deriv> m_debugPosition;
 
     Coord      m_fluidSurfaceOrigin; //in case of a box, indicates which face is the surface
@@ -141,6 +146,8 @@ public:
         //TODO: remove this line (avoid warning message) ...
         mparams->kFactor();
     };
+
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*kFact*/) {}
 
     void draw();
 
