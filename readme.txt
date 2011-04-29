@@ -60,7 +60,7 @@ customize it to your local configuration.
 
 Building Sofa under Windows :
 -----------------------------
-
+ - First of all, get the correct version of windows dependencies from SOFA web page, and unzip it in Sofa directory. Then...
  - MSVC 8 : (Visual 2005)
      Launch Project VC8.bat.	 
 
