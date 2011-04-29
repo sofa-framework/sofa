@@ -20,6 +20,12 @@ FEATURES_DIR = $$normalizePath($$PWD)
 BUILD_DIR = $$normalizePath($$OUT_PWD)
 SRC_DIR   = $$normalizePath($$_PRO_FILE_PWD_)
 
+equals(BUILD_DIR, $$SRC_DIR) {
+	OUT_OF_SOURCE = false
+} else {
+	OUT_OF_SOURCE = true
+}
+
 ## assumes this .prf file is located in $$SOFA_DIR/share/sofa/mkspecs
 SOFA_DIR = $$replace(FEATURES_DIR, /\\w+/\\w+/\\w+$, )
 
@@ -31,7 +37,7 @@ SOFA_DIR = $$replace(FEATURES_DIR, /\\w+/\\w+/\\w+$, )
 # We have chosen to use a common approach for both platform, because it
 # makes it easier to compute derivate paths: SUBDIR_PATH and ROOT_PATH.
 
-!equals(BUILD_DIR, $$SRC_DIR) {
+equals(OUT_OF_SOURCE, true) {
 	# Out-of-source build.
 	ROOT_SRC_DIR   = $$SRC_DIR
 	ROOT_BUILD_DIR = $$BUILD_DIR
@@ -76,6 +82,12 @@ SOFA_DIR = $$replace(FEATURES_DIR, /\\w+/\\w+/\\w+$, )
 
 	ROOT_PATH = $$replace(SUBDIR_PATH, [^/]+/, ../)
 	ROOT_PATH = $$replace(ROOT_PATH, \\w+, ..)
+}
+
+equals(SOFA_DIR, $$ROOT_SRC_DIR) {
+	USING_INSTALL = false
+} else {
+	USING_INSTALL = true
 }
 
 #message(SOFA_DIR      $$escape_expand(\\t)= $$SOFA_DIR)
@@ -190,6 +202,10 @@ isEmpty(SOFA_FEATURES_PATH) {
 	SOFA_FEATURES_PATH = share/sofa/mkspecs
 }
 SOFA_FEATURES_DIR = $$ROOT_SRC_DIR/$$SOFA_FEATURES_PATH
+
+INSTALL_INC_PATH = include/sofa
+INSTALL_LIB_PATH = lib
+INSTALL_BIN_PATH = bin
 
 ########################################################################
 # Some configuration
@@ -358,7 +374,7 @@ defineTest(addInstallableSubdir) {
 		addSubdirs($$dir, $$deps)
 	} else {
 		!isInstalled($$name) {
-			error(activateLib: Cannot find $$name library)
+			error(addInstallableSubdir: Cannot find $$name library)
 		}
 	}
 }
@@ -527,6 +543,22 @@ defineTest(declare) {
 	export(artifacts_registry)
 }
 
+defineTest(loadDependencyFile) {
+	name = $$1
+	directory = $$2
+	
+	exists($$FEATURES_DIR/$${name}.prf) {
+		load($$FEATURES_DIR/$$name)
+	}
+	else : exists($$ROOT_SRC_DIR/$${name}.prf) {
+		load($$ROOT_SRC_DIR/$$name)
+	}
+	else : !isEmpty(directory) : exists($$ROOT_SRC_DIR/$$directory/$${name}.prf) {
+		load($$ROOT_SRC_DIR/$$directory/$$name)
+	}
+	else : error(loadDependencyFile: cannot find $$name (dir: $$directory))
+}
+
 ##
 # This function returns the list of dependencies (including transitive ones) for
 # the specified artifact.
@@ -606,10 +638,12 @@ defineTest(buildEnabledArtifacts) {
 
 			#message(enabling $$name with the following dependencies:)
 			for(dep, tdeps) {
-				#message($$escape_expand(\\t)$$dep)
-				dep_project = $$eval($${dep}.project)
-				!isFeatureFile(dep_project) {
-					deps_dirs += $$dep_project
+				equals($${dep}.enabled, true) {
+					#message($$escape_expand(\\t)$$dep)
+					dep_project = $$eval($${dep}.project)
+					!isFeatureFile(dep_project) {
+						deps_dirs += $$dep_project
+					}
 				}
 			}
 
@@ -657,8 +691,4 @@ defineTest(loadDependencies) {
 # Loading dependencies declarations
 ########################################################################
 
-DEFAULT_DEPENDENCY_FILES = $$files($$ROOT_SRC_DIR/*dependencies*)
-CUSTOM_DEPENDENCY_FILES  = $$files($$ROOT_BUILD_DIR/*dependencies*)
-
-!isEmpty(DEFAULT_DEPENDENCY_FILES): include($$DEFAULT_DEPENDENCY_FILES)
-!isEmpty(CUSTOM_DEPENDENCY_FILES) : include($$CUSTOM_DEPENDENCY_FILES)
+loadDependencyFile(sofa-dependencies)
