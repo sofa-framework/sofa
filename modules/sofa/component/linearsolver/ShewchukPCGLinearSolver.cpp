@@ -146,6 +146,10 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
             }
             else
             {
+                for (unsigned int i=0; i<preconditioners.size(); ++i)
+                {
+                    preconditioners[i]->updateSystemMatrix();
+                }
                 next_refresh_step++;
             }
         }
@@ -161,6 +165,10 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
             }
             else
             {
+                for (unsigned int i=0; i<preconditioners.size(); ++i)
+                {
+                    preconditioners[i]->updateSystemMatrix();
+                }
                 next_refresh_step++;
             }
         }
@@ -173,6 +181,13 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
                     preconditioners[i]->setSystemMBKMatrix(mparams);
                 }
                 next_refresh_iteration=1;
+            }
+            else
+            {
+                for (unsigned int i=0; i<preconditioners.size(); ++i)
+                {
+                    preconditioners[i]->updateSystemMatrix();
+                }
             }
         }
         sofa::helper::AdvancedTimer::stepEnd("PCG::PrecondSetSystemMBKMatrix");
@@ -211,10 +226,6 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     bool apply_precond = false;
     if ((this->preconditioners.size()>0) && f_build_precond.getValue())
     {
-        for (unsigned int i=0; i<preconditioners.size(); ++i)
-        {
-            preconditioners[i]->updateSystemMatrix();
-        }
         if (f_max_use_by_step.getValue()<0) apply_precond = true;
         else apply_precond = (((int) (iter-1))<(int) f_max_use_by_step.getValue());
     }
