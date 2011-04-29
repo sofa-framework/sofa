@@ -4,3 +4,7 @@
 	CONFIG -= staticlib
 	CONFIG += dll
 }
+
+equals(USING_INSTALL, true) {
+	INSTALL_INC_PATH = $$INSTALL_INC_PATH/applications/plugins/$$basename(ROOT_SRC_DIR)
+}
