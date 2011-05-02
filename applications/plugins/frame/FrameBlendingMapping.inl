@@ -1232,19 +1232,13 @@ void FrameBlendingMapping<TIn, TOut>::updateMapping()
     simulation::Visitor::printNode("Update_Mapping");
 #endif
 
-    serr << this->getName() << " (" << this->isPhysical << ") Update Mapping" << sendl;
-
     if (this->isPhysical)
     {
-        serr << "Update Frames" << sendl;
-
-        //*
+        /*
         initFrames( true, true); // With lloyd on frames
         /*/
         initFrames( false); // Without lloyd on frames
         //*/
-
-        serr << "Update Samples" << sendl;
 
         initSamples();
 
@@ -1388,19 +1382,84 @@ void FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
     WriteAccessor<Data<VecInCoord> >  xfromReset = *this->fromModel->write(core::VecCoordId::resetPosition());
 
     //TODO inverseSkinning to obtain restPos from pos
+    Vec3d restPos = pos;
 
-    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfrom0[xfrom0.size()-1][j] = pos[j];
-    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfrom[xfrom.size()-1][j] = pos[j];
-    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfromReset[xfromReset.size()-1][j] = pos[j];
+    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfrom0[xfrom0.size()-1][j] = restPos[j];
+    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfrom[xfrom.size()-1][j] = restPos[j];
+    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfromReset[xfromReset.size()-1][j] = restPos[j];
 }
 
 
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::removeFrame (const unsigned int /*index*/)
 {
-    serr << "removeFrame call !!" << sendl;
+    serr << "removeFrame call !! Not yet implemented." << sendl;
 }
 
+
+template <class TIn, class TOut>
+bool FrameBlendingMapping<TIn, TOut>::inverseApply( InCoord& restCoord, InCoord& coord, const InCoord& targetCoord)
+{
+    //ReadAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->read(core::VecCoordId::restPosition());
+    ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::VecCoordId::position());
+    ReadAccessor<Data<VecOutCoord> > xto0 = *this->toModel->read(core::VecCoordId::resetPosition());
+    ReadAccessor<Data<VecOutCoord> > xto = *this->toModel->read(core::VecCoordId::position());
+
+    typedef typename defaulttype::DeformationGradientTypes<num_spatial_dimensions,num_material_dimensions,1,InReal> MappedPrimitive;
+    // Get closest material point
+    Vec<3,OutReal> t;
+    double d,dmin=1E5;
+    for (unsigned int i = 0; i < xto.size(); ++i)
+    {
+        t = targetCoord.getCenter() - center (xto[i]);
+        d = t * t;
+        if (d<dmin)
+        {
+            dmin = d;
+            restCoord.getCenter() = center (xto0[i]);
+        }
+    }
+
+    typename GridMat::VRef index;
+    Vec<nbRef,InReal> weights;
+    double eps=1E-5;
+    bool stop=false;
+    int count=0;
+    typename MappedPrimitive::MaterialFrame Uinv;
+    typename MappedPrimitive::Coord out, out0;
+    MappedPrimitive::set( out0, restCoord.getCenter()[0], restCoord.getCenter()[1], restCoord.getCenter()[2]);
+    while (!stop)
+    {
+        defaulttype::LinearBlendTypes<In,MappedPrimitive,GridMat,nbRef, 1 > map;
+        defaulttype::DualQuatBlendTypes<In,MappedPrimitive,GridMat,nbRef, 1 > dqmap;
+
+        gridMaterial->interpolateWeightsRepartition(out0.getCenter(),index,weights);
+
+        if(useDQ.getValue()) dqmap.init(out0,index,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weights,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
+        else map.init(out0,index,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weights,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
+
+        if(useDQ.getValue()) out = dqmap.apply (xfrom.ref());
+        else out = map.apply (xfrom.ref());
+
+        //update skinned points
+        t = targetCoord.getCenter()- out.getCenter();
+
+        if ( t*t < eps || count >= 10) stop = true;
+        count++;
+
+        if (!stop)
+        {
+            const typename MappedPrimitive::MaterialFrame& U = out.getMaterialFrame();
+            invertMatrix(Uinv,U);
+            out0.getCenter() += Uinv * t;
+        }
+    }
+
+    restCoord.getCenter() = out0.getCenter();
+    coord.getCenter() = out.getCenter();
+
+    return true;
+}
 
 
 

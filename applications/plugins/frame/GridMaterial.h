@@ -247,6 +247,8 @@ protected:
     Data<mapLabelType> labelToPoissonRatioPairs;
 
     // temporary grid data
+    //vector<vector<Real> > all_distances; // will soon replace distances (contains all the distances)
+    vector<vector<Real> > all_distances;
     vector<Real> distances;
     vector<int> voronoi;
     vector<int> voronoi_frames;
@@ -391,6 +393,7 @@ public:
     Data<bool> voxelsHaveChanged;
 
     void removeVoxels( const vector<unsigned int>& voxelsToRemove);
+    void localyUpdateWeights( const vector<unsigned int>& removedVoxels);
 
     /*********************************/
     /*   draw                        */
