@@ -139,6 +139,7 @@ public:
     virtual void removeFrame( const unsigned int index);
 
 protected:
+    bool inverseApply( InCoord& restCoord, InCoord& coord, const InCoord& targetCoord);
     inline void initFrames (const bool& setFramePos = true, const bool& updateFramePosFromOldOne = false);
     inline void initSamples();
     Data<bool> useLinearWeights;

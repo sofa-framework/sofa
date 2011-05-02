@@ -1201,6 +1201,7 @@ void GridMaterial< MaterialTypes>::normalizeWeightRepartion()
 template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::removeVoxels( const vector<unsigned int>& voxelsToRemove)
 {
+    // Delete Voxels
     GCoord gCoord;
     for (vector<unsigned int>::const_iterator it = voxelsToRemove.begin(); it != voxelsToRemove.end(); ++it)
     {
@@ -1208,9 +1209,87 @@ void GridMaterial< MaterialTypes>::removeVoxels( const vector<unsigned int>& vox
         grid(gCoord[0], gCoord[1], gCoord[2]) = 0;
     }
 
+    //localyUpdateWeights (voxelsToRemove);
+
     voxelsHaveChanged.setValue(true);
 }
 
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::localyUpdateWeights( const vector<unsigned int>& /*removedVoxels*/)
+{
+    /*
+    set<unsigned int> voxelsToUpdate;
+    set<unsigned int> border;
+    VUI neighbors;
+    for (unsigned int index = 0; index < v_weights.size(); ++index) // For each frame, update the weights
+    {
+        // Find 'voxelsToUpdate' and 'border'
+        //set<unsigned int> parsedVoxels;
+        std::queue<unsigned int > front;
+        for (vector<unsigned int>::const_iterator it = removedVoxels.begin(); it != removedVoxels.end(); ++it)
+            front.push( *it);
+        while( !front.empty())
+        {
+            unsigned int voxelID = front.front(); // Get the last voxel on the stack.
+            front.pop();          // Remove it from the stack.
+
+            //if ( parsedVoxels.find( voxelID ) != parsedVoxels.end() )   continue; // if this hexa is ever parsed, continue
+            //parsedVoxels.insert (voxelID);
+
+            // Propagate to the neighbors
+            get26Neighbors ( voxelID, neighbors );
+            for ( VUI::const_iterator it = neighbors.begin(); it != neighbors.end(); it++ )
+            {
+                if (all_distances[*it][index] > all_distances[voxelID][index])
+                {
+                    front.push (*it);
+                    voxelsToUpdate.insert (*it);
+                    border.erase( *it);
+                }
+                else //if (parsedVoxels.find( *it ) == parsedVoxels.end())
+                {
+                    border.insert( *it);
+                }
+            }
+        }
+
+        // Set new distances on 'voxelsToUpdate' set
+        typedef std::pair<Real,unsigned> DistanceToPoint;
+        std::set<DistanceToPoint> q; // priority queue
+        q.insert( DistanceToPoint(0.,index) );
+        distances[index]=0;
+        int fromLabel=(int)grid.data()[index];
+
+        while( !q.empty() ){
+            DistanceToPoint top = *q.begin();
+            q.erase(q.begin());
+            unsigned v = top.second;
+
+            get26Neighbors(v, neighbors);
+            for (unsigned int i=0;i<neighbors.size();i++){
+                unsigned v2 = neighbors[i];
+                if (grid.data()[v2])
+                {
+                    Real cost = getDistance(v,v2,fromLabel);
+                    //if(distanceScaleFactors) cost*=(*distanceScaleFactors)[v2];
+
+                    if(distances[v2] > distances[v] + cost)
+                    {
+                        if(distances[v2] != distMax) {
+                            q.erase(q.find(DistanceToPoint(distances[v2],v2)));
+                        }
+                        distances[v2] = distances[v] + cost;
+                        q.insert( DistanceToPoint(distances[v2],v2) );
+                    }
+                }
+            }
+        }
+
+        // Check unset voxels to insert a new frame
+        // TODO
+    }*/
+}
 
 
 template < class MaterialTypes>
@@ -1370,6 +1449,10 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const vector<int
     }
     VUI neighbors;
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Compute_Geodesical_Distances");
+#endif
+
     if( useDijkstra.getValue()==true )
     {
         /// dijkstra algorithm
@@ -1427,7 +1510,13 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const vector<int
                     voronoi[indices[i]]=i;
                     fifo.push(indices[i]);
                 }
-        if (fifo.empty()) return false; // all input voxels out of grid
+        if (fifo.empty())
+        {
+#ifdef SOFA_DUMP_VISITOR_INFO
+            simulation::Visitor::printCloseNode("Compute_Geodesical_Distances");
+#endif
+            return false; // all input voxels out of grid
+        }
         while (!fifo.empty())
         {
             index1=fifo.front();
@@ -1454,6 +1543,11 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const vector<int
     }
 
     updateMaxValues();
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("Compute_Geodesical_Distances");
+#endif
+
     return true;
 }
 
@@ -2233,6 +2327,7 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
         }
         indices[i]=indexmax;
     }
+
     // Lloyd relaxation
     if(initial_num_points!=nb_points)
     {
