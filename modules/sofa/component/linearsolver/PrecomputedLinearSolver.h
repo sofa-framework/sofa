@@ -65,6 +65,27 @@ public :
 
     FullMatrix<Real> JMinv;
     FullMatrix<Real> Minv;
+
+    bool readFile(const char * filename,unsigned systemSize)
+    {
+        std::ifstream compFileIn(filename, std::ifstream::binary);
+
+        if(compFileIn.good())
+        {
+            std::cout << "file open : " << filename << " compliance being loaded" << std::endl;
+            compFileIn.read((char*) Minv[0], systemSize * systemSize * sizeof(Real));
+            compFileIn.close();
+            return true;
+        }
+        return false;
+    }
+
+    void writeFile(const char * filename,unsigned systemSize)
+    {
+        std::ofstream compFileOut(filename, std::fstream::out | std::fstream::binary);
+        compFileOut.write((char*) Minv[0], systemSize * systemSize*sizeof(Real));
+        compFileOut.close();
+    }
 };
 
 /// Linear system solver based on a precomputed inverse matrix
@@ -125,7 +146,6 @@ protected :
 
 private :
     bool first;
-    bool usePrecond;
     unsigned systemSize;
     double dt;
     double factInt;

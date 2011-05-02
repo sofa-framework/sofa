@@ -25,12 +25,14 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
 #define SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
 
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/linearsolver/FullVector.h>
 #include <math.h>
+#include <sofa/component/linearsolver/RotationMatrix.h>
 
 #include <map>
 
@@ -49,9 +51,8 @@ class WarpPreconditionerInternalData
 public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
-    typedef FullVector<Real> TBaseVector ;
-
-
+    typedef RotationMatrix<Real> TRotationMatrix;
+    typedef FullVector<Real> TVector;
 };
 
 /// Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix
@@ -66,12 +67,14 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef typename WarpPreconditionerInternalData<DataTypes>::TBaseVector TBaseVector;
     typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
     typedef sofa::core::behavior::LinearSolver Inherit;
+    typedef typename WarpPreconditionerInternalData<DataTypes>::TRotationMatrix TRotationMatrix;
+    typedef typename WarpPreconditionerInternalData<DataTypes>::TVector TVector;
 
     Data<bool> f_verbose;
     Data <std::string> solverName;
+    Data<unsigned> f_useRotationFinder;
 
     WarpPreconditioner();
     //void solve (TMatrix& M, TVector& x, TVector& b);
@@ -150,11 +153,7 @@ public:
     }
 
     /// Ask the solver to no update the system matrix at the next iteration
-    virtual void updateSystemMatrix()
-    {
-        Inherit::updateSystemMatrix();
-        if (realSolver) realSolver->updateSystemMatrix();
-    }
+    virtual void updateSystemMatrix();
 
 
     //template<class JMatrix>
@@ -181,27 +180,54 @@ public:
         return DataTypes::Name();
     }
 
+
+    void prepareVisitor(Visitor* v)
+    {
+        v->setTags(this->getTags());
+    }
+
+    void prepareVisitor(simulation::BaseMechanicalVisitor* v)
+    {
+        prepareVisitor((Visitor*)v);
+    }
+
+    template<class T>
+    void executeVisitor(T v)
+    {
+        prepareVisitor(&v);
+        v.execute( this->getContext() );
+    }
+
+    template<class T>
+    void executeVisitor(T* v)
+    {
+        prepareVisitor(v);
+        v->execute( this->getContext() );
+    }
+
+
 private :
     //CudaBaseVector<cuda_real> CudaR;
     //CudaBaseVector<cuda_real> CudaT;
 
     core::behavior::LinearSolver* realSolver;
     core::behavior::MechanicalState<DataTypes>* mstate;
-    component::forcefield::TetrahedronFEMForceField<DataTypes>* forceField;
 
     core::MultiVecDerivId systemLHVId;
     core::MultiVecDerivId systemRHVId;
-    core::VecDerivId rotatedLHVId;
-    core::VecDerivId rotatedRHVId;
+
+    TVector tmpVector1;
+    TVector tmpVector2;
 
     WarpPreconditionerInternalData<DataTypes> data;
 
     //CudaMatrixUtils Utils;
 
-    void getRotations(TBaseVector & R);
+    unsigned indRotationFinder;
+    std::vector<sofa::component::misc::BaseRotationFinder *> rotationFinders;
 
-    TBaseVector Rcurr;
-    TBaseVector Rinv;
+    TRotationMatrix Rcur;
+
 };
 
 
