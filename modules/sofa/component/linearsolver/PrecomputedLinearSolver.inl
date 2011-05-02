@@ -73,36 +73,31 @@ PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
     , use_file( initData(&use_file,true,"use_file","Dump system matrix in a file") )
 {
     first = true;
-    usePrecond = true;
 }
 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
 {
     // Update the matrix only the first time
-
     if (first)
     {
+        first = false;
         Inherit::setSystemMBKMatrix(mparams);
         loadMatrix();
     }
-
-    this->currentGroup->needInvert = usePrecond;
 }
 
 //Solve x = R * M^-1 * R^t * b
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVector& r)
 {
-    if (usePrecond) z = internalData.Minv * r;
-    else z = r;
+    z = internalData.Minv * r;
 }
 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
 {
-    first = false;
-    unsigned systemSize = this->currentGroup->systemMatrix->rowSize();
+    systemSize = this->currentGroup->systemMatrix->rowSize();
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 
@@ -113,24 +108,10 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
 
     std::stringstream ss;
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
-    std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
-
-    if(compFileIn.good() && use_file.getValue())
-    {
-        cout << "file open : " << ss.str() << " compliance being loaded" << endl;
-        compFileIn.read((char*) internalData.Minv[0], systemSize * systemSize * sizeof(Real));
-        compFileIn.close();
-    }
-    else
+    if(! use_file.getValue() || ! internalData.readFile(ss.str().c_str(),systemSize) )
     {
         loadMatrixWithCSparse();
-
-        if (use_file.getValue())
-        {
-            std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
-            compFileOut.write((char*)internalData.Minv[0], systemSize * systemSize*sizeof(Real));
-            compFileOut.close();
-        }
+        if (use_file.getValue()) internalData.writeFile(ss.str().c_str(),systemSize);
     }
 
     for (unsigned int j=0; j<systemSize; j++)
@@ -151,7 +132,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse()
     FullVector<double> r;
     FullVector<double> b;
 
-    unsigned systemSize = internalData.Minv.colSize();
+// 	unsigned systemSize = internalData.Minv.colSize();
 
     matSolv.resize(systemSize,systemSize);
     r.resize(systemSize);
@@ -197,9 +178,12 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatri
 {
     if (first)
     {
-        loadMatrix();
-    }
+        core::MechanicalParams mparams = *core::MechanicalParams::defaultInstance();
+        //TODO get the m b k factor from euler
 
+        cerr << "ERROR : the construction of the matrix when the solver is used only as cvonstraint correction is not implemented. You first need to save the matrix into a file" << std::endl;
+        setSystemMBKMatrix(&mparams);
+    }
 
     if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
     {
