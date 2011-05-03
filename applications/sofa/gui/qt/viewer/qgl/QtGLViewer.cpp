@@ -720,6 +720,35 @@ void QtGLViewer::DisplayMenu(void)
     glPopMatrix();
 }
 
+void QtGLViewer::MakeStencilMask()
+{
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0,_W, 0, _H );
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glClear(GL_STENCIL_BUFFER_BIT);
+    glStencilFunc(GL_ALWAYS, 0x1, 0x1);
+    glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+    glColor4f(0,0,0,0);
+    glBegin(GL_LINES);
+    for (float f=0 ; f< _H ; f+=2.0)
+    {
+        glVertex2f(0.0, f);
+        glVertex2f(_W, f);
+    }
+    glEnd();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+}
+
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
@@ -764,7 +793,75 @@ void QtGLViewer::DrawScene(void)
         // 			DrawXZPlane(-4.0, -20.0, 20.0, -20.0, 20.0, 1.0);
         // 			DrawAxis(0.0, 0.0, 0.0, 10.0);
 
-        DisplayOBJs();
+        if(_stereoEnabled)
+        {
+            glEnable(GL_STENCIL_TEST);
+            MakeStencilMask();
+
+            //1st pass
+            glStencilFunc(GL_EQUAL, 0x1, 0x1);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            DisplayOBJs();
+
+            //2nd pass
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glLoadIdentity();
+
+            //translate slighty the camera
+            //visualParameters.sceneTransform.translation[0] += stereoShift;
+            qglviewer::Vec newPos, pos = camera()->position();
+            newPos = camera()->cameraCoordinatesOf(pos);
+            newPos.x += _stereoShift;
+            newPos = camera()->worldCoordinatesOf(newPos);
+            camera()->setPosition(newPos);
+            camera()->computeModelViewMatrix();
+            camera()->getModelViewMatrix(lastModelviewMatrix);
+            glMultMatrixd(lastModelviewMatrix);
+
+
+            glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            DisplayOBJs();
+
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+
+            camera()->setPosition(pos);
+            camera()->computeModelViewMatrix();
+            camera()->getModelViewMatrix(lastModelviewMatrix);
+            glMultMatrixd(lastModelviewMatrix);
+
+            glDisable(GL_STENCIL_TEST);
+
+
+            //visualParameters.sceneTransform.translation[0] -= stereoShift;
+        }
+        else
+        {
+            //SPLIT MODE
+            if (_binocularModeEnabled)
+            {
+                glMatrixMode(GL_PROJECTION);
+                glPushMatrix();
+                glViewport(0, 0, _W/2, _H);
+                glPopMatrix();
+                glMatrixMode(GL_MODELVIEW);
+                DisplayOBJs();
+
+                glMatrixMode(GL_PROJECTION);
+                glPushMatrix();
+                glViewport(_W/2, 0, _W, _H);
+                glPopMatrix();
+                glMatrixMode(GL_MODELVIEW);
+                DisplayOBJs();
+            }
+            //NORMAL MODE
+            else
+            {
+                DisplayOBJs();
+            }
+        }
 
         DisplayMenu();		// always needs to be the last object being drawn
     }

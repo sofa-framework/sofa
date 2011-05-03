@@ -180,6 +180,7 @@ private:
     void	DisplayOBJs();
     void	DisplayMenu(void);
     void	DrawScene();
+    void MakeStencilMask();
 
     //int		handle(int event);	// required by FLTK
 
