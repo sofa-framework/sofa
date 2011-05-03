@@ -1411,7 +1411,7 @@ bool FrameBlendingMapping<TIn, TOut>::inverseApply( InCoord& restCoord, InCoord&
     ReadAccessor<Data<VecOutCoord> > xto0 = *this->toModel->read(core::VecCoordId::resetPosition());
     ReadAccessor<Data<VecOutCoord> > xto = *this->toModel->read(core::VecCoordId::position());
 
-    typedef typename defaulttype::DeformationGradientTypes<num_spatial_dimensions,num_material_dimensions,1,InReal> MappedPrimitive;
+    typedef typename defaulttype::DeformationGradientTypes<num_spatial_dimensions,num_material_dimensions,1,InReal> DefGrad1;
     // Get closest material point
     Vec<3,OutReal> t;
     double d,dmin=1E5;
@@ -1431,13 +1431,13 @@ bool FrameBlendingMapping<TIn, TOut>::inverseApply( InCoord& restCoord, InCoord&
     double eps=1E-5;
     bool stop=false;
     int count=0;
-    typename MappedPrimitive::MaterialFrame Uinv;
-    typename MappedPrimitive::Coord out, out0;
-    MappedPrimitive::set( out0, restCoord.getCenter()[0], restCoord.getCenter()[1], restCoord.getCenter()[2]);
+    typename DefGrad1::MaterialFrame Uinv;
+    typename DefGrad1::Coord out, out0;
+    DefGrad1::set( out0, restCoord.getCenter()[0], restCoord.getCenter()[1], restCoord.getCenter()[2]);
     while (!stop)
     {
-        defaulttype::LinearBlendTypes<In,MappedPrimitive,GridMat,nbRef, 1 > map;
-        defaulttype::DualQuatBlendTypes<In,MappedPrimitive,GridMat,nbRef, 1 > dqmap;
+        defaulttype::LinearBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > map;
+        defaulttype::DualQuatBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > dqmap;
 
         gridMaterial->interpolateWeightsRepartition(out0.getCenter(),index,weights);
 
@@ -1455,14 +1455,21 @@ bool FrameBlendingMapping<TIn, TOut>::inverseApply( InCoord& restCoord, InCoord&
 
         if (!stop)
         {
-            const typename MappedPrimitive::MaterialFrame& U = out.getMaterialFrame();
+            const typename DefGrad1::MaterialFrame& U = out.getMaterialFrame();
             invertMatrix(Uinv,U);
             out0.getCenter() += Uinv * t;
         }
     }
 
     restCoord.getCenter() = out0.getCenter();
-    coord.getCenter() = out.getCenter();
+    // Compute the spatial derivatives of coord from restCoord
+    defaulttype::LinearBlendTypes<In,In,GridMat,nbRef, defaulttype::OutDataTypesInfo<In>::type > map;
+    defaulttype::DualQuatBlendTypes<In,In,GridMat,nbRef, defaulttype::OutDataTypesInfo<In>::type > dqmap;
+    gridMaterial->interpolateWeightsRepartition(restCoord.getCenter(),index,weights);
+    if(useDQ.getValue()) dqmap.init(restCoord,index,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weights,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
+    else map.init(restCoord,index,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weights,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
+    if(useDQ.getValue()) coord = dqmap.apply (xfrom.ref());
+    else coord = map.apply (xfrom.ref());
 
     return true;
 }
