@@ -1375,19 +1375,25 @@ template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
 {
     core::behavior::MechanicalState< In >* mstatefrom = static_cast<core::behavior::MechanicalState< In >* >( this->fromModel);
-    mstatefrom->resize( mstatefrom->getSize()+1);
+    unsigned int indexFrom = mstatefrom->getSize();
 
     WriteAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->write(core::VecCoordId::restPosition());
     WriteAccessor<Data<VecInCoord> >  xfrom = *this->fromModel->write(core::VecCoordId::position());
     WriteAccessor<Data<VecInCoord> >  xfromReset = *this->fromModel->write(core::VecCoordId::resetPosition());
 
-    //TODO inverseSkinning to obtain restPos from pos
-    Vec3d restPos = pos;
+    // Compute the rest position of the frame.
+    InCoord newX, newX0;
+    InCoord targetDOF;
+    In::set( targetDOF, pos[0], pos[1], pos[2]);
+    inverseApply( newX0, newX, targetDOF);
 
-    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfrom0[xfrom0.size()-1][j] = restPos[j];
-    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfrom[xfrom.size()-1][j] = restPos[j];
-    for ( unsigned int j=0; j<num_spatial_dimensions; j++ ) xfromReset[xfromReset.size()-1][j] = restPos[j];
+    // Insert a new DOF
+    this->fromModel->resize(indexFrom+1);
+    xfrom0[indexFrom] = newX0;
+    xfrom[indexFrom] = newX;
+    xfromReset[indexFrom] = newX0;
 }
+
 
 
 template <class TIn, class TOut>
@@ -1397,10 +1403,10 @@ void FrameBlendingMapping<TIn, TOut>::removeFrame (const unsigned int /*index*/)
 }
 
 
+
 template <class TIn, class TOut>
 bool FrameBlendingMapping<TIn, TOut>::inverseApply( InCoord& restCoord, InCoord& coord, const InCoord& targetCoord)
 {
-    //ReadAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->read(core::VecCoordId::restPosition());
     ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::VecCoordId::position());
     ReadAccessor<Data<VecOutCoord> > xto0 = *this->toModel->read(core::VecCoordId::resetPosition());
     ReadAccessor<Data<VecOutCoord> > xto = *this->toModel->read(core::VecCoordId::position());
