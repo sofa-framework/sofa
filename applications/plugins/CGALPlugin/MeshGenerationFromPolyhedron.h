@@ -16,6 +16,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 
+#include <CGAL/version.h>
 
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Polyhedron_incremental_builder_3.h>
@@ -79,6 +80,10 @@ public:
     //Parameters
     Data<double> facetAngle, facetSize, facetApproximation;
     Data<double> cellRatio, cellSize;
+#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
+    Data<double> sharpEdgeAngle;
+    Data<double> sharpEdgeSize;
+#endif
     Data<bool> odt, lloyd, perturb, exude;
     Data<int> odt_max_it, lloyd_max_it;
     Data<double> perturb_max_time, exude_max_time;

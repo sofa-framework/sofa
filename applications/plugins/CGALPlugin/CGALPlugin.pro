@@ -61,8 +61,11 @@ unix{
 	QMAKE_CFLAGS_RELEASE -= -fno-math-errno -funroll-loops -mfpmath=387
 	QMAKE_CXXFLAGS_RELEASE -= -fno-math-errno -funroll-loops -mfpmath=387
 
+        # CGAL generates many very very long warning messages...
 	QMAKE_CFLAGS_RELEASE -= -Wall
 	QMAKE_CXXFLAGS_RELEASE -= -Wall
+
+        QMAKE_CXXFLAGS += -Wno-unused-parameter -Wno-array-bounds -fno-strict-aliasing
 }
 
 unix : QMAKE_POST_LINK = cp $$README_FILE $$DESTDIR 
