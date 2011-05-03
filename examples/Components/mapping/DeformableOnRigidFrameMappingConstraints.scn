@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <Node name="root"  dt="0.02" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1" showBehavior="1">
-	<MasterConstraintSolver /> 
+	<MasterContactSolver /> 
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
-	<LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-	<CollisionResponse name="Response" response="default" />
+	<LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.1" />
+	<CollisionResponse name="Response" response="FrictionContact" />
 	<CollisionGroup name="Group" />
 
 	<Node name="ChainRigid">
@@ -23,7 +23,7 @@
 			<CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
 			<MechanicalObject name="rigidframe" template="Rigid" position="1 2 0 0 0 0.7 0.7" />
 			<UniformMass filename="BehaviorModels/torus.rigid" />
-			<noFixedConstraint />
+			<UncoupledConstraintCorrection/>
 		</Node>
 
 		<Node name="TorusDeformLocal">
@@ -31,8 +31,9 @@
 			<CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
 			<SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
 			<MechanicalObject />		                                  
-			<TetrahedronFEMForceField youngModulus="125" />
+			<TetrahedronFEMForceField youngModulus="1e4" />
 			<BoxConstraint box="-1 -1 -1 1 1 1"/>
+			<PrecomputedConstraintCorrection recompute="true"/>
 			
 			<Node name="DeformableMappedModel" >
 				<SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
@@ -44,8 +45,9 @@
 					<Mesh />
 					<MechanicalObject />
 					<Triangle group="2"/>
+					<Line group="2"/>
+					<Point group="2"/>
 					<BarycentricMapping/>
-					<PlaneForceField name="Floor" normal="0 1 0" d="-4" stiffness="100" damping="1" draw="1" />
 				</Node> 
 				
 				<Node name="Visu">
