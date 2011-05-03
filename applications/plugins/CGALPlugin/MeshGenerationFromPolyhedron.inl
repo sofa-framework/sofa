@@ -22,13 +22,17 @@
 #include <CGAL/Polyhedral_mesh_domain_3.h>
 #include <CGAL/make_mesh_3.h>
 #include <CGAL/refine_mesh_3.h>
+#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
+#include <CGAL/Polyhedral_mesh_domain_with_features_3.h>
+#endif
 
 // IO
 #include <CGAL/IO/Polyhedron_iostream.h>
 
 
 //CGAL
-struct K: public CGAL::Exact_predicates_inexact_constructions_kernel {};
+//struct K: public CGAL::Exact_predicates_inexact_constructions_kernel {};
+typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 
 using namespace sofa;
 
@@ -53,6 +57,10 @@ MeshGenerationFromPolyhedron<DataTypes>::MeshGenerationFromPolyhedron()
     , facetApproximation(initData(&facetApproximation, 0.008, "facetApproximation", "Upper bound for the center-center distances of the surface mesh facets"))
     , cellRatio(initData(&cellRatio, 4.0, "cellRatio", "Upper bound for the radius-edge ratio of the tetrahedra"))
     , cellSize(initData(&cellSize, 0.2, "cellSize", "Uniform upper bound for the circumradii of the tetrahedra in the mesh"))
+#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
+    , sharpEdgeAngle(initData(&sharpEdgeAngle, 120.0, "sharpEdgeAngle", "Threshold angle to detect sharp edges in input surface (activated with CGAL 3.8+ if sharpEdgeSize > 0)"))
+    , sharpEdgeSize(initData(&sharpEdgeSize, 0.0, "sharpEdgeSize", "Meshing size for sharp feature edges (activated with CGAL 3.8+ if sharpEdgeSize > 0)"))
+#endif
     , odt(initData(&odt, false, "odt", "activate odt optimization"))
     , lloyd(initData(&lloyd, false, "lloyd", "activate lloyd optimization"))
     , perturb(initData(&perturb, false, "perturb", "activate perturb optimization"))
@@ -81,6 +89,8 @@ void MeshGenerationFromPolyhedron<DataTypes>::init()
     addInput(&facetApproximation);
     addInput(&cellRatio);
     addInput(&cellSize);
+    addInput(&sharpEdgeAngle);
+    addInput(&sharpEdgeSize);
     addInput(&odt);
     addInput(&lloyd);
     addInput(&perturb);
@@ -129,15 +139,27 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
     // Domain
     // (we use exact intersection computation with Robust_intersection_traits_3)
 
+#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
+    typedef typename CGAL::Mesh_3::Robust_intersection_traits_3<K> Geom_traits;
+    //typedef K Geom_traits;
+    typedef typename CGAL::Mesh_polyhedron_3<Geom_traits>::type Polyhedron;
+    typedef typename Polyhedron::HalfedgeDS HalfedgeDS;
+    typedef typename CGAL::Polyhedral_mesh_domain_with_features_3<Geom_traits, Polyhedron> Mesh_domain;
+#else
     typedef typename CGAL::Mesh_3::Robust_intersection_traits_3<K> Geom_traits;
     typedef typename CGAL::Polyhedron_3<Geom_traits> Polyhedron;
     typedef typename Polyhedron::HalfedgeDS HalfedgeDS;
-
     typedef typename CGAL::Polyhedral_mesh_domain_3<Polyhedron, Geom_traits> Mesh_domain;
+#endif
+
 
     // Triangulation
     typedef typename CGAL::Mesh_triangulation_3<Mesh_domain>::type Tr;
+#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
+    typedef typename CGAL::Mesh_complex_3_in_triangulation_3<Tr, Mesh_domain::Corner_index, Mesh_domain::Curve_segment_index> C3t3;
+#else
     typedef typename CGAL::Mesh_complex_3_in_triangulation_3<Tr> C3t3;
+#endif
 
     // Mesh Criteria
     typedef typename CGAL::Mesh_criteria_3<Tr> Mesh_criteria;
@@ -187,14 +209,27 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
     sout << "Create domain" << sendl;
     Mesh_domain domain(polyhedron);
 
+#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
+    if (sharpEdgeSize.getValue() > 0)
+    {
+        sout << "Detect sharp edges (angle="<<sharpEdgeAngle.getValue()<<")" << sendl;
+        domain.detect_features(sharpEdgeAngle.getValue());
+    }
+#endif
+
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,6,0)
     // Mesh criteria (no cell_size set)
 //    Mesh_criteria criteria(facet_angle=facetAngle.getValue(), facet_size=facetSize.getValue(), facet_distance=facetApproximation.getValue(),
 //                           cell_radius_edge=cellRatio.getValue());
 //    // Mesh generation
     sout << "Create Mesh" << sendl;
-    Mesh_criteria criteria(facet_angle=facetAngle.getValue(), facet_size=facetSize.getValue(), facet_distance=facetApproximation.getValue(),
-            cell_radius_edge=cellRatio.getValue(), cell_size=cellSize.getValue());
+    Mesh_criteria criteria(
+#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
+        edge_size=sharpEdgeSize.getValue(),
+#endif
+
+        facet_angle=facetAngle.getValue(), facet_size=facetSize.getValue(), facet_distance=facetApproximation.getValue(),
+        cell_radius_edge=cellRatio.getValue(), cell_size=cellSize.getValue());
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria, no_perturb(), no_exude());
 
     // Set tetrahedron size (keep cell_radius_edge), ignore facets
