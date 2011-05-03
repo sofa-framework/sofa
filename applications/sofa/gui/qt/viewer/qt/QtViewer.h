@@ -265,6 +265,7 @@ private:
     void	DisplayOBJs();
     void	DisplayMenu(void);
     void	DrawScene();
+    void  MakeStencilMask();
 
     void	ApplySceneTransformation(int x, int y);
     //int		handle(int event);	// required by FLTK

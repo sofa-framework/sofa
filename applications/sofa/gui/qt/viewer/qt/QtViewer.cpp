@@ -738,6 +738,35 @@ void QtViewer::DisplayMenu(void)
     glPopMatrix();
 }
 
+void QtViewer::MakeStencilMask()
+{
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0,_W, 0, _H );
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glClear(GL_STENCIL_BUFFER_BIT);
+    glStencilFunc(GL_ALWAYS, 0x1, 0x1);
+    glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+    glColor4f(0,0,0,0);
+    glBegin(GL_LINES);
+    for (float f=0 ; f< _H ; f+=2.0)
+    {
+        glVertex2f(0.0, f);
+        glVertex2f(_W, f);
+    }
+    glEnd();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+}
+
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
@@ -779,7 +808,64 @@ void QtViewer::DrawScene(void)
 
     if (_renderingMode == GL_RENDER)
     {
-        DisplayOBJs();
+        //STEREO MODE
+        if(_stereoEnabled)
+        {
+            //calcProjection();
+
+            //window()->showNormal();
+            glEnable(GL_STENCIL_TEST);
+            MakeStencilMask();
+
+            //1st pass
+            glStencilFunc(GL_EQUAL, 0x1, 0x1);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            DisplayOBJs();
+
+            //2nd pass
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            //glLoadIdentity();
+            //translate slighty the camera
+            visualParameters.sceneTransform.translation[0] += _stereoShift;
+            visualParameters.sceneTransform.Apply();
+
+            glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            DisplayOBJs();
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+            glDisable(GL_STENCIL_TEST);
+
+            visualParameters.sceneTransform.translation[0] -= _stereoShift;
+        }
+        else
+        {
+            //SPLIT MODE
+            if (_binocularModeEnabled)
+            {
+                glMatrixMode(GL_PROJECTION);
+                glPushMatrix();
+                glViewport(0, 0, _W/2, _H);
+                glPopMatrix();
+                glMatrixMode(GL_MODELVIEW);
+                DisplayOBJs();
+
+                glMatrixMode(GL_PROJECTION);
+                glPushMatrix();
+                glViewport(_W/2, 0, _W, _H);
+                glPopMatrix();
+                glMatrixMode(GL_MODELVIEW);
+                DisplayOBJs();
+            }
+            //NORMAL MODE
+            else
+            {
+                //calcProjection(0,0, _W, _H);
+                //window()->showNormal();
+                DisplayOBJs();
+            }
+        }
 
         DisplayMenu(); // always needs to be the last object being drawn
     }

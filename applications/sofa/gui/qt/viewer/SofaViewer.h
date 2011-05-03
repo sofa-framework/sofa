@@ -226,6 +226,11 @@ protected:
     int _mouseInteractorSavedPosX;
     int _mouseInteractorSavedPosY;
 
+    //Stereo parameters
+    bool _stereoEnabled;
+    bool _binocularModeEnabled;
+    double _stereoShift;
+
 };
 
 template < typename VisualModelPolicyType >
