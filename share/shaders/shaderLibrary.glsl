@@ -236,7 +236,7 @@ varying vec3 Bitangent;
 varying vec3 ViewDirection;
 varying vec3 LightDirection;
 
-vec3 mainFS()
+vec4 mainFS()
 {
 #if defined(DistanceBasedCutting)
     if (distance(Position, ClipOrigin) > ClipDistance) discard;
@@ -254,13 +254,21 @@ vec3 mainFS()
     vec3 ViewDir  = normalize(ViewDirection);
     vec3 LightDir = normalize(LightDirection);
 
+    float alpha = 1.0f;
+
 #if defined(ExponentialMapping)
     Texcoord = Pow(fract(Texcoord) - 0.5, ExpScale) + 0.5;
 #endif
 
 #if defined(DiffuseMap_Present)
     // Read the diffuse map
+#if defined(DiffuseMap_Alpha)
+    vec4 DiffuseTexColor4 = texture2D(DiffuseMap, Texcoord);
+    vec3 DiffuseTexColor = DiffuseTexColor4.xyz;
+    alpha = DiffuseTexColor4.w;
+#else
     vec3 DiffuseTexColor = texture2D(DiffuseMap, Texcoord).xyz;
+#endif
 
     // Adjust contrast if needed
 #if defined(DiffuseMap_AdjustContrast)
@@ -302,12 +310,13 @@ vec3 mainFS()
     Final = mix(Final, EnvColor, Fresnel(dot(Normal, ViewDir), EnvReflectance));
 #endif
 
-    return Final;
+    return vec4(Final,alpha);
+
 }
 
 void main()
 {
-    gl_FragColor = vec4(mainFS(), 0);
+    gl_FragColor = mainFS();
 }
 
 #endif
