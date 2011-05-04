@@ -17,6 +17,12 @@ uniform vec4  RunSelectTable[10];
 //	- see the generation of the primitives for more details
 uniform float modulation;
 
+uniform vec3 center;
+uniform	float rmin;
+uniform	float rmax;
+uniform	float dmin;
+uniform	float dmax;
+
 // Constants
 const vec4 zero = vec4(0);
 
@@ -213,142 +219,156 @@ bool notDegeneratedTriangle(in vec4 u, in vec4 v, in vec4 w)
 	return (!(all(equal(u, v)) || all(equal(u, w)) || all(equal(v, w))));
 }
 
+float computeGradualOpacity(in vec3 v)
+{
+float dist = length(center - v);
+if (dist < rmin)
+{
+return dmax;
+}
+if (dist < rmax)
+{
+dist -= rmin;
+float ratio = rmax - rmin;
+float d = dmax - dmin;
+return dmin + (d*pow(pow(1-dist/ratio,2),2)*(4*dist/ratio+1));
+}
+
+return	dmin;
+}
+
 /***********************************************************************
 	MAIN: COMPUTATIONS OF THE TRIANGLES
 ************************************************************************/
 
- void main(void){
+void main(void){
 
-	//var 	
- 
-	vec4  u0, u1, u2, u3; //current point
- 	vec4  w0, w1, w2, w3; //projected into the basis graph
-	vec4  sfield;	      //original scalar field 
-	vec4  newSField;      //scalar field associated to the basis graph
- 	bvec4 tests;          //test to determine the projection
- 	vec4  interp;         //intepolation of the middle point
- 	vec4  i1, i2;         //middle of two segments
+//var 	
 
-	//outputs	
+vec4  u0, u1, u2, u3; //current point
+vec4  w0, w1, w2, w3; //projected into the basis graph
+vec4  sfield;	      //original scalar field 
+vec4  newSField;      //scalar field associated to the basis graph
+bvec4 tests;          //test to determine the projection
+vec4  interp;         //intepolation of the middle point
+vec4  i1, i2;         //middle of two segments
 
-	float depth0;
-	float scalField[5];
-	vec4  position[5];
+//outputs	
 
-	//
- 	
- 	u0 = gl_PositionIn[0]; //u0.xyz *= 1.0/u0.w; u0.w = 1.0;
- 	u1 = gl_PositionIn[1]; //u1.xyz *= 1.0/u1.w; u1.w = 1.0;
- 	u2 = gl_PositionIn[2]; //u2.xyz *= 1.0/u2.w; u2.w = 1.0;
- 	u3 = gl_PositionIn[3]; //u3.xyz *= 1.0/u3.w; u3.w = 1.0;
- 	 
- 	// Compute the tests 1,2 and 4 to determine the graph basis (according to Wylie et al.)
- 	tests = test124(u0, u1, u2, u3);
-  	
-	sfield = vec4(field[0], field[1], field[2], field[3]);
+float depth0;
+float scalField[5];
+vec4  position[5];
 
- 	// Mapping the vertices onto the graph basis
- 	mapVertices(ivec4(tests), u0, u1, u2, u3, w0, w1, w2, w3, sfield, newSField);
- 	
-	// Computing the intersection to find the vertex 0
- 	compute_intersection(w0, w1, w2, w3, interp, i1, i2);
- 	 		
- 	//Last test (test 3 according to Wylie et al.) 
- 	tests.w = bool(interp.x < 1.);
+//
 
-	depth0       = compute_depth(interp, i1, i2, tests.w);
-	scalField[0] = compute_scalarfieldZero(tests, newSField, interp);
-	position[0]  = compute_positionZero(tests.w, w0, w1, w2, w3, i1, i2);
-	position[0].w = 1.0;
+u0 = gl_PositionIn[0]; //u0.xyz *= 1.0/u0.w; u0.w = 1.0;
+u1 = gl_PositionIn[1]; //u1.xyz *= 1.0/u1.w; u1.w = 1.0;
+u2 = gl_PositionIn[2]; //u2.xyz *= 1.0/u2.w; u2.w = 1.0;
+u3 = gl_PositionIn[3]; //u3.xyz *= 1.0/u3.w; u3.w = 1.0;
 
-	for(int i=1;i<5;i++){
-		scalField[i] = compute_scalarfieldnonZero(tests, newSField, i, interp);
-		position[i]  = compute_positionnonZero(tests.w, w0, w1, w2, w3, i);
-		position[i].w = 1.0;
-	}
- 
-	
-	if (notDegeneratedTriangle(position[0], position[1], position[2])){
-		//TRIANGLE 0
- 		dataFragment = vec2(scalField[1], 0);
-		gl_Position = position[1];
-		EmitVertex();
+// Compute the tests 1,2 and 4 to determine the graph basis (according to Wylie et al.)
+tests = test124(u0, u1, u2, u3);
 
-		dataFragment = vec2(scalField[2], 0);
- 		gl_Position = position[2];
-		EmitVertex();
+sfield = vec4(field[0], field[1], field[2], field[3]);
 
-		//depth0 can need to be modulate with a constant > 10 to have a stronger opacity (uniform modulation)
-		//depends of the size of the cell!
-		dataFragment = vec2(scalField[0], depth0);
- 		gl_Position = position[0];
-		EmitVertex();
+// Mapping the vertices onto the graph basis
+mapVertices(ivec4(tests), u0, u1, u2, u3, w0, w1, w2, w3, sfield, newSField);
 
-		EndPrimitive();
-	}
+// Computing the intersection to find the vertex 0
+compute_intersection(w0, w1, w2, w3, interp, i1, i2);
 
-	if (notDegeneratedTriangle(position[0], position[2], position[3]))
-	{
-		//TRIANGLE 1
-		dataFragment = vec2(scalField[2], 0);
- 		gl_Position  = position[2];
-		EmitVertex();
+//Last test (test 3 according to Wylie et al.) 
+tests.w = bool(interp.x < 1.);
 
-		dataFragment = vec2(scalField[3], 0);
- 		gl_Position  = position[3];
-		EmitVertex();
+depth0       = compute_depth(interp, i1, i2, tests.w);
+scalField[0] = compute_scalarfieldZero(tests, newSField, interp);
+position[0]  = compute_positionZero(tests.w, w0, w1, w2, w3, i1, i2);
+position[0].w = 1.0;
 
-		//depth0 can need to be modulate with a constant > 10 to have a stronger opacity (uniform modulation)
-		//depends of the size of the cell and of the number of cells!
-		dataFragment = vec2(scalField[0], depth0);
- 		gl_Position  = position[0];
-		EmitVertex();
+for(int i=1;i<5;i++){
+scalField[i] = compute_scalarfieldnonZero(tests, newSField, i, interp);
+position[i]  = compute_positionnonZero(tests.w, w0, w1, w2, w3, i);
+position[i].w = 1.0;
+}
 
-		EndPrimitive();
-	}
+if (notDegeneratedTriangle(position[0], position[1], position[2])){
+//TRIANGLE 0
+dataFragment = vec2(scalField[1], 0);
+gl_Position = position[1];
+EmitVertex();
 
-	if (notDegeneratedTriangle(position[0], position[3], position[4]))
-	{
-		//TRIANGLE 2
-		
-		//depth0 can need to be modulate with a constant > 10 to have a stronger opacity (uniform modulation)
-		//depends of the size of the cell and of the number of cells!
-		dataFragment = vec2(scalField[0], depth0);
- 		gl_Position = position[0];
-		EmitVertex();
+dataFragment = vec2(scalField[2], 0);
+gl_Position = position[2];
+EmitVertex();
 
-		dataFragment = vec2(scalField[3], 0);
- 		gl_Position = position[3];
-		EmitVertex();
+//depth0 can need to be modulate with a constant > 10 to have a stronger opacity (uniform modulation)
+//depends of the size of the cell!
+dataFragment = vec2(scalField[0], depth0*computeGradualOpacity(position[0].xyz));
+gl_Position = position[0];
+EmitVertex();
 
-		dataFragment = vec2(scalField[4], 0);
- 		gl_Position = position[4];
-		EmitVertex();
+EndPrimitive();
+}
 
-		EndPrimitive();
-	}
-	
-	if (notDegeneratedTriangle(position[0], position[1], position[4]))
-	{
-		//TRIANGLE 3
-		dataFragment = vec2(scalField[4], 0);
-		gl_Position = position[4];
-		EmitVertex();
-	
-		dataFragment = vec2(scalField[1], 0);
- 		gl_Position = position[1];
-		EmitVertex();
+if (notDegeneratedTriangle(position[0], position[2], position[3]))
+{
+//TRIANGLE 1
+dataFragment = vec2(scalField[2], 0);
+gl_Position  = position[2];
+EmitVertex();
 
-		//depth0 can need to be modulate with a constant > 10 to have a stronger opacity (uniform modulation)
-		//depends of the size of the cell and of the number of cells!
-		dataFragment = vec2(scalField[0], depth0);
- 		gl_Position = position[0];
-		EmitVertex();
+dataFragment = vec2(scalField[3], 0);
+gl_Position  = position[3];
+EmitVertex();
 
-		//EndPrimitive() sous-entendu
-	}
- 	
- }
+//depth0 can need to be modulate with a constant > 10 to have a stronger opacity (uniform modulation)
+//depends of the size of the cell and of the number of cells!
+dataFragment = vec2(scalField[0], depth0*computeGradualOpacity(position[0].xyz));
+gl_Position  = position[0];
+EmitVertex();
 
+EndPrimitive();
+}
 
+if (notDegeneratedTriangle(position[0], position[3], position[4]))
+{
+//TRIANGLE 2
 
+//depth0 can need to be modulate with a constant > 10 to have a stronger opacity (uniform modulation)
+//depends of the size of the cell and of the number of cells!
+dataFragment = vec2(scalField[0], depth0*computeGradualOpacity(position[0].xyz));
+gl_Position = position[0];
+EmitVertex();
+
+dataFragment = vec2(scalField[3], 0);
+gl_Position = position[3];
+EmitVertex();
+
+dataFragment = vec2(scalField[4], 0);
+gl_Position = position[4];
+EmitVertex();
+
+EndPrimitive();
+}
+
+if (notDegeneratedTriangle(position[0], position[1], position[4]))
+{
+//TRIANGLE 3
+dataFragment = vec2(scalField[4], 0);
+gl_Position = position[4];
+EmitVertex();
+
+dataFragment = vec2(scalField[1], 0);
+gl_Position = position[1];
+EmitVertex();
+
+//depth0 can need to be modulate with a constant > 10 to have a stronger opacity (uniform modulation)
+//depends of the size of the cell and of the number of cells!
+dataFragment = vec2(scalField[0], depth0*computeGradualOpacity(position[0].xyz));
+gl_Position = position[0];
+EmitVertex();
+
+//EndPrimitive() sous-entendu
+}
+
+}
