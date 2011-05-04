@@ -30,6 +30,7 @@
 #include "FrameMass.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/topology/PointData.h>
+#include <limits>
 
 namespace sofa
 {
@@ -127,13 +128,16 @@ public:
 
     static const bool isPhysical = IsPhysical;
     bool mappingHasChanged;
+    vector<unsigned int> addedFrameIndices;
+    Data<double> newFrameMinDist;
 
     BaseFrameBlendingMapping ()
         : mappingHasChanged(false)
+        , newFrameMinDist(initData ( &newFrameMinDist, std::numeric_limits<double>::max(), "newFrameMinDist","Minimal distance between inserted frames." ))
     {
     }
 
-    virtual void insertFrame( const Vec3d& restPos) = 0;
+    virtual bool insertFrame( const Vec3d& restPos) = 0;
     virtual void removeFrame( const unsigned int index) = 0;
 };
 
