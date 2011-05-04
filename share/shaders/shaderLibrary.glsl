@@ -282,13 +282,15 @@ vec4 mainFS()
 
 #if defined(SpecularMap_Present)
     vec3 SpecularTexColor = texture2D(SpecularMap, Texcoord).xyz;
+    //return vec4(SpecularTexColor,1);
     Specular *= SpecularTexColor;
 #endif
 
     
     // Apply the normal map and convert vectors to tangent space
 #if defined(NormalMap_Present)
-    mat3 TBN = mat3(Tangent, Bitangent, Normal);
+    mat3 TBN = mat3(-Tangent, -Bitangent, Normal);
+    //return vec4(Bitangent,1);
 
     Normal = normalize(texture2D(NormalMap, Texcoord).xyz * 2.0 - 1.0);
     ViewDir = normalize(ViewDir * TBN);
