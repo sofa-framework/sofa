@@ -342,8 +342,11 @@ protected:
         Vector* systemRHVector;
         Vector* systemLHVector;
         core::MultiVecDerivId solutionVecId;
-        //DefaultMultiMatrixAccessor matrixAccessor;
+#ifdef SOFA_SUPPORT_MAPPED_MATRIX
         MappedMultiMatrixAccessor matrixAccessor;
+#else
+        DefaultMultiMatrixAccessor matrixAccessor;
+#endif
         GroupData()
             : systemSize(0), needInvert(true), systemMatrix(NULL), systemRHVector(NULL), systemLHVector(NULL), solutionVecId(core::MultiVecDerivId::null())
         {}
