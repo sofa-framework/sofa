@@ -161,9 +161,6 @@ void main()
     gl_Position = ftransform();
     Position = gl_Vertex.xyz;
     Normal = gl_Normal;
-#if defined(Mirrored)
-    Normal = -Normal;
-#endif
 
 #if defined(PlanarMapping)
     Texcoord.x = dot(vec4(gl_Vertex.xyz, 1.0), PlaneS);
@@ -176,6 +173,12 @@ void main()
 #endif
     Tangent   = gl_MultiTexCoord1.xyz;
     Bitangent = gl_MultiTexCoord2.xyz;
+
+#if defined(Mirrored)
+    Normal = -Normal;
+    Tangent = -Tangent;
+    Bitangent = -Bitangent;
+#endif
 
     ViewDirection  = gl_ModelViewMatrixInverse[3].xyz - Position;
 #if 0
@@ -267,6 +270,7 @@ vec4 mainFS()
     vec4 DiffuseTexColor4 = texture2D(DiffuseMap, Texcoord);
     vec3 DiffuseTexColor = DiffuseTexColor4.xyz;
     alpha = DiffuseTexColor4.w;
+    //return vec4(alpha,alpha,alpha,1);
 #else
     vec3 DiffuseTexColor = texture2D(DiffuseMap, Texcoord).xyz;
 #endif
@@ -289,7 +293,7 @@ vec4 mainFS()
     
     // Apply the normal map and convert vectors to tangent space
 #if defined(NormalMap_Present)
-    mat3 TBN = mat3(-Tangent, -Bitangent, Normal);
+    mat3 TBN = mat3(Tangent, Bitangent, Normal);
     //return vec4(Bitangent,1);
 
     Normal = normalize(texture2D(NormalMap, Texcoord).xyz * 2.0 - 1.0);
