@@ -32,6 +32,7 @@
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/helper/map.h>
 #include <math.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
 namespace sofa
 {
@@ -110,8 +111,8 @@ public:
     void solve (TMatrix& M, TVector& x, TVector& b);
     void invert(TMatrix& M);
     void setSystemMBKMatrix(const core::MechanicalParams* mparams);
-    void loadMatrix();
-    void loadMatrixWithCSparse();
+    void loadMatrix(TMatrix& M);
+    void loadMatrixWithCSparse(TMatrix& M);
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
 
 
