@@ -205,7 +205,9 @@ HEADERS += \
            PairwiseCudaRasterizer.h \
            PairwiseCudaRasterizer.inl \
            ProximityRasterizer.h \
-           ProximityRasterizer.inl 
+           ProximityRasterizer.inl \ 
+                VolumetricFrameContact.h \
+                VolumetricFrameContact.inl
 		
 		
 SOURCES += \
@@ -236,7 +238,8 @@ SOURCES += \
 	CudaDiagonalMass.cpp \
 	CudaBilateralInteractionConstraint.cpp \
            PairwiseCudaRasterizer.cpp \
-           ProximityRasterizer.cpp
+           ProximityRasterizer.cpp \
+           VolumetricFrameContact.cpp
 
 CUDA_SOURCES += \
            CudaFixedPlaneConstraint.cu \
@@ -282,14 +285,11 @@ contains(DEFINES,SOFA_HAVE_TAUCS_MT){
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){
 HEADERS += \
-                CudaLDIContactLMConstraint.h \
-                VolumetricFrameContact.h \
-                VolumetricFrameContact.inl
+                CudaLDIContactLMConstraint.h
            
 	   	
 SOURCES += \	
-                CudaLDIContactLMConstraint.cpp \
-                VolumetricFrameContact.cpp
+                CudaLDIContactLMConstraint.cpp
 }
 
 HEADERS += \

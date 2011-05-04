@@ -1372,7 +1372,7 @@ void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topol
 
 
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
+bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
 {
     core::behavior::MechanicalState< In >* mstatefrom = static_cast<core::behavior::MechanicalState< In >* >( this->fromModel);
     unsigned int indexFrom = mstatefrom->getSize();
@@ -1380,6 +1380,13 @@ void FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
     WriteAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->write(core::VecCoordId::restPosition());
     WriteAccessor<Data<VecInCoord> >  xfrom = *this->fromModel->write(core::VecCoordId::position());
     WriteAccessor<Data<VecInCoord> >  xfromReset = *this->fromModel->write(core::VecCoordId::resetPosition());
+
+    // Test if the frame to insert is not too close of an existing frame.
+    for (unsigned int i = 0; i < this->addedFrameIndices.size(); ++i)
+    {
+        const SReal dist=(xfrom[this->addedFrameIndices[i]].getCenter()-pos).norm();
+        if (dist < this->newFrameMinDist.getValue()) return false;
+    }
 
     // Compute the rest position of the frame.
     InCoord newX, newX0;
@@ -1392,6 +1399,10 @@ void FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
     xfrom0[indexFrom] = newX0;
     xfrom[indexFrom] = newX;
     xfromReset[indexFrom] = newX0;
+
+    this->addedFrameIndices.push_back( indexFrom);
+
+    return true;
 }
 
 
@@ -1462,14 +1473,7 @@ bool FrameBlendingMapping<TIn, TOut>::inverseApply( InCoord& restCoord, InCoord&
     }
 
     restCoord.getCenter() = out0.getCenter();
-    // Compute the spatial derivatives of coord from restCoord
-    defaulttype::LinearBlendTypes<In,In,GridMat,nbRef, defaulttype::OutDataTypesInfo<In>::type > map;
-    defaulttype::DualQuatBlendTypes<In,In,GridMat,nbRef, defaulttype::OutDataTypesInfo<In>::type > dqmap;
-    gridMaterial->interpolateWeightsRepartition(restCoord.getCenter(),index,weights);
-    if(useDQ.getValue()) dqmap.init(restCoord,index,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weights,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
-    else map.init(restCoord,index,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weights,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
-    if(useDQ.getValue()) coord = dqmap.apply (xfrom.ref());
-    else coord = map.apply (xfrom.ref());
+    apply( coord, restCoord);
 
     return true;
 }
