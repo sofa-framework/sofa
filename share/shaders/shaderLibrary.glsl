@@ -123,7 +123,7 @@ vec3 CookTorrance(vec3 Normal, vec3 LightDir, vec3 ViewDir,
 // The computation of the tangent-space basis for flat shading
 ///////////////////////////////////////////////////////////////////////////////
 
-mat3 ComputeFlatTangentSpaceBasis(vec3 Position, vec2 Texcoord)
+/*mat3 ComputeFlatTangentSpaceBasis(vec3 Position, vec2 Texcoord)
 {
     vec3 dxPosition = dFdx(Position);
     vec3 dyPosition = dFdy(Position);
@@ -135,7 +135,7 @@ mat3 ComputeFlatTangentSpaceBasis(vec3 Position, vec2 Texcoord)
     vec3 Normal    = normalize(cross(dxPosition, dyPosition));
 
     return mat3(Tangent, Bitangent, Normal);
-}
+}*/
 
 ///////////////////////////////////////////////////////////////////////////////
 // Vertex shader:
@@ -222,6 +222,7 @@ uniform vec3 LightColor;
 
 // Textures
 uniform sampler2D DiffuseMap;
+uniform sampler2D SpecularMap;
 uniform sampler2D NormalMap;
 uniform sampler3D NoiseMap;
 uniform samplerCube EnvMap;
@@ -279,6 +280,12 @@ vec4 mainFS()
     Diffuse *= DiffuseTexColor;
 #endif
 
+#if defined(SpecularMap_Present)
+    vec3 SpecularTexColor = texture2D(SpecularMap, Texcoord).xyz;
+    Specular *= SpecularTexColor;
+#endif
+
+    
     // Apply the normal map and convert vectors to tangent space
 #if defined(NormalMap_Present)
     mat3 TBN = mat3(Tangent, Bitangent, Normal);

@@ -1,13 +1,3 @@
-/*****************************************************************************
- * PROJECTED TETRAHEDRA: FRAGMENT SHADER
- * 	Inputs:  the coordinates of the fragment
- *		 dataFragment : interpolation of the scalar and depth
- *	Outputs: color of the fragment in RGBA
- *	Authors:  Sebastien Barbier, Georges-Pierre Bonneau
- *	Version: 1.0
- *	Date:	 March 2008
-******************************************************************************/
-
 #version 120
 
 //FROM the GEOMETRY SHADER
