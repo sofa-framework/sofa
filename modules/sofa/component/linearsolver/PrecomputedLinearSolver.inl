@@ -83,7 +83,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
     {
         first = false;
         Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix();
+        loadMatrix(*this->currentGroup->systemMatrix);
     }
 }
 
@@ -95,7 +95,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVe
 }
 
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
+void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 {
     systemSize = this->currentGroup->systemMatrix->rowSize();
     internalData.Minv.resize(systemSize,systemSize);
@@ -110,7 +110,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
     if(! use_file.getValue() || ! internalData.readFile(ss.str().c_str(),systemSize) )
     {
-        loadMatrixWithCSparse();
+        loadMatrixWithCSparse(M);
         if (use_file.getValue()) internalData.writeFile(ss.str().c_str(),systemSize);
     }
 
@@ -124,7 +124,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
 }
 
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse()
+void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
 {
     cout << "Compute the initial invert matrix with CS_PARSE" << endl;
 
@@ -143,7 +143,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse()
     {
         for (unsigned int i=0; i<systemSize; i++)
         {
-            if (this->currentGroup->systemMatrix->element(j,i)!=0) matSolv.set(j,i,this->currentGroup->systemMatrix->element(j,i));
+            if (M.element(j,i)!=0) matSolv.set(j,i,M.element(j,i));
         }
         b.set(j,0.0);
     }

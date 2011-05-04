@@ -260,6 +260,7 @@ CUDA_SOURCES += \
 contains(DEFINES,SOFA_HAVE_CSPARSE){
 	HEADERS += \
 		  CudaPrecomputedLinearSolver.h	\
+		  CudaPrecomputedLinearSolver.inl \
 		  CudaSparseLDLSolver.h \
 		  CudaSparseLDLSolver.inl \
 
