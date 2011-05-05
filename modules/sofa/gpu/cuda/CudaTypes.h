@@ -222,7 +222,7 @@ public:
         if ( !sizeX && !sizeY)   //special case anly reserve
         {
             DEBUG_OUT_M(SPACEN << "Is in ( !sizeX && !sizeY)" << std::endl);
-            if (allocSize > pitch_host*allocSizeY)
+            if (allocSize > pitch_host*allocSizeY || pitch_host < d_x*sizeof(T))
             {
                 T* prevHostPointer = hostPointer;
                 MemoryManager::hostAlloc( (void **) &hostPointer, allocSize ); pitch_host = d_x*sizeof(T);
@@ -238,7 +238,7 @@ public:
                 allocSizeY = d_y;
             }
         }
-        else if (x <= pitch_host)
+        else if (x*sizeof(T) <= pitch_host)
         {
             DEBUG_OUT_M(SPACEN << "Is in (x <= pitch_host)" << std::endl);
             if (d_y > allocSizeY)   // allocate
@@ -313,7 +313,7 @@ public:
         if ( !sizeX && !sizeY)   //special case anly reserve
         {
             DEBUG_OUT_M(SPACEN << "Is in ( !sizeX && !sizeY)" << std::endl);
-            if (allocSize > pitch_host*allocSizeY)
+            if (allocSize > pitch_host*allocSizeY || pitch_host < d_x*sizeof(T))
             {
                 T* prevHostPointer = hostPointer;
                 MemoryManager::hostAlloc( (void **) &hostPointer, allocSize ); pitch_host = d_x*sizeof(T);
@@ -327,6 +327,8 @@ public:
 
                 allocSizeY = d_y;
             }
+            else if (pitch_host < d_x*sizeof(T)) pitch_host = d_x*sizeof(T);
+
             if (hostIsValid)
             {
                 DEBUG_OUT_M(SPACEN << "MemsetHost from 0 to " << (pitch_host*y) << std::endl);
@@ -338,7 +340,7 @@ public:
                 MemoryManager::memsetDevice(0,devicePointer, 0, pitch_device*y);
             }
         }
-        else if (x <= pitch_host)
+        else if (x*sizeof(T) <= pitch_host)
         {
             DEBUG_OUT_M(SPACEN << "Is in (x <= pitch_host)" << std::endl);
             if (d_y > allocSizeY)   // allocate
