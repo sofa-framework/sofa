@@ -1401,6 +1401,7 @@ bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
     xfromReset[indexFrom] = newX0;
 
     this->addedFrameIndices.push_back( indexFrom);
+    serr << "addedFrameIndices: " << this->addedFrameIndices << sendl;
 
     return true;
 }
