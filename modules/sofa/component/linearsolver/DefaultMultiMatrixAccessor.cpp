@@ -93,6 +93,9 @@ void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::
 
 void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mapping)
 {
+#ifndef SOFA_SUPPORT_MAPPED_MATRIX
+    return;
+#endif
 //    std::cout << "DefaultMultiMatrixAccessor: added mapping " << mapping->getName() <<  std::endl;///////////////////
 
     const sofa::defaulttype::BaseMatrix* jmatrix = mapping->getJ();

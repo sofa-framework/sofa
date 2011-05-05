@@ -6,10 +6,11 @@ uniform sampler2D sphereTexture;
 varying vec3 positionW;
 uniform vec3 worldSphereCenter;
 uniform vec3 lightCenterProj;
-uniform vec3 discCenter;
+//uniform vec3 discCenter;
 
 uniform float sphereRadius;
 uniform float refractCoeff;
+uniform float ambientCoeff;
 
 uniform float lightProjRadius;
 
@@ -56,7 +57,7 @@ void main()
 		
 	float distanceFromCenterToProjPoint = length(projPoint - lightCenterProj);
 	
-	float lightRatio = 0.1+0.9*smoothstep(0.0, lightProjRadius*0.7 ,lightProjRadius-distanceFromCenterToProjPoint);
+	float lightRatio = ambientCoeff+(1.0-ambientCoeff)*smoothstep(0.0, lightProjRadius*0.7 ,lightProjRadius-distanceFromCenterToProjPoint);
 	vec4 color = texture2D(sphereTexture,normalize(projPoint-worldSphereCenter.xyz).xy*0.3+vec2(0.5,0.5));
 	
 	//gl_FragColor = vec4(vec3(distanceFromCenterToProjPoint,distanceFromCenterToProjPoint,distanceFromCenterToProjPoint), 1.0);
