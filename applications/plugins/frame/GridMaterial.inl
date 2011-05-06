@@ -2305,7 +2305,7 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
 
     for (i=initial_num_points; i<nb_points; i++)
     {
-        if (i==0) i=1; // a random point has been inserted
+        if (i==0) continue; // a random point has been inserted
         // get farthest point from all inserted points
         computeGeodesicalDistances(indices);
         dmax=-1;

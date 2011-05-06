@@ -245,6 +245,7 @@ void FrameBlendingMapping<TIn, TOut>::apply( InCoord& coord, const InCoord& rest
     Vec<nbRef,unsigned int> reps;
     MaterialCoord restPos = restCoord.getCenter();
     unsigned int hexaID = gridMaterial->getIndex( restPos);
+    if (hexaID == -1) return;
 
     gridMaterial->getWeights( w, hexaID );
     gridMaterial->getIndices( reps, hexaID );
@@ -1401,7 +1402,6 @@ bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
     xfromReset[indexFrom] = newX0;
 
     this->addedFrameIndices.push_back( indexFrom);
-    serr << "addedFrameIndices: " << this->addedFrameIndices << sendl;
 
     return true;
 }
