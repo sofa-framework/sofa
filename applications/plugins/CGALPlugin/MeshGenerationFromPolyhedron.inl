@@ -89,8 +89,10 @@ void MeshGenerationFromPolyhedron<DataTypes>::init()
     addInput(&facetApproximation);
     addInput(&cellRatio);
     addInput(&cellSize);
+#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
     addInput(&sharpEdgeAngle);
     addInput(&sharpEdgeSize);
+#endif
     addInput(&odt);
     addInput(&lloyd);
     addInput(&perturb);
