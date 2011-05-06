@@ -438,6 +438,18 @@ protected:
 //template<> inline const char* GridMaterial<Material3f>::Name() { return "GridMaterialf"; }
 //#endif
 
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_FRAME_API GridMaterial<Material3d>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class SOFA_FRAME_API GridMaterial<Material3f>;
+#endif //SOFA_DOUBLE
+#endif //defined(WIN32) && !defined(SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_CPP)
+
+
 } // namespace material
 
 } // namespace component
