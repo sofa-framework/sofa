@@ -248,7 +248,6 @@ protected:
 
     // temporary grid data
     //vector<vector<Real> > all_distances; // will soon replace distances (contains all the distances)
-    vector<vector<Real> > all_distances;
     vector<Real> distances;
     vector<int> voronoi;
     vector<int> voronoi_frames;
@@ -261,6 +260,7 @@ protected:
 public:
     inline void getWeights( VRefReal& weights, const unsigned int& index) { weights = v_weights[index];};
     inline void getIndices( VRef& indices, const unsigned int& index) { indices = v_index[index];};
+    inline Real getDistance( const unsigned int& index) {return distances[index];};
 
 protected:
     int showedrepartition; // to improve visualization (no need to paste weights on each draw)
