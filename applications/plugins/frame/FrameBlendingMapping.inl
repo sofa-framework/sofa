@@ -244,7 +244,7 @@ void FrameBlendingMapping<TIn, TOut>::apply( InCoord& coord, const InCoord& rest
     Vec<nbRef,InReal> w;
     Vec<nbRef,unsigned int> reps;
     MaterialCoord restPos = restCoord.getCenter();
-    unsigned int hexaID = gridMaterial->getIndex( restPos);
+    int hexaID = gridMaterial->getIndex( restPos);
     if (hexaID == -1) return;
 
     gridMaterial->getWeights( w, hexaID );
@@ -1382,10 +1382,10 @@ bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
     WriteAccessor<Data<VecInCoord> >  xfrom = *this->fromModel->write(core::VecCoordId::position());
     WriteAccessor<Data<VecInCoord> >  xfromReset = *this->fromModel->write(core::VecCoordId::resetPosition());
 
-    // Test if the frame to insert is not too close of an existing frame.
-    for (unsigned int i = 0; i < this->addedFrameIndices.size(); ++i)
+    // Avoid to insert a frame to close from another one (preliminary test to avoid inverseSkinning).
+    for (unsigned int i = 0; i < xfrom.size(); ++i)
     {
-        const SReal dist=(xfrom[this->addedFrameIndices[i]].getCenter()-pos).norm();
+        const SReal dist=(xfrom[i].getCenter()-pos).norm();
         if (dist < this->newFrameMinDist.getValue()) return false;
     }
 
@@ -1393,7 +1393,14 @@ bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
     InCoord newX, newX0;
     InCoord targetDOF;
     In::set( targetDOF, pos[0], pos[1], pos[2]);
-    inverseApply( newX0, newX, targetDOF);
+    if (!inverseApply( newX0, newX, targetDOF)) return false;
+
+    // Test if the frame to insert is not too close of an existing frame.
+    for (unsigned int i = 0; i < this->addedFrameIndices.size(); ++i)
+    {
+        const SReal dist=(xfrom0[this->addedFrameIndices[i]].getCenter()-newX0.getCenter()).norm();
+        if (dist < this->newFrameMinDist.getValue()) return false;
+    }
 
     // Insert a new DOF
     this->fromModel->resize(indexFrom+1);
@@ -1451,7 +1458,7 @@ bool FrameBlendingMapping<TIn, TOut>::inverseApply( InCoord& restCoord, InCoord&
         defaulttype::LinearBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > map;
         defaulttype::DualQuatBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > dqmap;
 
-        gridMaterial->interpolateWeightsRepartition(out0.getCenter(),index,weights);
+        if (!gridMaterial->interpolateWeightsRepartition(out0.getCenter(),index,weights)) return false;
 
         if(useDQ.getValue()) dqmap.init(out0,index,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weights,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
         else map.init(out0,index,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weights,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
@@ -1473,7 +1480,25 @@ bool FrameBlendingMapping<TIn, TOut>::inverseApply( InCoord& restCoord, InCoord&
         }
     }
 
-    restCoord.getCenter() = out0.getCenter();
+    // If the new frame is out of the grid, displace it to the nearest voxel position.
+    int nearestVoxel = gridMaterial->getIndex (out0.getCenter());
+    while (gridMaterial->grid.data()[nearestVoxel] == 0)
+    {
+        int oldValue = nearestVoxel;
+        vector<unsigned int> neighbors;
+        gridMaterial->get26Neighbors( nearestVoxel, neighbors);
+        double dist = gridMaterial->getDistance(nearestVoxel);
+        for (vector<unsigned int>::const_iterator it = neighbors.begin(); it != neighbors.end(); ++it)
+        {
+            if (gridMaterial->getDistance(*it) < dist)
+            {
+                nearestVoxel = *it;
+                dist = gridMaterial->getDistance(nearestVoxel);
+            }
+        }
+    }
+    gridMaterial->getCoord (nearestVoxel, restCoord.getCenter());
+
     apply( coord, restCoord);
 
     return true;
