@@ -36,6 +36,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/component/topology/PointData.inl>
 #include <iostream>
 
@@ -366,6 +367,8 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
+    checkForChanges();
+
     if ( ! ( this->maskTo->isInUse() ) )
     {
         this->maskFrom->setInUse ( false );
@@ -1227,13 +1230,13 @@ void FrameBlendingMapping<TIn, TOut>::findIndexInRepartition( bool& influenced, 
 
 
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::updateMapping()
+void FrameBlendingMapping<TIn, TOut>::updateMapping(const bool& computeWeights)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Update_Mapping");
 #endif
 
-    if (this->isPhysical)
+    if (this->isPhysical || computeWeights)
     {
         /*
         initFrames( true, true); // With lloyd on frames
@@ -1305,13 +1308,24 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
     if (this->mappingHasChanged) this->mappingHasChanged = false;
     ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
+    bool dofRemoved = false;
+    for (unsigned int i = 0; i < this->frameLife.size(); ++i)
+    {
+        if (this->getContext()->getTime() > this->frameLife[i])
+        {
+            removeFrame (i);
+            dofRemoved = true;
+        }
+    }
+
     // Mapping has to be updated
     if ( (in.size() != targetFrameNumber.getValue()) || // In DOFs have changed
-            (gridMaterial && gridMaterial->voxelsHaveChanged.getValue())) // Voxels have changed
+            (gridMaterial && gridMaterial->voxelsHaveChanged.getValue()) || // Voxels have changed
+            (dofRemoved))
     {
         targetFrameNumber.setValue(in.size());
         this->mappingHasChanged = true;
-        updateMapping();
+        updateMapping (dofRemoved);
     }
 }
 
@@ -1409,6 +1423,7 @@ bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
     xfromReset[indexFrom] = newX0;
 
     this->addedFrameIndices.push_back( indexFrom);
+    this->frameLife.push_back(this->getContext()->getTime()+20);
 
     return true;
 }
@@ -1416,9 +1431,17 @@ bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
 
 
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::removeFrame (const unsigned int /*index*/)
+void FrameBlendingMapping<TIn, TOut>::removeFrame (const unsigned int index)
 {
     serr << "removeFrame call !! Not yet implemented." << sendl;
+
+    component::container::MechanicalObject< In >* mstatefrom = static_cast<component::container::MechanicalObject< In >* >( this->fromModel);
+    mstatefrom->replaceValue (mstatefrom->getSize(),this->addedFrameIndices[index]);
+    mstatefrom->resize(mstatefrom->getSize()-1);
+    this->addedFrameIndices[index] = this->addedFrameIndices[this->addedFrameIndices.size()-1];
+    this->addedFrameIndices.resize(this->addedFrameIndices.size()-1);
+    this->frameLife[index] = this->frameLife[this->frameLife.size()-1];
+    this->frameLife.resize(this->frameLife.size()-1);
 }
 
 
@@ -1484,7 +1507,6 @@ bool FrameBlendingMapping<TIn, TOut>::inverseApply( InCoord& restCoord, InCoord&
     int nearestVoxel = gridMaterial->getIndex (out0.getCenter());
     while (gridMaterial->grid.data()[nearestVoxel] == 0)
     {
-        int oldValue = nearestVoxel;
         vector<unsigned int> neighbors;
         gridMaterial->get26Neighbors( nearestVoxel, neighbors);
         double dist = gridMaterial->getDistance(nearestVoxel);

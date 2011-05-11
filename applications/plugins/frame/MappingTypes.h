@@ -129,6 +129,7 @@ public:
     static const bool isPhysical = IsPhysical;
     bool mappingHasChanged;
     vector<unsigned int> addedFrameIndices;
+    vector<unsigned int> frameLife; // Test of removing frame
     Data<double> newFrameMinDist;
 
     BaseFrameBlendingMapping ()

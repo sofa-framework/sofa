@@ -88,7 +88,7 @@ public:
     void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   df , const DataVecDeriv&   dx );
 
     // Adaptativity
-    void updateFF (const DataVecCoord& _x);
+    void updateFF (const unsigned int& size);
 
     //        virtual void draw();
 
