@@ -1,6 +1,6 @@
 ########################################################################
 # SOFA build system configuration
-#   This file should be included at the very beginning of each pro file 
+#   This file should be included at the very beginning of each pro file
 ########################################################################
 
 defineReplace(normalizePath) {
@@ -9,6 +9,15 @@ defineReplace(normalizePath) {
 	path = $$replace(path, /$, )
 	return($$path)
 }
+
+########################################################################
+# Fixed variables (no customization possible)
+########################################################################
+
+SRC_FEATURES_PATH = features
+INSTALL_INC_PATH = include/sofa
+INSTALL_LIB_PATH = lib
+INSTALL_BIN_PATH = bin
 
 ########################################################################
 # Build system path variables
@@ -25,9 +34,6 @@ equals(BUILD_DIR, $$SRC_DIR) {
 } else {
 	OUT_OF_SOURCE = true
 }
-
-## assumes this .prf file is located in $$SOFA_DIR/share/sofa/mkspecs
-SOFA_DIR = $$replace(FEATURES_DIR, /\\w+/\\w+/\\w+$, )
 
 # We could get the ROOT_BUILD_DIR on Unix using $$(PWD), but
 # on Windows the equivalent $$(CD) does not work and $$system(echo %CD%)
@@ -84,13 +90,6 @@ equals(OUT_OF_SOURCE, true) {
 	ROOT_PATH = $$replace(ROOT_PATH, \\w+, ..)
 }
 
-equals(SOFA_DIR, $$ROOT_SRC_DIR) {
-	USING_INSTALL = false
-} else {
-	USING_INSTALL = true
-}
-
-#message(SOFA_DIR      $$escape_expand(\\t)= $$SOFA_DIR)
 #message(ROOT_SRC_DIR  $$escape_expand(\\t)= $$ROOT_SRC_DIR)
 #message(SRC_DIR       $$escape_expand(\\t)= $$SRC_DIR)
 #message(ROOT_BUILD_DIR$$escape_expand(\\t)= $$ROOT_BUILD_DIR)
@@ -124,7 +123,7 @@ exists($${INSTALLED_FEATURE_FILE}.prf) {
 load($$FEATURES_DIR/sofa-config-pre)
 
 ########################################################################
-# Other descriptive variables
+# Descriptive variables
 ########################################################################
 
 *-32*|win32* {
@@ -156,7 +155,7 @@ contains(QMAKE_CXXFLAGS, -pg) {
 }
 
 ########################################################################
-# Other configuration variables
+# Some configuration variables
 ########################################################################
 
 contains(CONFIGDEBUG, debug) {
@@ -191,24 +190,36 @@ isEqual(BUILD_DIR, $$SRC_DIR) {
 }
 
 ########################################################################
-# Definition of SOFA-specific paths
+# Detection of SOFA-specific paths
 ########################################################################
 
-isEmpty(SOFA_INSTALL_ROOT) {
-	SOFA_INSTALL_ROOT = /usr/local
+SRC_FEATURES_DIR = $$ROOT_SRC_DIR/$$SRC_FEATURES_PATH
+
+isEmpty(INSTALL_DIR) {
+	INSTALL_DIR = /usr
 }
 
-isEmpty(SOFA_FEATURES_PATH) {
-	SOFA_FEATURES_PATH = share/sofa/mkspecs
+equals(FEATURES_DIR, $$SRC_FEATURES_DIR) {
+	USING_INSTALL = false
+} else {
+	USING_INSTALL = true
+	
+	SOFA_INSTALL_DIR = $$replace(FEATURES_DIR, ^(.*$${INSTALL_DIR})/.+$, \\1)
+	isEmpty(SOFA_INSTALL_DIR): error(Unable to detect the install dir (maybe it has been moved since install, or some .prf file have been deleted))	
 }
-SOFA_FEATURES_DIR = $$ROOT_SRC_DIR/$$SOFA_FEATURES_PATH
 
-INSTALL_INC_PATH = include/sofa
-INSTALL_LIB_PATH = lib
-INSTALL_BIN_PATH = bin
+
+QMAKE_MKSPECS = $$[QMAKE_MKSPECS]
+match = $$find(QMAKE_MKSPECS, ^$${INSTALL_DIR}.*$)
+isEmpty(match) {
+	warning(Feature files will not be installed in Qt standard directory; so you will have to set QMAKEFEATURES environment variable to use them.)
+	INSTALL_PRF_PATH = share/sofa/features
+} else {
+	INSTALL_PRF_PATH = $$replace(QMAKE_MKSPECS, ^$$INSTALL_DIR/(.+), \\1)/features
+}
 
 ########################################################################
-# Some configuration
+# Customizable parameters
 ########################################################################
 
 isEmpty(PACKAGE) {
@@ -235,8 +246,23 @@ isEmpty(APP_DESTDIR) {
 	APP_DESTDIR = $$ROOT_PATH/bin
 }
 
-INSTALL_INCLUDE_DIR = $$SOFA_DIR/include/sofa
-INSTALL_LIB_DIR     = $$SOFA_DIR/lib
+########################################################################
+# Definition of derived paths
+########################################################################
+
+# Define the target directories for installation
+INSTALL_INC_DIR = $$INSTALL_DIR/$$INSTALL_INC_PATH
+INSTALL_LIB_DIR = $$INSTALL_DIR/$$INSTALL_LIB_PATH
+INSTALL_BIN_DIR = $$INSTALL_DIR/$$INSTALL_BIN_PATH
+INSTALL_PRF_DIR = $$INSTALL_DIR/$$INSTALL_PRF_PATH
+
+# Defines directories where the installed version of Sofa is
+equals(USING_INSTALL, true) {
+	SOFA_INSTALL_INC_DIR = $$SOFA_INSTALL_DIR/$$INSTALL_INC_PATH
+	SOFA_INSTALL_LIB_DIR = $$SOFA_INSTALL_DIR/$$INSTALL_LIB_PATH
+} else {
+	SOFA_INSTALL_INC_DIR = $$ROOT_SRC_DIR
+}
 
 ########################################################################
 # Utility functions
@@ -459,8 +485,8 @@ defineTest(requireExtLib) {
 		}
 		message(Using installed version of $$name)
 		MY_FEATUREFILE = $$FEATURES_DIR/$${name}
-		MY_INCLUDEPATH = $$INSTALL_INCLUDE_DIR/$$dir
-		MY_LIBRARYPATH = -L$$INSTALL_LIB_DIR
+		MY_INCLUDEPATH = $$SOFA_INSTALL_INC_DIR/$$dir
+		MY_LIBRARYPATH = -L$$SOFA_INSTALL_LIB_DIR
 	}
 	MY_LIBS = -l$$name$$LIBSUFFIX
 
@@ -501,8 +527,8 @@ defineTest(requireSofaLib) {
 		LIBS *= -L$$LIB_DESTDIR
 	} else {
 		message(Using installed version of Sofa library: $$name)
-		INCLUDEPATH *= $$INSTALL_INCLUDE_DIR/$$sourcedir
-		LIBS *= -L$$INSTALL_LIB_DIR
+		INCLUDEPATH *= $$SOFA_INSTALL_INC_DIR/$$sourcedir
+		LIBS *= -L$$SOFA_INSTALL_LIB_DIR
 	}
 	LIBS *= -l$$name$$LIBSUFFIX
 
