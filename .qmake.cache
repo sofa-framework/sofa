@@ -1,0 +1,4 @@
+# This file must not be destroyed, its presence is necessary for qmake to look for feature files
+# in the features subdirectory when doing an in-source build.
+# (see: rule 3 of "Adding New Configuration Features" in "QMake Advanced Usage":
+# "In a features directory beneath the project's root directory (where the .qmake.cache file is generated)")

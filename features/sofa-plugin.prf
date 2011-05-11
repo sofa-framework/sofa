@@ -7,4 +7,5 @@
 
 equals(USING_INSTALL, true) {
 	INSTALL_INC_PATH = $$INSTALL_INC_PATH/applications/plugins/$$basename(ROOT_SRC_DIR)
+	INSTALL_INC_DIR = $$INSTALL_DIR/$$INSTALL_INC_PATH
 }

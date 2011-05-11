@@ -1,13 +1,13 @@
 ########################################################################
 # SOFA build system configuration
-#   This file should be included at the end of each pro file 
+#   This file should be included at the end of each pro file
 ########################################################################
 
 !contains(TEMPLATE, subdirs) : !contains(TEMPLATE, vcsubdirs) {
 	loadDependencies($$TARGET, transitive)
 }
 
-BUILD_SYSTEM_FILES = $$files($$SOFA_FEATURES_DIR/*.prf)
+BUILD_SYSTEM_FILES = $$files($$SRC_FEATURES_DIR/*.prf)
 
 ########################################################################
 # Load SOFA-specific configuration
@@ -56,7 +56,7 @@ win32 {
 ########################################################################
 
 # If the build system features files exist in the source dir, we install them.
-equals(ROOT_PATH, .) : exists($$ROOT_SRC_DIR/$$SOFA_FEATURES_PATH) {
+equals(ROOT_PATH, .) : exists($$SRC_FEATURES_DIR) {
 	
 	INSTALLS += buildsystem
 
@@ -64,13 +64,13 @@ equals(ROOT_PATH, .) : exists($$ROOT_SRC_DIR/$$SOFA_FEATURES_PATH) {
 		$$BUILD_SYSTEM_FILES \
 		$$files($$BUILD_DIR/*.prf)
 
-	buildsystem.path = $$SOFA_INSTALL_ROOT/$$SOFA_FEATURES_PATH
+	buildsystem.path = $$INSTALL_PRF_DIR
 }
 
 contains(TEMPLATE, subdirs) {
 	features.files = $$files($$SRC_DIR/*.prf)
 	!isEmpty(features.files) {
-		features.path  = $$SOFA_INSTALL_ROOT/$$SOFA_FEATURES_PATH
+		features.path  = $$INSTALL_PRF_DIR
 		INSTALLS += features
 	}
 }
@@ -81,11 +81,11 @@ contains(TEMPLATE, lib) {
 	QMAKE_EXTRA_TARGETS += uninstall_headers
 	UNINSTALLDEPS += uninstall_headers
 
-	target.path    = $$SOFA_INSTALL_ROOT/$$INSTALL_LIB_PATH
+	target.path    = $$INSTALL_LIB_DIR
 	features.files = $${TARGET_BASE}.prf
-	features.path  = $$SOFA_INSTALL_ROOT/$$SOFA_FEATURES_PATH
+	features.path  = $$INSTALL_PRF_DIR
 
-	headers.path = $$SOFA_INSTALL_ROOT/$$INSTALL_INC_PATH/$$SUBDIR_PATH
+	headers.path = $$INSTALL_INC_DIR/$$SUBDIR_PATH
 	
 	# Creates the list of subfolders
 	for(header, HEADERS) {
@@ -120,7 +120,7 @@ contains(TEMPLATE, lib) {
 
 contains(TEMPLATE, app) {
 	INSTALLS += target
-	target.path = $$SOFA_INSTALL_ROOT/$$INSTALL_BIN_PATH
+	target.path = $$INSTALL_BIN_DIR
 }
 
 ########################################################################
@@ -162,7 +162,7 @@ equals(ROOT_PATH, .) {
 		QMAKE_EXTRA_TARGETS += dist
 		dist.depends = fulldist
 	}
-	exists($$ROOT_SRC_DIR/$$SOFA_FEATURES_PATH) {
+	!isEmpty(BUILD_SYSTEM_FILES) {
 		addCommand(fulldist.commands, (cd $$ROOT_SRC_DIR && rsync -R $$BUILD_SYSTEM_FILES $$DIST_DIR))
 	}
 	addCommand(fulldist.commands, tar -czvf $$PACKAGE-$${RELEASE}.tar.gz $$PACKAGE-$$RELEASE/)
