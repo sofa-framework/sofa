@@ -136,7 +136,7 @@ public:
     virtual void checkForChanges();
     virtual void handleTopologyChange(core::topology::Topology* t);
     virtual bool insertFrame( const Vec3d& pos);
-    virtual void removeFrame( const unsigned int index);
+    virtual void removeFrame( const unsigned int index); // Index is relative to addedFrameIndices
 
 protected:
     bool inverseApply( InCoord& restCoord, InCoord& coord, const InCoord& targetCoord);
@@ -148,7 +148,7 @@ protected:
     virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass);
 
     // Adaptativity
-    virtual void updateMapping();
+    virtual void updateMapping(const bool& computeWeights = false);
 
     PointData<InOut> inout;  ///< Data specific to the conversion between the types
     PointData<DQInOut> dqinout;  ///< Data specific to the conversion between the types

@@ -117,7 +117,7 @@ void GreenLagrangeForceField<DataTypes>::addForce(const core::MechanicalParams* 
     WriteAccessor<DataVecDeriv> f(_f);
     ReadAccessor<Data<VecMaterialCoord> > out (sampleData->f_materialPoints);
 
-    updateFF( _x);
+    updateFF( _x.getValue().size());
 
     // compute strains and strain rates
     for(unsigned int i=0; i<x.size(); i++)
@@ -153,6 +153,8 @@ void GreenLagrangeForceField<DataTypes>::addDForce(const core::MechanicalParams*
     strainChange.resize(dx.size());
     stressChange.resize(dx.size());
     ReadAccessor<Data<VecMaterialCoord> > out (sampleData->f_materialPoints);
+
+    updateFF( _dx.getValue().size());
 
     // compute strains changes
     for(unsigned int i=0; i<dx.size(); i++)
@@ -194,20 +196,19 @@ void GreenLagrangeForceField<DataTypes>::addDForce(const core::MechanicalParams*
 
 
 template <class DataTypes>
-void GreenLagrangeForceField<DataTypes>::updateFF (const DataVecCoord& _x)
+void GreenLagrangeForceField<DataTypes>::updateFF (const unsigned int& size)
 {
     ReadAccessor<Data<VecCoord> > out (*this->getMState()->read(core::ConstVecCoordId::restPosition()));
-    ReadAccessor<DataVecCoord> x(_x);
 
-    if (stressStrainMatrices.size() == x.size() && this->integFactors.size() == out.size() && !sampleData->mappingHasChanged) return;
+    if (stressStrainMatrices.size() == size && this->integFactors.size() == out.size() && !sampleData->mappingHasChanged) return;
 
     serr << "recompute stiffness matrix" << sendl;
 
-    stressStrainMatrices.resize(x.size());
-    //rotation.resize(x.size());
-    strain.resize(x.size());
-    strainRate.resize(x.size());
-    stress.resize(x.size());
+    stressStrainMatrices.resize(size);
+    //rotation.resize(size);
+    strain.resize(size);
+    strainRate.resize(size);
+    stress.resize(size);
 
     this->integFactors.resize(out.size());
 
