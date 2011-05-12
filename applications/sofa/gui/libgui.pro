@@ -1,5 +1,5 @@
 # Target is a library: sofagui
-load(sofa-pre)
+load(sofa/pre)
 
 TEMPLATE = lib
 TARGET = sofagui
@@ -22,4 +22,4 @@ HEADERS = \
 	PickHandler.h \
 	FilesRecentlyOpenedManager.h 
 
-load(sofa-post)
+load(sofa/post)

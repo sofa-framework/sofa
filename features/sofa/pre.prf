@@ -14,7 +14,7 @@ defineReplace(normalizePath) {
 # Fixed variables (no customization possible)
 ########################################################################
 
-SRC_FEATURES_PATH = features
+SRC_FEATURES_PATH = features/sofa
 INSTALL_INC_PATH = include/sofa
 INSTALL_LIB_PATH = lib
 INSTALL_BIN_PATH = bin
@@ -99,7 +99,7 @@ equals(OUT_OF_SOURCE, true) {
 
 ########################################################################
 # Extension point:
-#		If needed, create a file name sofa-pre-custom.prf at the root of
+#		If needed, create a file name sofa/pre-custom.prf at the root of
 #		your build dir (where you run qmake), and set any variable you need.
 #		Values defined there will override default values.
 #		If you run "make install" this file will be installed.
@@ -120,7 +120,7 @@ exists($${INSTALLED_FEATURE_FILE}.prf) {
 # Load SOFA-specific configuration
 ########################################################################
 
-load($$FEATURES_DIR/sofa-config-pre)
+load($$FEATURES_DIR/config-pre)
 
 ########################################################################
 # Descriptive variables
@@ -213,9 +213,9 @@ QMAKE_MKSPECS = $$[QMAKE_MKSPECS]
 match = $$find(QMAKE_MKSPECS, ^$${INSTALL_DIR}.*$)
 isEmpty(match) {
 	warning(Feature files will not be installed in Qt standard directory; so you will have to set QMAKEFEATURES environment variable to use them.)
-	INSTALL_PRF_PATH = share/sofa/features
+	INSTALL_PRF_PATH = share/sofa/$$$$SRC_FEATURES_PATH
 } else {
-	INSTALL_PRF_PATH = $$replace(QMAKE_MKSPECS, ^$$INSTALL_DIR/(.+), \\1)/features
+	INSTALL_PRF_PATH = $$replace(QMAKE_MKSPECS, ^$$INSTALL_DIR/(.+), \\1)/$$SRC_FEATURES_PATH
 }
 
 ########################################################################
@@ -345,7 +345,7 @@ defineTest(addSubdirs) {
 ##
 # This functions tests whether a module is installed.
 # A module is considered installed if a feature file having the specified name
-# exists in the feature directory (which also contain this sofa-pre.prf file).
+# exists in the feature directory (which also contain this sofa/pre.prf file).
 #
 defineTest(isInstalled) {
 	name = $$1

@@ -13,7 +13,7 @@ BUILD_SYSTEM_FILES = $$files($$SRC_FEATURES_DIR/*.prf)
 # Load SOFA-specific configuration
 ########################################################################
 
-load($$FEATURES_DIR/sofa-config-post)
+load($$FEATURES_DIR/config-post)
 
 ########################################################################
 # Definition of artifacts directories and name
