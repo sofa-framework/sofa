@@ -1309,13 +1309,14 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
     ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
     bool dofRemoved = false;
-    for (unsigned int i = 0; i < this->frameLife.size(); ++i)
+    for (unsigned int i = 0; i < this->frameLife.size();)
     {
         if (this->getContext()->getTime() > this->frameLife[i])
         {
             removeFrame (i);
             dofRemoved = true;
         }
+        else ++i;
     }
 
     // Mapping has to be updated
@@ -1423,7 +1424,7 @@ bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
     xfromReset[indexFrom] = newX0;
 
     this->addedFrameIndices.push_back( indexFrom);
-    this->frameLife.push_back(this->getContext()->getTime()+20);
+    this->frameLife.push_back(this->getContext()->getTime()+100);
 
     return true;
 }
@@ -1436,7 +1437,7 @@ void FrameBlendingMapping<TIn, TOut>::removeFrame (const unsigned int index)
     serr << "removeFrame call !! Not yet implemented." << sendl;
 
     component::container::MechanicalObject< In >* mstatefrom = static_cast<component::container::MechanicalObject< In >* >( this->fromModel);
-    mstatefrom->replaceValue (mstatefrom->getSize(),this->addedFrameIndices[index]);
+    mstatefrom->replaceValue (mstatefrom->getSize()-1,this->addedFrameIndices[index]);
     mstatefrom->resize(mstatefrom->getSize()-1);
     this->addedFrameIndices[index] = this->addedFrameIndices[this->addedFrameIndices.size()-1];
     this->addedFrameIndices.resize(this->addedFrameIndices.size()-1);
