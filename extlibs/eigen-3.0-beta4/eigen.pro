@@ -1,4 +1,4 @@
-load(sofa-pre)
+load(sofa/pre)
 
 TEMPLATE = subdirs
 HEADERS = 														\
@@ -26,4 +26,4 @@ HEADERS = 														\
 	$$files(Eigen/src/StlSupport/*.h)					\
 	$$files(Eigen/src/SVD/*.h)	
 
-load(sofa-post)
+load(sofa/post)
