@@ -112,6 +112,7 @@ public:
     static const unsigned int nbRef = GridMat::nbRef;
     typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::type > InOut;
     typedef typename defaulttype::DualQuatBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::type > DQInOut;
+    typedef defaulttype::BaseFrameBlendingMapping<true> PhysicalMapping;
 
     typedef Vec<3,double> Vec3d;
 
@@ -148,6 +149,7 @@ protected:
     virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass);
 
     // Adaptativity
+    PhysicalMapping* physicalMapping;
     virtual void updateMapping(const bool& computeWeights = false);
 
     PointData<InOut> inout;  ///< Data specific to the conversion between the types
