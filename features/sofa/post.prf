@@ -3,6 +3,8 @@
 #   This file should be included at the end of each pro file
 ########################################################################
 
+!isEmpty(PLUGIN_NAME): load($$FEATURES_DIR/plugin)
+
 !contains(TEMPLATE, subdirs) : !contains(TEMPLATE, vcsubdirs) {
 	loadDependencies($$TARGET, transitive)
 }

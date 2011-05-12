@@ -1,1 +1,3 @@
-declare(PluginExample, applications/plugins/PluginExample, sofaguiqt)
+includeOnce($$_FILE_) {
+	declare(PluginExample, applications/plugins/PluginExample, sofaguiqt)
+}

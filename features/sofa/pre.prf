@@ -14,6 +14,7 @@ defineReplace(normalizePath) {
 # Fixed variables (no customization possible)
 ########################################################################
 
+PLUGINS_PATH = applications/plugins
 SRC_FEATURES_PATH = features/sofa
 INSTALL_INC_PATH = include/sofa
 INSTALL_LIB_PATH = lib
@@ -282,6 +283,32 @@ defineTest(addCommand) {
 ########################################################################
 # Dependency management functions
 ########################################################################
+
+##
+# This function allows to protect a block from being parsed more than once in
+# the include tree.
+#
+# Parameters:
+#		name		a unique name associated with this block (eg: using $$__FILE__ as
+#						argument will ensure this block will only be read once for the given file)
+#
+defineTest(includeOnce) {
+	projectFile = $$basename(1)
+	projectName = $$replace(projectFile, \\., _)
+
+	defined = $$eval($${projectFile}.defined)
+	path = $$eval($${projectFile}.path)
+
+	equals(defined, true) : equals(path, $$_PRO_FILE_) {
+		return(false)
+	} else {
+		eval($${projectFile}.defined = true)
+		eval($${projectFile}.path = $$_PRO_FILE_)
+		export($${projectFile}.defined)
+		export($${projectFile}.path)
+		return(true)
+	}
+}
 
 defineTest(isProjectFile) {
 	path = $$eval($$1)
@@ -569,10 +596,10 @@ defineTest(declare) {
 	export(artifacts_registry)
 }
 
-defineTest(loadDependencyFile) {
+defineTest(include-declarations) {
 	name = $$1
 	directory = $$2
-	
+
 	exists($$FEATURES_DIR/$${name}.prf) {
 		load($$FEATURES_DIR/$$name)
 	}
@@ -582,7 +609,20 @@ defineTest(loadDependencyFile) {
 	else : !isEmpty(directory) : exists($$ROOT_SRC_DIR/$$directory/$${name}.prf) {
 		load($$ROOT_SRC_DIR/$$directory/$$name)
 	}
-	else : error(loadDependencyFile: cannot find $$name (dir: $$directory))
+	else : error(include-declarations: cannot find $$name (dir: $$directory))
+}
+
+defineTest(defineAsPlugin) {
+	PLUGIN_NAME = $$1
+	TEMPLATE = lib
+	include-declarations($${PLUGIN_NAME}-dependencies, $$PLUGINS_PATH/$$PLUGIN_NAME)
+	export(TEMPLATE)
+	export(PLUGIN_NAME)
+}
+
+defineTest(usePlugin) {
+	pluginName = $$1
+	include-declarations($${pluginName}-dependencies, $$PLUGINS_PATH/$$pluginName)
 }
 
 ##
@@ -717,4 +757,5 @@ defineTest(loadDependencies) {
 # Loading dependencies declarations
 ########################################################################
 
-loadDependencyFile(sofa-dependencies)
+include-declarations(sofa-dependencies)
+
