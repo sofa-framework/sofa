@@ -39,6 +39,7 @@
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/component/topology/PointData.inl>
 #include <iostream>
+#include <sofa/simulation/tree/GNode.h>
 
 namespace sofa
 {
@@ -231,6 +232,9 @@ void FrameBlendingMapping<TIn, TOut>::init()
     }
 
     this->getToModel()->getContext()->get(to_topo); // Get the output model topology to manage eventualy changes
+
+    static_cast<simulation::tree::GNode*>(static_cast<simulation::tree::GNode*>(this->getContext())->getParent())->get ( physicalMapping, core::objectmodel::BaseContext::SearchDown );
+    if (!physicalMapping) serr << "Unable to get physical mapping" << sendl;
 
     Inherit::init();
 }
@@ -1309,15 +1313,55 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
     ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
     bool dofRemoved = false;
-    for (unsigned int i = 0; i < this->frameLife.size();)
+    if (this->isPhysical)
     {
-        if (this->getContext()->getTime() > this->frameLife[i])
+        //* // Remove after a given time
+        for (unsigned int i = 0; i < this->frameLife.size();)
         {
-            removeFrame (i);
-            dofRemoved = true;
+            if (this->getContext()->getTime() > this->frameLife[i])
+            {
+                removeFrame (i);
+                dofRemoved = true;
+            }
+            else ++i;
         }
-        else ++i;
+
+        /*/ // Remove a frame if all the elastons are near rest state
+        double epsilon = 0.05;
+        ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > > index ( f_index );
+        ReadAccessor<Data<vector<Vec<nbRef,InReal> > > > m_weights ( weight );
+        ReadAccessor<Data<VecOutCoord> > out  = *this->toModel->read(core::ConstVecCoordId::restPosition());
+        for (unsigned int i = 0; i < this->addedFrameIndices.size();)
+        {
+            // Check all the elastons mapped by this frame.
+            bool allElastonsNearRestState = true;
+            for (unsigned int j = 0; j < index.size(); ++j)
+            {
+                for (unsigned int ref = 0; ref < nbRef; ++ref)
+                {
+                    if ( index[j][ref] == this->addedFrameIndices[i] && m_weights[j][ref] != 0) // If this elaston is mapped by the frame
+                    {
+                        for (unsigned int k = num_spatial_dimensions+9; k < OutCoord::total_size; ++k) // Check if the second order terms are < epsilon
+                        {
+                            if (fabs(out[j][k]) > epsilon)
+                            {
+                                allElastonsNearRestState = false;
+                            }
+                        }
+                    }
+                }
+            }
+            if (allElastonsNearRestState)
+            {
+                removeFrame (i);
+                dofRemoved = true;
+            }
+            else ++i;
+        }
+        //*/
     }
+
+
 
     // Mapping has to be updated
     if ( (in.size() != targetFrameNumber.getValue()) || // In DOFs have changed
@@ -1411,9 +1455,9 @@ bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
     if (!inverseApply( newX0, newX, targetDOF)) return false;
 
     // Test if the frame to insert is not too close of an existing frame.
-    for (unsigned int i = 0; i < this->addedFrameIndices.size(); ++i)
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
     {
-        const SReal dist=(xfrom0[this->addedFrameIndices[i]].getCenter()-newX0.getCenter()).norm();
+        const SReal dist=(xfrom0[i].getCenter()-newX0.getCenter()).norm();
         if (dist < this->newFrameMinDist.getValue()) return false;
     }
 
@@ -1423,8 +1467,9 @@ bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
     xfrom[indexFrom] = newX;
     xfromReset[indexFrom] = newX0;
 
-    this->addedFrameIndices.push_back( indexFrom);
-    this->frameLife.push_back(this->getContext()->getTime()+100);
+    // register new frame in the corresponding physical mapping
+    physicalMapping->addedFrameIndices.push_back( indexFrom);
+    physicalMapping->frameLife.push_back(this->getContext()->getTime()+100);
 
     return true;
 }
@@ -1434,8 +1479,6 @@ bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::removeFrame (const unsigned int index)
 {
-    serr << "removeFrame call !! Not yet implemented." << sendl;
-
     component::container::MechanicalObject< In >* mstatefrom = static_cast<component::container::MechanicalObject< In >* >( this->fromModel);
     mstatefrom->replaceValue (mstatefrom->getSize()-1,this->addedFrameIndices[index]);
     mstatefrom->resize(mstatefrom->getSize()-1);

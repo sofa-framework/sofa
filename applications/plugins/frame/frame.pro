@@ -17,6 +17,7 @@ DEFINES += SOFA_BUILD_FRAME
 LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += $$SOFA_EXT_LIBS
 LIBS += -lsofasimulation$$LIBSUFFIX
+LIBS += -lsofatree$$LIBSUFFIX
 LIBS += -lsofacomponentprojectiveconstraintset$$LIBSUFFIX
 LIBS += -lsofacomponentvisualmodel$$LIBSUFFIX
 LIBS += -lsofacomponentbase$$LIBSUFFIX
