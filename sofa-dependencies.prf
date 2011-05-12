@@ -1,3 +1,5 @@
+includeOnce($$_FILE_) {
+
 declare(glut,   glut.prf)
 declare(glew,   glew.prf)
 declare(boost,  boost.prf)
@@ -80,11 +82,4 @@ declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
 declare(sofaguifltk, applications/sofa/gui/fltk,           sofaguiqt fltk)
 
 declare(runSofa,     applications/projects/runSofa, sofaguimain)
-
-######################################################################
-# Plugins
-######################################################################
-
-declare(PluginExample, applications/plugins/PluginExample, sofaguiqt)
-declare(TriangularMeshRefiner, applications/plugins/TriangularMeshRefiner, sofacomponentcollision)
-declare(sofaframe, applications/plugins/frame, sofacomponentprojectiveconstraintset sofacomponentvisualmodel)
+}
