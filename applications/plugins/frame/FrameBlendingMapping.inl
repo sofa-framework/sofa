@@ -1239,6 +1239,7 @@ void FrameBlendingMapping<TIn, TOut>::updateMapping(const bool& computeWeights)
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Update_Mapping");
 #endif
+    if (!gridMaterial) return;
 
     if (this->isPhysical || computeWeights)
     {
@@ -1312,7 +1313,7 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
     if (this->mappingHasChanged) this->mappingHasChanged = false;
     ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
-    bool dofRemoved = false;
+    bool dofModified = false;
     if (this->isPhysical)
     {
         //* // Remove after a given time
@@ -1321,7 +1322,7 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
             if (this->getContext()->getTime() > this->frameLife[i])
             {
                 removeFrame (i);
-                dofRemoved = true;
+                dofModified = true;
             }
             else ++i;
         }
@@ -1354,7 +1355,7 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
             if (allElastonsNearRestState)
             {
                 removeFrame (i);
-                dofRemoved = true;
+                dofModified = true;
             }
             else ++i;
         }
@@ -1366,11 +1367,11 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
     // Mapping has to be updated
     if ( (in.size() != targetFrameNumber.getValue()) || // In DOFs have changed
             (gridMaterial && gridMaterial->voxelsHaveChanged.getValue()) || // Voxels have changed
-            (dofRemoved))
+            (dofModified))
     {
         targetFrameNumber.setValue(in.size());
         this->mappingHasChanged = true;
-        updateMapping (dofRemoved);
+        updateMapping (dofModified);
     }
 }
 
