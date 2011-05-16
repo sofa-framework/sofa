@@ -116,6 +116,12 @@ public:
             sofa::core::CollisionModel *model2, unsigned int idx2, const Vector3& secondPoint,
             int snapingValue = 0, int snapingBorderValue = 0);
 
+    /** Sets incision starting parameter - incision is just started or already in course
+     *
+     * @param isFirstCut - true if the next incision event will be the first of a new incision
+     */
+    void setIncisionFirstCut(bool isFirstCut);
+
 protected:
 
 private:
