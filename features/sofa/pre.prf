@@ -612,19 +612,6 @@ defineTest(include-declarations) {
 	else : error(include-declarations: cannot find $$name (dir: $$directory))
 }
 
-defineTest(defineAsPlugin) {
-	PLUGIN_NAME = $$1
-	TEMPLATE = lib
-	include-declarations($${PLUGIN_NAME}-dependencies, $$PLUGINS_PATH/$$PLUGIN_NAME)
-	export(TEMPLATE)
-	export(PLUGIN_NAME)
-}
-
-defineTest(usePlugin) {
-	pluginName = $$1
-	include-declarations($${pluginName}-dependencies, $$PLUGINS_PATH/$$pluginName)
-}
-
 ##
 # This function returns the list of dependencies (including transitive ones) for
 # the specified artifact.
@@ -702,7 +689,7 @@ defineTest(buildEnabledArtifacts) {
 			clear(tdeps)
 			tdeps = $$computeTransitiveDependencies($$artifact)
 
-			#message(enabling $$name with the following dependencies:)
+			#message(enabling $$artifact with the following dependencies:)
 			for(dep, tdeps) {
 				equals($${dep}.enabled, true) {
 					#message($$escape_expand(\\t)$$dep)
@@ -751,6 +738,49 @@ defineTest(loadDependencies) {
 			}
 		}
 	}
+}
+
+##
+# This function should be used in dependency files to declare that the current
+# artifact depends on the specified list of plugins
+#
+defineTest(dependOnPlugins) {
+	pluginDependencies = $$1
+	export(pluginDependencies)
+}
+
+##
+# This function imports all the declarations necessary to use or build the specified plugin.
+#
+defineTest(usePlugin) {
+	queue = $$1
+	for(depth, 1..100) {
+		isEmpty(queue): break()
+
+		for(plugin, queue) {
+			!contains(analysed, $$plugin) {
+				include-declarations($${plugin}-dependencies, $$PLUGINS_PATH/$$plugin)
+				newqueue *= $$pluginDependencies
+				clear(pluginDependencies)
+				analysed *= plugin
+			}
+		}
+		queue = $$newqueue
+		clear(newqueue)
+	}
+	export(pluginDependencies)
+}
+
+##
+# This function configures the current project file to build an artifact belonging
+# to the specified plugin.
+#
+defineTest(defineAsPlugin) {
+	PLUGIN_NAME = $$1
+	TEMPLATE = lib
+	usePlugin($$PLUGIN_NAME)
+	export(TEMPLATE)
+	export(PLUGIN_NAME)
 }
 
 ########################################################################
