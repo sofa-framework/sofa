@@ -78,7 +78,7 @@ public:
     virtual void store(int /*line*/, double* /*force*/, bool /*convergence*/) {}
 
     /// Number of dof used by this particular constraint. To be modified in the object's constructor.
-    unsigned char nbLines;
+    unsigned int nbLines;
 
     /// Custom tolerance, used for the convergence of this particular constraint instead of the global tolerance
     double tolerance;
