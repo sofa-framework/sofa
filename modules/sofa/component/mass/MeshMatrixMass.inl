@@ -35,6 +35,9 @@
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
 
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+#include <sofa/core/behavior/InertiaForce.h>
+#endif
 
 namespace sofa
 {

@@ -213,3 +213,8 @@ SOURCES +=  \
           collision/ParallelPipeline.cpp\
           objectmodel/BaseObjectTasks.cpp 
 }
+
+contains(DEFINES, SOFA_SUPPORT_MOVING_FRAMES){
+HEADERS += \
+		behavior/InertiaForce.h \
+}

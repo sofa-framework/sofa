@@ -193,21 +193,7 @@ protected:
 };
 
 
-/** Return the inertia force applied to a body referenced in a moving coordinate system.
- *  \param sv spatial velocity (omega, vorigin) of the coordinate system
- *  \param a acceleration of the origin of the coordinate system
- *  \param m mass of the body
- *  \param x position of the body in the moving coordinate system
- *  \param v velocity of the body in the moving coordinate system
- *         This default implementation returns no inertia.
- */
-template<class Coord, class Deriv, class Vec, class M, class SV>
-Deriv inertiaForce( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const Coord& /*x*/, const Deriv& /*v*/ )
-{
-    return Deriv();
-    //const Deriv& omega=sv.getAngularVelocity();
-    //return -( a + omega.cross( omega.cross(x) + v*2 ))*m;
-}
+
 
 #if defined(WIN32) && !defined(SOFA_BUILD_CORE)
 extern template class SOFA_CORE_API Mass<defaulttype::Vec3dTypes>;

@@ -39,6 +39,9 @@
 #include <iostream>
 #include <string.h>
 
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+#include <sofa/core/behavior/InertiaForce.h>
+#endif
 
 
 

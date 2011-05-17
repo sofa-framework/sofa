@@ -42,9 +42,7 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
+
 
 /**
  * This class returns the values given a list of indices.

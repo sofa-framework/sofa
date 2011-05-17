@@ -30,10 +30,6 @@
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
-
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/behavior/Mass.h>
-
 #include <sofa/helper/vector.h>
 #include <iostream>
 
@@ -409,44 +405,6 @@ struct DataTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Coord > : publi
 };
 
 } // namespace defaulttype
-
-
-//================================================================================================================
-// This is probably useless because the RigidObject actually contains its mass and computes its inertia forces itself:
-//================================================================================================================
-
-namespace core
-{
-namespace behavior
-{
-/// Specialization of the inertia force for defaulttype::RigidTypes
-template <>
-inline defaulttype::LaparoscopicRigid3Types::Deriv inertiaForce<
-defaulttype::LaparoscopicRigid3Types::Coord,
-            defaulttype::LaparoscopicRigid3Types::Deriv,
-            defaulttype::Vector3,
-            defaulttype::Rigid3Mass,
-            objectmodel::BaseContext::SpatialVector
-            >
-            (
-                    const objectmodel::BaseContext::SpatialVector& vframe,
-                    const defaulttype::Vector3& aframe,
-                    const defaulttype::Rigid3Mass& mass,
-                    const defaulttype::LaparoscopicRigid3Types::Coord& x,
-                    const defaulttype::LaparoscopicRigid3Types::Deriv& v )
-{
-    defaulttype::Vector3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    defaulttype::Vector3 origin, finertia, zero(0,0,0);
-    origin[0] = x.getTranslation();
-
-    finertia = -( aframe + omega.cross( omega.cross(origin) + defaulttype::Vector3(v.getVTranslation()*2,0,0) ))*mass.mass;
-    return defaulttype::LaparoscopicRigid3Types::Deriv( finertia[0], zero );
-    /// \todo replace zero by Jomega.cross(omega)
-}
-
-} // namespace behavoir
-
-} // namespace core
 
 } // namespace sofa
 

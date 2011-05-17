@@ -42,10 +42,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * This class returns the indices given a list of values.
  */
@@ -71,9 +67,9 @@ public:
 
     void update();
 
-    Data<VecValue> f_values;
-    Data<VecValue> f_global;
-    Data<VecIndex> f_indices;
+    core::objectmodel::Data<VecValue> f_values;
+    core::objectmodel::Data<VecValue> f_global;
+    core::objectmodel::Data<VecIndex> f_indices;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
