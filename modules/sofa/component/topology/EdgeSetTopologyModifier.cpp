@@ -59,7 +59,6 @@ int EdgeSetTopologyModifierClass = core::RegisterObject("Edge set topology modif
 
 using namespace std;
 using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
 
 void EdgeSetTopologyModifier::init()
 {

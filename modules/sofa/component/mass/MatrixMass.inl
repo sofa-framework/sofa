@@ -30,6 +30,10 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+#include <sofa/core/behavior/InertiaForce.h>
+#endif
+
 #include <sofa/helper/gl/template.h>
 
 namespace sofa

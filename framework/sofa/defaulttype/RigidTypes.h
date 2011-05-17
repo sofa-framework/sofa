@@ -31,7 +31,6 @@
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>
@@ -1561,78 +1560,7 @@ template<> struct DataTypeName< defaulttype::Rigid3dMass > { static const char* 
 
 /// \endcond
 
-
-} // namespace defaulttype
-
-namespace core
-{
-namespace behavior
-{
-
-/** Return the inertia force applied to a body referenced in a moving coordinate system.
-\param sv spatial velocity (omega, vorigin) of the coordinate system
-\param a acceleration of the origin of the coordinate system
-\param m mass of the body
-\param x position of the body in the moving coordinate system
-\param v velocity of the body in the moving coordinate system
-This default implementation returns no inertia.
-*/
-template<class Coord, class Deriv, class Vec, class M, class SV>
-Deriv inertiaForce( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const Coord& /*x*/, const Deriv& /*v*/ );
-
-/// Specialization of the inertia force for defaulttype::Rigid3dTypes
-template <>
-inline defaulttype::RigidDeriv<3, double> inertiaForce<
-defaulttype::RigidCoord<3, double>,
-            defaulttype::RigidDeriv<3, double>,
-            objectmodel::BaseContext::Vec3,
-            defaulttype::RigidMass<3, double>,
-            objectmodel::BaseContext::SpatialVector
-            >
-            (
-                    const objectmodel::BaseContext::SpatialVector& vframe,
-                    const objectmodel::BaseContext::Vec3& aframe,
-                    const defaulttype::RigidMass<3, double>& mass,
-                    const defaulttype::RigidCoord<3, double>& x,
-                    const defaulttype::RigidDeriv<3, double>& v
-            )
-{
-    defaulttype::RigidDeriv<3, double>::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    defaulttype::RigidDeriv<3, double>::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
-
-    finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
-    return defaulttype::RigidDeriv<3, double>( finertia, zero );
-    /// \todo replace zero by Jomega.cross(omega)
 }
-
-/// Specialization of the inertia force for defaulttype::Rigid3fTypes
-template <>
-inline defaulttype::RigidDeriv<3, float> inertiaForce<
-defaulttype::RigidCoord<3, float>,
-            defaulttype::RigidDeriv<3, float>,
-            objectmodel::BaseContext::Vec3,
-            defaulttype::RigidMass<3, float>,
-            objectmodel::BaseContext::SpatialVector
-            >
-            (
-                    const objectmodel::BaseContext::SpatialVector& vframe,
-                    const objectmodel::BaseContext::Vec3& aframe,
-                    const defaulttype::RigidMass<3, float>& mass,
-                    const defaulttype::RigidCoord<3, float>& x,
-                    const defaulttype::RigidDeriv<3, float>& v
-            )
-{
-    defaulttype::RigidDeriv<3, float>::Vec3 omega( (float)vframe.lineVec[0], (float)vframe.lineVec[1], (float)vframe.lineVec[2] );
-    defaulttype::RigidDeriv<3, float>::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
-
-    finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
-    return defaulttype::RigidDeriv<3, float>( finertia, zero );
-    /// \todo replace zero by Jomega.cross(omega)
-}
-
-} // namespace behavoir
-
-} // namespace core
 
 } // namespace sofa
 

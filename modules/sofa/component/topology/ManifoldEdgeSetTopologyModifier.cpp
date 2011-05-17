@@ -45,7 +45,7 @@ int ManifoldEdgeSetTopologyModifierClass = core::RegisterObject("ManifoldEdge se
 
 using namespace std;
 using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
+
 
 void ManifoldEdgeSetTopologyModifier::init()
 {

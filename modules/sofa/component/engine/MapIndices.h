@@ -42,10 +42,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * This class apply a permutation to a set of indices
  */
@@ -70,11 +66,11 @@ public:
 
     void update();
 
-    Data<VecValue> f_in;
-    Data<VecIndex> f_indices;
-    Data<VecValue> f_out;
-    Data<std::string> f_outStr;
-    Data<bool> f_transpose;
+    core::objectmodel::Data<VecValue> f_in;
+    core::objectmodel::Data<VecIndex> f_indices;
+    core::objectmodel::Data<VecValue> f_out;
+    core::objectmodel::Data<std::string> f_outStr;
+    core::objectmodel::Data<bool> f_transpose;
 
     template<class V>
     void applyIndex(V& v, const MapIndex& m)
