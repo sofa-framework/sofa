@@ -131,10 +131,12 @@ public:
     vector<unsigned int> addedFrameIndices;
     vector<unsigned int> frameLife; // Test of removing frame
     Data<double> newFrameMinDist;
+    Data<double> adaptativeCriteria;
 
     BaseFrameBlendingMapping ()
         : mappingHasChanged(false)
         , newFrameMinDist(initData ( &newFrameMinDist, std::numeric_limits<double>::max(), "newFrameMinDist","Minimal distance between inserted frames." ))
+        , adaptativeCriteria(initData ( &adaptativeCriteria, 0.15, "adaptativeCriteria","Citeria to insert and remove frames." ))
     {
     }
 

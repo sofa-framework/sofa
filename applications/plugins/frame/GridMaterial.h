@@ -261,6 +261,7 @@ public:
     inline void getWeights( VRefReal& weights, const unsigned int& index) { weights = v_weights[index];};
     inline void getIndices( VRef& indices, const unsigned int& index) { indices = v_index[index];};
     inline Real getDistance( const unsigned int& index) {return distances[index];};
+    inline double getVolumeForVoronoi( const unsigned int index) const { unsigned int nbV = 0; for (unsigned int i = 0; i < nbVoxels; ++i) if (voronoi[i] == (int)index) nbV++; return nbV * voxelSize.getValue()[0] * voxelSize.getValue()[1] * voxelSize.getValue()[2];};
 
 protected:
     int showedrepartition; // to improve visualization (no need to paste weights on each draw)

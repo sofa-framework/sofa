@@ -1316,6 +1316,20 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
     bool dofModified = false;
     if (this->isPhysical)
     {
+        // Insert a frame depending on the gradient of the deformation tensor.
+        ReadAccessor<Data<VecOutCoord> > out  = *this->toModel->read(core::ConstVecCoordId::position());
+        for (unsigned int i = 0; i < out.size(); ++i)
+        {
+            double criteria = 0;
+            for (unsigned int k = num_spatial_dimensions+9; k < OutCoord::total_size; ++k) // Check if the second order terms are < epsilon
+                criteria += out[i][k] * out[i][k];
+            criteria = sqrt( criteria) * pow (gridMaterial->getVolumeForVoronoi(i), 1/3.0);
+
+            serr << "inserting criteria[" << i << "]: " << criteria << sendl;
+
+            if (criteria > this->adaptativeCriteria.getValue()) insertFrame( center(out[i]));
+        }
+
         //* // Remove after a given time
         for (unsigned int i = 0; i < this->frameLife.size();)
         {
@@ -1327,32 +1341,34 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
             else ++i;
         }
 
-        /*/ // Remove a frame if all the elastons are near rest state
-        double epsilon = 0.05;
+        /*/
+        // Remove a frame depending on the gradient of the deformation tensor.
         ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > > index ( f_index );
         ReadAccessor<Data<vector<Vec<nbRef,InReal> > > > m_weights ( weight );
-        ReadAccessor<Data<VecOutCoord> > out  = *this->toModel->read(core::ConstVecCoordId::restPosition());
         for (unsigned int i = 0; i < this->addedFrameIndices.size();)
         {
             // Check all the elastons mapped by this frame.
-            bool allElastonsNearRestState = true;
+            double criteria = 0;
+            unsigned int nbElastons = 0;
             for (unsigned int j = 0; j < index.size(); ++j)
             {
                 for (unsigned int ref = 0; ref < nbRef; ++ref)
                 {
                     if ( index[j][ref] == this->addedFrameIndices[i] && m_weights[j][ref] != 0) // If this elaston is mapped by the frame
                     {
+                        double elastonCriteria = 0;
                         for (unsigned int k = num_spatial_dimensions+9; k < OutCoord::total_size; ++k) // Check if the second order terms are < epsilon
-                        {
-                            if (fabs(out[j][k]) > epsilon)
-                            {
-                                allElastonsNearRestState = false;
-                            }
-                        }
+                            elastonCriteria += out[i][k] * out[i][k];
+                        criteria += sqrt( elastonCriteria) * pow (gridMaterial->getVolumeForVoronoi(j), 1/3.0);
+                        nbElastons++;
                     }
                 }
             }
-            if (allElastonsNearRestState)
+            criteria /= nbElastons;
+
+            serr << "removal criteria[" << i << "]: " << criteria << sendl;
+
+            if (criteria < this->adaptativeCriteria.getValue())
             {
                 removeFrame (i);
                 dofModified = true;
