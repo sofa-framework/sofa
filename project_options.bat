@@ -4,6 +4,10 @@ REM Visual C++ 2003 or 2005
 REM use : project [VC7 / VC8 / vc9 / clean] [id# project]
 REM default visual project depends on the environment variable QMAKESPEC 
 
+@if not "%SOFA_DIR%" == "" goto qmakepath
+set SOFA_DIR=%CD%
+
+:qmakepath
 @if not "%QMAKEPATH%" == ""  goto subproject
 set QMAKEPATH=%CD%\tools\qt4win
 set QTDIR=%CD%\tools\qt4win
@@ -79,7 +83,7 @@ if %choix%==25 	set mode=gui&			set proj=Sofa.sln&	cd applications\sofa\gui
 if %choix%==26 	set mode=simulation&	set proj=Sofa.sln&	cd modules\sofa\simulation
 if %choix%==27 	set mode=gpu&			set proj=Sofa.sln&	cd modules\sofa\gpu
 if %choix%==28 	set mode=core&			set proj=sofacore.vcproj&	cd framework\sofa\core
-if %choix%==29 	set mode=defaulttype&	set proj=sofadefaulttype.vcproj.sln&	cd framework\sofa\defaulttype
+if %choix%==29 	set mode=defaulttype&	set proj=sofadefaulttype.vcproj&	cd framework\sofa\defaulttype
 if %choix%==30 	set mode=helper&		set proj=sofahelper.vcproj&	cd framework\sofa\helper
 echo you chose %mode%
 goto params
@@ -145,3 +149,4 @@ for /R %%i in (*.dsp, *.vcproj, *.vcproj.*) do del "%%i"
 cd ..
 
 :end
+@cd %SOFA_DIR%
