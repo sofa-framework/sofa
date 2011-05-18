@@ -140,6 +140,7 @@ private:
     FData* frameData; // Storage and computation of the mass blocks
 
     void updateMass();
+    void rotateMass();
     void computeRelRot (Mat33& relRot, const Quat& q, const Quat& q0);
     void rotateM( MatInxIn& M, const MatInxIn& M0, const Mat33& R);
     void QtoR( Mat33& M, const sofa::helper::Quater<Real>& q);

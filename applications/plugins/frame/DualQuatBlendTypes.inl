@@ -70,6 +70,7 @@ struct DualQuatBlendTypes<
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
+    bool avoidWarning; // TODO no attribute leads to gcc warnings. Remove this one when the class will be implemented.
 
     void init( const OutCoord& /*InitialPos*/, const Vec<nbRef,unsigned int>& /*Index*/, const VecInCoord& /*InitialTransform*/, const Vec<nbRef,Real>& /*w*/, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
@@ -138,6 +139,8 @@ struct DualQuatBlendTypes<
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
+    bool avoidWarning; // TODO no attribute leads to gcc warnings. Remove this one when the class will be implemented.
+
     void init( const OutCoord& /*InitialPos*/, const Vec<nbRef,unsigned int>& /*Index*/, const VecInCoord& /*InitialTransform*/, const Vec<nbRef,Real>& /*w*/, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
     }
@@ -205,6 +208,8 @@ struct DualQuatBlendTypes<
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
     typedef helper::Quater<OutReal> Quat;
 
+    bool avoidWarning; // TODO no attribute leads to gcc warnings. Remove this one when the class will be implemented.
+
     void init( const OutCoord& /*InitialPos*/, const Vec<nbRef,unsigned int>& /*Index*/, const VecInCoord& /*InitialTransform*/, const Vec<nbRef,Real>& /*w*/, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
     }
@@ -271,6 +276,9 @@ struct DualQuatBlendTypes<
     typedef typename In::VecDeriv VecInDeriv;
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
+
+    bool avoidWarning; // TODO no attribute leads to gcc warnings. Remove this one when the class will be implemented.
+
     void init( const OutCoord& /*InitialPos*/, const Vec<nbRef,unsigned int>& /*Index*/, const VecInCoord& /*InitialTransform*/, const Vec<nbRef,Real>& /*w*/, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
     }
@@ -339,6 +347,8 @@ struct DualQuatBlendTypes<
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
+    bool avoidWarning; // TODO no attribute leads to gcc warnings. Remove this one when the class will be implemented.
+
     void init( const OutCoord& /*InitialPos*/, const Vec<nbRef,unsigned int>& /*Index*/, const VecInCoord& /*InitialTransform*/, const Vec<nbRef,Real>& /*w*/, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
     }
@@ -405,6 +415,9 @@ struct DualQuatBlendTypes<
     typedef typename In::VecDeriv VecInDeriv;
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
+
+    bool avoidWarning; // TODO no attribute leads to gcc warnings. Remove this one when the class will be implemented.
+
     void init( const OutCoord& /*InitialPos*/, const Vec<nbRef,unsigned int>& /*Index*/, const VecInCoord& /*InitialTransform*/, const Vec<nbRef,Real>& /*w*/, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
     }
@@ -472,6 +485,9 @@ struct DualQuatBlendTypes<
     typedef Mat<In::spatial_dimensions*In::spatial_dimensions,3,Real> QuadraticMat; // mat 9x3
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
+
+    bool avoidWarning; // TODO no attribute leads to gcc warnings. Remove this one when the class will be implemented.
+
     void init( const OutCoord& /*InitialPos*/, const Vec<nbRef,unsigned int>& /*Index*/, const VecInCoord& /*InitialTransform*/, const Vec<nbRef,Real>& /*w*/, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
     }
@@ -538,6 +554,9 @@ struct DualQuatBlendTypes<
     typedef Mat<9,3,Real> MaterialFrame2;
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
+
+    bool avoidWarning; // TODO no attribute leads to gcc warnings. Remove this one when the class will be implemented.
+
     void init( const OutCoord& /*InitialPos*/, const Vec<nbRef,unsigned int>& /*Index*/, const VecInCoord& /*InitialTransform*/, const Vec<nbRef,Real>& /*w*/, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
     }
@@ -608,6 +627,9 @@ struct DualQuatBlendTypes<
     typedef typename In::VecDeriv VecInDeriv;
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
+
+    bool avoidWarning; // TODO no attribute leads to gcc warnings. Remove this one when the class will be implemented.
+
     void init( const OutCoord& /*InitialPos*/, const Vec<nbRef,unsigned int>& /*Index*/, const VecInCoord& /*InitialTransform*/, const Vec<nbRef,Real>& /*w*/, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
     }
@@ -671,6 +693,9 @@ struct DualQuatBlendTypes<
     typedef Mat<In::spatial_dimensions*In::spatial_dimensions,3,Real> QuadraticMat; // mat 9x3
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
+
+    bool avoidWarning; // TODO no attribute leads to gcc warnings. Remove this one when the class will be implemented.
+
     void init( const OutCoord& /*InitialPos*/, const Vec<nbRef,unsigned int>& /*Index*/, const VecInCoord& /*InitialTransform*/, const Vec<nbRef,Real>& /*w*/, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
     }

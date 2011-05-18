@@ -61,9 +61,9 @@ template class SOFA_FRAME_API FrameDiagonalMass<Rigid3dTypes,Frame3x6dMass>;
 template class SOFA_FRAME_API FrameDiagonalMass<Rigid3fTypes,Frame3x6fMass>;
 #endif
 
-template<> void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::updateMass() {}
+template<> void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::rotateMass() {}
 
-template<> void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::updateMass() {}
+template<> void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::rotateMass() {}
 
 #ifndef SOFA_FLOAT
 template class SOFA_FRAME_API FrameDiagonalMass<Affine3dTypes,Frame3x12dMass>;
@@ -72,9 +72,9 @@ template class SOFA_FRAME_API FrameDiagonalMass<Affine3dTypes,Frame3x12dMass>;
 template class SOFA_FRAME_API FrameDiagonalMass<Affine3fTypes,Frame3x12fMass>;
 #endif
 
-template<> void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::updateMass() {}
+template<> void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::rotateMass() {}
 
-template<> void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::updateMass() {}
+template<> void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::rotateMass() {}
 
 #ifndef SOFA_FLOAT
 template class SOFA_FRAME_API FrameDiagonalMass<Quadratic3dTypes,Frame3x30dMass>;

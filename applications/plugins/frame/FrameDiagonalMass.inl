@@ -97,12 +97,21 @@ void FrameDiagonalMass<DataTypes, MassType>::resize ( int vsize )
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addMDx ( VecDeriv& res, const VecDeriv& dx, double factor )
 {
+    const VecCoord& xfrom = *this->mstate->getX();
+    const MassVector& vecMass0 = f_mass0.getValue();
+    if ( vecMass0.size() != xfrom.size() || frameData->mappingHasChanged) // TODO remove the first condition when mappingHasChanged will be generalized
+        updateMass();
+
+    VecDeriv resCpy = res;
+
     const MassVector& masses = f_mass.getValue();
     if ( factor == 1.0 )
     {
         for ( unsigned int i=0; i<dx.size(); i++ )
         {
             res[i] += dx[i] * masses[i];
+            if( this->f_printLog.getValue() )
+                serr<<"FrameDiagonalMass<DataTypes, MassType>::addMDx, res = " << res[i] << sendl;
         }
     }
     else
@@ -110,6 +119,8 @@ void FrameDiagonalMass<DataTypes, MassType>::addMDx ( VecDeriv& res, const VecDe
         for ( unsigned int i=0; i<dx.size(); i++ )
         {
             res[i] += ( dx[i]* masses[i] ) * ( Real ) factor; // damping.getValue() * invSqrDT;
+            if( this->f_printLog.getValue() )
+                serr<<"FrameDiagonalMass<DataTypes, MassType>::addMDx, res = " << res[i] << sendl;
         }
     }
 }
@@ -203,13 +214,7 @@ void FrameDiagonalMass<DataTypes, MassType>::init()
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::reinit()
 {
-    const unsigned int& fromSize = this->mstate->getX()->size();
-    this->resize ( fromSize );
-    MassVector& mass0 = *f_mass0.beginEdit();
-    MassVector& mass  = *f_mass .beginEdit();
-    frameData->LumpMassesToFrames(mass0, mass);
-    f_mass0.endEdit();
-    f_mass .endEdit();
+    updateMass();
     Inherited::reinit();
 }
 
@@ -238,13 +243,7 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
         return;
     }
 
-    const unsigned int& fromSize = this->mstate->getX()->size();
-    this->resize ( fromSize );
-    MassVector& mass0 = *f_mass0.beginEdit();
-    MassVector& mass  = *f_mass .beginEdit();
-    frameData->LumpMassesToFrames(mass0, mass);
-    f_mass0.endEdit();
-    f_mass .endEdit();
+    updateMass();
 }
 
 template <class DataTypes, class MassType>
@@ -270,25 +269,13 @@ void FrameDiagonalMass<DataTypes, MassType>::addGravityToV (const core::Mechanic
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& v )
 {
-    const unsigned int& fromSize = this->mstate->getX()->size();
     const VecCoord& xfrom = *this->mstate->getX();
     const MassVector& vecMass0 = f_mass0.getValue();
     const MassVector& vecMass = f_mass.getValue();
-    if ( vecMass0.size() != xfrom.size() || frameData->mappingHasChanged) // TODO remove the first condition when mappingHasChanged will be generalized
-    {
-        serr << "recompute mass matrix" << sendl;
+    if ( vecMass0.size() != xfrom.size() || frameData->mappingHasChanged)
+        updateMass();
 
-        // ReCompute the blocks
-        this->resize ( fromSize );
-        MassVector& mass0 = *f_mass0.beginEdit();
-        MassVector& mass  = *f_mass .beginEdit();
-        frameData->LumpMassesToFrames(mass0, mass);
-        f_mass0.endEdit();
-        f_mass .endEdit();
-    }
-
-
-    updateMass();
+    rotateMass();
 
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if ( this->m_separateGravity.getValue() )
@@ -314,14 +301,16 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
         Deriv fDamping = - (vecMass[i] * v[i] * damping.getValue() * invDt);
         f[i] += theGravity*vecMass[i] + fDamping; //  + core::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
     }
-    /*
-    std::cerr << "Masse: " << std::endl;
-    for(unsigned int i = 0; i < masses.size(); ++i)
-    std::cerr << i << ": " << masses[i].inertiaMatrix << std::endl;
-    std::cerr << "Force_Masse: " << std::endl;
-    for(unsigned int i = 0; i < masses.size(); ++i)
-    std::cerr << i << ": " << f[i] << std::endl;
-    */
+    if( this->f_printLog.getValue() )
+    {
+        serr << "FrameDiagonalMass<DataTypes, MassType>::addForce" << sendl;
+        serr << "Masse:" << sendl;
+        for(unsigned int i = 0; i < vecMass.size(); ++i)
+            serr << i << ": " << vecMass[i].inertiaMatrix << sendl;
+        serr << "Force_Masse: " << sendl;
+        for(unsigned int i = 0; i < f.size(); ++i)
+            serr << i << ": " << f[i] << sendl;
+    }
 }
 
 template <class DataTypes, class MassType>
@@ -369,6 +358,20 @@ bool FrameDiagonalMass<DataTypes, MassType>::load ( const char *filename )
 
 template<class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::updateMass()
+{
+    // ReCompute the blocks
+    const unsigned int& fromSize = this->mstate->getX()->size();
+    this->resize ( fromSize );
+    MassVector& mass0 = *f_mass0.beginEdit();
+    MassVector& mass  = *f_mass .beginEdit();
+    frameData->LumpMassesToFrames(mass0, mass);
+    f_mass0.endEdit();
+    f_mass .endEdit();
+}
+
+
+template<class DataTypes, class MassType>
+void FrameDiagonalMass<DataTypes, MassType>::rotateMass()
 {
     const VecCoord& xfrom0 = *this->mstate->getX0();
     const VecCoord& xfrom = *this->mstate->getX();
