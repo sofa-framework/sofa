@@ -5,7 +5,8 @@
 	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
 	<DefaultContactManager name="Response"  response="default" />
 	<TreeCollisionGroupManager name="Group" />
-	<MeshSTEPLoader name="loader"  filename="c:/sofa/applications/plugins/singlecomponent/example/product.stp"  deflection="0.1"  debug="0"  keepDuplicate="1" />
+	<MeshSTEPLoader name="loader"  filename="Product.stp"  deflection="0.1"  debug="0"  keepDuplicate="1" />
+	
 	<Node 	name="obj1" gravity="0 -9.81 0" dt="0.01" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 		<SingleComponent template="int" name="comp1"  printLog="0"  positionsI="@../loader.position"  trianglesI="@../loader.triangles"  normalsI="@../loader.normals"  uvI="@../loader.uv"  indicesComponents="@../loader.indicesComponents"  numberShape="0" />
 		<OglModel template="ExtVec3f" name="vis"  useNormals="@comp1.normalsO"  position="@comp1.positionsO"  triangles="@comp1.trianglesO"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45" />
