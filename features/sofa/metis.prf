@@ -1,3 +1,0 @@
-contains(DEFINES, SOFA_HAVE_METIS) {
-	LIBS *= -lmetis
-}

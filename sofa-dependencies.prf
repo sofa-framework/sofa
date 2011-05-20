@@ -1,13 +1,16 @@
 includeOnce($$_FILE_) {
 
+declare(boost,  boost.prf)
+declare(cilk,   cilk.prf)
+declare(cuda,   cuda.prf)
+declare(fltk,   fltk.prf)
 declare(glut,   glut.prf)
 declare(glew,   glew.prf)
-declare(boost,  boost.prf)
-declare(fltk,   fltk.prf)
 declare(libpng, libpng.prf)
 declare(libxml, libxml.prf)
-declare(metis,  metis.prf)
 declare(zlib,   zlib.prf)
+declare(system-metis,  system-metis.prf)
+declare(system-taucs,  system-taucs.prf)
 
 ######################################################################
 # Extlibs
@@ -19,6 +22,11 @@ declare(eigen,      extlibs/eigen-3.0-beta4/eigen.pro)
 declare(qwt,        extlibs/qwt-5.2.0/src)
 declare(QGLViewer,  extlibs/libQGLViewer-2.3.3/QGLViewer)
 declare(miniFlowVR, extlibs/miniFlowVR, boost)
+declare(csparse,    extlibs/csparse)
+declare(cudpp,      extlibs/cudpp, cuda)
+declare(metis,      extlibs/metis)
+declare(taucs,      extlibs/taucs, cilk metis system-metis)
+declare(taucs_mt,   extlibs/taucs_mt, metis system-metis)
 
 ######################################################################
 # Framework
@@ -50,7 +58,7 @@ declare(sofacomponentodesolver,     modules/sofa/component/odesolver,     sofatr
 declare(sofacomponentvisualmodel,   modules/sofa/component/visualmodel,   sofacomponentbase)
 
 declare(sofacomponentconstraintset, modules/sofa/component/constraintset, sofacomponentlinearsolver sofacomponentmass)
-declare(sofacomponentlinearsolver,  modules/sofa/component/linearsolver,  sofacomponentodesolver sofacomponentforcefield)
+declare(sofacomponentlinearsolver,  modules/sofa/component/linearsolver,  sofacomponentodesolver sofacomponentforcefield taucs taucs_mt system-taucs csparse)
 
 declare(sofacomponentinteractionforcefield,    modules/sofa/component/interactionforcefield,   sofacomponentforcefield)
 declare(sofacomponentprojectiveconstraintset,  modules/sofa/component/projectiveconstraintset, sofacomponentlinearsolver sofacomponentmass)
@@ -71,15 +79,108 @@ declare(sofacomponentconfigurationsetting, modules/sofa/component/configurations
 declare(sofacomponent, modules/sofa/component/libcomponent.pro, \
   sofacomponentconfigurationsetting sofacomponentloader sofacomponentengine)
 
+declare(sofagpucuda, modules/sofa/gpu/cuda, sofacomponentbase eigen cuda csparse cudpp taucs taucs_mt system-taucs)
+
 ######################################################################
 # Applications
 ######################################################################
 
 declare(sofagui,     applications/sofa/gui/libgui.pro,     sofacomponentconfigurationsetting)
 declare(sofaguiqt,   applications/sofa/gui/qt,             sofagui qwt QGLViewer)
-declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut sofacomponent)
+declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut sofacomponent sofagpucuda)
 declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
 declare(sofaguifltk, applications/sofa/gui/fltk,           sofaguiqt fltk)
 
 declare(runSofa,     applications/projects/runSofa, sofaguimain)
+
+
+
+######################################################################
+# Enable artifacts
+######################################################################
+
+contains(DEFINES, SOFA_DEV) {
+	enable(sofabgl)
+	
+	contains(DEFINES, SOFA_EXTLIBS_METIS) {
+		enable(metis)
+	}
+	contains(DEFINES, SOFA_EXTLIBS_TAUCS) {
+		enable(taucs)
+	}
+	contains(DEFINES, SOFA_EXTLIBS_TAUCS_MT) {
+		enable(taucs_mt)
+	}
+}
+
+contains(DEFINES, SOFA_HAVE_CSPARSE) {
+	enable(csparse)
+}
+!contains(DEFINES, SOFA_HAVE_FLOWVR) {
+	enable(miniFlowVR)
+}
+contains(DEFINES, SOFA_GUI_QGLVIEWER) {
+	enable(QGLViewer)
+}
+
+enable(newmat)
+enable(tinyxml)
+enable(eigen)
+enable(qwt)
+
+enable(sofahelper)
+enable(sofadefaulttype)
+enable(sofacore)
+
+enable(sofasimulation)
+enable(sofatree)
+
+enable(sofacomponent)
+enable(sofacomponentbase)
+enable(sofacomponentbehaviormodel)
+enable(sofacomponentcollision)
+enable(sofacomponentconfigurationsetting)
+enable(sofacomponentconstraintset)
+enable(sofacomponentcontextobject)
+enable(sofacomponentcontroller)
+enable(sofacomponentengine)
+enable(sofacomponentfem)
+enable(sofacomponentforcefield)
+enable(sofacomponentinteractionforcefield)
+enable(sofacomponentlinearsolver)
+enable(sofacomponentloader)
+enable(sofacomponentmapping)
+enable(sofacomponentmass)
+enable(sofacomponentmastersolver)
+enable(sofacomponentmisc)
+enable(sofacomponentodesolver)
+enable(sofacomponentprojectiveconstraintset)
+enable(sofacomponentvisualmodel)
+
+enable(sofagui)
+enable(sofaguiqt)
+enable(sofaguimain)
+
+enable(runSofa)
+
+contains (DEFINES, SOFA_GUI_GLUT) {
+	enable(sofaguiglut)
+}
+
+contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
+	contains (DEFINES, SOFA_GUI_FLTK) {
+		enable(sofaguifltk)
+	}
+	contains(DEFINES, SOFA_GPU_CUDA) {
+		contains(DEFINES, SOFA_GPU_CUDPP) {
+			enable(cudpp)
+		}
+		enable(sofagpucuda)
+	}
+} # END SOFA_DEV
+
+contains (DEFINES, SOFA_PML) {
+	enable(sofapml)
+}
+
 }
