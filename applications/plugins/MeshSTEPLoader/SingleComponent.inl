@@ -58,6 +58,9 @@ SingleComponent<DataTypes>::SingleComponent()
     , _indicesComponents(initData(&_indicesComponents, "indicesComponents", "Shape # | number of nodes | number of triangles"))
     , _numberShape(initData(&_numberShape, "numberShape", "Shape number to be loaded (see Outputs tab of STEPLoader for a description of the shapes)"))
 {
+    addAlias(&_positionsO,"position");
+    addAlias(&_trianglesO,"triangles");
+    addAlias(&_normalsO,"normals");
 }
 
 template <class DataTypes>
