@@ -489,8 +489,17 @@ int TriangleOctree::trace (Vector3 origin, Vector3 direction,traceResult &result
 }
 
 
+void TriangleOctree::allTriangles (const Vector3 & /*origin*/,
+        const Vector3 & /*direction*/,
+        std::set<int>& results)
+{
+    for (unsigned int i = 0; i < objects.size (); i++)
+        results.insert(objects[i]);
+}
+
 void TriangleOctree::allTriangles (const Vector3 & origin,
-        const Vector3 & direction, vector<traceResult>& results)
+        const Vector3 & direction,
+        vector<traceResult>& results)
 {
     static RayTriangleIntersection intersectionSolver;
     Vector3 P;
@@ -512,12 +521,12 @@ void TriangleOctree::allTriangles (const Vector3 & origin,
     }
 }
 
-
+template<class Res>
 void TriangleOctree::traceAll (const Vector3 & origin,
         const Vector3 & direction, double tx0,
         double ty0, double tz0, double tx1,
         double ty1, double tz1, unsigned int a,
-        unsigned int b,Vector3 &origin1,Vector3 &direction1,vector<traceResult> &results)
+        unsigned int b,Vector3 &origin1,Vector3 &direction1, Res& results)
 {
     if (tx1 < 0.0 || ty1 < 0.0 || tz1 < 0.0)
         return;
@@ -708,7 +717,18 @@ void TriangleOctree::traceAll (const Vector3 & origin,
     }
 }
 
-void TriangleOctree::traceAll (Vector3 origin, Vector3 direction,vector<traceResult>& results)
+void TriangleOctree::traceAll(Vector3 origin, Vector3 direction, vector<traceResult>& results)
+{
+    traceAllStart(origin, direction, results);
+}
+
+void TriangleOctree::traceAllCandidates(Vector3 origin, Vector3 direction, std::set<int>& results)
+{
+    traceAllStart(origin, direction, results);
+}
+
+template<class Res>
+void TriangleOctree::traceAllStart(Vector3 origin, Vector3 direction, Res& results)
 {
     unsigned int a = 0;
     unsigned int b = 0;
@@ -763,7 +783,72 @@ void TriangleOctree::traceAll (Vector3 origin, Vector3 direction,vector<traceRes
 }
 
 
+void TriangleOctree::bbAllTriangles(const Vector3 & bbmin,
+        const Vector3 & bbmax,
+        std::set<int>& results)
+{
+    const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
+    const TriangleOctreeRoot::SeqTriangles& tri = *tm->octreeTriangles;
+    for (unsigned int i = 0; i < objects.size (); i++)
+    {
+        int t = objects[i];
+        Vector3 tmin = pos[tri[t][0]];
+        Vector3 tmax = tmin;
+        for (int j=1; j<3; ++j)
+        {
+            Vector3 p = pos[tri[t][j]];
+            for (int c=0; c<3; ++c)
+                    if (p[c] < tmin[c]) tmin[c] = p[c]; else if (p[c] > tmax[c]) tmax[c] = p[c];
+        }
+        if ( tmin[0] <= bbmax[0] && tmax[0] >= bbmin[0] &&
+                tmin[1] <= bbmax[1] && tmax[1] >= bbmin[1] &&
+                tmin[2] <= bbmax[2] && tmax[2] >= bbmin[2])
+        {
+            //std::cout << "Found tri " << t << std::endl;
+            results.insert(t);
+        }
+    }
+}
 
+template<class Res>
+void TriangleOctree::bbAll (const Vector3 & bbmin, const Vector3 & bbmax, Res& results)
+{
+    Vector3 c(x+size/2,y+size/2,z+size/2);
+    //static int level = 0;
+    //for (int l=0;l<level;++l) std::cout << ' ';
+    //std::cout << "-> " << c[0] << " " << c[1] << " " << c[2] << " " << size << " -> " << objects.size() << std::endl;
+    bbAllTriangles (bbmin, bbmax, results);
+    if (is_leaf)
+    {
+        return;
+    }
+    int dx0 = (bbmin[0] > c[0]) ? 1 : 0;    int dx1 = (bbmax[0] >= c[0]) ? 1 : 0;
+    int dy0 = (bbmin[1] > c[1]) ? 1 : 0;    int dy1 = (bbmax[1] >= c[1]) ? 1 : 0;
+    int dz0 = (bbmin[2] > c[2]) ? 1 : 0;    int dz1 = (bbmax[2] >= c[2]) ? 1 : 0;
+    //dx0 = dy0 = dz0 = 0;
+    //dx1 = dy1 = dz1 = 1;
+    for (int dx = dx0; dx <= dx1; ++dx)
+        for (int dy = dy0; dy <= dy1; ++dy)
+            for (int dz = dz0; dz <= dz1; ++dz)
+            {
+                int i = dx * 4 + dy * 2 + dz;
+                if (childVec[i])
+                {
+                    //for (int l=0;l<level;++l) std::cout << ' ';
+                    //std::cout << "> " << i << std::endl;
+                    //++level;
+                    childVec[i]->bbAll (bbmin, bbmax, results);
+                    //--level;
+                    //for (int l=0;l<level;++l) std::cout << ' ';
+                    //std::cout << "< " << i << std::endl;
+                }
+            }
+}
+
+void TriangleOctree::bboxAllCandidates(Vector3 bbmin, Vector3 bbmax, std::set<int>& results)
+{
+    bbAll(bbmin, bbmax, results);
+}
 
 TriangleOctreeRoot::TriangleOctreeRoot()
 {

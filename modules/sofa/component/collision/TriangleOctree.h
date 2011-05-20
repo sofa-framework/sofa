@@ -134,6 +134,12 @@ public:
     /// Find all triangles intersecting the given ray
     void traceAll (Vector3 origin, Vector3 direction, vector<traceResult>& results);
 
+    /// Find all triangles intersecting the given ray
+    void traceAllCandidates(Vector3 origin, Vector3 direction, std::set<int>& results);
+
+    /// Find all triangles intersecting the given ray
+    void bboxAllCandidates(Vector3 bbmin, Vector3 bbmax, std::set<int>& results);
+
     friend class TriangleOctreeRoot;
 
 protected:
@@ -141,15 +147,28 @@ protected:
             double tx0, double ty0, double tz0, double tx1, double ty1,
             double tz1, unsigned int a, unsigned int b,Vector3 &origin1,Vector3 &direction1, traceResult &result);
 
+    template<class Res>
+    void traceAllStart (Vector3 origin, Vector3 direction, Res& results);
+
+    template<class Res>
     void traceAll (const Vector3 & origin, const Vector3 & direction,
             double tx0, double ty0, double tz0, double tx1, double ty1,
-            double tz1, unsigned int a, unsigned int b,Vector3 &origin1,Vector3 &direction1, vector<traceResult>& results);
+            double tz1, unsigned int a, unsigned int b,Vector3 &origin1,Vector3 &direction1, Res& results);
+
+    template<class Res>
+    void bbAll (const Vector3 & bbmin, const Vector3 & bbmax, Res& results);
 
     int nearestTriangle (int minIndex, const Vector3 & origin,
             const Vector3 & direction,traceResult &result);
 
     void allTriangles (const Vector3 & origin,
             const Vector3 & direction, vector<traceResult>& results);
+
+    void allTriangles (const Vector3 & origin,
+            const Vector3 & direction, std::set<int>& results);
+
+    void bbAllTriangles (const Vector3 & bbmin,
+            const Vector3 & bbmax, std::set<int>& results);
 
     void insert (double _x, double _y, double _z, double _inc, int t);
 

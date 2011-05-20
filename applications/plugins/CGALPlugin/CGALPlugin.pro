@@ -65,7 +65,7 @@ unix{
 	QMAKE_CFLAGS_RELEASE -= -Wall
 	QMAKE_CXXFLAGS_RELEASE -= -Wall
 
-        QMAKE_CXXFLAGS += -Wno-unused-parameter -Wno-array-bounds -fno-strict-aliasing
+        QMAKE_CXXFLAGS += -Wno-unused-parameter -fno-strict-aliasing
 }
 
 unix : QMAKE_POST_LINK = cp $$README_FILE $$DESTDIR 
