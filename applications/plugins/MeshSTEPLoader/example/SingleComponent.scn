@@ -9,10 +9,12 @@
 	
 	<Node 	name="obj1" gravity="0 -9.81 0" dt="0.01" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 		<SingleComponent template="int" name="comp1"  printLog="0"  positionsI="@../loader.position"  trianglesI="@../loader.triangles"  normalsI="@../loader.normals"  uvI="@../loader.uv"  indicesComponents="@../loader.indicesComponents"  numberShape="0" />
+		<MeshTopology position="@comp1.positionsO"  triangles="@comp1.trianglesO" />
 		<OglModel template="ExtVec3f" name="vis"  useNormals="@comp1.normalsO"  position="@comp1.positionsO"  triangles="@comp1.trianglesO"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45" />
 	</Node>
 	<Node 	name="obj2" gravity="0 -9.81 0" dt="0.01" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 		<SingleComponent template="int" name="comp2"  positionsI="@../loader.position"  trianglesI="@../loader.triangles"  normalsI="@../loader.normals"  uvI="@../loader.uv"  indicesComponents="@../loader.indicesComponents"  numberShape="1" />
+		<MeshTopology position="@comp2.positionsO"  triangles="@comp2.trianglesO" />
 		<OglModel template="ExtVec3f" name="vis"  useNormals="@comp2.normalsO"  position="@comp2.positionsO"  triangles="@comp2.trianglesO"  material="Default Diffuse 1 1 1 0.498039 1 Ambient 1 1 0.666667 0 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45" />
 	</Node>
 </Node>
