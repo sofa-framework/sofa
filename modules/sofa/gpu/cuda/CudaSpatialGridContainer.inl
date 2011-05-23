@@ -131,7 +131,9 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updat
 #endif
     void* cells, void* cellGhost, const void* x)
 {
+//#if 0
     gpu::cuda::SpatialGridContainer3f_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
+//#endif
 
     int nbbits = 8;
     while (nbbits < cellBits + 1) nbbits+=8;
@@ -206,6 +208,13 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_reor
 }
 */
 
+#if 0
+static bool compare_pair_first(const std::pair<unsigned int,int>& a, const std::pair<unsigned int,int>& b)
+{
+    return a.first < b.first;
+}
+#endif
+
 template<class TCoord, class TDeriv, class TReal>
 void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::update(const VecCoord& x)
 {
@@ -223,7 +232,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         if (cudppHandleSortMaxElements > 0)
         {
             cudppDestroyPlan(cudppHandleSort);
-            cudppHandleSortMaxElements = (((cudppHandleSortMaxElements>>7)+1)<<7); // increase size to at least the next multiple of 128
+            cudppHandleSortMaxElements = (((cudppHandleSortMaxElements>>10)+1)<<10); // increase size to at least the next multiple of 1024
         }
         if (numElements > cudppHandleSortMaxElements)
             cudppHandleSortMaxElements = numElements;
@@ -250,13 +259,63 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     //cells.recreate(nbCells+1);
     cellGhost.recreate(nbCells);
     //sortedPos.recreate(nbPoints);
+#if 0
+    helper::vector< std::pair<unsigned int,int> > cpusort;
+    {
+        helper::WriteAccessor< sofa::gpu::cuda::CudaVector< int > > pcells = cells;
+        helper::WriteAccessor< sofa::gpu::cuda::CudaVector< unsigned int > > pparticleHash = particleHash;
+        helper::ReadAccessor< VecCoord > px = x;
+        const Real pcellWidth = cellWidth*2.0f;
+        //const Real pinvCellWidth = 1.0f/pcellWidth;
+        const int pcellMask = (1<<cellBits)-1;
+        //const Real phalfCellWidth = pcellWidth*0.5f;
+        const Real pinvHalfCellWidth = 2.0f/pcellWidth;
+        for (int i=0; i<nbPoints; ++i)
+        {
+            Coord p = px[i];
+            int hgpos_x,hgpos_y,hgpos_z;
+            hgpos_x = helper::rfloor(p[0] * pinvHalfCellWidth);
+            hgpos_y = helper::rfloor(p[1] * pinvHalfCellWidth);
+            hgpos_z = helper::rfloor(p[2] * pinvHalfCellWidth);
+            int halfcell = ((hgpos_x&1) + ((hgpos_y&1)<<1) + ((hgpos_z&1)<<2))^7;
+            // compute the first cell to be influenced by the particle
+            hgpos_x = (hgpos_x-1) >> 1;
+            hgpos_y = (hgpos_y-1) >> 1;
+            hgpos_z = (hgpos_z-1) >> 1;
+            unsigned int hx = (HASH_PX*hgpos_x);
+            unsigned int hy = (HASH_PY*hgpos_y);
+            unsigned int hz = (HASH_PZ*hgpos_z);
+            for (int x=0; x<8; ++x)
+            {
+                unsigned int h_x = hx; if (x&1) h_x += HASH_PX;
+                unsigned int h_y = hy; if (x&2) h_y += HASH_PY;
+                unsigned int h_z = hz; if (x&4) h_z += HASH_PZ;
+                unsigned int hash = ((h_x ^ h_y ^ h_z) & pcellMask)<<1;
+                if (halfcell != x) ++hash;
+                pcells[index0 + i*8 + x] = i;
+                pparticleHash[i*8 + x] = hash;
+            }
+        }
+        cpusort.resize(8*nbPoints);
+        for (unsigned int i=0; i<8*nbPoints; ++i)
+            cpusort[i] = std::make_pair(pparticleHash[i],pcells[index0+i]);
+        std::sort(cpusort.begin(),cpusort.end(),compare_pair_first);
+        /*
+        	for (unsigned int i=0;i<8*nbPoints;++i)
+        	{
+        	    pparticleHash[i] = cpusort[i].first;
+        	    pcells[index0+i] = cpusort[i].second;
+        	}
+        */
+    }
+#endif
     kernel_updateGrid(
         cellBits, index0, cellWidth*2, nbPoints, cells.deviceWriteAt(index0), particleHash.deviceWrite(),
 #ifndef SOFA_GPU_CUDPP
         sortTmp.deviceWrite(),
 #endif
         cells.deviceWrite(), cellGhost.deviceWrite(), x.deviceRead());
-
+#if 0
     std::cout << nbPoints*8 << " entries in " << nbCells << " cells." << std::endl;
     int nfill = 0;
     for (int c=0; c<nbCells; ++c)
@@ -267,6 +326,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         ++nfill;
     }
     std::cout << ((1000*nfill)/nbCells) * 0.1 << " % cells with particles." << std::endl;
+#endif
 
     //kernel_reorderData(nbPoints, particleHash.deviceRead(), sortedPos.deviceWrite(), x.deviceRead());
 }

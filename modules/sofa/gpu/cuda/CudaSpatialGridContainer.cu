@@ -185,7 +185,7 @@ computeHashD(const TIn* pos,
 {
     int index0 = __mul24(blockIdx.x, blockDim.x);
     int index = index0 + threadIdx.x;
-
+    int nt = n - index0; if (nt > BSIZE) nt = BSIZE;
     float3 p = getPos3(pos,index0,index);
 
     int3 hgpos;
@@ -211,21 +211,22 @@ computeHashD(const TIn* pos,
     dH.x = (x&1 ? HASH_PX : 0);
     dH.y = (x&2 ? HASH_PY : 0);
     dH.z = (x&4 ? HASH_PZ : 0);
-    int index0_8 = index0 << 3;
-    for (unsigned int l = x; l < 8*BSIZE; l+=BSIZE)
+    int x_7 = x&7;
+    int index0_8_x_7 = (index0 << 3) + x_7;
+    for (unsigned int lx = x>>3; lx < nt; lx+=(BSIZE>>3))
     {
-        particleIndex8[index0_8 + l] = index0 + (l>>3);
+        particleIndex8[index0_8_x_7 + (lx<<3)] = index0 + lx;
         uint3 h;
-        h.x = hx[l>>3];
-        h.y = hy[l>>3];
-        h.z = hz[l>>3];
+        h.x = hx[lx];
+        h.y = hy[lx];
+        h.z = hz[lx];
         int hc = h.x & 7;
         h.x = (h.x>>3) + dH.x;
         h.y += dH.y;
         h.z += dH.z;
         unsigned int hash = ((h.x ^ h.y ^ h.z) & gridParams.cellMask)<<1;
-        if (hc != (x&7)) ++hash;
-        particleHash8[index0_8 + l] = hash;
+        if (hc != x_7) ++hash;
+        particleHash8[index0_8_x_7 + (lx<<3)] = hash;
     }
 }
 
