@@ -242,7 +242,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, Rigid3fMass>::draw()
 
 // -- Mass interface
 template <>
-void UniformMass<CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
+void UniformMass<CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -253,7 +253,7 @@ void UniformMass<CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* m
 }
 
 template <>
-void UniformMass<CudaVec3dTypes, double>::accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
+void UniformMass<CudaVec3dTypes, double>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -264,11 +264,11 @@ void UniformMass<CudaVec3dTypes, double>::accFromF(const core::MechanicalParams*
 }
 
 template <>
-void UniformMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void UniformMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
     VecDeriv& f = *d_f.beginEdit();
-    const VecCoord& x = d_x.getValue();
-    const VecDeriv& v = d_v.getValue();
+    //const VecCoord& x = d_x.getValue();
+    //const VecDeriv& v = d_v.getValue();
 
     // weight
     Vec3d g ( this->getContext()->getGravity() );
@@ -299,7 +299,7 @@ bool UniformMass<gpu::cuda::CudaVec3dTypes, double>::addBBox(double* minBBox, do
 }
 
 template <>
-void UniformMass<CudaVec3d1Types, double>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
+void UniformMass<CudaVec3d1Types, double>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -310,7 +310,7 @@ void UniformMass<CudaVec3d1Types, double>::addMDx(const core::MechanicalParams* 
 }
 
 template <>
-void UniformMass<CudaVec3d1Types, double>::accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
+void UniformMass<CudaVec3d1Types, double>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -321,11 +321,11 @@ void UniformMass<CudaVec3d1Types, double>::accFromF(const core::MechanicalParams
 }
 
 template <>
-void UniformMass<CudaVec3d1Types, double>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void UniformMass<CudaVec3d1Types, double>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
     VecDeriv& f = *d_f.beginEdit();
-    const VecCoord& x = d_x.getValue();
-    const VecDeriv& v = d_v.getValue();
+    //const VecCoord& x = d_x.getValue();
+    //const VecDeriv& v = d_v.getValue();
 
     // weight
     Vec3d g ( this->getContext()->getGravity() );
@@ -356,7 +356,7 @@ bool UniformMass<gpu::cuda::CudaVec3d1Types, double>::addBBox(double* minBBox, d
 }
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& d_x) const
+double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
 {
     const VecCoord& x = d_x.getValue();
 
