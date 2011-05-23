@@ -1257,34 +1257,15 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         VecCoord* vDest = d_vDest->beginEdit();
 
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
-
         for (unsigned int i=0; i<vDest->size(); i++)
         {
-            for (unsigned int j=0; j<3; j++)
+            for (unsigned int j=0; j<coordDim; j++)
             {
                 Real tmp;
                 DataTypeInfo<Coord>::getValue((*vDest)[i],j,tmp);
-                DataTypeInfo<Coord>::setValue((*vDest)[i],j,tmp + src->element(offset + i * coordDim + j));
-            }
-
-            helper::Quater<double> q_src;
-            helper::Quater<double> q_dest;
-            for (unsigned int j=0; j<4; j++)
-            {
-                Real tmp;
-                DataTypeInfo<Coord>::getValue((*vDest)[i],j+3,tmp);
-                q_dest[j]=tmp;
-                q_src[j]=src->element(offset + i * coordDim + j+3);
-            }
-            //q_dest = q_dest*q_src;
-            q_dest = q_src*q_dest;
-            for (unsigned int j=0; j<4; j++)
-            {
-                Real tmp=q_dest[j];
-                DataTypeInfo<Coord>::setValue((*vDest)[i], j+3, tmp);
+                DataTypeInfo<Coord>::setValue((*vDest)[i], j, tmp + src->element(offset + i * coordDim + j));
             }
         }
-
 // 		offset += vDest->size() * coordDim;
         d_vDest->endEdit();
     }
