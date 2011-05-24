@@ -1,10 +1,11 @@
 <Node dt="0.001" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" gravity="0 -5 0" >
+<!--  <MultiStepMasterSolver integrationSteps="2" /> -->
 	<Node name="fluid">
 		<CentralDifferenceSolver/>
 <!--
 		<RungeKutta4/>
-        <EulerImplicitSolver rayleighMass="0" rayleighStiffness="0" />
-        <CGLinearSolver tolerance="1.0e-20" threshold="1.0e-12"/>
+		<EulerImplicitSolver rayleighMass="0" rayleighStiffness="0" />
+		<CGLinearSolver tolerance="1.0e-20" threshold="1.0e-12"/>
 -->
 		<MechanicalObject name="MModel" template="CudaVec3f" reserve="32000" />
 		<ParticleSource name="Source01"
@@ -123,7 +124,7 @@
 <!--
 		<Node id="Visual">
 			<OglModel name="VModel" color="blue" />
-			<SPHFluidSurfaceMapping name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.5" radius="0.6" step="0.2"/>
+			<SPHFluidSurfaceMapping name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.5" radius="0.4" step="0.2"/>
 		</Node>
 -->
 	</Node>

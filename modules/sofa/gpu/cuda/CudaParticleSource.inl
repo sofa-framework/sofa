@@ -41,8 +41,14 @@ namespace cuda
 extern "C"
 {
 
+    void ParticleSourceCuda3f_fillValues(unsigned int totalsize, unsigned int subsetsize, void* dest, const void* indices, float fx, float fy, float fz);
+    void ParticleSourceCuda3f_copyValuesWithOffset(unsigned int totalsize, unsigned int subsetsize, void* dest, const void* indices, const void* src, float fx, float fy, float fz);
+
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
+
+    void ParticleSourceCuda3d_fillValues(unsigned int totalsize, unsigned int subsetsize, void* dest, const void* indices, double fx, double fy, double fz);
+    void ParticleSourceCuda3d_copyValuesWithOffset(unsigned int totalsize, unsigned int subsetsize, void* dest, const void* indices, const void* src, double fx, double fy, double fz);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
@@ -59,27 +65,54 @@ namespace misc
 
 using namespace gpu::cuda;
 
-
 template <>
 void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectResponse(VecDeriv& res)
 {
     if (!this->mstate) return;
     if (lastparticles.empty()) return;
-    //sout << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<sendl;
+    //sout << "ParticleSource: projectResponse of last particles ("<<lastparticles<<")."<<sendl;
     double time = getContext()->getTime();
     if (time < f_start.getValue() || time > f_stop.getValue()) return;
     // constraint the last values
-    mycudaMemset(((Deriv*)res.deviceWrite())+lastparticles[0], 0, lastparticles.size()*sizeof(Coord));
+    //mycudaMemset(((Deriv*)res.deviceWrite())+lastparticles[0], 0, lastparticles.size()*sizeof(Deriv));
+    ParticleSourceCuda3f_fillValues(res.size(), lastparticles.size(), res.deviceWrite(), lastparticles.getArray().deviceRead(), 0, 0, 0);
 }
 
 template <>
-void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& )
+void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& res)
 {
+    if (!this->mstate) return;
+    if (lastparticles.empty()) return;
+    sout << "ParticleSource: projectVelocity of last particles ("<<lastparticles[0]<<"-"<<lastparticles[lastparticles.size()-1]<<") out of " << res.size() << "."<<sendl;
+    double time = getContext()->getTime();
+    if (time < f_start.getValue() || time > f_stop.getValue()) return;
+    // constraint the last values
+    Deriv vel = f_velocity.getValue();
+#if 1
+    //mycudaMemset(((Deriv*)res.deviceWrite())+lastparticles[0], 0, lastparticles.size()*sizeof(Coord));
+    ParticleSourceCuda3f_fillValues(res.size(), lastparticles.size(), res.deviceWrite(), lastparticles.getArray().deviceRead(), vel[0], vel[1], vel[2]);
+    // BUG: without the call to hostRead() below, the velocity is not computed correctly, there must be a bug in the helper::vector logic...
+    res.hostRead();
+#else
+    for (unsigned int s=0; s<lastparticles.size(); s++)
+        if ( lastparticles[s] < res.size() )
+            res[lastparticles[s]] = vel;
+#endif
 }
 
 template <>
-void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectPosition(VecDeriv& )
+void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectPosition(VecCoord& res)
 {
+    if (!this->mstate) return;
+    if (lastparticles.empty()) return;
+    //sout << "ParticleSource: projectVelocity of last particles ("<<lastparticles<<")."<<sendl;
+    double time = getContext()->getTime();
+    if (time < f_start.getValue() || time > f_stop.getValue()) return;
+    // constraint the last values
+    Deriv vel = f_velocity.getValue();
+    vel *= (time-lasttime);
+    //mycudaMemset(((Deriv*)res.deviceWrite())+lastparticles[0], 0, lastparticles.size()*sizeof(Coord));
+    ParticleSourceCuda3f_copyValuesWithOffset(res.size(), lastparticles.size(), res.deviceWrite(), lastparticles.getArray().deviceRead(), lastpos.deviceRead(), vel[0], vel[1], vel[2]);
 }
 
 
@@ -108,7 +141,6 @@ void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectPosition(VecDeriv& /*res*
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-
 
 } // namespace misc
 

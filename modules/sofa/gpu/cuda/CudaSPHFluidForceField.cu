@@ -103,6 +103,7 @@ public:
     static __device__ Real  Wd(Real r_h, Real C)
     {
         Real a = (1-r_h*r_h);
+        if (a<=0) return 0;
         return  C*a*a*a;
     }
     static __device__ Real  Wd2(Real r2_h2, Real C)
@@ -133,6 +134,7 @@ public:
     static __device__ Deriv gradWd(const Deriv& d, Real r_h, Real C)
     {
         Real a = (1-r_h*r_h);
+        if (a<0) a=0;
         return d*(C*a*a);
     }
     static __device__ Deriv gradWd2(const Deriv& d, Real r2_h2, Real C)

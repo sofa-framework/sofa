@@ -78,9 +78,7 @@ public:
     Data< Real > density0; ///< 1000 kg/m3 for water
     Data< Real > viscosity;
     Data< Real > surfaceTension;
-    Data< bool > newDensity;
-    Data< int  > pressureExponent;
-    Data< bool > usePCISPH;
+    //Data< int  > pressureExponent;
 
 protected:
     struct Particle
@@ -95,23 +93,8 @@ protected:
 #endif
     };
 
-    struct PredictedParticle
-    {
-        Real pressure_variation;
-        Deriv predicted_velocity;
-        Deriv predicted_position;
-        Real predicted_density;
-        Real predicted_density_variation;
-        Deriv pressure_force;
-        Deriv sum_gradWd;
-        Real sum_gradWdWd;
-        int neighborhood;
-    };
-
     Real lastTime;
     sofa::helper::vector<Particle> particles;
-    sofa::helper::vector<PredictedParticle> PCIParticles;
-    std::vector< VecCoord > iterParticles;
 
     typedef SpatialGridContainer<DataTypes> Grid;
 
@@ -347,73 +330,6 @@ public:
     Real getParticleFieldConstant(Real h)
     {
         return constWc(h)*particleMass.getValue();
-    }
-
-
-    Real GetMonaghanKernel(Real r,Real smoothRadius)
-    {
-        float h = (float)smoothRadius/2;
-
-        float q = (float)r / h;
-
-        static float norm = (float)15.0 / (float)(14 * 3.141592);
-
-
-        static float h2 = h * h;
-
-        float q2 = (2-q);
-        if (q<=1)
-        {
-            float q1 = (1-q);
-            return (norm / h2) * (q2*q2*q2 - 4*q1*q1*q1);
-        }
-        else if (q>1.0 && q<=2.0)
-        {
-            return (norm / h2) * q2*q2*q2;
-        }
-        else return 0.0;
-    }
-
-
-    Real GetMonaghanGrad(Real r,Real smoothRadius)
-    {
-        float h = (float)smoothRadius/2;
-        float q = (float)r / h;
-
-
-        static float h4 = pow(h,4);
-        static float norm = (float)15.0 / (float)(14 * M_PI * h4);
-
-        if (q<=1.0)
-        {
-            return (3*norm*r) * (3*q - 4);
-        }
-        else if (q>1.0 && q<=2.0)
-        {
-            return (3*norm*r) * (-1*(2-q)*(2-q)/q);
-        }
-        else return 0.0;
-    }
-
-
-    Real GetMonaghanLap(Real r, Real smoothRadius)
-    {
-        float h = (float)smoothRadius/2;
-
-        float q = (float)r / h;
-
-        static float norm = (float)15.0 / (float)(14 * 3.141592);
-
-        static float h2 = h * h;
-        if (q<=1.0)
-        {
-            return norm / (h2 * h2) * (6*(2-q) - 24*(1-q));
-        }
-        else if (q>1.0 && q<=2.0)
-        {
-            return norm / (h2 * h2) *  6 * (2-q);
-        }
-        else return 0.0;
     }
 
     virtual void init();
