@@ -34,9 +34,6 @@
 		<Object type="UniformMass" name="M1" mass="1" />
 		<Object type="SpatialGridContainer" cellWidth="0.75" sortPoints="true" />
 		<Object type="SPHFluidForceField" radius="0.75" density="15" viscosity="10" pressure="1000" surfaceTension="-1000" />
-		<!-- The following force fields handle collision with walls and an inclined floor -->
-
-
 		<Node id="Visual">
 			<Object type="OglModel" name="VModel" color="blue" />
 			<Object type="SPHFluidSurfaceMapping" name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.5" radius="0.75" step="0.25"/>

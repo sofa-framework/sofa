@@ -54,9 +54,7 @@ SPHFluidForceField<DataTypes>::SPHFluidForceField()
                     density0			(initData(&density0				,Real(1)		, "density", "Density")),
                     viscosity			(initData(&viscosity			,Real(0.001f)	, "viscosity", "Viscosity")),
                     surfaceTension	(initData(&surfaceTension		,Real(0)		, "surfaceTension", "Surface Tension")),
-                    newDensity		(initData(&newDensity			,false			, "newDensity", "Use new and more stable density computation")),
-                    pressureExponent	(initData(&pressureExponent		,1				, "pressureExponent", "Exponent of density variation in pressure expression")),
-                    usePCISPH			(initData(&usePCISPH			,false			, "usePCISPH", "Use Predictive-Corrective Incompressible SPH")),
+//	pressureExponent	(initData(&pressureExponent		,1				, "pressureExponent", "Exponent of density variation in pressure expression")),
                     grid(NULL)
 {
 }
@@ -98,15 +96,12 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
     const Real h2 = h*h;
     const Real m = particleMass.getValue();
     const Real m2 = m*m;
-    const bool newDensity = this->newDensity.getValue();
     const Real d0 = density0.getValue();
-    const int pE = pressureExponent.getValue();
+    //const int pE = pressureExponent.getValue();
     const Real k = pressureStiffness.getValue(); // /(pE); //*(Real)pow(d0,pE-1));
-    const bool PCISPH = usePCISPH.getValue();
     const Real time = (Real)this->getContext()->getTime();
-    const Real dt = (Real)this->getContext()->getDt();
-    const Real dt2 = dt*dt;
-    const Real betaPCISPH = dt2*m2*2/(d0*d0);
+    //const Real dt = (Real)this->getContext()->getDt();
+    //const Real dt2 = dt*dt;
     lastTime = time;
 
     //const Vec3d localg = this->getContext()->getLocalGravity();
@@ -115,16 +110,9 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
     //const Deriv mg = g * mass;
     const int n = x.size();
 
-    VecCoord vec;
-    vec.resize(n);
-    if(iterParticles.size()>1) vec = iterParticles[1];
-    else vec = x;
-    iterParticles.clear();
-    iterParticles.push_back(vec);
-
     // Precompute constants for smoothing kernels
     const Real     CWd =     constWd(h);
-    const Real CgradWd = constGradWd(h);
+    //const Real CgradWd = constGradWd(h);
     //const Real  ClaplacianWd =  constLaplacianWd(h);
     //const Real     CWp =     constWp(h);
     const Real CgradWp = constGradWp(h);
@@ -139,29 +127,18 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
     // Initialization
     f.resize(n);
     dforces.clear();
-    int n0 = particles.size();
+    //int n0 = particles.size();
     particles.resize(n);
-    PCIParticles.resize(n);
     for (int i=0; i<n; i++)
     {
         particles[i].neighbors.clear();
 #ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
         particles[i].neighbors2.clear();
 #endif
-        //particles[i].density = 0;
+        particles[i].density = 0;
         particles[i].pressure = 0;
         particles[i].normal.clear();
         particles[i].curvature = 0;
-    }
-    if (newDensity)
-    {
-        for (int i=n0; i<n; i++)
-            particles[i].density = d0;
-    }
-    else
-    {
-        for (int i=0; i<n; i++)
-            particles[i].density = 0;
     }
 
     // First compute the neighbors
@@ -237,26 +214,7 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
     }
 
     // Compute density and pressure
-    //if(!PCISPH)
     {
-        if (newDensity)
-        {
-            for (int i=0; i<n0; i++)
-            {
-                Particle& Pi = particles[i];
-                for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
-                {
-                    const int j = it->first;
-                    const Real r_h = it->second;
-                    Particle& Pj = particles[j];
-                    Real d = dt*m*(gradWd(x[i]-x[j],r_h,CgradWd)*(v[i]-v[j]));
-                    Pi.density += d;
-                    Pj.density += d;
-                }
-                Pi.pressure = k*(Real)pow(Pi.density - d0, pE);
-            }
-        }
-        else
         {
             for (int i=0; i<n; i++)
             {
@@ -271,15 +229,12 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
                     const Real r_h = it->second;
                     Particle& Pj = particles[j];
                     Real d = m*Wd(r_h,CWd);
-                    //				Real d = m*GetMonaghanKernel((x[i]-x[j]).norm(),h);
                     density += d;
                     Pj.density += d;
 
                 }
                 Pi.density = density;
-                if(!PCISPH)
-                    Pi.pressure = k*(density - d0);
-
+                Pi.pressure = k*(density - d0);
             }
         }
     }
@@ -305,7 +260,6 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
         }
     }
 
-    //if(!PCISPH)
     {
         // Compute the forces
         for (int i=0; i<n; i++)
@@ -321,26 +275,14 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
                 Particle& Pj = particles[j];
                 // Pressure
 
-                if(!PCISPH)
-                {
-                    Deriv fpressure = gradWp(x[i]-x[j],r_h,CgradWp) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
-                    f[i] += fpressure;
-                    f[j] -= fpressure;
-                }
+                Deriv fpressure = gradWp(x[i]-x[j],r_h,CgradWp) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
+                f[i] += fpressure;
+                f[j] -= fpressure;
 
                 // Viscosity
-                if(!PCISPH)
-                {
-                    Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity.getValue() / (Pi.density * Pj.density) * laplacianWv(r_h,ClaplacianWv) );
-                    f[i] += fviscosity;
-                    f[j] -= fviscosity;
-                }
-                else
-                {
-                    Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity.getValue() / (Pi.density * Pj.density) * GetMonaghanLap((x[j]-x[i]).norm(),h) );
-                    f[i] += fviscosity;
-                    f[j] -= fviscosity;
-                }
+                Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity.getValue() / (Pi.density * Pj.density) * laplacianWv(r_h,ClaplacianWv) );
+                f[i] += fviscosity;
+                f[j] -= fviscosity;
             }
 
             if (surfaceTension.getValue() > 0)
@@ -354,208 +296,6 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
             }
 
         }
-
-    }
-
-
-
-    if(PCISPH)
-    {
-
-        Real max_predicted_density_variation=0;
-        int iteration=0;
-        for (int i=0; i<n; i++)
-        {
-            PredictedParticle& Piv = PCIParticles[i];
-            Particle& Pi = particles[i];
-
-            //predict velocity and position
-            Piv.predicted_density = 0;
-            Pi.pressure= 0;
-        }
-
-
-
-        while(((max_predicted_density_variation>d0*0.01) || (iteration<4)) /*&& iteration <2000*/)
-        {
-            printf("while((max_predicted_density_variation>d0/100)||(iteration<4)) --> ((%f>%f) || (%d<n)\n",max_predicted_density_variation,d0*0.01,iteration);
-
-
-            max_predicted_density_variation=0;
-
-            for (int i=0; i<n; i++)
-            {
-
-                PredictedParticle& Piv = PCIParticles[i];
-
-                //predict velocity and position
-                Piv.predicted_velocity = v[i] + (Piv.pressure_force*dt)/m;
-                Piv.predicted_position = x[i] + Piv.predicted_velocity*dt;
-
-                //initialize
-                Piv.predicted_density = 0;
-                Deriv d;
-                Piv.sum_gradWd = d;
-                Piv.sum_gradWdWd =0;
-                Piv.pressure_force =  f[i];
-            }
-            Real distance_min=100;
-            Real force_max=0;
-            for (int i=0; i<n; i++)
-            {
-                PredictedParticle& Piv = PCIParticles[i];
-
-                Particle& Pi = particles[i];
-
-                //computation of sums GetMonaghanKernel
-                Piv.predicted_density += m*Wd(0,CWd);
-                //				Piv.predicted_density += m*GetMonaghanKernel(0,h);
-
-                const Coord& ri = Piv.predicted_position;
-
-                Piv.neighborhood = 0;
-                for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
-                {
-                    const int j = it->first;
-                    PredictedParticle& Pjv = PCIParticles[j];
-                    const Coord& rj = Pjv.predicted_position;
-                    Real r2 = (rj-ri).norm2();
-                    Real r  = sqrt(r2);
-                    Real r_h = (Real)sqrt(r2/h2);
-
-                    if(r2<h2)
-                    {
-                        Piv.neighborhood++;
-
-                        Real vWd = Wd(r_h,CWd);
-                        //						Real vWd = GetMonaghanKernel(r,h);
-
-                        Deriv vgradWd = gradWd(rj-ri,r_h,CgradWd);//value_laplacianWc;
-                        //						Deriv vgradWd = (rj-ri)*GetMonaghanGrad(r,h);
-                        if(r<distance_min)distance_min=r;
-                        //std::cout << "distance: " << r << " - Wd: " << vWd << " - gradWd: " << vgradWd << std::endl;
-
-                        //predict density
-                        Piv.predicted_density += m*vWd;
-                        Pjv.predicted_density += m*vWd;
-
-                        Piv.sum_gradWd += vgradWd;
-                        Piv.sum_gradWdWd += vgradWd*vgradWd;
-                        Pjv.sum_gradWd += vgradWd;
-                        Pjv.sum_gradWdWd += vgradWd*vgradWd;
-                    }
-
-                }
-                //std::cout << "predicted density: " << Piv.predicted_density << std::endl;
-                if(Piv.neighborhood)
-                {
-                    //predict density_variation
-                    Piv.predicted_density_variation = Piv.predicted_density - d0;
-                    if(Piv.predicted_density_variation<0)Piv.predicted_density_variation=0;
-                    //std::cout << "predicted variation: " << Piv.predicted_density_variation << std::endl;
-
-                    if(Piv.predicted_density_variation>max_predicted_density_variation)max_predicted_density_variation=Piv.predicted_density_variation;
-
-                    //udpate pressure
-                    Real sigma = (Real)-1.0/(betaPCISPH*(-Piv.sum_gradWd*Piv.sum_gradWd-Piv.sum_gradWdWd));
-                    Piv.pressure_variation = sigma*Piv.predicted_density_variation;
-
-                    Pi.pressure += Piv.pressure_variation;
-                    //std::cout << "sigma: " << sigma << " - pressure_variation: " << Piv.pressure_variation << " - pressure: " << Pi.pressure << std::endl;
-                }
-                Pi.density = Piv.predicted_density;
-            }
-            for (int i=0; i<n; i++)
-            {
-                PredictedParticle& Piv = PCIParticles[i];
-                Particle& Pi = particles[i];
-                for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
-                {
-                    const int j = it->first;
-                    PredictedParticle& Pjv = PCIParticles[j];
-                    Particle& Pj = particles[j];
-                    //	Real r_h = (Real)sqrt((x[i]-x[j]).norm2()/h2);
-                    Real r = (x[i]-x[j]).norm();
-                    //					Deriv fpressure = gradWp(x[i]-x[j],r_h,CgradWd) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
-                    //if(fpressure.norm2()>55000){fpressure = ((x[i]-x[j])/(x[i]-x[j]).norm())*55000;}
-                    Deriv fpressure = (x[i]-x[j]) * GetMonaghanGrad(r,h) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
-                    //std::cout << "fpressure "<< fpressure << "="<< Pi.pressure <<"/"<< (Pi.density*Pi.density) << "+" << Pj.pressure <<"/"<< (Pj.density*Pj.density) << std::endl;
-                    Piv.pressure_force += fpressure;
-                    Pjv.pressure_force -= fpressure;
-                    if(fpressure.norm()>force_max)force_max=fpressure.norm();
-                }
-
-                //std::cout << "distance_min" << distance_min << " force_max:" << force_max << "distance engeandrée " << force_max*dt*dt << std::endl;
-
-                if(distance_min < 0.65)
-                {
-#ifdef WIN32
-                    Sleep(2);
-#else
-                    sleep(2);
-#endif
-                }
-            }
-
-
-
-
-            VecCoord vec;
-
-
-            vec.resize(n);
-            if(iteration==0)iterParticles.push_back(x);
-
-            for (int i=0; i<n; i++)
-            {
-                PredictedParticle& Piv = PCIParticles[i];
-                vec[i]= Piv.predicted_position;
-            }
-            iterParticles.push_back(vec);
-
-            iteration++;
-
-
-
-        }
-
-
-        for (int i=0; i<n; i++)
-        {
-
-            PredictedParticle& Piv = PCIParticles[i];
-            // Particle& Pi = particles[i];
-
-            //std::cout << "force" << f[i] << " + " << Piv.pressure_force << "=" << f[i] +Piv.pressure_force << std::endl;
-            f[i] = Piv.pressure_force;
-            //			f[i] += Piv.pressure_force;
-
-
-            /*	for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
-            {
-            const int j = it->first;
-            const Real r_h = it->second;
-            Real r = (x[j]-x[i]).norm();
-            Particle& Pj = particles[j];
-
-            // Viscosity
-            Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity.getValue() / (Pi.density * Pj.density) * GetMonaghanLap(r,h));
-            //Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity.getValue() / (Pi.density * Pj.density) * laplacianWv(r_h,ClaplacianWv) );
-            f[i] += fviscosity;
-            f[j] -= fviscosity;
-            }
-            if (surfaceTension.getValue() > 0)
-            {
-            Real n = Pi.normal.norm();
-            if (n > 0.000001)
-            {
-            Deriv fsurface = Pi.normal * ( - m * surfaceTension.getValue() * Pi.curvature / n );
-            f[i] += fsurface;
-            }
-            }*/
-
-        }
-        //printf("z\n");
 
     }
     d_f.endEdit();
@@ -672,46 +412,6 @@ void SPHFluidForceField<DataTypes>::draw()
         }
         helper::gl::glVertexT(x[i]);
     }
-
-
-    float red[16]   =	{0.1f, 0.1f, 0.1f, 0.7f, 0.1f, 0.7f, 0.7f, 0.7f,  0.4f, 0.4f, 0.4f, 1.0f, 0.4f, 1.0f, 1.0f, 1.0f};
-    float green[16] =	{0.1f, 0.1f, 0.7f, 0.1f, 0.7f, 0.7f, 0.1f, 0.7f,  0.4f, 0.4f, 1.0f, 0.4f, 1.0f, 1.0f, 0.4f, 1.0f};
-    float blue[16]  =	{0.1f, 0.7f, 0.1f, 0.1f, 0.7f, 0.1f, 0.7f, 0.7f,  0.4f, 1.0f, 0.4f, 0.4f, 1.0f, 0.4f, 1.0f, 1.0f};
-    for(unsigned int i=0; i<iterParticles.size(); i++)
-    {
-        glColor3f(red[i%16],green[i%16],blue[i%16]);
-        VecCoord v = iterParticles[i];
-        //std::cout << "iteration "<<i;
-        for (unsigned int j=0; j<particles.size(); j++)
-        {
-            helper::gl::glVertexT(v[j]);
-            //std::cout << "{" << v[j] << "} ";
-        }
-        //std::cout << std::endl;
-
-
-        //if(particles.size()==2)
-        //{
-        //	std::cout << (v[0]-v[1]).norm() << std::endl;
-        //}
-
-    }
-
-    //Real distancemin=100;
-    //Real distanceparcourumax=0;
-    //for (unsigned int i=0;i<iterParticles.size();i++)
-    //{
-    //	for (unsigned int j=0;j<iterParticles.size();j++)
-    //	{
-    //		Real distance1 = ((iterParticles[1])[i] -  (iterParticles[1])[j]).norm();
-    //		if(distance1<distancemin && i!=j)distancemin=distance1;
-    //	}
-    //	Real distance2 = ((iterParticles[0])[i] -  (iterParticles[1])[i]).norm();
-    //	if(distance2>distanceparcourumax)distanceparcourumax=distance2;
-    //}
-
-    //std::cout << "distancemin " << distancemin<< std::endl;
-    //std::cout << "distanceparcourumax " << distanceparcourumax<< std::endl;
 
     glEnd();
     glPointSize(1);
