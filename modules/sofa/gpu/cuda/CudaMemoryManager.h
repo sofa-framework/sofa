@@ -47,6 +47,11 @@ class CudaMemoryManager : public sofa::helper::MemoryManager<T>
 {
 
 public :
+    template<class T2> struct rebind
+    {
+        typedef CudaMemoryManager<T2> other;
+    };
+
     typedef T* host_pointer;
     typedef /*mutable*/ void* device_pointer;
     typedef GLuint gl_buffer;

@@ -59,33 +59,6 @@ namespace component
 namespace misc
 {
 
-template <class VecT, class T2> class RebindVector;
-
-template <template<class T> class Vec, class T, class T2>
-class RebindVector<Vec<T>, T2>
-{
-public:
-    typedef Vec<T2> type;
-};
-
-template <class T, class AllocT, class T2>
-class RebindVector<std::vector<T, AllocT >, T2>
-{
-public:
-    typedef typename AllocT::template rebind<T2>::other AllocT2;
-    typedef std::vector<T2, AllocT2 > type;
-};
-
-template <class T, template<class T> class MemoryManager, class T2>
-class RebindVector<sofa::helper::vector<T, MemoryManager<T> >, T2>
-{
-public:
-    typedef sofa::helper::vector<T2, MemoryManager<T2> > type;
-};
-
-//typename RebindVector<VecCoord,unsigned int>::type;
-
-
 template<class TDataTypes>
 class ParticleSource : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
@@ -136,7 +109,8 @@ public:
     int N;
     Real lasttime;
     //int lastparticle;
-    topology::PointSubsetT< typename RebindVector<VecCoord,unsigned int>::type > lastparticles;
+    typedef typename VecCoord::template rebind<unsigned int>::other VecIndex;
+    topology::PointSubsetT< VecIndex > lastparticles;
     VecCoord lastpos;
 
     virtual void init()

@@ -92,7 +92,14 @@ public :
 template <class T >
 class CPUMemoryManager : public MemoryManager<T>
 {
-    /*public:
+public:
+
+    template<class T2> struct rebind
+    {
+        typedef CPUMemoryManager<T2> other;
+    };
+
+    /*
     	enum { MAX_DEVICES = 0 };
     	enum { BSIZE = 1 };
 
