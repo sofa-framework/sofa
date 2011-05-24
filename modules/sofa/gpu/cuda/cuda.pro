@@ -131,6 +131,7 @@ SOURCES += mycuda.cpp \
            CudaEllipsoidForceField.cpp \
            CudaIdentityMapping.cpp \
            CudaBarycentricMapping.cpp \
+           CudaBarycentricMappingRigid.cpp \
            CudaRigidMapping.cpp \
            CudaSubsetMapping.cpp \
            CudaDistanceGridCollisionModel.cpp \
@@ -144,6 +145,8 @@ SOURCES += mycuda.cpp \
            CudaTetrahedralVisualModel.cpp \
            CudaSetTopology.cpp \
            CudaParticleSource.cpp \
+    	   CudaMappedBeamToTetraForceField.cpp \
+	   CudaRespirationController.cpp \
            VolumetricContact.cpp 
 
 CUDA_SOURCES += mycuda.cu \
