@@ -86,6 +86,7 @@ HEADERS += helper.h \
     TagFactory.h \
     accessor.h \
     vector.h \
+    vector_device.h \
     polygon_cube_intersection/vec.h \
     polygon_cube_intersection/polygon_cube_intersection.h \
     proximity.h \

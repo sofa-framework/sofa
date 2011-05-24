@@ -40,6 +40,7 @@
 //#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <iostream>
 #include <sofa/gpu/cuda/CudaMemoryManager.h>
+#include <sofa/helper/vector_device.h>
 
 //#define DEBUG_OUT_MATRIX
 

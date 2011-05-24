@@ -91,8 +91,6 @@ void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& res)
 #if 1
     //mycudaMemset(((Deriv*)res.deviceWrite())+lastparticles[0], 0, lastparticles.size()*sizeof(Coord));
     ParticleSourceCuda3f_fillValues(res.size(), lastparticles.size(), res.deviceWrite(), lastparticles.getArray().deviceRead(), vel[0], vel[1], vel[2]);
-    // BUG: without the call to hostRead() below, the velocity is not computed correctly, there must be a bug in the helper::vector logic...
-    res.hostRead();
 #else
     for (unsigned int s=0; s<lastparticles.size(); s++)
         if ( lastparticles[s] < res.size() )

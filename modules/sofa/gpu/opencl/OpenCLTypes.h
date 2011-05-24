@@ -34,6 +34,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <sofa/gpu/opencl/OpenCLMemoryManager.h>
+#include <sofa/helper/vector_device.h>
 
 namespace sofa
 {
