@@ -48,10 +48,13 @@ Base::Base()
     : name(initData(&name,std::string("unnamed"),"name","object name"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
+    , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
 {
     name.setParentClass("Base");
     f_printLog.setParentClass("Base");
     f_tags.setParentClass("Base");
+    f_bbox.setParentClass("Base");
+    f_bbox.setReadOnly(true);
     sendl.setParent(this);
 }
 

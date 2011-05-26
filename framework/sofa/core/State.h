@@ -28,6 +28,8 @@
 #define SOFA_CORE_STATE_H
 
 #include <sofa/core/BaseState.h>
+#include <sofa/defaulttype/BoundingBox.h>
+#include <limits>
 
 namespace sofa
 {
@@ -138,6 +140,36 @@ public:
     static std::string templateName(const State<DataTypes>* = NULL)
     {
         return TDataTypes::Name();
+    }
+
+    virtual void computeBBox(const core::ExecParams* params)
+    {
+        const VecCoord& x = read(ConstVecCoordId::position())->getValue(params);
+        const unsigned int xSize = x.size();
+
+        if (xSize <= 0)
+            return;
+
+        const Real max_real = std::numeric_limits<Real>::max();
+        const Real min_real = std::numeric_limits<Real>::min();
+        Real p[3] = {0,0,0};
+        Real maxBBox[3] = {min_real,min_real,min_real};
+        Real minBBox[3] = {max_real,max_real,max_real};
+
+        for (unsigned int i = 0; i < xSize; i++)
+        {
+            DataTypes::get(p[0], p[1], p[2], x[i]);
+            for (int c = 0; c < 3; c++)
+            {
+                if (p[c] > maxBBox[c])
+                    maxBBox[c] = p[c];
+
+                if (p[c] < minBBox[c])
+                    minBBox[c] = p[c];
+            }
+        }
+
+        this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
     }
 };
 

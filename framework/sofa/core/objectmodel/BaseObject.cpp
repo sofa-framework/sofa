@@ -222,13 +222,13 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 {
     BaseObject* obj = this;
 
-    std::map < std::string, BaseData*> dataLoaderMap;
-    std::map < std::string, BaseData*>::iterator it_map;
+    std::multimap < std::string, BaseData*> dataLoaderMap(loader->m_aliasData);
+    std::multimap < std::string, BaseData*>::iterator it_map;
 
-    for (unsigned int j = 0; j<loader->m_fieldVec.size(); ++j)
-    {
-        dataLoaderMap.insert (std::pair<std::string, BaseData*> (loader->m_fieldVec[j].first, loader->m_fieldVec[j].second));
-    }
+    //for (unsigned int j = 0; j<loader->m_fieldVec.size(); ++j)
+    //{
+    //	dataLoaderMap.insert (std::pair<std::string, BaseData*> (loader->m_fieldVec[j].first, loader->m_fieldVec[j].second));
+    //}
 
     if (attributeList != 0)
     {
@@ -265,10 +265,14 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
     it_map = dataLoaderMap.find ("listening");
     if (it_map != dataLoaderMap.end())
         dataLoaderMap.erase (it_map);
+
+    it_map = dataLoaderMap.find("bbox");
+    if (it_map != dataLoaderMap.end() )
+        dataLoaderMap.erase(it_map);
     //}
 
 
-    for (it_map =dataLoaderMap.begin(); it_map != dataLoaderMap.end(); ++it_map)
+    for (it_map = dataLoaderMap.begin(); it_map != dataLoaderMap.end(); ++it_map)
     {
         BaseData* Data = obj->findField( (*it_map).first );
         if (Data != NULL)

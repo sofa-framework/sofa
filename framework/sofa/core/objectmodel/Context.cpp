@@ -459,7 +459,7 @@ void Context::copySimulationContext(const Context& c)
 
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
-    setLocalFrame( c.getLocalFrame());
+    setPositionInWorld( c.getPositionInWorld());
     spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
     velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
 #endif
