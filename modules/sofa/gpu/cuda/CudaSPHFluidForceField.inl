@@ -109,16 +109,16 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::Mechani
 }
 
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /*d_df*/, const DataVecDeriv& /*d_dx*/)
 {
-    //?
-    return;
+    mparams->kFactor();
+#if 0
     if (grid == NULL) return;
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    sout << "addDForce(" << mparams->kFactor() << "," << mparams->bFactor() << ")" << sendl;
+    //sout << "addDForce(" << mparams->kFactor() << "," << mparams->bFactor() << ")" << sendl;
     //const VecCoord& x = *this->mstate->getX();
     const VecDeriv& v = *this->mstate->getV();
     data.fillParams(this, mparams->kFactor(), mparams->bFactor());
@@ -129,6 +129,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::Mechan
         df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
 
     d_df.endEdit();
+#endif
 }
 
 
@@ -178,8 +179,10 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::Mechani
 }
 
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /*d_df*/, const DataVecDeriv& /*d_dx*/)
 {
+    mparams->kFactor();
+#if 0
     if (grid == NULL) return;
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -192,6 +195,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::Mechan
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
     d_df.endEdit();
+#endif
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
