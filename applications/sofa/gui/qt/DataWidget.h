@@ -64,13 +64,17 @@ namespace sofa
 
 namespace core
 {
+
 namespace objectmodel
 {
 class Base;
+
 }
 }
+
 namespace gui
 {
+
 namespace qt
 {
 
@@ -154,8 +158,13 @@ public slots:
         if(!dirty)
         {
             if(counter != baseData->getCounter())
+            {
                 readFromData();
+                this->update();
+            }
         }
+
+
     }
     /// You call this slot anytime you want to specify that the widget
     /// value is out of sync with the underlying data value.

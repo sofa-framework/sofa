@@ -110,19 +110,25 @@ QDataSimpleEdit::QDataSimpleEdit(QWidget* parent, const char* name, BaseData* da
 bool QDataSimpleEdit::createWidgets()
 {
     QString str  = QString( getBaseData()->getValueString().c_str() );
+    QLayout* layout = new QHBoxLayout(this);
     if( str.length() > TEXTSIZE_THRESHOLD )
     {
         innerWidget_.type = TEXTEDIT;
-        innerWidget_.widget.textEdit = new QTextEdit(this->parentWidget()); innerWidget_.widget.textEdit->setText(str);
-        connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SLOT ( setWidgetDirty() ) );
+        innerWidget_.widget.textEdit = new QTextEdit(this); innerWidget_.widget.textEdit->setText(str);
+        connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SLOT ( update() ) );
+        layout->add(innerWidget_.widget.textEdit);
     }
     else
     {
         innerWidget_.type = LINEEDIT;
-        innerWidget_.widget.lineEdit  = new QLineEdit(this->parentWidget());
+        innerWidget_.widget.lineEdit  = new QLineEdit(this);
         innerWidget_.widget.lineEdit->setText(str);
-        connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT( setWidgetDirty() ) );
+        connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT( update() ) );
+        layout->add(innerWidget_.widget.lineEdit);
     }
+
+
+
 
     return true;
 }
