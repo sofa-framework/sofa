@@ -949,7 +949,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3d
 */
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< CudaVec3fTypes, Rigid3dTypes >;
+template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3fTypes, Rigid3dTypes >;
 //template class SOFA_COMPONENT_MAPPING_API BarycentricMapper< CudaVec3fTypes, Rigid3dTypes >;
 /*template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper< Vec3dTypes, Rigid3dTypes >;
 template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology< Vec3dTypes, Rigid3dTypes >;
