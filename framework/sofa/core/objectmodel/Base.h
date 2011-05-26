@@ -30,6 +30,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/SofaOStream.h>
 #include <sofa/helper/vector.h>
+#include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
@@ -289,6 +290,8 @@ public:
     Data<bool> f_printLog;
 
     Data< sofa::core::objectmodel::TagSet > f_tags;
+
+    Data< sofa::defaulttype::BoundingBox > f_bbox;
 
 };
 
