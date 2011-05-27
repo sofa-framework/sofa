@@ -1,4 +1,10 @@
-<Node 	name="root" gravity="0 -1 -0.1" dt="0.08" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0"  >
+<Node 	name="root" gravity="0 0 -50" dt="0.01" 
+showBehaviorModels="0" 
+showVisualModels="1"
+showCollisionModels="0" 
+showMappings="0" 
+showForceFields="0" 
+showWireFrame="1" >
 	<DefaultPipeline name="default0"  verbose="0" />
 	<BruteForceDetection name="N2" />
 	<DefaultContactManager name="default1"  response="default" />
@@ -6,20 +12,33 @@
 	<TreeCollisionGroupManager name="default2" />
 	<Node 	name="SquareGravity" gravity="0 0 0"  >
 		<EulerImplicit name="cg_odesolver" printLog="false"  />
-		<CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"  />
-		<MeshLoader name="meshLoader"  filename="mesh/square3.msh" />
-		<MechanicalObject template="Vec3d" name="default4"  scale3d="10 10 10"  restScale="1" />
+		<CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"  />
+		
+		<MeshLoader name="meshLoader"  filename="mesh/square3.msh"/>
+		<MechanicalObject template="Vec3d" name="default4"  scale3d="10 10 10" restScale="1" />
+		
 		<TriangleSetTopologyContainer name="Container" />
 		<TriangleSetTopologyModifier name="Modifier" />
 		<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-		<DiagonalMass template="Vec3d" name="default5"  massDensity="0.15" />
-		<FixedConstraint template="Vec3d" name="default6"  indices="0 1" />
-		<TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
-		<TriangularBendingSprings template="Vec3d" name="FEM-Bend"  stiffness="300"  damping="1" />
-		<TriangleModel name="default7" />
+		
+		<DiagonalMass template="Vec3d" name="default5"  massDensity="1.5" />
+		
+		<BoxConstraint box="0 9.5 -0.5 10 10.5 0.5" name="box" drawBoxes="true"/>
+		
+		<BoxConstraint box="0 -0.5 -0.5 10 0.5 0.5" name="box" drawBoxes="true"/>
+		
+		<TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.45"  youngModulus="30000" />
+		<TriangularBendingSprings template="Vec3d" name="FEM-Bend"  stiffness="10000"  damping="1" />
+		<TriangleModel name="default7" selfCollision="true"/>
+		
+		
 		<OglModel template="ExtVec3f" name="Visual"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
 		<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8"  object1=".."  object2="Visual" />
-		<TopologicalChangeProcessor listening="1" filename="IncisionTrianglesProcess.txt"/>
+		
+		<TopologicalChangeProcessor listening="1" 
+		filename="IncisionTrianglesProcess.txt" saveIndicesAtInit="true" 
+		printLog="false" draw="true"
+		epsilonSnapPath="0.1" epsilonSnapBorder="0.5"/>
 	</Node>
 </Node>
