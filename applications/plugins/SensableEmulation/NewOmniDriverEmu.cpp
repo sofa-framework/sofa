@@ -65,253 +65,6 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 using namespace sofa::defaulttype;
 
-//static DeviceData gServoDeviceData;
-//static DeviceData deviceData;
-//static DeviceData previousData;
-static HHD hHD = HD_INVALID_HANDLE ;
-static bool isInitialized = false;
-static HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
-
-void printError(FILE *stream, const HDErrorInfo *error,
-        const char *message)
-{
-    fprintf(stream, "%s\n", hdGetErrorString(error->errorCode));
-    fprintf(stream, "HHD: %X\n", error->hHD);
-    fprintf(stream, "Error Code: %X\n", error->errorCode);
-    fprintf(stream, "Internal Error Code: %d\n", error->internalErrorCode);
-    fprintf(stream, "Message: %s\n", message);
-}
-
-bool isSchedulerError(const HDErrorInfo *error)
-{
-    switch (error->errorCode)
-    {
-    case HD_COMM_ERROR:
-    case HD_COMM_CONFIG_ERROR:
-    case HD_TIMER_ERROR:
-    case HD_INVALID_PRIORITY:
-    case HD_SCHEDULER_FULL:
-        return true;
-
-    default:
-        return false;
-    }
-}
-
-HDCallbackCode HDCALLBACK stateCallback(void *userData)
-{
-
-    //cout << "NewOmniDriverEmu::stateCallback BEGIN" << endl;
-    OmniData* data = static_cast<OmniData*>(userData);
-    //FIXME : Apparenlty, this callback is run before the mechanical state initialisation. I've found no way to know whether the mechcanical state is initialized or not, so i wait ...
-    //static int wait = 0;
-
-    if (data->servoDeviceData.stop)
-    {
-        //cout << ""
-        return HD_CALLBACK_DONE;
-    }
-
-    if (!data->servoDeviceData.ready)
-    {
-        return HD_CALLBACK_CONTINUE;
-    }
-
-    HHD hapticHD = hdGetCurrentDevice();
-    hdBeginFrame(hapticHD);
-
-    data->servoDeviceData.id = hapticHD;
-
-    //static int renderForce = true;
-
-    // Retrieve the current button(s).
-    hdGetIntegerv(HD_CURRENT_BUTTONS, &data->servoDeviceData.m_buttonState);
-
-    hdGetDoublev(HD_CURRENT_POSITION, data->servoDeviceData.m_devicePosition);
-    // Get the column major transform
-    HDdouble transform[16];
-    hdGetDoublev(HD_CURRENT_TRANSFORM, transform);
-
-    //std::cout << "Pos  = " << data->servoDeviceData.m_devicePosition <<std::endl;
-
-    // get Position and Rotation from transform => put in servoDeviceData
-    Mat3x3d mrot;
-    Quat rot;
-    for (int i=0; i<3; i++)
-        for (int j=0; j<3; j++)
-            mrot[i][j] = transform[j*4+i];
-
-    rot.fromMatrix(mrot);
-    rot.normalize();
-
-    double factor = 0.001;
-    Vec3d pos(transform[12+0]*factor, transform[12+1]*factor, transform[12+2]*factor); // omni pos is in mm => sofa simulation are in meters by default
-    data->servoDeviceData.pos=pos;
-
-    // verify that the quaternion does not flip:
-    if ((rot[0]*data->servoDeviceData.quat[0]+rot[1]*data->servoDeviceData.quat[1]+rot[2]*data->servoDeviceData.quat[2]+rot[3]*data->servoDeviceData.quat[3]) < 0)
-        for (int i=0; i<4; i++)
-            rot[i] *= -1;
-
-    data->servoDeviceData.quat[0] = rot[0];
-    data->servoDeviceData.quat[1] = rot[1];
-    data->servoDeviceData.quat[2] = rot[2];
-    data->servoDeviceData.quat[3] = rot[3];
-
-
-
-    /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
-    SolidTypes<double>::Transform baseOmni_H_endOmni(pos* data->scale, rot);
-    SolidTypes<double>::Transform world_H_virtualTool = data->world_H_baseOmni * baseOmni_H_endOmni * data->endOmni_H_virtualTool;
-
-    Vec3d world_pos_tool = world_H_virtualTool.getOrigin();
-    Quat world_quat_tool = world_H_virtualTool.getOrientation();
-
-
-    ///////////////// 3D rendering ////////////////
-    //double fx=0.0, fy=0.0, fz=0.0;
-    //if (data->forceFeedback != NULL)
-    //	(data->forceFeedback)->computeForce(world_pos_tool[0], world_pos_tool[1], world_pos_tool[2], world_quat_tool[0], world_quat_tool[1], world_quat_tool[2], world_quat_tool[3], fx, fy, fz);
-    //// generic computation with a 6D haptic feedback : the forceFeedback provide a force and a torque applied at point Tool but computed in the World frame
-    //SolidTypes<double>::SpatialVector Wrench_tool_inWorld(Vec3d(fx,fy,fz), Vec3d(0.0,0.0,0.0));
-
-
-    ///////////////// 6D rendering ////////////////
-    SolidTypes<double>::SpatialVector Twist_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0)); // Todo: compute a velocity !!
-    SolidTypes<double>::SpatialVector Wrench_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0));
-
-
-    if (data->forceFeedback != NULL)
-        (data->forceFeedback)->computeWrench(world_H_virtualTool,Twist_tool_inWorld,Wrench_tool_inWorld );
-
-    // we compute its value in the current Tool frame:
-    SolidTypes<double>::SpatialVector Wrench_tool_inTool(world_quat_tool.inverseRotate(Wrench_tool_inWorld.getForce()),  world_quat_tool.inverseRotate(Wrench_tool_inWorld.getTorque())  );
-    // we transport (change of application point) its value to the endOmni frame
-    SolidTypes<double>::SpatialVector Wrench_endOmni_inEndOmni = data->endOmni_H_virtualTool * Wrench_tool_inTool;
-    // we compute its value in the baseOmni frame
-    SolidTypes<double>::SpatialVector Wrench_endOmni_inBaseOmni( baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getForce()), baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getTorque()) );
-
-
-
-    double currentForce[3];
-    currentForce[0] = Wrench_endOmni_inBaseOmni.getForce()[0] * data->forceScale;
-    currentForce[1] = Wrench_endOmni_inBaseOmni.getForce()[1] * data->forceScale;
-    currentForce[2] = Wrench_endOmni_inBaseOmni.getForce()[2] * data->forceScale;
-
-    //cout << "OMNIDATA " << world_H_virtualTool.getOrigin() << " " << Wrench_tool_inWorld.getForce() << endl; // << currentForce[0] << " " << currentForce[1] << " " << currentForce[2] << endl;
-    if((data->servoDeviceData.m_buttonState & HD_DEVICE_BUTTON_1) || data->permanent_feedback)
-        hdSetDoublev(HD_CURRENT_FORCE, currentForce);
-
-    ++data->servoDeviceData.nupdates;
-    hdEndFrame(hapticHD);
-
-    /* HDErrorInfo error;
-    if (HD_DEVICE_ERROR(error = hdGetError()))
-    {
-    	printError(stderr, &error, "Error during scheduler callback");
-    	if (isSchedulerError(&error))
-    	{
-    		return HD_CALLBACK_DONE;
-    	}
-           }*/
-    /*
-     	OmniX = data->servoDeviceData.transform[12+0]*0.1;
-    	OmniY =	data->servoDeviceData.transform[12+1]*0.1;
-    	OmniZ =	data->servoDeviceData.transform[12+2]*0.1;
-    */
-
-    //cout << "NewOmniDriverEmu::stateCallback END" << endl;
-    return HD_CALLBACK_CONTINUE;
-}
-
-void exitHandler()
-{
-    hdStopScheduler();
-    hdUnschedule(hStateHandle);
-    /*
-        if (hHD != HD_INVALID_HANDLE)
-        {
-            hdDisableDevice(hHD);
-            hHD = HD_INVALID_HANDLE;
-        }
-    */
-}
-
-
-HDCallbackCode HDCALLBACK copyDeviceDataCallback(void *pUserData)
-{
-    std::cout << "SynchroCallBack" << std::endl;
-    OmniData *data = static_cast<OmniData*>(pUserData);
-    memcpy(&data->deviceData, &data->servoDeviceData, sizeof(DeviceData));
-    data->servoDeviceData.nupdates = 0;
-    data->servoDeviceData.ready = true;
-    return HD_CALLBACK_DONE;
-}
-
-HDCallbackCode HDCALLBACK stopCallback(void *pUserData)
-{
-    OmniData *data = static_cast<OmniData*>(pUserData);
-    data->servoDeviceData.stop = true;
-    return HD_CALLBACK_DONE;
-}
-
-/**
- * Sets up the device,
- */
-int NewOmniDriverEmu::initDevice(OmniData& data)
-{
-    if (isInitialized) return 0;
-    isInitialized = true;
-
-    data.deviceData.quat[0] = 0;
-    data.deviceData.quat[1] = 0;
-    data.deviceData.quat[2] = 0;
-    data.deviceData.quat[3] = 1;
-
-    data.servoDeviceData.quat[0] = 0;
-    data.servoDeviceData.quat[1] = 0;
-    data.servoDeviceData.quat[2] = 0;
-    data.servoDeviceData.quat[3] = 1;
-
-    HDErrorInfo error;
-    // Initialize the device, must be done before attempting to call any hd functions.
-    if (hHD == HD_INVALID_HANDLE)
-    {
-        hHD = hdInitDevice(HD_DEFAULT_DEVICE);
-        if (HD_DEVICE_ERROR(error = hdGetError()))
-        {
-            printError(stderr, &error, "[NewOmni] Failed to initialize the device");
-            return -1;
-        }
-        printf("[NewOmni] Found device %s\n",hdGetString(HD_DEVICE_MODEL_TYPE));
-
-        hdEnable(HD_FORCE_OUTPUT);
-        hdEnable(HD_MAX_FORCE_CLAMPING);
-
-        // Start the servo loop scheduler.
-        hdStartScheduler();
-        if (HD_DEVICE_ERROR(error = hdGetError()))
-        {
-            printError(stderr, &error, "[NewOmni] Failed to start the scheduler");
-            return -1;
-        }
-    }
-
-    data.servoDeviceData.ready = false;
-    data.servoDeviceData.stop = false;
-    hStateHandle = hdScheduleAsynchronous( stateCallback, (void*) &data, HD_MAX_SCHEDULER_PRIORITY);
-
-    if (HD_DEVICE_ERROR(error = hdGetError()))
-    {
-        printError(stderr, &error, "Failed to initialize haptic device");
-        fprintf(stderr, "\nPress any key to quit.\n");
-        getchar();
-        exit(-1);
-    }
-
-    return 0;
-}
-
 NewOmniDriverEmu::NewOmniDriverEmu()
     : forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
     , scale(initData(&scale, 1.0, "scale","Default scale applied to the Phantom Coordinates. "))
@@ -353,29 +106,11 @@ NewOmniDriverEmu::~NewOmniDriverEmu()
 void NewOmniDriverEmu::cleanup()
 {
     sout << "NewOmniDriverEmu::cleanup()" << sendl;
-    hdScheduleSynchronous(stopCallback, (void*) &data, HD_MIN_SCHEDULER_PRIORITY);
-    //exitHandler();
-    isInitialized = false;
-//    delete forceFeedback;
 }
-
-void NewOmniDriverEmu::setForceFeedback(ForceFeedback* ff)
-{
-
-    // the forcefeedback is already set
-    if(data.forceFeedback == ff)
-    {
-        return;
-    }
-
-    if(data.forceFeedback)
-        delete data.forceFeedback;
-    data.forceFeedback = ff;
-};
 
 void NewOmniDriverEmu::init()
 {
-    std::cout << "[NewOmni] init" << endl;
+    std::cout << "[NewOmniEmu] init" << endl;
 }
 
 void *hapticSimuExecute( void *ptr )
@@ -533,42 +268,26 @@ void NewOmniDriverEmu::bwdInit()
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
     ForceFeedback *ff = context->getTreeObject<ForceFeedback>();
 
-    if(ff)
-    {
-        this->setForceFeedback(ff);
-    }
-    //std::cerr << "setForceFeedback(ff) ok" << std::endl;
-    setDataValue();
-    //std::cerr << "NewOmniDriverEmu::bwdInit() setDataValueOK" << std::endl;
+    data.forceFeedback = ff;
 
-    if (!simulateTranslation.getValue())
+    setDataValue();
+
+    if (!omniSimThreadCreated)
     {
-        if(initDevice(data)==-1)
+        sout << "Not initializing phantom, starting emulating thread..." << sendl;
+        pthread_t hapSimuThread;
+
+        if (thTimer == NULL)
+            thTimer = new(CTime);
+
+        if ( pthread_create( &hapSimuThread, NULL, hapticSimuExecute, (void*)this) == 0 )
         {
-            noDevice=true;
-            std::cout<<"WARNING NO DEVICE"<<std::endl;
+            sout << "Thread created for Omni simulation" << sendl;
+            omniSimThreadCreated=true;
         }
     }
     else
-    {
-        if (!omniSimThreadCreated)
-        {
-            sout << "Not initializing phantom, starting emulating thread..." << sendl;
-            pthread_t hapSimuThread;
-
-            if (thTimer == NULL)
-                thTimer = new(CTime);
-
-            if ( pthread_create( &hapSimuThread, NULL, hapticSimuExecute, (void*)this) == 0 )
-            {
-                sout << "Thread created for Omni simulation" << sendl;
-                omniSimThreadCreated=true;
-            }
-        }
-        else
-            sout << "Emulating thread already running" << sendl;
-
-    }
+        sout << "Emulating thread already running" << sendl;
 }
 
 
@@ -698,6 +417,20 @@ void NewOmniDriverEmu::draw()
     }
 }
 
+void NewOmniDriverEmu::copyDeviceDataCallback(OmniData *pUserData)
+{
+    OmniData *data = pUserData; // static_cast<OmniData*>(pUserData);
+    memcpy(&data->deviceData, &data->servoDeviceData, sizeof(DeviceData));
+    data->servoDeviceData.nupdates = 0;
+    data->servoDeviceData.ready = true;
+}
+
+void NewOmniDriverEmu::stopCallback(OmniData *pUserData)
+{
+    OmniData *data = pUserData; // static_cast<OmniData*>(pUserData);
+    data->servoDeviceData.stop = true;
+}
+
 void NewOmniDriverEmu::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 {
 
@@ -722,7 +455,7 @@ void NewOmniDriverEmu::handleEvent(core::objectmodel::Event *event)
     {
         //getData(); // copy data->servoDeviceData to gDeviceData
         //if (!simulateTranslation.getValue()) {
-        hdScheduleSynchronous(copyDeviceDataCallback, (void *) &data, HD_MIN_SCHEDULER_PRIORITY);
+        copyDeviceDataCallback(&data);
         if (data.deviceData.ready)
         {
             cout << "Data ready, event" << endl;

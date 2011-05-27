@@ -26,10 +26,10 @@
 #define SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
 
 //Sensable include
-#include <HD/hd.h>
-#include <HDU/hdu.h>
-#include <HDU/hduError.h>
-#include <HDU/hduVector.h>
+//#include <HD/hd.h>
+//#include <HDU/hdu.h>
+//#include <HDU/hduError.h>
+//#include <HDU/hduVector.h>
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/defaulttype/SolidTypes.h>
 
@@ -60,11 +60,11 @@ using core::objectmodel::Data;
 /** Holds data retrieved from HDAPI. */
 typedef struct
 {
-    HHD id;
+    unsigned int id;
     int nupdates;
     int m_buttonState;					/* Has the device button has been pressed. */
-    hduVector3Dd m_devicePosition;	/* Current device coordinates. */
-    HDErrorInfo m_error;
+    //hduVector3Dd m_devicePosition;	/* Current device coordinates. */
+    //HDErrorInfo m_error;
     Vec3d pos;
     Quat quat;
     bool ready;
@@ -127,8 +127,6 @@ public:
     void cleanup();
     virtual void draw();
 
-    void setForceFeedback(ForceFeedback* ff);
-
     void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
     void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
 
@@ -147,6 +145,8 @@ public:
 
 private:
     void handleEvent(core::objectmodel::Event *);
+    void copyDeviceDataCallback(OmniData *pUserData);
+    void stopCallback(OmniData *pUserData);
     sofa::component::visualmodel::OglModel *visu_base, *visu_end;
     bool noDevice;
 
