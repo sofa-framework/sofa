@@ -32,8 +32,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/component/container/MeshLoader.h>
-//#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/loader/PrimitiveGroup.h>
 
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
@@ -57,7 +56,6 @@ using sofa::component::material::MaterialTypes;
 using sofa::component::material::GridMaterial;
 using defaulttype::FrameData;
 using defaulttype::SampleData;
-using sofa::component::container::MeshLoader;
 using sofa::component::topology::PointData;
 
 
@@ -155,6 +153,7 @@ protected:
     PointData<InOut> inout;  ///< Data specific to the conversion between the types
     PointData<DQInOut> dqinout;  ///< Data specific to the conversion between the types
     Data<bool> useDQ;  // use dual quat blending instead of linear blending
+    Data<bool> useAdaptivity;  // use automatic adaptation of frames and samples
 
 
     helper::ParticleMask* maskFrom;
@@ -162,6 +161,7 @@ protected:
 
     PointData<OutCoord> f_initPos;            // initial child coordinates in the world reference frame
     PointData<Vec<nbRef,unsigned int> > f_index;   ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
+    PointData<unsigned int> f_groups;            // child group for restricting interpolation (initialized from trianglegroupes)
 
     PointData<Vec<nbRef,InReal> >       weight;
     PointData<Vec<nbRef,MaterialCoord> > weightDeriv;
@@ -187,7 +187,8 @@ public:
     Data<bool> showDetF;
     Data<double> showDetFScaleFactor;
 
-    MeshLoader::SeqTriangles triangles; // Topology of toModel (used for strain display)
+    helper::vector< helper::fixed_array <unsigned int,3> > triangles; ///< Topology of toModel (used for strain display)
+    helper::vector< core::loader::PrimitiveGroup > trianglesGroups;  ///< triangle groups of toModel (used for restricting interpolation of a group to a label)
 
     GridMaterial< materialType>* gridMaterial;
     Data<unsigned int> targetFrameNumber;
