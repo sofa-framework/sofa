@@ -87,7 +87,7 @@ public:
     static const unsigned int num_material_dimensions = 3;
     static const unsigned int num_spatial_dimensions = 3;
 
-    static const unsigned int nbRef = 2;
+    static const unsigned int nbRef = 4;
 
     typedef Vec<num_material_dimensions,Real> Coord;    ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
     typedef vector<Coord> VecCoord;

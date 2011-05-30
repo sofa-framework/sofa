@@ -40,7 +40,8 @@
 #include <sofa/component/topology/PointData.inl>
 #include <iostream>
 #include <sofa/simulation/tree/GNode.h>
-
+#include <sofa/component/loader/MeshObjLoader.h>
+#include <sofa/component/container/MeshLoader.h>
 namespace sofa
 {
 
@@ -109,8 +110,10 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     : Inherit ( from, to ), FData(), SData()
     , useLinearWeights ( initData ( &useLinearWeights, false, "useLinearWeights","use linearly interpolated weights between the two closest frames." ) )
     , useDQ ( initData ( &useDQ, false, "useDQ","use dual quaternion blending instead of linear blending ." ) )
+    , useAdaptivity ( initData ( &useAdaptivity, false, "useAdaptivity","use automatic frame and sample adaptation." ) )
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
     , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
+    , f_groups ( initData ( &f_groups,"groups","child group (initialized from trianglegroupes)" ) )
     , weight ( initData ( &weight,"weights","influence weights of the Dofs" ) )
     , weightDeriv ( initData ( &weightDeriv,"weightGradients","weight gradients" ) )
     , weightDeriv2 ( initData ( &weightDeriv2,"weightHessians","weight Hessians" ) )
@@ -171,7 +174,9 @@ void FrameBlendingMapping<TIn, TOut>::init()
 
     //   unsigned int numParents = this->fromModel->getSize();
     unsigned int numChildren = this->toModel->getSize();
-    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
+    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+    // should be position0.. but does not work with extvec3f
+
     //WriteAccessor<PointData<OutCoord> > initPos(this->f_initPos);
     vector<OutCoord>& initPos = *(f_initPos.beginEdit());
 
@@ -182,6 +187,37 @@ void FrameBlendingMapping<TIn, TOut>::init()
             initPos[i] = out[i];
     }
     f_initPos.endEdit();
+
+
+    // Get the topology of toModel
+    sofa::component::container::MeshLoader *meshLoader;
+    this->getContext()->get( meshLoader, core::objectmodel::BaseContext::Local);
+    if (meshLoader) meshLoader->getTriangles(triangles);
+    else
+    {
+        sofa::component::loader::MeshObjLoader *meshobjLoader;
+        this->getContext()->get( meshobjLoader, core::objectmodel::BaseContext::Local);
+        if (meshobjLoader)
+        {
+            triangles.assign(meshobjLoader->triangles.getValue().begin(),meshobjLoader->triangles.getValue().end());
+            trianglesGroups.assign(meshobjLoader->trianglesGroups.getValue().begin(),meshobjLoader->trianglesGroups.getValue().end());
+            std::cout<<"FrameBlendingMapping: Import triangle groups: ";
+            for(unsigned int i=0; i<	trianglesGroups.size(); i++) std::cout<<		trianglesGroups[i]<<",";
+            std::cout<<std::endl;
+        }
+    }
+    if(triangles.size() && trianglesGroups.size())
+    {
+        vector<unsigned int>& groups = *(f_groups.beginEdit());
+        groups.resize(out.size()); groups.fill(0);
+        for(unsigned int i=0; i<trianglesGroups.size(); i++)
+            for(unsigned int j=0; j<(unsigned int)trianglesGroups[i].nbp; j++)
+                if(j+trianglesGroups[i].p0<triangles.size())
+                    for(unsigned int k=0; k<3; k++)
+                        groups[triangles[j+trianglesGroups[i].p0][k]]=i;
+        f_groups.endEdit();
+    }
+    this->getToModel()->getContext()->get(to_topo); // Get the output model topology to manage eventualy changes
 
 
     // init weights and sample info (mass, moments) todo: ask the Material
@@ -223,18 +259,9 @@ void FrameBlendingMapping<TIn, TOut>::init()
         inout.endEdit();
     }
 
-    // Get the topology of toModel to display the weights and the strain tensors on the triangular model.
-    MeshLoader *meshLoader;
-    this->getContext()->get( meshLoader, core::objectmodel::BaseContext::Local);
-    if (meshLoader)
-    {
-        meshLoader->getTriangles(triangles);
-    }
-
-    this->getToModel()->getContext()->get(to_topo); // Get the output model topology to manage eventualy changes
 
     static_cast<simulation::tree::GNode*>(static_cast<simulation::tree::GNode*>(this->getContext())->getParent())->get ( physicalMapping, core::objectmodel::BaseContext::SearchDown );
-    if (!physicalMapping) serr << "Unable to get physical mapping" << sendl;
+    //      if (!physicalMapping) serr << "Unable to get physical mapping" << sendl;
 
     Inherit::init();
 }
@@ -698,8 +725,12 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
             {
                 if(restrictInterpolationToLabel.getValue().size()==0) // general case=no restriction
                     gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i]);
-                else if(restrictInterpolationToLabel.getValue().size()==xto.size()) // restriction defined on each point
+                else if(restrictInterpolationToLabel.getValue().size()==1) // global restriction for all points
+                    gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i],restrictInterpolationToLabel.getValue()[0]);
+                else if(restrictInterpolationToLabel.getValue().size()==xto.size()) // restriction defined for each point
                     gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i],restrictInterpolationToLabel.getValue()[i]);
+                else if(restrictInterpolationToLabel.getValue().size()>=trianglesGroups.size() && f_groups.getValue().size()!=0) // restriction defined for each group
+                    gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i],restrictInterpolationToLabel.getValue()[f_groups.getValue()[i]]);
                 else // global restriction for all points
                     gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i],restrictInterpolationToLabel.getValue()[0]);
             }
@@ -1236,6 +1267,8 @@ void FrameBlendingMapping<TIn, TOut>::findIndexInRepartition( bool& influenced, 
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::updateMapping(const bool& computeWeights)
 {
+    if(!useAdaptivity.getValue()) return;
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Update_Mapping");
 #endif
@@ -1243,18 +1276,18 @@ void FrameBlendingMapping<TIn, TOut>::updateMapping(const bool& computeWeights)
 
     if (this->isPhysical || computeWeights)
     {
-        /*
-        initFrames( true, true); // With lloyd on frames
-        /*/
+        //initFrames( true, true); // With lloyd on frames
+
         initFrames( false); // Without lloyd on frames
-        //*/
+
 
         initSamples();
 
         gridMaterial->voxelsHaveChanged.setValue (false);
     }
 
-    ReadAccessor<Data<VecOutCoord> > out  = *this->toModel->read(core::ConstVecCoordId::restPosition());
+    //ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
+    const VecOutCoord& out = *this->toModel->getX0();
     vector<OutCoord>& initPos = *(f_initPos.beginEdit());
     initPos.resize(out.size());
     for(unsigned int i=0; i<out.size(); i++ )
@@ -1302,6 +1335,7 @@ void FrameBlendingMapping<TIn, TOut>::updateMapping(const bool& computeWeights)
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Update_Mapping");
 #endif
+
 }
 
 
@@ -1310,6 +1344,9 @@ void FrameBlendingMapping<TIn, TOut>::updateMapping(const bool& computeWeights)
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::checkForChanges()
 {
+    if(!useAdaptivity.getValue()) return;
+
+
     if (this->mappingHasChanged) this->mappingHasChanged = false;
     ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
@@ -1377,7 +1414,6 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
         }
         //*/
     }
-
 
 
     // Mapping has to be updated
