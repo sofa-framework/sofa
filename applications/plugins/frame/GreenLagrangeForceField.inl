@@ -154,8 +154,6 @@ void GreenLagrangeForceField<DataTypes>::addDForce(const core::MechanicalParams*
     stressChange.resize(dx.size());
     ReadAccessor<Data<VecMaterialCoord> > out (sampleData->f_materialPoints);
 
-    updateFF( _dx.getValue().size());
-
     // compute strains changes
     for(unsigned int i=0; i<dx.size(); i++)
     {

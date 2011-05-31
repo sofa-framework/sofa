@@ -398,8 +398,6 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    checkForChanges();
-
     if ( ! ( this->maskTo->isInUse() ) )
     {
         this->maskFrom->setInUse ( false );
@@ -1346,7 +1344,6 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
 {
     if(!useAdaptivity.getValue()) return;
 
-
     if (this->mappingHasChanged) this->mappingHasChanged = false;
     ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
@@ -1433,6 +1430,8 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
 {
+    if(!useAdaptivity.getValue()) return;
+
     if (t == to_topo)
     {
         // Handle topological changes on the mapped topology
