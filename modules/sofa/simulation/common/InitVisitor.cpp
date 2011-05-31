@@ -27,6 +27,7 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/VisualModel.h>
+#include <sofa/defaulttype/BoundingBox.h>
 
 //#include "MechanicalIntegration.h"
 
@@ -50,11 +51,16 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
     }
 #endif
 
+    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
+    nodeBBox->invalidate();
 
     for(unsigned int i=0; i<node->object.size(); ++i)
     {
         node->object[i]->init();
+        node->object[i]->computeBBox(params);
+        nodeBBox->include(node->object[i]->f_bbox.getValue(params));
     }
+    node->f_bbox.endEdit(params);
     return RESULT_CONTINUE;
 }
 
@@ -119,11 +125,21 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
 {
     // init all the components in reverse order
     node->setDefaultVisualContextValue();
+    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
+    Node::ChildIterator childNode;
+
+    for( childNode = node->child.begin(); childNode!=node->child.end(); ++childNode)
+    {
+        nodeBBox->include((*childNode)->f_bbox.getValue(params));
+    }
+    node->f_bbox.endEdit(params);
 
     for(unsigned int i=0; i<node->object.size(); ++i)
     {
         node->object[i]->bwdInit();
     }
+
+
 #ifdef SOFA_CLASSIC_SCENE_GRAPH
     return ;
 #else

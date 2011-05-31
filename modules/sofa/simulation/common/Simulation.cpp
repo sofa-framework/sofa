@@ -177,8 +177,6 @@ void Simulation::init ( Node* root )
         root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
     }
 
-    root->execute<UpdateBoundingBoxVisitor>(params);
-
     //Get the list of instruments present in the scene graph
     getInstruments(root);
 
