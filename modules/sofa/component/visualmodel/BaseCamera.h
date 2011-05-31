@@ -45,6 +45,7 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
+
 class TiXmlElement;
 
 namespace sofa
@@ -82,6 +83,7 @@ public:
 
     virtual void init();
     virtual void reinit();
+    virtual void bwdInit();
 
     void activate();
     void desactivate();
@@ -194,6 +196,8 @@ public:
     void handleEvent(sofa::core::objectmodel::Event* event);
 protected:
     Vec3 sceneCenter;
+    SReal sceneRadius;
+
 
     //need to keep "internal" lookAt and distance for updating Data
     //better way to do that ?
