@@ -87,6 +87,12 @@ bool BaseCamera::isActivated()
 
 void BaseCamera::init()
 {
+
+}
+
+void BaseCamera::bwdInit()
+{
+
     if(p_position.isSet())
     {
         if(!p_orientation.isSet())
@@ -126,11 +132,13 @@ void BaseCamera::init()
             serr << "Too many missing parameters ; taking default ..." << sendl;
         }
     }
-
-    currentLookAt = p_lookAt.getValue();
     currentDistance = p_distance.getValue();
     currentZNear = p_zNear.getValue();
     currentZFar = p_zFar.getValue();
+    p_minBBox.setValue(getContext()->f_bbox.getValue().minBBox());
+    p_maxBBox.setValue(getContext()->f_bbox.getValue().maxBBox());
+
+
 }
 
 void BaseCamera::translate(const Vec3& t)
@@ -346,6 +354,7 @@ void BaseCamera::computeZ()
 
         //get the same zFar and zNear calculations as QGLViewer
         sceneCenter = (minBBox + maxBBox)*0.5;
+        sceneRadius = 0.5*(maxBBox - minBBox).norm();
 
         double distanceCamToCenter = (currentPosition - sceneCenter).norm();
         double zClippingCoeff = 3.5;
@@ -550,6 +559,8 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
             p_orientation.endEdit();
             translate(translation);
             in.close();
+
+            setDefaultView(this->getContext()->getGravity());
 
             return true;
         }
