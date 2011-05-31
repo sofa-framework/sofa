@@ -924,11 +924,8 @@ void QtViewer::calcProjection()
     */
     if (groot && (!sceneBBoxIsValid || _axis))
     {
-        getSimulation()->computeBBox(groot, visualParameters.minBBox.ptr(),
-                visualParameters.maxBBox.ptr());
-        getSimulation()->computeBBox(getSimulation()->getVisualRoot(),
-                visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr(),
-                false);
+        visualParameters.minBBox = groot->f_bbox.getValue().minBBox();
+        visualParameters.maxBBox = groot->f_bbox.getValue().maxBBox();
         sceneBBoxIsValid = true;
 
         currentCamera->setBoundingBox(visualParameters.minBBox, visualParameters.maxBBox);
@@ -1738,14 +1735,7 @@ void QtViewer::setScene(sofa::simulation::Node* scene, const char* filename,
 
     bool newScene = (scene != groot);
     SofaViewer::setScene(scene, filename, keepParams);
-    if (newScene)
-    {
-        getSimulation()->computeBBox(groot, visualParameters.minBBox.ptr(),
-                visualParameters.maxBBox.ptr());
-        getSimulation()->computeBBox(getSimulation()->getVisualRoot(),
-                visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr(),
-                false);
-    }
+
 }
 
 void QtViewer::setSizeW(int size)
