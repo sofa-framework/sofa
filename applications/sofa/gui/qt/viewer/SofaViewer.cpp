@@ -80,14 +80,14 @@ void SofaViewer::setScene(sofa::simulation::Node* scene, const char* filename /*
             groot->addObject(currentCamera);
             currentCamera->p_position.forceSet();
             currentCamera->p_orientation.forceSet();
-            currentCamera->init();
+            currentCamera->bwdInit();
 
         }
         sofa::defaulttype::Vector3 minBBox, maxBBox;
 
-        sofa::simulation::getSimulation()->computeBBox(simulation::getSimulation()->getVisualRoot(), minBBox.ptr(),maxBBox.ptr());
+        //sofa::simulation::getSimulation()->computeBBox(simulation::getSimulation()->getVisualRoot(), minBBox.ptr(),maxBBox.ptr());
 
-        currentCamera->setBoundingBox(minBBox, maxBBox);
+        currentCamera->setBoundingBox(groot->f_bbox.getValue().minBBox(), groot->f_bbox.getValue().maxBBox());
 
     }
 
