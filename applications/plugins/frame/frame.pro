@@ -16,11 +16,12 @@ DEFINES += SOFA_BUILD_FRAME
 
 LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += $$SOFA_EXT_LIBS
-LIBS += -lsofasimulation$$LIBSUFFIX
-LIBS += -lsofatree$$LIBSUFFIX
+LIBS += -lsofacomponentbase$$LIBSUFFIX
+LIBS += -lsofacomponentloader$$LIBSUFFIX
 LIBS += -lsofacomponentprojectiveconstraintset$$LIBSUFFIX
 LIBS += -lsofacomponentvisualmodel$$LIBSUFFIX
-LIBS += -lsofacomponentbase$$LIBSUFFIX
+LIBS += -lsofasimulation$$LIBSUFFIX
+LIBS += -lsofatree$$LIBSUFFIX
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_DIR/applications
