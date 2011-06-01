@@ -872,8 +872,8 @@ void QtGLViewer::viewAll()
 {
     if (!groot) return;
 
-    getSimulation()->computeBBox(groot, visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
-    getSimulation()->computeBBox(getSimulation()->getVisualRoot(), visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr(),false);
+    visualParameters.minBBox = groot->f_bbox.getValue().minBBox();
+    visualParameters.maxBBox = groot->f_bbox.getValue().maxBBox();
 
     sceneBBoxIsValid =
         visualParameters.minBBox[0]    <=  visualParameters.maxBBox[0]

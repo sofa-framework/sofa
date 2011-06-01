@@ -91,6 +91,8 @@ signals:
     void NodeRemoved();
     void Updated();
     void NodeAdded();
+    void selectionChanged(sofa::core::objectmodel::BaseObject*);
+    void selectionChanged(sofa::core::objectmodel::BaseNode*);
 
 protected slots:
     void SaveNode();
