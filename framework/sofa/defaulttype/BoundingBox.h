@@ -27,6 +27,8 @@ public:
     operator bbox_t() const;
 
     void invalidate();
+    bool isValid() const;
+    bool isFlat()  const;
 
     SReal* minBBoxPtr();
     SReal* maxBBoxPtr();

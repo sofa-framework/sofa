@@ -34,6 +34,10 @@
 #include "QSofaListView.h"
 #include <algorithm>
 
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
+#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
+#endif
+
 
 #ifdef SOFA_HAVE_CHAI3D
 #include <sofa/simulation/common/PropagateEventVisitor.h>
@@ -439,11 +443,19 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect(visualGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ) , this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
     connect(visualGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
     connect(visualGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
+    connect(visualGraph, SIGNAL(selectionChanged(sofa::core::objectmodel::BaseObject*)),
+            viewer->getQWidget(), SLOT(fitObjectBBox(sofa::core::objectmodel::BaseObject*)) );
+    connect(visualGraph, SIGNAL( selectionChanged(sofa::core::objectmodel::BaseNode*) ),
+            viewer->getQWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) ) );
 #endif
     connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
     connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
+    connect(simulationGraph, SIGNAL(selectionChanged(sofa::core::objectmodel::BaseObject*)),
+            viewer->getQWidget(), SLOT(fitObjectBBox(sofa::core::objectmodel::BaseObject*)) );
+    connect(simulationGraph, SIGNAL( selectionChanged(sofa::core::objectmodel::BaseNode*) ),
+            viewer->getQWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) ) );
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
         connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setOn(bool) ) );
@@ -1455,6 +1467,9 @@ void RealGUI::step()
         simulation::getSimulation()->updateVisual( root , dt );
 #else
         simulation::getSimulation()->updateVisual( simulation::getSimulation()->getVisualRoot() , dt );
+        sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+        simulation::getSimulation()->getVisualRoot()->execute<sofa::simulation::UpdateBoundingBoxVisitor>(params);
+
 #endif
 
 

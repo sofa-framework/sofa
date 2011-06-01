@@ -162,6 +162,8 @@ public:
     virtual void setSizeW(int)=0;
     virtual void setSizeH(int)=0;
     virtual void captureEvent();
+    virtual void fitObjectBBox(sofa::core::objectmodel::BaseObject* ) {}
+    virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode*) {}
 
 
     //SIGNALS

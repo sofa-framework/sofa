@@ -47,6 +47,20 @@ void BoundingBox::invalidate()
     this->bbox = make_neutralBBox();
 }
 
+bool BoundingBox::isValid() const
+{
+    return minBBox().x() <= maxBBox().x() &&
+            minBBox().y() <= maxBBox().y() &&
+            minBBox().z() <= maxBBox().z();
+}
+
+bool BoundingBox::isFlat() const
+{
+    return    minBBox().x() == maxBBox().x() ||
+            minBBox().y() == maxBBox().y() ||
+            minBBox().z() == maxBBox().z();
+}
+
 BoundingBox::operator bbox_t() const
 {
     return bbox;

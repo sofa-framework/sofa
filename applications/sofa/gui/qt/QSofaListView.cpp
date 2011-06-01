@@ -210,11 +210,13 @@ void QSofaListView::updateMatchingObjectmodel(Q3ListViewItem* item)
             object = dynamic_cast<BaseObject*>(base);
             object_.ptr.Object = object;
             object_.type = typeObject;
+            emit( selectionChanged(object) );
         }
         else
         {
             object_.ptr.Node = node;
             object_.type = typeNode;
+            emit( selectionChanged(node));
         }
     }
 
