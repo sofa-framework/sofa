@@ -141,8 +141,10 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
 
     if (myData->lcp_true_vs_vm_false)
         myData->lcp_forceFeedback->computeForce(currentState, ForceBack);//Error here
+#ifdef SOFA_DEV
     else
         myData->vm_forceFeedback->computeForce(currentState, velocity, ForceBack);
+#endif
 
 
 
@@ -238,8 +240,9 @@ IHPDriver::IHPDriver()
     graspElasticMode = false;
     findForceFeedback= false;
 
-
+#ifdef SOFA_DEV
     data.vm_forceFeedback=NULL;
+#endif
     data.lcp_forceFeedback=NULL;
 }
 
@@ -277,6 +280,7 @@ void IHPDriver::setLCPForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* f
     data.lcp_true_vs_vm_false = true;
 };
 
+#ifdef SOFA_DEV
 void IHPDriver::setVMForceFeedback(VMechanismsForceFeedback<defaulttype::Vec1dTypes>* ff)
 {
     std::cout<<"IHPDriver::setVMForceFeedback() called:"<<std::endl;/////////////////////////////////////////////////////////
@@ -292,6 +296,7 @@ void IHPDriver::setVMForceFeedback(VMechanismsForceFeedback<defaulttype::Vec1dTy
 
     std::cout<<"IHPDriver::setVMForceFeedback() ok:"<<std::endl;/////////////////////////////////////////////////////////
 };
+#endif
 
 void IHPDriver::bwdInit()
 {
@@ -321,6 +326,7 @@ void IHPDriver::bwdInit()
     }
     else
     {
+#ifdef SOFA_DEV
 
         VMechanismsForceFeedback<defaulttype::Vec1dTypes> *ff = context->get<VMechanismsForceFeedback<defaulttype::Vec1dTypes>>();
         if(ff)
@@ -330,6 +336,7 @@ void IHPDriver::bwdInit()
             sout << "setVMForceFeedback(ff) ok" << sendl;
         }
         else
+#endif
             std::cout << " Error: no FF found" << std::endl;
     }
 
