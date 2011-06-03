@@ -36,7 +36,9 @@
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
 #include <sofa/component/controller/LCPForceFeedback.h>
+#ifdef SOFA_DEV
 #include <sofa/component/controller/VMechanismsForceFeedback.h>
+#endif
 #include "PaceMaker.h"
 #include "initXitact.h"
 namespace sofa
@@ -63,7 +65,9 @@ static float FFthresholdRoll;
 typedef struct
 {
     LCPForceFeedback<defaulttype::Vec1dTypes>* lcp_forceFeedback;//= NULL;
+#ifdef SOFA_DEV
     VMechanismsForceFeedback<defaulttype::Vec1dTypes>* vm_forceFeedback;// = NULL;
+#endif
     simulation::Node *context;
 
     int indexTool;
@@ -115,7 +119,9 @@ public:
     //virtual void draw();
 
     void setLCPForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff);
+#ifdef SOFA_DEV
     void setVMForceFeedback(VMechanismsForceFeedback<defaulttype::Vec1dTypes>* ff);
+#endif
 
     void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
     void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
