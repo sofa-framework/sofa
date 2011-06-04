@@ -490,7 +490,7 @@ void CudaHexahedronTLEDForceField::ComputeCIJK(float C[8][8][8])
 
 
 // --------------------------------------------------------------------------------------
-// Computes shape function global derivatives DhDx for hexahedral helements
+// Computes shape function global derivatives DhDx for hexahedral elements
 // --------------------------------------------------------------------------------------
 void CudaHexahedronTLEDForceField::ComputeDhDxHexa(const Element& e, const VecCoord& x, float Vol, float DhDx[8][3])
 {

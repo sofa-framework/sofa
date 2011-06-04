@@ -197,7 +197,6 @@ HEADERS += \
 		#CudaHexahedronGeodesicalDistance.inl \
                CudaJointSpringForceField.h \
                CudaJointSpringForceField.inl \
-		CudaTetrahedronSuperTLEDForceField.h \
 		CudaRasterizer.h \
 		CudaRasterizer.inl \
 		CudaLDIPenalityContactForceField.h \
@@ -232,7 +231,6 @@ SOURCES += \
 		#CudaHexahedronGeodesicalDistance.cpp \
                CudaJointSpringForceField.cpp \
 		CudaPairInteractionForceField.cpp \
-		CudaTetrahedronSuperTLEDForceField.cpp \
 		CudaRasterizer.cpp \
 		CudaLDIPenalityContactForceField.cpp \
 		CudaLDISimpleContactConstraint.cpp \
@@ -253,7 +251,6 @@ CUDA_SOURCES += \
 	CudaLinearSolverConstraintCorrection.cu \
 		#CudaHexahedronGeodesicalDistance.cu \
                CudaJointSpringForceField.cu \
-		CudaTetrahedronSuperTLEDForceField.cu \
 		CudaRasterizer.cu \
 		CudaLDIPenalityContactForceField.cu \
 	CudaComplianceMatrixUpdateManager.cu \
