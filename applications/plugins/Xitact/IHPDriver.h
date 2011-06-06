@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_IHPDRIVER_H
 #define SOFA_COMPONENT_IHPDRIVER_H
 
-
+#include <sofa/core/VecId.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseController.h>

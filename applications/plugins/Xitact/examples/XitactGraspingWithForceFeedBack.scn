@@ -150,7 +150,7 @@
           <RigidMapping object1="../.." object2="CM" index="3"/>
         </Node>
 
-        <ArticulatedSystemMapping object1="Articulations" object2="Jaws/GrasperDOFs" rootModel="../bati"/>
+        <ArticulatedSystemMapping input1="@../Articulations" output="@GrasperDOFs" input2="@../../bati"/>
       </Node>
 
       <ArticulatedHierarchyContainer/>
