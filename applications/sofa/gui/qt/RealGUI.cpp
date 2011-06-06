@@ -443,18 +443,18 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect(visualGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ) , this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
     connect(visualGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
     connect(visualGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
-    connect(visualGraph, SIGNAL(selectionChanged(sofa::core::objectmodel::BaseObject*)),
+    connect(visualGraph, SIGNAL(focusChanged(sofa::core::objectmodel::BaseObject*)),
             viewer->getQWidget(), SLOT(fitObjectBBox(sofa::core::objectmodel::BaseObject*)) );
-    connect(visualGraph, SIGNAL( selectionChanged(sofa::core::objectmodel::BaseNode*) ),
+    connect(visualGraph, SIGNAL( focusChanged(sofa::core::objectmodel::BaseNode*) ),
             viewer->getQWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) ) );
 #endif
     connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
     connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
-    connect(simulationGraph, SIGNAL(selectionChanged(sofa::core::objectmodel::BaseObject*)),
+    connect(simulationGraph, SIGNAL(focusChanged(sofa::core::objectmodel::BaseObject*)),
             viewer->getQWidget(), SLOT(fitObjectBBox(sofa::core::objectmodel::BaseObject*)) );
-    connect(simulationGraph, SIGNAL( selectionChanged(sofa::core::objectmodel::BaseNode*) ),
+    connect(simulationGraph, SIGNAL( focusChanged(sofa::core::objectmodel::BaseNode*) ),
             viewer->getQWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) ) );
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)

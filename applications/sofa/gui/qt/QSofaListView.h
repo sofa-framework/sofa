@@ -91,8 +91,8 @@ signals:
     void NodeRemoved();
     void Updated();
     void NodeAdded();
-    void selectionChanged(sofa::core::objectmodel::BaseObject*);
-    void selectionChanged(sofa::core::objectmodel::BaseNode*);
+    void focusChanged(sofa::core::objectmodel::BaseObject*);
+    void focusChanged(sofa::core::objectmodel::BaseNode*);
 
 protected slots:
     void SaveNode();
@@ -118,6 +118,8 @@ protected slots:
     void RunSofaDoubleClicked( QListViewItem*);
 #endif
     void nodeNameModification( simulation::Node*);
+    void focusObject();
+    void focusNode();
 protected:
     void collapseNode(Q3ListViewItem* item);
     void expandNode(Q3ListViewItem* item);
