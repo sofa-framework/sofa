@@ -8,7 +8,7 @@ namespace sofa
 namespace simulation
 {
 
-class UpdateBoundingBoxVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API UpdateBoundingBoxVisitor : public Visitor
 {
 public:
 
