@@ -1729,15 +1729,6 @@ void QtViewer::saveView()
     }
 }
 
-void QtViewer::setScene(sofa::simulation::Node* scene, const char* filename,
-        bool keepParams)
-{
-
-    bool newScene = (scene != groot);
-    SofaViewer::setScene(scene, filename, keepParams);
-
-}
-
 void QtViewer::setSizeW(int size)
 {
     resizeGL(size, _H);
