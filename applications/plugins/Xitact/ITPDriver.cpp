@@ -284,13 +284,15 @@ void ITPDriver::handleEvent(core::objectmodel::Event *event)
 
             if(_mstate->getSize()>5)
             {
-                (*_mstate->getX0())[0].x() = thetaX;
-                (*_mstate->getX0())[1].x() = thetaZ;
-                (*_mstate->getX0())[2].x() = state.toolRoll;
-                (*_mstate->getX0())[3].x() = state.toolDepth*Scale.getValue();
-                (*_mstate->getX0())[4].x() =state.opening;
-                (*_mstate->getX0())[5].x() =state.opening;
-                //std::cout << thetaX << thetaZ << state.toolRoll << state.toolDepth*Scale.getValue() << state.opening << std::endl;
+                Data<Vec1dTypes::VecCoord >* dataTrocar = _mstate->write(sofa::core::VecCoordId::restPosition());
+                helper::WriteAccessor< Data< Vec1dTypes::VecCoord > > vecXTrocar = dataTrocar;
+
+                vecXTrocar[0].x() = thetaX;
+                vecXTrocar[1].x() = thetaZ;
+                vecXTrocar[2].x() = state.toolRoll;
+                vecXTrocar[3].x() = state.toolDepth*Scale.getValue();
+                vecXTrocar[4].x() = state.opening;
+                vecXTrocar[5].x() = state.opening;
             }
             else
             {

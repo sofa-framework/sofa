@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_ITPDRIVER_H
 
 //Sensable include
+#include <sofa/core/VecId.h>
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
