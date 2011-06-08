@@ -107,6 +107,12 @@ public:
         return size;
     }
 
+    /// Return true if this model process self collision
+    bool getSelfCollision() const
+    {
+        return bSelfCollision.getValue();
+    }
+
     /// set a value to bSelfCollision
     void setSelfCollision(bool _bSelfCollision)
     {
