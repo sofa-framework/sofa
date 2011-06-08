@@ -1,3 +1,0 @@
-class TagSet
-!!!341936.cpp!!!	includes(in t : TagSet) : bool
-	return !empty() && std::includes( this->begin(), this->end(), t.begin(), t.end());

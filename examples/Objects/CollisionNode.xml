@@ -1,9 +1,0 @@
-<Node name="CollisionNode">
-  <MeshLoader name="collisionLoader" filename="file"/>
-  <Mesh/>
-  <MechanicalObject/>
-  <Triangle contactStiffness="200"/>
-  <Line     contactStiffness="@[-1].contactStiffness"/>
-  <Point    contactStiffness="@[-1].contactStiffness" />
-  <BarycentricMapping />
-</Node>
