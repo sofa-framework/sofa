@@ -59,6 +59,8 @@ public:
     typedef typename Out::Deriv Deriv;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
+    typedef typename In::MatrixDeriv InMatrixDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
 
 public:
     Data< Vector3 > pivot;
@@ -88,6 +90,10 @@ public:
     void applyJT(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in);
 
     void draw();
+
+// 	virtual void applyJT( const ConstraintParams* mparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in) {}
+
+    virtual void applyJT( InMatrixDeriv& /*out*/, const OutMatrixDeriv& /*in*/ ) {}
 
 protected:
     Quat currentRotation;
