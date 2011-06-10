@@ -62,10 +62,18 @@ public:
     virtual ~DefaultMultiMatrixAccessor();
 
     virtual void clear();
+
+    // setting the global matrix for the system. Its size must have the sum of all real Mechanical state
     virtual void setGlobalMatrix(defaulttype::BaseMatrix* matrix);
 
+    // When a real MS is visited by the visitor, it must be registed in a local data here (realStateOffsets)
+    // the global size of the system must be ajusted (adding the size of this MS)
     virtual void addMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate);
+
+    // When a mapping is visited by the visitor, satisfying that is a mechanical mapping
+    // and having implemented getJ, this mapping must be registed in a local data here (mappingList)
     virtual void addMechanicalMapping(sofa::core::BaseMapping* mapping);
+
     virtual void addMappedMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate);
 
     virtual void setupMatrices();
@@ -97,19 +105,9 @@ protected:
     //    K21 += JBt * I43 * JA
     //
     // using matrix buffer in case of interaction between mapped model
-    // when MS1 and MS2 are all mapped model, buffer12 and buffer21 are used instead of K12 and K21
-    defaulttype::BaseMatrix* buff12;
-    defaulttype::BaseMatrix* buff21;
 
     //map used for real mechanical state (non-mapped only)
     std::map< const sofa::core::behavior::BaseMechanicalState*, int > realStateOffsets;
-
-    //an tree structure allowing to propagate Bottom to Up of mapping tree
-    //giving the toModel of a mapping, we can take this mapping it-self, and then its fromModel
-    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* > mappingBottomUpTree;
-    //an tree structure allowing to propagate Top to Down of mapping tree
-    //giving the fromModel of a mapping, we can take this mapping it-self, and then its toModel
-    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, sofa::core::BaseMapping* > mappingTopDownTree;
 
     //map used only for mapped mechanical state
     //a mapped state is added here if and only if its stiffness matrix is guessed by other component (forcefield)
@@ -118,11 +116,16 @@ protected:
 
     //an data stored information about interaction between state. Each time there are interaction beween mapped state
     //a new matrix will be created and this interaction is stored here in order to propagate DownOnTop the interaction
-    mutable std::vector< std::pair< const BaseMechanicalState*, const BaseMechanicalState* > > interactionsMappedTree;
+    mutable std::vector< std::pair< const BaseMechanicalState*, const BaseMechanicalState* > > interactionsMappedTree;//todo remove
 
     //The data structure included mapped and on mapped state, the diagonal stiffness bloc and interaction stiffnessbloc
-    mutable std::map< const BaseMechanicalState*, MatrixRef > diagonalStiffnessBloc;
+    mutable std::map< const BaseMechanicalState*, MatrixRef > diagonalStiffnessBloc;//todo remove
     mutable std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef > interactionStiffnessBloc;
+
+    //The list of validated mapping in the order of visitor, to be read in the inverted direction for propagation contribution
+    std::vector<sofa::core::BaseMapping*> mappingList;
+
+
 
     //Matrix creating is only call when there are a mapped state,
     //the stiffness and interaction stiffness of this state could'nt described on the principal matrix
