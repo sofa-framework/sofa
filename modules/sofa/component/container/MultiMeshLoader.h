@@ -77,6 +77,7 @@ public:
 
     virtual bool load(const char* filename);
 
+    virtual void init();
 
     void setFilename(std::string f)
     {
