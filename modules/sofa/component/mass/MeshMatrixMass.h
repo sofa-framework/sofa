@@ -46,6 +46,11 @@
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
+
+//VERY IMPORTANT FOR GRAPHS
+#include <sofa/core/VisualModel.h>
+#include <sofa/helper/map.h>
+
 namespace sofa
 {
 
@@ -101,16 +106,18 @@ public:
 
     /// to display the center of gravity of the system
     Data< bool >         showCenterOfGravity;
-    Data< float >        showAxisSize;
+    Data< Real >        showAxisSize;
     Data< bool >         lumping;
     Data< bool >         printMass;
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
+
 
 
 protected:
 
     /// The type of topology to build the mass from the topology
     TopologyType topologyType;
-    float massLumpingCoeff;
+    Real massLumpingCoeff;
     Real savedMass;
 
 
