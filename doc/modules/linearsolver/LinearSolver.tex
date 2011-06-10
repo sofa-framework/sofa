@@ -62,28 +62,18 @@ introducing the simulation scene graph where there are mapped ms, mapping, inter
 Present here the matrix structure in the generale case, where there are several mapped mechanical states and interactions between them. Explain the structure : principale blocs, diagonal bloc (self-stiffness), non-diagonal blocs (interaction-stiffness), mapping blocs J can be seen as a bloc ...
 \subsection{Context in SOFA }
 Identifying the problem in SOFA where there are a scene but not all nodes has stiffness, or not all mapping has matrix J
-
-//           case1                                           case2
-//      |               |                                  |       |
-//     MS1             MS2                                MS1     MS2
-//      |               |                                 /      /
-//     mapA            mapB                             map   Inter
-//      |               |                                 \   /
-//     MS3 ---Inter--  MS4                                MS3/
-//
-//    K11 += JAt * K33 * JA                         K11 += Jt * K33 * J
-//    K22 += JBt * K44 * JB                         K12 += Jt * I32
-//    K12 += JAt * I34 * JB                         K21 +=      I32 * J
-//    K21 += JBt * I43 * JA
 \subsubsection{self-stiffness propagation }
+where the $K_{22}$ is a mapped mechanical state of the $K_{11}$
 \[
  K_{11} += J^t * K_{22} * J
 \]
 \subsubsection{interaction-stiffness propagation }
+In the general case, the may have a simulation scene where there are many level of mapped mechanical states (mapped of mapped state ...) and many interaction forcefield interacting beetween them. Therefor the stiffness of interaction forcefield and the mapped mechanical state need to be propagated through the mappings. We can imagine for one propagation, there are two simple cases.
 \paragraph{Interaction beweent Real Mechanical Object and Mapped Mechanical Object}
 \begin{center}
   \includegraphics[scale=0.3]{interaction_Real_Mapped}
 \end{center}
+In the case where one of the two mechanical states in interaction is non-mapped, the propagation can be computed directly by the formula :
 \[
 K_{11} += J^t * K_{33} * J 
 \]
@@ -97,6 +87,7 @@ K_{21} += I_{32} * J
 \begin{center}
   \includegraphics[scale=0.3]{interaction_Mapped_Mapped}
 \end{center}
+In the case where the two mechanical states in interaction are mapped, and the fromModel of the two mapping are non-mapped state, the propagation can be computed directly by the formula :
 \[
 K_{11} += JA^t * K_{33} * JA 
 \]
@@ -109,6 +100,7 @@ K_{12} += JA^t * I_{34} * JB
 \[
 K_{21} += JB^t * I_{43} * JA 
 \]
+In the case where the two mechanical states in interaction are mapped, of one of two fromModel or the two fromModel are still mapped model, that mean many propagation need to be done. We need a buffer interaction stiffness for propagating.
 \subsection{Iterative Solvers }
 \subsection{Preconditioner }
 
