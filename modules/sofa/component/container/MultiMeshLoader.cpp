@@ -53,6 +53,14 @@ MultiMeshLoader::MultiMeshLoader()
     nbPointsTotal.setReadOnly(true);
 }
 
+
+void MultiMeshLoader::init()
+{
+    helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3> > > _vertices(this->vertices);
+    _vertices.resize(seqPoints.size());
+    for (unsigned int i=0 ; i<seqPoints.size() ; i++)		 for (unsigned int j=0 ; j<3 ; j++) _vertices[i][j]=seqPoints[i][j];
+}
+
 void MultiMeshLoader::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->BaseObject::parse(arg);
