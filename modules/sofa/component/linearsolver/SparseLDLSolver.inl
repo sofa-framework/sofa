@@ -203,7 +203,7 @@ template<class TMatrix, class TVector>
 void SparseLDLSolver<TMatrix,TVector>::LDL_numeric(Matrix& M)
 {
     SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) getMatrixInvertData(&M);
-    double yi, l_ki ;
+    Real yi, l_ki ;
     int i, p, kk, len, top ;
 
     Y.resize(data->n);

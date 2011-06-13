@@ -130,7 +130,7 @@ void SparseTAUCSLLtSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector&
         for (int i=begin+1; i<end; i++)
         {
             int col = data->L->rowind[i];
-            double val = ((Real *)data->L->values)[i];
+            Real val = ((Real *)data->L->values)[i];
 
             data->B[col] -= val * data->B[diag];
         }
@@ -147,7 +147,7 @@ void SparseTAUCSLLtSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector&
         for (int i=begin+1; i<end; i++)
         {
             int col = data->L->rowind[i];
-            double val = ((Real *)data->L->values)[i];
+            Real val = ((Real *)data->L->values)[i];
 
             data->B[diag] -= val * data->B[col];
         }
