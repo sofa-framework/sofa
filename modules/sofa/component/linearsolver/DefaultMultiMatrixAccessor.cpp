@@ -414,7 +414,7 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
         std::cout << "=============================================================================================" <<std::endl;
     }
 
-
+#if 0
     const int lastMappingId = mappingList.size() - 1;
     for(int id=lastMappingId; id>=0; --id)
     {
@@ -481,23 +481,21 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
 //				std::cout << "	toModel : "<< outstate->getName()<< " has itself stiffness"<<std::endl;
 //		}
 
-
-
-
-        std::vector<std::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
-        std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin();
-        std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
-        while(it !=itEnd)
-        {
-            if(it->first.first == outstate || it->first.second == outstate )
-            {
-                interactionList.push_back(it->first);
-            }
-            ++it;
-        }
-
         if( MULTIMATRIX_VERBOSE)
         {
+
+            std::vector<std::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
+            std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin();
+            std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
+            while(it !=itEnd)
+            {
+                if(it->first.first == outstate || it->first.second == outstate )
+                {
+                    interactionList.push_back(it->first);
+                }
+                ++it;
+            }
+
             for(unsigned i=0; i< interactionList.size(); i++)
             {
                 //                   |       |
@@ -600,6 +598,8 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
 
 
     }
+
+#endif
 
 
 
