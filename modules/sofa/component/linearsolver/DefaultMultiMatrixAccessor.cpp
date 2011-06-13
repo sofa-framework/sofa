@@ -82,7 +82,9 @@ void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::
 
     if( MULTIMATRIX_VERBOSE)
     {
-        std::cout << "DefaultMultiMatrixAccessor: adding MechanicalState " << mstate->getName() << " in global matrix at offset " << realStateOffsets[mstate] << " with size " << dim << std::endl;
+        std::cout << "Mechanical Visitor : adding Real MechanicalState " << mstate->getName()
+                << " in global matrix ["<<dim<<"."<<dim
+                <<"] at offset (" << realStateOffsets[mstate] <<","<< realStateOffsets[mstate]<<")"<< std::endl;
     }
 }
 
@@ -100,7 +102,7 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* m
 
         if( MULTIMATRIX_VERBOSE)
         {
-            std::cout << "DefaultMultiMatrixAccessor: adding validated MechanicalMapping " << mapping->getName() << std::endl;
+            std::cout << "Mapping Visitor : adding validated MechanicalMapping " << mapping->getName() << std::endl;
         }
     }
     else
@@ -142,7 +144,7 @@ void DefaultMultiMatrixAccessor::setupMatrices()
 
     if( MULTIMATRIX_VERBOSE)
     {
-        std::cout << "DefaultMultiMatrixAccessor: Global Matrix size = " << globalDim << "x" << globalDim << " with " << realStateOffsets.size() << " models." << std::endl;
+        std::cout << "Setup Global Matrix [" << globalDim << "." << globalDim << "] for " << realStateOffsets.size() << " real mechanical state" << std::endl;
     }
 
 
@@ -212,10 +214,11 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
     {
         if (r.matrix != NULL)
         {
-            std::cout << "DefaultMultiMatrixAccessor: giving matrix " << r.matrix->rowSize() << "x" << r.matrix->colSize() << " for real state " << mstate->getName() << " using offset " << r.offset << std::endl;
+            std::cout << "		Giving Stiffness Matrix [" << r.matrix->rowSize() << "." << r.matrix->colSize() << "] for state " << mstate->getName()
+                    << " at offset (" << r.offset  <<","<< r.offset <<")"<< std::endl;
         }
         else
-            std::cout << "DefaultMultiMatrixAccessor: NULL matrix found for state " << mstate->getName() << std::endl;
+            std::cout << "		WARNING: NULL matrix found for state " << mstate->getName() << std::endl;
     }
 
     return r;
@@ -235,12 +238,12 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
         if( MULTIMATRIX_VERBOSE)///////////////////////////////////////////
         {
             if (r2.matrix != NULL)
-                std::cout << "DefaultMultiMatrixAccessor: giving bloc matrix "
-                        <<" at offset ("<<r2.offRow <<","<< r2.offCol<<") of global matrix"
-                        << r2.matrix->rowSize() << "x" << r2.matrix->colSize() << " for self-interaction "
+                std::cout << "		Giving Interaction Stiffness Matrix ["
+                        << r2.matrix->rowSize() << "." << r2.matrix->colSize()
+                        <<"] at offset ("<<r2.offRow <<","<< r2.offCol<<") for self-interaction : "
                         <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"<< std::endl;
             else
-                std::cout << "DefaultMultiMatrixAccessor: giving NULL matrix for self-interaction "<<
+                std::cout << "		WARNING : giving NULL matrix for self-interaction "<<
                         mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" << std::endl;
         }
     }
@@ -260,16 +263,15 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
             {
                 if(r2.matrix != NULL)
                 {
-                    std::cout << "DefaultMultiMatrixAccessor: giving matrix "
-                            <<" at offset ("<<r2.offRow <<","<< r2.offCol<<") "
-                            << r2.matrix->rowSize() << "x" << r2.matrix->colSize() << " for interaction "
+                    std::cout << "		Giving Interaction Stiffness Matrix ["
+                            << r2.matrix->rowSize() << "." << r2.matrix->colSize()
+                            <<"] at offset ("<<r2.offRow <<","<< r2.offCol<<")  for interaction : "
                             <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"<< std::endl;
                 }
                 else
                 {
-                    std::cout << "DefaultMultiMatrixAccessor: giving NULL matrix  for interaction "
-                            <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
-                            <<" at ("<<it->second.offRow <<","<< it->second.offCol<<")"<< std::endl;
+                    std::cout << "		WARNING : giving NULL matrix  for interaction "
+                            <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"<< std::endl;
                 }
             }
         }
@@ -293,13 +295,13 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
                         if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
                         {
                             if (r2.matrix != NULL)
-                                std::cout << "DefaultMultiMatrixAccessor: giving bloc matrix "
-                                        <<" at offset ("<<r2.offRow <<","<< r2.offCol<<") of global matrix"
-                                        << r2.matrix->rowSize() << "x" << r2.matrix->colSize() << " for interaction "
+                                std::cout <<  "		Giving Interaction Stiffness Matrix ["
+                                        << r2.matrix->rowSize() << "." << r2.matrix->colSize()
+                                        <<"] at offset ("<<r2.offRow <<","<< r2.offCol<<")  for interaction : "
                                         <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"<< std::endl;
                             else
-                                std::cout << "DefaultMultiMatrixAccessor: giving NULL matrix  for interaction "
-                                        << " for interaction real states"
+                                std::cout << "		WARNING : giving NULL matrix  for interaction "
+                                        << " for interaction : "
                                         << mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
                                         << std::endl;
                         }
@@ -319,13 +321,13 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
                 if( MULTIMATRIX_VERBOSE)
                 {
                     if (r2.matrix != NULL)
-                        std::cout << "DefaultMultiMatrixAccessor: giving created matrix "
-                                << " with offset ("<<r2.offRow <<","<< r2.offCol<<") size"
-                                << r2.matrix->rowSize() << "x" << r2.matrix->colSize() << " for interaction "
+                        std::cout <<   "		Giving Interaction Stiffness Matrix ["
+                                << r2.matrix->rowSize() << "." << r2.matrix->colSize()
+                                << "] at offset ("<<r2.offRow <<","<< r2.offCol<<")  for interaction : "
                                 << mstate1->getName()<< "[" <<mstate1->getMatrixSize()<< "] --- " <<mstate2->getName()<<"[" <<mstate2->getMatrixSize()<<"]"<< std::endl;
                     else
-                        std::cout << "DefaultMultiMatrixAccessor: giving NULL matrix  for interaction "
-                                << " for interaction real states"
+                        std::cout << "		WARNING : giving NULL matrix  for interaction "
+                                << " for interaction : "
                                 << mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]"
                                 << std::endl;
                 }
@@ -340,7 +342,7 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
     if( MULTIMATRIX_VERBOSE)
     {
         if(r2.matrix == NULL)
-            std::cout << "DefaultMultiMatrixAccessor: NULL matrix found for interaction " << mstate1->getName()<<" --- "<<mstate2->getName() << std::endl;
+            std::cout << "		WARNING : NULL matrix found for interaction " << mstate1->getName()<<" --- "<<mstate2->getName() << std::endl;
     }
 
     return r2;
@@ -379,7 +381,7 @@ defaulttype::BaseMatrix* MappedMultiMatrixAccessor::createMatrix(const sofa::cor
 
     if( MULTIMATRIX_VERBOSE)
     {
-        std::cout << "		++ creating and adding matrix["<< m->rowSize() <<"x"<< m->colSize() <<"]   for mapped state " << mstate->getName() << "[" << mstate->getMatrixSize()<<"]"<< std::endl;
+        std::cout << "			++ Creating matrix["<< m->rowSize() <<"."<< m->colSize() <<"]   for mapped state " << mstate->getName() << "[" << mstate->getMatrixSize()<<"]"<< std::endl;
     }
 
     return m;
@@ -393,7 +395,7 @@ defaulttype::BaseMatrix* MappedMultiMatrixAccessor::createInteractionMatrix(cons
 
     if( MULTIMATRIX_VERBOSE)
     {
-        std::cout << "		++ creating interraction matrix["<< m->rowSize() <<"x"<< m->colSize()
+        std::cout << "			++ Creating interraction matrix["<< m->rowSize() <<"x"<< m->colSize()
                 << "] for interaction " << mstate1->getName() << "[" << mstate1->getMatrixSize()
                 << "] --- "             << mstate2->getName() << "[" << mstate2->getMatrixSize()<<"]" <<std::endl;
     }
@@ -403,16 +405,17 @@ defaulttype::BaseMatrix* MappedMultiMatrixAccessor::createInteractionMatrix(cons
 
 void MappedMultiMatrixAccessor::computeGlobalMatrix()
 {
+    /*
     if( MULTIMATRIX_VERBOSE)
     {
-        const int lastMappingId = mappingList.size() - 1;
-        std::cout << "================  MappedMultiMatrixAccessor: "<<lastMappingId +1 <<" validated mappings registered ================" <<std::endl;
-        for(int id=lastMappingId; id>=0; --id)
-        {
-            std::cout << "                mapping "<<id<< "-th  :"<<mappingList[id]->getName() <<" registered in list" <<std::endl;
-        }
-        std::cout << "=============================================================================================" <<std::endl;
-    }
+    	const int lastMappingId = mappingList.size() - 1;
+    	std::cout << "================  MappedMultiMatrixAccessor: "<<lastMappingId +1 <<" validated mappings registered ================" <<std::endl;
+    	for(int id=lastMappingId;id>=0;--id)
+    	{
+    		std::cout << "                mapping "<<id<< "-th  :"<<mappingList[id]->getName() <<" registered in list" <<std::endl;
+    	}
+    	std::cout << "=============================================================================================" <<std::cout << std::endl;
+    }*/
 
 #if 0
     const int lastMappingId = mappingList.size() - 1;
@@ -422,10 +425,12 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
         const BaseMechanicalState* instate  = const_cast<const BaseMechanicalState*>(m_mapping->getMechFrom()[0]);
         const BaseMechanicalState* outstate  = const_cast<const BaseMechanicalState*>(m_mapping->getMechTo()[0]);
         const defaulttype::BaseMatrix* matrixJ = m_mapping->getJ();
+        const unsigned int nbR_J = matrixJ->rowSize();
+        const unsigned int nbC_J = matrixJ->colSize();
 
         if( MULTIMATRIX_VERBOSE)
         {
-            std::cout << " contribution of " << id << "-th mapping named : " << m_mapping->getName()
+            std::cout << "[CONTRIBUTION] of " << id << "-th mapping named : " << m_mapping->getName()
                     << " with fromModel : "<< instate->getName()
                     << " and toModel : "   << outstate->getName() <<" --" <<std::endl;
         }
@@ -435,107 +440,226 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
         if(mappedMatrices.find(outstate) == mappedMatrices.end())
         {
             if( MULTIMATRIX_VERBOSE)
-                std::cout << "	WARNING toModel : "<< outstate->getName()<< " not found in local data registed"<<std::endl;
+                std::cout << "	[Propa.Stiff] WARNING toModel : "<< outstate->getName()<< " dont have stiffness matrix"<<std::endl;
         }
 
 
 
-//		if(diagonalStiffnessBloc.find(outstate) != diagonalStiffnessBloc.end())
-//		{
-//			//    K11 += Jt * K22 * J       //
-//			MatrixRef K1 = this->getMatrix(instate);
-//			MatrixRef K2 = this->getMatrix(outstate);
-//
-//			const unsigned int sizeK1 = K1.matrix->rowSize(); //instate->getMatrixSize();
-//			const unsigned int sizeK2 = K2.matrix->rowSize(); //outstate->getMatrixSize();
-//
-//			const unsigned int offset1 = K1.offset;
-//			const unsigned int offset2 = K2.offset;
-//
-//			for(unsigned int i1 =0 ; i1 < sizeK1 ; ++i1)
-//			{
-//				for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
-//				{
-//					double Jt_K2_J_i1j1 = 0;
-//
-//					for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
-//					{
-//						for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
-//						{
-//							const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
-//							for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
-//							{
-//								const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
-//								const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
-//
-//								Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
-//							}
-//						}
-//					}
-//
-//					K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
-//				}
-//			}
-//
-//			if( MULTIMATRIX_VERBOSE)
-//				std::cout << "	toModel : "<< outstate->getName()<< " has itself stiffness"<<std::endl;
-//		}
+        if(diagonalStiffnessBloc.find(outstate) != diagonalStiffnessBloc.end())
+        {
+            //=================================
+            //           K11 += Jt * K22 * J
+            //=================================
+            MatrixRef K1 = this->getMatrix(instate);
+            MatrixRef K2 = this->getMatrix(outstate);
 
-        if( MULTIMATRIX_VERBOSE)
+
+            const unsigned int sizeK1 = K1.matrix->rowSize(); //instate->getMatrixSize();
+            const unsigned int sizeK2 = K2.matrix->rowSize(); //outstate->getMatrixSize();
+
+            const unsigned int offset1  = K1.offset;
+            const unsigned int offset2  = K2.offset;
+
+
+            if( MULTIMATRIX_VERBOSE)
+            {
+                std::cout << "	[Propa.Stiff] propagating stiffness of : "<< outstate->getName()<< " to stifness "<<instate->getName()<<std::endl;
+            }
+            if( MULTIMATRIX_VERBOSE)
+            {
+                std::cout <<"	                    **multiplication of "
+                        <<" K1["<<sizeK1<<"."<<sizeK1<< "]("<< offset1<<","<<offset1 <<  ")   =  "
+                        <<" Jt["<<nbC_J<<"."<<nbR_J<< "] * "
+                        <<" K2["<<sizeK2<<"."<<sizeK2<<"]("<< offset2<<","<<offset2 <<  ") * "
+                        <<" J["<<nbR_J<<"."<<nbC_J<< "]"
+                        <<std::endl;
+            }
+
+
+            /*
+            			for(unsigned int i1 =0; i1 < sizeK1 ; ++i1)
+            			{
+            				for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
+            				{
+            					double Jt_K2_J_i1j1 = 0;
+
+            					for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
+            					{
+            						for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
+            						{
+            							const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
+            							for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
+            							{
+            								const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
+            								const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
+
+            								Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
+            							}
+            						}
+            					}
+
+            					K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
+            				}
+            			}
+            */
+        }
+
+
+
+
+        std::vector<std::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
+        std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin();
+        std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
+        while(it !=itEnd)
+        {
+            if(it->first.first == outstate || it->first.second == outstate )
+            {
+                interactionList.push_back(it->first);
+            }
+            ++it;
+        }
+
+
+
+        for(unsigned i=0; i< interactionList.size(); i++)
         {
 
-            std::vector<std::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
-            std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin();
-            std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
-            while(it !=itEnd)
+            if( MULTIMATRIX_VERBOSE)
             {
-                if(it->first.first == outstate || it->first.second == outstate )
+                std::cout << "	[Propa.Interac.Stiff] detected interaction between toModel : "<<interactionList[i].first->getName()
+                        << " and : " <<interactionList[i].second->getName()<<std::endl;
+            }
+            //                   |       |
+            //                 MS1     MS2
+            //                  /      /
+            //                map    inter
+            //                   \   /
+            //                   MS3/
+            //
+            //           K_11 += Jt * K_33 * J
+            //           I_12 += Jt * I_32
+            //           I_21 +=      I_23 * J
+            //
+
+            if(interactionList[i].first == outstate)
+            {
+                InteractionMatrixRef I_32 = this->getMatrix( outstate , interactionList[i].second);
+                InteractionMatrixRef I_12 = this->getMatrix( instate  , interactionList[i].second);
+                //===========================
+                //          I_12 += Jt * I_32
+                //===========================
+                const unsigned int nbR_I_12   = I_12.matrix->rowSize();
+                const unsigned int nbC_I_12   = I_12.matrix->colSize();
+                const unsigned int offR_I_12  = I_12.offRow;
+                const unsigned int offC_I_12  = I_12.offCol;
+
+                const unsigned int nbR_I_32 = I_32.matrix->rowSize();
+                const unsigned int nbC_I_32 = I_32.matrix->colSize();
+                const unsigned int offR_I_32  = I_32.offRow;
+                const unsigned int offC_I_32  = I_32.offCol;
+
+                if( MULTIMATRIX_VERBOSE)
                 {
-                    interactionList.push_back(it->first);
+                    std::cout << "	[Propa.Interac.Stiff] propagating interaction "
+                            <<outstate->getName() << "--" <<interactionList[i].second->getName()
+                            <<"  to : "
+                            <<instate->getName() << "--" <<interactionList[i].second->getName()<<std::endl;
                 }
-                ++it;
+
+                if( MULTIMATRIX_VERBOSE)
+                {
+                    std::cout <<"	                    **multiplication of "
+                            <<" I12["<<nbR_I_12<<"."<<nbC_I_12<< "]("<< offR_I_12<<","<<offC_I_12 <<  ")  =  "
+                            <<" Jt["<<nbC_J<<"."<<nbR_J<< "]  *  "
+                            <<" I32["<<nbR_I_32<<"."<<nbC_I_32<<"]("<< offR_I_32<<","<<offC_I_32 <<  ")" <<std::endl;
+                }
+
+                /*
+                				for(unsigned int _i = offR_I_12;_i < nbR_I_12 ; _i++)
+                				{
+                					for(unsigned int _j = offC_I_12;_j < nbC_I_12 ; _j++)
+                					{
+                						double Jt_I32_ij = 0;
+                						for(unsigned int _k = 0;_k < nbR_I_32 ; _k++)
+                						{
+                							//std::cout<<" index matrix i:" << _i <<"    j:" <<_j  <<"      k:"  << _k <<std::endl;
+                							const double Jt_ik    = (double) matrixJ->element( _k, _i ) ;
+                							const double  I_32_kj = (double) I_32.matrix->element( offR_I_32 + _k, offC_I_32+_j) ;
+
+                							Jt_I32_ij += Jt_ik  *  I_32_kj;
+                						}
+                						I_12.matrix->add( _i ,  _j , Jt_I32_ij);
+                					}
+                				}
+                */
+
+
+
+
+
+            }
+            if(interactionList[i].second == outstate)
+            {
+                InteractionMatrixRef I_21 = this->getMatrix(interactionList[i].first,instate);
+                InteractionMatrixRef I_23 = this->getMatrix(interactionList[i].first,outstate);
+                //=========================================
+                //          I_21 +=      I_23 * J
+                //=========================================
+                const unsigned int nbR_I_21 = I_21.matrix->rowSize();
+                const unsigned int nbC_I_21 = I_21.matrix->colSize();
+                const unsigned int offR_I_21  = I_21.offRow;
+                const unsigned int offC_I_21  = I_21.offCol;
+
+                const unsigned int nbR_I_23   = I_23.matrix->rowSize();
+                const unsigned int nbC_I_23   = I_23.matrix->colSize();
+                const unsigned int offR_I_23  = I_23.offRow;
+                const unsigned int offC_I_23  = I_23.offCol;
+
+                if( MULTIMATRIX_VERBOSE)
+                {
+                    std::cout << "	[Propa.Interac.Stiff] propagating interaction "
+                            <<interactionList[i].first->getName()<< "--" <<outstate->getName()
+                            <<" to : "<<interactionList[i].first->getName()<< "--" <<instate->getName()<<std::endl;
+                }
+
+                if( MULTIMATRIX_VERBOSE)
+                {
+                    std::cout <<"	                    **multiplication of "
+                            <<" I_21["<<nbR_I_21<<"."<<nbC_I_21<<"]("<< offR_I_21<<","<<offC_I_21 <<  ")  =  "
+                            <<" I23["<<nbR_I_23<<"."<<nbC_I_23<< "]("<< offR_I_23<<","<<offC_I_23 <<  ")  *  "
+                            <<" J["<<nbR_J<<"."<<nbC_J<<"]" <<std::endl;
+                }
+
+                /*
+                				for(unsigned int _i = offR_I_21;_i < nbR_I_21 ; _i++)
+                				{
+                					for(unsigned int _j = offC_I_21;_j < nbC_I_21 ; _j++)
+                					{
+                						double I23_J_ij = 0;
+                						for(unsigned int _k = 0;_k < nbC_I_23 ; _k++)
+                						{
+                							//std::cout<<" index matrix i:" << _i <<"    j:" <<_j  <<"      k:"  << _k <<std::endl;
+                							const double I_23_ik = (double) I_23.matrix->element( offR_I_23 + _i, offC_I_23+_k) ;
+                							const double J_kj    = (double) matrixJ->element( _k, _j ) ;
+
+                							I23_J_ij += I_23_ik  * J_kj ;
+                						}
+                						I_21.matrix->add( _i ,  _j , I23_J_ij);
+                					}
+                				}
+                */
+
+
             }
 
-            for(unsigned i=0; i< interactionList.size(); i++)
+            //after propagating the interaction, we remove the older interaction
+            interactionStiffnessBloc.erase( interactionStiffnessBloc.find(interactionList[i]) );
+            if( MULTIMATRIX_VERBOSE)
             {
-                //                   |       |
-                //                 MS1     MS2
-                //                  /      /
-                //                map    inter
-                //                   \   /
-                //                   MS3/
-                //
-                //           K_11 += Jt * K_33 * J
-                //           I_12 += Jt * I_32
-                //           I_21 +=      I_23 * J
-                //
-
-                if(interactionList[i].first == outstate)
-                {
-                    InteractionMatrixRef I_32 = this->getMatrix( outstate , interactionList[i].second);
-                    InteractionMatrixRef I_12 = this->getMatrix( instate  , interactionList[i].second);
-                    //===========================
-                    //          I_12 += Jt * I_32
-                    //              ..........
-                    //===========================
-                }
-                if(interactionList[i].second == outstate)
-                {
-                    InteractionMatrixRef I23 = this->getMatrix(interactionList[i].first,outstate);
-                    InteractionMatrixRef I21 = this->getMatrix(interactionList[i].first,instate);
-                    //===========================
-                    //          I_21 +=      I_23 * J
-                    //              ..........
-                    //===========================
-                }
-
-                //after propagating the interaction, we remove the older interaction
-                interactionStiffnessBloc.erase( interactionStiffnessBloc.find(interactionList[i]) );
-
-
-                std::cout << "			interaction between toModel : "<<interactionList[i].first->getName()
-                        << " and the state : "                       <<interactionList[i].second->getName()<<std::endl;
+                std::cout << "	[CONTRIBUTION] remove interaction of : "<<interactionList[i].first->getName()
+                        << " and : " << interactionList[i].second->getName()<<std::endl;
             }
+
         }
 
 
