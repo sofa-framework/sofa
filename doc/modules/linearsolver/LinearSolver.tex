@@ -56,14 +56,20 @@
 \paragraph{Abstract : }
 %%%%%%%%%%%%%%%%%%   LOGO  %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%   LOGO  %%%%%%%%%%%%%%%%%%%%%%%%%
-introducing the simulation scene graph where there are mapped ms, mapping, interaction forcefield between real DOF and mapped MS
-
+In SOFA, all states of a mechanical object is described by its degree of freedom. The relation between theses DOF are informed all in the stiffness matrix. 
+\begin{center}
+\includegraphics[scale=0.3]{matrix_bloc}
+\end{center}
+On the case for example when there are two mechanical objects, we can see a global stiffness matrix describing the two mechanical states, composed diagonal blocs and non-diagonal blocs. The diagonal blocs often are filled by ForceField component in SOFA, and the non-diagonal ones are filled by InteractionForceField if existed.
 \subsection{Direct Solvers }
-Present here the matrix structure in the generale case, where there are several mapped mechanical states and interactions between them. Explain the structure : principale blocs, diagonal bloc (self-stiffness), non-diagonal blocs (interaction-stiffness), mapping blocs J can be seen as a bloc ...
+The direct solver demande to build explicitly the matrix, and invert this matrix after every step of time in order to solve the mechanical response after a sollicitation.
 \subsection{Context in SOFA }
-Identifying the problem in SOFA where there are a scene but not all nodes has stiffness, or not all mapping has matrix J
+In SOFA, there are a litle more complicated component called mapping, relying geometrical and mechanical propreties by master-slave (DOF-mapped object) relation. All changes of geometry or sollicitation to one object interfere to other and vice versa. If the mapped object have its own mechanical behavior, it must be counted on the mechanical propagation on the mapping.
 \subsubsection{self-stiffness propagation }
 where the $K_{22}$ is a mapped mechanical state of the $K_{11}$
+\begin{center}
+\includegraphics[scale=0.3]{stiffness_propagation}
+\end{center}
 \[
  K_{11} += J^t * K_{22} * J
 \]
@@ -78,29 +84,26 @@ In the case where one of the two mechanical states in interaction is non-mapped,
 K_{11} += J^t * K_{33} * J 
 \]
 \[
-K_{12} += J^t * I_{32}
+I_{12} += J^t * I_{32}
 \]
 \[
-K_{21} += I_{32} * J 
+I_{21} += I_{32} * J 
 \]
 \paragraph{Interaction beweent Mapped Mechanical Object and Mapped Mechanical Object}
 \begin{center}
   \includegraphics[scale=0.3]{interaction_Mapped_Mapped}
 \end{center}
-In the case where the two mechanical states in interaction are mapped, and the fromModel of the two mapping are non-mapped state, the propagation can be computed directly by the formula :
+In the case where the two mechanical states in interaction are mapped, the propagation can be computed by two steps. The first consist to propagate the interaction $I_{34}$ to the interation $I_{14}$ :
 \[
-K_{11} += JA^t * K_{33} * JA 
+K_{11} += J^t * K_{33} * J 
 \]
 \[
-K_{22} += JB^t * K_{44} * JB 
+I_{14} += J^t_A * I_{34}
 \]
 \[
-K_{12} += JA^t * I_{34} * JB 
+I_{41} += I_{34} * J_A 
 \]
-\[
-K_{21} += JB^t * I_{43} * JA 
-\]
-In the case where the two mechanical states in interaction are mapped, of one of two fromModel or the two fromModel are still mapped model, that mean many propagation need to be done. We need a buffer interaction stiffness for propagating.
+The following step can compute as the one of above paragraph, propagating the interation $I_{14}$ to $I_{12}$.
 \subsection{Iterative Solvers }
 \subsection{Preconditioner }
 
