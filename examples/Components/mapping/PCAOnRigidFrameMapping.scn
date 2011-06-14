@@ -16,12 +16,12 @@
 	</Node>
 
 	<Node 	name="Femur">
-		<MultiMeshLoader name='basis' filenamelist='mesh/r_femur.obj'/>
+		<MultiMeshLoader name='mesh' filenamelist='mesh/r_femur.obj'/>
 		<MechanicalObject template="Vec1d" name="weights"  position="0 0 0 0 0" />
 
 		<UniformMass template="Vec1d" name="weight_mass"  mass='0.01'/>
 
-		<Node 	name="Visu"  >
+		<Node 	name="PCA"  >
 			<MechanicalObject template="Vec3d" name="deformed"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
 			<PCAOnRigidFrameMapping template="Multi2Mapping&lt;[Vec1d,Rigid],Vec3d&gt;" name="PCAmapping"  basis="@../../basis/basis.vertices" input1="@.. "  input2="@../../rigidframe" output="@deformed" />
 			<Node 	name="Visu"  >
