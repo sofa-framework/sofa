@@ -52,6 +52,25 @@ namespace mass
 using namespace	sofa::component::topology;
 using namespace core::topology;
 
+using namespace sofa::defaulttype;
+using namespace sofa::core::behavior;
+
+
+template <class DataTypes, class MassType>
+MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
+    : vertexMassInfo( initData(&vertexMassInfo, "vertexMass", "values of the particles masses on vertices") )
+    , edgeMassInfo( initData(&edgeMassInfo, "edgeMass", "values of the particles masses on edges") )
+    , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
+    , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
+    , showAxisSize( initData(&showAxisSize, (Real)1.0, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
+    , lumping( initData(&lumping, true, "lumping","boolean if you need to use a lumped mass matrix") )
+    , printMass( initData(&printMass, false, "printMass","boolean if you want to get the totalMass") )
+    , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
+    , topologyType(TOPOLOGY_UNKNOWN)
+
+{
+    f_graph.setWidget("graph");
+}
 
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::VertexMassCreationFunction(int, void* , MassType & VertexMass,
@@ -615,28 +634,6 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHexahedronDestroyFunction(cons
 
 
 
-
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-
-
-template <class DataTypes, class MassType>
-MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
-    : vertexMassInfo( initData(&vertexMassInfo, "vertexMass", "values of the particles masses on vertices") )
-    , edgeMassInfo( initData(&edgeMassInfo, "edgeMass", "values of the particles masses on edges") )
-    , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
-    , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
-    , showAxisSize( initData(&showAxisSize, (Real)1.0, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
-    , lumping( initData(&lumping, true, "lumping","boolean if you need to use a lumped mass matrix") )
-    , printMass( initData(&printMass, false, "printMass","boolean if you want to get the totalMass") )
-    , topologyType(TOPOLOGY_UNKNOWN)
-    , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
-
-{
-    f_graph.setWidget("graph");
-}
-
-
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::init()
 {
@@ -1135,8 +1132,6 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 
 
 
-
-
 template <class DataTypes, class MassType>
 double MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index) const
 {
@@ -1145,6 +1140,7 @@ double MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index) c
 
     return mass;
 }
+
 
 
 //TODO: special case for Rigid Mass
