@@ -136,9 +136,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
 
     groot = NULL;
     initTexturesDone = false;
-#ifdef TRACKING_MOUSE
-    m_grabActived = false;
-#endif
     backgroundColour[0] = 1.0f;
     backgroundColour[1] = 1.0f;
     backgroundColour[2] = 1.0f;
@@ -1154,43 +1151,14 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
 
 void QtViewer::keyPressEvent(QKeyEvent * e)
 {
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        if (e->key() == Qt::Key_Escape)
-        {
-            m_grabActived = false;
-            this->setCursor(QCursor(Qt::ArrowCursor));
-        }
-        else
-        {
-            if (groot)
-            {
-                sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-                groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-            }
-            return;
-        }
-    }
-#endif
     if (isControlPressed()) // pass event to the scene data structure
     {
-#ifdef TRACKING_MOUSE
-        if (e->key() == Qt::Key_T)
+        //	cerr<<"QtViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
+        if (groot)
         {
-            m_grabActived = true;
-            this->setCursor(QCursor(Qt::BlankCursor));
-            QPoint p = mapToGlobal(this->pos()) + QPoint((this->width()+2)/2,(this->height()+2)/2);
-            QCursor::setPos(p);
+            sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
         }
-        else
-#endif
-            //	cerr<<"QtViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
-            if (groot)
-            {
-                sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-                groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-            }
     }
     else
         // control the GUI
@@ -1232,27 +1200,11 @@ void QtViewer::keyPressEvent(QKeyEvent * e)
 
 void QtViewer::keyReleaseEvent(QKeyEvent * e)
 {
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
-        if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-        return;
-    }
-#endif
     SofaViewer::keyReleaseEvent(e);
 }
 
 void QtViewer::wheelEvent(QWheelEvent* e)
 {
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
-        if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-        return;
-    }
-#endif
     if (e->state() & Qt::ControlButton)
     {
         moveLaparoscopic(e);
@@ -1263,30 +1215,6 @@ void QtViewer::wheelEvent(QWheelEvent* e)
 
 void QtViewer::mousePressEvent(QMouseEvent * e)
 {
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        if (e->type() == QEvent::MouseButtonPress)
-        {
-            if (e->button() == Qt::LeftButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed);
-                if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::RightButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed);
-                if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::MidButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed);
-                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            return;
-        }
-    }
-#endif
     mouseEvent(e);
 
     SofaViewer::mousePressEvent(e);
@@ -1294,30 +1222,6 @@ void QtViewer::mousePressEvent(QMouseEvent * e)
 
 void QtViewer::mouseReleaseEvent(QMouseEvent * e)
 {
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        if (e->type() == QEvent::MouseButtonRelease)
-        {
-            if (e->button() == Qt::LeftButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased);
-                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::RightButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased);
-                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::MidButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased);
-                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            return;
-        }
-    }
-#endif
     mouseEvent(e);
 
     SofaViewer::mouseReleaseEvent(e);
@@ -1326,17 +1230,6 @@ void QtViewer::mouseReleaseEvent(QMouseEvent * e)
 
 void QtViewer::mouseMoveEvent(QMouseEvent * e)
 {
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        QPoint p = mapToGlobal(this->pos()) + QPoint((this->width()+2)/2,(this->height()+2)/2);
-        QPoint c = QCursor::pos();
-        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move,c.x() - p.x(),c.y() - p.y());
-        QCursor::setPos(p);
-        if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-        return;
-    }
-#endif
 
 #ifdef TRACKING
     if (tracking)

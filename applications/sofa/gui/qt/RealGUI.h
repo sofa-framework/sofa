@@ -212,6 +212,9 @@ public slots:
 
     void fileRecentlyOpened(int id);
     void playpauseGUI(bool value);
+#ifdef SOFA_GUI_INTERACTION
+    void interactionGUI(bool value);
+#endif
     void step();
     void setDt(double);
     void setDt(const QString&);
@@ -257,6 +260,14 @@ protected:
     void eventNewTime();
     void init();
     void keyPressEvent ( QKeyEvent * e );
+#ifdef SOFA_GUI_INTERACTION
+    void mouseMoveEvent( QMouseEvent * e);
+    void wheelEvent( QWheelEvent * event );
+    void mousePressEvent(QMouseEvent * e);
+    void mouseReleaseEvent(QMouseEvent * e);
+    void keyReleaseEvent(QKeyEvent * e);
+    bool eventFilter(QObject *obj, QEvent *event);
+#endif
 
     void loadSimulation(bool one_step=false);
 
@@ -315,7 +326,9 @@ private:
 
     void addViewer();
     void setGUI(void);
-
+#ifdef SOFA_GUI_INTERACTION
+    bool m_interactionActived;
+#endif
 
 #ifdef SOFA_PML
     virtual void pmlOpen(const char* filename, bool resetView=true);
