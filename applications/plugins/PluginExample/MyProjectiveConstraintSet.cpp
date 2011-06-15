@@ -25,13 +25,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_CONSTRAINT_OtherFakeComponent_H
-#define SOFA_COMPONENT_CONSTRAINT_OtherFakeComponent_H
-
-#include "initPluginExample.h"
-#include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include "MyProjectiveConstraintSet.inl"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -42,51 +37,39 @@ namespace component
 namespace projectiveconstraintset
 {
 
-template <class DataTypes>
-class  OtherFakeComponent : public core::behavior::ProjectiveConstraintSet<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(OtherFakeComponent,DataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,DataTypes));
-    typedef typename  DataTypes::VecDeriv VecDeriv;
-    typedef typename  DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename  DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
-    typedef typename  DataTypes::VecCoord VecCoord;
-    OtherFakeComponent();
-    ~OtherFakeComponent();
-
-    void init();
-
-    void reinit();
-
-    void projectResponse(MatrixDerivRowType& /*dx*/) {}
-    void projectResponse(VecDeriv& /*dx*/) {}
-    void projectVelocity(VecDeriv& /*dx*/) {}
-    void projectPosition(VecCoord& /*x*/) {}
+using namespace sofa::defaulttype;
 
 
-protected:
+
+SOFA_DECL_CLASS(MyProjectiveConstraintSet)
 
 
-private:
-
-};
-
-#if defined(WIN32) && !defined(SOFA_BUILD_PLUGINEXAMPLE)
+int MyProjectiveConstraintSetClass = core::RegisterObject("just an example of templated component")
 #ifndef SOFA_FLOAT
-extern template class OtherFakeComponent<defaulttype::Vec3dTypes>;
-extern template class OtherFakeComponent<defaulttype::Rigid3dTypes>;
+        .add< MyProjectiveConstraintSet<Vec3dTypes> >()
+        .add< MyProjectiveConstraintSet<Vec1dTypes> >()
+        .add< MyProjectiveConstraintSet<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-extern template class OtherFakeComponent<defaulttype::Vec3fTypes>;
-extern template class OtherFakeComponent<defaulttype::Rigid3fTypes>;
+        .add< MyProjectiveConstraintSet<Vec3fTypes> >()
+        .add< MyProjectiveConstraintSet<Rigid3fTypes> >()
 #endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Rigid3dTypes>;
+template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Vec3dTypes>;
 #endif
-}
-
-}
-
-}
-
-
-
+#ifndef SOFA_DOUBLE
+template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Rigid3fTypes>;
+template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Vec3fTypes>;
 #endif
+
+
+
+}	//constraint
+
+}	//component
+
+}	//sofa
+

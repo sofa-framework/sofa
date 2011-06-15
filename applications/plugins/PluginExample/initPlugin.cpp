@@ -24,7 +24,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initPluginExample.h"
+#include "initPlugin.h"
 
 namespace sofa
 {
@@ -35,12 +35,12 @@ namespace component
 //Here are just several convenient functions to help user to know what contains the plugin
 
 extern "C" {
-    SOFA_PluginExample_API void initExternalModule();
-    SOFA_PluginExample_API const char* getModuleName();
-    SOFA_PluginExample_API const char* getModuleVersion();
-    SOFA_PluginExample_API const char* getModuleLicense();
-    SOFA_PluginExample_API const char* getModuleDescription();
-    SOFA_PluginExample_API const char* getModuleComponentList();
+    SOFA_MyPluginExample_API void initExternalModule();
+    SOFA_MyPluginExample_API const char* getModuleName();
+    SOFA_MyPluginExample_API const char* getModuleVersion();
+    SOFA_MyPluginExample_API const char* getModuleLicense();
+    SOFA_MyPluginExample_API const char* getModuleDescription();
+    SOFA_MyPluginExample_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -54,7 +54,7 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "PluginExample";
+    return "MyPluginExample";
 }
 
 const char* getModuleVersion()
@@ -75,7 +75,7 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "PendulumMapping, MyFakeComponent, OtherFakeComponent";
+    return "MyMappingPendulumInPlane, MyBehaviorModel, MyProjectiveConstraintSet";
 }
 
 
@@ -85,7 +85,7 @@ const char* getModuleComponentList()
 }
 
 
-SOFA_LINK_CLASS(PendulumMapping)
-SOFA_LINK_CLASS(MyFakeComponent)
-SOFA_LINK_CLASS(OtherFakeComponent)
+SOFA_LINK_CLASS(MyMappingPendulumInPlane)
+SOFA_LINK_CLASS(MyBehaviorModel)
+SOFA_LINK_CLASS(MyProjectiveConstraintSet)
 

@@ -25,16 +25,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_CONSTRAINT_PendulumMapping_H
-#define SOFA_COMPONENT_CONSTRAINT_PendulumMapping_H
-
-
-#include <sofa/core/Mapping.h>
-#include <sofa/component/component.h>
-#include <sofa/helper/OptionsGroup.h>
-#include <sofa/defaulttype/Vec.h>
-
-
+#include "MyMappingPendulumInPlane.inl"
+#include <sofa/core/Mapping.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa
@@ -45,61 +40,42 @@ namespace component
 
 namespace mapping
 {
-using helper::vector;
-using defaulttype::Vec;
 
-/** input: pendulum angle; output: coordinates of the endpoint of the pendulum
-  */
-
-template <class TIn, class TOut>
-class PendulumMapping : public core::Mapping<TIn, TOut>
-{
-public:
-    SOFA_CLASS( SOFA_TEMPLATE2(PendulumMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut) );
-    typedef core::Mapping<TIn, TOut> Inherit;
-    typedef TIn In;
-    typedef TOut Out;
-    typedef typename In::Real InReal;
-    typedef typename In::VecCoord VecInCoord;
-    typedef typename In::Deriv InDeriv;
-    typedef typename In::VecDeriv VecInDeriv;
-    typedef typename In::MatrixDeriv MatrixInDeriv;
-    typedef typename Out::Real OutReal;
-    typedef typename Out::VecCoord VecOutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename Out::VecDeriv VecOutDeriv;
-    typedef typename Out::MatrixDeriv MatrixOutDeriv;
-
-    PendulumMapping(core::State<In>* from, core::State<Out>* to );
-    ~PendulumMapping();
-
-    Data<vector<OutReal> > f_length;
-
-    virtual void init();
-    virtual void draw();
-
-    virtual void apply(VecOutCoord& out, const VecInCoord& in);
-    virtual void applyJ( VecOutDeriv& out, const VecInDeriv& in);
-    virtual void applyJT( VecInDeriv& out, const VecOutDeriv& in);
-    virtual void applyJT( MatrixInDeriv& out, const MatrixOutDeriv& in);
-    virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForceChange, core::ConstMultiVecDerivId );
-
-
-protected:
-    typedef Vec<2,OutReal> Vec2;
-    vector<Vec2> gap;
-
-private:
-
-};
-
-
-}
-
-}
-
-}
+using namespace sofa::defaulttype;
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec2dTypes;
+using sofa::defaulttype::Vec1dTypes;
+using sofa::defaulttype::Vec1fTypes;
 
 
 
+SOFA_DECL_CLASS(MyMappingPendulumInPlane)
+
+
+int MyMappingPendulumInPlaneClass = core::RegisterObject("Mapping from an angle to a point in 2D")
+#ifndef SOFA_FLOAT
+        .add< MyMappingPendulumInPlane<Vec1dTypes,Vec3dTypes> >()
+        .add< MyMappingPendulumInPlane<Vec1dTypes,Vec2dTypes> >()
 #endif
+#ifndef SOFA_DOUBLE
+        .add< MyMappingPendulumInPlane<Vec1fTypes,Vec3fTypes> >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class MyMappingPendulumInPlane<Vec1dTypes,Vec3dTypes>;
+template class MyMappingPendulumInPlane<Vec1dTypes,Vec2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class MyMappingPendulumInPlane<Vec1fTypes,Vec3fTypes>;
+#endif
+
+
+
+}	//mapping
+
+}	//component
+
+}	//sofa
+

@@ -1,5 +1,5 @@
 ######  PLUGIN TARGET
-TARGET = PluginExample
+TARGET = MyPluginExample
 
 ######  GENERAL PLUGIN CONFIGURATION, you shouldn't have to modify it
 
@@ -35,21 +35,21 @@ LIBS += $$SOFA_EXT_LIBS
 
 INCLUDEPATH += $$SOFA_DIR/extlibs
 
-SOURCES = MyFakeComponent.cpp \
-          CustomDataUnsignedWidget.cpp \
-          OtherFakeComponent.cpp \
-          PendulumMapping.cpp \
-          initPluginExample.cpp
+SOURCES = MyBehaviorModel.cpp \
+          MyDataWidgetUnsigned.cpp \
+          MyProjectiveConstraintSet.cpp \
+          MyMappingPendulumInPlane.cpp \
+          initPlugin.cpp
 
-HEADERS = MyFakeComponent.h \
-          CustomDataUnsignedWidget.h \
-          PendulumMapping.h \
-          PendulumMapping.inl \
-          OtherFakeComponent.h \
-          OtherFakeComponent.inl \
-		  initPluginExample.h
+HEADERS = MyBehaviorModel.h \
+          MyDataWidgetUnsigned.h \
+          MyMappingPendulumInPlane.h \
+          MyMappingPendulumInPlane.inl \
+          MyProjectiveConstraintSet.h \
+          MyProjectiveConstraintSet.inl \
+		  initPlugin.h
 		  
-README_FILE = PluginExample.txt
+README_FILE = MyPluginExample.txt
 
 unix : QMAKE_POST_LINK = cp $$README_FILE $$DESTDIR 
 win32 : QMAKE_POST_LINK = copy \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"

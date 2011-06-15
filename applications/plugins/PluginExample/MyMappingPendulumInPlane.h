@@ -25,8 +25,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "MyFakeComponent.h"
-#include <sofa/core/ObjectFactory.h>
+#ifndef SOFA_COMPONENT_CONSTRAINT_MyMappingPendulumInPlane_H
+#define SOFA_COMPONENT_CONSTRAINT_MyMappingPendulumInPlane_H
+
+
+#include <sofa/core/Mapping.h>
+#include <sofa/component/component.h>
+#include <sofa/helper/OptionsGroup.h>
+#include <sofa/defaulttype/Vec.h>
+
 
 
 
@@ -36,47 +43,63 @@ namespace sofa
 namespace component
 {
 
-namespace behaviormodel
+namespace mapping
 {
+using helper::vector;
+using defaulttype::Vec;
 
+/** input: pendulum angle; output: coordinates of the endpoint of the pendulum
+  */
 
-
-MyFakeComponent::MyFakeComponent()
-    : customUnsignedData( initData(&customUnsignedData,(unsigned)1,"Custom Unsigned Data","Example of unsigned data with custom widget") ),
-      regularUnsignedData( initData(&regularUnsignedData,(unsigned)1,"Unsigned Data","Example of unsigned data with standard widget") )
+template <class TIn, class TOut>
+class MyMappingPendulumInPlane : public core::Mapping<TIn, TOut>
 {
-    customUnsignedData.setWidget("widget_myData");
+public:
+    SOFA_CLASS( SOFA_TEMPLATE2(MyMappingPendulumInPlane,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut) );
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
+    typedef typename In::Real InReal;
+    typedef typename In::VecCoord VecInCoord;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::VecDeriv VecInDeriv;
+    typedef typename In::MatrixDeriv MatrixInDeriv;
+    typedef typename Out::Real OutReal;
+    typedef typename Out::VecCoord VecOutCoord;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename Out::VecDeriv VecOutDeriv;
+    typedef typename Out::MatrixDeriv MatrixOutDeriv;
+
+    MyMappingPendulumInPlane(core::State<In>* from, core::State<Out>* to );
+    ~MyMappingPendulumInPlane();
+
+    Data<vector<OutReal> > f_length;
+
+    virtual void init();
+    virtual void draw();
+
+    virtual void apply(VecOutCoord& out, const VecInCoord& in);
+    virtual void applyJ( VecOutDeriv& out, const VecInDeriv& in);
+    virtual void applyJT( VecInDeriv& out, const VecOutDeriv& in);
+    virtual void applyJT( MatrixInDeriv& out, const MatrixOutDeriv& in);
+    virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForceChange, core::ConstMultiVecDerivId );
+
+
+protected:
+    typedef Vec<2,OutReal> Vec2;
+    vector<Vec2> gap;
+
+private:
+
+};
+
+
+}
+
+}
+
 }
 
 
-MyFakeComponent::~MyFakeComponent()
-{
-}
 
-void MyFakeComponent::init()
-{
-}
-
-void MyFakeComponent::reinit()
-{
-}
-
-void MyFakeComponent::updatePosition(double /*dt*/)
-{
-}
-
-
-
-
-SOFA_DECL_CLASS(MyFakeComponent)
-
-int MyFakeComponentClass = core::RegisterObject("just an example of component")
-        .add< MyFakeComponent >()
-        ;
-
-}	//behaviormodel
-
-}	//component
-
-}	//sofa
-
+#endif

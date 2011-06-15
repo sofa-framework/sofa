@@ -25,8 +25,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "OtherFakeComponent.h"
+#ifndef SOFA_COMPONENT_CONSTRAINT_MyProjectiveConstraintSet_H
+#define SOFA_COMPONENT_CONSTRAINT_MyProjectiveConstraintSet_H
 
+#include "initPlugin.h"
+#include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -37,35 +42,51 @@ namespace component
 namespace projectiveconstraintset
 {
 
-
-
 template <class DataTypes>
-OtherFakeComponent<DataTypes>::OtherFakeComponent()
-    :core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+class  MyProjectiveConstraintSet : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(MyProjectiveConstraintSet,DataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,DataTypes));
+    typedef typename  DataTypes::VecDeriv VecDeriv;
+    typedef typename  DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename  DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
+    typedef typename  DataTypes::VecCoord VecCoord;
+    MyProjectiveConstraintSet();
+    ~MyProjectiveConstraintSet();
+
+    void init();
+
+    void reinit();
+
+    void projectResponse(MatrixDerivRowType& /*dx*/) {}
+    void projectResponse(VecDeriv& /*dx*/) {}
+    void projectVelocity(VecDeriv& /*dx*/) {}
+    void projectPosition(VecCoord& /*x*/) {}
+
+
+protected:
+
+
+private:
+
+};
+
+#if defined(WIN32) && !defined(SOFA_BUILD_PLUGINEXAMPLE)
+#ifndef SOFA_FLOAT
+extern template class MyProjectiveConstraintSet<defaulttype::Vec3dTypes>;
+extern template class MyProjectiveConstraintSet<defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class MyProjectiveConstraintSet<defaulttype::Vec3fTypes>;
+extern template class MyProjectiveConstraintSet<defaulttype::Rigid3fTypes>;
+#endif
+#endif
+}
+
+}
+
 }
 
 
-template <class DataTypes>
-OtherFakeComponent<DataTypes>::~OtherFakeComponent()
-{
-}
 
-template <class DataTypes>
-void OtherFakeComponent<DataTypes>::init()
-{
-}
-
-template <class DataTypes>
-void OtherFakeComponent<DataTypes>::reinit()
-{
-}
-
-
-
-}	//constraint
-
-}	//component
-
-}	//sofa
-
+#endif
