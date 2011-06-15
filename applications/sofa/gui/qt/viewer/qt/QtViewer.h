@@ -53,7 +53,6 @@
 
 // allow catheter navigation using the tracking system (very simple version, surely will be modified)
 //#define TRACKING
-#define TRACKING_MOUSE
 
 namespace sofa
 {
@@ -90,9 +89,6 @@ private:
     bool tracking;
 #endif // TRACKING
 
-#ifdef TRACKING_MOUSE
-    bool m_grabActived;
-#endif
     // Interaction
     enum
     {

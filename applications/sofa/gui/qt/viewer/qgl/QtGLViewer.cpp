@@ -105,10 +105,6 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     groot = NULL;
     initTexturesDone = false;
 
-#ifdef TRACKING_MOUSE
-    m_grabActived = false;
-#endif
-
     backgroundColour[0]=1.0f;
     backgroundColour[1]=1.0f;
     backgroundColour[2]=1.0f;
@@ -1003,45 +999,16 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 {
 
     //Tracking Mode
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        if (e->key() == Qt::Key_Escape)
-        {
-            m_grabActived = false;
-            this->setCursor(QCursor(Qt::ArrowCursor));
-        }
-        else
-        {
-            if (groot)
-            {
-                sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-                groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-            }
-        }
-        return;
-    }
-#endif
 
     // 	cerr<<"QtGLViewer::keyPressEvent, get "<<e->key()<<endl;
     if( isControlPressed() ) // pass event to the scene data structure
     {
-#ifdef TRACKING_MOUSE
-        if (e->key() == Qt::Key_T)
+        //cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
+        if (groot)
         {
-            m_grabActived = true;
-            this->setCursor(QCursor(Qt::BlankCursor));
-            QPoint p = mapToGlobal(this->pos()) + QPoint((this->width()+2)/2,(this->height()+2)/2);
-            QCursor::setPos(p);
+            sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
         }
-        else
-#endif
-            //cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
-            if (groot)
-            {
-                sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-                groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-            }
     }
     else  // control the GUI
     {
@@ -1078,14 +1045,6 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 void QtGLViewer::keyReleaseEvent ( QKeyEvent * e )
 {
 
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
-        if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-        return;
-    }
-#endif
     QGLViewer::keyReleaseEvent(e);
     SofaViewer::keyReleaseEvent(e);
 }
@@ -1097,32 +1056,6 @@ void QtGLViewer::keyReleaseEvent ( QKeyEvent * e )
 
 void QtGLViewer::mousePressEvent ( QMouseEvent * e )
 {
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        if (e->type() == QEvent::MouseButtonPress)
-        {
-            if (e->button() == Qt::LeftButton)
-            {
-                LeftPressedForMove = true;
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed);
-                if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::RightButton)
-            {
-                RightPressedForMove = true;
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed);
-                if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::MidButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed);
-                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            return;
-        }
-    }
-#endif
     if( ! mouseEvent(e) )
         QGLViewer::mousePressEvent(e);
 }
@@ -1132,32 +1065,6 @@ void QtGLViewer::mousePressEvent ( QMouseEvent * e )
 
 void QtGLViewer::mouseReleaseEvent ( QMouseEvent * e )
 {
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        if (e->type() == QEvent::MouseButtonRelease)
-        {
-            if (e->button() == Qt::LeftButton)
-            {
-                LeftPressedForMove = false;
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased);
-                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::RightButton)
-            {
-                RightPressedForMove = false;
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased);
-                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            else if (e->button() == Qt::MidButton)
-            {
-                sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased);
-                if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-            }
-            return;
-        }
-    }
-#endif
     if( ! mouseEvent(e) )
         QGLViewer::mouseReleaseEvent(e);
 }
@@ -1168,28 +1075,6 @@ void QtGLViewer::mouseReleaseEvent ( QMouseEvent * e )
 
 void QtGLViewer::mouseMoveEvent ( QMouseEvent * e )
 {
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        QPoint p = mapToGlobal(this->pos()) + QPoint((this->width()+2)/2,(this->height()+2)/2);
-        QPoint c = QCursor::pos();
-
-        sofa::core::objectmodel::MouseEvent mouseEvent1(sofa::core::objectmodel::MouseEvent::Move,c.x() - p.x(),c.y() - p.y());
-        sofa::core::objectmodel::MouseEvent mouseEvent2(sofa::core::objectmodel::MouseEvent::Move,p.x() - p.x(),c.y() - p.y());
-        sofa::core::objectmodel::MouseEvent mouseEvent3(sofa::core::objectmodel::MouseEvent::Move,c.x() - p.x(),p.y() - p.y());
-
-
-        QCursor::setPos(p);
-        if((LeftPressedForMove == false && RightPressedForMove == false) || (LeftPressedForMove == true && RightPressedForMove == true))
-            if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent1);
-        if(LeftPressedForMove == true)
-            if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent2);
-        if(RightPressedForMove == true)
-            if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent3);
-        return;
-    }
-#endif
-
     if( ! mouseEvent(e) )
         QGLViewer::mouseMoveEvent(e);
 }
@@ -1216,14 +1101,6 @@ bool QtGLViewer::mouseEvent(QMouseEvent * e)
 
 void QtGLViewer::wheelEvent(QWheelEvent* e)
 {
-#ifdef TRACKING_MOUSE
-    if(m_grabActived)
-    {
-        sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
-        if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-        return;
-    }
-#endif
     if (e->state()&Qt::ControlButton)
         moveLaparoscopic(e);
     else
