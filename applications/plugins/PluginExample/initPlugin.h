@@ -10,4 +10,8 @@
 #define SOFA_MyPluginExample_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+/** \mainpage
+  This is a simple example plugin.
+  */
+
 #endif // INITMyPluginExample_H

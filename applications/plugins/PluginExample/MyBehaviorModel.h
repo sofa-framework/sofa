@@ -40,6 +40,9 @@ namespace component
 namespace behaviormodel
 {
 
+/**
+  This BehaviorModel does nothing but contain a custom data widget.
+  */
 
 class SOFA_MyPluginExample_API MyBehaviorModel : public sofa::core::BehaviorModel
 {
