@@ -25,11 +25,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "PendulumMapping.inl"
-#include <sofa/core/Mapping.inl>
+#include "MyBehaviorModel.h"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/VecTypes.h>
+
 
 
 namespace sofa
@@ -38,42 +36,45 @@ namespace sofa
 namespace component
 {
 
-namespace mapping
+namespace behaviormodel
 {
 
-using namespace sofa::defaulttype;
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::Vec2dTypes;
-using sofa::defaulttype::Vec1dTypes;
-using sofa::defaulttype::Vec1fTypes;
+
+
+MyBehaviorModel::MyBehaviorModel()
+    : customUnsignedData( initData(&customUnsignedData,(unsigned)1,"Custom Unsigned Data","Example of unsigned data with custom widget") ),
+      regularUnsignedData( initData(&regularUnsignedData,(unsigned)1,"Unsigned Data","Example of unsigned data with standard widget") )
+{
+    customUnsignedData.setWidget("widget_myData");
+}
+
+
+MyBehaviorModel::~MyBehaviorModel()
+{
+}
+
+void MyBehaviorModel::init()
+{
+}
+
+void MyBehaviorModel::reinit()
+{
+}
+
+void MyBehaviorModel::updatePosition(double /*dt*/)
+{
+}
 
 
 
-SOFA_DECL_CLASS(PendulumMapping)
 
+SOFA_DECL_CLASS(MyBehaviorModel)
 
-int PendulumMappingClass = core::RegisterObject("Mapping from an angle to a point in 2D")
-#ifndef SOFA_FLOAT
-        .add< PendulumMapping<Vec1dTypes,Vec3dTypes> >()
-        .add< PendulumMapping<Vec1dTypes,Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PendulumMapping<Vec1fTypes,Vec3fTypes> >()
-#endif
+int MyBehaviorModelClass = core::RegisterObject("just an example of component")
+        .add< MyBehaviorModel >()
         ;
 
-#ifndef SOFA_FLOAT
-template class PendulumMapping<Vec1dTypes,Vec3dTypes>;
-template class PendulumMapping<Vec1dTypes,Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class PendulumMapping<Vec1fTypes,Vec3fTypes>;
-#endif
-
-
-
-}	//mapping
+}	//behaviormodel
 
 }	//component
 

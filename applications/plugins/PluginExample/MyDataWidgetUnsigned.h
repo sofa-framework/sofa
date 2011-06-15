@@ -1,7 +1,7 @@
-#ifndef SOFA_GUI_QT_CustomDataUnsignedWidget_H
-#define SOFA_GUI_QT_CustomDataUnsignedWidget_H
+#ifndef SOFA_GUI_QT_MyDataWidgetUnsigned_H
+#define SOFA_GUI_QT_MyDataWidgetUnsigned_H
 
-#include "initPluginExample.h"
+#include "initPlugin.h"
 #include <sofa/gui/qt/DataWidget.h>
 
 #ifdef SOFA_QT4
@@ -27,15 +27,15 @@ namespace qt
 /**
 *\brief Customization of the representation of Data<unsigned> types
 * in the gui. In the .cpp file this widget is registered to represent
-* myData from MyFakeComponent in the gui.
+* myData from MyBehaviorModel in the gui.
 **/
-class SOFA_PluginExample_API CustomDataUnsignedWidget : public TDataWidget<unsigned>
+class SOFA_MyPluginExample_API MyDataWidgetUnsigned : public TDataWidget<unsigned>
 {
     Q_OBJECT
 public :
     ///The class constructor takes a TData<unsigned> since it creates
     ///a widget for a that particular data type.
-    CustomDataUnsignedWidget(QWidget* parent, const char* name, core::objectmodel::TData<unsigned>* data):
+    MyDataWidgetUnsigned(QWidget* parent, const char* name, core::objectmodel::TData<unsigned>* data):
         TDataWidget<unsigned>(parent,name,data) {};
     ///In this method we  create the widgets and perform the signal / slots
     ///connections.

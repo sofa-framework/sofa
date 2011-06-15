@@ -25,8 +25,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "OtherFakeComponent.inl"
-#include <sofa/core/ObjectFactory.h>
+#include "MyProjectiveConstraintSet.h"
+
 
 namespace sofa
 {
@@ -37,33 +37,29 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace sofa::defaulttype;
 
 
+template <class DataTypes>
+MyProjectiveConstraintSet<DataTypes>::MyProjectiveConstraintSet()
+    :core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+{
+}
 
-SOFA_DECL_CLASS(OtherFakeComponent)
 
+template <class DataTypes>
+MyProjectiveConstraintSet<DataTypes>::~MyProjectiveConstraintSet()
+{
+}
 
-int OtherFakeComponentClass = core::RegisterObject("just an example of templated component")
-#ifndef SOFA_FLOAT
-        .add< OtherFakeComponent<Vec3dTypes> >()
-        .add< OtherFakeComponent<Vec1dTypes> >()
-        .add< OtherFakeComponent<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< OtherFakeComponent<Vec3fTypes> >()
-        .add< OtherFakeComponent<Rigid3fTypes> >()
-#endif
-        ;
+template <class DataTypes>
+void MyProjectiveConstraintSet<DataTypes>::init()
+{
+}
 
-#ifndef SOFA_FLOAT
-template class SOFA_PluginExample_API OtherFakeComponent<Rigid3dTypes>;
-template class SOFA_PluginExample_API OtherFakeComponent<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_PluginExample_API OtherFakeComponent<Rigid3fTypes>;
-template class SOFA_PluginExample_API OtherFakeComponent<Vec3fTypes>;
-#endif
+template <class DataTypes>
+void MyProjectiveConstraintSet<DataTypes>::reinit()
+{
+}
 
 
 

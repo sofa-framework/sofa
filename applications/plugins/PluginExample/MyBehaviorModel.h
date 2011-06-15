@@ -25,10 +25,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_BEHAVIORMODEL_MyFakeComponent_H
-#define SOFA_COMPONENT_BEHAVIORMODEL_MyFakeComponent_H
+#ifndef SOFA_COMPONENT_BEHAVIORMODEL_MyBehaviorModel_H
+#define SOFA_COMPONENT_BEHAVIORMODEL_MyBehaviorModel_H
 
-#include "initPluginExample.h"
+#include "initPlugin.h"
 #include <sofa/core/BehaviorModel.h>
 
 namespace sofa
@@ -41,12 +41,12 @@ namespace behaviormodel
 {
 
 
-class SOFA_PluginExample_API MyFakeComponent : public sofa::core::BehaviorModel
+class SOFA_MyPluginExample_API MyBehaviorModel : public sofa::core::BehaviorModel
 {
 public:
-    SOFA_CLASS(MyFakeComponent,sofa::core::BehaviorModel);
-    MyFakeComponent();
-    ~MyFakeComponent();
+    SOFA_CLASS(MyBehaviorModel,sofa::core::BehaviorModel);
+    MyBehaviorModel();
+    ~MyBehaviorModel();
 
     virtual void init();
 

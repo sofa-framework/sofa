@@ -1,4 +1,4 @@
-#include "CustomDataUnsignedWidget.h"
+#include "MyDataWidgetUnsigned.h"
 #include <sofa/helper/Factory.h>
 
 namespace sofa
@@ -13,11 +13,11 @@ namespace qt
 /*
 register this new class in the DataWidgetFactory.
 The factory key is the Data widget property
-(see MyFakeComponent constructor)
+(see MyBehaviorModel constructor)
 */
-helper::Creator<DataWidgetFactory,CustomDataUnsignedWidget> DW_myData("widget_myData",false);
+helper::Creator<DataWidgetFactory,MyDataWidgetUnsigned> DW_myData("widget_myData",false);
 
-bool CustomDataUnsignedWidget::createWidgets()
+bool MyDataWidgetUnsigned::createWidgets()
 {
     unsigned myData_value = getData()->virtualGetValue();
 
@@ -54,7 +54,7 @@ bool CustomDataUnsignedWidget::createWidgets()
     return true;
 }
 
-void CustomDataUnsignedWidget::readFromData()
+void MyDataWidgetUnsigned::readFromData()
 {
     qslider->setValue( (int)getData()->virtualGetValue() );
 
@@ -69,7 +69,7 @@ void CustomDataUnsignedWidget::readFromData()
 
 }
 
-void CustomDataUnsignedWidget::writeToData()
+void MyDataWidgetUnsigned::writeToData()
 {
     unsigned widget_value = (unsigned)qslider->value();
     getData()->virtualSetValue(widget_value);
@@ -84,7 +84,7 @@ void CustomDataUnsignedWidget::writeToData()
 
 }
 
-void CustomDataUnsignedWidget::change()
+void MyDataWidgetUnsigned::change()
 {
     QString label1_text("myData current value = ");
     label1_text.append(getData()->getValueString().c_str());
