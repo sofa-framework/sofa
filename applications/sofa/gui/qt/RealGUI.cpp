@@ -277,13 +277,15 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     interactionButton = new QPushButton(optionTabs);
     interactionButton->setObjectName(QString::fromUtf8("interactionButton"));
     interactionButton->setCheckable(true);
+    interactionButton->setStyleSheet("background-color: red;");
+
 
     gridLayout->addWidget(interactionButton, 3, 0, 1, 1);
     gridLayout->removeWidget(screenshotButton);
     gridLayout->addWidget(screenshotButton, 3, 1, 1,1);
 
     interactionButton->setText(QApplication::translate("GUI", "&Interaction", 0, QApplication::UnicodeUTF8));
-    interactionButton->setShortcut(QApplication::translate("GUI", "Ctrl+T", 0, QApplication::UnicodeUTF8));
+    interactionButton->setShortcut(QApplication::translate("GUI", "Alt+i", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_TOOLTIP
     interactionButton->setProperty("toolTip", QVariant(QApplication::translate("GUI", "Start interaction mode", 0, QApplication::UnicodeUTF8)));
 #endif // QT_NO_TOOLTIP	
@@ -1442,11 +1444,11 @@ void RealGUI::interactionGUI ( bool value )
     interactionButton->setOn ( value );
     m_interactionActived = value;
     viewer->getQWidget()->setMouseTracking ( ! value);
-    playpauseGUI(value);
+    if (value==true) playpauseGUI(value);
 
     if(value)
     {
-        interactionButton->setText(QApplication::translate("GUI", "Ctrl+T to quit", 0, QApplication::UnicodeUTF8));
+        interactionButton->setText(QApplication::translate("GUI", "Alt+i to quit", 0, QApplication::UnicodeUTF8));
         this->grabMouse();
         this->grabKeyboard();
         this->setMouseTracking(true);
@@ -1843,7 +1845,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
 #ifdef SOFA_GUI_INTERACTION
     if(m_interactionActived)
     {
-        if ((e->key()==Qt::Key_Escape) || (e->modifiers() && (e->key()=='T')))
+        if ((e->key()==Qt::Key_Escape) || (e->modifiers() && (e->key()=='I')))
         {
             this->interactionGUI (false);
         }
@@ -1931,7 +1933,6 @@ void RealGUI::wheelEvent(QWheelEvent* e)
 {
     if(m_interactionActived)
     {
-        printf("%d\n",e->delta());
         sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
         Node* groot = viewer->getScene();
         if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
