@@ -148,6 +148,10 @@ public:
 
     const char* viewerName;
 
+#ifdef SOFA_GUI_INTERACTION
+    QPushButton *interactionButton;
+#endif
+
     sofa::gui::qt::viewer::SofaViewer* viewer;
     QSofaListView* simulationGraph;
 
