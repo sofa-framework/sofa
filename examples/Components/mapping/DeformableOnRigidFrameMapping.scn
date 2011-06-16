@@ -15,13 +15,13 @@
 			<OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray"  />
 		</Node>
 		
-		<Node name="TorusRigid">
+<!-- 		<Node name="TorusRigid"> -->
 			<EulerImplicit />
 			<CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
 			<MechanicalObject name="rigidframe" template="Rigid" position="1 2 0 0 0 0.7 0.7" />
 			<UniformMass filename="BehaviorModels/torus.rigid" />
 			<noFixedConstraint />
-	</Node>
+<!-- 	</Node> -->
 
 			<Node name="TorusDeformLocal">
 				<SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
