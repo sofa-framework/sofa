@@ -29,7 +29,7 @@ public:
 
     SOFA_CLASS(OglViewport, core::VisualManager);
 
-    Data<defaulttype::Vec<2, unsigned int> > p_screenPosition;
+    Data<defaulttype::Vec<2, int> > p_screenPosition;
     Data<defaulttype::Vec<2, unsigned int> > p_screenSize;
     Data<defaulttype::Vec3f> p_cameraPosition;
     Data<defaulttype::Quat> p_cameraOrientation;

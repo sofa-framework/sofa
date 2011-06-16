@@ -130,15 +130,8 @@ void OglShaderVisualModel::init()
         vrestnormals.setIndexShader( 0);
         vrestnormals.init();
 
-        ResizableExtVector<Coord>& vrestnorm = * ( vrestnormals.beginEdit() );
-        const ResizableExtVector<Coord>& vnormals = m_vnormals.getValue();
-        vrestnorm.resize ( vnormals.size() );
-        for ( unsigned int i = 0; i < vnormals.size(); i++ )
-        {
-            vrestnorm[i] = vnormals[i];
-        }
+        computeRestNormals();
 
-        vrestnormals.endEdit();
 //
 //    //add Model Matrix as Uniform
         modelMatrixUniform.setContext( this->getContext());
@@ -229,6 +222,11 @@ void OglShaderVisualModel::computeRestNormals()
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
     ResizableExtVector<Coord>& restNormals = * ( vrestnormals.beginEdit() );
+    restNormals.resize(vrestpos.size());
+    for (unsigned int i = 0; i < restNormals.size(); i++)
+    {
+        restNormals[i].clear();
+    }
     for (unsigned int i = 0; i < triangles.size() ; i++)
     {
         const Coord  v1 = vrestpos[triangles[i][0]];

@@ -66,12 +66,8 @@ void OglViewport::init()
 
 void OglViewport::initVisual()
 {
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    GLint windowWidth = viewport[2];
-    GLint windowHeight = viewport[3];
-
-    fbo.init(windowWidth,windowHeight);
+    const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
+    fbo.init(screenSize[0],screenSize[1]);
 }
 
 
@@ -148,7 +144,8 @@ void OglViewport::preDrawScene(helper::gl::VisualParameters* vp)
     double ratio = (double)vp->viewport[2]/(double)vp->viewport[3];
 
     //Launch FBO process
-    fbo.setSize(vp->viewport[2], vp->viewport[3]);
+    const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
+    fbo.setSize(screenSize[0],screenSize[1]);
     fbo.start();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -189,14 +186,16 @@ void OglViewport::postDrawScene(helper::gl::VisualParameters* vp)
     float txmax,tymax,tzmax;
     float txmin,tymin,tzmin;
 
-    const Vec<2, unsigned int> &screenPosition = *p_screenPosition.beginEdit();
-    const Vec<2, unsigned int> &screenSize = *p_screenSize.beginEdit();
+    const Vec<2, int> screenPosition = p_screenPosition.getValue();
+    const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
 
     txmin = tymin = tzmin = 0.0;
     vxmin = vymin = vzmin = -1.0;
     vxmax = vymax = vzmax = txmax = tymax = tzmax = 1.0;
 
-    glViewport(screenPosition[0],screenPosition[1],screenSize[0],screenSize[1]);
+    int x = (screenPosition[0]>=0 ? screenPosition[0] : vp->viewport[2]+screenPosition[0]);
+    int y = (screenPosition[1]>=0 ? screenPosition[1] : vp->viewport[3]+screenPosition[1]);
+    glViewport(x,y,screenSize[0],screenSize[1]);
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
