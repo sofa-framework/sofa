@@ -181,6 +181,8 @@ public:
     // handle topological changes
     virtual void handleTopologyChange();
 
+    void addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+
     void draw();
 
 protected:
