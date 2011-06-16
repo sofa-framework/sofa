@@ -273,6 +273,22 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
       saveReloadFile(false)
 {
 
+#ifdef SOFA_GUI_INTERACTION
+    interactionButton = new QPushButton(optionTabs);
+    interactionButton->setObjectName(QString::fromUtf8("interactionButton"));
+    interactionButton->setCheckable(true);
+
+    gridLayout->addWidget(interactionButton, 3, 0, 1, 1);
+    gridLayout->removeWidget(screenshotButton);
+    gridLayout->addWidget(screenshotButton, 3, 1, 1,1);
+
+    interactionButton->setText(QApplication::translate("GUI", "&Interaction", 0, QApplication::UnicodeUTF8));
+    interactionButton->setShortcut(QApplication::translate("GUI", "Ctrl+T", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+    interactionButton->setProperty("toolTip", QVariant(QApplication::translate("GUI", "Start interaction mode", 0, QApplication::UnicodeUTF8)));
+#endif // QT_NO_TOOLTIP	
+#endif
+
     connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
 
     informationOnPickCallBack = InformationOnPickCallBack(this);
@@ -1915,9 +1931,11 @@ void RealGUI::wheelEvent(QWheelEvent* e)
 {
     if(m_interactionActived)
     {
+        printf("%d\n",e->delta());
         sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
         Node* groot = viewer->getScene();
         if (groot)groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+        e->accept();
         return;
     }
 }
