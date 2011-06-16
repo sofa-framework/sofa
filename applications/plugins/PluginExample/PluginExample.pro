@@ -1,5 +1,5 @@
 ######  PLUGIN TARGET
-TARGET = MyPluginExample
+TARGET = PluginExample
 
 ######  GENERAL PLUGIN CONFIGURATION, you shouldn't have to modify it
 
@@ -49,7 +49,7 @@ HEADERS = MyBehaviorModel.h \
           MyProjectiveConstraintSet.inl \
 		  initPlugin.h
 		  
-README_FILE = MyPluginExample.txt
+README_FILE = PluginExample.txt
 
 unix : QMAKE_POST_LINK = cp $$README_FILE $$DESTDIR 
 win32 : QMAKE_POST_LINK = copy \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"

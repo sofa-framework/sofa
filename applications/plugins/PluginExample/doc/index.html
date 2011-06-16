@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
+
 <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Plugin example</title></head><body>
 <h1>Plugin Example</h1>
 <br>
@@ -34,12 +35,13 @@ different types, which generate binary code.<span style="font-weight: bold;"></s
 <br>
 <h3><a name="Create_your_own_plugin"></a>Create your own plugin</h3>Suppose you want to create a plugin called YourPlugin. The easiest way is to apply the following steps:<br>
 <ol>
-  <li>copy and rename the PluginExample example directory</li>
-  <li>rename MyPluginExample.pro to YourPluginExample.pro, and MyPluginExample.txt to YourPluginExample.txt</li>
-  <li>replace MyPluginExample with YourPluginExample in the following files: <br>
+  <li>copy and rename the PluginExample example directory to YourPlugin<br>
+</li>
+  <li>rename PluginExample.pro to YourPlugin.pro, and PluginExample.txt to YourPlugin.txt</li>
+  <li>replace PluginExample with YourPlugin in the following files: <br>
     <ul>
-      <li>YourPluginExample.pro</li>
-      <li>YourPluginExample.txt</li>
+      <li>YourPlugin.pro</li>
+      <li>YourPlugin.txt</li>
       <li>initPlugin.h</li>
       <li>initPlugin.cpp</li>
     </ul>
@@ -56,7 +58,7 @@ different types, which generate binary code.<span style="font-weight: bold;"></s
   <li>run the plugin. <br>
     <ul>
       <li>Do not forget to load it in Sofa (in the Qt GUI, use Edit &gt; Plugin Manager &gt; add&#8230;)</li>
-      <li>an example scene is given: <a href="../testMyPluginExample.scn">testMyPluginExample.scn</a><br>
+      <li>You can adapt the example scene : <a href="PluginExampleTest.scn">PluginExampleTest.scn</a> <span style="text-decoration: underline;"></span><br>
       </li>
     </ul>
   </li>
@@ -76,7 +78,7 @@ different types, which generate binary code.<span style="font-weight: bold;"></s
 <ul>
   <li>change the file names, the project file and the initPlugin.cpp file</li>
   <li>alternatively, the Unix shell script changeClassName.sh allows you to easily change a class Name:<br>
-./changeClassName.sh OldClassName NewClassName<br>
+./changeClassName.sh OldClassName NewClassName <br>
 This script replaces string OldClassName with string NewClassName in
 all files (including .pro), and in the file names, of the current
 directory.<br>
