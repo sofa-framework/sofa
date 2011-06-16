@@ -417,7 +417,7 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
     	std::cout << "=============================================================================================" <<std::cout << std::endl;
     }*/
 
-#if 0
+
     const int lastMappingId = mappingList.size() - 1;
     for(int id=lastMappingId; id>=0; --id)
     {
@@ -476,35 +476,31 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
             }
 
 
-            /*
-            			for(unsigned int i1 =0; i1 < sizeK1 ; ++i1)
-            			{
-            				for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
-            				{
-            					double Jt_K2_J_i1j1 = 0;
 
-            					for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
-            					{
-            						for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
-            						{
-            							const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
-            							for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
-            							{
-            								const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
-            								const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
+            for(unsigned int i1 =0; i1 < sizeK1 ; ++i1)
+            {
+                for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
+                {
+                    double Jt_K2_J_i1j1 = 0;
 
-            								Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
-            							}
-            						}
-            					}
+                    for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
+                    {
+                        for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
+                        {
+                            const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
+                            for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
+                            {
+                                const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
+                                const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
 
-            					K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
-            				}
-            			}
-            */
+                                Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
+                            }
+                        }
+                    }
+                    K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
+                }
+            }
         }
-
-
 
 
         std::vector<std::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
@@ -518,7 +514,6 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
             }
             ++it;
         }
-
 
 
         for(unsigned i=0; i< interactionList.size(); i++)
@@ -574,30 +569,25 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
                             <<" I32["<<nbR_I_32<<"."<<nbC_I_32<<"]("<< offR_I_32<<","<<offC_I_32 <<  ")" <<std::endl;
                 }
 
-                /*
-                				for(unsigned int _i = offR_I_12;_i < nbR_I_12 ; _i++)
-                				{
-                					for(unsigned int _j = offC_I_12;_j < nbC_I_12 ; _j++)
-                					{
-                						double Jt_I32_ij = 0;
-                						for(unsigned int _k = 0;_k < nbR_I_32 ; _k++)
-                						{
-                							//std::cout<<" index matrix i:" << _i <<"    j:" <<_j  <<"      k:"  << _k <<std::endl;
-                							const double Jt_ik    = (double) matrixJ->element( _k, _i ) ;
-                							const double  I_32_kj = (double) I_32.matrix->element( offR_I_32 + _k, offC_I_32+_j) ;
 
-                							Jt_I32_ij += Jt_ik  *  I_32_kj;
-                						}
-                						I_12.matrix->add( _i ,  _j , Jt_I32_ij);
-                					}
-                				}
-                */
+                for(unsigned int _i = offR_I_12; _i < nbR_I_12 ; _i++)
+                {
+                    for(unsigned int _j = offC_I_12; _j < nbC_I_12 ; _j++)
+                    {
+                        double Jt_I32_ij = 0;
+                        for(unsigned int _k = 0; _k < nbR_I_32 ; _k++)
+                        {
+                            //std::cout<<" index matrix i:" << _i <<"    j:" <<_j  <<"      k:"  << _k <<std::endl;
+                            const double Jt_ik    = (double) matrixJ->element( _k, _i ) ;
+                            const double  I_32_kj = (double) I_32.matrix->element( offR_I_32 + _k, offC_I_32+_j) ;
 
-
-
-
-
+                            Jt_I32_ij += Jt_ik  *  I_32_kj;
+                        }
+                        I_12.matrix->add( _i ,  _j , Jt_I32_ij);
+                    }
+                }
             }
+
             if(interactionList[i].second == outstate)
             {
                 InteractionMatrixRef I_21 = this->getMatrix(interactionList[i].first,instate);
@@ -630,24 +620,24 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
                             <<" J["<<nbR_J<<"."<<nbC_J<<"]" <<std::endl;
                 }
 
-                /*
-                				for(unsigned int _i = offR_I_21;_i < nbR_I_21 ; _i++)
-                				{
-                					for(unsigned int _j = offC_I_21;_j < nbC_I_21 ; _j++)
-                					{
-                						double I23_J_ij = 0;
-                						for(unsigned int _k = 0;_k < nbC_I_23 ; _k++)
-                						{
-                							//std::cout<<" index matrix i:" << _i <<"    j:" <<_j  <<"      k:"  << _k <<std::endl;
-                							const double I_23_ik = (double) I_23.matrix->element( offR_I_23 + _i, offC_I_23+_k) ;
-                							const double J_kj    = (double) matrixJ->element( _k, _j ) ;
 
-                							I23_J_ij += I_23_ik  * J_kj ;
-                						}
-                						I_21.matrix->add( _i ,  _j , I23_J_ij);
-                					}
-                				}
-                */
+                for(unsigned int _i = offR_I_21; _i < nbR_I_21 ; _i++)
+                {
+                    for(unsigned int _j = offC_I_21; _j < nbC_I_21 ; _j++)
+                    {
+                        double I23_J_ij = 0;
+                        for(unsigned int _k = 0; _k < nbC_I_23 ; _k++)
+                        {
+                            //std::cout<<" index matrix i:" << _i <<"    j:" <<_j  <<"      k:"  << _k <<std::endl;
+                            const double I_23_ik = (double) I_23.matrix->element( offR_I_23 + _i, offC_I_23+_k) ;
+                            const double J_kj    = (double) matrixJ->element( _k, _j ) ;
+
+                            I23_J_ij += I_23_ik  * J_kj ;
+                        }
+                        I_21.matrix->add( _i ,  _j , I23_J_ij);
+                    }
+                }
+
 
 
             }
@@ -663,70 +653,7 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//		const int nbInteraction = interactionsMappedTree.size();
-//		for(int id=0;id<nbInteraction;id++)
-//		{
-//			if (interactionsMappedTree[id].first  == outstate)
-//			{
-//				std::cout << "	toModel : "<< outstate->getName()<< " has interaction stiffness with : "
-//						<< interactionsMappedTree[id].second->getName()<<std::endl;
-//			}
-//			if (interactionsMappedTree[id].second == outstate)
-//			{
-//				std::cout << "	toModel : "<< outstate->getName()<< " has interaction stiffness with : "
-//						<< interactionsMappedTree[id].first->getName()<<std::endl;
-//			}
-//		}
-
-
-
-//		//test for fromModel -----------------------------------------------------------
-//		if (realStateOffsets.find(instate) != realStateOffsets.end()) //case where fromModel is a non mapped state
-//		{
-//			std::cout << "	fromModel : "<< instate->getName()<< " found in real MS registed list"<<std::endl;
-//		}
-//		else if(mappedMatrices.find(instate) != mappedMatrices.end()) //case where fromModel is a mapped state
-//		{
-//			std::cout << "	fromModel : "<< instate->getName()<< " found in mapped MS registed list"<<std::endl;
-//		}
-//		else
-//		{
-//			std::cout << "	fromModel : "<< instate->getName()<< " not found in local data registed"<<std::endl;
-//		}
-
-
-
-
-
     }
-
-#endif
-
-
-
 }
 
 
