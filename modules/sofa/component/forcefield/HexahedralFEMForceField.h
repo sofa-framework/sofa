@@ -152,6 +152,7 @@ public:
         : f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
         , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
         , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
+        , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
     {
 
         _coef[0][0]= -1;		_coef[0][1]= -1;		_coef[0][2]= -1;
@@ -215,6 +216,7 @@ public:
     Data<std::string> f_method; ///< the computation method of the displacements
     Data<Real> f_poissonRatio;
     Data<Real> f_youngModulus;
+    Data<bool> f_drawing;
 
 protected:
     /// container that stotes all requires information for each hexahedron
