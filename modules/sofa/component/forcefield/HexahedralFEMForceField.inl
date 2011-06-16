@@ -615,7 +615,44 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar(WDataRefVecDeriv& 
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-/////////////////////////////////////////////////
+
+template<class DataTypes>
+void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+{
+    // Build Matrix Block for this ForceField
+    int i,j,n1, n2, e;
+
+    Index node1, node2;
+
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    const Real kFactor = (Real)mparams->kFactor();
+    const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
+
+    for(e=0 ; e<_topology->getNbHexahedra() ; ++e)
+    {
+        const ElementStiffness &Ke = hexahedronInf[e].stiffness;
+
+        // find index of node 1
+        for (n1=0; n1<8; n1++)
+        {
+            node1 = _topology->getHexahedron(e)[n1];
+
+            // find index of node 2
+            for (n2=0; n2<8; n2++)
+            {
+                node2 = _topology->getHexahedron(e)[n2];
+                Mat33 tmp = hexahedronInf[e].rotation.multTranspose( Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
+                        Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
+                        Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * hexahedronInf[e].rotation;
+                for(i=0; i<3; i++)
+                    for (j=0; j<3; j++)
+                        r.matrix->add(r.offset+3*node1+i, r.offset+3*node2+j, - tmp[i][j]*kFactor);
+            }
+        }
+    }
+}
+
+
 
 
 template<class DataTypes>

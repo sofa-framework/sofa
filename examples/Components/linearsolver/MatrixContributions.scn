@@ -15,7 +15,7 @@
 		<EulerImplicit name="cg_odesolver" printLog="false"/>
 		<CGLinearSolver name="cg_solver" iterations="25" tolerance="1.0e-9" threshold="1.0e-9"/>
 <!--
-		<BTDLinearSolver name="m_lSolver" printLog="false" verbose="false" />
+		<LULinearSolver name="m_lSolver" printLog="false" verbose="false" />
 -->
 		<Node name="Hexahedra1">
 			<HexahedronSetTopologyContainer name="hexaContainer1" filename="mesh/SimpleBeamHexa.msh"/>
