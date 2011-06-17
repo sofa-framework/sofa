@@ -36,6 +36,7 @@ public:
     Data<RigidCoord > p_cameraRigid;
     Data<double> p_zNear, p_zFar;
     Data<double> p_fovy;
+    Data<bool> p_useFBO;
 
     helper::gl::FrameBufferObject fbo;
 
@@ -47,9 +48,13 @@ public:
     void initVisual();
     void preDrawScene(helper::gl::VisualParameters* vp);
     bool drawScene(helper::gl::VisualParameters* vp);
-    void postDrawScene(helper::gl::VisualParameters* /*vp*/);
-};
+    void postDrawScene(helper::gl::VisualParameters* vp);
 
+protected:
+    void renderToViewport(helper::gl::VisualParameters* vp);
+    void renderFBOToScreen(helper::gl::VisualParameters* vp);
+
+};
 }
 
 }

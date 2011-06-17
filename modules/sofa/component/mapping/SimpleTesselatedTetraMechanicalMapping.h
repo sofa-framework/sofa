@@ -29,6 +29,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/topology/SimpleTesselatedTetraTopologicalMapping.h>
 #include <sofa/helper/vector.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -88,26 +90,22 @@ protected:
     core::topology::BaseMeshTopology* outputTopo;
 };
 
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_CPP)
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3fTypes, Rigid3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3dTypes, Rigid3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Rigid3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3fTypes >;
 #endif
 #endif
 
