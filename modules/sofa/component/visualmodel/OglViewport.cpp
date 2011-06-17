@@ -38,14 +38,12 @@ OglViewport::OglViewport()
     ,p_zNear(initData(&p_zNear, "zNear", "Camera's ZNear"))
     ,p_zFar(initData(&p_zFar, "zFar", "Camera's ZFar"))
     ,p_fovy(initData(&p_fovy, (double) 60.0, "fovy", "Field of View (Y axis)"))
+    ,p_useFBO(initData(&p_useFBO, true, "useFBO", "Use a FBO to render the viewport"))
 {
-    // TODO Auto-generated constructor stub
-
 }
 
 OglViewport::~OglViewport()
 {
-    // TODO Auto-generated destructor stub
 }
 
 
@@ -60,24 +58,41 @@ void OglViewport::init()
     {
         p_cameraRigid.setDisplayed(false);
     }
-
-
 }
 
 void OglViewport::initVisual()
 {
-    const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
-    fbo.init(screenSize[0],screenSize[1]);
+    if (p_useFBO.getValue())
+    {
+        const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
+        fbo.init(screenSize[0],screenSize[1]);
+    }
 }
 
 
 void OglViewport::preDrawScene(helper::gl::VisualParameters* vp)
 {
+    if (p_useFBO.getValue())
+        renderToViewport(vp);
+}
+
+bool OglViewport::drawScene(helper::gl::VisualParameters* /* vp */)
+{
+    return false;
+}
+
+void OglViewport::postDrawScene(helper::gl::VisualParameters* vp)
+{
+    if (p_useFBO.getValue())
+        renderFBOToScreen(vp);
+    else
+        renderToViewport(vp);
+}
+
+void OglViewport::renderToViewport(helper::gl::VisualParameters* vp)
+{
     Vec3f cameraPosition;
     Quat cameraOrientation;
-    //const Vec3f &cameraPosition = *p_cameraPosition.beginEdit();
-    //const Quat &cameraOrientation = *p_cameraOrientation.beginEdit();
-    //defaulttype::RigidCoord &rigidCamera = *p_cameraRigid.beginEdit();
 
     //Take the rigid if it is connected to something
     if (p_cameraRigid.isDisplayed())
@@ -141,14 +156,26 @@ void OglViewport::preDrawScene(helper::gl::VisualParameters* vp)
         zFar = p_zFar.getValue();
     }
 
-    double ratio = (double)vp->viewport[2]/(double)vp->viewport[3];
-
     //Launch FBO process
+    const Vec<2, int> screenPosition = p_screenPosition.getValue();
     const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
-    fbo.setSize(screenSize[0],screenSize[1]);
-    fbo.start();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    if (p_useFBO.getValue())
+    {
+        fbo.init(screenSize[0],screenSize[1]);
+        fbo.start();
+        glViewport(0,0,screenSize[0],screenSize[1]);
+    }
+    else
+    {
+        int x0 = (screenPosition[0]>=0 ? screenPosition[0] : vp->viewport[2]+screenPosition[0]);
+        int y0 = (screenPosition[1]>=0 ? screenPosition[1] : vp->viewport[3]+screenPosition[1]);
+        glViewport(x0,y0,screenSize[0],screenSize[1]);
+        glScissor(x0,y0,screenSize[0],screenSize[1]);
+        glEnable(GL_SCISSOR_TEST);
+    }
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    double ratio = (double)screenSize[0]/(double)screenSize[1];
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
@@ -171,31 +198,40 @@ void OglViewport::preDrawScene(helper::gl::VisualParameters* vp)
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
-    fbo.stop();
+    if (p_useFBO.getValue())
+    {
+        fbo.stop();
+    }
+    else
+    {
+        glDisable(GL_SCISSOR_TEST);
+    }
+
+    glViewport(vp->viewport[0],vp->viewport[1],vp->viewport[2],vp->viewport[3]);
 }
 
-bool OglViewport::drawScene(helper::gl::VisualParameters* /* vp */)
+void OglViewport::renderFBOToScreen(helper::gl::VisualParameters* vp)
 {
-    return false;
-}
-
-void OglViewport::postDrawScene(helper::gl::VisualParameters* vp)
-{
-    float vxmax, vymax, vzmax ;
-    float vxmin, vymin, vzmin ;
-    float txmax,tymax,tzmax;
-    float txmin,tymin,tzmin;
+    if (!p_useFBO.getValue())
+        return;
+    float vxmax, vymax;
+    float vxmin, vymin;
+    float txmax,tymax;
+    float txmin,tymin;
 
     const Vec<2, int> screenPosition = p_screenPosition.getValue();
     const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
 
-    txmin = tymin = tzmin = 0.0;
-    vxmin = vymin = vzmin = -1.0;
-    vxmax = vymax = vzmax = txmax = tymax = tzmax = 1.0;
+    int x0 = (screenPosition[0]>=0 ? screenPosition[0] : vp->viewport[2]+screenPosition[0]);
+    int y0 = (screenPosition[1]>=0 ? screenPosition[1] : vp->viewport[3]+screenPosition[1]);
 
-    int x = (screenPosition[0]>=0 ? screenPosition[0] : vp->viewport[2]+screenPosition[0]);
-    int y = (screenPosition[1]>=0 ? screenPosition[1] : vp->viewport[3]+screenPosition[1]);
-    glViewport(x,y,screenSize[0],screenSize[1]);
+    txmin = tymin = 0.0;
+    txmax = tymax = 1.0;
+    //glViewport(x0,y0,screenSize[0],screenSize[1]);
+    vxmin = x0*2.0f/vp->viewport[2] - 1.0f;
+    vymin = y0*2.0f/vp->viewport[3] - 1.0f;
+    vxmax = (x0+screenSize[0])*2.0f/vp->viewport[2] - 1.0f;
+    vymax = (y0+screenSize[1])*2.0f/vp->viewport[3] - 1.0f;
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -232,7 +268,7 @@ void OglViewport::postDrawScene(helper::gl::VisualParameters* vp)
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
-    glViewport(0,0,vp->viewport[2],vp->viewport[3]);
+    //glViewport(0,0,vp->viewport[2],vp->viewport[3]);
 }
 
 }
