@@ -264,13 +264,17 @@ contains(DEFINES,SOFA_HAVE_CSPARSE){
 		  CudaPrecomputedLinearSolver.inl \
 		  CudaSparseLDLSolver.h \
 		  CudaSparseLDLSolver.inl \
+		  CudaSparseXXTSolver.h \
+		  CudaSparseXXTSolver.inl \
 
 	SOURCES += \	
 		  CudaPrecomputedLinearSolver.cpp \
-		  CudaSparseLDLSolver.cpp
+		  CudaSparseLDLSolver.cpp \
+		  CudaSparseXXTSolver.cpp
 
 	CUDA_SOURCES += \
-		CudaSparseLDLSolver.cu
+		CudaSparseLDLSolver.cu \
+		CudaSparseXXTSolver.cu
 }
 
 contains(DEFINES,SOFA_HAVE_TAUCS_MT){ 

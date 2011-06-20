@@ -57,7 +57,7 @@ public:
     Data<bool> f_verbose;
     Data<unsigned> f_update_iteration;
     Data<unsigned> f_update_step;
-    Data<int> f_max_use_by_step;
+    Data<bool> f_use_precond;
     Data<bool> f_build_precond;
     Data< helper::vector< std::string > > f_preconditioners;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;

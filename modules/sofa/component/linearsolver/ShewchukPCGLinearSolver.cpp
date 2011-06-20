@@ -63,7 +63,7 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_update_iteration( initData(&f_update_iteration,(unsigned)0,"update_iteration","Number of CG iterations before next refresh of precondtioner") )
     , f_update_step( initData(&f_update_step,(unsigned)1,"update_step","Number of steps before the next refresh of precondtioners") )
-    , f_max_use_by_step( initData(&f_max_use_by_step,(int)-1,"max_use_by_step","maximum application of the precondtioners in one step (-1 => alaways)") )
+    , f_use_precond( initData(&f_use_precond,true,"use_precond","Use preconditioner") )
     , f_build_precond( initData(&f_build_precond,true,"build_precond","Build the preconditioners, if false build the preconditioner only at the initial step") )
     , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
@@ -224,12 +224,9 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     unsigned iter=1;
 
     bool apply_precond = false;
-    if ((this->preconditioners.size()>0) && f_build_precond.getValue())
-    {
-        if (f_max_use_by_step.getValue()<0) apply_precond = true;
-        else apply_precond = (((int) (iter-1))<(int) f_max_use_by_step.getValue());
-    }
+    if ((this->preconditioners.size()>0) && f_build_precond.getValue()) apply_precond = f_use_precond.getValue();
     else apply_precond = false;
+
     if (apply_precond)
     {
         sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
@@ -274,11 +271,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         cgstep_alpha(x,d,alpha);//for(int i=0; i<n; i++) x[i] += alpha * d[i];
         cgstep_alpha(r,q,-alpha);//for (int i=0; i<n; i++) r[i] = r[i] - alpha * q[i];
 
-        if (this->preconditioners.size()>0 && f_build_precond.getValue())
-        {
-            if (f_max_use_by_step.getValue()<0) apply_precond = true;
-            else apply_precond = (((int) (iter))<(int) f_max_use_by_step.getValue());
-        }
+        if (this->preconditioners.size()>0 && f_build_precond.getValue()) apply_precond = f_use_precond.getValue();
         else apply_precond = false;
 
         if (apply_precond)
