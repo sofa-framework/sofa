@@ -1902,7 +1902,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
 }
 
 #ifdef SOFA_GUI_INTERACTION
-bool RealGUI::eventFilter(QObject *obj, QEvent *e)
+bool RealGUI::eventFilter(QObject */*obj*/, QEvent *e)
 {
     if (m_interactionActived)
     {
@@ -1915,7 +1915,7 @@ bool RealGUI::eventFilter(QObject *obj, QEvent *e)
     return false; // pass other events
 }
 
-void RealGUI::mouseMoveEvent(QMouseEvent * e)
+void RealGUI::mouseMoveEvent(QMouseEvent * /*e*/)
 {
     if (m_interactionActived)
     {
