@@ -1122,6 +1122,7 @@ public:
         , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif
     {
+
     }
 
     BarycentricMapping(core::State<In>* from, core::State<Out>* to, Mapper* mapper)

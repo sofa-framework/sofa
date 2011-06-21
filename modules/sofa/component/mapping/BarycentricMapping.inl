@@ -1127,11 +1127,8 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
         if (t1 != NULL)
         {
             typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexahedronSetMapper;
-            f_hexaMapper->setTopology(t1);
-            f_hexaMapper->setToTopology(toTopoCont);
-            f_hexaMapper->setMaskFrom(maskFrom);
-            f_hexaMapper->setMaskTo(maskTo);
-            mapper = f_hexaMapper;
+            f_hexaMapper = new HexahedronSetMapper(t1, toTopoCont, maskFrom, maskTo);
+            mapper =  dynamic_cast< TopologyBarycentricMapper<InDataTypes,OutDataTypes>* > ( f_hexaMapper );
         }
         else
         {
