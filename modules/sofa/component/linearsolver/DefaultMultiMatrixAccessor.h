@@ -114,10 +114,6 @@ protected:
     //by method "getMatrix" in order to fill its matrix
     mutable std::map< const BaseMechanicalState*, defaulttype::BaseMatrix* > mappedMatrices;
 
-    //an data stored information about interaction between state. Each time there are interaction beween mapped state
-    //a new matrix will be created and this interaction is stored here in order to propagate DownOnTop the interaction
-    mutable std::vector< std::pair< const BaseMechanicalState*, const BaseMechanicalState* > > interactionsMappedTree;
-
     //The data structure included mapped and on mapped state, the diagonal stiffness bloc and interaction stiffnessbloc
     mutable std::map< const BaseMechanicalState*, MatrixRef > diagonalStiffnessBloc;//todo remove
     mutable std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef > interactionStiffnessBloc;//todo remove
@@ -145,7 +141,7 @@ class SOFA_COMPONENT_LINEARSOLVER_API MappedMultiMatrixAccessor : public Default
 {
 public:
     MappedMultiMatrixAccessor() : DefaultMultiMatrixAccessor() {}
-    virtual ~MappedMultiMatrixAccessor() { this->clear();}
+    ~MappedMultiMatrixAccessor() {	this->clear();}
 
     virtual defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const;
     virtual defaulttype::BaseMatrix* createInteractionMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2) const;
