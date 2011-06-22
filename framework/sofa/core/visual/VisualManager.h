@@ -16,63 +16,59 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_INL
-#define SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_INL
+#ifndef SOFA_CORE_VISUAL_VISUALMANAGER_H
+#define SOFA_CORE_VISUAL_VISUALMANAGER_H
 
-#include <sofa/component/visualmodel/OglVariable.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-namespace visualmodel
+namespace visual
 {
 
-//
-//template<class DataTypes>
-//OglVariable<DataTypes>::OglVariable()
-//: value(initData(&value, DataTypes(), "value", "Set Uniform Value"))
-//{
-//    addAlias(&value, "values"); // some variable types hold multiple values, so we authorize both names for this attribute
-//}
-//
-//template<class DataTypes>
-//OglVariable<DataTypes>::~OglVariable()
-//{
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::init()
-//{
-//    OglShaderElement::init();
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::initVisual()
-//{
-//    core::visual::VisualModel::initVisual();
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::reinit()
-//{
-//    init();
-//    initVisual();
-//}
+class VisualManager : public virtual VisualModel
+{
+public:
+    SOFA_CLASS(VisualManager, VisualModel);
 
-} // namespace visualmodel
+    /// Destructor
+    virtual ~VisualManager() { }
 
-} // namespace component
+    /**
+     *  \brief Called before rendering the scene
+     */
+    virtual void preDrawScene(VisualParams* /*vparams*/) {}
+
+    /**
+     *  \brief Called after rendering the scene
+     */
+    virtual void postDrawScene(VisualParams* /*vparams*/) {}
+
+    /**
+     *  \brief Called instead of rendering the scene
+     *
+     *  Return true if this object actually did the rendering, or false if it wasn't done.
+     */
+    virtual bool drawScene(VisualParams* /*vparams*/) { return false; }
+};
+
+} // namespace visual
+
+} // namespace core
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
+#endif // SOFA_CORE_VISUAL_VISUALMANAGER_H

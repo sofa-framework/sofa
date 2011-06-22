@@ -73,7 +73,7 @@ void OglTetrahedralModel<DataTypes>::init()
 }
 
 template<class DataTypes>
-void OglTetrahedralModel<DataTypes>::drawTransparent()
+void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualParams*)
 {
     if (!getContext()->getShowVisualModels()) return;
 

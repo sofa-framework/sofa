@@ -36,9 +36,9 @@
 #ifndef SOFA_COMPONENT_OGLSHADER
 #define SOFA_COMPONENT_OGLSHADER
 
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/Shader.h>
+#include <sofa/core/visual/Shader.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/GLSLShader.h>
@@ -64,10 +64,10 @@ namespace visualmodel
  *  and Ati's >2K series.
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API OglShader : public core::Shader, public core::VisualModel
+class SOFA_COMPONENT_VISUALMODEL_API OglShader : public core::visual::Shader, public core::visual::VisualModel
 {
 public:
-    SOFA_CLASS2(OglShader, core::Shader, core::VisualModel);
+    SOFA_CLASS2(OglShader, core::visual::Shader, core::visual::VisualModel);
 
     ///Activates or not the shader
     Data<bool> turnOn;
@@ -108,7 +108,7 @@ public:
     void initVisual();
     void init();
     void reinit();
-    void drawVisual();
+    void drawVisual(const core::visual::VisualParams*);
     void updateVisual();
 
     void start();
@@ -174,7 +174,7 @@ public:
  *  and the id (or name) of the element.
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API OglShaderElement : public core::ShaderElement
+class SOFA_COMPONENT_VISUALMODEL_API OglShaderElement : public core::visual::ShaderElement
 {
 protected:
     ///Name of element (corresponding with the shader)

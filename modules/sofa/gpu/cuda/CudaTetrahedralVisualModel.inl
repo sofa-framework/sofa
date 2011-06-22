@@ -76,7 +76,7 @@ void OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::ini
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::drawTransparent()
+void OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::drawTransparent(const core::visual::VisualParams*)
 {
     //if (!getContext()->getShowVisualModels()) return;
 

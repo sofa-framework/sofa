@@ -76,8 +76,8 @@ public:
 
     void putRestPositions(const Vec3fTypes::VecCoord& positions);
 
-    virtual void bwdDraw(Pass);
-    virtual void fwdDraw(Pass);
+    virtual void bwdDraw(core::visual::VisualParams*);
+    virtual void fwdDraw(core::visual::VisualParams*);
 
     // handle topological changes
     virtual void handleTopologyChange();

@@ -26,7 +26,7 @@
 #ifndef _OGL_ATTRIBUTE_H_
 #define _OGL_ATTRIBUTE_H_
 
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/component/visualmodel/OglShader.h>
@@ -42,10 +42,10 @@ namespace visualmodel
 {
 
 template< int size, unsigned int type, class DataTypes>
-class OglAttribute: public core::VisualModel, public OglShaderElement
+class OglAttribute: public core::visual::VisualModel, public OglShaderElement
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE3(OglAttribute, size, type, DataTypes), core::VisualModel, OglShaderElement);
+    SOFA_CLASS2(SOFA_TEMPLATE3(OglAttribute, size, type, DataTypes), core::visual::VisualModel, OglShaderElement);
     OglAttribute();
     virtual ~OglAttribute();
 
@@ -65,8 +65,8 @@ public:
     void setValue( const ResizableExtVector<DataTypes>& value);
     void enable();
     void disable();
-    virtual void bwdDraw(Pass);
-    virtual void fwdDraw(Pass);
+    virtual void bwdDraw(core::visual::VisualParams* );
+    virtual void fwdDraw(core::visual::VisualParams* );
 
     void setUsage(unsigned int usage) { _usage = usage; }
 

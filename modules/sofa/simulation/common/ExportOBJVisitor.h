@@ -48,7 +48,7 @@ public:
     ExportOBJVisitor(const core::ExecParams* params /* PARAMS FIRST */, std::ostream* out, std::ostream* mtl);
     ~ExportOBJVisitor();
 
-    virtual void processVisualModel(Node* node, core::VisualModel* vm);
+    virtual void processVisualModel(Node* node, core::visual::VisualModel* vm);
 
     virtual Result processNodeTopDown(Node* node);
     virtual void processNodeBottomUp(Node* node);

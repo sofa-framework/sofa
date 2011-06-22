@@ -40,7 +40,7 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/component/component.h>
 #include <sofa/component/visualmodel/Light.h>
-#include <sofa/core/VisualManager.h>
+#include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Mat.h>
 
@@ -65,10 +65,10 @@ namespace visualmodel
  *
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API LightManager : public core::VisualManager
+class SOFA_COMPONENT_VISUALMODEL_API LightManager : public core::visual::VisualManager
 {
 public:
-    SOFA_CLASS(LightManager, core::VisualManager);
+    SOFA_CLASS(LightManager, core::visual::VisualManager);
 
 private:
     std::vector<Light*> lights;
@@ -97,16 +97,16 @@ public:
     void init();
     void reinit();
     void initVisual();
-    void update() { };
+    void update() { }
 
-    void preDrawScene(helper::gl::VisualParameters* vp);
-    bool drawScene(helper::gl::VisualParameters* vp);
-    void postDrawScene(helper::gl::VisualParameters* vp);
+    void preDrawScene(core::visual::VisualParams* vp);
+    bool drawScene(core::visual::VisualParams* vp);
+    void postDrawScene(core::visual::VisualParams* vp);
 
 
     void draw();
-    void fwdDraw(Pass);
-    void bwdDraw(Pass);
+    void fwdDraw(core::visual::VisualParams*);
+    void bwdDraw(core::visual::VisualParams*);
 
     ///Register a light into the LightManager
     void putLight(Light* light);

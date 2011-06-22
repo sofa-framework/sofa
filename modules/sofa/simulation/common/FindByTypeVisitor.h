@@ -27,7 +27,7 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/system/gl.h>
 #include <iostream>
 #include <typeinfo>

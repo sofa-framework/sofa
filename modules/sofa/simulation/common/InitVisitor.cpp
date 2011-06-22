@@ -26,7 +26,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/BoundingBox.h>
 
 //#include "MechanicalIntegration.h"
@@ -114,7 +114,7 @@ void MoveObjectFunctor<core::BaseMapping>::registerMovedComponent(Node *node, co
     node->componentInVisualGraph.add(object);
 }
 template <>
-void MoveObjectFunctor<core::VisualModel>::registerMovedComponent(Node *node, core::VisualModel *object)
+void MoveObjectFunctor<core::visual::VisualModel>::registerMovedComponent(Node *node, core::visual::VisualModel *object)
 {
     node->visualModelInVisualGraph.add(object);
     node->componentInVisualGraph.add(object);
@@ -174,9 +174,9 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
 
         //********************************************************
         //Moving Visual Models
-        std::list< core::VisualModel* > visualModels;
-        node->getContext()->get<core::VisualModel>(&visualModels, core::objectmodel::BaseContext::SearchDown);
-        MoveObjectFunctor< core::VisualModel > moveVisualModels(simuToVisu);
+        std::list< core::visual::VisualModel* > visualModels;
+        node->getContext()->get<core::visual::VisualModel>(&visualModels, core::objectmodel::BaseContext::SearchDown);
+        MoveObjectFunctor< core::visual::VisualModel > moveVisualModels(simuToVisu);
         std::for_each(visualModels.begin(), visualModels.end(), moveVisualModels);
         //********************************************************
         //Moving Visual Mappings

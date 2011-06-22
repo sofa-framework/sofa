@@ -932,7 +932,7 @@ void FlowVisualModel<DataTypes>::draw()
 }
 
 template <class DataTypes>
-void FlowVisualModel<DataTypes>::drawTransparent()
+void FlowVisualModel<DataTypes>::drawTransparent(const core::visual::VisualParams*)
 {
     if (!getContext()->getShowVisualModels()) return;
     glDepthMask(GL_FALSE);

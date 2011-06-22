@@ -25,7 +25,7 @@
 #ifndef OGLTEXTURE_H_
 #define OGLTEXTURE_H_
 
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
@@ -51,10 +51,10 @@ namespace visualmodel
  *  At the moment, only texture2D is supported.
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API OglTexture :  public core::VisualModel, public OglShaderElement
+class SOFA_COMPONENT_VISUALMODEL_API OglTexture :  public core::visual::VisualModel, public OglShaderElement
 {
 public:
-    SOFA_CLASS2(OglTexture, core::VisualModel, OglShaderElement);
+    SOFA_CLASS2(OglTexture, core::visual::VisualModel, OglShaderElement);
 
 protected:
     sofa::core::objectmodel::DataFileName textureFilename;
@@ -89,8 +89,8 @@ public:
     virtual void init();
     void initVisual();
     void reinit();
-    void fwdDraw(Pass);
-    void bwdDraw(Pass);
+    void fwdDraw(core::visual::VisualParams*);
+    void bwdDraw(core::visual::VisualParams*);
 
     std::string getTextureName();
     void getTextureUnit();

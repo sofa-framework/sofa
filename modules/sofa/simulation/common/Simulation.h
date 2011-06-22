@@ -27,7 +27,6 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/gl/DrawManager.h>
-#include <sofa/helper/gl/VisualParameters.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/simulation/common/xml/BaseElement.h>
 #include <sofa/simulation/common/xml/XML.h>
@@ -57,7 +56,7 @@ public:
     /// Initialize the objects
     virtual void init(Node* root);
 
-    //Init a node without changing the context of the simulation.
+    ///Init a node without changing the context of the simulation.
     virtual void initNode(Node* node);
 
 
@@ -87,7 +86,7 @@ public:
     virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true);
 
     /// Render the scene
-    virtual void draw(Node* root, helper::gl::VisualParameters* params = NULL);
+    virtual void draw(Node* root, sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance());
 
     /// Render the scene - Shadows pass
     virtual void drawShadows(Node* root);

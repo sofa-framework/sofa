@@ -32,7 +32,8 @@
 #ifndef SOFA_COMPONENT_POSTPROCESSMANAGER_H_
 #define SOFA_COMPONENT_POSTPROCESSMANAGER_H_
 
-#include <sofa/core/VisualManager.h>
+#include <sofa/core/visual/VisualManager.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/FrameBufferObject.h>
 #include <sofa/component/visualmodel/OglShader.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -46,10 +47,10 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_COMPONENT_VISUALMODEL_API PostProcessManager : public core::VisualManager
+class SOFA_COMPONENT_VISUALMODEL_API PostProcessManager : public core::visual::VisualManager
 {
 public:
-    SOFA_CLASS(PostProcessManager,core::VisualModel);
+    SOFA_CLASS(PostProcessManager,core::visual::VisualModel);
 
 private:
     static const std::string DEPTH_OF_FIELD_VERTEX_SHADER;
@@ -73,9 +74,9 @@ public:
     void initVisual();
     void update() { };
 
-    void preDrawScene(helper::gl::VisualParameters* vp);
-    bool drawScene(helper::gl::VisualParameters* vp);
-    void postDrawScene(helper::gl::VisualParameters* vp);
+    void preDrawScene(core::visual::VisualParams* vp);
+    bool drawScene(core::visual::VisualParams* vp);
+    void postDrawScene(core::visual::VisualParams* vp);
 
     void handleEvent(sofa::core::objectmodel::Event* event);
 };

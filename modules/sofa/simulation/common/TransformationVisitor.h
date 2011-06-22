@@ -32,7 +32,7 @@
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 
 namespace sofa
 {
@@ -58,7 +58,7 @@ public:
     void setScale(SReal sx, SReal sy, SReal sz) {scale=Vector3(sx,sy,sz);}
 
 
-    void processVisualModel(simulation::Node* node, core::VisualModel* v);
+    void processVisualModel(simulation::Node* node, core::visual::VisualModel* v);
     void processMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* m);
     virtual Result processNodeTopDown(simulation::Node* node);
 

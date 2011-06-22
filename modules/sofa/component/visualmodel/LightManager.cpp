@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 //
 // C++ Implementation: LightManager
 //
@@ -52,6 +52,7 @@ namespace visualmodel
 
 using namespace helper::gl;
 using namespace simulation;
+using namespace core::visual;
 
 SOFA_DECL_CLASS(LightManager)
 //Register LightManager in the Object Factory
@@ -166,43 +167,44 @@ void LightManager::makeShadowMatrix(unsigned int i)
 
 
     /*
-       sofa::defaulttype::Mat4x4f m;
-       m.identity();
-       m[0][3] = 0.5f;
-       m[1][3] = 0.5f;
-       m[2][3] = 0.5f +( -0.006f);
-       m[0][0] = 0.5f;
-       m[1][1] = 0.5f;
-       m[2][2] = 0.5f;
+      sofa::defaulttype::Mat4x4f m;
+      m.identity();
+      m[0][3] = 0.5f;
+      m[1][3] = 0.5f;
+      m[2][3] = 0.5f +( -0.006f);
+      m[0][0] = 0.5f;
+      m[1][1] = 0.5f;
+      m[2][2] = 0.5f;
 
-       sofa::defaulttype::Mat4x4f lightProj(lp); //lightProj.transpose();
-       sofa::defaulttype::Mat4x4f lightModelView(lmv);// lightModelView.transpose();
+      sofa::defaulttype::Mat4x4f lightProj(lp); //lightProj.transpose();
+      sofa::defaulttype::Mat4x4f lightModelView(lmv);// lightModelView.transpose();
 
-       sofa::defaulttype::Mat4x4f model;
-       glGetFloatv(GL_MODELVIEW_MATRIX,model.ptr());
-       //model.transpose();
-       sofa::defaulttype::Mat4x4f modelInv;
-       modelInv.invert(model);
+      sofa::defaulttype::Mat4x4f model;
+      glGetFloatv(GL_MODELVIEW_MATRIX,model.ptr());
+      //model.transpose();
+      sofa::defaulttype::Mat4x4f modelInv;
+      modelInv.invert(model);
 
-       m = m * lightProj * lightModelView * modelInv;
-       //m.transpose();
-       //std::cout << "Computed " << modelInv << std::endl;
+      m = m * lightProj * lightModelView * modelInv;
+      //m.transpose();
+      //std::cout << "Computed " << modelInv << std::endl;
 
 
-       if (lightModelViewMatrix.size() > 0)
-       {
-    	   lightModelViewMatrix[i] = m;
-       }
-       else
-       {
-    	   lightModelViewMatrix.resize(lights.size());
-    	   lightModelViewMatrix[i] = m;
-       }
+      if (lightModelViewMatrix.size() > 0)
+      {
+      lightModelViewMatrix[i] = m;
+      }
+      else
+      {
+      lightModelViewMatrix.resize(lights.size());
+      lightModelViewMatrix[i] = m;
+      }
     */
 }
 
-void LightManager::fwdDraw(Pass pass)
+void LightManager::fwdDraw(core::visual::VisualParams* vp)
 {
+
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient.getValue().ptr());
     unsigned int id = 0;
     for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
@@ -213,13 +215,14 @@ void LightManager::fwdDraw(Pass pass)
     }
 
 #ifdef SOFA_HAVE_GLEW
+    const core::visual::VisualParams::Pass pass = vp->pass();
     GLint lightFlag[MAX_NUMBER_OF_LIGHTS];
     GLint shadowTextureID[MAX_NUMBER_OF_LIGHTS];
     GLfloat lightModelViewProjectionMatrices[MAX_NUMBER_OF_LIGHTS*16];
     GLfloat zNears[MAX_NUMBER_OF_LIGHTS];
     GLfloat zFars[MAX_NUMBER_OF_LIGHTS];
 
-    if(pass != core::VisualModel::Shadow)
+    if(pass != core::visual::VisualParams::Shadow)
     {
         if (!shadowShaders.empty())
         {
@@ -283,7 +286,7 @@ void LightManager::fwdDraw(Pass pass)
 #endif
 }
 
-void LightManager::bwdDraw(Pass /* pass */)
+void LightManager::bwdDraw(core::visual::VisualParams* )
 {
     for(unsigned int i=0 ; i<lights.size() ; i++)
     {
@@ -319,28 +322,28 @@ void LightManager::draw()
 
     for(unsigned int i=0 ; i < lights.size() ; i++)
     {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, lights[i]->getDepthTexture());
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, lights[i]->getDepthTexture());
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
-        glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
+    glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
 
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        glBegin(GL_QUADS);
-        glColor3f(1.0,0.0,0.0) ; glTexCoord2f(0,0); glVertex3f(0 + i*20, 20, -10);
-        glColor3f(0.0,1.0,0.0) ; glTexCoord2f(1,0); glVertex3f(0 + i*20, 40, -10);
-        glColor3f(0.0,0.0,1.0) ; glTexCoord2f(1,1); glVertex3f(20 + i*20, 40, -10);
-        glColor3f(0.0,0.0,0.0) ; glTexCoord2f(0,1); glVertex3f(20 + i*20, 20, -10);
-        glEnd();
-        glBindTexture(GL_TEXTURE_2D, lights[i]->getColorTexture());
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glBegin(GL_QUADS);
+    glColor3f(1.0,0.0,0.0) ; glTexCoord2f(0,0); glVertex3f(0 + i*20, 20, -10);
+    glColor3f(0.0,1.0,0.0) ; glTexCoord2f(1,0); glVertex3f(0 + i*20, 40, -10);
+    glColor3f(0.0,0.0,1.0) ; glTexCoord2f(1,1); glVertex3f(20 + i*20, 40, -10);
+    glColor3f(0.0,0.0,0.0) ; glTexCoord2f(0,1); glVertex3f(20 + i*20, 20, -10);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, lights[i]->getColorTexture());
 
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        glBegin(GL_QUADS);
-        glColor3f(1.0,0.0,0.0) ; glTexCoord2f(0,0); glVertex3f(40 + i*20, 20, -10);
-        glColor3f(0.0,1.0,0.0) ; glTexCoord2f(1,0); glVertex3f(40 + i*20, 40, -10);
-        glColor3f(0.0,0.0,1.0) ; glTexCoord2f(1,1); glVertex3f(60 + i*20, 40, -10);
-        glColor3f(0.0,0.0,0.0) ; glTexCoord2f(0,1); glVertex3f(60 + i*20, 20, -10);
-        glEnd();
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glBegin(GL_QUADS);
+    glColor3f(1.0,0.0,0.0) ; glTexCoord2f(0,0); glVertex3f(40 + i*20, 20, -10);
+    glColor3f(0.0,1.0,0.0) ; glTexCoord2f(1,0); glVertex3f(40 + i*20, 40, -10);
+    glColor3f(0.0,0.0,1.0) ; glTexCoord2f(1,1); glVertex3f(60 + i*20, 40, -10);
+    glColor3f(0.0,0.0,0.0) ; glTexCoord2f(0,1); glVertex3f(60 + i*20, 20, -10);
+    glEnd();
     }
 
     glMatrixMode(GL_TEXTURE);
@@ -367,7 +370,7 @@ void LightManager::reinit()
     }
 }
 
-void LightManager::preDrawScene(VisualParameters* vp)
+void LightManager::preDrawScene(VisualParams* vp)
 {
 #ifdef SOFA_HAVE_GLEW
     for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
@@ -375,26 +378,26 @@ void LightManager::preDrawScene(VisualParameters* vp)
         if(shadowsEnabled.getValue())
         {
             (*itl)->preDrawShadow(vp);
-
-            simulation::VisualDrawVisitor vdv( core::ExecParams::defaultInstance() /* PARAMS FIRST */, core::VisualModel::Shadow);
+            vp->pass() = core::visual::VisualParams::Shadow;
+            simulation::VisualDrawVisitor vdv(vp);
 
             vdv.execute ( getContext() );
 
             (*itl)->postDrawShadow();
         }
     }
-
+    const core::visual::VisualParams::Viewport& viewport = vp->viewport();
     //restore viewport
-    glViewport(0, 0, vp->viewport[2] , vp->viewport[3]);
+    glViewport(0, 0, viewport[2] , viewport[3]);
 #endif
 }
 
-bool LightManager::drawScene(VisualParameters* /*vp*/)
+bool LightManager::drawScene(VisualParams* /*vp*/)
 {
     return false;
 }
 
-void LightManager::postDrawScene(VisualParameters* /*vp*/)
+void LightManager::postDrawScene(VisualParams* /*vp*/)
 {
     restoreDefaultLight();
 }

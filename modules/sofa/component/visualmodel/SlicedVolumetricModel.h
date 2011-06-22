@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_VISUALMODEL_SlicedVolumetricModel_H
 #define SOFA_COMPONENT_VISUALMODEL_SlicedVolumetricModel_H
 
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/component.h>
@@ -52,10 +52,10 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_COMPONENT_VISUALMODEL_API SlicedVolumetricModel : public core::VisualModel
+class SOFA_COMPONENT_VISUALMODEL_API SlicedVolumetricModel : public core::visual::VisualModel
 {
 public:
-    SOFA_CLASS(SlicedVolumetricModel, core::VisualModel);
+    SOFA_CLASS(SlicedVolumetricModel, core::visual::VisualModel);
 
     SlicedVolumetricModel();
     virtual ~SlicedVolumetricModel();
@@ -66,7 +66,7 @@ public:
 
     virtual bool isTransparent() {return true;}
 
-    virtual void drawTransparent();
+    virtual void drawTransparent(const core::visual::VisualParams*);
 
 protected:
     void setColor(float r, float g, float b);

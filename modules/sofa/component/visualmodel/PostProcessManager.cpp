@@ -49,6 +49,8 @@ int PostProcessManagerClass = core::RegisterObject("PostProcessManager")
         .add< PostProcessManager >()
         ;
 
+using namespace core::visual;
+
 const std::string PostProcessManager::DEPTH_OF_FIELD_VERTEX_SHADER = "shaders/depthOfField.vert";
 const std::string PostProcessManager::DEPTH_OF_FIELD_FRAGMENT_SHADER = "shaders/depthOfField.frag";
 
@@ -106,11 +108,13 @@ void PostProcessManager::initVisual()
     }
 }
 
-void PostProcessManager::preDrawScene(helper::gl::VisualParameters* vp)
+void PostProcessManager::preDrawScene(VisualParams* vp)
 {
+    const VisualParams::Viewport& viewport = vp->viewport();
+
     if (postProcessEnabled)
     {
-        fbo.setSize(vp->viewport[2], vp->viewport[3]);
+        fbo.setSize(viewport[2], viewport[3]);
         fbo.start();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -120,24 +124,27 @@ void PostProcessManager::preDrawScene(helper::gl::VisualParameters* vp)
         gluPerspective(60.0,1.0, zNear.getValue(), zFar.getValue());
 
         glMatrixMode(GL_MODELVIEW);
-        simulation::VisualDrawVisitor vdv( core::ExecParams::defaultInstance() /* PARAMS FIRST */, core::VisualModel::Std );
+        vp->pass() = VisualParams::Std;
+        simulation::VisualDrawVisitor vdv( vp);
         vdv.execute ( getContext() );
-        simulation::VisualDrawVisitor vdvt( core::ExecParams::defaultInstance() /* PARAMS FIRST */, core::VisualModel::Transparent );
+        vp->pass() = VisualParams::Transparent;
+        simulation::VisualDrawVisitor vdvt( vp );
         vdvt.execute ( getContext() );
 
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
 
-        gluPerspective(60.0,1.0, vp->zNear, vp->zFar);
-        glViewport(0,0,vp->viewport[2],vp->viewport[3]);
+        gluPerspective(60.0,1.0, vp->zNear(), vp->zFar());
+        glViewport(0,0,viewport[2],viewport[3]);
 
         fbo.stop();
     }
 }
 
-bool PostProcessManager::drawScene(helper::gl::VisualParameters* vp)
+bool PostProcessManager::drawScene(VisualParams* vp)
 {
+    const VisualParams::Viewport& viewport = vp->viewport();
     if (postProcessEnabled)
     {
         float vxmax, vymax, vzmax ;
@@ -171,8 +178,8 @@ bool PostProcessManager::drawScene(helper::gl::VisualParameters* vp)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
 
         float pixelSize[2];
-        pixelSize[0] = (float)1.0/vp->viewport[2];
-        pixelSize[1] = (float)1.0/vp->viewport[3];
+        pixelSize[0] = (float)1.0/viewport[2];
+        pixelSize[1] = (float)1.0/viewport[3];
 
         //dofShader->setInt(0, "colorTexture", 0);
         //dofShader->setInt(0, "depthTexture", 1);
@@ -207,7 +214,7 @@ bool PostProcessManager::drawScene(helper::gl::VisualParameters* vp)
     return false;
 }
 
-void PostProcessManager::postDrawScene(helper::gl::VisualParameters* /*vp*/)
+void PostProcessManager::postDrawScene(VisualParams* /*vp*/)
 {
 
 }

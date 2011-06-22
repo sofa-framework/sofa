@@ -159,7 +159,7 @@ void SlicedVolumetricModel::reinit()
 
 }
 
-void SlicedVolumetricModel::drawTransparent()
+void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams*)
 {
     if(!getContext()->getShowVisualModels()) return;
 

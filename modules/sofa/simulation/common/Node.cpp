@@ -33,7 +33,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "Node.h"
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
@@ -50,7 +50,6 @@
 #include <iostream>
 
 #include <boost/graph/adjacency_list.hpp>
-//#include <sofa/core/objectmodel/BaseObject.h>
 #include <boost/graph/topological_sort.hpp>
 
 //#define DEBUG_VISITOR
@@ -107,10 +106,10 @@ void Node::animate(const core::ExecParams* params /* PARAMS FIRST */, double dt)
     //cerr<<"Node::animate, end execute"<<endl;
 }
 
-void Node::glDraw(const core::ExecParams* params)
+void Node::glDraw(core::visual::VisualParams* vparams)
 {
-    execute<simulation::VisualUpdateVisitor>(params);
-    execute<simulation::VisualDrawVisitor>(params);
+    execute<simulation::VisualUpdateVisitor>(vparams);
+    execute<simulation::VisualDrawVisitor>(vparams);
 }
 
 
@@ -243,7 +242,7 @@ void Node::doAddObject(BaseObject* obj)
     inserted+= mass.add(dynamic_cast< core::behavior::BaseMass* >(obj));
     inserted+= topology.add(dynamic_cast< core::topology::Topology* >(obj));
     inserted+= meshTopology.add(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
-    inserted+= shader.add(dynamic_cast< sofa::core::Shader* >(obj));
+    inserted+= shader.add(dynamic_cast< sofa::core::visual::Shader* >(obj));
 
     bool isInteractionForceField = interactionForceField.add(dynamic_cast< core::behavior::BaseInteractionForceField* >(obj));
     inserted+= isInteractionForceField;
@@ -252,8 +251,8 @@ void Node::doAddObject(BaseObject* obj)
     inserted+= projectiveConstraintSet.add(dynamic_cast< core::behavior::BaseProjectiveConstraintSet* >(obj));
     inserted+= constraintSet.add(dynamic_cast< core::behavior::BaseConstraintSet* >(obj));
     inserted+= behaviorModel.add(dynamic_cast< core::BehaviorModel* >(obj));
-    inserted+= visualModel.add(dynamic_cast< core::VisualModel* >(obj));
-    inserted+= visualManager.add(dynamic_cast< core::VisualManager* >(obj));
+    inserted+= visualModel.add(dynamic_cast< core::visual::VisualModel* >(obj));
+    inserted+= visualManager.add(dynamic_cast< core::visual::VisualManager* >(obj));
     inserted+= collisionModel.add(dynamic_cast< core::CollisionModel* >(obj));
     inserted+= contextObject.add(dynamic_cast< core::objectmodel::ContextObject* >(obj));
     inserted+= configurationSetting.add(dynamic_cast< core::objectmodel::ConfigurationSetting* >(obj));
@@ -286,7 +285,7 @@ void Node::doRemoveObject(BaseObject* obj)
     mass.remove(dynamic_cast< core::behavior::BaseMass* >(obj));
     topology.remove(dynamic_cast< core::topology::Topology* >(obj));
     meshTopology.remove(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
-    shader.remove(dynamic_cast<sofa::core::Shader* >(obj));
+    shader.remove(dynamic_cast<sofa::core::visual::Shader* >(obj));
 
     forceField.remove(dynamic_cast< core::behavior::BaseForceField* >(obj));
     interactionForceField.remove(dynamic_cast< core::behavior::BaseInteractionForceField* >(obj));
@@ -294,8 +293,8 @@ void Node::doRemoveObject(BaseObject* obj)
     constraintSet.remove(dynamic_cast< core::behavior::BaseConstraintSet* >(obj));
     mapping.remove(dynamic_cast< core::BaseMapping* >(obj));
     behaviorModel.remove(dynamic_cast< core::BehaviorModel* >(obj));
-    visualModel.remove(dynamic_cast< core::VisualModel* >(obj));
-    visualManager.remove(dynamic_cast< core::VisualManager* >(obj));
+    visualModel.remove(dynamic_cast< core::visual::VisualModel* >(obj));
+    visualManager.remove(dynamic_cast< core::visual::VisualManager* >(obj));
     collisionModel.remove(dynamic_cast< core::CollisionModel* >(obj));
     contextObject.remove(dynamic_cast<core::objectmodel::ContextObject* >(obj));
     configurationSetting.remove(dynamic_cast<core::objectmodel::ConfigurationSetting* >(obj));
@@ -340,7 +339,7 @@ core::objectmodel::BaseObject* Node::getShader() const
     if (shader)
         return shader;
     else
-        return get<core::Shader>();
+        return get<core::visual::Shader>();
 }
 
 /// Degrees-of-Freedom
@@ -640,9 +639,9 @@ void Node::printComponents()
     using core::topology::Topology;
     using core::topology::BaseTopology;
     using core::topology::BaseMeshTopology;
-    using core::Shader;
+    using core::visual::Shader;
     using core::BehaviorModel;
-    using core::VisualModel;
+    using core::visual::VisualModel;
     using core::CollisionModel;
     using core::objectmodel::ContextObject;
     using core::collision::Pipeline;

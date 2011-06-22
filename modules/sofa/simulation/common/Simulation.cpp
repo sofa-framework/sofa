@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/PrintVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
@@ -54,6 +54,7 @@
 #include <sofa/helper/gl/DrawManagerGL.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/VisualParams.h>
 
 
 #include <fstream>
@@ -204,9 +205,9 @@ void Simulation::initNode( Node* node)
         sofa::core::MechanicalParams mparams(*params);
         node->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
         /*sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
-        mparams.x() = xfree;
-        MechanicalPropagatePositionVisitor act(&mparams   // PARAMS FIRST //, 0, xfree, true);
-        node->execute(act);*/
+          mparams.x() = xfree;
+          MechanicalPropagatePositionVisitor act(&mparams   // PARAMS FIRST //, 0, xfree, true);
+          node->execute(act);*/
     }
 
     node->execute<StoreResetStateVisitor>(params);
@@ -345,8 +346,8 @@ void Simulation::initTextures ( Node* root )
 /// Compute the bounding box of the scene.
 void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
 {
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    VisualComputeBBoxVisitor act(params);
+    sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
+    VisualComputeBBoxVisitor act(vparams);
     if ( root )
         root->execute ( act );
     if (init)
@@ -396,41 +397,43 @@ void Simulation::updateVisualContext ( Node* root, Node::VISUAL_FLAG FILTER)
     vis.execute(root);
 }
 /// Render the scene
-void Simulation::draw ( Node* root, helper::gl::VisualParameters* params )
+void Simulation::draw ( Node* root, sofa::core::visual::VisualParams* vparams )
 {
     if ( !root ) return;
-    sofa::core::ExecParams* eparams = sofa::core::ExecParams::defaultInstance();
     if (root->visualManager.empty())
     {
-        VisualDrawVisitor act ( eparams /* PARAMS FIRST */, core::VisualModel::Std );
+        vparams->pass() = sofa::core::visual::VisualParams::Std;
+        VisualDrawVisitor act ( vparams );
         root->execute ( &act );
-
-        VisualDrawVisitor act2 ( eparams /* PARAMS FIRST */, core::VisualModel::Transparent );
+        vparams->pass() = sofa::core::visual::VisualParams::Transparent;
+        VisualDrawVisitor act2 ( vparams );
         root->execute ( &act2 );
     }
     else
     {
-        Node::Sequence<core::VisualManager>::iterator begin = root->visualManager.begin(), end = root->visualManager.end(), it;
+        Node::Sequence<core::visual::VisualManager>::iterator begin = root->visualManager.begin(), end = root->visualManager.end(), it;
         for (it = begin; it != end; ++it)
-            (*it)->preDrawScene(params);
+            (*it)->preDrawScene(vparams);
         bool rendered = false; // true if a manager did the rendering
         for (it = begin; it != end; ++it)
-            if ((*it)->drawScene(params))
+            if ((*it)->drawScene(vparams))
             {
                 rendered = true;
                 break;
             }
         if (!rendered) // do the rendering
         {
-            VisualDrawVisitor act ( eparams /* PARAMS FIRST */, core::VisualModel::Std );
-            root->execute ( &act );
+            vparams->pass() = sofa::core::visual::VisualParams::Std;
 
-            VisualDrawVisitor act2 ( eparams /* PARAMS FIRST */, core::VisualModel::Transparent );
+            VisualDrawVisitor act ( vparams );
+            root->execute ( &act );
+            vparams->pass() = sofa::core::visual::VisualParams::Transparent;
+            VisualDrawVisitor act2 ( vparams );
             root->execute ( &act2 );
         }
-        Node::Sequence<core::VisualManager>::reverse_iterator rbegin = root->visualManager.rbegin(), rend = root->visualManager.rend(), rit;
+        Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = root->visualManager.rbegin(), rend = root->visualManager.rend(), rit;
         for (rit = rbegin; rit != rend; ++rit)
-            (*rit)->postDrawScene(params);
+            (*rit)->postDrawScene(vparams);
     }
 }
 

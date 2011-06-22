@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_VISUALMODEL_VISUALMODELIMPL_H
 
 #include <sofa/core/State.h>
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
@@ -171,11 +171,11 @@ public:
  *
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API VisualModelImpl : public core::VisualModel, public ExtVec3fState //, public RigidState
+class SOFA_COMPONENT_VISUALMODEL_API VisualModelImpl : public core::visual::VisualModel, public ExtVec3fState //, public RigidState
 {
 public:
-    SOFA_CLASS2(VisualModelImpl, core::VisualModel, ExtVec3fState);
-//    SOFA_CLASS3(VisualModelImpl, core::VisualModel, ExtVec3fState , RigidState);
+    SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, ExtVec3fState);
+//    SOFA_CLASS3(VisualModelImpl, core::visual::VisualModel, ExtVec3fState , RigidState);
 
     typedef Vec<2, float> TexCoord;
 
@@ -313,9 +313,9 @@ public:
     bool hasTransparent();
     bool hasOpaque();
 
-    void drawVisual();
-    void drawTransparent();
-    void drawShadow();
+    void drawVisual(const core::visual::VisualParams* );
+    void drawTransparent(const core::visual::VisualParams* );
+    void drawShadow(const core::visual::VisualParams* );
 
     virtual bool loadTextures() {return false;}
     virtual bool loadTexture(const std::string& /*filename*/) { return false; }

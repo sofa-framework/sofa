@@ -34,7 +34,7 @@
 
 #include <sofa/component/component.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/ManifoldTriangleSetTopologyContainer.h>
@@ -44,7 +44,7 @@
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.inl>
 #include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/core/Shader.h>
+#include <sofa/core/visual/Shader.h>
 namespace sofa
 {
 
@@ -125,10 +125,10 @@ static defaulttype::Vec3f ColorMap[64] =
 };
 
 template <class DataTypes>
-class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::VisualModel
+class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::visual::VisualModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FlowVisualModel,DataTypes), core::VisualModel);
+    SOFA_CLASS(SOFA_TEMPLATE(FlowVisualModel,DataTypes), core::visual::VisualModel);
 
     typedef typename core::behavior::MechanicalState<DataTypes> FluidState;
     typedef typename core::behavior::MechanicalState<DataTypes> TetraGeometry;
@@ -158,7 +158,7 @@ protected:
     topology::ManifoldTetrahedronSetTopologyContainer* m_tetraTopo;
     topology::TetrahedronSetGeometryAlgorithms<DataTypes>* m_tetraGeo;
     //draw tetrahedra
-    core::Shader* shader;
+    core::visual::Shader* shader;
 
     VecCoord triangleCenters;
     VecDeriv velocityAtTriangleVertex;
@@ -205,7 +205,7 @@ public:
     void reinit();
     void initVisual();
     void draw();
-    void drawTransparent();
+    void drawTransparent(const core::visual::VisualParams*);
     void drawTetra();
     void computeStreamLine(unsigned int index, unsigned int maxNbPoints, double dt);
 

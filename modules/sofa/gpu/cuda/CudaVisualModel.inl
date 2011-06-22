@@ -291,21 +291,21 @@ void CudaVisualModel< TDataTypes >::updateVisual()
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::drawVisual()
+void CudaVisualModel< TDataTypes >::drawVisual(const core::visual::VisualParams*)
 {
     bool transparent = (matDiffuse.getValue()[3] < 1.0);
     if (!transparent) internalDraw();
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::drawTransparent()
+void CudaVisualModel< TDataTypes >::drawTransparent(const core::visual::VisualParams*)
 {
     bool transparent = (matDiffuse.getValue()[3] < 1.0);
     if (transparent) internalDraw();
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::drawShadow()
+void CudaVisualModel< TDataTypes >::drawShadow(const core::visual::VisualParams*)
 {
     bool transparent = (matDiffuse.getValue()[3] < 1.0);
     if (!transparent /* && getCastShadow() */ ) internalDraw();

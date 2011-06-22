@@ -204,16 +204,16 @@ void OglShaderVisualModel::handleTopologyChange()
     // For the moment, the only class using dynamic topology is HexaToTriangleTopologicalMapping which update itself the attributes...
 }
 
-void OglShaderVisualModel::bwdDraw(Pass pass)
+void OglShaderVisualModel::bwdDraw(core::visual::VisualParams* vp)
 {
-    vrestpositions.bwdDraw(pass);
-    vrestnormals.bwdDraw(pass);
+    vrestpositions.bwdDraw(vp);
+    vrestnormals.bwdDraw(vp);
 }
 
-void OglShaderVisualModel::fwdDraw(Pass pass)
+void OglShaderVisualModel::fwdDraw(core::visual::VisualParams* vp)
 {
-    vrestpositions.fwdDraw(pass);
-    vrestnormals.fwdDraw(pass);
+    vrestpositions.fwdDraw(vp);
+    vrestnormals.fwdDraw(vp);
 }
 
 void OglShaderVisualModel::computeRestNormals()
