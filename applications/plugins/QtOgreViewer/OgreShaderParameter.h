@@ -28,7 +28,7 @@
 #define OGRESHADERPARAMETER_H
 
 #include <sofa/helper/fixed_array.h>
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 
 namespace sofa
 {
@@ -40,10 +40,10 @@ namespace visualmodel
 {
 
 
-class BaseOgreShaderParameter :public core::VisualModel
+class BaseOgreShaderParameter :public core::visual::VisualModel
 {
 public:
-    SOFA_CLASS(BaseOgreShaderParameter, core::VisualModel);
+    SOFA_CLASS(BaseOgreShaderParameter, core::visual::VisualModel);
 
     BaseOgreShaderParameter():
         entryPoint(initData(&entryPoint,5,"entryPoint", "Entry Point for the parameter:\nthe first 4 entries are automatically binded with ambient, diffuse, specular and shininess"))
