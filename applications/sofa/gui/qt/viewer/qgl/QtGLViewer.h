@@ -43,7 +43,6 @@
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/gl/Trackball.h>
 #include <sofa/helper/gl/Texture.h>
-#include <sofa/helper/gl/VisualParameters.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/common/xml/Element.h>
 
@@ -92,8 +91,6 @@ private:
 
     double lastProjectionMatrix[16];
     double lastModelviewMatrix[16];
-
-    VisualParameters visualParameters;
 
     GLUquadricObj*	_arrow;
     GLUquadricObj*	_tube;

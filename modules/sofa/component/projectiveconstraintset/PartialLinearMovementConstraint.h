@@ -48,9 +48,11 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::defaulttype;
+
+
+
+
+
 
 template<class DataTypes>
 class PartialLinearMovementConstraintInternalData
@@ -88,16 +90,16 @@ protected:
 
 public :
     /// indices of the DOFs the constraint is applied to
-    Data<SetIndex> m_indices;
+    core::objectmodel::Data<SetIndex> m_indices;
     /// the key frames when the motion is defined by the user
-    Data<helper::vector<Real> > m_keyTimes;
+    core::objectmodel::Data<helper::vector<Real> > m_keyTimes;
     /// the motions corresponding to the key frames
-    Data<VecDeriv > m_keyMovements;
+    core::objectmodel::Data<VecDeriv > m_keyMovements;
 
     /// attributes to precise display
     /// if showMovement is true we display the expected movement
     /// otherwise we show which are the fixed dofs
-    Data< bool > showMovement;
+    core::objectmodel::Data< bool > showMovement;
 
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
@@ -106,17 +108,17 @@ public :
     ///initial constrained DOFs position
     VecCoord x0;
 
-    Data<bool> linearMovementBetweenNodesInIndices;
-    Data<unsigned> mainIndice;
-    Data<unsigned> minDepIndice;
-    Data<unsigned> maxDepIndice;
-    Data<helper::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
+    core::objectmodel::Data<bool> linearMovementBetweenNodesInIndices;
+    core::objectmodel::Data<unsigned> mainIndice;
+    core::objectmodel::Data<unsigned> minDepIndice;
+    core::objectmodel::Data<unsigned> maxDepIndice;
+    core::objectmodel::Data<helper::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
     ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
     Data<Real> X0,Y0,Z0;
 
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
-    Data<VecBool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
+    core::objectmodel::Data<VecBool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
     PartialLinearMovementConstraint();
 
     virtual ~PartialLinearMovementConstraint();
@@ -156,9 +158,9 @@ protected:
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
 
     template <class MyCoord>
-    void interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
+    void interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, sofa::defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);
     template <class MyCoord>
-    void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
+    void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, sofa::defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);
 
     sofa::core::topology::BaseMeshTopology* topology;
 

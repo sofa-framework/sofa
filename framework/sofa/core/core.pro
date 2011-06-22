@@ -131,8 +131,12 @@ HEADERS += \
 	  	  objectmodel/OmniEvent.h \
 	  	  objectmodel/GLInitializedEvent.h \
           objectmodel/Tag.h \
-          VisualModel.h \
-          VisualManager.h \
+          visual/VisualParams.h \
+          visual/VisualModel.h \
+          visual/VisualManager.h \
+          visual/DrawTool.h \
+          visual/DrawToolGL.h \
+          visual/Shader.h \
           ObjectFactory.h \
           SofaLibrary.h \
           CategoryLibrary.h \
@@ -196,8 +200,8 @@ SOURCES +=  \
           behavior/PairInteractionProjectiveConstraintSet.cpp \
           behavior/MixedInteractionConstraint.cpp \
           behavior/ProjectiveConstraintSet.cpp \
-          loader/MeshLoader.cpp 
-
+          loader/MeshLoader.cpp \ 
+          visual/DrawToolGL.cpp
 
 contains(DEFINES,SOFA_SMP){
 HEADERS +=  \

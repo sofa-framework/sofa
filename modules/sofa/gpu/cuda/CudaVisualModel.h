@@ -25,7 +25,7 @@
 #ifndef SOFA_GPU_CUDA_CUDAVISUALMODEL_H
 #define SOFA_GPU_CUDA_CUDAVISUALMODEL_H
 
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/State.h>
 #include "CudaTypes.h"
@@ -54,7 +54,7 @@ namespace visualmodel
 {
 
 template <class TDataTypes>
-class CudaVisualModel : public core::VisualModel
+class CudaVisualModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(CudaVisualModel, TDataTypes), VisualModel);
@@ -110,9 +110,9 @@ public:
     virtual void init();
     virtual void reinit();
     virtual void internalDraw();
-    virtual void drawVisual();
-    virtual void drawTransparent();
-    virtual void drawShadow();
+    virtual void drawVisual(const core::visual::VisualParams*);
+    virtual void drawTransparent(const core::visual::VisualParams*);
+    virtual void drawShadow(const core::visual::VisualParams*);
     virtual void updateVisual();
     virtual void updateTopology();
     virtual void updateNormals();

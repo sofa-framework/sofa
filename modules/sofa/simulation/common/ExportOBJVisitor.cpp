@@ -48,7 +48,7 @@ ExportOBJVisitor::~ExportOBJVisitor()
 {
 }
 
-void ExportOBJVisitor::processVisualModel(Node* /*node*/, core::VisualModel* vm)
+void ExportOBJVisitor::processVisualModel(Node* /*node*/, core::visual::VisualModel* vm)
 {
     std::ostringstream oname;
     oname << ++ID << "_" << vm->getName();

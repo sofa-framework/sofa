@@ -48,7 +48,6 @@
 
 
 //VERY IMPORTANT FOR GRAPHS
-#include <sofa/core/VisualModel.h>
 #include <sofa/helper/map.h>
 
 namespace sofa

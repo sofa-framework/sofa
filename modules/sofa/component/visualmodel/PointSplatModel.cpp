@@ -133,7 +133,7 @@ void PointSplatModel::reinit()
     setColor(color.getValue());
 }
 
-void PointSplatModel::drawTransparent()
+void PointSplatModel::drawTransparent(const core::visual::VisualParams*)
 {
     if(!getContext()->getShowVisualModels()) return;
 

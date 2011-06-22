@@ -1,29 +1,29 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
-*                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
-*******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include "viewer/qgl/QtGLViewer.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -130,9 +130,9 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     _waitForRender=false;
 
     /*_surfaceModel = NULL;
-    _springMassView = NULL;
-    _mapView = NULL;
-    sphViewer = NULL;
+      _springMassView = NULL;
+      _mapView = NULL;
+      sphViewer = NULL;
     */
 
     //////////////////////
@@ -147,8 +147,8 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     camera()->setZNearCoefficient(0.001);
     camera()->setZClippingCoefficient(5);
 
-    visualParameters.zNear = camera()->zNear();
-    visualParameters.zFar = camera()->zFar();
+    vparams->zNear() = camera()->zNear();
+    vparams->zFar()  = camera()->zFar();
 
     connect( &captureTimer, SIGNAL(timeout()), this, SLOT(captureEvent()) );
 }
@@ -671,19 +671,19 @@ void QtGLViewer::DisplayOBJs()
 
     {
         //Draw Debug information of the components
-        simulation::getSimulation()->draw(groot, &visualParameters);
+        simulation::getSimulation()->draw(groot, vparams);
         //Draw Visual Models
-        simulation::getSimulation()->draw(simulation::getSimulation()->getVisualRoot(), &visualParameters);
+        simulation::getSimulation()->draw(simulation::getSimulation()->getVisualRoot(), vparams);
         if (_axis)
         {
-            this->setSceneBoundingBox(qglviewer::Vec(visualParameters.minBBox[0], visualParameters.minBBox[1], visualParameters.minBBox[2]),
-                    qglviewer::Vec(visualParameters.maxBBox[0], visualParameters.maxBBox[1], visualParameters.maxBBox[2]));
+            this->setSceneBoundingBox(qglviewer::Vec(vparams->sceneBBox().minBBoxPtr()),
+                    qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()) );
 
             //DrawAxis(0.0, 0.0, 0.0, 10.0);
             DrawAxis(0.0, 0.0, 0.0, this->sceneRadius());
 
-            if (visualParameters.minBBox[0] < visualParameters.maxBBox[0])
-                DrawBox(visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
+            if (vparams->sceneBBox().isValid())
+                DrawBox(vparams->sceneBBox().minBBoxPtr(), vparams->sceneBBox().maxBBoxPtr());
         }
     }
 
@@ -752,12 +752,10 @@ void QtGLViewer::DrawScene(void)
 {
 
     camera()->getProjectionMatrix( lastProjectionMatrix );
-
-    camera()->getViewport( visualParameters.viewport );
-    visualParameters.viewport[1]=0;
-    visualParameters.viewport[3]=-visualParameters.viewport[3];
-
-
+    sofa::core::visual::VisualParams::Viewport& viewport = vparams->viewport();
+    camera()->getViewport( viewport.begin() );
+    viewport[1] = 0;
+    viewport[3] = -viewport[3];
 
 
     if (_background==0)
@@ -867,32 +865,27 @@ void QtGLViewer::DrawScene(void)
 void QtGLViewer::viewAll()
 {
     if (!groot) return;
+    sofa::defaulttype::BoundingBox& bbox = vparams->sceneBBox();
+    bbox = groot->f_bbox.getValue();
 
-    visualParameters.minBBox = groot->f_bbox.getValue().minBBox();
-    visualParameters.maxBBox = groot->f_bbox.getValue().maxBBox();
 
-    sceneBBoxIsValid =
-        visualParameters.minBBox[0]    <=  visualParameters.maxBBox[0]
-        && visualParameters.minBBox[1] <=  visualParameters.maxBBox[1]
-        && visualParameters.minBBox[2] <=  visualParameters.maxBBox[2];
-
-    if (visualParameters.minBBox[0] == visualParameters.maxBBox[0])
+    if (bbox.minBBox().x() == bbox.maxBBox().x() || !bbox.isValid())
     {
-        visualParameters.minBBox[0]=-1;
-        visualParameters.minBBox[0]= 1;
+        bbox.minBBox().x() = -1;
+        bbox.maxBBox().x() =  1;
     }
-    if (visualParameters.minBBox[1] == visualParameters.maxBBox[1])
+    if (bbox.minBBox().y() == bbox.maxBBox().y() || !bbox.isValid())
     {
-        visualParameters.minBBox[1]=-1;
-        visualParameters.minBBox[1]= 1;
+        bbox.minBBox().y() = -1;
+        bbox.maxBBox().y() =  1;
     }
-    if (visualParameters.minBBox[2] == visualParameters.maxBBox[2])
+    if (bbox.minBBox().z() == bbox.maxBBox().z() || !bbox.isValid())
     {
-        visualParameters.minBBox[2]=-1;
-        visualParameters.minBBox[2]= 1;
+        bbox.minBBox().z() = -1;
+        bbox.maxBBox().z() =  1;
     }
 
-    if (sceneBBoxIsValid) QGLViewer::setSceneBoundingBox(   qglviewer::Vec(visualParameters.minBBox.ptr()),qglviewer::Vec(visualParameters.maxBBox.ptr()) );
+    QGLViewer::setSceneBoundingBox(   qglviewer::Vec(bbox.minBBoxPtr()),qglviewer::Vec(bbox.maxBBoxPtr())) ;
 
     qglviewer::Vec pos;
     pos[0] = 0.0;
@@ -937,13 +930,13 @@ void QtGLViewer::draw()
     // Use this to avoid unneccessarily initializing the OpenGL context.
     //static double lastOrthoTransZ = 0.0;
     /*
-    if (!valid())
-    {
-    InitGFX();		// this has to be called here since we don't know when the context is created
-    _W = w();
-    _H = h();
-    reshape(_W, _H);
-    }
+      if (!valid())
+      {
+      InitGFX();		// this has to be called here since we don't know when the context is created
+      _W = w();
+      _H = h();
+      reshape(_W, _H);
+      }
     */
     // clear buffers (color and depth)
     if (_background==0)
@@ -1109,13 +1102,14 @@ void QtGLViewer::wheelEvent(QWheelEvent* e)
 
 void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
 {
+    const sofa::core::visual::VisualParams::Viewport& viewport = vparams->viewport();
     Vec3d p0, px, py, pz, px1, py1;
-    gluUnProject(eventX,   visualParameters.viewport[3]-1-(eventY),   0,   lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(p0[0]),  &(p0[1]),  &(p0[2]));
-    gluUnProject(eventX+1, visualParameters.viewport[3]-1-(eventY),   0,   lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(px[0]),  &(px[1]),  &(px[2]));
-    gluUnProject(eventX,   visualParameters.viewport[3]-1-(eventY+1), 0,   lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(py[0]),  &(py[1]),  &(py[2]));
-    gluUnProject(eventX,   visualParameters.viewport[3]-1-(eventY),   0.1, lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(pz[0]),  &(pz[1]),  &(pz[2]));
-    gluUnProject(eventX+1, visualParameters.viewport[3]-1-(eventY),   0.1, lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(px1[0]), &(px1[1]), &(px1[2]));
-    gluUnProject(eventX,   visualParameters.viewport[3]-1-(eventY+1), 0,   lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(py1[0]), &(py1[1]), &(py1[2]));
+    gluUnProject(eventX,   viewport[3]-1-(eventY),   0,   lastModelviewMatrix, lastProjectionMatrix, viewport.data(), &(p0[0]),  &(p0[1]),  &(p0[2]));
+    gluUnProject(eventX+1, viewport[3]-1-(eventY),   0,   lastModelviewMatrix, lastProjectionMatrix, viewport.data(), &(px[0]),  &(px[1]),  &(px[2]));
+    gluUnProject(eventX,   viewport[3]-1-(eventY+1), 0,   lastModelviewMatrix, lastProjectionMatrix, viewport.data(), &(py[0]),  &(py[1]),  &(py[2]));
+    gluUnProject(eventX,   viewport[3]-1-(eventY),   0.1, lastModelviewMatrix, lastProjectionMatrix, viewport.data(), &(pz[0]),  &(pz[1]),  &(pz[2]));
+    gluUnProject(eventX+1, viewport[3]-1-(eventY),   0.1, lastModelviewMatrix, lastProjectionMatrix, viewport.data(), &(px1[0]), &(px1[1]), &(px1[2]));
+    gluUnProject(eventX,   viewport[3]-1-(eventY+1), 0,   lastModelviewMatrix, lastProjectionMatrix, viewport.data(), &(py1[0]), &(py1[1]), &(py1[2]));
     px1 -= pz;
     py1 -= pz;
     px -= p0;

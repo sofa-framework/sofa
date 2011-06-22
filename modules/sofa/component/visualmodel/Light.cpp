@@ -157,7 +157,7 @@ void Light::drawLight()
 
 }
 
-void Light::preDrawShadow(helper::gl::VisualParameters* /* vp */)
+void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
 {
     const Vector3& pos = getPosition();
     glMatrixMode(GL_PROJECTION);
@@ -511,9 +511,10 @@ void SpotLight::draw()
     }
 }
 
-void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
+void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
 {
     Light::preDrawShadow(vp);
+    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
     const Vector3 &pos = position.getValue();
     const Vector3 &dir = direction.getValue();
 
@@ -536,9 +537,10 @@ void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
         //compute zNear, zFar from light point of view
         for (int corner=0; corner<8; ++corner)
         {
-            Vector3 p((corner&1)?vp->minBBox[0]:vp->maxBBox[0],
-                    (corner&2)?vp->minBBox[1]:vp->maxBBox[1],
-                    (corner&4)?vp->minBBox[2]:vp->maxBBox[2]);
+            Vector3 p(
+                (corner&1)?sceneBBox.minBBox().x():sceneBBox.maxBBox().x(),
+                (corner&2)?sceneBBox.minBBox().y():sceneBBox.maxBBox().y(),
+                (corner&4)?sceneBBox.minBBox().z():sceneBBox.maxBBox().z());
             p = q.rotate(p - pos);
             double z = -p[2];
             if (z < zNear) zNear = z;
@@ -553,8 +555,8 @@ void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
             zFar = 1000.0;
         if (zFar <= 0)
         {
-            zNear = vp->zNear;
-            zFar = vp->zFar;
+            zNear = vp->zNear();
+            zFar = vp->zFar();
         }
 
         if (zNear > 0 && zFar < 1000)

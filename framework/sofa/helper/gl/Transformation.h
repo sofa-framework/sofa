@@ -42,27 +42,19 @@ namespace gl
 class SOFA_HELPER_API Transformation
 {
 public:
-
     SReal			translation[3];
     SReal			scale[3];
     SReal			rotation[4][4];
-
     SReal			objectCenter[3];
 
-private:
-
 public:
-
     Transformation();	// constructor
     ~Transformation();	// destructor
-
-
-
     Transformation&	operator=(const Transformation& transform);
 
-    void			Apply();
-    void			ApplyWithCentring();
-    void			ApplyInverse();
+    void Apply();
+    void ApplyWithCentring();
+    void ApplyInverse();
 
     template<class Vector>
     Vector operator*(Vector v) const
@@ -77,8 +69,9 @@ public:
         return r;
     }
 
-private:void		InvertTransRotMatrix(SReal matrix[4][4]);
-    void			InvertTransRotMatrix(SReal sMatrix[4][4],
+private:
+    void InvertTransRotMatrix(SReal matrix[4][4]);
+    void InvertTransRotMatrix(SReal sMatrix[4][4],
             SReal dMatrix[4][4]);
 };
 

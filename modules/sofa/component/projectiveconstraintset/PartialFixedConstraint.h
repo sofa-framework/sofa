@@ -35,7 +35,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointSubset.h>
-#include <set>
+
 
 namespace sofa
 {
@@ -46,7 +46,7 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using helper::vector;
+
 using core::objectmodel::Data;
 using namespace sofa::core::objectmodel;
 

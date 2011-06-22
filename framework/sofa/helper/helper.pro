@@ -40,7 +40,6 @@ HEADERS += helper.h \
     gl/Texture.h \
     gl/Trackball.h \
     gl/Transformation.h \
-    gl/VisualParameters.h \
     io/Image.h \
     io/ImageBMP.h \
     io/ImagePNG.h \

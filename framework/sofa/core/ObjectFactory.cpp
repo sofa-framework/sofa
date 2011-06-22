@@ -28,7 +28,7 @@
 
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/BaseMapping.h>
@@ -389,7 +389,7 @@ RegisterObject& RegisterObject::addBaseClasses(const core::objectmodel::BaseClas
 {
     if (mclass->hasParent(objectmodel::ContextObject::GetClass()))
         entry.baseClasses.insert("ContextObject");
-    if (mclass->hasParent(VisualModel::GetClass()))
+    if (mclass->hasParent(core::visual::VisualModel::GetClass()))
         entry.baseClasses.insert("VisualModel");
     if (mclass->hasParent(BehaviorModel::GetClass()))
         entry.baseClasses.insert("BehaviorModel");

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
 #define SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
 
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/component.h>
@@ -50,10 +50,10 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_COMPONENT_VISUALMODEL_API PointSplatModel : public core::VisualModel
+class SOFA_COMPONENT_VISUALMODEL_API PointSplatModel : public core::visual::VisualModel
 {
 public:
-    SOFA_CLASS(PointSplatModel,core::VisualModel);
+    SOFA_CLASS(PointSplatModel,core::visual::VisualModel);
 
     PointSplatModel();
     virtual ~PointSplatModel();
@@ -64,7 +64,7 @@ public:
 
     virtual bool isTransparent() {return true;}
 
-    virtual void drawTransparent();
+    virtual void drawTransparent(const core::visual::VisualParams*);
 
 private:
     void setColor(float r, float g, float b, float a);

@@ -34,9 +34,8 @@
 //
 //
 #include <sofa/component/visualmodel/OglRenderingSRGB.h>
-#include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/FileRepository.h>
+
 
 namespace sofa
 {
@@ -56,7 +55,7 @@ int OglRenderingSRGBClass = core::RegisterObject("OglRenderingSRGB")
         .add< OglRenderingSRGB >()
         ;
 
-void OglRenderingSRGB::fwdDraw(Pass)
+void OglRenderingSRGB::fwdDraw(core::visual::VisualParams* /*vp*/)
 {
 #if defined(GLEW_ARB_framebuffer_sRGB)
     if (GLEW_ARB_framebuffer_sRGB)
@@ -64,7 +63,7 @@ void OglRenderingSRGB::fwdDraw(Pass)
 #endif
 }
 
-void OglRenderingSRGB::bwdDraw(Pass)
+void OglRenderingSRGB::bwdDraw(core::visual::VisualParams* /*vp*/)
 {
 #if defined(GLEW_ARB_framebuffer_sRGB)
     if (GLEW_ARB_framebuffer_sRGB)

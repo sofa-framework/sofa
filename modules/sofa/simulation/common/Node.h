@@ -44,9 +44,9 @@
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/VisualModel.h>
-#include <sofa/core/VisualManager.h>
-#include <sofa/core/Shader.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualManager.h>
+#include <sofa/core/visual/Shader.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -81,6 +81,7 @@ using sofa::simulation::Visitor;
 using sofa::simulation::VisitorScheduler;
 
 #include <sofa/helper/system/thread/CTime.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <string>
 #include <stack>
 
@@ -120,7 +121,7 @@ public:
     /// Do one step forward in time
     void animate(const core::ExecParams* params /* PARAMS FIRST */, double dt);
     /// Draw the objects in an OpenGl context
-    void glDraw(const core::ExecParams* params);
+    void glDraw(core::visual::VisualParams* params);
     /// @}
 
     /// @name Visitor handling
@@ -151,6 +152,15 @@ public:
     void execute(const Params* params)
     {
         Act action(params);
+        simulation::Visitor* p = &action;
+        executeVisitor(p);
+    }
+
+    /// Execute a recursive action starting from this node
+    template<class Act>
+    void execute(core::visual::VisualParams* vparams)
+    {
+        Act action(vparams);
         simulation::Visitor* p = &action;
         executeVisitor(p);
     }
@@ -319,7 +329,7 @@ public:
     Single<core::behavior::BaseMass> mass;
     Single<core::topology::Topology> topology;
     Single<core::topology::BaseMeshTopology> meshTopology;
-    Single<sofa::core::Shader> shader;
+    Single<core::visual::Shader> shader;
 
     //warning : basic topology are not yet used in the release version
     Sequence<core::topology::BaseTopology> basicTopology;
@@ -333,8 +343,8 @@ public:
 
     Sequence<core::BaseMapping> mapping;
     Sequence<core::BehaviorModel> behaviorModel;
-    Sequence<core::VisualModel> visualModel;
-    Sequence<core::VisualManager> visualManager;
+    Sequence<core::visual::VisualModel> visualModel;
+    Sequence<core::visual::VisualManager> visualManager;
     Sequence<core::CollisionModel> collisionModel;
 
     Single<core::collision::Pipeline> collisionPipeline;
@@ -344,7 +354,7 @@ public:
     Sequence<Node>              childInVisualGraph;
     Sequence<core::objectmodel::BaseObject> componentInVisualGraph;
 
-    Sequence<core::VisualModel> visualModelInVisualGraph;
+    Sequence<core::visual::VisualModel> visualModelInVisualGraph;
     Sequence<core::BaseMapping> visualMappingInVisualGraph;
     /// @}
 

@@ -25,7 +25,7 @@
 #ifndef OGLTETRAHEDRALMODEL_H_
 #define OGLTETRAHEDRALMODEL_H_
 
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/component.h>
@@ -50,10 +50,10 @@ namespace visualmodel
  */
 
 template<class DataTypes>
-class OglTetrahedralModel : public core::VisualModel
+class OglTetrahedralModel : public core::visual::VisualModel
 {
 public:
-    SOFA_CLASS(OglTetrahedralModel, core::VisualModel);
+    SOFA_CLASS(OglTetrahedralModel, core::visual::VisualModel);
 
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -70,7 +70,7 @@ public:
     virtual ~OglTetrahedralModel();
 
     void init();
-    void drawTransparent();
+    void drawTransparent(const core::visual::VisualParams* );
     bool addBBox(double* minBBox, double* maxBBox);
 
     virtual std::string getTemplateName() const

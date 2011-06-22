@@ -37,12 +37,9 @@
 #ifndef SOFA_OGLRENDERING_SRGB_H
 #define SOFA_OGLRENDERING_SRGB_H
 
-#include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/component/component.h>
-#include <sofa/component/visualmodel/Light.h>
-#include <sofa/core/VisualManager.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/core/visual/VisualManager.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -57,13 +54,13 @@ namespace visualmodel
  *  \brief The utility to enable/disable sRGB rendering
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API OglRenderingSRGB : public core::VisualManager
+class SOFA_COMPONENT_VISUALMODEL_API OglRenderingSRGB : public core::visual::VisualManager
 {
 public:
-    SOFA_CLASS(OglRenderingSRGB, core::VisualManager);
+    SOFA_CLASS(OglRenderingSRGB, core::visual::VisualManager);
 
-    void fwdDraw(Pass);
-    void bwdDraw(Pass);
+    void fwdDraw(core::visual::VisualParams* );
+    void bwdDraw(core::visual::VisualParams* );
 };
 
 }//namespace visualmodel

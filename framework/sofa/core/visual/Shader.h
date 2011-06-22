@@ -16,63 +16,77 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_INL
-#define SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_INL
+//
+// C++ Interface: Shader
+//
+// Description:
+//
+//
+// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#ifndef SOFA_CORE_VISUAL_SHADER_H
+#define SOFA_CORE_VISUAL_SHADER_H
 
-#include <sofa/component/visualmodel/OglVariable.h>
-#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-namespace visualmodel
+namespace visual
 {
 
-//
-//template<class DataTypes>
-//OglVariable<DataTypes>::OglVariable()
-//: value(initData(&value, DataTypes(), "value", "Set Uniform Value"))
-//{
-//    addAlias(&value, "values"); // some variable types hold multiple values, so we authorize both names for this attribute
-//}
-//
-//template<class DataTypes>
-//OglVariable<DataTypes>::~OglVariable()
-//{
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::init()
-//{
-//    OglShaderElement::init();
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::initVisual()
-//{
-//    core::visual::VisualModel::initVisual();
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::reinit()
-//{
-//    init();
-//    initVisual();
-//}
+/**
+ *  \brief A basic interface to define a Shader for different system (OpenGL, DirectX, ...).
+ *
+ *
+ *
+ */
+class Shader : public virtual objectmodel::BaseObject
+{
+public:
+    SOFA_CLASS(Shader, objectmodel::BaseObject);
 
-} // namespace visualmodel
+    /// Destructor
+    virtual ~Shader() { };
+    /// Start the shader
+    virtual void start() = 0;
+    /// Stop the shader
+    virtual void stop() = 0;
+    ///Tells if it must be activated automatically(value false : the visitor will switch the shader)
+    ///or manually (value true : useful when another component wants to use it for itself only)
+    virtual bool isActive() = 0;
+};
 
-} // namespace component
+/**
+ *  \brief A basic interface to define an element to be used with a Shader.
+ *
+ *
+ *
+ */
+class ShaderElement: public virtual objectmodel::BaseObject
+{
+public:
+    /// Destructor
+    virtual ~ShaderElement() { };
+};
+
+} // namespace visual
+
+} // namespace core
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
+#endif //SOFA_CORE_VISUAL_SHADER_H

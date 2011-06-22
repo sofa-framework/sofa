@@ -243,7 +243,7 @@ public:
     using VisualModelPolicyType::unload;
     CustomPolicySofaViewer() { load(); }
     virtual ~CustomPolicySofaViewer() { unload(); }
-
+protected:
 };
 
 typedef CustomPolicySofaViewer< OglModelPolicy > OglModelSofaViewer;

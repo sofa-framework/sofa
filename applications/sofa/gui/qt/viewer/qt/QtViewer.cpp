@@ -156,10 +156,10 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     sceneBBoxIsValid = false;
 
     /*_surfaceModel = NULL;
-     _springMassView = NULL;
-     _mapView = NULL;
-     sphViewer = NULL;
-     */
+      _springMassView = NULL;
+      _mapView = NULL;
+      sphViewer = NULL;
+    */
 
     // init trackball rotation matrix / quaternion
     _newTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
@@ -694,15 +694,15 @@ void QtViewer::DisplayOBJs()
 
     {
 
-        getSimulation()->draw(groot, &visualParameters);
+        getSimulation()->draw(groot, vparams);
         getSimulation()->draw(simulation::getSimulation()->getVisualRoot(),
-                &visualParameters);
+                vparams);
         if (_axis)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);
-            if (visualParameters.minBBox[0] < visualParameters.maxBBox[0])
-                DrawBox(visualParameters.minBBox.ptr(),
-                        visualParameters.maxBBox.ptr());
+            if (vparams->sceneBBox().minBBox().x() < vparams->sceneBBox().maxBBox().x())
+                DrawBox(vparams->sceneBBox().minBBoxPtr(),
+                        vparams->sceneBBox().maxBBoxPtr());
         }
     }
 
@@ -779,9 +779,9 @@ void QtViewer::DrawScene(void)
 
     glLoadIdentity();
 
-    //visualParameters.sceneTransform.Apply();
+
     GLdouble mat[16];
-    //currentCamera->getOpenGLModelViewMatrix(mat);
+
     currentCamera->getOpenGLMatrix(mat);
     glMultMatrixd(mat);
 
@@ -824,9 +824,8 @@ void QtViewer::DrawScene(void)
             glPushMatrix();
             //glLoadIdentity();
             //translate slighty the camera
-            visualParameters.sceneTransform.translation[0] += _stereoShift;
-            visualParameters.sceneTransform.Apply();
-
+            vparams->sceneTransform().translation[0] += _stereoShift;
+            vparams->sceneTransform().Apply();
             glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
             glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
             DisplayOBJs();
@@ -834,7 +833,7 @@ void QtViewer::DrawScene(void)
             glPopMatrix();
             glDisable(GL_STENCIL_TEST);
 
-            visualParameters.sceneTransform.translation[0] -= _stereoShift;
+            vparams->sceneTransform().translation[0] -= _stereoShift;
         }
         else
         {
@@ -907,40 +906,28 @@ void QtViewer::calcProjection()
     /// Camera part
     if (!currentCamera)
         return;
-    /*
-    	const Vec3d& camPosition = currentCamera->getPosition();
-    	const Quat& camOrientation = currentCamera->getOrientation();
 
-    	//std::cout << camPosition << std::endl;
-
-    	visualParameters.sceneTransform.translation[0] = -camPosition[0];
-    	visualParameters.sceneTransform.translation[1] = -camPosition[1];
-    	visualParameters.sceneTransform.translation[2] = -camPosition[2];
-
-    	camOrientation.buildRotationMatrix(visualParameters.sceneTransform.rotation);
-    */
     if (groot && (!sceneBBoxIsValid || _axis))
     {
-        visualParameters.minBBox = groot->f_bbox.getValue().minBBox();
-        visualParameters.maxBBox = groot->f_bbox.getValue().maxBBox();
+        vparams->sceneBBox() = groot->f_bbox.getValue();
         sceneBBoxIsValid = true;
 
-        currentCamera->setBoundingBox(visualParameters.minBBox, visualParameters.maxBBox);
+        currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());
     }
 
-    visualParameters.zNear = currentCamera->getZNear();
-    visualParameters.zFar = currentCamera->getZFar();
+    vparams->zNear() = currentCamera->getZNear();
+    vparams->zFar() = currentCamera->getZFar();
     ///
 
 
-    xNear = 0.35 * visualParameters.zNear;
-    yNear = 0.35 * visualParameters.zNear;
-    offset = 0.001 * visualParameters.zNear; // for foreground and background planes
+    xNear = 0.35 * vparams->zNear();
+    yNear = 0.35 * vparams->zNear();
+    offset = 0.001 * vparams->zNear(); // for foreground and background planes
 
-    xOrtho = fabs(visualParameters.sceneTransform.translation[2]) * xNear
-            / visualParameters.zNear;
-    yOrtho = fabs(visualParameters.sceneTransform.translation[2]) * yNear
-            / visualParameters.zNear;
+    xOrtho = fabs(vparams->sceneTransform().translation[2]) * xNear
+            / vparams->zNear();
+    yOrtho = fabs(vparams->sceneTransform().translation[2]) * yNear
+            / vparams->zNear();
 
     if ((height != 0) && (width != 0))
     {
@@ -955,11 +942,8 @@ void QtViewer::calcProjection()
             yFactor = 1.0;
         }
     }
+    vparams->viewport() = sofa::helper::make_array(0,0,width,height);
 
-    visualParameters.viewport[0] = 0;
-    visualParameters.viewport[1] = 0;
-    visualParameters.viewport[2] = width;
-    visualParameters.viewport[3] = height;
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -969,28 +953,28 @@ void QtViewer::calcProjection()
 
     //std::cout << xNear << " " << yNear << std::endl;
 
-    zForeground = -visualParameters.zNear - offset;
-    zBackground = -visualParameters.zFar + offset;
+    zForeground = -vparams->zNear() - offset;
+    zBackground = -vparams->zFar() + offset;
 
     if (currentCamera->getCameraType() == component::visualmodel::BaseCamera::PERSPECTIVE_TYPE)
-        gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, visualParameters.zNear, visualParameters.zFar);
+        gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
     else
     {
-        float ratio = visualParameters.zFar / (visualParameters.zNear * 20);
-        Vector3 tcenter = visualParameters.sceneTransform * center;
+        float ratio = vparams->zFar() / (vparams->zNear() * 20);
+        Vector3 tcenter = vparams->sceneTransform() * center;
         if (tcenter[2] < 0.0)
         {
             ratio = -300 * (tcenter.norm2()) / tcenter[2];
         }
         glOrtho((-xNear * xFactor) * ratio, (xNear * xFactor) * ratio, (-yNear
                 * yFactor) * ratio, (yNear * yFactor) * ratio,
-                visualParameters.zNear, visualParameters.zFar);
+                vparams->zNear(), vparams->zFar());
     }
 
-    xForeground = -zForeground * xNear / visualParameters.zNear;
-    yForeground = -zForeground * yNear / visualParameters.zNear;
-    xBackground = -zBackground * xNear / visualParameters.zNear;
-    yBackground = -zBackground * yNear / visualParameters.zNear;
+    xForeground = -zForeground * xNear / vparams->zNear();
+    yForeground = -zForeground * yNear / vparams->zNear();
+    xBackground = -zBackground * xNear / vparams->zNear();
+    yBackground = -zBackground * yNear / vparams->zNear();
 
     xForeground *= xFactor;
     yForeground *= yFactor;
@@ -1053,10 +1037,10 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
 {
     // Mouse Interaction
     double coeffDeplacement = 0.025;
-    if (sceneBBoxIsValid && visualParameters.maxBBox[0]
-        > visualParameters.minBBox[0])
-        coeffDeplacement *= 0.001 * (visualParameters.maxBBox
-                - visualParameters.minBBox).norm();
+    const sofa::defaulttype::BoundingBox sceneBBox = vparams->sceneBBox();
+    if (sceneBBox.isValid() && ! sceneBBox.isFlat())
+        coeffDeplacement *= 0.001 * (sceneBBox.maxBBox()
+                - sceneBBox.minBBox()).norm();
     Quaternion conjQuat, resQuat, _newQuatBckUp;
 
     float x1, x2, y1, y2;
@@ -1473,25 +1457,27 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
 void QtViewer::moveRayPickInteractor(int eventX, int eventY)
 {
 
+    const sofa::core::visual::VisualParams::Viewport& viewport = vparams->viewport();
+
     Vec3d p0, px, py, pz, px1, py1;
-    gluUnProject(eventX, visualParameters.viewport[3] - 1 - (eventY), 0,
+    gluUnProject(eventX, viewport[3] - 1 - (eventY), 0,
             lastModelviewMatrix, lastProjectionMatrix,
-            visualParameters.viewport, &(p0[0]), &(p0[1]), &(p0[2]));
-    gluUnProject(eventX + 1, visualParameters.viewport[3] - 1 - (eventY), 0,
+            viewport.data(), &(p0[0]), &(p0[1]), &(p0[2]));
+    gluUnProject(eventX + 1, viewport[3] - 1 - (eventY), 0,
             lastModelviewMatrix, lastProjectionMatrix,
-            visualParameters.viewport, &(px[0]), &(px[1]), &(px[2]));
-    gluUnProject(eventX, visualParameters.viewport[3] - 1 - (eventY + 1), 0,
+            viewport.data(), &(px[0]), &(px[1]), &(px[2]));
+    gluUnProject(eventX, viewport[3] - 1 - (eventY + 1), 0,
             lastModelviewMatrix, lastProjectionMatrix,
-            visualParameters.viewport, &(py[0]), &(py[1]), &(py[2]));
-    gluUnProject(eventX, visualParameters.viewport[3] - 1 - (eventY), 0.1,
+            viewport.data(), &(py[0]), &(py[1]), &(py[2]));
+    gluUnProject(eventX, viewport[3] - 1 - (eventY), 0.1,
             lastModelviewMatrix, lastProjectionMatrix,
-            visualParameters.viewport, &(pz[0]), &(pz[1]), &(pz[2]));
-    gluUnProject(eventX + 1, visualParameters.viewport[3] - 1 - (eventY), 0.1,
+            viewport.data(), &(pz[0]), &(pz[1]), &(pz[2]));
+    gluUnProject(eventX + 1, viewport[3] - 1 - (eventY), 0.1,
             lastModelviewMatrix, lastProjectionMatrix,
-            visualParameters.viewport, &(px1[0]), &(px1[1]), &(px1[2]));
-    gluUnProject(eventX, visualParameters.viewport[3] - 1 - (eventY + 1), 0,
+            viewport.data(), &(px1[0]), &(px1[1]), &(px1[2]));
+    gluUnProject(eventX, viewport[3] - 1 - (eventY + 1), 0,
             lastModelviewMatrix, lastProjectionMatrix,
-            visualParameters.viewport, &(py1[0]), &(py1[1]), &(py1[2]));
+            viewport.data(), &(py1[0]), &(py1[1]), &(py1[2]));
     px1 -= pz;
     py1 -= pz;
     px -= p0;
@@ -1542,22 +1528,22 @@ void QtViewer::resetView()
     {
         std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
         /*std::ifstream in(viewFileName.c_str());
-        if (!in.fail())
-        {
-        	in >> position[0];
-        	in >> position[1];
-        	in >> position[2];
-        	in >> orientation[0];
-        	in >> orientation[1];
-        	in >> orientation[2];
-        	in >> orientation[3];
-        	orientation.normalize();
+          if (!in.fail())
+          {
+          in >> position[0];
+          in >> position[1];
+          in >> position[2];
+          in >> orientation[0];
+          in >> orientation[1];
+          in >> orientation[2];
+          in >> orientation[3];
+          orientation.normalize();
 
-        	in.close();
-        	fileRead = true;
+          in.close();
+          fileRead = true;
 
-            setView(position, orientation);
-        }*/
+          setView(position, orientation);
+          }*/
         fileRead = currentCamera->importParametersFromFile(viewFileName);
     }
 
@@ -1601,20 +1587,20 @@ void QtViewer::saveView()
     {
         std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
         /*std::ofstream out(viewFileName.c_str());
-        if (!out.fail())
-        {
-            const Vec3d& camPosition = currentCamera->getPosition();
-        	const Quat& camOrientation = currentCamera->getOrientation();
+          if (!out.fail())
+          {
+          const Vec3d& camPosition = currentCamera->getPosition();
+          const Quat& camOrientation = currentCamera->getOrientation();
 
-        	out << camPosition[0] << " "
-        		<< camPosition[1] << " "
-        		<< camPosition[2] << "\n";
-        	out << camOrientation[0] << " "
-        	    << camOrientation[1] << " "
-        	    << camOrientation[2] << " "
-        	    << camOrientation[3] << "\n";
-        	out.close();
-        }*/
+          out << camPosition[0] << " "
+          << camPosition[1] << " "
+          << camPosition[2] << "\n";
+          out << camOrientation[0] << " "
+          << camOrientation[1] << " "
+          << camOrientation[2] << " "
+          << camOrientation[3] << "\n";
+          out.close();
+          }*/
         if(currentCamera->exportParametersInFile(viewFileName))
             std::cout << "View parameters saved in " << viewFileName << std::endl;
         else

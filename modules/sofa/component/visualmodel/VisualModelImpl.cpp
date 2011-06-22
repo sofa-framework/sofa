@@ -67,7 +67,7 @@ using namespace sofa::core::loader;
 
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {
-    this->core::VisualModel::parse(arg);
+    this->core::visual::VisualModel::parse(arg);
     VisualModelImpl* obj = this;
 
     if (arg->getAttribute("normals")!=NULL)
@@ -208,19 +208,19 @@ bool VisualModelImpl::hasOpaque()
     return false;
 }
 
-void VisualModelImpl::drawVisual()
+void VisualModelImpl::drawVisual(const core::visual::VisualParams* )
 {
     if (hasOpaque())
         internalDraw(false);
 }
 
-void VisualModelImpl::drawTransparent()
+void VisualModelImpl::drawTransparent(const core::visual::VisualParams* )
 {
     if (hasTransparent())
         internalDraw(true);
 }
 
-void VisualModelImpl::drawShadow()
+void VisualModelImpl::drawShadow(const core::visual::VisualParams* )
 {
     if (hasOpaque() && getCastShadow())
         internalDraw(false);

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
 #define SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
 
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Mat.h>
@@ -54,10 +54,10 @@ namespace visualmodel
  */
 
 template<class DataTypes>
-class OglVariable : public core::VisualModel, public OglShaderElement
+class OglVariable : public core::visual::VisualModel, public OglShaderElement
 {
 public:
-    SOFA_CLASS2(OglVariable, core::VisualModel, OglShaderElement);
+    SOFA_CLASS2(OglVariable, core::visual::VisualModel, OglShaderElement);
 protected:
     Data< DataTypes > value;
 public:
@@ -70,7 +70,7 @@ public:
 
     virtual void setValue( const DataTypes& v ) { value.setValue(v); }
     void init() { OglShaderElement::init(); }
-    void initVisual() { core::VisualModel::initVisual(); }
+    void initVisual() { core::visual::VisualModel::initVisual(); }
     void pushValue() { initVisual(); }
     void reinit() { init();	initVisual(); }
 };

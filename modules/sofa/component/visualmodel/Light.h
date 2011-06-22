@@ -1,36 +1,35 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_COMPONENT_LIGHT
 #define SOFA_COMPONENT_LIGHT
 
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/VisualModel.h>
-#include <sofa/helper/gl/VisualParameters.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/component/component.h>
 
 #ifdef SOFA_HAVE_GLEW
@@ -60,10 +59,10 @@ namespace visualmodel
  */
 
 
-class SOFA_COMPONENT_VISUALMODEL_API Light : public virtual sofa::core::VisualModel
+class SOFA_COMPONENT_VISUALMODEL_API Light : public virtual sofa::core::visual::VisualModel
 {
 public:
-    SOFA_CLASS(Light, core::VisualModel);
+    SOFA_CLASS(Light, core::visual::VisualModel);
 protected:
     GLint lightID;
     GLuint shadowTexWidth, shadowTexHeight;
@@ -106,7 +105,7 @@ public:
     void update() {} ;
 
     //CastShadowModel
-    virtual void preDrawShadow(helper::gl::VisualParameters* vp);
+    virtual void preDrawShadow(core::visual::VisualParams* vp);
     virtual void postDrawShadow();
     virtual GLuint getShadowMapSize();
     virtual GLuint getDepthTexture() { return 0 ;};
@@ -168,7 +167,7 @@ public:
     virtual void draw();
     virtual void reinit();
 
-    void preDrawShadow(helper::gl::VisualParameters* vp);
+    void preDrawShadow(core::visual::VisualParams*  vp);
     GLuint getDepthTexture();
     GLuint getColorTexture();
     GLfloat* getProjectionMatrix();

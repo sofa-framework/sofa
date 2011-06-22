@@ -106,7 +106,7 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             flags |= 1 << LOADER;
         if (dynamic_cast<core::objectmodel::ConfigurationSetting*>(obj))
             flags |= 1 << CONFIGURATIONSETTING;
-        if (dynamic_cast<core::VisualModel*>(obj) && !flags)
+        if (dynamic_cast<core::visual::VisualModel*>(obj) && !flags)
             flags |= 1 << VMODEL;
         if (!flags)
             flags |= 1 << OBJECT;

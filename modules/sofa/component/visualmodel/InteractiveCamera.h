@@ -1,8 +1,8 @@
-#ifndef INTERACTIVECAMERA_H
-#define INTERACTIVECAMERA_H
+#ifndef SOFA_COMPONENT_VISUALMODEL_INTERACTIVECAMERA_H
+#define SOFA_COMPONENT_VISUALMODEL_INTERACTIVECAMERA_H
 
 #include <sofa/component/visualmodel/BaseCamera.h>
-
+#include <sofa/component/component.h>
 namespace sofa
 {
 
@@ -47,4 +47,4 @@ private:
 
 } // namespace sofa
 
-#endif // INTERACTIVECAMERA_H
+#endif // SOFA_COMPONENT_VISUALMODEL_INTERACTIVECAMERA_H

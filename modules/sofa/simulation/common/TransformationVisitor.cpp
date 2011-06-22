@@ -31,7 +31,7 @@ namespace simulation
 {
 
 void TransformationVisitor::processVisualModel(simulation::Node* // node
-        , core::VisualModel* v)
+        , core::visual::VisualModel* v)
 {
     v->applyScale ( scale[0], scale[1], scale[2] );
     v->applyRotation(rotation[0],rotation[1],rotation[2]);

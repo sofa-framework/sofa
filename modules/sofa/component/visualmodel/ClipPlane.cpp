@@ -62,7 +62,7 @@ void ClipPlane::reinit()
 {
 }
 
-void ClipPlane::fwdDraw(Pass)
+void ClipPlane::fwdDraw(core::visual::VisualParams*)
 {
     wasActive = glIsEnabled(GL_CLIP_PLANE0+id.getValue());
     if (active.getValue())
@@ -82,7 +82,7 @@ void ClipPlane::fwdDraw(Pass)
     }
 }
 
-void ClipPlane::bwdDraw(Pass)
+void ClipPlane::bwdDraw(core::visual::VisualParams*)
 {
     if (active.getValue())
     {
