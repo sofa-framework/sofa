@@ -26,11 +26,9 @@
 #define SOFA_COMPONENT_CLIPPLANE_H
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {

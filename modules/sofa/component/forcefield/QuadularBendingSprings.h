@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_H
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

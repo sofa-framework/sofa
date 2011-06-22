@@ -37,7 +37,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/forcefield/PlaneForceField.h>
 #include <vector>

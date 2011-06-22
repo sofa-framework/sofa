@@ -47,7 +47,7 @@
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/gl/Trackball.h>
 #include <sofa/helper/gl/Texture.h>
-#include <sofa/helper/gl/VisualParameters.h>
+
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/common/xml/Element.h>
 
@@ -98,7 +98,6 @@ private:
 
     enum { MINMOVE = 10 };
 
-    VisualParameters visualParameters;
 
     QTimer* timerAnimate;
     int				_W, _H;
