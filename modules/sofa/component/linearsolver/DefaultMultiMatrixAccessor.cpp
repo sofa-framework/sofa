@@ -36,7 +36,14 @@ namespace linearsolver
 {
 
 DefaultMultiMatrixAccessor::DefaultMultiMatrixAccessor()
-    : globalMatrix(NULL), globalDim(0) ,MULTIMATRIX_VERBOSE(false)
+    : globalMatrix(NULL)
+    , globalDim(0)
+#ifndef SOFA_SUPPORT_MAPPED_MATRIX
+    , MULTIMATRIX_VERBOSE(false)
+#else
+    , MULTIMATRIX_VERBOSE(true)
+#endif
+
 {
 }
 
@@ -477,8 +484,8 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
 
             const unsigned int offset1  = K1.offset;
             const unsigned int offset2  = K2.offset;
-            const unsigned int sizeK1 = K1.matrix->rowSize();
-            const unsigned int sizeK2 = K2.matrix->rowSize();
+            const unsigned int sizeK1 = K1.matrix->rowSize() - offset1;
+            const unsigned int sizeK2 = K2.matrix->rowSize() - offset2;
 
             if( MULTIMATRIX_VERBOSE)
             {
@@ -491,7 +498,7 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
                         <<std::endl;
             }
 
-            // Matrix multiplication  K11 += Jt * K22 * J
+//			// Matrix multiplication  K11 += Jt * K22 * J
 //			for(unsigned int i1 =0; i1 < sizeK1 ; ++i1)
 //			{
 //				for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
@@ -509,13 +516,22 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
 //								const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
 //
 //								Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
+//								/*
+//								if( MULTIMATRIX_VERBOSE)  // index debug
+//								{
+//									std::cout<<"K1("<<offset1 + i1<<","<<offset1 + j1<<")  +="
+//											<<" Jt("<<i1<<","<<k2<<")  * "
+//											<<"K2("<<offset2 + i2<<","<<offset2 + j2<<") * "
+//											<<" J("<<k2<<","<<j1<<")"<<std::endl;
+//								}
+//								*/
 //							}
 //						}
 //					}
 //					K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
 //				}
 //			}
-            // Matrix multiplication  K11 += Jt * K22 * J
+//			// Matrix multiplication  K11 += Jt * K22 * J
 
         }
 
@@ -563,15 +579,15 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
                 //===========================
                 //          I_12 += Jt * I_32
                 //===========================
-                const unsigned int nbR_I_12   = I_12.matrix->rowSize();
-                const unsigned int nbC_I_12   = I_12.matrix->colSize();
-                const unsigned int offR_I_12  = I_12.offRow;
-                const unsigned int offC_I_12  = I_12.offCol;
+                const unsigned int offR_I_12  = I_12.offRow;                       //      row offset of I12 matrix
+                const unsigned int offC_I_12  = I_12.offCol;                       //    colum offset of I12 matrix
+                const unsigned int nbR_I_12   = I_12.matrix->rowSize() - offR_I_12;//number of rows   of I12 matrix
+                const unsigned int nbC_I_12   = I_12.matrix->colSize() - offC_I_12;//number of colums of I12 matrix
 
-                const unsigned int nbR_I_32 = I_32.matrix->rowSize();
-                const unsigned int nbC_I_32 = I_32.matrix->colSize();
-                const unsigned int offR_I_32  = I_32.offRow;
-                const unsigned int offC_I_32  = I_32.offCol;
+                const unsigned int offR_I_32  = I_32.offRow;                     //      row offset of I32 matrix
+                const unsigned int offC_I_32  = I_32.offCol;                     //    colum offset of I32 matrix
+                const unsigned int nbR_I_32 = I_32.matrix->rowSize() - offR_I_32;//number of rows   of I32 matrix
+                const unsigned int nbC_I_32 = I_32.matrix->colSize() - offC_I_32;//number of colums of I32 matrix
 
 
                 if( MULTIMATRIX_VERBOSE)
@@ -588,20 +604,27 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
                 }
 
 //				// Matrix multiplication   I_12 += Jt * I_32
-//				for(unsigned int _i = offR_I_12;_i < nbR_I_12 ; _i++)
+//				for(unsigned int _i = 0;_i < nbR_I_12 ; _i++)
 //				{
-//					for(unsigned int _j = offC_I_12;_j < nbC_I_12 ; _j++)
+//					for(unsigned int _j = 0;_j < nbC_I_12 ; _j++)
 //					{
 //						double Jt_I32_ij = 0;
 //						for(unsigned int _k = 0;_k < nbR_I_32 ; _k++)
 //						{
-//							//std::cout<<" index matrix i:" << _i <<"    j:" <<_j  <<"      k:"  << _k <<std::endl;
 //							const double Jt_ik    = (double) matrixJ->element( _k, _i ) ;
 //							const double  I_32_kj = (double) I_32.matrix->element( offR_I_32 + _k, offC_I_32+_j) ;
 //
 //							Jt_I32_ij += Jt_ik  *  I_32_kj;
+//							/*
+//							if( MULTIMATRIX_VERBOSE)  // index debug
+//							{
+//								std::cout<<"I12("<<offR_I_12 + _i<<","<<offC_I_12 +  _j<<")  +="
+//										<<" Jt("<<_k<<","<<_i<<")  * "
+//										<<"I32("<<offR_I_32 + _k<<","<< offC_I_32+_j<<")"<<std::endl;
+//							}
+//							*/
 //						}
-//						I_12.matrix->add( _i ,  _j , Jt_I32_ij);
+//						I_12.matrix->add(offR_I_12 + _i , offC_I_12 +  _j , Jt_I32_ij);
 //					}
 //				}// Matrix multiplication   I_12 += Jt * I_32
 
@@ -614,15 +637,15 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
                 //=========================================
                 //          I_21 +=      I_23 * J
                 //=========================================
-                const unsigned int nbR_I_21 = I_21.matrix->rowSize();
-                const unsigned int nbC_I_21 = I_21.matrix->colSize();
                 const unsigned int offR_I_21  = I_21.offRow;
                 const unsigned int offC_I_21  = I_21.offCol;
+                const unsigned int nbR_I_21 = I_21.matrix->rowSize() - offR_I_21;
+                const unsigned int nbC_I_21 = I_21.matrix->colSize() - offC_I_21;
 
-                const unsigned int nbR_I_23   = I_23.matrix->rowSize();
-                const unsigned int nbC_I_23   = I_23.matrix->colSize();
                 const unsigned int offR_I_23  = I_23.offRow;
                 const unsigned int offC_I_23  = I_23.offCol;
+                const unsigned int nbR_I_23   = I_23.matrix->rowSize() - offR_I_23;
+                const unsigned int nbC_I_23   = I_23.matrix->colSize() - offC_I_23;
 
                 if( MULTIMATRIX_VERBOSE)
                 {
@@ -637,21 +660,28 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
                 }
 
 
-//				// Matrix multiplication  I_21 +=  I_23 * J
-//				for(unsigned int _i = offR_I_21;_i < nbR_I_21 ; _i++)
+                // Matrix multiplication  I_21 +=  I_23 * J
+//				for(unsigned int _i = 0;_i < nbR_I_21 ; _i++)
 //				{
-//					for(unsigned int _j = offC_I_21;_j < nbC_I_21 ; _j++)
+//					for(unsigned int _j = 0;_j < nbC_I_21 ; _j++)
 //					{
 //						double I23_J_ij = 0;
 //						for(unsigned int _k = 0;_k < nbC_I_23 ; _k++)
 //						{
-//							//std::cout<<" index matrix i:" << _i <<"    j:" <<_j  <<"      k:"  << _k <<std::endl;
 //							const double I_23_ik = (double) I_23.matrix->element( offR_I_23 + _i, offC_I_23+_k) ;
 //							const double J_kj    = (double) matrixJ->element( _k, _j ) ;
 //
 //							I23_J_ij += I_23_ik  * J_kj ;
+//							/*
+//							if( MULTIMATRIX_VERBOSE)  // index debug
+//							{
+//								std::cout<<"I21("<<offR_I_21 + _i<<","<<offC_I_21 + _j<<")  +="
+//										<<"I23("<<offR_I_23 + _i<<","<< offC_I_23+_k<<") * "
+//										<<" Jt("<<_k<<","<<_k<<")"<<std::endl;
+//							}
+//							*/
 //						}
-//						I_21.matrix->add( _i ,  _j , I23_J_ij);
+//						I_21.matrix->add(offR_I_21 + _i , offC_I_21 + _j , I23_J_ij);
 //					}
 //				}// Matrix multiplication  I_21 +=  I_23 * J
 
