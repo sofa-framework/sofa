@@ -28,7 +28,7 @@
 #define OGRESHADERENTRYPOINT_H
 
 #include <sofa/helper/fixed_array.h>
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 
 namespace sofa
 {
@@ -39,10 +39,10 @@ namespace component
 namespace visualmodel
 {
 
-class OgreShaderEntryPoint: public core::VisualModel
+class OgreShaderEntryPoint: public core::visual::VisualModel
 {
 public:
-    SOFA_CLASS(OgreShaderEntryPoint, core::VisualModel);
+    SOFA_CLASS(OgreShaderEntryPoint, core::visual::VisualModel);
 
     OgreShaderEntryPoint():
         techniqueIndex(initData(&techniqueIndex, 0, "techniqueIndex", "Index of the technique where we have to add the Texture Unit"))

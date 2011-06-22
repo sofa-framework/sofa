@@ -4,7 +4,7 @@
 
 #include "OgreSceneObject.h"
 
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <string>
@@ -24,11 +24,11 @@ namespace visualmodel
 
 class OgreVisualModel;
 
-class OgrePlanarReflectionMaterial : public core::VisualModel, public Ogre::RenderTargetListener,
+class OgrePlanarReflectionMaterial : public core::visual::VisualModel, public Ogre::RenderTargetListener,
     public core::ogre::OgreSceneObject
 {
 public:
-    SOFA_CLASS(OgrePlanarReflectionMaterial,core::VisualModel);
+    SOFA_CLASS(OgrePlanarReflectionMaterial,core::visual::VisualModel);
 
     typedef sofa::defaulttype::Vec<2,int> Vec2i;
 

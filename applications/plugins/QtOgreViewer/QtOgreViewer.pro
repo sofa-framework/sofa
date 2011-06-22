@@ -46,23 +46,23 @@ SOURCES += DotSceneLoader.cpp \
            QtOgreViewer.cpp\
            QtOgreViewer_slots.cpp\
            OgreVisualModel.cpp \
-		   OgreMeshLoader.cpp \
+	   OgreMeshLoader.cpp \
            OgreShaderParameter.cpp \
            OgreShaderTextureUnit.cpp \
            QOgreLightWidget.cpp \
            OgrePlanarReflectionMaterial.cpp \
            DrawManagerOGRE.cpp \
            OgreViewerSetting.cpp \
-		   OgreSceneObject.cpp \
-		   PropagateOgreSceneManager.cpp \
+	   OgreSceneObject.cpp \
+	   PropagateOgreSceneManager.cpp \
            initQtOgreViewer.cpp \
-		   SubMesh.cpp 
+	   SubMesh.cpp 
 
 HEADERS += DotSceneLoader.h \
            HelperLogics.h \
            QtOgreViewer.h \
            OgreVisualModel.h \
-		   OgreMeshLoader.h \
+	   OgreMeshLoader.h \
            OgreShaderEntryPoint.h \
            OgreShaderParameter.h \
            OgreShaderTextureUnit.h \
@@ -71,10 +71,10 @@ HEADERS += DotSceneLoader.h \
            OgreSofaViewer.h \
            DrawManagerOGRE.h \
            OgreViewerSetting.h \
-		   OgreSceneObject.h \
-		   PropagateOgreSceneManager.h \
+	   OgreSceneObject.h \
+	   PropagateOgreSceneManager.h \
            initQtOgreViewer.h \
-		   SubMesh.h
+	   SubMesh.h
 
 
 README_FILE = QtOgreViewer.txt
