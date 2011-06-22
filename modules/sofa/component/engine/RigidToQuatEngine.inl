@@ -1,5 +1,5 @@
-#ifndef RIGIDTOQUATENGINE_INL
-#define RIGIDTOQUATENGINE_INL
+#ifndef SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_INL
+#define SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_INL
 
 #include <sofa/component/engine/RigidToQuatEngine.h>
 
@@ -32,10 +32,10 @@ RigidToQuatEngine<DataTypes>::~RigidToQuatEngine()
 template <class DataTypes>
 void RigidToQuatEngine<DataTypes>::init()
 {
-    addInput(&f_positions);
-    addInput(&f_orientations);
+    addInput(&f_rigids);
 
-    addOutput(&f_rigids);
+    addOutput(&f_positions);
+    addOutput(&f_orientations);
 
     setDirtyValue();
 }
@@ -51,27 +51,19 @@ void RigidToQuatEngine<DataTypes>::update()
 {
     cleanDirty();
 
-    const helper::vector<Vec3>& positions = f_positions.getValue();
-    const helper::vector<Quat>& orientations = f_orientations.getValue();
+    helper::ReadAccessor< Data< helper::vector<RigidVec3> > > rigids = f_rigids;
+    helper::WriteAccessor< Data< helper::vector<Vec3> > > positions = f_positions;
+    helper::WriteAccessor< Data< helper::vector<Quat> > > orientations = f_orientations;
 
-    helper::vector<RigidVec3>& rigids = *(f_rigids.beginEdit());
-
-    unsigned int sizeRigids = positions.size();
-
-    if(positions.size() != orientations.size())
-    {
-        serr << "Warnings : size of positions and orientations are not equal" << sendl;
-        sizeRigids = ( positions.size() > orientations.size() ) ?  orientations.size() :  positions.size() ;
-    }
-
-    rigids.clear();
+    unsigned int sizeRigids = rigids.size();
+    positions.resize(sizeRigids);
+    orientations.resize(sizeRigids);
     for (unsigned int i=0 ; i< sizeRigids ; i++)
     {
-        RigidVec3 r(positions[i], orientations[i]);
-        rigids.push_back(r);
+        RigidVec3 r = rigids[i];
+        positions[i] = r.getCenter();
+        orientations[i] = r.getOrientation();
     }
-
-    f_rigids.endEdit();
 }
 
 } // namespace engine
@@ -80,4 +72,4 @@ void RigidToQuatEngine<DataTypes>::update()
 
 } // namespace sofa
 
-#endif // RIGIDTOQUATENGINE_INL
+#endif // SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_INL

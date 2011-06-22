@@ -23,6 +23,7 @@ int RigidToQuatEngineClass = core::RegisterObject("Transform a couple of Vec3 an
 #ifndef SOFA_DOUBLE
         .add< RigidToQuatEngine<sofa::defaulttype::Vec3fTypes> >()
 #endif //SOFA_DOUBLE
+        .addAlias("RigidEngine")
         ;
 
 #ifndef SOFA_FLOAT

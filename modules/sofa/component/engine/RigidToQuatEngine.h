@@ -1,9 +1,5 @@
-#ifndef RIGIDTOQUATENGINE_H
-#define RIGIDTOQUATENGINE_H
-
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+#ifndef SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_H
+#define SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_H
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/helper/vector.h>
@@ -21,8 +17,9 @@ namespace component
 
 namespace engine
 {
+
 /*
- * Engine which converts (vector of) Vec3 + Quaternion to give a (vector of) Rigid
+ * Engine which converts (vectors of) Vec3 + Quaternion to give a (vector of) Rigid
  *
  */
 
@@ -83,4 +80,4 @@ template class SOFA_COMPONENT_ENGINE_API RigidToQuatEngine<defaulttype::Vec3fTyp
 
 } // namespace sofa
 
-#endif // RIGIDTOQUATENGINE_H
+#endif // SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_H

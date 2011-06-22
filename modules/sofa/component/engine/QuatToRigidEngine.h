@@ -1,9 +1,5 @@
-#ifndef RIGIDTOQUATENGINE_H
-#define RIGIDTOQUATENGINE_H
-
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+#ifndef SOFA_COMPONENT_ENGINE_QUATTORIGIDENGINE_H
+#define SOFA_COMPONENT_ENGINE_QUATTORIGIDENGINE_H
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/helper/vector.h>
@@ -21,24 +17,25 @@ namespace component
 
 namespace engine
 {
+
 /*
- * Engine which converts (vector of) Vec3 + Quaternion to give a (vector of) Rigid
+ * Engine which converts (vectors of) Vec3 + Quaternion to give a (vector of) Rigid
  *
  */
 
 template <class DataTypes>
-class RigidToQuatEngine : public sofa::core::DataEngine
+class QuatToRigidEngine : public sofa::core::DataEngine
 {
 public:
-    SOFA_CLASS(RigidToQuatEngine,sofa::core::DataEngine);
+    SOFA_CLASS(QuatToRigidEngine,sofa::core::DataEngine);
 
     typedef typename DataTypes::Real Real;
     typedef sofa::defaulttype::Vec<3,Real> Vec3;
     typedef sofa::helper::Quater<Real> Quat;
     typedef typename sofa::defaulttype::StdRigidTypes<3,Real>::Coord RigidVec3;
 
-    RigidToQuatEngine();
-    virtual ~RigidToQuatEngine();
+    QuatToRigidEngine();
+    virtual ~QuatToRigidEngine();
 
     void update();
     void init();
@@ -56,7 +53,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const RigidToQuatEngine<DataTypes>* = NULL)
+    static std::string templateName(const QuatToRigidEngine<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
@@ -67,13 +64,13 @@ public:
     Data<helper::vector<RigidVec3> > f_rigids;
 };
 
-#if defined(WIN32) && !defined(RIGIDTOQUATENGINE_CPP)
+#if defined(WIN32) && !defined(QUATTORIGIDENGINE_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API RigidToQuatEngine<defaulttype::Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API QuatToRigidEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API RigidToQuatEngine<defaulttype::Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API QuatToRigidEngine<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 
@@ -83,4 +80,4 @@ template class SOFA_COMPONENT_ENGINE_API RigidToQuatEngine<defaulttype::Vec3fTyp
 
 } // namespace sofa
 
-#endif // RIGIDTOQUATENGINE_H
+#endif // SOFA_COMPONENT_ENGINE_QUATTORIGIDENGINE_H
