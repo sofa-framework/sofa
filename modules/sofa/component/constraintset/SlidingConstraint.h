@@ -27,7 +27,6 @@
 
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <iostream>
 
 namespace sofa

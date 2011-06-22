@@ -27,7 +27,6 @@
 
 #include <sofa/component/behaviormodel/eulerianfluid/Grid2D.h>
 #include <sofa/core/BehaviorModel.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/Data.h>
 
 
