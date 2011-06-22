@@ -30,7 +30,6 @@
 #endif
 #include <sofa/component/component.h>
 #include <sofa/component/fem/material/HyperelasticMaterial.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <string>
