@@ -55,6 +55,19 @@ public:
 
     /// Destructor. Do nothing
     virtual ~DataEngine();
+
+    /// Add a new input to this engine
+    void addInput(objectmodel::BaseData* n);
+
+    /// Remove an input from this engine
+    void delInput(objectmodel::BaseData* n);
+
+    /// Add a new output to this engine
+    void addOutput(objectmodel::BaseData* n);
+
+    /// Remove an output from this engine
+    void delOutput(objectmodel::BaseData* n);
+
 };
 
 } // namespace core

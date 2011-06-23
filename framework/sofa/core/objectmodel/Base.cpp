@@ -55,6 +55,8 @@ Base::Base()
     f_tags.setParentClass("Base");
     f_bbox.setParentClass("Base");
     f_bbox.setReadOnly(true);
+    f_bbox.setPersistent(false);
+    f_bbox.setDisplayed(false);
     sendl.setParent(this);
 }
 
