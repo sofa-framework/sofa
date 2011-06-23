@@ -67,6 +67,7 @@
 #include <sofa/component/mapping/ImplicitSurfaceMapping.h>
 #include <sofa/component/mapping/LineSetSkinningMapping.h>
 #include <sofa/component/mapping/Mesh2PointMechanicalMapping.h>
+#include <sofa/component/mapping/PCAOnRigidFrameMapping.h>
 #include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/component/mapping/RigidRigidMapping.h>
 #include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
@@ -80,191 +81,197 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ArticulatedSystemMapping
-typedef sofa::component::mapping::ArticulatedSystemMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdRigidTypes<3, float> > ArticulatedSystemMapping1f_Rigid3f_to_Rigid3f;
+typedef  sofa::component::mapping::ArticulatedSystemMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float>, sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdRigidTypes<3,float> > ArticulatedSystemMapping1f_Rigid3f_to_Rigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for BarycentricMapping
-typedef sofa::component::mapping::BarycentricMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdRigidTypes<3, float> > BarycentricMapping3f_to_Rigid3f;
-typedef sofa::component::mapping::BarycentricMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BarycentricMapping3f_to_Ext3f;
-typedef sofa::component::mapping::BarycentricMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BarycentricMapping3f_to_3f;
+typedef  sofa::component::mapping::BarycentricMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > BarycentricMapping3f_to_Ext3f;
+typedef  sofa::component::mapping::BarycentricMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > BarycentricMapping3f_to_3f;
+typedef  sofa::component::mapping::BarycentricMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdRigidTypes<3,float> > BarycentricMapping3f_to_Rigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for BeamBsplineMapping
-typedef sofa::component::mapping::BeamBsplineMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BeamBsplineMappingRigid3f_to_Ext3f;
-typedef sofa::component::mapping::BeamBsplineMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BeamBsplineMappingRigid3f_to_3f;
+typedef  sofa::component::mapping::BeamBsplineMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > BeamBsplineMappingRigid3f_to_Ext3f;
+typedef  sofa::component::mapping::BeamBsplineMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > BeamBsplineMappingRigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for BeamLinearMapping
-typedef sofa::component::mapping::BeamLinearMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BeamLinearMappingRigid3f_to_Ext3f;
-typedef sofa::component::mapping::BeamLinearMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BeamLinearMappingRigid3f_to_3f;
+typedef  sofa::component::mapping::BeamLinearMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > BeamLinearMappingRigid3f_to_Ext3f;
+typedef  sofa::component::mapping::BeamLinearMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > BeamLinearMappingRigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for CenterOfMassMapping
-typedef sofa::component::mapping::CenterOfMassMapping<sofa::defaulttype::StdRigidTypes<2, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > CenterOfMassMappingRigid2f_to_2f;
-typedef sofa::component::mapping::CenterOfMassMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > CenterOfMassMappingRigid3f_to_Ext3f;
-typedef sofa::component::mapping::CenterOfMassMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > CenterOfMassMappingRigid3f_to_3f;
+typedef  sofa::component::mapping::CenterOfMassMapping< sofa::defaulttype::StdRigidTypes<2,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > CenterOfMassMappingRigid2f_to_2f;
+typedef  sofa::component::mapping::CenterOfMassMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > CenterOfMassMappingRigid3f_to_Ext3f;
+typedef  sofa::component::mapping::CenterOfMassMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > CenterOfMassMappingRigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for CenterOfMassMulti2Mapping
-typedef sofa::component::mapping::CenterOfMassMulti2Mapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > CenterOfMassMulti2Mapping3f_Rigid3f_to_3f;
+typedef  sofa::component::mapping::CenterOfMassMulti2Mapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > CenterOfMassMulti2Mapping3f_Rigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for CenterOfMassMultiMapping
-typedef sofa::component::mapping::CenterOfMassMultiMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdRigidTypes<3, float> > CenterOfMassMultiMappingRigid3f_to_Rigid3f;
-typedef sofa::component::mapping::CenterOfMassMultiMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > CenterOfMassMultiMapping3f_to_3f;
+typedef  sofa::component::mapping::CenterOfMassMultiMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdRigidTypes<3,float> > CenterOfMassMultiMappingRigid3f_to_Rigid3f;
+typedef  sofa::component::mapping::CenterOfMassMultiMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > CenterOfMassMultiMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for CenterPointMechanicalMapping
-typedef sofa::component::mapping::CenterPointMechanicalMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > CenterPointMechanicalMapping3f_to_Ext3f;
-typedef sofa::component::mapping::CenterPointMechanicalMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > CenterPointMechanicalMapping3f_to_3f;
+typedef  sofa::component::mapping::CenterPointMechanicalMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > CenterPointMechanicalMapping3f_to_Ext3f;
+typedef  sofa::component::mapping::CenterPointMechanicalMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > CenterPointMechanicalMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for CircumcenterMapping
-typedef sofa::component::mapping::CircumcenterMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > CircumcenterMapping3f_to_Ext3f;
-typedef sofa::component::mapping::CircumcenterMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > CircumcenterMapping3f_to_3f;
+typedef  sofa::component::mapping::CircumcenterMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > CircumcenterMapping3f_to_Ext3f;
+typedef  sofa::component::mapping::CircumcenterMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > CircumcenterMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for CurveMapping
-typedef sofa::component::mapping::CurveMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdRigidTypes<3, float> > CurveMapping3f_to_Rigid3f;
+typedef  sofa::component::mapping::CurveMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdRigidTypes<3,float> > CurveMapping3f_to_Rigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DeformableOnRigidFrameMapping
-typedef sofa::component::mapping::DeformableOnRigidFrameMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > DeformableOnRigidFrameMapping3f_Rigid3f_to_3f;
+typedef  sofa::component::mapping::DeformableOnRigidFrameMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > DeformableOnRigidFrameMapping3f_Rigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DiscreteBeamBsplineMapping
-typedef sofa::component::mapping::DiscreteBeamBsplineMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > DiscreteBeamBsplineMappingRigid3f_to_Ext3f;
-typedef sofa::component::mapping::DiscreteBeamBsplineMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > DiscreteBeamBsplineMappingRigid3f_to_3f;
+typedef  sofa::component::mapping::DiscreteBeamBsplineMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > DiscreteBeamBsplineMappingRigid3f_to_Ext3f;
+typedef  sofa::component::mapping::DiscreteBeamBsplineMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > DiscreteBeamBsplineMappingRigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ExternalInterpolationMapping
-typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > ExternalInterpolationMapping1f_to_1f;
-typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ExternalInterpolationMapping2f_to_2f;
-typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ExternalInterpolationMapping3f_to_Ext3f;
-typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ExternalInterpolationMapping3f_to_3f;
+typedef  sofa::component::mapping::ExternalInterpolationMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > ExternalInterpolationMapping1f_to_1f;
+typedef  sofa::component::mapping::ExternalInterpolationMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > ExternalInterpolationMapping2f_to_2f;
+typedef  sofa::component::mapping::ExternalInterpolationMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ExternalInterpolationMapping3f_to_Ext3f;
+typedef  sofa::component::mapping::ExternalInterpolationMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ExternalInterpolationMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for HexahedronCompositeFEMMapping
-typedef sofa::component::mapping::HexahedronCompositeFEMMapping<sofa::core::Mapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > HexahedronCompositeFEMMapping3f_to_Ext3f;
-typedef sofa::component::mapping::HexahedronCompositeFEMMapping<sofa::core::Mapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > HexahedronCompositeFEMMapping3f_to_3f;
+typedef  sofa::component::mapping::HexahedronCompositeFEMMapping< sofa::core::Mapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > > HexahedronCompositeFEMMapping3f_to_Ext3f;
+typedef  sofa::component::mapping::HexahedronCompositeFEMMapping< sofa::core::Mapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > > HexahedronCompositeFEMMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for IdentityMapping
-typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdRigidTypes<2, float>, sofa::defaulttype::StdRigidTypes<2, float> > IdentityMappingRigid2f_to_Rigid2f;
-typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdRigidTypes<2, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > IdentityMappingRigid2f_to_2f;
-typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IdentityMappingRigid3f_to_Ext3f;
-typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdRigidTypes<3, float> > IdentityMappingRigid3f_to_Rigid3f;
-typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IdentityMappingRigid3f_to_3f;
-typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > IdentityMapping1f_to_1f;
-typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > IdentityMapping2f_to_2f;
-typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IdentityMapping3f_to_Ext3f;
-typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IdentityMapping3f_to_3f;
-typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > IdentityMapping6f_to_6f;
+typedef  sofa::component::mapping::IdentityMapping< sofa::defaulttype::StdRigidTypes<2,float>, sofa::defaulttype::StdRigidTypes<2,float> > IdentityMappingRigid2f_to_Rigid2f;
+typedef  sofa::component::mapping::IdentityMapping< sofa::defaulttype::StdRigidTypes<2,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > IdentityMappingRigid2f_to_2f;
+typedef  sofa::component::mapping::IdentityMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > IdentityMappingRigid3f_to_Ext3f;
+typedef  sofa::component::mapping::IdentityMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdRigidTypes<3,float> > IdentityMappingRigid3f_to_Rigid3f;
+typedef  sofa::component::mapping::IdentityMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > IdentityMappingRigid3f_to_3f;
+typedef  sofa::component::mapping::IdentityMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > IdentityMapping1f_to_1f;
+typedef  sofa::component::mapping::IdentityMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > IdentityMapping2f_to_2f;
+typedef  sofa::component::mapping::IdentityMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > IdentityMapping3f_to_Ext3f;
+typedef  sofa::component::mapping::IdentityMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > IdentityMapping3f_to_3f;
+typedef  sofa::component::mapping::IdentityMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > IdentityMapping6f_to_6f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ImplicitSurfaceMapping
-typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ImplicitSurfaceMapping3f_to_Ext3f;
-typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ImplicitSurfaceMapping3f_to_3f;
+typedef  sofa::component::mapping::ImplicitSurfaceMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ImplicitSurfaceMapping3f_to_Ext3f;
+typedef  sofa::component::mapping::ImplicitSurfaceMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ImplicitSurfaceMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for LineSetSkinningMapping
-typedef sofa::component::mapping::LineSetSkinningMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > LineSetSkinningMappingRigid3f_to_3f;
+typedef  sofa::component::mapping::LineSetSkinningMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > LineSetSkinningMappingRigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for Mesh2PointMechanicalMapping
-typedef sofa::component::mapping::Mesh2PointMechanicalMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > Mesh2PointMechanicalMapping3f_to_Ext3f;
-typedef sofa::component::mapping::Mesh2PointMechanicalMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > Mesh2PointMechanicalMapping3f_to_3f;
+typedef  sofa::component::mapping::Mesh2PointMechanicalMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > Mesh2PointMechanicalMapping3f_to_Ext3f;
+typedef  sofa::component::mapping::Mesh2PointMechanicalMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > Mesh2PointMechanicalMapping3f_to_3f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for PCAOnRigidFrameMapping
+typedef  sofa::component::mapping::PCAOnRigidFrameMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float>, sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > PCAOnRigidFrameMapping1f_Rigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for RigidMapping
-typedef sofa::component::mapping::RigidMapping<sofa::defaulttype::StdRigidTypes<2, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > RigidMappingRigid2f_to_2f;
-typedef sofa::component::mapping::RigidMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RigidMappingRigid3f_to_Ext3f;
-typedef sofa::component::mapping::RigidMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RigidMappingRigid3f_to_3f;
+typedef  sofa::component::mapping::RigidMapping< sofa::defaulttype::StdRigidTypes<2,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > RigidMappingRigid2f_to_2f;
+typedef  sofa::component::mapping::RigidMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > RigidMappingRigid3f_to_Ext3f;
+typedef  sofa::component::mapping::RigidMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > RigidMappingRigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for RigidRigidMapping
-typedef sofa::component::mapping::RigidRigidMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdRigidTypes<3, float> > RigidRigidMappingRigid3f_to_Rigid3f;
+typedef  sofa::component::mapping::RigidRigidMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdRigidTypes<3,float> > RigidRigidMappingRigid3f_to_Rigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SPHFluidSurfaceMapping
-typedef sofa::component::mapping::SPHFluidSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SPHFluidSurfaceMapping3f_to_Ext3f;
-typedef sofa::component::mapping::SPHFluidSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SPHFluidSurfaceMapping3f_to_3f;
+typedef  sofa::component::mapping::SPHFluidSurfaceMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SPHFluidSurfaceMapping3f_to_Ext3f;
+typedef  sofa::component::mapping::SPHFluidSurfaceMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SPHFluidSurfaceMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SimpleTesselatedTetraMechanicalMapping
-typedef sofa::component::mapping::SimpleTesselatedTetraMechanicalMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SimpleTesselatedTetraMechanicalMapping3f_to_Ext3f;
-typedef sofa::component::mapping::SimpleTesselatedTetraMechanicalMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SimpleTesselatedTetraMechanicalMapping3f_to_3f;
+typedef  sofa::component::mapping::SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SimpleTesselatedTetraMechanicalMapping3f_to_Ext3f;
+typedef  sofa::component::mapping::SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SimpleTesselatedTetraMechanicalMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SkinningMapping
-typedef sofa::component::mapping::SkinningMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SkinningMappingRigid3f_to_Ext3f;
-typedef sofa::component::mapping::SkinningMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SkinningMappingRigid3f_to_3f;
+typedef  sofa::component::mapping::SkinningMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SkinningMappingRigid3f_to_Ext3f;
+typedef  sofa::component::mapping::SkinningMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SkinningMappingRigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SubsetMapping
-typedef sofa::component::mapping::SubsetMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdRigidTypes<3, float> > SubsetMappingRigid3f_to_Rigid3f;
-typedef sofa::component::mapping::SubsetMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > SubsetMapping1f_to_1f;
-typedef sofa::component::mapping::SubsetMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SubsetMapping3f_to_Ext3f;
-typedef sofa::component::mapping::SubsetMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SubsetMapping3f_to_3f;
+typedef  sofa::component::mapping::SubsetMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdRigidTypes<3,float> > SubsetMappingRigid3f_to_Rigid3f;
+typedef  sofa::component::mapping::SubsetMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > SubsetMapping1f_to_1f;
+typedef  sofa::component::mapping::SubsetMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SubsetMapping3f_to_Ext3f;
+typedef  sofa::component::mapping::SubsetMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SubsetMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SubsetMultiMapping
-typedef sofa::component::mapping::SubsetMultiMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SubsetMultiMapping3f_to_3f;
+typedef  sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SubsetMultiMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TubularMapping
-typedef sofa::component::mapping::TubularMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TubularMappingRigid3f_to_Ext3f;
-typedef sofa::component::mapping::TubularMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TubularMappingRigid3f_to_3f;
+typedef  sofa::component::mapping::TubularMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::ExtVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > TubularMappingRigid3f_to_Ext3f;
+typedef  sofa::component::mapping::TubularMapping< sofa::defaulttype::StdRigidTypes<3,float>, sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > TubularMappingRigid3f_to_3f;
 
 
 
@@ -272,9 +279,9 @@ typedef sofa::component::mapping::TubularMapping<sofa::defaulttype::StdRigidType
 
 #ifdef SOFA_FLOAT
 typedef ArticulatedSystemMapping1f_Rigid3f_to_Rigid3f ArticulatedSystemMapping1_Rigid3_to_Rigid3;
-typedef BarycentricMapping3f_to_Rigid3f BarycentricMapping3_to_Rigid3;
 typedef BarycentricMapping3f_to_Ext3f BarycentricMapping3_to_Ext3;
 typedef BarycentricMapping3f_to_3f BarycentricMapping3_to_3;
+typedef BarycentricMapping3f_to_Rigid3f BarycentricMapping3_to_Rigid3;
 typedef BeamBsplineMappingRigid3f_to_Ext3f BeamBsplineMappingRigid3_to_Ext3;
 typedef BeamBsplineMappingRigid3f_to_3f BeamBsplineMappingRigid3_to_3;
 typedef BeamLinearMappingRigid3f_to_Ext3f BeamLinearMappingRigid3_to_Ext3;
@@ -314,6 +321,7 @@ typedef ImplicitSurfaceMapping3f_to_3f ImplicitSurfaceMapping3_to_3;
 typedef LineSetSkinningMappingRigid3f_to_3f LineSetSkinningMappingRigid3_to_3;
 typedef Mesh2PointMechanicalMapping3f_to_Ext3f Mesh2PointMechanicalMapping3_to_Ext3;
 typedef Mesh2PointMechanicalMapping3f_to_3f Mesh2PointMechanicalMapping3_to_3;
+typedef PCAOnRigidFrameMapping1f_Rigid3f_to_3f PCAOnRigidFrameMapping1_Rigid3_to_3;
 typedef RigidMappingRigid2f_to_2f RigidMappingRigid2_to_2;
 typedef RigidMappingRigid3f_to_Ext3f RigidMappingRigid3_to_Ext3;
 typedef RigidMappingRigid3f_to_3f RigidMappingRigid3_to_3;

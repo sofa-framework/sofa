@@ -54,25 +54,25 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for LinearSolverConstraintCorrection
-typedef sofa::component::constraintset::LinearSolverConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, float> > LinearSolverConstraintCorrectionRigid3f;
-typedef sofa::component::constraintset::LinearSolverConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > LinearSolverConstraintCorrection1f;
-typedef sofa::component::constraintset::LinearSolverConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > LinearSolverConstraintCorrection3f;
+typedef  sofa::component::constraintset::LinearSolverConstraintCorrection< sofa::defaulttype::StdRigidTypes<3,float> > LinearSolverConstraintCorrectionRigid3f;
+typedef  sofa::component::constraintset::LinearSolverConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > LinearSolverConstraintCorrection1f;
+typedef  sofa::component::constraintset::LinearSolverConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > LinearSolverConstraintCorrection3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for PrecomputedConstraintCorrection
-typedef sofa::component::constraintset::PrecomputedConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, float> > PrecomputedConstraintCorrectionRigid3f;
-typedef sofa::component::constraintset::PrecomputedConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > PrecomputedConstraintCorrection1f;
-typedef sofa::component::constraintset::PrecomputedConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PrecomputedConstraintCorrection3f;
+typedef  sofa::component::constraintset::PrecomputedConstraintCorrection< sofa::defaulttype::StdRigidTypes<3,float> > PrecomputedConstraintCorrectionRigid3f;
+typedef  sofa::component::constraintset::PrecomputedConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > PrecomputedConstraintCorrection1f;
+typedef  sofa::component::constraintset::PrecomputedConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > PrecomputedConstraintCorrection3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for UncoupledConstraintCorrection
-typedef sofa::component::constraintset::UncoupledConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, float> > UncoupledConstraintCorrectionRigid3f;
-typedef sofa::component::constraintset::UncoupledConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > UncoupledConstraintCorrection1f;
-typedef sofa::component::constraintset::UncoupledConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > UncoupledConstraintCorrection3f;
+typedef  sofa::component::constraintset::UncoupledConstraintCorrection< sofa::defaulttype::StdRigidTypes<3,float> > UncoupledConstraintCorrectionRigid3f;
+typedef  sofa::component::constraintset::UncoupledConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > UncoupledConstraintCorrection1f;
+typedef  sofa::component::constraintset::UncoupledConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > UncoupledConstraintCorrection3f;
 
 
 
