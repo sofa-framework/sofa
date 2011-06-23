@@ -56,31 +56,31 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DrawV
-typedef sofa::component::visualmodel::DrawV DrawVExt3f;
+typedef  sofa::component::visualmodel::DrawV DrawVExt3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for OglModel
-typedef sofa::component::visualmodel::OglModel OglModelExt3f;
+typedef  sofa::component::visualmodel::OglModel OglModelExt3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for OglShaderVisualModel
-typedef sofa::component::visualmodel::OglShaderVisualModel OglShaderVisualModelExt3f;
+typedef  sofa::component::visualmodel::OglShaderVisualModel OglShaderVisualModelExt3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for OglTetrahedralModel
-typedef sofa::component::visualmodel::OglTetrahedralModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > OglTetrahedralModel3f;
+typedef  sofa::component::visualmodel::OglTetrahedralModel< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > OglTetrahedralModel3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for VisualModelImpl
-typedef sofa::component::visualmodel::VisualModelImpl VisualModelImplExt3f;
+typedef  sofa::component::visualmodel::VisualModelImpl VisualModelImplExt3f;
 
 
 

@@ -46,27 +46,19 @@
 #endif
 
 
-#include <sofa/component/visualmodel/FlowVisualModel.h>
 #include <sofa/component/visualmodel/OglTetrahedralModel.h>
 
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for FlowVisualModel
-typedef sofa::component::visualmodel::FlowVisualModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > FlowVisualModel3d;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for OglTetrahedralModel
-typedef sofa::component::visualmodel::OglTetrahedralModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > OglTetrahedralModel3d;
+typedef  sofa::component::visualmodel::OglTetrahedralModel< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > OglTetrahedralModel3d;
 
 
 
 
 
 #ifndef SOFA_FLOAT
-typedef FlowVisualModel3d FlowVisualModel3;
 typedef OglTetrahedralModel3d OglTetrahedralModel3;
 #endif
 

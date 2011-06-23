@@ -53,13 +53,13 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TriangleModelInRegularGrid
-typedef sofa::component::collision::TriangleModelInRegularGrid TriangleModelInRegularGrid3d;
+typedef  sofa::component::collision::TriangleModelInRegularGrid TriangleModelInRegularGrid3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TriangleOctreeModel
-typedef sofa::component::collision::TriangleOctreeModel TriangleOctreeModel3d;
+typedef  sofa::component::collision::TriangleOctreeModel TriangleOctreeModel3d;
 
 
 
