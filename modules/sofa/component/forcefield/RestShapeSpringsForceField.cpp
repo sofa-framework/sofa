@@ -52,7 +52,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
 
-    VecCoord p_0 = *pp_0;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
 
     f1.resize(p1.size());
 
@@ -70,11 +70,11 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
         const unsigned int ext_index = m_ext_indices[i];
 
         // translation
-        Vec3d dx = p1[index].getCenter() - p_0[ext_index].getCenter();
+        Vec3d dx = p1[index].getCenter() - p0[ext_index].getCenter();
         getVCenter(f1[index]) -=  dx * k[i] ;
 
         // rotation
-        Quatd dq = p1[index].getOrientation() * p_0[ext_index].getOrientation().inverse();
+        Quatd dq = p1[index].getOrientation() * p0[ext_index].getOrientation().inverse();
         Vec3d dir;
         double angle=0;
         dq.normalize();
@@ -172,7 +172,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalPa
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
 
-    VecCoord p_0 = *pp_0;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
 
     f1.resize(p1.size());
 
@@ -190,11 +190,11 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalPa
         const unsigned int ext_index = m_ext_indices[i];
 
         // translation
-        Vec3f dx = p1[index].getCenter() - p_0[ext_index].getCenter();
+        Vec3f dx = p1[index].getCenter() - p0[ext_index].getCenter();
         getVCenter(f1[index]) -=  dx * k[i] ;
 
         // rotation
-        Quatf dq = p1[index].getOrientation() * p_0[ext_index].getOrientation().inverse();
+        Quatf dq = p1[index].getOrientation() * p0[ext_index].getOrientation().inverse();
         Vec3f dir;
         Real angle=0;
         dq.normalize();
@@ -301,14 +301,9 @@ void RestShapeSpringsForceField<Vec3dTypes>::draw()
     if (!this->getContext()->getShowForceFields())
         return;  /// \todo put this in the parent class
 
-    const VecCoord* p_0 = this->mstate->getX0();
-    if (useRestMState)
-        p_0 = restMState->getX();
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
 
-    //std::cout<<"p_0 in draw : "<<p_0<<std::endl;
-
-    const VecCoord& p = *this->mstate->getX();
-
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p = this->mstate->read(core::VecCoordId::position());
 
     const VecIndex& indices = points.getValue();
     const VecIndex& ext_indices=external_points.getValue();
@@ -324,7 +319,7 @@ void RestShapeSpringsForceField<Vec3dTypes>::draw()
         glColor3f(0,1,0);
 
         glVertex3f( (GLfloat)p[index][0], (GLfloat)p[index][1], (GLfloat)p[index][2] );
-        glVertex3f( (GLfloat)(*p_0)[ext_index][0], (GLfloat)(*p_0)[ext_index][1], (GLfloat)(*p_0)[ext_index][2] );
+        glVertex3f( (GLfloat)p0[ext_index][0], (GLfloat)p0[ext_index][1], (GLfloat)p0[ext_index][2] );
 
         glEnd();
     }

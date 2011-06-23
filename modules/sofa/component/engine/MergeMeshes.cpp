@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP
-#include <sofa/component/engine/TransformEngine.inl>
+#define SOFA_COMPONENT_ENGINE_MERGEMESHES_CPP
+#include <sofa/component/engine/MergeMeshes.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -35,47 +35,45 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(TransformEngine)
+SOFA_DECL_CLASS(MergeMeshes)
 
-int TransformEngineClass = core::RegisterObject("Transform position of 3d points")
+int MergeMeshesClass = core::RegisterObject("Merge several meshes")
 #ifdef SOFA_FLOAT
-        .add< TransformEngine<defaulttype::Vec3fTypes> >(true) // default template
+        .add< MergeMeshes<defaulttype::Vec3fTypes> >(true) // default template
 #else
-        .add< TransformEngine<defaulttype::Vec3dTypes> >(true) // default template
+        .add< MergeMeshes<defaulttype::Vec3dTypes> >(true) // default template
 #ifndef SOFA_DOUBLE
-        .add< TransformEngine<defaulttype::Vec3fTypes> >()
+        .add< MergeMeshes<defaulttype::Vec3fTypes> >()
 #endif
 #endif
 #ifndef SOFA_FLOAT
-        .add< TransformEngine<defaulttype::Vec1dTypes> >()
-        .add< TransformEngine<defaulttype::Vec2dTypes> >()
-        .add< TransformEngine<defaulttype::Rigid2dTypes> >()
-        .add< TransformEngine<defaulttype::Rigid3dTypes> >()
+        .add< MergeMeshes<defaulttype::Vec1dTypes> >()
+        .add< MergeMeshes<defaulttype::Vec2dTypes> >()
+        .add< MergeMeshes<defaulttype::Rigid2dTypes> >()
+        .add< MergeMeshes<defaulttype::Rigid3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< TransformEngine<defaulttype::Vec1fTypes> >()
-        .add< TransformEngine<defaulttype::Vec2fTypes> >()
-        .add< TransformEngine<defaulttype::Rigid2fTypes> >()
-        .add< TransformEngine<defaulttype::Rigid3fTypes> >()
+        .add< MergeMeshes<defaulttype::Vec1fTypes> >()
+        .add< MergeMeshes<defaulttype::Vec2fTypes> >()
+        .add< MergeMeshes<defaulttype::Rigid2fTypes> >()
+        .add< MergeMeshes<defaulttype::Rigid3fTypes> >()
 #endif //SOFA_DOUBLE
-        .add< TransformEngine<defaulttype::ExtVec3fTypes> >()
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec1dTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec2dTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Rigid2dTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Rigid3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec1dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec2dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Rigid2dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec1fTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec2fTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Rigid2fTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Rigid3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec1fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec2fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Rigid2fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::ExtVec3fTypes>;
 
 
 } // namespace constraint

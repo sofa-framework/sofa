@@ -111,7 +111,7 @@ protected :
     VecIndex m_indices;
     VecReal k;
     VecIndex m_ext_indices;
-    const VecCoord* pp_0;
+    //const VecCoord* pp_0;
 private :
 
     bool useRestMState; /// An external MechanicalState is used as rest reference.
