@@ -47,7 +47,7 @@ template<class DataTypes>
 EvalPointsDistance<DataTypes>::EvalPointsDistance(MechanicalState<DataTypes>* ms1, MechanicalState<DataTypes>* ms2)
     : f_draw( initData(&f_draw, true, "draw", "activate rendering of lines between associated points"))
     , f_filename( initData(&f_filename, "filename", "output file name"))
-    , f_period( initData(&f_period, 1.0, "period", "period between outputs"))
+    , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
     , distMean( initData(&distMean, 1.0, "distMean", "mean distance (OUTPUT)"))
     , distMin( initData(&distMin, 1.0, "distMin", "min distance (OUTPUT)"))
     , distMax( initData(&distMax, 1.0, "distMax", "max distance (OUTPUT)"))
@@ -113,7 +113,11 @@ void EvalPointsDistance<DataTypes>::init()
         else
             (*outfile) << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)" << sendl;
     }
-
+    if(f_period.getValue() == 0.0)
+    {
+        serr << " ERROR perido must be different of zero  " << sendl;
+        return;
+    }
 }
 
 //-------------------------------- reset ------------------------------------

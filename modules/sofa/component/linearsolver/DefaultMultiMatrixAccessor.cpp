@@ -409,39 +409,39 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
 
     if( MULTIMATRIX_VERBOSE)
     {
-        //		std::cout << "==========================     VERIFICATION REGISTERED IN LOCAL DATA ========================" <<std::endl << std::endl;
-        //
-        //		for (std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
-        //		{
-        //			std::cout << "                Mechanical State (Real) : "<< it->first->getName() <<" registered in list" <<std::endl;
-        //		}
-        //
-        //		for (std::map< const sofa::core::behavior::BaseMechanicalState*,defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
-        //		{
-        //			std::cout << "                Mechanical State (mapped) : "<< it->first->getName() <<" registered in list" <<std::endl;
-        //		}
-        //
-        //		for (std::map< const BaseMechanicalState*, MatrixRef >::iterator it = diagonalStiffnessBloc.begin(), itend = diagonalStiffnessBloc.end(); it != itend; ++it)
-        //		{
-        //			std::cout << "                Mechanical State ( all ) : "<< it->first->getName() <<" registered in list" <<std::endl;
-        //		}
-        //
-        //		std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itBegin = interactionStiffnessBloc.begin();
-        //		std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
-        //
-        //		while(itBegin != itEnd)
-        //		{
-        //			std::cout << "                 Interaction: "
-        //                      << itBegin->first.first->getName() <<" -- "<< itBegin->first.second->getName()<<std::endl;
-        //
-        //			++itBegin;
-        //		}
-        //
-        //		const int lastMappingId = mappingList.size() - 1;
-        //		for(int id=lastMappingId;id>=0;--id)
-        //		{
-        //			std::cout << "                mapping "<<id<< "-th  :"<<mappingList[id]->getName() <<" registered in list" <<std::endl;
-        //		}
+//				std::cout << "==========================     VERIFICATION REGISTERED IN LOCAL DATA ========================" <<std::endl << std::endl;
+//
+//				for (std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
+//				{
+//					std::cout << "                Mechanical State (Real) : "<< it->first->getName() <<" registered in list" <<std::endl;
+//				}
+//
+//				for (std::map< const sofa::core::behavior::BaseMechanicalState*,defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
+//				{
+//					std::cout << "                Mechanical State (mapped) : "<< it->first->getName() <<" registered in list" <<std::endl;
+//				}
+//
+//				for (std::map< const BaseMechanicalState*, MatrixRef >::iterator it = diagonalStiffnessBloc.begin(), itend = diagonalStiffnessBloc.end(); it != itend; ++it)
+//				{
+//					std::cout << "                Mechanical State ( all ) : "<< it->first->getName() <<" registered in list" <<std::endl;
+//				}
+//
+//				std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itBegin = interactionStiffnessBloc.begin();
+//				std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
+//
+//				while(itBegin != itEnd)
+//				{
+//					std::cout << "                 Interaction: "
+//		                      << itBegin->first.first->getName() <<" -- "<< itBegin->first.second->getName()<<std::endl;
+//
+//					++itBegin;
+//				}
+//
+//				const int lastMappingId = mappingList.size() - 1;
+//				for(int id=lastMappingId;id>=0;--id)
+//				{
+//					std::cout << "                mapping "<<id<< "-th  :"<<mappingList[id]->getName() <<" registered in list" <<std::endl;
+//				}
         std::cout << "=======================     CONTRIBUTION CONTRIBUTION CONTRIBUTION     ======================" <<std::endl << std::endl;
     }
 
@@ -498,50 +498,45 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
                         <<std::endl;
             }
 
-//			// Matrix multiplication  K11 += Jt * K22 * J
-//			for(unsigned int i1 =0; i1 < sizeK1 ; ++i1)
-//			{
-//				for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
-//				{
-//					double Jt_K2_J_i1j1 = 0;
-//
-//					for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
-//					{
-//						for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
-//						{
-//							const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
-//							for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
-//							{
-//								const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
-//								const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
-//
-//								Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
-//								/*
-//								if( MULTIMATRIX_VERBOSE)  // index debug
-//								{
-//									std::cout<<"K1("<<offset1 + i1<<","<<offset1 + j1<<")  +="
-//											<<" Jt("<<i1<<","<<k2<<")  * "
-//											<<"K2("<<offset2 + i2<<","<<offset2 + j2<<") * "
-//											<<" J("<<k2<<","<<j1<<")"<<std::endl;
-//								}
-//								*/
-//							}
-//						}
-//					}
-//					K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
-//				}
-//			}
-//			// Matrix multiplication  K11 += Jt * K22 * J
+            // Matrix multiplication  K11 += Jt * K22 * J
+            for(unsigned int i1 =0; i1 < sizeK1 ; ++i1)
+            {
+                for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
+                {
+                    double Jt_K2_J_i1j1 = 0;
+
+                    for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
+                    {
+                        for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
+                        {
+                            const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
+                            for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
+                            {
+                                const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
+                                const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
+
+                                Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
+                                /*
+                                if( MULTIMATRIX_VERBOSE)  // index debug
+                                {
+                                	std::cout<<"K1("<<offset1 + i1<<","<<offset1 + j1<<")  +="
+                                			<<" Jt("<<i1<<","<<k2<<")  * "
+                                			<<"K2("<<offset2 + i2<<","<<offset2 + j2<<") * "
+                                			<<" J("<<k2<<","<<j1<<")"<<std::endl;
+                                }
+                                */
+                            }
+                        }
+                    }
+                    K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
+                }
+            }
+            // Matrix multiplication  K11 += Jt * K22 * J
 
         }
 
-
         std::vector<std::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
-        std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itBegin = interactionStiffnessBloc.begin();
-        std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
-        std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it=itBegin;
-
-        while(it != itEnd)
+        for (std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin(), itend = interactionStiffnessBloc.end(); it != itend; ++it)
         {
             if(it->first.first == outstate || it->first.second == outstate )
             {
@@ -549,7 +544,7 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
             }
             ++it;
         }
-        it = itBegin;
+
 
         const unsigned nbInteraction = interactionList.size();
         for(unsigned i=0; i< nbInteraction; i++)
@@ -603,30 +598,30 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
                             <<" I32["<<nbR_I_32<<"."<<nbC_I_32<<"]("<< offR_I_32<<","<<offC_I_32 <<  ")" <<std::endl;
                 }
 
-//				// Matrix multiplication   I_12 += Jt * I_32
-//				for(unsigned int _i = 0;_i < nbR_I_12 ; _i++)
-//				{
-//					for(unsigned int _j = 0;_j < nbC_I_12 ; _j++)
-//					{
-//						double Jt_I32_ij = 0;
-//						for(unsigned int _k = 0;_k < nbR_I_32 ; _k++)
-//						{
-//							const double Jt_ik    = (double) matrixJ->element( _k, _i ) ;
-//							const double  I_32_kj = (double) I_32.matrix->element( offR_I_32 + _k, offC_I_32+_j) ;
-//
-//							Jt_I32_ij += Jt_ik  *  I_32_kj;
-//							/*
-//							if( MULTIMATRIX_VERBOSE)  // index debug
-//							{
-//								std::cout<<"I12("<<offR_I_12 + _i<<","<<offC_I_12 +  _j<<")  +="
-//										<<" Jt("<<_k<<","<<_i<<")  * "
-//										<<"I32("<<offR_I_32 + _k<<","<< offC_I_32+_j<<")"<<std::endl;
-//							}
-//							*/
-//						}
-//						I_12.matrix->add(offR_I_12 + _i , offC_I_12 +  _j , Jt_I32_ij);
-//					}
-//				}// Matrix multiplication   I_12 += Jt * I_32
+                // Matrix multiplication   I_12 += Jt * I_32
+                for(unsigned int _i = 0; _i < nbR_I_12 ; _i++)
+                {
+                    for(unsigned int _j = 0; _j < nbC_I_12 ; _j++)
+                    {
+                        double Jt_I32_ij = 0;
+                        for(unsigned int _k = 0; _k < nbR_I_32 ; _k++)
+                        {
+                            const double Jt_ik    = (double) matrixJ->element( _k, _i ) ;
+                            const double  I_32_kj = (double) I_32.matrix->element( offR_I_32 + _k, offC_I_32+_j) ;
+
+                            Jt_I32_ij += Jt_ik  *  I_32_kj;
+                            /*
+                            if( MULTIMATRIX_VERBOSE)  // index debug
+                            {
+                            	std::cout<<"I12("<<offR_I_12 + _i<<","<<offC_I_12 +  _j<<")  +="
+                            			<<" Jt("<<_k<<","<<_i<<")  * "
+                            			<<"I32("<<offR_I_32 + _k<<","<< offC_I_32+_j<<")"<<std::endl;
+                            }
+                            */
+                        }
+                        I_12.matrix->add(offR_I_12 + _i , offC_I_12 +  _j , Jt_I32_ij);
+                    }
+                }// Matrix multiplication   I_12 += Jt * I_32
 
             }
 
@@ -661,29 +656,29 @@ void MappedMultiMatrixAccessor::computeGlobalMatrix()
 
 
                 // Matrix multiplication  I_21 +=  I_23 * J
-//				for(unsigned int _i = 0;_i < nbR_I_21 ; _i++)
-//				{
-//					for(unsigned int _j = 0;_j < nbC_I_21 ; _j++)
-//					{
-//						double I23_J_ij = 0;
-//						for(unsigned int _k = 0;_k < nbC_I_23 ; _k++)
-//						{
-//							const double I_23_ik = (double) I_23.matrix->element( offR_I_23 + _i, offC_I_23+_k) ;
-//							const double J_kj    = (double) matrixJ->element( _k, _j ) ;
-//
-//							I23_J_ij += I_23_ik  * J_kj ;
-//							/*
-//							if( MULTIMATRIX_VERBOSE)  // index debug
-//							{
-//								std::cout<<"I21("<<offR_I_21 + _i<<","<<offC_I_21 + _j<<")  +="
-//										<<"I23("<<offR_I_23 + _i<<","<< offC_I_23+_k<<") * "
-//										<<" Jt("<<_k<<","<<_k<<")"<<std::endl;
-//							}
-//							*/
-//						}
-//						I_21.matrix->add(offR_I_21 + _i , offC_I_21 + _j , I23_J_ij);
-//					}
-//				}// Matrix multiplication  I_21 +=  I_23 * J
+                for(unsigned int _i = 0; _i < nbR_I_21 ; _i++)
+                {
+                    for(unsigned int _j = 0; _j < nbC_I_21 ; _j++)
+                    {
+                        double I23_J_ij = 0;
+                        for(unsigned int _k = 0; _k < nbC_I_23 ; _k++)
+                        {
+                            const double I_23_ik = (double) I_23.matrix->element( offR_I_23 + _i, offC_I_23+_k) ;
+                            const double J_kj    = (double) matrixJ->element( _k, _j ) ;
+
+                            I23_J_ij += I_23_ik  * J_kj ;
+                            /*
+                            if( MULTIMATRIX_VERBOSE)  // index debug
+                            {
+                            	std::cout<<"I21("<<offR_I_21 + _i<<","<<offC_I_21 + _j<<")  +="
+                            			<<"I23("<<offR_I_23 + _i<<","<< offC_I_23+_k<<") * "
+                            			<<" Jt("<<_k<<","<<_k<<")"<<std::endl;
+                            }
+                            */
+                        }
+                        I_21.matrix->add(offR_I_21 + _i , offC_I_21 + _j , I23_J_ij);
+                    }
+                }// Matrix multiplication  I_21 +=  I_23 * J
 
             }
 

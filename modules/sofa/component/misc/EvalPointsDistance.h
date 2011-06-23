@@ -176,7 +176,11 @@ public:
         obj = new T(_ms1,_ms2);
         obj->setPathToMS1(_msPath1);
         obj->setPathToMS2(_msPath2);
-        if (context) context->addObject(obj);
+        if (context)
+        {
+            obj->setPeriod(context->getDt());
+            context->addObject(obj);
+        }
         if (arg) obj->parse(arg);
     }
 
@@ -192,6 +196,7 @@ public:
 
     void setPathToMS1(const std::string &o) {m_msPath1.setValue(o);}
     void setPathToMS2(const std::string &o) {m_msPath2.setValue(o);}
+    void setPeriod(const double& _dt)      {f_period.setValue(_dt);}
 
 protected:
     /// First model mechanical state

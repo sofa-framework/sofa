@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<!--
+	The mapping and interaction forcefield do that the beams do not only fall in a gravity axe, but also in the attached mapped objects direction. 
+	Accuracy of matrix computation can compare with the iterative solver (CG) 
+-->
+<Node 	name="root" gravity="0 0 -9.8" dt="0.01" showBehaviorModels="1" showForceFields="1" showVisualModels="0" showInteractionForceFields="1" >
+	<DefaultPipeline name="default21" verbose="0"/>
+	<BruteForceDetection name="N2"/>
+	<DefaultContactManager name="default22" response="default"/>
+	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5"/>
+	<DefaultCollisionGroupManager name="default23"/>
+	<Node name="DirectSolverNode">
+		<EulerImplicit name="cg_odesolver" printLog="false"/>
+		<LULinearSolver name="m_lSolver" printLog="false" verbose="false" />
+		<Node name="HexahedraA">
+			<HexahedronSetTopologyContainer name="hexaContainer1" position="0. 0. 0. 
+										        5. 0. 0. 
+										        5. 1. 0. 
+										        0. 1. 0.  
+										        0. 0. 1. 
+										        5. 0. 1. 
+							                                5. 1. 1. 
+							                                0. 1. 1." hexahedra="0 1 2 3 4 5 6 7"/>
+			<HexahedronSetTopologyModifier   name="hexaModifier1" />
+			<HexahedronSetTopologyAlgorithms name="hexaAlgo1"   template="Vec3d" />
+			<HexahedronSetGeometryAlgorithms name="hexaGeomAlgo1"   template="Vec3d" />
+			<MechanicalObject name="MS1"/>
+			<DiagonalMass massDensity="0.02" name="massA" />
+			<FixedConstraint  indices="0 3 7 4" name="fixedHexa"/>     
+			<HexahedralFEMForceField name="HexaFF1" youngModulus="20" poissonRatio="0.3"  method="large" drawing="0"/>
+			<Node name="MappedTetrahedronA" >
+				<TetrahedronSetTopologyContainer name="tetraContainer" position="3.0 0.2 0.2 
+										                 4.0 0.2 0.2 
+										                 4.0 0.8 0.2 
+										                 4.0 0.2 0.8"  tetrahedra="0 1 2 3"/>
+				<TetrahedronSetTopologyModifier name="tetraModifier"/>
+				<TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo"/>
+				<TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo"/>
+				<MechanicalObject name="MS3"/>
+				<TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large"  drawing="1"/>
+				<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping13" input="@../MS1" output="@MS3"/>
+			</Node>
+			<Node name="VisuA">
+				<OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45"/>
+				<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../MS1" output="@Visual"/>
+			</Node>
+		</Node>
+		<Node name="HexahedraB">
+			<HexahedronSetTopologyContainer name="hexaContainer1" position="0. 4. 0. 
+										        5. 4. 0. 
+										        5. 5. 0. 
+										        0. 5. 0.  
+										        0. 4. 1. 
+										        5. 4. 1. 
+							                                5. 5. 1. 
+							                                0. 5. 1." hexahedra="0 1 2 3 4 5 6 7"/>
+			<HexahedronSetTopologyModifier   name="hexaModifier1" />
+			<HexahedronSetTopologyAlgorithms name="hexaAlgo1"   template="Vec3d" />
+			<HexahedronSetGeometryAlgorithms name="hexaGeomAlgo1"   template="Vec3d" />
+			<MechanicalObject name="MS2"/>
+			<DiagonalMass massDensity="0.02" name="massA" />
+			<FixedConstraint  indices="0 3 7 4" name="fixedHexa"/>     
+			<HexahedralFEMForceField name="HexaFF1" youngModulus="20" poissonRatio="0.3"  method="large" drawing="0"/>
+			<Node name="MappedTetrahedronB" >
+				<TetrahedronSetTopologyContainer name="tetraContainer" position="3.0 4.2 0.2 
+										                 4.0 4.2 0.2 
+										                 4.0 4.8 0.2 
+										                 4.0 4.2 0.8"  tetrahedra="0 1 2 3"/>
+				<TetrahedronSetTopologyModifier name="tetraModifier"/>
+				<TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo"/>
+				<TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo"/>
+				<MechanicalObject name="MS4"/>
+				<TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large"  drawing="1"/>
+				<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping24" input="@../MS2" output="@MS4"/>
+			</Node>
+			<Node name="VisuA">
+				<OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45"/>
+				<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../MS2" output="@Visual"/>
+			</Node>
+		</Node>
+		<StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="HexahedraA/MappedTetrahedronA" object2="HexahedraB/MappedTetrahedronB"/>
+	</Node>
+<!-- uncomment to see the comparison between direct solver (contribution of interaction & mapping to the global matrix) and the iterative solver
+	<Node name="IterativeSolverNode">
+		<EulerImplicit name="cg_odesolver" printLog="false"/>
+		<CGLinearSolver name="cg_solver" iterations="25" tolerance="1.0e-9" threshold="1.0e-9"/>
+		<Node name="HexahedraA">
+			<HexahedronSetTopologyContainer name="hexaContainer1" position="0. 0. 0. 
+										        5. 0. 0. 
+										        5. 1. 0. 
+										        0. 1. 0.  
+										        0. 0. 1. 
+										        5. 0. 1. 
+							                                5. 1. 1. 
+							                                0. 1. 1." hexahedra="0 1 2 3 4 5 6 7"/>
+			<HexahedronSetTopologyModifier   name="hexaModifier1" />
+			<HexahedronSetTopologyAlgorithms name="hexaAlgo1"   template="Vec3d" />
+			<HexahedronSetGeometryAlgorithms name="hexaGeomAlgo1"   template="Vec3d" />
+			<MechanicalObject name="MS1"/>
+			<DiagonalMass massDensity="0.02" name="massA" />
+			<FixedConstraint  indices="0 3 7 4" name="fixedHexa"/>     
+			<HexahedralFEMForceField name="HexaFF1" youngModulus="20" poissonRatio="0.3"  method="large" drawing="0"/>
+			<Node name="MappedTetrahedronA" >
+				<TetrahedronSetTopologyContainer name="tetraContainer" position="3.0 0.2 0.2 
+										                 4.0 0.2 0.2 
+										                 4.0 0.8 0.2 
+										                 4.0 0.2 0.8"  tetrahedra="0 1 2 3"/>
+				<TetrahedronSetTopologyModifier name="tetraModifier"/>
+				<TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo"/>
+				<TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo"/>
+				<MechanicalObject name="MS3"/>
+				<TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large"  drawing="1"/>
+				<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping13" input="@../MS1" output="@MS3"/>
+			</Node>
+			<Node name="VisuA">
+				<OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45"/>
+				<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../MS1" output="@Visual"/>
+			</Node>
+		</Node>
+		<Node name="HexahedraB">
+			<HexahedronSetTopologyContainer name="hexaContainer1" position="0. 4. 0. 
+										        5. 4. 0. 
+										        5. 5. 0. 
+										        0. 5. 0.  
+										        0. 4. 1. 
+										        5. 4. 1. 
+							                                5. 5. 1. 
+							                                0. 5. 1." hexahedra="0 1 2 3 4 5 6 7"/>
+			<HexahedronSetTopologyModifier   name="hexaModifier1" />
+			<HexahedronSetTopologyAlgorithms name="hexaAlgo1"   template="Vec3d" />
+			<HexahedronSetGeometryAlgorithms name="hexaGeomAlgo1"   template="Vec3d" />
+			<MechanicalObject name="MS2"/>
+			<DiagonalMass massDensity="0.02" name="massA" />
+			<FixedConstraint  indices="0 3 7 4" name="fixedHexa"/>     
+			<HexahedralFEMForceField name="HexaFF1" youngModulus="20" poissonRatio="0.3"  method="large" drawing="0"/>
+			<Node name="MappedTetrahedronB" >
+				<TetrahedronSetTopologyContainer name="tetraContainer" position="3.0 4.2 0.2 
+										                 4.0 4.2 0.2 
+										                 4.0 4.8 0.2 
+										                 4.0 4.2 0.8"  tetrahedra="0 1 2 3"/>
+				<TetrahedronSetTopologyModifier name="tetraModifier"/>
+				<TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo"/>
+				<TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo"/>
+				<MechanicalObject name="MS4"/>
+				<TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large"  drawing="1"/>
+				<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping13" input="@../MS2" output="@MS4"/>
+			</Node>
+			<Node name="VisuA">
+				<OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45"/>
+				<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../MS2" output="@Visual"/>
+			</Node>
+		</Node>
+		<StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="HexahedraA/MappedTetrahedronA" object2="HexahedraB/MappedTetrahedronB"/>
+	</Node>
+	<EvalPointsDistance name="comparator" object1="@DirectSolverNode/HexahedraA/MS1" object2="@IterativeSolverNode/HexahedraA/MS1" printLog="1" draw="1"/>
+-->
+</Node>
+
