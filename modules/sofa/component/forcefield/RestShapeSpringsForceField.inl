@@ -53,7 +53,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , external_points(initData(&external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
     , recompute_indices(initData(&recompute_indices, false, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , restMState(NULL)
-    , pp_0(NULL)
+//	, pp_0(NULL)
 {
 
 }
@@ -103,13 +103,6 @@ void RestShapeSpringsForceField<DataTypes>::init()
 
     recomputeIndices();
 
-    pp_0 = useRestMState ? restMState->getX() : this->mstate->getX0();
-
-    if (!pp_0)
-    {
-        std::cerr << "Index not found in " << this->getName() << std::endl;
-        m_indices.clear();
-    }
 }
 
 
@@ -168,6 +161,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
 
     f1.resize(p1.size());
 
@@ -186,8 +180,8 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
             const unsigned int index = m_indices[i];
             const unsigned int ext_index = m_ext_indices[i];
 
-            Deriv dx = p1[index] - (*pp_0)[ext_index];
-            Springs_dir[i] = p1[index] - (*pp_0)[ext_index];
+            Deriv dx = p1[index] - p0[ext_index];
+            Springs_dir[i] = p1[index] - p0[ext_index];
             Springs_dir[i].normalize();
             f1[index] -=  dx * k[0] ;
 
@@ -205,8 +199,8 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
             const unsigned int index = m_indices[i];
             const unsigned int ext_index = m_ext_indices[i];
 
-            Deriv dx = p1[index] - (*pp_0)[ext_index];
-            Springs_dir[i] = p1[index] - (*pp_0)[ext_index];
+            Deriv dx = p1[index] - p0[ext_index];
+            Springs_dir[i] = p1[index] - p0[ext_index];
             Springs_dir[i].normalize();
             f1[index] -=  dx * k[index] ;
 

@@ -25,16 +25,14 @@
 #ifndef SOFA_COMPONENT_ENGINE_MERGEPOINTS_H
 #define SOFA_COMPONENT_ENGINE_MERGEPOINTS_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/PointSubset.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -44,10 +42,6 @@ namespace component
 
 namespace engine
 {
-
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
 
 /**
  * This class merge 2 coordinate vectors.
@@ -72,27 +66,6 @@ public:
 
     void update();
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        /*        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-                    return false;*/
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        core::objectmodel::BaseObject::create(obj, context, arg);
-        /*        if (context)
-                {
-                    obj->mstate = dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState());
-                }*/
-    }
-
     virtual std::string getTemplateName() const
     {
         return templateName(this);
@@ -108,16 +81,23 @@ public:
     Data<SetIndex> f_indices1;
     Data<SetIndex> f_indices2;
     Data<VecCoord> f_points;
-    MechanicalState<DataTypes>* mstate;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec1dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec2dTypes>;
 template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid2dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec1fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec2fTypes>;
 template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid2fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

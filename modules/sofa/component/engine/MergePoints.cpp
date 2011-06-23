@@ -25,8 +25,6 @@
 #define SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP
 #include <sofa/component/engine/MergePoints.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -40,23 +38,41 @@ namespace engine
 SOFA_DECL_CLASS(MergePoints)
 
 int MergePointsClass = core::RegisterObject("Merge 2 cordinate vectors")
+#ifdef SOFA_FLOAT
+        .add< MergePoints<defaulttype::Vec3fTypes> >(true) // default template
+#else
+        .add< MergePoints<defaulttype::Vec3dTypes> >(true) // default template
+#ifndef SOFA_DOUBLE
+        .add< MergePoints<defaulttype::Vec3fTypes> >()
+#endif
+#endif
 #ifndef SOFA_FLOAT
-        .add< MergePoints<Vec3dTypes> >()
-        .add< MergePoints<Rigid3dTypes> >()
+        .add< MergePoints<defaulttype::Vec1dTypes> >()
+        .add< MergePoints<defaulttype::Vec2dTypes> >()
+        .add< MergePoints<defaulttype::Rigid2dTypes> >()
+        .add< MergePoints<defaulttype::Rigid3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< MergePoints<Vec3fTypes> >()
-        .add< MergePoints<Rigid3fTypes> >()
+        .add< MergePoints<defaulttype::Vec1fTypes> >()
+        .add< MergePoints<defaulttype::Vec2fTypes> >()
+        .add< MergePoints<defaulttype::Rigid2fTypes> >()
+        .add< MergePoints<defaulttype::Rigid3fTypes> >()
 #endif //SOFA_DOUBLE
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API MergePoints<Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergePoints<Rigid3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec1dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec2dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid2dTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API MergePoints<Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergePoints<Rigid3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec1fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec2fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid2fTypes>;
+template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 

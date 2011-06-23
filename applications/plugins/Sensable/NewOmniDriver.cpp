@@ -299,8 +299,8 @@ int NewOmniDriver::initDevice(OmniData& data)
 }
 
 NewOmniDriver::NewOmniDriver()
-    : forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
-    , scale(initData(&scale, 1.0, "scale","Default scale applied to the Phantom Coordinates. "))
+    : scale(initData(&scale, 1.0, "scale","Default scale applied to the Phantom Coordinates. "))
+    , forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
     , positionBase(initData(&positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
     , orientationBase(initData(&orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
     , positionTool(initData(&positionTool, Vec3d(0,0,0), "positionTool","Position of the tool in the omni end effector frame"))
@@ -502,8 +502,8 @@ void NewOmniDriver::draw()
         (visu_end->xforms)[0].getCenter() =  world_H_endOmni.getOrigin();
 
         // draw the 2 visual models
-        visu_base->drawVisual();
-        visu_end->drawVisual();
+        visu_base->drawVisual(sofa::core::visual::VisualParams::defaultInstance());
+        visu_end->drawVisual(sofa::core::visual::VisualParams::defaultInstance());
     }
 }
 

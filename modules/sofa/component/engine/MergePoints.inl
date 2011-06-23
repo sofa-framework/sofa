@@ -41,10 +41,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 MergePoints<DataTypes>::MergePoints()
     : f_X1( initData (&f_X1, "position1", "position coordinates of the degrees of freedom of the first object") )

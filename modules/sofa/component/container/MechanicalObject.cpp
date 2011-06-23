@@ -51,7 +51,7 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 #else
         .add< MechanicalObject<Vec3dTypes> >(true) // default template
 #ifndef SOFA_DOUBLE
-        .add< MechanicalObject<Vec3fTypes> >() // default template
+        .add< MechanicalObject<Vec3fTypes> >()
 #endif
 #endif
 #ifndef SOFA_FLOAT

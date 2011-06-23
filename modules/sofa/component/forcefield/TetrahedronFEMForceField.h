@@ -222,6 +222,7 @@ public:
     Data< sofa::helper::OptionsGroup > _gatherPt; //use in GPU version
     Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
     Data< bool > drawHeterogeneousTetra;
+    Data< bool > drawAsEdges;
 
     Real minYoung;
     Real maxYoung;
@@ -232,16 +233,17 @@ public:
         ,_mesh(NULL)
         , _indexedElements(NULL)
         , needUpdateTopology(false)
-        , _initialPoints(core::objectmodel::BaseObject::initData(&_initialPoints, "initialPoints", "Initial Position"))
+        , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
         , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
-        , _poissonRatio(core::objectmodel::BaseObject::initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
-        , _youngModulus(core::objectmodel::BaseObject::initData(&_youngModulus,"youngModulus","FEM Young Modulus"))
-        , _localStiffnessFactor(core::objectmodel::BaseObject::initData(&_localStiffnessFactor, "localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
-        , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
-        , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
-        , _gatherPt(core::objectmodel::BaseObject::initData(&_gatherPt,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
-        , _gatherBsize(core::objectmodel::BaseObject::initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
-        , drawHeterogeneousTetra(core::objectmodel::BaseObject::initData(&drawHeterogeneousTetra,false,"drawHeterogeneousTetra","Draw Heterogeneous Tetra in different color"))
+        , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
+        , _youngModulus(initData(&_youngModulus,"youngModulus","FEM Young Modulus"))
+        , _localStiffnessFactor(initData(&_localStiffnessFactor, "localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
+        , _updateStiffnessMatrix(initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
+        , _assembling(initData(&_assembling,false,"computeGlobalMatrix",""))
+        , _gatherPt(initData(&_gatherPt,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
+        , _gatherBsize(initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
+        , drawHeterogeneousTetra(initData(&drawHeterogeneousTetra,false,"drawHeterogeneousTetra","Draw Heterogeneous Tetra in different color"))
+        , drawAsEdges(initData(&drawAsEdges,false,"drawAsEdges","Draw as edges instead of tetrahedra"))
     {
         data.initPtrData(this);
         parallelDataInit[0]=0;
