@@ -69,6 +69,17 @@ extern "C" {
     extern void SOFA_GPU_CUDA_API mycudaMemset(void * devPtr, int val , size_t size,int d = mycudaGetBufferDevice());
     extern void SOFA_GPU_CUDA_API mycudaThreadSynchronize();
 
+    extern void SOFA_GPU_CUDA_API mycudaCheckError(const char* src);
+
+#if defined(NDEBUG) && !defined(CUDA_DEBUG)
+#define mycudaDebugError(src) do {} while(0)
+#else
+#define mycudaDebugError(src) ::sofa::gpu::cuda::mycudaCheckError(src)
+#endif
+
+// To add a call to mycudaDebugError after all kernel launches in a file, you can use :
+// sed -i.bak -e 's/\([ \t]\)\([_A-Za-z][_A-Za-z0-9]*[ \t]*\(<[_A-Za-z0-9 :,().+*\/|&^-]*\(<[_A-Za-z0-9 :,().+*\/|&^-]*>[_A-Za-z0-9 :,().+*\/|&^-]*\)*>\)\?[:space:]*\)<<</\1###\2###<<</g' -e's/###\([^;#]*[^;# \t]\)\([:space:]*\)###\(<<<[^;]*>>>[^;]*\);/{\1\2\3; mycudaDebugError("\1");}/g' -e 's/###\([^;#]*\)###\(<<<\)/\1\2/g' myfile.cu
+
     extern void SOFA_GPU_CUDA_API mycudaLogError(const char* err, const char* src);
     extern int myprintf(const char* fmt, ...);
     extern int mycudaGetMultiProcessorCount();

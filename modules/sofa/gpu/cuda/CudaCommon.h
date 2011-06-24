@@ -25,6 +25,8 @@
 #ifndef CUDACOMMON_H
 #define CUDACOMMON_H
 
+#include "mycuda.h"
+
 // Default size of thread blocks
 // Between 16 and 512
 enum { BSIZE_LOG2=6 };
