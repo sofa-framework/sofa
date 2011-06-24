@@ -102,7 +102,7 @@ void matrix_vector_productf(int n,const void * M,int mPitch,const void * r,void 
     dim3 threads(MAX_THREADS,1);
     dim3 grid(1,n);
 
-    matrix_vector_product_kernel<float><<< grid, threads >>>(n,(const float*)M, mPitch,(const float*)r, (float*)z,MAX_THREADS/2);
+    {matrix_vector_product_kernel<float><<< grid, threads >>>(n,(const float*)M, mPitch,(const float*)r, (float*)z,MAX_THREADS/2); mycudaDebugError("matrix_vector_product_kernel<float>");}
 }
 
 void matrix_vector_productd(int n,const void * M,int mPitch,const void * r,void * z)
@@ -110,7 +110,7 @@ void matrix_vector_productd(int n,const void * M,int mPitch,const void * r,void 
     dim3 threads(MAX_THREADS,1);
     dim3 grid(1,n);
 
-    matrix_vector_product_kernel<double><<< grid, threads >>>(n,(const double*)M, mPitch,(const double*)r, (double*)z,MAX_THREADS/2);
+    {matrix_vector_product_kernel<double><<< grid, threads >>>(n,(const double*)M, mPitch,(const double*)r, (double*)z,MAX_THREADS/2); mycudaDebugError("matrix_vector_product_kernel<double>");}
 }
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000

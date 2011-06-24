@@ -1257,9 +1257,9 @@ inline void TetrahedronFEMForceFieldCuda3t_addForce_launch2(int pt,unsigned int 
 
     switch (pt)
     {
-    case 1 : TetrahedronFEMForceFieldCuda3t_addForce1_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (real*)f); return;
-    case 4 : TetrahedronFEMForceFieldCuda3t_addForce4_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (real*)f); return;
-    case 8 : TetrahedronFEMForceFieldCuda3t_addForce8_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (real*)f); return;
+    case 1 : {TetrahedronFEMForceFieldCuda3t_addForce1_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (real*)f); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_addForce1_kernel<real,BSIZE>");} return;
+    case 4 : {TetrahedronFEMForceFieldCuda3t_addForce4_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (real*)f); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_addForce4_kernel<real,BSIZE>");} return;
+    case 8 : {TetrahedronFEMForceFieldCuda3t_addForce8_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (real*)f); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_addForce8_kernel<real,BSIZE>");} return;
     }
     myprintf("Error : gatherPt should be 1 or 4 or 8, current value is %d\n",pt);
 }
@@ -1285,9 +1285,9 @@ inline void TetrahedronFEMForceFieldCuda3t1_addForce_launch2(int pt,unsigned int
 
     switch (pt)
     {
-    case 1 : TetrahedronFEMForceFieldCuda3t1_addForce1_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (CudaVec4<real>*)f); return;
-//       case 4 : TetrahedronFEMForceFieldCuda3t1_addForce4_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (CudaVec4<real>*)f); return;
-//       case 8 : TetrahedronFEMForceFieldCuda3t1_addForce8_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (CudaVec4<real>*)f); return;
+    case 1 : {TetrahedronFEMForceFieldCuda3t1_addForce1_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (CudaVec4<real>*)f); mycudaDebugError("TetrahedronFEMForceFieldCuda3t1_addForce1_kernel<real,BSIZE>");} return;
+//       case 4 : {TetrahedronFEMForceFieldCuda3t1_addForce4_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (CudaVec4<real>*)f); mycudaDebugError("TetrahedronFEMForceFieldCuda3t1_addForce4_kernel<real,BSIZE>");} return;
+//       case 8 : {TetrahedronFEMForceFieldCuda3t1_addForce8_kernel<real,BSIZE><<< grid, threads >>>(nbVertex, nbElemPerVertex, (const CudaVec4<real>*)eforce, (const int*)velems, (CudaVec4<real>*)f); mycudaDebugError("TetrahedronFEMForceFieldCuda3t1_addForce8_kernel<real,BSIZE>");} return;
     }
     myprintf("Error : gatherPt should be 1 or 4 or 8, current value is %d\n",pt);
 }
@@ -1312,7 +1312,7 @@ void TetrahedronFEMForceFieldCuda3f_addForce(int bsize,int pt,unsigned int nbEle
     CudaTetrahedronFEMForceFieldTempTextures<float,CudaVec4<float> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_calcForce_kernel<float, CudaVec3<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (float*)state, (float*)eforce, (const CudaVec3<float>*)x);
+    {TetrahedronFEMForceFieldCuda3t_calcForce_kernel<float, CudaVec3<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (float*)state, (float*)eforce, (const CudaVec3<float>*)x); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_calcForce_kernel<float, CudaVec3<float> >");}
     TetrahedronFEMForceFieldCuda3t_addForce_launch1<float>(bsize,pt, nbVertex, nbElemPerVertex, eforce, velems, f);
 }
 
@@ -1322,7 +1322,7 @@ void TetrahedronFEMForceFieldCuda3f_addDForce(int bsize,int pt,unsigned int nbEl
     CudaTetrahedronFEMForceFieldTempTextures<float,CudaVec4<float> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<float, CudaVec3<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (const float*)state, (float*)eforce, (const CudaVec3<float>*)dx, (float) factor);
+    {TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<float, CudaVec3<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (const float*)state, (float*)eforce, (const CudaVec3<float>*)dx, (float) factor); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<float, CudaVec3<float> >");}
     TetrahedronFEMForceFieldCuda3t_addForce_launch1<float>(bsize,pt,nbVertex, nbElemPerVertex, eforce, velems, df);
 }
 
@@ -1331,7 +1331,7 @@ void TetrahedronFEMForceFieldCuda3f_addKToMatrix(int bsize,int pt,unsigned int n
     CudaTetrahedronFEMForceFieldTempTextures<float,CudaVec4<float> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<float, CudaVec3<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (const float*)state, (float*)eforce, (float) factor);
+    {TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<float, CudaVec3<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (const float*)state, (float*)eforce, (float) factor); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<float, CudaVec3<float> >");}
     TetrahedronFEMForceFieldCuda3t_addForce_launch1<float>(bsize,pt, nbVertex, nbElemPerVertex, eforce, velems, df);
 }
 
@@ -1341,7 +1341,7 @@ void TetrahedronFEMForceFieldCuda3f1_addForce(int bsize,int pt,unsigned int nbEl
     CudaTetrahedronFEMForceFieldTempTextures<float,CudaVec4<float> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_calcForce_kernel<float, CudaVec4<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (float*)state, (float*)eforce, (const CudaVec4<float>*)x);
+    {TetrahedronFEMForceFieldCuda3t_calcForce_kernel<float, CudaVec4<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (float*)state, (float*)eforce, (const CudaVec4<float>*)x); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_calcForce_kernel<float, CudaVec4<float> >");}
     TetrahedronFEMForceFieldCuda3t1_addForce_launch1<float>(bsize,pt, nbVertex, nbElemPerVertex, eforce, velems, f);
 }
 
@@ -1351,7 +1351,7 @@ void TetrahedronFEMForceFieldCuda3f1_addDForce(int bsize,int pt,unsigned int nbE
     CudaTetrahedronFEMForceFieldTempTextures<float,CudaVec4<float> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<float, CudaVec4<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (const float*)state, (float*)eforce, (const CudaVec4<float>*)dx, (float) factor);
+    {TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<float, CudaVec4<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (const float*)state, (float*)eforce, (const CudaVec4<float>*)dx, (float) factor); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<float, CudaVec4<float> >");}
     TetrahedronFEMForceFieldCuda3t1_addForce_launch1<float>(bsize,pt, nbVertex, nbElemPerVertex, eforce, velems, df);
 }
 
@@ -1360,7 +1360,7 @@ void TetrahedronFEMForceFieldCuda3f1_addKToMatrix(int bsize,int pt,unsigned int 
     CudaTetrahedronFEMForceFieldTempTextures<float,CudaVec4<float> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<float, CudaVec4<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (const float*)state, (float*)eforce, (float) factor);
+    {TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<float, CudaVec4<float> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<float>*)elems, (const float*)state, (float*)eforce, (float) factor); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<float, CudaVec4<float> >");}
     TetrahedronFEMForceFieldCuda3t1_addForce_launch1<float>(bsize,pt, nbVertex, nbElemPerVertex, eforce, velems, df);
 }
 
@@ -1368,7 +1368,7 @@ void TetrahedronFEMForceFieldCuda3f_getRotations(unsigned int nbElem, unsigned i
 {
     dim3 threads(BSIZE,1);
     dim3 grid((nbVertex+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_getRotations_kernel<float><<< grid, threads >>>(nbVertex, (const float*)initState, (const float*)state, (const int*)rotationIdx, (float*)rotations);
+    {TetrahedronFEMForceFieldCuda3t_getRotations_kernel<float><<< grid, threads >>>(nbVertex, (const float*)initState, (const float*)state, (const int*)rotationIdx, (float*)rotations); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_getRotations_kernel<float>");}
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -1379,7 +1379,7 @@ void TetrahedronFEMForceFieldCuda3d_addForce(int bsize,int pt,unsigned int nbEle
     CudaTetrahedronFEMForceFieldTempTextures<double,CudaVec4<double> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_calcForce_kernel<double, CudaVec3<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (double*)state, (double*)eforce, (const CudaVec3<double>*)x);
+    {TetrahedronFEMForceFieldCuda3t_calcForce_kernel<double, CudaVec3<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (double*)state, (double*)eforce, (const CudaVec3<double>*)x); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_calcForce_kernel<double, CudaVec3<double> >");}
     TetrahedronFEMForceFieldCuda3t_addForce_launch1<double>(bsize,pt,nbVertex, nbElemPerVertex, eforce, velems, f);
 }
 
@@ -1389,7 +1389,7 @@ void TetrahedronFEMForceFieldCuda3d_addDForce(int bsize,int pt,unsigned int nbEl
     CudaTetrahedronFEMForceFieldTempTextures<double,CudaVec4<double> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<double, CudaVec3<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (const double*)state, (double*)eforce, (const CudaVec3<double>*)dx, (double) factor);
+    {TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<double, CudaVec3<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (const double*)state, (double*)eforce, (const CudaVec3<double>*)dx, (double) factor); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<double, CudaVec3<double> >");}
     TetrahedronFEMForceFieldCuda3t_addForce_launch1<double>(bsize,pt,nbVertex, nbElemPerVertex, eforce, velems, df);
 }
 
@@ -1398,7 +1398,7 @@ void TetrahedronFEMForceFieldCuda3d_addKToMatrix(int bsize,int pt,unsigned int n
     CudaTetrahedronFEMForceFieldTempTextures<double,CudaVec4<double> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<double, CudaVec3<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (const double*)state, (double*)eforce, (double) factor);
+    {TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<double, CudaVec3<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (const double*)state, (double*)eforce, (double) factor); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<double, CudaVec3<double> >");}
     TetrahedronFEMForceFieldCuda3t_addForce_launch1<double>(bsize,pt, nbVertex, nbElemPerVertex, eforce, velems, df);
 }
 
@@ -1408,7 +1408,7 @@ void TetrahedronFEMForceFieldCuda3d1_addForce(int bsize,int pt,unsigned int nbEl
     CudaTetrahedronFEMForceFieldTempTextures<double,CudaVec4<double> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_calcForce_kernel<double, CudaVec4<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (double*)state, (double*)eforce, (const CudaVec4<double>*)x);
+    {TetrahedronFEMForceFieldCuda3t_calcForce_kernel<double, CudaVec4<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (double*)state, (double*)eforce, (const CudaVec4<double>*)x); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_calcForce_kernel<double, CudaVec4<double> >");}
     TetrahedronFEMForceFieldCuda3t1_addForce_launch1<double>(bsize,pt,nbVertex, nbElemPerVertex, eforce, velems, f);
 }
 
@@ -1418,7 +1418,7 @@ void TetrahedronFEMForceFieldCuda3d1_addDForce(int bsize,int pt,unsigned int nbE
     CudaTetrahedronFEMForceFieldTempTextures<double,CudaVec4<double> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<double, CudaVec4<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (const double*)state, (double*)eforce, (const CudaVec4<double>*)dx, (double) factor);
+    {TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<double, CudaVec4<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (const double*)state, (double*)eforce, (const CudaVec4<double>*)dx, (double) factor); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_calcDForce_kernel<double, CudaVec4<double> >");}
     TetrahedronFEMForceFieldCuda3t1_addForce_launch1<double>(bsize,pt,nbVertex, nbElemPerVertex, eforce, velems, df);
 }
 
@@ -1427,7 +1427,7 @@ void TetrahedronFEMForceFieldCuda3d1_addKToMatrix(int bsize,int pt,unsigned int 
     CudaTetrahedronFEMForceFieldTempTextures<double,CudaVec4<double> >::setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<double, CudaVec4<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (const double*)state, (double*)eforce, (double) factor);
+    {TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<double, CudaVec4<double> ><<< grid1, threads1 >>>(nbElem, (const GPUElement<double>*)elems, (const double*)state, (double*)eforce, (double) factor); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_addKToMatrix_kernel<double, CudaVec4<double> >");}
     TetrahedronFEMForceFieldCuda3t1_addForce_launch1<double>(bsize,pt,nbVertex, nbElemPerVertex, eforce, velems, df);
 }
 
@@ -1435,7 +1435,7 @@ void TetrahedronFEMForceFieldCuda3d_getRotations(unsigned int nbElem, unsigned i
 {
     dim3 threads(BSIZE,1);
     dim3 grid((nbVertex+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3t_getRotations_kernel<double><<< grid, threads >>>(nbVertex, (const double*)initState, (const double*)state, (const int*)rotationIdx, (double*)rotations);
+    {TetrahedronFEMForceFieldCuda3t_getRotations_kernel<double><<< grid, threads >>>(nbVertex, (const double*)initState, (const double*)state, (const int*)rotationIdx, (double*)rotations); mycudaDebugError("TetrahedronFEMForceFieldCuda3t_getRotations_kernel<double>");}
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

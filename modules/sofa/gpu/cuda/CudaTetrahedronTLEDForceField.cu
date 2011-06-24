@@ -1211,29 +1211,29 @@ void CudaTetrahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned i
     {
     case 0 :
         // Isotropic
-        CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet0<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu);
-        break;
+    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet0<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet0");}
+    break;
 
     case 1 :
         // Anisotropic
-        CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu);
-        break;
+    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1");}
+    break;
 
     case 2 :
         // Viscoelastic
-        CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu);
-        break;
+    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2");}
+    break;
 
     case 3 :
         // Viscoelastic and anisotropic
-        CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu);
-        break;
+    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3");}
+    break;
     }
 
     // The second kernel operates over nodes and reads the previously calculated element force contributions and sums them for each node
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    CudaTetrahedronTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (float*)f);
+    {CudaTetrahedronTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (float*)f); mycudaDebugError("CudaTetrahedronTLEDForceField3f_addForce_kernel");}
 
 }
 

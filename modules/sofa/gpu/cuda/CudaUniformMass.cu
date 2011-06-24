@@ -206,14 +206,14 @@ void UniformMassCuda3f_addMDx(unsigned int size, float mass, void* res, const vo
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //UniformMassCuda3t_addMDx_kernel<float><<< grid, threads >>>(size, mass, (CudaVec3<float>*)res, (const CudaVec3<float>*)dx);
     dim3 grid((3*size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda1t_addMDx_kernel<float><<< grid, threads >>>(3*size, mass, (float*)res, (const float*)dx);
+    {UniformMassCuda1t_addMDx_kernel<float><<< grid, threads >>>(3*size, mass, (float*)res, (const float*)dx); mycudaDebugError("UniformMassCuda1t_addMDx_kernel<float>");}
 }
 
 void UniformMassCuda3f1_addMDx(unsigned int size, float mass, void* res, const void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda3t1_addMDx_kernel<float><<< grid, threads >>>(size, mass, (CudaVec4<float>*)res, (const CudaVec4<float>*)dx);
+    {UniformMassCuda3t1_addMDx_kernel<float><<< grid, threads >>>(size, mass, (CudaVec4<float>*)res, (const CudaVec4<float>*)dx); mycudaDebugError("UniformMassCuda3t1_addMDx_kernel<float>");}
     //dim3 grid((4*size+BSIZE-1)/BSIZE,1);
     //UniformMassCuda1t_addMDx_kernel<float><<< grid, threads >>>(4*size, mass, (float*)res, (const float*)dx);
 }
@@ -224,14 +224,14 @@ void UniformMassCuda3f_accFromF(unsigned int size, float mass, void* a, const vo
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //UniformMassCuda3t_accFromF_kernel<float><<< grid, threads >>>(size, 1.0f/mass, (CudaVec3<float>*)a, (const CudaVec3<float>*)f);
     dim3 grid((3*size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda1t_accFromF_kernel<float><<< grid, threads >>>(3*size, 1.0f/mass, (float*)a, (const float*)f);
+    {UniformMassCuda1t_accFromF_kernel<float><<< grid, threads >>>(3*size, 1.0f/mass, (float*)a, (const float*)f); mycudaDebugError("UniformMassCuda1t_accFromF_kernel<float>");}
 }
 
 void UniformMassCuda3f1_accFromF(unsigned int size, float mass, void* a, const void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda3t1_accFromF_kernel<float><<< grid, threads >>>(size, 1.0f/mass, (CudaVec4<float>*)a, (const CudaVec4<float>*)f);
+    {UniformMassCuda3t1_accFromF_kernel<float><<< grid, threads >>>(size, 1.0f/mass, (CudaVec4<float>*)a, (const CudaVec4<float>*)f); mycudaDebugError("UniformMassCuda3t1_accFromF_kernel<float>");}
     //dim3 grid((4*size+BSIZE-1)/BSIZE,1);
     //UniformMassCuda1t_accFromF_kernel<float><<< grid, threads >>>(4*size, 1.0f/mass, (float*)a, (const float*)f);
 }
@@ -240,14 +240,14 @@ void UniformMassCuda3f_addForce(unsigned int size, const float *mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda3t_addForce_kernel<float><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (float*)f);
+    {UniformMassCuda3t_addForce_kernel<float><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (float*)f); mycudaDebugError("UniformMassCuda3t_addForce_kernel<float>");}
 }
 
 void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda3t1_addForce_kernel<float><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (CudaVec4<float>*)f);
+    {UniformMassCuda3t1_addForce_kernel<float><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (CudaVec4<float>*)f); mycudaDebugError("UniformMassCuda3t1_addForce_kernel<float>");}
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -258,14 +258,14 @@ void UniformMassCuda3d_addMDx(unsigned int size, double mass, void* res, const v
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //UniformMassCuda3t_addMDx_kernel<double><<< grid, threads >>>(size, mass, (CudaVec3<double>*)res, (const CudaVec3<double>*)dx);
     dim3 grid((3*size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda1t_addMDx_kernel<double><<< grid, threads >>>(3*size, mass, (double*)res, (const double*)dx);
+    {UniformMassCuda1t_addMDx_kernel<double><<< grid, threads >>>(3*size, mass, (double*)res, (const double*)dx); mycudaDebugError("UniformMassCuda1t_addMDx_kernel<double>");}
 }
 
 void UniformMassCuda3d1_addMDx(unsigned int size, double mass, void* res, const void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda3t1_addMDx_kernel<double><<< grid, threads >>>(size, mass, (CudaVec4<double>*)res, (const CudaVec4<double>*)dx);
+    {UniformMassCuda3t1_addMDx_kernel<double><<< grid, threads >>>(size, mass, (CudaVec4<double>*)res, (const CudaVec4<double>*)dx); mycudaDebugError("UniformMassCuda3t1_addMDx_kernel<double>");}
     //dim3 grid((4*size+BSIZE-1)/BSIZE,1);
     //UniformMassCuda1t_addMDx_kernel<double><<< grid, threads >>>(4*size, mass, (double*)res, (const double*)dx);
 }
@@ -276,14 +276,14 @@ void UniformMassCuda3d_accFromF(unsigned int size, double mass, void* a, const v
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //UniformMassCuda3t_accFromF_kernel<double><<< grid, threads >>>(size, 1.0f/mass, (CudaVec3<double>*)a, (const CudaVec3<double>*)f);
     dim3 grid((3*size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda1t_accFromF_kernel<double><<< grid, threads >>>(3*size, 1.0f/mass, (double*)a, (const double*)f);
+    {UniformMassCuda1t_accFromF_kernel<double><<< grid, threads >>>(3*size, 1.0f/mass, (double*)a, (const double*)f); mycudaDebugError("UniformMassCuda1t_accFromF_kernel<double>");}
 }
 
 void UniformMassCuda3d1_accFromF(unsigned int size, double mass, void* a, const void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda3t1_accFromF_kernel<double><<< grid, threads >>>(size, 1.0f/mass, (CudaVec4<double>*)a, (const CudaVec4<double>*)f);
+    {UniformMassCuda3t1_accFromF_kernel<double><<< grid, threads >>>(size, 1.0f/mass, (CudaVec4<double>*)a, (const CudaVec4<double>*)f); mycudaDebugError("UniformMassCuda3t1_accFromF_kernel<double>");}
     //dim3 grid((4*size+BSIZE-1)/BSIZE,1);
     //UniformMassCuda1t_accFromF_kernel<double><<< grid, threads >>>(4*size, 1.0f/mass, (double*)a, (const double*)f);
 }
@@ -292,14 +292,14 @@ void UniformMassCuda3d_addForce(unsigned int size, const double *mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda3t_addForce_kernel<double><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (double*)f);
+    {UniformMassCuda3t_addForce_kernel<double><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (double*)f); mycudaDebugError("UniformMassCuda3t_addForce_kernel<double>");}
 }
 
 void UniformMassCuda3d1_addForce(unsigned int size, const double *mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda3t1_addForce_kernel<double><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (CudaVec4<double>*)f);
+    {UniformMassCuda3t1_addForce_kernel<double><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (CudaVec4<double>*)f); mycudaDebugError("UniformMassCuda3t1_addForce_kernel<double>");}
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

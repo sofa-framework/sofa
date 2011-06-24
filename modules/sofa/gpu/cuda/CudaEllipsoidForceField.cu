@@ -319,28 +319,28 @@ void EllipsoidForceFieldCuda3f_addForce(unsigned int size, GPUEllipsoid* ellipso
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    EllipsoidForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *ellipsoid, tmp, (float*)f, (const float*)x, (const float*)v);
+    {EllipsoidForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *ellipsoid, tmp, (float*)f, (const float*)x, (const float*)v); mycudaDebugError("EllipsoidForceFieldCuda3f_addForce_kernel");}
 }
 
 void EllipsoidForceFieldCuda3f1_addForce(unsigned int size, GPUEllipsoid* ellipsoid, float* tmp, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    EllipsoidForceFieldCuda3f1_addForce_kernel<<< grid, threads >>>(size, *ellipsoid, tmp, (CudaVec4<float>*)f, (const CudaVec4<float>*)x, (const CudaVec4<float>*)v);
+    {EllipsoidForceFieldCuda3f1_addForce_kernel<<< grid, threads >>>(size, *ellipsoid, tmp, (CudaVec4<float>*)f, (const CudaVec4<float>*)x, (const CudaVec4<float>*)v); mycudaDebugError("EllipsoidForceFieldCuda3f1_addForce_kernel");}
 }
 
 void EllipsoidForceFieldCuda3f_addDForce(unsigned int size, GPUEllipsoid* ellipsoid, const float* tmp, void* df, const void* dx, double factor) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    EllipsoidForceFieldCuda3f_addDForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, /* *ellipsoid, */ tmp, (float*)df, (const float*)dx, (float)factor);
+    {EllipsoidForceFieldCuda3f_addDForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, /* *ellipsoid, */ tmp, (float*)df, (const float*)dx, (float)factor); mycudaDebugError("EllipsoidForceFieldCuda3f_addDForce_kernel");}
 }
 
 void EllipsoidForceFieldCuda3f1_addDForce(unsigned int size, GPUEllipsoid* ellipsoid, const float* tmp, void* df, const void* dx, double factor) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    EllipsoidForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, /* *ellipsoid, */ tmp, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx, (float)factor);
+    {EllipsoidForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, /* *ellipsoid, */ tmp, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx, (float)factor); mycudaDebugError("EllipsoidForceFieldCuda3f1_addDForce_kernel");}
 }
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000

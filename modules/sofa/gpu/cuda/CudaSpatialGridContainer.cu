@@ -321,7 +321,7 @@ void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoi
     {
         dim3 threads(BSIZE,1);
         dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-        computeHashD<float3><<< grid, threads >>>((const float3*)x, (unsigned int*)particleIndex8, (unsigned int*)particleHash8, nbPoints);
+        {computeHashD<float3><<< grid, threads >>>((const float3*)x, (unsigned int*)particleIndex8, (unsigned int*)particleHash8, nbPoints); mycudaDebugError("computeHashD<float3>");}
     }
 }
 
@@ -339,7 +339,7 @@ void SpatialGridContainer3f1_computeHash(int cellBits, float cellWidth, int nbPo
     {
         dim3 threads(BSIZE,1);
         dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-        computeHashD<float4><<< grid, threads >>>((const float4*)x, (unsigned int*)particleIndex8, (unsigned int*)particleHash8, nbPoints);
+        {computeHashD<float4><<< grid, threads >>>((const float4*)x, (unsigned int*)particleIndex8, (unsigned int*)particleHash8, nbPoints); mycudaDebugError("computeHashD<float4>");}
     }
 }
 
@@ -351,7 +351,7 @@ void SpatialGridContainer_findCellRange(int cellBits, int index0, float cellWidt
     {
         dim3 threads(BSIZE,1);
         dim3 grid((8*nbPoints+BSIZE-1)/BSIZE,1);
-        findCellRangeD<<< grid, threads >>>(index0, (const unsigned int*)particleHash8, (int*)cellRange, (int*)cellGhost, 8*nbPoints);
+        {findCellRangeD<<< grid, threads >>>(index0, (const unsigned int*)particleHash8, (int*)cellRange, (int*)cellGhost, 8*nbPoints); mycudaDebugError("findCellRangeD");}
     }
 }
 /*
@@ -359,14 +359,14 @@ void SpatialGridContainer3f_reorderData(int nbPoints, const void* particleHash, 
 {
     dim3 threads(BSIZE,1);
     dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-    reorderDataD<float3><<< grid, threads >>>((const uint2*)particleHash, (const float3*)x, (float4*)sorted, nbPoints);
+    {reorderDataD<float3><<< grid, threads >>>((const uint2*)particleHash, (const float3*)x, (float4*)sorted, nbPoints); mycudaDebugError("reorderDataD<float3>");}
 }
 
 void SpatialGridContainer3f1_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-    reorderDataD<float4><<< grid, threads >>>((const uint2*)particleHash, (const float4*)x, (float4*)sorted, nbPoints);
+    {reorderDataD<float4><<< grid, threads >>>((const uint2*)particleHash, (const float4*)x, (float4*)sorted, nbPoints); mycudaDebugError("reorderDataD<float4>");}
 }
 */
 #if defined(__cplusplus) && CUDA_VERSION < 2000

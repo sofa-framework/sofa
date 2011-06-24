@@ -228,28 +228,28 @@ void SubsetMappingCuda3f_apply(unsigned int size, const void* map, void* out, co
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (float*)out, (const CudaVec3<float>*)in);
+    {SubsetMappingCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (float*)out, (const CudaVec3<float>*)in); mycudaDebugError("SubsetMappingCuda3f_apply_kernel<CudaVec3<float> >");}
 }
 
 void SubsetMappingCuda3f_applyJ(unsigned int size, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (float*)out, (const CudaVec3<float>*)in);
+    {SubsetMappingCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (float*)out, (const CudaVec3<float>*)in); mycudaDebugError("SubsetMappingCuda3f_apply_kernel<CudaVec3<float> >");}
 }
 
 void SubsetMappingCuda3f_applyJT(unsigned int insize, unsigned int maxNOut, const void* mapT, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((insize+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f_applyJT_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(insize, maxNOut, (const int*)mapT, (float*)out, (const CudaVec3<float>*)in);
+    {SubsetMappingCuda3f_applyJT_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(insize, maxNOut, (const int*)mapT, (float*)out, (const CudaVec3<float>*)in); mycudaDebugError("SubsetMappingCuda3f_applyJT_kernel<CudaVec3<float> >");}
 }
 
 void SubsetMappingCuda3f_applyJT1(unsigned int size, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f_applyJT1_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (CudaVec3<float>*)out, (const float*)in);
+    {SubsetMappingCuda3f_applyJT1_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (CudaVec3<float>*)out, (const float*)in); mycudaDebugError("SubsetMappingCuda3f_applyJT1_kernel<CudaVec3<float> >");}
 }
 
 
@@ -257,28 +257,28 @@ void SubsetMappingCuda3f1_apply(unsigned int size, const void* map, void* out, c
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {SubsetMappingCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("SubsetMappingCuda3f1_apply_kernel<CudaVec4<float> >");}
 }
 
 void SubsetMappingCuda3f1_applyJ(unsigned int size, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {SubsetMappingCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("SubsetMappingCuda3f1_apply_kernel<CudaVec4<float> >");}
 }
 
 void SubsetMappingCuda3f1_applyJT(unsigned int insize, unsigned int maxNOut, const void* mapT, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((insize+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f1_applyJT_kernel<CudaVec4<float> ><<< grid, threads >>>(insize, maxNOut, (const int*)mapT, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {SubsetMappingCuda3f1_applyJT_kernel<CudaVec4<float> ><<< grid, threads >>>(insize, maxNOut, (const int*)mapT, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("SubsetMappingCuda3f1_applyJT_kernel<CudaVec4<float> >");}
 }
 
 void SubsetMappingCuda3f1_applyJT1(unsigned int size, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f1_applyJT1_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {SubsetMappingCuda3f1_applyJT1_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("SubsetMappingCuda3f1_applyJT1_kernel<CudaVec4<float> >");}
 }
 
 
@@ -286,28 +286,28 @@ void SubsetMappingCuda3f1_3f_apply(unsigned int size, const void* map, void* out
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (float*)out, (const CudaVec4<float>*)in);
+    {SubsetMappingCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (float*)out, (const CudaVec4<float>*)in); mycudaDebugError("SubsetMappingCuda3f_apply_kernel<CudaVec4<float> >");}
 }
 
 void SubsetMappingCuda3f1_3f_applyJ(unsigned int size, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (float*)out, (const CudaVec4<float>*)in);
+    {SubsetMappingCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (float*)out, (const CudaVec4<float>*)in); mycudaDebugError("SubsetMappingCuda3f_apply_kernel<CudaVec4<float> >");}
 }
 
 void SubsetMappingCuda3f1_3f_applyJT(unsigned int insize, unsigned int maxNOut, const void* mapT, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((insize+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f1_applyJT_kernel<CudaVec3<float> ><<< grid, threads >>>(insize, maxNOut, (const int*)mapT, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+    {SubsetMappingCuda3f1_applyJT_kernel<CudaVec3<float> ><<< grid, threads >>>(insize, maxNOut, (const int*)mapT, (CudaVec4<float>*)out, (const CudaVec3<float>*)in); mycudaDebugError("SubsetMappingCuda3f1_applyJT_kernel<CudaVec3<float> >");}
 }
 
 void SubsetMappingCuda3f1_3f_applyJT1(unsigned int size, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f_applyJT1_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (CudaVec4<float>*)out, (const float*)in);
+    {SubsetMappingCuda3f_applyJT1_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (CudaVec4<float>*)out, (const float*)in); mycudaDebugError("SubsetMappingCuda3f_applyJT1_kernel<CudaVec4<float> >");}
 }
 
 
@@ -315,28 +315,28 @@ void SubsetMappingCuda3f_3f1_apply(unsigned int size, const void* map, void* out
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+    {SubsetMappingCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in); mycudaDebugError("SubsetMappingCuda3f1_apply_kernel<CudaVec3<float> >");}
 }
 
 void SubsetMappingCuda3f_3f1_applyJ(unsigned int size, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+    {SubsetMappingCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in); mycudaDebugError("SubsetMappingCuda3f1_apply_kernel<CudaVec3<float> >");}
 }
 
 void SubsetMappingCuda3f_3f1_applyJT(unsigned int insize, unsigned int maxNOut, const void* mapT, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((insize+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f_applyJT_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(insize, maxNOut, (const int*)mapT, (float*)out, (const CudaVec4<float>*)in);
+    {SubsetMappingCuda3f_applyJT_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(insize, maxNOut, (const int*)mapT, (float*)out, (const CudaVec4<float>*)in); mycudaDebugError("SubsetMappingCuda3f_applyJT_kernel<CudaVec4<float> >");}
 }
 
 void SubsetMappingCuda3f_3f1_applyJT1(unsigned int size, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SubsetMappingCuda3f1_applyJT1_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec3<float>*)out, (const CudaVec4<float>*)in);
+    {SubsetMappingCuda3f1_applyJT1_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec3<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("SubsetMappingCuda3f1_applyJT1_kernel<CudaVec3<float> >");}
 }
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000

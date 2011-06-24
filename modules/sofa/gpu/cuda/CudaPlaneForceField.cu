@@ -244,28 +244,28 @@ void PlaneForceFieldCuda3f_addForce(unsigned int size, GPUPlane3f* plane, float*
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PlaneForceFieldCuda3t_addForce_kernel<float><<< grid, threads >>>(size, *plane, penetration, (float*)f, (const float*)x, (const float*)v);
+    {PlaneForceFieldCuda3t_addForce_kernel<float><<< grid, threads >>>(size, *plane, penetration, (float*)f, (const float*)x, (const float*)v); mycudaDebugError("PlaneForceFieldCuda3t_addForce_kernel<float>");}
 }
 
 void PlaneForceFieldCuda3f1_addForce(unsigned int size, GPUPlane3f* plane, float* penetration, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PlaneForceFieldCuda3t1_addForce_kernel<float><<< grid, threads >>>(size, *plane, penetration, (CudaVec4<float>*)f, (const CudaVec4<float>*)x, (const CudaVec4<float>*)v);
+    {PlaneForceFieldCuda3t1_addForce_kernel<float><<< grid, threads >>>(size, *plane, penetration, (CudaVec4<float>*)f, (const CudaVec4<float>*)x, (const CudaVec4<float>*)v); mycudaDebugError("PlaneForceFieldCuda3t1_addForce_kernel<float>");}
 }
 
 void PlaneForceFieldCuda3f_addDForce(unsigned int size, GPUPlane3f* plane, const float* penetration, void* df, const void* dx) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PlaneForceFieldCuda3t_addDForce_kernel<float><<< grid, threads >>>(size, *plane, penetration, (float*)df, (const float*)dx);
+    {PlaneForceFieldCuda3t_addDForce_kernel<float><<< grid, threads >>>(size, *plane, penetration, (float*)df, (const float*)dx); mycudaDebugError("PlaneForceFieldCuda3t_addDForce_kernel<float>");}
 }
 
 void PlaneForceFieldCuda3f1_addDForce(unsigned int size, GPUPlane3f* plane, const float* penetration, void* df, const void* dx) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PlaneForceFieldCuda3t1_addDForce_kernel<float><<< grid, threads >>>(size, *plane, penetration, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx);
+    {PlaneForceFieldCuda3t1_addDForce_kernel<float><<< grid, threads >>>(size, *plane, penetration, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx); mycudaDebugError("PlaneForceFieldCuda3t1_addDForce_kernel<float>");}
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -274,28 +274,28 @@ void PlaneForceFieldCuda3d_addForce(unsigned int size, GPUPlane3d* plane, double
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PlaneForceFieldCuda3t_addForce_kernel<double><<< grid, threads >>>(size, *plane, penetration, (double*)f, (const double*)x, (const double*)v);
+    {PlaneForceFieldCuda3t_addForce_kernel<double><<< grid, threads >>>(size, *plane, penetration, (double*)f, (const double*)x, (const double*)v); mycudaDebugError("PlaneForceFieldCuda3t_addForce_kernel<double>");}
 }
 
 void PlaneForceFieldCuda3d1_addForce(unsigned int size, GPUPlane3d* plane, double* penetration, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PlaneForceFieldCuda3t1_addForce_kernel<double><<< grid, threads >>>(size, *plane, penetration, (CudaVec4<double>*)f, (const CudaVec4<double>*)x, (const CudaVec4<double>*)v);
+    {PlaneForceFieldCuda3t1_addForce_kernel<double><<< grid, threads >>>(size, *plane, penetration, (CudaVec4<double>*)f, (const CudaVec4<double>*)x, (const CudaVec4<double>*)v); mycudaDebugError("PlaneForceFieldCuda3t1_addForce_kernel<double>");}
 }
 
 void PlaneForceFieldCuda3d_addDForce(unsigned int size, GPUPlane3d* plane, const double* penetration, void* df, const void* dx) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PlaneForceFieldCuda3t_addDForce_kernel<double><<< grid, threads >>>(size, *plane, penetration, (double*)df, (const double*)dx);
+    {PlaneForceFieldCuda3t_addDForce_kernel<double><<< grid, threads >>>(size, *plane, penetration, (double*)df, (const double*)dx); mycudaDebugError("PlaneForceFieldCuda3t_addDForce_kernel<double>");}
 }
 
 void PlaneForceFieldCuda3d1_addDForce(unsigned int size, GPUPlane3d* plane, const double* penetration, void* df, const void* dx) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PlaneForceFieldCuda3t1_addDForce_kernel<double><<< grid, threads >>>(size, *plane, penetration, (CudaVec4<double>*)df, (const CudaVec4<double>*)dx);
+    {PlaneForceFieldCuda3t1_addDForce_kernel<double><<< grid, threads >>>(size, *plane, penetration, (CudaVec4<double>*)df, (const CudaVec4<double>*)dx); mycudaDebugError("PlaneForceFieldCuda3t1_addDForce_kernel<double>");}
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

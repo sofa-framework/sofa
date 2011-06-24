@@ -242,7 +242,7 @@ void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoint
     //maxPoints = (maxPoints+15)&-16;
     dim3 threads(maxPoints,1);
     dim3 grid(nbTests,1);
-    CudaCollisionDetection_runTests_kernel<<< grid, threads, threads.x*sizeof(int) >>>(gputests, (int*)nresults);
+    {CudaCollisionDetection_runTests_kernel<<< grid, threads, threads.x*sizeof(int) >>>(gputests, (int*)nresults); mycudaDebugError("CudaCollisionDetection_runTests_kernel");}
 
 }
 

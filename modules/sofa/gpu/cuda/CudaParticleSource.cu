@@ -100,14 +100,14 @@ void ParticleSourceCuda3f_fillValues(unsigned int totalsize, unsigned int subset
 {
     dim3 threads(BSIZE,1);
     dim3 grid((subsetsize+BSIZE-1)/BSIZE,1);
-    ParticleSourceCuda3t_fillValues_kernel<float><<< grid, threads >>>(totalsize, subsetsize, (float*)dest, (const unsigned int*)indices, fx, fy, fz);
+    {ParticleSourceCuda3t_fillValues_kernel<float><<< grid, threads >>>(totalsize, subsetsize, (float*)dest, (const unsigned int*)indices, fx, fy, fz); mycudaDebugError("ParticleSourceCuda3t_fillValues_kernel<float>");}
 }
 
 void ParticleSourceCuda3f_copyValuesWithOffset(unsigned int totalsize, unsigned int subsetsize, void* dest, const void* indices, const void* src, float fx, float fy, float fz)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((subsetsize+BSIZE-1)/BSIZE,1);
-    ParticleSourceCuda3t_copyValuesWithOffset_kernel<float><<< grid, threads >>>(totalsize, subsetsize, (float*)dest, (const unsigned int*)indices, (const float*)src, fx, fy, fz);
+    {ParticleSourceCuda3t_copyValuesWithOffset_kernel<float><<< grid, threads >>>(totalsize, subsetsize, (float*)dest, (const unsigned int*)indices, (const float*)src, fx, fy, fz); mycudaDebugError("ParticleSourceCuda3t_copyValuesWithOffset_kernel<float>");}
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -116,14 +116,14 @@ void ParticleSourceCuda3d_fillValues(unsigned int totalsize, unsigned int subset
 {
     dim3 threads(BSIZE,1);
     dim3 grid((subsetsize+BSIZE-1)/BSIZE,1);
-    ParticleSourceCuda3t_fillValues_kernel<double><<< grid, threads >>>(totalsize, subsetsize, (double*)dest, (const unsigned int*)indices, fx, fy, fz);
+    {ParticleSourceCuda3t_fillValues_kernel<double><<< grid, threads >>>(totalsize, subsetsize, (double*)dest, (const unsigned int*)indices, fx, fy, fz); mycudaDebugError("ParticleSourceCuda3t_fillValues_kernel<double>");}
 }
 
 void ParticleSourceCuda3d_copyValuesWithOffset(unsigned int totalsize, unsigned int subsetsize, void* dest, const void* indices, const void* src, double fx, double fy, double fz)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((subsetsize+BSIZE-1)/BSIZE,1);
-    ParticleSourceCuda3t_copyValuesWithOffset_kernel<double><<< grid, threads >>>(totalsize, subsetsize, (double*)dest, (const unsigned int*)indices, (const double*)src, fx, fy, fz);
+    {ParticleSourceCuda3t_copyValuesWithOffset_kernel<double><<< grid, threads >>>(totalsize, subsetsize, (double*)dest, (const unsigned int*)indices, (const double*)src, fx, fy, fz); mycudaDebugError("ParticleSourceCuda3t_copyValuesWithOffset_kernel<double>");}
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

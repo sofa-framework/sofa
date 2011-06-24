@@ -408,7 +408,7 @@ void CudaVisualModelCuda3f_calcTNormals(unsigned int nbElem, unsigned int nbVert
     CudaCudaVisualModelTextures<float,CudaVec3<float> >::setX(x);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t_calcTNormals_kernel<float, CudaVec3<float> ><<< grid1, threads1 >>>(nbElem, (const int*)elems, (float*)fnormals, (const CudaVec3<float>*)x);
+    {CudaVisualModelCuda3t_calcTNormals_kernel<float, CudaVec3<float> ><<< grid1, threads1 >>>(nbElem, (const int*)elems, (float*)fnormals, (const CudaVec3<float>*)x); mycudaDebugError("CudaVisualModelCuda3t_calcTNormals_kernel<float, CudaVec3<float> >");}
 }
 
 void CudaVisualModelCuda3f_calcQNormals(unsigned int nbElem, unsigned int nbVertex, const void* elems, void* fnormals, const void* x)
@@ -416,14 +416,14 @@ void CudaVisualModelCuda3f_calcQNormals(unsigned int nbElem, unsigned int nbVert
     CudaCudaVisualModelTextures<float,CudaVec3<float> >::setX(x);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t_calcQNormals_kernel<float, CudaVec3<float> ><<< grid1, threads1 >>>(nbElem, (const int4*)elems, (float*)fnormals, (const CudaVec3<float>*)x);
+    {CudaVisualModelCuda3t_calcQNormals_kernel<float, CudaVec3<float> ><<< grid1, threads1 >>>(nbElem, (const int4*)elems, (float*)fnormals, (const CudaVec3<float>*)x); mycudaDebugError("CudaVisualModelCuda3t_calcQNormals_kernel<float, CudaVec3<float> >");}
 }
 
 void CudaVisualModelCuda3f_calcVNormals(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* velems, void* vnormals, const void* fnormals, const void* x)
 {
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t_calcVNormals_kernel<float, CudaVec3<float> ><<< grid2, threads2 >>>(nbVertex, nbElemPerVertex, (const int*)velems, (float*)vnormals, (const CudaVec3<float>*)fnormals);
+    {CudaVisualModelCuda3t_calcVNormals_kernel<float, CudaVec3<float> ><<< grid2, threads2 >>>(nbVertex, nbElemPerVertex, (const int*)velems, (float*)vnormals, (const CudaVec3<float>*)fnormals); mycudaDebugError("CudaVisualModelCuda3t_calcVNormals_kernel<float, CudaVec3<float> >");}
 }
 
 void CudaVisualModelCuda3f1_calcTNormals(unsigned int nbElem, unsigned int nbVertex, const void* elems, void* fnormals, const void* x)
@@ -431,7 +431,7 @@ void CudaVisualModelCuda3f1_calcTNormals(unsigned int nbElem, unsigned int nbVer
     CudaCudaVisualModelTextures<float,CudaVec4<float> >::setX(x);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t1_calcTNormals_kernel<float, CudaVec4<float> ><<< grid1, threads1 >>>(nbElem, (const int*)elems, (CudaVec4<float>*)fnormals, (const CudaVec4<float>*)x);
+    {CudaVisualModelCuda3t1_calcTNormals_kernel<float, CudaVec4<float> ><<< grid1, threads1 >>>(nbElem, (const int*)elems, (CudaVec4<float>*)fnormals, (const CudaVec4<float>*)x); mycudaDebugError("CudaVisualModelCuda3t1_calcTNormals_kernel<float, CudaVec4<float> >");}
 }
 
 void CudaVisualModelCuda3f1_calcQNormals(unsigned int nbElem, unsigned int nbVertex, const void* elems, void* fnormals, const void* x)
@@ -439,14 +439,14 @@ void CudaVisualModelCuda3f1_calcQNormals(unsigned int nbElem, unsigned int nbVer
     CudaCudaVisualModelTextures<float,CudaVec4<float> >::setX(x);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t1_calcQNormals_kernel<float, CudaVec4<float> ><<< grid1, threads1 >>>(nbElem, (const int4*)elems, (CudaVec4<float>*)fnormals, (const CudaVec4<float>*)x);
+    {CudaVisualModelCuda3t1_calcQNormals_kernel<float, CudaVec4<float> ><<< grid1, threads1 >>>(nbElem, (const int4*)elems, (CudaVec4<float>*)fnormals, (const CudaVec4<float>*)x); mycudaDebugError("CudaVisualModelCuda3t1_calcQNormals_kernel<float, CudaVec4<float> >");}
 }
 
 void CudaVisualModelCuda3f1_calcVNormals(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* velems, void* vnormals, const void* fnormals, const void* x)
 {
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t1_calcVNormals_kernel<float, CudaVec4<float> ><<< grid2, threads2 >>>(nbVertex, nbElemPerVertex, (const int*)velems, (CudaVec4<float>*)vnormals, (const CudaVec4<float>*)fnormals);
+    {CudaVisualModelCuda3t1_calcVNormals_kernel<float, CudaVec4<float> ><<< grid2, threads2 >>>(nbVertex, nbElemPerVertex, (const int*)velems, (CudaVec4<float>*)vnormals, (const CudaVec4<float>*)fnormals); mycudaDebugError("CudaVisualModelCuda3t1_calcVNormals_kernel<float, CudaVec4<float> >");}
 }
 
 
@@ -457,7 +457,7 @@ void CudaVisualModelCuda3d_calcTNormals(unsigned int nbElem, unsigned int nbVert
     CudaCudaVisualModelTextures<double,CudaVec3<double> >::setX(x);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t_calcTNormals_kernel<double, CudaVec3<double> ><<< grid1, threads1 >>>(nbElem, (const int*)elems, (double*)fnormals, (const CudaVec3<double>*)x);
+    {CudaVisualModelCuda3t_calcTNormals_kernel<double, CudaVec3<double> ><<< grid1, threads1 >>>(nbElem, (const int*)elems, (double*)fnormals, (const CudaVec3<double>*)x); mycudaDebugError("CudaVisualModelCuda3t_calcTNormals_kernel<double, CudaVec3<double> >");}
 }
 
 void CudaVisualModelCuda3d_calcQNormals(unsigned int nbElem, unsigned int nbVertex, const void* elems, void* fnormals, const void* x)
@@ -465,14 +465,14 @@ void CudaVisualModelCuda3d_calcQNormals(unsigned int nbElem, unsigned int nbVert
     CudaCudaVisualModelTextures<double,CudaVec3<double> >::setX(x);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t_calcQNormals_kernel<double, CudaVec3<double> ><<< grid1, threads1 >>>(nbElem, (const int4*)elems, (double*)fnormals, (const CudaVec3<double>*)x);
+    {CudaVisualModelCuda3t_calcQNormals_kernel<double, CudaVec3<double> ><<< grid1, threads1 >>>(nbElem, (const int4*)elems, (double*)fnormals, (const CudaVec3<double>*)x); mycudaDebugError("CudaVisualModelCuda3t_calcQNormals_kernel<double, CudaVec3<double> >");}
 }
 
 void CudaVisualModelCuda3d_calcVNormals(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* velems, void* vnormals, const void* fnormals, const void* x)
 {
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t_calcVNormals_kernel<double, CudaVec3<double> ><<< grid2, threads2 >>>(nbVertex, nbElemPerVertex, (const int*)velems, (double*)vnormals, (const CudaVec3<double>*)fnormals);
+    {CudaVisualModelCuda3t_calcVNormals_kernel<double, CudaVec3<double> ><<< grid2, threads2 >>>(nbVertex, nbElemPerVertex, (const int*)velems, (double*)vnormals, (const CudaVec3<double>*)fnormals); mycudaDebugError("CudaVisualModelCuda3t_calcVNormals_kernel<double, CudaVec3<double> >");}
 }
 
 void CudaVisualModelCuda3d1_calcTNormals(unsigned int nbElem, unsigned int nbVertex, const void* elems, void* fnormals, const void* x)
@@ -480,7 +480,7 @@ void CudaVisualModelCuda3d1_calcTNormals(unsigned int nbElem, unsigned int nbVer
     CudaCudaVisualModelTextures<double,CudaVec4<double> >::setX(x);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t1_calcTNormals_kernel<double, CudaVec4<double> ><<< grid1, threads1 >>>(nbElem, (const int*)elems, (CudaVec4<double>*)fnormals, (const CudaVec4<double>*)x);
+    {CudaVisualModelCuda3t1_calcTNormals_kernel<double, CudaVec4<double> ><<< grid1, threads1 >>>(nbElem, (const int*)elems, (CudaVec4<double>*)fnormals, (const CudaVec4<double>*)x); mycudaDebugError("CudaVisualModelCuda3t1_calcTNormals_kernel<double, CudaVec4<double> >");}
 }
 
 void CudaVisualModelCuda3d1_calcQNormals(unsigned int nbElem, unsigned int nbVertex, const void* elems, void* fnormals, const void* x)
@@ -488,14 +488,14 @@ void CudaVisualModelCuda3d1_calcQNormals(unsigned int nbElem, unsigned int nbVer
     CudaCudaVisualModelTextures<double,CudaVec4<double> >::setX(x);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t1_calcQNormals_kernel<double, CudaVec4<double> ><<< grid1, threads1 >>>(nbElem, (const int4*)elems, (CudaVec4<double>*)fnormals, (const CudaVec4<double>*)x);
+    {CudaVisualModelCuda3t1_calcQNormals_kernel<double, CudaVec4<double> ><<< grid1, threads1 >>>(nbElem, (const int4*)elems, (CudaVec4<double>*)fnormals, (const CudaVec4<double>*)x); mycudaDebugError("CudaVisualModelCuda3t1_calcQNormals_kernel<double, CudaVec4<double> >");}
 }
 
 void CudaVisualModelCuda3d1_calcVNormals(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* velems, void* vnormals, const void* fnormals, const void* x)
 {
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    CudaVisualModelCuda3t1_calcVNormals_kernel<double, CudaVec4<double> ><<< grid2, threads2 >>>(nbVertex, nbElemPerVertex, (const int*)velems, (CudaVec4<double>*)vnormals, (const CudaVec4<double>*)fnormals);
+    {CudaVisualModelCuda3t1_calcVNormals_kernel<double, CudaVec4<double> ><<< grid2, threads2 >>>(nbVertex, nbElemPerVertex, (const int*)velems, (CudaVec4<double>*)vnormals, (const CudaVec4<double>*)fnormals); mycudaDebugError("CudaVisualModelCuda3t1_calcVNormals_kernel<double, CudaVec4<double> >");}
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

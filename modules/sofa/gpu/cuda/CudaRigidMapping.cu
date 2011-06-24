@@ -207,21 +207,21 @@ void RigidMappingCuda3f_apply(unsigned int size, const matrix3<float>& rotation,
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RigidMappingCuda3f_apply_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, rotation.x, rotation.y, rotation.z, translation, (float*)out, (float*)rotated, (const float*)in);
+    {RigidMappingCuda3f_apply_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, rotation.x, rotation.y, rotation.z, translation, (float*)out, (float*)rotated, (const float*)in); mycudaDebugError("RigidMappingCuda3f_apply_kernel");}
 }
 
 void RigidMappingCuda3f_applyJ(unsigned int size, const CudaVec3<float>& v, const CudaVec3<float>& omega, void* out, const void* rotated)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RigidMappingCuda3f_applyJ_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, v, omega, (float*)out, (const float*)rotated);
+    {RigidMappingCuda3f_applyJ_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, v, omega, (float*)out, (const float*)rotated); mycudaDebugError("RigidMappingCuda3f_applyJ_kernel");}
 }
 
 void RigidMappingCuda3f_applyJT(unsigned int size, unsigned int nbloc, void* out, const void* rotated, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(nbloc,1);
-    RigidMappingCuda3f_applyJT_kernel<<< grid, threads, BSIZE*6*sizeof(float) >>>(size, nbloc, (float*)out, (const float*)rotated, (const float*)in);
+    {RigidMappingCuda3f_applyJT_kernel<<< grid, threads, BSIZE*6*sizeof(float) >>>(size, nbloc, (float*)out, (const float*)rotated, (const float*)in); mycudaDebugError("RigidMappingCuda3f_applyJT_kernel");}
 }
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
