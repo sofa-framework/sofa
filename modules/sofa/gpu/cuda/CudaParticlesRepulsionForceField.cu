@@ -288,14 +288,14 @@ void ParticlesRepulsionForceFieldCuda3f_addForce(unsigned int size, const void* 
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60,1);
-    ParticlesRepulsionForceFieldCuda3t_addForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (float*)f, (const float*)x, (const float*)v);
+    {ParticlesRepulsionForceFieldCuda3t_addForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (float*)f, (const float*)x, (const float*)v); mycudaDebugError("ParticlesRepulsionForceFieldCuda3t_addForce_kernel<float>");}
 }
 
 void ParticlesRepulsionForceFieldCuda3f_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3f* repulsion, void* df, const void* x, const void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60/BSIZE,1);
-    ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (float*)df, (const float*)x, (const float*)dx);
+    {ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (float*)df, (const float*)x, (const float*)dx); mycudaDebugError("ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<float>");}
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -304,14 +304,14 @@ void ParticlesRepulsionForceFieldCuda3d_addForce(unsigned int size, const void* 
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60/BSIZE,1);
-    ParticlesRepulsionForceFieldCuda3t_addForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (double*)f, (const double*)x, (const double*)v);
+    {ParticlesRepulsionForceFieldCuda3t_addForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (double*)f, (const double*)x, (const double*)v); mycudaDebugError("ParticlesRepulsionForceFieldCuda3t_addForce_kernel<double>");}
 }
 
 void ParticlesRepulsionForceFieldCuda3d_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3d* repulsion, void* df, const void* x, const void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60/BSIZE,1);
-    ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (double*)df, (const double*)x, (const double*)dx);
+    {ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (double*)df, (const double*)x, (const double*)dx); mycudaDebugError("ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<double>");}
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

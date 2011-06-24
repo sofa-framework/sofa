@@ -118,7 +118,7 @@ void LinearMovementConstraintCudaVec6f_projectResponseIndexed(unsigned size, con
 {
     dim3 threads(BSIZE, 1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<float>*)dx);
+    {LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<float>*)dx); mycudaDebugError("LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<float>");}
 }
 
 void LinearMovementConstraintCudaVec6f_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x)
@@ -134,27 +134,27 @@ void LinearMovementConstraintCudaVec6f_projectVelocityIndexed(unsigned size, con
 {
     dim3 threads(BSIZE, 1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, ((float*)dir)[0], ((float*)dir)[1], ((float*)dir)[2], ((float*)dir)[3], ((float*)dir)[4], ((float*)dir)[5], (CudaRigidDeriv3<float>*)dx);
+    {LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, ((float*)dir)[0], ((float*)dir)[1], ((float*)dir)[2], ((float*)dir)[3], ((float*)dir)[4], ((float*)dir)[5], (CudaRigidDeriv3<float>*)dx); mycudaDebugError("LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<float>");}
 }
 void LinearMovementConstraintCudaRigid3f_projectResponseIndexed(unsigned size, const void* indices, void* dx)
 {
     dim3 threads(BSIZE, 1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<float>*)dx);
+    {LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<float>*)dx); mycudaDebugError("LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<float>");}
 }
 
 void LinearMovementConstraintCudaRigid3f_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x)
 {
     dim3 threads(BSIZE, 1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    LinearMovementConstraintCudaRigid3t_projectPositionIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, ((float*)dir)[0], ((float*)dir)[1], ((float*)dir)[2], ((float*)dir)[3], ((float*)dir)[4], ((float*)dir)[5], (const CudaRigidCoord3<float>*) x0, (CudaRigidCoord3<float>*)x);
+    {LinearMovementConstraintCudaRigid3t_projectPositionIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, ((float*)dir)[0], ((float*)dir)[1], ((float*)dir)[2], ((float*)dir)[3], ((float*)dir)[4], ((float*)dir)[5], (const CudaRigidCoord3<float>*) x0, (CudaRigidCoord3<float>*)x); mycudaDebugError("LinearMovementConstraintCudaRigid3t_projectPositionIndexed_kernel<float>");}
 }
 
 void LinearMovementConstraintCudaRigid3f_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx)
 {
     dim3 threads(BSIZE, 1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, ((float*)dir)[0], ((float*)dir)[1], ((float*)dir)[2], ((float*)dir)[3], ((float*)dir)[4], ((float*)dir)[5], (CudaRigidDeriv3<float>*)dx);
+    {LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, ((float*)dir)[0], ((float*)dir)[1], ((float*)dir)[2], ((float*)dir)[3], ((float*)dir)[4], ((float*)dir)[5], (CudaRigidDeriv3<float>*)dx); mycudaDebugError("LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<float>");}
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -162,7 +162,7 @@ void LinearMovementConstraintCudaVec6d_projectResponseIndexed(unsigned size, con
 {
     dim3 threads(BSIZE, 1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<double>*)dx);
+    {LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<double>*)dx); mycudaDebugError("LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<double>");}
 }
 
 void LinearMovementConstraintCudaVec6d_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x)
@@ -178,28 +178,28 @@ void LinearMovementConstraintCudaVec6d_projectVelocityIndexed(unsigned size, con
 {
     dim3 threads(BSIZE, 1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, ((double*)dir)[0], ((double*)dir)[1], ((double*)dir)[2], ((double*)dir)[3], ((double*)dir)[4], ((double*)dir)[5], (CudaRigidDeriv3<double>*)dx);
+    {LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, ((double*)dir)[0], ((double*)dir)[1], ((double*)dir)[2], ((double*)dir)[3], ((double*)dir)[4], ((double*)dir)[5], (CudaRigidDeriv3<double>*)dx); mycudaDebugError("LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<double>");}
 }
 
 void LinearMovementConstraintCudaRigid3d_projectResponseIndexed(unsigned size, const void* indices, void* dx)
 {
     dim3 threads(BSIZE, 1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<double>*)dx);
+    {LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<double>*)dx); mycudaDebugError("LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<double>");}
 }
 
 void LinearMovementConstraintCudaRigid3d_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x)
 {
     dim3 threads(BSIZE, 1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    LinearMovementConstraintCudaRigid3t_projectPositionIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, ((double*)dir)[0], ((double*)dir)[1], ((double*)dir)[2], ((double*)dir)[3], ((double*)dir)[4], ((double*)dir)[5], (const CudaRigidCoord3<double>*) x0, (CudaRigidCoord3<double>*)x);
+    {LinearMovementConstraintCudaRigid3t_projectPositionIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, ((double*)dir)[0], ((double*)dir)[1], ((double*)dir)[2], ((double*)dir)[3], ((double*)dir)[4], ((double*)dir)[5], (const CudaRigidCoord3<double>*) x0, (CudaRigidCoord3<double>*)x); mycudaDebugError("LinearMovementConstraintCudaRigid3t_projectPositionIndexed_kernel<double>");}
 }
 
 void LinearMovementConstraintCudaRigid3d_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx)
 {
     dim3 threads(BSIZE, 1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, ((double*)dir)[0], ((double*)dir)[1], ((double*)dir)[2], ((double*)dir)[3], ((double*)dir)[4], ((double*)dir)[5], (CudaRigidDeriv3<double>*)dx);
+    {LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, ((double*)dir)[0], ((double*)dir)[1], ((double*)dir)[2], ((double*)dir)[3], ((double*)dir)[4], ((double*)dir)[5], (CudaRigidDeriv3<double>*)dx); mycudaDebugError("LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<double>");}
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

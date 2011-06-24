@@ -103,7 +103,7 @@ void RigidContactMapperCuda3f_setPoints2(unsigned int size, unsigned int nbTests
     //maxPoints = (maxPoints+15)&-16;
     dim3 threads(maxPoints,1);
     dim3 grid(nbTests,1);
-    RigidContactMapperCuda3f_setPoints2_kernel<<< grid, threads >>>((const GPUTestEntry*)tests, (GPUContact*)contacts, (float3*)map);
+    {RigidContactMapperCuda3f_setPoints2_kernel<<< grid, threads >>>((const GPUTestEntry*)tests, (GPUContact*)contacts, (float3*)map); mycudaDebugError("RigidContactMapperCuda3f_setPoints2_kernel");}
 }
 
 void SubsetContactMapperCuda3f_setPoints1(unsigned int size, unsigned int nbTests, unsigned int maxPoints, unsigned int nbPointsPerElem, const void* tests, const void* contacts, void* map)
@@ -112,7 +112,7 @@ void SubsetContactMapperCuda3f_setPoints1(unsigned int size, unsigned int nbTest
     //maxPoints = (maxPoints+15)&-16;
     dim3 threads(maxPoints,1);
     dim3 grid(nbTests,1);
-    SubsetContactMapperCuda3f_setPoints1_kernel<<< grid, threads >>>(nbPointsPerElem, (const GPUTestEntry*)tests, (GPUContact*)contacts, (int*)map);
+    {SubsetContactMapperCuda3f_setPoints1_kernel<<< grid, threads >>>(nbPointsPerElem, (const GPUTestEntry*)tests, (GPUContact*)contacts, (int*)map); mycudaDebugError("SubsetContactMapperCuda3f_setPoints1_kernel");}
 
 }
 

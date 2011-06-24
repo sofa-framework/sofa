@@ -242,28 +242,28 @@ void SphereForceFieldCuda3f_addForce(unsigned int size, GPUSphere* sphere, CudaV
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SphereForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *sphere, penetration, (float*)f, (const float*)x, (const float*)v);
+    {SphereForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *sphere, penetration, (float*)f, (const float*)x, (const float*)v); mycudaDebugError("SphereForceFieldCuda3f_addForce_kernel");}
 }
 
 void SphereForceFieldCuda3f1_addForce(unsigned int size, GPUSphere* sphere, CudaVec4<float>* penetration, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SphereForceFieldCuda3f1_addForce_kernel<<< grid, threads >>>(size, *sphere, penetration, (CudaVec4<float>*)f, (const CudaVec4<float>*)x, (const CudaVec4<float>*)v);
+    {SphereForceFieldCuda3f1_addForce_kernel<<< grid, threads >>>(size, *sphere, penetration, (CudaVec4<float>*)f, (const CudaVec4<float>*)x, (const CudaVec4<float>*)v); mycudaDebugError("SphereForceFieldCuda3f1_addForce_kernel");}
 }
 
 void SphereForceFieldCuda3f_addDForce(unsigned int size, GPUSphere* sphere, const CudaVec4<float>* penetration, void* df, const void* dx) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SphereForceFieldCuda3f_addDForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *sphere, penetration, (float*)df, (const float*)dx);
+    {SphereForceFieldCuda3f_addDForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *sphere, penetration, (float*)df, (const float*)dx); mycudaDebugError("SphereForceFieldCuda3f_addDForce_kernel");}
 }
 
 void SphereForceFieldCuda3f1_addDForce(unsigned int size, GPUSphere* sphere, const CudaVec4<float>* penetration, void* df, const void* dx) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SphereForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, *sphere, penetration, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx);
+    {SphereForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, *sphere, penetration, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx); mycudaDebugError("SphereForceFieldCuda3f1_addDForce_kernel");}
 }
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000

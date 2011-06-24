@@ -77,7 +77,7 @@ void ExternalForceFieldCuda3f_addForce(unsigned int size,void* f, const void* in
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    ExternalForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (float*)f, (const unsigned*)indices,(const float*)forces);
+    {ExternalForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (float*)f, (const unsigned*)indices,(const float*)forces); mycudaDebugError("ExternalForceFieldCuda3f_addForce_kernel");}
 }
 
 #if defined(__cplusplus)

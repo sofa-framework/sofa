@@ -612,42 +612,42 @@ void RegularGridMapperCuda3f_apply(unsigned int size, const unsigned int* gridsi
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (float*)out, (const CudaVec3<float>*)in);
+    {RegularGridMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (float*)out, (const CudaVec3<float>*)in); mycudaDebugError("RegularGridMapperCuda3f_apply_kernel<CudaVec3<float> >");}
 }
 
 void RegularGridMapperCuda3f_applyJ(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (float*)out, (const CudaVec3<float>*)in);
+    {RegularGridMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (float*)out, (const CudaVec3<float>*)in); mycudaDebugError("RegularGridMapperCuda3f_apply_kernel<CudaVec3<float> >");}
 }
 
 void RegularGridMapperCuda3f_applyJT(unsigned int insize, unsigned int maxNOut, const unsigned int* gridsize, const void* mapT, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((insize+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f_applyJT_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(insize, maxNOut, (const GPULinearMap*)mapT, (float*)out, (const CudaVec3<float>*)in);
+    {RegularGridMapperCuda3f_applyJT_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(insize, maxNOut, (const GPULinearMap*)mapT, (float*)out, (const CudaVec3<float>*)in); mycudaDebugError("RegularGridMapperCuda3f_applyJT_kernel<CudaVec3<float> >");}
 }
 
 void RegularGridMapperCuda3f1_apply(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {RegularGridMapperCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("RegularGridMapperCuda3f1_apply_kernel<CudaVec4<float> >");}
 }
 
 void RegularGridMapperCuda3f1_applyJ(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {RegularGridMapperCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("RegularGridMapperCuda3f1_apply_kernel<CudaVec4<float> >");}
 }
 
 void RegularGridMapperCuda3f1_applyJT(unsigned int insize, unsigned int maxNOut, const unsigned int* gridsize, const void* mapT, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((insize+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f1_applyJT_kernel<CudaVec4<float> ><<< grid, threads >>>(insize, maxNOut, (const GPULinearMap*)mapT, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {RegularGridMapperCuda3f1_applyJT_kernel<CudaVec4<float> ><<< grid, threads >>>(insize, maxNOut, (const GPULinearMap*)mapT, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("RegularGridMapperCuda3f1_applyJT_kernel<CudaVec4<float> >");}
 }
 
 
@@ -655,21 +655,21 @@ void RegularGridMapperCuda3f1_3f_apply(unsigned int size, const unsigned int* gr
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (float*)out, (const CudaVec4<float>*)in);
+    {RegularGridMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (float*)out, (const CudaVec4<float>*)in); mycudaDebugError("RegularGridMapperCuda3f_apply_kernel<CudaVec4<float> >");}
 }
 
 void RegularGridMapperCuda3f1_3f_applyJ(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (float*)out, (const CudaVec4<float>*)in);
+    {RegularGridMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (float*)out, (const CudaVec4<float>*)in); mycudaDebugError("RegularGridMapperCuda3f_apply_kernel<CudaVec4<float> >");}
 }
 
 void RegularGridMapperCuda3f_3f1_applyJT(unsigned int insize, unsigned int maxNOut, const unsigned int* gridsize, const void* mapT, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((insize+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f_applyJT_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(insize, maxNOut, (const GPULinearMap*)mapT, (float*)out, (const CudaVec4<float>*)in);
+    {RegularGridMapperCuda3f_applyJT_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(insize, maxNOut, (const GPULinearMap*)mapT, (float*)out, (const CudaVec4<float>*)in); mycudaDebugError("RegularGridMapperCuda3f_applyJT_kernel<CudaVec4<float> >");}
 }
 
 
@@ -677,21 +677,21 @@ void RegularGridMapperCuda3f_3f1_apply(unsigned int size, const unsigned int* gr
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+    {RegularGridMapperCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in); mycudaDebugError("RegularGridMapperCuda3f1_apply_kernel<CudaVec3<float> >");}
 }
 
 void RegularGridMapperCuda3f_3f1_applyJ(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+    {RegularGridMapperCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, gridsize[0], gridsize[0]*gridsize[1], (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in); mycudaDebugError("RegularGridMapperCuda3f1_apply_kernel<CudaVec3<float> >");}
 }
 
 void RegularGridMapperCuda3f1_3f_applyJT(unsigned int insize, unsigned int maxNOut, const unsigned int* gridsize, const void* mapT, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((insize+BSIZE-1)/BSIZE,1);
-    RegularGridMapperCuda3f1_applyJT_kernel<CudaVec3<float> ><<< grid, threads >>>(insize, maxNOut, (const GPULinearMap*)mapT, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+    {RegularGridMapperCuda3f1_applyJT_kernel<CudaVec3<float> ><<< grid, threads >>>(insize, maxNOut, (const GPULinearMap*)mapT, (CudaVec4<float>*)out, (const CudaVec3<float>*)in); mycudaDebugError("RegularGridMapperCuda3f1_applyJT_kernel<CudaVec3<float> >");}
 }
 
 
@@ -702,42 +702,42 @@ void SparseGridMapperCuda3f_apply(unsigned int size, const void * cudaHexa,const
 {
     dim3 threads(SPARSE_GRID_BSIZE,1);
     dim3 grid((size+SPARSE_GRID_BSIZE-1)/SPARSE_GRID_BSIZE,1);
-    SparseGridMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (float*)out, (const CudaVec3<float>*)in);
+    {SparseGridMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (float*)out, (const CudaVec3<float>*)in); mycudaDebugError("SparseGridMapperCuda3f_apply_kernel<CudaVec3<float> >");}
 }
 
 void SparseGridMapperCuda3f_applyJ(unsigned int size, const void * cudaHexa,const void* map, void* out, const void* in)
 {
     dim3 threads(SPARSE_GRID_BSIZE,1);
     dim3 grid((size+SPARSE_GRID_BSIZE-1)/SPARSE_GRID_BSIZE,1);
-    SparseGridMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (float*)out, (const CudaVec3<float>*)in);
+    {SparseGridMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (float*)out, (const CudaVec3<float>*)in); mycudaDebugError("SparseGridMapperCuda3f_apply_kernel<CudaVec3<float> >");}
 }
 
 void SparseGridMapperCuda3f_applyJT(unsigned int size, const void * CudaTnb, const void * CudaTst, const void * CudaTid, const void * CudaTVal, void* out, const void* in)
 {
     dim3 threads(SPARSE_GRID_MAX_CUBE,1);
     dim3 grid(size,1);
-    SparseGridMapperCuda3f_applyJT_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const unsigned *) CudaTnb, (const unsigned *) CudaTst, (const unsigned *) CudaTid, (const float *) CudaTVal, (float*)out, (const CudaVec3<float>*)in);
+    {SparseGridMapperCuda3f_applyJT_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const unsigned *) CudaTnb, (const unsigned *) CudaTst, (const unsigned *) CudaTid, (const float *) CudaTVal, (float*)out, (const CudaVec3<float>*)in); mycudaDebugError("SparseGridMapperCuda3f_applyJT_kernel<CudaVec3<float> >");}
 }
 
 void SparseGridMapperCuda3f1_apply(unsigned int size, const void * cudaHexa, const void* map, void* out, const void* in)
 {
     dim3 threads(SPARSE_GRID_BSIZE,1);
     dim3 grid((size+SPARSE_GRID_BSIZE-1)/SPARSE_GRID_BSIZE,1);
-    SparseGridMapperCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {SparseGridMapperCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("SparseGridMapperCuda3f1_apply_kernel<CudaVec4<float> >");}
 }
 
 void SparseGridMapperCuda3f1_applyJ(unsigned int size, const void * cudaHexa, const void* map, void* out, const void* in)
 {
     dim3 threads(SPARSE_GRID_BSIZE,1);
     dim3 grid((size+SPARSE_GRID_BSIZE-1)/SPARSE_GRID_BSIZE,1);
-    SparseGridMapperCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {SparseGridMapperCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("SparseGridMapperCuda3f1_apply_kernel<CudaVec4<float> >");}
 }
 
 void SparseGridMapperCuda3f1_applyJT(unsigned int size, const void * CudaTnb, const void * CudaTst, const void * CudaTid, const void * CudaTVal, void* out, const void* in)
 {
     dim3 threads(SPARSE_GRID_BSIZE,1);
     dim3 grid(size,1);
-    SparseGridMapperCuda3f1_applyJT_kernel<CudaVec4<float> ><<< grid, threads >>>(size,  (const unsigned *) CudaTnb, (const unsigned *) CudaTst, (const unsigned *) CudaTid, (const float *) CudaTVal, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {SparseGridMapperCuda3f1_applyJT_kernel<CudaVec4<float> ><<< grid, threads >>>(size,  (const unsigned *) CudaTnb, (const unsigned *) CudaTst, (const unsigned *) CudaTid, (const float *) CudaTVal, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("SparseGridMapperCuda3f1_applyJT_kernel<CudaVec4<float> >");}
 }
 
 
@@ -745,21 +745,21 @@ void SparseGridMapperCuda3f1_3f_apply(unsigned int size, const void * cudaHexa, 
 {
     dim3 threads(SPARSE_GRID_BSIZE,1);
     dim3 grid((size+SPARSE_GRID_BSIZE-1)/SPARSE_GRID_BSIZE,1);
-    SparseGridMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (float*)out, (const CudaVec4<float>*)in);
+    {SparseGridMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (float*)out, (const CudaVec4<float>*)in); mycudaDebugError("SparseGridMapperCuda3f_apply_kernel<CudaVec4<float> >");}
 }
 
 void SparseGridMapperCuda3f1_3f_applyJ(unsigned int size, const void * cudaHexa, const void* map, void* out, const void* in)
 {
     dim3 threads(SPARSE_GRID_BSIZE,1);
     dim3 grid((size+SPARSE_GRID_BSIZE-1)/SPARSE_GRID_BSIZE,1);
-    SparseGridMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (float*)out, (const CudaVec4<float>*)in);
+    {SparseGridMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (float*)out, (const CudaVec4<float>*)in); mycudaDebugError("SparseGridMapperCuda3f_apply_kernel<CudaVec4<float> >");}
 }
 
 void SparseGridMapperCuda3f1_3f_applyJT(unsigned int size, const void * CudaTnb, const void * CudaTst, const void * CudaTid, const void * CudaTVal, void* out, const void* in)
 {
     dim3 threads(SPARSE_GRID_MAX_CUBE,1);
     dim3 grid(size,1);
-    SparseGridMapperCuda3f_applyJT_kernel<CudaVec4<float> ><<< grid, threads >>>(size,  (const unsigned *) CudaTnb, (const unsigned *) CudaTst, (const unsigned *) CudaTid, (const float *) CudaTVal, (float*)out, (const CudaVec4<float>*)in);
+    {SparseGridMapperCuda3f_applyJT_kernel<CudaVec4<float> ><<< grid, threads >>>(size,  (const unsigned *) CudaTnb, (const unsigned *) CudaTst, (const unsigned *) CudaTid, (const float *) CudaTVal, (float*)out, (const CudaVec4<float>*)in); mycudaDebugError("SparseGridMapperCuda3f_applyJT_kernel<CudaVec4<float> >");}
 }
 
 
@@ -767,21 +767,21 @@ void SparseGridMapperCuda3f_3f1_apply(unsigned int size, const void * cudaHexa, 
 {
     dim3 threads(SPARSE_GRID_BSIZE,1);
     dim3 grid((size+SPARSE_GRID_BSIZE-1)/SPARSE_GRID_BSIZE,1);
-    SparseGridMapperCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+    {SparseGridMapperCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in); mycudaDebugError("SparseGridMapperCuda3f1_apply_kernel<CudaVec3<float> >");}
 }
 
 void SparseGridMapperCuda3f_3f1_applyJ(unsigned int size, const void * cudaHexa, const void* map, void* out, const void* in)
 {
     dim3 threads(SPARSE_GRID_BSIZE,1);
     dim3 grid((size+SPARSE_GRID_BSIZE-1)/SPARSE_GRID_BSIZE,1);
-    SparseGridMapperCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+    {SparseGridMapperCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int *) cudaHexa, (const GPUCubeData*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in); mycudaDebugError("SparseGridMapperCuda3f1_apply_kernel<CudaVec3<float> >");}
 }
 
 void SparseGridMapperCuda3f_3f1_applyJT(unsigned int size, const void * CudaTnb, const void * CudaTst, const void * CudaTid, const void * CudaTVal, void* out, const void* in)
 {
     dim3 threads(SPARSE_GRID_MAX_CUBE,1);
     dim3 grid(size,1);
-    SparseGridMapperCuda3f1_applyJT_kernel<CudaVec3<float> ><<< grid, threads >>>(size,  (const unsigned *) CudaTnb, (const unsigned *) CudaTst, (const unsigned *) CudaTid, (const float *) CudaTVal, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+    {SparseGridMapperCuda3f1_applyJT_kernel<CudaVec3<float> ><<< grid, threads >>>(size,  (const unsigned *) CudaTnb, (const unsigned *) CudaTst, (const unsigned *) CudaTid, (const float *) CudaTVal, (CudaVec4<float>*)out, (const CudaVec3<float>*)in); mycudaDebugError("SparseGridMapperCuda3f1_applyJT_kernel<CudaVec3<float> >");}
 }
 
 
@@ -797,28 +797,28 @@ void MeshMapperCuda3f_apply(unsigned int size, unsigned int maxN, const void* ma
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    MeshMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec3<float>*)in);
+    {MeshMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec3<float>*)in); mycudaDebugError("MeshMapperCuda3f_apply_kernel<CudaVec3<float> >");}
 }
 
 void MeshMapperCuda3f1_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    MeshMapperCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {MeshMapperCuda3f1_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("MeshMapperCuda3f1_apply_kernel<CudaVec4<float> >");}
 }
 
 void MeshMapperCuda3f_3f1_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    MeshMapperCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+    {MeshMapperCuda3f1_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in); mycudaDebugError("MeshMapperCuda3f1_apply_kernel<CudaVec3<float> >");}
 }
 
 void MeshMapperCuda3f1_3f_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    MeshMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec4<float>*)in);
+    {MeshMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec4<float>*)in); mycudaDebugError("MeshMapperCuda3f_apply_kernel<CudaVec4<float> >");}
 }
 
 
@@ -826,28 +826,28 @@ void MeshMapperCuda3f_applyPEq(unsigned int size, unsigned int maxN, const void*
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    MeshMapperCuda3f_applyPEq_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec3<float>*)in);
+    {MeshMapperCuda3f_applyPEq_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec3<float>*)in); mycudaDebugError("MeshMapperCuda3f_applyPEq_kernel<CudaVec3<float> >");}
 }
 
 void MeshMapperCuda3f1_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    MeshMapperCuda3f1_applyPEq_kernel<CudaVec4<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+    {MeshMapperCuda3f1_applyPEq_kernel<CudaVec4<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("MeshMapperCuda3f1_applyPEq_kernel<CudaVec4<float> >");}
 }
 
 void MeshMapperCuda3f_3f1_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    MeshMapperCuda3f1_applyPEq_kernel<CudaVec3<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+    {MeshMapperCuda3f1_applyPEq_kernel<CudaVec3<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in); mycudaDebugError("MeshMapperCuda3f1_applyPEq_kernel<CudaVec3<float> >");}
 }
 
 void MeshMapperCuda3f1_3f_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    MeshMapperCuda3f_applyPEq_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec4<float>*)in);
+    {MeshMapperCuda3f_applyPEq_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec4<float>*)in); mycudaDebugError("MeshMapperCuda3f_applyPEq_kernel<CudaVec4<float> >");}
 }
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000

@@ -159,21 +159,21 @@ void FixedConstraintCuda3f_projectResponseIndexed(unsigned int size, const void*
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    FixedConstraintCuda3t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaVec3<float>*)dx);
+    {FixedConstraintCuda3t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaVec3<float>*)dx); mycudaDebugError("FixedConstraintCuda3t_projectResponseIndexed_kernel<float>");}
 }
 
 void FixedConstraintCuda3f1_projectResponseIndexed(unsigned int size, const void* indices, void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    FixedConstraintCuda3t1_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaVec4<float>*)dx);
+    {FixedConstraintCuda3t1_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaVec4<float>*)dx); mycudaDebugError("FixedConstraintCuda3t1_projectResponseIndexed_kernel<float>");}
 }
 
 void FixedConstraintCudaRigid3f_projectResponseIndexed(unsigned int size, const void* indices, void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    FixedConstraintCudaRigid3t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<float>*)dx);
+    {FixedConstraintCudaRigid3t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<float>*)dx); mycudaDebugError("FixedConstraintCudaRigid3t_projectResponseIndexed_kernel<float>");}
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -208,21 +208,21 @@ void FixedConstraintCuda3d_projectResponseIndexed(unsigned int size, const void*
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    FixedConstraintCuda3t_projectResponseIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, (CudaVec3<double>*)dx);
+    {FixedConstraintCuda3t_projectResponseIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, (CudaVec3<double>*)dx); mycudaDebugError("FixedConstraintCuda3t_projectResponseIndexed_kernel<double>");}
 }
 
 void FixedConstraintCuda3d1_projectResponseIndexed(unsigned int size, const void* indices, void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    FixedConstraintCuda3t1_projectResponseIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, (CudaVec4<double>*)dx);
+    {FixedConstraintCuda3t1_projectResponseIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, (CudaVec4<double>*)dx); mycudaDebugError("FixedConstraintCuda3t1_projectResponseIndexed_kernel<double>");}
 }
 
 void FixedConstraintCudaRigid3d_projectResponseIndexed(unsigned int size, const void* indices, void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    FixedConstraintCudaRigid3t_projectResponseIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<double>*)dx);
+    {FixedConstraintCudaRigid3t_projectResponseIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<double>*)dx); mycudaDebugError("FixedConstraintCudaRigid3t_projectResponseIndexed_kernel<double>");}
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

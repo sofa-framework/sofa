@@ -95,21 +95,21 @@ void DiagonalMassCuda_addMDxf(unsigned int size, float factor, const void * mass
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    DiagonalMassCuda_addMDx_kernel<float><<< grid, threads >>>(size,factor, (const float *) mass, (const float*)dx, (float*)res);
+    {DiagonalMassCuda_addMDx_kernel<float><<< grid, threads >>>(size,factor, (const float *) mass, (const float*)dx, (float*)res); mycudaDebugError("DiagonalMassCuda_addMDx_kernel<float>");}
 }
 
 void DiagonalMassCuda_accFromFf(unsigned int size, const void * mass, const void* f, void* a)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    DiagonalMassCuda_accFromF_kernel<float><<< grid, threads >>>(size, (const float *) mass, (const float*)f, (float*)a);
+    {DiagonalMassCuda_accFromF_kernel<float><<< grid, threads >>>(size, (const float *) mass, (const float*)f, (float*)a); mycudaDebugError("DiagonalMassCuda_accFromF_kernel<float>");}
 }
 
 void DiagonalMassCuda_addForcef(unsigned int size, const void * mass,const double * g, const void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    DiagonalMassCuda_addForce_kernel<float><<< grid, threads >>>(size,(const float *) mass, g[0],g[1],g[2], (float*)f);
+    {DiagonalMassCuda_addForce_kernel<float><<< grid, threads >>>(size,(const float *) mass, g[0],g[1],g[2], (float*)f); mycudaDebugError("DiagonalMassCuda_addForce_kernel<float>");}
 }
 
 
@@ -119,21 +119,21 @@ void DiagonalMassCuda_addMDxd(unsigned int size, double factor, const void * mas
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    DiagonalMassCuda_addMDx_kernel<double><<< grid, threads >>>(size,factor, (const double *) mass, (const double*)dx, (double*)res);
+    {DiagonalMassCuda_addMDx_kernel<double><<< grid, threads >>>(size,factor, (const double *) mass, (const double*)dx, (double*)res); mycudaDebugError("DiagonalMassCuda_addMDx_kernel<double>");}
 }
 
 void DiagonalMassCuda_accFromFd(unsigned int size, const void * mass, const void* f, void* a)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    DiagonalMassCuda_accFromF_kernel<double><<< grid, threads >>>(size, (const double *) mass, (const double*)f, (double*)a);
+    {DiagonalMassCuda_accFromF_kernel<double><<< grid, threads >>>(size, (const double *) mass, (const double*)f, (double*)a); mycudaDebugError("DiagonalMassCuda_accFromF_kernel<double>");}
 }
 
 void DiagonalMassCuda_addForced(unsigned int size, const void * mass,const double * g, const void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    DiagonalMassCuda_addForce_kernel<double><<< grid, threads >>>(size,(const double *) mass, g[0],g[1],g[2], (double*)f);
+    {DiagonalMassCuda_addForce_kernel<double><<< grid, threads >>>(size,(const double *) mass, g[0],g[1],g[2], (double*)f); mycudaDebugError("DiagonalMassCuda_addForce_kernel<double>");}
 }
 #endif
 

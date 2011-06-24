@@ -1468,26 +1468,26 @@ void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned in
     switch(2*viscoelasticity + anisotropy)
     {
     case 0 :
-        CudaHexahedronTLEDForceField3f_calcForce_kernel0<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu);
-        break;
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel0<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel0");}
+    break;
 
     case 1 :
-        CudaHexahedronTLEDForceField3f_calcForce_kernel1<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu);
-        break;
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel1<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel1");}
+    break;
 
     case 2 :
-        CudaHexahedronTLEDForceField3f_calcForce_kernel2<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu);
-        break;
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel2<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel2");}
+    break;
 
     case 3 :
-        CudaHexahedronTLEDForceField3f_calcForce_kernel3<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu);
-        break;
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel3<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel3");}
+    break;
     }
 
     // The second kernel operates over nodes and reads the previously calculated element force contributions and sums them for each node
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    CudaHexahedronTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (float*)f);
+    {CudaHexahedronTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (float*)f); mycudaDebugError("CudaHexahedronTLEDForceField3f_addForce_kernel");}
 }
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
