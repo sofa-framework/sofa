@@ -126,7 +126,6 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     _facetNormal = GL_FALSE;
     _renderingMode = GL_RENDER;
 
-    sceneBBoxIsValid = false;
     _waitForRender=false;
 
     /*_surfaceModel = NULL;
@@ -650,7 +649,7 @@ void QtGLViewer::DisplayOBJs()
 {
     if (!groot) return;
 
-    if (!sceneBBoxIsValid) viewAll();
+    if (!groot->f_bbox.getValue().isValid()) viewAll();
 
     Enable<GL_LIGHTING> light;
     Enable<GL_DEPTH_TEST> depth;
@@ -668,6 +667,7 @@ void QtGLViewer::DisplayOBJs()
         //---------------------------------------------------
         initTexturesDone = true;
     }
+
 
     {
         //Draw Debug information of the components
@@ -753,14 +753,16 @@ void QtGLViewer::DrawScene(void)
 
     camera()->getProjectionMatrix( lastProjectionMatrix );
     sofa::core::visual::VisualParams::Viewport& viewport = vparams->viewport();
-    camera()->getViewport( viewport.begin() );
+    viewport[0] = 0;
     viewport[1] = 0;
-    viewport[3] = -viewport[3];
+    viewport[2] = camera()->screenWidth();
+    viewport[3] = -camera()->screenHeight();
 
+    vparams->zFar() = camera()->zFar();
+    vparams->zNear() = camera()->zNear();
 
     if (_background==0)
         DrawLogo();
-
 
     camera()->getModelViewMatrix( lastModelviewMatrix );
     //camera()->frame()->getMatrix( lastModelviewMatrix );

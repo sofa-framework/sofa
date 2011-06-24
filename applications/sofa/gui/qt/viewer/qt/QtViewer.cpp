@@ -153,7 +153,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     _facetNormal = GL_FALSE;
     _renderingMode = GL_RENDER;
     _waitForRender = false;
-    sceneBBoxIsValid = false;
 
     /*_surfaceModel = NULL;
       _springMassView = NULL;
@@ -907,11 +906,9 @@ void QtViewer::calcProjection()
     if (!currentCamera)
         return;
 
-    if (groot && (!sceneBBoxIsValid || _axis))
+    if (groot && (!groot->f_bbox.getValue().isValid() || _axis))
     {
         vparams->sceneBBox() = groot->f_bbox.getValue();
-        sceneBBoxIsValid = true;
-
         currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());
     }
 

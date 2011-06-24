@@ -64,8 +64,6 @@ void SofaViewer::setScene(sofa::simulation::Node* scene, const char* filename /*
     sceneFileName = filename ? filename : std::string("default.scn");
     groot = scene;
     initTexturesDone = false;
-    sceneBBoxIsValid = false;
-
     _stereoEnabled = false;
     _stereoShift = 1.0;
     _binocularModeEnabled = false;
