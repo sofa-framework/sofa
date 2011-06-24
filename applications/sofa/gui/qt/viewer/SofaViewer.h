@@ -211,7 +211,6 @@ protected:
     bool _axis;
     int _background;
     bool initTexturesDone;
-    bool sceneBBoxIsValid;
 
     Vector3 backgroundColour;
     sofa::helper::gl::Texture* texLogo;
