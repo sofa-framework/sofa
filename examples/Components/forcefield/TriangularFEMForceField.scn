@@ -1,22 +1,26 @@
-<!-- Mechanical MassSpring Group Basic Example -->
-<Node name="root" dt="0.05" gravity="0 -90 10" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" showBoundingTree="0" >
-	<Object type="CollisionPipeline" verbose="0" />
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="CollisionResponse" response="default" />
-	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-	<Object type="CollisionGroup" />
+<!-- Mechanical TriangularFEMForceField Example -->
+<Node name="root" dt="0.05" gravity="0 -9.8 10" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" showBoundingTree="0" >
+	<CollisionPipeline verbose="0" />
+	<BruteForceDetection name="N2" />
+	<CollisionResponse response="default" />
+	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+	<CollisionGroup />
 	<Node name="SquareGravity">
-		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<Object type="MeshLoader" filename="mesh/square3.msh" />
-		<Object type="MechanicalObject"  />
-		<include href="Objects/TriangleSetTopology.xml" />
-		<Object type="DiagonalMass" massDensity="0.5" />
-		<Object type="FixedConstraint" indices="0 1"/>
-		<Object type="TriangularFEMForceField" name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />  
-		<Object type="TriangleSet"/>
-		<Object type="OglModel" name="Visual" color="yellow"/>
-		<Object type="IdentityMapping" object1=".." object2="Visual"/>
+		<EulerImplicit name="cg_odesolver" printLog="false"/>
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<MeshLoader filename="mesh/square3.msh" />
+		<MechanicalObject  name="DOFs" scale3d="100 100 0"/>
+		<TriangleSetTopologyContainer  name="Container"/>
+		<TriangleSetTopologyModifier   name="Modifier" />
+		<TriangleSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+		<TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+		<DiagonalMass massDensity="0.005" />
+		<FixedConstraint indices="0 1 2"/>
+		<TriangularFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" />  
+		<Node name="VisuA">
+			<OglModel name="Visual" color="yellow"/>
+			<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../DOFs" output="@Visual"/>
+		</Node>
 	</Node>
 </Node>
 
