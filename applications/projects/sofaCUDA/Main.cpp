@@ -162,7 +162,13 @@ int main(int argc, char** argv)
 
 
     if (!files.empty()) fileName = files[0];
-    else fileName = "CUDA/quadSpringSphereCUDA.scn";
+    else fileName =
+#if defined(SOFA_GUI_INTERACTION) && defined(SOFA_HAVE_METIS) && defined(SOFA_HAVE_TAUCS_MT) && defined(SOFA_GPU_CUBLAS) && defined(SOFA_HAVE_BOOST)
+            "Demos/Passport/expiredRibCageOmniCarvingVideo1.scn"
+#else
+            "CUDA/quadSpringSphereCUDA.scn"
+#endif
+            ;
     //std::string fileName = "CUDA/beam10x10x46-spring-rk4-CUDA.scn";
 
 
@@ -261,10 +267,10 @@ int main(int argc, char** argv)
         t1 = CTime::getRefTime();
         std::cout << std::endl;
         std::cout << nbIter << " iterations done." << std::endl;
-        std::cout << "Time: " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds, " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))/(double)nbIter <<" ms/it." << std::endl;
+        std::cout << "Time: " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds, " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))/(double)nbIter <<" ms/it ("<< ((double)nbIter*1000.0)/((t1-t0)/(CTime::getRefTicksPerSec()/1000)) << " FPS)" << std::endl;
         std::string logname = fileName.substr(0,fileName.length()-4)+"-log.txt";
         std::ofstream flog(logname.c_str());
-        flog << "Time: " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds, " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))/(double)nbIter <<" ms/it." << std::endl;
+        flog << "Time: " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds, " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))/(double)nbIter <<" ms/it ("<< ((double)nbIter*1000.0)/((t1-t0)/(CTime::getRefTicksPerSec()/1000)) << " FPS)" << std::endl;
         flog.close();
         if (save)
         {
