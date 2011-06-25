@@ -277,7 +277,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     interactionButton = new QPushButton(optionTabs);
     interactionButton->setObjectName(QString::fromUtf8("interactionButton"));
     interactionButton->setCheckable(true);
-    interactionButton->setStyleSheet("background-color: red;");
+    interactionButton->setStyleSheet("background-color: cyan;");
 
 
     gridLayout->addWidget(interactionButton, 3, 0, 1, 1);
@@ -1452,8 +1452,9 @@ void RealGUI::interactionGUI ( bool value )
         this->grabMouse();
         this->grabKeyboard();
         this->setMouseTracking(true);
-        this->setCursor(QCursor(Qt::BlankCursor));
-        QPoint p = mapToGlobal(this->pos()) + QPoint((this->width()+2)/2,(this->height()+2)/2);
+        //this->setCursor(QCursor(Qt::BlankCursor));
+        application->setOverrideCursor( QCursor( Qt::BlankCursor ) );
+        QPoint p = mapToGlobal(QPoint((this->width()+2)/2,(this->height()+2)/2));
         QCursor::setPos(p);
     }
     else
@@ -1462,7 +1463,8 @@ void RealGUI::interactionGUI ( bool value )
         this->releaseKeyboard();
         this->releaseMouse();
         this->setMouseTracking(false);
-        this->setCursor(QCursor(Qt::ArrowCursor));
+        //this->setCursor(QCursor(Qt::ArrowCursor));
+        application->restoreOverrideCursor();
     }
 }
 #endif
@@ -1919,7 +1921,7 @@ void RealGUI::mouseMoveEvent(QMouseEvent * /*e*/)
 {
     if (m_interactionActived)
     {
-        QPoint p = mapToGlobal(this->pos()) + QPoint((this->width()+2)/2,(this->height()+2)/2);
+        QPoint p = mapToGlobal(QPoint((this->width()+2)/2,(this->height()+2)/2));
         QPoint c = QCursor::pos();
         sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move,c.x() - p.x(),c.y() - p.y());
         QCursor::setPos(p);

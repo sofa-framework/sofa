@@ -677,8 +677,8 @@ void OglMatrix4x3Variable::initVisual()
     shader->setMatrix4x3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/12, transpose.getValue(), &(value.getValue()[0]));
 }
 
-}
+} // namespace visual
 
-}
+} // namespace component
 
-}
+} // namespace sofa

@@ -55,7 +55,14 @@ uniform vec2 scaleTexture;
 #if defined(TRI_TEXTURING)
 varying vec3 restPositionW, restNormalW;
 uniform float showDebug;
+#if defined(TRI_TEXTURING_SINGLE_TEXTURE)
+uniform sampler2D planarTexture;
+#define planarTextureX planarTexture
+#define planarTextureY planarTexture
+#define planarTextureZ planarTexture
+#else
 uniform sampler2D planarTextureX, planarTextureY, planarTextureZ;
+#endif
 #endif
 
 #if defined(BUMP_MAPPING)

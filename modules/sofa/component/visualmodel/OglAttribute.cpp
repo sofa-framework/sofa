@@ -67,8 +67,8 @@ int OglUInt2AttributeClass = core::RegisterObject ( "OglUInt2Attribute" ).add< O
 int OglUInt3AttributeClass = core::RegisterObject ( "OglUInt3Attribute" ).add< OglUInt3Attribute >();
 int OglUInt4AttributeClass = core::RegisterObject ( "OglUInt4Attribute" ).add< OglUInt4Attribute >();
 
-}
+} // namespace visual
 
-}
+} // namespace component
 
-}
+} // namespace sofa

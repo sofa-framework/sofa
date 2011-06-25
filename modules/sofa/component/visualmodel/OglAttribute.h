@@ -55,9 +55,8 @@ public:
 
     virtual void reinit();
 
-    // TODO
-    // if attributes are not static, need to update buffer
-    bool updateABO();
+    /// if attributes are not static, update the buffer
+    void updateVisual();
 
     ResizableExtVector<DataTypes>* beginEdit();
     void endEdit();
@@ -77,6 +76,8 @@ protected:
     // attribute buffer object identity
     // to send data to the graphics card faster
     GLuint _abo;
+    unsigned int _aboSize;
+    bool _needUpdate;
     // memory index of the attribute into the graphics memory
     GLuint _index;
 
@@ -86,7 +87,6 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 };
-
 
 /** FLOAT ATTRIBUTE **/
 class SOFA_COMPONENT_VISUALMODEL_API OglFloatAttribute : public OglAttribute<1, GL_FLOAT, float>
@@ -205,10 +205,10 @@ public:
 
 };
 
-}
+} // namespace visual
 
-}
+} // namespace component
 
-}
+} // namespace sofa
 
 #endif

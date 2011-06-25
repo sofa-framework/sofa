@@ -48,13 +48,12 @@ using namespace sofa::component::topology;
 template < int size, unsigned int type, class DataTypes>
 OglAttribute< size, type, DataTypes>::OglAttribute() :
     OglShaderElement()
-    , _abo ( -1 )
+    , _abo ( GLuint(-1) ), _aboSize(0), _needUpdate(false)
     , _usage( GL_STATIC_DRAW)
     ,value( initData(&value, "value", "internal Data"))
 {
     _topology = NULL;
 }
-
 
 template < int size, unsigned int type, class DataTypes>
 OglAttribute< size, type, DataTypes>::~OglAttribute()
@@ -63,22 +62,20 @@ OglAttribute< size, type, DataTypes>::~OglAttribute()
         glDeleteBuffersARB(1, &_abo);
 }
 
-
 template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::init()
 {
     OglShaderElement::init();
     getContext()->get( _topology);
-
-    if ( ( int ) _abo == -1 ) glGenBuffers ( 1, &_abo );
 }
-
 
 template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::initVisual ()
 {
+    if ( _abo == GLuint(-1) ) glGenBuffers ( 1, &_abo );
     const ResizableExtVector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
+    _aboSize = totalSize;
     glBindBufferARB ( GL_ARRAY_BUFFER, _abo );
     glBufferDataARB ( GL_ARRAY_BUFFER,
             totalSize,
@@ -89,36 +86,38 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
             0,
             totalSize,
             data.getData() );
+    _needUpdate = false;
     _index = shader->getAttribute ( indexShader.getValue(), id.getValue().c_str() );
 
     enable();
     glBindBufferARB(GL_ARRAY_BUFFER,0);
 }
 
-
 template < int size, unsigned int type, class DataTypes>
-bool OglAttribute< size, type, DataTypes>::updateABO()
+void OglAttribute< size, type, DataTypes>::updateVisual()
 {
+    if (!_needUpdate) return;
+
     const ResizableExtVector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
     glBindBufferARB ( GL_ARRAY_BUFFER, _abo );
-    glBufferDataARB ( GL_ARRAY_BUFFER,
-            totalSize,
-            NULL,
-            _usage );
+    if (totalSize != _aboSize)
+    {
+        glBufferDataARB ( GL_ARRAY_BUFFER,
+                totalSize,
+                NULL,
+                _usage );
+        _aboSize = totalSize;
+    }
     // Fill the buffer
     glBufferSubDataARB ( GL_ARRAY_BUFFER,
             0,
             totalSize,
             (char*)data.getData() );
-
+    _needUpdate = false;
     enable();
     glBindBufferARB(GL_ARRAY_BUFFER,0);
-
-    return true;
 }
-
-
 
 template < int size, unsigned int type, class DataTypes>
 ResizableExtVector<DataTypes>* OglAttribute< size, type, DataTypes>::beginEdit()
@@ -183,8 +182,7 @@ void OglAttribute< size, type, DataTypes>::bwdDraw(core::visual::VisualParams*)
 template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::reinit()
 {
-    init();
-    initVisual();
+    _needUpdate = true;
 }
 
 // Only resizing and renumbering is done. 'value' has to be set by external components.
@@ -205,8 +203,7 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
             case core::topology::ENDING_EVENT:
             {
                 //sout << "INFO_print : Vis - ENDING_EVENT" << sendl;
-                updateVisual();
-                updateABO();
+                _needUpdate = true;
                 break;
             }
 
@@ -298,10 +295,10 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
     }
 }
 
-}
+} // namespace visual
 
-}
+} // namespace component
 
-}
+} // namespace sofa
 
 #endif
