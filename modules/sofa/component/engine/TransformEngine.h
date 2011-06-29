@@ -87,6 +87,7 @@ protected:
     Data<defaulttype::Vector3> translation; // translation
     Data<defaulttype::Vector3> rotation; // rotation
     Data<defaulttype::Vector3> scale; // scale
+    Data<bool> inverse;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP)

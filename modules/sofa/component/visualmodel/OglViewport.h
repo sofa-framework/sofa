@@ -58,6 +58,7 @@ public:
     Data<double> p_zNear, p_zFar;
     Data<double> p_fovy;
     Data<bool> p_useFBO;
+    Data<bool> p_swapMainView;
 
     helper::gl::FrameBufferObject fbo;
 

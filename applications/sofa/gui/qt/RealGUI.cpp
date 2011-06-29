@@ -1448,7 +1448,7 @@ void RealGUI::interactionGUI ( bool value )
 
     if(value)
     {
-        interactionButton->setText(QApplication::translate("GUI", "Alt+i to quit", 0, QApplication::UnicodeUTF8));
+        interactionButton->setText(QApplication::translate("GUI", "ESC to qu&it", 0, QApplication::UnicodeUTF8));
         this->grabMouse();
         this->grabKeyboard();
         this->setMouseTracking(true);
@@ -1466,6 +1466,10 @@ void RealGUI::interactionGUI ( bool value )
         //this->setCursor(QCursor(Qt::ArrowCursor));
         application->restoreOverrideCursor();
     }
+    sofa::core::objectmodel::KeypressedEvent keyEvent(value?(char)0x81:(char)0x80);
+    Node* groot = viewer->getScene();
+    if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
+
 }
 #endif
 

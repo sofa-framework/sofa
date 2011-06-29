@@ -5,8 +5,8 @@ varying vec4 ambientGlobal;
 
 uniform int lightFlag[MAX_NUMBER_OF_LIGHTS];
 varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
-varying float dist[MAX_NUMBER_OF_LIGHTS];
-varying float spotOff[MAX_NUMBER_OF_LIGHTS];
+//varying float dist[MAX_NUMBER_OF_LIGHTS];
+//varying float spotOff[MAX_NUMBER_OF_LIGHTS];
 
 #ifdef USE_TEXTURE
 uniform sampler2D colorTexture;
@@ -25,10 +25,10 @@ float shadow_unroll(const int index, const sampler2DShadow shadowTexture)
 	depth = sqrt(depthSqr);
 	depth = (depth - zNear[index])/(zFar[index] - zNear[index]);
 	float shadow = shadow2DProj(shadowTexture, shadowTexCoord[index]).x;
-	if (shadow < depth)
-		shadow = 0.0;
+	if (shadow+0.005f < depth)
+		shadow = 0.0f;
 	else 
-		shadow = 1.0;	
+		shadow = 1.0f;	
 	return shadow;
 }
 #endif // ENABLE_SHADOW == 1 
@@ -36,7 +36,7 @@ float shadow_unroll(const int index, const sampler2DShadow shadowTexture)
 void main()
 {
 	vec4 final_color = ambientGlobal;
-    vec4 specular_color = vec4(0.0,0.0,0.0,0.0);
+    vec4 specular_color = vec4(0.0f,0.0f,0.0f,0.0f);
 	bool hasLight = false;
 	vec3 n,halfV;
 	vec4 diffuse;
@@ -53,7 +53,7 @@ void main()
 #if MAX_NUMBER_OF_LIGHTS > 0
 	 float shadowsVar[MAX_NUMBER_OF_LIGHTS];
 	 for(int i=0 ; i<MAX_NUMBER_OF_LIGHTS ; i++)
-	 	shadowsVar[i] = 1.0;
+	 	shadowsVar[i] = 1.0f;
 	 	
 	 if(lightFlag[0] == 2)
 	 	shadowsVar[0] = shadow_unroll(0, shadowTexture[0]);
@@ -89,31 +89,32 @@ void main()
 #if ENABLE_SHADOW == 1 
 			shadow = shadowsVar[i];
 #endif // ENABLE_SHADOW == 1 
-			NdotL = max(dot(n,normalize(lightDir[i])),0.0);
-			if (NdotL > 0.0)
+			NdotL = max(dot(n,normalize(lightDir[i])),0.0f);
+			if (NdotL > 0.0f)
 			{
 #if ENABLE_SHADOW == 1 
-				if (shadow > 0.0)
+				if (shadow > 0.0f)
 				{
 #endif // ENABLE_SHADOW == 1 
 					diffuse = gl_FrontMaterial.diffuse * gl_LightSource[i].diffuse;
 					spotEffect = dot(normalize(gl_LightSource[i].spotDirection), normalize(-lightDir[i]));
-
-					if (spotEffect > spotOff[i])
+                    float spotOff = gl_LightSource[i].spotCosCutoff;
+					if (spotEffect > spotOff)
 					{
-						spotEffect = smoothstep(spotOff[i], 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
+						spotEffect = smoothstep(spotOff, 1.0f, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
 #if ENABLE_SHADOW == 1 
 						spotEffect *= shadow;
 #endif // ENABLE_SHADOW == 1 
 
+                        float dist = length(lightDir[i]);
 						att = spotEffect /* / (gl_LightSource[i].constantAttenuation +
-								gl_LightSource[i].linearAttenuation * dist[i] +
-								gl_LightSource[i].quadraticAttenuation * dist[i] * dist[i]) */;
+								gl_LightSource[i].linearAttenuation * dist +
+								gl_LightSource[i].quadraticAttenuation * dist * dist) */;
 
 						final_color += att * (diffuse * NdotL) ;
 
 						halfV = normalize(gl_LightSource[i].halfVector.xyz);
-						NdotHV = max(dot(n,halfV),0.0);
+						NdotHV = max(dot(n,halfV),0.0f);
 						specular_color += att * gl_FrontMaterial.specular * gl_LightSource[i].specular * pow(NdotHV,gl_FrontMaterial.shininess);
 					}
 				#if ENABLE_SHADOW == 1 

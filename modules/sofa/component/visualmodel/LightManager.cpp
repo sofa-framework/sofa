@@ -81,10 +81,10 @@ void LightManager::init()
 #ifdef SOFA_HAVE_GLEW
     context->get<sofa::component::visualmodel::OglShadowShader, sofa::helper::vector<sofa::component::visualmodel::OglShadowShader*> >(&shadowShaders, core::objectmodel::BaseContext::SearchDown);
 
-    if (shadowShaders.empty())
+    if (shadowShaders.empty() && shadowsEnabled.getValue())
     {
         serr << "LightManager: No OglShadowShaders found ; shadow will be disabled."<< sendl;
-        //shadowsEnabled.setValue(false);
+        shadowsEnabled.setValue(false);
         //return;
     }
 

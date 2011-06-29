@@ -1,6 +1,6 @@
 
 //General Settings () 
-varying vec4 diffuse, ambient, /*ambientGlobal,*/ specular;
+//varying vec4 diffuse, ambient, /*ambientGlobal,*/ specular;
 varying vec3 positionW, normalW;
  
 #if defined(PLANE_ENVIRONMENT_MAPPING) || defined(BORDER_OPACIFYING)  || defined(BORDER_OPACIFYING_V2) 
@@ -49,14 +49,14 @@ void main()
 	
 	
 	/* Compute the diffuse, ambient and globalAmbient terms */
-	diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
-	ambient = (gl_LightModel.ambient + gl_LightSource[0].ambient) * gl_FrontMaterial.ambient;
+//	diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
+//	ambient = (gl_LightModel.ambient + gl_LightSource[0].ambient) * gl_FrontMaterial.ambient;
 	//ambientGlobal = gl_LightModel.ambient * gl_FrontMaterial.ambient;
 	
 #ifdef WET_SPECULAR
-	specular = vec4(1.0,1.0,1.0,1.0);
+	//specular = vec4(1.0,1.0,1.0,1.0);
 #else
-	specular = gl_FrontMaterial.specular * gl_LightSource[0].specular;
+	//specular = gl_FrontMaterial.specular * gl_LightSource[0].specular;
 #endif
 
 #ifdef TEXTURE_UNIT_0
