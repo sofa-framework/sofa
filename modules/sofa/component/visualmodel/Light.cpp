@@ -87,8 +87,8 @@ Light::Light()
     , p_zFar(initData(&p_zFar, "zFar", "Camera's ZFar"))
     , shadowsEnabled(initData(&shadowsEnabled, (bool) true, "shadowsEnabled", "Enable Shadow from this light"))
     , softShadows(initData(&softShadows, (bool) false, "softShadows", "Turn on Soft Shadow from this light"))
+    , needUpdate(false)
 {
-
 }
 
 Light::~Light()
@@ -139,15 +139,22 @@ void Light::initVisual()
 #endif
 }
 
+void Light::update()
+{
+    if (!needUpdate) return;
+    computeShadowMapSize();
+    needUpdate = false;
+}
+
 void Light::reinit()
 {
-
-    initVisual();
-
+    needUpdate = true;
 }
 
 void Light::drawLight()
 {
+    if (needUpdate)
+        update();
     glLightf(GL_LIGHT0+lightID, GL_SPOT_CUTOFF, 180.0);
     GLfloat c[4] = { (GLfloat) color.getValue()[0], (GLfloat)color.getValue()[1], (GLfloat)color.getValue()[2], 1.0 };
     glLightfv(GL_LIGHT0+lightID, GL_AMBIENT, c);
@@ -159,6 +166,8 @@ void Light::drawLight()
 
 void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
 {
+    if (needUpdate)
+        update();
     const Vector3& pos = getPosition();
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -309,17 +318,6 @@ DirectionalLight::~DirectionalLight()
 
 }
 
-void DirectionalLight::initVisual()
-{
-    Light::initVisual();
-
-}
-
-void DirectionalLight::reinit()
-{
-    initVisual();
-}
-
 void DirectionalLight::drawLight()
 {
     Light::drawLight();
@@ -348,18 +346,6 @@ PositionalLight::PositionalLight()
 
 PositionalLight::~PositionalLight()
 {
-
-}
-
-void PositionalLight::initVisual()
-{
-    Light::initVisual();
-
-}
-
-void PositionalLight::reinit()
-{
-    initVisual();
 
 }
 
@@ -418,7 +404,8 @@ void PositionalLight::draw()
 SpotLight::SpotLight():
     direction(initData(&direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light")),
     cutoff(initData(&cutoff, (float) 30.0, "cutoff", "Set the angle (cutoff) of the spot")),
-    exponent(initData(&exponent, (float) 20.0, "exponent", "Set the exponent of the spot"))
+    exponent(initData(&exponent, (float) 20.0, "exponent", "Set the exponent of the spot")),
+    lookat(initData(&lookat, false, "lookat", "If true, direction specify the point at which the spotlight should be pointed to"))
 {
 
 }
@@ -428,39 +415,27 @@ SpotLight::~SpotLight()
 
 }
 
-void SpotLight::initVisual()
-{
-    PositionalLight::initVisual();
-
-}
-
-void SpotLight::reinit()
-{
-    initVisual();
-
-}
-
 void SpotLight::drawLight()
 {
     PositionalLight::drawLight();
-
-    GLfloat dir[]= {(GLfloat)(direction.getValue()[0]), (GLfloat)(direction.getValue()[1]), (GLfloat)(direction.getValue()[2])};
-    glLightf(GL_LIGHT0+lightID, GL_SPOT_CUTOFF, cutoff.getValue());
-    glLightfv(GL_LIGHT0+lightID, GL_SPOT_DIRECTION, dir);
-    glLightf(GL_LIGHT0+lightID, GL_SPOT_EXPONENT, exponent.getValue());
-
+    defaulttype::Vector3 d = direction.getValue();
+    if (lookat.getValue()) d -= position.getValue();
+    d.normalize();
+    GLfloat dir[3]= {(GLfloat)(d[0]), (GLfloat)(d[1]), (GLfloat)(d[2])};
     if (fixed.getValue())
     {
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
         glLoadIdentity();
-        glLightfv(GL_LIGHT0+lightID, GL_SPOT_DIRECTION, dir);
+    }
+    glLightf(GL_LIGHT0+lightID, GL_SPOT_CUTOFF, cutoff.getValue());
+    glLightfv(GL_LIGHT0+lightID, GL_SPOT_DIRECTION, dir);
+    glLightf(GL_LIGHT0+lightID, GL_SPOT_EXPONENT, exponent.getValue());
+    if (fixed.getValue())
+    {
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
     }
-    else
-        glLightfv(GL_LIGHT0+lightID, GL_SPOT_DIRECTION, dir);
-
 }
 
 void SpotLight::draw()
@@ -474,9 +449,11 @@ void SpotLight::draw()
         float width = 5.0f;
         float base =(float)(tan(cutoff.getValue()*M_PI/360)*width*2);
 
-        GLUquadric* quad = gluNewQuadric();
+        static GLUquadric* quad = gluNewQuadric();
         const Vector3& pos = position.getValue();
-        const Vector3& dir = direction.getValue();
+        Vector3 dir = direction.getValue();
+        if (lookat.getValue()) dir -= position.getValue();
+
         const Vector3& col = color.getValue();
 
         //get Rotation
@@ -486,11 +463,14 @@ void SpotLight::draw()
         yAxis = dir.cross(xAxis);
         xAxis.normalize();
         yAxis.normalize();
-        defaulttype::Quat q;
-        q = q.createQuaterFromFrame(xAxis, yAxis, dir).inverse();
-
-        GLfloat rotMat[16];
-        q.writeOpenGlMatrix(rotMat);
+        dir.normalize();
+        GLfloat rotMat[16] =
+        {
+            (GLfloat)xAxis[0], (GLfloat)xAxis[1], (GLfloat)xAxis[2], 0.0f,
+            (GLfloat)yAxis[0], (GLfloat)yAxis[1], (GLfloat)yAxis[2], 0.0f,
+            (GLfloat)dir  [0], (GLfloat)dir  [1], (GLfloat)dir  [2], 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        };
         glDisable(GL_LIGHTING);
         glColor3fv((float*)col.ptr());
 
@@ -499,10 +479,9 @@ void SpotLight::draw()
         glMultMatrixf(rotMat);
         glScalef(scale, scale, scale);
         glPushMatrix();
-        gluSphere(quad, 1.0, 16, 16);
+        gluSphere(quad, 0.5, 16, 16);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glTranslatef(0.0,0.0,-width);
-        gluCylinder(quad,base, 0.0, width, 16, 16);
+        gluCylinder(quad,0.0, base, width, 10, 10);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glPopMatrix();
         glPopMatrix();
@@ -516,7 +495,9 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
     Light::preDrawShadow(vp);
     const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
     const Vector3 &pos = position.getValue();
-    const Vector3 &dir = direction.getValue();
+    Vector3 dir = direction.getValue();
+    if (lookat.getValue()) dir -= position.getValue();
+
 
     Vector3 xAxis, yAxis;
 

@@ -1,7 +1,7 @@
 #version 120
 #extension GL_EXT_gpu_shader4 : enable
 
-varying vec4 diffuse, ambient, /*ambientGlobal,*/ specular;
+//varying vec4 diffuse, ambient, /*ambientGlobal,*/ specular;
 varying vec3 positionW, normalW;
 
 #ifdef TEXTURE_UNIT_0
@@ -71,7 +71,7 @@ uniform float bumpFactor;
 #endif
 
 #ifdef LIGHT2
-varying vec4 diffuse2, specular2;
+//varying vec4 diffuse2, specular2;
 varying vec3 lightDir2;
 #endif //LIGHT2
 
@@ -279,7 +279,7 @@ void main()
 {
 	vec4 color = gl_Color;
 	
-	color = ambient;
+	color = gl_LightModel.ambient * gl_FrontMaterial.ambient;
 
 	//normal
 	vec3 n;
@@ -312,7 +312,7 @@ void main()
 	color += texture2D(planarTextureX,vec2(pos0.y/scaleTexture.x,pos0.z/scaleTexture.y) ) * coefs.x;
 
 	color.rgb = showDebug * (vec3(1.0,1.0,1.0)-coefs) + (1.0-showDebug)*color.rgb;
-	color.a = diffuse.a;
+	color.a = gl_FrontMaterial.diffuse.a;
 #endif
 
 #if defined (PERLIN_NOISE_COLOR) 
@@ -374,7 +374,7 @@ void main()
 	
 
 #ifdef BORDER_OPACIFYING
-	color = ambient;
+	color = gl_LightModel.ambient * gl_FrontMaterial.ambient;
 	
 	vec3 unitNormalVec = normalize(normalW);
 	vec3 unitViewVec = normalize(viewVectorW);
@@ -386,7 +386,7 @@ void main()
 #endif
 
 #ifdef BORDER_OPACIFYING_V2
-	color = ambient;
+	color = gl_LightModel.ambient * gl_FrontMaterial.ambient;
 	vec3 unitNormalVec = normalize(normalW);
 	vec3 unitViewVec = normalize(viewVectorW);
 	 
@@ -411,6 +411,16 @@ void main()
 #else
 	NdotL = max(dot(n,normalize(lightDir)),0.0);
 #endif
+
+	//vec3 halfV = normalize(gl_LightSource[0].halfVector.xyz);
+	vec3 halfV = halfVector;
+	vec4 spec = vec4(0.0,0.0,0.0,0.0);
+
+#ifdef DOUBLE_SIDED
+	NdotHV = abs(dot(n,halfV));
+#else
+	NdotHV = max(dot(n,halfV),0.0);
+#endif
 	
 	if (NdotL > 0.0)
 	{
@@ -424,7 +434,14 @@ void main()
 					gl_LightSource[0].quadraticAttenuation * dist * dist) */;
 	
 			//phong_color += (diffuse * NdotL) /* * att */;
-			phong_color.rgb += (diffuse.rgb * NdotL) * att ;
+			phong_color.rgb += (gl_LightSource[0].diffuse.rgb * NdotL) * att ;
+	
+        	spec =  gl_LightSource[0].specular * pow(NdotHV,gl_FrontMaterial.shininess) * att;
+
+#if defined(SMOOTH_LAYER)
+            spec +=  smoothSpecular * pow( max(dot(normalize(normalW),halfV),0.0),smoothShininess) * att;
+#endif //SMOOTH_LAYER
+
 		}
 	}
 
@@ -434,6 +451,7 @@ void main()
 	
 	if (NdotL > 0.0)
 	{
+/*
 		float spotEffect = dot(normalize(gl_LightSource[1].spotDirection), normalize(-lightDir2));
 	
 		if (spotEffect > gl_LightSource[1].spotCosCutoff)
@@ -442,53 +460,40 @@ void main()
 			att = spotEffect / (gl_LightSource[1].constantAttenuation +
 					gl_LightSource[1].linearAttenuation * dist2 +
 					gl_LightSource[1].quadraticAttenuation * dist2 * dist2);
-	
+	*/
 			//phong_color += (diffuse * NdotL) /* * att */;
-			phong_color.rgb += (diffuse.rgb * NdotL);//  * att ;
+			phong_color.rgb += (gl_LightSource[1].diffuse.rgb * NdotL);//  * att ;
+
+
+#ifdef PHONG2
+       	vec3 halfV2 = halfVector2;
+	    NdotHV = max(dot(n,halfV2),0.0);
+	    spec +=  gl_LightSource[1].specular * pow(NdotHV,gl_FrontMaterial.shininess) /* * att */;
+#endif
+
+/*
 		}
+*/
 	}
 #endif
 	
 #if defined(TEXTURE_UNIT_0) || defined(TRI_TEXTURING)
-	color.rgb *= phong_color.rgb;
+	color.rgb *= gl_FrontMaterial.diffuse.rgb*phong_color.rgb;
 #else
-	color.rgb += phong_color.rgb;
+	color.rgb += gl_FrontMaterial.diffuse.rgb*phong_color.rgb;
 #endif //defined(TEXTURE_UNIT_0) || defined(TRI_TEXTURING)
-
-	//vec3 halfV = normalize(gl_LightSource[0].halfVector.xyz);
-	vec3 halfV = halfVector;
-	vec4 spec = vec4(0.0,0.0,0.0,0.0);
-
-#ifdef DOUBLE_SIDED
-	NdotHV = abs(dot(n,halfV));
-#else
-	NdotHV = max(dot(n,halfV),0.0);
-#endif
 	
-	spec =  specular * pow(NdotHV,gl_FrontMaterial.shininess) /* * att */;
-
-#if defined(SMOOTH_LAYER)
-	spec +=  smoothSpecular * pow( max(dot(normalize(normalW),halfV),0.0),smoothShininess);
-#endif //SMOOTH_LAYER
-
-#ifdef PHONG2
-	vec3 halfV2 = halfVector2;
-	NdotHV = max(dot(n,halfV2),0.0);
-	spec +=  specular * pow(NdotHV,gl_FrontMaterial.shininess) /* * att */;
-#endif
-	
-	color.rgb += spec.rgb;
-	color.a += spec.a;
+	color += gl_FrontMaterial.specular*spec;
 	
 #endif //PHONG
 
 #ifdef PLANE_ENVIRONMENT_MAPPING
-	color = ambient;
+	color = gl_LightModel.ambient * gl_FrontMaterial.ambient;
 	
 	vec3 reflectVec = reflect(viewVectorW, normalW);
 	
 	//if ((reflectVec.z)>0.0)
-	  color.rgb += texture2D(planeTexture, reflectVec.xy*( altitude/reflectVec.z )+vec2(0.5,0.5)).rgb * specular.rgb ;
+	  color.rgb += texture2D(planeTexture, reflectVec.xy*( altitude/reflectVec.z )+vec2(0.5,0.5)).rgb * gl_FrontMaterial.specular.rgb ;
 
 	
 #endif //PLANE_ENVIRONMENT_MAPPING
