@@ -1,59 +1,60 @@
 <Node name="root"  dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
-	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="MinProximityIntersection" name="Proximity" usePointPoint="1" alarmDistance="3.5" contactDistance="2.2" />
-	<Object type="CollisionResponse" name="Response" response="default" />
-	<Object type="CollisionGroup" name="Group" />
-	
+	<CollisionPipeline depth="6" verbose="0" draw="0"/>
+	<BruteForceDetection name="N2" />
+	<MinProximityIntersection name="Proximity" usePointPoint="1" alarmDistance="3.5" contactDistance="1.5" />
+	<CollisionResponse name="Response" response="default" />
+	<CollisionGroup name="Group" />
 	
 	<Node name="Frog">
-		<Object type="CGImplicit" iterations="30" />
-		<Object type="SparseGridTopology" n="10 5 10" fileTopology="mesh/frog.obj" />
-		<Object type="MechanicalObject" dx="-10.0"/>
-		<Object type="UniformMass" mass="1.0" />
-		<Object type="BoxConstraint" box="-18.0 2.0 -5.0 -2.0 3.0 5.0" />
-		<Object type="MeshSpringForceField" name="Springs" stiffness="50000" damping="4" />
+		<EulerImplicit/>
+		<CGLinearSolver iterations="30"/>
+		<SparseGridTopology n="10 5 10" fileTopology="mesh/frog.obj" />
+		<MechanicalObject dx="-10.0"/>
+		<UniformMass mass="1.0" />
+		<BoxConstraint box="-18.0 2.0 -5.0 -2.0 3.0 5.0" />
+		<MeshSpringForceField name="Springs" stiffness="50000" damping="4" />
 		
 		<Node name="Visu">
-			<Object type="OglModel" name="Visual" fileMesh="mesh/frog.obj" color="0.5 1.0 0.5 1.0" />
-			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+			<OglModel name="Visual" fileMesh="mesh/frog.obj" color="0.5 1.0 0.5 1.0" />
+			<BarycentricMapping input="@.." output="@Visual"/>
 		</Node>
 		
 		<Node name="TriangleSurf">
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/frog.obj"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" />
-			<Object type="Triangle"/>	
-			<Object type="Line"/>
-			<Object type="Point"/>
-			<Object type="SurfacePressureForceField" pressure="50000.0" pulseMode="true" pressureSpeed="20000.0"/>
-			<Object type="BarycentricMapping" />
+			<MeshLoader name="meshLoader" filename="mesh/frog.obj"/>
+			<Mesh/>
+			<MechanicalObject/>
+			<Triangle group="1"/>	
+			<Line group="1"/>
+			<Point group="1"/>
+			<SurfacePressureForceField pressure="50000.0" pulseMode="true" pressureSpeed="20000.0"/>
+			<BarycentricMapping input="@.." output="@."/>
 		</Node>
 	</Node>
 	
 	
 	<Node name="Frog2">
-		<Object type="CGImplicit" iterations="30" />
-		<Object type="SparseGridTopology" n="10 5 10" fileTopology="mesh/frog_quads.obj"/>
-		<Object type="MechanicalObject" dx="10.0"/>
-		<Object type="UniformMass" mass="1.0" />
-		<Object type="BoxConstraint" box="2.0 2.0 -5.0 18.0 3.0 5.0" />
-		<Object type="MeshSpringForceField" name="Springs" stiffness="50000" damping="4" />
+		<EulerImplicit/>
+		<CGLinearSolver iterations="30"/>
+		<SparseGridTopology n="10 5 10" fileTopology="mesh/frog_quads.obj"/>
+		<MechanicalObject dx="10.0"/>
+		<UniformMass mass="1.0" />
+		<BoxConstraint box="2.0 2.0 -5.0 18.0 3.0 5.0" />
+		<MeshSpringForceField name="Springs" stiffness="50000" damping="4" />
 		
 		<Node name="Visu">
-			<Object type="OglModel" name="Visual" fileMesh="mesh/frog_quads.obj" color="1.0 0.5 0.5 1.0"/>
-			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+			<OglModel name="Visual" fileMesh="mesh/frog_quads.obj" color="1.0 0.5 0.5 1.0"/>
+			<BarycentricMapping input="@.." output="@Visual"/>
 		</Node>
 		
 		<Node name="QuadSurf">
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/frog_quads.obj"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" />
-			<Object type="Triangle"/>	
-			<Object type="Line"/>
-			<Object type="Point"/>
-			<Object type="SurfacePressureForceField" pressure="50000.0" pulseMode="true" pressureSpeed="20000.0"/>
-			<Object type="BarycentricMapping" />
+			<MeshLoader name="meshLoader" filename="mesh/frog_quads.obj"/>
+			<Mesh/>
+			<MechanicalObject/>
+			<Triangle group="1"/>	
+			<Line group="1"/>
+			<Point group="1"/>
+			<SurfacePressureForceField pressure="50000.0" pulseMode="true" pressureSpeed="20000.0"/>
+			<BarycentricMapping input="@.." output="@."/>
 		</Node>
 	</Node>
 	
