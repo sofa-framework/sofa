@@ -173,6 +173,25 @@ MechanicalObject<DataTypes>::MechanicalObject()
     resize(1);
 }
 
+
+template <class DataTypes>
+MechanicalObject<DataTypes>::~MechanicalObject()
+{
+    if (m_gnuplotFileV != NULL)
+        delete m_gnuplotFileV;
+
+    if (m_gnuplotFileX != NULL)
+        delete m_gnuplotFileX;
+
+//    for(unsigned i=0; i<vectorsCoord.size(); i++)
+//        if( vectorsCoord[i] != NULL ) { delete vectorsCoord[i]; vectorsCoord[i]=NULL; }
+//    for(unsigned i=0; i<vectorsDeriv.size(); i++)
+//        if( vectorsDeriv[i] != NULL )  { delete vectorsDeriv[i]; vectorsDeriv[i]=NULL; }
+//    for(unsigned i=0; i<vectorsMatrixDeriv.size(); i++)
+//        if( vectorsMatrixDeriv[i] != NULL )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=NULL; }
+}
+
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::initGnuplot(const std::string path)
 {
@@ -291,15 +310,6 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     }
 }
 
-template <class DataTypes>
-MechanicalObject<DataTypes>::~MechanicalObject()
-{
-    if (m_gnuplotFileV != NULL)
-        delete m_gnuplotFileV;
-
-    if (m_gnuplotFileX != NULL)
-        delete m_gnuplotFileX;
-}
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()

@@ -25,6 +25,8 @@
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -82,7 +84,10 @@ void DeleteVisitor::processNodeBottomUp(Node* node)
         core::objectmodel::BaseObject* object = *node->object.begin();
         node->removeObject(object);
         if (object != (core::objectmodel::BaseObject*)getSimulation())
+        {
+//                    cerr << "DeleteVisitor::processNodeBottomUp, delete component : " << object->getName() << endl;
             delete object;
+        }
     }
 }
 

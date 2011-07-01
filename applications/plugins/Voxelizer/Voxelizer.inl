@@ -53,7 +53,7 @@ Voxelizer<DataTypes>::Voxelizer()
     : useROI (initData(&useROI, false, "useROI", "Use the given regions of interest."))
     , vROICenter (initData(&vROICenter, "vROICenter", "position of the center of the ROI"))
     , vROIRadius (initData(&vROIRadius, "vROIRadius", "radius of the ROI"))
-    , bbox (initData(&bbox, "bbox", "Define a bounding bos for the rasterization."))
+    , boundingBox (initData(&boundingBox, "boundingBox", "Define a bounding bos for the rasterization."))
     , triangularModelPath (initData(&triangularModelPath, "triangularModelPath", "path to the triangular models"))
     , voxelSize (initData(&voxelSize, "voxelSize", "voxels size"))
     , generateRAWFiles (initData(&generateRAWFiles, true, "generateRAWFiles", "generate RAW files"))
@@ -856,11 +856,11 @@ void Voxelizer<DataTypes>::changeRasterizerSettings()
     for (unsigned int j = 0; j < 2; ++j)
         for (unsigned int i = 0; i < 3; ++i)
         {
-            if (bbox.getValue()[j][i] != 0)
+            if (boundingBox.getValue()[j][i] != 0)
                 emptyBBox = false;
         }
     if (!emptyBBox)
-        rasterizer->sceneBBox.setValue( bbox.getValue());
+        rasterizer->sceneBBox.setValue( boundingBox.getValue());
 
     temporaryChangeTags();
     rasterizer->reinit();

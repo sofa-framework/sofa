@@ -99,6 +99,7 @@ Simulation::Simulation()
 
 Simulation::~Simulation()
 {
+    delete mDrawUtility;
 }
 /// The (unique) simulation which controls the scene
 std::auto_ptr<Simulation> Simulation::theSimulation;

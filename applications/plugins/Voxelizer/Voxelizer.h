@@ -110,7 +110,7 @@ public:
     Data<vector<double> > vROIRadius; // Radius of the ROIs
 
     // Global volume
-    Data<BBox> bbox; // if not useROI, a rasterization bounding box can be specified. The default bounding box is defined by the rasterized objects
+    Data<BBox> boundingBox; // if not useROI, a rasterization bounding box can be specified. The default bounding box is defined by the rasterized objects
 
     // Rasterized Objects
     Data<string> triangularModelPath;
@@ -163,12 +163,12 @@ protected:
     inline void generateFullVolumes( RasterizedVol** rasterizedVolume);
     inline bool isCoordInside( const Vec3d& position, const RasterizedVol& rasterizedVolume, const unsigned int axis); // return true if pos is in the rasterizedVolume.
     inline unsigned int isCoordInside( const Vec3d& position, const RasterizedVol* rasterizedVolume, const unsigned int axis); // return the rasterizeVolume index in which pos is present.
-    inline bool isCoordInside( const BBox& bbox, const RasterizedVol& rasterizedVolume, const unsigned int axis); // return true if pos is in the rasterizedVolume.
-    inline unsigned int isCoordInside( const BBox& bbox, const RasterizedVol** rasterizedVolume); // return the rasterizeVolume index in which pos is present.
-    inline unsigned int isCoordInside( const BBox& bbox, const RasterizedVol* rasterizedVolume, const unsigned int axis); // return the rasterizeVolume index in which pos is present.
-    inline bool isCoordIntersecting( const BBox& bbox, const RasterizedVol& rasterizedVolume, const unsigned int axis); // return true if pos intersect the rasterizedVolume.
-    inline unsigned int isCoordIntersecting( const BBox& bbox, const RasterizedVol** rasterizedVolume); // return the rasterizeVolume index intersecting bbox.
-    inline unsigned int isCoordIntersecting( const BBox& bbox, const RasterizedVol* rasterizedVolume, const unsigned int axis); // return the rasterizeVolume index intersecting bbox.
+    inline bool isCoordInside( const BBox& boundingBox, const RasterizedVol& rasterizedVolume, const unsigned int axis); // return true if pos is in the rasterizedVolume.
+    inline unsigned int isCoordInside( const BBox& boundingBox, const RasterizedVol** rasterizedVolume); // return the rasterizeVolume index in which pos is present.
+    inline unsigned int isCoordInside( const BBox& boundingBox, const RasterizedVol* rasterizedVolume, const unsigned int axis); // return the rasterizeVolume index in which pos is present.
+    inline bool isCoordIntersecting( const BBox& boundingBox, const RasterizedVol& rasterizedVolume, const unsigned int axis); // return true if pos intersect the rasterizedVolume.
+    inline unsigned int isCoordIntersecting( const BBox& boundingBox, const RasterizedVol** rasterizedVolume); // return the rasterizeVolume index intersecting bbox.
+    inline unsigned int isCoordIntersecting( const BBox& boundingBox, const RasterizedVol* rasterizedVolume, const unsigned int axis); // return the rasterizeVolume index intersecting bbox.
     void temporaryChangeTags();
     void restoreTags();
     template<class T>
