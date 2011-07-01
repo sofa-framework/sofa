@@ -159,12 +159,13 @@ MechanicalObject<DataTypes>::MechanicalObject()
 
     // These vectors are set as modified as they are mandatory in the MechanicalObject.
     x				.forceSet();
-//	x0				.forceSet();
+    //	x0				.forceSet();
     v				.forceSet();
     dx				.forceSet();
     f				.forceSet();
     externalForces	.forceSet();
 
+    // do not forget to delete these in the destructor
     write(VecCoordId::null())->forceSet();
     write(VecDerivId::null())->forceSet();
     write(VecDerivId::dforce())->forceSet();
@@ -183,12 +184,17 @@ MechanicalObject<DataTypes>::~MechanicalObject()
     if (m_gnuplotFileX != NULL)
         delete m_gnuplotFileX;
 
-//    for(unsigned i=0; i<vectorsCoord.size(); i++)
-//        if( vectorsCoord[i] != NULL ) { delete vectorsCoord[i]; vectorsCoord[i]=NULL; }
-//    for(unsigned i=0; i<vectorsDeriv.size(); i++)
-//        if( vectorsDeriv[i] != NULL )  { delete vectorsDeriv[i]; vectorsDeriv[i]=NULL; }
-//    for(unsigned i=0; i<vectorsMatrixDeriv.size(); i++)
-//        if( vectorsMatrixDeriv[i] != NULL )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=NULL; }
+    for(unsigned i=core::VecCoordId::V_FIRST_DYNAMIC_INDEX; i<vectorsCoord.size(); i++)
+        if( vectorsCoord[i] != NULL ) { delete vectorsCoord[i]; vectorsCoord[i]=NULL; }
+    delete vectorsCoord[VecCoordId::null().getIndex()]; vectorsCoord[VecCoordId::null().getIndex()] = NULL;
+
+    for(unsigned i=core::VecDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsDeriv.size(); i++)
+        if( vectorsDeriv[i] != NULL )  { delete vectorsDeriv[i]; vectorsDeriv[i]=NULL; }
+    delete vectorsDeriv[VecDerivId::null().getIndex()]; vectorsDeriv[VecDerivId::null().getIndex()] = NULL;
+    delete vectorsDeriv[VecDerivId::dforce().getIndex()]; vectorsDeriv[VecDerivId::dforce().getIndex()] = NULL;
+
+    for(unsigned i=core::MatrixDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsMatrixDeriv.size(); i++)
+        if( vectorsMatrixDeriv[i] != NULL )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=NULL; }
 }
 
 
@@ -1050,11 +1056,11 @@ void MechanicalObject<DataTypes>::init()
 
     reinit();
 
-//	*this->v0 = *v;
-//	*this->v0 = v.getValue();
+    //	*this->v0 = *v;
+    //	*this->v0 = v.getValue();
 
     // Free motion position = position
-//	vOp(VecId::freePosition(), VecId::position());
+    //	vOp(VecId::freePosition(), VecId::position());
 
     VecCoord *x0_edit = x0.beginEdit();
 
@@ -1473,8 +1479,8 @@ template <class DataTypes>
 Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::write(VecCoordId v)
 {
 #ifdef SOFA_SMP_NUMA
-//	if(this->getContext()->getProcessor()!=-1)
-//		numa_set_preferred(this->getContext()->getProcessor()/2);
+    //	if(this->getContext()->getProcessor()!=-1)
+    //		numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
 
     if (v.index >= vectorsCoord.size())
@@ -1515,8 +1521,8 @@ template <class DataTypes>
 Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::write(VecDerivId v)
 {
 #ifdef SOFA_SMP_NUMA
-//	if(this->getContext()->getProcessor()!=-1)
-//		numa_set_preferred(this->getContext()->getProcessor()/2);
+    //	if(this->getContext()->getProcessor()!=-1)
+    //		numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
 
     if (v.index >= vectorsDeriv.size())
@@ -1553,8 +1559,8 @@ template <class DataTypes>
 Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::write(MatrixDerivId v)
 {
 #ifdef SOFA_SMP_NUMA
-//	if(this->getContext()->getProcessor()!=-1)
-//		numa_set_preferred(this->getContext()->getProcessor()/2);
+    //	if(this->getContext()->getProcessor()!=-1)
+    //		numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
 
     if (v.index >= vectorsMatrixDeriv.size())
