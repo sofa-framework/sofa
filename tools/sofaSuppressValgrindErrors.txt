@@ -1,0 +1,53 @@
+{
+   SOFA: Register class in the factory
+   Memcheck:Leak
+   fun:_Znwj
+   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
+   ...
+   fun:_ZNSsC1ERKSsjj
+   fun:_ZNKSs6substrEjj
+   fun:_ZN4sofa4core11objectmodel4Base19decodeNamespaceNameERKSt9type_info
+   fun:_ZN4sofa4core11objectmodel4Base13namespaceNameINS_10simulation4tree14TreeSimulationEEESsPKT_
+   fun:_ZN4sofa4core11objectmodel6TClassINS_10simulation4tree14TreeSimulationENS3_10SimulationEEC1Ev
+   fun:_ZN4sofa4core11objectmodel6TClassINS_10simulation4tree14TreeSimulationENS3_10SimulationEE3getEv
+   fun:_ZN4sofa10simulation4tree14TreeSimulation8GetClassEv
+   fun:_ZN4sofa4core14RegisterObject3addINS_10simulation4tree14TreeSimulationEEERS1_b
+}
+{
+   SOFA: TreeSimulation destructor
+   Memcheck:Addr4
+   fun:_ZNSt8auto_ptrIN4sofa10simulation10SimulationEED1Ev
+}
+{
+   SOFA: Simulation destructor
+   Memcheck:Addr4
+   ...
+   fun:_ZN4sofa10simulation10SimulationD0Ev
+}
+{
+   SOFA: Simulation destructor
+   Memcheck:Free
+   ...
+   fun:_ZN4sofa10simulation10SimulationD0Ev
+}
+{
+   SOFA: ?
+   Memcheck:Leak
+   fun:_Znwj
+   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
+   ...
+   fun:_ZNSsC1EPKcRKSaIcE
+}
+{
+   SOFA: ?
+   Memcheck:Jump
+   ...
+   fun:_ZN4sofa4core11objectmodel8BaseDataD2Ev
+   fun:_ZN4sofa4core11objectmodel5TDataIbED2Ev
+   fun:_ZN4sofa4core11objectmodel4DataIbED1Ev
+   fun:_ZN4sofa4core11objectmodel10BaseObjectD2Ev
+   fun:_ZN4sofa10simulation10SimulationD0Ev
+   fun:_ZNSt8auto_ptrIN4sofa10simulation10SimulationEED1Ev
+}
+
+

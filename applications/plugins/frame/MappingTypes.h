@@ -72,8 +72,8 @@ class OutDataTypesInfo
 public:
     typedef Vec<3,typename Primitive::Real> MaterialCoord;
     typedef vector<MaterialCoord> VecMaterialCoord;
-    enum {primitive_order = 0};
-    enum {type = 0};
+    enum {primitive_order = 0}; ///< differential order: 0 for point, 1 for affine frame, 2 for quadratic frame
+    enum {type = 0};            ///< used to tell apart rigid frames from affine frames (both are order 1)
 };
 
 template<int Spatial_dimensions, int Material_dimensions, int Order, typename Real> struct DeformationGradientTypes;

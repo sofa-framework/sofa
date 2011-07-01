@@ -186,6 +186,7 @@ public:
     Data<double> showStrainScaleFactor;
     Data<bool> showDetF;
     Data<double> showDetFScaleFactor;
+    Data<bool> isAdaptive;
 
     helper::vector< helper::fixed_array <unsigned int,3> > triangles; ///< Topology of toModel (used for strain display)
     helper::vector< core::loader::PrimitiveGroup > trianglesGroups;  ///< triangle groups of toModel (used for restricting interpolation of a group to a label)

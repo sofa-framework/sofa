@@ -16,6 +16,7 @@ contains(CONFIGSTATIC, static) {
 	LIBS += -Wl,--start-group
 }
 LIBS += $$SOFA_LIBS
+QMAKE_LIBDIR += /usr/local/cuda/lib/
 LIBS += -lsofaobjectcreator$$LIBSUFFIX
 contains(CONFIGSTATIC, static) {
 	LIBS += -Wl,--end-group
