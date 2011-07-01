@@ -90,8 +90,8 @@ helper::SofaViewerCreator<QtGLViewer> QtGLViewer_class("qglviewer",false);
 SOFA_DECL_CLASS ( QGLViewerGUI )
 
 
-static bool LeftPressedForMove = false;
-static bool RightPressedForMove = false;
+//static bool LeftPressedForMove = false;
+//static bool RightPressedForMove = false;
 
 
 // ---------------------------------------------------------
