@@ -385,6 +385,7 @@ MatrixLinearSolver<Matrix,Vector>::~MatrixLinearSolver()
     //if (systemLHVector) deleteVector(systemLHVector);
     if (invertData) delete invertData;
     invertData = NULL;
+    delete data;
 }
 
 template<class Matrix, class Vector>
