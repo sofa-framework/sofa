@@ -152,7 +152,7 @@ public:
 
     void moveRayPickInteractor(int eventX, int eventY);
 
-    void setCameraMode(component::visualmodel::BaseCamera::CameraType mode);
+    void setCameraMode(core::visual::VisualParams::CameraType mode);
 
     QString helpString();
 

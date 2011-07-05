@@ -27,7 +27,7 @@ BaseCamera::BaseCamera()
     ,p_maxBBox(initData(&p_maxBBox, Vec3(1.0,1.0,1.0) , "maxBBox", "maaxBBox"))
     ,p_widthViewport(initData(&p_widthViewport, (unsigned int) 800 , "widthViewport", "widthViewport"))
     ,p_heightViewport(initData(&p_heightViewport,(unsigned int) 600 , "heightViewport", "heightViewport"))
-    ,p_type(initData(&p_type, (int) BaseCamera::PERSPECTIVE_TYPE, "type", "Camera Type (0 = Perspective, 1 = Orthographic)"))
+    ,p_type(initData(&p_type, (int) core::visual::VisualParams::PERSPECTIVE_TYPE, "type", "Camera Type (0 = Perspective, 1 = Orthographic)"))
     ,p_activated(initData(&p_activated, true , "activated", "Camera activated ?"))
 {
 

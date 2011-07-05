@@ -125,7 +125,7 @@ public:
     virtual void setSceneFileName(const std::string &f);
     virtual void setScene(sofa::simulation::Node* scene, const char* filename =
             NULL, bool /*keepParams*/= false);
-    virtual void setCameraMode(component::visualmodel::BaseCamera::CameraType mode);
+    virtual void setCameraMode(core::visual::VisualParams::CameraType);
 
 
     virtual bool ready();
