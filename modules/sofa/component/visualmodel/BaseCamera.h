@@ -44,7 +44,7 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
-
+#include <sofa/core/visual/VisualParams.h>
 
 class TiXmlElement;
 
@@ -60,8 +60,7 @@ namespace visualmodel
 class SOFA_COMPONENT_VISUALMODEL_API BaseCamera : public core::objectmodel::BaseObject
 {
 public:
-    enum  CameraType { PERSPECTIVE_TYPE =0, ORTHOGRAPHIC_TYPE =1};
-
+    typedef sofa::core::visual::VisualParams::CameraType CameraType;
     typedef defaulttype::Vector3 Vec3;
     typedef defaulttype::Quat Quat;
 
@@ -147,10 +146,10 @@ public:
 
     void setCameraType(int type)
     {
-        if (type == ORTHOGRAPHIC_TYPE)
-            p_type.setValue(ORTHOGRAPHIC_TYPE);
+        if (type == core::visual::VisualParams::ORTHOGRAPHIC_TYPE)
+            p_type.setValue(core::visual::VisualParams::ORTHOGRAPHIC_TYPE);
         else
-            p_type.setValue(PERSPECTIVE_TYPE);
+            p_type.setValue(core::visual::VisualParams::PERSPECTIVE_TYPE);
     }
 
 

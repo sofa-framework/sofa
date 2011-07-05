@@ -953,7 +953,7 @@ void QtViewer::calcProjection()
     zForeground = -vparams->zNear() - offset;
     zBackground = -vparams->zFar() + offset;
 
-    if (currentCamera->getCameraType() == component::visualmodel::BaseCamera::PERSPECTIVE_TYPE)
+    if (currentCamera->getCameraType() == core::visual::VisualParams::PERSPECTIVE_TYPE)
         gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
     else
     {
