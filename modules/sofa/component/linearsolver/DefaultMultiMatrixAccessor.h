@@ -27,6 +27,7 @@
 
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/objectmodel/Data.h>
 #include <sofa/component/component.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
@@ -51,7 +52,7 @@ using namespace sofa::core::behavior;
  * This class allow only cases where there are several Mechanical State on simulation scene
  * and interactions between them.
  *
- * MappedMultiMatrixAccessor is a more powerfull class managing the global system matrix.
+ * CRSMultiMatrixAccessor is a more powerfull class managing the global system matrix.
  * This class allow the scene where there are mappings so mapped Mechanical State. It compute
  * The contribution of stiffness on mapped Mechanical State to the root State related by mapping.
  *
@@ -155,11 +156,11 @@ protected:
 //TODO separating in other file
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class SOFA_COMPONENT_LINEARSOLVER_API MappedMultiMatrixAccessor : public DefaultMultiMatrixAccessor
+class SOFA_COMPONENT_LINEARSOLVER_API CRSMultiMatrixAccessor : public DefaultMultiMatrixAccessor
 {
 public:
-    MappedMultiMatrixAccessor() : DefaultMultiMatrixAccessor() {}
-    ~MappedMultiMatrixAccessor() {	this->clear();}
+    CRSMultiMatrixAccessor() : DefaultMultiMatrixAccessor() {}
+    ~CRSMultiMatrixAccessor() {	this->clear();}
 
     //Creating the stiffness matrix for a mapped Mechanical State
     virtual defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const;
