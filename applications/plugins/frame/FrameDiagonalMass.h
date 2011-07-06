@@ -118,7 +118,7 @@ public:
         return true;
     };
 
-    void draw();
+    void draw(const core::visual::VisualParams* vparams);
 
     virtual std::string getTemplateName() const
     {

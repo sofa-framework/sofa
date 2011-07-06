@@ -314,7 +314,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
 }
 
 template <class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::draw()
+void FrameDiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
     const MassVector& masses = f_mass.getValue();
     if ( !this->getContext()->getShowBehaviorModels() ) return;
@@ -322,12 +322,12 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
     if ( x.size() != masses.size()) return;
     for ( unsigned int i=0; i<x.size(); i++ )
     {
-        simulation::getSimulation()->DrawUtility().pushMatrix();
+        vparams->drawTool()->pushMatrix();
         float glTransform[16];
         x[i].writeOpenGlMatrix ( glTransform );
-        simulation::getSimulation()->DrawUtility().multMatrix( glTransform );
-        simulation::getSimulation()->DrawUtility().drawFrame ( Vec3(), Quat(), Vec3 ( 1,1,1 )*showAxisSize.getValue() );
-        simulation::getSimulation()->DrawUtility().popMatrix();
+        vparams->drawTool()->multMatrix( glTransform );
+        vparams->drawTool()->drawFrame ( Vec3(), Quat(), Vec3 ( 1,1,1 )*showAxisSize.getValue() );
+        vparams->drawTool()->popMatrix();
     }
 }
 
