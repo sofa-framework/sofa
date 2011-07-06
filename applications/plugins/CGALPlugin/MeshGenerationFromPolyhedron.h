@@ -14,7 +14,9 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-
+#include <sofa/simulation/common/Simulation.h>
+#include <sofa/helper/gl/template.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <CGAL/version.h>
 
@@ -47,14 +49,14 @@ public:
 
 public:
     MeshGenerationFromPolyhedron();
-    virtual ~MeshGenerationFromPolyhedron() { };
+    virtual ~MeshGenerationFromPolyhedron() { }
 
     void init();
     void reinit();
 
     void update();
 
-    void draw();
+    void draw(const sofa::core::visual::VisualParams* vparams);
 
     virtual std::string getTemplateName() const
     {
