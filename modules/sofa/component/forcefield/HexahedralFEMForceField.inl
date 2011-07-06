@@ -656,7 +656,7 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::draw()
+void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;

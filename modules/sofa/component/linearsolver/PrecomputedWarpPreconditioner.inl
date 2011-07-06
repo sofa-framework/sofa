@@ -800,7 +800,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::init()
 }
 
 template<class TDataTypes>
-void PrecomputedWarpPreconditioner<TDataTypes>::draw()
+void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualParams* )
 {
     if (! use_rotations.getValue()) return;
     if (draw_rotations_scale.getValue() <= 0.0) return;

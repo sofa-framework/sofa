@@ -386,7 +386,7 @@ void LineModel::updateFromTopology()
     }
 }
 
-void LineModel::draw(int index)
+void LineModel::draw(const core::visual::VisualParams* ,int index)
 {
     Line l(this,index);
     if (!l.activated())
@@ -397,12 +397,12 @@ void LineModel::draw(int index)
     glEnd();
 }
 
-void LineModel::draw()
+void LineModel::draw(const core::visual::VisualParams* vparams)
 {
     if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility().setPolygonMode(0,true);
+            vparams->drawTool()->setPolygonMode(0,true);
 
         std::vector< Vector3 > points;
         for (int i=0; i<size; i++)
@@ -415,7 +415,7 @@ void LineModel::draw()
             }
         }
 
-        simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(getColor4f()));
+        vparams->drawTool()->drawLines(points, 1, Vec<4,float>(getColor4f()));
 
         if (m_displayFreePosition.getValue())
         {
@@ -430,14 +430,14 @@ void LineModel::draw()
                 }
             }
 
-            simulation::getSimulation()->DrawUtility().drawLines(pointsFree, 1, Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
+            vparams->drawTool()->drawLines(pointsFree, 1, Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
         }
 
         if (getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
+            vparams->drawTool()->setPolygonMode(0,false);
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
-        getPrevious()->draw();
+        getPrevious()->draw(vparams);
 }
 
 bool LineModel::canCollideWithElement(int index, CollisionModel* model2, int index2)

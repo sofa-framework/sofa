@@ -218,7 +218,7 @@ double LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::getPotentialEnergy
 
 /*
 template<class DataTypes1, class DataTypes2>
-void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::draw()
+void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::draw(const core::visual::VisualParams* vparams)
 {
 
 }

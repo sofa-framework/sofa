@@ -1398,7 +1398,7 @@ bool LocalMinDistance::testValidity(Triangle &t, const Vector3 &PQ)
 }
 
 
-void LocalMinDistance::draw()
+void LocalMinDistance::draw(const core::visual::VisualParams* )
 {
     if (!getContext()->getShowCollisionModels())
         return;

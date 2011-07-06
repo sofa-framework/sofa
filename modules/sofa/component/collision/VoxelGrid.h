@@ -62,7 +62,7 @@ public:
     void eraseAll(int timeStampMethod);
     GridCell();
 
-    void draw(int timeStampMethod);
+    void draw(const core::visual::VisualParams*,int timeStampMethod);
     void setMinMax(const Vector3 &minimum, const Vector3& maximum);
 };
 
@@ -92,7 +92,7 @@ public:
     // Create a voxel grid define by minx, miny, minz, maxx, maxy, maxz and the number of subdivision on x, y, z
     void createVoxelGrid (const Vector3 &min, const Vector3 &max, const Vector3 &nbSubdivision);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     void add(core::CollisionModel *cm, int phase);
 

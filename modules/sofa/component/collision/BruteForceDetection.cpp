@@ -478,7 +478,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     //sout << "Narrow phase "<<cm1->getLast()->getName()<<"("<<gettypename(typeid(*cm1->getLast()))<<") - "<<cm2->getLast()->getName()<<"("<<gettypename(typeid(*cm2->getLast()))<<"): "<<elemPairs.size()-size0<<" contacts."<<sendl;
 }
 
-void BruteForceDetection::draw()
+void BruteForceDetection::draw(const core::visual::VisualParams* )
 {
     if (!bDraw.getValue()) return;
     /*
@@ -493,8 +493,8 @@ void BruteForceDetection::draw()
             core::collision::DetectionOutputVector& outputs = it->second;
             for (core::collision::DetectionOutputVector::iterator it2 = outputs.begin(); it2!=outputs.end(); it2++)
             {
-                it2->elem.first.draw();
-                it2->elem.second.draw();
+                it2->elem.first.draw(vparams);
+                it2->elem.second.draw(vparams);
             }
         }
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

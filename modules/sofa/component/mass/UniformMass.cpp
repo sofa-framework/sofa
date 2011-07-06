@@ -206,7 +206,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
 
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid3dTypes, Rigid3dMass>::draw()
+void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams)
 {
     if (!getContext()->getShowBehaviorModels())
         return;
@@ -230,7 +230,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw()
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        simulation::getSimulation()->DrawUtility().drawFrame(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue() );
         gravityCenter += (x[i].getCenter());
     }
 
@@ -262,7 +262,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw()
 
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid2dTypes, Rigid2dMass>::draw()
+void UniformMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualParams* vparams)
 {
     if (!getContext()->getShowBehaviorModels())
         return;
@@ -277,7 +277,7 @@ void UniformMass<Rigid2dTypes, Rigid2dMass>::draw()
         Quat orient(Vec3d(0,0,1), x[i].getOrientation());
         Vec3d center; center = x[i].getCenter();
 
-        simulation::getSimulation()->DrawUtility().drawFrame(center, orient, len*showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(center, orient, len*showAxisSize.getValue() );
     }
 }
 
@@ -313,7 +313,7 @@ double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const core::Me
 
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Vec6dTypes, double>::draw()
+void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* )
 {
     if (!getContext()->getShowBehaviorModels())
         return;
@@ -500,7 +500,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
 
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid3fTypes, Rigid3fMass>::draw()
+void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualParams* vparams)
 {
     if (!getContext()->getShowBehaviorModels())
         return;
@@ -524,7 +524,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw()
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        simulation::getSimulation()->DrawUtility().drawFrame(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue() );
         gravityCenter += (x[i].getCenter());
     }
 
@@ -544,7 +544,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw()
 }
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid2fTypes, Rigid2fMass>::draw()
+void UniformMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualParams* vparams)
 {
     if (!getContext()->getShowBehaviorModels())
         return;
@@ -559,7 +559,7 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw()
         Quat orient(Vec3d(0,0,1), x[i].getOrientation());
         Vec3d center; center = x[i].getCenter();
 
-        simulation::getSimulation()->DrawUtility().drawFrame(center, orient, len*showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(center, orient, len*showAxisSize.getValue() );
     }
 }
 
@@ -594,7 +594,7 @@ double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const core::Me
 
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Vec6fTypes, float>::draw()
+void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* )
 {
     if (!getContext()->getShowBehaviorModels())
         return;

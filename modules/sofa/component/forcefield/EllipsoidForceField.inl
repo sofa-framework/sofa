@@ -147,7 +147,7 @@ void EllipsoidForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
 }
 
 template<class DataTypes>
-void EllipsoidForceField<DataTypes>::draw()
+void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!bDraw.getValue()) return;

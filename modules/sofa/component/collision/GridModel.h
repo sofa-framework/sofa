@@ -81,9 +81,9 @@ public:
 
     virtual bool isLeaf( int index ) const;
 
-    void draw(int index);
+    void draw(const core::visual::VisualParams*,int index);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 };
 
 inline GridCell::GridCell(GridModel* model, int index)

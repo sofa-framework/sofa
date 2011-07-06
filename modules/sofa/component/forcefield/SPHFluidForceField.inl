@@ -326,11 +326,11 @@ void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mpar
 }
 
 template<class DataTypes>
-void SPHFluidForceField<DataTypes>::draw()
+void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     //if (grid != NULL)
-    //	grid->draw();
+    //	grid->draw(vparams);
     const VecCoord& x = *this->mstate->getX();
     glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);

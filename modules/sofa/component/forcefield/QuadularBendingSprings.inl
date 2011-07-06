@@ -775,7 +775,7 @@ void QuadularBendingSprings<DataTypes>::updateLameCoefficients()
 
 
 template<class DataTypes>
-void QuadularBendingSprings<DataTypes>::draw()
+void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;

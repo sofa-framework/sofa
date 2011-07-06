@@ -109,7 +109,7 @@ public:
 
     virtual double getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x1, const DataVecCoord& x2) const;
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 };
 
 } // namespace interactionforcefield

@@ -2551,17 +2551,17 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 
 #ifndef SOFA_FLOAT
 template<>
-void MechanicalObject<defaulttype::Rigid3dTypes>::draw();
+void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
 #endif
 #ifndef SOFA_DOUBLE
 template<>
-void MechanicalObject<defaulttype::Rigid3fTypes>::draw();
+void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
 #endif
 template<>
-void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw();
+void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams);
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::draw()
+void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -2618,7 +2618,7 @@ void MechanicalObject<DataTypes>::draw()
         vector<Vector3> positions;
         for (int i = 0; i < vsize; ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
-        simulation::getSimulation()->DrawUtility().drawPoints(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
+        vparams->drawTool()->drawPoints(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
         glPopAttrib();
     }
 }

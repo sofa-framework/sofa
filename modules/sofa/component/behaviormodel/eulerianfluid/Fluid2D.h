@@ -80,7 +80,7 @@ public:
 
     virtual void updatePosition(double dt);
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
     virtual bool addBBox(double* minBBox, double* maxBBox);
 

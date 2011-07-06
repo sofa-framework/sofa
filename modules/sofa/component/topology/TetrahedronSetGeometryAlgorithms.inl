@@ -548,9 +548,9 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 
 
 template<class DataTypes>
-void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
+void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    TriangleSetGeometryAlgorithms<DataTypes>::draw();
+    TriangleSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     //Draw tetra indices
     if (showTetrahedraIndices.getValue())

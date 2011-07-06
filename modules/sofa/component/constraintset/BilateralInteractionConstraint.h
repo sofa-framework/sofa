@@ -216,7 +216,7 @@ public:
 
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)

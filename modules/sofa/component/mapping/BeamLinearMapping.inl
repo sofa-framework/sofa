@@ -278,7 +278,7 @@ void BeamLinearMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
 
 
 template <class TIn, class TOut>
-void BeamLinearMapping<TIn, TOut>::draw()
+void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getShow()) return;
     std::vector< Vector3 > points;
@@ -291,7 +291,7 @@ void BeamLinearMapping<TIn, TOut>::draw()
         points.push_back(point);
     }
 
-    simulation::getSimulation()->DrawUtility().drawPoints(points, 7, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawPoints(points, 7, Vec<4,float>(1,1,0,1));
 }
 
 

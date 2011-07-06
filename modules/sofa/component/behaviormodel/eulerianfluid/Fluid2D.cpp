@@ -101,7 +101,7 @@ void Fluid2D::updatePosition(double dt)
     Grid2D* p = fluid; fluid=fnext; fnext=p;
 }
 
-void Fluid2D::draw()
+void Fluid2D::draw(const core::visual::VisualParams* )
 {
     updateVisual();
     glPushMatrix();

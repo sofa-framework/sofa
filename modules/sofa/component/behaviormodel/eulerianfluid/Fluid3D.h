@@ -84,7 +84,7 @@ public:
 
     virtual void updatePosition(double dt);
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
     virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
 

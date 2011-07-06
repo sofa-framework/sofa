@@ -103,13 +103,13 @@ void FixParticlePerformer<DataTypes>::execute()
 
 
 template <class DataTypes>
-void FixParticlePerformer<DataTypes>::draw()
+void FixParticlePerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     for (unsigned int i=0; i<fixations.size(); ++i)
     {
         bool b = fixations[i]->getContext()->getShowBehaviorModels();
         fixations[i]->getContext()->setShowBehaviorModels(true);
-        simulation::getSimulation()->draw(fixations[i]);
+        simulation::getSimulation()->draw(fixations[i],const_cast<core::visual::VisualParams*>(vparams));
         fixations[i]->getContext()->setShowBehaviorModels(b);
     }
 }

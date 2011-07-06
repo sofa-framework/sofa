@@ -106,7 +106,7 @@ void PlaneForceField<Rigid3dTypes>::setPlane(const Deriv& normal, Real d)
 }
 
 template<>
-void PlaneForceField<Rigid3dTypes>::drawPlane(float size)
+void PlaneForceField<Rigid3dTypes>::drawPlane(const core::visual::VisualParams* vparams,float size)
 {
     if (size == 0.0f) size = (float)drawSize.getValue();
 
@@ -147,10 +147,10 @@ void PlaneForceField<Rigid3dTypes>::drawPlane(float size)
     points.push_back(corners[2]);
     points.push_back(corners[3]);
 
-    simulation::getSimulation()->DrawUtility().setPolygonMode(2,false); //Cull Front face
+    vparams->drawTool()->setPolygonMode(2,false); //Cull Front face
 
-    simulation::getSimulation()->DrawUtility().drawTriangles(points, defaulttype::Vec<4,float>(color.getValue()[0],color.getValue()[1],color.getValue()[2],0.5));
-    simulation::getSimulation()->DrawUtility().setPolygonMode(0,false); //No Culling
+    vparams->drawTool()->drawTriangles(points, defaulttype::Vec<4,float>(color.getValue()[0],color.getValue()[1],color.getValue()[2],0.5));
+    vparams->drawTool()->setPolygonMode(0,false); //No Culling
     glDisable(GL_CULL_FACE);
 
     std::vector< defaulttype::Vector3 > pointsLine;
@@ -180,7 +180,7 @@ void PlaneForceField<Rigid3dTypes>::drawPlane(float size)
         pointsLine.push_back(point1);
         pointsLine.push_back(point2);
     }
-    simulation::getSimulation()->DrawUtility().drawLines(pointsLine, 1, defaulttype::Vec<4,float>(1,0,0,1));
+    vparams->drawTool()->drawLines(pointsLine, 1, defaulttype::Vec<4,float>(1,0,0,1));
 }
 
 template<>

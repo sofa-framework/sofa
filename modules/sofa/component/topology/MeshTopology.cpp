@@ -2565,7 +2565,7 @@ const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElements
 
 
 
-void MeshTopology::draw()
+void MeshTopology::draw(const core::visual::VisualParams* )
 {
     //Draw edges
     if (_drawEdges.getValue())

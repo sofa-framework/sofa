@@ -420,13 +420,13 @@ void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalPar
 
 
 template<class DataTypes>
-void RegularGridSpringForceField<DataTypes>::draw()
+void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields())) return;
     assert(this->mstate1);
     assert(this->mstate2);
     // Draw any custom springs
-    this->StiffSpringForceField<DataTypes>::draw();
+    this->StiffSpringForceField<DataTypes>::draw(vparams);
     // Compute topological springs
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
@@ -631,7 +631,7 @@ void RegularGridSpringForceField<DataTypes>::draw()
         }
     }
 
-    simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(0.5,0.5,0.5,1));
+    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(0.5,0.5,0.5,1));
 }
 
 } // namespace interactionforcefield

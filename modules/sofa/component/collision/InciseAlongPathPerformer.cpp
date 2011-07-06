@@ -218,7 +218,7 @@ InciseAlongPathPerformer::~InciseAlongPathPerformer()
     this->interactor->setBodyPicked(firstIncisionBody);
 }
 
-void InciseAlongPathPerformer::draw()
+void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
 {
     if (firstBody.body == NULL) return;
 

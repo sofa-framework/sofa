@@ -126,7 +126,7 @@ public:
     //bool testIntersection(CubicBezierCurve<FLAG>&, CubicBezierCurve<FLAG>&);
 #endif // SOFA_DEV
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     /// Actions to accomplish when the broadPhase is started. By default do nothing.
     virtual void beginBroadPhase() {}

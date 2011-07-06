@@ -195,7 +195,7 @@ void SpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *, 
 
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::draw()
+void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();
@@ -250,10 +250,10 @@ void SpringForceField<DataTypes>::draw()
 
     if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)
     {
-        simulation::getSimulation()->DrawUtility().drawLines(points[0], 1, c0);
-        simulation::getSimulation()->DrawUtility().drawLines(points[1], 1, c1);
-        simulation::getSimulation()->DrawUtility().drawLines(points[2], 1, c2);
-        simulation::getSimulation()->DrawUtility().drawLines(points[3], 1, c3);
+        vparams->drawTool()->drawLines(points[0], 1, c0);
+        vparams->drawTool()->drawLines(points[1], 1, c1);
+        vparams->drawTool()->drawLines(points[2], 1, c2);
+        vparams->drawTool()->drawLines(points[3], 1, c3);
     }
     else if (drawMode.getValue() == 1)
     {
@@ -262,10 +262,10 @@ void SpringForceField<DataTypes>::draw()
         const unsigned int numLines2=points[2].size()/2;
         const unsigned int numLines3=points[3].size()/2;
 
-        for (unsigned int i=0; i<numLines0; ++i) simulation::getSimulation()->DrawUtility().drawCylinder(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
-        for (unsigned int i=0; i<numLines1; ++i) simulation::getSimulation()->DrawUtility().drawCylinder(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
-        for (unsigned int i=0; i<numLines2; ++i) simulation::getSimulation()->DrawUtility().drawCylinder(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
-        for (unsigned int i=0; i<numLines3; ++i) simulation::getSimulation()->DrawUtility().drawCylinder(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
+        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawCylinder(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
+        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawCylinder(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
+        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawCylinder(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
+        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawCylinder(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
 
     }
     else if (drawMode.getValue() == 2)
@@ -275,10 +275,10 @@ void SpringForceField<DataTypes>::draw()
         const unsigned int numLines2=points[2].size()/2;
         const unsigned int numLines3=points[3].size()/2;
 
-        for (unsigned int i=0; i<numLines0; ++i) simulation::getSimulation()->DrawUtility().drawArrow(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
-        for (unsigned int i=0; i<numLines1; ++i) simulation::getSimulation()->DrawUtility().drawArrow(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
-        for (unsigned int i=0; i<numLines2; ++i) simulation::getSimulation()->DrawUtility().drawArrow(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
-        for (unsigned int i=0; i<numLines3; ++i) simulation::getSimulation()->DrawUtility().drawArrow(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
+        for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawArrow(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
+        for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawArrow(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
+        for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawArrow(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
+        for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawArrow(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
     }
     else serr << "No proper drawing mode found!" << sendl;
 

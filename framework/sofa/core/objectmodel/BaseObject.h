@@ -53,6 +53,12 @@ namespace topology
 class Topology;
 } // namespace topology
 
+namespace visual
+{
+class VisualParams;
+}
+
+
 namespace objectmodel
 {
 
@@ -136,9 +142,16 @@ public:
     /// @}
 
     /// Render internal data of this object, for debugging purposes.
-    virtual void draw() {}
-
+    virtual void draw(const core::visual::VisualParams*)
+    {
+#ifndef SOFA_DEPRECATE_OLD_API
+        draw();
+#endif
+    }
     ///@}
+#ifndef SOFA_DEPRECATE_OLD_API
+    virtual void draw() {}
+#endif
 
     /// @name data access
     ///   Access to external data

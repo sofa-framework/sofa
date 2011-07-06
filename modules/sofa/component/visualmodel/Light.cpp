@@ -331,7 +331,7 @@ void DirectionalLight::drawLight()
     glLightfv(GL_LIGHT0+lightID, GL_POSITION, dir);
 }
 
-void DirectionalLight::draw()
+void DirectionalLight::draw(const core::visual::VisualParams* )
 {
 
 }
@@ -374,7 +374,7 @@ void PositionalLight::drawLight()
 
 }
 
-void PositionalLight::draw()
+void PositionalLight::draw(const core::visual::VisualParams* )
 {
     if (drawSource.getValue() && getContext()->getShowVisualModels())
     {
@@ -438,7 +438,7 @@ void SpotLight::drawLight()
     }
 }
 
-void SpotLight::draw()
+void SpotLight::draw(const core::visual::VisualParams* )
 {
     if (drawSource.getValue() && getContext()->getShowVisualModels())
     {

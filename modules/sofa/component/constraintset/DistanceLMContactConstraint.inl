@@ -333,7 +333,7 @@ bool DistanceLMContactConstraint<DataTypes>::isCorrectionComputedWithSimulatedDO
 }
 
 template <class DataTypes>
-void DistanceLMContactConstraint<DataTypes>::draw()
+void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     //if (this->l0.size() != pointPairs.getValue().size()) updateRestLength();
 
@@ -373,11 +373,11 @@ void DistanceLMContactConstraint<DataTypes>::draw()
             }
         }
 
-        simulation::getSimulation()->DrawUtility().drawLines(points[VANISHING], 1, colorsContactState[VANISHING]);
-        simulation::getSimulation()->DrawUtility().drawLines(points[STICKING], 1, colorsContactState[STICKING]);
-        simulation::getSimulation()->DrawUtility().drawLines(points[SLIDING], 1, colorsContactState[SLIDING]);
+        vparams->drawTool()->drawLines(points[VANISHING], 1, colorsContactState[VANISHING]);
+        vparams->drawTool()->drawLines(points[STICKING], 1, colorsContactState[STICKING]);
+        vparams->drawTool()->drawLines(points[SLIDING], 1, colorsContactState[SLIDING]);
 
-        simulation::getSimulation()->DrawUtility().drawLines(slidingConstraints, 1, colorsContactState.back());
+        vparams->drawTool()->drawLines(slidingConstraints, 1, colorsContactState.back());
 
 
     }

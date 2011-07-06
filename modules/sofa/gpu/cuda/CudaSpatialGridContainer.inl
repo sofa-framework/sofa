@@ -332,7 +332,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::draw()
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::draw(const core::visual::VisualParams* )
 {
     if (!lastX) return;
     int nbPoints = particleHash.size();

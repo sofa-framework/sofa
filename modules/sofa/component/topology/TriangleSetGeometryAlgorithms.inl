@@ -2107,9 +2107,9 @@ bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p, unsigned int
 
 
 template<class DataTypes>
-void TriangleSetGeometryAlgorithms<DataTypes>::draw()
+void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    EdgeSetGeometryAlgorithms<DataTypes>::draw();
+    EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Triangles indices
     if (showTriangleIndices.getValue())

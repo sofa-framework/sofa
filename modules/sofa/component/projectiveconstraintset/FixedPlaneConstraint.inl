@@ -204,7 +204,7 @@ template <class DataTypes> void FixedPlaneConstraint<DataTypes>::handleTopologyC
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::draw()
+void FixedPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowBehaviorModels()) return;
     const VecCoord& x = *this->mstate->getX();

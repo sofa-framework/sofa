@@ -357,7 +357,7 @@ void BoxROI<DataTypes>::update()
 }
 
 template <class DataTypes>
-void BoxROI<DataTypes>::draw()
+void BoxROI<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowBehaviorModels() && !this->_drawSize.getValue())
         return;

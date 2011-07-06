@@ -81,7 +81,7 @@ public:
 
     //virtual void reinit();
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
     virtual ~EdgeSetGeometryAlgorithms() {}
 

@@ -134,7 +134,7 @@ void LagrangianMultiplierContactConstraint<DataTypes>::addDForce(VecDeriv& f1, V
 
 
 template<class DataTypes>
-void LagrangianMultiplierContactConstraint<DataTypes>::draw()
+void LagrangianMultiplierContactConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();

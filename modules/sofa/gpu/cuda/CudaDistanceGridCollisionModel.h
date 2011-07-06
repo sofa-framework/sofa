@@ -553,9 +553,9 @@ public:
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0);
 
-    void draw(int index);
+    void draw(const core::visual::VisualParams*,int index);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 };
 
 inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, int index)

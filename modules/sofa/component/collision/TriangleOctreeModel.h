@@ -59,7 +59,7 @@ public:
     /// the normals for each point
     vector<Vector3> pNorms;
     //vector < Vector4 > octreeVec;
-    void draw();
+    void draw(const core::visual::VisualParams*);
     virtual void computeBoundingTree(int maxDepth=0);
     virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
     /// init the octree creation

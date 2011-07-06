@@ -60,7 +60,7 @@ public:
     void createContacts(DetectionOutputMap& outputs);
 
     void init();
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)

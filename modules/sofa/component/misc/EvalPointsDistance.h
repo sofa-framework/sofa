@@ -92,7 +92,7 @@ public:
 
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event);
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
     virtual void doDraw(const VecCoord& x1, const VecCoord& x2);
 
     /// Retrieve the associated MechanicalState (First model)

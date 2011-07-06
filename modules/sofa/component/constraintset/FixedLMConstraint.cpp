@@ -64,7 +64,7 @@ template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<Rigid3fTypes>;
 
 #ifndef SOFA_FLOAT
 template <>
-void FixedLMConstraint<Rigid3dTypes>::draw()
+void FixedLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* )
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -82,7 +82,7 @@ void FixedLMConstraint<Rigid3dTypes>::draw()
 
 #ifndef SOFA_DOUBLE
 template <>
-void FixedLMConstraint<Rigid3fTypes>::draw()
+void FixedLMConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -98,11 +98,11 @@ void FixedLMConstraint<Rigid3fTypes>::draw()
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        simulation::getSimulation()->DrawUtility().drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
     else
     {
-        simulation::getSimulation()->DrawUtility().drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 }
 

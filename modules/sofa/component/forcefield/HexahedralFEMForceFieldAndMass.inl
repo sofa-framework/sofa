@@ -635,9 +635,9 @@ double HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*
 
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::draw()
+void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    HexahedralFEMForceFieldT::draw();
+    HexahedralFEMForceFieldT::draw(vparams);
 
     if (!this->getContext()->getShowBehaviorModels())
         return;

@@ -162,7 +162,7 @@ void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::beh
 
 
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::draw()
+void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowInteractionForceFields()) return;
 

@@ -211,7 +211,7 @@ public:
     virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
     virtual void handleTopologyChange();
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     int method;
     Data<std::string> f_method;

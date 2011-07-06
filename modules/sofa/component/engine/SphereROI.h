@@ -87,7 +87,7 @@ public:
 
     void update();
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     bool addBBox(double* /*minBBox*/, double* /*maxBBox*/) { return false; };
 

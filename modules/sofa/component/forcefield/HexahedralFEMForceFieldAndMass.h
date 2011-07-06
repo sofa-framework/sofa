@@ -114,7 +114,7 @@ public:
 
     virtual void addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v);
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
     virtual bool addBBox(double* minBBox, double* maxBBox);
 

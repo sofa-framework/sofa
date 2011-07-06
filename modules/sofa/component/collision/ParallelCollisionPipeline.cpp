@@ -300,7 +300,7 @@ helper::set< std::string > ParallelCollisionPipeline::getResponseList() const
     return listResponse;
 }
 
-void ParallelCollisionPipeline::draw()
+void ParallelCollisionPipeline::draw(const core::visual::VisualParams* vparams)
 {
     if (!bDraw.getValue()) return;
     if (!narrowPhaseDetection) return;

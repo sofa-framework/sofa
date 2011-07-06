@@ -143,7 +143,7 @@ void LennardJonesForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 }
 
 template<class DataTypes>
-void LennardJonesForceField<DataTypes>::draw()
+void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getContext()->getShowForceFields()) return;
     const VecCoord& p1 = *this->mstate->getX();
@@ -165,8 +165,8 @@ void LennardJonesForceField<DataTypes>::draw()
             points[1].push_back(p1[df.b]);
         }
     }
-    simulation::getSimulation()->DrawUtility().drawLines(points[0], 1, defaulttype::Vec<4,float>(1,1,1,1));
-    simulation::getSimulation()->DrawUtility().drawLines(points[1], 1, defaulttype::Vec<4,float>(0,0,1,1));
+    vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(1,1,1,1));
+    vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0,0,1,1));
 
 }
 

@@ -58,9 +58,9 @@ TriangleOctreeModel::TriangleOctreeModel ()
 {
 }
 
-void TriangleOctreeModel::draw ()
+void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 {
-    TriangleModel::draw();
+    TriangleModel::draw(vparams);
     if (isActive () && getContext ()->getShowCollisionModels ())
     {
         if (getContext ()->getShowWireFrame ())
@@ -77,7 +77,7 @@ void TriangleOctreeModel::draw ()
         glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
         glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, 20);
         if(octreeRoot)
-            octreeRoot->draw ();
+            octreeRoot->draw(vparams);
 
         glColor3f (1.0f, 1.0f, 1.0f);
         glDisable (GL_LIGHTING);

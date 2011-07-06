@@ -102,7 +102,7 @@ public:
     void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 
     MeshLoader::SeqTriangles triangles; // Topology of toModel (used for weight display)
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
 };
 

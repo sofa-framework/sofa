@@ -302,7 +302,7 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, 
 
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::draw()
+void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getContext()->
         getShowBehaviorModels()) return;
@@ -334,7 +334,7 @@ void FixedConstraint<DataTypes>::draw()
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
-        simulation::getSimulation()->DrawUtility().drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
@@ -355,22 +355,22 @@ void FixedConstraint<DataTypes>::draw()
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
-        simulation::getSimulation()->DrawUtility().drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 }
 
 // Specialization for rigids
 #ifndef SOFA_FLOAT
 template <>
-void FixedConstraint<Rigid3dTypes >::draw();
+void FixedConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void FixedConstraint<Rigid2dTypes >::draw();
+void FixedConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void FixedConstraint<Rigid3fTypes >::draw();
+void FixedConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void FixedConstraint<Rigid2fTypes >::draw();
+void FixedConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
 
 

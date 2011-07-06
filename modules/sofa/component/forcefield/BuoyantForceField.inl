@@ -598,7 +598,7 @@ typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::getImm
 }
 
 template<class DataTypes>
-void BuoyantForceField<DataTypes>::draw()
+void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;

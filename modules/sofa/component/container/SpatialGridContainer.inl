@@ -561,7 +561,7 @@ void SpatialGrid<DataTypes>::reorderIndices(helper::vector<unsigned int>* old2ne
 }
 
 template<class DataTypes>
-void SpatialGrid<DataTypes>::draw()
+void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
 {
     const float cscale = (float)(cellWidth);
     const float gscale = (float)(cellWidth*GRIDDIM);
@@ -793,12 +793,12 @@ void SpatialGridContainer<DataTypes>::handleEvent(sofa::core::objectmodel::Event
 }
 
 template<class DataTypes>
-void SpatialGridContainer<DataTypes>::draw()
+void SpatialGridContainer<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!d_showGrid.getValue())
         return;
     if (grid != NULL)
-        grid->draw();
+        grid->draw(vparams);
 }
 
 } // namespace container

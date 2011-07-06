@@ -204,12 +204,12 @@ std::string DefaultContactManager::getContactResponse(core::CollisionModel* mode
     else return response1;
 }
 
-void DefaultContactManager::draw()
+void DefaultContactManager::draw(const core::visual::VisualParams* vparams)
 {
     for (sofa::helper::vector<core::collision::Contact*>::iterator it = contacts.begin(); it!=contacts.end(); it++)
     {
         if ((*it)!=NULL)
-            (*it)->draw();
+            (*it)->draw(vparams);
     }
 }
 

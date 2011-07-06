@@ -129,7 +129,7 @@ void PointModel::init()
 
 }
 
-void PointModel::draw(int index)
+void PointModel::draw(const core::visual::VisualParams* ,int index)
 {
     Point p(this,index);
     if (!p.activated())
@@ -146,12 +146,12 @@ void PointModel::draw(int index)
     }
 }
 
-void PointModel::draw()
+void PointModel::draw(const core::visual::VisualParams* vparams)
 {
     if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility().setPolygonMode(0,true);
+            vparams->drawTool()->setPolygonMode(0,true);
 
         // Check topological modifications
         const int npoints = mstate->getX()->size();
@@ -176,8 +176,8 @@ void PointModel::draw()
             }
         }
 
-        simulation::getSimulation()->DrawUtility().drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
-        simulation::getSimulation()->DrawUtility().drawLines(pointsL, 1, Vec<4,float>(getColor4f()));
+        vparams->drawTool()->drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
+        vparams->drawTool()->drawLines(pointsL, 1, Vec<4,float>(getColor4f()));
 
         if (m_displayFreePosition.getValue())
         {
@@ -192,15 +192,15 @@ void PointModel::draw()
                 }
             }
 
-            simulation::getSimulation()->DrawUtility().drawPoints(pointsPFree, 3, Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
+            vparams->drawTool()->drawPoints(pointsPFree, 3, Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
         }
 
         if (getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
+            vparams->drawTool()->setPolygonMode(0,false);
     }
 
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
-        getPrevious()->draw();
+        getPrevious()->draw(vparams);
 }
 
 bool PointModel::canCollideWithElement(int index, CollisionModel* model2, int index2)

@@ -348,9 +348,9 @@ bool is_point_in_quad(const Coord& p,
 
 
 template<class DataTypes>
-void QuadSetGeometryAlgorithms<DataTypes>::draw()
+void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    EdgeSetGeometryAlgorithms<DataTypes>::draw();
+    EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Quads indices
     if (showQuadIndices.getValue())

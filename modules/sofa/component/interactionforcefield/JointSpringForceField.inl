@@ -337,7 +337,7 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::draw()
+void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();
@@ -384,9 +384,9 @@ void JointSpringForceField<DataTypes>::draw()
 
         //---debugging
 //		if (showLawfulTorsion.getValue())
-//			helper::gl::Axis::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation()*springs[i].lawfulTorsion, 0.5*showFactorSize.getValue());
+//			helper::gl::Axis::draw(vparams,p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation()*springs[i].lawfulTorsion, 0.5*showFactorSize.getValue());
 //		if (showExtraTorsion.getValue())
-//			helper::gl::Axis::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation()*springs[i].extraTorsion, 0.5*showFactorSize.getValue());
+//			helper::gl::Axis::draw(vparams,p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation()*springs[i].extraTorsion, 0.5*showFactorSize.getValue());
         if (showLawfulTorsion.getValue())
             helper::gl::drawArrow(p1[springs[i].m1].getCenter(), p1[springs[i].m1].pointToParent(springs[i].lawfulTorsion), (float)(0.5*showFactorSize.getValue()));
         if (showExtraTorsion.getValue())

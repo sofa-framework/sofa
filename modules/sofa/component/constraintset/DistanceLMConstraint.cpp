@@ -76,7 +76,7 @@ Rigid3dTypes::Deriv DistanceLMConstraint<Rigid3dTypes>::getDirection(const Edge 
     return Deriv(V12, Vector3());
 }
 template<>
-void DistanceLMConstraint<Rigid3dTypes>::draw()
+void DistanceLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
 
@@ -95,7 +95,7 @@ void DistanceLMConstraint<Rigid3dTypes>::draw()
             points.push_back(x1[edges[i][0]].getCenter());
             points.push_back(x2[edges[i][1]].getCenter());
         }
-        simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
+        vparams->drawTool()->drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
     }
 }
 #endif
@@ -108,7 +108,7 @@ Rigid3fTypes::Deriv DistanceLMConstraint<Rigid3fTypes>::getDirection(const Edge 
     return Deriv(V12, Vector3());
 }
 template<>
-void DistanceLMConstraint<Rigid3fTypes>::draw()
+void DistanceLMConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
 
@@ -127,7 +127,7 @@ void DistanceLMConstraint<Rigid3fTypes>::draw()
             points.push_back(x1[edges[i][0]].getCenter());
             points.push_back(x2[edges[i][1]].getCenter());
         }
-        simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
+        vparams->drawTool()->drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
     }
 }
 #endif

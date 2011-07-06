@@ -1293,7 +1293,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessPolar( Vecto
 //////////////////////////////////////////////////////////////////////
 
 template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::draw()
+void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
@@ -1302,7 +1302,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw()
     const VecCoord& x = *this->mstate->getX();
 
     if (this->getContext()->getShowWireFrame())
-        simulation::getSimulation()->DrawUtility().setPolygonMode(0,true);
+        vparams->drawTool()->setPolygonMode(0,true);
 
 
     std::vector< Vector3 > points[4];
@@ -1341,13 +1341,13 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw()
         points[3].push_back(pb);
     }
 
-    simulation::getSimulation()->DrawUtility().drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
-    simulation::getSimulation()->DrawUtility().drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
-    simulation::getSimulation()->DrawUtility().drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
-    simulation::getSimulation()->DrawUtility().drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
+    vparams->drawTool()->drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
+    vparams->drawTool()->drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
+    vparams->drawTool()->drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
+    vparams->drawTool()->drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
 
     if (this->getContext()->getShowWireFrame())
-        simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
+        vparams->drawTool()->setPolygonMode(0,false);
 }
 
 

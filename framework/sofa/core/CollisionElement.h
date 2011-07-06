@@ -29,6 +29,7 @@
 
 #include <vector>
 #include <sofa/core/core.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -246,10 +247,16 @@ public:
     /// Render this element.
     ///
     /// @see CollisionModel::draw
+    void draw(const core::visual::VisualParams* vparams)
+    {
+        model->draw(vparams,index);
+    }
+#ifndef SOFA_DEPRECATE_OLD_API
     void draw()
     {
         model->draw(index);
     }
+#endif
 
     /// @}
 

@@ -143,7 +143,7 @@ public:
     /**
      * @brief
      */
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
 protected:
     Data<Real> step;

@@ -114,7 +114,7 @@ public:
 
     const sofa::defaulttype::BaseMatrix* getJ();
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
 
 

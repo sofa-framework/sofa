@@ -694,7 +694,7 @@ void TriangularBendingSprings<DataTypes>::updateLameCoefficients()
 
 
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::draw()
+void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* )
 {
     unsigned int i;
     if (!this->getContext()->getShowForceFields()) return;

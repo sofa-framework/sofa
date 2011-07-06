@@ -81,7 +81,7 @@ public:
 
     void removeResponse();
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 };
 
 } // namespace collision

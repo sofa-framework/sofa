@@ -105,7 +105,7 @@ int RayModel::addRay(const Vector3& origin, const Vector3& direction, SReal leng
     return i;
 }
 
-void RayModel::draw(int index)
+void RayModel::draw(const core::visual::VisualParams* ,int index)
 {
     Ray r(this, index);
     const Vector3& p1 = r.origin();
@@ -116,7 +116,7 @@ void RayModel::draw(int index)
     glEnd();
 }
 
-void RayModel::draw()
+void RayModel::draw(const core::visual::VisualParams* vparams)
 {
     if (getContext()->getShowCollisionModels())
     {
@@ -124,11 +124,11 @@ void RayModel::draw()
         glColor4fv(getColor4f());
         for (int i=0; i<size; i++)
         {
-            draw(i);
+            draw(vparams,i);
         }
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
-        getPrevious()->draw();
+        getPrevious()->draw(vparams);
 }
 
 void RayModel::computeBoundingTree(int maxDepth)

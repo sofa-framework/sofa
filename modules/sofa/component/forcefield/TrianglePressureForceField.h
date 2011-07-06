@@ -108,7 +108,7 @@ public:
     virtual void handleTopologyChange();
 
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     void setDminAndDmax(const double _dmin, const double _dmax)
     {

@@ -82,7 +82,7 @@ public:
         collisionModels.clear();
     }
 
-    void draw ();
+    void draw (const core::visual::VisualParams*);
 };
 
 }				// namespace collision

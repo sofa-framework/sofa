@@ -83,7 +83,7 @@ public:
 
     void update();
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

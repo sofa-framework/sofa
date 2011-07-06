@@ -272,7 +272,7 @@ void RandomPointDistributionInSurface<DataTypes>::update()
 }
 
 template <class DataTypes>
-void RandomPointDistributionInSurface<DataTypes>::draw()
+void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowBehaviorModels() || !isVisible.getValue())
         return;
@@ -315,7 +315,7 @@ void RandomPointDistributionInSurface<DataTypes>::draw()
 //    }
 //    glEnd();
     //
-    //trianglesOctree.octreeRoot->draw();
+    //trianglesOctree.octreeRoot->draw(vparams);
 
     if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

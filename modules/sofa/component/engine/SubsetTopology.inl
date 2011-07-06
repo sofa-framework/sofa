@@ -589,7 +589,7 @@ void SubsetTopology<DataTypes>::update()
 }
 
 template <class DataTypes>
-void SubsetTopology<DataTypes>::draw()
+void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowBehaviorModels())
         return;

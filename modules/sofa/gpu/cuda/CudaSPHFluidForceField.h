@@ -116,7 +116,7 @@ template <>
 void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw();
+void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::VisualParams* vparams);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 

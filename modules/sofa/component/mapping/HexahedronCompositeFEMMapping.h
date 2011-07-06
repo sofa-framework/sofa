@@ -99,7 +99,7 @@ public:
 
     virtual void applyJT ( InVecDeriv& out, const OutVecDeriv& in );
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
 // 	Data<int> _method;
 

@@ -129,7 +129,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& parentForc
 
 
 template <class TIn, class TOut>
-void CenterOfMassMapping<TIn, TOut>::draw()
+void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     const typename Out::VecCoord &X = *this->toModel->getX();
 
@@ -145,7 +145,7 @@ void CenterOfMassMapping<TIn, TOut>::draw()
         points.push_back(point2);
     }
 
-    simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1,1,0,1));
 }
 
 

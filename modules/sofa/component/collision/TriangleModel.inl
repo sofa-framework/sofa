@@ -578,7 +578,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::draw(int index)
+void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
 {
     Element t(this,index);
     glBegin(GL_TRIANGLES);
@@ -590,7 +590,7 @@ void TTriangleModel<DataTypes>::draw(int index)
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::drawColourPicking(const ColourCode method)
+void TTriangleModel<DataTypes>::drawColourPicking(const core::visual::VisualParams* vparams, const ColourCode method)
 {
 
     if( size != _topology->getNbTriangles())
@@ -647,7 +647,7 @@ void TTriangleModel<DataTypes>::drawColourPicking(const ColourCode method)
         break;
     default: assert(false);
     }
-    sofa::simulation::getSimulation()->DrawUtility().drawTriangles(points,normals,colours);
+    vparams->drawTool()->drawTriangles(points,normals,colours);
 
 
 }
@@ -665,7 +665,7 @@ sofa::defaulttype::Vector3 TTriangleModel<DataTypes>::getPositionFromWeights(int
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::draw()
+void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (getContext()->getShowCollisionModels())
     {
@@ -673,11 +673,11 @@ void TTriangleModel<DataTypes>::draw()
         //  updateFromTopology();
 
         if (bothSide.getValue() || getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility().setPolygonMode(0,getContext()->getShowWireFrame());
+            vparams->drawTool()->setPolygonMode(0,getContext()->getShowWireFrame());
         else
         {
-            simulation::getSimulation()->DrawUtility().setPolygonMode(2,true);
-            simulation::getSimulation()->DrawUtility().setPolygonMode(1,false);
+            vparams->drawTool()->setPolygonMode(2,true);
+            vparams->drawTool()->setPolygonMode(1,false);
         }
 
         std::vector< Vector3 > points;
@@ -695,10 +695,10 @@ void TTriangleModel<DataTypes>::draw()
             index+=3;
         }
 
-        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(true);
-        simulation::getSimulation()->DrawUtility().drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
-        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(false);
-        simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
+        vparams->drawTool()->setLightingEnabled(true);
+        vparams->drawTool()->drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
+        vparams->drawTool()->setLightingEnabled(false);
+        vparams->drawTool()->setPolygonMode(0,false);
 
 
         if (getContext()->getShowNormals())
@@ -711,12 +711,12 @@ void TTriangleModel<DataTypes>::draw()
                 points.push_back(points.back()+t.n());
             }
 
-            simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(1,1,1,1));
+            vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1,1,1,1));
 
         }
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
-        getPrevious()->draw();
+        getPrevious()->draw(vparams);
 }
 
 

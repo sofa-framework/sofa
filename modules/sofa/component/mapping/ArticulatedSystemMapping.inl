@@ -628,7 +628,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
 }
 
 template <class TIn, class TInRoot, class TOut>
-void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw()
+void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     using container::ArticulatedHierarchyContainer;
 
@@ -661,8 +661,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw()
         }
     }
 
-    simulation::getSimulation()->DrawUtility().drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-    simulation::getSimulation()->DrawUtility().drawLines(pointsLine, 1, Vec<4,float>(0,0,1,1));
+    vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    vparams->drawTool()->drawLines(pointsLine, 1, Vec<4,float>(0,0,1,1));
 
     //
     //OutVecCoord& xto = *m_toModel->getX();

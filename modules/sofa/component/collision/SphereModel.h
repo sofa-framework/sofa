@@ -108,9 +108,9 @@ public:
 
     virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
 
-    void draw(int index);
+    void draw(const core::visual::VisualParams*,int index);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     virtual void drawColourPicking(const ColourCode method);
 

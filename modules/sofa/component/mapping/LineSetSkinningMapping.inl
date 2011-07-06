@@ -196,7 +196,7 @@ void LineSetSkinningMapping<TIn, TOut>::reinit()
 }
 
 template <class TIn, class TOut>
-void LineSetSkinningMapping<TIn, TOut>::draw()
+void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* )
 {
     if (!this->getShow()) return;
     glDisable (GL_LIGHTING);

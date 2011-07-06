@@ -153,7 +153,7 @@ public:
         end();
     }
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     template<class NeighborListener>
     void findNeighbors(NeighborListener* dest, Real dist);
@@ -332,7 +332,7 @@ public:
 
     virtual void init();
     virtual void reinit();
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
     virtual void handleEvent(sofa::core::objectmodel::Event* event);
 
     Grid* getGrid() { return grid; }

@@ -403,11 +403,11 @@ void SPHFluidSurfaceMapping<In,Out>::applyJ(const core::MechanicalParams * /*mpa
 }
 
 template <class In, class Out>
-void SPHFluidSurfaceMapping<In,Out>::draw()
+void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vparams)
 {
     if (!getContext()->getShowMappings()) return;
     if (!grid) return;
-    grid->draw();
+    grid->draw(vparams);
 
     float scale = (float)mStep.getValue();
     typename Grid::iterator end = grid->gridEnd();
@@ -436,7 +436,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
             }
         }
     }
-    simulation::getSimulation()->DrawUtility().drawPoints(points1, 3, Vec<4,float>(1,1,1,1));
+    vparams->drawTool()->drawPoints(points1, 3, Vec<4,float>(1,1,1,1));
 
 
     std::vector< Vector3 > points2;
@@ -445,7 +445,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
     {
         points2.push_back(out[i]);
     }
-    simulation::getSimulation()->DrawUtility().drawPoints(points2, 5, Vec<4,float>(0.5,1,0.5,1));
+    vparams->drawTool()->drawPoints(points2, 5, Vec<4,float>(0.5,1,0.5,1));
 
 
     std::vector< Vector3 > points3;
@@ -484,7 +484,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
             }
         }
     }
-    simulation::getSimulation()->DrawUtility().drawLines(points3, 1, Vec<4,float>(0,1,0,1));
+    vparams->drawTool()->drawLines(points3, 1, Vec<4,float>(0,1,0,1));
 }
 
 } // namespace mapping

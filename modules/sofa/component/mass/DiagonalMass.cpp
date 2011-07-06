@@ -89,7 +89,7 @@ double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const core::
   }*/
 
 template <>
-void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw()
+void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams)
 
 {
     const MassVector &masses= f_mass.getValue();
@@ -118,7 +118,7 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw()
         len[1] = sqrt(m00+m22-m11);
         len[2] = sqrt(m00+m11-m22);
 
-        simulation::getSimulation()->DrawUtility().drawFrame(center, orient, len*showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(center, orient, len*showAxisSize.getValue() );
 
         gravityCenter += (center * masses[i].mass);
         totalMass += masses[i].mass;
@@ -194,7 +194,7 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::init()
 }
 
 template <>
-void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw()
+void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualParams* vparams)
 {
     const MassVector &masses= f_mass.getValue();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -209,7 +209,7 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw()
         Quat orient(Vec3d(0,0,1), x[i].getOrientation());
         Vec3d center; center = x[i].getCenter();
 
-        simulation::getSimulation()->DrawUtility().drawFrame(center, orient, len*showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(center, orient, len*showAxisSize.getValue() );
     }
 }
 
@@ -258,7 +258,7 @@ double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const core::
 
 
 template <>
-void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw()
+void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualParams* vparams)
 
 {
     const MassVector &masses= f_mass.getValue();
@@ -287,7 +287,7 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw()
         len[1] = sqrt(m00+m22-m11);
         len[2] = sqrt(m00+m11-m22);
 
-        simulation::getSimulation()->DrawUtility().drawFrame(center, orient, len*showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(center, orient, len*showAxisSize.getValue() );
 
         gravityCenter += (center * masses[i].mass);
         totalMass += masses[i].mass;
@@ -333,7 +333,7 @@ void DiagonalMass<Rigid2fTypes, Rigid2fMass>::init()
 
 
 template <>
-void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw()
+void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualParams* vparams)
 {
     const MassVector &masses= f_mass.getValue();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -347,7 +347,7 @@ void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw()
 
         Quat orient(Vec3d(0,0,1), x[i].getOrientation());
         Vec3d center; center = x[i].getCenter();
-        simulation::getSimulation()->DrawUtility().drawFrame(center, orient, len*showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(center, orient, len*showAxisSize.getValue() );
     }
 }
 

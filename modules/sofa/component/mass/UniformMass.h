@@ -122,7 +122,7 @@ public:
 
     bool isDiagonal() {return true;};
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     bool addBBox(double* minBBox, double* maxBBox);
 };

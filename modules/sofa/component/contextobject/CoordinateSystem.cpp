@@ -148,7 +148,7 @@ void CoordinateSystem::apply()
 
 
 
-void CoordinateSystem::draw()
+void CoordinateSystem::draw(const core::visual::VisualParams* vparams)
 {
     /*
         glPushAttrib(GL_COLOR_BUFFER_BIT | GL_LIGHTING_BIT);

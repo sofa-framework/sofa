@@ -94,7 +94,7 @@ double OscillatingTorsionForceField<DataTypes>::getPotentialEnergy(const VecCoor
 
 
 template<class DataTypes>
-void OscillatingTorsionForceField<DataTypes>::draw()
+void OscillatingTorsionForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 }
 
@@ -206,7 +206,7 @@ double OscillatingTorsionForceField<DataTypes>::getPotentialEnergy(const VecCoor
 
 
 template<class DataTypes>
-void OscillatingTorsionForceField<DataTypes>::draw()
+void OscillatingTorsionForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 }
 

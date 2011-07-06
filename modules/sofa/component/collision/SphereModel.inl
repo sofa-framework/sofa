@@ -138,7 +138,7 @@ void TSphereModel<DataTypes>::applyTranslation(const double dx, const double dy,
 }
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::draw(int index)
+void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
 {
     TSphere<DataTypes> t(this,index);
 
@@ -149,11 +149,11 @@ void TSphereModel<DataTypes>::draw(int index)
     glPopMatrix();
 }
 template<class DataTypes>
-void TSphereModel<DataTypes>::draw()
+void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (getContext()->getShowCollisionModels())
     {
-        sofa::simulation::getSimulation()->DrawUtility().setPolygonMode(0,getContext()->getShowWireFrame());
+        vparams->drawTool()->setPolygonMode(0,getContext()->getShowWireFrame());
 
         glEnable(GL_LIGHTING);
         glEnable(GL_COLOR_MATERIAL);
@@ -172,17 +172,17 @@ void TSphereModel<DataTypes>::draw()
             radius.push_back(t.r());
         }
 
-        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(true); //Enable lightning
-        simulation::getSimulation()->DrawUtility().drawSpheres(points, radius, Vec<4,float>(getColor4f()));
-        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(false); //Disable lightning
+        vparams->drawTool()->setLightingEnabled(true); //Enable lightning
+        vparams->drawTool()->drawSpheres(points, radius, Vec<4,float>(getColor4f()));
+        vparams->drawTool()->setLightingEnabled(false); //Disable lightning
 
     }
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
-        getPrevious()->draw();
+        getPrevious()->draw(vparams);
 
-    sofa::simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
+    vparams->drawTool()->setPolygonMode(0,false);
 }
 
 template <class DataTypes>

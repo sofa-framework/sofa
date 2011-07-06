@@ -30,6 +30,7 @@
 #include <sofa/component/component.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -50,15 +51,15 @@ class SOFA_COMPONENT_COLLISION_API InteractionPerformer
 public:
     typedef helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*> InteractionPerformerFactory;
 
-    InteractionPerformer(BaseMouseInteractor *i):interactor(i),freezePerformer(0) {};
-    virtual ~InteractionPerformer() {};
+    InteractionPerformer(BaseMouseInteractor *i):interactor(i),freezePerformer(0) {}
+    virtual ~InteractionPerformer() {}
 
 
     virtual void start()=0;
     virtual void execute()=0;
 
-    virtual void handleEvent(core::objectmodel::Event * ) {};
-    virtual void draw() {};
+    virtual void handleEvent(core::objectmodel::Event * ) {}
+    virtual void draw(const core::visual::VisualParams* ) {}
 
     virtual void setPerformerFreeze() {freezePerformer = true;}
 

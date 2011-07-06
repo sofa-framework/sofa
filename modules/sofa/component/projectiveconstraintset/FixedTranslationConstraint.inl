@@ -204,7 +204,7 @@ void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::Me
 
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::draw()
+void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParams* )
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!this->getContext()->getShowBehaviorModels())
@@ -232,9 +232,9 @@ void FixedTranslationConstraint<DataTypes>::draw()
 }
 
 template<>
-void FixedTranslationConstraint<Vec6dTypes>::draw();
+void FixedTranslationConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* vparams);
 template<>
-void FixedTranslationConstraint<Vec6fTypes>::draw();
+void FixedTranslationConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* vparams);
 
 } // namespace constraint
 

@@ -307,7 +307,7 @@ void EulerianFluidModel<DataTypes>::updatePosition(double dt)
 
 
 template<class DataTypes>
-void EulerianFluidModel<DataTypes>::draw()
+void EulerianFluidModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     assert(this->m_mstate);
     glDisable(GL_LIGHTING);

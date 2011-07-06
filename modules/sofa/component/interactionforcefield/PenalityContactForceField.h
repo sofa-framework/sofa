@@ -138,7 +138,7 @@ public:
 
     virtual bool useMask() const {return true;}
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_INTERACTIONFORCEFIELD)

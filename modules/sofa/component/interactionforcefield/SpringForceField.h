@@ -164,7 +164,7 @@ public:
     int getDrawMode() const {return drawMode.getValue();}
     void setDrawMode(int m) {drawMode.setValue(m);}
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     // -- Modifiers
 

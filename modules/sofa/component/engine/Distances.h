@@ -149,7 +149,7 @@ public:
     */
     void getDistances ( VVD& distances, VecVecCoord& gradients, const VecCoord& goals );
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     /// Pre-construction check method called by ObjectFactory.
     ///

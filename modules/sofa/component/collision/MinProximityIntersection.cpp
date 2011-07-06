@@ -818,7 +818,7 @@ int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputV
 	return 1;
 }
 */
-void MinProximityIntersection::draw()
+void MinProximityIntersection::draw(const core::visual::VisualParams* )
 {
     if (!getContext()->getShowCollisionModels())
         return;

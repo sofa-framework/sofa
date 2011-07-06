@@ -325,11 +325,11 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 // ---	Display
 // ----------------------------------------------------------------
 template <class DataTypes>
-void TriangularAnisotropicFEMForceField<DataTypes>::draw()
+void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     glPolygonOffset(1.0, 2.0);
     glEnable(GL_POLYGON_OFFSET_FILL);
-    Inherited::draw();
+    Inherited::draw(vparams);
     glDisable(GL_POLYGON_OFFSET_FILL);
     if (!this->getContext()->getShowForceFields())
         return;

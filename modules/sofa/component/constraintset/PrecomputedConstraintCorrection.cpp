@@ -122,12 +122,12 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::draw()
+SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::draw(const core::visual::VisualParams* )
 {
 }
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::draw()
+SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* )
 {
 }
 
@@ -217,12 +217,12 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
 }
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::draw()
+SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::draw(const core::visual::VisualParams* )
 {
 }
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::draw()
+SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* )
 {
 }
 

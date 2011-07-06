@@ -168,7 +168,7 @@ public:
         return springArray;
     }
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     // -- Modifiers
 
