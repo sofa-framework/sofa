@@ -8,8 +8,6 @@
 #ifndef CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
 #define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
 #include "MeshGenerationFromPolyhedron.h"
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/gl/template.h>
 
 #include <CGAL/AABB_intersections.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
@@ -333,7 +331,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
 }
 
 template <class DataTypes>
-void MeshGenerationFromPolyhedron<DataTypes>::draw()
+void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::VisualParams* vparams)
 {
     if (drawTetras.getValue())
     {
@@ -343,7 +341,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw()
         //if (this->getContext()->getShowWireFrame())
         //    simulation::getSimulation()->DrawUtility().setPolygonMode(0,true);
 
-        simulation::getSimulation()->DrawUtility().setLightingEnabled(false);
+        vparams->drawTool()->setLightingEnabled(false);
         std::vector< defaulttype::Vector3 > points[4];
         for(unsigned int i=0; i<tetrahedra.size(); ++i)
         {
@@ -378,10 +376,10 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw()
             points[3].push_back(pb);
         }
 
-        simulation::getSimulation()->DrawUtility().drawTriangles(points[0], defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
-        simulation::getSimulation()->DrawUtility().drawTriangles(points[1], defaulttype::Vec<4,float>(0.0,0.5,1.0,1.0));
-        simulation::getSimulation()->DrawUtility().drawTriangles(points[2], defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
-        simulation::getSimulation()->DrawUtility().drawTriangles(points[3], defaulttype::Vec<4,float>(0.5,1.0,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[0], defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[1], defaulttype::Vec<4,float>(0.0,0.5,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[2], defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[3], defaulttype::Vec<4,float>(0.5,1.0,1.0,1.0));
 
         //if (this->getContext()->getShowWireFrame())
         //    simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
@@ -393,9 +391,9 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw()
         helper::ReadAccessor< Data<SeqQuads> > quads = f_quads;
 
         if (this->getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility().setPolygonMode(0,true);
+            vparams->drawTool()->setPolygonMode(0,true);
 
-        simulation::getSimulation()->DrawUtility().setLightingEnabled(false);
+        vparams->drawTool()->setLightingEnabled(false);
         std::vector< defaulttype::Vector3 > points;
         for(unsigned int i=0; i<triangles.size(); ++i)
         {
@@ -427,10 +425,10 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw()
             points.push_back(pd);
         }
 
-        simulation::getSimulation()->DrawUtility().drawTriangles(points, defaulttype::Vec<4,float>(1.0,0.5,0.0,1.0));
+        vparams->drawTool()->drawTriangles(points, defaulttype::Vec<4,float>(1.0,0.5,0.0,1.0));
 
         if (this->getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
+            vparams->drawTool()->setPolygonMode(0,false);
     }
 }
 
