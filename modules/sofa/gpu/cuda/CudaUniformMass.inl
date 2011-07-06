@@ -377,7 +377,7 @@ double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::
 }
 
 template <>
-void UniformMass<gpu::cuda::CudaRigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams)
+void UniformMass<gpu::cuda::CudaRigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* )
 {
     if (!getContext()->getShowBehaviorModels())
         return;
@@ -400,7 +400,7 @@ void UniformMass<gpu::cuda::CudaRigid3dTypes, Rigid3dMass>::draw(const core::vis
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        helper::gl::Axis::draw(vparams,x[i].getCenter(), x[i].getOrientation(), len);
+        helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
     }
 }
 
