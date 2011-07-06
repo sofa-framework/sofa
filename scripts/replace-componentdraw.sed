@@ -67,10 +67,14 @@ s/\(^[[:blank:]]*\)\(draw[[:blank:]]*\)(\([[:blank:]]*\)\([[:alnum:]][[:graph:]]
 s/\(^[[:blank:]]*\)\(draw[[:blank:]]*\)(\([[:blank:]]*\))\([[:blank:]]*\);\([[:blank:]]*\)$/\1draw(vparams);/g
 
 # Revert duplicated changes
-s/\(([[:space:]]*\)\(const sofa::core::visual::VisualParams\*,\|const sofa::core::visual::VisualParams\* vparams,\)\([^)]*core::visual::VisualParams\*\)/\1\3/g
+s/\(([[:space:]]*\)\(const sofa::core::visual::VisualParams\*,|const sofa::core::visual::VisualParams\* vparams,\)\([^)]*core::visual::VisualParams\*\)/\1\3/g
 s/vparams,vparams/vparams/g
 
 # Revert changes to Axis::draw(), Cylinder::draw(), GlText::draw(), BBox.draw(), getSimulation()->draw()
-s/\(Axis::\|Cylinder::\|GlText::\|getSimulation()->\)draw(vparams,/\1draw(/g
+s/\(Axis::\)draw(vparams,/\1draw(/g
+s/\(Cylinder::\)draw(vparams,/\1draw(/g
+s/\(GlText::\)draw(vparams,/\1draw(/g
+s/\(getSimulation()->\)draw(vparams,/\1draw(/g
 # Revert changes to BBox.draw(), vmsubvol[i].draw()
-s/\(BBox\.\|vmsubvol\[i\]\.\)draw(vparams)/\1draw()/g
+s/\(BBox\)draw(vparams)/\1draw()/g
+s/\(vmsubvol\[i\]\.\)draw(vparams)/\1draw()/g

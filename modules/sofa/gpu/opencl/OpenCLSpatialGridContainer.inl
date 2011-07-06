@@ -113,7 +113,7 @@ void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeri
 }
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3fTypes > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex,gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer sortTmp,gpu::opencl::_device_pointer cells,gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer x,RadixSort *rs)
+void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3fTypes > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex,gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer /*sortTmp*/,gpu::opencl::_device_pointer cells,gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer x,RadixSort *rs)
 {
     gpu::opencl::SpatialGridContainer3f_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
 
@@ -131,7 +131,7 @@ void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3fTypes > >::kernel_u
 }
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3f1Types > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex,gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer sortTmp,gpu::opencl::_device_pointer cells,gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer x,RadixSort *rs)
+void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3f1Types > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex,gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer /*sortTmp*/,gpu::opencl::_device_pointer cells,gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer x,RadixSort *rs)
 {
     gpu::opencl::SpatialGridContainer3f1_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
 
@@ -205,7 +205,7 @@ void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeri
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> > >::draw()
+void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> > >::draw(const sofa::core::visual::VisualParams* /*vparams*/)
 {
     int BSIZE = gpu::opencl::OpenCLMemoryManager<void*>::BSIZE;
     if (!lastX) return;
