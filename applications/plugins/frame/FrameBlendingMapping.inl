@@ -915,7 +915,7 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames (MassVector& f_mass0, M
 
 
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::draw()
+void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     const typename Out::VecCoord& xto = *this->toModel->getX();
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
@@ -1071,7 +1071,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
                     }
                 }
             }
-            simulation::getSimulation()->DrawUtility().drawTriangles(points, normals, colors);
+            vparams->drawTool()->drawTriangles(points, normals, colors);
             glPopAttrib();
         }
         else // Show by points

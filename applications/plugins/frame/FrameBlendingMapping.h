@@ -120,7 +120,7 @@ public:
 
     virtual void init();
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams* vparams);
 
     virtual void apply( InCoord& coord, const InCoord& restCoord);
     virtual void apply( typename SData::MaterialCoord& coord, const typename SData::MaterialCoord& restCoord);

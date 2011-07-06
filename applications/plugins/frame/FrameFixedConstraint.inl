@@ -251,7 +251,7 @@ void FrameFixedConstraint<DataTypes>::projectPosition(const core::MechanicalPara
 
 
 template <class DataTypes>
-void FrameFixedConstraint<DataTypes>::draw()
+void FrameFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getContext()->
         getShowBehaviorModels()) return;
@@ -276,7 +276,7 @@ void FrameFixedConstraint<DataTypes>::draw()
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        simulation::getSimulation()->DrawUtility().drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
@@ -290,7 +290,7 @@ void FrameFixedConstraint<DataTypes>::draw()
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        simulation::getSimulation()->DrawUtility().drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 }
 

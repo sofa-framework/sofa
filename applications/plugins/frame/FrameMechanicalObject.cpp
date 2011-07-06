@@ -45,7 +45,7 @@ namespace container
 
 
 template <>
-void MechanicalObject<Affine3dTypes>::draw()
+void MechanicalObject<Affine3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -102,13 +102,13 @@ void MechanicalObject<Affine3dTypes>::draw()
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
-            simulation::getSimulation()->DrawUtility().pushMatrix();
+            vparams->drawTool()->pushMatrix();
             float glTransform[16];
             x[i].writeOpenGlMatrix ( glTransform );
-            simulation::getSimulation()->DrawUtility().multMatrix( glTransform );
-            simulation::getSimulation()->DrawUtility().scale ( scale);
-            simulation::getSimulation()->DrawUtility().drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
-            simulation::getSimulation()->DrawUtility().popMatrix();
+            vparams->drawTool()->multMatrix( glTransform );
+            vparams->drawTool()->scale ( scale);
+            vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+            vparams->drawTool()->popMatrix();
         }
         glPopAttrib();
     }
@@ -116,7 +116,7 @@ void MechanicalObject<Affine3dTypes>::draw()
 
 
 template <>
-void MechanicalObject<Quadratic3dTypes>::draw()
+void MechanicalObject<Quadratic3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -173,13 +173,13 @@ void MechanicalObject<Quadratic3dTypes>::draw()
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
-            simulation::getSimulation()->DrawUtility().pushMatrix();
+            vparams->drawTool()->pushMatrix();
             float glTransform[16];
             x[i].writeOpenGlMatrix ( glTransform );
-            simulation::getSimulation()->DrawUtility().multMatrix( glTransform );
-            simulation::getSimulation()->DrawUtility().scale ( scale);
-            simulation::getSimulation()->DrawUtility().drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
-            simulation::getSimulation()->DrawUtility().popMatrix();
+            vparams->drawTool()->multMatrix( glTransform );
+            vparams->drawTool()->scale ( scale);
+            vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+            vparams->drawTool()->popMatrix();
         }
         glPopAttrib();
     }
@@ -202,7 +202,7 @@ void MechanicalObject<Quadratic3dTypes>::draw()
 //            };
 
 template <>
-void MechanicalObject<DeformationGradient331dTypes>::draw()
+void MechanicalObject<DeformationGradient331dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -259,13 +259,13 @@ void MechanicalObject<DeformationGradient331dTypes>::draw()
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
-            simulation::getSimulation()->DrawUtility().pushMatrix();
+            vparams->drawTool()->pushMatrix();
             float glTransform[16];
             x[i].writeOpenGlMatrix ( glTransform );
-            simulation::getSimulation()->DrawUtility().multMatrix( glTransform );
-            simulation::getSimulation()->DrawUtility().scale ( scale);
-            simulation::getSimulation()->DrawUtility().drawPlus ( 0.1, Vec<4,float> ( 1.0, 1.0, 0.0, 1.0 ) );
-            simulation::getSimulation()->DrawUtility().popMatrix();
+            vparams->drawTool()->multMatrix( glTransform );
+            vparams->drawTool()->scale ( scale);
+            vparams->drawTool()->drawPlus ( 0.1, Vec<4,float> ( 1.0, 1.0, 0.0, 1.0 ) );
+            vparams->drawTool()->popMatrix();
         }
         glPopAttrib();
     }
@@ -288,7 +288,7 @@ void MechanicalObject<DeformationGradient331dTypes>::draw()
 //            };
 
 template <>
-void MechanicalObject<DeformationGradient332dTypes >::draw()
+void MechanicalObject<DeformationGradient332dTypes >::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -347,13 +347,13 @@ void MechanicalObject<DeformationGradient332dTypes >::draw()
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
-            simulation::getSimulation()->DrawUtility().pushMatrix();
+            vparams->drawTool()->pushMatrix();
             float glTransform[16];
             x[i].writeOpenGlMatrix ( glTransform );
-            simulation::getSimulation()->DrawUtility().multMatrix( glTransform );
-            simulation::getSimulation()->DrawUtility().scale ( scale);
-            simulation::getSimulation()->DrawUtility().drawPlus ( 0.1, Vec<4,float> ( 1.0, 1.0, 0.0, 1.0 ) );
-            simulation::getSimulation()->DrawUtility().popMatrix();
+            vparams->drawTool()->multMatrix( glTransform );
+            vparams->drawTool()->scale ( scale);
+            vparams->drawTool()->drawPlus ( 0.1, Vec<4,float> ( 1.0, 1.0, 0.0, 1.0 ) );
+            vparams->drawTool()->popMatrix();
         }
         glPopAttrib();
     }
