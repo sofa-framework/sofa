@@ -25,7 +25,7 @@ make_err=$( make -j5 2>&1 >/dev/null )
 echo '...done'
 #echo -e "$make_err" > make_err_file
 #echo "$make_err" > make_err_file2
-vparams_warnings=$(echo "$make_err" | sed s/g++/\\ng++/g | grep vparams | uniq | sed s/‘vparams’/‘vparams’\\n/g)
+vparams_warnings=$(echo "$make_err" | grep vparams | uniq | sed s/‘vparams’/‘vparams’\\n/g)
 #echo "$vparams_warnings" > vparams_warnings_file
 echo 'processing vparams warnings...'
 counter=0
