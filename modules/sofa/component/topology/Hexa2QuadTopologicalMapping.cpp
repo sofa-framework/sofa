@@ -66,6 +66,7 @@ int Hexa2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
 
 Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping(In* from, Out* to)
     : TopologicalMapping(from, to)
+    ,flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
 {
 }
 
@@ -112,8 +113,19 @@ void Hexa2QuadTopologicalMapping::init()
 
                 if (fromModel->getHexahedraAroundQuad(i).size()==1)
                 {
-
-                    to_tstm->addQuadProcess(quadArray[i]);
+                    if(flipNormals.getValue())
+                    {
+                        Quad q = quadArray[i];
+                        unsigned int tmp3 = q[3];
+                        unsigned int tmp2 = q[2];
+                        q[3] = q[0];
+                        q[2] = q[1];
+                        q[1] = tmp2;
+                        q[0] = tmp3;
+                        to_tstm->addQuadProcess(q);
+                    }
+                    else
+                        to_tstm->addQuadProcess(quadArray[i]);
 
                     Loc2GlobVec.push_back(i);
                     Glob2LocMap[i]=Loc2GlobVec.size()-1;
