@@ -229,7 +229,7 @@ void HermiteSplineConstraint<DataTypes>::projectJacobianMatrix(const core::Mecha
 }
 
 template <class DataTypes>
-void HermiteSplineConstraint<DataTypes>::draw()
+void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowBehaviorModels()) return;
 

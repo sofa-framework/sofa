@@ -189,7 +189,7 @@ double LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const cor
 
 
 template< class DataTypes>
-void LinearForceField<DataTypes>::draw()
+void LinearForceField<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
 {
 
 

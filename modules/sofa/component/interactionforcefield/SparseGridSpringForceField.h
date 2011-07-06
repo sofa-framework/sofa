@@ -144,7 +144,7 @@ public:
 
     virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
     void setFileName(char* name)
     {

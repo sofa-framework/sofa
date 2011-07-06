@@ -493,10 +493,10 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
 
 
 template<class DataTypes>
-void EdgeSetGeometryAlgorithms<DataTypes>::draw()
+void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 
-    PointSetGeometryAlgorithms<DataTypes>::draw();
+    PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Edges indices
     if (showEdgeIndices.getValue())

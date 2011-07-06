@@ -74,7 +74,7 @@ public:
 
     void execute();
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     BodyPicked& getFirstIncisionBodyPicked() {return firstIncisionBody;}
 

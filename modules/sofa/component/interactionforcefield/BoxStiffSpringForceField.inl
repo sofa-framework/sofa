@@ -154,12 +154,12 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 
 
 template <class DataTypes>
-void BoxStiffSpringForceField<DataTypes>::draw()
+void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getContext()->getShowInteractionForceFields())
         return;
 
-    Inherit::draw();
+    Inherit::draw(vparams);
     //     const VecCoord& x = *this->mstate->getX();
     //     glDisable (GL_LIGHTING);
     //     glPointSize(10);

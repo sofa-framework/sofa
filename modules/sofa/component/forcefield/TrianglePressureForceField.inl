@@ -191,7 +191,7 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesFromString()
 
 }
 template<class DataTypes>
-void TrianglePressureForceField<DataTypes>::draw()
+void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;

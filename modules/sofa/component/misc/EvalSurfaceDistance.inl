@@ -165,7 +165,7 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
 
 //-------------------------------- draw------------------------------------
 template<class DataTypes>
-void EvalSurfaceDistance<DataTypes>::draw()
+void EvalSurfaceDistance<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->f_draw.getValue())
         return;

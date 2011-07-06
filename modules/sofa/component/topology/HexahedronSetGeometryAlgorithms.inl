@@ -459,9 +459,9 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filena
 }
 
 template<class DataTypes>
-void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
+void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    QuadSetGeometryAlgorithms<DataTypes>::draw();
+    QuadSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Hexa indices
     if (showHexaIndices.getValue())

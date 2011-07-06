@@ -390,7 +390,7 @@ void SphereROI<DataTypes>::update()
 }
 
 template <class DataTypes>
-void SphereROI<DataTypes>::draw()
+void SphereROI<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowBehaviorModels())
         return;

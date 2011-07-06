@@ -554,7 +554,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(typename In::MatrixDeri
 
 
 template <class TIn, class TInRoot, class TOut>
-void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::draw()
+void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getShow()) return;
     std::vector< Vector3 > points;
@@ -566,7 +566,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::draw()
         point = Out::getCPos(x[i]);
         points.push_back(point);
     }
-    simulation::getSimulation()->DrawUtility().drawPoints(points, 7, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawPoints(points, 7, Vec<4,float>(1,1,0,1));
 }
 
 } // namespace mapping

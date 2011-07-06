@@ -218,7 +218,7 @@ double PenalityContactForceField<CudaVec3fTypes>::getPotentialEnergy(const core:
 }
 
 //template<>
-void PenalityContactForceField<CudaVec3fTypes>::draw()
+void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualParams* )
 {
     if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();

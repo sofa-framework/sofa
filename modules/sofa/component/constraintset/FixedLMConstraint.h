@@ -98,7 +98,7 @@ public:
     virtual void handleTopologyChange();
 
     void init();
-    void draw();
+    void draw(const core::visual::VisualParams*);
     void initFixedPosition();
     void reset() {initFixedPosition();};
 

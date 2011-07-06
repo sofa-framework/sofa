@@ -422,10 +422,10 @@ double HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::draw()
+void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     // 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::draw()  "<<this->_indexedElements->size()<<""<<sendl;
-    HexahedronFEMForceFieldT::draw();
+    HexahedronFEMForceFieldT::draw(vparams);
 
     if (!this->getContext()->getShowBehaviorModels())
         return;

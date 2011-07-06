@@ -39,15 +39,15 @@ namespace projectiveconstraintset
 {
 
 template<>
-void FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>::draw();
+void FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>::draw(const core::visual::VisualParams* vparams);
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template<>
-void FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw();
+void FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::visual::VisualParams* vparams);
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 
 template <>
-void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>::draw()
+void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>::draw(const core::visual::VisualParams* )
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!this->getContext()->getShowBehaviorModels())
@@ -76,7 +76,7 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template <>
-void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw()
+void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!this->getContext()->getShowBehaviorModels())

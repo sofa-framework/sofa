@@ -1407,7 +1407,7 @@ void LCPConstraintSolver::lockConstraintProblem(ConstraintProblem* l1, Constrain
 }
 
 
-void LCPConstraintSolver::draw()
+void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
 {
     unsigned int showLevels = (unsigned int) this->showLevels.getValue();
     if (showLevels > hierarchy_constraintBlockInfo.size()) showLevels = hierarchy_constraintBlockInfo.size();
@@ -1473,7 +1473,7 @@ void LCPConstraintSolver::draw()
 
                 int colid = (level * 12 + ((int)level < merge_local_levels ? (cb % 2) : 0)) % 72;
                 color.i = colors[colid + 0];
-                simulation::getSimulation()->DrawUtility().drawArrow(
+                vparams->drawTool()->drawArrow(
                     centerFine,centerFine+dirFineN*radius*2.0f,
                     (float)radius*2.0f*0.03f,
                     defaulttype::Vec<4,float>((float)(color.b[0]) * (1.0f/255.0f),
@@ -1483,7 +1483,7 @@ void LCPConstraintSolver::draw()
                 if (_mu > 1.0e-6)
                 {
                     color.i = colors[colid + 2];
-                    simulation::getSimulation()->DrawUtility().drawArrow(
+                    vparams->drawTool()->drawArrow(
                         centerFine-dirFineT1*radius*_mu,centerFine+dirFineT1*radius*_mu,
                         (float)(radius*_mu*0.03f),
                         defaulttype::Vec<4,float>((float)(color.b[0]) * (1.0f/255.0f),
@@ -1491,7 +1491,7 @@ void LCPConstraintSolver::draw()
                                 (float)(color.b[2]) * (1.0f/255.0f),
                                 1.0f));
                     color.i = colors[colid + 4];
-                    simulation::getSimulation()->DrawUtility().drawArrow(
+                    vparams->drawTool()->drawArrow(
                         centerFine-dirFineT2*radius*_mu,centerFine+dirFineT2*radius*_mu,
                         (float)(radius*_mu*0.03f),
                         defaulttype::Vec<4,float>(color.b[0] * (1.0f/255.0f),

@@ -148,7 +148,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     void updateTriangleIncisionInformation();
 

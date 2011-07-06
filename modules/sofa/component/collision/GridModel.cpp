@@ -132,7 +132,7 @@ void GridModel::updateGrids()
         updateGrid(i);
 }
 
-void GridModel::draw(int index)
+void GridModel::draw(const core::visual::VisualParams* vparams,int index)
 {
     const Vector3& vmin = elems[index].minBBox;
     const Vector3& vmax = elems[index].maxBBox;
@@ -169,7 +169,7 @@ void GridModel::draw(int index)
     glEnd();
 }
 
-void GridModel::draw()
+void GridModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive() || !((getNext()==NULL)?getContext()->getShowCollisionModels():getContext()->getShowBoundingCollisionModels())) return;
     glDisable(GL_LIGHTING);
@@ -194,7 +194,7 @@ void GridModel::draw()
     }
     for (int i=0; i<size; i++)
     {
-        draw(i);
+        draw(vparams,i);
     }
     if (color < 1.0f)
     {
@@ -202,7 +202,7 @@ void GridModel::draw()
         glDepthMask(1);
     }
     if (getPrevious()!=NULL)
-        getPrevious()->draw();
+        getPrevious()->draw(vparams);
 }
 
 std::pair<core::CollisionElementIterator,core::CollisionElementIterator> GridModel::getInternalChildren(int index) const

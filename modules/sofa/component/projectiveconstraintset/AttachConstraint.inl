@@ -760,7 +760,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
 
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::draw()
+void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowBehaviorModels())
         return;

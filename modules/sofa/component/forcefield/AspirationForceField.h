@@ -80,7 +80,7 @@ public:
     /// Constant force has null variation
     virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*kFact*/) {}
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 };
 
 using sofa::defaulttype::Vec3dTypes;

@@ -75,13 +75,13 @@ void AttachBodyPerformer<DataTypes>::execute()
 }
 
 template <class DataTypes>
-void AttachBodyPerformer<DataTypes>::draw()
+void AttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (forcefield)
     {
         bool b = forcefield->getContext()->getShowInteractionForceFields();
         forcefield->getContext()->setShowInteractionForceFields(true);
-        forcefield->draw();
+        forcefield->draw(vparams);
         forcefield->getContext()->setShowInteractionForceFields(b);
     }
 }

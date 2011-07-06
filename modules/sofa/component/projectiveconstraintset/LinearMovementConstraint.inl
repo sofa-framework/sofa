@@ -394,7 +394,7 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
 
 //display the path the constrained dofs will go through
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::draw()
+void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
@@ -427,7 +427,7 @@ void LinearMovementConstraint<DataTypes>::draw()
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        simulation::getSimulation()->DrawUtility().drawPoints(points, 10, Vec<4, float> (1, 0.5, 0.5, 1));
+        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (1, 0.5, 0.5, 1));
     }
 }
 

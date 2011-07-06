@@ -183,7 +183,7 @@ double ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const c
 
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::draw()
+void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     double aSC = arrowSizeCoef.getValue();
 
@@ -226,7 +226,7 @@ void ConstantForceField<DataTypes>::draw()
             points.push_back(defaulttype::Vector3(xx, xy, xz ));
             points.push_back(defaulttype::Vector3(xx+fx, xy+fy, xz+fz ));
         }
-        simulation::getSimulation()->DrawUtility().drawLines(points, 2, defaulttype::Vec<4,float>(0,1,0,1));
+        vparams->drawTool()->drawLines(points, 2, defaulttype::Vec<4,float>(0,1,0,1));
     }
     else
     {
@@ -253,12 +253,12 @@ void ConstantForceField<DataTypes>::draw()
             if( aSC > 0)
             {
                 //helper::gl::drawArrow(p1,p2, norm/20.0);
-                simulation::getSimulation()->DrawUtility().drawArrow(p1,p2, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
+                vparams->drawTool()->drawArrow(p1,p2, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
             }
             else
             {
                 //helper::gl::drawArrow(p2,p1, norm/20.0);
-                simulation::getSimulation()->DrawUtility().drawArrow(p2,p1, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
+                vparams->drawTool()->drawArrow(p2,p1, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
             }
         }
     }

@@ -138,7 +138,7 @@ public:
     void invert(TMatrix& M);
     void setSystemMBKMatrix(const core::MechanicalParams* mparams);
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
-    void draw();
+    void draw(const core::visual::VisualParams*);
     void init();
     void loadMatrix(TMatrix& M);
 

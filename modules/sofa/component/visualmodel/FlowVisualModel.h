@@ -204,7 +204,7 @@ public:
     void init();
     void reinit();
     void initVisual();
-    void draw();
+    void draw(const core::visual::VisualParams*);
     void drawTransparent(const core::visual::VisualParams*);
     void drawTetra();
     void computeStreamLine(unsigned int index, unsigned int maxNbPoints, double dt);

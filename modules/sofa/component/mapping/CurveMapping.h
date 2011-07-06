@@ -140,7 +140,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event* event);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     Real advanceAbscissa(Real ab, Real dist);
     void rotateElements();

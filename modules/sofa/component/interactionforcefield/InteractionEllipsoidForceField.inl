@@ -307,7 +307,7 @@ double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnerg
 }
 
 template<class DataTypes1, class DataTypes2>
-void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw()
+void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!bDraw.getValue()) return;

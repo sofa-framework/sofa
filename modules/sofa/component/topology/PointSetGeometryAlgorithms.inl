@@ -183,7 +183,7 @@ PointSetGeometryAlgorithms<DataTypes>::computeAngle(PointID ind_p0, PointID ind_
 
 
 template<class DataTypes>
-void PointSetGeometryAlgorithms<DataTypes>::draw()
+void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* )
 {
 
     if (showPointIndices.getValue())

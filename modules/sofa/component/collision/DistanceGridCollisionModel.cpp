@@ -237,7 +237,7 @@ void RigidDistanceGridCollisionModel::updateGrid()
 {
 }
 
-void RigidDistanceGridCollisionModel::draw()
+void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive()) return;
     if (getContext()->getShowCollisionModels())
@@ -249,17 +249,17 @@ void RigidDistanceGridCollisionModel::draw()
         glPointSize(3);
         for (unsigned int i=0; i<elems.size(); i++)
         {
-            draw(i);
+            draw(vparams,i);
         }
         glPointSize(1);
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     if (getPrevious()!=NULL)
-        getPrevious()->draw();
+        getPrevious()->draw(vparams);
 }
 
-void RigidDistanceGridCollisionModel::draw(int index)
+void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,int index)
 {
     const bool flipped = isFlipped();
 
@@ -716,7 +716,7 @@ FFDDistanceGridCollisionModel::DeformedCube::Plane FFDDistanceGridCollisionModel
     return Plane(N,N*C4*(-0.25f));
 }
 
-void FFDDistanceGridCollisionModel::draw()
+void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive()) return;
     if (getContext()->getShowCollisionModels())
@@ -727,16 +727,16 @@ void FFDDistanceGridCollisionModel::draw()
         glColor4fv(getColor4f());
         for (unsigned int i=0; i<elems.size(); i++)
         {
-            draw(i);
+            draw(vparams,i);
         }
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     if (getPrevious()!=NULL)
-        getPrevious()->draw();
+        getPrevious()->draw(vparams);
 }
 
-void FFDDistanceGridCollisionModel::draw(int index)
+void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,int index)
 {
     //DistanceGrid* grid = getGrid(index);
     DeformedCube& cube = getDeformCube( index );

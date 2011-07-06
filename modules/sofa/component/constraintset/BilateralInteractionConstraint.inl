@@ -123,7 +123,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vec
 
 
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::draw()
+void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowInteractionForceFields()) return;
 

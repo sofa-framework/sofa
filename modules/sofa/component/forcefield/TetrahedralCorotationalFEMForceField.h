@@ -206,7 +206,7 @@ public:
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
     void getElementStiffnessMatrix(Real* stiffness, Tetra& te);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
 protected:
 

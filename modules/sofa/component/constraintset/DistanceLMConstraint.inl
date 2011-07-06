@@ -187,15 +187,15 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lin
 
 #ifndef SOFA_FLOAT
 template <>
-void DistanceLMConstraint<defaulttype::Rigid3dTypes>::draw();
+void DistanceLMConstraint<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void DistanceLMConstraint<defaulttype::Rigid3fTypes>::draw();
+void DistanceLMConstraint<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
 #endif
 
 template <class DataTypes>
-void DistanceLMConstraint<DataTypes>::draw()
+void DistanceLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
 
@@ -211,7 +211,7 @@ void DistanceLMConstraint<DataTypes>::draw()
             points.push_back(x1[edges[i][0]]);
             points.push_back(x2[edges[i][1]]);
         }
-        simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
+        vparams->drawTool()->drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
     }
 }
 

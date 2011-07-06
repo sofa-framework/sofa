@@ -182,7 +182,7 @@ void FrameSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /
 }
 
 template<class DataTypes>
-void FrameSpringForceField<DataTypes>::draw()
+void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if ( ! ( ( this->mstate1 == this->mstate2 ) ?this->getContext()->getShowForceFields() :this->getContext()->getShowInteractionForceFields() ) ) return;
     const VecCoord& p1 = *this->mstate1->getX();

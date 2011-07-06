@@ -138,7 +138,7 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addDForce(VecDeriv& f1, Ve
 
 
 template<class DataTypes>
-void LagrangianMultiplierAttachConstraint<DataTypes>::draw()
+void LagrangianMultiplierAttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();

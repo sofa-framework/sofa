@@ -195,7 +195,7 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& l
 }
 
 template <class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::draw()
+void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams*)
 {
     if (!this->getContext()->getShowForceFields()) return;
     const VecCoord& x = *this->constrainedObject1->getX();

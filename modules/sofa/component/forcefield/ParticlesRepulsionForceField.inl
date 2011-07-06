@@ -187,11 +187,11 @@ void ParticlesRepulsionForceField<DataTypes>::addDForce(const core::MechanicalPa
 }
 
 template<class DataTypes>
-void ParticlesRepulsionForceField<DataTypes>::draw()
+void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields() && !this->getContext()->getShowInteractionForceFields()) return;
     //if (grid != NULL)
-    //	grid->draw();
+    //	grid->draw(vparams);
     const VecCoord& x = *this->mstate->getX();
     const Real h = distance.getValue();
     glDisable(GL_LIGHTING);

@@ -404,7 +404,7 @@ void TriangularTensorMassForceField<DataTypes>::updateLameCoefficients()
 
 
 template<class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::draw()
+void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     int i;
     if (!this->getContext()->getShowForceFields()) return;

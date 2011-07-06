@@ -219,7 +219,7 @@ void ExtrudeSurface<DataTypes>::update()
 }
 
 template <class DataTypes>
-void ExtrudeSurface<DataTypes>::draw()
+void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* )
 {
 
     const helper::vector<BaseMeshTopology::TriangleID> &surfaceTriangles = f_surfaceTriangles.getValue();

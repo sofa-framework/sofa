@@ -400,7 +400,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT ( InVecDeriv& out, con
 
 
 template <class BasicMapping>
-void HexahedronCompositeFEMMapping<BasicMapping>::draw()
+void HexahedronCompositeFEMMapping<BasicMapping>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getShow()) return;
 
@@ -414,7 +414,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::draw()
     }
 
 
-    simulation::getSimulation()->DrawUtility().drawPoints(points, 7, Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
+    vparams->drawTool()->drawPoints(points, 7, Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
 }
 
 

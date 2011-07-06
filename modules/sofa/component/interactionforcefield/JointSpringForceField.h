@@ -349,7 +349,7 @@ public:
 
     sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     // -- Modifiers
 

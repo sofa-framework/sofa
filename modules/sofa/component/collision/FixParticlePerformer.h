@@ -59,7 +59,7 @@ public:
 
     void start();
     void execute();
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
 protected:
     MouseContainer* getFixationPoints(const BodyPicked &b, helper::vector<unsigned int> &points, typename DataTypes::Coord &fixPoint);

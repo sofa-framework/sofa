@@ -131,7 +131,7 @@ public:
     virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) ;
     ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 };
 
 using sofa::defaulttype::Vec3dTypes;

@@ -2445,7 +2445,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeightsRamification
 
 
 template<class T>
-void HexahedronCompositeFEMForceFieldAndMass<T>::draw()
+void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
@@ -2454,7 +2454,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw()
 
     if( _drawColor.getValue() == -1 ) return;
 
-    if( _drawType.getValue() == -1 ) return HexahedronFEMForceFieldAndMassT::draw();
+    if( _drawType.getValue() == -1 ) return HexahedronFEMForceFieldAndMassT::draw(vparams);
 
 
     const VecCoord& x = *this->mstate->getX();
@@ -2483,27 +2483,27 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw()
 
     if( _drawType.getValue() == 0 )
     {
-        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(true);
+        vparams->drawTool()->setLightingEnabled(true);
 
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
-            sofa::simulation::getSimulation()->DrawUtility().drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize.getValue(), colour );
+            vparams->drawTool()->drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize.getValue(), colour );
         }
 
-        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(false);
+        vparams->drawTool()->setLightingEnabled(false);
     }
     else
     {
         std::vector< Vector3 > points;
 
-        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(false);
+        vparams->drawTool()->setLightingEnabled(false);
 
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
             points.push_back( x[(*it)[0]] );
             points.push_back( x[(*it)[1]] );
         }
-        simulation::getSimulation()->DrawUtility().drawLines(points, _drawSize.getValue(),colour);
+        vparams->drawTool()->drawLines(points, _drawSize.getValue(),colour);
     }
 
 
@@ -2523,7 +2523,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw()
 
         std::vector< Vector3 > points;
         for(unsigned i=0; i<x.size(); ++i) points.push_back( x[i] );
-        simulation::getSimulation()->DrawUtility().drawSpheres(points, _drawSize.getValue()*1.5f,colour);
+        vparams->drawTool()->drawSpheres(points, _drawSize.getValue()*1.5f,colour);
     }
 
 
@@ -2645,7 +2645,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw()
             points.push_back(pf);
 
         }
-        simulation::getSimulation()->DrawUtility().drawTriangles(points, colour);
+        vparams->drawTool()->drawTriangles(points, colour);
     }
 
 }

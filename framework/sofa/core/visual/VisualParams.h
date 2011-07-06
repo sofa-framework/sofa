@@ -168,6 +168,7 @@ public:
     Pass& pass() { return m_pass; }
 
     DrawTool*& drawTool() { return m_drawTool; }
+    DrawTool*& drawTool() const { return m_drawTool; }
 
     DisplayFlags& displayflags() { return m_displayflags; }
     const DisplayFlags& displayflags() const { return m_displayflags; }

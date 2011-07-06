@@ -64,7 +64,7 @@ void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmo
 #ifdef DEBUG_DRAW
         std::cerr << ">" << o->getClassName() << "::draw() of " << o->getName() << std::endl;
 #endif
-        o->draw();
+        o->draw(vparams);
 #ifdef DEBUG_DRAW
         std::cerr << "<" << o->getClassName() << "::draw() of " << o->getName() << std::endl;
 #endif

@@ -441,7 +441,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 
 
 template<class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::draw()
+void TriangularQuadraticSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;

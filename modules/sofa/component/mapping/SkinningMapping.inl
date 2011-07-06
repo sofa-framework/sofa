@@ -331,7 +331,7 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacob
 
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::draw()
+void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     const typename Out::VecCoord& xto = *this->toModel->getX();
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
@@ -388,7 +388,7 @@ void SkinningMapping<TIn, TOut>::draw()
                     colors.push_back(defaulttype::Vec<4,float>(color, 0.0, 0.0,1.0));
                 }
             }
-            simulation::getSimulation()->DrawUtility().drawTriangles(points, normals, colors);
+            vparams->drawTool()->drawTriangles(points, normals, colors);
         }
         else // Show by points
         {

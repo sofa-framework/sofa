@@ -234,10 +234,10 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
-void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw()
+void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* )
 {
     //	if (dynamic_cast<core::VisualModel*>(ff)!=NULL)
-    //		dynamic_cast<core::VisualModel*>(ff)->draw();
+    //		dynamic_cast<core::VisualModel*>(ff)->draw(vparams);
 }
 
 } // namespace collision

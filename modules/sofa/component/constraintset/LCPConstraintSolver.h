@@ -145,7 +145,7 @@ public:
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
 
     Data<bool> displayTime;

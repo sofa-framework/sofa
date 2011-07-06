@@ -410,7 +410,7 @@ void TetrahedralTensorMassForceField<DataTypes>::updateLameCoefficients()
 
 
 template<class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::draw()
+void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;

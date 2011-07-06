@@ -192,7 +192,7 @@ void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalP
 
 
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::draw()
+void FixedRotationConstraint<DataTypes>::draw(const core::visual::VisualParams* )
 {
 }
 

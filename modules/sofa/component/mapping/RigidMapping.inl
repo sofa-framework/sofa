@@ -960,7 +960,7 @@ void RigidMapping<TIn, TOut>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::draw()
+void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getShow())
         return;
@@ -973,7 +973,7 @@ void RigidMapping<TIn, TOut>::draw()
         point = OutDataTypes::getCPos(x[i]);
         points.push_back(point);
     }
-    simulation::getSimulation()->DrawUtility().drawPoints(points, 7,
+    vparams->drawTool()->drawPoints(points, 7,
             Vec<4, float>(1, 1, 0,1));
 }
 

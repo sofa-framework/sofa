@@ -162,7 +162,7 @@ void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 }
 
 template<class DataTypes>
-void ConicalForceField<DataTypes>::draw()
+void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!bDraw.getValue()) return;

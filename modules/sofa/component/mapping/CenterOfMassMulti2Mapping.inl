@@ -234,7 +234,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut>::init()
 }
 
 template <class TIn1, class TIn2, class TOut>
-void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::draw()
+void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::draw(const core::visual::VisualParams* vparams)
 {
     assert( this->toModels.size() == 1 );
     const Data< OutVecCoord > *X = this->getToModels()[0]->read(VecCoordId::position());
@@ -251,7 +251,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::draw()
         points.push_back(point1);
         points.push_back(point2);
     }
-    simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1,1,0,1));
 }
 
 

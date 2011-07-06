@@ -660,7 +660,7 @@ void CudaRigidDistanceGridCollisionModel::updateGrid()
 {
 }
 
-void CudaRigidDistanceGridCollisionModel::draw()
+void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive()) return;
     if (getContext()->getShowCollisionModels())
@@ -672,17 +672,17 @@ void CudaRigidDistanceGridCollisionModel::draw()
         glPointSize(3);
         for (unsigned int i=0; i<elems.size(); i++)
         {
-            draw(i);
+            draw(vparams,i);
         }
         glPointSize(1);
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     if (getPrevious()!=NULL)
-        getPrevious()->draw();
+        getPrevious()->draw(vparams);
 }
 
-void CudaRigidDistanceGridCollisionModel::draw(int index)
+void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,int index)
 {
     if (elems[index].isTransformed)
     {

@@ -277,7 +277,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesFromString(
 
 
 template<class DataTypes>
-void OscillatingTorsionPressureForceField<DataTypes>::draw()
+void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;

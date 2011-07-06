@@ -530,7 +530,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 
 
 template<class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::draw()
+void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;

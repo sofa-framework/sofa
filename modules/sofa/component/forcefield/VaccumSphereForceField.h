@@ -149,7 +149,7 @@ public:
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 };
 
 using sofa::defaulttype::Vec3dTypes;

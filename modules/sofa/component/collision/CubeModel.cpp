@@ -142,7 +142,7 @@ void CubeModel::updateCubes()
         updateCube(i);
 }
 
-void CubeModel::draw(int index)
+void CubeModel::draw(const core::visual::VisualParams* , int index)
 {
     const Vector3& vmin = elems[index].minBBox;
     const Vector3& vmax = elems[index].maxBBox;
@@ -179,7 +179,7 @@ void CubeModel::draw(int index)
     glEnd();
 }
 
-void CubeModel::draw()
+void CubeModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive() || !((getNext()==NULL)?getContext()->getShowCollisionModels():getContext()->getShowBoundingCollisionModels())) return;
 
@@ -232,11 +232,11 @@ void CubeModel::draw()
         points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
     }
 
-    simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(c));
+    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(c));
 
 
     if (getPrevious()!=NULL)
-        getPrevious()->draw();
+        getPrevious()->draw(vparams);
 }
 
 std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeModel::getInternalChildren(int index) const

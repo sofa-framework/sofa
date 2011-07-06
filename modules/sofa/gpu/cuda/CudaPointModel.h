@@ -86,9 +86,9 @@ public:
 
     //virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
 
-    void draw(int index);
+    void draw(const core::visual::VisualParams*,int index);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return mstate; }
 

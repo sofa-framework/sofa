@@ -477,7 +477,7 @@ void CurveMapping<TIn, TOut>::handleEvent(sofa::core::objectmodel::Event* event)
 }
 
 template <class TIn, class TOut>
-void CurveMapping<TIn, TOut>::draw()
+void CurveMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getShow()) return;
     std::vector< Vector3 > points;
@@ -489,7 +489,7 @@ void CurveMapping<TIn, TOut>::draw()
         point = DataTypes::getCPos(x[i]);
         points.push_back(point);
     }
-    simulation::getSimulation()->DrawUtility().drawPoints(points, 5, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawPoints(points, 5, Vec<4,float>(1,1,0,1));
 
 }
 

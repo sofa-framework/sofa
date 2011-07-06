@@ -159,7 +159,7 @@ double PenalityContactForceField<DataTypes>::getPotentialEnergy(const core::Mech
 }
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::draw()
+void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();
@@ -194,10 +194,10 @@ void PenalityContactForceField<DataTypes>::draw()
             points[3].push_back(p2[c.m2]);
         }
     }
-    simulation::getSimulation()->DrawUtility().drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,1,1));
-    simulation::getSimulation()->DrawUtility().drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,1,1));
-    simulation::getSimulation()->DrawUtility().drawLines(points[2], 1, defaulttype::Vec<4,float>(1,0,0,1));
-    simulation::getSimulation()->DrawUtility().drawLines(points[3], 1, defaulttype::Vec<4,float>(0,1,0,1));
+    vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,1,1));
+    vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,1,1));
+    vparams->drawTool()->drawLines(points[2], 1, defaulttype::Vec<4,float>(1,0,0,1));
+    vparams->drawTool()->drawLines(points[3], 1, defaulttype::Vec<4,float>(0,1,0,1));
 
 
     std::vector< defaulttype::Vector3 > pointsN;
@@ -215,7 +215,7 @@ void PenalityContactForceField<DataTypes>::draw()
             pointsN.push_back(p2[c.m2]);
             pointsN.push_back(p);
         }
-        simulation::getSimulation()->DrawUtility().drawLines(pointsN, 1, defaulttype::Vec<4,float>(1,1,0,1));
+        vparams->drawTool()->drawLines(pointsN, 1, defaulttype::Vec<4,float>(1,1,0,1));
     }
 }
 

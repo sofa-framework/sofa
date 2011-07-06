@@ -109,7 +109,7 @@ public:
     double getElementMass(unsigned int index);
     // visual model
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
     virtual bool addBBox(double* minBBox, double* maxBBox);
 

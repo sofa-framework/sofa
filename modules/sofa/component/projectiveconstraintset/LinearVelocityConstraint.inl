@@ -351,7 +351,7 @@ void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(const core::Mec
 
 //display the path the constrained dofs will go through
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::draw()
+void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
     glDisable (GL_LIGHTING);
@@ -372,13 +372,13 @@ void LinearVelocityConstraint<TDataTypes>::draw()
 
 // Specialization for rigids
 template <>
-void LinearVelocityConstraint<Rigid3dTypes >::draw();
+void LinearVelocityConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void LinearVelocityConstraint<Rigid3fTypes >::draw();
+void LinearVelocityConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void LinearVelocityConstraint<Vec6dTypes >::draw();
+void LinearVelocityConstraint<Vec6dTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void LinearVelocityConstraint<Vec6fTypes >::draw();
+void LinearVelocityConstraint<Vec6fTypes >::draw(const core::visual::VisualParams* vparams);
 
 } // namespace constraint
 

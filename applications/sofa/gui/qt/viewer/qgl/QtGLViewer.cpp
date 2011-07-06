@@ -100,8 +100,6 @@ SOFA_DECL_CLASS ( QGLViewerGUI )
 QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     : QGLViewer(parent, name)
 {
-    sofa::simulation::getSimulation()->setDrawUtility(new sofa::helper::gl::DrawManagerGL);
-
     groot = NULL;
     initTexturesDone = false;
 

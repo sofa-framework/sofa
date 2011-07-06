@@ -74,7 +74,7 @@ public:
 
     virtual ~TetrahedronSetGeometryAlgorithms() {}
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
     void computeTetrahedronAABB(const TetraID i, Coord& minCoord, Coord& maxCoord) const;
 

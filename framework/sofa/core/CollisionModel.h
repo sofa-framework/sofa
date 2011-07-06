@@ -38,6 +38,12 @@ namespace sofa
 namespace core
 {
 
+namespace visual
+{
+class VisualParams;
+}
+
+
 /**
  *  \brief Abstract CollisionModel interface.
  *
@@ -279,10 +285,23 @@ public:
 
 
     /// Render an collision element.
-    virtual void draw(int /*index*/) {}
+    virtual void draw(const core::visual::VisualParams* /*vparams*/,int /*index*/) {}
 
     /// Render the whole collision model.
+    virtual void draw(const core::visual::VisualParams* )
+    {
+#ifndef SOFA_DEPRECATE_OLD_API
+        draw();
+#endif
+    }
+
+#ifndef SOFA_DEPRECATE_OLD_API
     virtual void draw() {}
+
+    virtual void draw(int /*index*/) {}
+#endif
+
+
 
 
     enum ColourCode

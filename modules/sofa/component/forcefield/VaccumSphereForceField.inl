@@ -191,7 +191,7 @@ void VaccumSphereForceField<DataTypes>::handleEvent(sofa::core::objectmodel::Eve
 
 
 template<class DataTypes>
-void VaccumSphereForceField<DataTypes>::draw()
+void VaccumSphereForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!active.getValue()) return;
 

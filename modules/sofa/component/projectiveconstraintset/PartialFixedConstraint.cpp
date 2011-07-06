@@ -82,7 +82,7 @@ template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialFixedConstraint
 
 #ifndef SOFA_FLOAT
 template <>
-void PartialFixedConstraint<Rigid3dTypes>::draw()
+void PartialFixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -97,13 +97,13 @@ void PartialFixedConstraint<Rigid3dTypes>::draw()
             points.push_back(x[*it].getCenter());
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
-        simulation::getSimulation()->DrawUtility().drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     else
-        simulation::getSimulation()->DrawUtility().drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
 }
 
 template <>
-void PartialFixedConstraint<Rigid2dTypes>::draw()
+void PartialFixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams* )
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -127,7 +127,7 @@ void PartialFixedConstraint<Rigid2dTypes>::draw()
 
 #ifndef SOFA_DOUBLE
 template <>
-void PartialFixedConstraint<Rigid3fTypes>::draw()
+void PartialFixedConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -142,13 +142,13 @@ void PartialFixedConstraint<Rigid3fTypes>::draw()
             points.push_back(x[*it].getCenter());
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
-        simulation::getSimulation()->DrawUtility().drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     else
-        simulation::getSimulation()->DrawUtility().drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
 }
 
 template <>
-void PartialFixedConstraint<Rigid2fTypes>::draw()
+void PartialFixedConstraint<Rigid2fTypes>::draw(const core::visual::VisualParams* )
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;

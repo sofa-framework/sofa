@@ -74,7 +74,7 @@ void CudaPointModel::init()
     resize(nelems);
 }
 
-void CudaPointModel::draw(int index)
+void CudaPointModel::draw(const core::visual::VisualParams* ,int index)
 {
     const int gsize = groupSize.getValue();
     CudaPoint t(this,index);
@@ -89,7 +89,7 @@ void CudaPointModel::draw(int index)
     glEnd();
 }
 
-void CudaPointModel::draw()
+void CudaPointModel::draw(const core::visual::VisualParams* vparams)
 {
     if (isActive() && getContext()->getShowCollisionModels())
     {
@@ -102,7 +102,7 @@ void CudaPointModel::draw()
 
         for (int i=0; i<size; i++)
         {
-            draw(i);
+            draw(vparams,i);
         }
 
         glColor3f(1.0f, 1.0f, 1.0f);
@@ -112,7 +112,7 @@ void CudaPointModel::draw()
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
-        getPrevious()->draw();
+        getPrevious()->draw(vparams);
 }
 
 using sofa::component::collision::CubeModel;

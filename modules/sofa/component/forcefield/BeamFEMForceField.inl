@@ -596,7 +596,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::draw()
+void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
@@ -615,9 +615,9 @@ void BeamFEMForceField<DataTypes>::draw()
         for (unsigned int i=0; i<_indexedElements->size(); ++i)
             drawElement(i, points, x);
     }
-    simulation::getSimulation()->DrawUtility().drawLines(points[0], 1, Vec<4,float>(1,0,0,1));
-    simulation::getSimulation()->DrawUtility().drawLines(points[1], 1, Vec<4,float>(0,1,0,1));
-    simulation::getSimulation()->DrawUtility().drawLines(points[2], 1, Vec<4,float>(0,0,1,1));
+    vparams->drawTool()->drawLines(points[0], 1, Vec<4,float>(1,0,0,1));
+    vparams->drawTool()->drawLines(points[1], 1, Vec<4,float>(0,1,0,1));
+    vparams->drawTool()->drawLines(points[2], 1, Vec<4,float>(0,0,1,1));
 }
 
 template<class DataTypes>

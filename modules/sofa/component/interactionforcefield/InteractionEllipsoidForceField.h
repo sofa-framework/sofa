@@ -165,7 +165,7 @@ public:
 
     void reinit() {_update_pos_relative = true;}
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
 protected:
     struct TempVars

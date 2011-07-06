@@ -104,7 +104,7 @@ public:
     void postDrawScene(core::visual::VisualParams* vp);
 
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
     void fwdDraw(core::visual::VisualParams*);
     void bwdDraw(core::visual::VisualParams*);
 

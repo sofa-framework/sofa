@@ -89,36 +89,16 @@ Simulation::Simulation()
       nbMechSteps( initData(&nbMechSteps, (unsigned)0, "nbMechSteps", "Number of mechanical steps completed", true, false)),
       gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved")),
       instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used")),
-      paused(false),mDrawUtility(0l)
+      paused(false)
 {
-    /// By default, initialise the Viewer with openGL
-    /// We can switch Viewer between GL, OGRE and OSG with the setDrawUtility method
-    this->setDrawUtility(new sofa::helper::gl::DrawManagerGL() );
 }
 
 
 Simulation::~Simulation()
 {
-    delete mDrawUtility;
 }
 /// The (unique) simulation which controls the scene
 std::auto_ptr<Simulation> Simulation::theSimulation;
-
-
-sofa::helper::gl::DrawManager& Simulation::DrawUtility()
-{
-    return *mDrawUtility;
-}
-
-
-void Simulation::setDrawUtility(sofa::helper::gl::DrawManager * _NewDrawUtility)
-{
-    sofa::helper::gl::DrawManager * old = mDrawUtility;
-    mDrawUtility = _NewDrawUtility;
-    if(mDrawUtility != NULL)
-        delete old;
-}
-
 
 void setSimulation ( Simulation* s )
 {

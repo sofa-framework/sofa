@@ -296,7 +296,7 @@ else
 
 
 template<>
-void RestShapeSpringsForceField<Vec3dTypes>::draw()
+void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields())
         return;  /// \todo put this in the parent class

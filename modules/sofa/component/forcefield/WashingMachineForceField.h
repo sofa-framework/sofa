@@ -166,7 +166,7 @@ public:
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
     bool addBBox(double* minBBox, double* maxBBox);
 
 

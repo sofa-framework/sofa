@@ -203,11 +203,11 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::Mechan
 
 
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw()
+void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::VisualParams* )
 {
     if (!getContext()->getShowForceFields()) return;
     //if (grid != NULL)
-    //	grid->draw();
+    //	grid->draw(vparams);
     const VecCoord& x = *this->mstate->getX();
     const gpu::cuda::CudaVector<defaulttype::Vec4f> pos4 = this->data.pos4;
     if (pos4.empty()) return;

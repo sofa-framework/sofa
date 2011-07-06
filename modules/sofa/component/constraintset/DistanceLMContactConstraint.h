@@ -119,7 +119,7 @@ public:
     void clear();
     /// register a new contact
     void addContact(unsigned m1, unsigned m2);
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
     bool useMask() const {return true;}
 
     std::string getTemplateName() const

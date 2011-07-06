@@ -653,7 +653,7 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, 
 
 
 template<class DataTypes>
-void TriangleFEMForceField<DataTypes>::draw()
+void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
 {
     if (!this->getContext()->getShowForceFields())
         return;

@@ -1153,7 +1153,7 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::draw()
+void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 // 	serr<<"HexahedronFEMForceField<DataTypes>::draw()"<<sendl;
     if (!this->getContext()->getShowForceFields()) return;
@@ -1164,7 +1164,7 @@ void HexahedronFEMForceField<DataTypes>::draw()
     const VecCoord& x = *this->mstate->getX();
 
     if (this->getContext()->getShowWireFrame())
-        simulation::getSimulation()->DrawUtility().setPolygonMode(0,true);
+        vparams->drawTool()->setPolygonMode(0,true);
 
 
 
@@ -1282,19 +1282,19 @@ void HexahedronFEMForceField<DataTypes>::draw()
         points[5].push_back(pf);
 
 
-        simulation::getSimulation()->DrawUtility().setLightingEnabled(false);
-        simulation::getSimulation()->DrawUtility().drawTriangles(points[0], Vec<4,float>(0.7f,0.7f,0.1f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        simulation::getSimulation()->DrawUtility().drawTriangles(points[1], Vec<4,float>(0.7f,0.0f,0.0f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        simulation::getSimulation()->DrawUtility().drawTriangles(points[2], Vec<4,float>(0.0f,0.7f,0.0f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        simulation::getSimulation()->DrawUtility().drawTriangles(points[3], Vec<4,float>(0.0f,0.0f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        simulation::getSimulation()->DrawUtility().drawTriangles(points[4], Vec<4,float>(0.1f,0.7f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        simulation::getSimulation()->DrawUtility().drawTriangles(points[5], Vec<4,float>(0.7f,0.1f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->setLightingEnabled(false);
+        vparams->drawTool()->drawTriangles(points[0], Vec<4,float>(0.7f,0.7f,0.1f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->drawTriangles(points[1], Vec<4,float>(0.7f,0.0f,0.0f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->drawTriangles(points[2], Vec<4,float>(0.0f,0.7f,0.0f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->drawTriangles(points[3], Vec<4,float>(0.0f,0.0f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->drawTriangles(points[4], Vec<4,float>(0.1f,0.7f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        vparams->drawTool()->drawTriangles(points[5], Vec<4,float>(0.7f,0.1f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
 
     }
 
 
     if (this->getContext()->getShowWireFrame())
-        simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
+        vparams->drawTool()->setPolygonMode(0,false);
 
     if(_sparseGrid )
         glDisable(GL_BLEND);

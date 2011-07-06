@@ -63,7 +63,7 @@ TriangleOctree::~TriangleOctree()
     }
 }
 
-void TriangleOctree::draw ()
+void TriangleOctree::draw (const core::visual::VisualParams* vparams)
 {
     Vector3 center;
     if ( objects.size ())
@@ -78,7 +78,7 @@ void TriangleOctree::draw ()
     for (int i = 0; i < 8; i++)
     {
         if (childVec[i])
-            childVec[i]->draw ();
+            childVec[i]->draw(vparams);
     }
 }
 

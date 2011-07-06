@@ -123,7 +123,7 @@ void Spiral<DataTypes>::update()
 }
 
 template <class DataTypes>
-void Spiral<DataTypes>::draw()
+void Spiral<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowBehaviorModels())
         return;

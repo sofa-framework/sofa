@@ -151,10 +151,10 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
-void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::draw()
+void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::draw(const core::visual::VisualParams* vparams)
 {
 //	if (ff!=NULL)
-//		ff->draw();
+//		ff->draw(vparams);
 }
 
 } // namespace collision

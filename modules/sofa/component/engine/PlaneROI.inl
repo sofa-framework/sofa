@@ -408,7 +408,7 @@ void PlaneROI<DataTypes>::update()
 }
 
 template <class DataTypes>
-void PlaneROI<DataTypes>::draw()
+void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowBehaviorModels())
         return;

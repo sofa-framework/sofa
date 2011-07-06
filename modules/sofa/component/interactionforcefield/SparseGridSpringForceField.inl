@@ -405,14 +405,14 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
 
 
 template<class DataTypes>
-void SparseGridSpringForceField<DataTypes>::draw()
+void SparseGridSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getContext()->getShowForceFields())
         return;
     assert(this->object1);
     assert(this->object2);
     // Draw any custom springs
-    this->StiffSpringForceField<DataTypes>::draw();
+    this->StiffSpringForceField<DataTypes>::draw(vparams);
     // Compute topological springs
     const VecCoord& p1 = *this->object1->getX();
     const VecCoord& p2 = *this->object2->getX();

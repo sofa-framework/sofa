@@ -105,7 +105,7 @@ public:
     */
     void writeMSHfile(const char *filename) const;
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
 protected:
     Data<bool> showQuadIndices;

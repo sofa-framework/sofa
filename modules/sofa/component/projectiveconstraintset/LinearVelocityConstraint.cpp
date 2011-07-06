@@ -47,7 +47,7 @@ using namespace sofa::helper;
 //display specialisation for rigid types
 #ifndef SOFA_FLOAT
 template <>
-void LinearVelocityConstraint<Rigid3dTypes>::draw()
+void LinearVelocityConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* )
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -61,7 +61,7 @@ void LinearVelocityConstraint<Rigid3dTypes>::draw()
     glEnd();
 }
 template <>
-void LinearVelocityConstraint<Vec6dTypes>::draw()
+void LinearVelocityConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* )
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -77,7 +77,7 @@ void LinearVelocityConstraint<Vec6dTypes>::draw()
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void LinearVelocityConstraint<Rigid3fTypes>::draw()
+void LinearVelocityConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* )
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -91,7 +91,7 @@ void LinearVelocityConstraint<Rigid3fTypes>::draw()
     glEnd();
 }
 template <>
-void LinearVelocityConstraint<Vec6fTypes>::draw()
+void LinearVelocityConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* )
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;

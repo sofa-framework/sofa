@@ -384,7 +384,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::drawSphere(double r, i
 
 
 template<class DataTypes>
-void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw()
+void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw(const core::visual::VisualParams* )
 {
 
     if (!this->getContext()->getShowForceFields()) return;

@@ -74,7 +74,7 @@ public:
     // ContextObject
     virtual void apply();
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
     virtual void reinit();
 

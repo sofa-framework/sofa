@@ -94,7 +94,7 @@ public:
 
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
 protected:
 

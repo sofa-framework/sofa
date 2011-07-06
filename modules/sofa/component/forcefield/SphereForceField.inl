@@ -177,7 +177,7 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
 }
 
 template<class DataTypes>
-void SphereForceField<DataTypes>::draw()
+void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowForceFields()) return;
     if (!bDraw.getValue()) return;

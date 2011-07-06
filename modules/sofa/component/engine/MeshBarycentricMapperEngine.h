@@ -76,7 +76,7 @@ public:
 
     void update();
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     void addPointInLine(const int /*lineIndex*/, const SReal* /*baryCoords*/);
 

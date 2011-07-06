@@ -650,7 +650,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
 #endif
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::draw()
+void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getContext()->getShowBehaviorModels()) return;
     const MassVector &masses= f_mass.getValue();
@@ -673,7 +673,7 @@ void DiagonalMass<DataTypes, MassType>::draw()
         totalMass += masses[i];
     }
 
-    simulation::getSimulation()->DrawUtility().drawPoints(points, 2, Vec<4,float>(1,1,1,1));
+    vparams->drawTool()->drawPoints(points, 2, Vec<4,float>(1,1,1,1));
 
     if(showCenterOfGravity.getValue())
     {
@@ -749,9 +749,9 @@ double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const core::
 template <>
 double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 template <>
-void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw();
+void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams);
 template <>
-void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw();
+void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualParams* vparams);
 #endif
 #ifndef SOFA_DOUBLE
 template <>
@@ -760,9 +760,9 @@ template <>
 double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
 
 template <>
-void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw();
+void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualParams* vparams);
 template <>
-void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw();
+void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualParams* vparams);
 #endif
 
 

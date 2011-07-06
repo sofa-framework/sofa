@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 
 #include <sofa/component/collision/RayTriangleIntersection.h>
 
@@ -202,7 +202,7 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
             /*search a triangle on t1, to be sure that the triangle found on t2 isn't outside the t1 object */
 
             /*if there is no triangle in t1  that is crossed by the tri1 normal (resTriangle2==-1), it means that t1 is not an object with a closed volume, so we can't continue.
-               If the distance from the  point to the triangle on t1 is less than the distance to the triangle on t2 it means that the corresponding point is outside t1, and is not a good point */
+              If the distance from the  point to the triangle on t1 is less than the distance to the triangle on t2 it means that the corresponding point is outside t1, and is not a good point */
             resTriangle2 =
                 tm1->octreeRoot->trace (point, -normau[t], res2);
 
@@ -307,7 +307,7 @@ void RayTraceDetection::addCollisionPair (const std::pair <
     }
 }
 
-void RayTraceDetection::draw ()
+void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
 {
     if (!bDraw.getValue ())
         return;
@@ -338,8 +338,8 @@ void RayTraceDetection::draw ()
             glEnd ();
             serr << it2->point[0] << " " << it2->
                     point[0] << sendl;
-            it2->elem.first.draw ();
-            it2->elem.second.draw ();
+            it2->elem.first.draw(vparams);
+            it2->elem.second.draw(vparams);
         }
     }
     glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);

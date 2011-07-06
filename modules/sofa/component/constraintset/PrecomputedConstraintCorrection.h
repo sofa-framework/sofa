@@ -109,7 +109,7 @@ public:
 
     virtual void rotateResponse();
 
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
     /// @name Unbuilt constraint system during resolution
     /// @{

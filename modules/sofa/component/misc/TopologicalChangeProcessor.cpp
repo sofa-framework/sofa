@@ -1351,7 +1351,7 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 }
 
 
-void TopologicalChangeProcessor::draw()
+void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
 {
     if (!m_topology)
         return;
@@ -1369,7 +1369,7 @@ void TopologicalChangeProcessor::draw()
         return;
 
 //                if (this->getContext()->getShowWireFrame())
-//                      simulation::getSimulation()->DrawUtility().setPolygonMode(0,true);
+//                      vparams->drawTool()->setPolygonMode(0,true);
 
     unsigned int nbTriangles = m_topology->getNbTriangles();
 
@@ -1400,8 +1400,8 @@ void TopologicalChangeProcessor::draw()
         }
     }
 
-    simulation::getSimulation()->DrawUtility().drawTriangles(trianglesToDraw, Vec<4,float>(0.0,0.0,1.0,1.0));
-    simulation::getSimulation()->DrawUtility().drawPoints(pointsToDraw, 15.0,  Vec<4,float>(1.0,0.0,1.0,1.0));
+    vparams->drawTool()->drawTriangles(trianglesToDraw, Vec<4,float>(0.0,0.0,1.0,1.0));
+    vparams->drawTool()->drawPoints(pointsToDraw, 15.0,  Vec<4,float>(1.0,0.0,1.0,1.0));
 
     if (!errorTrianglesIndices.empty())
     {
@@ -1418,11 +1418,11 @@ void TopologicalChangeProcessor::draw()
                 trianglesToDraw.push_back(coord[k]);
         }
 
-        simulation::getSimulation()->DrawUtility().drawTriangles(trianglesToDraw,
+        vparams->drawTool()->drawTriangles(trianglesToDraw,
                 Vec<4,float>(1.0,(Real)rand() / (Real)RAND_MAX, (Real)rand() / (Real)RAND_MAX, 1.0));
     }
 //                if (this->getContext()->getShowWireFrame())
-//                      simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
+//                      vparams->drawTool()->setPolygonMode(0,false);
 }
 
 } // namespace misc

@@ -61,12 +61,12 @@ void WashingMachineForceField<DataTypes>::addDForce(const core::MechanicalParams
 }
 
 template<class DataTypes>
-void WashingMachineForceField<DataTypes>::draw()
+void WashingMachineForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!this->getContext()->getShowForceFields() || !_alreadyInit ) return;
     for(int i=0; i<6; ++i)
 // 				_planes[i]->drawPlane(_size.getValue()[0]);
-        _planes[i]->draw();
+        _planes[i]->draw(vparams);
 }
 
 template<class DataTypes>

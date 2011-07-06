@@ -166,7 +166,7 @@ public:
 
     //void applyJT(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
 
 protected:

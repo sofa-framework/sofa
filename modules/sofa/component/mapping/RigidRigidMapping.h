@@ -132,7 +132,7 @@ public:
         return NULL;
     }
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 
     void clear();
 

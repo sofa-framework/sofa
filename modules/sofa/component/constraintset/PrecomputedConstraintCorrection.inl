@@ -877,7 +877,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 
 
 template< class DataTypes >
-void PrecomputedConstraintCorrection< DataTypes >::draw()
+void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::VisualParams* )
 {
     if (!this->getContext()->getShowBehaviorModels() || !m_rotations.getValue())
         return;
@@ -1519,10 +1519,10 @@ template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse();
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::draw();
+void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::draw();
+void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::draw(const core::visual::VisualParams* vparams);
 
 #endif
 
@@ -1541,10 +1541,10 @@ template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse();
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::draw();
+void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::draw();
+void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::draw(const core::visual::VisualParams* vparams);
 
 #endif
 

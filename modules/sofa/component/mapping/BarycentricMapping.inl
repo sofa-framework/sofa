@@ -3400,7 +3400,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,O
 
 
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::draw()
+void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if ( !this->getShow() ) return;
 
@@ -3412,13 +3412,13 @@ void BarycentricMapping<TIn, TOut>::draw()
     }
 //	glEnd();
     const InVecCoord& in = *this->fromModel->getX();
-    if ( mapper!=NULL ) mapper->draw ( out, in );
+    if ( mapper!=NULL ) mapper->draw(vparams,out, in );
 
-    simulation::getSimulation()->DrawUtility().drawPoints ( points, 7, Vec<4,float> ( 1,1,0,1 ) );
+    vparams->drawTool()->drawPoints ( points, 7, Vec<4,float> ( 1,1,0,1 ) );
 }
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::draw ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     const sofa::core::topology::BaseMeshTopology::SeqLines& lines = this->fromTopology->getLines();
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
@@ -3566,11 +3566,11 @@ void BarycentricMapperMeshTopology<In,Out>::draw ( const typename Out::VecCoord&
             }
         }
     }
-    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 template <class In, class Out>
-void BarycentricMapperRegularGridTopology<In,Out>::draw ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     std::vector< Vector3 > points;
 
@@ -3613,12 +3613,12 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw ( const typename Out::Ve
             }
         }
     }
-    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,0,1,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,0,1,1 ) );
 
 }
 
 template <class In, class Out>
-void BarycentricMapperSparseGridTopology<In,Out>::draw ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperSparseGridTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     std::vector< Vector3 > points;
     for ( unsigned int i=0; i<map.size(); i++ )
@@ -3660,12 +3660,12 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw ( const typename Out::Vec
             }
         }
     }
-    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,0,1,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,0,1,1 ) );
 
 }
 
 template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::draw ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperEdgeSetTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     const sofa::helper::vector<topology::Edge>& edges = this->fromTopology->getEdges();
 
@@ -3696,11 +3696,11 @@ void BarycentricMapperEdgeSetTopology<In,Out>::draw ( const typename Out::VecCoo
             }
         }
     }
-    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::draw ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperTriangleSetTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     const sofa::helper::vector<topology::Triangle>& triangles = this->fromTopology->getTriangles();
 
@@ -3727,11 +3727,11 @@ void BarycentricMapperTriangleSetTopology<In,Out>::draw ( const typename Out::Ve
             }
         }
     }
-    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::draw ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperQuadSetTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     const sofa::helper::vector<topology::Quad>& quads = this->fromTopology->getQuads();
     std::vector< Vector3 > points;
@@ -3758,11 +3758,11 @@ void BarycentricMapperQuadSetTopology<In,Out>::draw ( const typename Out::VecCoo
             }
         }
     }
-    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::draw ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperTetrahedronSetTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
 
@@ -3791,11 +3791,11 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::draw ( const typename Out:
             }
         }
     }
-    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::draw ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperHexahedronSetTopology<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     const sofa::helper::vector<topology::Hexahedron>& cubes = this->fromTopology->getHexahedra();
 
@@ -3828,7 +3828,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::draw ( const typename Out::
             }
         }
     }
-    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 /************************************* PropagateConstraint ***********************************/

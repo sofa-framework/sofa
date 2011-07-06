@@ -151,7 +151,7 @@ public:
 
     virtual bool isIn(Coord p);
 
-    void draw();
+    void draw(const core::visual::VisualParams*);
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP)

@@ -970,7 +970,7 @@ void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(const core::MechanicalP
 }
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::draw()
+void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* )
 {
     if (!getShow(this)) return;
     const typename Out::VecCoord& x = *this->toModel->getX();
