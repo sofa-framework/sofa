@@ -76,7 +76,7 @@ public:
     Data<vector<OutReal> > f_length;
 
     virtual void init();
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
     virtual void apply(VecOutCoord& out, const VecInCoord& in);
     virtual void applyJ( VecOutDeriv& out, const VecInDeriv& in);

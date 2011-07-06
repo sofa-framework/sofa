@@ -79,7 +79,7 @@ void MyMappingPendulumInPlane<In,Out>::init()
 }
 
 template <class In, class Out>
-void MyMappingPendulumInPlane<In,Out>::draw()
+void MyMappingPendulumInPlane<In,Out>::draw(const core::visual::VisualParams* vparams)
 {
     if ( !this->getShow() ) return;
 
@@ -90,7 +90,7 @@ void MyMappingPendulumInPlane<In,Out>::draw()
     {
         points[i] = Out::getCPos(out[i]);
     }
-    simulation::getSimulation()->DrawUtility().drawPoints ( points, 7, Vec<4,float> ( 1,1,0,1 ) );
+    vparams->drawTool()->drawPoints ( points, 7, Vec<4,float> ( 1,1,0,1 ) );
 
     points.resize(2*out.size());
     for ( unsigned int i=0; i<out.size(); i++ )
@@ -98,7 +98,7 @@ void MyMappingPendulumInPlane<In,Out>::draw()
         points[2*i] =   Vector3(0,0,0);
         points[2*i+1] = Out::getCPos(out[i]);
     }
-    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 
 
 }
