@@ -2,43 +2,31 @@
 #README:
 #sed -f replace-componentdraw.sed < testfile > testoutput
 #testfile
-#TEST FILE FOR REPLACECOMPONENTDRAW.SED
-# void draw ();
-#  void draw (    );
-#    void draw ( int );
-#      void draw (  int idx    );
-#          simulation::getSimulation()->DrawUtility().drawArrow(p0,p1,p2,p3);
-#     sofa::simulation::getSimulation()->DrawUtility().drawArrow(p0,p1,p2,p3);
-#	void Component::draw ()
-#	{
-#		TriangleSetGeometryAlgorithms<DataTypes>::draw ();
-#	}
-#		void Component::draw(   )
-#		{
-#		TriangleSetGeometryAlgorithms< DataTypes >::draw (   );
-#		}
-#	void Component::draw ( int index )
-#	{
-#	  CollisionModel::draw ( index  );
-#	}
-#	void Component::draw (int   i)
-#	{
-#	draw (  );
-#	draw (i); it2->elem.first.draw ();
-#	it2->elem.first.draw ();
-#	}
-# 	void draw ( const typename Out::VecCoord& out , const typename In::VecCoord& in ) ;
-#	template <class In, class Out>
-#void BarycentricMapperMeshTopology<In,Out>::draw ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
-#	if ( mapper!=NULL ) mapper->draw ( out, in );
-#	template<>
-#	void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw();
-#	template<class DataTypes>
-#	void DistanceOnGrid< DataTypes >::draw()
-#	grid->draw();
-#	template <>
-#void UniformMass<Rigid2dTypes, Rigid2dMass>::draw();
+#BEGIN 
+# Inherited::draw();
+# 	template <class DataTypes>
+# 	void TriangularAnisotropicFEMForceField<DataTypes>::draw()
+# 		void draw();
+# 	void draw ( ) ;
+# void MechanicalObject<defaulttype::Rigid3dTypes>::draw();
 
+# template <class DataTypes>
+# void MechanicalObject<DataTypes>::draw()
+# 		it2->elem.first.draw ();
+# 	virtual void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
+# 	void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+# void BarycentricMapperRegularGridTopology<In,Out>::draw ( const typename Out::VecCoord& out, const typename In::VecCoord& in )    
+# 	if ( mapper!=NULL ) mapper->draw ( out, in );
+# template<class DataTypes>
+# void TriangleFEMForeField<DataTypes>::draw()  
+# // ----------------------------------------------------------------
+# // ---	Display 
+# // ----------------------------------------------------------------
+# template <class DataTypes>
+# void TriangularAnisotropicFEMForceField<DataTypes>::draw()  
+# template<typename GFiniteElement>       
+# void FEMDiagonalMass<GFiniteElement>::draw() {       
+#END TEST FILE
 
 
 #void draw(int index) --> draw(const sofa::core::visual::VisualParams*, int index)
@@ -50,9 +38,11 @@ s/\(void[[:blank:]]\)\([[:blank:]]*\)\(draw[[:blank:]]*\)(\([[:blank:]]*\))\([[:
 #void Component::draw() --> void Component::draw(const sofa::core::visual::VisualParams* vparams)
 #void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in ) 
 # --> void BarycentricMapperMeshTopology<In,Out>::draw (const sofa::core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
-s/\(void[[:blank:]][[:blank:]]*\)\([[:graph:]][[:print:]]*\)\(::draw[[:blank:]]*\)(\([[:blank:]]*\)\([[:graph:]][[:graph:]]*\)\(.*\))\([[:blank:]]*\)$/\1\2\3(const sofa::core::visual::VisualParams* vparams,\4\5\6\7)/g
-s/\(void[[:blank:]][[:blank:]]*\)\([[:graph:]][[:print:]]*\)\(::draw[[:blank:]]*\)(\([[:blank:]]*\))\([[:blank:]]*\)$/\1\2\3\4(const sofa::core::visual::VisualParams* vparams)/g
-s/\(void[[:blank:]][[:blank:]]*\)\([[:graph:]][[:print:]]*\)\(::draw[[:blank:]]*\)(\([[:blank:]]*\)\([[:graph:]][[:graph:]]*\)\(.*\))\([[:blank:]]*\);\([[:blank:]]*\)$/\1\2\3\4(const sofa::core::visual::VisualParams* vparams,\5\6\7);/g
+# void FEMDiagonalMass<GFiniteElement>::draw() {  --> void FEMDiagonalMass<GFiniteElement>::draw(const sofa::core::visual::VisualParams* vparams) { 
+s/\(void[[:blank:]][[:blank:]]*\)\([[:graph:]][[:print:]]*\)\(::draw[[:blank:]]*\)(\([[:blank:]]*\)\([[:graph:]][[:graph:]]*\)\(.*\))\([{[:blank:]]*\)$/\1\2\3(const sofa::core::visual::VisualParams* vparams,\4\5\6)\7/g
+s/\(void[[:blank:]][[:blank:]]*\)\([[:graph:]][[:print:]]*\)\(::draw[[:blank:]]*\)(\([[:blank:]]*\))\([{[:blank:]]*\)$/\1\2\3\4(const sofa::core::visual::VisualParams* vparams)\5/g
+
+s/\(void[[:blank:]][[:blank:]]*\)\([[:graph:]][[:print:]]*\)\(::draw[[:blank:]]*\)(\([[:blank:]]*\)\([[:graph:]][[:graph:]]*\)\(.*\))\([[:blank:]]*\);\([{[:blank:]]*\)$/\1\2\3\4(const sofa::core::visual::VisualParams* vparams,\5\6\7);/g
 s/\(void[[:blank:]][[:blank:]]*\)\([[:graph:]][[:print:]]*\)\(::draw[[:blank:]]*\)(\([[:blank:]]*\))\([[:blank:]]*\);\([[:blank:]]*\)$/\1\2\3\4(const sofa::core::visual::VisualParams* vparams);/g
 
 
