@@ -344,8 +344,7 @@ protected:
         core::MultiVecDerivId solutionVecId;
 
 #ifdef SOFA_SUPPORT_CRS_MATRIX
-        //CRSMultiMatrixAccessor matrixAccessor;
-        DefaultMultiMatrixAccessor matrixAccessor;
+        CRSMultiMatrixAccessor matrixAccessor;
 #else
         DefaultMultiMatrixAccessor matrixAccessor;
 #endif
