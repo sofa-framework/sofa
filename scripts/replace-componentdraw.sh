@@ -14,15 +14,16 @@ echo "$size"
 for g in $(find ${1:-.} -name '*.h' -o -name '*.cpp' -o -name '*.inl') 
 do
 	#echo "$g"
-	sed -f "$SCRIPTS/replace-componentdraw.sed" "$g" > buff
-	if [ -s buff ]
+	sed -f "$SCRIPTS/replace-componentdraw.sed" "$g" > "$g".tmp
+	if [ -s "$g".tmp ]
 	then
-		cat buff > "$g"
+		cat "$g".tmp > "$g"
+        rm -f "$g".tmp
 		current=$(($current+1))
 		#rate=$(echo "$current / $size" | bc -l)
 		rate=$(($current*100 / $size))
 		echo -ne "Progression : $rate%\r"
 	else
-		echo "Erreur in $g"
+		echo "Error in $g"
 	fi
 done
