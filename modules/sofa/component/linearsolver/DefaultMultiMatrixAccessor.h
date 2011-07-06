@@ -31,6 +31,7 @@
 #include <sofa/component/component.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/component/linearsolver/GraphScatteredTypes.h>
 #include <vector>
 
@@ -156,6 +157,14 @@ protected:
 //TODO separating in other file
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/* CRSMultiMatrixAccessor do the same thing as DefaultMultiMatrixAccessor but optimal.
+ * The different is instead of creating a standard full matrix for mapped and mapping, CRSMultiMatrixAccessor works
+ * with CompressedRowSparseMatrix.
+ *
+ * To be able to creat  CompressedRowSparseMatrix, it is needle to know about block format of relied to the
+ * size of DOF of mapped Mechanical state and input-output Mechanical State of the mapping
+ * */
 class SOFA_COMPONENT_LINEARSOLVER_API CRSMultiMatrixAccessor : public DefaultMultiMatrixAccessor
 {
 public:
@@ -171,6 +180,109 @@ public:
     //Compute the contribution of all new created matrix to the the global system matrix
     virtual void computeGlobalMatrix();
 };
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+///////////  SWITCH COMPILATION PROBLEM TO RUNTIME PROBLEM  /////////////////////
+
+//template<int JblocRsize, int JblocCsize, int MblocCsize, class JelementType, class MelementType>
+//bool opMulJTM_TFinal(defaulttype::BaseMatrix* out, const defaulttype::BaseMatrix* J, const defaulttype::BaseMatrix* M, int offsetRow, int offsetCol)
+//{
+//	typedef defaulttype::Mat<JblocRsize, JblocCsize, JelementType> JBloc;
+//	typedef CompressedRowSparseMatrix<JBloc> JMatrix;
+//	typedef defaulttype::Mat<JblocRsize, MblocCsize, MelementType> MBloc;
+//	typedef CompressedRowSparseMatrix<MBloc> MMatrix;
+//	typedef defaulttype::Mat<JblocCsize, MblocCsize, MelementType> OutBloc;
+//	typedef CompressedRowSparseMatrix<OutBloc> OutMatrix;
+//	JMatrix* Jmatrix = dynamic_cast<JMatrix*>(J);
+//	MMatrix* Mmatrix = dynamic_cast<MMatrix*>(M);
+//	OutMatrix* Outmatrix = dynamic_cast<OutMatrix*>(out);
+//	if (!Jmatrix || !Mmatrix) return false;
+//	// We can compute out += Jt M
+//	if (!Outmatrix || (offsetRow % JblocCsize != 0) || (offsetCol % MblocCsize != 0))
+//	{ // optimized multiplication, but generic output
+//	}
+//	else
+//	{ // optimized multiplication and output
+//		int offsetBRow = offsetRow / JblocCsize;
+//		int offsetBCol = offsetCol / MblocCsize;
+//	}
+//	return true;
+//}
+
+
+
+
+
+template<int blocRsize, int blocCsize, class elementType>
+inline defaulttype::BaseMatrix* createBlocSparseMatrixT(int nbRowBloc, int nbColBloc)
+{
+    typedef CompressedRowSparseMatrix< defaulttype::Mat<blocRsize, blocCsize, elementType> > BlocMatrix;
+    BlocMatrix* m =	new BlocMatrix;
+    m->resizeBloc(nbRowBloc,nbColBloc);
+    return m;
+}
+
+template<int blocRsize, int blocCsize>
+inline defaulttype::BaseMatrix* createBlocSparseMatrixTReal(int elementSize, int nbRowBloc, int nbColBloc)
+{
+    switch(elementSize)
+    {
+    case sizeof(float) : return createBlocSparseMatrixT<blocRsize,blocCsize, float>(nbRowBloc,nbColBloc);
+    case sizeof(double): return createBlocSparseMatrixT<blocRsize,blocCsize,double>(nbRowBloc,nbColBloc);
+    default            : return createBlocSparseMatrixT<blocRsize,blocCsize, SReal>(nbRowBloc,nbColBloc);
+    }
+}
+
+template<int blocRsize>
+inline defaulttype::BaseMatrix* createBlocSparseMatrixTRow(int blocCsize, int elementSize, int nbRowBloc, int nbColBloc)
+{
+    switch(blocCsize)
+    {
+    case 1: return createBlocSparseMatrixTReal<blocRsize,1>(elementSize  ,nbRowBloc,nbColBloc);
+    case 2: return createBlocSparseMatrixTReal<blocRsize,2>(elementSize  ,nbRowBloc,nbColBloc);
+    case 3: return createBlocSparseMatrixTReal<blocRsize,3>(elementSize  ,nbRowBloc,nbColBloc);
+    case 4: return createBlocSparseMatrixTReal<blocRsize,4>(elementSize  ,nbRowBloc,nbColBloc);
+    case 5: return createBlocSparseMatrixTReal<blocRsize,5>(elementSize  ,nbRowBloc,nbColBloc);
+    case 6: return createBlocSparseMatrixTReal<blocRsize,6>(elementSize  ,nbRowBloc,nbColBloc);
+    default: return createBlocSparseMatrixTReal<blocRsize,1>(elementSize  ,nbRowBloc,nbColBloc);
+    }
+}
+
+inline defaulttype::BaseMatrix* createBlocSparseMatrix(int blocRsize, int blocCsize, int elementSize, int nbRowBloc, int nbColBloc)
+{
+    switch(blocRsize)
+    {
+    case 1: return createBlocSparseMatrixTRow<1>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
+    case 2: return createBlocSparseMatrixTRow<2>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
+    case 3: return createBlocSparseMatrixTRow<3>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
+    case 4: return createBlocSparseMatrixTRow<4>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
+    case 5: return createBlocSparseMatrixTRow<5>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
+    case 6: return createBlocSparseMatrixTRow<6>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
+    default: return createBlocSparseMatrixTRow<1>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 } // namespace linearsolver
 
