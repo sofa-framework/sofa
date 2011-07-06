@@ -55,7 +55,7 @@ template <>
 double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int ) const;
 
 template <>
-void UniformMass<gpu::opencl::OpenCLRigid3fTypes, Rigid3fMass>::draw();
+void UniformMass<gpu::opencl::OpenCLRigid3fTypes, Rigid3fMass>::draw(const sofa::core::visual::VisualParams* vparams);
 
 template <>
 void UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
@@ -90,7 +90,7 @@ template <>
 double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getElementMass(unsigned int ) const;
 
 template <>
-void UniformMass<gpu::opencl::OpenCLRigid3dTypes, Rigid3dMass>::draw();
+void UniformMass<gpu::opencl::OpenCLRigid3dTypes, Rigid3dMass>::draw(const sofa::core::visual::VisualParams* vparams);
 
 template <>
 void UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);

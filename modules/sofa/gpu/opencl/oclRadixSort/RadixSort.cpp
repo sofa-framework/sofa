@@ -44,8 +44,8 @@ RadixSort::RadixSort(
     unsigned int maxElements,
     const int ctaSize,
     bool /*keysOnly = true*/) :
-    mNumElements(0),
-    CTA_SIZE(ctaSize)
+    CTA_SIZE(ctaSize),
+    mNumElements(0)
 
 {
     DEBUG_TEXT("RadixSort")
@@ -344,7 +344,7 @@ void RadixSort::memset(sofa::gpu::opencl::_device_pointer dp,size_t offset,unsig
     ckMemset->setArg<unsigned int>(1,(unsigned int*)&offset);
 
     size_t globalWorkSize[1] = {((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1)};
-    size_t localWorkSize[1] = {BSIZE};
+    //size_t localWorkSize[1] = {BSIZE};
 
 
 

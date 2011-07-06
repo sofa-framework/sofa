@@ -177,16 +177,13 @@ void SPHFluidForceFieldOpenCL3f_addForce (unsigned int size, const _device_point
     BARRIER(cells,__FILE__,__LINE__);
 }
 
-void SPHFluidForceFieldOpenCL3f_addDForce(unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3f* params,_device_pointer f, const _device_pointer pos4, const _device_pointer v, const _device_pointer dx) {NOT_IMPLEMENTED();}
+void SPHFluidForceFieldOpenCL3f_addDForce(unsigned int /*size*/, const _device_pointer /*cells*/, const _device_pointer /*cellGhost*/, GPUSPHFluid3f* /*params*/,_device_pointer /*f*/, const _device_pointer /*pos4*/, const _device_pointer /*v*/, const _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 
 
 
-void SPHFluidForceFieldOpenCL3d_computeDensity(unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3d* params,_device_pointer pos4, const _device_pointer x) {NOT_IMPLEMENTED();}
-void SPHFluidForceFieldOpenCL3d_addForce (unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3d* params,_device_pointer f, const _device_pointer pos4, const _device_pointer v) {NOT_IMPLEMENTED();}
-void SPHFluidForceFieldOpenCL3d_addDForce(unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3d* params,_device_pointer f, const _device_pointer pos4, const _device_pointer v, const _device_pointer dx) {NOT_IMPLEMENTED();}
-
-
-
+void SPHFluidForceFieldOpenCL3d_computeDensity(unsigned int /*size*/, const _device_pointer /*cells*/, const _device_pointer /*cellGhost*/, GPUSPHFluid3d* /*params*/,_device_pointer /*pos4*/, const _device_pointer /*x*/) {NOT_IMPLEMENTED();}
+void SPHFluidForceFieldOpenCL3d_addForce (unsigned int /*size*/, const _device_pointer /*cells*/, const _device_pointer /*cellGhost*/, GPUSPHFluid3d* /*params*/,_device_pointer /*f*/, const _device_pointer /*pos4*/, const _device_pointer /*v*/) {NOT_IMPLEMENTED();}
+void SPHFluidForceFieldOpenCL3d_addDForce(unsigned int /*size*/, const _device_pointer /*cells*/, const _device_pointer /*cellGhost*/, GPUSPHFluid3d* /*params*/,_device_pointer /*f*/, const _device_pointer /*pos4*/, const _device_pointer /*v*/, const _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 
 } // namespace OpenCL
 

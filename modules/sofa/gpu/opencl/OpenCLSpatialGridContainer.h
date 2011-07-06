@@ -80,7 +80,7 @@ public:
 
     void update(const VecCoord& x);
 
-    void draw();
+    void draw(const sofa::core::visual::VisualParams*);
 
     template<class NeighborListener>
     void findNeighbors(NeighborListener* dest, Real dist);
