@@ -30,7 +30,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-
+#include <sofa/helper/map.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -162,6 +162,8 @@ public:
     Data<bool> _updateStiffnessMatrix;
     Data<bool> _assembling;
     Data<bool> f_drawing;
+    Data<bool> _displayWholeVolume;
+    Data<std::map < std::string, sofa::helper::vector<double> > > _volumeGraph;
 
     TetrahedralCorotationalFEMForceField()
         : f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))

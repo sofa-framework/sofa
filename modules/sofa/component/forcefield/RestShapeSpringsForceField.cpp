@@ -54,7 +54,10 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
 
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
 
+    //std::cout<<"addForce with p_0 ="<<p_0<<" getX0"<<(*this->mstate->getX0())<<std::endl;
+
     f1.resize(p1.size());
+    //std::cout<<" size p1:"<<p1.size()<<std::endl;
 
     if (recompute_indices.getValue())
     {
@@ -66,11 +69,13 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
 
     for (unsigned int i = 0; i < m_indices.size(); i++)
     {
+        //std::cout<<"i="<<i<<std::endl;
         const unsigned int index = m_indices[i];
         const unsigned int ext_index = m_ext_indices[i];
 
         // translation
         Vec3d dx = p1[index].getCenter() - p0[ext_index].getCenter();
+        //std::cout<<"dx = "<< dx <<std::endl;
         getVCenter(f1[index]) -=  dx * k[i] ;
 
         // rotation
@@ -88,9 +93,17 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
         if (dq[3] < 0.999999999999999)
             dq.quatToAxis(dir, angle);
 
-        //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
+        //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<"  index : "<<index<<"  f1.size() : "<<f1.size()<<std::endl;
+        //Vec3d m1 = getVOrientation(f1[index]) ;
+        //std::cout<<"m1 = "<<m1<<std::endl;
+
         getVOrientation(f1[index]) -= dir * angle * k_a[i] ;
+
+        //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
+
     }
+
+    //std::cout<<" f1 = "<<f1<<std::endl;
 }
 
 
