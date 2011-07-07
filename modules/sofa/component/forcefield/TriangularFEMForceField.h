@@ -36,6 +36,8 @@
 #include <sofa/component/topology/TriangleData.h>
 #include <sofa/component/topology/EdgeData.h>
 #include <sofa/component/topology/PointData.h>
+#include <map>
+#include <sofa/helper/map.h>
 
 
 namespace sofa
@@ -46,6 +48,9 @@ namespace component
 
 namespace forcefield
 {
+
+//#define PLOT_CURVE //lose some FPS
+
 
 using namespace sofa::defaulttype;
 using sofa::helper::vector;
@@ -125,6 +130,9 @@ protected:
         Real maxStress;
         Coord principalStrainDirection;
         Real maxStrain;
+
+        helper::vector<Coord> lastNStressDirection;
+
         TriangleInformation() { }
 
         /// Output stream
@@ -138,6 +146,8 @@ protected:
         {
             return in;
         }
+
+        Real differenceToCriteria;
     };
 
     class EdgeInformation
@@ -170,6 +180,8 @@ protected:
         Coord meanStrainDirection;
         double sumEigenValues;
         Transformation rotation;
+
+        double stress; //average stress of triangles around (used only for drawing)
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const VertexInformation& /*vi*/)
@@ -212,6 +224,7 @@ public:
     virtual void handleTopologyChange();
 
     void draw(const core::visual::VisualParams*);
+    Vec3d getVertexColor(Index vertexIndex, double maxStress, double minStress);
 
     int method;
     Data<std::string> f_method;
@@ -223,8 +236,27 @@ public:
     Data<bool> f_fracturable;
     Data<bool> showStressValue;
     Data<bool> showStressVector;
+    Data<bool> showFracturableTriangles;
     Data< sofa::helper::vector <helper::fixed_array<Coord,3> > > m_rotatedInitialElements;
     Data< sofa::helper::vector <Transformation> > m_initialTransformation;
+    Data< Real > hosfordExponant;
+    Data<Real>      criteriaValue;
+
+#ifdef PLOT_CURVE
+    //structures to save values for each element along time
+    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphStress;
+    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphCriteria;
+    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphOrientation;
+
+    //the index of element we want to display the graphs
+    Data<Real>  elementID;
+
+    //data storing the values along time for the element with index elementID
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphStress;
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphCriteria;
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphOrientation;
+#endif
+
 
     Real getPoisson() { return (f_poisson.getValue())[0]; }
     void setPoisson(Real val)
