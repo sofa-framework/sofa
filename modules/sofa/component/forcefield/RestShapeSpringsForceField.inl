@@ -95,8 +95,7 @@ void RestShapeSpringsForceField<DataTypes>::init()
     {
         useRestMState = true;
 
-        std::cout << "RestShapeSpringsForceField : Mechanical state named " << restMState->getName()
-                << " found for RestShapeSpringFF named " << this->getName() << std::endl;
+        // std::cout << "RestShapeSpringsForceField : Mechanical state named " << restMState->getName() << " found for RestShapeSpringFF named " << this->getName() << std::endl;
     }
 
     this->k = stiffness.getValue();
