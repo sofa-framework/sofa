@@ -89,6 +89,9 @@ public:
         _q[3]=1.0;
     }
 
+    void fromFrame(defaulttype::Vec<3,Real>& x, defaulttype::Vec<3,Real>&y, defaulttype::Vec<3,Real>&z);
+
+
     void fromMatrix(const defaulttype::Matrix3 &m);
 
     template<class Mat33>

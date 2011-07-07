@@ -267,6 +267,17 @@ void Quater<Real>::normalize()
 }
 
 template<class Real>
+void Quater<Real>::fromFrame(defaulttype::Vec<3,Real>& x, defaulttype::Vec<3,Real>&y, defaulttype::Vec<3,Real>&z)
+{
+
+    defaulttype::Matrix3 R(x,y,z);
+    R.transpose();
+    this->fromMatrix(R);
+
+
+}
+
+template<class Real>
 void Quater<Real>::fromMatrix(const defaulttype::Matrix3 &m)
 {
     Real tr, s;
