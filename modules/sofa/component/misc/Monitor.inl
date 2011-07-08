@@ -34,7 +34,7 @@
 #include <fstream>
 #include <sofa/defaulttype/Vec.h>
 #include <cmath>
-#include <sofa/helper/gl/DrawManager.h>
+
 
 
 

@@ -26,7 +26,6 @@
 #define SOFA_SIMULATION_COMMON_SIMULATION_H
 
 #include <sofa/simulation/common/Node.h>
-#include <sofa/helper/gl/DrawManager.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/simulation/common/xml/BaseElement.h>
 #include <sofa/simulation/common/xml/XML.h>

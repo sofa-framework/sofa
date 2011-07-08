@@ -42,7 +42,6 @@
 #include <sofa/gui/qt/RealGUI.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
-#include <sofa/helper/gl/DrawManagerGL.h>
 
 #include <sofa/helper/Factory.inl>
 

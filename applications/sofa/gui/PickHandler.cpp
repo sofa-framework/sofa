@@ -32,7 +32,6 @@
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/DrawManager.h>
 #include <sofa/simulation/common/Simulation.h>
 
 #include <iostream>

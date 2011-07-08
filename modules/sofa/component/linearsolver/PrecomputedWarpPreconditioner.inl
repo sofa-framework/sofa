@@ -46,7 +46,6 @@
 #include <sofa/component/container/RotationFinder.inl>
 #include <sofa/core/behavior/LinearSolver.h>
 
-#include <sofa/helper/gl/DrawManager.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/Quater.h>
 
