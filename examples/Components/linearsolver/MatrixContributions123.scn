@@ -80,7 +80,7 @@
 		</Node>
 		<StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="HexahedraA/MappedTetrahedronA" object2="HexahedraB/MappedTetrahedronB"/>
 	</Node>
-<!-- uncomment to see the comparison between direct solver (contribution of interaction & mapping to the global matrix) and the iterative solver
+<!-- uncomment to see the comparison between direct solver (contribution of interaction & mapping to the global matrix) and the iterative solver-->
 	<Node name="IterativeSolverNode">
 		<EulerImplicit name="cg_odesolver" printLog="false"/>
 		<CGLinearSolver name="cg_solver" iterations="25" tolerance="1.0e-9" threshold="1.0e-9"/>
@@ -153,6 +153,6 @@
 		<StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="HexahedraA/MappedTetrahedronA" object2="HexahedraB/MappedTetrahedronB"/>
 	</Node>
 	<EvalPointsDistance name="comparator" object1="@DirectSolverNode/HexahedraA/MS1" object2="@IterativeSolverNode/HexahedraA/MS1" printLog="1" draw="1"/>
--->
+
 </Node>
 
