@@ -48,6 +48,7 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
+#include <sofa/defaulttype/BoundingBox.h>
 
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
@@ -443,6 +444,8 @@ SimpleGUI::SimpleGUI()
     pick.changeOperation(LEFT,   "Attach");
     pick.changeOperation(MIDDLE, "Incise");
     pick.changeOperation(RIGHT,  "Remove");
+
+    vparams.drawTool() = &drawTool;
 }
 
 
@@ -1165,8 +1168,8 @@ void SimpleGUI::DisplayOBJs(bool shadowPass)
         }
         else
         {
-            getSimulation()->draw(groot);
-            getSimulation()->draw(visualRoot);
+            getSimulation()->draw(&vparams,groot);
+            getSimulation()->draw(&vparams,visualRoot);
         }
         if (_axis)
         {
@@ -1565,6 +1568,11 @@ void SimpleGUI::calcProjection()
     glGetDoublev(GL_PROJECTION_MATRIX,lastProjectionMatrix);
 
     glMatrixMode(GL_MODELVIEW);
+
+    vparams.zFar()  = zFar;
+    vparams.zNear() = zNear;
+    vparams.viewport() = sofa::helper::make_array(0,0,width,height);
+    vparams.sceneBBox() = sofa::defaulttype::BoundingBox(sceneMinBBox,sceneMaxBBox);
 }
 
 // ---------------------------------------------------------

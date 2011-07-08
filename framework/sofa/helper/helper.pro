@@ -30,8 +30,6 @@ HEADERS += helper.h \
     gl/Capture.h \
     gl/Color.h \
     gl/Cylinder.h \
-    gl/DrawManager.h \
-    gl/DrawManagerGL.h \
     gl/glfont.h \
     gl/glText.inl \
     gl/glText.h \
@@ -102,7 +100,6 @@ SOURCES += ArgumentParser.cpp \
     gl/Capture.cpp \
     gl/Color.cpp \
     gl/Cylinder.cpp \
-    gl/DrawManagerGL.cpp \
     gl/glfont.cpp \
     gl/glText.cpp \
     gl/Texture.cpp \
