@@ -36,7 +36,6 @@
 
 #include <sofa/helper/helper.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/DrawManager.h>
 
 
 namespace sofa
