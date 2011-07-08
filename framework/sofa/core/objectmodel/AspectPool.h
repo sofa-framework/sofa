@@ -96,7 +96,11 @@ private:
     AspectPool& operator=(const AspectPool& r);
 
     typedef helper::system::atomic<int> AtomicInt;
-    typedef helper::system::thread::CircularQueue<AtomicInt, SOFA_DATA_MAX_INSTANCES, helper::system::thread::ManyThreadsPerEnd> AspectQueue;
+    typedef helper::system::thread::CircularQueue<
+    AtomicInt,
+    helper::system::thread::FixedPower2Size<SOFA_DATA_MAX_INSTANCES>::type,
+    helper::system::thread::ManyThreadsPerEnd>
+    AspectQueue;
 
     AspectQueue freeAspects;
 };

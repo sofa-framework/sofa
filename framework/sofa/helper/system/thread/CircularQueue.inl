@@ -43,33 +43,33 @@ namespace system
 namespace thread
 {
 
-template<class T, unsigned N, class ThreadAccessPolicy>
-CircularQueue<T, N, ThreadAccessPolicy>::CircularQueue()
+template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::CircularQueue()
 {
-    ThreadAccessPolicy::init(&array[0], N);
+    ThreadAccessPolicy::init(this->getQueue(), this->maxCapacity());
 }
 
-template<class T, unsigned N, class ThreadAccessPolicy>
-CircularQueue<T, N, ThreadAccessPolicy>::~CircularQueue()
+template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::~CircularQueue()
 {
 }
 
-template<class T, unsigned N, class ThreadAccessPolicy>
-bool CircularQueue<T, N, ThreadAccessPolicy>::isFull() const
+template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::isFull() const
 {
-    return ThreadAccessPolicy::isFull(N);
+    return ThreadAccessPolicy::isFull(this->maxSize());
 }
 
-template<class T, unsigned N, class ThreadAccessPolicy>
-bool CircularQueue<T, N, ThreadAccessPolicy>::pop(T& item)
+template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::pop(T& item)
 {
-    return ThreadAccessPolicy::pop(&array[0], N, item);
+    return ThreadAccessPolicy::pop(this->getQueue(), this->maxSize(), this->maxCapacity(), item);
 }
 
-template<class T, unsigned N, class ThreadAccessPolicy>
-bool CircularQueue<T, N, ThreadAccessPolicy>::push(const T& item)
+template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+bool CircularQueue<T, StoragePolicy, ThreadAccessPolicy>::push(const T& item)
 {
-    return ThreadAccessPolicy::push(&array[0], N, item);
+    return ThreadAccessPolicy::push(this->getQueue(), this->maxSize(), this->maxCapacity(), item);
 }
 
 
@@ -84,9 +84,9 @@ bool OneThreadPerEnd::isEmpty() const
     return head == tail;
 }
 
-bool OneThreadPerEnd::isFull(unsigned size) const
+bool OneThreadPerEnd::isFull(unsigned maxSize) const
 {
-    return (tail+1) % size == head;
+    return (tail+1) % maxSize == head;
 }
 
 unsigned OneThreadPerEnd::size() const
@@ -95,24 +95,24 @@ unsigned OneThreadPerEnd::size() const
 }
 
 template<class T>
-void OneThreadPerEnd::init(T /*array*/[], unsigned /*size*/)
+void OneThreadPerEnd::init(T /*array*/[], unsigned /*maxCapacity*/)
 {
 }
 
 template<class T>
-bool OneThreadPerEnd::pop(T array[], unsigned size, T& item)
+bool OneThreadPerEnd::pop(T array[], unsigned maxSize, unsigned /*maxCapacity*/, T& item)
 {
     if(isEmpty()) return false;
 
     item = array[head];
-    head = (head + 1) % size;
+    head = (head + 1) % maxSize;
     return true;
 }
 
 template<class T>
-bool OneThreadPerEnd::push(T array[], unsigned size, const T& item)
+bool OneThreadPerEnd::push(T array[], unsigned maxSize, unsigned /*maxCapacity*/, const T& item)
 {
-    unsigned nextTail = (tail + 1) % size;
+    unsigned nextTail = (tail + 1) % maxSize;
     if(nextTail != head)
     {
         array[tail] = item;
@@ -136,9 +136,9 @@ bool ManyThreadsPerEnd::isEmpty() const
     return head >= tail;
 }
 
-bool ManyThreadsPerEnd::isFull(int size) const
+bool ManyThreadsPerEnd::isFull(int maxSize) const
 {
-    return (tail - head + 1) >= size;
+    return (tail - head + 1) >= maxSize;
 }
 
 
@@ -147,15 +147,15 @@ int ManyThreadsPerEnd::size() const
     return tail - head;
 }
 
-void ManyThreadsPerEnd::init(AtomicInt array[], int size)
+void ManyThreadsPerEnd::init(AtomicInt array[], int maxCapacity)
 {
-    for(int i = 0; i < size; ++i)
+    for(int i = 0; i < maxCapacity; ++i)
     {
         array[i] = -1;
     }
 }
 
-bool ManyThreadsPerEnd::pop(AtomicInt array[], int size, AtomicInt& item)
+bool ManyThreadsPerEnd::pop(AtomicInt array[], int /*maxSize*/, int maxCapacity, AtomicInt& item)
 {
     if(isEmpty())
     {
@@ -165,7 +165,7 @@ bool ManyThreadsPerEnd::pop(AtomicInt array[], int size, AtomicInt& item)
         return false;
     }
     // atomically reserve the element to read
-    int readIdx = head.exchange_and_add(1) % size;
+    int readIdx = head.exchange_and_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
 
     // Active wait:
     // loop as long as other threads have not put any valid value in the element.
@@ -178,9 +178,9 @@ bool ManyThreadsPerEnd::pop(AtomicInt array[], int size, AtomicInt& item)
     return true;
 }
 
-bool ManyThreadsPerEnd::push(AtomicInt array[], int size, const AtomicInt& item)
+bool ManyThreadsPerEnd::push(AtomicInt array[], int maxSize, int maxCapacity, const AtomicInt& item)
 {
-    if(isFull(size))
+    if(isFull(maxSize))
     {
 #if SOFA_HAVE_BOOST
         boost::thread::yield();
@@ -189,7 +189,7 @@ bool ManyThreadsPerEnd::push(AtomicInt array[], int size, const AtomicInt& item)
     }
 
     // atomically reserve the element to write
-    int writeIdx = tail.exchange_and_add(1) % size;
+    int writeIdx = tail.exchange_and_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
 
     // Active wait:
     // loop as long as the element has not been read by another thread (which is indicated by a -1 value).

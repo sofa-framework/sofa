@@ -42,14 +42,13 @@ namespace system
 
 namespace thread
 {
-
 /**
- * This class implements a fixed-size circular queue.
+ * This class implements a policy-based circular queue.
  * The template parameter ThreadAccessPolicy allows to customize access to the
  * array according to thread-safety requirements.
  */
-template<class T, unsigned N, class ThreadAccessPolicy>
-class SOFA_HELPER_API CircularQueue : public ThreadAccessPolicy
+template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
+class SOFA_HELPER_API CircularQueue : public StoragePolicy<T>, public ThreadAccessPolicy
 {
 public:
     CircularQueue();
@@ -59,9 +58,62 @@ public:
     bool push(const T& item);
 
     bool isFull() const;
+};
 
-private:
-    helper::fixed_array<T, N> array;
+template<int N>
+struct AlignPow2
+{
+    enum { val = AlignPow2<N/2>::val*2 };
+};
+
+template<>
+struct AlignPow2<0>
+{
+    enum { val = 1 };
+};
+
+/**
+ * This is a storage policy for CircularQueue that uses a compile-time fixed-size array.
+ */
+template<int N>
+struct FixedSize
+{
+    template<class T>
+    class type
+    {
+    public:
+        T* getQueue() { return &array[0]; }
+
+        static int maxSize() { return N; }
+        static int maxCapacity() { return N; }
+
+    private:
+        helper::fixed_array<T, N> array;
+    };
+};
+
+/**
+ * This is a storage policy for CircularQueue that uses a compile-time fixed-size
+ * array aligned on the upper power of 2 of the specified template parameter.
+ */
+template<int N>
+struct FixedPower2Size
+{
+    template<class T>
+    class type
+    {
+    public:
+        T* getQueue() { return &array[0]; }
+
+        static int maxSize() { return MaxSize; }
+        static int maxCapacity() { return MaxCapacity; }
+
+    private:
+        enum { MaxSize = N };
+        enum { MaxCapacity = AlignPow2<MaxSize>::val };
+
+        helper::fixed_array<T, MaxCapacity> array;
+    };
 };
 
 /**
@@ -77,16 +129,16 @@ public:
 protected:
     OneThreadPerEnd();
 
-    bool isFull(unsigned size) const;
+    bool isFull(unsigned maxSize) const;
 
     template<class T>
-    void init(T array[], unsigned size);
+    void init(T array[], unsigned maxCapacity);
 
     template<class T>
-    bool pop(T array[], unsigned size, T& item);
+    bool pop(T array[], unsigned maxSize, unsigned maxCapacity, T& item);
 
     template<class T>
-    bool push(T array[], unsigned size, const T& item);
+    bool push(T array[], unsigned maxSize, unsigned maxCapacity, const T& item);
 
     volatile unsigned head;
     volatile unsigned tail;
@@ -95,8 +147,7 @@ protected:
 /**
  * This is a lock-free (but not wait-free) multi-producer multi-consumer
  * implementation of a circular queue matching the ThreadAccessPolicy of CircularQueue.
- * It is not recommended to use it when the queue can be full or empty for a
- * long time with threads waiting (because of active waits).
+ * @note maxCapacity parameters MUST always be a power of 2.
  */
 class ManyThreadsPerEnd
 {
@@ -104,14 +155,15 @@ public:
     bool isEmpty() const;
     int size() const;
 
-    typedef helper::system::atomic<int> AtomicInt;
 protected:
+    typedef helper::system::atomic<int> AtomicInt;
+
     ManyThreadsPerEnd();
 
     bool isFull(int size) const;
-    void init(AtomicInt array[], int size);
-    bool pop(AtomicInt array[], int size, AtomicInt& item);
-    bool push(AtomicInt array[], int size, const AtomicInt& item);
+    void init(AtomicInt array[], int maxCapacity);
+    bool pop(AtomicInt array[], int maxSize, int maxCapacity, AtomicInt& item);
+    bool push(AtomicInt array[], int maxSize, int maxCapacity, const AtomicInt& item);
 
     AtomicInt head;
     AtomicInt tail;

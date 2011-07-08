@@ -22,7 +22,7 @@ struct CircularQueue_Single
     ~CircularQueue_Single()
     {
     }
-    CircularQueue<int, 6, OneThreadPerEnd> queue;
+    CircularQueue<int, FixedSize<6>::type, OneThreadPerEnd> queue;
 };
 
 struct SingleProdSingleCons
@@ -68,7 +68,7 @@ struct SingleProdSingleCons
 
     std::auto_ptr<boost::thread> producer;
     std::auto_ptr<boost::thread> consumer;
-    CircularQueue<int, 6, OneThreadPerEnd> queue;
+    CircularQueue<int, FixedSize<6>::type, OneThreadPerEnd > queue;
     int counter;
 };
 
@@ -138,7 +138,7 @@ struct ManyProdManyCons
     }
     std::auto_ptr<boost::thread> prod[ProducerCount];
     std::auto_ptr<boost::thread> cons[ConsumerCount];
-    CircularQueue<atomic<int>, Capacity, ManyThreadsPerEnd> queue;
+    CircularQueue<atomic<int>, FixedPower2Size<Capacity>::type, ManyThreadsPerEnd> queue;
     atomic<int> counter;
     atomic<int> emptyFault;
     atomic<int> fullFault;
