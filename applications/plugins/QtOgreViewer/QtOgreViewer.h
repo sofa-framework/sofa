@@ -1,31 +1,31 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
-*                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
-*******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
-#ifndef __sofaOgreWidget_H__
-#define __sofaOgreWidget_H__
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
+#ifndef SOFA_GUI_QTOGREVIEWER_H
+#define SOFA_GUI_QTOGREVIEWER_H
 
 #include <stdlib.h>
 
@@ -65,7 +65,6 @@ typedef QGroupBox Q3GroupBox;
 
 #if defined(SOFA_GPU_CUDA)
 #include <sofa/gpu/cuda/mycuda.h>
-using namespace sofa::gpu::cuda;
 #endif
 
 
@@ -77,16 +76,8 @@ std::string macBundlePath();
 //*********************************************************************************//
 // Widget with Ogre embedded
 //*********************************************************************************//
-
 namespace sofa
 {
-namespace helper
-{
-namespace gl
-{
-class DrawManagerOGRE;
-}
-}
 
 namespace gui
 {
@@ -97,15 +88,14 @@ namespace qt
 namespace viewer
 {
 
-using namespace sofa::helper::system::thread;
-using namespace sofa::simulation;
+
 
 class QtOgreViewer : public QGLWidget, public sofa::gui::qt::viewer::OgreSofaViewer
 {
     Q_OBJECT
 public:
 
-
+    typedef sofa::helper::system::thread::ctime_t ctime_t;
 
     std::string sceneName;
 
@@ -278,10 +268,6 @@ protected:
         m_mTranslateVector = Ogre::Vector3::ZERO;
     }
 
-    // store our DrawManager
-    sofa::helper::gl::DrawManagerOGRE *mDrawManager;
-
-
 public slots:
     void updateViewerParameters();
 
@@ -305,11 +291,12 @@ signals:
     void quit();
 
 };
+
 } //viewer
 } //qt
 } //gui
 } //sofa
 
 
-#endif
+#endif //SOFA_GUI_QTOGREVIEWER_H
 

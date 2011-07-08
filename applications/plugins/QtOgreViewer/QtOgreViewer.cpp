@@ -1,29 +1,29 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
-*                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
-*******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <OgreConfigFile.h>
 #if OGRE_VERSION >= 0x010700
 #include "HelperLogics.h"
@@ -34,7 +34,7 @@
 
 #include "OgreVisualModel.h"
 #include "OgreViewerSetting.h"
-#include "DrawManagerOGRE.h"
+#include "DrawToolOGRE.h"
 #include "PropagateOgreSceneManager.h"
 
 
@@ -118,14 +118,12 @@ helper::SofaViewerCreator<QtOgreViewer> QtOgreViewer_class("ogre",false);
 int QtOGREGUIClass = GUIManager::RegisterGUI ( "ogre", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 1 );
 
 using sofa::simulation::Simulation;
-
+using namespace sofa::helper::system::thread;
 
 //Application principale
 QtOgreViewer::QtOgreViewer( QWidget *parent, const char *name )
     : QGLWidget( parent, name )
 {
-    mDrawManager = new helper::gl::DrawManagerOGRE();
-    sofa::simulation::getSimulation()->setDrawUtility(mDrawManager  );
     dirLight = pointLight = spotLight = NULL;
     this->setName("ogre");
 #ifdef SOFA_QT4
@@ -187,7 +185,7 @@ QtOgreViewer::QtOgreViewer( QWidget *parent, const char *name )
 
 QtOgreViewer::~QtOgreViewer()
 {
-    sofa::simulation::getSimulation()->DrawUtility().clear();
+    vparams->drawTool()->clear();
 
     if(mRoot != NULL)
     {
@@ -403,11 +401,11 @@ void QtOgreViewer::drawSceneAxis() const
         nodeZ->setPosition(posZ[0], posZ[1], posZ[2]);
     }
 
-    simulation::getSimulation()->DrawUtility().drawArrow(centerAxis,posX,
+    vparams->drawTool()->drawArrow(centerAxis,posX,
             l*0.005, defaulttype::Vec<4,float>(1.0f,0.0f,0.0f,1.0f));
-    simulation::getSimulation()->DrawUtility().drawArrow(centerAxis,posY,
+    vparams->drawTool()->drawArrow(centerAxis,posY,
             l*0.005, defaulttype::Vec<4,float>(0.0f,1.0f,0.0f,1.0f));
-    simulation::getSimulation()->DrawUtility().drawArrow(centerAxis,posZ,
+    vparams->drawTool()->drawArrow(centerAxis,posZ,
             l*0.005, defaulttype::Vec<4,float>(0.0f,0.0f,1.0f,1.0f));
 
 }
@@ -428,14 +426,14 @@ void QtOgreViewer::updateIntern()
             mCamera->setPolygonMode(Ogre::PM_SOLID);
 
         //Not optimal, clear all the datas
-        sofa::simulation::getSimulation()->DrawUtility().clear();
+        vparams->drawTool()->clear();
 
         static bool initViewer=false;
         if (initViewer)
         {
-            sofa::simulation::getSimulation()->initTextures(simulation::getSimulation()->getVisualRoot());
-            sofa::simulation::getSimulation()->draw(groot);
-            sofa::simulation::getSimulation()->draw(simulation::getSimulation()->getVisualRoot());
+            sofa::simulation::getSimulation()->initTextures( simulation::getSimulation()->getVisualRoot());
+            sofa::simulation::getSimulation()->draw(vparams,groot);
+            sofa::simulation::getSimulation()->draw(vparams,simulation::getSimulation()->getVisualRoot());
 
             if (!initCompositing.empty())
             {
@@ -1054,7 +1052,7 @@ void QtOgreViewer::setCameraMode(component::visualmodel::BaseCamera::CameraType 
 
     switch (mode)
     {
-    case component::visualmodel::BaseCamera::ORTHOGRAPHIC_TYPE:
+    case core::visual::VisualParams::ORTHOGRAPHIC_TYPE:
     {
         const sofa::defaulttype::Vector3 center((sceneMinBBox+sceneMaxBBox)*0.5);
 
@@ -1068,7 +1066,7 @@ void QtOgreViewer::setCameraMode(component::visualmodel::BaseCamera::CameraType 
         mCamera->setOrthoWindow(d*wRatio,d);
     }
     break;
-    case component::visualmodel::BaseCamera::PERSPECTIVE_TYPE:
+    case core::visual::VisualParams::PERSPECTIVE_TYPE:
         mCamera->setProjectionType(Ogre::PT_PERSPECTIVE);
         break;
     }
@@ -1236,7 +1234,7 @@ void QtOgreViewer::wheelEvent(QWheelEvent* evt)
     SReal displacement=evt->delta()*_factorWheel*0.0005;
     m_mTranslateVector.z +=  displacement;
     mCamera->moveRelative(m_mTranslateVector);
-    if (currentCamera->getCameraType() == component::visualmodel::BaseCamera::ORTHOGRAPHIC_TYPE)
+    if (currentCamera->getCameraType() == core::visual::VisualParams::ORTHOGRAPHIC_TYPE)
     {
         SReal wRatio = mCamera->getOrthoWindowWidth()/mCamera->getOrthoWindowHeight();
         mCamera->setOrthoWindow(displacement*wRatio+mCamera->getOrthoWindowWidth(),
@@ -1256,14 +1254,11 @@ void QtOgreViewer::setScene(sofa::simulation::Node* scene, const char* filename,
     numPointLight->setValue(0);
     numSpotLight->setValue(0);
     SofaViewer::setScene(scene, filename, keepParams);
-    if(mSceneMgr != NULL)
-    {
-        mDrawManager->clear();
-    }
+
     createScene();
-    mDrawManager->setOgreObject(drawUtility);
-    sofa::simulation::getSimulation()->DrawUtility().setPolygonMode(0,false); //Disable culling
-    mDrawManager->setSceneMgr(mSceneMgr);
+    drawToolOGRE.setOgreObject(drawUtility);
+    vparams->drawTool()->setPolygonMode(0,false); //Disable culling
+    drawToolOGRE.setSceneMgr(mSceneMgr);
     updateIntern();
     resize();
 
@@ -1305,7 +1300,7 @@ bool QtOgreViewer::updateInteractor(QMouseEvent * e)
 void QtOgreViewer::moveRayPickInteractor(int eventX, int eventY)
 {
     Vec3d position, direction;
-    if (currentCamera->getCameraType() == component::visualmodel::BaseCamera::PERSPECTIVE_TYPE)
+    if (currentCamera->getCameraType() == core::visual::VisualParams::PERSPECTIVE_TYPE)
     {
         sofa::defaulttype::Vec3d  p0, px, py, pz, px1, py1;
         GLint viewPort[4] = {0,0,width(), height()};
@@ -1407,13 +1402,13 @@ void QtOgreViewer::removeViewerTab(QTabWidget *t)
 void QtOgreViewer::configureViewerTab(QTabWidget *t)
 {
     /*
-    if (dirLight)
-    {
-    if (!tabLights)
-    t->addTab(tabLights,QString("Lights"));
+      if (dirLight)
+      {
+      if (!tabLights)
+      t->addTab(tabLights,QString("Lights"));
 
-    return;
-    }*/
+      return;
+      }*/
     addTabulationLights(t);
     addTabulationCompositor(t);
 
