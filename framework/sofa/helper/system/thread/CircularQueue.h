@@ -49,14 +49,14 @@ namespace thread
  * array according to thread-safety requirements.
  */
 template<class T, unsigned N, class ThreadAccessPolicy>
-class CircularQueue : public ThreadAccessPolicy
+class SOFA_HELPER_API CircularQueue : public ThreadAccessPolicy
 {
 public:
     CircularQueue();
     ~CircularQueue();
 
     bool pop(T& item);
-    bool push(T& item);
+    bool push(const T& item);
 
     bool isFull() const;
 
@@ -73,6 +73,7 @@ class OneThreadPerEnd
 public:
     bool isEmpty() const;
 
+    unsigned size() const;
 protected:
     OneThreadPerEnd();
 
@@ -85,7 +86,7 @@ protected:
     bool pop(T array[], unsigned size, T& item);
 
     template<class T>
-    bool push(T array[], unsigned size, T& item);
+    bool push(T array[], unsigned size, const T& item);
 
     volatile unsigned head;
     volatile unsigned tail;
@@ -101,6 +102,7 @@ class ManyThreadsPerEnd
 {
 public:
     bool isEmpty() const;
+    int size() const;
 
     typedef helper::system::atomic<int> AtomicInt;
 protected:
@@ -109,7 +111,7 @@ protected:
     bool isFull(int size) const;
     void init(AtomicInt array[], int size);
     bool pop(AtomicInt array[], int size, AtomicInt& item);
-    bool push(AtomicInt array[], int size, AtomicInt& item);
+    bool push(AtomicInt array[], int size, const AtomicInt& item);
 
     AtomicInt head;
     AtomicInt tail;

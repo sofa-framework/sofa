@@ -27,6 +27,10 @@
 
 #include "CircularQueue.h"
 
+#if SOFA_HAVE_BOOST
+#include <boost/thread/thread.hpp>
+#endif
+
 namespace sofa
 {
 
@@ -63,7 +67,7 @@ bool CircularQueue<T, N, ThreadAccessPolicy>::pop(T& item)
 }
 
 template<class T, unsigned N, class ThreadAccessPolicy>
-bool CircularQueue<T, N, ThreadAccessPolicy>::push(T& item)
+bool CircularQueue<T, N, ThreadAccessPolicy>::push(const T& item)
 {
     return ThreadAccessPolicy::push(&array[0], N, item);
 }
@@ -82,7 +86,12 @@ bool OneThreadPerEnd::isEmpty() const
 
 bool OneThreadPerEnd::isFull(unsigned size) const
 {
-    return (head+1) % size == tail;
+    return (tail+1) % size == head;
+}
+
+unsigned OneThreadPerEnd::size() const
+{
+    return tail - head;
 }
 
 template<class T>
@@ -101,7 +110,7 @@ bool OneThreadPerEnd::pop(T array[], unsigned size, T& item)
 }
 
 template<class T>
-bool OneThreadPerEnd::push(T array[], unsigned size, T& item)
+bool OneThreadPerEnd::push(T array[], unsigned size, const T& item)
 {
     unsigned nextTail = (tail + 1) % size;
     if(nextTail != head)
@@ -124,12 +133,18 @@ ManyThreadsPerEnd::ManyThreadsPerEnd()
 
 bool ManyThreadsPerEnd::isEmpty() const
 {
-    return head == tail;
+    return head >= tail;
 }
 
 bool ManyThreadsPerEnd::isFull(int size) const
 {
-    return (head+1) % size == tail;
+    return (tail - head + 1) >= size;
+}
+
+
+int ManyThreadsPerEnd::size() const
+{
+    return tail - head;
 }
 
 void ManyThreadsPerEnd::init(AtomicInt array[], int size)
@@ -142,6 +157,13 @@ void ManyThreadsPerEnd::init(AtomicInt array[], int size)
 
 bool ManyThreadsPerEnd::pop(AtomicInt array[], int size, AtomicInt& item)
 {
+    if(isEmpty())
+    {
+#if SOFA_HAVE_BOOST
+        boost::thread::yield();
+#endif
+        return false;
+    }
     // atomically reserve the element to read
     int readIdx = head.exchange_and_add(1) % size;
 
@@ -156,8 +178,16 @@ bool ManyThreadsPerEnd::pop(AtomicInt array[], int size, AtomicInt& item)
     return true;
 }
 
-bool ManyThreadsPerEnd::push(AtomicInt array[], int size, AtomicInt& item)
+bool ManyThreadsPerEnd::push(AtomicInt array[], int size, const AtomicInt& item)
 {
+    if(isFull(size))
+    {
+#if SOFA_HAVE_BOOST
+        boost::thread::yield();
+#endif
+        return false;
+    }
+
     // atomically reserve the element to write
     int writeIdx = tail.exchange_and_add(1) % size;
 
