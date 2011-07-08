@@ -48,8 +48,6 @@
 #include <qevent.h>
 #include "GenGraphForm.h"
 
-#include <sofa/helper/gl/DrawManagerGL.h>
-
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
 #ifdef SOFA_HAVE_GLEW

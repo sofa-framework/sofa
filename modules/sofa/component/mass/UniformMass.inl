@@ -35,7 +35,6 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/gl/DrawManager.h>
 #include <iostream>
 #include <string.h>
 

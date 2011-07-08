@@ -51,7 +51,6 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PipeProcess.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/helper/gl/DrawManagerGL.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>

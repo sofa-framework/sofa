@@ -34,12 +34,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 
-
 #include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/helper/gl/DrawManager.h>
-
-
-
 
 namespace sofa
 {

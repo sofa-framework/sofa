@@ -36,8 +36,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <cmath>
 #include <limits>
-#include <sofa/helper/gl/DrawManager.h>
-
 
 
 namespace sofa
