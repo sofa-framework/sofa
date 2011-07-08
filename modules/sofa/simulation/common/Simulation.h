@@ -86,7 +86,7 @@ public:
     virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true);
 
     /// Render the scene
-    virtual void draw(Node* root, sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance());
+    virtual void draw(sofa::core::visual::VisualParams* vparams, Node* root);
 
     /// Render the scene - Shadows pass
     virtual void drawShadows(Node* root);

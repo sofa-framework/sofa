@@ -115,10 +115,10 @@ public:
 
     protected:
 
-        ColConstIterator()
-        {
+        /*ColConstIterator()
+        	{
 
-        }
+        }*/
 
         ColConstIterator(Iterator _internal, const KeyT _rowIndex)
             : m_internal(_internal)
@@ -230,10 +230,10 @@ public:
 
     protected:
 
-        RowConstIterator()
-        {
+        /*RowConstIterator()
+        	{
 
-        }
+        }*/
 
         RowConstIterator(Iterator _internal)
             : m_internal(_internal)
@@ -361,10 +361,10 @@ public:
 
     protected:
 
-        ColIterator()
-        {
+        /*ColIterator()
+        	{
 
-        }
+        }*/
 
         ColIterator(Iterator _internal, const KeyT _rowIndex)
             : m_internal(_internal)
@@ -475,10 +475,10 @@ public:
 
     protected:
 
-        RowIterator()
-        {
+        /*RowIterator()
+        	{
 
-        }
+        }*/
 
         RowIterator(Iterator _internal)
             : m_internal(_internal)
