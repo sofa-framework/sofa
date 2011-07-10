@@ -107,25 +107,23 @@ void Hexa2QuadTopologicalMapping::init()
             sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
             Loc2GlobVec.clear();
             Glob2LocMap.clear();
+            const bool flipN = flipNormals.getValue();
 
             for (unsigned int i=0; i<quadArray.size(); ++i)
             {
-
                 if (fromModel->getHexahedraAroundQuad(i).size()==1)
                 {
-                    if(flipNormals.getValue())
+                    Quad q = quadArray[i];
+                    if(flipN)
                     {
-                        Quad q = quadArray[i];
                         unsigned int tmp3 = q[3];
                         unsigned int tmp2 = q[2];
                         q[3] = q[0];
                         q[2] = q[1];
                         q[1] = tmp2;
                         q[0] = tmp3;
-                        to_tstm->addQuadProcess(q);
                     }
-                    else
-                        to_tstm->addQuadProcess(quadArray[i]);
+                    to_tstm->addQuadProcess(q);
 
                     Loc2GlobVec.push_back(i);
                     Glob2LocMap[i]=Loc2GlobVec.size()-1;
@@ -292,6 +290,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                         sofa::helper::vector< Quad > quads_to_create;
                         sofa::helper::vector< unsigned int > quadsIndexList;
                         int nb_elems = toModel->getNbQuads();
+                        const bool flipN = flipNormals.getValue();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
                         {
@@ -332,77 +331,29 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                     if(!is_present)
                                     {
 
-                                        Quad t;
+                                        Quad q;
 
-                                        const Hexahedron &te=hexahedronArray[ind_test];
+                                        const Hexahedron &he=hexahedronArray[ind_test];
                                         int h = fromModel->getQuadIndexInHexahedron(fromModel->getQuadsInHexahedron(ind_test),k);
                                         //unsigned int hh = (fromModel->getQuadsInHexahedron(ind_test))[h];
 
                                         //t=from_qstc->getQuad(hh);
+                                        static const int hexaQuads[6][4] = { { 0,3,2,1 }, {4,5,6,7}, {0,1,5,4}, {1,2,6,5}, {2,3,7,6}, {3,0,4,7} };
+                                        q[0] = he[hexaQuads[h][0]];
+                                        q[1] = he[hexaQuads[h][1]];
+                                        q[2] = he[hexaQuads[h][2]];
+                                        q[3] = he[hexaQuads[h][3]];
 
-                                        switch( h )
+                                        if(flipN)
                                         {
-
-                                        case 0:
-                                        {
-                                            t[0] = te[0];
-                                            t[1] = te[3];
-                                            t[2] = te[2];
-                                            t[3] = te[1];
-
-                                            break;
+                                            unsigned int tmp3 = q[3];
+                                            unsigned int tmp2 = q[2];
+                                            q[3] = q[0];
+                                            q[2] = q[1];
+                                            q[1] = tmp2;
+                                            q[0] = tmp3;
                                         }
-                                        case 1:
-                                        {
-                                            t[0] = te[4];
-                                            t[1] = te[5];
-                                            t[2] = te[6];
-                                            t[3] = te[7];
-
-                                            break;
-                                        }
-                                        case 2:
-                                        {
-                                            t[0] = te[0];
-                                            t[1] = te[1];
-                                            t[2] = te[5];
-                                            t[3] = te[4];
-
-                                            break;
-                                        }
-                                        case 3:
-                                        {
-                                            t[0] = te[1];
-                                            t[1] = te[2];
-                                            t[2] = te[6];
-                                            t[3] = te[5];
-
-                                            break;
-                                        }
-                                        case 4:
-                                        {
-                                            t[0] = te[2];
-                                            t[1] = te[3];
-                                            t[2] = te[7];
-                                            t[3] = te[6];
-
-                                            break;
-                                        }
-                                        case 5:
-                                        {
-                                            t[0] = te[3];
-                                            t[1] = te[0];
-                                            t[2] = te[4];
-                                            t[3] = te[7];
-
-                                            break;
-                                        }
-
-                                        default:
-                                            break;
-                                        };
-
-                                        quads_to_create.push_back(t);
+                                        quads_to_create.push_back(q);
                                         quadsIndexList.push_back(nb_elems);
                                         nb_elems+=1;
 
@@ -410,7 +361,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                         std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                                         if(iter_1 != Glob2LocMap.end() )
                                         {
-                                            sout << "INFO_print : Hexa2QuadTopologicalMapping - fail to add quad " << k << "which already exists" << sendl;
+                                            sout << "INFO_print : Hexa2QuadTopologicalMapping - fail to add quad " << k << " which already exists" << sendl;
                                             Glob2LocMap.erase(Glob2LocMap.find(k));
                                         }
                                         Glob2LocMap[k]=Loc2GlobVec.size()-1;
