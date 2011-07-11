@@ -35,16 +35,18 @@ namespace component
 namespace linearsolver
 {
 
+
 DefaultMultiMatrixAccessor::DefaultMultiMatrixAccessor()
     : globalMatrix(NULL)
     , globalDim(0)
 #ifdef SOFA_SUPPORT_CRS_MATRIX
-    , MULTIMATRIX_VERBOSE(true)
+    , MULTIMATRIX_VERBOSE(false)
 #else
     , MULTIMATRIX_VERBOSE(false)
 #endif
 {
 }
+
 
 DefaultMultiMatrixAccessor::~DefaultMultiMatrixAccessor()
 {
@@ -691,7 +693,7 @@ defaulttype::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core::
                 <<std::endl;
     }
 
-    return createBlocSparseMatrix(dofSize,dofSize,elementsize,nbDOFs,nbDOFs);
+    return createBlocSparseMatrix(dofSize,dofSize,elementsize,nbDOFs,nbDOFs,this->MULTIMATRIX_VERBOSE);
 }
 
 
@@ -716,7 +718,7 @@ defaulttype::BaseMatrix* CRSMultiMatrixAccessor::createInteractionMatrix(const s
                 <<std::endl;
     }
 
-    return createBlocSparseMatrix(dofSize1,dofSize2,elementsize,nbDOFs1,nbDOFs2);
+    return createBlocSparseMatrix(dofSize1,dofSize2,elementsize,nbDOFs1,nbDOFs2,this->MULTIMATRIX_VERBOSE);
 }
 
 void CRSMultiMatrixAccessor::computeGlobalMatrix()
@@ -820,30 +822,26 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
             const unsigned int sizeK1 = K1.matrix->rowSize() - offset1;
             const unsigned int sizeK2 = K2.matrix->rowSize() - offset2;
 
+            defaulttype::BaseMatrix* matrixJJ =const_cast<defaulttype::BaseMatrix*>(matrixJ);
 
-//			defaulttype::BaseMatrix* matrixJJ =const_cast<defaulttype::BaseMatrix*>(matrixJ);
-//			int JblocRsize     = matrixJJ->getBlockRows();
-//			int JblocCsize     = matrixJJ->getBlockCols();
-//
-//			//int JnbBlocRow     = matrixJJ->bRowSize();
-//			int JnbBlocCol     = matrixJJ->bColSize();
-//
-//			//int K2blocRsize    = K2.matrix->getBlockRows();
-//			int K2blocCsize    = K2.matrix->getBlockCols();
-//
-//			//int K2nbBlocRow    = K2.matrix->bRowSize();
-//			int K2blocCsCol    = K2.matrix->bColSize();
-//
-//			int JelementSize   = matrixJJ->getElementSize();
-//			int MelementSize   = K2.matrix->getElementSize();
-//
-//			// Matrix multiplication  tempoMatrix = Jt * K22
-//			defaulttype::BaseMatrix* tempoMatrix = createBlocSparseMatrix(JblocCsize, K2blocCsize, MelementSize, JnbBlocCol, K2blocCsCol);
-//
-//			opAddMulJTM(tempoMatrix,   matrixJJ, K2.matrix,       0,0      , JblocRsize, JblocCsize,K2blocCsize,JelementSize,MelementSize);
-//			opAddMulMJ( K1.matrix  ,tempoMatrix,  matrixJJ, offset1,offset1, JblocCsize, K2blocCsize,JblocCsize,JelementSize,MelementSize);
-//
-//			delete tempoMatrix;
+            int JblocRsize     = matrixJJ->getBlockRows();
+            int JblocCsize     = matrixJJ->getBlockCols();
+            int JnbBlocCol     = matrixJJ->bColSize();
+
+            int K2blocCsize    = K2.matrix->getBlockCols();
+            int K2nbBlocCol   = K2.matrix->bColSize();
+
+            int JelementSize   = matrixJJ->getElementSize();
+            int MelementSize   = K2.matrix->getElementSize();
+
+            // creating a tempo matrix  tempoMatrix
+            defaulttype::BaseMatrix* tempoMatrix = createBlocSparseMatrix(JblocCsize, K2blocCsize, MelementSize, JnbBlocCol, K2nbBlocCol,this->MULTIMATRIX_VERBOSE);
+            // Matrix multiplication  tempoMatrix += Jt * K22
+            opAddMulJTM(tempoMatrix,   matrixJJ, K2.matrix,       0,0      , JblocRsize, JblocCsize , K2blocCsize, JelementSize,MelementSize,this->MULTIMATRIX_VERBOSE);
+            // Matrix multiplication  K11         += tempoMatrix * J
+            opAddMulMJ( K1.matrix  ,tempoMatrix,  matrixJJ, offset1,offset1, JblocCsize, K2blocCsize, JblocCsize , JelementSize,MelementSize,this->MULTIMATRIX_VERBOSE);
+
+            delete tempoMatrix;
 
 
 
@@ -857,41 +855,6 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
                         <<" J["<<nbR_J<<"."<<nbC_J<< "]"
                         <<std::endl;
             }
-
-            for(unsigned int i1 =0; i1 < sizeK1 ; ++i1)
-            {
-                for(unsigned int j1 =0 ; j1 < sizeK1 ; ++j1)
-                {
-                    double Jt_K2_J_i1j1 = 0;
-
-                    for(unsigned int i2 =0 ; i2 < sizeK2 ; ++i2)
-                    {
-                        for(unsigned int j2 =0 ; j2 < sizeK2 ; ++j2)
-                        {
-                            const double K2_i2j2 = (double) K2.matrix->element(offset2 + i2, offset2 + j2);
-                            for(unsigned int k2=0 ; k2 < sizeK2 ; ++k2)
-                            {
-                                const double Jt_i1k2 = (double) matrixJ->element( i1 , k2 ) ;
-                                const double  J_k2j1 = (double) matrixJ->element( k2 , j1 ) ;
-
-                                Jt_K2_J_i1j1 += Jt_i1k2 * K2_i2j2  * J_k2j1;
-                                /*
-                                if( MULTIMATRIX_VERBOSE)  // index debug
-                                {
-                                	std::cout<<"K1("<<offset1 + i1<<","<<offset1 + j1<<")  +="
-                                			<<" Jt("<<i1<<","<<k2<<")  * "
-                                			<<"K2("<<offset2 + i2<<","<<offset2 + j2<<") * "
-                                			<<" J("<<k2<<","<<j1<<")"<<std::endl;
-                                }
-                                */
-                            }
-                        }
-                    }
-                    K1.matrix->add(offset1 + i1 , offset1 + j1 , Jt_K2_J_i1j1);
-                }
-            }
-            // Matrix multiplication  K11 += Jt * K22 * J
-
         }
 
         std::vector<std::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
@@ -966,7 +929,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
                 int JelementSize   = matrixJJ->getElementSize();
                 int MelementSize   = I_32.matrix->getElementSize();
 
-                opAddMulMJ(I_12.matrix,matrixJJ,I_32.matrix,offR_I_12,offC_I_12, JblocRsize, JblocCsize,I_32_blocCsize,JelementSize,MelementSize);
+                opAddMulJTM(I_12.matrix,matrixJJ,I_32.matrix,offR_I_12,offC_I_12, JblocRsize, JblocCsize,I_32_blocCsize,JelementSize,MelementSize,this->MULTIMATRIX_VERBOSE);
             }
 
             if(interactionList[i].second == outstate)
@@ -1007,7 +970,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
                 int JelementSize   = matrixJJ->getElementSize();
                 int MelementSize   = I_23.matrix->getElementSize();
 
-                opAddMulMJ(I_21.matrix,I_23.matrix,matrixJJ,offR_I_21,offC_I_21, I_23_blocRsize,I_23_blocCsize,JblocCsize,JelementSize,MelementSize);
+                opAddMulMJ(I_21.matrix,I_23.matrix,matrixJJ,offR_I_21,offC_I_21, I_23_blocRsize,I_23_blocCsize,JblocCsize,JelementSize,MelementSize,this->MULTIMATRIX_VERBOSE);
 
             }
 

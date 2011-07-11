@@ -345,7 +345,6 @@ protected:
 
 #ifdef SOFA_SUPPORT_CRS_MATRIX
         CRSMultiMatrixAccessor matrixAccessor;
-        //DefaultMultiMatrixAccessor matrixAccessor;
 #else
         DefaultMultiMatrixAccessor matrixAccessor;
 #endif
