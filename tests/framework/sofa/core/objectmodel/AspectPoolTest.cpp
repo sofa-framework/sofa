@@ -25,90 +25,42 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_CORE_OBJECTMODEL_ASPECTPOOL_H
-#define SOFA_CORE_OBJECTMODEL_ASPECTPOOL_H
+#include <sofa/core/objectmodel/AspectPool.h>
+#include <boost/test/auto_unit_test.hpp>
 
-#include <sofa/core/ExecParams.h>
-#include <sofa/helper/system/thread/CircularQueue.h>
-#include <boost/smart_ptr/intrusive_ptr.hpp>
+using namespace sofa::core::objectmodel;
+using sofa::core::SOFA_DATA_MAX_ASPECTS;
 
-namespace sofa
+BOOST_AUTO_TEST_CASE(AspectPool_allocate)
 {
+    AspectPool p;
+    {
+        AspectRef refs[SOFA_DATA_MAX_ASPECTS];
+        // allocate all available aspects
+        for(int i = 0; i < SOFA_DATA_MAX_ASPECTS; ++i)
+        {
+            refs[i] = p.allocate();
+            BOOST_CHECK(refs[i] != 0);
+            BOOST_CHECK_EQUAL(refs[i]->aspectID(), i);
+        }
+        AspectRef extraRef = p.allocate(); // try to allocate one more aspect
+        BOOST_CHECK(extraRef == 0); // it should have returned a null pointer
 
-namespace core
-{
+        refs[SOFA_DATA_MAX_ASPECTS/2].reset(); // release an aspect
+        extraRef = p.allocate(); // allocate a new one: it should return the ID of the previously released one.
+        BOOST_CHECK(extraRef != 0);
+        BOOST_CHECK_EQUAL(extraRef->aspectID(), SOFA_DATA_MAX_ASPECTS/2);
+    }
 
-namespace objectmodel
-{
+    AspectRef newRef = p.allocate(); // allocate an aspect after all have been released.
+    BOOST_CHECK(newRef != 0);
+    BOOST_CHECK_EQUAL(newRef->aspectID(), SOFA_DATA_MAX_ASPECTS/2); // it should return the 0 aspect
 
-class Aspect;
-class AspectPool;
-typedef boost::intrusive_ptr<Aspect> AspectRef;
+    if(SOFA_DATA_MAX_ASPECTS > 1)
+    {
+        AspectRef extraRef = p.allocate();
+        BOOST_CHECK(extraRef != 0);
+        BOOST_CHECK_EQUAL(extraRef->aspectID(), SOFA_DATA_MAX_ASPECTS-1); // it should return the last aspect
+    }
+}
 
-/**
- * This class represents an allocated aspect.
- * AspectPool returns a smart pointer to an object of this class to give the
- * aspect ownership to the caller.
- * It is safe to use this class from several threads.
- */
-class Aspect
-{
-public:
-    ~Aspect();
-
-    int aspectID() { return id; }
-
-    friend class AspectPool;
-private:
-    static AspectRef create(AspectPool* pool, int id);
-
-    Aspect(AspectPool& pool, int id);
-    void releaseFromPool();
-
-    AspectPool& pool;
-    int id;
-    helper::system::atomic<int> counter;
-
-    friend void intrusive_ptr_add_ref(Aspect* b);
-    friend void intrusive_ptr_release(Aspect* b);
-};
-
-
-
-/**
- * This class is responsible for managing the pool of available aspects numbers.
- * It is safe to use this class from several thread.
- */
-class AspectPool
-{
-public:
-    AspectPool();
-    ~AspectPool();
-
-    AspectRef allocate();
-
-    friend class Aspect;
-protected:
-    void release(int id);
-
-private:
-    AspectPool(const AspectPool& r);
-    AspectPool& operator=(const AspectPool& r);
-
-    typedef helper::system::atomic<int> AtomicInt;
-    typedef helper::system::thread::CircularQueue<
-    AtomicInt,
-    helper::system::thread::FixedPower2Size<SOFA_DATA_MAX_ASPECTS>::type,
-    helper::system::thread::ManyThreadsPerEnd>
-    AspectQueue;
-
-    AspectQueue freeAspects;
-};
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif /* SOFA_CORE_OBJECTMODEL_ASPECTPOOL_H */

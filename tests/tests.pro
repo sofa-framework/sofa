@@ -11,6 +11,7 @@ SOURCES = \
 	framework/sofa/helper/system/atomicTest.cpp \
 	
 contains(DEFINES, SOFA_HAVE_BOOST) {
+	SOURCES += framework/sofa/core/objectmodel/AspectPoolTest.cpp
 	SOURCES += framework/sofa/helper/system/thread/CircularQueueTest.cpp
 }
 	
