@@ -138,7 +138,7 @@ bool ManyThreadsPerEnd::isEmpty() const
 
 bool ManyThreadsPerEnd::isFull(int maxSize) const
 {
-    return (tail - head + 1) >= maxSize;
+    return tail-head >= maxSize;
 }
 
 

@@ -91,7 +91,7 @@ void intrusive_ptr_release(Aspect* a)
 AspectPool::AspectPool()
 {
     // Fill the list of free aspects.
-    for(int i = 0; i < SOFA_DATA_MAX_INSTANCES; ++i)
+    for(int i = 0; i < SOFA_DATA_MAX_ASPECTS; ++i)
     {
         AtomicInt aspectID(i);
         freeAspects.push(aspectID);
@@ -110,12 +110,17 @@ AspectPool::~AspectPool()
  * The returned object should stay alive as long as the aspect is in use.
  * It it possible to duplicate the AspectRef if several threads/algorithm use
  * the same aspect.
+ * If no aspect remains available, null pointer is returned.
  */
 AspectRef AspectPool::allocate()
 {
+    AspectRef ref;
     AtomicInt aspectID;
-    freeAspects.pop(aspectID);
-    return Aspect::create(this, aspectID);
+    if(freeAspects.pop(aspectID))
+    {
+        ref = Aspect::create(this, aspectID);
+    }
+    return ref;
 }
 
 /**
