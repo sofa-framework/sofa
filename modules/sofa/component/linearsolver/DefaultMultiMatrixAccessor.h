@@ -188,62 +188,59 @@ public:
 /////////////////////////////  SWITCH COMPILATION PROBLEM TO RUNTIME PROBLEM  /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<int blocRsize, int blocCsize, class elementType>
-inline defaulttype::BaseMatrix* createBlocSparseMatrixT(int nbRowBloc, int nbColBloc)
+inline defaulttype::BaseMatrix* createBlocSparseMatrixT(int nbRowBloc, int nbColBloc, bool _debug)
 {
     typedef CompressedRowSparseMatrix< defaulttype::Mat<blocRsize, blocCsize, elementType> > BlocMatrix;
     BlocMatrix* m =	new BlocMatrix;
     m->resizeBloc(nbRowBloc,nbColBloc);
+    if(_debug)
+        std::cout<<"				++createBlocSparseMatrix : _"<< nbRowBloc <<"x"<<nbColBloc<<"_ of blocs _["<<blocRsize<<"x"<<blocCsize<<"]"<<std::endl;
     return m;
 }
 
 template<int blocRsize, int blocCsize>
-inline defaulttype::BaseMatrix* createBlocSparseMatrixTReal(int elementSize, int nbRowBloc, int nbColBloc)
+inline defaulttype::BaseMatrix* createBlocSparseMatrixTReal(int elementSize, int nbRowBloc, int nbColBloc, bool _debug)
 {
     switch(elementSize)
     {
-    case sizeof(float) : return createBlocSparseMatrixT<blocRsize,blocCsize, float>(nbRowBloc,nbColBloc);
-    case sizeof(double): return createBlocSparseMatrixT<blocRsize,blocCsize,double>(nbRowBloc,nbColBloc);
-    default            : return createBlocSparseMatrixT<blocRsize,blocCsize, SReal>(nbRowBloc,nbColBloc);
+    case sizeof(float) : return createBlocSparseMatrixT<blocRsize,blocCsize, float>(nbRowBloc,nbColBloc, _debug);
+    case sizeof(double): return createBlocSparseMatrixT<blocRsize,blocCsize,double>(nbRowBloc,nbColBloc, _debug);
+    default            : return createBlocSparseMatrixT<blocRsize,blocCsize, SReal>(nbRowBloc,nbColBloc, _debug);
     }
 }
 
 template<int blocRsize>
-inline defaulttype::BaseMatrix* createBlocSparseMatrixTRow(int blocCsize, int elementSize, int nbRowBloc, int nbColBloc)
+inline defaulttype::BaseMatrix* createBlocSparseMatrixTRow(int blocCsize, int elementSize, int nbRowBloc, int nbColBloc, bool _debug)
 {
     switch(blocCsize)
     {
-    case 1: return createBlocSparseMatrixTReal<blocRsize,1>(elementSize  ,nbRowBloc,nbColBloc);
-    case 2: return createBlocSparseMatrixTReal<blocRsize,2>(elementSize  ,nbRowBloc,nbColBloc);
-    case 3: return createBlocSparseMatrixTReal<blocRsize,3>(elementSize  ,nbRowBloc,nbColBloc);
-    case 4: return createBlocSparseMatrixTReal<blocRsize,4>(elementSize  ,nbRowBloc,nbColBloc);
-    case 5: return createBlocSparseMatrixTReal<blocRsize,5>(elementSize  ,nbRowBloc,nbColBloc);
-    case 6: return createBlocSparseMatrixTReal<blocRsize,6>(elementSize  ,nbRowBloc,nbColBloc);
-    default: return createBlocSparseMatrixTReal<blocRsize,1>(elementSize  ,nbRowBloc,nbColBloc);
+    case 1: return createBlocSparseMatrixTReal<blocRsize,1>(elementSize  ,nbRowBloc,nbColBloc, _debug);
+    case 2: return createBlocSparseMatrixTReal<blocRsize,2>(elementSize  ,nbRowBloc,nbColBloc, _debug);
+    case 3: return createBlocSparseMatrixTReal<blocRsize,3>(elementSize  ,nbRowBloc,nbColBloc, _debug);
+    case 4: return createBlocSparseMatrixTReal<blocRsize,4>(elementSize  ,nbRowBloc,nbColBloc, _debug);
+    case 5: return createBlocSparseMatrixTReal<blocRsize,5>(elementSize  ,nbRowBloc,nbColBloc, _debug);
+    case 6: return createBlocSparseMatrixTReal<blocRsize,6>(elementSize  ,nbRowBloc,nbColBloc, _debug);
+    default: return createBlocSparseMatrixTReal<blocRsize,1>(elementSize  ,nbRowBloc,nbColBloc, _debug);
     }
 }
 
-inline defaulttype::BaseMatrix* createBlocSparseMatrix(int blocRsize, int blocCsize, int elementSize, int nbRowBloc, int nbColBloc)
+inline defaulttype::BaseMatrix* createBlocSparseMatrix(int blocRsize, int blocCsize, int elementSize, int nbRowBloc, int nbColBloc, bool _debug=false)
 {
     switch(blocRsize)
     {
-    case 1: return createBlocSparseMatrixTRow<1>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
-    case 2: return createBlocSparseMatrixTRow<2>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
-    case 3: return createBlocSparseMatrixTRow<3>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
-    case 4: return createBlocSparseMatrixTRow<4>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
-    case 5: return createBlocSparseMatrixTRow<5>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
-    case 6: return createBlocSparseMatrixTRow<6>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
-    default: return createBlocSparseMatrixTRow<1>(blocCsize, elementSize  ,nbRowBloc,nbColBloc);
+    case 1: return createBlocSparseMatrixTRow<1>(blocCsize, elementSize  ,nbRowBloc,nbColBloc, _debug);
+    case 2: return createBlocSparseMatrixTRow<2>(blocCsize, elementSize  ,nbRowBloc,nbColBloc, _debug);
+    case 3: return createBlocSparseMatrixTRow<3>(blocCsize, elementSize  ,nbRowBloc,nbColBloc, _debug);
+    case 4: return createBlocSparseMatrixTRow<4>(blocCsize, elementSize  ,nbRowBloc,nbColBloc, _debug);
+    case 5: return createBlocSparseMatrixTRow<5>(blocCsize, elementSize  ,nbRowBloc,nbColBloc, _debug);
+    case 6: return createBlocSparseMatrixTRow<6>(blocCsize, elementSize  ,nbRowBloc,nbColBloc, _debug);
+    default: return createBlocSparseMatrixTRow<1>(blocCsize, elementSize  ,nbRowBloc,nbColBloc, _debug);
     }
 }
 
 
-
-//    virtual int bRowSize() const { return rowBSize(); }
-//    /// @return the number of columns of blocks
-//    virtual int bColSize() const { return colBSize(); }
-
 template<int JblocRsize, int JblocCsize, int MblocCsize, class JelementType, class MelementType>
-inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2, int offsetRow, int offsetCol)
+inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2, int offsetRow, int offsetCol, bool _debug)
 {
     // Notice : in case where stiffMatrix2 are self-stiffness matrix,
     // we have JblocRsize = MblocCsize
@@ -265,6 +262,20 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
     OutMatrix* Outmatrix = dynamic_cast<OutMatrix*>(out);
 
     if (!Jmatrix || !Mmatrix) return false;
+    if(_debug)
+    {
+        std::cout<<"    **opAddMulJTM_TBloc: === "
+                <<"K1["<< out->rowSize() <<"x"<< out->colSize()<< "]:_"
+                << out->bRowSize() << "x"<< out->bColSize() <<"_ of blocs _["
+                << out->getBlockRows() << "x"<< out->getBlockCols() <<"]_"
+                <<"    +=    Jt["<< J->colSize()<<"x"<< J->rowSize() << "]:_"
+                << J->bColSize() << "x"<<  J->bRowSize()<<"_ of blocs _["
+                <<J->getBlockCols() << "x"<< J->getBlockRows()  <<"]_"
+                <<"*K2["<< stiffMatrix2->rowSize() <<"x"<< stiffMatrix2->colSize()<< "]:_"
+                << stiffMatrix2->bRowSize() << "x"<< stiffMatrix2->bColSize() <<"_ of blocs _["
+                << stiffMatrix2->getBlockRows() << "x"<< stiffMatrix2->getBlockCols() <<"]_"
+                <<"   =============================="<<std::endl<<std::endl;
+    }
 
     // We can compute stiffMatrix 1 += Jt M
     if (!Outmatrix || (offsetRow % JblocCsize != 0) || (offsetCol % MblocCsize != 0))
@@ -273,6 +284,7 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
 
         JBloc Jblocbuffer;
         MBloc Mblocbuffer;
+
 
         for (int JBRowIndex = 0; JBRowIndex < Jmatrix->nBlocRow; JBRowIndex++)
         {
@@ -296,8 +308,16 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
                         {
                             for (int k = 0; k < JblocRsize; k++)
                             {
+
                                 tempBlockData(i,j) += JblocData(k,i)*MblocData(k,j);
-                                Outmatrix->add(offsetRow + JblocRsize*JBColIndex+i, offsetCol + MblocCsize*MBColIndex+j, tempBlockData(i,j));
+                                out->add(offsetRow + JblocRsize*JBColIndex+i, offsetCol + MblocCsize*MBColIndex+j, tempBlockData(i,j));
+                                if(_debug)
+                                {
+                                    std::cout<<" (i."<<offsetRow + JblocRsize*JBColIndex+i<<","
+                                            <<"j."<<offsetCol + MblocCsize*MBColIndex+j<<")"
+                                            <<"    JBRowIndex:" <<JBRowIndex <<" JBColIndex:" <<JBColIndex
+                                            <<"      i:" <<i <<" j:"<<j <<"  k:" <<k <<std::endl;
+                                }
                             }
                         }
                     }
@@ -333,7 +353,16 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
                     for (int i = 0; i < JblocCsize; i++)
                         for (int j = 0; j < MblocCsize; j++)
                             for (int k = 0; k < JblocRsize; k++)
+                            {
                                 tempBlockData(i,j) += JblocData(k,i)*MblocData(k,j);
+                                if(_debug)
+                                {
+                                    std::cout<<" (bI."<<offsetBRow + JBColIndex<<","
+                                            <<"bJ."<<offsetBCol + MBColIndex<<")"
+                                            <<"    JBRowIndex:" <<JBRowIndex <<" JBColIndex:" <<JBColIndex
+                                            <<"      i:" <<i <<" j:"<<j <<"  k:" <<k <<std::endl;
+                                }
+                            }
                     Outmatrix->blocAdd(offsetBRow + JBColIndex,offsetBCol + MBColIndex, tempBlockData.ptr());
                 }
             }
@@ -348,78 +377,78 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
 
 template<int JblocRsize, int JblocCsize, int MblocCsize, class JelementType>
 inline bool opAddMulJTM_T4(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2,
-        int offsetRow, int offsetCol, int MelementSize)
+        int offsetRow, int offsetCol, int MelementSize, bool _debug)
 {
     switch(MelementSize)
     {
     case sizeof(float) :
-        return opAddMulJTM_TBloc<JblocRsize, JblocCsize, MblocCsize, JelementType, float>(out,J,stiffMatrix2,offsetRow,offsetCol);
+        return opAddMulJTM_TBloc<JblocRsize, JblocCsize, MblocCsize, JelementType, float>(out,J,stiffMatrix2,offsetRow,offsetCol, _debug);
     case sizeof(double):
-        return opAddMulJTM_TBloc<JblocRsize, JblocCsize, MblocCsize, JelementType, double>(out,J,stiffMatrix2,offsetRow,offsetCol);
+        return opAddMulJTM_TBloc<JblocRsize, JblocCsize, MblocCsize, JelementType, double>(out,J,stiffMatrix2,offsetRow,offsetCol, _debug);
     default            :
-        return opAddMulJTM_TBloc<JblocRsize, JblocCsize, MblocCsize, JelementType, SReal>(out,J,stiffMatrix2,offsetRow,offsetCol);
+        return opAddMulJTM_TBloc<JblocRsize, JblocCsize, MblocCsize, JelementType, SReal>(out,J,stiffMatrix2,offsetRow,offsetCol, _debug);
     }
 }
 //-------------------------------------------------------------------------------------------------
 template<int JblocRsize, int JblocCsize, int MblocCsize>
 inline bool opAddMulJTM_T3(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2,
-        int offsetRow, int offsetCol, int JelementSize, int MelementSize)
+        int offsetRow, int offsetCol, int JelementSize, int MelementSize, bool _debug)
 {
     switch(JelementSize)
     {
     case sizeof(float) :
-        return opAddMulJTM_T4<JblocRsize, JblocCsize, MblocCsize, float>(out,J,stiffMatrix2,offsetRow,offsetCol,MelementSize);
+        return opAddMulJTM_T4<JblocRsize, JblocCsize, MblocCsize, float>(out,J,stiffMatrix2,offsetRow,offsetCol,MelementSize, _debug);
     case sizeof(double):
-        return opAddMulJTM_T4<JblocRsize, JblocCsize, MblocCsize, double>(out,J,stiffMatrix2,offsetRow,offsetCol,MelementSize);
+        return opAddMulJTM_T4<JblocRsize, JblocCsize, MblocCsize, double>(out,J,stiffMatrix2,offsetRow,offsetCol,MelementSize, _debug);
     default            :
-        return opAddMulJTM_T4<JblocRsize, JblocCsize, MblocCsize, SReal>(out,J,stiffMatrix2,offsetRow,offsetCol,MelementSize);
+        return opAddMulJTM_T4<JblocRsize, JblocCsize, MblocCsize, SReal>(out,J,stiffMatrix2,offsetRow,offsetCol,MelementSize, _debug);
     }
 }
 //-------------------------------------------------------------------------------------------------
 template<int JblocRsize, int JblocCsize>
 inline bool opAddMulJTM_T2(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2,
-        int offsetRow, int offsetCol, int _MblocCsize, int JelementSize, int MelementSize)
+        int offsetRow, int offsetCol, int _MblocCsize, int JelementSize, int MelementSize, bool _debug)
 {
     switch(_MblocCsize)
     {
-    case 1:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 1>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize);
-    case 2:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 2>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize);
-    case 3:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 3>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize);
-    case 4:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 4>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize);
-    case 5:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 5>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize);
-    case 6:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 6>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize);
-    default: return opAddMulJTM_T3<JblocRsize, JblocCsize, 1>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize);
+    case 1:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 1>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    case 2:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 2>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    case 3:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 3>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    case 4:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 4>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    case 5:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 5>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    case 6:	return opAddMulJTM_T3<JblocRsize, JblocCsize, 6>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    default: return opAddMulJTM_T3<JblocRsize, JblocCsize, 1>(out,J,stiffMatrix2,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
     }
 }
 //-------------------------------------------------------------------------------------------------
 template<int JblocRsize>
 inline bool opAddMulJTM_T1(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2,
-        int offsetRow, int offsetCol, int _JblocCsize, int _MblocCsize, int JelementSize, int MelementSize)
+        int offsetRow, int offsetCol, int _JblocCsize, int _MblocCsize, int JelementSize, int MelementSize, bool _debug)
 {
     switch(_JblocCsize)
     {
-    case 1:	return opAddMulJTM_T2<JblocRsize, 1>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize);
-    case 2:	return opAddMulJTM_T2<JblocRsize, 2>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize);
-    case 3:	return opAddMulJTM_T2<JblocRsize, 3>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize);
-    case 4:	return opAddMulJTM_T2<JblocRsize, 4>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize);
-    case 5:	return opAddMulJTM_T2<JblocRsize, 5>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize);
-    case 6:	return opAddMulJTM_T2<JblocRsize, 6>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize);
-    default: return opAddMulJTM_T2<JblocRsize, 1>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize);
+    case 1:	return opAddMulJTM_T2<JblocRsize, 1>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize, _debug);
+    case 2:	return opAddMulJTM_T2<JblocRsize, 2>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize, _debug);
+    case 3:	return opAddMulJTM_T2<JblocRsize, 3>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize, _debug);
+    case 4:	return opAddMulJTM_T2<JblocRsize, 4>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize, _debug);
+    case 5:	return opAddMulJTM_T2<JblocRsize, 5>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize, _debug);
+    case 6:	return opAddMulJTM_T2<JblocRsize, 6>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize, _debug);
+    default: return opAddMulJTM_T2<JblocRsize, 1>(out,J,stiffMatrix2,offsetRow,offsetCol, _MblocCsize, JelementSize, MelementSize, _debug);
     }
 }
 //-------------------------------------------------------------------------------------------------
 inline bool opAddMulJTM(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2,
-        int offsetRow, int offsetCol, int _JblocRsize, int _JblocCsize, int _MblocCsize, int JelementSize, int MelementSize)
+        int offsetRow, int offsetCol, int _JblocRsize, int _JblocCsize, int _MblocCsize, int JelementSize, int MelementSize, bool _debug=false)
 {
     switch(_JblocRsize)
     {
-    case 1:	return opAddMulJTM_T1<1>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize);
-    case 2:	return opAddMulJTM_T1<2>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize);
-    case 3:	return opAddMulJTM_T1<3>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize);
-    case 4:	return opAddMulJTM_T1<4>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize);
-    case 5:	return opAddMulJTM_T1<5>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize);
-    case 6:	return opAddMulJTM_T1<6>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize);
-    default: return opAddMulJTM_T1<1>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize);
+    case 1:	return opAddMulJTM_T1<1>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize, _debug);
+    case 2:	return opAddMulJTM_T1<2>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize, _debug);
+    case 3:	return opAddMulJTM_T1<3>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize, _debug);
+    case 4:	return opAddMulJTM_T1<4>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize, _debug);
+    case 5:	return opAddMulJTM_T1<5>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize, _debug);
+    case 6:	return opAddMulJTM_T1<6>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize, _debug);
+    default: return opAddMulJTM_T1<1>(out,J,stiffMatrix2,offsetRow,offsetCol, _JblocCsize, _MblocCsize, JelementSize, MelementSize, _debug);
     }
 }
 
@@ -427,7 +456,7 @@ inline bool opAddMulJTM(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<int MblocRsize, int MblocCsize, int JblocCsize, class JelementType, class MelementType>
-inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2,  defaulttype::BaseMatrix* J,int offsetRow, int offsetCol)
+inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2,  defaulttype::BaseMatrix* J,int offsetRow, int offsetCol, bool _debug)
 {
     typedef defaulttype::Mat<MblocCsize, JblocCsize, JelementType> JBloc;
     typedef CompressedRowSparseMatrix<JBloc>                       JMatrix;
@@ -447,6 +476,21 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
     OutMatrix* Outmatrix = dynamic_cast<OutMatrix*>(out);
 
     if (!Jmatrix || !Mmatrix) return false;
+
+    if(_debug)
+    {
+        std::cout<<"    **opAddMulMJ_TBloc: === "
+                <<"K1["<< out->rowSize() <<"x"<< out->colSize()<< "]:_"
+                << out->bRowSize() << "x"<< out->bColSize() <<"_ of blocs _["
+                << out->getBlockRows() << "x"<< out->getBlockCols() <<"]_"
+                <<"    +=    K2["<< stiffMatrix2->rowSize()       <<"x" << stiffMatrix2->colSize()      <<"]:_"
+                <<                  stiffMatrix2->bRowSize()     << "x" << stiffMatrix2->bColSize()     <<"_ of blocs _["
+                <<                  stiffMatrix2->getBlockRows() << "x" << stiffMatrix2->getBlockCols() <<"]_"
+                <<" * J["<< J->rowSize()     << "x" << J->colSize()      <<"]:_"
+                <<          J->bRowSize()    << "x" << J->bColSize()     <<"_ of blocs _["
+                <<          J->getBlockRows()<< "x" << J->getBlockCols() <<"]_"
+                <<"   =============================="<<std::endl<<std::endl;
+    }
 
     // We can compute stiffMatrix 1 += Jt M
     if (!Outmatrix || (offsetRow % MblocRsize != 0) || (offsetCol % JblocCsize != 0))
@@ -477,9 +521,19 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
                         {
                             for (int k = 0; k < MblocCsize; k++)
                             {
+
                                 tempBlockData(i,j) += MblocData(i,k)*JblocData(k,j);
-                                Outmatrix->add(offsetRow + MblocRsize*MBRowIndex+i, offsetCol + JblocCsize*JBColIndex+j, tempBlockData(i,j));
+                                if(_debug)
+                                {
+                                    std::cout<<" (i."<<offsetRow + MblocRsize*MBRowIndex+i<<","
+                                            <<"j."<<offsetCol + JblocCsize * JBColIndex+j<<")"
+                                            <<"    MBRowIndex:" <<MBRowIndex <<" JBColIndex:" <<JBColIndex
+                                            <<"      i:" <<i <<" j:"<<j <<"  k:" <<k <<std::endl;
+                                }
+
+
                             }
+                            out->add(offsetRow + MblocRsize*MBRowIndex+i, offsetCol + JblocCsize*JBColIndex+j, tempBlockData(i,j));
                         }
                     }
                 }
@@ -514,7 +568,17 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
                     for (int i = 0; i < MblocRsize; i++)
                         for (int j = 0; j < JblocCsize; j++)
                             for (int k = 0; k < MblocCsize; k++)
+                            {
+                                if(_debug)
+                                {
+                                    std::cout<<" (bI."<<offsetBRow + MBRowIndex<<","
+                                            <<"bJ."<<offsetBCol + JBColIndex<<")"
+                                            <<"    MBRowIndex:" <<MBRowIndex <<" JBColIndex:" <<JBColIndex
+                                            <<"      i:" <<i <<" j:"<<j <<"  k:" <<k <<std::endl;
+                                }
+
                                 tempBlockData(i,j) += MblocData(i,k)*JblocData(k,j);
+                            }
                     Outmatrix->blocAdd(offsetBRow + MBRowIndex,offsetBCol + JBColIndex, tempBlockData.ptr());
                 }
             }
@@ -526,78 +590,78 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
 
 template<int MblocRsize, int MblocCsize, int JblocCsize, class JelementType>
 inline bool opAddMulMJ_T4(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2, defaulttype::BaseMatrix* J,
-        int offsetRow, int offsetCol, int MelementSize)
+        int offsetRow, int offsetCol, int MelementSize, bool _debug)
 {
     switch(MelementSize)
     {
     case sizeof(float) :
-        return opAddMulMJ_TBloc<MblocRsize, MblocCsize, JblocCsize, JelementType, float>(out,stiffMatrix2,J,offsetRow,offsetCol);
+        return opAddMulMJ_TBloc<MblocRsize, MblocCsize, JblocCsize, JelementType, float>(out,stiffMatrix2,J,offsetRow,offsetCol, _debug);
     case sizeof(double):
-        return opAddMulMJ_TBloc<MblocRsize, MblocCsize, JblocCsize, JelementType, double>(out,stiffMatrix2,J,offsetRow,offsetCol);
+        return opAddMulMJ_TBloc<MblocRsize, MblocCsize, JblocCsize, JelementType, double>(out,stiffMatrix2,J,offsetRow,offsetCol, _debug);
     default            :
-        return opAddMulMJ_TBloc<MblocRsize, MblocCsize, JblocCsize, JelementType, SReal>(out,stiffMatrix2,J,offsetRow,offsetCol);
+        return opAddMulMJ_TBloc<MblocRsize, MblocCsize, JblocCsize, JelementType, SReal>(out,stiffMatrix2,J,offsetRow,offsetCol, _debug);
     }
 }
 //-------------------------------------------------------------------------------------------------
 template<int MblocRsize, int MblocCsize, int JblocCsize>
 inline bool opAddMulMJ_T3(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2, defaulttype::BaseMatrix* J,
-        int offsetRow, int offsetCol, int JelementSize, int MelementSize)
+        int offsetRow, int offsetCol, int JelementSize, int MelementSize, bool _debug)
 {
     switch(JelementSize)
     {
     case sizeof(float) :
-        return opAddMulMJ_T4<MblocRsize, MblocCsize, JblocCsize, float>(out,stiffMatrix2,J,offsetRow,offsetCol,MelementSize);
+        return opAddMulMJ_T4<MblocRsize, MblocCsize, JblocCsize, float>(out,stiffMatrix2,J,offsetRow,offsetCol,MelementSize, _debug);
     case sizeof(double):
-        return opAddMulMJ_T4<MblocRsize, MblocCsize, JblocCsize, double>(out,stiffMatrix2,J,offsetRow,offsetCol,MelementSize);
+        return opAddMulMJ_T4<MblocRsize, MblocCsize, JblocCsize, double>(out,stiffMatrix2,J,offsetRow,offsetCol,MelementSize, _debug);
     default            :
-        return opAddMulMJ_T4<MblocRsize, MblocCsize, JblocCsize, SReal>(out,stiffMatrix2,J,offsetRow,offsetCol,MelementSize);
+        return opAddMulMJ_T4<MblocRsize, MblocCsize, JblocCsize, SReal>(out,stiffMatrix2,J,offsetRow,offsetCol,MelementSize, _debug);
     }
 }
 //-------------------------------------------------------------------------------------------------
 template<int MblocRsize, int MblocCsize>
 inline bool opAddMulMJ_T2(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2, defaulttype::BaseMatrix* J,
-        int offsetRow, int offsetCol, int _JblocCsize, int JelementSize, int MelementSize)
+        int offsetRow, int offsetCol, int _JblocCsize, int JelementSize, int MelementSize, bool _debug)
 {
     switch(_JblocCsize)
     {
-    case 1:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 1>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize);
-    case 2:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 2>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize);
-    case 3:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 3>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize);
-    case 4:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 4>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize);
-    case 5:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 5>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize);
-    case 6:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 6>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize);
-    default: return opAddMulMJ_T3<MblocRsize, MblocCsize, 1>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize);
+    case 1:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 1>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    case 2:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 2>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    case 3:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 3>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    case 4:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 4>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    case 5:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 5>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    case 6:	return opAddMulMJ_T3<MblocRsize, MblocCsize, 6>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
+    default: return opAddMulMJ_T3<MblocRsize, MblocCsize, 1>(out,stiffMatrix2,J,offsetRow,offsetCol, JelementSize, MelementSize, _debug);
     }
 }
 //-------------------------------------------------------------------------------------------------
 template<int MblocRsize>
 inline bool opAddMulMJ_T1(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2, defaulttype::BaseMatrix* J,
-        int offsetRow, int offsetCol, int _MblocCsize, int _JblocCsize, int JelementSize, int MelementSize)
+        int offsetRow, int offsetCol, int _MblocCsize, int _JblocCsize, int JelementSize, int MelementSize, bool _debug)
 {
     switch(_MblocCsize)
     {
-    case 1:	return opAddMulMJ_T2<MblocRsize, 1>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize);
-    case 2:	return opAddMulMJ_T2<MblocRsize, 2>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize);
-    case 3:	return opAddMulMJ_T2<MblocRsize, 3>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize);
-    case 4:	return opAddMulMJ_T2<MblocRsize, 4>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize);
-    case 5:	return opAddMulMJ_T2<MblocRsize, 5>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize);
-    case 6:	return opAddMulMJ_T2<MblocRsize, 6>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize);
-    default: return opAddMulMJ_T2<MblocRsize, 1>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize);
+    case 1:	return opAddMulMJ_T2<MblocRsize, 1>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize, _debug);
+    case 2:	return opAddMulMJ_T2<MblocRsize, 2>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize, _debug);
+    case 3:	return opAddMulMJ_T2<MblocRsize, 3>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize, _debug);
+    case 4:	return opAddMulMJ_T2<MblocRsize, 4>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize, _debug);
+    case 5:	return opAddMulMJ_T2<MblocRsize, 5>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize, _debug);
+    case 6:	return opAddMulMJ_T2<MblocRsize, 6>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize, _debug);
+    default: return opAddMulMJ_T2<MblocRsize, 1>(out,stiffMatrix2,J,offsetRow,offsetCol, _JblocCsize, JelementSize, MelementSize, _debug);
     }
 }
 //-------------------------------------------------------------------------------------------------
 inline bool opAddMulMJ(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2, defaulttype::BaseMatrix* J,
-        int offsetRow, int offsetCol, int _MblocRsize, int _MblocCsize, int _JblocCsize, int JelementSize, int MelementSize)
+        int offsetRow, int offsetCol, int _MblocRsize, int _MblocCsize, int _JblocCsize, int JelementSize, int MelementSize, bool _debug=false)
 {
     switch(_MblocRsize)
     {
-    case 1:	return opAddMulMJ_T1<1>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize);
-    case 2:	return opAddMulMJ_T1<2>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize);
-    case 3:	return opAddMulMJ_T1<3>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize);
-    case 4:	return opAddMulMJ_T1<4>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize);
-    case 5:	return opAddMulMJ_T1<5>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize);
-    case 6:	return opAddMulMJ_T1<6>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize);
-    default: return opAddMulMJ_T1<1>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize);
+    case 1:	return opAddMulMJ_T1<1>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize, _debug);
+    case 2:	return opAddMulMJ_T1<2>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize, _debug);
+    case 3:	return opAddMulMJ_T1<3>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize, _debug);
+    case 4:	return opAddMulMJ_T1<4>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize, _debug);
+    case 5:	return opAddMulMJ_T1<5>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize, _debug);
+    case 6:	return opAddMulMJ_T1<6>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize, _debug);
+    default: return opAddMulMJ_T1<1>(out,stiffMatrix2,J,offsetRow,offsetCol, _MblocCsize, _JblocCsize, JelementSize, MelementSize, _debug);
     }
 }
 
