@@ -308,8 +308,7 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
                         {
                             for (int k = 0; k < JblocRsize; k++)
                             {
-
-                                tempBlockData(i,j) += JblocData(k,i)*MblocData(k,j);
+                                tempBlockData(i,j) += (MelementType)JblocData(k,i) * MblocData(k,j);
                                 out->add(offsetRow + JblocRsize*JBColIndex+i, offsetCol + MblocCsize*MBColIndex+j, tempBlockData(i,j));
                                 if(_debug)
                                 {
@@ -354,7 +353,7 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
                         for (int j = 0; j < MblocCsize; j++)
                             for (int k = 0; k < JblocRsize; k++)
                             {
-                                tempBlockData(i,j) += JblocData(k,i)*MblocData(k,j);
+                                tempBlockData(i,j) += (MelementType)JblocData(k,i) * MblocData(k,j);
                                 if(_debug)
                                 {
                                     std::cout<<" (bI."<<offsetBRow + JBColIndex<<","
@@ -521,8 +520,7 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
                         {
                             for (int k = 0; k < MblocCsize; k++)
                             {
-
-                                tempBlockData(i,j) += MblocData(i,k)*JblocData(k,j);
+                                tempBlockData(i,j) += MblocData(i,k) * (MelementType)JblocData(k,j);
                                 if(_debug)
                                 {
                                     std::cout<<" (i."<<offsetRow + MblocRsize*MBRowIndex+i<<","
@@ -577,7 +575,7 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
                                             <<"      i:" <<i <<" j:"<<j <<"  k:" <<k <<std::endl;
                                 }
 
-                                tempBlockData(i,j) += MblocData(i,k)*JblocData(k,j);
+                                tempBlockData(i,j) += MblocData(i,k) * (MelementType)JblocData(k,j);
                             }
                     Outmatrix->blocAdd(offsetBRow + MBRowIndex,offsetBCol + JBColIndex, tempBlockData.ptr());
                 }
