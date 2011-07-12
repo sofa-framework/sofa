@@ -92,6 +92,8 @@ public:
     Data<bool>                                       isVisible;
     Data<Vector3>                                    f_scale;
     Data<Real>                                       f_thickness;
+    Data<Real>                                       f_thicknessIn;
+    Data<Real>                                       f_thicknessOut;
     Data<int>                                        f_numberOfSlices;
     Data<VecCoord>                                   f_surfaceVertices;
     Data< helper::vector<BaseMeshTopology::Quad> >   f_surfaceQuads;

@@ -51,7 +51,8 @@ ExtrudeQuadsAndGenerateHexas<DataTypes>::ExtrudeQuadsAndGenerateHexas()
     : initialized(false)
     , isVisible( initData (&isVisible, bool (true), "isVisible", "is Visible ?") )
     , f_scale( initData (&f_scale, Vector3(1.0,1.0,1.0), "scale", "Apply a scaling factor to the extruded mesh") )
-    , f_thickness( initData (&f_thickness, Real (1.0), "thickness", "Thickness of the extruded volume") )
+    , f_thicknessIn( initData (&f_thicknessIn, Real (0.0), "thicknessIn", "Thickness of the extruded volume in the opposite direction of the normals") )
+    , f_thicknessOut( initData (&f_thicknessOut, Real (1.0), "thicknessOut", "Thickness of the extruded volume in the direction of the normals") )
     , f_numberOfSlices( initData (&f_numberOfSlices, int (1), "numberOfSlices", "Number of slices / steps in the extrusion") )
     , f_surfaceVertices( initData (&f_surfaceVertices, "surfaceVertices", "Position coordinates of the surface") )
     , f_surfaceQuads( initData (&f_surfaceQuads, "surfaceQuads", "Indices of the quads of the surface to extrude") )
@@ -111,9 +112,6 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
     //first loop to compute normals per point
     for (unsigned int q=0; q<surfaceQuads.size(); q++)
     {
-//       for (int i=0 ; i<4 ;i++)
-//           std::cout << "Coordinates of quad " << q << " node " << surfaceQuads[q][i] << ": " << surfaceVertices[surfaceQuads[q][i]] << std::endl;
-
         VecCoord quadCoord;
 
         //fetch real coords
@@ -141,8 +139,8 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
         //  std::cout << "Extruded vertex coordinates: " << std::endl;
         for (int n=0; n<=f_numberOfSlices.getValue(); n++)
         {
-            Real scale = f_thickness.getValue()/(Real)f_numberOfSlices.getValue();
-            Coord disp = normals[i].first * scale * (Real)n;
+            Real scale = (f_thicknessIn.getValue() + f_thicknessOut.getValue())/(Real)f_numberOfSlices.getValue();
+            Coord disp = -normals[i].first * f_thicknessIn.getValue() + (normals[i].first * scale * (Real)n);
             //std::cout << "[ " << surfaceVertices[i] + disp << "] ";
             Coord newVertexPos(surfaceVertices[i][0]*f_scale.getValue()[0], surfaceVertices[i][1]*f_scale.getValue()[1], surfaceVertices[i][2]*f_scale.getValue()[2]);
             extrudedVertices->push_back(newVertexPos + disp);
