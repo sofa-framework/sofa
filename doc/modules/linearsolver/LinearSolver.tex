@@ -56,11 +56,56 @@
 \paragraph{Abstract : }
 %%%%%%%%%%%%%%%%%%   LOGO  %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%   LOGO  %%%%%%%%%%%%%%%%%%%%%%%%%
-In SOFA, all states of a mechanical object is described by its degree of freedom. The relation between theses DOF are informed all in the stiffness matrix. 
+In SOFA, all states of a mechanical object is described by its degree of freedom. The main works for the simulation are filling and inverting a matrix system in order to find the states of mechanical objects by steps of time. This system matrix can be described as below :
+ \[
+\left[ \textbf{MBK} \right].a=f \text{    ,  or at time n+1 :   }\left[ \textbf{MBK} \right].a_{n+1}=f_{n+1}
+\]
+where,
+\[
+\left\{ 
+\begin{array}{l}
+\textbf{M} \text { : the mass matrix   }  \\
+\textbf{B} \text { : the damping matrix   }  \\
+\textbf{K} \text { : the stiffness matrix   }  \\
+\left[ \textbf{MBK} \right] \text {  : is a linear combination of MBK (not multiplication)   }  \\
+a_{n+1} \text { : accelerator field} \\
+f_{n+1} \text { : force field} 
+\end{array}\right.
+\]
+ Usually, \textbf{M} is filled by \textbf{\color{orange}mass} components, \textbf{K} is filled by \textbf{\color{orange}forcefield} or \textbf{\color{orange}interactionforcefield} components, \textbf{B} (often $\alpha\textbf{M}+\beta\textbf{K}$ ) and $\left[ \textbf{MBK} \right]$ are computed by \textbf{\color{orange}odesolver} components. The works left to invert the matrix system are done by \textbf{\color{orange}linearsolver} components.
 \begin{center}
 \includegraphics[scale=0.3]{matrix_bloc}
 \end{center}
-On the case for example when there are two mechanical objects, we can see a global stiffness matrix describing the two mechanical states, composed diagonal blocs and non-diagonal blocs. The diagonal blocs often are filled by ForceField component in SOFA, and the non-diagonal ones are filled by InteractionForceField if existed.
+On the case for example when there are two mechanical objects, we can see a global stiffness matrix describing the two mechanical states, composed diagonal blocs and non-diagonal blocs. The diagonal blocs are filled by \textbf{\color{orange}mass},\textbf{\color{orange}forcefield} components, and the non-diagonal ones are filled by \textbf{\color{orange}interactionforcefield} if existed.
+\paragraph{Mapping matrix contribution : } When existe a mapping on the simulation scene, the states of two mechanical objects are relied by : 
+\[
+\begin{array}{rl}
+\textbf{x}_{2} & = \Im\left(\textbf{x}_{1}\right)           \text{      ,	mapping::apply}             \\
+\textbf{v}_{2} & = \left[\textbf{J}\right] \textbf{v}_{1}   \text{      ,	mapping::applyJ}  
+\end{array}
+\]
+The $\left[\textbf{J}\right]$ matrix is derivative of $\Im$ operator and is defined by the \textbf{\color{orange}mapping} components. The dynamic and matrix system of the two objects are relied by :   
+\[
+\begin{array}{rl}
+\textbf{f}                  & += \textbf{f}_{1}  +   \left[\textbf{J}\right]^{t} \textbf{f}_{2}         \text{      ,	mapping::applyJT}             \\
+\left[ \textbf{MBK} \right] & += \left[ \textbf{MBK} \right]_{1}  + \left[\textbf{J}\right]^{t}  \left[ \textbf{MBK} \right]_{2} \left[\textbf{J}\right]
+\end{array}
+\]
+The resolution of the system with the mapping is done in general :
+\[
+\left\{ 
+\begin{array}{rl}
+\textbf{a}^{n+1}        & = \left[ \textbf{MBK} \right]^{-1}  \textbf{f}^{n+1}    \\
+\textbf{v}^{n+1}_{1}    & = \textbf{v}^{n}_{1}     + dt.\textbf{a}^{n+1}         \\
+\textbf{x}^{n+1}_{1}    & = \textbf{x}^{n}_{1}     + dt.\textbf{v}^{n+1}         \\
+\textbf{x}^{n+1}_{2}    &  \text{ ,	mapping::apply }     \\
+\textbf{v}^{n+1}_{2}    &  \text{ ,	mapping::applyJ }          
+\end{array}
+\right.
+\]
+
+
+
 \subsection{Direct Solvers }
 The direct solver demande to build explicitly the matrix, and invert this matrix after every step of time in order to solve the mechanical response after a sollicitation.
 \subsection{Context in SOFA }
