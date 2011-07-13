@@ -475,6 +475,23 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
 
         if (this->f_printLog.getValue()) std::cout << "dx[" << i << "] = " << dx[i] << std::endl;
     }
+
+
+//     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+//     {
+//         const double fC1 = f->element(rowIt.index());
+//
+//         if (fC1 != 0.0)
+//         {
+//             MatrixDerivColConstIterator colItEnd = rowIt.end();
+//
+//             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+//             {
+//                 v[colIt.index()] = Deriv();
+//             }
+//         }
+//     }
+
     dataDx.endEdit();
     dataForce.endEdit();
     xData.endEdit();
