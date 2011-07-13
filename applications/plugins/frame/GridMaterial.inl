@@ -888,7 +888,7 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const VUI& indices,const SCoord& 
     //sout<<"fit on "<<indices.size()<<" voxels"<<sendl;
 
     unsigned int i,j,k;
-    Real MIN_DET=1E-2;
+    Real MIN_DET=1E-20;
 
     // least squares fit
     unsigned int order=0;
