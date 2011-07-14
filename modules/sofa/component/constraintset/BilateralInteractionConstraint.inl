@@ -48,6 +48,7 @@ void BilateralInteractionConstraint<DataTypes>::init()
     assert(this->mstate1);
     assert(this->mstate2);
     prevForces.clear();
+    activated = false;
 }
 
 template<class DataTypes>
@@ -97,15 +98,18 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
         , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
 {
-    unsigned minp=min(m1.getValue().size(),m2.getValue().size());
-    dfree.resize(minp);
-    for (unsigned pid=0; pid<minp; pid++)
+    if (activated)
     {
-        dfree[pid] = x2.getValue()[m2.getValue()[pid]] - x1.getValue()[m1.getValue()[pid]];
+        unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+        dfree.resize(minp);
+        for (unsigned pid=0; pid<minp; pid++)
+        {
+            dfree[pid] = x2.getValue()[m2.getValue()[pid]] - x1.getValue()[m1.getValue()[pid]];
 
-        v->set(cid[pid]  , dfree[pid][0]);
-        v->set(cid[pid]+1, dfree[pid][1]);
-        v->set(cid[pid]+2, dfree[pid][2]);
+            v->set(cid[pid]  , dfree[pid][0]);
+            v->set(cid[pid]+1, dfree[pid][1]);
+            v->set(cid[pid]+2, dfree[pid][2]);
+        }
     }
 }
 
@@ -118,6 +122,41 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vec
     {
         resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces);
         offset += 3;
+    }
+}
+
+template<class DataTypes>
+void BilateralInteractionConstraint<DataTypes>::handleEvent(sofa::core::objectmodel::Event *event)
+{
+    static unsigned int stepCounter = 0;
+
+    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    {
+        std::cout << "key pressed " << std::endl;
+        switch(ev->getKey())
+        {
+
+        case 'A':
+        case 'a':
+            std::cout << "Activating constraint" << std::endl;
+            activated = true;
+            break;
+        }
+    }
+
+
+    if ( /*simulation::AnimateEndEvent* ev =*/  dynamic_cast<simulation::AnimateEndEvent*>(event))
+    {
+        unsigned int maxStep = activateAtIteration.getValue();
+        if (maxStep == 0) return;
+
+        stepCounter++;
+        if(stepCounter > maxStep)
+        {
+            stepCounter = 0;
+            std::cout << "Activating constraint" << std::endl;
+            activated = true;
+        }
     }
 }
 
