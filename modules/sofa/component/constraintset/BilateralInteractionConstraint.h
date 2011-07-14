@@ -35,6 +35,12 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
+
 #include <deque>
 
 namespace sofa
@@ -168,14 +174,18 @@ protected:
 
     Data<helper::vector<int> > m1;
     Data<helper::vector<int> > m2;
+    Data<unsigned int> activateAtIteration;
 
     std::vector<double> prevForces;
+
+    bool activated;
 public:
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherit(object1, object2)
         , m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
+        , activateAtIteration( initData(&activateAtIteration, (unsigned int)0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
     {
     }
 
@@ -183,12 +193,14 @@ public:
         : Inherit(object, object)
         , m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
+        , activateAtIteration( initData(&activateAtIteration, (unsigned int)0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
     {
     }
 
     BilateralInteractionConstraint()
         : m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
+        , activateAtIteration( initData(&activateAtIteration, (unsigned int)0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
     {
     }
 
@@ -215,6 +227,8 @@ public:
             , const DataVecDeriv &v1, const DataVecDeriv &v2);
 
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
+
+    void handleEvent(sofa::core::objectmodel::Event *event);
 
     void draw(const core::visual::VisualParams*);
 };
