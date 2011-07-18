@@ -109,30 +109,50 @@ The resolution of the system with the mapping is done in general :
 \subsection{Direct Solvers }
 The direct solver demande to build explicitly the matrix, and invert this matrix after every step of time in order to solve the mechanical response after a sollicitation.
 \subsection{Context in SOFA }
-In SOFA, there are a litle more complicated component called mapping, relying geometrical and mechanical propreties by master-slave (DOF-mapped object) relation. All changes of geometry or sollicitation to one object interfere to other and vice versa. If the mapped object have its own mechanical behavior, it must be counted on the mechanical propagation on the mapping.
+In SOFA, there are a litle more complicated component called mapping, relying geometrical and mechanical propreties by master-slave (DOF-mapped object) relation. All changes of geometry or sollicitation to one object interfere to other and vice versa. If the mapped object have its own mechanical behavior, it must be counted on the mechanical propagation by the mapping.
 \subsubsection{self-stiffness propagation }
-where the $K_{22}$ is a mapped mechanical state of the $K_{11}$
-\begin{center}
-\includegraphics[scale=0.3]{stiffness_propagation}
-\end{center}
 \[
- K_{11} += J^t * K_{22} * J
+\begin{array}{cc}
+\includegraphics[scale=0.3]{stiffness_propagation_matrix}        
+& 
+\includegraphics[scale=0.35]{stiffness_propagation} 
+\end{array}
 \]
+In the simple simulation scene, \textbf{MS2} is a mapped object to the \textbf{MS1} mechanical object by the mapping. The matrix to be inverted for all mechanical response is the filled colorized one ($K_{11}$), the matrix $K_{22}$ describing mechanical propreties of the second objects must contribute to $K_{11}$ by the formula :
+\[
+\left\{ 
+\begin{array}{ll}
+K_{11}       & += J^t * K_{22} * J               \\
+\text{or,}   &         \\
+K_{tempo}    & =  J^t * K_{22}                   \\
+K_{11}       & += K_{tempo} * J                  \\         
+\end{array}
+\right.
+\]
+By doing this computation, we propagate the stiffness of the mapped mechanical object to its root mechanical object.
 \subsubsection{interaction-stiffness propagation }
 In the general case, the may have a simulation scene where there are many level of mapped mechanical states (mapped of mapped state ...) and many interaction forcefield interacting beetween them. Therefor the stiffness of interaction forcefield and the mapped mechanical state need to be propagated through the mappings. We can imagine for one propagation, there are two simple cases.
 \paragraph{Interaction beweent Real Mechanical Object and Mapped Mechanical Object}
-\begin{center}
-  \includegraphics[scale=0.3]{interaction_Real_Mapped}
-\end{center}
+\[
+\begin{array}{cc}
+\includegraphics[scale=0.3]{interaction_Real_Mapped_Matrix}        
+& 
+\includegraphics[scale=0.35]{interaction_Real_Mapped} 
+\end{array}
+\]
 In the case where one of the two mechanical states in interaction is non-mapped, the propagation can be computed directly by the formula :
 \[
-K_{11} += J^t * K_{33} * J 
-\]
-\[
-I_{12} += J^t * I_{32}
-\]
-\[
-I_{21} += I_{23} * J 
+\left\{ 
+\begin{array}{ll}
+K_{11}       & += J^t * K_{33} * J               \\
+\text{or,}   &                                   \\
+K_{tempo}    & =  J^t * K_{33}                   \\
+K_{11}       & += K_{tempo} * J                  \\ 
+\text{and,}&                 \\      
+I_{12}       & += J^t * I_{32}                   \\ 
+I_{21}       & += I_{23} * J                        
+\end{array}
+\right.
 \]
 \paragraph{Interaction beweent Mapped Mechanical Object and Mapped Mechanical Object}
 \begin{center}
@@ -140,13 +160,17 @@ I_{21} += I_{23} * J
 \end{center}
 In the case where the two mechanical states in interaction are mapped, the propagation can be computed by two steps. The first consist to propagate the interaction $I_{34}$ to the interation $I_{14}$ :
 \[
-K_{11} += J^t * K_{33} * J 
-\]
-\[
-I_{14} += J^t_A * I_{34}
-\]
-\[
-I_{41} += I_{43} * J_A 
+\left\{ 
+\begin{array}{ll}
+K_{11}       & += J^t * K_{33} * J               \\
+\text{or,}   &                                   \\
+K_{tempo}    & =  J^t * K_{33}                   \\
+K_{11}       & += K_{tempo} * J                  \\ 
+\text{and,}&                 \\      
+I_{14}       & += J^t_A * I_{34}                  \\ 
+I_{41}       & += I_{43} * J_A                        
+\end{array}
+\right.
 \]
 The following step can compute as the one of above paragraph, propagating the interation $I_{14}$ to $I_{12}$.
 \subsection{Iterative Solvers }
