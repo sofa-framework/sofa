@@ -155,6 +155,8 @@ bool Mesh::load(const char* filename)
       return loadObj(filename,anchor);
     if (!strcasecmp(ext,".off"))
       return loadOff(filename);
+    if (!strcasecmp(ext,".lwo"))
+      return loadLwo(filename);
     if (!strcasecmp(ext,".vtk"))
       return loadVtk(filename);
   }
@@ -172,6 +174,8 @@ bool Mesh::save(const char* filename) const
       return saveOff(filename);
     if (!strcasecmp(ext,".stl"))
       return saveStl(filename);
+    if (!strcasecmp(ext,".lwo"))
+      return saveLwo(filename);
     if (!strcasecmp(ext,".vtk"))
       return saveVtk(filename);
   }
