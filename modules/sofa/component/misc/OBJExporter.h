@@ -32,53 +32,24 @@ public:
     SOFA_CLASS(OBJExporter,core::objectmodel::BaseObject);
 
 private:
-    sofa::core::topology::BaseMeshTopology* topology;
-    sofa::core::behavior::BaseMechanicalState* mstate;
     unsigned int stepCounter;
-
     std::ofstream* outfile;
     std::ofstream* mtlfile;
-
-    void fetchDataFields(const helper::vector<std::string>& strData, helper::vector<std::string>& objects, helper::vector<std::string>& fields, helper::vector<std::string>& names);
-    void writeVTKSimple();
-    void writeVTKXML();
-    void writeParallelFile();
-    void writeData(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields, const helper::vector<std::string>& names);
-    void writeDataArray(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields, const helper::vector<std::string>& names);
-    std::string segmentString(std::string str, unsigned int n);
+    void writeOBJ();
+    sofa::core::objectmodel::BaseContext* context;
+    unsigned int maxStep;
 
 public:
     sofa::core::objectmodel::DataFileName objFilename;
-    Data<bool> fileFormat;	//0 for Simple Legacy Formats, 1 for XML File Format
-    Data<defaulttype::Vec3Types::VecCoord> position;
-    Data<bool> writeEdges;
-    Data<bool> writeTriangles;
-    Data<bool> writeQuads;
-    Data<bool> writeTetras;
-    Data<bool> writeHexas;
-    Data<helper::vector<std::string> > dPointsDataFields;
-    Data<helper::vector<std::string> > dCellsDataFields;
     Data<unsigned int> exportEveryNbSteps;
     Data<bool> exportAtBegin;
     Data<bool> exportAtEnd;
-
-    int nbFiles;
-
-    helper::vector<std::string> pointsDataObject;
-    helper::vector<std::string> pointsDataField;
-    helper::vector<std::string> pointsDataName;
-
-    helper::vector<std::string> cellsDataObject;
-    helper::vector<std::string> cellsDataField;
-    helper::vector<std::string> cellsDataName;
-
+    bool  activateExport;
     OBJExporter();
     virtual ~OBJExporter();
-
     void init();
     void cleanup();
     void bwdInit();
-
     void handleEvent(sofa::core::objectmodel::Event *);
 };
 
