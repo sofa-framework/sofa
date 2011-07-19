@@ -907,10 +907,6 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
 
             break;
         }
-        case 'F':
-        case 'f':
-            if(fileFormat.getValue())
-                writeParallelFile();
         }
     }
 
@@ -924,10 +920,17 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         if(stepCounter > maxStep)
         {
             stepCounter = 0;
-            if(fileFormat.getValue())
-                writeVTKXML();
-            else
-                writeVTKSimple();
+
+            std::string filename = objFilename.getFullPath();
+            filename += ".obj";
+            outfile = new std::ofstream(filename.c_str());
+            filename = objFilename.getFullPath();
+            filename += ".mtl";
+            mtlfile = new std::ofstream(filename.c_str());
+
+            sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),outfile, mtlfile);
+            sofa::core::objectmodel::BaseContext* context = this->getContext();
+            context->executeVisitor(&exportOBJ);
         }
     }
 }
