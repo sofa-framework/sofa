@@ -922,11 +922,16 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
             stepCounter = 0;
 
             std::string filename = objFilename.getFullPath();
-            filename += ".obj";
+            std::ostringstream oss;
+            oss << stepCounter;
+            filename += oss.str() + ".obj";
             outfile = new std::ofstream(filename.c_str());
-            filename = objFilename.getFullPath();
-            filename += ".mtl";
-            mtlfile = new std::ofstream(filename.c_str());
+
+            std::string mtlfilename = objFilename.getFullPath();
+            std::ostringstream mtloss;
+            mtloss << stepCounter;
+            mtlfilename += mtloss.str() + ".mtl";
+            mtlfile = new std::ofstream(mtlfilename.c_str());
 
             sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),outfile, mtlfile);
             sofa::core::objectmodel::BaseContext* context = this->getContext();
