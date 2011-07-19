@@ -49,7 +49,6 @@ OBJExporter::~OBJExporter()
         delete outfile;
     if (mtlfile)
         delete mtlfile;
-
 }
 
 void OBJExporter::init()
@@ -70,11 +69,6 @@ void OBJExporter::writeOBJ()
     std::cout << "Exporting OBJ as: " << filename << std::endl;
 
     std::string mtlfilename = objFilename.getFullPath();
-    std::ostringstream mtloss;
-    mtloss.width(5);
-    mtloss.fill('0');
-    mtloss << stepCounter / maxStep;
-    mtlfilename += mtloss.str() + ".mtl";
     mtlfile = new std::ofstream(mtlfilename.c_str());
 
     sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),outfile, mtlfile);
