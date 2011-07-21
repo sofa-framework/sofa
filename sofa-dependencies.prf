@@ -3,6 +3,7 @@ includeOnce($$_FILE_) {
 declare(boost,  boost.prf)
 declare(cilk,   cilk.prf)
 declare(cuda,   cuda.prf)
+declare(flowvr, flowvr.prf)
 declare(fltk,   fltk.prf)
 declare(glut,   glut.prf)
 declare(glew,   glew.prf)
@@ -45,7 +46,7 @@ declare(sofatree,       modules/sofa/simulation/tree,   sofasimulation)
 declare(sofabgl,        modules/sofa/simulation/bgl,    sofasimulation)
 declare(sofapml,        modules/sofa/simulation/filemanager/sofapml, sofacomponentcollision)
 
-declare(sofacomponentbase,          modules/sofa/component/libbase.pro,   sofatree miniFlowVR)
+declare(sofacomponentbase,          modules/sofa/component/libbase.pro,   sofatree miniFlowVR flowvr)
 declare(sofacomponentbehaviormodel, modules/sofa/component/behaviormodel, sofatree)
 declare(sofacomponentcontextobject, modules/sofa/component/contextobject, sofatree)
 declare(sofacomponentengine,        modules/sofa/component/engine,        sofacomponentcollision)
@@ -91,9 +92,18 @@ declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut
 declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
 declare(sofaguifltk, applications/sofa/gui/fltk,           sofaguiqt fltk)
 
-declare(runSofa,     applications/projects/runSofa, sofaguimain)
-
-
+declare(runSofa,          applications/projects/runSofa, sofaguimain)
+declare(generateDoc,      applications/projects/generateDoc, sofacomponent sofagpucuda)
+declare(GenerateRigid,    applications/projects/GenerateRigid, sofacomponent sofagpucuda)
+declare(generateTypedefs, applications/projects/generateTypedefs, sofaguimain)
+declare(meshconv,         applications/projects/meshconv, sofacomponent)
+declare(sofaCUDA,         applications/projects/sofaCUDA, sofaguimain)
+declare(SofaFlowVR,       applications/projects/SofaFlowVR, sofaguimain)
+declare(sofaInitTimer,    applications/projects/sofaInitTimer, sofaguimain)
+declare(sofaVerification, applications/projects/sofaVerification, sofacomponent sofagpucuda)
+# SofaVRPN
+# SofaDevices
+# Haptic
 
 ######################################################################
 # Enable artifacts
@@ -118,6 +128,9 @@ contains(DEFINES, SOFA_HAVE_CSPARSE) {
 }
 !contains(DEFINES, SOFA_HAVE_FLOWVR) {
 	enable(miniFlowVR)
+} else {
+	enable(flowvr)
+	enable(SofaFlowVR)
 }
 contains(DEFINES, SOFA_GUI_QGLVIEWER) {
 	enable(QGLViewer)
@@ -162,6 +175,12 @@ enable(sofaguiqt)
 enable(sofaguimain)
 
 enable(runSofa)
+enable(generateDoc)
+enable(GenerateRigid)
+enable(generateTypedefs)
+enable(meshconv)
+enable(sofaInitTimer)
+enable(sofaVerification)
 
 contains (DEFINES, SOFA_GUI_GLUT) {
 	enable(sofaguiglut)
@@ -176,6 +195,7 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 			enable(cudpp)
 		}
 		enable(sofagpucuda)
+		enable(sofaCUDA)
 	}
 } # END SOFA_DEV
 
