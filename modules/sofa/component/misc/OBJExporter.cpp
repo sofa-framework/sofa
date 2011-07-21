@@ -33,7 +33,9 @@ int OBJExporterClass = core::RegisterObject("Export under Wavefront OBJ format")
         .add< OBJExporter >();
 
 OBJExporter::OBJExporter()
-    : stepCounter(0), outfile(NULL)
+    : stepCounter(0)
+    , outfile(NULL)
+    , mtlfile(NULL)
     , objFilename( initData(&objFilename, "filename", "output OBJ file name"))
     , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
     , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
@@ -59,6 +61,8 @@ void OBJExporter::init()
 
 void OBJExporter::writeOBJ()
 {
+    if (!maxStep) return;
+
     std::string filename = objFilename.getFullPath();
     std::ostringstream oss;
     oss.width(5);
@@ -66,22 +70,22 @@ void OBJExporter::writeOBJ()
     oss << stepCounter / maxStep;
     filename += oss.str() + ".obj";
     outfile = new std::ofstream(filename.c_str());
-    std::cout << "Exporting OBJ as: " << filename << std::endl;
 
     std::string mtlfilename = objFilename.getFullPath();
+    mtlfilename = mtlfilename + ".mtl";
     mtlfile = new std::ofstream(mtlfilename.c_str());
-
     sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),outfile, mtlfile);
     context->executeVisitor(&exportOBJ);
     outfile->close();
     mtlfile->close();
+
+    std::cout << "Exporting OBJ as: " << filename.c_str() << " with MTL file: " << mtlfilename.c_str() << std::endl;
 }
 
 void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
 {
     if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
-        std::cout << "key pressed " << std::endl;
         switch(ev->getKey())
         {
 
@@ -95,6 +99,10 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         case 'P':
         case 'p':
         {
+            if (!activateExport)
+                std::cout << "Starting OBJ sequece export..." << std::endl;
+            else
+                std::cout << "Ending OBJ sequece export..." << std::endl;
             activateExport = !activateExport;
             break;
         }
@@ -108,9 +116,7 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         stepCounter++;
         if(stepCounter % maxStep == 0)
         {
-            //stepCounter = 0;
             writeOBJ();
-
         }
     }
 }
