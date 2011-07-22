@@ -80,6 +80,8 @@ HEADERS += helper.h \
     system/thread/TimeoutWatchdog.h \
     system/PipeProcess.h \
     system/SofaOStream.h \
+    system/DynamicLibrary.h \
+    system/PluginManager.h \
     TagFactory.h \
     accessor.h \
     vector.h \
@@ -130,6 +132,8 @@ SOURCES += ArgumentParser.cpp \
     system/thread/TimeoutWatchdog.cpp \
     system/PipeProcess.cpp \
     system/SofaOStream.cpp \
+    system/DynamicLibrary.cpp \
+    system/PluginManager.cpp \
     TagFactory.cpp \
     polygon_cube_intersection/polygon_cube_intersection.cpp \
     polygon_cube_intersection/fast_polygon_cube_intersection.cpp \
@@ -162,3 +166,4 @@ contains(DEFINES,SOFA_HAVE_FFMPEG) { # SOFA_HAVE_FFMPEG
     	gl/VideoRecorder.cpp 
 }
 
+QMAKE_LFLAGS *= -ldl
