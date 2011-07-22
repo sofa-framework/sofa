@@ -28,3 +28,8 @@ win32-msvc20* {
 	QMAKE_CXXFLAGS_DEBUG += -wd4996
 	QMAKE_CXXFLAGS_RELEASE += -wd4996
 }
+
+win32 {
+	#LIBS *= -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32
+	LIBS *= -lGdi32 -lShell32
+}

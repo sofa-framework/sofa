@@ -1,10 +1,5 @@
 !contains(TEMPLATE, lib): error(plugins should have the "lib" qmake template)
 
-!contains(CONFIGSTATIC, static) {
-	CONFIG -= staticlib
-	CONFIG += dll
-}
-
 equals(USING_INSTALL, true) {
 	INSTALL_INC_PATH = $$INSTALL_INC_PATH/$$PLUGINS_PATH/$$PLUGIN_NAME
 	INSTALL_INC_DIR = $$INSTALL_DIR/$$INSTALL_INC_PATH

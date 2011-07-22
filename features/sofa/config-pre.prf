@@ -6,8 +6,8 @@
 CONFIG += warn_on exceptions rtti stl thread
 
 win32 {
-	QMAKE_CXXFLAGS_DEBUG = -Gm -ZI
-	QMAKE_CXXFLAGS_RELEASE = -MP
+	QMAKE_CXXFLAGS_DEBUG = -Gm -MDd -Od
+	QMAKE_CXXFLAGS_RELEASE = -MP -MD -O2
 }
 
 ########################################################################

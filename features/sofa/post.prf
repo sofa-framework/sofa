@@ -46,11 +46,12 @@ isEmpty(OBJMOC) {
 	}
 }
 
-win32 {
-	contains(TEMPLATE, lib) | contains(TEMPLATE, vclib) {
-		CONFIG += static
-		# TODO: support for shared libraries
-	}
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
+	CONFIG += dll
+} else {
+	CONFIG -= dll shared
+	CONFIG += staticlib
 }
 
 ########################################################################
