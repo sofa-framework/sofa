@@ -895,9 +895,9 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
     //Hosford yield criterion
     //for plane stress : 1/2 * ( |S_1|^n + |S_2|^n) + 1/2 * |S_1 - S_2|^n = S_y^n
     //with S_i the principal stresses, n is a material-dependent exponent and S_y is the yield stress in uniaxial tension/compression
-    Real n = this->hosfordExponant.getValue();
-    triangleInf[elementIndex].differenceToCriteria =
-        pow(0.5 * (pow(fabs(D(1,1)), n) +  pow(fabs(D(2,2)), n) + pow(fabs(D(1,1) - D(2,2)),n)), 1.0/ n) - this->criteriaValue.getValue();
+    double n = this->hosfordExponant.getValue();
+    triangleInf[elementIndex].differenceToCriteria = (Real)
+            pow(0.5 * (pow((double)fabs(D(1,1)), n) +  pow((double)fabs(D(2,2)), n) + pow((double)fabs(D(1,1) - D(2,2)),n)), 1.0/ n) - this->criteriaValue.getValue();
 
     //max stress is the highest eigenvalue
     triangleInf[elementIndex].maxStress = fabs((Real)D(biggestIndex,biggestIndex));
@@ -1853,13 +1853,13 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         for ( unsigned int i = 0 ; i < vertexInf.size() ; i++)
         {
             BaseMeshTopology::TrianglesAroundVertex triangles = _topology->getTrianglesAroundVertex(i);
-            float averageStress = 0.0f;
-            float sumArea = 0.0f;
+            double averageStress = 0.0;
+            double sumArea = 0.0;
             for ( unsigned int v = 0 ; v < triangles.size() ; v++)
             {
                 if ( triangleInfo.getValue()[triangles[v]].area)
                 {
-                    averageStress+= ( (float)fabs(triangleInfo.getValue()[triangles[v]].maxStress) * triangleInfo.getValue()[triangles[v]].area);
+                    averageStress+= ( fabs(triangleInfo.getValue()[triangles[v]].maxStress) * triangleInfo.getValue()[triangles[v]].area);
                     sumArea += triangleInfo.getValue()[triangles[v]].area;
                 }
             }
