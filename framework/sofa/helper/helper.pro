@@ -166,4 +166,3 @@ contains(DEFINES,SOFA_HAVE_FFMPEG) { # SOFA_HAVE_FFMPEG
     	gl/VideoRecorder.cpp 
 }
 
-QMAKE_LFLAGS *= -ldl
