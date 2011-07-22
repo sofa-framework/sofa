@@ -50,7 +50,7 @@ template <class DataTypes>
 ExtrudeQuadsAndGenerateHexas<DataTypes>::ExtrudeQuadsAndGenerateHexas()
     : initialized(false)
     , isVisible( initData (&isVisible, bool (true), "isVisible", "is Visible ?") )
-    , f_scale( initData (&f_scale, Vector3(1.0,1.0,1.0), "scale", "Apply a scaling factor to the extruded mesh") )
+    , f_scale( initData (&f_scale, Coord(1.0f,1.0f,1.0f), "scale", "Apply a scaling factor to the extruded mesh") )
     , f_thicknessIn( initData (&f_thicknessIn, Real (0.0), "thicknessIn", "Thickness of the extruded volume in the opposite direction of the normals") )
     , f_thicknessOut( initData (&f_thicknessOut, Real (1.0), "thicknessOut", "Thickness of the extruded volume in the direction of the normals") )
     , f_numberOfSlices( initData (&f_numberOfSlices, int (1), "numberOfSlices", "Number of slices / steps in the extrusion") )
