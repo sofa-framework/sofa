@@ -49,7 +49,7 @@ namespace helper
 
 namespace system
 {
-
+FileRepository PluginRepository("SOFA_PLUGIN_PATH","../lib/sofa-plugins");
 #if defined (WIN32)
 FileRepository DataRepository("SOFA_DATA_PATH", "../share;../examples");
 #elif defined (__APPLE__)
