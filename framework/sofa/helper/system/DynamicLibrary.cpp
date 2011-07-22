@@ -4,6 +4,7 @@
 #else
 #include <dlfcn.h>
 #endif
+#include <string>
 
 namespace sofa
 {
@@ -46,9 +47,8 @@ DynamicLibrary * DynamicLibrary::load(const std::string & name,
     if (handle == NULL)
     {
         DWORD errorCode = ::GetLastError();
-        (*errlog) << "LoadLibrary(") << name
-                << ") Failed. errorCode: "
-                << errorCode;
+        (*errlog) << "LoadLibrary("<<name<<") Failed. errorCode: "<<errorCode;
+        (*errlog) << std::endl;
     }
 #else
     handle = ::dlopen(name.c_str(), RTLD_NOW);
