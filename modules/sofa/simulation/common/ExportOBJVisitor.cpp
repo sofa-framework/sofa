@@ -35,12 +35,12 @@ namespace simulation
 
 
 ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params /* PARAMS FIRST */, std::ostream* out)
-    : Visitor(params) , out(out), mtl(NULL), ID(0), vindex(0), nindex(0), tindex(0)
+    : Visitor(params) , out(out), mtl(NULL), ID(0), vindex(0), nindex(0), tindex(0), count(0)
 {
 }
 
 ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params /* PARAMS FIRST */, std::ostream* out,std::ostream* mtl)
-    : Visitor(params) , out(out), mtl(mtl), ID(0), vindex(0), nindex(0), tindex(0)
+    : Visitor(params) , out(out), mtl(mtl), ID(0), vindex(0), nindex(0), tindex(0), count(0)
 {
 }
 
@@ -53,7 +53,7 @@ void ExportOBJVisitor::processVisualModel(Node* /*node*/, core::visual::VisualMo
     std::ostringstream oname;
     oname << ++ID << "_" << vm->getName();
 
-    vm->exportOBJ(oname.str(),out,mtl,vindex,nindex,tindex);
+    vm->exportOBJ(oname.str(),out,mtl,vindex,nindex,tindex, ++count);
 }
 
 simulation::Visitor::Result ExportOBJVisitor::processNodeTopDown(Node* node)
@@ -68,6 +68,8 @@ simulation::Visitor::Result ExportOBJVisitor::processNodeTopDown(Node* node)
         ExportOBJVisitor act (params /* PARAMS FIRST */, out,mtl);
         child->execute ( &act );
     }
+
+    count = 0;
 
     return RESULT_CONTINUE;
 }

@@ -59,6 +59,7 @@ protected:
     int vindex;
     int nindex;
     int tindex;
+    int count;
 };
 
 } // namespace simulation
