@@ -1624,7 +1624,7 @@ void VisualModelImpl::initVisual()
     //}
 }
 
-void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex)
+void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex, int& count)
 {
     *out << "g "<<name<<"\n";
 
@@ -1633,8 +1633,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         std::string name; // = material.name;
         if (name.empty())
         {
-            static int count = 0;
-            std::ostringstream o; o << "mat" << ++count;
+            std::ostringstream o; o << "mat" << count;
             name = o.str();
         }
         *mtl << "newmtl "<<name<<"\n";
@@ -1654,6 +1653,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
 
         *out << "usemtl "<<name<<'\n';
     }
+
     const ResizableExtVector<Coord>& x = m_positions.getValue();
     const ResizableExtVector<Deriv>& vnormals = m_vnormals.getValue();
     const ResizableExtVector<TexCoord>& vtexcoords = m_vtexcoords.getValue();
