@@ -1,0 +1,106 @@
+#ifndef SOFA_GUI_QT_DISPLAYFLAGSDATAWIDGET_H
+#define SOFA_GUI_QT_DISPLAYFLAGSDATAWIDGET_H
+
+#include <sofa/gui/qt/DataWidget.h>
+#include <sofa/core/visual/DisplayFlags.h>
+
+#ifdef SOFA_QT4
+#include <Q3ListView>
+#include <Q3CheckListItem>
+#include <Q3ListViewItem>
+#include <Q3Header>
+#include <QMouseEvent>
+#include <Q3Frame>
+#include <Q3GroupBox>
+#else
+#include <qlistview.h>
+#include <qheader.h>
+#include <qgroupbox.h>
+typedef QListView Q3ListView;
+typedef QCheckListItem Q3CheckListItem;
+typedef QListViewItem Q3ListViewItem;
+typedef QGroupBox Q3GroupBox;
+#endif
+
+namespace sofa
+{
+namespace gui
+{
+namespace qt
+{
+
+
+class DisplayFlagWidget : public Q3ListView
+{
+    Q_OBJECT;
+public:
+
+    enum VISUAL_FLAG
+    {
+        VISUALMODELS,
+        BEHAVIORMODELS,
+        COLLISIONMODELS,
+        BOUNDINGCOLLISIONMODELS,
+        MAPPINGS,MECHANICALMAPPINGS,
+        FORCEFIELDS,
+        INTERACTIONFORCEFIELDS,
+        WIREFRAME,
+        NORMALS,
+#ifdef SOFA_SMP
+        PROCESSORCOLOR,
+#endif
+        ALLFLAGS
+    };
+
+
+    DisplayFlagWidget(QWidget* parent, const char* name= 0, Qt::WFlags f= 0 );
+
+    bool getFlag(int idx) {return itemShowFlag[idx]->isOn();}
+    void setFlag(int idx, bool value) {itemShowFlag[idx]->setOn(value);}
+
+signals:
+    void change(int,bool);
+    void clicked();
+
+protected:
+    virtual void contentsMousePressEvent ( QMouseEvent * e );
+
+    void findChildren(Q3CheckListItem *, std::vector<Q3CheckListItem* > &children);
+
+
+    Q3CheckListItem* itemShowFlag[ALLFLAGS];
+    std::map<  Q3CheckListItem*, int > mapFlag;
+};
+
+
+class DisplayFlagsDataWidget : public TDataWidget< sofa::core::visual::DisplayFlags >
+{
+    Q_OBJECT;
+public:
+    typedef sofa::core::visual::DisplayFlags DisplayFlags;
+    DisplayFlagsDataWidget(QWidget* parent, const char* name, core::objectmodel::Data<DisplayFlags>* data)
+        :TDataWidget<DisplayFlags>(parent,name,data)
+    {
+    }
+
+    virtual bool createWidgets();
+protected:
+
+    virtual void readFromData();
+    virtual void writeToData();
+    virtual unsigned int sizeWidget() {return 3;}
+    virtual unsigned int numColumnWidget() {return 1;}
+
+    DisplayFlagWidget* flags;
+
+
+};
+
+}
+
+}
+
+}
+
+
+#endif // SOFA_GUI_QT_DISPLAYFLAGSDATAWIDGET_H
