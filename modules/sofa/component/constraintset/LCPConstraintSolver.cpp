@@ -863,6 +863,8 @@ void LCPConstraintSolver::keepContactForcesValue()
 
 int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
 {
+    if(!_numConstraints)
+        return 0;
 
     //helper::system::thread::CTime timer;
     double time = 0.0;
