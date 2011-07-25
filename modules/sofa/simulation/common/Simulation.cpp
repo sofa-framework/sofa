@@ -164,8 +164,8 @@ void Simulation::init ( Node* root )
     getInstruments(root);
 
     // propagate the visualization settings (showVisualModels, etc.) in the whole graph
-    updateVisualContext(root,Node::ALLFLAGS);
-    updateVisualContext(getVisualRoot(),Node::ALLFLAGS);
+    updateVisualContext(root);
+    updateVisualContext(getVisualRoot());
 }
 
 
@@ -371,11 +371,11 @@ void Simulation::updateContext ( Node* root )
 }
 
 /// Update only Visual contexts. Required before drawing the scene if root flags are modified.( can filter by specifying a specific element)
-void Simulation::updateVisualContext ( Node* root, Node::VISUAL_FLAG FILTER)
+void Simulation::updateVisualContext (Node* root)
 {
     if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    UpdateVisualContextVisitor vis(params /* PARAMS FIRST */, FILTER);
+    sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
+    UpdateVisualContextVisitor vis(vparams);
     vis.execute(root);
 }
 /// Render the scene

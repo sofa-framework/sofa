@@ -1,8 +1,8 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     **
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     **
 under the terms of the GNU General Public License as published by the Free  *
 * Software Foundation; either version 2 of the License, or (at your option)   *
 * any later version.                                                          *
@@ -43,7 +43,7 @@ under the terms of the GNU General Public License as published by the Free  *
 #include "viewer/SofaViewer.h"
 #include "AddObject.h"
 #include "ModifyObject.h"
-#include "DisplayFlagWidget.h"
+#include "DisplayFlagsDataWidget.h"
 #include "QMenuFilesRecentlyOpened.h"
 #include "SofaPluginManager.h"
 #include "SofaMouseManager.h"
@@ -191,7 +191,7 @@ public:
     virtual void fileNew();
     virtual void fileOpen();
     virtual void fileSave();
-    virtual void fileSaveAs() {fileSaveAs((Node *)NULL);};
+    virtual void fileSaveAs() {fileSaveAs((Node *)NULL);}
 
     virtual void fileSaveAs(Node* node,const char* filename);
 
@@ -224,7 +224,7 @@ public slots:
     void setDt(const QString&);
     void resetScene();
     void screenshot();
-    void showhideElements(int FILTER, bool value);
+    void showhideElements();
     void updateViewerParameters();
     void updateBackgroundColour();
     void updateBackgroundImage();
@@ -301,7 +301,7 @@ protected:
     WDoubleLineEdit *background[3];
     QLineEdit *backgroundImage;
     QWidgetStack* left_stack;
-
+    SofaPluginManager* pluginManager_dialog;
     QMenuFilesRecentlyOpened recentlyOpenedFilesManager;
 
     std::string simulation_name;

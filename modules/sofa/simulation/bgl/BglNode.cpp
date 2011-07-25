@@ -535,77 +535,18 @@ void BglNode::initVisualContext()
     }
 }
 
-void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
+void BglNode::updateVisualContext()
 {
     if (!parents.empty())
     {
-        switch (FILTER)
+
+        for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
         {
-        case VISUALMODELS:
-            setShowVisualModels(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                setShowVisualModels( (*it)->getShowVisualModels());
-            break;
-        case BEHAVIORMODELS:
-            setShowBehaviorModels(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                setShowBehaviorModels( (*it)->getShowBehaviorModels());
-            break;
-        case COLLISIONMODELS:
-            setShowCollisionModels(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                setShowCollisionModels( (*it)->getShowCollisionModels());
-            break;
-        case BOUNDINGCOLLISIONMODELS:
-            setShowBoundingCollisionModels(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                setShowBoundingCollisionModels( (*it)->getShowBoundingCollisionModels());
-            break;
-        case MAPPINGS:
-            setShowMappings(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                setShowMappings( (*it)->getShowMappings());
-            break;
-        case MECHANICALMAPPINGS:
-            setShowMechanicalMappings(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                setShowMechanicalMappings( (*it)->getShowMechanicalMappings());
-            break;
-        case FORCEFIELDS:
-            setShowForceFields(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                setShowForceFields( (*it)->getShowForceFields());
-            break;
-        case INTERACTIONFORCEFIELDS:
-            setShowInteractionForceFields(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                setShowInteractionForceFields( (*it)->getShowInteractionForceFields());
-            break;
-        case WIREFRAME:
-            setShowWireFrame(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                setShowWireFrame( (*it)->getShowWireFrame());
-            break;
-        case NORMALS:
-            setShowNormals(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                setShowNormals( (*it)->getShowNormals());
-            break;
-        case ALLFLAGS:
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-            {
-                fusionVisualContext(*(*it));
-            }
-            break;
-#ifdef SOFA_SMP
-        case PROCESSORCOLOR:
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                setShowProcessorColor((*it)->getShowProcessorColor());
-            break;
-#endif
+            fusionVisualContext(*(*it));
         }
+
     }
-    simulation::Node::updateVisualContext(FILTER);
+    simulation::Node::updateVisualContext();
 }
 
 SOFA_DECL_CLASS(BglNode)

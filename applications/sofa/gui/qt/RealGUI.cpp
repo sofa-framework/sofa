@@ -1,37 +1,37 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
-*                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
-*******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include "RealGUI.h"
 #include "ImageQt.h"
 #ifndef SOFA_GUI_QT_NO_RECORDER
-#include "QSofaRecorder.h"
+#include "sofa/gui/qt/QSofaRecorder.h"
 #endif
-#include "QSofaStatWidget.h"
-#include "GenGraphForm.h"
-#include "QSofaListView.h"
+#include "sofa/gui/qt/QSofaStatWidget.h"
+#include "sofa/gui/qt/GenGraphForm.h"
+#include "sofa/gui/qt/QSofaListView.h"
 #include <algorithm>
 
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
@@ -53,6 +53,8 @@
 #include <sofa/simulation/common/DeactivatedNodeVisitor.h>
 
 #include <sofa/helper/system/FileRepository.h>
+
+#include <sofa/core/visual/VisualParams.h>
 
 #ifdef SOFA_QT4
 #include <QWidget>
@@ -127,7 +129,7 @@ typedef Q3TextEdit QTextEdit;
 using sofa::core::objectmodel::BaseObject;
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation;
-//       using namespace sofa::simulation::tree;
+using namespace sofa::core::visual;
 
 
 ///////////////////////////////////////////////////////////
@@ -308,7 +310,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
 
     displayFlag = new DisplayFlagWidget(tabView);
-    connect( displayFlag, SIGNAL( change(int,bool)), this, SLOT(showhideElements(int,bool) ));
+    connect( displayFlag, SIGNAL( change(int,bool)), this, SLOT(showhideElements() ));
     gridLayout1->addWidget(displayFlag,0,0);
 
 
@@ -441,11 +443,14 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect(htmlPage, SIGNAL(sourceChanged(const QString&)), this, SLOT(changeHtmlPage(const QString&)));
 #endif
     //--------
-    this->connect( SofaPluginManager::getInstance(), SIGNAL(libraryAdded() ),  this, SLOT( updateViewerList() ));
-    this->connect( SofaPluginManager::getInstance(), SIGNAL(libraryRemoved() ),  this, SLOT( updateViewerList() ));
+    pluginManager_dialog = new SofaPluginManager();
+    pluginManager_dialog->hide();
 
-    SofaPluginManager::getInstance()->hide();
-    SofaPluginManager::getInstance()->initPluginList();
+
+    this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
+    this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
+
+
     SofaMouseManager::getInstance()->hide();
     SofaVideoRecorderManager::getInstance()->hide();
 
@@ -929,18 +934,18 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
     if (root)
     {
         // set state of display flags
-        displayFlag->setFlag(Node::VISUALMODELS,root->getContext()->getShowVisualModels());
-        displayFlag->setFlag(Node::BEHAVIORMODELS,root->getContext()->getShowBehaviorModels());
-        displayFlag->setFlag(Node::COLLISIONMODELS,root->getContext()->getShowCollisionModels());
-        displayFlag->setFlag(Node::BOUNDINGCOLLISIONMODELS,root->getContext()->getShowBoundingCollisionModels());
-        displayFlag->setFlag(Node::MAPPINGS,root->getContext()->getShowMappings());
-        displayFlag->setFlag(Node::MECHANICALMAPPINGS,root->getContext()->getShowMechanicalMappings());
-        displayFlag->setFlag(Node::FORCEFIELDS,root->getContext()->getShowForceFields());
-        displayFlag->setFlag(Node::INTERACTIONFORCEFIELDS,root->getContext()->getShowInteractionForceFields());
-        displayFlag->setFlag(Node::WIREFRAME,root->getContext()->getShowWireFrame());
-        displayFlag->setFlag(Node::NORMALS,root->getContext()->getShowNormals());
+        displayFlag->setFlag(DisplayFlagWidget::VISUALMODELS,root->getContext()->getShowVisualModels());
+        displayFlag->setFlag(DisplayFlagWidget::BEHAVIORMODELS,root->getContext()->getShowBehaviorModels());
+        displayFlag->setFlag(DisplayFlagWidget::COLLISIONMODELS,root->getContext()->getShowCollisionModels());
+        displayFlag->setFlag(DisplayFlagWidget::BOUNDINGCOLLISIONMODELS,root->getContext()->getShowBoundingCollisionModels());
+        displayFlag->setFlag(DisplayFlagWidget::MAPPINGS,root->getContext()->getShowMappings());
+        displayFlag->setFlag(DisplayFlagWidget::MECHANICALMAPPINGS,root->getContext()->getShowMechanicalMappings());
+        displayFlag->setFlag(DisplayFlagWidget::FORCEFIELDS,root->getContext()->getShowForceFields());
+        displayFlag->setFlag(DisplayFlagWidget::INTERACTIONFORCEFIELDS,root->getContext()->getShowInteractionForceFields());
+        displayFlag->setFlag(DisplayFlagWidget::WIREFRAME,root->getContext()->getShowWireFrame());
+        displayFlag->setFlag(DisplayFlagWidget::NORMALS,root->getContext()->getShowNormals());
 #ifdef SOFA_SMP
-        displayFlag->setFlag(Node::PROCESSORCOLOR,root->getContext()->getShowProcessorColor());
+        displayFlag->setFlag(DisplayFlagWidget::PROCESSORCOLOR,root->getContext()->getShowProcessorColor());
 #endif
 
         //simulation::getSimulation()->updateVisualContext ( root );
@@ -1379,7 +1384,7 @@ void RealGUI::editRecordDirectory()
 
 void RealGUI::showPluginManager()
 {
-    SofaPluginManager::getInstance()->show();
+    pluginManager_dialog->show();
 }
 
 void RealGUI::showMouseManager()
@@ -2072,131 +2077,28 @@ void RealGUI::updateBackgroundImage()
     updateViewerParameters();
 }
 
-void RealGUI::showhideElements(int FILTER, bool value)
+void RealGUI::showhideElements()
 {
     Node* root = getScene();
     if ( root )
     {
-        switch(FILTER)
-        {
-        case Node::ALLFLAGS:
-            root->getContext()->setShowVisualModels ( value );
-            root->getContext()->setShowBehaviorModels ( value );
-            root->getContext()->setShowCollisionModels ( value );
-            root->getContext()->setShowBoundingCollisionModels ( value );
-            root->getContext()->setShowMappings ( value );
-            root->getContext()->setShowMechanicalMappings ( value );
-            root->getContext()->setShowForceFields ( value );
-            root->getContext()->setShowInteractionForceFields ( value );
+        root->setShowVisualModels(displayFlag->getFlag(DisplayFlagWidget::VISUALMODELS));
+        root->setShowBehaviorModels(displayFlag->getFlag(DisplayFlagWidget::BEHAVIORMODELS));
+        root->setShowCollisionModels(displayFlag->getFlag(DisplayFlagWidget::COLLISIONMODELS));
+        root->setShowBoundingCollisionModels(displayFlag->getFlag(DisplayFlagWidget::BOUNDINGCOLLISIONMODELS));
+        root->setShowMappings(displayFlag->getFlag(DisplayFlagWidget::MAPPINGS));
+        root->setShowMechanicalMappings(displayFlag->getFlag(DisplayFlagWidget::MECHANICALMAPPINGS));
+        root->setShowForceFields(displayFlag->getFlag(DisplayFlagWidget::FORCEFIELDS));
+        root->setShowInteractionForceFields(displayFlag->getFlag(DisplayFlagWidget::INTERACTIONFORCEFIELDS));
+        root->setShowWireFrame(displayFlag->getFlag(DisplayFlagWidget::WIREFRAME));
+        root->setShowNormals(displayFlag->getFlag(DisplayFlagWidget::NORMALS));
 #ifdef SOFA_SMP
-            root->getContext()->setShowProcessorColor ( value );
+        root->seShowProcessorColor(displayFlag->getFlag(DisplayFlagWidget::PROCESSOR_COLOR));
 #endif
+
+        sofa::simulation::getSimulation()->updateVisualContext ( root );
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowVisualModels ( value );
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBehaviorModels ( value );
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowCollisionModels ( value );
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBoundingCollisionModels ( value );
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMappings ( value );
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMechanicalMappings ( value );
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowForceFields ( value );
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowInteractionForceFields ( value );
-#ifdef SOFA_SMP
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowProcessorColor ( value );
-#endif
-#endif
-            break;
-        case  Node::VISUALMODELS:
-        {
-            root->getContext()->setShowVisualModels ( value );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->setShowVisualModels( value);
-#endif
-            break;
-        }
-        case  Node::BEHAVIORMODELS:
-        {
-            root->getContext()->setShowBehaviorModels ( value );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBehaviorModels ( value );
-#endif
-            break;
-        }
-        case  Node::COLLISIONMODELS:
-        {
-            root->getContext()->setShowCollisionModels ( value );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowCollisionModels ( value );
-#endif
-            break;
-        }
-        case  Node::BOUNDINGCOLLISIONMODELS:
-        {
-            root->getContext()->setShowBoundingCollisionModels ( value );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBoundingCollisionModels ( value );
-#endif
-            break;
-        }
-        case  Node::MAPPINGS:
-        {
-            root->getContext()->setShowMappings ( value );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMappings ( value );
-#endif
-            break;
-        }
-        case  Node::MECHANICALMAPPINGS:
-        {
-            root->getContext()->setShowMechanicalMappings ( value );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMechanicalMappings ( value );
-#endif
-            break;
-        }
-        case  Node::FORCEFIELDS:
-        {
-            root->getContext()->setShowForceFields ( value );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowForceFields ( value );
-#endif
-            break;
-        }
-        case  Node::INTERACTIONFORCEFIELDS:
-        {
-            root->getContext()->setShowInteractionForceFields ( value );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowInteractionForceFields ( value );
-#endif
-            break;
-        }
-        case  Node::WIREFRAME:
-        {
-            root->getContext()->setShowWireFrame ( value );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowWireFrame ( value );
-#endif
-            break;
-        }
-        case  Node::NORMALS:
-        {
-            root->getContext()->setShowNormals ( value );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowNormals ( value );
-#endif
-            break;
-        }
-#ifdef SOFA_SMP
-        case  Node::PROCESSORCOLOR:
-        {
-            root->getContext()->setShowProcessorColor ( value );
-            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowProcessorColor ( value );
-            break;
-        }
-#endif
-        }
-        sofa::simulation::getSimulation()->updateVisualContext ( root, (simulation::Node::VISUAL_FLAG) FILTER );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-        sofa::simulation::getSimulation()->updateVisualContext ( sofa::simulation::getSimulation()->getVisualRoot(), (simulation::Node::VISUAL_FLAG) FILTER );
+        sofa::simulation::getSimulation()->updateVisualContext ( sofa::simulation::getSimulation()->getVisualRoot() );
 #endif
     }
     viewer->getQWidget()->update();

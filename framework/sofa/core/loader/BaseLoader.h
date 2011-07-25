@@ -97,10 +97,6 @@ public:
       return BaseMapping::canCreate(obj, context, arg);
     }
     */
-
-
-protected:
-
     sofa::core::objectmodel::DataFileName m_filename;
 
 };

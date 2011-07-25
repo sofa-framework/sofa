@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 //
 // C++ Interface: Node
 //
@@ -92,22 +92,20 @@ namespace simulation
 {
 
 /**
-Implements the object (component) management of the core::Context.
-Contains objects in lists and provides accessors.
-The other nodes are not visible (unknown scene graph).
+   Implements the object (component) management of the core::Context.
+   Contains objects in lists and provides accessors.
+   The other nodes are not visible (unknown scene graph).
 
-	@author The SOFA team </www.sofa-framework.org>
+   @author The SOFA team </www.sofa-framework.org>
 */
 class SOFA_SIMULATION_COMMON_API Node : public core::objectmodel::BaseNode, public sofa::core::objectmodel::Context
 {
 
 public:
     SOFA_CLASS2(Node, BaseNode, Context);
-#ifdef SOFA_SMP
-    enum VISUAL_FLAG {VISUALMODELS,BEHAVIORMODELS,COLLISIONMODELS,BOUNDINGCOLLISIONMODELS,MAPPINGS,MECHANICALMAPPINGS,FORCEFIELDS,INTERACTIONFORCEFIELDS,WIREFRAME,NORMALS,PROCESSORCOLOR,ALLFLAGS};
-#else
-    enum VISUAL_FLAG {VISUALMODELS,BEHAVIORMODELS,COLLISIONMODELS,BOUNDINGCOLLISIONMODELS,MAPPINGS,MECHANICALMAPPINGS,FORCEFIELDS,INTERACTIONFORCEFIELDS,WIREFRAME,NORMALS,ALLFLAGS};
-#endif
+
+    typedef sofa::core::visual::DisplayFlags DisplayFlags;
+
     Node(const std::string& name="");
 
     virtual ~Node();
@@ -570,7 +568,7 @@ public:
     virtual void propagateEvent(const core::ExecParams* params /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, core::objectmodel::Event* event);
 
     /// Update the visual context values, based on parent and local ContextObjects
-    virtual void updateVisualContext(VISUAL_FLAG FILTER=ALLFLAGS);
+    virtual void updateVisualContext();
 
     Single<VisitorScheduler> actionScheduler;
 

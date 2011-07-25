@@ -30,7 +30,7 @@
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
-
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/component/misc/ReadState.h>
 #include <sofa/component/misc/CompareState.h>
@@ -201,7 +201,9 @@ int main(int argc, char** argv)
         fileName = files[0];
 
     for (unsigned int i=0; i<plugins.size(); i++)
-        loadPlugin(plugins[i].c_str());
+        sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
+
+    sofa::helper::system::PluginManager::getInstance().init();
 
     if(gui.compare("batch") == 0 && nbIterations > 0)
     {

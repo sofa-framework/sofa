@@ -96,7 +96,7 @@ class QPoissonRatioWidget : public TDataWidget<double>
 {
     Q_OBJECT
 public :
-    QPoissonRatioWidget(QWidget*, const char*, core::objectmodel::TData<double>*);
+    QPoissonRatioWidget(QWidget*, const char*, core::objectmodel::Data<double>*);
     virtual bool createWidgets();
 
 protected slots :

@@ -27,7 +27,7 @@
 #ifndef SOFA_GUI_QT_MODIFYOBJECT_H
 #define SOFA_GUI_QT_MODIFYOBJECT_H
 
-#include "SofaGUIQt.h"
+#include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/defaulttype/Vec.h>
@@ -35,10 +35,9 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/misc/Monitor.h>
-#include "QTransformationWidget.h"
-#include "QEnergyStatWidget.h"
-#include "DisplayFlagWidget.h"
-#include "WDoubleLineEdit.h"
+#include <sofa/gui/qt/QTransformationWidget.h>
+#include <sofa/gui/qt/QEnergyStatWidget.h>
+#include <sofa/gui/qt/WDoubleLineEdit.h>
 
 #ifdef SOFA_QT4
 #include <QDialog>
@@ -118,7 +117,7 @@ typedef struct ModifyObjectFlags
         EMPTY_FLAG(false),
         RESIZABLE_FLAG(false),
         REINIT_FLAG(true),
-        LINKPATH_MODIFIABLE_FLAG(false) {};
+        LINKPATH_MODIFIABLE_FLAG(false) {}
 
     void setFlagsForSofa()
     {
@@ -167,7 +166,7 @@ public:
 
     void createDialog(core::objectmodel::Base* node);
     void createDialog(core::objectmodel::BaseData* data);
-    bool hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;};
+    bool hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
     void readOnlyData(Q3Table *widget, core::objectmodel::BaseData* data);
     void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
 
@@ -219,7 +218,7 @@ protected:
     //Energy widget: plot the kinetic & potential energy
     QEnergyStatWidget* energy;
     //Visual Flags
-    QDisplayFlagWidget *displayFlag;
+
 };
 
 
