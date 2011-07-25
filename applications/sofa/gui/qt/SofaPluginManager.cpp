@@ -1,48 +1,42 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
-*                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
-*******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include "SofaPluginManager.h"
 #include "FileManagement.h"
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-
+#include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/system/DynamicLibrary.h>
 #ifdef SOFA_QT4
-//#include <Q3Header>
-//#include <Q3PopupMenu>
+
 #include <QMessageBox>
-#include <QLibrary>
-#include <QSettings>
 #include <QTextEdit>
 #include <QPushButton>
 #else
-//#include <qheader.h>
-//#include <qpopupmenu.h>
 #include <qmessagebox.h>
-#include <qlibrary.h>
-#include <qsettings.h>
 #include <qtextedit.h>
 #include <qpushbutton.h>
 #endif
@@ -55,6 +49,8 @@
 #ifndef SOFA_QT4
 typedef QListViewItem Q3ListViewItem;
 #endif
+
+
 
 namespace sofa
 {
@@ -77,93 +73,29 @@ SofaPluginManager::SofaPluginManager()
     this->connect(listPlugins, SIGNAL(selectionChanged(QListViewItem*) ), this, SLOT(updateComponentList(QListViewItem*) ));
     this->connect(listPlugins, SIGNAL(selectionChanged(QListViewItem*) ), this, SLOT(updateDescription(QListViewItem*) ));
 #endif
-
-
+    sofa::helper::system::PluginManager::getInstance().initRecentlyOpened();
+    initPluginListView();
 }
 
-void SofaPluginManager::initPluginList()
+
+
+void SofaPluginManager::initPluginListView()
 {
-    //for compatibility with previous version : transfer plugin list from SOFA to sofa path (to be removed one day...)
-    transferPluginsToNewPath();
-
-    //read the plugin list in the settings
-    QSettings settings;
-    std::string binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
-    settings.setPath( "SOFA-FRAMEWORK", QString(binPath.c_str()), QSettings::User);
-
-    settings.beginGroup("/plugins");
-    int size = settings.readNumEntry("/size");
-
+    typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
+    PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();
+    typedef PluginMap::iterator PluginIterator;
     listPlugins->clear();
-    typedef void (*componentLoader)();
-    typedef const char* (*componentStr)();
-    int numToRemove = 0;
-
-    for (int i=1 ; i<=size; i++)
+    for( PluginIterator iter = map.begin(); iter != map.end(); ++iter )
     {
-        QString pluginEntry;
-        pluginEntry = pluginEntry.setNum(i);
-
-        settings.beginGroup(pluginEntry);
-        QString sfile = settings.readEntry("/location");
-        settings.endGroup(); // pluginEntry
-
-        //load the plugin libs -> automatically look at the relase/debug version depending on the current mode we are
-#ifndef NDEBUG
-        //add the "d" in the name if we are currently in debug mode
-        sfile.replace(QString("."), QString("d."));
-#endif
-        QLibrary lib(sfile);
-
-        componentLoader componentLoaderFunc = (componentLoader) lib.resolve("initExternalModule");
-        componentStr componentNameFunc = (componentStr) lib.resolve("getModuleName");
-
-        //fill the list view
-        if (componentLoaderFunc && componentNameFunc)
-        {
-            componentLoaderFunc();
-            QString sname(componentNameFunc());
-
-            componentStr componentLicenseFunc = (componentStr) lib.resolve("getModuleLicense");
-            QString slicense;
-            if (componentLicenseFunc)
-                slicense=componentLicenseFunc();
-
-            componentStr componentVersionFunc = (componentStr) lib.resolve("getModuleVersion");
-            QString sversion;
-            if(componentVersionFunc)
-                sversion=componentVersionFunc();
-
-            if( listPlugins->findItem(sfile,LOCATION_COLUMN) == NULL )
-            {
-                Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, sfile);
-                item->setSelectable(true);
-                pluginList.insert(std::string(sfile.ascii()) );
-                emit( libraryAdded() );
-            }
-            else
-            {
-                // the settings contains more than one entry to this plugin, so we remove the extra ones .
-                ++numToRemove;
-                settings.beginGroup(pluginEntry);
-                settings.removeEntry("/location");
-                settings.endGroup();  // pluginEntry
-            }
-        }
-        else
-        {
-            //we fail to load the plugin for some reason, so we remove it from the settings.
-            ++numToRemove;
-            settings.beginGroup(pluginEntry);
-            settings.removeEntry("/location");
-            settings.endGroup();  // pluginEntry
-        }
+        sofa::helper::system::Plugin& plugin = iter->second;
+        QString slicense = plugin.getModuleLicense();
+        QString sname    = plugin.getModuleName();
+        QString sversion = plugin.getModuleVersion();
+        QString sfile    = (iter->first).c_str();
+        Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, sfile);
+        item->setSelectable(true);
     }
-    settings.writeEntry("/size", size - numToRemove);
-    settings.endGroup();  // plugins
 }
-
-
 
 void SofaPluginManager::addLibrary()
 {
@@ -187,64 +119,38 @@ void SofaPluginManager::addLibrary()
         if(QMessageBox::question(this, "library loading warning","This plugin lib seems to be in release mode whereas you are currently in debug mode.\n Are you sure you want to load this lib?",QMessageBox::Yes,QMessageBox::No) != QMessageBox::Yes)
             return;
 #endif
+    std::stringstream sstream;
 
-    //try to load the lib
-    QLibrary lib(sfile);
-    if (!lib.load())
-        std::cout<<"Error loading plugin " << sfile.latin1() <<std::endl;
-
-    //get the functions
-    typedef void (*componentLoader)();
-    typedef const char* (*componentStr)();
-    componentLoader componentLoaderFunc = (componentLoader) lib.resolve("initExternalModule");
-    componentStr componentNameFunc = (componentStr) lib.resolve("getModuleName");
-
-    if (componentLoaderFunc && componentNameFunc)
+    std::string pluginFile = std::string(sfile.ascii());
+    if(sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginFile,&sstream))
     {
-        //fill the list view
-        componentLoaderFunc();
-        QString sname(componentNameFunc());
+        typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
+        typedef sofa::helper::system::Plugin    Plugin;
+        if( ! sstream.str().empty())
+        {
+            QMessageBox * mbox = new QMessageBox(this,"library loading warning");
+            mbox->setText(sstream.str().c_str());
+            mbox->show();
+        }
+        PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();
+        Plugin& plugin = map[pluginFile];
+        QString slicense = plugin.getModuleLicense();
+        QString sname    = plugin.getModuleName();
+        QString sversion = plugin.getModuleVersion();
 
-        componentStr componentLicenseFunc = (componentStr) lib.resolve("getModuleLicense");
-        QString slicense;
-        if (componentLicenseFunc)
-            slicense=componentLicenseFunc();
-
-
-        componentStr componentVersionFunc = (componentStr) lib.resolve("getModuleVersion");
-        QString sversion;
-        if(componentVersionFunc)
-            sversion=componentVersionFunc();
-
-        Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, sfile);
+        Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, pluginFile.c_str());
         item->setSelectable(true);
 
-        //add to the settings (to record it)
-        QSettings settings;
-        std::string binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
-        settings.setPath( "SOFA-FRAMEWORK", QString(binPath.c_str()), QSettings::User);
-        settings.beginGroup("/plugins");
-        int size = settings.readNumEntry("/size");
-        QString pluginEntry;
-        pluginEntry = pluginEntry.setNum(size+1);
-        settings.beginGroup(pluginEntry);
-#ifndef NDEBUG
-        //remove the "d" in the name if we are currently in release mode
-        sfile.replace(QString("d."), QString("."));
-#endif
-        settings.writeEntry("/location", sfile);
-        settings.endGroup();
-        settings.writeEntry("/size", size+1);
-        settings.endGroup();
-        pluginList.insert(std::string(sfile.ascii()) );
         emit( libraryAdded() );
     }
     else
     {
         QMessageBox * mbox = new QMessageBox(this,"library loading error");
-        mbox->setText("Unable to load this library");
+        mbox->setText(sstream.str().c_str());
         mbox->show();
     }
+
+
 }
 
 
@@ -253,126 +159,68 @@ void SofaPluginManager::removeLibrary()
 {
     //get the selected item
     Q3ListViewItem * curItem = listPlugins->selectedItem();
+    std::stringstream sstream;
     if (!curItem) return;
-    QString location = curItem->text(LOCATION_COLUMN); //get the location value
-    //remove it from the list view
-    listPlugins->removeItem(curItem);
-
-    //remove it from the settings
-    QSettings settings;
-    std::string binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
-    settings.setPath( "SOFA-FRAMEWORK", QString(binPath.c_str()), QSettings::User);
-    settings.beginGroup("/plugins");
-    int size = settings.readNumEntry("/size");
-
-    for (int i=1 ; i<=size; i++)
+    std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
+    if( sofa::helper::system::PluginManager::getInstance().unloadPlugin(location,&sstream) )
     {
-        QString config;
-        config = config.setNum(i);
-        settings.beginGroup(config);
-        QString sfile = settings.readEntry("/location");
-        if (sfile == location)
-        {
-            settings.removeEntry("/location");
-            pluginList.erase(pluginList.find(std::string(sfile.ascii()) ) );
-        }
-        settings.endGroup();
+        listPlugins->removeItem(curItem);
+        emit( libraryRemoved() );
+        description->clear();
+        listComponents->clear();
+    }
+    else
+    {
+        std::string errlog;
+        sstream >> errlog;
+        QMessageBox * mbox = new QMessageBox(this,"library unloading error");
+        mbox->setText(errlog.c_str());
+        mbox->show();
     }
 
-    settings.endGroup();
-    description->clear();
-    listComponents->clear();
-
-    emit( libraryRemoved() );
 }
-
-
 
 void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
 {
-
+    if(curItem == NULL ) return;
     //update the component list when an item is selected
     listComponents->clear();
-    QString location = curItem->text(LOCATION_COLUMN); //get the location value
-    QLibrary lib(location);
-    typedef const char* (*componentStr)();
-    componentStr componentListFunc = (componentStr) lib.resolve("getModuleComponentList");
-    if(componentListFunc)
-    {
-        QString cpts( componentListFunc() );
-        cpts.replace(", ","\n");
-        cpts.replace(",","\n");
-        std::istringstream in(cpts.ascii());
+    std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
+    typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
+    typedef sofa::helper::system::Plugin    Plugin;
+    PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();
+    Plugin& plugin = map[location];
 
-        while (!in.eof())
-        {
-            std::string componentText;
-            in >> componentText;
-            Q3ListViewItem *item=new Q3ListViewItem(listComponents,curItem);
-            item->setText(0,componentText.c_str());
-        }
+    QString cpts( plugin.getModuleComponentList() );
+    cpts.replace(", ","\n");
+    cpts.replace(",","\n");
+    std::istringstream in(cpts.ascii());
+
+    while (!in.eof())
+    {
+        std::string componentText;
+        in >> componentText;
+        Q3ListViewItem *item=new Q3ListViewItem(listComponents,curItem);
+        item->setText(0,componentText.c_str());
     }
+
 }
 
 
 void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
 {
+    if(curItem == NULL ) return;
     //update the component list when an item is selected
     description->clear();
-    QString location = curItem->text(LOCATION_COLUMN); //get the location value
-    QLibrary lib(location);
-    typedef const char* (*componentStr)();
-    componentStr componentDescFunc = (componentStr) lib.resolve("getModuleDescription");
-    if(componentDescFunc)
-    {
-        description->setText(QString(componentDescFunc()));
-    }
+    std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
+    typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
+    typedef sofa::helper::system::Plugin    Plugin;
+    PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();
+    Plugin plugin = map[location];
+    description->setText(QString(plugin.getModuleDescription()));
 }
 
 
-void SofaPluginManager::transferPluginsToNewPath()
-{
-    //read the plugin list in the settings
-    QSettings oldSettings;
-    oldSettings.setPath( "SOFA-FRAMEWORK", "SOFA", QSettings::User);
-    oldSettings.beginGroup("/plugins");
-    int size = oldSettings.readNumEntry("/size");
-
-    QSettings newSettings;
-    std::string binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
-    newSettings.setPath( "SOFA-FRAMEWORK", QString(binPath.c_str()), QSettings::User);
-    newSettings.beginGroup("/plugins");
-
-    listPlugins->clear();
-
-    for (int i=1 ; i<=size; i++)
-    {
-        QString plugId;
-        plugId = plugId.setNum(i);
-
-        //get the plugin location in the old list
-        oldSettings.beginGroup(plugId);
-        QString sfile = oldSettings.readEntry("/location");
-        oldSettings.endGroup();
-
-        //put it in the new one
-        int sizeNewList = newSettings.readNumEntry("/size");
-        QString titi;
-        titi = titi.setNum(sizeNewList+1);
-        newSettings.beginGroup(titi);
-        newSettings.writeEntry("/location", sfile);
-        newSettings.endGroup();
-        newSettings.writeEntry("/size", sizeNewList+1);
-
-        //remove it from the old list
-        oldSettings.beginGroup(plugId);
-        oldSettings.removeEntry("/location");
-        oldSettings.endGroup();
-    }
-    oldSettings.writeEntry("/size", 0);
-    oldSettings.endGroup();
-    newSettings.endGroup();
-}
 
 }
 }

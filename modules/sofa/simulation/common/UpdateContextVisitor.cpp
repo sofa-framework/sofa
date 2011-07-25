@@ -53,7 +53,7 @@ Visitor::Result UpdateVisualContextVisitor::processNodeTopDown(simulation::Node*
 
     if (!startingNode) startingNode = node;
     if (node != startingNode)
-        node->updateVisualContext(filter);
+        node->updateVisualContext();
     return RESULT_CONTINUE;
 }
 

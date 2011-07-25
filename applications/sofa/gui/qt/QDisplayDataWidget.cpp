@@ -165,7 +165,7 @@ void QDataSimpleEdit::writeToData()
 
 /* QPoissonRatioWidget */
 
-QPoissonRatioWidget::QPoissonRatioWidget(QWidget * parent, const char * name, sofa::core::objectmodel::TData<double> *data)
+QPoissonRatioWidget::QPoissonRatioWidget(QWidget * parent, const char * name, sofa::core::objectmodel::Data<double> *data)
     :TDataWidget<double>(parent,name,data)
 {
 

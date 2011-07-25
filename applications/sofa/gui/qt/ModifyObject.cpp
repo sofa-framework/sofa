@@ -138,15 +138,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
 
                 connect(tabs.back(), SIGNAL(nodeNameModification(simulation::Node *)), this, SIGNAL(nodeNameModification(simulation::Node *)));
-
-                displayFlag = new QDisplayFlagWidget(tabs.back(),dynamic_cast< simulation::Node *>(node),QString("Visualization Flags"));
-                tabs.back()->layout()->add( displayFlag );
-                tabs.back()->externalWidgetAddition(displayFlag->getNumWidgets());
-
-                connect(buttonUpdate,   SIGNAL(clicked() ),               displayFlag, SLOT( applyFlags() ) );
-                connect(buttonOk,       SIGNAL(clicked() ),               displayFlag, SLOT( applyFlags() ) );
-                connect(displayFlag,    SIGNAL( DisplayFlagDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
-                connect(displayFlag,    SIGNAL( DisplayFlagDirty(bool) ), this, SIGNAL( componentDirty(bool) ) );
             }
         }
 
@@ -159,10 +150,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             std::string currentGroup=data->getGroup();
 
             if (currentGroup.empty()) currentGroup="Property";
-            else if (currentGroup == "Visualization" &&
-                    dynamic_cast< Data<int> * >( data ) &&
-                    ( (*it).first == "showVisualModels" || (*it).first == "showBehaviorModels" ||  (*it).first == "showCollisionModels" ||  (*it).first == "showBoundingCollisionModels" ||  (*it).first == "showMappings" ||  (*it).first == "showMechanicalMappings" ||  (*it).first == "showForceFields" ||  (*it).first == "showInteractionForceFields" ||  (*it).first == "showWireFrame" ||  (*it).first == "showNormals" ) )
-                continue;
 
             QTabulationModifyObject* currentTab=NULL;
 
@@ -366,10 +353,7 @@ void ModifyObject::updateValues()
             transformation->setDefaultValues();
         }
 
-        if (isNode)
-        {
-            displayFlag->applyFlags();
-        }
+
 
         if (dialogFlags_.REINIT_FLAG)
         {

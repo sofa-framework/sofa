@@ -44,6 +44,7 @@ namespace tree
 class SOFA_SIMULATION_TREE_API GNode : public simulation::Node
 {
 public:
+    typedef Node::DisplayFlags DisplayFlags;
     SOFA_CLASS(GNode, simulation::Node);
     GNode( const std::string& name="", GNode* parent=NULL  );
 
@@ -130,7 +131,7 @@ public:
     virtual void updateContext();
 
     /// Update the visual context values, based on parent and local ContextObjects
-    virtual void updateVisualContext(VISUAL_FLAG FILTER=ALLFLAGS);
+    virtual void updateVisualContext();
 
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
     virtual void updateSimulationContext();

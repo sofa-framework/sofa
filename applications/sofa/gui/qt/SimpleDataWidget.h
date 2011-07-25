@@ -180,7 +180,7 @@ protected:
 
 
 public:
-    typedef sofa::core::objectmodel::TData<T> MyTData;
+    typedef sofa::core::objectmodel::Data<T> MyTData;
     SimpleDataWidget(QWidget* parent,const char* name, MyTData* d):
         TDataWidget<T>(parent,name,d)
     {}
@@ -196,7 +196,7 @@ public:
     }
     virtual void readFromData()
     {
-        container.readFromData(this->getData()->virtualGetValue());
+        container.readFromData(this->getData()->getValue());
     }
 
     virtual void setReadOnly(bool readOnly)
@@ -206,9 +206,9 @@ public:
 
     virtual void writeToData()
     {
-        data_type d = this->getData()->virtualGetValue();
+        data_type& d = *this->getData()->beginEdit();
         container.writeToData(d);
-        this->getData()->virtualSetValue(d);
+        this->getData()->endEdit();
     }
     virtual unsigned int numColumnWidget() { return 5; }
 };
@@ -946,7 +946,7 @@ public :
     ///The class constructor takes a TData<RadioTrick> since it creates
     ///a widget for a that particular data type.
     RadioDataWidget(QWidget* parent, const char* name,
-            core::objectmodel::TData<sofa::helper::OptionsGroup >* m_data)
+            core::objectmodel::Data<sofa::helper::OptionsGroup >* m_data)
         : TDataWidget<sofa::helper::OptionsGroup >(parent,name,m_data) {};
 
     ///In this method we  create the widgets and perform the signal / slots connections.

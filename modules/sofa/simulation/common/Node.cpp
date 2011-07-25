@@ -569,7 +569,7 @@ void Node::updateSimulationContext()
     }
 }
 
-void Node::updateVisualContext(VISUAL_FLAG/* FILTER*/)
+void Node::updateVisualContext()
 {
     // Apply local modifications to the context
     if (getLogTime())

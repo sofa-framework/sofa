@@ -1,35 +1,36 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                              SOFA :: Framework                              *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_CORE_OBJECTMODEL_CONTEXT_H
 #define SOFA_CORE_OBJECTMODEL_CONTEXT_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
 #include <iostream>
 #include <map>
@@ -58,27 +59,13 @@ class SOFA_CORE_API Context : public BaseContext
 public:
     SOFA_CLASS(Context, BaseContext);
 
+    typedef sofa::core::visual::DisplayFlags DisplayFlags;
 
-private:
     Data<bool> is_activated;
     Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     Data<double> dt_;
     Data<double> time_;
     Data<bool> animate_;
-    Data<int> showVisualModels_;
-    Data<int> showBehaviorModels_;
-    Data<int> showCollisionModels_;
-    Data<int> showBoundingCollisionModels_;
-    Data<int> showMappings_;
-    Data<int> showMechanicalMappings_;
-    Data<int> showForceFields_;
-    Data<int> showInteractionForceFields_;
-    Data<int> showWireFrame_;
-    Data<int> showNormals_;
-#ifdef SOFA_SMP
-    Data<int> showProcessorColor_;
-#endif
-
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// @name For multiresolution (UNSTABLE)
@@ -96,7 +83,6 @@ private:
     Data<bool> is_partition_;
     Iterative::IterativePartition *partition_;
 #endif
-
 
 public:
     Context();
@@ -125,6 +111,10 @@ public:
 
     /// Animation flag
     virtual bool getAnimate() const;
+
+    /// Display flags
+    DisplayFlags& displayFlags() { return displayFlags_; }
+    const DisplayFlags& displayFlags() const { return displayFlags_; }
 
     /// Display flags: Collision Models
     virtual bool getShowCollisionModels() const;
@@ -291,6 +281,10 @@ public:
 
     /// Fusion the context variables of visualization from the given instance with the current instance
     void fusionVisualContext(const Context& c);
+
+protected:
+
+    core::visual::DisplayFlags displayFlags_;
 
 
 

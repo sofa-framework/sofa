@@ -31,6 +31,7 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/fixed_array.h>
@@ -65,36 +66,6 @@ public:
         PERSPECTIVE_TYPE =0, ///< Perspective camera
         ORTHOGRAPHIC_TYPE =1 ///< Orthographic camera
     };
-
-    /// DisplayFlags
-    struct DisplayFlags
-    {
-        DisplayFlags():
-            showVisualModels(false),
-            showBehaviorModels(false),
-            showCollisionModels(false),
-            showBoundingCollisionModels(false),
-            showMappings(false),
-            showMechanicalMappings(false),
-            showForceFields(false),
-            showInteractionForceFields(false),
-            showWireFrame(false),
-            showNormals(false)
-        {
-        }
-
-        bool showVisualModels;
-        bool showBehaviorModels;
-        bool showCollisionModels;
-        bool showBoundingCollisionModels;
-        bool showMappings;
-        bool showMechanicalMappings;
-        bool showForceFields;
-        bool showInteractionForceFields;
-        bool showWireFrame;
-        bool showNormals;
-    };
-
 
     /// @name Access to vectors from a given state container (i.e. State or MechanicalState)
     /// @{

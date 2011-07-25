@@ -29,7 +29,7 @@ public:
     DataFileNameWidget(
         QWidget* parent,
         const char* name,
-        core::objectmodel::TData<std::string>* data):
+        core::objectmodel::Data<std::string>* data):
         TDataWidget<std::string>(parent,name,data) {};
 
     virtual bool createWidgets();

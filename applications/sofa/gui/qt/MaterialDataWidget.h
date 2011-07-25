@@ -69,9 +69,9 @@ class MaterialDataWidget : public TDataWidget<sofa::core::loader::Material>
 public:
     MaterialDataWidget(QWidget* parent,
             const char* name,
-            core::objectmodel::TData<sofa::core::loader::Material>* data):
+            core::objectmodel::Data<sofa::core::loader::Material>* data):
         TDataWidget<sofa::core::loader::Material>(parent,name,data)
-    {};
+    {}
 
     virtual bool createWidgets();
     virtual unsigned int numColumnWidget() {return 1;}
@@ -100,7 +100,7 @@ class VectorMaterialDataWidget : public TDataWidget< VectorMaterial >
 public:
     VectorMaterialDataWidget(QWidget* parent,
             const char* name,
-            core::objectmodel::TData< helper::vector<sofa::core::loader::Material> >* data):
+            core::objectmodel::Data< helper::vector<sofa::core::loader::Material> >* data):
         TDataWidget< helper::vector<sofa::core::loader::Material> >(parent,name,data),
         _materialDataWidget(NULL),
         _currentMaterial(0,data->isDisplayed(),data->isReadOnly(),data->getOwner()),

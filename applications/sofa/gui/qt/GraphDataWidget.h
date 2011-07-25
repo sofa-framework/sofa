@@ -354,7 +354,7 @@ class GraphDataWidget : public SimpleDataWidget<T, graph_data_widget_container< 
 {
 public:
     typedef SimpleDataWidget<T, graph_data_widget_container< T > > Inherit;
-    typedef sofa::core::objectmodel::TData<T> MyData;
+    typedef sofa::core::objectmodel::Data<T> MyData;
 public:
     GraphDataWidget(QWidget* parent,const char* name, MyData* d) : Inherit(parent,name,d) {}
     virtual unsigned int sizeWidget() {return 3;}

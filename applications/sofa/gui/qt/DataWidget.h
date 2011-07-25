@@ -198,11 +198,13 @@ public:
 
 
     /// BaseData pointer accessor function.
-    core::objectmodel::BaseData* getBaseData() const { return baseData; }
+    const core::objectmodel::BaseData* getBaseData() const { return baseData; }
+    core::objectmodel::BaseData* getBaseData() { return baseData; }
+
     void updateVisibility()
     {
         parentWidget()->setShown(baseData->isDisplayed());
-    };
+    }
     bool isDirty() { return dirty; }
 
     /// The implementation of this method holds the widget creation and the signal / slot
@@ -241,7 +243,7 @@ class SOFA_SOFAGUIQT_API TDataWidget : public DataWidget
 {
 
 public:
-    typedef sofa::core::objectmodel::TData<T> MyTData;
+    typedef sofa::core::objectmodel::Data<T> MyTData;
 
     template <class RealObject>
     static void create( RealObject*& obj, CreatorArgument& arg)
@@ -262,10 +264,12 @@ public:
     }
 
     TDataWidget(QWidget* parent,const char* name, MyTData* d):
-        DataWidget(parent,name,d),Tdata(d) {};
+        DataWidget(parent,name,d),Tdata(d) {}
     /// Accessor function. Gives you the actual data instead
     /// of a BaseData pointer of it like in getBaseData().
-    sofa::core::objectmodel::TData<T>* getData() const {return Tdata;}
+    sofa::core::objectmodel::Data<T>* getData() {return Tdata;}
+    const sofa::core::objectmodel::Data<T>* getData() const {return Tdata;}
+
     inline virtual void setData(MyTData* d)
     {
         Tdata = d;

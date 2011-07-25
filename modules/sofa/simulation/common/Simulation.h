@@ -27,6 +27,7 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/simulation/common/xml/BaseElement.h>
 #include <sofa/simulation/common/xml/XML.h>
 #include <memory>
@@ -46,6 +47,7 @@ class SOFA_SIMULATION_COMMON_API Simulation: public virtual sofa::core::objectmo
 {
 public:
 
+    typedef sofa::core::visual::DisplayFlags DisplayFlags;
     Simulation();
     virtual ~Simulation();
 
@@ -79,7 +81,7 @@ public:
     virtual void updateContext(Node* root);
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    virtual void updateVisualContext(Node* root,Node::VISUAL_FLAG FILTER=Node::ALLFLAGS);
+    virtual void updateVisualContext(Node* root);
 
     /// Compute the bounding box of the scene. If init is set to "true", then minBBox and maxBBox will be initialised to a default value
     virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true);

@@ -53,7 +53,7 @@ class TableDataWidget : public SimpleDataWidget<T, table_data_widget_container< 
 public:
     typedef T data_type;
     typedef SimpleDataWidget<T, table_data_widget_container< T , FLAGS > > Inherit;
-    typedef sofa::core::objectmodel::TData<T> MyData;
+    typedef sofa::core::objectmodel::Data<T> MyData;
 public:
     TableDataWidget(QWidget* parent,const char* name, MyData* d) : Inherit(parent,name,d) {}
     virtual unsigned int sizeWidget() {return 3;}

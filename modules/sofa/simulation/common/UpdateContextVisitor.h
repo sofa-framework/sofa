@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_UPDATECONTEXTACTION_H
 
 #include <sofa/simulation/common/Visitor.h>
-// #include <sofa/core/BaseMapping.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa
 {
@@ -70,17 +70,15 @@ public:
 class SOFA_SIMULATION_COMMON_API UpdateVisualContextVisitor : public UpdateContextVisitor
 {
 public:
-    Node::VISUAL_FLAG filter;
-    UpdateVisualContextVisitor(const core::ExecParams* params)
-        : UpdateContextVisitor(params), filter(Node::ALLFLAGS)
+
+
+    UpdateVisualContextVisitor(const sofa::core::visual::VisualParams* vparams)
+        : UpdateContextVisitor(vparams)
     {
     }
-    UpdateVisualContextVisitor(const core::ExecParams* params /* PARAMS FIRST */, Node::VISUAL_FLAG FILTER)
-        : UpdateContextVisitor(params), filter(FILTER)
-    {}
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "UpdateVisualContextVisitor"; }
-
+protected:
 };
 
 } // namespace simulation

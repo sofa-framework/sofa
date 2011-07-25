@@ -1,29 +1,29 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                              SOFA :: Framework                              *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/core/objectmodel/Context.h>
 // #include <sofa/simulation/common/Visitor.h>
 
@@ -43,19 +43,6 @@ Context::Context()
     , dt_(initData(&dt_,0.01,"dt","Time step"))
     , time_(initData(&time_,0.,"time","Current time"))
     , animate_(initData(&animate_,false,"animate","Animate the Simulation(applied at initialization only)"))
-    , showVisualModels_           (initData(&showVisualModels_,           -1, "showVisualModels","display Visual Models"))
-    , showBehaviorModels_         (initData(&showBehaviorModels_,         -1,"showBehaviorModels","display Behavior Models"))
-    , showCollisionModels_        (initData(&showCollisionModels_,        -1,"showCollisionModels","display Collision Models"))
-    , showBoundingCollisionModels_(initData(&showBoundingCollisionModels_,-1,"showBoundingCollisionModels","display Bounding Collision Models"))
-    , showMappings_               (initData(&showMappings_,               -1,"showMappings","display Mappings"))
-    , showMechanicalMappings_     (initData(&showMechanicalMappings_,     -1,"showMechanicalMappings","display Mechanical Mappings"))
-    , showForceFields_            (initData(&showForceFields_,            -1,"showForceFields","display Force Fields"))
-    , showInteractionForceFields_ (initData(&showInteractionForceFields_, -1,"showInteractionForceFields","display Interaction Force Fields"))
-    , showWireFrame_              (initData(&showWireFrame_,              -1,"showWireFrame","display in WireFrame"))
-    , showNormals_                (initData(&showNormals_,                -1,"showNormals","display Normals"))
-#ifdef SOFA_SMP
-    , showProcessorColor_                (initData(&showProcessorColor_,                -1,"showProcessorColor","display Processor Color"))
-#endif
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     , currentLevel_(initData(&currentLevel_,0,"currentLevel","Current level of details"))
@@ -82,32 +69,6 @@ Context::Context()
 #ifdef SOFA_SMP
     is_partition_.setValue(false);
 #endif
-    addAlias(&showVisualModels_,           "showAll"); addAlias(&showVisualModels_,           "showVisual");
-
-    addAlias(&showBehaviorModels_,         "showAll"); addAlias(&showBehaviorModels_,         "showBehavior");
-    addAlias(&showForceFields_,            "showAll"); addAlias(&showForceFields_,            "showBehavior");
-    addAlias(&showInteractionForceFields_, "showAll"); addAlias(&showInteractionForceFields_, "showBehavior");
-
-
-    addAlias(&showCollisionModels_,        "showAll"); addAlias(&showCollisionModels_,        "showCollision");
-    addAlias(&showBoundingCollisionModels_,"showAll"); addAlias(&showBoundingCollisionModels_,"showCollision");
-
-    addAlias(&showMappings_,               "showAll"); addAlias(&showMappings_,               "showMapping");
-    addAlias(&showMechanicalMappings_,     "showAll"); addAlias(&showMechanicalMappings_,     "showMapping");
-
-    //setDt(objectmodel::BaseContext::getDt());
-    //setTime(objectmodel::BaseContext::getTime());
-    //setAnimate(objectmodel::BaseContext::getAnimate());
-    //setShowCollisionModels(objectmodel::BaseContext::getShowCollisionModels());
-    //setShowBoundingCollisionModels(objectmodel::BaseContext::getShowBoundingCollisionModels());
-    //setShowBehaviorModels(objectmodel::BaseContext::getShowBehaviorModels());
-    //setShowVisualModels(objectmodel::BaseContext::getShowVisualModels());
-    //setShowMappings(objectmodel::BaseContext::getShowMappings());
-    //setShowMechanicalMappings(objectmodel::BaseContext::getShowMechanicalMappings());
-    //setShowForceFields(objectmodel::BaseContext::getShowForceFields());
-    //setShowInteractionForceFields(objectmodel::BaseContext::getShowInteractionForceFields());
-    //setShowWireFrame(objectmodel::BaseContext::getShowWireFrame());
-    //setShowNormals(objectmodel::BaseContext::getShowNormals());
 }
 
 /// The Context is active
@@ -198,78 +159,67 @@ bool Context::getAnimate() const
 /// Display flags: Collision Models
 bool Context::getShowCollisionModels() const
 {
-    if (showCollisionModels_.getValue() < 0) return false;
-    else return showCollisionModels_.getValue() != 0;
+    return displayFlags_.getShowCollisionModels();
 }
 
 /// Display flags: Bounding Collision Models
 bool Context::getShowBoundingCollisionModels() const
 {
-    if (showBoundingCollisionModels_.getValue() < 0) return false;
-    else return showBoundingCollisionModels_.getValue()!= 0;
+    return displayFlags_.getShowBoundingCollisionModels();
 }
 
 /// Display flags: Behavior Models
 bool Context::getShowBehaviorModels() const
 {
-    if (showBehaviorModels_.getValue() < 0) return false;
-    else  return showBehaviorModels_.getValue()!= 0;
+    return displayFlags_.getShowBehaviorModels();
 }
 
 /// Display flags: Visual Models
 bool Context::getShowVisualModels() const
 {
-    if (showVisualModels_.getValue() < 0) return true;
-    else return showVisualModels_.getValue()!= 0;
+    return displayFlags_.getShowVisualModels();
 }
 
 /// Display flags: Mappings
 bool Context::getShowMappings() const
 {
-    if (showMappings_.getValue() < 0) return false;
-    else return showMappings_.getValue()!= 0;
+    return displayFlags_.getShowMappings();
 }
 
 /// Display flags: Mechanical Mappings
 bool Context::getShowMechanicalMappings() const
 {
-    if (showMechanicalMappings_.getValue() < 0) return false;
-    else return showMechanicalMappings_.getValue()!= 0;
+    return displayFlags_.getShowMechanicalMappings();
 }
 
 /// Display flags: ForceFields
 bool Context::getShowForceFields() const
 {
-    if (showForceFields_.getValue() < 0) return false;
-    else return showForceFields_.getValue()!= 0;
+    return displayFlags_.getShowForceFields();
 }
 
 /// Display flags: InteractionForceFields
 bool Context::getShowInteractionForceFields() const
 {
-    if (showInteractionForceFields_.getValue() < 0) return false;
-    else return showInteractionForceFields_.getValue()!= 0;
+    return displayFlags_.getShowInteractionForceFields();
 }
 
 /// Display flags: WireFrame
 bool Context::getShowWireFrame() const
 {
-    if (showWireFrame_.getValue() < 0) return false;
-    else return showWireFrame_.getValue()!= 0;
+    return displayFlags_.getShowWireFrame();
 }
 
 /// Display flags: Normal
 bool Context::getShowNormals() const
 {
-    if (showNormals_.getValue() < 0) return false;
-    else return showNormals_.getValue()!= 0;
+    return displayFlags_.getShowNormals();
 }
 #ifdef SOFA_SMP
 /// Display flags: Normal
 bool Context::getShowProcessorColor() const
 {
-    if (showProcessorColor_.getValue() < 0) return false;
-    else return showProcessorColor_.getValue()!= 0;
+    return displayFlags_.getShowProcessorColor();
 }
 #endif
 
@@ -327,67 +277,68 @@ void Context::setAnimate(bool val)
 /// Display flags: Collision Models
 void Context::setShowCollisionModels(bool val)
 {
-    showCollisionModels_.setValue(val);
+    displayFlags_.setShowCollisionModels(val);
 }
 
 /// Display flags: Bounding Collision Models
 void Context::setShowBoundingCollisionModels(bool val)
 {
-    showBoundingCollisionModels_.setValue(val);
+    displayFlags_.setShowBoundingCollisionModels(val);
 }
 
 /// Display flags: Behavior Models
 void Context::setShowBehaviorModels(bool val)
 {
-    showBehaviorModels_.setValue(val);
+    displayFlags_.setShowBehaviorModels(val);
 }
 
 /// Display flags: Visual Models
 void Context::setShowVisualModels(bool val)
 {
-    showVisualModels_.setValue(val);
+    displayFlags_.setShowVisualModels(val);
+
 }
 
 /// Display flags: Mappings
 void Context::setShowMappings(bool val)
 {
-    showMappings_.setValue(val);
+    displayFlags_.setShowMappings(val);
 }
 
 /// Display flags: Mechanical Mappings
 void Context::setShowMechanicalMappings(bool val)
 {
-    showMechanicalMappings_.setValue(val);
+    displayFlags_.setShowMechanicalMappings(val);
 }
 
 /// Display flags: ForceFields
 void Context::setShowForceFields(bool val)
 {
-    showForceFields_.setValue(val);
+    displayFlags_.setShowForceFields(val);
 }
 
 /// Display flags: InteractionForceFields
 void Context::setShowInteractionForceFields(bool val)
 {
-    showInteractionForceFields_.setValue(val);
+    displayFlags_.setShowInteractionForceFields(val);
 }
 
 /// Display flags: WireFrame
 void Context::setShowWireFrame(bool val)
 {
-    showWireFrame_.setValue(val);
+    displayFlags_.setShowWireFrame(val);
 }
 
 /// Display flags: Normals
 void Context::setShowNormals(bool val)
 {
-    showNormals_.setValue(val);
+    displayFlags_.setShowNormals(val);
 }
 
 #ifdef SOFA_SMP
 void Context::setShowProcessorColor(bool val)
 {
-    showProcessorColor_.setValue(val);
+    displayFlags_.setShowProcessorColor(val);
 }
 #endif
 

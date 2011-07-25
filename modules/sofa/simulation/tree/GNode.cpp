@@ -457,53 +457,13 @@ void GNode::updateSimulationContext()
     simulation::Node::updateSimulationContext();
 }
 
-void GNode::updateVisualContext(VISUAL_FLAG FILTER)
+void GNode::updateVisualContext()
 {
     if ( getParent() != NULL )
     {
-        switch (FILTER)
-        {
-        case VISUALMODELS:
-            setShowVisualModels((*parent).getShowVisualModels());
-            break;
-        case BEHAVIORMODELS:
-            setShowBehaviorModels((*parent).getShowBehaviorModels());
-            break;
-        case COLLISIONMODELS:
-            setShowCollisionModels((*parent).getShowCollisionModels());
-            break;
-        case BOUNDINGCOLLISIONMODELS:
-            setShowBoundingCollisionModels((*parent).getShowBoundingCollisionModels());
-            break;
-        case MAPPINGS:
-            setShowMappings((*parent).getShowMappings());
-            break;
-        case MECHANICALMAPPINGS:
-            setShowMechanicalMappings((*parent).getShowMechanicalMappings());
-            break;
-        case FORCEFIELDS:
-            setShowForceFields((*parent).getShowForceFields());
-            break;
-        case INTERACTIONFORCEFIELDS:
-            setShowInteractionForceFields((*parent).getShowInteractionForceFields());
-            break;
-        case WIREFRAME:
-            setShowWireFrame((*parent).getShowWireFrame());
-            break;
-        case NORMALS:
-            setShowNormals((*parent).getShowNormals());
-            break;
-        case ALLFLAGS:
-            copyVisualContext(*parent);
-            break;
-#ifdef SOFA_SMP
-        case PROCESSORCOLOR:
-            setShowProcessorColor((*parent).getShowProcessorColor());
-            break;
-#endif
-        }
+        copyVisualContext(*parent);
     }
-    simulation::Node::updateVisualContext(FILTER);
+    simulation::Node::updateVisualContext();
 }
 
 /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
