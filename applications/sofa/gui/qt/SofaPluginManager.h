@@ -54,7 +54,6 @@ class SofaPluginManager: public PluginManager
 public:
 
     SofaPluginManager();
-    void initPluginListView();
 
 
 signals:
@@ -75,6 +74,8 @@ public slots:
 #endif
 private :
     void updatePluginsListView();
+    void initPluginListView();
+
 };
 
 

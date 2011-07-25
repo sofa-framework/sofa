@@ -1,6 +1,6 @@
 #ifndef SOFA_CORE_VISUAL_DISPLAYFLAGS_H
 #define SOFA_CORE_VISUAL_DISPLAYFLAGS_H
-
+#include <sofa/core/core.h>
 #include <sstream>
 #include <map>
 
@@ -11,7 +11,7 @@ namespace core
 namespace visual
 {
 
-class DisplayFlags
+class SOFA_CORE_API DisplayFlags
 {
 public:
 

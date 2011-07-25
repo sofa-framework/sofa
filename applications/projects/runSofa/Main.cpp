@@ -57,35 +57,6 @@
 #include <athapascan-1>
 #endif /* SOFA_SMP */
 
-#ifndef WIN32
-#include <dlfcn.h>
-bool loadPlugin(const char* filename)
-{
-    void *handle;
-    handle=dlopen(filename, RTLD_LAZY);
-    if (!handle)
-    {
-        std::cerr<<"Error loading plugin "<<filename<<": "<<dlerror()<<std::endl;
-        return false;
-    }
-    std::cerr<<"Plugin "<<filename<<" loaded."<<std::endl;
-    return true;
-}
-#else
-bool loadPlugin(const char* filename)
-{
-    HINSTANCE DLLHandle;
-    DLLHandle = LoadLibraryA(filename); //warning: issue between unicode and ansi encoding on Visual c++ -> force to ansi-> dirty!
-    if (DLLHandle == NULL)
-    {
-        std::cerr<<"Error loading plugin "<<filename<<std::endl;
-        return false;
-    }
-    std::cerr<<"Plugin "<<filename<<" loaded."<<std::endl;
-    return true;
-}
-#endif
-
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
     std::cout << "loadVerificationData from " << directory << " and file " << filename << std::endl;

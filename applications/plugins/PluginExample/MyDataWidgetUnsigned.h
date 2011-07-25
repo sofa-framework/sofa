@@ -35,7 +35,7 @@ class SOFA_MyPluginExample_API MyDataWidgetUnsigned : public TDataWidget<unsigne
 public :
     ///The class constructor takes a TData<unsigned> since it creates
     ///a widget for a that particular data type.
-    MyDataWidgetUnsigned(QWidget* parent, const char* name, core::objectmodel::TData<unsigned>* data):
+    MyDataWidgetUnsigned(QWidget* parent, const char* name, core::objectmodel::Data<unsigned>* data):
         TDataWidget<unsigned>(parent,name,data) {};
     ///In this method we  create the widgets and perform the signal / slots
     ///connections.
