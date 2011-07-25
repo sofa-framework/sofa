@@ -1,5 +1,5 @@
 <Node name="Group"> 
-  <Object type="QuadSetTopologyContainer"  name="Container" />
+  <Object type="QuadSetTopologyContainer"  name="Container" src=""/>
   <Object type="QuadSetTopologyModifier"   name="Modifier" />
   <Object type="QuadSetTopologyAlgorithms" name="TopoAlgo"  template="Vec3d" />
   <Object type="QuadSetGeometryAlgorithms" name="GeomAlgo"  template="Vec3d" />
