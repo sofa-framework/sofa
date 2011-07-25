@@ -29,7 +29,6 @@
 #ifdef SOFA_SMP
 #include <sofa/component/container/MechanicalObjectTasks.inl>
 #endif
-#include <sofa/component/container/MeshLoader.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/component/topology/RegularGridTopology.h>
@@ -37,7 +36,6 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 #include <sofa/helper/accessor.h>
-#include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/system/glut.h>
 
 #include <sofa/simulation/common/Node.h>
@@ -236,51 +234,10 @@ MechanicalObject<DataTypes> &MechanicalObject<DataTypes>::operator = (const Mech
     return *this;
 }
 
-template<class DataTypes>
-class MechanicalObject<DataTypes>::Loader : public helper::io::MassSpringLoader
-{
-public:
-    MechanicalObject<DataTypes>* dest;
-    int index;
-    Loader(MechanicalObject<DataTypes>* dest) : dest(dest), index(0) {}
-
-    virtual void addMass(SReal px, SReal py, SReal pz, SReal vx, SReal vy, SReal vz, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/)
-    {
-        dest->resize(index+1);
-
-        Data<typename DataTypes::VecCoord> *x_d = dest->write(VecCoordId::position());
-        Data<typename DataTypes::VecDeriv> *v_d = dest->write(VecDerivId::velocity());
-
-        DataTypes::set((*x_d->beginEdit())[index], px, py, pz);
-        DataTypes::set((*v_d->beginEdit())[index], vx, vy, vz);
-        ++index;
-
-        x_d->endEdit();
-        v_d->endEdit();
-    }
-};
-
-template<class DataTypes>
-bool MechanicalObject<DataTypes>::load(const char* filename)
-{
-    typename MechanicalObject<DataTypes>::Loader loader(this);
-    return loader.load(filename);
-}
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
 {
-    if (arg->getAttribute("filename"))
-    {
-        filename.setValue(arg->getAttribute("filename"));
-    }
-
-    if (!filename.getValue().empty())
-    {
-        load(filename.getFullPath().c_str());
-        filename.setValue(std::string("")); //clear the field filename: When we save the scene, we don't need anymore the filename
-    }
-
     Inherited::parse(arg);
 
     // DEPRECATED: Warning, you should not use these parameters, but a TransformEngine instead
@@ -980,7 +937,7 @@ void MechanicalObject<DataTypes>::init()
 
     if (x_wA.size() != (std::size_t)vsize || v_wA.size() != (std::size_t)vsize)
     {
-        // X and/or V where user-specified
+        // X and/or V were user-specified
         // copy the last specified velocity to all points
 
         const unsigned int xSize = x_wA.size();
@@ -998,69 +955,32 @@ void MechanicalObject<DataTypes>::init()
 
         resize(xSize > v_wA.size() ? xSize : v_wA.size());
     }
-    else if (x_wA.size() <= 1)
+    else if ( x_wA.size() <= 1)
     {
-        if (!ignoreLoader.getValue())
+        if (m_topology != NULL && m_topology->hasPos() && m_topology->getContext() == this->getContext())
         {
-            MeshLoader* m_loader=NULL;
-            this->getContext()->get(m_loader);
-
-            if (m_loader && m_loader->getFillMState())
+            int nbp = m_topology->getNbPoints();
+            //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << m_topology->getName() <<std::endl;
+            // copy the last specified velocity to all points
+            if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
             {
-                int nbp = m_loader->getNbPoints();
-
-                //std::cout<<"Setting "<<nbp<<" points from MeshLoader. " <<std::endl;
-
-                // copy the last specified velocity to all points
-                if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
-                {
-                    unsigned int i = v_wA.size();
-                    Deriv v1 = v_wA[i-1];
-                    v_wA.resize(nbp);
-                    while (i < v_wA.size())
-                        v_wA[i++] = v1;
-                }
-                this->resize(nbp);
-
-                for (int i=0; i<nbp; i++)
-                {
-                    x_wA[i] = Coord();
-                    DataTypes::set(x_wA[i], m_loader->getPX(i), m_loader->getPY(i), m_loader->getPZ(i));
-                }
+                unsigned int i = v_wA.size();
+                Deriv v1 = v_wA[i-1];
+                v_wA.resize(nbp);
+                while (i < v_wA.size())
+                    v_wA[i++] = v1;
             }
-            else
+            this->resize(nbp);
+            for (int i=0; i<nbp; i++)
             {
-                if (m_topology != NULL && m_topology->hasPos() && m_topology->getContext() == this->getContext())
-                {
-                    int nbp = m_topology->getNbPoints();
-                    //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << m_topology->getName() <<std::endl;
-                    // copy the last specified velocity to all points
-                    if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
-                    {
-                        unsigned int i = v_wA.size();
-                        Deriv v1 = v_wA[i-1];
-                        v_wA.resize(nbp);
-                        while (i < v_wA.size())
-                            v_wA[i++] = v1;
-                    }
-                    this->resize(nbp);
-                    for (int i=0; i<nbp; i++)
-                    {
-                        x_wA[i] = Coord();
-                        DataTypes::set(x_wA[i], m_topology->getPX(i), m_topology->getPY(i), m_topology->getPZ(i));
-                    }
-                }
+                x_wA[i] = Coord();
+                DataTypes::set(x_wA[i], m_topology->getPX(i), m_topology->getPY(i), m_topology->getPZ(i));
             }
         }
     }
 
     reinit();
 
-    //	*this->v0 = *v;
-    //	*this->v0 = v.getValue();
-
-    // Free motion position = position
-    //	vOp(VecId::freePosition(), VecId::position());
 
     VecCoord *x0_edit = x0.beginEdit();
 

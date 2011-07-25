@@ -98,15 +98,6 @@ void SkinningMapping<TIn, TOut>::init()
     if( this->weight.getValue().size() != numChildren || this->f_index.getValue().size() != numChildren)
         updateWeights(); // if not defined by user -> recompute based on euclidean distances
 
-    // Get the topology of toModel to display weights on the triangular model.
-    MeshLoader *meshLoader;
-    this->getContext()->get( meshLoader, core::objectmodel::BaseContext::Local);
-    if (meshLoader)
-    {
-        meshLoader->getTriangles(triangles);
-    }
-
-
     reinit();
     Inherit::init();
 }

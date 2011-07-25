@@ -26,7 +26,6 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/component/container/MeshLoader.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 #include <set>
@@ -79,13 +78,7 @@ void MeshTopology::init()
     BaseMeshTopology::init();
     if (nbPoints==0)
     {
-        sofa::component::container::MeshLoader* loader;
-        this->getContext()->get(loader);
 
-        if(loader)
-        {
-            loadFromMeshLoader(loader);
-        }
 
         // looking for upper topology
         if (seqHexahedra.isSet())
@@ -147,23 +140,6 @@ void MeshTopology::init()
 
         nbPoints = n;
     }
-}
-
-void MeshTopology::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
-{
-    nbPoints = loader->getNbPoints();
-    //loader->getPoints(*seqPoints.beginEdit());
-    vector<helper::fixed_array<SReal,3> > points;
-    loader->getPoints(points);
-    vector< defaulttype::Vec<3,SReal> >& opoints = *seqPoints.beginEdit();
-    opoints.resize(points.size());
-    for (unsigned int i=0; i<points.size(); ++i) opoints[i] = defaulttype::Vec<3,SReal>(points[i].data());
-    seqPoints.endEdit();
-    loader->getEdges(*seqEdges.beginEdit()); seqEdges.endEdit();
-    loader->getTriangles(*seqTriangles.beginEdit()); seqTriangles.endEdit();
-    loader->getQuads(*seqQuads.beginEdit()); seqQuads.endEdit();
-    loader->getTetrahedra(*seqTetrahedra.beginEdit()); seqTetrahedra.endEdit();
-    loader->getHexahedra(*seqHexahedra.beginEdit()); seqHexahedra.endEdit();
 }
 
 void MeshTopology::clear()

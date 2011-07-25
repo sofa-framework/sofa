@@ -476,7 +476,7 @@ protected:
 
     /// for each triangle provides the set of tetrahedra adjacent to that triangle.
     sofa::helper::vector< TetrahedraAroundTriangle > m_tetrahedraAroundTriangle;
-    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
+
 };
 
 } // namespace topology

@@ -25,8 +25,6 @@
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/container/MeshLoader.h>
-
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
@@ -121,24 +119,6 @@ void PointSetTopologyContainer::init()
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if (nbPoints.getValue() == 0 && !initPoints.empty())
         nbPoints.setValue(initPoints.size());
-
-    if(nbPoints.getValue() == 0)
-    {
-        sofa::component::container::MeshLoader* loader;
-        this->getContext()->get(loader);
-
-        if(loader)
-        {
-            loadFromMeshLoader(loader);
-        }
-    }
-}
-
-void PointSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
-{
-    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
-    if (!initPoints.empty()) return;
-    nbPoints.setValue( loader->getNbPoints() );
 }
 
 void PointSetTopologyContainer::addPoints(const unsigned int nPoints)

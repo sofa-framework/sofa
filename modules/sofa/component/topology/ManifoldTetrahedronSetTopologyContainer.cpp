@@ -26,7 +26,6 @@
 #include <sofa/component/topology/ManifoldTetrahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/container/MeshLoader.h>
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>

@@ -50,7 +50,8 @@ int MultilevelHexahedronSetTopologyContainerClass = core::RegisterObject("Hexahe
 MultilevelHexahedronSetTopologyContainer::MultilevelHexahedronSetTopologyContainer()
     : HexahedronSetTopologyContainer(),
       _level(initData(&_level, 0, "level", "Number of resolution levels between the fine and coarse mesh")),
-      _fineResolution(0,0,0),
+      fineResolution(initData(&fineResolution,Vec3i(0,0,0),"resolution","fine resolution")),
+      hexaIndexInRegularGrid(initData(&hexaIndexInRegularGrid,"idxInRegularGrid","indices of the hexa in the grid.")),
       _coarseResolution(0,0,0)
 { }
 
@@ -62,60 +63,47 @@ MultilevelHexahedronSetTopologyContainer::~MultilevelHexahedronSetTopologyContai
 
 void MultilevelHexahedronSetTopologyContainer::init()
 {
-    HexahedronSetTopologyContainer::init();
-}
+    const Vec3i& _fineResolution = fineResolution.getValue();
 
-void MultilevelHexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
-{
-    sofa::component::container::VoxelGridLoader* rgLoader = dynamic_cast<sofa::component::container::VoxelGridLoader*> (loader);
+    _fineComponentInRegularGrid.resize(_fineResolution[0] * _fineResolution[1] * _fineResolution[2], NULL);
 
-    if(rgLoader)
+    const unsigned int numVoxels = d_hexahedron.getValue().size();
+
+    // initialize the components
+    // at the beginning the components of both levels are the same
+    _coarseResolution = _fineResolution;
+
+    _fineComponents.beginEdit()->reserve(numVoxels);
+    _fineComponents.endEdit();
+    _coarseComponents.beginEdit()->reserve(numVoxels);
+    _coarseComponents.endEdit();
+    const helper::vector<unsigned int>&  _hexaIndexInRegularGrid= hexaIndexInRegularGrid.getValue();
+    for(unsigned int idx=0; idx<numVoxels; ++idx)
     {
-        // load points
-        PointSetTopologyContainer::loadFromMeshLoader(loader);
-        helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
-        rgLoader->getHexahedra(*(d_hexahedron.beginEdit()));
-        d_hexahedron.endEdit();
+        //	id = k * nx * ny + j * nx + i;
+        const unsigned int id = _hexaIndexInRegularGrid[idx];
+        const unsigned int i = id % _fineResolution[0];
+        const unsigned int j = (id / _fineResolution[0]) % _fineResolution[1];
+        const unsigned int k = id / (_fineResolution[0] * _fineResolution[1]);
 
-        helper::vector<unsigned int> hexaIndexInRegularGrid;
-        rgLoader->getIndicesInRegularGrid(hexaIndexInRegularGrid);
+        Vec3i pos(i,j,k);
+        std::set<Vec3i> voxels;
+        voxels.insert(&pos, 1+&pos); // Using this insert method avoid the 39390 bug of gcc-4.4
 
-        rgLoader->getResolution(_fineResolution);
-
-        _fineComponentInRegularGrid.resize(_fineResolution[0] * _fineResolution[1] * _fineResolution[2], NULL);
-
-        const unsigned int numVoxels = m_hexahedron.size();
-
-        // initialize the components
-        // at the beginning the components of both levels are the same
-        _coarseResolution = _fineResolution;
-
-        _fineComponents.beginEdit()->reserve(numVoxels);
+        MultilevelHexahedronSetTopologyContainer::Component *comp = new MultilevelHexahedronSetTopologyContainer::Component(pos, voxels);
+        _fineComponents.beginEdit()->push_back(comp);
         _fineComponents.endEdit();
-        _coarseComponents.beginEdit()->reserve(numVoxels);
+        _coarseComponents.beginEdit()->push_back(comp);
         _coarseComponents.endEdit();
-        for(unsigned int idx=0; idx<numVoxels; ++idx)
-        {
-            //	id = k * nx * ny + j * nx + i;
-            const unsigned int id = hexaIndexInRegularGrid[idx];
-            const unsigned int i = id % _fineResolution[0];
-            const unsigned int j = (id / _fineResolution[0]) % _fineResolution[1];
-            const unsigned int k = id / (_fineResolution[0] * _fineResolution[1]);
 
-            Vec3i pos(i,j,k);
-            std::set<Vec3i> voxels;
-            voxels.insert(&pos, 1+&pos); // Using this insert method avoid the 39390 bug of gcc-4.4
-
-            MultilevelHexahedronSetTopologyContainer::Component *comp = new MultilevelHexahedronSetTopologyContainer::Component(pos, voxels);
-            _fineComponents.beginEdit()->push_back(comp);
-            _fineComponents.endEdit();
-            _coarseComponents.beginEdit()->push_back(comp);
-            _coarseComponents.endEdit();
-
-            _fineComponentInRegularGrid[id] = comp;
-        }
+        _fineComponentInRegularGrid[id] = comp;
     }
+
+    HexahedronSetTopologyContainer::init();
+
 }
+
+
 
 void MultilevelHexahedronSetTopologyContainer::clear()
 {
@@ -133,7 +121,7 @@ void MultilevelHexahedronSetTopologyContainer::clear()
 
     _level = 0;
 
-    _fineResolution = Vec3i(0,0,0);
+    fineResolution.setValue(Vec3i(0,0,0));
     _coarseResolution = Vec3i(0,0,0);
 
     _fineComponentInRegularGrid.clear();
@@ -244,11 +232,13 @@ const MultilevelHexahedronSetTopologyContainer::Vec3i& MultilevelHexahedronSetTo
 int MultilevelHexahedronSetTopologyContainer::getHexaIdInFineRegularGrid(const unsigned int hexaId) const
 {
     const Vec3i& voxelId = getHexaIdxInFineRegularGrid(hexaId);
+    const Vec3i& _fineResolution = fineResolution.getValue();
     return voxelId[0] + _fineResolution[0] * (voxelId[1]  + voxelId[2] * _fineResolution[1]);
 }
 
 int MultilevelHexahedronSetTopologyContainer::getHexaInFineRegularGrid(const Vec3i& voxelId) const
 {
+    const Vec3i& _fineResolution = fineResolution.getValue();
     Component* comp = _fineComponentInRegularGrid[voxelId[0] + _fineResolution[0] * (voxelId[1]  + voxelId[2] * _fineResolution[1])];
     if(comp != NULL)
     {

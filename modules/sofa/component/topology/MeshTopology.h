@@ -41,10 +41,6 @@ namespace sofa
 namespace component
 {
 
-namespace container
-{
-class MeshLoader;
-}
 
 namespace topology
 {
@@ -614,7 +610,7 @@ public:
     virtual void updateHexahedra();
 
 protected:
-    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
+
     sofa::core::topology::TopologyObjectType UpperTopology;
 };
 

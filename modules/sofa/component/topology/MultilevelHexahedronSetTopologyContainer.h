@@ -70,8 +70,6 @@ public:
 
     virtual void clear();
 
-    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
-
     void getHexaNeighbors(const unsigned int hexaId,
             helper::vector<unsigned int> &neighbors);
 
@@ -115,7 +113,7 @@ public:
 
     int getLevel() const {return _level.getValue();}
 
-    const Vec3i& getFineResolution() const { return _fineResolution; }
+
 
     const Vec3i& getCoarseResolution() const { return _coarseResolution; }
 
@@ -136,6 +134,10 @@ public:
     int getHexaInFineRegularGrid(const Vec3i& id) const;
 
     const std::set<Vec3i>& getHexaVoxels(const unsigned int hexaId) const;
+
+    Data<int> _level;
+    Data<Vec3i>	fineResolution;		// width, height, depth (number of hexa in each direction)
+    Data<helper::vector<unsigned int> > hexaIndexInRegularGrid;
 
 private:
     void setCoarseResolution(const Vec3i& res) { _coarseResolution = res; }
@@ -191,7 +193,7 @@ private:
     };
 
 private:
-    Data<int> _level;
+
 
     std::list<const TopologyChange *>	m_changeListFine;
 
@@ -199,7 +201,7 @@ private:
     HexahedronData<Component*>		_fineComponents;	// map between hexahedra and components - fine
 
     // the fine mesh must be a regular grid - store its parameters here
-    Vec3i	_fineResolution;		// width, height, depth (number of hexa in each direction)
+
     Vec3i	_coarseResolution;
 
     sofa::helper::vector<Component*>	_fineComponentInRegularGrid;

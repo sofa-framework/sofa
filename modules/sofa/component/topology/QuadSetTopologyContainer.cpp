@@ -27,7 +27,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/container/MeshLoader.h>
 
 namespace sofa
 {
@@ -67,15 +66,6 @@ void QuadSetTopologyContainer::init()
     d_quad.updateIfDirty(); // make sure m_quad is up to date
 }
 
-void QuadSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
-{
-    // load points
-    helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
-    if (!m_quad.empty()) return;
-    PointSetTopologyContainer::loadFromMeshLoader(loader);
-    loader->getQuads(*(d_quad.beginEdit()));
-    d_quad.endEdit();
-}
 
 void QuadSetTopologyContainer::createQuadSetArray()
 {
