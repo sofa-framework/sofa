@@ -27,7 +27,6 @@
 
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <sofa/component/topology/HexahedronData.h>
-#include <sofa/component/container/MeshLoader.h>
 #include <sofa/helper/map.h>
 
 namespace sofa
@@ -61,9 +60,8 @@ public:
 
     DynamicSparseGridTopologyContainer();
     virtual ~DynamicSparseGridTopologyContainer() {}
+    void init();
 
-protected:
-    virtual void loadFromMeshLoader ( sofa::component::container::MeshLoader* loader );
 };
 
 } // namespace topology

@@ -228,9 +228,6 @@ protected:
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     sofa::helper::vector< EdgesAroundVertex > m_edgesAroundVertex;
 
-    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
-
-
 public:
 
     Data <bool> m_checkConnexity;

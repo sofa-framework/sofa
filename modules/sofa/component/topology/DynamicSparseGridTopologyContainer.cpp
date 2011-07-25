@@ -57,25 +57,23 @@ DynamicSparseGridTopologyContainer::DynamicSparseGridTopologyContainer()
     idInRegularGrid2IndexInTopo.setDisplayed( false);
 }
 
-void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::container::MeshLoader* loader )
+void DynamicSparseGridTopologyContainer::init()
 {
-
-    if (!valuesIndexedInRegularGrid.getValue().empty()) return;
-    HexahedronSetTopologyContainer::loadFromMeshLoader( loader);
-    sofa::component::container::VoxelGridLoader* voxelGridLoader = dynamic_cast< sofa::component::container::VoxelGridLoader*> ( loader );
+    HexahedronSetTopologyContainer::init();
+    // Init regular/topo mapping
+    sofa::component::container::VoxelGridLoader* voxelGridLoader;
+    this->getContext()->get(voxelGridLoader);
     if ( !voxelGridLoader )
     {
-        this->serr << "DynamicSparseGridTopologyContainer::loadFromMeshLoader(): The loader used is not a VoxelGridLoader ! You must use it for this topology." << this->sendl;
+        this->serr << "DynamicSparseGridTopologyContainer::init(): No VoxelGridLoader found! Aborting..." << this->sendl;
         exit(0);
     }
 
-    // Init regular/topo mapping
-    helper::vector<BaseMeshTopology::HexaID>& iirg = *idxInRegularGrid.beginEdit();
+    const helper::vector<BaseMeshTopology::HexaID>& iirg = idxInRegularGrid.getValue();
     std::map< unsigned int, BaseMeshTopology::HexaID> &idrg2tpo = *idInRegularGrid2IndexInTopo.beginEdit();
     helper::vector<unsigned char>& viirg = *(valuesIndexedInRegularGrid.beginEdit());
     helper::vector<unsigned char>& viit = *(valuesIndexedInTopology.beginEdit());
 
-    voxelGridLoader->getIndicesInRegularGrid( iirg);
     for( unsigned int i = 0; i < iirg.size(); i++)
     {
         idrg2tpo.insert( make_pair( iirg[i], i ));
@@ -101,18 +99,14 @@ void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::c
         viit[i] = data[iirg[i]];
     }
 
-    // init resolution & voxelSize.
-    Vec3i& res = *resolution.beginEdit();
-    voxelGridLoader->getResolution ( res );
-    resolution.endEdit();
-    idxInRegularGrid.endEdit();
+
     idInRegularGrid2IndexInTopo.endEdit();
     valuesIndexedInRegularGrid.endEdit();
     valuesIndexedInTopology.endEdit();
-    defaulttype::Vector3 &value=*voxelSize.beginEdit();
-    voxelGridLoader->getVoxelSize ( value );
-    voxelSize.endEdit();
+
 }
+
+
 
 } // namespace topology
 

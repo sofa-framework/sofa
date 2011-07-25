@@ -31,7 +31,7 @@
 #include <vector>
 #include <sofa/helper/SVector.h>
 #include <sofa/component/component.h>
-#include <sofa/component/container/MeshLoader.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -44,7 +44,7 @@ namespace mapping
 
 using sofa::helper::vector;
 using sofa::helper::SVector;
-using sofa::component::container::MeshLoader;
+
 
 template <class TIn, class TOut>
 class SkinningMapping : public core::Mapping<TIn, TOut>
@@ -53,6 +53,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(SkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
 
     // Input types
     typedef TIn In;
@@ -101,7 +102,7 @@ public:
     void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
     void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 
-    MeshLoader::SeqTriangles triangles; // Topology of toModel (used for weight display)
+    SeqTriangles triangles; // Topology of toModel (used for weight display)
     void draw(const core::visual::VisualParams*);
 
 };

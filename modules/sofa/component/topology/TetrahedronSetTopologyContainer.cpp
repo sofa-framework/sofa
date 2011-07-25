@@ -26,7 +26,6 @@
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/container/MeshLoader.h>
 
 namespace sofa
 {
@@ -99,14 +98,6 @@ void TetrahedronSetTopologyContainer::init()
     	  std::cout<<std::endl;
       }
     ===========  TEST   EDGES IN TETRAHEDRON ARRAY  =================*/
-}
-
-void TetrahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
-{
-    // load points
-    PointSetTopologyContainer::loadFromMeshLoader(loader);
-    loader->getTetrahedra(*(d_tetrahedron.beginEdit()));
-    d_tetrahedron.endEdit();
 }
 
 void TetrahedronSetTopologyContainer::createTetrahedronSetArray()

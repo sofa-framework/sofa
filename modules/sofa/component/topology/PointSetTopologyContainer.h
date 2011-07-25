@@ -36,11 +36,6 @@ namespace sofa
 namespace component
 {
 
-namespace container
-{
-class MeshLoader;
-}
-
 namespace topology
 {
 class PointSetTopologyModifier;
@@ -157,7 +152,7 @@ public:
 
 
 protected:
-    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
+
 
     Data<unsigned int> nbPoints;
 

@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_INL
 
 #include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/container/MultiMeshLoader.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.inl>

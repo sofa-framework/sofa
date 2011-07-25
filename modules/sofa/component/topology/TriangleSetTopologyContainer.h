@@ -348,7 +348,6 @@ protected:
     /// Set of point indices on topology border.
     sofa::helper::vector <PointID> m_pointsOnBorder;
 
-    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 };
 
 } // namespace topology

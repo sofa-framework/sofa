@@ -38,7 +38,7 @@
 #include <boost/graph/cuthill_mckee_ordering.hpp>
 #include <boost/graph/bandwidth.hpp>
 
-#include <sofa/component/container/MeshLoader.h>
+
 
 namespace sofa
 {
@@ -82,16 +82,6 @@ void EdgeSetTopologyContainer::init()
     }
     // std::cout << "coords: " << getPX(m_edge[1][0]) << " " << getPY(m_edge[1][0]) << " " << getPZ(m_edge[1][0]) << std::endl;
     PointSetTopologyContainer::init();
-}
-
-void EdgeSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
-{
-    // load points
-    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-    if (!m_edge.empty()) return;
-    PointSetTopologyContainer::loadFromMeshLoader(loader);
-    loader->getEdges(*(d_edge.beginEdit()));
-    d_edge.endEdit();
 }
 
 void EdgeSetTopologyContainer::addEdge(int a, int b)

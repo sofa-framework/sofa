@@ -26,8 +26,6 @@
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/container/MeshLoader.h>
-
 namespace sofa
 {
 namespace component
@@ -75,16 +73,7 @@ void HexahedronSetTopologyContainer::init()
     d_hexahedron.updateIfDirty(); // make sure m_hexahedron is up to date
 }
 
-void HexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
-{
-    // load points
-    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
-    if (!m_hexahedron.empty()) return;
-    PointSetTopologyContainer::loadFromMeshLoader(loader);
 
-    loader->getHexahedra(*(d_hexahedron.beginEdit()));
-    d_hexahedron.endEdit();
-}
 
 void HexahedronSetTopologyContainer::createHexahedronSetArray()
 {

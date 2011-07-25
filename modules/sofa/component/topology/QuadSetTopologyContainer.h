@@ -306,7 +306,7 @@ protected:
     /// for each edge provides the set of quads adjacent to that edge.
     sofa::helper::vector< QuadsAroundEdge > m_quadsAroundEdge;
 
-    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
+
 };
 
 } // namespace topology

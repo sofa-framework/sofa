@@ -88,8 +88,8 @@ void PointSplatModel::init()
     {
         unsigned int nbPoints = _mstate->getSize();
 
-        helper::vector<unsigned int> idxInRegularGrid;
-        loader->getIndicesInRegularGrid(idxInRegularGrid);
+        const helper::vector<unsigned int>& idxInRegularGrid = loader->idxInRegularGrid.getValue();
+
 
         if(idxInRegularGrid.size() == nbPoints)
         {

@@ -30,8 +30,6 @@
 
 #include <sofa/helper/system/glut.h>
 
-#include <sofa/component/container/MeshLoader.h>
-
 namespace sofa
 {
 
@@ -76,17 +74,6 @@ void TriangleSetTopologyContainer::init()
     d_triangle.updateIfDirty(); // make sure m_triangle is up to date
 }
 
-void TriangleSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
-{
-    // load points
-    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
-    if (m_triangle.empty())
-    {
-        PointSetTopologyContainer::loadFromMeshLoader(loader);
-        loader->getTriangles(*(d_triangle.beginEdit()));
-        d_triangle.endEdit();
-    }
-}
 
 void TriangleSetTopologyContainer::createTriangleSetArray()
 {
