@@ -1,29 +1,29 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
-*                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
-*******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include "SofaModeler.h"
 
 #include <sofa/helper/system/FileRepository.h>
@@ -33,7 +33,8 @@
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/qt/FileManagement.h>
-#include <sofa/gui/qt/SofaPluginManager.h>
+#include <sofa/helper/system/PluginManager.h>
+
 
 #define MAX_RECENTLY_OPENED 10
 
@@ -78,6 +79,8 @@ namespace qt
 typedef QTextDrag Q3TextDrag;
 typedef QDockWindow Q3DockWindow;
 #endif
+
+using namespace sofa::helper::system;
 
 
 SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
@@ -214,10 +217,12 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
 
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
-    SofaPluginManager::getInstance()->hide();
-    SofaPluginManager::getInstance()->initPluginList();
-    this->connect( SofaPluginManager::getInstance()->buttonClose, SIGNAL(clicked() ),  this, SLOT( rebuildLibrary() ));
-    this->connect( SofaPluginManager::getInstance()->buttonClose, SIGNAL(clicked() ),  this, SLOT( updateViewerList() ));
+    plugin_dialog = new SofaPluginManager();
+    plugin_dialog->hide();
+
+
+    this->connect( plugin_dialog->buttonClose, SIGNAL(clicked() ),  this, SLOT( rebuildLibrary() ));
+    this->connect( plugin_dialog->buttonClose, SIGNAL(clicked() ),  this, SLOT( updateViewerList() ));
 
     rebuildLibrary();
 
@@ -936,13 +941,14 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, GNode* root)
     }
 
     //retrive plugins
-    helper::vector<std::string> pluginList;
-    SofaPluginManager::getInstance()->getPluginList(std::back_inserter(pluginList));
-    helper::vector<std::string>::const_iterator it;
-    for( it = pluginList.begin(); it != pluginList.end(); ++it )
+    typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
+    PluginMap& pluginMap = PluginManager::getInstance().getPluginMap();
+    PluginManager::PluginIterator it;
+
+    for( it = pluginMap.begin(); it != pluginMap.end(); ++it )
     {
-        argv << "-l" << QString((*it).c_str()) << " ";
-        messageLaunch += QString("-l ") + QString((*it).c_str());
+        argv << "-l" << QString((it->first).c_str()) << " ";
+        messageLaunch += QString("-l ") + QString((it->first).c_str());
     }
 
 
@@ -1139,7 +1145,7 @@ void SofaModeler::editPaste()
 
 void SofaModeler::showPluginManager()
 {
-    SofaPluginManager::getInstance()->show();
+    plugin_dialog->show();
 }
 
 void SofaModeler::displayMessage(const std::string &m)

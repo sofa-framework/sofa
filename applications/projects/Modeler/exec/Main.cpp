@@ -35,6 +35,7 @@
 
 
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/PluginManager.h>
 #ifndef SOFA_QT4
 #include <qpixmap.h>
 #endif
