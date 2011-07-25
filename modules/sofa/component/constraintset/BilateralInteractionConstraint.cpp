@@ -57,7 +57,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(std::
         resTab[offset] = new BilateralConstraintResolution3Dof();
         offset += 3;
         BilateralConstraintResolution3Dof* temp = new BilateralConstraintResolution3Dof();
-        temp->tolerance = 0.0001;	// specific (smaller) tolerance for the rotation
+        temp->tolerance = 0.01;	// specific (smaller) tolerance for the rotation
         resTab[offset] = temp;
         offset += 3;
     }

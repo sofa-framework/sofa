@@ -441,6 +441,12 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 
     for(i=0; i<dimension; )
     {
+        if(!constraintsResolutions[i])
+        {
+            std::cerr << "Bad size of constraintsResolutions in GenericConstraintProblem" << std::endl;
+            dimension = i;
+            break;
+        }
         constraintsResolutions[i]->init(i, w, force);
         i += constraintsResolutions[i]->nbLines;
     }
@@ -671,8 +677,13 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
     for(i=0; i<dimension; )
     {
         constraintsResolutions[i]->init(i, w, force);
-        i += constraintsResolutions[i]->nbLines;
+        int nb = constraintsResolutions[i]->nbLines;
+        // TODO : previous forces don't work with multiple constraints
+//		if(cclist_elem1[i]) cclist_elem1[i]->setConstraintDForce(force, i, i+nb-1, true);
+//		if(cclist_elem2[i]) cclist_elem2[i]->setConstraintDForce(force, i, i+nb-1, true);
+        i += nb;
     }
+    memset(force, 0, dimension * sizeof(double));	// Erase previous forces for the time being
 
     sofa::helper::vector<double>* graph_residuals = NULL;
     sofa::helper::vector<double> tabErrors;
