@@ -7,9 +7,9 @@
 
 	<Node name="H">
 		<CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10"/>
-		<MeshLoader name="meshLoader" filename="mesh/nine_hexa.msh"/>
-		<MechanicalObject name="Hexa" />
-		<include href="Objects/HexahedronSetTopology.xml" />
+		<MeshGmshLoader name="meshLoader" filename="mesh/nine_hexa.msh"/>
+		<MechanicalObject name="Hexa" src="@meshLoader" />
+		<include href="Objects/HexahedronSetTopology.xml" src="@meshLoader" />
 
 		<HexahedralFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
 		<DiagonalMass massDensity="0.5" />

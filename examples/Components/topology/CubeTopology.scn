@@ -21,8 +21,9 @@
 			<IdentityMapping object1="../.." object2="VisualModel" name="visual mapping"/>
 		</Node>
 		<Node name="Surf">
+      <MechanicalObject />
 			<TriangleSet name="CollisionModel" />
-			<IdentityMapping name="mapping"/>
+			<IdentityMapping name="mapping" input="@.." output="@."/>
 		</Node>
 	</Node>
 </Node>
