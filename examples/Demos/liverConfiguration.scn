@@ -6,7 +6,7 @@
 	<Node 	name="Settings" gravity="0 -9.81 0"  >
 		<SofaDefaultPathSetting/>
 		<Node 	name="Application" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-			<ViewerSetting fullscreen="0"  cameraMode="Orthographic"  objectPickingMethod="Ray casting" />
+			<ViewerSetting fullscreen="0"  cameraMode="Orthographic"  objectPickingMethod="Selection buffer" />
 			<BackgroundSetting color="0.2 0 0.2" />
 			<StatsSetting logTime="0"  traceVisitors="1" />
 		</Node>
@@ -18,8 +18,8 @@
 	<Node 	name="Liver" gravity="0 -9.81 0" depend="topo dofs"  >
 		<EulerImplicitSolver name="cg_odesolver"  printLog="0" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-09"  threshold="1e-09" />
-		<MeshLoader name="meshLoader"  filename="mesh/liver.msh" />
-		<TetrahedronSetTopologyContainer name="topo" />
+		<MeshGmshLoader name="meshLoader"  filename="mesh/liver.msh" />
+		<TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
 		<MechanicalObject template="Vec3d" name="dofs"  useMask="1"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1" />
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 		<DiagonalMass template="Vec3d" name="computed using mass density"  massDensity="1" />
