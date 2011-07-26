@@ -3,6 +3,7 @@
 
 #include <sofa/gui/PickHandler.h>
 #include <sofa/core/CollisionModel.h>
+#include <sofa/gui/ColourPickingVisitor.h>
 
 namespace sofa
 {
@@ -40,7 +41,7 @@ class ColourPickingRenderCallBack : public sofa::gui::CallBackRender
 public:
     ColourPickingRenderCallBack();
     ColourPickingRenderCallBack(viewer::SofaViewer* viewer);
-    void render(core::CollisionModel::ColourCode code);
+    void render(ColourPickingVisitor::ColourCode code);
 protected:
     viewer::SofaViewer* _viewer;
 

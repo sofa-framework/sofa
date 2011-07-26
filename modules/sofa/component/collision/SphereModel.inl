@@ -185,60 +185,6 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->setPolygonMode(0,false);
 }
 
-template <class DataTypes>
-void TSphereModel<DataTypes>::drawColourPicking(const ColourCode method)
-{
-    using namespace sofa::core::objectmodel;
-
-    if( method == ENCODE_RELATIVEPOSITION ) return; // we pick the center of the sphere.
-
-    helper::vector<core::CollisionModel*> listCollisionModel;
-    core::objectmodel::BaseContext* context;
-    context = this->getContext();
-    context->get< sofa::core::CollisionModel >( &listCollisionModel, BaseContext::SearchRoot);
-    const int totalCollisionModel = listCollisionModel.size();
-    helper::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), this);
-    const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
-    float red = (float)indexCollisionModel / (float)totalCollisionModel;
-    // Check topological modifications
-    const int npoints = mstate->getX()->size();
-    std::vector<Vector3> points;
-    std::vector<float> radius;
-    for (int i=0; i<npoints; i++)
-    {
-        TSphere<DataTypes> t(this,i);
-        Coord p = t.p();
-        points.push_back(p);
-        radius.push_back(t.r());
-    }
-    glDisable(GL_LIGHTING);
-    glDisable(GL_COLOR_MATERIAL);
-    glDisable(GL_DITHER);
-    glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
-    float ratio;
-    for( int i=0; i<npoints; i++)
-    {
-        Vector3 p = points[i];
-
-        glPushMatrix();
-        glTranslated(p[0], p[1], p[2]);
-        ratio = (float)i / (float)npoints;
-        glColor4f(red,ratio,0,1);
-        glutSolidSphere(radius[i], 32, 16);
-
-        glPopMatrix();
-    }
-}
-
-template <class DataTypes>
-sofa::defaulttype::Vector3 TSphereModel<DataTypes>::getPositionFromWeights(int index, Real /*a*/ ,Real /*b*/, Real /*c*/)
-{
-    Element sphere(this,index);
-
-    return sphere.center();
-
-}
 
 template <class DataTypes>
 void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)

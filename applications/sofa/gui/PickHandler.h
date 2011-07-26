@@ -30,6 +30,9 @@
 #include "SofaGUI.h"
 #include "OperationFactory.h"
 
+
+#include <sofa/gui/ColourPickingVisitor.h>
+
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
 
@@ -65,15 +68,15 @@ using sofa::component::collision::ComponentMouseInteraction;
 class CallBackPicker
 {
 public:
-    virtual ~CallBackPicker() {};
+    virtual ~CallBackPicker() {}
     virtual void execute(const sofa::component::collision::BodyPicked &body)=0;
 };
 
 class CallBackRender
 {
 public:
-    virtual ~CallBackRender() {};
-    virtual void render(core::CollisionModel::ColourCode code ) = 0;
+    virtual ~CallBackRender() {}
+    virtual void render(ColourPickingVisitor::ColourCode code ) = 0;
 };
 
 
@@ -133,7 +136,7 @@ public:
     BodyPicked findCollisionUsingColourCoding(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction);
 
     ComponentMouseInteraction           *getInteraction();
-    BodyPicked                          *getLastPicked() {return &lastPicked;};
+    BodyPicked                          *getLastPicked() {return &lastPicked;}
 
 protected:
     bool interactorInUse;
@@ -179,8 +182,7 @@ protected:
 
     bool needToCastRay();
     void setCompatibleInteractor();
-    void _decodeCollisionElement( BodyPicked& body, const sofa::defaulttype::Vec4f colour);
-    void _decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f& colour);
+
 
 };
 }

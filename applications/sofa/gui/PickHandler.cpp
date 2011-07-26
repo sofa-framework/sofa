@@ -34,6 +34,11 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/simulation/common/Simulation.h>
 
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/SphereModel.h>
+
+
+
 #include <iostream>
 #include <limits>
 
@@ -449,52 +454,30 @@ component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(con
     sofa::defaulttype::Vec4f color;
     int x = mousePosition.x;
     int y = mousePosition.screenHeight - mousePosition.y;
+    TriangleModel* tmodel;
+    SphereModel* smodel;
     _fbo.start();
     if(renderCallback)
     {
-        renderCallback->render(core::CollisionModel::ENCODE_COLLISIONELEMENT );
+        renderCallback->render(ColourPickingVisitor::ENCODE_COLLISIONELEMENT );
         glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType,color.elems);
-        _decodeCollisionElement(result,color);
-        renderCallback->render(core::CollisionModel::ENCODE_RELATIVEPOSITION );
+        decodeCollisionElement(color,result);
+        renderCallback->render(ColourPickingVisitor::ENCODE_RELATIVEPOSITION );
         glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType,color.elems);
-        _decodePosition(result,color);
+        if( ( tmodel = dynamic_cast<TriangleModel*>(result.body) ) != NULL )
+        {
+            decodePosition(result,color,tmodel,result.indexCollisionElement);
+        }
+        if( ( smodel = dynamic_cast<SphereModel*>(result.body)) != NULL)
+        {
+            decodePosition(result, color,smodel,result.indexCollisionElement);
+        }
         result.rayLength = (result.point-origin)*direction;
     }
     _fbo.stop();
     return result;
 }
 
-void PickHandler::_decodeCollisionElement( BodyPicked& body, const sofa::defaulttype::Vec4f colour)
-{
-    using namespace core::objectmodel;
-    using namespace core::behavior;
-    using namespace sofa::defaulttype;
-    const float threshold = std::numeric_limits<float>::min();
-
-    if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  ) // make sure we are not picking the background...
-    {
-
-        helper::vector<core::CollisionModel*> listCollisionModel;
-        sofa::simulation::getSimulation()->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
-        const int totalCollisionModel = listCollisionModel.size();
-        const int indexListCollisionModel = (int) ( colour[0] * (float)totalCollisionModel + 0.5) - 1;
-        body.body = listCollisionModel[indexListCollisionModel];
-        body.indexCollisionElement = (unsigned int) ( colour[1] * body.body->getSize() + 0.5 );
-
-    }
-}
-
-void PickHandler::_decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f& colour)
-{
-
-    const float threshold = std::numeric_limits<float>::min();
-    if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  )
-    {
-        body.point = body.body->getPositionFromWeights(body.indexCollisionElement,colour[0], colour[1], colour[2]);
-    }
-
-
-}
 
 
 

@@ -119,7 +119,7 @@ public:
 
     static const char* acceleratedName()  { return "&QGLViewer"; }
 
-    virtual void drawColourPicking (core::CollisionModel::ColourCode code);
+    virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
 
     QtGLViewer( QWidget* parent, const char* name="" );
     ~QtGLViewer();
@@ -145,8 +145,8 @@ public:
     {
         return _H;
     };
-    bool ready() {return _waitForRender;};
-    void wait() {_waitForRender = true;};
+    bool ready() {return _waitForRender;}
+    void wait() {_waitForRender = true;}
 
     void	UpdateOBJ(void);
 

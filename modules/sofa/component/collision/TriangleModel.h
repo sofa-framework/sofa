@@ -180,10 +180,6 @@ public:
 
     void draw(const core::visual::VisualParams*);
 
-    void drawColourPicking(const core::visual::VisualParams* vparams, const ColourCode method);
-
-    virtual sofa::defaulttype::Vector3 getPositionFromWeights(int index, Real a, Real b, Real c);
-
     virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2);
 
     virtual void handleTopologyChange();
