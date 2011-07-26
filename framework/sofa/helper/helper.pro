@@ -86,6 +86,7 @@ HEADERS += helper.h \
     accessor.h \
     vector.h \
     vector_device.h \
+    StringUtils.h \
     polygon_cube_intersection/vec.h \
     polygon_cube_intersection/polygon_cube_intersection.h \
     proximity.h \
@@ -95,6 +96,7 @@ HEADERS += helper.h \
 	OptionsGroup.h \ 
     Polynomial_LD.h \
     Polynomial_LD.inl
+
 SOURCES += ArgumentParser.cpp \
     BackTrace.cpp \
     Factory.cpp \
@@ -143,6 +145,7 @@ SOURCES += ArgumentParser.cpp \
     io/ImageDDS.cpp \
     OptionsGroup.cpp \
 	Polynomial_LD.cpp
+
 contains(DEFINES,SOFA_HAVE_GLEW) { 
     HEADERS += gl/FrameBufferObject.h \
         gl/GLSLShader.h

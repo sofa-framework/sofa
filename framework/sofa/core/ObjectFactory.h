@@ -279,7 +279,6 @@ public:
  *    int Fluid3DClass = core::RegisterObject("Eulerian 3D fluid")
  *    .add\< Fluid3D \>()
  *    .addLicense("LGPL")
- *    .addAuthor("Jeremie Allard")
  *    ;
  *  \endcode
  *

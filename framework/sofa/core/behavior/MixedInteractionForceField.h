@@ -236,6 +236,15 @@ public:
         return DataTypes1::Name()+std::string(",")+DataTypes2::Name();
     }
 
+    template<class T>
+    static std::string shortName(const T* ptr = NULL, objectmodel::BaseObjectDescription* arg = NULL)
+    {
+        std::string name = Inherit1::shortName(ptr, arg);
+        sofa::helper::replaceAll(name, "InteractionForceField", "IFF");
+        sofa::helper::replaceAll(name, "ForceField", "FF");
+        return name;
+    }
+
 protected:
     MechanicalState<DataTypes1> *mstate1;
     MechanicalState<DataTypes2> *mstate2;
