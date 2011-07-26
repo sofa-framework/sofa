@@ -124,6 +124,7 @@ QGLFormat QtViewer::setupGLFormat()
     std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
     f.setSwapInterval(0); // disable vertical refresh sync
 #endif
+    //f.setOption(QGL::SampleBuffers);
     return f;
 }
 

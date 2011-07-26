@@ -161,7 +161,11 @@ void SofaPluginManager::removeLibrary()
     Q3ListViewItem * curItem = listPlugins->selectedItem();
     std::stringstream sstream;
     if (!curItem) return;
+#ifdef SOFA_QT4
     std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
+#else
+    std::string location( curItem->text(LOCATION_COLUMN).ascii() ); //get the location value
+#endif
     if( sofa::helper::system::PluginManager::getInstance().unloadPlugin(location,&sstream) )
     {
         listPlugins->removeItem(curItem);
@@ -185,7 +189,11 @@ void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
     if(curItem == NULL ) return;
     //update the component list when an item is selected
     listComponents->clear();
+#ifdef SOFA_QT4
     std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
+#else
+    std::string location( curItem->text(LOCATION_COLUMN).ascii() ); //get the location value
+#endif
     typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     typedef sofa::helper::system::Plugin    Plugin;
     PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();
@@ -212,7 +220,11 @@ void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
     if(curItem == NULL ) return;
     //update the component list when an item is selected
     description->clear();
+#ifdef SOFA_QT4
     std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
+#else
+    std::string location( curItem->text(LOCATION_COLUMN).ascii() ); //get the location value
+#endif
     typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     typedef sofa::helper::system::Plugin    Plugin;
     PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();

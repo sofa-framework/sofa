@@ -216,9 +216,9 @@ public slots:
 
     void fileRecentlyOpened(int id);
     void playpauseGUI(bool value);
-#ifdef SOFA_GUI_INTERACTION
+//#ifdef SOFA_GUI_INTERACTION
     void interactionGUI(bool value);
-#endif
+//#endif
     void step();
     void setDt(double);
     void setDt(const QString&);

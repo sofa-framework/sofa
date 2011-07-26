@@ -1,5 +1,11 @@
 #include <sofa/gui/qt/DisplayFlagsDataWidget.h>
+#ifdef SOFA_QT4
+#include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QLayout>
+#else
+#include <qlayout.h>
+#endif
 
 namespace sofa
 {
