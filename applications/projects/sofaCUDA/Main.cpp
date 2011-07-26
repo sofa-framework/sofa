@@ -164,7 +164,7 @@ int main(int argc, char** argv)
     if (!files.empty()) fileName = files[0];
     else fileName =
 #if defined(SOFA_GUI_INTERACTION) && defined(SOFA_HAVE_METIS) && defined(SOFA_HAVE_TAUCS_MT) && defined(SOFA_GPU_CUBLAS) && defined(SOFA_HAVE_BOOST)
-            "Demos/Passport/expiredRibCageOmniCarvingVideo1.scn"
+            "Demos/Passport/siggraph2011.scn"
 #else
             "CUDA/quadSpringSphereCUDA.scn"
 #endif
