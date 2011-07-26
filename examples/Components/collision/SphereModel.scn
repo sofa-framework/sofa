@@ -1,31 +1,31 @@
 <Node name="root"  dt="0.02" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1">
-	<Object type="CollisionPipeline" verbose="0" />
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="CollisionResponse" name="Response" response="default" />
-	<Object type="CollisionGroup" name="Group" />
+	<CollisionPipeline verbose="0" />
+	<BruteForceDetection name="N2" />
+	<CollisionResponse name="Response" response="default" />
+	<CollisionGroup name="Group" />
 	<Node name="cubeFEM">
-		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<Object type="MechanicalObject"/>
-		<Object type="UniformMass" mass="0.25"/>
-		<Object type="RegularGrid"
+		<EulerImplicit name="cg_odesolver" printLog="false"/>
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<RegularGrid
 				nx="5" ny="5" nz="5"
 				xmin="-3.5" xmax="3.5"
 				ymin="-3.5" ymax="3.5"
 				zmin="-3.5" zmax="3.5"
 		/>
-		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large"/>
+		<MechanicalObject/>
+		<UniformMass mass="0.25"/>
+		<TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large"/>
 		<Node name="Visu">
-			<Object type="OglModel" name="Visual" fileMesh="mesh/smCube125.obj" color="red" />
-			<Object type="SurfaceIdentityMapping" object1="../.." object2="Visual" />
+			<OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" />
+			<SurfaceIdentityMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
 			<MechanicalObject/>
-			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
-			<Object type="BarycentricMapping" />
+			<Sphere filename="mesh/smCube27b.sph"/>
+			<BarycentricMapping />
 		</Node>
 	</Node>
-	<MechanicalObject dy="-12.5" />
-	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" contactStiffness="1000"/>
-	<Object type="OglModel" name="FloorV" fileMesh="mesh/floor2.obj" texturename="textures/floor2.bmp" dy="-12.5" />
+	<MechanicalObject translation="0 -12.5 0" />
+	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" translation="@[-1].translation" simulated="0" moving="0" contactStiffness="1000"/>
+	<Object type="OglModel" name="FloorV" fileMesh="mesh/floor2.obj" texturename="textures/floor2.bmp" translation="@[-1].translation" />
 </Node>
