@@ -403,10 +403,10 @@ bool Mesh::saveLwo(const char* filename) const
   }
 */
 
-  fwrite(&(out.data[0]),out.data.size(),1,fp);
+  size_t n = fwrite(&(out.data[0]),out.data.size(),1,fp);
 
   fclose(fp);
-  return true;
+  return (n == 1);
 }
 
 } // namespace render

@@ -1474,7 +1474,10 @@ void RealGUI::interactionGUI ( bool value )
     sofa::core::objectmodel::KeypressedEvent keyEvent(value?(char)0x81:(char)0x80);
     Node* groot = viewer->getScene();
     if (groot) groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-
+}
+#else
+void RealGUI::interactionGUI ( bool )
+{
 }
 #endif
 
