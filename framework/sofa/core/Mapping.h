@@ -474,6 +474,15 @@ public:
 
     static std::string templateName(const Mapping<TIn, TOut>* = NULL);
 
+
+    template<class T>
+    static std::string shortName(const T* ptr = NULL, objectmodel::BaseObjectDescription* arg = NULL)
+    {
+        std::string name = Inherit1::shortName(ptr, arg);
+        sofa::helper::replaceAll(name, "Mapping", "Map");
+        return name;
+    }
+
 protected:
     /// If true, display the mapping
     bool getShow() const { return this->getContext()->getShowMappings(); }

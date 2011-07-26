@@ -224,7 +224,8 @@ void Mapping<In,Out>::setModels(State<In>* from, State<Out>* to)
 template <class In, class Out>
 std::string Mapping<In,Out>::templateName(const Mapping<In, Out>* /*mapping*/)
 {
-    return std::string("Mapping<") + In::Name() + std::string(",") + Out::Name() + std::string(">");
+//	return std::string("Mapping<") + In::Name() + std::string(",") + Out::Name() + std::string(">");
+    return In::Name() + std::string(",") + Out::Name();
 }
 
 

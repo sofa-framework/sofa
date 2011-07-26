@@ -166,6 +166,15 @@ public:
     {
         return DataTypes::Name();
     }
+
+    template<class T>
+    static std::string shortName(const T* ptr = NULL, objectmodel::BaseObjectDescription* arg = NULL)
+    {
+        std::string name = Inherit1::shortName(ptr, arg);
+        sofa::helper::replaceAll(name, "Mechanical", "M");
+        sofa::helper::replaceAll(name, "mechanical", "m");
+        return name;
+    }
 };
 
 } // namespace behavior

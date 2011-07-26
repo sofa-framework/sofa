@@ -272,6 +272,15 @@ public:
         return DataTypes::Name();
     }
 
+    template<class T>
+    static std::string shortName(const T* ptr = NULL, objectmodel::BaseObjectDescription* arg = NULL)
+    {
+        std::string name = Inherit1::shortName(ptr, arg);
+        sofa::helper::replaceAll(name, "InteractionForceField", "IFF");
+        sofa::helper::replaceAll(name, "ForceField", "FF");
+        return name;
+    }
+
 protected:
     sofa::core::objectmodel::Data< std::string > _object1;
     sofa::core::objectmodel::Data< std::string > _object2;

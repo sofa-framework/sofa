@@ -30,6 +30,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/SofaOStream.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/StringUtils.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -266,7 +267,7 @@ public:
     template< class T>
     static std::string shortName( const T* ptr = NULL, BaseObjectDescription* = NULL )
     {
-        std::string shortname = className(ptr);
+        std::string shortname = T::className(ptr);
         if( !shortname.empty() )
         {
             *shortname.begin() = ::tolower(*shortname.begin());
