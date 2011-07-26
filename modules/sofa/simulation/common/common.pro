@@ -13,7 +13,6 @@ HEADERS += common.h \
            ClassSystem.h \  
            CleanupVisitor.h \
            CollisionBeginEvent.h \
-           ColourPickingVisitor.h \
            CollisionEndEvent.h \
            CollisionVisitor.h \  
            Colors.h \
@@ -28,7 +27,7 @@ HEADERS += common.h \
            MasterSolverImpl.h \
            MechanicalComputeEnergyVisitor.h \
            MechanicalMatrixVisitor.h \
-	       MechanicalOperations.h \
+	         MechanicalOperations.h \
            MechanicalVPrintVisitor.h \
            MechanicalVisitor.h \
            MutationListener.h \
@@ -76,7 +75,6 @@ SOURCES += Node.cpp \
            CactusStackStorage.cpp \
            CleanupVisitor.cpp \
            CollisionVisitor.cpp \
-           ColourPickingVisitor.cpp \
            DeleteVisitor.cpp \
            DeactivatedNodeVisitor.cpp \
            ExportGnuplotVisitor.cpp \

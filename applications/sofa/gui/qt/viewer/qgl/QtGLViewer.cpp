@@ -34,7 +34,7 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/common/ColourPickingVisitor.h>
+#include <sofa/gui/ColourPickingVisitor.h>
 //#include <sofa/helper/system/SetDirectory.h>
 #include <math.h>
 #include <iostream>
@@ -563,7 +563,7 @@ void QtGLViewer::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
     glEnd();
 }
 
-void QtGLViewer::drawColourPicking(core::CollisionModel::ColourCode code)
+void QtGLViewer::drawColourPicking(ColourPickingVisitor::ColourCode code)
 {
 
     // Define background color
@@ -577,7 +577,7 @@ void QtGLViewer::drawColourPicking(core::CollisionModel::ColourCode code)
 
 
 
-    ColourPickingVisitor cpv(sofa::core::ExecParams::defaultInstance(), code);
+    ColourPickingVisitor cpv(sofa::core::visual::VisualParams::defaultInstance(), code);
     cpv.execute(sofa::simulation::getSimulation()->getContext() );
 
     glMatrixMode(GL_PROJECTION);

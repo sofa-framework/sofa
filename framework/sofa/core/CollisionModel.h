@@ -301,34 +301,6 @@ public:
     virtual void draw(int /*index*/) {}
 #endif
 
-
-
-
-    enum ColourCode
-    {
-        ENCODE_COLLISIONELEMENT,		///< The object colour encodes the pair CollisionModel - CollisionElement
-        ENCODE_RELATIVEPOSITION,	///< The object colour encodes the relative position.
-    };
-
-
-    /// Picking related. Render the collision model with an appropriate RGB colour code
-    /// so as to recognize it with the PickHandler of the GUI.
-    /// ENCODE_COLLISIONELEMENT Pass :
-    ///   r channel : indexCollisionModel / totalCollisionModelInScene.
-    ///   g channel : index of CollisionElement.
-    /// ENCODE_RELATIVEPOSITION Pass :
-    /// r,g,b channels encode the barycentric weights for a triangle model
-    virtual void drawColourPicking(const ColourCode /* method */) {}
-
-    /// Picking related.
-    /// For TriangleModels a,b,c encode the barycentric weights with respect to the vertex p1 p2 and p3 of
-    /// the TriangleElement with the given index
-    virtual sofa::defaulttype::Vector3 getPositionFromWeights( int /*index*/ , Real /*a*/, Real /* b */, Real /*c*/ )
-    {
-        sofa::defaulttype::Vector3  result;
-        return result;
-    };
-
     /// Return the first (i.e. root) CollisionModel in the hierarchy.
     CollisionModel* getFirst()
     {

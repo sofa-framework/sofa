@@ -56,7 +56,7 @@
 #include <sofa/helper/io/ImageBMP.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/simulation/common/ColourPickingVisitor.h>
+#include <sofa/gui/ColourPickingVisitor.h>
 
 // define this if you want video and OBJ capture to be only done once per N iteration
 //#define CAPTURE_PERIOD 5
@@ -646,7 +646,7 @@ void QtViewer::DrawLogo()
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
-void QtViewer::drawColourPicking(core::CollisionModel::ColourCode code)
+void QtViewer::drawColourPicking(ColourPickingVisitor::ColourCode code)
 {
     // Define background color
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -659,7 +659,7 @@ void QtViewer::drawColourPicking(core::CollisionModel::ColourCode code)
     glMatrixMode(GL_MODELVIEW);
 
 
-    sofa::simulation::ColourPickingVisitor cpv(sofa::core::ExecParams::defaultInstance(), code);
+    ColourPickingVisitor cpv(sofa::core::visual::VisualParams::defaultInstance(), code);
     cpv.execute(sofa::simulation::getSimulation()->getContext() );
 
     glMatrixMode(GL_PROJECTION);

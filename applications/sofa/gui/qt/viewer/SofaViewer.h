@@ -112,9 +112,9 @@ public:
     SofaViewer();
     virtual ~SofaViewer();
 
-    virtual void drawColourPicking (core::CollisionModel::ColourCode /*code*/) {};
-    virtual void removeViewerTab(QTabWidget *) {};
-    virtual void configureViewerTab(QTabWidget *) {};
+    virtual void drawColourPicking (ColourPickingVisitor::ColourCode /*code*/) {}
+    virtual void removeViewerTab(QTabWidget *) {}
+    virtual void configureViewerTab(QTabWidget *) {}
 
 
     virtual QWidget* getQWidget()=0;

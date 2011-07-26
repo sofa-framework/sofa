@@ -69,7 +69,7 @@ ColourPickingRenderCallBack::ColourPickingRenderCallBack(viewer::SofaViewer* vie
 {
 }
 
-void ColourPickingRenderCallBack::render(core::CollisionModel::ColourCode code)
+void ColourPickingRenderCallBack::render(ColourPickingVisitor::ColourCode code)
 {
     if(_viewer)
     {
