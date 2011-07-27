@@ -42,9 +42,9 @@
 		<BoxConstraint box="-5 -2.1 -10    10 -1.9 10"/>
 		
 		<Node name="Collinonunif">
-			<MeshLoader name="meshLoader"  filename="mesh/bubille_out.obj"/>
-			<Mesh />
-			<MechanicalObject />
+			<MeshObjLoader name="loader"  filename="mesh/bubille_out.obj"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" />
  			<HexahedronCompositeFEMMapping/>
 			<Triangle/>
 			

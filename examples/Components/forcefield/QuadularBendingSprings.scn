@@ -11,9 +11,9 @@
     <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
     <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
-    <Object type="MeshLoader"  filename="mesh/nine_quads.msh" />
-    <Object type="MechanicalObject" name="Quads" />
-    <include href="Objects/QuadSetTopology.xml" />
+    <Object type="MeshGmshLoader"  filename="mesh/nine_quads.msh"  name="loader"/>
+    <Object type="MechanicalObject" src="@loader" name="Quads" />
+    <include href="Objects/QuadSetTopology.xml" src="@loader" />
     <Object type="QuadSetTopology" name="topo_Quads" />
 
     <Object type="QuadularBendingSprings" name="FEM-Bend" stiffness="3000" damping="1.0"/> 

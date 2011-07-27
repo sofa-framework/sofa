@@ -6,9 +6,9 @@
 	<Node name="cubeFEM">
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<Object type="MeshLoader" name="meshLoader" filename="mesh/dragon.obj"/>
-		<Object type="Mesh" />
-		<Object type="MechanicalObject" scale="1" dz="10"/>
+		<Object type="MeshObjLoader" name="loader" filename="mesh/dragon.obj"/>
+		<Object type="Mesh" src="@loader" />
+		<Object type="MechanicalObject" src="@loader" scale="1" dz="10"/>
 		<Object type="UniformMass" mass="3"/>
                 <Object type="RotationFinder" numOfClusters="50" radius="0"/>
                 <Object type="ShapeMatchingForceField" name="ShapeMatching" stiffness="10000" />
@@ -17,9 +17,9 @@
 			<Object type="IdentityMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/dragon.obj"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" dz="10"/>
+			<Object type="MeshObjLoader" name="loader" filename="mesh/dragon.obj"/>
+			<Object type="Mesh" src="@loader"/>
+			<Object type="MechanicalObject" src="@loader" dz="10"/>
 			<Object type="Triangle" contactStiffness="1000"/>
 			<Object type="Line" contactStiffness="1000"/>
 			<Object type="Point" contactStiffness="1000"/>
@@ -27,9 +27,9 @@
 		</Node>
 	</Node>
 	<Node name="Floor">
-                <Object type="MeshLoader" name="meshLoader" filename="mesh/floor3.obj"/>
-		<Object type="Mesh" />
-		<Object type="MechanicalObject" dy="-10" scale="1.75" />
+                <Object type="MeshObjLoader" name="loader" filename="mesh/floor3.obj"/>
+		<Object type="Mesh" src="@loader" />
+		<Object type="MechanicalObject" src="@loader" dy="-10" scale="1.75" />
 		<Object type="Triangle" name="FloorTriangle" simulated="0" moving="0" />
 		<Object type="Line" name="FloorLine" simulated="0" moving="0" />
 		<Object type="Point" name="FloorLine" simulated="0" moving="0" />
