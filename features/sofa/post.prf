@@ -12,6 +12,82 @@
 BUILD_SYSTEM_FILES = $$files($$SRC_FEATURES_DIR/*.prf)
 
 ########################################################################
+# Setup some descriptive variables
+########################################################################
+
+contains(TEMPLATE, lib) | contains(TEMPLATE, vclib) {
+	IS_LIBRARY = true
+}
+contains(TEMPLATE, app) | contains(TEMPLATE, vcapp) {
+	IS_APPLICATION = true
+}
+contains(TEMPLATE, subdirs) | contains(TEMPLATE, vcsubdirs) {
+	IS_SUBDIR = true
+}
+contains(TEMPLATE, vcsubdirs) | contains(TEMPLATE, vclib) | contains(TEMPLATE, vcapp) {
+	IS_SLN = true
+}
+
+########################################################################
+# Setup some variables for compilation
+########################################################################
+
+# Use shared libraries except if requested otherwise, through the CONFIGSTATIC variable 
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
+	CONFIG += dll
+} else {
+	CONFIG -= dll shared
+	CONFIG += staticlib
+}
+
+# This block is executed when generating Visual C++ solutions.
+# It fixes a difficulty for detecting root build and source directories in the
+# process of generating the solution.
+# Indeed, .sln generation requires several passes, and the last one always have
+# the root build dir in the OUT_PWD variable (whatever the .pro file).
+# It makes root dirs detection using qmake variables completely impossible.
+# The only solution I found is to save into a file these directories in a
+# previous pass and read it back later.
+#
+win32 : !build_pass : equals(IS_SLN, true) : equals(SRC_DIR, $$ROOT_SRC_DIR) {
+	system(echo ROOT_SRC_DIR=$$ROOT_SRC_DIR > $$ROOT_BUILD_DIR/builddirs.pri)
+	system(echo ROOT_BUILD_DIR=$$ROOT_BUILD_DIR >> $$ROOT_BUILD_DIR/builddirs.pri)
+}
+
+# This block is executed when generating Visual C++ solutions.
+# It adds the content of the LIB and INCLUDE environment variables (as defined
+# when running qmake) to the LIBS and INCLUDEPATH variables.
+# It makes it optional to define those variables at the system level. They only
+# have to be defined when generating the solution, within the console.
+# The implementation has to cope with paths containing spaces.
+# It has to transform spaces to pipes (because this is a restricted character that
+# won't be used in the original path), split semi-colon separated path entries,
+# and add each of these path entries to the library/include list (the pipes 
+# are converted back to spaces before that).
+#
+equals(IS_SLN, true) {
+	ENV_LIB = $$(LIB)
+	!isEmpty(ENV_LIB) {
+		ENV_LIB = $$join(ENV_LIB, |,,) # Transform spaces to pipes
+		ENV_LIB = $$split(ENV_LIB, ;)  # Transform semi-colons to spaces
+		for(library, ENV_LIB) {        # Loop on space separated elements => each path entry
+			library = $$replace(library, \|, ' ') # Revert pipes to spaces
+			LIBS *= -L\"$$library\"               # Add quoted path as a library path
+		}
+	}
+	ENV_INCLUDE = $$(INCLUDE)
+	!isEmpty(ENV_INCLUDE) {
+		ENV_INCLUDE = $$join(ENV_INCLUDE, |,,) # Transform spaces to pipes
+		ENV_INCLUDE = $$split(ENV_INCLUDE, ;)  # Transform semi-colons to spaces
+		for(include, ENV_INCLUDE) {            # Loop on space separated elements => each path entry
+			include = $$replace(include, \|, ' ') # Revert pipes to spaces
+			INCLUDEPATH *= \"$$include\"          # Add quoted path as a library path
+		}
+	}
+}
+
+########################################################################
 # Load SOFA-specific configuration
 ########################################################################
 
@@ -21,17 +97,17 @@ load($$FEATURES_DIR/config-post)
 # Definition of artifacts directories and name
 ########################################################################
 
-contains(TEMPLATE, lib) | contains(TEMPLATE, vclib) {
+equals(IS_LIBRARY, true) {
 	DESTDIR = $$LIB_DESTDIR
 }
-contains(TEMPLATE, app) | contains(TEMPLATE, vcapp) {
+equals(IS_APPLICATION, true) {
 	DESTDIR = $$APP_DESTDIR
 }
 
-contains(TEMPLATE, lib) | contains(TEMPLATE, vclib) {
+equals(IS_LIBRARY, true) {
 	SUFFIX = $$LIBSUFFIX
 }
-contains(TEMPLATE, app) | contains(TEMPLATE, vcapp) {
+equals(IS_APPLICATION, true) {
 	SUFFIX = $$APPSUFFIX
 }
 TARGET_BASE = $$TARGET
@@ -44,14 +120,6 @@ isEmpty(OBJMOC) {
 	} else {
 		unset(MOC_DIR)
 	}
-}
-
-!contains(CONFIGSTATIC, static) {
-	CONFIG -= staticlib
-	CONFIG += dll
-} else {
-	CONFIG -= dll shared
-	CONFIG += staticlib
 }
 
 ########################################################################

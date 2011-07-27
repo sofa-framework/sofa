@@ -5,8 +5,12 @@
 
 defineReplace(normalizePath) {
 	path = $$1
-	path = $$replace(path, //, /)
+	path = $$replace(path, /+, /)
 	path = $$replace(path, /$, )
+	path = $$replace(path, \\\\+, /)
+	win32 {
+		path = $$lower($$path)
+	}
 	return($$path)
 }
 
@@ -35,6 +39,22 @@ equals(BUILD_DIR, $$SRC_DIR) {
 } else {
 	OUT_OF_SOURCE = true
 }
+
+# On windows, when generating Visual C++ solutions, the root source dir and
+# root build dir cannot be detected in some passes. To avoid this problem,
+# we use this builddirs.pri file generated in post.prf.
+# The pass that needs it will have OUT_PWD equal to the root build dir, so
+# it matches the place where this file is created in post.prf
+#
+win32 : exists($$BUILD_DIR/builddirs.pri) {
+	include($$BUILD_DIR/builddirs.pri)
+
+	SUBDIR_PATH = $$replace(BUILD_DIR, $$ROOT_BUILD_DIR, .)
+	SUBDIR_PATH = $$replace(SUBDIR_PATH, ^\\./,)
+
+	ROOT_PATH = $$replace(SUBDIR_PATH, [^/]+/, ../)
+	ROOT_PATH = $$replace(ROOT_PATH, \\w+, ..)
+} else {
 
 # We could get the ROOT_BUILD_DIR on Unix using $$(PWD), but
 # on Windows the equivalent $$(CD) does not work and $$system(echo %CD%)
@@ -90,7 +110,10 @@ equals(OUT_OF_SOURCE, true) {
 	ROOT_PATH = $$replace(SUBDIR_PATH, [^/]+/, ../)
 	ROOT_PATH = $$replace(ROOT_PATH, \\w+, ..)
 }
+}
 
+#message(OUT_PWD       $$escape_expand(\\t)= $$OUT_PWD)
+#message(_PRO_FILE_    $$escape_expand(\\t)= $$_PRO_FILE_)
 #message(ROOT_SRC_DIR  $$escape_expand(\\t)= $$ROOT_SRC_DIR)
 #message(SRC_DIR       $$escape_expand(\\t)= $$SRC_DIR)
 #message(ROOT_BUILD_DIR$$escape_expand(\\t)= $$ROOT_BUILD_DIR)
@@ -116,12 +139,6 @@ exists($${CUSTOM_FEATURES_FILE}.prf) {
 exists($${INSTALLED_FEATURE_FILE}.prf) {
 	load($$INSTALLED_FEATURE_FILE)
 }
-
-########################################################################
-# Load SOFA-specific configuration
-########################################################################
-
-load($$FEATURES_DIR/config-pre)
 
 ########################################################################
 # Descriptive variables
@@ -155,6 +172,18 @@ contains(QMAKE_CXXFLAGS, -pg) {
   CONFIGDEBUG += profile
 }
 
+CONFIG(release, debug|release) {
+	#message(release pass)
+} else {
+	#message(debug pass)
+}
+
+build_pass {
+	#message(build pass)
+} else {
+	#message(not build)
+}
+
 ########################################################################
 # Some configuration variables
 ########################################################################
@@ -163,6 +192,7 @@ contains(CONFIGDEBUG, debug) {
 	LIBSUFFIX = d
 	APPSUFFIX = d
 }
+
 contains(CONFIGDEBUG, profile) {
 	APPSUFFIX = $${APPSUFFIX}p
 }
@@ -213,7 +243,9 @@ equals(FEATURES_DIR, $$SRC_FEATURES_DIR) {
 QMAKE_MKSPECS = $$[QMAKE_MKSPECS]
 match = $$find(QMAKE_MKSPECS, ^$${INSTALL_DIR}.*$)
 isEmpty(match) {
-	warning(Feature files will not be installed in Qt standard directory; so you will have to set QMAKEFEATURES environment variable to use them.)
+	equals(ROOT_PATH, .) { # only display this message at the root level.
+		warning(Feature files will not be installed in Qt standard directory; so you will have to set QMAKEFEATURES environment variable to use them.)
+	}
 	INSTALL_PRF_PATH = share/sofa/$$$$SRC_FEATURES_PATH
 } else {
 	INSTALL_PRF_PATH = $$replace(QMAKE_MKSPECS, ^$$INSTALL_DIR/(.+), \\1)/$$SRC_FEATURES_PATH
@@ -264,6 +296,12 @@ equals(USING_INSTALL, true) {
 } else {
 	SOFA_INSTALL_INC_DIR = $$ROOT_SRC_DIR
 }
+
+########################################################################
+# Load SOFA-specific configuration
+########################################################################
+
+load($$FEATURES_DIR/config-pre)
 
 ########################################################################
 # Utility functions
@@ -344,6 +382,11 @@ defineReplace(canonicalize) {
 		}
 	}
 	return($$filelist)
+}
+
+defineReplace(toWindowsPath) {
+	path = $$replace(1, /+, \\)
+	return($$path)
 }
 
 defineTest(addSubdirs) {
@@ -609,7 +652,7 @@ defineTest(include-declarations) {
 	else : !isEmpty(directory) : exists($$ROOT_SRC_DIR/$$directory/$${name}.prf) {
 		load($$ROOT_SRC_DIR/$$directory/$$name)
 	}
-	else : error(include-declarations: cannot find $$name (dir: $$directory))
+	else : error(include-declarations: cannot find $$name (dir=$$directory, FEATURES_DIR=$$FEATURES_DIR, ROOT_SRC_DIR=$$ROOT_SRC_DIR))
 }
 
 ##
