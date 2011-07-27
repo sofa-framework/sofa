@@ -22,9 +22,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_scale3_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject"  dx="0" dy="20" dz="-11" />
+        		<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3_for_collision.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader"  dx="0" dy="20" dz="-11" />
 			<Object type="TriangleOctree" />
 			<Object type="BarycentricMapping" />
 		</Node>
@@ -47,9 +47,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_scale3_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject"   dx="0" dy="20" dz="-13" />
+        		<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3_for_collision.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader"   dx="0" dy="20" dz="-13" />
 			<Object type="TriangleOctree" />
 			<Object type="BarycentricMapping" />
 		</Node>
@@ -73,9 +73,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_scale3_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject"  dx="0" dy="20" dz="-15" />
+        		<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3_for_collision.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader"  dx="0" dy="20" dz="-15" />
 			<Object type="TriangleOctree" />
 			<Object type="BarycentricMapping" />
 		</Node>
@@ -98,9 +98,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">        		
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_scale3_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject"  dx="0" dy="20" dz="-17" />
+			<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3_for_collision.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader"  dx="0" dy="20" dz="-17" />
 			<Object type="TriangleOctree" />
 			<Object type="BarycentricMapping" />
 		</Node>
@@ -122,9 +122,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">        		
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_scale3_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject" dx="0" dy="20" dz="-19"/>
+			<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3_for_collision.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader" dx="0" dy="20" dz="-19"/>
 			<Object type="TriangleOctree" />
 			<Object type="BarycentricMapping" />
 		</Node>
@@ -148,9 +148,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">        		
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_scale3_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject"  dx="0" dy="20" dz="-23" />
+			<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3_for_collision.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader"  dx="0" dy="20" dz="-23" />
 			<Object type="TriangleOctree" />
 			<Object type="BarycentricMapping" />
 		</Node>
@@ -174,9 +174,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">        		
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_scale3_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject"  dx="0" dy="20" dz="-21" />
+			<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3_for_collision.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader"  dx="0" dy="20" dz="-21" />
 			<Object type="TriangleOctree" />
 			<Object type="BarycentricMapping" />
 		</Node>
@@ -200,9 +200,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">        		
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_scale3_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject"  dx="0" dy="20" dz="-29" />
+			<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3_for_collision.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader"  dx="0" dy="20" dz="-29" />
 			<Object type="TriangleOctree" />
 			<Object type="BarycentricMapping" />
 		</Node>
@@ -225,9 +225,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">        		
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_scale3_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject"  dx="0" dy="20" dz="-27"/>
+			<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3_for_collision.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader"  dx="0" dy="20" dz="-27"/>
 			<Object type="TriangleOctree" />
 			<Object type="BarycentricMapping" />
 		</Node>
@@ -250,18 +250,18 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">        		
-		        <Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_scale3_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject"  dx="0" dy="20" dz="-25" />
+		        <Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3_for_collision.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader"  dx="0" dy="20" dz="-25" />
 			<Object type="TriangleOctree" />
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
 
 	<Node name="Floor">
-	        <Object type="MeshLoader" name="meshLoader" filename="mesh/floor2b.obj"/>
-		<Object type="Mesh"  />
-		<Object type="MechanicalObject" dy="-10" scale="0.5" />
+	        <Object type="MeshObjLoader" name="loader" filename="mesh/floor2b.obj"/>
+		<Object type="Mesh" src="@loader"  />
+		<Object type="MechanicalObject" src="@loader" dy="-10" scale="0.5" />
 		<Object type="TriangleOctree" name="Floor" simulated="0" moving="0" />
 		<Object type="OglModel" name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" notexturename="textures/floor.bmp" color="lightgray" dy="-10" />
 	</Node>
