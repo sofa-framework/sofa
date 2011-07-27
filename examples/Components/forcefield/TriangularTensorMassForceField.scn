@@ -9,9 +9,9 @@
 	<Node name="SquareGravity">
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<Object type="MeshLoader" name="meshLoader" filename="mesh/square3.msh" />
-		<Object type="MechanicalObject" scale="10" />
-		<include href="Objects/TriangleSetTopology.xml" />
+		<Object type="MeshGmshLoader" name="loader" filename="mesh/square3.msh" />
+		<Object type="MechanicalObject" src="@loader" scale="10" />
+		<include href="Objects/TriangleSetTopology.xml" src="@loader" />
 
 		<Object type="DiagonalMass" massDensity="0.015" />
 		<Object type="FixedConstraint" indices="0 1"/>

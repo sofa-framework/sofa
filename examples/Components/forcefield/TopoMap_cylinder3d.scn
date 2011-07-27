@@ -11,9 +11,9 @@
     <!-- <Object type="StaticSolver" iterations="140" /> -->
     <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
     <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-    <Object type="MeshLoader" filename="mesh/cylinder.msh"/>
-    <Object type="MechanicalObject" name="Volume" />
-	<include href="Objects/TetrahedronSetTopology.xml" />
+    <Object type="MeshGmshLoader" filename="mesh/cylinder.msh" name="loader"/>
+    <Object type="MechanicalObject" src="@loader" name="Volume" />
+	<include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
 
     <Object type="DiagonalMass" massDensity="0.5" />
     <Object type="FixedPlaneConstraint" direction="0 0 1" dmin="-0.1" dmax="0.1"/>

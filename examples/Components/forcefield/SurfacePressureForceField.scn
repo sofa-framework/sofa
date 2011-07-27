@@ -20,9 +20,9 @@
 		</Node>
 		
 		<Node name="TriangleSurf">
-			<MeshLoader name="meshLoader" filename="mesh/frog.obj"/>
+			<MeshObjLoader name="loader" filename="mesh/frog.obj"/>
 			<Mesh/>
-			<MechanicalObject/>
+			<MechanicalObject src="@loader" />
 			<Triangle group="1"/>	
 			<Line group="1"/>
 			<Point group="1"/>
@@ -47,9 +47,9 @@
 		</Node>
 		
 		<Node name="QuadSurf">
-			<MeshLoader name="meshLoader" filename="mesh/frog_quads.obj"/>
+			<MeshObjLoader name="loader" filename="mesh/frog_quads.obj"/>
 			<Mesh/>
-			<MechanicalObject/>
+			<MechanicalObject src="@loader" />
 			<Triangle group="1"/>	
 			<Line group="1"/>
 			<Point group="1"/>

@@ -3,12 +3,12 @@
     <Object type="EulerImplicit" name="OdeSolver" printLog="false"/>
     <Object type="CGLinearSolver" iterations="25" name="LinearSolver" tolerance="1.0e-9" threshold="1.0e-9" />
 
-    <Object type="MeshLoader" filename="mesh/aneurysm2D_hires.obj" /> 
-    <Object type="MeshTopology"  name="Mesh" />
+    <Object type="MeshObjLoader" filename="mesh/aneurysm2D_hires.obj"  name="loader"/>
+    <Object type="MeshTopology" src="@loader"  name="Mesh" />
     <Object type="TriangleSetGeometryAlgorithms" name="Geometry"   template="Vec3d" />
 
 
-    <Object type="MechanicalObject" name="Mechanical" />
+    <Object type="MechanicalObject" src="@loader" name="Mechanical" />
     <Object type="EulerianFluidModel" name="Fluid" centerType="1"
             
             viscousFluid ="1" viscosity ="0.05" 

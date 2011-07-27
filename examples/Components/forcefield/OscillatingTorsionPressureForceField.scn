@@ -13,9 +13,9 @@
     <CGLinearSolver template="GraphScattered" name="solverLinear"  iterations="100"  tolerance="1e-20"  threshold="1e-20" />
     
     <Node name="CylinderNode">
-      <Object type="MeshLoader" filename="mesh/cylinder_8x30x6.msh"/>
-      <include href="Objects/TetrahedronSetTopology.xml" />
-      <Object type="MechanicalObject" name="Cylinder"/>
+      <Object type="MeshGmshLoader" filename="mesh/cylinder_8x30x6.msh" name="loader"/>
+      <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
+      <Object type="MechanicalObject" src="@loader" name="Cylinder"/>
       <Object type="UniformMass" totalmass="0.001247"/>
       <Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large"/> 
       <Object type="DisplacementConstraint" box="-1.1 -1.1 -0.0001 1.1 1.1 0.0001" displacement="0 0 0" />

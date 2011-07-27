@@ -5,33 +5,33 @@
 
 
 		<Node name="M1">
-            		<Object type="MeshLoader"  filename="mesh/smCube27.msh"/>
-			<Object type="MechanicalObject"/>
+            		<Object type="MeshGmshLoader"  filename="mesh/smCube27.msh" name="loader"/>
+			<Object type="MechanicalObject" src="@loader"/>
 			<Object type="UniformMass" mass="0.1"/>
 			<include href="Objects/internalSpringsCube.xml"  InternalSprings__name="InternalSprings1"/>
 			<Object type="FixedConstraint" indices="0 3 6 9 12 15 18 21 24"/>
 		</Node>
 		<Node name="M2">
-            		<Object type="MeshLoader"  filename="mesh/smCube27.msh"/>
-			<Object type="MechanicalObject"  dz="10.5"/>
+            		<Object type="MeshGmshLoader"  filename="mesh/smCube27.msh" name="loader"/>
+			<Object type="MechanicalObject" src="@loader"  dz="10.5"/>
 			<Object type="UniformMass" mass="0.1"/>
 			<include href="Objects/internalSpringsCube.xml"  InternalSprings__name="InternalSprings2"/>
 		</Node>
 		<Node name="M3">
-            		<Object type="MeshLoader"  filename="mesh/smCube27.msh"/>
-			<Object type="MechanicalObject" dz="21"/>
+            		<Object type="MeshGmshLoader"  filename="mesh/smCube27.msh" name="loader"/>
+			<Object type="MechanicalObject" src="@loader" dz="21"/>
 			<Object type="UniformMass" mass="0.1"/>
 			<include href="Objects/internalSpringsCube.xml"  InternalSprings__name="InternalSprings3"/>
 		</Node>
 		<Node name="M4">
-            		<Object type="MeshLoader"  filename="mesh/smCube27.msh"/>
-			<Object type="MechanicalObject"  dz="31.5"/>
+            		<Object type="MeshGmshLoader"  filename="mesh/smCube27.msh" name="loader"/>
+			<Object type="MechanicalObject" src="@loader"  dz="31.5"/>
 			<Object type="UniformMass" mass="0.1"/>
 			<include href="Objects/internalSpringsCube.xml"  InternalSprings__name="InternalSprings4"/>
 		</Node>
 		<Node name="M5">
-            		<Object type="MeshLoader"  filename="mesh/smCube27.msh"/>
-			<Object type="MechanicalObject"  dz="42"/>
+            		<Object type="MeshGmshLoader"  filename="mesh/smCube27.msh" name="loader"/>
+			<Object type="MechanicalObject" src="@loader"  dz="42"/>
 			<Object type="UniformMass" mass="0.1"/>
 			<include href="Objects/internalSpringsCube.xml"  InternalSprings__name="InternalSprings5"/>
 		</Node>

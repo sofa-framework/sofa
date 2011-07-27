@@ -3,15 +3,15 @@
     <!--<Object type="EulerImplicit" name="OdeSolver" printLog="false"/>-->
     <!--<Object type="CGLinearSolver" iterations="25" name="LinearSolver" tolerance="1.0e-9" threshold="1.0e-9" />-->
 
-    <Object type="MeshLoader" filename="mesh/square_2594_triangles.obj" />
+    <Object type="MeshObjLoader" filename="mesh/square_2594_triangles.obj"  name="loader"/>
     <!-- square_864_triangles.obj -->
     <!--addForces="1" force="2.0" addForcePointSet="189 214 179 202 216 192 222 180 209"-->
     <!-- square_2594_triangles.obj -->
     <!--addForces="1" force="2.0" addForcePointSet="618 661 604 647 688 590 634 678 718 620 666 707 605 653 693"-->
-    <Object type="MeshTopology"  name="Mesh" />
+    <Object type="MeshTopology" src="@loader"  name="Mesh" />
     <Object type="TriangleSetGeometryAlgorithms" name="Geometry" template="Vec3d" />
 
-    <Object type="MechanicalObject" name="Mechanical" />
+    <Object type="MechanicalObject" src="@loader" name="Mechanical" />
     <Object type="EulerianFluidModel" name="Fluid2D" centerType="1"
             viscousFluid="1" viscosity="0.1"
             addForces="0" force="0"
