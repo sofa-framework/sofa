@@ -12,9 +12,9 @@
 	<CGLinearSolver/>
 	
 	<Node name="Torus1">
-		<MeshLoader filename="mesh/torus2_for_collision.obj"/>
+		<MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader"/>
 		<Mesh/>
-		<MechanicalObject scale="5.0"/>
+		<MechanicalObject src="@loader" scale="5.0"/>
 		<Triangle simulated="0" moving="0" name="Torus1Triangle" group="1" />
 		<Line simulated="0" moving="0" name="Torus1Triangle" group="1" />
 		<Point simulated="0" moving="0" name="Torus1Triangle" group="1" />
@@ -31,9 +31,9 @@
 			<RigidMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf2">
-			<MeshLoader filename="mesh/torus_for_collision.obj"/>
+			<MeshObjLoader filename="mesh/torus_for_collision.obj" name="loader"/>
 			<Mesh/>
-			<MechanicalObject scale="5.0"/>
+			<MechanicalObject src="@loader" scale="5.0"/>
 			<Triangle name="Torus2Triangle" group="2" />
 			<Line name="Torus2Triangle" group="2" />	
 			<Point name="Torus2Triangle" group="2" />
@@ -51,9 +51,9 @@
 			<RigidMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf2">
-			<MeshLoader filename="mesh/torus2_for_collision.obj"/>
-			<Mesh />
-			<MechanicalObject scale="5.0"/>
+			<MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" scale="5.0"/>
 			<Triangle name="Torus3Triangle" group="3" /> 
 			<Line name="Torus3Triangle" group="3" />
 			<Point name="Torus3Triangle" group="3" />
@@ -71,9 +71,9 @@
 			<RigidMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf2">
-			<MeshLoader filename="mesh/torus_for_collision.obj"/>
+			<MeshObjLoader filename="mesh/torus_for_collision.obj" name="loader"/>
 			<Mesh/>
-			<MechanicalObject scale="5.0"/>
+			<MechanicalObject src="@loader" scale="5.0"/>
 			<Triangle name="Torus4Triangle" group="4" /> 
 			<Line name="Torus4Line" group="4" />
 			<Point name="Torus4Point" group="4" />

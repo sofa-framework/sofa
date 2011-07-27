@@ -7,9 +7,9 @@
 	<Node name="Tissue">
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<Object type="MeshLoader" name="meshLoader" filename="mesh/square.msh" />
-		<Object type="MechanicalObject" scale="10" />
-		<include href="Objects/TriangleSetTopology.xml" />
+		<Object type="MeshGmshLoader" name="loader" filename="mesh/square.msh" />
+		<Object type="MechanicalObject" src="@loader" scale="10" />
+		<include href="Objects/TriangleSetTopology.xml" src="@loader" />
 		<Object type="BoxConstraint" box="-1 14 -1 16 16 1"/>
 		<NOObject type="UniformMass" totalmass="0.5" handleTopoChange="true"/>
 		<Object type="DiagonalMass" massDensity="0.0001" name="computed using mass density"/>

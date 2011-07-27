@@ -8,9 +8,9 @@
 	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.2" contactDistance="0.2" />
 
 	<Node name="Liver" >
-		<Object type="MeshLoader" filename="mesh/liver.msh" />
-		<Object type="MechanicalObject" />
-		<include href="Objects/TetrahedronSetTopology.xml" />
+		<Object type="MeshGmshLoader" filename="mesh/liver.msh"  name="loader"/>
+		<Object type="MechanicalObject" src="@loader" />
+		<include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
 		<Node name="CollisionModel" >
 			<include href="Objects/TriangleSetTopology.xml" />
         		<Object type="Tetra2TriangleTopologicalMapping" object1="../../Container" object2="Container"/>
