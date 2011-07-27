@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/loader/MeshLoader.h>
+#include <stdlib.h>
 
 namespace sofa
 {
@@ -74,6 +75,12 @@ MeshLoader::MeshLoader() : BaseLoader()
 void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     BaseLoader::parse(arg);
+
+    if (arg->getAttribute("scale"))
+    {
+        SReal s = (SReal) atof(arg->getAttribute("scale"));
+        scale.setValue(scale.getValue()*s);
+    }
 
     if (canLoad())
         load(/*m_filename.getFullPath().c_str()*/);
@@ -154,6 +161,24 @@ void MeshLoader::updateMesh()
     updateNormals();
 }
 
+template<class Vec>
+static inline Vec uniqueOrder(Vec v)
+{
+    // simple insertion sort
+    for (unsigned int j = 1; j < v.size(); ++j)
+    {
+        typename Vec::value_type key = v[j];
+        unsigned int i = j;
+        while (i>0 && v[i-1] > key)
+        {
+            v[i] = v[i-1];
+            --i;
+        }
+        v[i] = key;
+    }
+    return v;
+}
+
 void MeshLoader::updateElements()
 {
     if (triangulate.getValue())
@@ -168,6 +193,109 @@ void MeshLoader::updateElements()
             addTriangle(&waTriangles.wref(), q[0], q[2], q[3]);
         }
         waQuads.clear();
+    }
+    // If ND topological elements are presents as well as (N-1)D elements, make sure all neighbors are created
+    if (hexahedra.getValue().size() > 0 && quads.getValue().size() > 0)
+    {
+        helper::ReadAccessor<Data<helper::vector< helper::fixed_array <unsigned int,8> > > > hexahedra = this->hexahedra;
+        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,4> > > > quads = this->quads;
+        std::set<helper::fixed_array <unsigned int,4> > eSet;
+        for (unsigned int i = 0; i < quads.size(); ++i)
+            eSet.insert(uniqueOrder(quads[i]));
+        int nbnew = 0;
+        for (unsigned int i = 0; i < hexahedra.size(); ++i)
+        {
+            helper::fixed_array<unsigned int,8> h = hexahedra[i];
+            helper::fixed_array< helper::fixed_array<unsigned int,4>, 6 > e;
+            e[0] = helper::make_array(h[0],h[3],h[2],h[1]);
+            e[1] = helper::make_array(h[4],h[5],h[6],h[7]);
+            e[2] = helper::make_array(h[0],h[1],h[5],h[4]);
+            e[3] = helper::make_array(h[1],h[2],h[6],h[5]);
+            e[4] = helper::make_array(h[2],h[3],h[7],h[6]);
+            e[5] = helper::make_array(h[3],h[0],h[4],h[7]);
+            for (unsigned int j = 0; j < e.size(); ++j)
+            {
+                if (eSet.insert(uniqueOrder(e[j])).second) // the element was inserted
+                {
+                    quads.push_back(e[j]);
+                    ++nbnew;
+                }
+            }
+        }
+        if (nbnew > 0)
+            sout << nbnew << " quads were missing around the hexahedra" << sendl;
+    }
+    if (tetrahedra.getValue().size() > 0 && triangles.getValue().size() > 0)
+    {
+        helper::ReadAccessor<Data<helper::vector< helper::fixed_array <unsigned int,4> > > > tetrahedra = this->tetrahedra;
+        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,3> > > > triangles = this->triangles;
+        std::set<helper::fixed_array <unsigned int,3> > eSet;
+        for (unsigned int i = 0; i < triangles.size(); ++i)
+            eSet.insert(uniqueOrder(triangles[i]));
+        int nbnew = 0;
+        for (unsigned int i = 0; i < tetrahedra.size(); ++i)
+        {
+            helper::fixed_array<unsigned int,4> t = tetrahedra[i];
+            for (unsigned int j = 0; j < t.size(); ++j)
+            {
+                helper::fixed_array<unsigned int,3> e(t[(j+1)%t.size()],t[(j+2)%t.size()],t[(j+3)%t.size()]);
+                if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
+                {
+                    triangles.push_back(e);
+                    ++nbnew;
+                }
+            }
+        }
+        if (nbnew > 0)
+            sout << nbnew << " triangles were missing around the tetrahedra" << sendl;
+    }
+    if (quads.getValue().size() > 0 && edges.getValue().size() > 0)
+    {
+        helper::ReadAccessor<Data<helper::vector< helper::fixed_array <unsigned int,4> > > > quads = this->quads;
+        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,2> > > > edges = this->edges;
+        std::set<helper::fixed_array <unsigned int,2> > eSet;
+        for (unsigned int i = 0; i < edges.size(); ++i)
+            eSet.insert(uniqueOrder(edges[i]));
+        int nbnew = 0;
+        for (unsigned int i = 0; i < quads.size(); ++i)
+        {
+            helper::fixed_array<unsigned int,4> t = quads[i];
+            for (unsigned int j = 0; j < t.size(); ++j)
+            {
+                helper::fixed_array<unsigned int,2> e(t[(j+1)%t.size()],t[(j+2)%t.size()]);
+                if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
+                {
+                    edges.push_back(e);
+                    ++nbnew;
+                }
+            }
+        }
+        if (nbnew > 0)
+            sout << nbnew << " edges were missing around the quads" << sendl;
+    }
+    if (triangles.getValue().size() > 0 && edges.getValue().size() > 0)
+    {
+        helper::ReadAccessor<Data<helper::vector< helper::fixed_array <unsigned int,3> > > > triangles = this->triangles;
+        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,2> > > > edges = this->edges;
+        std::set<helper::fixed_array <unsigned int,2> > eSet;
+        for (unsigned int i = 0; i < edges.size(); ++i)
+            eSet.insert(uniqueOrder(edges[i]));
+        int nbnew = 0;
+        for (unsigned int i = 0; i < triangles.size(); ++i)
+        {
+            helper::fixed_array<unsigned int,3> t = triangles[i];
+            for (unsigned int j = 0; j < t.size(); ++j)
+            {
+                helper::fixed_array<unsigned int,2> e(t[(j+1)%t.size()],t[(j+2)%t.size()]);
+                if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
+                {
+                    edges.push_back(e);
+                    ++nbnew;
+                }
+            }
+        }
+        if (nbnew > 0)
+            sout << nbnew << " edges were missing around the triangles" << sendl;
     }
 }
 
