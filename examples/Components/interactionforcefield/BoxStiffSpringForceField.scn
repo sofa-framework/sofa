@@ -10,9 +10,9 @@
 		<!--<Object type="CGImplicit" iterations="25"/>-->
 		<Object type="EulerImplicit"/>
 		<Object type="CGLinearSolver" iterations="25"/>
-        	<Object type="MeshLoader" name="meshLoader" filename="mesh/liver.msh"/>
-		<Object type="Mesh"/>
-		<Object type="MechanicalObject" template="Vec3d" name="Liver1MS" />
+        	<Object type="MeshGmshLoader" name="loader" filename="mesh/liver.msh"/>
+		<Object type="Mesh" src="@loader"/>
+		<Object type="MechanicalObject" src="@loader" template="Vec3d" name="Liver1MS" />
 		<Object type="UniformMass" name="mass" mass="0.05"/>
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="2000" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/>
                 <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
@@ -30,9 +30,9 @@
 		<!--<Object type="CGImplicit" iterations="25"/>-->
 		<Object type="EulerImplicit"/>
 		<Object type="CGLinearSolver" iterations="25"/>
-        	<Object type="MeshLoader" name="meshLoader" filename="mesh/liver.msh"/>
-		<Object type="Mesh"/>
-		<Object type="MechanicalObject" template="Vec3d" name="Liver2MS"   dx="10" ry="180"/>
+        	<Object type="MeshGmshLoader" name="loader" filename="mesh/liver.msh"/>
+		<Object type="Mesh" src="@loader"/>
+		<Object type="MechanicalObject" src="@loader" template="Vec3d" name="Liver2MS"   dx="10" ry="180"/>
 		<Object type="UniformMass" name="mass" mass="0.05"/>
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/>
 		<Node name="Visu">
@@ -49,9 +49,9 @@
 		<!--<Object type="CGImplicit" iterations="25"/>-->
 		<Object type="EulerImplicit"/>
 		<Object type="CGLinearSolver" iterations="25"/>
-        	<Object type="MeshLoader" name="meshLoader" filename="mesh/liver.msh"/>
-		<Object type="Mesh"/>
-		<Object type="MechanicalObject" template="Vec3d" name="Liver3MS"   dx="20" ry="90"/>
+        	<Object type="MeshGmshLoader" name="loader" filename="mesh/liver.msh"/>
+		<Object type="Mesh" src="@loader"/>
+		<Object type="MechanicalObject" src="@loader" template="Vec3d" name="Liver3MS"   dx="20" ry="90"/>
 		<Object type="UniformMass" name="mass" mass="0.05"/>
 <!--                <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" /> -->
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/>
