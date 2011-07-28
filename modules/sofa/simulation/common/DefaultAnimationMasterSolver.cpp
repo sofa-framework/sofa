@@ -25,6 +25,37 @@
 #include <sofa/simulation/common/DefaultAnimationMasterSolver.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/simulation/common/PrintVisitor.h>
+#include <sofa/simulation/common/FindByTypeVisitor.h>
+#include <sofa/simulation/common/ExportGnuplotVisitor.h>
+#include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/common/InstrumentVisitor.h>
+#include <sofa/simulation/common/AnimateVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/CollisionVisitor.h>
+#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/ResetVisitor.h>
+#include <sofa/simulation/common/VisualVisitor.h>
+#include <sofa/simulation/common/ExportOBJVisitor.h>
+#include <sofa/simulation/common/WriteStateVisitor.h>
+#include <sofa/simulation/common/XMLPrintVisitor.h>
+#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/UpdateMappingEndEvent.h>
+#include <sofa/simulation/common/CleanupVisitor.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/common/xml/NodeElement.h>
+
+#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/PipeProcess.h>
+#include <sofa/helper/AdvancedTimer.h>
+
+#include <sofa/core/visual/VisualParams.h>
+
 #include <stdlib.h>
 #include <math.h>
 
@@ -43,21 +74,90 @@ int DefaultAnimationMasterSolverClass = core::RegisterObject("The simplest maste
 
 
 
-DefaultAnimationMasterSolver::DefaultAnimationMasterSolver()
-{}
+DefaultAnimationMasterSolver::DefaultAnimationMasterSolver(simulation::Node* _gnode)
+    : Inherit()
+    , numMechSteps( initData(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") )
+    , nbSteps( initData(&nbSteps, (unsigned)0, "nbSteps", "Number of animation steps completed", true, false))
+    , nbMechSteps( initData(&nbMechSteps, (unsigned)0, "nbMechSteps", "Number of mechanical steps completed", true, false))
+    , gnode(_gnode)
+{
+    std::cout<<" Calling Constructor DefaultAnimationMasterSolver"<<std::endl;
+    assert(gnode);
+}
 
 DefaultAnimationMasterSolver::~DefaultAnimationMasterSolver()
-{}
-
-void DefaultAnimationMasterSolver::step(const core::ExecParams* /*params*/, double /*dt*/)
 {
-    std::cout<<" DefaultAnimationMasterSolver detected on scene and step is called "<<std::cout;
+
+}
+
+void DefaultAnimationMasterSolver::step(const core::ExecParams* params, double dt)
+{
+    std::cout<<" DefaultAnimationMasterSolver detected on scene and step is called with   dt = "<<dt<<std::endl;
+
+
+    sofa::helper::AdvancedTimer::begin("Animate");
+
+    {
+        AnimateBeginEvent ev ( dt );
+        PropagateEventVisitor act ( params, &ev );
+        gnode->execute ( act );
+    }
+
+    //std::cout << "animate\n";
+    double startTime = gnode->getTime();
+    double mechanicalDt = dt/numMechSteps.getValue();
+    //double nextTime = gnode->getTime() + gnode->getDt();
+
+    // CHANGE to support MasterSolvers : CollisionVisitor is now activated within AnimateVisitor
+    //gnode->execute<CollisionVisitor>(params);
+
+    AnimateVisitor act(params);
+    act.setDt ( mechanicalDt );
+    BehaviorUpdatePositionVisitor beh(params , gnode->getDt());
+    for( unsigned i=0; i<numMechSteps.getValue(); i++ )
+    {
+        gnode->execute ( beh );
+        gnode->execute ( act );
+        gnode->setTime ( startTime + (i+1)* act.getDt() );
+        //getVisualRoot()->setTime ( gnode->getTime() );
+        gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
+        //getVisualRoot()->execute<UpdateSimulationContextVisitor>(params);
+        nbMechSteps.setValue(nbMechSteps.getValue() + 1);
+    }
+
+    {
+        AnimateEndEvent ev ( dt );
+        PropagateEventVisitor act ( params, &ev );
+        gnode->execute ( act );
+    }
+
+    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
+    //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
+    gnode->execute<UpdateMappingVisitor>(params);
+    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
+    {
+        UpdateMappingEndEvent ev ( dt );
+        PropagateEventVisitor act ( params , &ev );
+        gnode->execute ( act );
+    }
+    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
+
+#ifndef SOFA_NO_UPDATE_BBOX
+    sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
+    gnode->execute<UpdateBoundingBoxVisitor>(params);
+    sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
+#endif
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode(std::string("Step"));
+#endif
+    nbSteps.setValue(nbSteps.getValue() + 1);
+
+    sofa::helper::AdvancedTimer::end("Animate");
+
 }
 
 const DefaultAnimationMasterSolver::Solvers& DefaultAnimationMasterSolver::getSolverSequence()
 {
-    simulation::Node* gnode = dynamic_cast<simulation::Node*>( this->getContext() );
-    assert( gnode );
     return gnode->solver;
 }
 

@@ -25,10 +25,11 @@
 #ifndef SOFA_SIMULATION_DEFAULTANIMATIONMASTERSOLVER_H
 #define SOFA_SIMULATION_DEFAULTANIMATIONMASTERSOLVER_H
 
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MasterSolver.h>
+#include <sofa/core/ExecParams.h>
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/core/ExecParams.h>
 
 namespace sofa
 {
@@ -36,9 +37,10 @@ namespace sofa
 namespace simulation
 {
 
-
+using namespace sofa::core::objectmodel;
+using namespace sofa::core::behavior;
 /**
- *  \brief Default MasterSolver to be created when no Master Sovler found on simulation::node.
+ *  \brief Default Animation Master Solver to be created when no Master Sovler found on simulation::node.
  *
  *
  */
@@ -46,14 +48,29 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API DefaultAnimationMasterSolver : public sofa::core::behavior::MasterSolver
 {
 public:
+    typedef sofa::core::behavior::MasterSolver Inherit;
     SOFA_CLASS(DefaultAnimationMasterSolver,sofa::core::behavior::MasterSolver);
 
-    DefaultAnimationMasterSolver();
+    DefaultAnimationMasterSolver(simulation::Node* gnode);
 
     virtual ~DefaultAnimationMasterSolver();
 
     virtual void step(const core::ExecParams* params, double dt);
 
+    Data<unsigned> numMechSteps;
+    Data<unsigned> nbSteps;
+    Data<unsigned> nbMechSteps;
+
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static void create(T*& obj, BaseContext* context, BaseObjectDescription* arg)
+    {
+        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
+        obj = new T(gnode);
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+    }
 
     virtual void computeCollision(const core::ExecParams* /*params*/) {}
     virtual void integrate(const core::ExecParams* /*params*/, double /*dt*/) {}
@@ -62,6 +79,8 @@ protected:
     typedef simulation::Node::Sequence<core::behavior::OdeSolver> Solvers;
     typedef core::collision::Pipeline Pipeline;
     const Solvers& getSolverSequence();
+
+    simulation::Node* gnode;
 };
 
 } // namespace simulation
