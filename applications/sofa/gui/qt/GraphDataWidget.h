@@ -162,6 +162,24 @@ public:
 
     QWidget *getWidget() {return w;}
 
+    QColor getColor(float h)
+    {
+        int i = int(h * 6) % 6;
+        float f = h * 6 - floor(h * 6);
+        int c1 = 255 - floor(255 * f);
+        int c2 = floor(255 * f);
+
+        switch(i)
+        {
+        case 0: return QColor(255, c2, 0);
+        case 1: return QColor(c1, 255, 0);
+        case 2: return QColor(0, 255, c2);
+        case 3: return QColor(0, c1, 255);
+        case 4: return QColor(c2, 0, 255);
+    case 5: default: return QColor(255, 0, c1);
+        }
+    }
+
     void readFromData(const data_type& d0)
     {
         double minX = 0.0;
@@ -176,49 +194,38 @@ public:
         {
             const curve_type* v = trait::get(d,i);
             const char* name = trait::header(d,i);
+            Curve *c;
+            CurveData* cd;
+
             if (i >= s)
             {
-                Curve *c;
                 QString s;
                 if (name && *name) s = name;
                 c = new Curve(s);
                 c->attach(w);
-                switch(i % 6)
-                {
-                case 0 : c->setPen(QPen(Qt::red)); break;
-                case 1 : c->setPen(QPen(Qt::green)); break;
-                case 2 : c->setPen(QPen(Qt::blue)); break;
-                case 3 : c->setPen(QPen(Qt::cyan)); break;
-                case 4 : c->setPen(QPen(Qt::magenta)); break;
-                case 5 : c->setPen(QPen(Qt::yellow)); break;
-                }
-                CurveData* cd = new CurveData;
-                cd->setData(v);
-                c->setData(*cd);
+                cd = new CurveData;
                 curve.push_back(c);
                 cdata.push_back(cd);
                 s = i+1;
-                if(c->minXValue() < minX) minX = c->minXValue();
-                if(c->maxXValue() > maxX) maxX = c->maxXValue();
-                if(c->minYValue() < minY) minY = c->minYValue();
-                if(c->maxYValue() > maxY) maxY = c->maxYValue();
             }
             else
             {
-                Curve* c = curve[i];
-                CurveData* cd = cdata[i];
+                c = curve[i];
+                cd = cdata[i];
                 QString s;
                 if (name && *name) s = name;
                 if (s != c->title().text())
                     c->setTitle(s);
-                cd->setData(v);
-                c->setData(*cd);
-                if(c->minXValue() < minX) minX = c->minXValue();
-                if(c->maxXValue() > maxX) maxX = c->maxXValue();
-                if(c->minYValue() < minY) minY = c->minYValue();
-                if(c->maxYValue() > maxY) maxY = c->maxYValue();
-
             }
+
+            c->setPen(getColor(i / (float)n));
+            cd->setData(v);
+            c->setData(*cd);
+            if(c->minXValue() < minX) minX = c->minXValue();
+            if(c->maxXValue() > maxX) maxX = c->maxXValue();
+            if(c->minYValue() < minY) minY = c->minYValue();
+            if(c->maxYValue() > maxY) maxY = c->maxYValue();
+
             rect = rect.unite(cdata[i]->boundingRect());
         }
 
@@ -370,11 +377,8 @@ public:
     virtual bool createWidgets()
     {
         bool b = GraphDataWidget<T>::createWidgets();
-
         typename GraphWidget<T>::Widget* w = dynamic_cast<typename GraphWidget<T>::Widget*>(this->container.w->getWidget());
-
-        if(w)
-            w->setAxisScaleEngine(GraphWidget<T>::Widget::yLeft, new QwtLinearScaleEngine);
+        if(w) w->setAxisScaleEngine(GraphWidget<T>::Widget::yLeft, new QwtLinearScaleEngine);
         return b;
     }
 };
