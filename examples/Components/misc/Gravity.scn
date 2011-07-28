@@ -22,9 +22,9 @@
 			<BarycentricMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-        		<MeshLoader name="meshLoader" filename="mesh/torus2_scale3.obj"/>
-			<Mesh />
-			<MechanicalObject dx="0" dy="20" dz="0" />
+        		<MeshObjLoader name="loader" filename="mesh/torus2_scale3.obj"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" dx="0" dy="20" dz="0" />
 			<Triangle />
 			<Line />
 			<Point />
@@ -50,9 +50,9 @@
 			<BarycentricMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-        		<MeshLoader name="meshLoader" filename="mesh/torus2_scale3.obj"/>
-			<Mesh />
-			<MechanicalObject dx="0" dy="-20" dz="0" />
+        		<MeshObjLoader name="loader" filename="mesh/torus2_scale3.obj"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" dx="0" dy="-20" dz="0" />
 			<Triangle />
 			<Line />
 			<Point />
@@ -64,9 +64,9 @@
 
 
 	<Node name="Floor">
-                <MeshLoader name="meshLoader" filename="mesh/floor2b.obj"/>
-		<Mesh />
-		<MechanicalObject dy="30.25" scale="0.7" rx="180" />
+                <MeshObjLoader name="loader" filename="mesh/floor2b.obj"/>
+		<Mesh src="@loader"/>
+		<MechanicalObject src="@loader" dy="30.25" scale="0.7" rx="180" />
 		<Triangle name="Floor" simulated="0" moving="0" />
 		<Line name="Floor" simulated="0" moving="0" />
 		<Point name="Floor" simulated="0" moving="0" />
@@ -80,9 +80,9 @@
 	</Node>
 
 	<Node name="Floor">
-                <MeshLoader name="meshLoader" filename="mesh/floor2b.obj"/>
-		<Mesh />
-		<MechanicalObject dy="-30.25" scale="0.7" />
+                <MeshObjLoader name="loader" filename="mesh/floor2b.obj"/>
+		<Mesh src="@loader"/>
+		<MechanicalObject src="@loader" dy="-30.25" scale="0.7" />
 		<Triangle name="Floor" simulated="0" moving="0" />
 		<Line name="Floor" simulated="0" moving="0" />
 		<Point name="Floor" simulated="0" moving="0" />

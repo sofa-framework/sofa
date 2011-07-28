@@ -2,8 +2,8 @@
 	<Node 	name="Poutre1" gravity="0 -9.81 0"  >
 		<EulerSolver name="Explicit"  printLog="0" />
 		<Node 	name="M1" gravity="0 -9.81 0"  >
-			<MeshLoader name="default0"  filename="mesh/smCube27.msh" />
-			<MechanicalObject template="Vec3d" name="default1"  restScale="1" />
+			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
+			<MechanicalObject src="@loader" template="Vec3d" name="default1"  restScale="1" />
 			<UniformMass template="Vec3d" name="default2"  mass="0.1" />
 			<FixedConstraint template="Vec3d" name="default3"  indices="0 3 6 9 12 15 18 21 24" />
 			<Monitor template="Vec3d" name="velocities_2-11-20"  listening="1"  indices="2 11 20"  showPositions="0"  PositionsColor="1 1 0 1"  showVelocities="1"  VelocitiesColor="1 1 0 1"  ForcesColor="1 1 0 1"  showMinThreshold="0.01"  TrajectoriesPrecision="0.1"  TrajectoriesColor="1 1 0 1" />
@@ -169,8 +169,8 @@
 " />
 		</Node>
 		<Node 	name="M2" gravity="0 -9.81 0"  >
-			<MeshLoader name="default4"  filename="mesh/smCube27.msh" />
-			<MechanicalObject template="Vec3d" name="default5"  translation="0 0 10.5"  restScale="1" />
+			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
+			<MechanicalObject src="@loader" template="Vec3d" name="default5"  translation="0 0 10.5"  restScale="1" />
 			<Monitor template="Vec3d" name="positions_8-16-24"  listening="1"  indices="8 16 24"  showPositions="1"  PositionsColor="1 1 0 1"  VelocitiesColor="1 1 0 1"  ForcesColor="1 1 0 1"  showMinThreshold="0.01"  TrajectoriesPrecision="0.1"  TrajectoriesColor="1 1 0 1" />
 			<UniformMass template="Vec3d" name="default6"  mass="0.1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings2"  spring="0 9 100 5 3.5
@@ -334,8 +334,8 @@
 " />
 		</Node>
 		<Node 	name="M3" gravity="0 -9.81 0"  >
-			<MeshLoader name="default7"  filename="mesh/smCube27.msh" />
-			<MechanicalObject template="Vec3d" name="default8"  translation="0 0 21"  restScale="1" />
+			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
+			<MechanicalObject src="@loader" template="Vec3d" name="default8"  translation="0 0 21"  restScale="1" />
 			<Monitor template="Vec3d" name="velocities_8-16-24"  listening="1"  indices="8 16 24"  showPositions="0"  PositionsColor="1 1 0 1"  showVelocities="1"  VelocitiesColor="1 1 0 1"  ForcesColor="1 1 0 1"  showMinThreshold="0.01"  TrajectoriesPrecision="0.1"  TrajectoriesColor="1 1 0 1"  sizeFactor="1" />
 			<UniformMass template="Vec3d" name="default9"  mass="0.1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings3"  spring="0 9 100 5 3.5
@@ -499,8 +499,8 @@
 " />
 		</Node>
 		<Node 	name="M4" gravity="0 -9.81 0"  >
-			<MeshLoader name="default10"  filename="mesh/smCube27.msh" />
-			<MechanicalObject template="Vec3d" name="default11"  translation="0 0 31.5"  restScale="1" />
+			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
+			<MechanicalObject src="@loader" template="Vec3d" name="default11"  translation="0 0 31.5"  restScale="1" />
 			<UniformMass template="Vec3d" name="default12"  mass="0.1" />
 			<Monitor template="Vec3d" name="forces_2-11-20"  listening="1"  indices="2 11 20"  showPositions="0"  PositionsColor="1 1 0 1"  showVelocities="0"  VelocitiesColor="1 1 0 1"  showForces="1"  ForcesColor="0 1 1 1"  showMinThreshold="0.01"  TrajectoriesPrecision="0.1"  TrajectoriesColor="1 1 0 1"  sizeFactor="1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings4"  spring="0 9 100 5 3.5
@@ -664,8 +664,8 @@
 " />
 		</Node>
 		<Node 	name="M5" gravity="0 -9.81 0"  >
-			<MeshLoader name="default13"  filename="mesh/smCube27.msh" />
-			<MechanicalObject template="Vec3d" name="default14"  translation="0 0 42"  restScale="1" />
+			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
+			<MechanicalObject src="@loader" template="Vec3d" name="default14"  translation="0 0 42"  restScale="1" />
 			<UniformMass template="Vec3d" name="default15"  mass="0.1" />
 			<Monitor template="Vec3d" name="trajectories_8-16-24"  listening="1"  indices="8 16 24"  showPositions="0"  PositionsColor="1 1 0 1"  VelocitiesColor="1 1 0 1"  showForces="0"  ForcesColor="0 1 1 1"  showMinThreshold="0.01"  showTrajectories="1"  TrajectoriesPrecision="0.1"  TrajectoriesColor="1 0 1 1"  sizeFactor="1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings5"  spring="0 9 100 5 3.5
