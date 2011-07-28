@@ -9,9 +9,9 @@
 
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        	<Object type="MeshLoader" name="meshLoader"  filename="mesh/liver.msh"/>
-		<Object type="Mesh" />
-		<Object type="MechanicalObject" template="Vec3f" name="Liver" />
+        	<Object type="MeshGmshLoader" name="loader"  filename="mesh/liver.msh"/>
+		<Object type="Mesh" src="@loader" />
+		<Object type="MechanicalObject" src="@loader" template="Vec3f" name="Liver" />
 		<Object type="UniformMass" name="mass" mass="0.05"/>
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/>
                 <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
