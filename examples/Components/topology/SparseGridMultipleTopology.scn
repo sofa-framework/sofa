@@ -55,9 +55,9 @@
 			<BarycentricMapping object1="../.." object2="VisualLips" />
 		</Node>
 		<Node name="Surf">
-			<MeshLoader name="meshLoader" filename="mesh/frog-push25.obj"/>
-			<Mesh />
-			<MechanicalObject   />
+			<MeshObjLoader name="loader" filename="mesh/frog-push25.obj"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" />
 			<Triangle />
 			<Line />
 			<Point />
