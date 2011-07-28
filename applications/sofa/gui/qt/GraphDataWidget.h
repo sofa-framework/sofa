@@ -361,6 +361,21 @@ public:
     virtual unsigned int numColumnWidget() {return 1;}
 };
 
+template<class T>
+class GraphDataWidget_Linear : public GraphDataWidget< T >
+{
+public:
+    GraphDataWidget_Linear(QWidget* parent,const char* name, MyData* d) : GraphDataWidget(parent,name,d) { }
+    virtual bool createWidgets()
+    {
+        bool b = GraphDataWidget::createWidgets();
+        GraphWidget<T>::Widget* w = dynamic_cast<GraphWidget<T>::Widget*>(container.w->getWidget());
+        if(w)
+            w->setAxisScaleEngine(GraphWidget<T>::Widget::yLeft, new QwtLinearScaleEngine);
+        return b;
+    }
+};
+
 } // namespace qt
 
 } // namespace gui

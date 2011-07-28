@@ -51,6 +51,10 @@ Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::helper:
 Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::helper::vector<double> > > > DWClass_mapvectord("graph",true);
 Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::helper::vector<Vec2d> > > > DWClass_mapvector2d("graph",true);
 
+Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, sofa::helper::vector<float> > > > DWLClass_mapvectorf("graph_linear",true);
+Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, sofa::helper::vector<double> > > > DWLClass_mapvectord("graph_linear",true);
+Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, sofa::helper::vector<Vec2d> > > > DWLClass_mapvector2d("graph_linear",true);
+
 
 
 GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *graphConf):graph(graphConf)
