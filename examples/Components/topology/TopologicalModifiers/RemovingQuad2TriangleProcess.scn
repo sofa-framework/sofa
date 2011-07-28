@@ -8,9 +8,9 @@
 	<Node name="Q">
 		<EulerImplicit name="cg_odesolver" printLog="false"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<MeshLoader name="meshLoader" filename="mesh/nine_quads.msh"/>
-		<MechanicalObject name="Quads" />
-		<include href="Objects/QuadSetTopology.xml" />
+		<MeshGmshLoader name="loader" filename="mesh/nine_quads.msh"/>
+		<MechanicalObject src="@loader" name="Quads" />
+		<include href="Objects/QuadSetTopology.xml" src="@loader" />
 		
 		<TopologicalChangeProcessor listening="1" filename="RemovingQuad2TriangleProcess.txt"/>
 		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/> 

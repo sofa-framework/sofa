@@ -8,10 +8,10 @@
 	<Node name="Q">
 		<EulerImplicit name="cg_odesolver" printLog="false"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<MeshLoader name="meshLoader" filename="mesh/cubeDof.msh"/>
-		<MechanicalObject name="Quads" />
+		<MeshGmshLoader name="loader" filename="mesh/cubeDof.msh"/>
+		<MechanicalObject src="@loader" name="Quads" />
 
-		<QuadSetTopologyContainer name="Container" listening="1"/>
+		<QuadSetTopologyContainer src="@loader" name="Container" listening="1"/>
 		<QuadSetTopologyModifier name="Modifier" />
 		<QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		<QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawQuads="1"/>
