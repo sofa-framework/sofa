@@ -31,7 +31,7 @@
   :changeTopology
   s/type[[:blank:]]*=[[:blank:]]*"Mesh"/type="Mesh" src="@loader"/
   s/<[[:blank:]]*Mesh[[:blank:]][[:blank:]]*/<Mesh src="@loader"/
-  s/Mesh\/>/Mesh src="@loader"\/>/
+  s/<[[:blank:]]*Mesh\/>/<Mesh src="@loader"\/>/
   #
   s/type[[:blank:]]*=[[:blank:]]*"MeshTopology"/type="MeshTopology" src="@loader"/
   s/<[[:blank:]]*MeshTopology[[:blank:]]*/<MeshTopology src="@loader"/
