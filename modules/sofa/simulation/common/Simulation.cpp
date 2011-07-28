@@ -202,7 +202,7 @@ void Simulation::getInstruments( Node *node)
     instruments = fetchInstrument.getInstruments();
 }
 
-/// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
+/// Execute one timestep. If do is 0, the dt parameter in the graph will be used
 void Simulation::animate ( Node* root, double dt )
 {
     if ( !root ) return;

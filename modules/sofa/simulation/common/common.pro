@@ -16,8 +16,9 @@ HEADERS += common.h \
            CollisionEndEvent.h \
            CollisionVisitor.h \  
            Colors.h \
-           DeleteVisitor.h \
            DeactivatedNodeVisitor.h \
+           DefaultAnimationMasterSolver.h \
+           DeleteVisitor.h \
            ExportGnuplotVisitor.h \
            ExportOBJVisitor.h \
            FindByTypeVisitor.h \
@@ -75,8 +76,9 @@ SOURCES += Node.cpp \
            CactusStackStorage.cpp \
            CleanupVisitor.cpp \
            CollisionVisitor.cpp \
-           DeleteVisitor.cpp \
            DeactivatedNodeVisitor.cpp \
+           DefaultAnimationMasterSolver.cpp \
+           DeleteVisitor.cpp \
            ExportGnuplotVisitor.cpp \
            ExportOBJVisitor.cpp \
            InitVisitor.cpp \   
