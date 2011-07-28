@@ -11,8 +11,8 @@
 		<MechanicalObject template="Rigid" name="rigid"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1" />
 		<UniformMass template="Rigid" name="default0" />
 		<Node 	name="topology" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="0" showWireFrame="1" showNormals="0"  >
-			<MeshLoader name="meshLoader"  filename="mesh/truthcylinder1.msh" />
-			<MeshTopology name="meshTopology" />
+			<MeshGmshLoader name="loader"  filename="mesh/truthcylinder1.msh" />
+			<MeshTopology src="@loader"name="meshTopology" />
 			<SubsetTopology template="Vec3d" name="Subset"  box="-5 -20 -5 5 -10 5"  rest_position="@meshTopology.position"  edges="@meshTopology.edges"  triangles="@meshTopology.triangles"  tetrahedra="@meshTopology.tetrahedra"  indices="0"  localIndices="1"  drawROI="0" />
 			<OglModel template="ExtVec3f" name="visual"  position="@meshTopology.position"  useNormals="0"  computeTangents="1"  vertices="@meshTopology.position"  triangles="@meshTopology.triangles"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45" />
 			<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="default15"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@visual" />

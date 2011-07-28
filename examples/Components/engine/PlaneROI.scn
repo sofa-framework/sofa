@@ -9,9 +9,9 @@
 	<Node name="TT">
 		<EulerImplicit name="cg_odesolver" printLog="false"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<MeshLoader name="meshLoader" filename="mesh/cylinder.msh" />
-		<MechanicalObject name="Volume" />
-		<include href="Objects/TetrahedronSetTopology.xml" />
+		<MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
+		<MechanicalObject src="@loader" name="Volume" />
+		<include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
 
 		<PlaneROI plane="0.3 0 0 0 0 0 0 0.3 0 0" drawBoxes="1"
 			   position="@Volume.rest_position" computeTriangles="0"

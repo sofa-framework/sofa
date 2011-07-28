@@ -6,9 +6,9 @@
   <DefaultCollisionGroupManager name="Group"/>
 	
   <Node name="MecaNode" gravity="0 0 0"  >
-    <MeshLoader name="loader" tags="meca" filename="mesh/square3.msh"/>
-    <MechanicalObject template="Vec3d" name="mecaObj" tags="meca" scale="10" />
-    <TriangleSetTopologyContainer name="topo" tags="meca"/>
+    <MeshGmshLoader name="loader" tags="meca" filename="mesh/square3.msh"/>
+    <MechanicalObject src="@loader" template="Vec3d" name="mecaObj" tags="meca" scale="10" />
+    <TriangleSetTopologyContainer src="@loader" name="topo" tags="meca"/>
 
     <Node name="ElecNode" gravity="0 0 0"  >
       <EulerImplicitSolver name="euler" tags="elec"/>
