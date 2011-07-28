@@ -45,10 +45,9 @@ using namespace sofa::defaulttype;
 
 template <class DataTypes>
 Vertex2Frame<DataTypes>::Vertex2Frame():
-    vertices(initData(&vertices,"vertices","Vertices of the mesh loaded"))
+    vertices(initData(&vertices,"position","Vertices of the mesh loaded"))
     , texCoords(initData(&texCoords,"texCoords","TexCoords of the mesh loaded"))
     , normals(initData(&normals,"normals","Normals of the mesh loaded"))
-    , facets(initData(&facets,"facets","Facets of the mesh loaded"))
     , frames( initData (&frames, "frames", "Frames at output") )
     , invertNormals( initData (&invertNormals, false, "invertNormals", "Swap normals") )
 {
@@ -60,7 +59,6 @@ void Vertex2Frame<DataTypes>::init()
     addInput(&vertices);
     addInput(&texCoords);
     addInput(&normals);
-    addInput(&facets);
 
     addOutput(&frames);
 
