@@ -1,8 +1,8 @@
 
 <Node name="root" dt="0.02" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="0" >
-	<MeshLoader name="meshLoader"  filename="mesh/icosahedron.obj"/>
-	<Vertex2Frame name="vertex2frame" template="Rigid" vertices="@meshLoader.vertices" texCoords="@meshLoader.texCoords" normals="@meshLoader.normals" facets="@meshLoader.facets"/>
-	<MechanicalObject name="dofs" template="Rigid" position="@../vertex2frame.frames" />
+	<MeshObjLoader name="loader"  filename="mesh/icosahedron.obj"/>
+	<Vertex2Frame name="vertex2frame" template="Rigid" src="@loader"/>
+	<MechanicalObject name="dofs" template="Rigid" position="@vertex2frame.frames" />
 	<UniformMass totalmass="0.1"/>
 
 	<OglModel name="Visual" color="red" filename="mesh/icosahedron.obj"/>

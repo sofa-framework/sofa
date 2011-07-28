@@ -18,9 +18,9 @@
 			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default17" object1="../.." object2="Visual" hexamap="0 "/>
 		</Node>
 		<Node 	name="CollisionNode" gravity="0 -9.81 0">
-			<MeshLoader name="collisionLoader" filename="mesh/doubleBall.obj"/>
-			<MeshTopology name="default18"/>
-			<MechanicalObject template="Vec3d" name="default19" restScale="1"/>
+			<MeshObjLoader name="loader" filename="mesh/doubleBall.obj"/>
+			<MeshTopology src="@loader"name="default18"/>
+			<MechanicalObject src="@loader" template="Vec3d" name="default19" restScale="1"/>
 			<TriangleModel name="default20"/>
 			<LineModel name="default21"/>
 			<PointModel name="default22"/>
