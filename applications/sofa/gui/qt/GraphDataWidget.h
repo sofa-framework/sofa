@@ -366,11 +366,13 @@ class GraphDataWidget_Linear : public GraphDataWidget< T >
 {
 public:
     typedef sofa::core::objectmodel::Data<T> MyData;
-    GraphDataWidget_Linear(QWidget* parent,const char* name, MyData* d) : GraphDataWidget(parent,name,d) { }
+    GraphDataWidget_Linear(QWidget* parent,const char* name, MyData* d) : GraphDataWidget <T>(parent,name,d) { }
     virtual bool createWidgets()
     {
-        bool b = GraphDataWidget::createWidgets();
-        GraphWidget<T>::Widget* w = dynamic_cast<GraphWidget<T>::Widget*>(container.w->getWidget());
+        bool b = GraphDataWidget<T>::createWidgets();
+
+        typename GraphWidget<T>::Widget* w = dynamic_cast<typename GraphWidget<T>::Widget*>(this->container.w->getWidget());
+
         if(w)
             w->setAxisScaleEngine(GraphWidget<T>::Widget::yLeft, new QwtLinearScaleEngine);
         return b;
