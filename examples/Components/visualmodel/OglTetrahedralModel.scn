@@ -1,9 +1,9 @@
 <Node name="root" dt="0.02" showBehaviorModels="0" showVisualModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
 
 	<Node name="Lens">
-		<Object type="MeshLoader" filename="mesh/single_tetra.msh" />
-		<Object type="MechanicalObject" template="Vec3d"/>
-		<include href="Objects/TetrahedronSetTopology.xml" />
+		<Object type="MeshGmshLoader" filename="mesh/single_tetra.msh"  name="loader"/>
+		<Object type="MechanicalObject" src="@loader" template="Vec3d"/>
+		<include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
 		<Node >
 			<Object type="OglShader" geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="shaders/tetra.vert" geoFilename="shaders/tetra_triangles.geo" fragFilename="shaders/tetra.frag"/>
 			<Object type="OglTetrahedralModel" />
