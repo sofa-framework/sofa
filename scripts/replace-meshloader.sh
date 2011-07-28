@@ -11,7 +11,7 @@ do
 done
 
 echo "$size"
-for g in $(find ${1:-.} -name '*.scn' -o -name '*.xml') 
+for g in $(find ${1:-.} -name '*.scn' -o -name '*.xml' ) 
 do
 	#echo "$g"
 	sed -f "$SCRIPTS/replace-meshloader.sed" "$g" > "$g".tmp
