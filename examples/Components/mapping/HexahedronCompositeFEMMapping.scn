@@ -33,9 +33,9 @@
 		<Object type="BoxConstraint" box="-30 -11 -30   100 -9 30" drawSize="0.75"/>
 
 		<Node name="Collinonunif">
-			<Object type="MeshLoader" name="meshLoader"  filename="mesh/grape_out.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject" />
+			<Object type="MeshObjLoader" name="loader"  filename="mesh/grape_out.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader" />
 			<Object type="HexahedronCompositeFEMMapping"/>
 			
 			<Node name="f1">
@@ -76,9 +76,9 @@
 		<Object type="BoxConstraint" box="-100 -11 -30   30 -9 30" drawSize="0.75"/>
 
 		<Node name="Collinonunif">
-			<Object type="MeshLoader" name="meshLoader"  filename="mesh/grape_out.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject" />
+			<Object type="MeshObjLoader" name="loader"  filename="mesh/grape_out.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader" />
 			<Object type="BarycentricMapping"/>
 			
 			<Node name="f2">

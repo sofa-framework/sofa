@@ -9,9 +9,9 @@
 
 	<Node name="ChainRigid">
 		<Node name="TorusFixed">
-        	<MeshLoader name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
-			<Mesh />
-			<MechanicalObject />
+        	<MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" />
 			<Triangle simulated="0" moving="0" />
 			<Line simulated="0" moving="0"  />
 			<Point simulated="0" moving="0" />
@@ -41,9 +41,9 @@
 				<DeformableOnRigidFrameMapping input1="@.." input2="@../../TorusRigid/rigidframe" output="@deformedMO" printLog="0"/>	
 				
 				 <Node name="TorusCollisLocal">
-					<MeshLoader name="meshLoader" filename="mesh/torus_for_collision.obj"/>
-					<Mesh />
-					<MechanicalObject />
+					<MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj"/>
+					<Mesh src="@loader"/>
+					<MechanicalObject src="@loader" />
 					<Triangle group="2"/>
 					<Line group="2"/>
 					<Point group="2"/>

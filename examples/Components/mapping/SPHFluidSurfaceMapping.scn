@@ -3,8 +3,8 @@
 
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        	<Object type="MeshLoader" name="meshLoader" filename="mesh/liver.msh"/>
-		<Object type="MechanicalObject" name="dofs" />
+        	<Object type="MeshGmshLoader" name="loader" filename="mesh/liver.msh"/>
+		<Object type="MechanicalObject" src="@loader" name="dofs" />
 
 		<Object type="UniformMass" name="M1" mass="1" />
 		<Object type="SPHFluidForceField" radius="0.75" density="15" viscosity="10" pressure="1000" surfaceTension="-1000" /> 
