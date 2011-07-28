@@ -9,10 +9,10 @@
 	<Node name="tshirt">
 		<Object type="EulerImplicit" />
 		<Object type="CGLinearSolver" iterations="25"/>
-        	<Object type="MeshLoader" name="meshLoader"  filename="mesh/tshirt_0.msh"/>
-		<Object type="Mesh"/>
-		<Object type="MechanicalObject" scale="10"/>
-		<include href="Objects/TriangleSetTopology.xml" />
+        	<Object type="MeshGmshLoader" name="loader"  filename="mesh/tshirt_0.msh"/>
+		<Object type="Mesh" src="@loader"/>
+		<Object type="MechanicalObject" src="@loader" scale="10"/>
+		<include href="Objects/TriangleSetTopology.xml" src="@loader" />
 		<Object type="UniformMass" mass="1" />
 		<Object type="FixedConstraint" indices="38 39 40 41 42 43 123 124 137"/>
 		<Object type="TriangleFEMForceField" name="FEM" youngModulus="50000" poissonRatio="0.3" method="large"/>
