@@ -7,9 +7,9 @@
 	<Object type="CollisionResponse" name="Response" response="FrictionContact"/>
 	
 	<Node name="Torus1">
-		<Object type="MeshLoader" filename="mesh/torus2_for_collision.obj"/>
-		<Object type="Mesh"/>
-		<Object type="MechanicalObject" scale="5.0"/>
+		<Object type="MeshObjLoader" filename="mesh/torus2_for_collision.obj" name="loader"/>
+		<Object type="Mesh" src="@loader"/>
+		<Object type="MechanicalObject" src="@loader" scale="5.0"/>
 		<Object type="Triangle" simulated="0" moving="0" />
 		<Object type="Line" simulated="0" moving="0" />
 		<Object type="Point" simulated="0" moving="0" />
@@ -21,9 +21,9 @@
 		<Object type="EulerImplicitSolver" rayleighMass="0.01"  rayleighStiffness="0.001" />
 		<Object type="CGLinearSolver" iterations="15" threshold="1.0e-15"  tolerance="1.0e-9" />
 		<!--<SparseLDLSolver />-->
-		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus_low_res.msh"/>
-		<Object type="Mesh"/>
-		<Object type="MechanicalObject" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0" scale="5.0" />
+		<Object type="MeshGmshLoader" name="loader" filename="mesh/torus_low_res.msh"/>
+		<Object type="Mesh" src="@loader"/>
+		<Object type="MechanicalObject" src="@loader" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0" scale="5.0" />
 		<Object type="UniformMass" totalmass="0.2" />
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="10000" poissonRatio="0.48" computeGlobalMatrix="false" method="polar"/>
 		<!--<LinearSolverConstraintCorrection />-->
@@ -33,9 +33,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 			</Node>
 		<Node name="Surf2">
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/torus_for_collision.obj"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0" scale="5.0"/>
+			<Object type="MeshObjLoader" name="loader" filename="mesh/torus_for_collision.obj"/>
+			<Object type="Mesh" src="@loader"/>
+			<Object type="MechanicalObject" src="@loader" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0" scale="5.0"/>
 			<Object type="Triangle" contactStiffness="0.1"/>
 			<Object type="Line" />
 			<Object type="Point" />
@@ -55,9 +55,9 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf2">
-			<Object type="MeshLoader" filename="mesh/torus_for_collision.obj"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" scale="5.0"/>
+			<Object type="MeshObjLoader" filename="mesh/torus_for_collision.obj" name="loader"/>
+			<Object type="Mesh" src="@loader"/>
+			<Object type="MechanicalObject" src="@loader" scale="5.0"/>
 			<Object type="Triangle" />	
 			<Object type="Line" />	
 			<Object type="Point" />
@@ -77,9 +77,9 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf2">
-			<Object type="MeshLoader" filename="mesh/torus2_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject" scale="5.0"/>
+			<Object type="MeshObjLoader" filename="mesh/torus2_for_collision.obj" name="loader"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader" scale="5.0"/>
 			<Object type="Triangle" /> 
 			<Object type="Line" />
 			<Object type="Point" />
@@ -98,9 +98,9 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf2">
-			<Object type="MeshLoader" filename="mesh/torus_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject" scale="5.0"/>
+			<Object type="MeshObjLoader" filename="mesh/torus_for_collision.obj" name="loader"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader" scale="5.0"/>
 			<Object type="Triangle" /> 
 			<Object type="Line" />
 			<Object type="Point" />

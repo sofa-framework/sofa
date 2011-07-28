@@ -8,9 +8,9 @@
 	<Object type="MultiStepMasterSolver" collisionSteps="10" integrationSteps="2"/>
 	<Node name="ChainRigid">
 		<Node name="TorusFixed">
-        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject" />
+        		<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_for_collision.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader" />
 			<Object type="Triangle" simulated="0" moving="0" />
 			<Object type="OglModel" name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
 		</Node>
@@ -24,9 +24,9 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-        		        <Object type="MeshLoader" name="meshLoader"  filename="mesh/torus_for_collision.obj"/>
-				<Object type="Mesh" />
-				<Object type="MechanicalObject" />
+        		        <Object type="MeshObjLoader" name="loader"  filename="mesh/torus_for_collision.obj"/>
+				<Object type="Mesh" src="@loader" />
+				<Object type="MechanicalObject" src="@loader" />
 				<Object type="Triangle" />
 				<Object type="RigidMapping" />
 			</Node>
@@ -41,9 +41,9 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-	        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
-				<Object type="Mesh" />
-				<Object type="MechanicalObject" />
+	        		<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_for_collision.obj"/>
+				<Object type="Mesh" src="@loader" />
+				<Object type="MechanicalObject" src="@loader" />
 				<Object type="Triangle" />
 				<Object type="RigidMapping" />
 			</Node>
@@ -58,9 +58,9 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-        		        <Object type="MeshLoader" name="meshLoader"  filename="mesh/torus_for_collision.obj"/>
-				<Object type="Mesh" />
-				<Object type="MechanicalObject" />
+        		        <Object type="MeshObjLoader" name="loader"  filename="mesh/torus_for_collision.obj"/>
+				<Object type="Mesh" src="@loader" />
+				<Object type="MechanicalObject" src="@loader" />
 				<Object type="Triangle" />
 				<Object type="RigidMapping" />
 			</Node>
@@ -75,9 +75,9 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-	        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
-				<Object type="Mesh" />
-				<Object type="MechanicalObject" />
+	        		<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_for_collision.obj"/>
+				<Object type="Mesh" src="@loader" />
+				<Object type="MechanicalObject" src="@loader" />
 				<Object type="Triangle" />
 				<Object type="RigidMapping" />
 			</Node>

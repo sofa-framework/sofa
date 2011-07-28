@@ -3,9 +3,9 @@
 	<Node name="DeformableObject">
 		<RungeKutta4 name="odeExplicitSolver" />
 		<Object type="CGLinearSolver" iterations="100" />
-        	<Object type="MeshLoader" name="meshLoader" filename="mesh/truthcylinder1.msh"/>
-		<Object type="Mesh" />
-		<Object type="MechanicalObject"/>
+        	<Object type="MeshGmshLoader" name="loader" filename="mesh/truthcylinder1.msh"/>
+		<Object type="Mesh" src="@loader" />
+		<Object type="MechanicalObject" src="@loader"/>
 		<Object type="UniformMass" totalmass="15" />
 		<Object type="FixedConstraint" indices="0 1 2 3 4 5 6 7 8 9 10 
 							11 12 13 14 15 16 17 18 19 20 
