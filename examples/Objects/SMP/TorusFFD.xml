@@ -15,8 +15,8 @@
 		<BarycentricMapping object1="../.." object2="Visual" />
 	</Node>
 	<Node name="Surf2">
-    <MeshLoader name="collisionLoader" filename="mesh/torus_for_collision.obj"/>
-		<Mesh/>
+    <MeshObjLoader name="collisionLoader" filename="mesh/torus_for_collision.obj"/>
+		<Mesh src="@collisionLoader" />
 		<MechanicalObject dx="0" dy="0" dz="0" scale="1.0"/>
 		<Triangle />
 		<Line />

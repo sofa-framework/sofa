@@ -8,8 +8,8 @@
 		<RigidMapping object1="../.." object2="Visual" />
 	</Node>
 	<Node name="Surf2">
-		<MeshLoader name="meshLoader" filename="mesh/torus_for_collision.obj"/>
-		<Mesh/>
+		<MeshObjLoader name="meshLoader" filename="mesh/torus_for_collision.obj"/>
+		<Mesh src="@meshLoader"/>
 		<MechanicalObject scale="1.0" />
 		<Triangle />
 		<Line />
