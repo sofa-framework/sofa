@@ -8,9 +8,9 @@
 	<Node name="TT">
 		<EulerImplicit name="cg_odesolver" printLog="false"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<MeshLoader name="meshLoader" filename="mesh/cubeDof.msh" />
-		<MechanicalObject name="Volume" />
-		<TetrahedronSetTopologyContainer name="Container" listening="1"/>
+		<MeshGmshLoader name="loader" filename="mesh/cubeDof.msh" />
+		<MechanicalObject src="@loader" name="Volume" />
+		<TetrahedronSetTopologyContainer src="@loader" name="Container" listening="1"/>
 		<TetrahedronSetTopologyModifier name="Modifier" />
 		<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1"/>

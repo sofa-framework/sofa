@@ -9,9 +9,9 @@
 
 		<EulerImplicit name="cg_odesolver" printLog="false"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<MeshLoader name="meshLoader" filename="mesh/nine_hexa.msh"/>
-		<MechanicalObject name="Hexa" />
-		<include href="Objects/HexahedronSetTopology.xml" />
+		<MeshGmshLoader name="loader" filename="mesh/nine_hexa.msh"/>
+		<MechanicalObject src="@loader" name="Hexa" />
+		<include href="Objects/HexahedronSetTopology.xml" src="@loader" />
 
 		<TopologicalChangeProcessor listening="1" filename="RemovingHexa2QuadProcess.txt"/>
 		<HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3"  method="large" />
