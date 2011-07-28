@@ -8,18 +8,20 @@ INCLUDEPATH += $$ROOT_SRC_DIR/applications
 DEFINES += SOFA_BUILD_SOFAGUI
 
 SOURCES = \
-	SofaGUI.cpp \
 	BatchGUI.cpp \
+	ColourPickingVisitor.h \
+	FilesRecentlyOpenedManager.cpp \
 	MouseOperations.cpp \
 	PickHandler.cpp \
-	FilesRecentlyOpenedManager.cpp
+	SofaGUI.cpp
 
 HEADERS = \
-	SofaGUI.h \
 	BatchGUI.h \
-	OperationFactory.h \
+	ColourPickingVisitor.cpp \
 	MouseOperations.h \
+	OperationFactory.h \
 	PickHandler.h \
-	FilesRecentlyOpenedManager.h 
+	FilesRecentlyOpenedManager.h \
+	SofaGUI.h
 
 load(sofa/post)
