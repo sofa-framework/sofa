@@ -82,7 +82,7 @@ protected:
     Data< helper::vector<sofa::defaulttype::Vector3> > vertices;
     Data< helper::vector<sofa::defaulttype::Vector3> > texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
     Data< helper::vector<sofa::defaulttype::Vector3> > normals;
-    Data< helper::vector< helper::vector < helper::vector <int> > > > facets;
+
     Data<VecCoord> frames;
     Data<bool> invertNormals;
 };
