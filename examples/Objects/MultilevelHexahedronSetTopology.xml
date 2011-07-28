@@ -1,5 +1,5 @@
 <Node name="Group"> 
-  <Object type="MultilevelHexahedronSetTopologyContainer"  name="Container" level="0"/>
+  <Object type="MultilevelHexahedronSetTopologyContainer"  name="Container" src="" level="0"/>
   <Object type="MultilevelHexahedronSetTopologyModifier"   name="Modifier" />
   <Object type="MultilevelHexahedronSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
   <Object type="MultilevelHexahedronSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" />
