@@ -20,9 +20,9 @@
 				<RigidMapping object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<MeshLoader name="meshLoader" filename="mesh/torus_for_collision.obj" triangulate="true"/>
+				<MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" triangulate="true"/>
 				<Mesh/>
-				<MechanicalObject scale="1.0"/>
+				<MechanicalObject src="@loader" scale="1.0"/>
 				<Triangle/> 
 				<Line/>
 				<Point/>
@@ -41,9 +41,9 @@
 				<RigidMapping object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<MeshLoader name="meshLoader" filename="mesh/man.obj" triangulate="true"/>
+				<MeshObjLoader name="loader" filename="mesh/man.obj" triangulate="true"/>
 				<Mesh/>
-				<MechanicalObject scale="10" dy="-3.0"/>
+				<MechanicalObject src="@loader" scale="10" dy="-3.0"/>
 				<Triangle/> 
 				<Line/>
 				<Point/>
@@ -61,9 +61,9 @@
 				<RigidMapping object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<MeshLoader name="meshLoader" filename="mesh/smCube27.obj" triangulate="true"/>
+				<MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true"/>
 				<Mesh/>
-				<MechanicalObject scale="0.3"/>
+				<MechanicalObject src="@loader" scale="0.3"/>
 				<Triangle/> 
 				<Line/>
 				<Point/>
@@ -82,9 +82,9 @@
 				<RigidMapping object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<MeshLoader name="meshLoader" filename="mesh/dragon_clean.obj" triangulate="true"/>
+				<MeshObjLoader name="loader" filename="mesh/dragon_clean.obj" triangulate="true"/>
 				<Mesh/>
-				<MechanicalObject scale="0.25"/>
+				<MechanicalObject src="@loader" scale="0.25"/>
 				<Triangle/> 
 				<Line/>
 				<Point/>
@@ -94,9 +94,9 @@
 -->
 
 		<Node name="BOX">
-			<MeshLoader name="meshLoader" filename="mesh/box_inside.obj" triangulate="true"/>
+			<MeshObjLoader name="loader" filename="mesh/box_inside.obj" triangulate="true"/>
 			<Mesh/>
-			<MechanicalObject/>
+			<MechanicalObject src="@loader" />
 			<Triangle simulated="0" moving="0"/>	
 			<Line simulated="0" moving="0"/>
 			<Point simulated="0" moving="0"/>

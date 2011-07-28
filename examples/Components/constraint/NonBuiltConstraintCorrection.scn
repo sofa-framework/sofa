@@ -21,9 +21,9 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="MeshLoader" name="meshLoader" filename="mesh/torus_for_collision.obj" triangulate="true"/>
-				<Object type="Mesh" />
-				<Object type="MechanicalObject" scale="1.0"/>
+				<Object type="MeshObjLoader" name="loader" filename="mesh/torus_for_collision.obj" triangulate="true"/>
+				<Object type="Mesh" src="@loader" />
+				<Object type="MechanicalObject" src="@loader" scale="1.0"/>
 				<Object type="Triangle" /> 
 				<Object type="Line" />
 				<Object type="Point" />
@@ -43,9 +43,9 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="MeshLoader" name="meshLoader" filename="mesh/man.obj" triangulate="true"/>
-				<Object type="Mesh" />
-				<Object type="MechanicalObject" scale="10" dy="-3.0"/>
+				<Object type="MeshObjLoader" name="loader" filename="mesh/man.obj" triangulate="true"/>
+				<Object type="Mesh" src="@loader" />
+				<Object type="MechanicalObject" src="@loader" scale="10" dy="-3.0"/>
 				<Object type="Triangle" /> 
 				<Object type="Line" />
 				<Object type="Point" />
@@ -63,9 +63,9 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-					<Object type="MeshLoader" name="meshLoader" filename="mesh/smCube27.obj" triangulate="true"/>
-				<Object type="Mesh" />
-				<Object type="MechanicalObject" scale="0.3"/>
+					<Object type="MeshObjLoader" name="loader" filename="mesh/smCube27.obj" triangulate="true"/>
+				<Object type="Mesh" src="@loader" />
+				<Object type="MechanicalObject" src="@loader" scale="0.3"/>
 				<Object type="Triangle" /> 
 				<Object type="Line" />
 				<Object type="Point" />
@@ -85,9 +85,9 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="MeshLoader" name="meshLoader" filename="mesh/dragon_clean.obj" triangulate="true"/>
-				<Object type="Mesh" />
-				<Object type="MechanicalObject" scale="0.25"/>
+				<Object type="MeshObjLoader" name="loader" filename="mesh/dragon_clean.obj" triangulate="true"/>
+				<Object type="Mesh" src="@loader" />
+				<Object type="MechanicalObject" src="@loader" scale="0.25"/>
 				<Object type="Triangle" /> 
 				<Object type="Line" />
 				<Object type="Point" />
@@ -100,9 +100,9 @@
 
 		
 		<Node name="BOX">
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/box_inside.obj" triangulate="true"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject"/>
+			<Object type="MeshObjLoader" name="loader" filename="mesh/box_inside.obj" triangulate="true"/>
+			<Object type="Mesh" src="@loader"/>
+			<Object type="MechanicalObject" src="@loader"/>
 			<Object type="Triangle" simulated="0" moving="0"/>	
 			<Object type="Line" simulated="0" moving="0"/>
 			<Object type="Point" simulated="0" moving="0"/>

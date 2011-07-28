@@ -13,9 +13,9 @@
 			<OglModel name="Visual" fileMesh="mesh/cube.obj" color="1 0 0 1" dy="2.5"/>
 		</Node>
 		<Node name="ColliCube">
-			<MeshLoader name="meshLoader"  filename="mesh/cube.obj" triangulate="1"/>
-			<Mesh />
-			<MechanicalObject template="Vec3d" dy="2.5"/>
+			<MeshObjLoader name="loader"  filename="mesh/cube.obj" triangulate="1"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" template="Vec3d" dy="2.5"/>
 			<Triangle simulated="0" moving="0"/>	
 			<Line simulated="0" moving="0"/>
 			<Point simulated="0" moving="0"/> 
@@ -37,9 +37,9 @@
 			<RigidMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="ColliCube">
-			<MeshLoader name="meshLoader"  filename="mesh/cube.obj"  triangulate="1"/>
-			<Mesh />
-			<MechanicalObject />
+			<MeshObjLoader name="loader"  filename="mesh/cube.obj"  triangulate="1"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" />
 			<Triangle contactStiffness="10.0"/> 
 			<Line contactStiffness="10.0"/>
 			<Point contactStiffness="10.0"/>
@@ -65,9 +65,9 @@
 			<RigidMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="ColliCube">
-			<MeshLoader name="meshLoader"  filename="mesh/cube.obj"/>
-			<Mesh />
-			<MechanicalObject scale="1.0"/>
+			<MeshObjLoader name="loader"  filename="mesh/cube.obj"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" scale="1.0"/>
 			<Triangle /> 
 			<Line />
 			<Point />
@@ -93,9 +93,9 @@
 			<RigidMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="ColliCube">
-			<MeshLoader name="meshLoader"  filename="mesh/cube.obj"/>
-			<Mesh />
-			<MechanicalObject scale="1.0"/>
+			<MeshObjLoader name="loader"  filename="mesh/cube.obj"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" scale="1.0"/>
 			<Triangle /> 
 			<Line />
 			<Point />
@@ -121,9 +121,9 @@
 			<RigidMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="ColliCube">
-			<MeshLoader name="meshLoader"  filename="mesh/cube.obj"/>
-			<Mesh />
-			<MechanicalObject scale="1.0"/>
+			<MeshObjLoader name="loader"  filename="mesh/cube.obj"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" scale="1.0"/>
 			<Triangle /> 
 			<Line />
 			<Point />
