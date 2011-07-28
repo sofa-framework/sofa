@@ -53,9 +53,9 @@
     </Node>
   </Node>
   <Node name="CubeFixed">
-    <Object type="MeshLoader" name="meshLoader" filename="mesh/cube.obj"/>
-    <Object type="Mesh" />
-    <Object type="MechanicalObject" scale="20" dz="-35"/>
+    <Object type="MeshObjLoader" name="loader" filename="mesh/cube.obj"/>
+    <Object type="Mesh" src="@loader" />
+    <Object type="MechanicalObject" src="@loader" scale="20" dz="-35"/>
     <Object type="Triangle" simulated="0" moving="0" />
     <Object type="OglModel" name="Visual" fileMesh="mesh/cube.obj" color="gray" scale="20" dz="-35" />
   </Node>

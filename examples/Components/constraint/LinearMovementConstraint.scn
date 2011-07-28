@@ -32,9 +32,9 @@
 
     <Node name="coli">
 
-      <Object type="MeshLoader" name="meshLoader" filename="mesh/liver.obj"/>
-      <Object type="Mesh" />
-      <Object type="MechanicalObject" template="Vec3d">
+      <Object type="MeshObjLoader" name="loader" filename="mesh/liver.obj"/>
+      <Object type="Mesh" src="@loader" />
+      <Object type="MechanicalObject" src="@loader" template="Vec3d">
 	<Attribute type="name">
 	  <Data value="dofs"/>
 	</Attribute>
@@ -103,9 +103,9 @@
 
     <Node name="coli">
 
-      <Object type="MeshLoader" name="meshLoader" filename="mesh/liver.obj"/>
-      <Object type="Mesh" />
-      <Object type="MechanicalObject" template="Vec3d">
+      <Object type="MeshObjLoader" name="loader" filename="mesh/liver.obj"/>
+      <Object type="Mesh" src="@loader" />
+      <Object type="MechanicalObject" src="@loader" template="Vec3d">
 	<Attribute type="name">
 	  <Data value="dofs"/>
 	</Attribute>
@@ -175,9 +175,9 @@
 
     <Node name="coli">
 
-      <Object type="MeshLoader" name="meshLoader" filename="mesh/liver.obj"/>
-      <Object type="Mesh" />
-      <Object type="MechanicalObject" template="Vec3d">
+      <Object type="MeshObjLoader" name="loader" filename="mesh/liver.obj"/>
+      <Object type="Mesh" src="@loader" />
+      <Object type="MechanicalObject" src="@loader" template="Vec3d">
 	<Attribute type="name">
 	  <Data value="dofs"/>
 	</Attribute>
