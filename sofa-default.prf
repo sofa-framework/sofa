@@ -32,6 +32,9 @@ DEFINES += SOFA_GUI_QTVIEWER
 # Uncomment if you want to compile GLUT interface
 DEFINES += SOFA_GUI_GLUT
 
+# Uncomment if you want to enable interactionmode
+# DEFINES += SOFA_GUI_INTERACTION
+
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 # Uncomment if you want to compile FLTK interface
@@ -60,6 +63,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Uncomment if you want to support MASS under mappings
 DEFINES += SOFA_SUPPORT_MAPPED_MASS
 
+# Uncomment if you want to support computing mechanical matrices taking cCompressed Row Sparse matrix into account
+# DEFINES += SOFA_SUPPORT_CRS_MATRIX
+
 # Uncomment if you want to use MechanicalState masks by default, instead of only when useMask="true" is set
 # This can reduce computations in mappings to collision models, but it complicates visitors and solvers and may introduce hard to understand bugs...
 # DEFINES += SOFA_USE_MASK_BY_DEFAULT
@@ -77,6 +83,9 @@ DEFINES += SOFA_DUMP_VISITOR_INFO
 
 # Uncomment if you want to disable vector access failure assertions (WIN32 Debug optimization)
 # DEFINES += SOFA_NO_VECTOR_ACCESS_FAILURE
+
+# Uncomment if you want to disable bounding boxes recomputation at each timestep
+# DEFINES += SOFA_NO_UPDATE_BBOX
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
@@ -105,6 +114,10 @@ DEFINES += SOFA_HAVE_GLEW
 
 # Uncomment if you want to use Boost lib for multithread computing
 # DEFINES += SOFA_HAVE_BOOST
+win32{ # On Windows, the path where boost is install and the suffix of the dlls should be specified
+# BOOST_ROOT = "C:\Code\boost\boost_1_46_1"
+# BOOST_SUFFIX = -vc90-mt-1_46_1
+}
 
 # Uncomment if you want to use EIGEN2 for Matrix Solvers
  DEFINES += SOFA_HAVE_EIGEN2
@@ -199,6 +212,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Uncomment if you want to use OpenCascade
 #DEFINES += SOFA_HAVE_OPENCASCADE
 #OPEN_CASCADE_DIR = C:/OpenCASCADE6.3.0/ros
+
+# Uncomment if you want to test stable fluid plugin. It is an import of the SofaFluid project (https://gforge.inria.fr/projects/sofafluid/)
+# DEFINES += SOFA_HAVE_STABLEFLUID_PLUGIN
 
 ########################################################################
 # GPU
@@ -374,7 +390,7 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 }
 
 # comment this out if you want to track the possible reinterpret_cast problems
-QMAKE_CXXFLAGS += -fno-strict-aliasing
+# QMAKE_CXXFLAGS += -fno-strict-aliasing
 }
 
 QMAKE_CXXFLAGS_DEBUG += -DSOFA_DEBUG
