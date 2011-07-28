@@ -7,9 +7,9 @@
 	<Node 	name="TT" gravity="0 -9.81 0"  >
 		<EulerImplicitSolver name="cg_odesolver"  printLog="0" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-09"  threshold="1e-09" />
-		<MeshLoader name="meshLoader"  filename="mesh/cylinder.msh" />
-		<MechanicalObject template="Vec3d" name="Volume"  restScale="1" />
-		<TetrahedronSetTopologyContainer name="Container" />
+		<MeshGmshLoader name="loader"  filename="mesh/cylinder.msh" />
+		<MechanicalObject src="@loader" template="Vec3d" name="Volume"  restScale="1" />
+		<TetrahedronSetTopologyContainer src="@loader" name="Container" />
 		<TetrahedronSetTopologyModifier name="Modifier" />
 		<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />

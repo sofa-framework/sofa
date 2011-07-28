@@ -31,9 +31,9 @@
 			<BarycentricMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<MeshLoader name="meshLoader"  filename="mesh/c.obj"/>
-			<Mesh/>
-			<MechanicalObject/>
+			<MeshObjLoader name="loader"  filename="mesh/c.obj"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" />
 			<Triangle />
 			<Point />
 			<Line />
@@ -63,9 +63,9 @@
 			<BarycentricMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<MeshLoader name="meshLoader"  filename="mesh/c.obj"/>
-			<Mesh/>
-			<MechanicalObject/>
+			<MeshObjLoader name="loader"  filename="mesh/c.obj"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" />
 			<Triangle />
 			<Point />
 			<Line />
@@ -95,9 +95,9 @@
 			<BarycentricMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<MeshLoader name="meshLoader"  filename="mesh/c.obj"/>
-			<Mesh/>
-			<MechanicalObject/>
+			<MeshObjLoader name="loader"  filename="mesh/c.obj"/>
+			<Mesh src="@loader"/>
+			<MechanicalObject src="@loader" />
 			<Triangle />
 			<Point />
 			<Line />
