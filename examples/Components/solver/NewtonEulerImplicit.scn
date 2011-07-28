@@ -7,9 +7,9 @@
 		<!--  changing NewtonEulerImplicit to EulerImplicit to see the difference   -->
 		<NewtonEulerImplicit name="cg_odesolver" firstOrder="false" printLog="0" newtonError="0.1" steps="10"/>
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="500"  tolerance="1e-09"  threshold="1e-09" />
-		<MeshLoader name="meshLoader"  filename="mesh/SimpleBeamTetra.msh"  />
-		<TetrahedronSetTopologyContainer name="TetraContainer" />
-		<MechanicalObject template="Vec3d" name="dofs" />
+		<MeshGmshLoader name="loader"  filename="mesh/SimpleBeamTetra.msh"  />
+		<TetrahedronSetTopologyContainer src="@loader" name="TetraContainer" />
+		<MechanicalObject src="@loader" template="Vec3d" name="dofs" />
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 		<DiagonalMass template="Vec3d" name="computed using mass density"  massDensity="2.0" />
 		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="3000"  computeGlobalMatrix="0" />
