@@ -198,10 +198,10 @@ public:
                 curve.push_back(c);
                 cdata.push_back(cd);
                 s = i+1;
-                minX = c->minXValue();
-                maxX = c->maxXValue();
-                minY = c->minYValue();
-                maxY = c->maxYValue();
+                if(c->minXValue() < minX) minX = c->minXValue();
+                if(c->maxXValue() > maxX) maxX = c->maxXValue();
+                if(c->minYValue() < minY) minY = c->minYValue();
+                if(c->maxYValue() > maxY) maxY = c->maxYValue();
             }
             else
             {
@@ -213,10 +213,10 @@ public:
                     c->setTitle(s);
                 cd->setData(v);
                 c->setData(*cd);
-                minX = c->minXValue();
-                maxX = c->maxXValue();
-                minY = c->minYValue();
-                maxY = c->maxYValue();
+                if(c->minXValue() < minX) minX = c->minXValue();
+                if(c->maxXValue() > maxX) maxX = c->maxXValue();
+                if(c->minYValue() < minY) minY = c->minYValue();
+                if(c->maxYValue() > maxY) maxY = c->maxYValue();
 
             }
             rect = rect.unite(cdata[i]->boundingRect());
@@ -365,6 +365,7 @@ template<class T>
 class GraphDataWidget_Linear : public GraphDataWidget< T >
 {
 public:
+    typedef sofa::core::objectmodel::Data<T> MyData;
     GraphDataWidget_Linear(QWidget* parent,const char* name, MyData* d) : GraphDataWidget(parent,name,d) { }
     virtual bool createWidgets()
     {
