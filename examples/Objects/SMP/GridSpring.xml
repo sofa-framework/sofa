@@ -10,9 +10,9 @@
 		<BarycentricMapping object1="../.." object2="Visual" />
 	</Node>
 	<Node name="CollisionNode">
-    <MeshLoader name="collisionLoader" filename="file"/>
-		<Mesh />
-		<MechanicalObject  useMask="true"  />
+    <MeshLoader name="loader" filename="file"/>
+		<Mesh src="@loader"/>
+		<MechanicalObject src="@loader" useMask="true"  />
 		<Triangle />
 		<Line />
 		<Point />

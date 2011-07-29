@@ -141,9 +141,9 @@
 			showNormals="0" 
 			multiThreadSimulation="0" 
 			 >
-			<MeshLoader name="default46" filename="mesh/Teodule_LowRes.obj"/>
-			<MeshTopology name="default47"/>
-			<MechanicalObject template="Vec3d" name="default36" translation="2 5 -20" rotation="90 0 0"/>
+			<MeshObjLoader name="loader" filename="mesh/Teodule_LowRes.obj"/>
+			<MeshTopology src="@loader"name="default47"/>
+			<MechanicalObject src="@loader" template="Vec3d" name="default36" translation="2 5 -20" rotation="90 0 0"/>
 			<TriangleModel name="Teodule Triangle" selfCollision="1"/>
 			<LineModel name="Teodule Line" moving="0" simulated="0" contactStiffness="100"/>
 			<PointModel name="Teodule Point" moving="0" simulated="0" contactStiffness="100"/>
@@ -179,9 +179,9 @@
 		showWireFrame="0" 
 		showNormals="0" 
 		 >
-		<MeshLoader name="meshLoader" filename="mesh/SaladBowl.obj"/>
-		<MeshTopology name="default74"/>
-		<MechanicalObject template="Vec3d" name="default75" translation="0 -50 -20" rotation="-90 0 0" scale="100"/>
+		<MeshObjLoader name="loader" filename="mesh/SaladBowl.obj"/>
+		<MeshTopology src="@loader"name="default74"/>
+		<MechanicalObject src="@loader" template="Vec3d" name="default75" translation="0 -50 -20" rotation="-90 0 0" scale="100"/>
 		<TriangleModel name="Floor" moving="0" simulated="0" contactStiffness="1000"/>
 		<LineModel name="Floor" moving="0" simulated="0" contactStiffness="1000"/>
 		<PointModel name="Floor" moving="0" simulated="0" contactStiffness="1000"/>

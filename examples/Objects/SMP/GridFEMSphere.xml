@@ -2,25 +2,25 @@
 	<EulerImplicitSolver rayleighStiffness="0.01" />
 	<ParallelCGLinearSolver iterations="25" threshold="0.00000001"  />
 
-  <MeshLoader name="sparse"  filename="file"/>
-	<Mesh />
-	<MechanicalObject dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  template="CudaVec3f"/>
+  <MeshLoader name="loader"  filename="file"/>
+	<Mesh src="@loader"/>
+	<MechanicalObject src="@loader" dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  template="CudaVec3f"/>
 	<UniformMass totalmass="5" />
 	<TetrahedronFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.3"  method="large"/>
 
 	<Node name="VisualNode">
-  	<MeshLoader   name="VisualMesh"  filename="file" />
-    <Mesh />
+  	<MeshLoader   name="loader"  filename="file" />
+    <Mesh src="@loader"/>
         <!--        <Object type="MappedObject" name="Mapped"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"   template="CudaVec3f" />-->
-		<MechanicalObject  name="Mapped"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  template="CudaVec3f"/>
+		<MechanicalObject src="@loader" name="Mapped"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  template="CudaVec3f"/>
 		<CudaVisualModel  computeNormals="true"   template="CudaVec3f"   name="Visual"   diffuse="0.8 0.8 0.8 1.0"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"   />
 		<BarycentricMapping  isMechanical="false" object1="../.." object2="Mapped" />
 	</Node>
 
 	<Node name="CollisionNode">
-	  <MeshLoader name="collisionLoader"  filename="file"/>
-		<Mesh />
-		<MechanicalObject  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"   template="CudaVec3f"    />
+	  <MeshLoader name="loader"  filename="file"/>
+		<Mesh src="@loader"/>
+		<MechanicalObject src="@loader" dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"   template="CudaVec3f"    />
 		<CudaTriangle   template="CudaVectorTypes&lt;Vec&lt;3, float&gt;, Vec&lt;3, float&gt;, float&gt; &gt;"   />
 		<BarycentricMapping />
 	</Node>

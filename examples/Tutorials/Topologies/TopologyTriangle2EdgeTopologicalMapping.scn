@@ -11,10 +11,10 @@
   <Node name="Triangles Mesh">
 
     <CGImplicitSolver name="Solver" iterations="40" tolerance="1e-06" threshold="1e-10"/>
-    <MeshLoader name="meshLoader" filename="mesh/square3.msh"/>
-    <MechanicalObject template="Vec3d" name="mechanical" scale="10" restScale="1"/>
+    <MeshGmshLoader name="loader" filename="mesh/square3.msh"/>
+    <MechanicalObject src="@loader" template="Vec3d" name="mechanical" scale="10" restScale="1"/>
 
-    <TriangleSetTopologyContainer name="Container"/>
+    <TriangleSetTopologyContainer src="@loader" name="Container"/>
     <TriangleSetTopologyModifier name="Modifier"/>
     <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
     <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>

@@ -18,9 +18,9 @@
 				<Object object1="../.." object2="Visual" type="RigidMapping"/>
 			</Node> 
 			<Node name="Surf2"> 
-				<Object type="MeshLoader" name="meshLoader" filename="mesh/sphere.obj" />
-				<Object type="Mesh" />
-				<Object type="MechanicalObject" scale="50"/>
+				<Object type="MeshObjLoader" name="loader" filename="mesh/sphere.obj" />
+				<Object type="Mesh" src="@loader" />
+				<Object type="MechanicalObject" src="@loader" scale="50"/>
 				<Object type="Triangle"/> 
 				<Object type="Line"/> 
 				<Object type="Point"/> 

@@ -1,7 +1,7 @@
 <Node name="CollisionNode">
-  <MeshLoader name="collisionLoader" filename="file"/>
-  <Mesh/>
-  <MechanicalObject translation="0 0 0" rotation="0 0 0" scale3d="0 0 0"/>
+  <MeshLoader name="loader" filename="file"/>
+  <Mesh src="@loader"/>
+  <MechanicalObject src="@loader" translation="0 0 0" rotation="0 0 0" scale3d="0 0 0"/>
   <Triangle contactStiffness="200"/>
   <Line     contactStiffness="@[-1].contactStiffness"/>
   <Point    contactStiffness="@[-1].contactStiffness" />

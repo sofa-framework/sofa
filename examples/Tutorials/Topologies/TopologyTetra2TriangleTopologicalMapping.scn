@@ -9,12 +9,12 @@
   <DefaultCollisionGroupManager name="Group"/>
 
   <Node name="Tetrahedrons Mesh">
-    <MeshLoader name="loader" filename="mesh/cylinder.msh" />
-    <MechanicalObject template="Vec3d" name="Volume"/>
+    <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
+    <MechanicalObject src="@loader" template="Vec3d" name="Volume"/>
     <EulerImplicitSolver name="cg_odesolver" printLog="0"/>
     <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09"/>
 
-    <TetrahedronSetTopologyContainer name="Container" filename="mesh/cylinder.msh"/>
+    <TetrahedronSetTopologyContainer src="@loader" name="Container" filename="mesh/cylinder.msh"/>
     <TetrahedronSetTopologyModifier name="Modifier"/>
     <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
     <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1" drawColorTetrahedra="1.0 1.0 0.3"/>

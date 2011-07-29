@@ -8,8 +8,8 @@
 	<TetrahedronFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.3"  method="large"/>
 
 	<Node name="VisualNode">
-    <MeshLoader name="VisualMesh"  filename="file" />
-    <Mesh />
+    <MeshLoader name="loader"  filename="file" />
+    <Mesh src="@loader"/>
     <MappedObject name="Mapped" template="CudaVec3f" />
 		<CudaVisualModel computeNormals="true"   template="CudaVec3f"   name="Visual"   diffuse="0.8 0.8 0.8 1.0"    />
 		<BarycentricMapping   object1="../.." object2="Mapped" />

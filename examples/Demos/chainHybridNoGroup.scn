@@ -5,9 +5,9 @@
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Node name="Chain">
 		<Node name="Fixed">
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/torus_for_collision.obj"/>
-			<Object type="Mesh"  />
-			<Object type="MechanicalObject" rx="90"/>
+			<Object type="MeshObjLoader" name="loader" filename="mesh/torus_for_collision.obj"/>
+			<Object type="Mesh" src="@loader"  />
+			<Object type="MechanicalObject" src="@loader" rx="90"/>
 			<Object type="Triangle" simulated="0" moving="0" />
 			<Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="gray" rx="90"/>
 		</Node>

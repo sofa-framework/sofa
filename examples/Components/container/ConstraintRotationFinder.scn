@@ -23,9 +23,9 @@
 	</Node>
 	
 	<Node name="Sphere">
-		<MeshLoader filename="mesh/sphere.obj"/>
-		<Mesh />
-		<Object type="MechanicalObject" scale="3.95" dx="0" dy="1" dz="3"/>
+		<MeshObjLoader filename="mesh/sphere.obj" name="loader"/>
+		<Mesh src="@loader"/>
+		<Object type="MechanicalObject" src="@loader" scale="3.95" dx="0" dy="1" dz="3"/>
 		
 		<Object type="Triangle" simulated="0" moving="0" group="1" />
  		<Object type="Line" simulated="0" moving="0" group="1" /> 

@@ -21,9 +21,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_scale3.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject" useMask="true" dx="0" dy="20" dz="29" />
+        		<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader" useMask="true" dx="0" dy="20" dz="29" />
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="Point" />
@@ -48,9 +48,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-        		<Object type="MeshLoader" name="meshLoader" filename="mesh/dragon.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject" useMask="true" dx="20" dy="20" dz="29" />
+        		<Object type="MeshObjLoader" name="loader" filename="mesh/dragon.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader" useMask="true" dx="20" dy="20" dz="29" />
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="Point" />
@@ -87,9 +87,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="VisualLips" />
 		</Node>
 		<Node name="Surf">
-        		<Object type="MeshLoader" name="meshLoader" filename="mesh/frog-push25.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject" useMask="true" dx="-20" dy="20" dz="29" />
+        		<Object type="MeshObjLoader" name="loader" filename="mesh/frog-push25.obj"/>
+			<Object type="Mesh" src="@loader" />
+			<Object type="MechanicalObject" src="@loader" useMask="true" dx="-20" dy="20" dz="29" />
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="Point" />
@@ -97,9 +97,9 @@
 		</Node>
 	</Node>
 	<Node name="Floor">
-                <Object type="MeshLoader" name="meshLoader" filename="mesh/floor2b.obj"/>
-		<Object type="Mesh" />
-		<Object type="MechanicalObject" useMask="true" dy="-10.25" scale="0.5" />
+                <Object type="MeshObjLoader" name="loader" filename="mesh/floor2b.obj"/>
+		<Object type="Mesh" src="@loader" />
+		<Object type="MechanicalObject" src="@loader" useMask="true" dy="-10.25" scale="0.5" />
 		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
 		<Object type="Line" name="Floor" simulated="0" moving="0" />
 		<Object type="Point" name="Floor" simulated="0" moving="0" />

@@ -15,9 +15,9 @@
 			<Object type="IdentityMapping" object1="../.." object2="Visual"/>
 		</Node>
 		<Node name="Surf">
-			<Object type="MeshLoader" filename="mesh/smCube27.obj"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" />
+			<Object type="MeshObjLoader" filename="mesh/smCube27.obj" name="loader"/>
+			<Object type="Mesh" src="@loader"/>
+			<Object type="MechanicalObject" src="@loader" />
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="Point" />
@@ -34,9 +34,9 @@
 			<Object type="RigidMapping"/>
 		</Node>
 		<Node name="Surf">
-			<Object type="MeshLoader" filename="mesh/smCube27.obj"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" />
+			<Object type="MeshObjLoader" filename="mesh/smCube27.obj" name="loader"/>
+			<Object type="Mesh" src="@loader"/>
+			<Object type="MechanicalObject" src="@loader" />
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="Point" />
@@ -58,9 +58,9 @@
 			<Object type="IdentityMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="MeshLoader" filename="mesh/smCube27.obj"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" />
+			<Object type="MeshObjLoader" filename="mesh/smCube27.obj" name="loader"/>
+			<Object type="Mesh" src="@loader"/>
+			<Object type="MechanicalObject" src="@loader" />
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="Point" />
@@ -81,9 +81,9 @@
 			</Node>
 		</Node>
 		<Node name="Surf">
-			<Object type="MeshLoader" filename="mesh/smCube27.obj"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" />
+			<Object type="MeshObjLoader" filename="mesh/smCube27.obj" name="loader"/>
+			<Object type="Mesh" src="@loader"/>
+			<Object type="MechanicalObject" src="@loader" />
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="Point" />
@@ -101,9 +101,9 @@
 			<Object type="IdentityMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="MeshLoader" filename="mesh/smCube27.obj"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" />
+			<Object type="MeshObjLoader" filename="mesh/smCube27.obj" name="loader"/>
+			<Object type="Mesh" src="@loader"/>
+			<Object type="MechanicalObject" src="@loader" />
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="Point" />
@@ -124,9 +124,9 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="MeshLoader" filename="mesh/dragon.obj"/>
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" />
+			<Object type="MeshObjLoader" filename="mesh/dragon.obj" name="loader"/>
+			<Object type="Mesh" src="@loader"/>
+			<Object type="MechanicalObject" src="@loader" />
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="Point" />
@@ -134,9 +134,9 @@
 		</Node>
 	</Node>
 	<Node name="Floor">
-		<Object type="MeshLoader" filename="mesh/floor.obj"/>
-		<Object type="Mesh"/>
-		<Object type="MechanicalObject" dy="-20" />
+		<Object type="MeshObjLoader" filename="mesh/floor.obj" name="loader"/>
+		<Object type="Mesh" src="@loader"/>
+		<Object type="MechanicalObject" src="@loader" dy="-20" />
 		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
 		<Object type="Line" name="Floor" simulated="0" moving="0" />
 		<Object type="Point" name="Floor" simulated="0" moving="0" />

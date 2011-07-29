@@ -9,14 +9,14 @@
   <DefaultCollisionGroupManager name="Group"/>
 
   <Node name="Cylinder Static Mesh">
-    <MeshLoader name="loader" filename="mesh/cylinder.msh" />
-    <MechanicalObject name="DOFs" template="Vec3d" translation="0 0 0" rotation="0 90 0" scale="10"/>
+    <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
+    <MechanicalObject src="@loader" name="DOFs" template="Vec3d" translation="0 0 0" rotation="0 90 0" scale="10"/>
     <FixedConstraint name="FixedConstraint" template="Vec3d" indices="0"/>
     <UniformMass name="Mass" template="Vec3d" totalmass="50"/>
     <EulerImplicitSolver name="cg_odesolver" printLog="0"/>
     <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09"/>
 
-    <MeshTopology name="Static Mesh" fileTopology="mesh/cylinder.msh" />
+    <MeshTopology src="@loader"name="Static Mesh" fileTopology="mesh/cylinder.msh" />
     <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1"/>
     <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0"/>
 
@@ -41,14 +41,14 @@
   </Node>
 
   <Node name="Cylinder Dynamic Mesh">
-    <MeshLoader name="loader" filename="mesh/cylinder.msh" />
-    <MechanicalObject name="DOFs" template="Vec3d" translation="0 0 10" rotation="0 90 0" scale="10"/>
+    <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
+    <MechanicalObject src="@loader" name="DOFs" template="Vec3d" translation="0 0 10" rotation="0 90 0" scale="10"/>
     <FixedConstraint name="FixedConstraint" template="Vec3d" indices="0"/>
     <UniformMass name="Mass" template="Vec3d" totalmass="50"/>
     <EulerImplicitSolver name="cg_odesolver" printLog="0"/>
     <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09"/>
     
-    <TetrahedronSetTopologyContainer name="Topology Container" fileTopology="mesh/cylinder.msh" />
+    <TetrahedronSetTopologyContainer src="@loader" name="Topology Container" fileTopology="mesh/cylinder.msh" />
     <TetrahedronSetTopologyModifier name="Topology Modifier"/>
     <TetrahedronSetTopologyAlgorithms name="Topology Algorithms" template="Vec3d"/>
     <TetrahedronSetGeometryAlgorithms name="Geometry Algorithms" template="Vec3d"/>
