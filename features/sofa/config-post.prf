@@ -42,13 +42,13 @@ win32 {
 
 win32 {
 	CONFIG(debug, debug|release) {
-		LIBS *= -L$$ROOT_SRC_DIR/win32/DebugVC9
+		LIBS *= -L$$ROOT_SRC_DIR/lib/win32/DebugVC9
 	} else {
-		LIBS *= -L$$ROOT_SRC_DIR/win32/ReleaseVC9
+		LIBS *= -L$$ROOT_SRC_DIR/lib/win32/ReleaseVC9
 	}
-	LIBS *= -L$$ROOT_SRC_DIR/win32/Common
+	LIBS *= -L$$ROOT_SRC_DIR/lib/win32/Common
 }
 macx {
-	LIBS *= -L$$ROOT_SRC_DIR/macx
+	LIBS *= -L$$ROOT_SRC_DIR/lib/macx
 }
 INCLUDEPATH *= $ROOT_SRC_DIR/include
