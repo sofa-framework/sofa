@@ -10,9 +10,9 @@
 	  <MeshTrianLoader name="TrianLoader" filename="mesh/coeur1.trian"/>
 	  
 	  <!--	  <MeshGmshLoader name="loader" filename="mesh/square3.msh" /> -->
-	  <MechanicalObject src="@loader" name="dofs" scale="1" src="@TrianLoader" />
+	  <MechanicalObject name="dofs" scale="1" src="@TrianLoader" />
 	  
-	  <TriangleSetTopologyContainer src="@loader" name="topo" src="@TrianLoader" />
+	  <TriangleSetTopologyContainer  name="topo" src="@TrianLoader" />
 	  <TriangleSetTopologyModifier name="modif" />
 	  <TriangleSetTopologyAlgorithms name="algo" />
 	  <TriangleSetGeometryAlgorithms name="triGeo" />
