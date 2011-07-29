@@ -183,10 +183,18 @@ enable(generateDoc)
 enable(GenerateRigid)
 enable(generateTypedefs)
 enable(meshconv)
-enable(sofamodeler)
-enable(Modeler)
 enable(sofaInitTimer)
 enable(sofaVerification)
+
+contains(DEFINES, SOFA_GUI_QTVIEWER) | contains(DEFINES, SOFA_GUI_QGLVIEWER) | contains(DEFINES, SOFA_GUI_QTOGREVIEWER) {
+	#enable(sofaConfiguration) # not yet converted
+	enable(sofamodeler)
+	enable(Modeler)
+}
+
+contains (DEFINES, SOFA_GPU_OPENCL) {
+	# enable(sofaOPENCL) # not yet converted
+}
 
 contains (DEFINES, SOFA_GUI_GLUT) {
 	enable(sofaguiglut)
