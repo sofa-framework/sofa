@@ -51,4 +51,4 @@ win32 {
 macx {
 	LIBS *= -L$$ROOT_SRC_DIR/lib/macx
 }
-INCLUDEPATH *= $ROOT_SRC_DIR/include
+INCLUDEPATH *= $$ROOT_SRC_DIR/include
