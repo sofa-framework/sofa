@@ -10,9 +10,9 @@
 	  <MeshVTKLoader name="VtkLoader" filename="mesh/liver.vtk"/>
 
 	  <!--	  <MeshGmshLoader name="loader" filename="mesh/square3.msh" /> -->
-	  <MechanicalObject src="@loader" name="dofs" scale="1" src="@VtkLoader"  />
+	  <MechanicalObject  name="dofs" scale="1" src="@VtkLoader"  />
 	  
-	  <TriangleSetTopologyContainer src="@loader" name="topo" src="@VtkLoader" />
+	  <TriangleSetTopologyContainer  name="topo" src="@VtkLoader" />
 	  <TriangleSetTopologyModifier name="modif" />
 	  <TriangleSetTopologyAlgorithms name="algo" />
 	  <TriangleSetGeometryAlgorithms name="triGeo" />
