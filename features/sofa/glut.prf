@@ -1,4 +1,5 @@
 win32 {
+	INCLUDEPATH *= $ROOT_SRC_DIR/include # Only to support extracting include/GL/glut.h in the source dir
 	LIBS *= -lopengl32 -lglu32 -lglut32
 }
 
