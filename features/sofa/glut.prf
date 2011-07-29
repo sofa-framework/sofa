@@ -5,6 +5,6 @@ win32 {
 
 unix {
 	macx  : LIBS += -framework OpenGL -framework GLUT
-	!macx : LIBS *= -lGL -lGLU -lglut
+	!macx : LIBS *= -lGL -lGLU -lglut -lX11
 	LIBS *= -ldl
 }
