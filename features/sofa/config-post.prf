@@ -33,3 +33,22 @@ win32 {
 	#LIBS *= -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32
 	LIBS *= -lGdi32 -lShell32
 }
+
+########################################################################
+# Deprecated lib and include directories (when using dependencies packages)
+# This section should be removed when scripts will be updated to use installed
+# version of the libraries.
+########################################################################
+
+win32 {
+	CONFIG(debug, debug|release) {
+		LIBS *= -L$$ROOT_SRC_DIR/win32/DebugVC9
+	} else {
+		LIBS *= -L$$ROOT_SRC_DIR/win32/ReleaseVC9
+	}
+	LIBS *= -L$$ROOT_SRC_DIR/win32/Common
+}
+macx {
+	LIBS *= -L$$ROOT_SRC_DIR/macx
+}
+INCLUDEPATH *= $ROOT_SRC_DIR/include
