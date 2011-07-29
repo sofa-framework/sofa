@@ -1,28 +1,9 @@
-SOFA_DIR=../../../..
+load(sofa/pre)
+
 TEMPLATE = app
 TARGET = Modeler
 
-include($${SOFA_DIR}/sofa.cfg)
-
-DESTDIR = $$SOFA_DIR/bin
-CONFIG += $$CONFIGPROJECTGUI 
-
-contains(CONFIGSTATIC, static) {
-	LIBS += -Wl,--start-group
-}
-LIBS += $$SOFA_GUI_LIBS
-LIBS += -lsofamodeler$$LIBSUFFIX
-contains(CONFIGSTATIC, static) {
-	LIBS += -Wl,--end-group
-	LIBS += -Wl,--start-group
-	LIBS += -Wl,--whole-archive
-}
-LIBS += $$SOFA_LIBS
-contains(CONFIGSTATIC, static) {
-	LIBS += -Wl,--no-whole-archive
-	LIBS += -Wl,--end-group
-}
-
+INCLUDEPATH += $$BUILD_DIR/../lib/$$UI_DIR # HACK: some uic generated headers are generated in another .pro
 
 macx : {
 	CONFIG +=app_bundle
@@ -34,15 +15,17 @@ macx : {
 
 # The following is a workaround to get KDevelop to detect the name of the program to start
 unix {
-	!macx: QMAKE_POST_LINK = ln -sf Modeler$$SUFFIX $$DESTDIR/Modeler-latest
+	!macx: QMAKE_POST_LINK = ln -sf Modeler$$SUFFIX $$APP_DESTDIR/Modeler-latest
 }
 
 # The following create enables to start Modeler from the command line as well as graphically
 macx {
-	QMAKE_POST_LINK = ln -sf Modeler$$SUFFIX.app/Contents/MacOS/Modeler$$SUFFIX $$DESTDIR/Modeler$$SUFFIX
+	QMAKE_POST_LINK = ln -sf Modeler$$SUFFIX.app/Contents/MacOS/Modeler$$SUFFIX $$APP_DESTDIR/Modeler$$SUFFIX
 }
 
 !macx : RC_FILE = sofa.rc
 
 SOURCES = Main.cpp
 HEADERS = 
+
+load(sofa/post)

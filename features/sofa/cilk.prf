@@ -1,0 +1,11 @@
+
+contains(DEFINES, SOFA_HAVE_CILK) {
+	LIBS *= -lcilk
+}
+
+contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
+	contains(DEFINES, SOFA_HAVE_CILK) {
+		DEFINES *= SOFA_HAVE_CILK
+		INCLUDEPATH *= /usr/local/include/cilk
+	}
+} # END SOFA_DEV

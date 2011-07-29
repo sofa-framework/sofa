@@ -1,13 +1,10 @@
 # Target is a library:  newmat
+load(sofa/pre)
 
-SOFA_DIR = ../..
 TEMPLATE = lib
 TARGET = newmat
 
-include($${SOFA_DIR}/sofa.cfg)
-
-CONFIG += $${CONFIGLIBRARIES}
-
+CONFIGSTATIC = static
 
 DEFINES += use_namespace 
 
@@ -45,3 +42,5 @@ HEADERS = \
         newmat/newmatap.h \
         newmat/newmatrm.h \
         newmat/precisio.h 
+
+load(sofa/post)

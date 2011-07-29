@@ -1,0 +1,11 @@
+contains(DEFINES, SOFA_HAVE_FLOWVR) {
+	FLOWVR = $(FLOWVR_PREFIX)
+	QMAKE_CXXFLAGS += `pkg-config --cflags flowvr-mod flowvr-ftl flowvr-render`
+	QMAKE_LDFLAGS += `pkg-config --libs flowvr-mod flowvr-ftl flowvr-render`
+	QMAKE_LFLAGS_DEBUG += `pkg-config --libs flowvr-mod flowvr-ftl flowvr-render`
+	QMAKE_LFLAGS_RELEASE += `pkg-config --libs flowvr-mod flowvr-ftl flowvr-render`
+	export(QMAKE_CXXFLAGS)
+	export(QMAKE_LDFLAGS)
+	export(QMAKE_LFLAGS_DEBUG)
+	export(QMAKE_LFLAGS_RELEASE)
+}

@@ -1,23 +1,9 @@
-SOFA_DIR = ../../../..
+load(sofa/pre)
+
 TEMPLATE = lib
 TARGET = sofapml
 
-include($${SOFA_DIR}/sofa.cfg)
-
-
-CONFIG += $$CONFIGLIBRARIES
-
-!contains(CONFIGSTATIC, static) {
-	CONFIG -= staticlib
-CONFIG += dll
-}
-
 DEFINES += SOFA_BUILD_FILEMANAGER_PML
-
-LIBS += $$SOFA_FRAMEWORK_LIBS
-LIBS += $$SOFA_EXT_LIBS
-LIBS += $$SOFA_MODULES_LIBS
-LIBS -= -lsofapml$$LIBSUFFIX
 
 HEADERS += sofapml.h \
            PMLBody.h \
@@ -45,3 +31,4 @@ SOURCES += PMLBody.cpp \
            LMLForce.cpp \
            LMLReader.cpp 
 
+load(sofa/post)

@@ -1,0 +1,35 @@
+
+########################################################################
+# Defines
+########################################################################
+
+# Class reflection / plugins system: define SOFA_TARGET macro
+contains(TEMPLATE, subdirs) | contains(TEMPLATE, vcsubdirs) {
+} else {
+	#!isEmpty(TARGET): message("TARGET: $$TARGET")
+	DEFINES *= SOFA_TARGET=$$TARGET
+}
+
+########################################################################
+# System-specific configuration
+########################################################################
+
+win32-msvc* {
+	QMAKE_CXXFLAGS_DEBUG += -wd4250 -wd4251 -wd4275
+	QMAKE_CXXFLAGS_RELEASE += -wd4250 -wd4251 -wd4275
+}
+
+win32-msvc.net {
+	QMAKE_CXXFLAGS_DEBUG += -wd4675
+	QMAKE_CXXFLAGS_RELEASE += -wd4675
+}
+
+win32-msvc20* {
+	QMAKE_CXXFLAGS_DEBUG += -wd4996
+	QMAKE_CXXFLAGS_RELEASE += -wd4996
+}
+
+win32 {
+	#LIBS *= -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32
+	LIBS *= -lGdi32 -lShell32
+}

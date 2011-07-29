@@ -1,23 +1,9 @@
-SOFA_DIR=../../../..
+load(sofa/pre)
+
 TEMPLATE = lib
 TARGET = sofamodeler
 
-include($${SOFA_DIR}/sofa.cfg)
-
-CONFIG += $$CONFIGLIBRARIES
-# LIBS += -lsofasimulation$$LIBSUFFIX 
-contains(CONFIGSTATIC, static) {
-#LIBS -= $${SOFA_EXT_LIBS}
-LIBS += $${SOFA_MODULES_LIBS}
-LIBS += $${SOFA_FRAMEWORK_LIBS}
-}
-else {
-LIBS += $$SOFA_GUI_LIBS
-LIBS += $$SOFA_LIBS
-LIBS += $$SOFA_EXT_LIBS
-
-INCLUDEPATH += $$SOFA_DIR/extlibs
-}
+INCLUDEPATH *= $ROOT_SRC_DIR/applications/sofa/gui/qt/$$UI_DIR # HACK: this library uses some uic generated headers from this directory.
 
 SOURCES = SofaModeler.cpp \
           GraphModeler.cpp \
@@ -43,34 +29,32 @@ HEADERS = SofaModeler.h \
 
 contains (DEFINES, SOFA_QT4) {	
 
-          HEADERS += QSofaTreeLibrary.h \
-                     QCategoryTreeLibrary.h \ 
-                     QComponentTreeLibrary.h
-          SOURCES += QSofaTreeLibrary.cpp \
-                     QCategoryTreeLibrary.cpp \ 
-                     QComponentTreeLibrary.cpp
+	HEADERS += QSofaTreeLibrary.h \
+	           QCategoryTreeLibrary.h \ 
+	           QComponentTreeLibrary.h
+	SOURCES += QSofaTreeLibrary.cpp \
+	           QCategoryTreeLibrary.cpp \ 
+	           QComponentTreeLibrary.cpp
                      
-	  CONFIG += $$CONFIGLIBRARIES qt uic uic3
-	  QT += qt3support xml
-	  FORMS3 += Modeler.ui 
-	  FORMS3 += DialogAddPreset.ui
-        FORMS3 += ../../../sofa/gui/qt/PluginManager.ui
+	CONFIG += qt uic3
+	QT += qt3support xml
+	FORMS3 += Modeler.ui 
+	FORMS3 += DialogAddPreset.ui
+	FORMS3 += ../../../sofa/gui/qt/PluginManager.ui
 }
 else {
 
-          HEADERS += QSofaLibrary.h \
-                     QCategoryLibrary.h \ 
-                     QComponentLibrary.h
-          SOURCES += QSofaLibrary.cpp \
-                     QCategoryLibrary.cpp \ 
-                     QComponentLibrary.cpp
+  HEADERS += QSofaLibrary.h \
+             QCategoryLibrary.h \ 
+             QComponentLibrary.h
+  SOURCES += QSofaLibrary.cpp \
+             QCategoryLibrary.cpp \ 
+             QComponentLibrary.cpp
                      
-	  CONFIG += $$CONFIGLIBRARIES qt
-	  FORMS += Modeler.ui
-	  FORMS += DialogAddPreset.ui
-        FORMS += ../../../sofa/gui/qt/PluginManager.ui                    
+	CONFIG += qt
+	FORMS += Modeler.ui
+	FORMS += DialogAddPreset.ui
+	FORMS += ../../../sofa/gui/qt/PluginManager.ui                    
 }
 
-
-#add local libraries to the modeler
-exists(lib-local.cfg): include(lib-local.cfg)
+load(sofa/post)

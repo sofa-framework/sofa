@@ -1,127 +1,116 @@
-SOFA_DIR =.
+load(sofa/pre)
+
 TEMPLATE = subdirs
+
+!contains(DEFINES, SOFA_DEV): message("WARNING: SOFA_DEV not defined, in-development code will be disabled!")
 
 message( "PRE-CONFIG: " $${CONFIG})
 
-include($${SOFA_DIR}/sofa.cfg) 
+########################################################################
+# Enable plugins in addition of the standard Sofa libraries
+########################################################################
 
-SUBDIRS += extlibs/newmat
+usePlugin(PluginExample)
 
-contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
-#SUBDIRS += extlibs/SLC
+contains(DEFINES, SOFA_HAVE_ARTRACK) {
+	usePlugin(ARTrack)
+}
+
+contains(DEFINES, SOFA_HAVE_SENSABLE) {
+	usePlugin(Sensable)
+}
+
+contains(DEFINES, SOFA_HAVE_XITACT) {
+	usePlugin(Xitact)
+}
+
+
+contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
+
+	contains (DEFINES, SOFA_HAVE_VULCAIN) {
+		usePlugin(vulcain)
+	}
+
+	contains (DEFINES, SOFA_HAVE_LEM) {
+		usePlugin(lem)
+	}
+
+	contains(DEFINES, SOFA_HAVE_TRIANGULARMESHREFINER) {
+		usePlugin(TriangularMeshRefiner)
+	}
+
+	contains (DEFINES, SOFA_HAVE_BEAMADAPTER) {
+		usePlugin(BeamAdapter)
+	}
+
+	contains (DEFINES, SOFA_HAVE_CGAL) {
+		usePlugin(CGALPlugin)
+	}
+
+	contains(DEFINES, SOFA_HAVE_FRAME) {
+		usePlugin(frame)
+	}
+
+	contains (DEFINES, SOFA_HAVE_REGISTRATION) {
+		usePlugin(Registration)
+	}
+
+	contains (DEFINES, SOFA_HAVE_OPENCV) {
+		usePlugin(OpenCVPlugin)
+	}
+
+	contains (DEFINES, SOFA_HAVE_PHYSICALFIELDMODELING) {
+		usePlugin(PhysicalFieldModeling)
+	}
+
+	contains (DEFINES, SOFA_GPU_CUDA) { # BEGIN SOFA_GPU_CUDA
+
+		contains (DEFINES, SOFA_HAVE_TRIANGULARMESHBASEDHEXASCUTTER) {
+			usePlugin(TriangularMeshBasedHexasCutter)
+		}
+
+		contains (DEFINES, SOFA_HAVE_VOXELIZER) {
+			usePlugin(Voxelizer)
+		}
+
+	} # END SOFA_GPU_CUDA
+
+	contains (DEFINES, SOFA_HAVE_QTOGREVIEWER){
+		usePlugin(QtOgreViewer)
+	}
+
+	contains (DEFINES, SOFA_HAVE_STEPLOADER) { # BEGIN SOFA_HAVE_STEPLOADER
+		usePlugin(MeshSTEPLoader)
+	}
+
+	contains (DEFINES, SOFA_HAVE_PERSISTENTCONTACT) {
+		usePlugin(PersistentContact)
+	}
+
 } # END SOFA_DEV
 
-SUBDIRS += extlibs/qwt-5.2.0/src
-
-contains(DEFINES,SOFA_XML_PARSER_TINYXML){
-  SUBDIRS += extlibs/tinyxml
+contains(DEFINES, SOFA_HAVE_PLUGIN_FEM) {
+	usePlugin(FEM)
 }
 
-contains(DEFINES,SOFA_HAVE_ARTRACK){
-  SUBDIRS += extlibs/ARTrack
+contains (DEFINES, SOFA_HAVE_SOHUSIM) {
+	usePlugin(Sohusim)
 }
 
-# FlowVR
-	SUBDIRS += extlibs/miniFlowVR
-contains(DEFINES,SOFA_HAVE_FLOWVR){
-	SUBDIRS -= extlibs/miniFlowVR
-}
-
-#CSParse
-
-contains(DEFINES,SOFA_HAVE_CSPARSE){
-	SUBDIRS += extlibs/csparse
-}
-
-contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
-
-#METIS
-
-contains(DEFINES,SOFA_EXTLIBS_METIS){
-	SUBDIRS += extlibs/metis
-}
-
-#TAUCS
-
-contains(DEFINES,SOFA_EXTLIBS_TAUCS){
-	contains(DEFINES,SOFA_HAVE_CILK){
-		SUBDIRS += extlibs/taucs
-	} else {
-		SUBDIRS += extlibs/taucs-svn
-	}
-}
-
-#TAUCS-MT
-
-contains(DEFINES,SOFA_EXTLIBS_TAUCS_MT){
-	SUBDIRS += extlibs/taucs_mt
+contains (DEFINES, SOFA_HAVE_STABLEFLUID_PLUGIN) {
+	usePlugin(StableFluidBehaviorPlugin)
 }
 
 
-#FFMPEG
-contains(DEFINES,SOFA_EXTLIBS_FFMPEG){
-	SUBDIRS += extlibs/ffmpeg
-}
+########################################################################
+# Generate SUBDIRS specifications to build everything
+########################################################################
 
-} # END SOFA_DEV
+buildEnabledArtifacts()
 
-#DCCD
-contains(DEFINES,SOFA_HAVE_DCCD){
-	SUBDIRS += extlibs/self-ccd-1.0/self-ccd.pro
-}
-
-#QGLViewer
-
-contains(DEFINES,SOFA_GUI_QGLVIEWER){
-	SUBDIRS += extlibs/libQGLViewer-2.3.3/QGLViewer
-}
-
-
-contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
-#CUDPP
-contains(DEFINES,SOFA_GPU_CUDA){
-	contains(DEFINES,SOFA_GPU_CUDPP){
-		SUBDIRS += extlibs/cudpp
-	}
-}
-} # END SOFA_DEV
-
-contains(DEFINES,SOFA_HAVE_COLLADADOM){
-	SUBDIRS += extlibs/colladadom/dom/colladadom.pro
-}
-
-# PML
-	SUBDIRS += extlibs/PML
-	SUBDIRS += extlibs/LML
-!contains(DEFINES,SOFA_PML){
-	SUBDIRS -= extlibs/PML
-	SUBDIRS -= extlibs/LML
-}
-
-#FISHPACK
-contains(DEFINES,SOFA_HAVE_FISHPACK){
-	SUBDIRS += extlibs/fftpack
-	SUBDIRS += extlibs/fishpack
-}
-
-# MUPARSER
-contains(DEFINES,MUPARSER){
-	SUBDIRS += extlibs/muparser
-}
-
-#VRPN
-contains(DEFINES,SOFA_HAVE_VRPN){
-	contains(DEFINES,VRPN_USE_WIIUSE){
-		SUBDIRS += extlibs/wiiuse
-	}
-	SUBDIRS += extlibs/VRPN
-}
-
-SUBDIRS += framework
-SUBDIRS += modules
-SUBDIRS += applications
-
+########################################################################
 # Print current config
+########################################################################
 
 message( "====== SOFA Build Configuration ======")
 
@@ -329,14 +318,16 @@ unix {
   contains(DEFINES, SOFA_QT4):DOLLAR="\\$"
   !contains(DEFINES, SOFA_QT4):DOLLAR="\$"
   contains (DEFINES, SOFA_SMP) {
-    system(echo "export SOFA_DIR=$${PWD}" >config-Sofa-parallel.sh) 
-    system(echo "export KAAPI_DIR=$${KAAPI_DIR}" >>config-Sofa-parallel.sh) 
-    system(echo "export LD_LIBRARY_PATH=$${DOLLAR}SOFA_DIR/lib/linux:$${DOLLAR}KAAPI_DIR/lib:$${DOLLAR}LD_LIBRARY_PATH" >>config-Sofa-parallel.sh) 
-    system(echo "export PATH=$${DOLLAR}SOFA_DIR/bin:$${DOLLAR}KAAPI_DIR/bin:$${DOLLAR}PATH" >>config-Sofa-parallel.sh) 
+    system(echo "export SOFA_DIR=$${PWD}" >config-Sofa-parallel.sh)
+    system(echo "export KAAPI_DIR=$${KAAPI_DIR}" >>config-Sofa-parallel.sh)
+    system(echo "export LD_LIBRARY_PATH=$${DOLLAR}SOFA_DIR/lib/linux:$${DOLLAR}KAAPI_DIR/lib:$${DOLLAR}LD_LIBRARY_PATH" >>config-Sofa-parallel.sh)
+    system(echo "export PATH=$${DOLLAR}SOFA_DIR/bin:$${DOLLAR}KAAPI_DIR/bin:$${DOLLAR}PATH" >>config-Sofa-parallel.sh)
     contains (DEFINES, SOFA_GPU_CUDA) {
-      system(echo "export CUDA_DIR=$${CUDA_DIR}" >>config-Sofa-parallel.sh) 
-      system(echo "export LD_LIBRARY_PATH=$${DOLLAR}CUDA_DIR/lib:$${DOLLAR}CUDA_DIR/lib64:$${DOLLAR}LD_LIBRARY_PATH" >>config-Sofa-parallel.sh) 
-      system(echo "export PATH=$${DOLLAR}CUDA_DIR/bin:$${DOLLAR}PATH" >>config-Sofa-parallel.sh) 
+      system(echo "export CUDA_DIR=$${CUDA_DIR}" >>config-Sofa-parallel.sh)
+      system(echo "export LD_LIBRARY_PATH=$${DOLLAR}CUDA_DIR/lib:$${DOLLAR}CUDA_DIR/lib64:$${DOLLAR}LD_LIBRARY_PATH" >>config-Sofa-parallel.sh)
+      system(echo "export PATH=$${DOLLAR}CUDA_DIR/bin:$${DOLLAR}PATH" >>config-Sofa-parallel.sh)
     }
   }
 }
+
+load(sofa/post)

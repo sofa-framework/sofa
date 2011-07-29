@@ -1,22 +1,19 @@
 # Target is a library: sofahelper
-SOFA_DIR = ../../..
+load(sofa/pre)
+
 TEMPLATE = lib
 TARGET = sofahelper
-include($${SOFA_DIR}/sofa.cfg)
-CONFIG += $$CONFIGLIBRARIES
-!contains(CONFIGSTATIC, static) {
-	CONFIG -= staticlib
-CONFIG += dll
-}
-LIBS += $$SOFA_EXT_LIBS
-INCLUDEPATH += /usr/include/libxml2
+
+# INCLUDEPATH += /usr/include/libxml2
 DEFINES += SOFA_BUILD_HELPER
 
-# Cross-dependecy to faulttype is forbidden as defaulttype depends on helper...
+# Cross-dependecy to defaulttype is forbidden as defaulttype depends on helper...
 # LIBS += -lsofadefaulttype$$LIBSUFFIX
 # Make sure there are no cross-dependencies
-INCLUDEPATH -= $$SOFA_DIR/modules
-INCLUDEPATH -= $$SOFA_DIR/applications
+INCLUDEPATH -= $$ROOT_SRC_DIR/modules
+INCLUDEPATH -= $$ROOT_SRC_DIR/applications
+INCLUDEPATH += $$ROOT_SRC_DIR/framework
+
 HEADERS += helper.h \
     ArgumentParser.h \
     BackTrace.h \
@@ -169,3 +166,4 @@ contains(DEFINES,SOFA_HAVE_FFMPEG) { # SOFA_HAVE_FFMPEG
     	gl/VideoRecorder.cpp 
 }
 
+load(sofa/post)

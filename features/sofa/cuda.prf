@@ -1,0 +1,74 @@
+contains (DEFINES, SOFA_GPU_CUDA) {
+
+	cuda.input = CUDA_SOURCES
+	QMAKE_EXTRA_COMPILERS *= cuda
+	win32 {
+		ENV_CUDA_INC_PATH = $$system(echo %CUDA_INC_PATH%)
+		CUDA_BIN_PATH = $$system(echo %CUDA_BIN_PATH%)
+	  CUDA_DIR = $$dirname(ENV_CUDA_INC_PATH)
+		INCLUDEPATH += $${CUDA_DIR}/include
+		win64-msvc*{
+			QMAKE_LIBDIR += $${CUDA_DIR}/lib/x64
+		}
+		win32-msvc*{
+			QMAKE_LIBDIR += $${CUDA_DIR}/lib/Win32
+			CUDA_FLAGS += --machine 32
+		}
+		LIBS *= -lcudart
+		contains(DEFINES,SOFA_GPU_CUBLAS) {
+			LIBS *= -lcublas
+		}	
+		contains(CUDA_FLAGS,--device-emulation) {
+			cuda.output = $${OBJECTS_DIR}/${QMAKE_FILE_BASE}_cudaemu.obj
+			cuda.clean = $${OBJECTS_DIR}/${QMAKE_FILE_BASE}_cudaemu.obj
+		}
+		else {
+			cuda.output = $${OBJECTS_DIR}/${QMAKE_FILE_BASE}_cuda.obj
+			cuda.clean = $${OBJECTS_DIR}/${QMAKE_FILE_BASE}_cuda.obj
+		}
+		cuda.commands = $$(CUDA_BIN_PATH)/nvcc.exe -c $$CUDA_FLAGS -Xcompiler -nologo $${join(INCLUDEPATH,'" -I "','-I "','"')} $${join(DEFINES," -D","-D",)} ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
+		cuda.dependency_type = TYPE_C
+	}
+	unix {
+		# auto-detect CUDA path
+		CUDA_DIR = $${system(which nvcc | sed 's,/bin/*nvcc$,,')}
+		INCLUDEPATH += $${CUDA_DIR}/include
+
+		contains(TARGET_ARCH, 64) {
+			QMAKE_LIBDIR += $${CUDA_DIR}/lib64
+		} else {
+			QMAKE_LIBDIR += $${CUDA_DIR}/lib
+		}
+
+		LIBS *= -lcudart
+		contains(DEFINES,SOFA_GPU_CUBLAS) {
+			LIBS *= -lcublas
+		}
+#		macx: QMAKE_LFLAGS += -Wl,-rpath,$${CUDA_DIR}/lib
+		contains(CUDA_FLAGS,--device-emulation) {
+			cuda.output = ${OBJECTS_DIR}${QMAKE_FILE_BASE}_cudaemu.o
+			cuda.clean = ${OBJECTS_DIR}${QMAKE_FILE_BASE}_cudaemu.o
+		}
+		else {
+			cuda.output = ${OBJECTS_DIR}${QMAKE_FILE_BASE}_cuda.o
+			cuda.clean = ${OBJECTS_DIR}${QMAKE_FILE_BASE}_cuda.o
+		}
+		contains(CONFIGDEBUG, debug) {
+			CUDA_FLAGS *= -g
+		}
+		contains(QMAKE_CFLAGS,-m32): CUDA_FLAGS *= -m32
+		contains(QMAKE_CFLAGS,-m64): CUDA_FLAGS *= -m64
+		contains(CONFIG,x86): CUDA_FLAGS *= -m32
+		contains(CONFIG,x86_64): CUDA_FLAGS *= -m64
+		cuda.commands = nvcc -c $$CUDA_FLAGS -Xcompiler -fPIC,$${join(QMAKE_CXXFLAGS_RELEASE,",")}  $${join(DEFINES," -D","-D")} $(INCPATH) ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
+		cuda.dependency_type = TYPE_C
+#		macx: cuda.commands += --host-compilation 'C'
+	}
+	export(QMAKE_LIBDIR)
+	export(QMAKE_EXTRA_COMPILERS)
+	export(cuda.input)
+	export(cuda.output)
+	export(cuda.clean)
+	export(cuda.commands)
+	export(cuda.dependency_type)
+}

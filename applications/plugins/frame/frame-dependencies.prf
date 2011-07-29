@@ -1,0 +1,7 @@
+includeOnce($$_FILE_) {
+	declare(sofaframe, applications/plugins/frame, sofacomponentprojectiveconstraintset sofacomponentvisualmodel sofagpucuda)
+	
+	contains(DEFINES, SOFA_HAVE_FRAME) {
+		enable(sofaframe)
+	}
+}

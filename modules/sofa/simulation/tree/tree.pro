@@ -2,6 +2,10 @@
 # ------------------------------------------- 
 # Subdir relative project main directory: ./modules/sofa/simulation/tree
 # Target is a library:  sofatree$$LIBSUFFIX
+load(sofa/pre)
+
+TEMPLATE = lib
+TARGET = sofatree
 
 HEADERS += tree.h \
            ExportDotVisitor.h \
@@ -17,12 +21,6 @@ SOURCES += ExportDotVisitor.cpp \
 		   TreeSimulation.cpp \
 		   
 
-SOFA_DIR =../../../..
-TEMPLATE = lib
-TARGET = sofatree
-
-include($${SOFA_DIR}/sofa.cfg)
-
 contains(DEFINES,SOFA_SMP){
 HEADERS += \
 			SMPSimulation.h
@@ -31,18 +29,9 @@ SOURCES += \
 			SMPSimulation.cpp
 }
 
-CONFIG += $$CONFIGLIBRARIES
-
-!contains(CONFIGSTATIC, static) {
-	CONFIG -= staticlib
-CONFIG += dll
-}
-
 DEFINES += SOFA_BUILD_SIMULATION_TREE
 
-LIBS += $$SOFA_FRAMEWORK_LIBS
-LIBS += -lsofasimulation$$LIBSUFFIX
-LIBS += $$SOFA_EXT_LIBS
-
 # Make sure there are no cross-dependencies
-INCLUDEPATH -= $$SOFA_DIR/applications
+INCLUDEPATH -= $$ROOT_SRC_DIR/applications
+
+load(sofa/post)

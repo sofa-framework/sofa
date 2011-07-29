@@ -1,0 +1,5 @@
+includeOnce($$_FILE_) {
+	declare(PluginExample, applications/plugins/PluginExample, sofaguiqt)
+	
+	enable(PluginExample)
+}

@@ -1,0 +1,8 @@
+win32 {
+	LIBS *= -lopengl32 -lglu32 -lglut32
+}
+
+unix {
+	macx  : LIBS += -framework OpenGL -framework GLUT
+	!macx : LIBS *= -lGL -lGLU -lglut
+}
