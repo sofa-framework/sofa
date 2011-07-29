@@ -9,12 +9,12 @@
   <DefaultCollisionGroupManager name="Group"/>
 
   <Node name="Quads Mesh">
-    <MeshLoader name="loader" filename="mesh/cubeQuad.obj" />
-    <MechanicalObject template="Vec3d" name="Quads"/>
+    <MeshObjLoader name="loader" filename="mesh/cubeQuad.obj" />
+    <MechanicalObject src="@loader" template="Vec3d" name="Quads"/>
     <EulerImplicitSolver name="cg_odesolver" printLog="0"/>
     <CGLinearSolver name="linear solver" template="GraphScattered" iterations="40" tolerance="1e-09" threshold="1e-09"/>
 
-    <QuadSetTopologyContainer name="Container" />
+    <QuadSetTopologyContainer src="@loader" name="Container" />
     <QuadSetTopologyModifier name="Topology Modifier"/>
     <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
     <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />

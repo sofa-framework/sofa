@@ -10,12 +10,12 @@
 		<EulerImplicit rayleighStiffness="0" printLog="false"/>
 		<BTDLinearSolver template="NewMatBand" bandWidth="11" threshold="0.000000001" tolerance="0.0000000001" printLog="false" verbose="false"/>
 		
-		<MeshLoader name="meshLoader" filename="mesh/edgeSet2.mesh"/>
-		<MechanicalObject name="MechanicalDOFs" template="Rigid" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1  3 0 0 0 0 0 1  4 0 0 0 0 0 1  5 0 0 0 0 0 1  6 0 0 0 0 0 1"/>
+		<MeshLoader name="loader" filename="mesh/edgeSet2.mesh"/>
+		<MechanicalObject src="@loader" name="MechanicalDOFs" template="Rigid" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1  3 0 0 0 0 0 1  4 0 0 0 0 0 1  5 0 0 0 0 0 1  6 0 0 0 0 0 1"/>
 		<FixedConstraint name="FixedConstraint" indices="0"/>
 		<UniformMass mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" showInitialCenterOfGravity="false"/>
 		
-		<include href="Objects/EdgeSetTopology.xml" template="Rigid"/>
+		<include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid"/>
 		
 	<!--	<EdgeSetController listening="true" mainDirection="1.0 0.0 0.0" reversed="false"/>	-->
 		<BeamAdapter name="beamAdapter" listening="true" minCurvatureAngle="3" maxCurvatureAngle="12" nbMaxBeams="6" activate="true"/>
@@ -54,12 +54,12 @@
 		<EulerImplicit rayleighStiffness="0" printLog="false"/>
 		<BTDLinearSolver template="NewMatBand" bandWidth="11" threshold="0.000000001" tolerance="0.0000000001" printLog="false" verbose="false"/>
 		
-		<MeshLoader name="meshLoader" filename="mesh/edgeSet2.mesh"/>
-		<MechanicalObject name="MechanicalDOFs" template="Rigid" position="0 0 2.0 0 0 0 1  1 0 2.0 0 0 0 1  2 0 2.0 0 0 0 1  3 0 2.0 0 0 0 1  4 0 2.0 0 0 0 1  5 0 2.0 0 0 0 1  6 0 2.0 0 0 0 1"/>
+		<MeshLoader name="loader" filename="mesh/edgeSet2.mesh"/>
+		<MechanicalObject src="@loader" name="MechanicalDOFs" template="Rigid" position="0 0 2.0 0 0 0 1  1 0 2.0 0 0 0 1  2 0 2.0 0 0 0 1  3 0 2.0 0 0 0 1  4 0 2.0 0 0 0 1  5 0 2.0 0 0 0 1  6 0 2.0 0 0 0 1"/>
 		<FixedConstraint name="FixedConstraint" indices="0"/>
 		<UniformMass mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" showInitialCenterOfGravity="false"/>
 		
-		<include href="Objects/EdgeSetTopology.xml" template="Rigid"/>
+		<include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid"/>
 		
 	<!--	<EdgeSetController listening="true" mainDirection="1.0 0.0 0.0" reversed="false"/>	-->
 		<BeamFEMForceField name="FEM" radius="0.05" youngModulus="500000000"/>

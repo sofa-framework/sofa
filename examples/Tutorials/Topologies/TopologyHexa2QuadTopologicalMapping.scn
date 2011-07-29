@@ -9,14 +9,14 @@
   <DefaultCollisionGroupManager name="Group"/>
 
   <Node name="Cube">
-    <Object type="MeshLoader" name="meshLoader" filename="mesh/nine_hexa.msh"/>
+    <Object type="MeshGmshLoader" name="loader" filename="mesh/nine_hexa.msh"/>
 
     <EulerImplicitSolver name="cg_odesolver" printLog="0"/>
     <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09"/>
-    <MechanicalObject template="Vec3d" name="Hexa"/>
+    <MechanicalObject src="@loader" template="Vec3d" name="Hexa"/>
     <UniformMass template="Vec3d" name="Mass" mass="0.25"/>
 
-    <Object type="HexahedronSetTopologyContainer"  name="Container" />
+    <Object type="HexahedronSetTopologyContainer" src="@loader"  name="Container" />
     <Object type="HexahedronSetTopologyModifier"   name="Modifier" />
     <Object type="HexahedronSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
     <Object type="HexahedronSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" drawHexa="1" drawColorHexahedra="1.0 1.0 0.3"/>/>    

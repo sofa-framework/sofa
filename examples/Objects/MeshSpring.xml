@@ -1,9 +1,9 @@
 <Node name="MeshSpring">
 	<EulerImplicitSolver rayleighStiffness="0.01" />
 	<CGLinearSolver iterations="25" threshold="0.00000001" />	 
-	<MeshLoader name="mechaLoader" filename="file"/>
-	<Mesh/> 
-	<MechanicalObject translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
+	<MeshLoader name="loader" filename="file"/>
+	<Mesh src="@loader"/> 
+	<MechanicalObject src="@loader" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
 	<UniformMass totalmass="1" />
 	<MeshSpringForceField name="Springs" stiffness="400" damping="4"/>
     <VisualNodeTransformation/>

@@ -50,21 +50,21 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" index="0"/>
 		</Node>
 		<Node name="RefModel">
-			<Object type="MeshLoader" filename="data/mesh/dental_instrument_centerline.obj" />
-			<Object type="Mesh"  />
-			<Object type="MechanicalObject" name="instrumentCollisionState" dz="-3.5" dx="0.3" />
+			<Object type="MeshObjLoader" filename="data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<Object type="Mesh" src="@loader"  />
+			<Object type="MechanicalObject" src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3" />
 			<Object type="RigidMapping" />
 		</Node>
 		<Node name="RefModelRight" >
-			<Object type="MeshLoader" filename="data/mesh/dental_instrument_centerline.obj" />
-			<Object type="Mesh" name="InstrumentCollisionModel"  />
-			<Object type="MechanicalObject" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="0.5"/>
+			<Object type="MeshObjLoader" filename="data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<Object type="Mesh" src="@loader" name="InstrumentCollisionModel"  />
+			<Object type="MechanicalObject" src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="0.5"/>
 			<Object type="RigidMapping" />
 		</Node>
 		<Node name="RefModelLeft" >
-			<Object type="MeshLoader" filename="data/mesh/dental_instrument_centerline.obj" />
-			<Object type="Mesh" name="InstrumentCollisionModel"  />
-			<Object type="MechanicalObject" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="-0.5"/>
+			<Object type="MeshObjLoader" filename="data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<Object type="Mesh" src="@loader" name="InstrumentCollisionModel"  />
+			<Object type="MechanicalObject" src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="-0.5"/>
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
@@ -81,23 +81,23 @@
 			<Object type="RigidMapping" name="MM->VM mapping" object1="instrumentState" object2="InstrumentVisualModel" />
 		</Node>
 		<Node name="CollisionModel" >
-			<Object type="MeshLoader" filename="data/mesh/dental_instrument_centerline.obj" />
-			<Object type="Mesh" name="InstrumentCollisionModel"  />
-			<Object type="MechanicalObject" name="instrumentCollisionState" dz="-3.5" dx="0.3"/>
+			<Object type="MeshObjLoader" filename="data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<Object type="Mesh" src="@loader" name="InstrumentCollisionModel"  />
+			<Object type="MechanicalObject" src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3"/>
 			<Object type="Line" name="instrument" contactStiffness="10" />
 			<Object type="Point" name="instrument" contactStiffness="10" /> 
 			<Object type="RigidMapping" name="MM->CM mapping" object1="instrumentState" object2="instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelRight" >
-			<Object type="MeshLoader" filename="data/mesh/dental_instrument_centerline.obj" />
-			<Object type="Mesh" name="InstrumentCollisionModel" />
-			<Object type="MechanicalObject" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="0.5"/>
+			<Object type="MeshObjLoader" filename="data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<Object type="Mesh" src="@loader" name="InstrumentCollisionModel" />
+			<Object type="MechanicalObject" src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="0.5"/>
 			<Object type="RigidMapping" name="MM->CM mapping" object1="instrumentState" object2="instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelLeft" >
-			<Object type="MeshLoader" filename="data/mesh/dental_instrument_centerline.obj" />
-			<Object type="Mesh" name="InstrumentCollisionModel"  />
-			<Object type="MechanicalObject" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="-0.5" />
+			<Object type="MeshObjLoader" filename="data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<Object type="Mesh" src="@loader" name="InstrumentCollisionModel"  />
+			<Object type="MechanicalObject" src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="-0.5" />
 			<Object type="RigidMapping" name="MM->CM mapping" object1="instrumentState" object2="instrumentCollisionState" />
 		</Node>
        

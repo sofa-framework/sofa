@@ -1,9 +1,9 @@
 <Node name="FEM">
 	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
 	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001"  />
-	<Object type="MeshLoader" name="mechaLoader" filename="file"/>
-	<Object type="Mesh"  />
-	<Object type="MechanicalObject" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
+	<Object type="MeshLoader" name="loader" filename="file"/>
+	<Object type="Mesh" src="@loader"  />
+	<Object type="MechanicalObject" src="@loader" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
 	<Object type="UniformMass" totalmass="1" />
 	<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3"  method="polar"/>
 	<Node name="VisualNode">
@@ -11,9 +11,9 @@
 		<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 	</Node>
 	<Node name="CollisionNode">
-	        <Object type="MeshLoader" name="collisionLoader"  filename="file"/>
-		<Object type="Mesh"  />
-		<Object type="MechanicalObject" useMask="true"/>
+	        <Object type="MeshLoader" name="loader"  filename="file"/>
+		<Object type="Mesh" src="@loader"  />
+		<Object type="MechanicalObject" src="@loader" useMask="true"/>
 		<Object type="Triangle" />
 		<Object type="Line" />
 		<Object type="Point" />

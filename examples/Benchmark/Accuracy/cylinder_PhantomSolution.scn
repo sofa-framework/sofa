@@ -14,9 +14,9 @@
                 <Object type="FixedConstraint" indices="0" />
             </Node>
             <Node name="Surface">
-            	<Object type="MeshLoader"  filename="mesh/truthCylinder-Deformed.obj" /> 
-                <Object type="Mesh" />
-                <Object type="MechanicalObject" scale="1.0" />
+            	<Object type="MeshObjLoader"  filename="mesh/truthCylinder-Deformed.obj"  name="loader"/>
+                <Object type="Mesh" src="@loader" />
+                <Object type="MechanicalObject" src="@loader" scale="1.0" />
                 <Object type="Triangle" />
                 <Object type="Line" />
                 <Object type="Point" />

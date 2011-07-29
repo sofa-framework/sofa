@@ -19,8 +19,8 @@
 
   <Node name="Dragon">
 
-    <MeshLoader name="MeshLoader" filename="mesh/dragon.obj" />
-    <MechanicalObject name="DragonParticles" scale="0.1"/>
+    <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+    <MechanicalObject src="@loader" name="DragonParticles" scale="0.1"/>
 
     <PlaneForceField name="Floor" normal="0 0.2 1" stiffness="100" damping="1" draw="1" />
     <PlaneForceField name="Wall" normal="0 -1 0" d="-4" stiffness="100" damping="1" draw="1" color="1 1 1" />

@@ -70,9 +70,9 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="MeshLoader" filename="mesh/smCube125.obj" />
-			<Object type="Mesh"/>
-			<Object type="MechanicalObject" />
+			<Object type="MeshObjLoader" filename="mesh/smCube125.obj"  name="loader"/>
+			<Object type="Mesh" src="@loader"/>
+			<Object type="MechanicalObject" src="@loader" />
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="RigidMapping" />

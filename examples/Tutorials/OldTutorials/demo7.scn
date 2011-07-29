@@ -15,8 +15,8 @@
 				<Object type="OglModel" name="Visual" filename="mesh/smCube27.obj" color="yellow"/>
 				<Object type="IdentityMapping" object1="../.." object2="Visual"/>
 			</Node>
-			<Object type="MeshLoader" filename="mesh/smCube27.mesh"/>
-			<Object type="Mesh"/>
+			<Object type="MeshLoader" filename="mesh/smCube27.mesh" name="loader"/>
+			<Object type="Mesh" src="@loader" src="@loader"/>
 			<Node name="Surf">
 				<MechanicalObject dz="-21.0"/>
 				<Object type="Sphere" filename="mesh/smCube27b.sph"/>
@@ -48,8 +48,8 @@
 				<Object type="OglModel" name="Visual" filename="mesh/smCube27.obj" color="red" />
 				<Object type="IdentityMapping" object1="../.." object2="Visual" />
 			</Node>
-			<Object type="MeshLoader" filename="mesh/smCube27.mesh"/>
-			<Object type="Mesh"/>
+			<Object type="MeshLoader" filename="mesh/smCube27.mesh" name="loader"/>
+			<Object type="Mesh" src="@loader" src="@loader"/>
 			<Node name="Surf">
 				<MechanicalObject/>
 				<Object type="Sphere" filename="mesh/smCube27b.sph" />
@@ -81,8 +81,8 @@
 				<Object type="OglModel" name="Visual" filename="mesh/smCube27.obj" color="cyan" />
 				<Object type="IdentityMapping" object1="../.." object2="Visual" />
 			</Node>
-			<Object type="MeshLoader" filename="mesh/smCube27.mesh"/>
-			<Object type="Mesh"/>
+			<Object type="MeshLoader" filename="mesh/smCube27.mesh" name="loader"/>
+			<Object type="Mesh" src="@loader" src="@loader"/>
 			<Node name="Surf">
 				<MechanicalObject dz="21"/>
 				<Object type="Sphere" filename="mesh/smCube27b.sph"/>
