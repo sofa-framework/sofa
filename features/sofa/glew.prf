@@ -1,6 +1,5 @@
 contains(DEFINES, SOFA_HAVE_GLEW){
 	win32 {
-		INCLUDEPATH *= $ROOT_SRC_DIR/include # Only to support extracting include/GL/glew.h in the source dir
 		LIBS *= -lglew32
 	}
 	unix {

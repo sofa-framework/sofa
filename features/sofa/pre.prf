@@ -205,9 +205,9 @@ contains(CONFIGDEBUG, profile) {
 ########################################################################
 
 # Only define these directories when performing an in-source build.
-isEqual(BUILD_DIR, $$SRC_DIR) {
+!equals(OUT_OF_SOURCE, true) {
 	isEmpty(OBJECTS_DIR) {
-		OBJECTS_DIR = OBJ/$$CONFIGDEBUG
+		OBJECTS_DIR = OBJ/$$join(CONFIGDEBUG, -, , )
 	}
 	
 	isEmpty(RCC_DIR) {

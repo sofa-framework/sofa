@@ -200,7 +200,7 @@ defineTest(requireLib) {
 	isEmpty(name)   : error(missing name parameter in requireLib)
 	isEmpty(feature): error(missing feature parameter in requireLib)
 
-	message(Using system lib $$name)
+	#message(Using system lib $$name)
 
 	featureNoExt = $$replace(feature, ^(.+)\\.prf$, \\1)
 	isSourceAvailable($$name, $$feature) {
@@ -252,7 +252,7 @@ defineTest(requireExtLib) {
 	}
 
 	isSourceAvailable($$name, $$project) {
-		message(Using shipped version of $$name)
+		#message(Using shipped version of $$name)
 		MY_FEATUREFILE = $$ROOT_SRC_DIR/$$dir/$${name}
 		MY_INCLUDEPATH = $$ROOT_SRC_DIR/$$dir
 		MY_LIBRARYPATH = -L$$LIB_DESTDIR
@@ -260,7 +260,7 @@ defineTest(requireExtLib) {
 		!isInstalled($$name) {
 			error(requireExtLib: Cannot find $$name library)
 		}
-		message(Using installed version of $$name)
+		#message(Using installed version of $$name)
 		MY_FEATUREFILE = $$FEATURES_DIR/$${name}
 		MY_INCLUDEPATH = $$SOFA_INSTALL_INC_DIR/$$dir
 		MY_LIBRARYPATH = -L$$SOFA_INSTALL_LIB_DIR
@@ -299,11 +299,11 @@ defineTest(requireSofaLib) {
 	sourcedir = $$replace(project, (applications|framework|modules)/.+, \\1)
 
 	isSourceAvailable($$name, $$project) {
-		message(Using shipped version of Sofa library: $$name)
+		#message(Using shipped version of Sofa library: $$name)
 		INCLUDEPATH *= $$ROOT_SRC_DIR/$$sourcedir
 		LIBS *= -L$$LIB_DESTDIR
 	} else {
-		message(Using installed version of Sofa library: $$name)
+		#message(Using installed version of Sofa library: $$name)
 		INCLUDEPATH *= $$SOFA_INSTALL_INC_DIR/$$sourcedir
 		LIBS *= -L$$SOFA_INSTALL_LIB_DIR
 	}
