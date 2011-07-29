@@ -9,7 +9,7 @@ DEFINES += SOFA_BUILD_SOFAGUI
 
 SOURCES = \
 	BatchGUI.cpp \
-	ColourPickingVisitor.h \
+	ColourPickingVisitor.cpp \
 	FilesRecentlyOpenedManager.cpp \
 	MouseOperations.cpp \
 	PickHandler.cpp \
@@ -17,7 +17,7 @@ SOURCES = \
 
 HEADERS = \
 	BatchGUI.h \
-	ColourPickingVisitor.cpp \
+	ColourPickingVisitor.h \
 	MouseOperations.h \
 	OperationFactory.h \
 	PickHandler.h \
