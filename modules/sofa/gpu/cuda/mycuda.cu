@@ -362,7 +362,7 @@ __global__ void cuda_debug_kernel()
 
 void cuda_void_kernel()
 {
-    myprintf("WARNING : cuda_void_kernel should only be use for debug\n");
+    myprintf("WARNING : cuda_void_kernel should only be used for debug\n");
 
     dim3 threads(1,1);
     dim3 grid(1,1);
