@@ -230,11 +230,10 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Use to generate code for multiple architectures
 # CUDA_FLAGS += -gencode=arch=compute_10,code=\\\"sm_10,compute_10\\\"
 # CUDA_FLAGS += -gencode=arch=compute_13,code=\\\"sm_13,compute_13\\\"
-# CUDA_FLAGS += -gencode=arch=compute_13,code=\\\"sm_20,compute_13\\\"
 # CUDA_FLAGS += -gencode=arch=compute_20,code=\\\"sm_20,compute_20\\\"
 
-# Uncomment if you want tu use gcc4.3 to compile cuda files (use if you have weak error)
-# CUDA_FLAGS = --compiler-bindir=/usr/bin/gcc-4.3
+# Uncomment if you want to use gcc4.4 to compile cuda files (use if you have weak error)
+# CUDA_FLAGS += --compiler-bindir=/usr/bin/gcc-4.4
 
 # Uncomment if you want to use IEEE 754-compliant floating point operations
 # DEFINES += SOFA_GPU_CUDA_PRECISE
