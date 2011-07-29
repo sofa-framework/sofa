@@ -1,0 +1,8 @@
+contains(DEFINES, SOFA_QT4) {	
+	#CONFIG *= uic3
+	QT *= qt3support
+}
+QT *= opengl
+
+export(QT)
+export(CONFIG)

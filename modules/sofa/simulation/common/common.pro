@@ -2,6 +2,17 @@
 # ------------------------------------------- 
 # Subdir relative project main directory: ./modules/sofa/simulation/common
 # Target is a library:  sofasimulation$$LIBSUFFIX
+load(sofa/pre)
+
+TEMPLATE = lib
+TARGET = sofasimulation
+
+DEFINES += SOFA_BUILD_SIMULATION_COMMON
+
+INCLUDEPATH += $$ROOT_SRC_DIR/modules
+
+# Make sure there are no cross-dependencies
+INCLUDEPATH -= $$ROOT_SRC_DIR/applications
 
 HEADERS += common.h \
            Node.h \
@@ -123,11 +134,6 @@ SOURCES += Node.cpp \
            xml/DataElement.cpp \
            xml/XML.cpp 
 
-
-SOFA_DIR =../../../..
-TEMPLATE = lib
-TARGET = sofasimulation
-include($${SOFA_DIR}/sofa.cfg)
 contains(DEFINES,SOFA_SMP){
 HEADERS +=  \
            ChangeListener.h \
@@ -138,17 +144,4 @@ SOURCES +=  \
            ParallelMechanicalVisitor.cpp 
 }
 
-CONFIG += $$CONFIGLIBRARIES
-
-!contains(CONFIGSTATIC, static) {
-	CONFIG -= staticlib
-CONFIG += dll
-}
-
-DEFINES += SOFA_BUILD_SIMULATION_COMMON
-
-LIBS += $$SOFA_FRAMEWORK_LIBS
-LIBS += $$SOFA_EXT_LIBS
-
-# Make sure there are no cross-dependencies
-INCLUDEPATH -= $$SOFA_DIR/applications
+load(sofa/post)

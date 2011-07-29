@@ -1,30 +1,13 @@
-SOFA_DIR =../../..
+load(sofa/pre)
+defineAsPlugin(frame)
+
 TEMPLATE = lib
 TARGET = sofaframe
-include($${SOFA_DIR}/sofa.cfg)
-
-DESTDIR = $$SOFA_DIR/lib/sofa-plugins
-
-CONFIG += $$CONFIGLIBRARIES
-
-!contains(CONFIGSTATIC, static) {
-	CONFIG -= staticlib
-CONFIG += dll
-}
 
 DEFINES += SOFA_BUILD_FRAME
 
-LIBS += $$SOFA_FRAMEWORK_LIBS
-LIBS += $$SOFA_EXT_LIBS
-LIBS += -lsofacomponentbase$$LIBSUFFIX
-LIBS += -lsofacomponentloader$$LIBSUFFIX
-LIBS += -lsofacomponentprojectiveconstraintset$$LIBSUFFIX
-LIBS += -lsofacomponentvisualmodel$$LIBSUFFIX
-LIBS += -lsofasimulation$$LIBSUFFIX
-LIBS += -lsofatree$$LIBSUFFIX
-
 # Make sure there are no cross-dependencies
-INCLUDEPATH -= $$SOFA_DIR/applications
+INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
 
 HEADERS += \
            initFrame.h \
@@ -79,8 +62,7 @@ SOURCES += \
            NewHookeMaterial.cpp
            #TetrahedronFEMForceFieldWithExternalMaterial.cpp
 
-contains(DEFINES,SOFA_GPU_CUDA){ # BEGIN SOFA_GPU_CUDA
-LIBS += -lsofagpucuda$$LIBSUFFIX
+contains(DEFINES, SOFA_GPU_CUDA) { # BEGIN SOFA_GPU_CUDA
 
 HEADERS += \
            HexaRemover.h \
@@ -89,3 +71,5 @@ HEADERS += \
 SOURCES += \
            HexaRemover.cpp
 }
+
+load(sofa/post)

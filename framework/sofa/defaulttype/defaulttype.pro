@@ -1,25 +1,14 @@
 # Target is a library:  sofadefaulttype
+load(sofa/pre)
 
-SOFA_DIR = ../../..
 TEMPLATE = lib
 TARGET = sofadefaulttype
 
-include($${SOFA_DIR}/sofa.cfg)
-
-CONFIG += $$CONFIGLIBRARIES
-
-!contains(CONFIGSTATIC, static) {
-	CONFIG -= staticlib
-CONFIG += dll
-}
-
-LIBS += -lsofahelper$$LIBSUFFIX
-LIBS += $$SOFA_EXT_LIBS
 DEFINES += SOFA_BUILD_DEFAULTTYPE
 # Make sure there are no cross-dependencies
-INCLUDEPATH -= $$SOFA_DIR/framework/sofa/core
-INCLUDEPATH -= $$SOFA_DIR/modules
-INCLUDEPATH -= $$SOFA_DIR/applications
+INCLUDEPATH -= $$ROOT_SRC_DIR/framework/sofa/core
+INCLUDEPATH -= $$ROOT_SRC_DIR/modules
+INCLUDEPATH -= $$ROOT_SRC_DIR/applications
 
 HEADERS += \
         defaulttype.h \
@@ -49,4 +38,4 @@ SOURCES += \
           Frame.cpp \
           SolidTypes.cpp
 
-
+load(sofa/post)

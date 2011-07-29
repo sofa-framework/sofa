@@ -1,14 +1,13 @@
 # Target is a library:  miniFlowVR
+load(sofa/pre)
 
-SOFA_DIR = ../..
 TEMPLATE = lib
 TARGET = miniFlowVR
 
-include($${SOFA_DIR}/sofa.cfg)
-
-CONFIG += $$CONFIGLIBRARIES
-
+INCLUDEPATH *= include
 DEFINES *= MINI_FLOWVR
+
+CONFIGSTATIC = static
 
 HEADERS += \
            include/ftl/cmdline.h \
@@ -39,3 +38,5 @@ SOURCES += \
            src/librender/mesh_io_stl.cpp \
            src/librender/mesh_io_vtk.cpp \
            src/librender/mesh_io_lwo.cpp
+
+load(sofa/post)

@@ -7,7 +7,7 @@ PLATFORM=linux
 fi
 export SOFA_DIR=$PWD
 export PATH=$SOFA_DIR/bin:$PATH
-export LD_LIBRARY_PATH=$SOFA_DIR/lib/$PLATFORM:$SOFA_DIR/lib/sofa-plugins/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$SOFA_DIR/lib:$LD_LIBRARY_PATH
 if [ "$PLATFORM" = "macx" ]; then
-export DYLD_LIBRARY_PATH=$SOFA_DIR/lib/$PLATFORM:$SOFA_DIR/lib/sofa-plugins/:$DYLD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=$SOFA_DIR/lib:$DYLD_LIBRARY_PATH
 fi

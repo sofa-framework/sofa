@@ -1,12 +1,10 @@
 # Target is a library:  tinyxml
+load(sofa/pre)
 
-SOFA_DIR = ../..
 TEMPLATE = lib
 TARGET = tinyxml
 
-include($${SOFA_DIR}/sofa.cfg)
-
-CONFIG += $$CONFIGLIBRARIES
+CONFIGSTATIC = static
 
 HEADERS += \
   tinystr.h \
@@ -17,3 +15,5 @@ SOURCES += \
   tinyxml.cpp \
   tinyxmlerror.cpp \
   tinyxmlparser.cpp
+
+load(sofa/post)

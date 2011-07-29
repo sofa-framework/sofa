@@ -1,0 +1,14 @@
+# If PML is active, we need to include libxml even if it is not the active parser in SOFA
+contains(DEFINES, SOFA_PML) | contains(DEFINES, SOFA_XML_PARSER_LIBXML) {
+  win32 {
+    LIBS *= -llibxml2 
+  }
+  unix {
+    # Use xml2-config if available to get options for libxml2
+    QMAKE_CXXFLAGS *= $$system(xml2-config --cflags 2>/dev/null || echo '-I/usr/include/libxml2')
+    LIBS *=  $$system(xml2-config --libs 2>/dev/null || echo '-lxml2 -lz')
+    # TODO: in which case the following is still necessary ?
+    INCLUDEPATH *= /usr/include/libxml2
+    export(QMAKE_CXXFLAGS)
+  }
+}

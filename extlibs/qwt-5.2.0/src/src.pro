@@ -6,21 +6,16 @@
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the Qwt License, Version 1.0
 ##############################################
+load(sofa/pre)
 
 # qmake project file for building the qwt libraries
 
 QWT_ROOT = ..
 
-SOFA_DIR = ../../..
 TEMPLATE = lib
-include($${SOFA_DIR}/sofa.cfg)
+TARGET  = qwt
 
 include( $${QWT_ROOT}/qwtconfig.pri )
-
-TARGET  = qwt$${LIBSUFFIX}
-CONFIG += $$CONFIGLIBRARIES
-
-MOC_DIR           = moc
 
 contains(CONFIG, QwtDll ) {
     CONFIG += dll
@@ -199,12 +194,4 @@ contains(CONFIG, QwtWidgets) {
         qwt_wheel.cpp
 }
 
-# Install directives
-
-headers.files  = $$HEADERS
-doc.files      = $${QWT_ROOT}/doc/html $${QWT_ROOT}/doc/qwt-5.2.0.qch
-unix {
-    doc.files      += $${QWT_ROOT}/doc/man
-}
-
-INSTALLS       = target headers doc
+load(sofa/post)

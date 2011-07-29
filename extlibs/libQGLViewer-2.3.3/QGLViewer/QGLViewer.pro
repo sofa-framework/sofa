@@ -7,12 +7,11 @@
 # If your Qt version is lower than 3.1 (look at $QTDIR/lib), you need to link with GLUT.
 # Uncomment the following line:
 # USE_GLUT = yes
+load(sofa/pre)
 
-SOFA_DIR = ../../..
 TEMPLATE = lib
 TARGET = QGLViewer
 
-include($${SOFA_DIR}/sofa.cfg)
 
 CONFIG *= qt opengl warn_on shared thread create_prl rtti uic
 
@@ -120,7 +119,7 @@ unix {
   # INCLUDE_DIR and LIB_DIR specify where to install the include files and the library.
   # Use qmake INCLUDE_DIR=... LIB_DIR=... , or qmake PREFIX=... to customize your installation.
   isEmpty( PREFIX ) {
-    PREFIX=/usr
+    PREFIX=/usr/local
   }
   isEmpty( LIB_DIR ) {
     LIB_DIR = $${PREFIX}/lib
@@ -188,7 +187,7 @@ HEADERS *= $${VRENDER_HEADERS}
 #		--  L i n u x  --
 linux-g++ {
   # Patch for gcc 3.2.0 and 3.3.1-2
-  system( g++ --version | grep " 3\.2\.0 " > /dev/null )|system( g++ --version | grep " 3\.3\.1\-2" > /dev/null ) {
+  system( g++ --version | grep " 3\\.2\\.0 " > /dev/null )|system( g++ --version | grep " 3\\.3\\.1\\-2" > /dev/null ) {
       message( Patching gcc bug - using debug configuration )
       CONFIG -= release
       CONFIG *= debug
@@ -246,11 +245,11 @@ win32 {
 
   CONFIG *= embed_manifest_dll
 
-  # Make sure to have C++ files, PentiumPro code, few warnings, add
+  # Make sure to have C++ files, few warnings, add
   # support to RTTI and Exceptions, and generate debug info "program database".
   # Any feedback on these flags is welcome.
   !win32-g++ {
-    QMAKE_CXXFLAGS = -TP -G6 -GR -Zi
+    QMAKE_CXXFLAGS = -TP -GR -Zi
     win32-msvc {
       QMAKE_CXXFLAGS *= -GX
     } else {
@@ -258,3 +257,5 @@ win32 {
     }
   }
 }
+
+load(sofa/post)

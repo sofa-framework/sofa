@@ -1,13 +1,7 @@
-# Target is a library:  csparse
+load(sofa/pre)
 
-SOFA_DIR = ../..
 TEMPLATE = lib
 TARGET = csparse
-
-include($${SOFA_DIR}/sofa.cfg)
-
-CONFIG += $${CONFIGLIBRARIES}
-
 
 DEFINES += use_namespace 
 
@@ -19,3 +13,5 @@ HEADERS = \
         csparse.h \
         ldl.h \
         UFconfig.h \
+
+load(sofa/post)

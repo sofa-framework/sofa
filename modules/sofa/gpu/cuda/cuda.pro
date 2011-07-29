@@ -1,49 +1,17 @@
 # Target is a library: sofagpucuda
 
-SOFA_DIR = ../../../..
+load(sofa/pre)
+
 TEMPLATE = lib
 TARGET = sofagpucuda
 
 DEFINES += SOFA_BUILD_GPU_CUDA
 
-include($${SOFA_DIR}/sofa.cfg)
-
-CONFIG += $$CONFIGLIBRARIES
 DEFINES += CUDPP_STATIC_LIB
-
-!contains(CONFIGSTATIC, static) {
-	CONFIG -= staticlib
-CONFIG += dll
-}
 
 win32 {
 QMAKE_CXXFLAGS += /bigobj
 }
-
-LIBS += $$SOFA_FRAMEWORK_LIBS
-LIBS += -lsofasimulation$$LIBSUFFIX
-LIBS += -lsofatree$$LIBSUFFIX
-LIBS += -lsofacomponentbase$$LIBSUFFIX
-LIBS += -lsofacomponentmastersolver$$LIBSUFFIX
-LIBS += -lsofacomponentfem$$LIBSUFFIX
-LIBS += -lsofacomponentinteractionforcefield$$LIBSUFFIX
-LIBS += -lsofacomponentcontextobject$$LIBSUFFIX
-LIBS += -lsofacomponentbehaviormodel$$LIBSUFFIX
-LIBS += -lsofacomponentlinearsolver$$LIBSUFFIX
-LIBS += -lsofacomponentodesolver$$LIBSUFFIX
-LIBS += -lsofacomponentbase$$LIBSUFFIX
-LIBS += -lsofacomponentcontroller$$LIBSUFFIX
-LIBS += -lsofacomponentengine$$LIBSUFFIX
-LIBS += -lsofacomponentvisualmodel$$LIBSUFFIX
-LIBS += -lsofacomponentmass$$LIBSUFFIX
-LIBS += -lsofacomponentforcefield$$LIBSUFFIX
-LIBS += -lsofacomponentmapping$$LIBSUFFIX
-LIBS += -lsofacomponentprojectiveconstraintset$$LIBSUFFIX
-LIBS += -lsofacomponentconstraintset$$LIBSUFFIX
-LIBS += -lsofacomponentcollision$$LIBSUFFIX
-LIBS += -lsofacomponentmisc$$LIBSUFFIX
-LIBS += -lsofacomponent$$LIBSUFFIX
-LIBS += $$SOFA_EXT_LIBS
 
 HEADERS += mycuda.h \
            gpucuda.h \
@@ -93,7 +61,6 @@ HEADERS += mycuda.h \
            CudaPointModel.h \
            CudaSphereModel.h \
            CudaTriangleModel.h \
-           CudaTriangleModel.inl \
            CudaPenalityContactForceField.h \
            CudaPenalityContactForceField.inl \
            CudaSpatialGridContainer.h \
@@ -314,9 +281,11 @@ HEADERS += scan.h
 CUDA_SOURCES += scan.cu
 
 !contains(DEFINES,SOFA_GPU_CUDPP){
-	HEADERS += radixsort.cuh radixsort_kernel.cu
+	HEADERS += radixsort.h
 	CUDA_SOURCES += radixsort.cu
 }
 
 
 } # END SOFA_DEV
+
+load(sofa/post)

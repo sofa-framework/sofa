@@ -1,0 +1,8 @@
+contains(DEFINES, SOFA_HAVE_GLEW){
+	win32 {
+		LIBS *= -lglew32
+	}
+	unix {
+		LIBS *= -lGLEW
+	}
+}

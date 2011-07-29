@@ -1,0 +1,47 @@
+
+########################################################################
+# Default options
+########################################################################
+
+CONFIG += warn_on exceptions rtti stl thread
+
+win32 {
+	QMAKE_CXXFLAGS_DEBUG = -MP -MDd -Od
+	QMAKE_CXXFLAGS_RELEASE = -MP -MD -O2
+}
+
+########################################################################
+# Defines
+########################################################################
+
+# Auto-detect Qt 4.x
+# The QT variable was introduced in Qt 4
+!isEmpty(QT): DEFINES += SOFA_QT4
+
+!contains(DEFINES,SOFA_XML_PARSER_LIBXML){
+  DEFINES *= SOFA_XML_PARSER_TINYXML
+}
+
+contains(DEFINES, SOFA_GUI_QTVIEWER) {
+	DEFINES *= SOFA_GUI_QT
+}
+
+contains(DEFINES, SOFA_GUI_QGLVIEWER) {
+	DEFINES *= SOFA_GUI_QT
+}
+
+!contains(CONFIGDEBUG, debug) {
+	DEFINES += NDEBUG
+}
+
+########################################################################
+# System-specific configuration
+########################################################################
+
+macx {
+	BUNDLE_RESOURCES_SHADERS.path = Contents/Resources/shaders
+	BUNDLE_RESOURCES_SHADERS.files = $$files($$ROOT_SRC_DIR/share/shaders/*)
+	BUNDLE_RESOURCES_TEXTURES.path = Contents/Resources/textures
+	BUNDLE_RESOURCES_TEXTURES.files = $$ROOT_SRC_DIR/share/textures/SOFA_logo.bmp $$files($$ROOT_SRC_DIR/share/textures/media*)
+	APP_BUNDLE_DATA += BUNDLE_RESOURCES_TEXTURES BUNDLE_RESOURCES_SHADERS
+}
