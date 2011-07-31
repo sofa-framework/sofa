@@ -252,7 +252,7 @@ defineTest(requireExtLib) {
 	}
 
 	isSourceAvailable($$name, $$project) {
-		#message(Using shipped version of $$name)
+		#message(Using shipped version of $$name in $$dir)
 		MY_FEATUREFILE = $$ROOT_SRC_DIR/$$dir/$${name}
 		MY_INCLUDEPATH = $$ROOT_SRC_DIR/$$dir
 		MY_LIBRARYPATH = -L$$LIB_DESTDIR
@@ -299,11 +299,12 @@ defineTest(requireSofaLib) {
 	sourcedir = $$replace(project, (applications|framework|modules)/.+, \\1)
 
 	isSourceAvailable($$name, $$project) {
-		#message(Using shipped version of Sofa library: $$name)
+		#message(Using shipped version of Sofa library: $$name in $$sourcedir)
 		INCLUDEPATH *= $$ROOT_SRC_DIR/$$sourcedir
+		#message($$INCLUDEPATH)
 		LIBS *= -L$$LIB_DESTDIR
 	} else {
-		#message(Using installed version of Sofa library: $$name)
+		#message(Using installed version of Sofa library: $$name in $$sourcedir)
 		INCLUDEPATH *= $$SOFA_INSTALL_INC_DIR/$$sourcedir
 		LIBS *= -L$$SOFA_INSTALL_LIB_DIR
 	}
