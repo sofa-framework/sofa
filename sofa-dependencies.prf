@@ -1,6 +1,7 @@
 includeOnce($$_FILE_) {
 
 declare(boost,  boost.prf)
+declare(cgal,   cgal.prf)
 declare(cilk,   cilk.prf)
 declare(cuda,   cuda.prf)
 declare(flowvr, flowvr.prf)
@@ -75,7 +76,7 @@ declare(sofacomponentcollision, modules/sofa/component/collision, \
 
 declare(sofacomponentmisc, modules/sofa/component/misc,  \
   sofacomponentcontroller sofacomponentcollision sofacomponentfem \
-  sofacomponentcontextobject sofacomponentbehaviormodel zlib)
+  sofacomponentcontextobject sofacomponentbehaviormodel zlib cgal)
 
 declare(sofacomponentconfigurationsetting, modules/sofa/component/configurationsetting, sofacomponentmisc)
 
@@ -101,7 +102,7 @@ declare(generateTypedefs, applications/projects/generateTypedefs, sofaguimain)
 declare(meshconv,         applications/projects/meshconv,         sofacomponent)
 declare(sofamodeler,      applications/projects/Modeler/lib,      sofaguimain)
 declare(Modeler,          applications/projects/Modeler/exec,     sofamodeler)
-declare(sofaCUDA,         applications/projects/sofaCUDA,         sofaguimain)
+declare(sofaCUDA,         applications/projects/sofaCUDA,         sofaguimain sofagpucuda)
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofacomponent sofagpucuda)
 declare(sofaVerification, applications/projects/sofaVerification, sofacomponent sofagpucuda)

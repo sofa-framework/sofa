@@ -1,6 +1,6 @@
 contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 	contains(DEFINES, SOFA_HAVE_CGAL) {
-		INCLUDEPATH = $$SOFA_INSTALL_INC_DIR/extlibs/CGAL/include
+		INCLUDEPATH *= $$SOFA_INSTALL_INC_DIR/extlibs/CGAL/include
 		LIBS *= -lCGAL -lgmp -lmpfr -lboost_thread-mt
 	}
 } # END SOFA_DEV
