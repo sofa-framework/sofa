@@ -215,6 +215,7 @@ defineTest(requireLib) {
 	load($$MY_FEATUREFILE)
 
 	export(INCLUDEPATH)
+	export(DEPENDPATH)
 	export(LIBS)
 }
 
@@ -271,11 +272,13 @@ defineTest(requireExtLib) {
 
 	equals(OLD_INCLUDEPATH, $$INCLUDEPATH) {
 		INCLUDEPATH *= $$MY_INCLUDEPATH
+		DEPENDPATH *= $$MY_INCLUDEPATH
 	}
 	equals(OLD_LIBS, $$LIBS) {
 		LIBS *= $$MY_LIBRARYPATH $$MY_LIBS
 	}
 
+	export(DEPENDPATH)
 	export(INCLUDEPATH)
 	export(LIBS)
 }
@@ -301,6 +304,7 @@ defineTest(requireSofaLib) {
 	isSourceAvailable($$name, $$project) {
 		#message(Using shipped version of Sofa library: $$name in $$sourcedir)
 		INCLUDEPATH *= $$ROOT_SRC_DIR/$$sourcedir
+		DEPENDPATH *= $$ROOT_SRC_DIR/$$sourcedir
 		#message($$INCLUDEPATH)
 		LIBS *= -L$$LIB_DESTDIR
 	} else {
@@ -311,6 +315,7 @@ defineTest(requireSofaLib) {
 	LIBS *= -l$$name$$LIBSUFFIX
 
 	export(INCLUDEPATH)
+	export(DEPENDPATH)
 	export(LIBS)
 }
 
