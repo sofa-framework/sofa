@@ -25,7 +25,8 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/BTDLinearSolver.h>
+//#include <sofa/component/linearsolver/BTDLinearSolver.h>
+#include "BTDLinearSolver.inl"
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
