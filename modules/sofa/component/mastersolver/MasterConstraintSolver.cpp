@@ -847,7 +847,13 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
             nb = res[j]->nbLines;
             //std::cout << "dim = " << nb << std::endl;
 
-            if (w[j][j]!=0.0)
+            bool check = true;
+            for (int b=0; b<nb; b++)
+            {
+                if (w[j+b][j+b]==0.0) check = false;
+            }
+
+            if (check)
             {
                 //2. for each line we compute the actual value of d
                 //   (a)d is set to dfree
@@ -871,50 +877,51 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 
                 //3. the specific resolution of the constraint(s) is called
                 res[j]->resolution(j, w, d, force, dfree);
-            }
-            else
-            {
-                force[j] = 0;
-                if (i==0) printf("ERROR : constraint %d has a compliance equal to zero on the diagonal\n",j);
-            }
 
-            //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
-            double contraintError = 0.0;
-            if(nb > 1)
-            {
-                for(l=0; l<nb; l++)
+                //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
+                double contraintError = 0.0;
+                if(nb > 1)
                 {
-                    double lineError = 0.0;
-                    for (int m=0; m<nb; m++)
+                    for(l=0; l<nb; l++)
                     {
-                        double dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
-                        lineError += dofError * dofError;
-                    }
-                    lineError = sqrt(lineError);
-                    if(lineError > tolerance)
-                        constraintsAreVerified = false;
+                        double lineError = 0.0;
+                        for (int m=0; m<nb; m++)
+                        {
+                            double dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
+                            lineError += dofError * dofError;
+                        }
+                        lineError = sqrt(lineError);
+                        if(lineError > tolerance)
+                            constraintsAreVerified = false;
 
-                    contraintError += lineError;
+                        contraintError += lineError;
+                    }
                 }
+                else
+                {
+                    contraintError = fabs(w[j][j] * (force[j] - errF[0]));
+                    if(contraintError > tolerance)
+                        constraintsAreVerified = false;
+                }
+
+                if(res[j]->tolerance)
+                {
+                    if(contraintError > res[j]->tolerance)
+                        constraintsAreVerified = false;
+                    contraintError *= tolerance / res[j]->tolerance;
+                }
+
+                error += contraintError;
+                tabErrors[j] = contraintError;
+
+                j += nb;
             }
             else
             {
-                contraintError = fabs(w[j][j] * (force[j] - errF[0]));
-                if(contraintError > tolerance)
-                    constraintsAreVerified = false;
+                for (int b=0; b<nb; b++) force[j+b] = 0;
+                if (i==0) printf("ERROR : constraint %d has a compliance equal to zero on the diagonal\n",j);
+                j += nb;
             }
-
-            if(res[j]->tolerance)
-            {
-                if(contraintError > res[j]->tolerance)
-                    constraintsAreVerified = false;
-                contraintError *= tolerance / res[j]->tolerance;
-            }
-
-            error += contraintError;
-            tabErrors[j] = contraintError;
-
-            j += nb;
         }
 
 
