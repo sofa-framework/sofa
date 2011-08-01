@@ -61,9 +61,11 @@ AnimateVisitor::AnimateVisitor(const core::ExecParams* params)
 
 void AnimateVisitor::processMasterSolver(simulation::Node*, core::behavior::MasterSolver* obj)
 {
+#ifndef  MASTERSOLVER_DEV
     sofa::helper::AdvancedTimer::stepBegin("MasterSolver",obj);
     obj->step(core::ExecParams::defaultInstance(), getDt());
     sofa::helper::AdvancedTimer::stepEnd("MasterSolver",obj);
+#endif
 }
 
 void AnimateVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel* obj)
@@ -139,7 +141,9 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         // In case the timestep was changed by the MasterSolver, we would like the simulation
         // to use the new one to compute the next simulation time.
         setDt(node->getDt());
+#ifndef  MASTERSOLVER_DEV
         return RESULT_PRUNE;
+#endif
     }
     if (node->collisionPipeline != NULL)
     {
