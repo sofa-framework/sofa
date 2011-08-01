@@ -44,7 +44,7 @@ win32 : exists($$BUILD_DIR/builddirs.pri) {
 	SUBDIR_PATH = $$replace(SUBDIR_PATH, ^\\./,)
 
 	ROOT_PATH = $$replace(SUBDIR_PATH, [^/]+/, ../)
-	ROOT_PATH = $$replace(ROOT_PATH, \\w+, ..)
+	ROOT_PATH = $$replace(ROOT_PATH, [^/]+$, ..)
 } else {
 
 # We could get the ROOT_BUILD_DIR on Unix using $$(PWD), but
@@ -99,7 +99,7 @@ equals(OUT_OF_SOURCE, true) {
 	SUBDIR_PATH = $$replace(SUBDIR_PATH, ^\\./,)
 
 	ROOT_PATH = $$replace(SUBDIR_PATH, [^/]+/, ../)
-	ROOT_PATH = $$replace(ROOT_PATH, \\w+, ..)
+	ROOT_PATH = $$replace(ROOT_PATH, [^/]+$, ..)
 }
 }
 
