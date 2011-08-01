@@ -3,6 +3,8 @@ load(sofa/pre)
 TEMPLATE = lib
 TARGET = sofamodeler
 
+CONFIGSTATIC = static
+
 INCLUDEPATH *= $ROOT_SRC_DIR/applications/sofa/gui/qt/$$UI_DIR # HACK: this library uses some uic generated headers from this directory.
 
 SOURCES = SofaModeler.cpp \

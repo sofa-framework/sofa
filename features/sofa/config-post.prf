@@ -41,12 +41,13 @@ win32 {
 ########################################################################
 
 win32 {
-	CONFIG(debug, debug|release) {
-		LIBS *= -L$$ROOT_SRC_DIR/lib/win32/DebugVC9
-	} else {
-		LIBS *= -L$$ROOT_SRC_DIR/lib/win32/ReleaseVC9
-	}
-	LIBS *= -L$$ROOT_SRC_DIR/lib/win32/Common
+	CONFIG(debug, debug|release) : VCCONFIGDIR = Debug
+	else :                         VCCONFIGDIR = Release
+	
+	win32-msvc2005 : VCCONFIGDIR = $${VCCONFIGDIR}VC8
+	else :           VCCONFIGDIR = $${VCCONFIGDIR}VC9
+
+	LIBS *= -L$$ROOT_SRC_DIR/lib/win32/$$VCCONFIGDIR -L$$ROOT_SRC_DIR/lib/win32/Common
 }
 macx {
 	LIBS *= -L$$ROOT_SRC_DIR/lib/macx

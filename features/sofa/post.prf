@@ -122,6 +122,8 @@ isEmpty(OBJMOC) {
 	}
 }
 
+!equals(IS_SLN, true) {
+
 ########################################################################
 # Definition of make install
 ########################################################################
@@ -290,3 +292,5 @@ equals(ROOT_PATH, .) {
 		addCommand(maintainer-clean.commands, $(DEL_DIR) -p $$SUBDIRS_PATH; true)
 	}
 }
+
+} # !equals(IS_SLN, true)
