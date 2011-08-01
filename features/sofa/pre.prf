@@ -87,8 +87,8 @@ equals(OUT_OF_SOURCE, true) {
 } else {
 	# In-source build.
 	unix {
-		ROOT_BUILD_DIR = $$(PWD)
-		ROOT_SRC_DIR = $$(PWD)
+		ROOT_BUILD_DIR = $$system(cd $$(PWD) && pwd -P)
+		ROOT_SRC_DIR = $$ROOT_BUILD_DIR
 	} else {
 		# HACK: On windows we have no other choice but to make assumptions about the
 		# names of the source directories to deduce the root source directory.
