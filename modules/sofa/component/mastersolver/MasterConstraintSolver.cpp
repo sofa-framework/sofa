@@ -847,28 +847,36 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
             nb = res[j]->nbLines;
             //std::cout << "dim = " << nb << std::endl;
 
-            //2. for each line we compute the actual value of d
-            //   (a)d is set to dfree
-            for(l=0; l<nb; l++)
+            if (w[j][j]!=0.0)
             {
-                errF[l] = force[j+l];
-                d[j+l] = dfree[j+l];
-            }
-            //   (b) contribution of forces are added to d
-            for(k=0; k<dim; k++)
+                //2. for each line we compute the actual value of d
+                //   (a)d is set to dfree
                 for(l=0; l<nb; l++)
-                    d[j+l] += w[j+l][k] * force[k];
+                {
+                    errF[l] = force[j+l];
+                    d[j+l] = dfree[j+l];
+                }
+                //   (b) contribution of forces are added to d
+                for(k=0; k<dim; k++)
+                    for(l=0; l<nb; l++)
+                        d[j+l] += w[j+l][k] * force[k];
 
-            ///////////// debug //////////
-            /*		if (i<3 && j<3)
-            		{
-            			std::cerr<<".............. iteration "<<i<< std::endl;
-            			std::cerr<<"d ["<<j<<"]="<<d[j]<<"  - d ["<<j+1<<"]="<<d[j+1]<<"  - d ["<<j+2<<"]="<<d[j+2]<<std::endl;
-            		}*/
-            //////////////////////////////
+                ///////////// debug //////////
+                /*		if (i<3 && j<3)
+                		{
+                			std::cerr<<".............. iteration "<<i<< std::endl;
+                			std::cerr<<"d ["<<j<<"]="<<d[j]<<"  - d ["<<j+1<<"]="<<d[j+1]<<"  - d ["<<j+2<<"]="<<d[j+2]<<std::endl;
+                		}*/
+                //////////////////////////////
 
-            //3. the specific resolution of the constraint(s) is called
-            res[j]->resolution(j, w, d, force, dfree);
+                //3. the specific resolution of the constraint(s) is called
+                res[j]->resolution(j, w, d, force, dfree);
+            }
+            else
+            {
+                force[j] = 0;
+                if (i==0) printf("ERROR : constraint %d has a compliance equal to zero on the diagonal\n",j);
+            }
 
             //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
             double contraintError = 0.0;
