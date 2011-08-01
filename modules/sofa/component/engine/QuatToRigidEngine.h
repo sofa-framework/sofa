@@ -61,6 +61,7 @@ public:
     //
     Data<helper::vector<Vec3 > > f_positions;
     Data<helper::vector<Quat> > f_orientations;
+    Data<helper::vector<Vec3 > > f_colinearPositions;
     Data<helper::vector<RigidVec3> > f_rigids;
 };
 
