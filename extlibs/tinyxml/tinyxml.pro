@@ -4,6 +4,7 @@ load(sofa/pre)
 TEMPLATE = lib
 TARGET = tinyxml
 
+DEFINES *= TIXML_USE_STL
 CONFIGSTATIC = static
 
 HEADERS += \
