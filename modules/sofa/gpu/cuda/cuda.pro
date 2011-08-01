@@ -244,7 +244,7 @@ contains(DEFINES,SOFA_HAVE_CSPARSE){
 		CudaSparseXXTSolver.cu
 }
 
-contains(DEFINES,SOFA_HAVE_TAUCS_MT){ 
+contains(DEFINES,SOFA_EXTLIBS_TAUCS_MT){ 
 	HEADERS += \
 		CudaSparseTaucsLLtSolver.h \
 		CudaSparseTaucsLLtSolver.inl
