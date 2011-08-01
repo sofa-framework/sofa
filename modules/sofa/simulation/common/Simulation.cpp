@@ -245,11 +245,6 @@ void Simulation::animate ( Node* root, double dt )
         return;
     }
     ////////////////////////////////////////////////////////////////////////
-
-    getVisualRoot()->setTime ( root->getTime() );
-    //root->execute<UpdateSimulationContextVisitor>(params);  // propagate time
-    getVisualRoot()->execute<UpdateSimulationContextVisitor>(params);
-
 #else
 
     sofa::helper::AdvancedTimer::begin("Animate");
