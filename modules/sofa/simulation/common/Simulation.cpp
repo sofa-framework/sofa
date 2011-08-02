@@ -84,7 +84,7 @@ namespace simulation
 
 using namespace sofa::defaulttype;
 Simulation::Simulation()
-#ifndef  MASTERSOLVER_DEV
+#ifdef  DEPRECATED_MASTERSOLVER
     : numMechSteps( initData(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") ),
       nbSteps( initData(&nbSteps, (unsigned)0, "nbSteps", "Number of animation steps completed", true, false)),
       nbMechSteps( initData(&nbMechSteps, (unsigned)0, "nbMechSteps", "Number of mechanical steps completed", true, false)),
@@ -151,12 +151,12 @@ void Simulation::init ( Node* root )
 
     setContext( root->getContext());
 
-#ifdef  MASTERSOLVER_DEV
+#ifndef  DEPRECATED_MASTERSOLVER
     sofa::core::behavior::MasterSolver* m_RootSolver;
     root->get(m_RootSolver);
     if(!m_RootSolver)
     {
-        std::cout<<"WARNING(simulation::init) : Default Animation Master Solver will be used"<<std::endl;
+        std::cout<<"WARNING(simulation::init) : Default Animation Master Solver will be used. Add DefaultAnimationMasterSolver to the root node of scene file to remove this warning"<<std::endl;
         m_RootSolver = new DefaultAnimationMasterSolver(root);
         root->addObject(m_RootSolver);
     }
@@ -217,8 +217,7 @@ void Simulation::animate ( Node* root, double dt )
     simulation::Visitor::printNode(std::string("Step"));
 #endif
 
-
-#ifdef  MASTERSOLVER_DEV
+#ifndef  DEPRECATED_MASTERSOLVER
     //////////////////////////////////////////////////////////////////
     sofa::core::behavior::MasterSolver* m_RootSolver;
     root->get(m_RootSolver);
@@ -293,10 +292,8 @@ void Simulation::animate ( Node* root, double dt )
 
     sofa::helper::AdvancedTimer::end("Animate");
 
-
 #endif
 }
-
 
 void Simulation::updateVisual ( Node* root, double dt )
 {
@@ -337,7 +334,7 @@ void Simulation::reset ( Node* root )
     root->execute<UpdateMappingVisitor>(params);
     root->execute<VisualUpdateVisitor>(params);
 
-#ifndef  MASTERSOLVER_DEV
+#ifdef  DEPRECATED_MASTERSOLVER
     nbSteps.setValue(0);
     nbMechSteps.setValue(0);
 #endif

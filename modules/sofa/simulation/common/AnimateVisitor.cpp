@@ -59,14 +59,15 @@ AnimateVisitor::AnimateVisitor(const core::ExecParams* params)
 {
 }
 
+
+#ifdef  DEPRECATED_MASTERSOLVER
 void AnimateVisitor::processMasterSolver(simulation::Node*, core::behavior::MasterSolver* obj)
 {
-#ifndef  MASTERSOLVER_DEV
-    //sofa::helper::AdvancedTimer::stepBegin("MasterSolver",obj);
+    sofa::helper::AdvancedTimer::stepBegin("MasterSolver",obj);
     obj->step(core::ExecParams::defaultInstance(), getDt());
-    //sofa::helper::AdvancedTimer::stepEnd("MasterSolver",obj);
-#endif
+    sofa::helper::AdvancedTimer::stepEnd("MasterSolver",obj);
 }
+#endif
 
 void AnimateVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel* obj)
 {
@@ -133,6 +134,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 
     if (dt == 0) setDt(node->getDt());
 // 	for_each(this, node, node->behaviorModel, &AnimateVisitor::processBehaviorModel);
+#ifdef  DEPRECATED_MASTERSOLVER
     if (node->masterSolver != NULL)
     {
         ctime_t t0 = begin(node, node->masterSolver);
@@ -141,10 +143,9 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         // In case the timestep was changed by the MasterSolver, we would like the simulation
         // to use the new one to compute the next simulation time.
         setDt(node->getDt());
-#ifndef  MASTERSOLVER_DEV
         return RESULT_PRUNE;
-#endif
     }
+#endif
     if (node->collisionPipeline != NULL)
     {
 
