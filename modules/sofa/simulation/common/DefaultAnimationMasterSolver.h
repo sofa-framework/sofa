@@ -30,6 +30,7 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Node.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {

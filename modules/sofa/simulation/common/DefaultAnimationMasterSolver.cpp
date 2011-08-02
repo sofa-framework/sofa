@@ -32,6 +32,8 @@
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
+#include <sofa/simulation/common/CollisionBeginEvent.h>
+#include <sofa/simulation/common/CollisionEndEvent.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/ResetVisitor.h>
@@ -57,7 +59,7 @@
 
 #include <stdlib.h>
 #include <math.h>
-
+#include <algorithm>
 
 namespace sofa
 {
@@ -91,8 +93,8 @@ DefaultAnimationMasterSolver::~DefaultAnimationMasterSolver()
 
 void DefaultAnimationMasterSolver::step(const core::ExecParams* params, double dt)
 {
+    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
     std::cout<<" DefaultAnimationMasterSolver detected on scene and step is called with   dt = "<<dt<<std::endl;
-
 
     sofa::helper::AdvancedTimer::begin("Animate");
 
@@ -151,8 +153,12 @@ void DefaultAnimationMasterSolver::step(const core::ExecParams* params, double d
 #endif
     nbSteps.setValue(nbSteps.getValue() + 1);
 
-    sofa::helper::AdvancedTimer::end("Animate");
+    ///////////////////////////////////////////////////////////////////////
 
+    ///////////////////////////////////////////////////////////////////////
+
+    sofa::helper::AdvancedTimer::end("Animate");
+    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
 }
 
 const DefaultAnimationMasterSolver::Solvers& DefaultAnimationMasterSolver::getSolverSequence()

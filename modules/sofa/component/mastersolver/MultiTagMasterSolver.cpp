@@ -67,7 +67,7 @@ void MultiTagMasterSolver::init()
 
 void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
 {
-
+    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
     sofa::core::objectmodel::TagSet::iterator it;
 
     for (it = tagList.begin(); it != tagList.end(); ++it)
@@ -86,7 +86,7 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
 
         this->removeTag (*it);
     }
-
+    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
 
 }
 

@@ -248,6 +248,8 @@ template<class real>
 void CudaMasterContactSolver<real>::step(const core::ExecParams* params /* PARAMS FIRST */, double dt)
 {
 
+    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
+
     context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
 #ifdef DISPLAY_TIME
     CTime *timer;
@@ -453,6 +455,7 @@ void CudaMasterContactSolver<real>::step(const core::ExecParams* params /* PARAM
 
     simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
     context->execute(&endVisitor);
+    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
 }
 
 SOFA_DECL_CLASS(CudaMasterContactSolver)

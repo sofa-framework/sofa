@@ -148,6 +148,7 @@ bool LMContactConstraintSolver::isCollisionDetected()
 
 void LMContactConstraintSolver::step(double dt)
 {
+    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
     const unsigned int maxSteps = maxCollisionSteps.getValue();
     simulation::Node *node = (simulation::Node*)getContext();
 
@@ -174,6 +175,7 @@ void LMContactConstraintSolver::step(double dt)
             break;
         }
     }
+    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
 }
 
 } // namespace mastersolver
