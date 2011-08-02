@@ -60,13 +60,13 @@ protected:
 
     GLuint abo;
     OglShader* shader;
-
+    int restPosition_lastUpdate;
 public:
     // These attributes are public due to dynamic topologies updates.
-    OglFloat3Attribute vrestpositions;
-    OglFloat3Attribute vrestnormals;
+    OglFloat3Attribute* vrestpositions;
+    OglFloat3Attribute* vrestnormals;
 
-    OglMatrix4Variable modelMatrixUniform;
+    OglMatrix4Variable* modelMatrixUniform;
 
     OglShaderVisualModel();
     virtual ~OglShaderVisualModel();
@@ -74,13 +74,16 @@ public:
     void init();
     void initVisual();
 
-    void putRestPositions(const Vec3fTypes::VecCoord& positions);
+    void updateVisual();
+
+    //void putRestPositions(const Vec3fTypes::VecCoord& positions);
 
     virtual void bwdDraw(core::visual::VisualParams*);
     virtual void fwdDraw(core::visual::VisualParams*);
 
     // handle topological changes
     virtual void handleTopologyChange();
+    void computeRestPositions();
     void computeRestNormals();
 
 private:

@@ -61,15 +61,16 @@ int OglShaderVisualModelClass = core::RegisterObject("Visual model for OpenGL di
         ;
 
 OglShaderVisualModel::OglShaderVisualModel()
+    : shader(NULL)
+    , restPosition_lastUpdate(-1)
+    , vrestpositions(NULL)
+    , vrestnormals(NULL)
+    , modelMatrixUniform(NULL)
 {
-    //???
-    //inputNormals = vrestpositions.beginEdit();
-    //vrestpositions.endEdit();
 }
 
 OglShaderVisualModel::~OglShaderVisualModel()
 {
-    // TODO Auto-generated destructor stub
 }
 
 void OglShaderVisualModel::pushTransformMatrix(float* matrix)
@@ -80,13 +81,14 @@ void OglShaderVisualModel::pushTransformMatrix(float* matrix)
 
     for ( unsigned int i = 0; i < 16; i++ )
         tempModelMatrixValue.push_back(matrix[i]);
-
-    modelMatrixUniform.setValue(tempModelMatrixValue);
+    if (modelMatrixUniform)
+        modelMatrixUniform->setValue(tempModelMatrixValue);
 
     if (shader)
     {
         shader->stop();
-        modelMatrixUniform.pushValue();
+        if (modelMatrixUniform)
+            modelMatrixUniform->pushValue();
         shader->start();
     }
 }
@@ -94,69 +96,103 @@ void OglShaderVisualModel::pushTransformMatrix(float* matrix)
 void OglShaderVisualModel::popTransformMatrix()
 {
     OglModel::popTransformMatrix();
-
-    if (shader)
-        shader->stop();
-
+    /*
+    	if (shader)
+    		shader->stop();
+    */
 }
 
 void OglShaderVisualModel::init()
 {
-    OglModel::init();
+    if (!shader)
+        OglModel::init();
 
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     shader = context->core::objectmodel::BaseContext::get<OglShader>();
 
     if( shader)
     {
+        if (!vrestpositions)
+            context->get(vrestpositions, "restPosition");
+        if (!vrestnormals)
+            context->get(vrestnormals, "restNormal");
+        if (!modelMatrixUniform)
+            context->get(modelMatrixUniform, "modelMatrix");
         //add restPosition as Attribute
-        vrestpositions.setContext( this->getContext());
-        vrestpositions.setID( std::string("restPosition"));
-        vrestpositions.setIndexShader( 0);
-        vrestpositions.init();
-
-        ResizableExtVector<Coord>& vrestpos = * ( vrestpositions.beginEdit() );
-        const ResizableExtVector<Coord>& vertices = m_vertices.getValue();
-        vrestpos.resize (vertices.size() );
-        for ( unsigned int i = 0; i < vertices.size(); i++ )
+        if (!vrestpositions)
         {
-            vrestpos[i] = vertices[i];
+            vrestpositions = new OglFloat3Attribute;
+            vrestpositions->setName("restPosition");
+            this->getContext()->addObject(vrestpositions);
+            vrestpositions->setID( std::string("restPosition"));
+            vrestpositions->setIndexShader(0);
+            vrestpositions->init();
         }
-        vrestpositions.endEdit();
 
-        //add restNormal as Attribute
-        vrestnormals.setContext( this->getContext());
-        vrestnormals.setID( std::string("restNormal") );
-        vrestnormals.setIndexShader( 0);
-        vrestnormals.init();
+        if (!vrestnormals)
+        {
+            vrestnormals = new OglFloat3Attribute;
+            vrestnormals->setName("restNormal");
+            this->getContext()->addObject(vrestnormals);
+            vrestnormals->setID( std::string("restNormal"));
+            vrestnormals->setIndexShader(0);
+            vrestnormals->init();
+        }
+        /*
+            ResizableExtVector<Coord>& vrestpos = * ( vrestpositions.beginEdit() );
+            const ResizableExtVector<Coord>& vertices = m_vertices.getValue();
+            vrestpos.resize (vertices.size() );
+            for ( unsigned int i = 0; i < vertices.size(); i++ )
+            {
+              vrestpos[i] = vertices[i];
+            }
+            vrestpositions.endEdit();
 
-        computeRestNormals();
+            //add restNormal as Attribute
+            vrestnormals.setContext( this->getContext());
+        	vrestnormals.setID( std::string("restNormal") );
+        	vrestnormals.setIndexShader( 0);
+            vrestnormals.init();
 
+            computeRestNormals();
+        */
+        computeRestPositions();
 //
 //    //add Model Matrix as Uniform
-        modelMatrixUniform.setContext( this->getContext());
-        modelMatrixUniform.setID( std::string("modelMatrix") );
-        modelMatrixUniform.setIndexShader( 0);
-        modelMatrixUniform.init();
+        if (!modelMatrixUniform)
+        {
+            modelMatrixUniform = new OglMatrix4Variable;
+            modelMatrixUniform->setName("modelMatrix");
+            this->getContext()->addObject(modelMatrixUniform);
+            modelMatrixUniform->setID( std::string("modelMatrix") );
+            modelMatrixUniform->setIndexShader( 0);
+            modelMatrixUniform->init();
+        }
     }
-
 }
 
 
 void OglShaderVisualModel::initVisual()
 {
     OglModel::initVisual();
-    //Store other attributes
-    if(shader)
-    {
-        vrestpositions.initVisual();
-        vrestnormals.initVisual();
-    }
 }
 
-void OglShaderVisualModel::putRestPositions(const Vec3fTypes::VecCoord& positions)
+void OglShaderVisualModel::updateVisual()
 {
-    ResizableExtVector<Coord>& vrestpos = * ( vrestpositions.beginEdit() );
+    OglModel::updateVisual();
+    computeRestPositions();
+}
+
+void OglShaderVisualModel::computeRestPositions()
+{
+    if (!vrestpositions) return;
+    int counter = m_restPositions.getCounter();
+    if (counter == restPosition_lastUpdate)
+        return;
+    restPosition_lastUpdate = counter;
+
+    helper::ReadAccessor< Data<ResizableExtVector<Coord> > > positions = (m_positions.getValue().size() != m_restPositions.getValue().size()) ? m_positions : m_restPositions;
+    ResizableExtVector<Coord>& vrestpos = * ( vrestpositions->beginEdit() );
     vrestpos.resize ( positions.size() );
 
     for ( unsigned int i = 0; i < positions.size(); i++ )
@@ -164,19 +200,16 @@ void OglShaderVisualModel::putRestPositions(const Vec3fTypes::VecCoord& position
         vrestpos[i] = positions[i];
     }
 
-    vrestpositions.endEdit();
-
+    vrestpositions->endEdit();
     computeRestNormals();
 }
 
 void OglShaderVisualModel::handleTopologyChange()
 {
-    vrestpositions.handleTopologyChange();
-    vrestnormals.handleTopologyChange();
-    init();
+    //init();
+    OglModel::handleTopologyChange();
 
-    VisualModelImpl::handleTopologyChange();
-    if (m_topology)
+    if (m_topology && shader)
     {
         bool update=false;
         std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
@@ -194,6 +227,7 @@ void OglShaderVisualModel::handleTopologyChange()
         }
         if (update)
         {
+            computeRestPositions();
             computeRestNormals();
             std::cerr<< "OglShaderVisualModel - Updating Rest Normals"<<std::endl;
         }
@@ -204,24 +238,21 @@ void OglShaderVisualModel::handleTopologyChange()
     // For the moment, the only class using dynamic topology is HexaToTriangleTopologicalMapping which update itself the attributes...
 }
 
-void OglShaderVisualModel::bwdDraw(core::visual::VisualParams* vp)
+void OglShaderVisualModel::bwdDraw(core::visual::VisualParams* /*vp*/)
 {
-    vrestpositions.bwdDraw(vp);
-    vrestnormals.bwdDraw(vp);
 }
 
-void OglShaderVisualModel::fwdDraw(core::visual::VisualParams* vp)
+void OglShaderVisualModel::fwdDraw(core::visual::VisualParams* /*vp*/)
 {
-    vrestpositions.fwdDraw(vp);
-    vrestnormals.fwdDraw(vp);
 }
 
 void OglShaderVisualModel::computeRestNormals()
 {
-    const ResizableExtVector<Coord>& vrestpos = vrestpositions.getValue();
+    if (!vrestpositions || !vrestnormals) return;
+    const ResizableExtVector<Coord>& vrestpos = vrestpositions->getValue();
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
-    ResizableExtVector<Coord>& restNormals = * ( vrestnormals.beginEdit() );
+    ResizableExtVector<Coord>& restNormals = * ( vrestnormals->beginEdit() );
     restNormals.resize(vrestpos.size());
     for (unsigned int i = 0; i < restNormals.size(); i++)
     {
@@ -229,6 +260,8 @@ void OglShaderVisualModel::computeRestNormals()
     }
     for (unsigned int i = 0; i < triangles.size() ; i++)
     {
+        if (triangles[i][0] >= vrestpos.size() || triangles[i][1] >= vrestpos.size() || triangles[i][2] >= vrestpos.size())
+            continue;
         const Coord  v1 = vrestpos[triangles[i][0]];
         const Coord  v2 = vrestpos[triangles[i][1]];
         const Coord  v3 = vrestpos[triangles[i][2]];
@@ -241,6 +274,8 @@ void OglShaderVisualModel::computeRestNormals()
     }
     for (unsigned int i = 0; i < quads.size() ; i++)
     {
+        if (quads[i][0] >= vrestpos.size() || quads[i][1] >= vrestpos.size() || quads[i][2] >= vrestpos.size() || quads[i][3] >= vrestpos.size())
+            continue;
         const Coord & v1 = vrestpos[quads[i][0]];
         const Coord & v2 = vrestpos[quads[i][1]];
         const Coord & v3 = vrestpos[quads[i][2]];
@@ -259,7 +294,7 @@ void OglShaderVisualModel::computeRestNormals()
     {
         restNormals[i].normalize();
     }
-    vrestnormals.endEdit();
+    vrestnormals->endEdit();
 }
 
 
