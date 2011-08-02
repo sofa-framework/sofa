@@ -27,7 +27,6 @@
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/simulation/common/ExportGnuplotVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
-#include <sofa/simulation/common/InstrumentVisitor.h>
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
@@ -178,9 +177,6 @@ void Simulation::init ( Node* root )
 
     root->execute<UpdateBoundingBoxVisitor>(params);
 
-    //Get the list of instruments present in the scene graph
-    getInstruments(root);
-
     // propagate the visualization settings (showVisualModels, etc.) in the whole graph
     updateVisualContext(root);
     updateVisualContext(getVisualRoot());
@@ -209,15 +205,6 @@ void Simulation::initNode( Node* node)
     }
 
     node->execute<StoreResetStateVisitor>(params);
-    getInstruments(node);
-}
-
-void Simulation::getInstruments( Node *node)
-{
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    InstrumentVisitor fetchInstrument(params);
-    fetchInstrument.execute(node);
-    instruments = fetchInstrument.getInstruments();
 }
 
 /// Execute one timestep. If do is 0, the dt parameter in the graph will be used

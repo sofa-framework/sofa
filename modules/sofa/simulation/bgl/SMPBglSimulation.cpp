@@ -45,7 +45,6 @@
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/simulation/common/ExportGnuplotVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
-#include <sofa/simulation/common/InstrumentVisitor.h>
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
