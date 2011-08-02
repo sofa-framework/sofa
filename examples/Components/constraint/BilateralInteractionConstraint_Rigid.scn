@@ -1,5 +1,6 @@
 <Node name="root"  dt="0.01" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1" showInteractionForceFields="1" gravity="0 -0.981 0">
-	<MasterConstraintSolver printLog="0"/> 
+	<FreeMotionMasterSolver/>
+	<GenericConstraintSolver/>
    
 	<Node name="Beam1">	  
 		  <EulerImplicit name="cg_odesolver" printLog="false"/>
