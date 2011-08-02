@@ -40,9 +40,9 @@
 #include <map>
 #include <list>
 
-#ifdef SOFA_HAVE_GLEW
-#include <sofa/component/visualmodel/OglShaderVisualModel.h>
-#endif
+//#ifdef SOFA_HAVE_GLEW
+//#include <sofa/component/visualmodel/OglShaderVisualModel.h>
+//#endif
 
 namespace sofa
 {
@@ -371,24 +371,25 @@ void SPHFluidSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
     }
 
     //sout << out.size() << " points, "<<seqTriangles.size()<<" faces."<<sendl;
-    if (firstApply)
-    {
-#ifdef SOFA_HAVE_GLEW
-        visualmodel::OglShaderVisualModel* oglsvm = dynamic_cast<visualmodel::OglShaderVisualModel*>(this->toModel);
+    /*
+    	if (firstApply)
+    	{
+    #ifdef SOFA_HAVE_GLEW
+    		visualmodel::OglShaderVisualModel* oglsvm = dynamic_cast<visualmodel::OglShaderVisualModel*>(this->toModel);
 
-        if(oglsvm)
-        {
-            Vec3fTypes::VecCoord tempRest;
-            for(unsigned int i=0 ; i<out.size() ; i++)
-                tempRest.push_back(out[i]);
-            oglsvm->putRestPositions(tempRest);
-            //std::cout << "void SPHFluidSurfaceMapping<In,Out>::apply" << std::endl;
-        }
+    		if(oglsvm)
+    		{
+    			Vec3fTypes::VecCoord tempRest;
+    			for(unsigned int i=0 ; i<out.size() ; i++)
+    				tempRest.push_back(out[i]);
+    			oglsvm->putRestPositions(tempRest);
+    			//std::cout << "void SPHFluidSurfaceMapping<In,Out>::apply" << std::endl;
+    		}
 
-        firstApply = false;
-#endif
-    }
-
+    		firstApply = false;
+    #endif
+    	}
+    */
     if(normals_data == NULL)
         delete normals;
     else
