@@ -118,7 +118,7 @@ public:
     /// Return the current pause state
     virtual bool getPaused();
 
-#ifndef  MASTERSOLVER_DEV
+#ifdef  DEPRECATED_MASTERSOLVER
     /// Number of mechanical steps within an animation step
     Data<unsigned> numMechSteps;
 
