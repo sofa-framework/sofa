@@ -1,8 +1,6 @@
-contains(DEFINES, SOFA_QT4) {	
-	#CONFIG *= uic3
+contains(DEFINES, SOFA_QT4) {
 	QT *= qt3support
 }
 QT *= opengl
 
 export(QT)
-export(CONFIG)
