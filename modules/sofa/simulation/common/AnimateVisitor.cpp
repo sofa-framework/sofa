@@ -62,9 +62,9 @@ AnimateVisitor::AnimateVisitor(const core::ExecParams* params)
 void AnimateVisitor::processMasterSolver(simulation::Node*, core::behavior::MasterSolver* obj)
 {
 #ifndef  MASTERSOLVER_DEV
-    sofa::helper::AdvancedTimer::stepBegin("MasterSolver",obj);
+    //sofa::helper::AdvancedTimer::stepBegin("MasterSolver",obj);
     obj->step(core::ExecParams::defaultInstance(), getDt());
-    sofa::helper::AdvancedTimer::stepEnd("MasterSolver",obj);
+    //sofa::helper::AdvancedTimer::stepEnd("MasterSolver",obj);
 #endif
 }
 
