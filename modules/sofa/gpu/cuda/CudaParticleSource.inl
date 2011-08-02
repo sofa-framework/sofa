@@ -83,7 +83,7 @@ void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& res)
 {
     if (!this->mstate) return;
     if (lastparticles.empty()) return;
-    sout << "ParticleSource: projectVelocity of last particles ("<<lastparticles[0]<<"-"<<lastparticles[lastparticles.size()-1]<<") out of " << res.size() << "."<<sendl;
+    //sout << "ParticleSource: projectVelocity of last particles ("<<lastparticles[0]<<"-"<<lastparticles[lastparticles.size()-1]<<") out of " << res.size() << "."<<sendl;
     double time = getContext()->getTime();
     if (time < f_start.getValue() || time > f_stop.getValue()) return;
     // constraint the last values

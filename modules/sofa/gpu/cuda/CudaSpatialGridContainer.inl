@@ -236,11 +236,14 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         }
         if (numElements > cudppHandleSortMaxElements)
             cudppHandleSortMaxElements = numElements;
+        if (x.capacity()*8 > cudppHandleSortMaxElements)
+            cudppHandleSortMaxElements = x.capacity()*8;
         cudppHandleSortMaxElements = ((cudppHandleSortMaxElements + 255) & ~255);
 
         std::cout << "Creating CUDPP RadixSort Plan for " << cudppHandleSortMaxElements << " elements." << std::endl;
         CUDPPConfiguration config;
         config.algorithm = CUDPP_SORT_RADIX;
+        config.op = CUDPP_ADD;
         config.datatype = CUDPP_UINT;
         config.options = CUDPP_OPTION_KEY_VALUE_PAIRS;
         if (cudppPlan(&cudppHandleSort, config, cudppHandleSortMaxElements, 1, 0) != CUDPP_SUCCESS)
