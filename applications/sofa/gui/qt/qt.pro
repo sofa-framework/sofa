@@ -8,7 +8,7 @@ INCLUDEPATH += $$ROOT_SRC_DIR/applications
 INCLUDEPATH += $$SRC_DIR
 
 contains(DEFINES, SOFA_QT4) {	
-	CONFIG += qt uic3
+	CONFIG += qt uic uic3
 	QT += opengl qt3support xml
 
 	FORMS3 += GUI.ui

@@ -38,7 +38,7 @@ contains (DEFINES, SOFA_QT4) {
 	           QCategoryTreeLibrary.cpp \ 
 	           QComponentTreeLibrary.cpp
                      
-	CONFIG += qt uic3
+	CONFIG += qt uic uic3
 	QT += qt3support xml
 	FORMS3 += Modeler.ui 
 	FORMS3 += DialogAddPreset.ui
