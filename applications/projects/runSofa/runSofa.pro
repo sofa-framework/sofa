@@ -10,7 +10,7 @@ macx {
   QMAKE_BUNDLE_DATA += $$APP_BUNDLE_DATA
   
   # The following create enables to start the program from the command line as well as graphically
-  QMAKE_POST_LINK = ln -sf $$TARGET.app/Contents/MacOS/$$TARGET $$APP_DESTDIR/$$TARGET ;
+  QMAKE_POST_LINK = ln -sf $${TARGET}.$${TEMPLATE}/Contents/MacOS/$$TARGET $$APP_DESTDIR/$$TARGET ;
 } else {
 	RC_FILE = sofa.rc
 }
