@@ -511,9 +511,9 @@ void SparseGridTopology::updateMesh()
     // 	    using sofa::simulation::Node;
 
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshf;
-    sofa::helper::vector< sofa::helper::vector< Vec3f >* > list_Xf;
+    sofa::helper::vector< Data< Vec3fTypes::VecCoord >* > list_Xf;
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshd;
-    sofa::helper::vector< sofa::helper::vector< Vec3d >* > list_Xd;
+    sofa::helper::vector< Data< Vec3dTypes::VecCoord >* > list_Xd;
 
     //Get Collision Model
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology* > m_temp;
@@ -533,9 +533,7 @@ void SparseGridTopology::updateMesh()
         if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
             list_meshd.push_back(collisionTopology);
-            Data< Vec3dTypes::VecCoord > x_d = *mecha_tempd->write(core::VecCoordId::position());
-            list_Xd.push_back(x_d.beginEdit());
-            x_d.endEdit();
+            list_Xd.push_back(mecha_tempd->write(core::VecCoordId::position()));
         }
 #endif
 #ifndef SOFA_DOUBLE
@@ -544,9 +542,7 @@ void SparseGridTopology::updateMesh()
         {
 
             list_meshf.push_back(collisionTopology);
-            Data< Vec3fTypes::VecCoord > x_f = *mecha_tempf->write(core::VecCoordId::position());
-            list_Xf.push_back(x_f.beginEdit());
-            x_f.endEdit();
+            list_Xf.push_back(mecha_tempf->write(core::VecCoordId::position()));
         }
 #endif
     }
@@ -583,7 +579,7 @@ void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
 
 template< class T >
 void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > &list_mesh,
-        const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* > &list_X)
+        const helper::vector< Data< helper::vector< Vec<3,T> > >* > &list_X)
 {
     sofa::helper::vector< unsigned int>	triangles;
     vector< Vector3 >		vertices;
@@ -595,15 +591,16 @@ void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< so
     for (unsigned int i=0; i<list_mesh.size(); ++i)
     {
         list_mesh[i]->clear();
-        list_X[i]->resize(vertices.size());
+        helper::WriteAccessor<Data< helper::vector< Vec<3,T> > > > x(list_X[i]);
+        x.resize(vertices.size());
     }
 
-    for (unsigned int id_point=0; id_point<vertices.size(); ++id_point)
+    for (unsigned int j=0; j<list_mesh.size(); ++j)
     {
-        const Vector3 point(vertices[id_point]);
-        for (unsigned int j=0; j<list_mesh.size(); ++j)
+        helper::WriteAccessor<Data< helper::vector< Vec<3,T> > > > x(list_X[j]);
+        for (unsigned int id_point=0; id_point<vertices.size(); ++id_point)
         {
-            (*list_X[j])[id_point] = point;
+            x[id_point] = vertices[id_point];
         }
     }
 

@@ -128,7 +128,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 
     if (!densityFile.getValue().empty() && sofa::helper::system::DataRepository.findFile(path))
     {
-        densityFile = sofa::helper::system::DataRepository.getFile ( densityFile.getValue() );
+        densityFile.setValue(sofa::helper::system::DataRepository.getFile(densityFile.getValue()));
         FILE *file = fopen( densityFile.getValue().c_str(), "r" );
         voxels.resize(dimensionDensityFile.getValue()[2]);
         for (unsigned int z=0; z<dimensionDensityFile.getValue()[2]; ++z)
