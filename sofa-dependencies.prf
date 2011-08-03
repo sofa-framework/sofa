@@ -108,6 +108,7 @@ declare(sofaCUDA_Bench,         applications/projects/sofaCUDA_Bench,         so
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofacomponent sofagpucuda)
 declare(sofaVerification, applications/projects/sofaVerification, sofacomponent sofagpucuda)
+declare(sofatests,        tests,                                  sofacore)
 # SofaVRPN
 # SofaDevices
 # Haptic
@@ -188,6 +189,7 @@ enable(generateTypedefs)
 enable(meshconv)
 enable(sofaInitTimer)
 enable(sofaVerification)
+enable(sofatests)
 
 contains(DEFINES, SOFA_GUI_QTVIEWER) | contains(DEFINES, SOFA_GUI_QGLVIEWER) | contains(DEFINES, SOFA_GUI_QTOGREVIEWER) {
 	#enable(sofaConfiguration) # not yet converted

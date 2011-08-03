@@ -62,6 +62,8 @@ template<> class atomic<int>
 {
     atomic_t val;
 public:
+    atomic() {}
+    atomic(int i) { set(i); }
     operator int() const { return atomic_read(&val); }
     void set(int i) { atomic_set(&val,i); }
     void add(int i) { atomic_add(i,&val); }
@@ -72,8 +74,10 @@ public:
     bool dec_and_test_null() { return atomic_dec_and_test(&val); }
     //bool inc_and_test_null() { return atomic_inc_and_test(&val); }
     bool add_and_test_neg(int i) { return atomic_add_negative(i,&val); }
-    void operator=(int i) { set(i); }
+    atomic& operator= (int i) { set(i); return *this; }
+    /// Add a value to this atomic, without return value (use exchange_and_add if you need the result)
     void operator+=(int i) { add(i); }
+    /// Substract a value to this atomic, without return value (use exchange_and_add if you need the result)
     void operator-=(int i) { sub(i); }
     void operator++() { inc(); }
     void operator++(int) { inc(); }
@@ -92,6 +96,8 @@ template<> class atomic<int>
 {
     volatile int val;
 public:
+    atomic() {}
+    atomic(int i) { set(i); }
     operator int() const { return val; }
     void set(int i) { val = i; }
     void add(int i)
@@ -141,8 +147,21 @@ public:
         return res;
     }
 
-    void operator=(int i) { set(i); }
+    int compare_and_swap(int cmp, int with)
+    {
+        int result;
+        __asm__ __volatile__ ( "lock\n\t"
+                "cmpxchg %3,%1"
+                : "=a" (result), "+m" (val)
+                : "r" (cmp), "r" (with)
+                : "memory", "cc");
+        return result;
+    }
+
+    atomic& operator= (int i) { set(i); return *this; }
+    /// Add a value to this atomic, without return value (use exchange_and_add if you need the result)
     void operator+=(int i) { add(i); }
+    /// Substract a value to this atomic, without return value (use exchange_and_add if you need the result)
     void operator-=(int i) { sub(i); }
     void operator++() { inc(); }
     void operator++(int) { inc(); }
@@ -167,6 +186,8 @@ template<> class atomic<int>
 {
     volatile _Atomic_word val;
 public:
+    atomic() {}
+    atomic(int i) { set(i); }
     operator int() const
     {
         // this is the correct implementation
@@ -187,8 +208,10 @@ public:
     bool dec_and_test_null() { return __exchange_and_add(&val,-1)==1; }
     //bool inc_and_test_null() { return __exchange_and_add(&val,1)==-1; }
     bool add_and_test_neg(int i) { return __exchange_and_add(&val,i) < -i; }
-    void operator=(int i) { set(i); }
+    atomic& operator= (int i) { set(i); return *this; }
+    /// Add a value to this atomic, without return value (use exchange_and_add if you need the result)
     void operator+=(int i) { add(i); }
+    /// Substract a value to this atomic, without return value (use exchange_and_add if you need the result)
     void operator-=(int i) { sub(i); }
     void operator++() { inc(); }
     void operator++(int) { inc(); }
@@ -207,6 +230,8 @@ template<> class atomic<int>
 {
     volatile LONG val;
 public:
+    atomic() {}
+    atomic(int i) { set(i); }
     operator int() const
     {
         // this is the correct implementation
@@ -227,8 +252,10 @@ public:
     bool dec_and_test_null() { return InterlockedDecrement(&val)==0; }
     //bool inc_and_test_null() { return __exchange_and_add(&val,1)==-1; }
     bool add_and_test_neg(int i) { return InterlockedExchangeAdd(&val,(LONG)i) < -i; }
-    void operator=(int i) { set(i); }
-    void operator+=(int i) { add(i); }
+    atomic& operator= (int i) { set(i); return *this; }
+    /// Add a value to this atomic, without return value (use exchange_and_add if you need the result)
+    void operator+=(int i) { add(i);  }
+    /// Substract a value to this atomic, without return value (use exchange_and_add if you need the result)
     void operator-=(int i) { sub(i); }
     void operator++() { inc(); }
     void operator++(int) { inc(); }
@@ -236,6 +263,7 @@ public:
     void operator--(int) { dec(); }
 
     int exchange_and_add(int i) { return InterlockedExchangeAdd(&val,i); }
+    int compare_and_swap(int cmp, int with) { return InterlockedCompareExchange(&val, with, cmp); }
 
     static const char* getImplName() { return "Win32"; }
 };
