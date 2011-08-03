@@ -65,6 +65,8 @@ public :
     SparseMatrix<Real> JR;
     FullMatrix<Real> JRMinv;
     FullMatrix<Real>* MinvPtr;
+    std::vector<int> idActiveDofs;
+    std::vector<int> invActiveDofs;
     bool shared;
     PrecomputedWarpPreconditionerInternalData()
         : MinvPtr(new FullMatrix<Real>), shared(false)
@@ -128,7 +130,6 @@ public:
     Data <std::string> solverName;
     Data<bool> use_rotations;
     Data<double> draw_rotations_scale;
-    Data<helper::vector<int> > sub_compliance_index;
 
     MState * mstate;
 
@@ -169,8 +170,8 @@ public:
 protected :
     TVector R;
     TVector T;
-    TVector subR;
-    TVector subZ;
+
+    std::vector<bool> isActiveDofs;
     PrecomputedWarpPreconditionerInternalData<TDataTypes> internalData;
 
     virtual void rotateConstraints();
@@ -180,8 +181,9 @@ protected :
     template<class JMatrix>
     void ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact);
 
+
     template<class JMatrix>
-    void filterSubJ(JMatrix& J);
+    void computeActiveDofs(JMatrix& J);
 
     bool first;
     bool _rotate;
@@ -195,8 +197,7 @@ protected :
     unsigned dof_on_node;
     unsigned nb_dofs;
     unsigned matrixSize;
-    SparseMatrix<Real> subJ;
-    std::vector<int> sub_sorted_index;
+
 };
 
 

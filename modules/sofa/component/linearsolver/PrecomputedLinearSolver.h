@@ -66,6 +66,8 @@ public :
 
     FullMatrix<Real> JMinv;
     FullMatrix<Real> Minv;
+    std::vector<int> idActiveDofs;
+    std::vector<int> invActiveDofs;
 
     bool readFile(const char * filename,unsigned systemSize)
     {
@@ -145,12 +147,16 @@ protected :
 
     PrecomputedLinearSolverInternalData<TMatrix,TVector> internalData;
 
+    template<class JMatrix>
+    void computeActiveDofs(JMatrix& J);
+
+
 private :
     bool first;
     unsigned systemSize;
     double dt;
     double factInt;
-
+    std::vector<bool> isActiveDofs;
 };
 
 } // namespace linearsolver

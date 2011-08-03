@@ -173,6 +173,35 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::invert(TMatrix& /*M*/) {}
 
+template<class TMatrix,class TVector> template<class JMatrix>
+void PrecomputedLinearSolver<TMatrix,TVector>::computeActiveDofs(JMatrix& J)
+{
+    isActiveDofs.clear();
+    isActiveDofs.resize(systemSize);
+
+    //compute JR = J * R
+    for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
+    {
+        for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
+        {
+            isActiveDofs[i1->first] = true;
+        }
+    }
+
+    internalData.invActiveDofs.clear();
+    internalData.invActiveDofs.resize(systemSize);
+    internalData.idActiveDofs.clear();
+
+    for (unsigned c=0; c<systemSize; c++)
+    {
+        if (isActiveDofs[c])
+        {
+            internalData.invActiveDofs[c] = internalData.idActiveDofs.size();
+            internalData.idActiveDofs.push_back(c);
+        }
+    }
+}
+
 template<class TMatrix,class TVector>
 bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
 {
@@ -187,10 +216,12 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatri
 
     if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
     {
+        computeActiveDofs(*j);
         ComputeResult(result, *j, (float) fact);
     }
     else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
     {
+        computeActiveDofs(*j);
         ComputeResult(result, *j, (float) fact);
     } return false;
 
@@ -201,41 +232,38 @@ template<class TMatrix,class TVector> template<class JMatrix>
 void PrecomputedLinearSolver<TMatrix,TVector>::ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact)
 {
     unsigned nl = 0;
-    for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++) nl++;
-
     internalData.JMinv.clear();
-    internalData.JMinv.resize(nl,internalData.Minv.rowSize());
+    internalData.JMinv.resize(J.rowSize(),internalData.idActiveDofs.size());
 
-    nl = 0;
+    nl=0;
     for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
     {
-        for (unsigned c = 0; c<internalData.Minv.rowSize(); c++)
+        for (unsigned c = 0; c<internalData.idActiveDofs.size(); c++)
         {
+            int col = internalData.idActiveDofs[c];
             Real v = 0.0;
             for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
             {
-                v += internalData.Minv.element(i1->first,c) * i1->second;
+                v += internalData.Minv.element(i1->first,col) * i1->second;
             }
-            internalData.JMinv.add(nl,c,v);
+            internalData.JMinv.set(nl,c,v);
         }
         nl++;
     }
-
-    //compute Result = JRMinv * Jt
-
+    //compute Result = JRMinv * (JR)t
     nl = 0;
     for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
     {
-        int l = jit1->first;
+        int row = jit1->first;
         for (typename JMatrix::LineConstIterator jit2 = J.begin(); jit2 != J.end(); jit2++)
         {
-            int c = jit2->first;
+            int col = jit2->first;
             Real res = 0.0;
             for (typename JMatrix::LElementConstIterator i1 = jit2->second.begin(); i1 != jit2->second.end(); i1++)
             {
-                res += internalData.JMinv.element(nl,i1->first) * i1->second;
+                res += internalData.JMinv.element(nl,internalData.invActiveDofs[i1->first]) * i1->second;
             }
-            result->add(l,c,res*fact);
+            result->add(row,col,res*fact);
         }
         nl++;
     }
