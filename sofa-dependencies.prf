@@ -189,7 +189,10 @@ enable(generateTypedefs)
 enable(meshconv)
 enable(sofaInitTimer)
 enable(sofaVerification)
-enable(sofatests)
+
+contains(DEFINES, SOFA_HAVE_BOOST) {
+	enable(sofatests)
+}
 
 contains(DEFINES, SOFA_GUI_QTVIEWER) | contains(DEFINES, SOFA_GUI_QGLVIEWER) | contains(DEFINES, SOFA_GUI_QTOGREVIEWER) {
 	#enable(sofaConfiguration) # not yet converted
