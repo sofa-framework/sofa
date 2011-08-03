@@ -34,7 +34,7 @@
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <iostream>
 #include <algorithm>
-
+#include <memory>
 
 
 namespace sofa
@@ -125,7 +125,8 @@ public:
     typedef unsigned int   size_type;
     virtual ~ExtVectorAllocator() {}
     virtual void resize(value_type*& data, size_type size, size_type& maxsize, size_type& cursize)=0;
-    virtual void close(value_type* data)=0;
+    virtual void close(value_type*& data)=0;
+    virtual std::auto_ptr<ExtVectorAllocator> clone() = 0;
 };
 
 /// Custom vector class.
@@ -146,32 +147,37 @@ protected:
     value_type* data;
     size_type   maxsize;
     size_type   cursize;
-    ExtVectorAllocator<T>* allocator;
+    std::auto_ptr<ExtVectorAllocator<T> > allocator;
 
 public:
     explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL),  maxsize(0), cursize(0), allocator(alloc) {}
     ExtVector(int size, ExtVectorAllocator<T>* alloc) : data(NULL), maxsize(0), cursize(0), allocator(alloc) { resize(size); }
-    ~ExtVector() { if (allocator) allocator->close(data); }
+    ~ExtVector() { if (allocator.get()) allocator->close(data); }
 
     void init() {}
 
     void setAllocator(ExtVectorAllocator<T>* alloc)
     {
-        if (alloc != allocator)
+        if (alloc != allocator.get())
         {
             if (cursize)
             {
                 value_type* oldData = data;
                 size_type size = cursize;
+
                 data = NULL;
                 maxsize = 0;
                 cursize = 0;
-                alloc->resize(data, size, maxsize, cursize);
-                std::copy(oldData, oldData+size, data);
-                if (allocator)
+                if(alloc)
+                    alloc->resize(data, size, maxsize, cursize);
+                if(data != 0 && oldData != 0)
+                {
+                    std::copy(oldData, oldData + size, data);
+                }
+                if(allocator.get())
                     allocator->close(oldData);
             }
-            allocator = alloc;
+            allocator.reset(alloc);
         }
     }
     void setData(value_type* d, size_type s) { data=d; maxsize=s; cursize=s; }
@@ -187,7 +193,7 @@ public:
         if (size <= maxsize)
             return;
         size_type temp = cursize;
-        if (allocator)
+        if (allocator.get())
             allocator->resize(data, size, maxsize, temp);
         else
         {
@@ -198,7 +204,7 @@ public:
     {
         if (size <= maxsize)
             cursize = size;
-        else if (allocator)
+        else if (allocator.get())
             allocator->resize(data, size, maxsize, cursize);
         else
         {
@@ -223,30 +229,30 @@ public:
 
     ExtVector& operator=(const ExtVector& ev)
     {
-        cursize = ev.size();
-        maxsize = 0;
-        while(maxsize < cursize)
-            maxsize *= 2;
-        resize(cursize);
-        T* oldData = data;
-        data = new T[maxsize];
-        if (cursize)
-            std::copy(ev.begin(), ev.end(), data);
-        if (oldData!=NULL) delete[] oldData;
-
+        if(allocator.get())
+        {
+            allocator->close(data);
+        }
+        allocator = ev.allocator->clone();
+        if(allocator.get())
+        {
+            allocator->resize(data, ev.cursize, maxsize, cursize);
+            if(data != 0)
+            {
+                std::copy(ev.begin(), ev.end(), data);
+            }
+        }
         return *this;
     }
 
     ExtVector(const ExtVector& ev)
+        : data(0), maxsize(0), cursize(0), allocator(ev.allocator->clone())
     {
-        cursize = ev.size();
-        maxsize = 0;
-        while(maxsize < cursize)
-            maxsize *= 2;
-        data = new T[maxsize];
-        if (cursize)
+        allocator->resize(data, ev.cursize, maxsize, cursize);
+        if(data != 0)
+        {
             std::copy(ev.begin(), ev.end(), data);
-        //Alloc
+        }
     }
 
 
@@ -282,10 +288,10 @@ class DefaultAllocator : public ExtVectorAllocator<T>
 public:
     typedef typename ExtVectorAllocator<T>::value_type value_type;
     typedef typename ExtVectorAllocator<T>::size_type size_type;
-    virtual void close(value_type* data)
+    virtual void close(value_type*& data)
     {
-        if (data!=NULL) delete[] data;
-        delete this;
+        delete[] data;
+        data = 0;
     }
     virtual void resize(value_type*& data, size_type size, size_type& maxsize, size_type& cursize)
     {
@@ -294,13 +300,17 @@ public:
             T* oldData = data;
             maxsize = (size > 2*maxsize ? size : 2*maxsize);
             data = new T[maxsize];
-            if (cursize)
+            if(oldData)
+            {
                 std::copy(oldData, oldData+cursize, data);
-            //for (size_type i = 0 ; i < cursize ; ++i)
-            //    data[i] = oldData[i];
-            if (oldData!=NULL) delete[] oldData;
+                delete[] oldData;
+            }
         }
         cursize = size;
+    }
+    virtual std::auto_ptr<ExtVectorAllocator<T> > clone()
+    {
+        return std::auto_ptr<ExtVectorAllocator<T> >(new DefaultAllocator<T>);
     }
 };
 
@@ -319,7 +329,7 @@ public:
     ResizableExtVector(const ResizableExtVector& ev)
         :ExtVector<T>(ev)
     {
-        this->allocator = new DefaultAllocator<T>;
+        setAllocator(new DefaultAllocator<T>);
     }
 };
 
