@@ -18,7 +18,7 @@
 		<Object type="FixedConstraint" indices="12 15 28 31" />     	
 		
 		<Node name="Q">
-			<include href="Objects/QuadSetTopology.xml" />
+			<include href="Objects/QuadSetTopology.xml" src="@"/>
 			<Object type="Hexa2QuadTopologicalMapping" object1="../../Container" object2="Container"/>	
            								
 			<Node name="Visu">
@@ -27,7 +27,7 @@
 			</Node>
 
 			<Node name="T">
-				<include href="Objects/TriangleSetTopology.xml" />
+				<include href="Objects/TriangleSetTopology.xml" src="@"/>
 				<Object type="Quad2TriangleTopologicalMapping" object1="../../Container" object2="Container"/>
              		
 				<Object type="TriangleSet"/>			

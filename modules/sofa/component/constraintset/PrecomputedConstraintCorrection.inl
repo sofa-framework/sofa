@@ -180,7 +180,6 @@ void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::strin
     sout << "saveCompliance in " << fileName << sendl;
 
     std::string filePathInSofaShare = sofa::helper::system::DataRepository.getFirstPath() +"/"+ fileName;
-    std::cout<< " CTN   ======================================   PrecomputedConstraintCorrection "<<filePathInSofaShare<<std::endl;
 
     std::ofstream compFileOut(filePathInSofaShare.c_str(), std::fstream::out | std::fstream::binary);
     compFileOut.write((char*)invM->data, nbCols * nbRows * sizeof(double));
