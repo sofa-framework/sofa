@@ -156,7 +156,7 @@ void Simulation::init ( Node* root )
     root->get(m_RootSolver);
     if(!m_RootSolver)
     {
-        std::cout<<"WARNING(simulation::init) : Default Animation Master Solver will be used. Add DefaultAnimationMasterSolver to the root node of scene file to remove this warning"<<std::endl;
+        sout<<"WARNING(simulation::init) : Default Animation Master Solver will be used. Add DefaultAnimationMasterSolver to the root node of scene file to remove this warning"<<sendl;
         m_RootSolver = new DefaultAnimationMasterSolver(root);
         root->addObject(m_RootSolver);
     }
@@ -227,7 +227,7 @@ void Simulation::animate ( Node* root, double dt )
     }
     else
     {
-        std::cout<<"ERROR : MasterSolver expected at the root node"<<std::endl;
+        serr<<"ERROR : MasterSolver expected at the root node"<<sendl;
         return;
     }
     ////////////////////////////////////////////////////////////////////////

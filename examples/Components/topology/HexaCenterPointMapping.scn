@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <Node name="root" dt="0.05" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="0" showBoundingTree="0" gravity="0 0 0">
 	<CollisionPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
@@ -17,7 +18,7 @@
 		<Gravity gravity="0 -9.81 0"/>	
 		
 		<Node name="Q">
-			<include href="Objects/QuadSetTopology.xml" />
+			<include href="Objects/QuadSetTopology.xml" src="@"/>
 			<Hexa2QuadTopologicalMapping object1="../../Container" object2="Container"/>	
 
 			<Node name="Visu">
@@ -27,7 +28,7 @@
 		</Node>	
 		
 		<Node name="P">
-			<include href="Objects/PointSetTopology.xml" />
+			<include href="Objects/PointSetTopology.xml" src="@"/>
 			<CenterPointTopologicalMapping object1="../../Container" object2="Container"/>	
 			<MechanicalObject name="Point" />
 			<CenterPointMechanicalMapping object1="../../Hexa" object2="Point"/>	
