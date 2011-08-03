@@ -105,6 +105,11 @@ AspectPool::~AspectPool()
 {
 }
 
+void AspectPool::setReleaseCallback(const boost::function<void (int)>& callback)
+{
+    releaseCallback = callback;
+}
+
 /**
  * Request a new aspect.
  * The returned object should stay alive as long as the aspect is in use.
@@ -130,6 +135,10 @@ AspectRef AspectPool::allocate()
  */
 void AspectPool::release(int id)
 {
+    if(releaseCallback != 0)
+    {
+        releaseCallback(id);
+    }
     AtomicInt aspectID(id);
     freeAspects.push(aspectID);
 }

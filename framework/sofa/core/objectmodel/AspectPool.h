@@ -31,6 +31,7 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/helper/system/thread/CircularQueue.h>
 #include <boost/smart_ptr/intrusive_ptr.hpp>
+#include <boost/function.hpp>
 
 namespace sofa
 {
@@ -85,6 +86,8 @@ public:
     AspectPool();
     ~AspectPool();
 
+    void setReleaseCallback(const boost::function<void (int)>& callback);
+
     AspectRef allocate();
 
     friend class Aspect;
@@ -103,6 +106,7 @@ private:
     AspectQueue;
 
     AspectQueue freeAspects;
+    boost::function<void (int)> releaseCallback;
 };
 
 } // namespace objectmodel
