@@ -265,7 +265,7 @@ OglTexture2D::~OglTexture2D()
 
 void OglTexture2D::init()
 {
-    textureFilename = texture2DFilename;
+    textureFilename.setValue(texture2DFilename.getValue());
     OglTexture::init();
 }
 

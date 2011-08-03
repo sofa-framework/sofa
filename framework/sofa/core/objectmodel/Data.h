@@ -34,6 +34,7 @@
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/helper/accessor.h>
+#include <boost/shared_ptr.hpp>
 #include <stdlib.h>
 #include <string>
 #include <sstream>
@@ -185,7 +186,6 @@ class DataValue;
 template <class T>
 class DataValue<T, false>
 {
-protected:
     T data;
 public:
 
@@ -194,17 +194,17 @@ public:
     {
     }
 
-    DataValue(const T &value)
+    explicit DataValue(const T &value)
         : data(value)
     {
     }
 
-    DataValue(const DataValue<T, false>& dc)
+    DataValue(const DataValue& dc)
         : data(dc.getValue())
     {
     }
 
-    DataValue<T, false>& operator=(const DataValue<T, false>& dc )
+    DataValue& operator=(const DataValue& dc )
     {
         data = dc.getValue();
         return *this;
@@ -225,56 +225,34 @@ public:
 template <class T>
 class DataValue<T, true>
 {
-    //TODO: change this to be atomic
-    typedef unsigned int Counter;
-
-protected:
-    T* data;
-    Counter* cpt;
+    boost::shared_ptr<T> ptr;
 public:
 
     DataValue()
-        : data(new T(T())) // BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
-        , cpt(new Counter(1))
+        : ptr(new T(T())) // BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
     {
     }
 
-    DataValue(const T& value)
-        : data(new T(value))
-        , cpt(new Counter(1))
+    explicit DataValue(const T& value)
+        : ptr(new T(value))
     {
     }
 
     DataValue(const DataValue& dc)
-        : data(dc.data)
-        , cpt(dc.cpt)
+        : ptr(dc.ptr)
     {
-        ++(*cpt);
     }
 
     ~DataValue()
     {
-        if ((--(*cpt)) == 0) // last ref to data
-        {
-            delete cpt;
-            delete data;
-        }
     }
 
-    DataValue<T, true>& operator=(const DataValue<T, true>& dc )
+    DataValue& operator=(const DataValue& dc )
     {
         //avoid self reference
         if(&dc != this)
         {
-            if ((--(*cpt)) == 0) // last ref to data
-            {
-                delete cpt;
-                delete data;
-            }
-            this->data = dc.data;
-            this->cpt = dc.cpt;
-
-            ++(*cpt);
+            ptr = dc.ptr;
         }
 
         return *this;
@@ -282,19 +260,11 @@ public:
 
     T* beginEdit()
     {
-        if (*cpt > 1)
+        if(!ptr.unique())
         {
-            T* newData = new T(*data);
-            if ((--(*cpt)) == 0) // last ref to data, not that this can only happen if another thread released a reference between this test and the previous if condition
-            {
-                delete cpt;
-                delete data;
-            }
-
-            cpt = new Counter(1);
-            data = newData;
+            ptr.reset(new T(*ptr));
         }
-        return data;
+        return ptr.get();
     }
 
     void endEdit()
@@ -303,25 +273,25 @@ public:
 
     const T& getValue() const
     {
-        return *data;
+        return *ptr;
     }
 
     void setValue(const T& value)
     {
-        if (*cpt >= 1)
+        if(!ptr.unique())
         {
-            if ((--(*cpt)) == 0) // last ref to data, not that this can only happen if another thread released a reference between this test and the previous if condition
-            {
-                delete cpt;
-                delete data;
-            }
-
-            cpt = new Counter(1);
-            data = &value;
+            ptr.reset(new T(value));
         }
-
+        else
+        {
+            *ptr = value;
+        }
     }
 
+    void release()
+    {
+        ptr.reset();
+    }
 
 //    T& value()
 //    {
@@ -391,13 +361,6 @@ public:
     Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
         : TData<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
         , m_value(value)
-        , shared(NULL)
-    {
-    }
-
-    Data(const Data& d)
-        : TData<T>()
-        , m_value(d.getValue())
         , shared(NULL)
     {
     }
@@ -512,6 +475,10 @@ protected:
     //DataValue<T, true> m_value;
 public:
     mutable void* shared;
+
+private:
+    Data(const Data& );
+    Data& operator=(const Data& );
 };
 
 #if defined(WIN32) && !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)

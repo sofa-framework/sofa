@@ -64,12 +64,6 @@ public:
         updatePath();
     }
 
-    explicit DataFileName( const Inherit& d)
-        : Inherit(d)
-    {
-        updatePath();
-    }
-
     /** Constructor
         this constructor should be used through the initData() methods
      */
@@ -131,6 +125,10 @@ protected:
     void updatePath();
 
     std::string fullpath;
+
+private:
+    DataFileName(const Inherit& d);
+    DataFileName& operator=(const DataFileName&);
 };
 
 
@@ -147,12 +145,6 @@ public:
 
     DataFileNameVector( const sofa::helper::vector<std::string>& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(value, helpMsg, isDisplayed, isReadOnly)
-    {
-        updatePath();
-    }
-
-    explicit DataFileNameVector( const Inherit& d)
-        : Inherit(d)
     {
         updatePath();
     }
@@ -218,6 +210,10 @@ protected:
     void updatePath();
 
     sofa::helper::vector<std::string> fullpath;
+
+private:
+    DataFileNameVector(const Inherit& d);
+    DataFileNameVector& operator=(const DataFileNameVector&);
 };
 
 } // namespace objectmodel
