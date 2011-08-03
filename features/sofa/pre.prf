@@ -95,7 +95,7 @@ equals(OUT_OF_SOURCE, true) {
 	} else {
 		# HACK: On windows we have no other choice but to make assumptions about the
 		# names of the source directories to deduce the root source directory.
-	  ROOT_SRC_DIR   = $$replace(SRC_DIR, (.+)/(applications|extlibs|framework|modules)(/.+)?, \\1)
+	  ROOT_SRC_DIR   = $$replace(SRC_DIR, (.+)/(applications|extlibs|framework|modules|tests)(/.+)?, \\1)
 		ROOT_BUILD_DIR = $$ROOT_SRC_DIR
 	}
 	SUBDIR_PATH = $$replace(BUILD_DIR, $$ROOT_BUILD_DIR, .)
