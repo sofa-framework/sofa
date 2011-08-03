@@ -55,7 +55,7 @@ FileRepository DataRepository("SOFA_DATA_PATH", "../share;../examples");
 #elif defined (__APPLE__)
 FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../Resources/examples:../Resources:../../../../examples:../../../../share");
 #else
-FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples");
+FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../../Verification/data:../../Verification/simulation");
 #endif
 
 FileRepository::FileRepository(const char* envVar, const char* relativePath)
