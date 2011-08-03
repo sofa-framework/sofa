@@ -315,3 +315,6 @@ load($$FEATURES_DIR/config-pre)
 
 include-declarations(sofa-dependencies)
 
+exists($$ROOT_BUILD_DIR/sofa-dependencies-local.prf) {
+	load($$ROOT_BUILD_DIR/sofa-dependencies-local)
+}
