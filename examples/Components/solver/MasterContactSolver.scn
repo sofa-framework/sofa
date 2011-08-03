@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <Node name="root"  dt="0.01" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" gravity="0 981 0">
 	<Object type="MasterContactSolver" />
 	<Object type="LCPConstraintSolver" tolerance="1e-3" maxIt="1000"/>
@@ -70,7 +71,7 @@
 		<Object type="EulerImplicitSolver"/>	
 		<Object type="CGLinearSolver" iterations="25"/>	
 		<Object type="MechanicalObject" template="Rigid" scale="5.0" dx ="-25" dy="0"/>
-		<Object type="UniformMass" filename="BehaviorModels/torus2.rigid" totalMass="0.2"/>
+		<Object type="UniformMass" filename="BehaviorModels/torus2.rigid" totalMass="0.02"/>
 		<Object type="UncoupledConstraintCorrection"/>
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" fileMesh="mesh/torus2.obj" color="1.0 0.5 0.25 1.0" scale="5.0"/>
