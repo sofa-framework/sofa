@@ -89,6 +89,7 @@ public:
     Data<bool> odt, lloyd, perturb, exude;
     Data<int> odt_max_it, lloyd_max_it;
     Data<double> perturb_max_time, exude_max_time;
+    Data<int> ordering;
 
     // Display
     Data<bool> drawTetras;

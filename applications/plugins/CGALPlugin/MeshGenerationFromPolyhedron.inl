@@ -67,10 +67,15 @@ MeshGenerationFromPolyhedron<DataTypes>::MeshGenerationFromPolyhedron()
     , lloyd_max_it(initData(&lloyd_max_it, 200, "lloyd_max_it", "lloyd max iteration number"))
     , perturb_max_time(initData(&perturb_max_time, 20.0, "perturb_max_time", "perturb maxtime"))
     , exude_max_time(initData(&exude_max_time, 20.0, "exude_max_time", "exude max time"))
+    , ordering(initData(&ordering, 0, "ordering", "Output points and elements ordering (0 = none, 1 = longest bbox axis)"))
     , drawTetras(initData(&drawTetras, false, "drawTetras", "display generated tetra mesh"))
     , drawSurface(initData(&drawSurface, false, "drawSurface", "display input surface mesh"))
 {
+}
 
+template<class T1, class T2> bool compare_pair_first(const std::pair<T1,T2>& e1, const std::pair<T1,T2>& e2)
+{
+    return e1.first < e2.first;
 }
 
 template <class DataTypes>
@@ -99,6 +104,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::init()
     addInput(&lloyd_max_it);
     addInput(&perturb_max_time);
     addInput(&exude_max_time);
+    addInput(&ordering);
 
     setDirtyValue();
 }
@@ -299,6 +305,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
     newPoints.clear();
     int inum = 0;
     int notconnected = 0;
+    Point bbmin, bbmax;
     for( Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
     {
         Point_3 pointCgal = vit->point();
@@ -313,7 +320,11 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
         else
         {
             V[vit] = inum++;
-
+            if (newPoints.empty())
+                bbmin = bbmax = p;
+            else
+                for (int c=0; c<p.size(); c++)
+                            if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
             newPoints.push_back(p);
         }
     }
@@ -327,6 +338,57 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
             tetra[i] = V[cit->vertex(i)];
         tetrahedra.push_back(tetra);
     }
+
+    int nbp = newPoints.size();
+    int nbe = tetrahedra.size();
+
+    switch(ordering.getValue())
+    {
+    case 0: break;
+    case 1:
+    {
+        int axis = 0;
+        for (int c=1; c<3; c++)
+            if (bbmax[c]-bbmin[c] > bbmax[axis]-bbmin[axis]) axis=c;
+        sout << "Ordering along the " << (char)('X'+axis) << " axis." << sendl;
+        helper::vector< std::pair<float,int> > sortArray;
+        for (int i=0; i<nbp; ++i)
+            sortArray.push_back(std::make_pair((float)newPoints[i][axis], i));
+        std::sort(sortArray.begin(), sortArray.end(), compare_pair_first<float,int>);
+        helper::vector<int> old2newP;
+        old2newP.resize(nbp);
+        VecCoord oldPoints = newPoints.ref();
+        for (int i=0; i<nbp; ++i)
+        {
+            newPoints[i] = oldPoints[sortArray[i].second];
+            old2newP[sortArray[i].second] = i;
+        }
+        for (int e=0; e<nbe; ++e)
+        {
+            for (int i=0; i<4; i++)
+                tetrahedra[e][i] = old2newP[tetrahedra[e][i]];
+        }
+        helper::vector< std::pair<int,int> > sortArray2;
+        for (int e=0; e<nbe; ++e)
+        {
+            int p = tetrahedra[e][0];
+            for (int i=0; i<4; i++)
+                if (tetrahedra[e][i] < p) p = tetrahedra[e][i];
+            sortArray2.push_back(std::make_pair(p,e));
+        }
+        std::sort(sortArray2.begin(), sortArray2.end(), compare_pair_first<int,int>);
+        SeqTetrahedra oldTetrahedra = tetrahedra.ref();
+        for (int i=0; i<nbe; ++i)
+        {
+            tetrahedra[i] = oldTetrahedra[sortArray2[i].second];
+        }
+        break;
+    }
+    default: break;
+    }
+
+    sout << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra." << sendl;
+
     frozen.setValue(true);
 }
 
