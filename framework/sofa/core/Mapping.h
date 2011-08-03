@@ -86,6 +86,7 @@ public:
     //Data< std::string > object2;
     objectmodel::DataObjectRef m_outputObject;
 
+    Data<bool> f_applyRestPosition;
     Data<bool> f_checkJacobian;
 
     /// Constructor, taking input and output models as parameters.
