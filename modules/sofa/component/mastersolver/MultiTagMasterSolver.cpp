@@ -28,9 +28,6 @@
 #include <math.h>
 #include <iostream>
 
-
-
-
 namespace sofa
 {
 
@@ -67,6 +64,14 @@ void MultiTagMasterSolver::init()
 
 void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
 {
+    sofa::simulation::Node* root = dynamic_cast<sofa::simulation::Node*> (this->getContext());
+    {
+        AnimateBeginEvent ev ( dt );
+        PropagateEventVisitor act ( params, &ev );
+        root->execute ( act );
+    }
+
+
     sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
     sofa::core::objectmodel::TagSet::iterator it;
 
@@ -87,6 +92,13 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
         this->removeTag (*it);
     }
     sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
+
+
+    {
+        AnimateEndEvent ev ( dt );
+        PropagateEventVisitor act ( params, &ev );
+        root->execute ( act );
+    }
 
 }
 

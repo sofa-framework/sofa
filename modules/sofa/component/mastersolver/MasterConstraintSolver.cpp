@@ -543,6 +543,13 @@ void MasterConstraintSolver::correctiveMotion(const core::ExecParams* params /* 
 
 void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIRST */, double dt )
 {
+    sofa::simulation::Node* root = dynamic_cast<sofa::simulation::Node*> (this->getContext());
+    {
+        AnimateBeginEvent ev ( dt );
+        PropagateEventVisitor act ( params, &ev );
+        root->execute ( act );
+    }
+
     sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
     time = 0.0;
     double totaltime = 0.0;
@@ -756,6 +763,12 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
     simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
     context->execute(&endVisitor);
     sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
+
+    {
+        AnimateEndEvent ev ( dt );
+        PropagateEventVisitor act ( params, &ev );
+        root->execute ( act );
+    }
 }
 
 void MasterConstraintSolver::computePredictiveForce(int dim, double* force, std::vector<core::behavior::ConstraintResolution*>& res)

@@ -148,15 +148,19 @@ bool LMContactConstraintSolver::isCollisionDetected()
 
 void LMContactConstraintSolver::step(double dt)
 {
+    simulation::Node *node = (simulation::Node*)getContext();
+    {
+        AnimateBeginEvent ev ( dt );
+        PropagateEventVisitor act ( params, &ev );
+        node->execute ( act );
+    }
+
     sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
     const unsigned int maxSteps = maxCollisionSteps.getValue();
-    simulation::Node *node = (simulation::Node*)getContext();
 
     // Then integrate the time step
     //    sout << "integration" << sendl;
     integrate(dt);
-
-
 
     bool propagateState=needPriorStatePropagation();
     for (unsigned int step=0; step<maxSteps; ++step)
@@ -176,6 +180,12 @@ void LMContactConstraintSolver::step(double dt)
         }
     }
     sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
+
+    {
+        AnimateEndEvent ev ( dt );
+        PropagateEventVisitor act ( params, &ev );
+        node->execute ( act );
+    }
 }
 
 } // namespace mastersolver
