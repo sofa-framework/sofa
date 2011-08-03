@@ -57,14 +57,26 @@ GenerateBenchSolver<TMatrix,TVector>::GenerateBenchSolver()
     , dump_constraint( initData(&dump_constraint,false,"dump_constraint","Dump the Jmatrix at the next time step") )
     , file_constraint( initData(&file_constraint,std::string("file_constraint"),"file_constraint","Filename for the J matrix") )
     , f_one_step( initData(&f_one_step,true,"one_step","Generate the matrix only for the next step else erase the file each step") )
+    , f_max_size( initData(&f_max_size,false,"max_size","Write J only if it's the maximum contacts") )
 {
+    newStep = true;
+    max_size = 0;
+}
+
+template<class TMatrix, class TVector>
+void GenerateBenchSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
+{
+    Inherit::setSystemMBKMatrix(mparams);
+    newStep = true;
+
 }
 
 template<class TMatrix, class TVector>
 void GenerateBenchSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    if (dump_system.getValue())
+    if (dump_system.getValue() && newStep)
     {
+        newStep = false;
         if (f_one_step.getValue())
         {
             bool * dump = dump_system.beginEdit();
@@ -110,6 +122,10 @@ bool GenerateBenchSolver<TMatrix,TVector>::addJMInvJt(RMatrix& /*result*/, JMatr
 {
     if (dump_constraint.getValue())
     {
+        if (f_max_size.getValue() && J.rowSize()<=max_size) return true;
+
+        max_size = J.rowSize();
+
         if (f_one_step.getValue())
         {
             bool * dump = dump_constraint.beginEdit();

@@ -82,7 +82,6 @@ PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
     , solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver to use to precompute the first matrix"))
     , use_rotations( initData(&use_rotations,true,"use_rotations","Use Rotations around the preconditioner") )
     , draw_rotations_scale( initData(&draw_rotations_scale,0.0,"draw_rotations_scale","Scale rotations in draw function") )
-    , sub_compliance_index( initData(&sub_compliance_index,"sub_compliance_index","Sub compliance index constraint con only be apply on theese dofs") )
 {
     first = true;
     _rotate = false;
@@ -108,34 +107,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::setSystemMBKMatrix(const core::M
 
 //Solve x = R * M^-1 * R^t * b
 template<class TDataTypes>
-void PrecomputedWarpPreconditioner<TDataTypes>::solve (TMatrix& M, TVector& z, TVector& r)
+void PrecomputedWarpPreconditioner<TDataTypes>::solve (TMatrix& /*M*/, TVector& z, TVector& r)
 {
     if (usePrecond)
     {
-        if (! sub_sorted_index.empty())
-        {
-            if (r.size() != matrixSize)
-            {
-                for (unsigned i=0; i<sub_sorted_index.size(); i++)
-                {
-                    for (unsigned d=0; d<dof_on_node; d++)
-                    {
-                        subR[i*dof_on_node+d] = r[sub_sorted_index[i]*dof_on_node+d];
-                    }
-                }
-                solve(M,subZ,subR);
-                z=r;
-                for (unsigned i=0; i<sub_sorted_index.size(); i++)
-                {
-                    for (unsigned d=0; d<dof_on_node; d++)
-                    {
-                        z[sub_sorted_index[i]*dof_on_node+d] = subZ[i*dof_on_node+d];
-                    }
-                }
-                return ;
-            }
-        }
-
         if (use_rotations.getValue())
         {
             unsigned int k = 0;
@@ -177,27 +152,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::solve (TMatrix& M, TVector& z, T
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 {
-    if (! sub_compliance_index.getValue().empty())
-    {
-        for (unsigned i=0; i<sub_compliance_index.getValue().size(); i++)
-        {
-            sub_sorted_index.push_back(sub_compliance_index.getValue()[i]);
-
-            int j=sub_sorted_index.size()-1;
-            while ((j>0) && (sub_sorted_index[j]<sub_sorted_index[j-1]))
-            {
-                int tmp = sub_sorted_index[j-1];
-                sub_sorted_index[j-1] = sub_sorted_index[j];
-                sub_sorted_index[j] = tmp;
-                j--;
-            }
-        }
-    }
-
     dof_on_node = Deriv::size();
     systemSize = M.rowSize();
-    if (sub_sorted_index.empty()) nb_dofs = systemSize/dof_on_node;
-    else nb_dofs = sub_sorted_index.size();
+    nb_dofs = systemSize/dof_on_node;
     matrixSize = nb_dofs*dof_on_node;
 
     dt = this->getContext()->getDt();
@@ -261,12 +218,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
         R[k*9] = R[k*9+4] = R[k*9+8] = 1.0f;
         R[k*9+1] = R[k*9+2] = R[k*9+3] = R[k*9+5] = R[k*9+6] = R[k*9+7] = 0.0f;
     }
-
-    if (! sub_sorted_index.empty())
-    {
-        subR.resize(matrixSize);
-        subZ.resize(matrixSize);
-    }
 }
 
 #ifdef SOFA_HAVE_CSPARSE
@@ -290,8 +241,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
     for (unsigned int j=0; j<nb_dofs; j++)
     {
         unsigned pid_j;
-        if (sub_sorted_index.empty()) pid_j = j;
-        else pid_j = sub_sorted_index[j];
+        pid_j = j;
 
         for (unsigned d=0; d<dof_on_node; d++)
         {
@@ -306,8 +256,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
             for (unsigned int i=0; i<nb_dofs; i++)
             {
                 unsigned pid_i;
-                if (sub_sorted_index.empty()) pid_i=i;
-                else pid_i=sub_sorted_index[i];
+                pid_i=i;
 
                 for (unsigned c=0; c<dof_on_node; c++)
                 {
@@ -461,8 +410,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         Deriv unitary_force;
 
         int pid_j;
-        if (sub_sorted_index.empty()) pid_j = j;
-        else pid_j = sub_sorted_index[j];
+        pid_j = j;
 
         for (unsigned int d=0; d<dof_on_node; d++)
         {
@@ -504,8 +452,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
             for (unsigned int i=0; i<nb_dofs; i++)
             {
                 unsigned pid_i;
-                if (sub_sorted_index.empty()) pid_i=i;
-                else pid_i=sub_sorted_index[i];
+                pid_i=i;
 
                 for (unsigned int c=0; c<dof_on_node; c++)
                 {
@@ -594,8 +541,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
         for(unsigned int k = 0; k < nb_dofs; k++)
         {
             int pid;
-            if (sub_sorted_index.empty()) pid = k;
-            else pid = sub_sorted_index[k];
+            pid = k;
 
             forceField->getRotation(Rotation, pid);
             for (int j=0; j<3; j++)
@@ -613,8 +559,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
         for(unsigned int k = 0; k < nb_dofs; k++)
         {
             int pid;
-            if (sub_sorted_index.empty()) pid = k;
-            else pid = sub_sorted_index[k];
+            pid = k;
 
             Rotation = rotations[pid];
             for (int j=0; j<3; j++)
@@ -639,6 +584,35 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
 
 }
 
+template<class TDataTypes> template<class JMatrix>
+void PrecomputedWarpPreconditioner<TDataTypes>::computeActiveDofs(JMatrix& J)
+{
+    isActiveDofs.clear();
+    isActiveDofs.resize(systemSize);
+
+    //compute JR = J * R
+    for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
+    {
+        for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
+        {
+            isActiveDofs[i1->first] = true;
+        }
+    }
+
+    internalData.invActiveDofs.clear();
+    internalData.invActiveDofs.resize(systemSize);
+    internalData.idActiveDofs.clear();
+
+    for (unsigned c=0; c<systemSize; c++)
+    {
+        if (isActiveDofs[c])
+        {
+            internalData.invActiveDofs[c] = internalData.idActiveDofs.size();
+            internalData.idActiveDofs.push_back(c);
+        }
+    }
+}
+
 template<class TDataTypes>
 bool PrecomputedWarpPreconditioner<TDataTypes>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
 {
@@ -648,28 +622,14 @@ bool PrecomputedWarpPreconditioner<TDataTypes>::addJMInvJt(defaulttype::BaseMatr
 
     if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
     {
-        if (sub_sorted_index.empty())
-        {
-            ComputeResult(result, *j, (float) fact);
-        }
-        else
-        {
-            filterSubJ(*j);
-            ComputeResult(result, subJ, (float) fact);
-        }
+        computeActiveDofs(*j);
+        ComputeResult(result, *j, (float) fact);
         return true;
     }
     else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
     {
-        if (sub_sorted_index.empty())
-        {
-            ComputeResult(result, *j, (float) fact);
-        }
-        else
-        {
-            filterSubJ(*j);
-            ComputeResult(result, subJ, (float) fact);
-        }
+        computeActiveDofs(*j);
+        ComputeResult(result, *j, (float) fact);
         return true;
     }
 
@@ -677,50 +637,18 @@ bool PrecomputedWarpPreconditioner<TDataTypes>::addJMInvJt(defaulttype::BaseMatr
 }
 
 template<class TDataTypes> template<class JMatrix>
-void PrecomputedWarpPreconditioner<TDataTypes>::filterSubJ(JMatrix& J)
-{
-    subJ.clear();
-    subJ.resize(J.rowSize(),matrixSize);
-
-    for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
-    {
-        unsigned sub_id = 0;
-        for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end() && (sub_id<sub_sorted_index.size());)
-        {
-            int pid = i1->first / dof_on_node;
-            while ((sub_sorted_index[sub_id]<pid) && (sub_id<sub_sorted_index.size()))  sub_id++;
-
-            if (sub_sorted_index[sub_id]==pid)
-            {
-                for (unsigned i=0; i<dof_on_node; i++)
-                {
-                    subJ.set(jit1->first,sub_id*dof_on_node+i,i1->second);
-                    i1++;
-                }
-            }
-            else
-            {
-                for (unsigned i=0; i<dof_on_node; i++)
-                {
-                    i1++;
-                }
-                //std::cout << "Warinig J contains indices which are not in the list of sub_compliance_index ==> skipped" << std::endl;
-            }
-        }
-    }
-}
-
-template<class TDataTypes> template<class JMatrix>
 void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact)
 {
-    unsigned nl;
-    internalData.JR.clear();
-    internalData.JR.resize(J.rowSize(),J.colSize());
+    unsigned nl = 0;
+    internalData.JRMinv.clear();
+    internalData.JRMinv.resize(J.rowSize(),internalData.idActiveDofs.size());
 
     if (use_rotations.getValue())
     {
+        internalData.JR.clear();
+        internalData.JR.resize(J.rowSize(),J.colSize());
+
         //compute JR = J * R
-        nl = 0;
         for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
         {
             int l = jit1->first;
@@ -732,63 +660,61 @@ void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(defaulttype::BaseM
                 internalData.JR.set(l,c+1,v0 * R[(c+0)*3+1] + v1 * R[(c+1)*3+1] + v2 * R[(c+2)*3+1] );
                 internalData.JR.set(l,c+2,v0 * R[(c+0)*3+2] + v1 * R[(c+1)*3+2] + v2 * R[(c+2)*3+2] );
             }
+        }
+
+        nl=0;
+        for (typename SparseMatrix<Real>::LineConstIterator jit1 = internalData.JR.begin(); jit1 != internalData.JR.end(); jit1++)
+        {
+            for (unsigned c = 0; c<internalData.idActiveDofs.size(); c++)
+            {
+                int col = internalData.idActiveDofs[c];
+                Real v = 0.0;
+                for (typename SparseMatrix<Real>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
+                {
+                    v += internalData.MinvPtr->element(i1->first,col) * i1->second;
+                }
+                internalData.JRMinv.set(nl,c,v);
+            }
             nl++;
         }
     }
     else
     {
-        //compute JR = J * I
-        nl = 0;
+        nl=0;
         for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
         {
-            int l = jit1->first;
-            for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end();)
+            for (unsigned c = 0; c<internalData.idActiveDofs.size(); c++)
             {
-                int c = i1->first;
-                Real v0 = i1->second; i1++; Real v1 = i1->second; i1++; Real v2 = i1->second; i1++;
-                internalData.JR.set(l,c+0,v0);
-                internalData.JR.set(l,c+1,v1);
-                internalData.JR.set(l,c+2,v2);
+                int col = internalData.idActiveDofs[c];
+                Real v = 0.0;
+                for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
+                {
+                    v += internalData.MinvPtr->element(i1->first,col) * i1->second;
+                }
+                internalData.JRMinv.set(nl,c,v);
             }
             nl++;
         }
     }
-
-    internalData.JRMinv.clear();
-    internalData.JRMinv.resize(nl,internalData.MinvPtr->rowSize());
-
-    nl = 0;
-    for (typename SparseMatrix<Real>::LineConstIterator jit1 = internalData.JR.begin(); jit1 != internalData.JR.end(); jit1++)
-    {
-        for (unsigned c = 0; c<matrixSize; c++)
-        {
-            Real v = 0.0;
-            for (typename SparseMatrix<Real>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
-            {
-                v += internalData.MinvPtr->element(i1->first,c) * i1->second;
-            }
-            internalData.JRMinv.add(nl,c,v);
-        }
-        nl++;
-    }
-
     //compute Result = JRMinv * (JR)t
     nl = 0;
-    for (typename SparseMatrix<Real>::LineConstIterator jit1 = internalData.JR.begin(); jit1 != internalData.JR.end(); jit1++)
+    for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
     {
-        int l = jit1->first;
-        for (typename SparseMatrix<Real>::LineConstIterator jit2 = internalData.JR.begin(); jit2 != internalData.JR.end(); jit2++)
+        int row = jit1->first;
+        for (typename JMatrix::LineConstIterator jit2 = J.begin(); jit2 != J.end(); jit2++)
         {
-            int c = jit2->first;
+            int col = jit2->first;
             Real res = 0.0;
-            for (typename SparseMatrix<Real>::LElementConstIterator i1 = jit2->second.begin(); i1 != jit2->second.end(); i1++)
+            for (typename JMatrix::LElementConstIterator i1 = jit2->second.begin(); i1 != jit2->second.end(); i1++)
             {
-                res += internalData.JRMinv.element(nl,i1->first) * i1->second;
+                res += internalData.JRMinv.element(nl,internalData.invActiveDofs[i1->first]) * i1->second;
             }
-            result->add(l,c,res*fact);
+            result->add(row,col,res*fact);
         }
         nl++;
     }
+
+
 }
 
 template<class TDataTypes>
@@ -820,9 +746,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
             }
         }
 
-        int pid;
-        if (sub_sorted_index.empty()) pid = i;
-        else pid = sub_sorted_index[i];
+        int pid = i;
 
         sofa::defaulttype::Quat q;
         q.fromMatrix(RotMat);

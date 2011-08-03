@@ -56,9 +56,15 @@ public:
     Data<bool> dump_constraint;
     Data< std::string >  file_constraint;
     Data< bool > f_one_step;
+    Data< bool > f_max_size;
+
+    bool newStep;
+    int max_size;
 
     GenerateBenchSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
+
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
 
     template<class RMatrix, class JMatrix>
     bool addJMInvJt(RMatrix& result, JMatrix& J, double fact);
