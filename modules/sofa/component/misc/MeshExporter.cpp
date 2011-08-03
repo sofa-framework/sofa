@@ -1,6 +1,7 @@
 #include "MeshExporter.h"
 
 #include <sstream>
+#include <iomanip>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -95,6 +96,7 @@ void MeshExporter::writeMesh()
     const bool netgen = all || (format == 3);
     const bool tetgen = all || (format == 4);
     const bool gmsh   = all || (format == 5);
+    sout << "Exporting mesh " << getMeshFilename("") << sendl;
     if (vtkxml)
         writeMeshVTKXML();
     if (vtk)
@@ -124,8 +126,9 @@ std::string MeshExporter::getMeshFilename(const char* ext)
         nbe = ( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )
                 + ( (writeQuads.getValue()) ? topology->getNbQuads() : 0 );
     if (!nbe)
-        nbe = ( (writeTetras.getValue()) ? topology->getNbTetras() : 0 )
-                + ( (writeHexas.getValue()) ? topology->getNbHexas() : 0 );
+        nbe = ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 );
+    if (!nbe)
+        nbe = nbp;
 
     std::ostringstream oss;
     std::string filename = meshFilename.getFullPath();
@@ -166,6 +169,9 @@ void MeshExporter::writeMeshVTKXML()
         serr << "Error creating file "<<filename<<sendl;
         return;
     }
+
+    outfile << std::setprecision (9);
+
     //const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     //const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
@@ -347,6 +353,8 @@ void MeshExporter::writeMeshVTK()
         return;
     }
 
+    outfile << std::setprecision (9);
+
     //const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     //const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
@@ -476,6 +484,8 @@ void MeshExporter::writeMeshGmsh()
         return;
     }
 
+    outfile << std::setprecision (9);
+
     //const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     //const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
@@ -590,6 +600,8 @@ void MeshExporter::writeMeshNetgen()
         return;
     }
 
+    outfile << std::setprecision (9);
+
     //const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     //const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
@@ -677,6 +689,8 @@ void MeshExporter::writeMeshTetgen()
         serr << "Error creating file "<<filename<<sendl;
         return;
     }
+
+    outfile << std::setprecision (9);
 
     //const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     //const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
@@ -799,7 +813,7 @@ void MeshExporter::handleEvent(sofa::core::objectmodel::Event *event)
 {
     if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
-        std::cout << "key pressed " << std::endl;
+        //std::cout << "key pressed " << std::endl;
         switch(ev->getKey())
         {
 

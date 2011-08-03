@@ -45,6 +45,7 @@ Mapping<In,Out>::Mapping(State<In>* from, State<Out>* to)
     , fromModel(from), toModel(to)
     , m_inputObject(initData(&m_inputObject, "input", "Input object to map"))
     , m_outputObject(initData(&m_outputObject, "output", "Output object to map"))
+    , f_applyRestPosition( initData( &f_applyRestPosition, false, "applyRestPosition", "set to true to apply this mapping to restPosition at init"))
     , f_checkJacobian( initData( &f_checkJacobian, false, "checkJacobian", "set to true to compare results of applyJ/applyJT methods with multiplication with the matrix given by getJ()" ) )
 {
     if(to != NULL && !testMechanicalState(to))
@@ -117,6 +118,8 @@ void Mapping<In,Out>::init()
 
     apply(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecCoordId::position(), ConstVecCoordId::position());
     applyJ(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecDerivId::velocity(), ConstVecDerivId::velocity());
+    if (f_applyRestPosition.getValue())
+        apply(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecCoordId::restPosition(), ConstVecCoordId::restPosition());
 }
 
 #ifdef SOFA_SMP
