@@ -16,35 +16,54 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Tests                                 *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/helper/system/atomic.h>
-#include <boost/test/auto_unit_test.hpp>
+#include "CopyAspectVisitor.h"
 
-using sofa::helper::system::atomic;
-
-BOOST_AUTO_TEST_CASE(dec_and_test_null)
+namespace sofa
 {
-    atomic<int> value(3);
-    BOOST_CHECK_EQUAL(value.dec_and_test_null(), false);
-    BOOST_CHECK_EQUAL(value, 2);
-    BOOST_CHECK_EQUAL(value.dec_and_test_null(), false);
-    BOOST_CHECK_EQUAL(value, 1);
-    BOOST_CHECK_EQUAL(value.dec_and_test_null(), true);
-    BOOST_CHECK_EQUAL(value, 0);
+
+namespace simulation
+{
+
+CopyAspectVisitor::CopyAspectVisitor(const core::ExecParams* params, int destAspect, int srcAspect)
+    : Visitor(params), destAspect(destAspect), srcAspect(srcAspect)
+{
 }
 
-BOOST_AUTO_TEST_CASE(compare_and_swap)
+CopyAspectVisitor::~CopyAspectVisitor()
 {
-    atomic<int> value(-1);
-    BOOST_CHECK_EQUAL(value.compare_and_swap(-1, 10), -1);
-    BOOST_CHECK_EQUAL(value, 10);
-
-    BOOST_CHECK_EQUAL(value.compare_and_swap(5, 25), 10);
-    BOOST_CHECK_EQUAL(value, 10);
 }
+
+CopyAspectVisitor::Result CopyAspectVisitor::processNodeTopDown(Node* node)
+{
+    for(Node::ObjectIterator iObj = node->object.begin(), endObj = node->object.end(); iObj != endObj; ++iObj)
+    {
+        fprintf(stderr, "Copy node: %s, object: %s\n", node->getName().c_str(), (*iObj)->getName().c_str());
+        (*iObj)->copyAspect(destAspect, srcAspect);
+    }
+//    for(Node::ObjectIterator iObj = node->componentInVisualGraph.begin(), endObj = node->componentInVisualGraph.end(); iObj != endObj; ++iObj)
+//    {
+//        fprintf(stderr, "Copy vnode: %s, object: %s\n", node->getName().c_str(), (*iObj)->getName().c_str());
+//        (*iObj)->copyAspect(destAspect, srcAspect);
+//    }
+//    for(Node::Sequence<core::visual::VisualModel>::iterator iObj = node->visualModelInVisualGraph.begin(), endObj = node->visualModelInVisualGraph.end(); iObj != endObj; ++iObj)
+//    {
+//        fprintf(stderr, "Copy vnode: %s, object: %s\n", node->getName().c_str(), (*iObj)->getName().c_str());
+//        (*iObj)->copyAspect(destAspect, srcAspect);
+//    }
+    for(Node::ChildIterator iVNode = node->childInVisualGraph.begin(), endVNode = node->childInVisualGraph.end(); iVNode != endVNode; ++iVNode)
+    {
+        processNodeTopDown(*iVNode);
+    }
+    return RESULT_CONTINUE;
+}
+
+} // namespace sofa
+
+} // namespace simulation

@@ -16,35 +16,39 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Tests                                 *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/helper/system/atomic.h>
-#include <boost/test/auto_unit_test.hpp>
+#ifndef SOFA_SIMULATION_RELEASEASPECTVISITOR_H
+#define SOFA_SIMULATION_RELEASEASPECTVISITOR_H
 
-using sofa::helper::system::atomic;
+#include <sofa/simulation/common/Visitor.h>
+#include <sofa/core/ExecParams.h>
 
-BOOST_AUTO_TEST_CASE(dec_and_test_null)
+namespace sofa
 {
-    atomic<int> value(3);
-    BOOST_CHECK_EQUAL(value.dec_and_test_null(), false);
-    BOOST_CHECK_EQUAL(value, 2);
-    BOOST_CHECK_EQUAL(value.dec_and_test_null(), false);
-    BOOST_CHECK_EQUAL(value, 1);
-    BOOST_CHECK_EQUAL(value.dec_and_test_null(), true);
-    BOOST_CHECK_EQUAL(value, 0);
-}
 
-BOOST_AUTO_TEST_CASE(compare_and_swap)
+namespace simulation
 {
-    atomic<int> value(-1);
-    BOOST_CHECK_EQUAL(value.compare_and_swap(-1, 10), -1);
-    BOOST_CHECK_EQUAL(value, 10);
 
-    BOOST_CHECK_EQUAL(value.compare_and_swap(5, 25), 10);
-    BOOST_CHECK_EQUAL(value, 10);
-}
+class ReleaseAspectVisitor : public Visitor
+{
+public:
+    ReleaseAspectVisitor(const core::ExecParams* params, int aspect);
+    ~ReleaseAspectVisitor();
+
+    Result processNodeTopDown(Node* node);
+
+private:
+    int aspect;
+};
+
+} // namespace sofa
+
+} // namespace simulation
+
+#endif /* SOFA_SIMULATION_RELEASEASPECTVISITOR_H */

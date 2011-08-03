@@ -105,6 +105,7 @@ bool OneThreadPerEnd::pop(T array[], unsigned maxSize, unsigned /*maxCapacity*/,
     if(isEmpty()) return false;
 
     item = array[head];
+    array[head] = T();
     head = (head + 1) % maxSize;
     return true;
 }
