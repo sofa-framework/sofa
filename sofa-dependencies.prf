@@ -104,6 +104,7 @@ declare(meshconv,         applications/projects/meshconv,         sofacomponent)
 declare(sofamodeler,      applications/projects/Modeler/lib,      sofaguimain)
 declare(Modeler,          applications/projects/Modeler/exec,     sofamodeler)
 declare(sofaCUDA,         applications/projects/sofaCUDA,         sofaguimain sofagpucuda)
+declare(sofaCUDA_Bench,         applications/projects/sofaCUDA_Bench,         sofaguimain sofagpucuda)
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofacomponent sofagpucuda)
 declare(sofaVerification, applications/projects/sofaVerification, sofacomponent sofagpucuda)
@@ -212,6 +213,8 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 		}
 		enable(sofagpucuda)
 		enable(sofaCUDA)
+# This project should be enable in sofa_dependencies-local.prf
+#		enable(sofaCUDA_Bench)
 	}
 } # END SOFA_DEV
 
