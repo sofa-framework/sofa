@@ -44,6 +44,8 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/system/glut.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawToolGL.h>
 #ifdef SOFA_SMP
 #include <Multigraph.h>
 #endif
@@ -88,6 +90,8 @@ class SOFA_SOFAGUIGLUT_API MultithreadGUI : public sofa::gui::SofaGUI
 {
 
 public:
+    typedef sofa::core::visual::VisualParams VisualParams;
+    typedef sofa::core::visual::DrawToolGL   DrawToolGL;
 
     /// @name methods each GUI must implement
     /// @{
@@ -344,6 +348,8 @@ protected:
     bool m_displayComputationTime;
     bool m_exportGnuplot;
     std::ofstream* m_dumpStateStream;
+    VisualParams vparams;
+    DrawToolGL   drawTool;
 };
 
 } // namespace glut
