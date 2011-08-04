@@ -5,8 +5,9 @@
 	<MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2"/>
 	<DefaultContactManager name="Response" response="default"/>
 	<TreeCollisionGroupManager name="Group"/>
-	<Node name="Obj file">
-	  <CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10"/>
+	<Node name="vtk file">
+	  <EulerImplicit name="cg_odesolver" printLog="false"  />
+	  <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"  />
 	  <MeshVTKLoader name="VtkLoader" filename="mesh/liver.vtk"/>
 
 	  <!--	  <MeshGmshLoader name="loader" filename="mesh/square3.msh" /> -->
@@ -17,6 +18,7 @@
 	  <TriangleSetTopologyAlgorithms name="algo" />
 	  <TriangleSetGeometryAlgorithms name="triGeo" />
 
-	  <OglModel name="VisualModel" src="@VtkLoader" color="red"/>
+ 	  <OglModel name="VisualModel" src="@VtkLoader" color="red" texturename="textures/liver-texture-square.png" />		    
+
 	</Node>
 </Node>
