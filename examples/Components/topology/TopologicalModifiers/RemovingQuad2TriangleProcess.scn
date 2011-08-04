@@ -1,4 +1,4 @@
-<Node name="root" dt="0.05" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" showBoundingTree="0" gravity="0 -9.81 0">
+<Node name="root" dt="0.01" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" showBoundingTree="0" gravity="0 -9.81 0">
 	<CollisionPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
 	<CollisionResponse response="default" />
@@ -19,7 +19,7 @@
 		<BoxConstraint box="0 3 0 0 3 0 3 3 0 3 3 0" />
 
 		<Node name="T">
-			<include href="Objects/TriangleSetTopology.xml" />
+			<include href="Objects/TriangleSetTopology.xml" drawEdges="1"/>
 			<Quad2TriangleTopologicalMapping object1="../../Container" object2="Container"/>            
 
           		<TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />

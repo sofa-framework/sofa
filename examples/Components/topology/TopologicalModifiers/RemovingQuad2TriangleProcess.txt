@@ -1,9 +1,13 @@
 T= 0.2
-  REMOVE= 3
-0 1 2
+  REMOVE= 2
+0 1 
 T= 0.6
   REMOVE= 3
 0 1 2
 T= 1.0
-  REMOVE= 3
-0 1 2
+  REMOVE= 2
+0 1 
+T= 1.4
+  REMOVE= 2
+0 1 
+
