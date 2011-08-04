@@ -222,20 +222,21 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
 }
 
 
-MasterConstraintSolver::MasterConstraintSolver()
-    :displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of MasterConstraintSolver.")),
-     _tol( initData(&_tol, 0.00001, "tolerance", "Tolerance of the Gauss-Seidel")),
-     _maxIt( initData(&_maxIt, 1000, "maxIterations", "Maximum number of iterations of the Gauss-Seidel")),
-     doCollisionsFirst(initData(&doCollisionsFirst, false, "doCollisionsFirst","Compute the collisions first (to support penality-based contacts)")),
-     doubleBuffer( initData(&doubleBuffer, false, "doubleBuffer","Buffer the constraint problem in a double buffer to be accessible with an other thread")),
-     scaleTolerance( initData(&scaleTolerance, true, "scaleTolerance","Scale the error tolerance with the number of constraints")),
-     _allVerified( initData(&_allVerified, false, "allVerified","All contraints must be verified (each constraint's error < tolerance)")),
-     _sor( initData(&_sor, 1.0, "sor","Successive Over Relaxation parameter (0-2)")),
-     schemeCorrection( initData(&schemeCorrection, false, "schemeCorrection","Apply new scheme where compliance is progressively corrected")),
-     _realTimeCompensation( initData(&_realTimeCompensation, false, "realTimeCompensation","If the total computational time T < dt, sleep(dt-T)")),
-     _graphErrors( initData(&_graphErrors,"graphErrors","Sum of the constraints' errors at each iteration")),
-     _graphConstraints( initData(&_graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution")),
-     _graphForces( initData(&_graphForces,"graphForces","Graph of each constraint's force at each step of the resolution"))
+MasterConstraintSolver::MasterConstraintSolver(simulation::Node* gnode)
+    : Inherit(gnode)
+    , displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of MasterConstraintSolver."))
+    , _tol( initData(&_tol, 0.00001, "tolerance", "Tolerance of the Gauss-Seidel"))
+    , _maxIt( initData(&_maxIt, 1000, "maxIterations", "Maximum number of iterations of the Gauss-Seidel"))
+    , doCollisionsFirst(initData(&doCollisionsFirst, false, "doCollisionsFirst","Compute the collisions first (to support penality-based contacts)"))
+    , doubleBuffer( initData(&doubleBuffer, false, "doubleBuffer","Buffer the constraint problem in a double buffer to be accessible with an other thread"))
+    , scaleTolerance( initData(&scaleTolerance, true, "scaleTolerance","Scale the error tolerance with the number of constraints"))
+    , _allVerified( initData(&_allVerified, false, "allVerified","All contraints must be verified (each constraint's error < tolerance)"))
+    , _sor( initData(&_sor, 1.0, "sor","Successive Over Relaxation parameter (0-2)"))
+    , schemeCorrection( initData(&schemeCorrection, false, "schemeCorrection","Apply new scheme where compliance is progressively corrected"))
+    , _realTimeCompensation( initData(&_realTimeCompensation, false, "realTimeCompensation","If the total computational time T < dt, sleep(dt-T)"))
+    , _graphErrors( initData(&_graphErrors,"graphErrors","Sum of the constraints' errors at each iteration"))
+    , _graphConstraints( initData(&_graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution"))
+    , _graphForces( initData(&_graphForces,"graphForces","Graph of each constraint's force at each step of the resolution"))
 {
     bufCP1 = false;
 
@@ -543,11 +544,10 @@ void MasterConstraintSolver::correctiveMotion(const core::ExecParams* params /* 
 
 void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIRST */, double dt )
 {
-    sofa::simulation::Node* root = dynamic_cast<sofa::simulation::Node*> (this->getContext());
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
-        root->execute ( act );
+        this->gnode->execute ( act );
     }
 
     sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
@@ -767,7 +767,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
-        root->execute ( act );
+        this->gnode->execute ( act );
     }
 }
 

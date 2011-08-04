@@ -52,8 +52,9 @@ int LMContactConstraintSolverClass = core::RegisterObject("invert the Sofa simul
 
 SOFA_DECL_CLASS(LMContactConstraintSolver);
 
-LMContactConstraintSolver::LMContactConstraintSolver()
-    : maxCollisionSteps( initData(&maxCollisionSteps,(unsigned int)1,"maxSteps", "number of collision steps between each frame rendering") )
+LMContactConstraintSolver::LMContactConstraintSolver(simulation::Node* gnode)
+    : Inherit(gnode)
+    , maxCollisionSteps( initData(&maxCollisionSteps,(unsigned int)1,"maxSteps", "number of collision steps between each frame rendering") )
 {
 }
 
@@ -91,12 +92,11 @@ bool LMContactConstraintSolver::needPriorStatePropagation()
 void LMContactConstraintSolver::solveConstraints(bool needPropagation)
 {
 //  sout << "apply constraints" << sendl;
-    simulation::Node *node = (simulation::Node*)getContext();
-    simulation::MechanicalExpressJacobianVisitor JacobianVisitor(node);
-    JacobianVisitor.execute(node);
+    simulation::MechanicalExpressJacobianVisitor JacobianVisitor(this->gnode);
+    JacobianVisitor.execute(this->gnode);
 
     helper::vector< constraintset::LMConstraintSolver* > listSolver;
-    node->get<constraintset::LMConstraintSolver>(&listSolver, core::objectmodel::BaseContext::SearchDown);
+    this->gnode->get<constraintset::LMConstraintSolver>(&listSolver, core::objectmodel::BaseContext::SearchDown);
 
     helper::vector< bool > constraintActive(listSolver.size(), false);
     for (unsigned int i=0; i<listSolver.size(); ++i)
@@ -107,7 +107,7 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
 
     core::behavior::BaseMechanicalState::VecId positionState=core::behavior::BaseMechanicalState::VecId::position();
     simulation::MechanicalSolveLMConstraintVisitor solveConstraintsPosition(positionState,needPropagation, false);
-    solveConstraintsPosition.execute(node);
+    solveConstraintsPosition.execute(this->gnode);
 
     for (unsigned int i=0; i<listSolver.size(); ++i)
     {
@@ -116,7 +116,7 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
 
     simulation::MechanicalPropagatePositionVisitor propagateState;
     propagateState.ignoreMask=false;
-    propagateState.execute(node);
+    propagateState.execute(this->gnode);
 }
 
 bool LMContactConstraintSolver::isCollisionDetected()
@@ -148,11 +148,10 @@ bool LMContactConstraintSolver::isCollisionDetected()
 
 void LMContactConstraintSolver::step(double dt)
 {
-    simulation::Node *node = (simulation::Node*)getContext();
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
-        node->execute ( act );
+        this->gnode->execute ( act );
     }
 
     sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
@@ -165,12 +164,12 @@ void LMContactConstraintSolver::step(double dt)
     bool propagateState=needPriorStatePropagation();
     for (unsigned int step=0; step<maxSteps; ++step)
     {
-        node->execute<simulation::MechanicalResetConstraintVisitor>();
-        node->execute<simulation::CollisionResetVisitor>();
+        this->gnode->execute<simulation::MechanicalResetConstraintVisitor>();
+        this->gnode->execute<simulation::CollisionResetVisitor>();
         if (isCollisionDetected())
         {
-            node->execute<simulation::CollisionResetVisitor>();
-            node->execute<simulation::CollisionResponseVisitor>();
+            this->gnode->execute<simulation::CollisionResetVisitor>();
+            this->gnode->execute<simulation::CollisionResponseVisitor>();
             solveConstraints(propagateState);
         }
         else
@@ -184,7 +183,7 @@ void LMContactConstraintSolver::step(double dt)
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
-        node->execute ( act );
+        this->gnode->execute ( act );
     }
 }
 
