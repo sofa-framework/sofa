@@ -200,17 +200,27 @@ contains(DEFINES, SOFA_GUI_QTVIEWER) | contains(DEFINES, SOFA_GUI_QGLVIEWER) | c
 	enable(Modeler)
 }
 
-contains (DEFINES, SOFA_GPU_OPENCL) {
+contains(DEFINES, SOFA_GPU_OPENCL) {
 	# enable(sofaOPENCL) # not yet converted
 }
 
-contains (DEFINES, SOFA_GUI_GLUT) {
+contains(DEFINES, SOFA_GUI_GLUT) {
 	enable(sofaguiglut)
+}
+
+contains(DEFINES, SOFA_HAVE_CHAI3D) {
+	#enable(Haptic)
 }
 
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 	contains (DEFINES, SOFA_GUI_FLTK) {
 		enable(sofaguifltk)
+	}
+	contains(DEFINES, SOFA_HAVE_VDD) {
+		#enable(SofaDevices)
+	}
+	contains(DEFINES, SOFA_HAVE_VRPN) {
+		#enable(SofaVRPN)
 	}
 	contains(DEFINES, SOFA_GPU_CUDA) {
 		contains(DEFINES, SOFA_GPU_CUDPP) {
