@@ -65,6 +65,8 @@ void MultiTagMasterSolver::init()
 
 void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
 {
+    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
+
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
@@ -72,7 +74,6 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
     }
 
 
-    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
     sofa::core::objectmodel::TagSet::iterator it;
 
     for (it = tagList.begin(); it != tagList.end(); ++it)
@@ -91,7 +92,6 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
 
         this->removeTag (*it);
     }
-    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
 
 
     {
@@ -100,6 +100,32 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
         this->gnode->execute ( act );
     }
 
+    //////////////////////////////////////////////////////////////////////
+#ifndef  DEPRECATED_MASTERSOLVER
+    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
+    //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
+    this->gnode->execute<UpdateMappingVisitor>(params);
+    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
+    {
+        UpdateMappingEndEvent ev ( dt );
+        PropagateEventVisitor act ( params , &ev );
+        this->gnode->execute ( act );
+    }
+    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
+
+#ifndef SOFA_NO_UPDATE_BBOX
+    sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
+    this->gnode->execute<UpdateBoundingBoxVisitor>(params);
+    sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
+#endif
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode(std::string("Step"));
+#endif
+    nbSteps.setValue(nbSteps.getValue() + 1);
+#endif//  DEPRECATED_MASTERSOLVER
+    /////////////////////////////////////////////////////////////////////
+
+    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
 }
 
 void MultiTagMasterSolver::clear()

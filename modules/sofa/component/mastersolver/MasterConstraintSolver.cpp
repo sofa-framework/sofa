@@ -544,13 +544,14 @@ void MasterConstraintSolver::correctiveMotion(const core::ExecParams* params /* 
 
 void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIRST */, double dt )
 {
+    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
+
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
         this->gnode->execute ( act );
     }
 
-    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
     time = 0.0;
     double totaltime = 0.0;
     timeScale = 1.0 / (double)CTime::getTicksPerSec() * 1000;
@@ -600,12 +601,11 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
     if (debug)
         sout << "MasterConstraintSolver::step is called" << sendl;
 
-    simulation::Node *context = dynamic_cast< simulation::Node * >(this->getContext());
 
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
-    simulation::MechanicalVInitVisitor<core::V_COORD>(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(context);
-    simulation::MechanicalVInitVisitor<core::V_DERIV>(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity()).execute(context);
+    simulation::MechanicalVInitVisitor<core::V_COORD>(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
+    simulation::MechanicalVInitVisitor<core::V_DERIV>(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity()).execute(this->gnode);
 
     if (doCollisionsFirst.getValue())
     {
@@ -616,7 +616,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
     // Update the BehaviorModels => to be removed ?
     // Required to allow the RayPickInteractor interaction
     sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdate");
-    simulation::BehaviorUpdatePositionVisitor(params /* PARAMS FIRST */, dt).execute(context);
+    simulation::BehaviorUpdatePositionVisitor(params /* PARAMS FIRST */, dt).execute(this->gnode);
     sofa::helper::AdvancedTimer::stepEnd  ("BehaviorUpdate");
 
 
@@ -626,10 +626,10 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
         numConstraints = 0;
 
         //1. Find the new constraint direction
-        writeAndAccumulateAndCountConstraintDirections(params /* PARAMS FIRST */, context, numConstraints);
+        writeAndAccumulateAndCountConstraintDirections(params /* PARAMS FIRST */, this->gnode, numConstraints);
 
         //2. Get the constraint solving process:
-        getIndividualConstraintSolvingProcess(params /* PARAMS FIRST */, context);
+        getIndividualConstraintSolvingProcess(params /* PARAMS FIRST */, this->gnode);
 
         //3. Use the stored forces to compute
         if (debug)
@@ -671,7 +671,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
 
 
     /// FREE MOTION
-    freeMotion(params /* PARAMS FIRST */, context, dt);
+    freeMotion(params /* PARAMS FIRST */, this->gnode, dt);
 
 
 
@@ -683,11 +683,11 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
 
     //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
     core::MechanicalParams mparams(*params);
-    simulation::MechanicalPropagatePositionVisitor(&mparams /* PARAMS FIRST */, 0, core::VecCoordId::position(), true).execute(context);
+    simulation::MechanicalPropagatePositionVisitor(&mparams /* PARAMS FIRST */, 0, core::VecCoordId::position(), true).execute(this->gnode);
 
 
     /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION
-    setConstraintEquations(params /* PARAMS FIRST */, context);
+    setConstraintEquations(params /* PARAMS FIRST */, this->gnode);
 
     if (debug)
     {
@@ -741,7 +741,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
     }
 
     /// CORRECTIVE MOTION
-    correctiveMotion(params /* PARAMS FIRST */, context);
+    correctiveMotion(params /* PARAMS FIRST */, this->gnode);
 //       if (doubleBuffer.getValue() && bufCP1)
 //           std::cout << " #C: " << CP2.getSize() << " constraints" << std::endl;
 //       else
@@ -761,14 +761,40 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
     }
 
     simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
-    context->execute(&endVisitor);
-    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
+    this->gnode->execute(&endVisitor);
 
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
         this->gnode->execute ( act );
     }
+
+    //////////////////////////////////////////////////////////////////////
+#ifndef  DEPRECATED_MASTERSOLVER
+    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
+    //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
+    this->gnode->execute<UpdateMappingVisitor>(params);
+    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
+    {
+        UpdateMappingEndEvent ev ( dt );
+        PropagateEventVisitor act ( params , &ev );
+        this->gnode->execute ( act );
+    }
+    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
+
+#ifndef SOFA_NO_UPDATE_BBOX
+    sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
+    this->gnode->execute<UpdateBoundingBoxVisitor>(params);
+    sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
+#endif
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode(std::string("Step"));
+#endif
+    nbSteps.setValue(nbSteps.getValue() + 1);
+#endif//  DEPRECATED_MASTERSOLVER
+    /////////////////////////////////////////////////////////////////////
+
+    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
 }
 
 void MasterConstraintSolver::computePredictiveForce(int dim, double* force, std::vector<core::behavior::ConstraintResolution*>& res)
