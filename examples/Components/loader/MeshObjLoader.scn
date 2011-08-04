@@ -5,7 +5,7 @@
 	<MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2"/>
 	<DefaultContactManager name="Response" response="default"/>
 	<TreeCollisionGroupManager name="Group"/>
-	<Node name="Obj file">
+	<Node name="obj file">
 	  <MeshObjLoader name="ObjLoader" filename="mesh/floor3.obj"/>
 	  <MechanicalObject name="dofs" src="@ObjLoader" />
 	  
