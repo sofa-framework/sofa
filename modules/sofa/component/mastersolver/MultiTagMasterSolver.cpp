@@ -74,25 +74,43 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
     }
 
 
-    sofa::core::objectmodel::TagSet::iterator it;
-
-    for (it = tagList.begin(); it != tagList.end(); ++it)
+    double startTime = this->gnode->getTime();
+    double mechanicalDt = dt/numMechSteps.getValue();
+    AnimateVisitor act(params);
+    act.setDt ( mechanicalDt );
+    BehaviorUpdatePositionVisitor beh(params , this->gnode->getDt());
+    for( unsigned i=0; i<numMechSteps.getValue(); i++ )
     {
-        this->addTag (*it);
+        this->gnode->execute ( beh );
 
-        if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin constraints reset" << sendl;
-        sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
-        if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end constraints reset" << sendl;
-        if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin collision for tag: "<< *it << sendl;
-        computeCollision(params);
-        if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end collision" << sendl;
-        if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin integration  for tag: "<< *it << sendl;
-        integrate(params /* PARAMS FIRST */, dt);
-        if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end integration" << sendl;
 
-        this->removeTag (*it);
+        //////////////////////////////////////////////////////////////////
+        sofa::core::objectmodel::TagSet::iterator it;
+
+        for (it = tagList.begin(); it != tagList.end(); ++it)
+        {
+            this->addTag (*it);
+
+            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin constraints reset" << sendl;
+            sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
+            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end constraints reset" << sendl;
+            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin collision for tag: "<< *it << sendl;
+            computeCollision(params);
+            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end collision" << sendl;
+            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin integration  for tag: "<< *it << sendl;
+            integrate(params /* PARAMS FIRST */, dt);
+            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end integration" << sendl;
+
+            this->removeTag (*it);
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+
+        this->gnode->setTime ( startTime + (i+1)* act.getDt() );
+        sofa::simulation::getSimulation()->getVisualRoot()->setTime ( this->gnode->getTime() );
+        this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
+        sofa::simulation::getSimulation()->getVisualRoot()->execute<UpdateSimulationContextVisitor>(params);
+        nbMechSteps.setValue(nbMechSteps.getValue() + 1);
     }
-
 
     {
         AnimateEndEvent ev ( dt );
