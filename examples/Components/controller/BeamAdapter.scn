@@ -10,7 +10,7 @@
 		<EulerImplicit rayleighStiffness="0" printLog="false"/>
 		<BTDLinearSolver template="NewMatBand" bandWidth="11" threshold="0.000000001" tolerance="0.0000000001" printLog="false" verbose="false"/>
 		
-		<MeshLoader name="loader" filename="mesh/edgeSet2.mesh"/>
+		<MeshLoader name="loader" filename="mesh/edgeSet2.msh"/>
 		<MechanicalObject src="@loader" name="MechanicalDOFs" template="Rigid" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1  3 0 0 0 0 0 1  4 0 0 0 0 0 1  5 0 0 0 0 0 1  6 0 0 0 0 0 1"/>
 		<FixedConstraint name="FixedConstraint" indices="0"/>
 		<UniformMass mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" showInitialCenterOfGravity="false"/>
@@ -54,7 +54,7 @@
 		<EulerImplicit rayleighStiffness="0" printLog="false"/>
 		<BTDLinearSolver template="NewMatBand" bandWidth="11" threshold="0.000000001" tolerance="0.0000000001" printLog="false" verbose="false"/>
 		
-		<MeshLoader name="loader" filename="mesh/edgeSet2.mesh"/>
+		<MeshLoader name="loader" filename="mesh/edgeSet2.msh"/>
 		<MechanicalObject src="@loader" name="MechanicalDOFs" template="Rigid" position="0 0 2.0 0 0 0 1  1 0 2.0 0 0 0 1  2 0 2.0 0 0 0 1  3 0 2.0 0 0 0 1  4 0 2.0 0 0 0 1  5 0 2.0 0 0 0 1  6 0 2.0 0 0 0 1"/>
 		<FixedConstraint name="FixedConstraint" indices="0"/>
 		<UniformMass mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" showInitialCenterOfGravity="false"/>

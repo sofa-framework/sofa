@@ -10,7 +10,7 @@
 		<Object type="EulerImplicit" rayleighStiffness="0" printLog="false" />
 		<Object type="BTDLinearSolver" template="NewMatBand" bandWidth="11"  printLog="false" verbose="false"/>
 		
-		<Object type="MeshLoader" name="loader" filename="mesh/edgeSet.mesh"/>
+		<Object type="MeshLoader" name="loader" filename="mesh/edgeSet.msh"/>
 		<Object type="MechanicalObject" src="@loader" name="MechanicalDOFs" template="Rigid" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1"/>
 		
 		<include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid" />
