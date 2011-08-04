@@ -32,14 +32,15 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/AdvancedTimer.h>
 
+using namespace sofa::core::objectmodel;
+using namespace sofa::core::behavior;
+
 namespace sofa
 {
 
 namespace simulation
 {
 
-using namespace sofa::core::objectmodel;
-using namespace sofa::core::behavior;
 /**
  *  \brief Default Animation Master Solver to be created when no Master Sovler found on simulation::node.
  *
@@ -57,11 +58,6 @@ public:
     virtual ~DefaultAnimationMasterSolver();
 
     virtual void step(const core::ExecParams* params, double dt);
-
-    Data<unsigned> numMechSteps;
-    Data<unsigned> nbSteps;
-    Data<unsigned> nbMechSteps;
-
 
     /// Construction method called by ObjectFactory.
     template<class T>
@@ -82,6 +78,7 @@ protected:
     const Solvers& getSolverSequence();
 
     simulation::Node* gnode;
+
 };
 
 } // namespace simulation

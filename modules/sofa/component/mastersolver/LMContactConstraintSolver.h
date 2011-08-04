@@ -42,14 +42,26 @@ namespace mastersolver
 class SOFA_COMPONENT_MASTERSOLVER_API LMContactConstraintSolver : public sofa::simulation::MasterSolverImpl
 {
 public:
+    typedef sofa::simulation::MasterSolverImpl Inherit;
+
     SOFA_CLASS(LMContactConstraintSolver, sofa::simulation::MasterSolverImpl);
 
-    LMContactConstraintSolver();
+    LMContactConstraintSolver(simulation::Node* gnode);
     virtual ~LMContactConstraintSolver();
     void bwdInit();
     void step (double dt);
     void solveConstraints(bool priorStatePropagation);
     bool isCollisionDetected();
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static void create(T*& obj, BaseContext* context, BaseObjectDescription* arg)
+    {
+        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
+        obj = new T(gnode);
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+    }
 
 protected:
     bool needPriorStatePropagation();

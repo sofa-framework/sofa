@@ -77,9 +77,6 @@ int DefaultAnimationMasterSolverClass = core::RegisterObject("The simplest maste
 
 DefaultAnimationMasterSolver::DefaultAnimationMasterSolver(simulation::Node* _gnode)
     : Inherit()
-    , numMechSteps( initData(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") )
-    , nbSteps( initData(&nbSteps, (unsigned)0, "nbSteps", "Number of animation steps completed", true, false))
-    , nbMechSteps( initData(&nbMechSteps, (unsigned)0, "nbMechSteps", "Number of mechanical steps completed", true, false))
     , gnode(_gnode)
 {
     assert(gnode);
