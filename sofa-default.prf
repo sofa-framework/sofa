@@ -37,11 +37,9 @@ DEFINES += SOFA_GUI_GLUT
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
-# Uncomment if you want the older version of MasterSolver 
-# DEFINES += DEPRECATED_MASTERSOLVER
-
 # Uncomment if you want to compile FLTK interface
 # DEFINES += SOFA_GUI_FLTK
+
 } # END SOFA_DEV
 
 

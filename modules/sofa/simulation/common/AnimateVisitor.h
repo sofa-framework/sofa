@@ -64,9 +64,6 @@ public:
     virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
     virtual void processBehaviorModel(simulation::Node* node, core::BehaviorModel* obj);
     virtual void fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* obj);
-#ifdef  DEPRECATED_MASTERSOLVER
-    virtual void processMasterSolver(simulation::Node* node, core::behavior::MasterSolver* obj);
-#endif
     virtual void processOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj);
 
     virtual Result processNodeTopDown(simulation::Node* node);

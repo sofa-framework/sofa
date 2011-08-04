@@ -166,8 +166,6 @@ void LMContactConstraintSolver::step(double dt)
     {
         this->gnode->execute ( beh );
 
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
         const unsigned int maxSteps = maxCollisionSteps.getValue();
 
         // Then integrate the time step
@@ -191,7 +189,6 @@ void LMContactConstraintSolver::step(double dt)
                 break;
             }
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////////
 
         this->gnode->setTime ( startTime + (i+1)* act.getDt() );
         sofa::simulation::getSimulation()->getVisualRoot()->setTime ( this->gnode->getTime() );
@@ -206,8 +203,7 @@ void LMContactConstraintSolver::step(double dt)
         this->gnode->execute ( act );
     }
 
-    //////////////////////////////////////////////////////////////////////
-#ifndef  DEPRECATED_MASTERSOLVER
+
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
     this->gnode->execute<UpdateMappingVisitor>(params);
@@ -228,8 +224,6 @@ void LMContactConstraintSolver::step(double dt)
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
     nbSteps.setValue(nbSteps.getValue() + 1);
-#endif//  DEPRECATED_MASTERSOLVER
-    /////////////////////////////////////////////////////////////////////
 
     sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
 }

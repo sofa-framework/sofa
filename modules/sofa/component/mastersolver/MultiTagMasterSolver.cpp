@@ -83,8 +83,6 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
     {
         this->gnode->execute ( beh );
 
-
-        //////////////////////////////////////////////////////////////////
         sofa::core::objectmodel::TagSet::iterator it;
 
         for (it = tagList.begin(); it != tagList.end(); ++it)
@@ -103,7 +101,6 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
 
             this->removeTag (*it);
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////////
 
         this->gnode->setTime ( startTime + (i+1)* act.getDt() );
         sofa::simulation::getSimulation()->getVisualRoot()->setTime ( this->gnode->getTime() );
@@ -118,8 +115,6 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
         this->gnode->execute ( act );
     }
 
-    //////////////////////////////////////////////////////////////////////
-#ifndef  DEPRECATED_MASTERSOLVER
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
     this->gnode->execute<UpdateMappingVisitor>(params);
@@ -140,8 +135,6 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
     nbSteps.setValue(nbSteps.getValue() + 1);
-#endif//  DEPRECATED_MASTERSOLVER
-    /////////////////////////////////////////////////////////////////////
 
     sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
 }

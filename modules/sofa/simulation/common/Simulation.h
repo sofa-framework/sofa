@@ -118,16 +118,6 @@ public:
     /// Return the current pause state
     virtual bool getPaused();
 
-#ifdef  DEPRECATED_MASTERSOLVER
-    /// Number of mechanical steps within an animation step
-    Data<unsigned> numMechSteps;
-
-    /// Number of animation steps completed
-    Data<unsigned> nbSteps;
-
-    /// Number of mechanical steps completed
-    Data<unsigned> nbMechSteps;
-#endif
     sofa::core::objectmodel::DataFileName gnuplotDirectory;
 
     helper::vector< Node* > instruments;
