@@ -84,16 +84,9 @@ namespace simulation
 
 using namespace sofa::defaulttype;
 Simulation::Simulation()
-#ifdef  DEPRECATED_MASTERSOLVER
-    : numMechSteps( initData(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") ),
-      nbSteps( initData(&nbSteps, (unsigned)0, "nbSteps", "Number of animation steps completed", true, false)),
-      nbMechSteps( initData(&nbMechSteps, (unsigned)0, "nbMechSteps", "Number of mechanical steps completed", true, false)),
-#else
-    :
-#endif
-      gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved")),
-      instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used")),
-      paused(false)
+    : gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved"))
+    , instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used"))
+    , paused(false)
 {
 }
 
@@ -151,7 +144,6 @@ void Simulation::init ( Node* root )
 
     setContext( root->getContext());
 
-#ifndef  DEPRECATED_MASTERSOLVER
     sofa::core::behavior::MasterSolver* m_RootSolver;
     root->get(m_RootSolver);
     if(!m_RootSolver)
@@ -160,8 +152,6 @@ void Simulation::init ( Node* root )
         m_RootSolver = new DefaultAnimationMasterSolver(root);
         root->addObject(m_RootSolver);
     }
-#endif
-
 
     // apply the init() and bwdInit() methods to all the components.
     // and put the VisualModels in a separate graph, rooted at getVisualRoot()
@@ -217,8 +207,6 @@ void Simulation::animate ( Node* root, double dt )
     simulation::Visitor::printNode(std::string("Step"));
 #endif
 
-#ifndef  DEPRECATED_MASTERSOLVER
-    //////////////////////////////////////////////////////////////////
     sofa::core::behavior::MasterSolver* m_RootSolver;
     root->get(m_RootSolver);
     if(m_RootSolver)
@@ -230,69 +218,7 @@ void Simulation::animate ( Node* root, double dt )
         serr<<"ERROR : MasterSolver expected at the root node"<<sendl;
         return;
     }
-    ////////////////////////////////////////////////////////////////////////
-#else
 
-    sofa::helper::AdvancedTimer::begin("Animate");
-
-    {
-        AnimateBeginEvent ev ( dt );
-        PropagateEventVisitor act ( params, &ev );
-        root->execute ( act );
-    }
-
-    //std::cout << "animate\n";
-    double startTime = root->getTime();
-    double mechanicalDt = dt/numMechSteps.getValue();
-    //double nextTime = root->getTime() + root->getDt();
-
-    // CHANGE to support MasterSolvers : CollisionVisitor is now activated within AnimateVisitor
-    //root->execute<CollisionVisitor>(params);
-
-    AnimateVisitor act(params);
-    act.setDt ( mechanicalDt );
-    BehaviorUpdatePositionVisitor beh(params , root->getDt());
-    for( unsigned i=0; i<numMechSteps.getValue(); i++ )
-    {
-        root->execute ( beh );
-        root->execute ( act );
-        root->setTime ( startTime + (i+1)* act.getDt() );
-        getVisualRoot()->setTime ( root->getTime() );
-        root->execute<UpdateSimulationContextVisitor>(params);  // propagate time
-        getVisualRoot()->execute<UpdateSimulationContextVisitor>(params);
-        nbMechSteps.setValue(nbMechSteps.getValue() + 1);
-    }
-
-    {
-        AnimateEndEvent ev ( dt );
-        PropagateEventVisitor act ( params, &ev );
-        root->execute ( act );
-    }
-
-    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
-    //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
-    root->execute<UpdateMappingVisitor>(params);
-    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
-    {
-        UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( params , &ev );
-        root->execute ( act );
-    }
-    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
-
-#ifndef SOFA_NO_UPDATE_BBOX
-    sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
-    root->execute<UpdateBoundingBoxVisitor>(params);
-    sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
-#endif
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printCloseNode(std::string("Step"));
-#endif
-    nbSteps.setValue(nbSteps.getValue() + 1);
-
-    sofa::helper::AdvancedTimer::end("Animate");
-
-#endif
 }
 
 void Simulation::updateVisual ( Node* root, double dt )
@@ -333,11 +259,6 @@ void Simulation::reset ( Node* root )
     root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
     root->execute<UpdateMappingVisitor>(params);
     root->execute<VisualUpdateVisitor>(params);
-
-#ifdef  DEPRECATED_MASTERSOLVER
-    nbSteps.setValue(0);
-    nbMechSteps.setValue(0);
-#endif
 }
 
 /// Initialize the textures

@@ -562,8 +562,6 @@ void MasterConstraintSolver::step( const core::ExecParams* params /* PARAMS FIRS
     {
         this->gnode->execute ( beh );
 
-
-        //////////////////////////////////////////////////////////////////
         time = 0.0;
         double totaltime = 0.0;
         timeScale = 1.0 / (double)CTime::getTicksPerSec() * 1000;
@@ -775,8 +773,6 @@ void MasterConstraintSolver::step( const core::ExecParams* params /* PARAMS FIRS
         simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
         this->gnode->execute(&endVisitor);
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-
         this->gnode->setTime ( startTime + (i+1)* act.getDt() );
         sofa::simulation::getSimulation()->getVisualRoot()->setTime ( this->gnode->getTime() );
         this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
@@ -790,8 +786,6 @@ void MasterConstraintSolver::step( const core::ExecParams* params /* PARAMS FIRS
         this->gnode->execute ( act );
     }
 
-    //////////////////////////////////////////////////////////////////////
-#ifndef  DEPRECATED_MASTERSOLVER
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
     this->gnode->execute<UpdateMappingVisitor>(params);
@@ -812,8 +806,6 @@ void MasterConstraintSolver::step( const core::ExecParams* params /* PARAMS FIRS
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
     nbSteps.setValue(nbSteps.getValue() + 1);
-#endif//  DEPRECATED_MASTERSOLVER
-    /////////////////////////////////////////////////////////////////////
 
     sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
 }
