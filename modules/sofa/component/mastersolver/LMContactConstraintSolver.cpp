@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/component/mastersolver/LMContactConstraintSolver.h>
 #include <sofa/component/constraintset/LMConstraintSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
@@ -65,7 +65,7 @@ LMContactConstraintSolver::~LMContactConstraintSolver()
 
 void LMContactConstraintSolver::bwdInit()
 {
-//  sout << "collision" << sendl;
+    //  sout << "collision" << sendl;
     computeCollision();
 }
 
@@ -91,7 +91,7 @@ bool LMContactConstraintSolver::needPriorStatePropagation()
 
 void LMContactConstraintSolver::solveConstraints(bool needPropagation)
 {
-//  sout << "apply constraints" << sendl;
+    //  sout << "apply constraints" << sendl;
     simulation::MechanicalExpressJacobianVisitor JacobianVisitor(this->gnode);
     JacobianVisitor.execute(this->gnode);
 
@@ -121,7 +121,7 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
 
 bool LMContactConstraintSolver::isCollisionDetected()
 {
-//  sout << "collision" << sendl;
+    //  sout << "collision" << sendl;
     {
         simulation::CollisionBeginEvent evBegin;
         simulation::PropagateEventVisitor eventPropagation(&evBegin);
@@ -142,7 +142,7 @@ bool LMContactConstraintSolver::isCollisionDetected()
 
     if (!rasterizer) return false;
 
-//  sout << "intersections : " << rasterizer->getNbPairs() << sendl;
+    //  sout << "intersections : " << rasterizer->getNbPairs() << sendl;
     return (rasterizer->getNbPairs() != 0);
 }
 
@@ -156,28 +156,48 @@ void LMContactConstraintSolver::step(double dt)
         this->gnode->execute ( act );
     }
 
-    const unsigned int maxSteps = maxCollisionSteps.getValue();
 
-    // Then integrate the time step
-    //    sout << "integration" << sendl;
-    integrate(dt);
-
-    bool propagateState=needPriorStatePropagation();
-    for (unsigned int step=0; step<maxSteps; ++step)
+    double startTime = this->gnode->getTime();
+    double mechanicalDt = dt/numMechSteps.getValue();
+    AnimateVisitor act(params);
+    act.setDt ( mechanicalDt );
+    BehaviorUpdatePositionVisitor beh(params , this->gnode->getDt());
+    for( unsigned i=0; i<numMechSteps.getValue(); i++ )
     {
-        this->gnode->execute<simulation::MechanicalResetConstraintVisitor>();
-        this->gnode->execute<simulation::CollisionResetVisitor>();
-        if (isCollisionDetected())
+        this->gnode->execute ( beh );
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        const unsigned int maxSteps = maxCollisionSteps.getValue();
+
+        // Then integrate the time step
+        //    sout << "integration" << sendl;
+        integrate(dt);
+
+        bool propagateState=needPriorStatePropagation();
+        for (unsigned int step=0; step<maxSteps; ++step)
         {
+            this->gnode->execute<simulation::MechanicalResetConstraintVisitor>();
             this->gnode->execute<simulation::CollisionResetVisitor>();
-            this->gnode->execute<simulation::CollisionResponseVisitor>();
-            solveConstraints(propagateState);
+            if (isCollisionDetected())
+            {
+                this->gnode->execute<simulation::CollisionResetVisitor>();
+                this->gnode->execute<simulation::CollisionResponseVisitor>();
+                solveConstraints(propagateState);
+            }
+            else
+            {
+                //No collision --> no constraint
+                break;
+            }
         }
-        else
-        {
-            //No collision --> no constraint
-            break;
-        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+
+        this->gnode->setTime ( startTime + (i+1)* act.getDt() );
+        sofa::simulation::getSimulation()->getVisualRoot()->setTime ( this->gnode->getTime() );
+        this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
+        sofa::simulation::getSimulation()->getVisualRoot()->execute<UpdateSimulationContextVisitor>(params);
+        nbMechSteps.setValue(nbMechSteps.getValue() + 1);
     }
 
     {
