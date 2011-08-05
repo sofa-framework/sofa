@@ -8,7 +8,7 @@
 		<TetrahedronSetTopologyContainer name="Container1" fileTopology="mesh/liver.msh" />
 		<TetrahedronSetTopologyModifier/>
 		<TetrahedronSetTopologyAlgorithms template="Vec3d" />
-		<TetrahedronSetGeometryAlgorithms template="Vec3d" />
+		<TetrahedronSetGeometryAlgorithms template="Vec3d" drawEdges="1" drawColorEdges="0 1 0"/>
 		<MechanicalObject name="dofs" />
                 <FixedConstraint name="FixedConstraint" indices="3 39 64" />
 		<DiagonalMass massDensity="1" name="computed using mass density"/>
@@ -17,7 +17,7 @@
 			<TetrahedronSetTopologyContainer name="Container2"/>
 			<TetrahedronSetTopologyModifier/>
 			<TetrahedronSetTopologyAlgorithms template="Vec3d" />
-			<TetrahedronSetGeometryAlgorithms template="Vec3d" />
+			<TetrahedronSetGeometryAlgorithms template="Vec3d" drawTetrahedra="1" drawColorTetrahedra="1 0 0"/>
 			<SimpleTesselatedTetraTopologicalMapping object1="Container1" object2="Container2"/>
 			<MechanicalObject/>
 			<SimpleTesselatedTetraMechanicalMapping/>
