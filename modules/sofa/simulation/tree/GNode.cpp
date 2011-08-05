@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
@@ -48,6 +48,14 @@ GNode::GNode(const std::string& name, GNode* parent)
 
 GNode::~GNode()
 {}
+
+/// Create, add, then return the new child of this Node
+Node* GNode::createChild(const std::string& nodeName)
+{
+    GNode* newchild = new GNode(nodeName);
+    this->addChild(newchild); newchild->updateSimulationContext();
+    return newchild;
+}
 
 /// Add a child node
 void GNode::doAddChild(GNode* node)
@@ -403,31 +411,31 @@ void GNode::initVisualContext()
         this->setDisplayWorldGravity(false); //only display gravity for the root: it will be propagated at each time step
         /// @TODO: This method is now broken because getShow*() methods never return -1
         /*
-                if (getShowVisualModels() == -1)
-                    setShowVisualModels(static_cast<GNode *>(getParent())->getShowVisualModels());
-                if (getShowBehaviorModels() == -1)
-                                setShowBehaviorModels(static_cast<GNode *>(getParent())->getShowBehaviorModels());
-                if (getShowCollisionModels() == -1)
-                                setShowCollisionModels(static_cast<GNode *>(getParent())->getShowCollisionModels());
-                if (getShowBoundingCollisionModels() == -1)
-                                setShowBoundingCollisionModels(static_cast<GNode *>(getParent())->getShowBoundingCollisionModels());
-                if (getShowMappings() == -1)
-                                setShowMappings(static_cast<GNode *>(getParent())->getShowMappings());
-                if (getShowMechanicalMappings() == -1)
-                                setShowMechanicalMappings(static_cast<GNode *>(getParent())->getShowMechanicalMappings());
-                if (getShowForceFields() == -1)
-                                setShowForceFields(static_cast<GNode *>(getParent())->getShowForceFields());
-                if (getShowInteractionForceFields() == -1)
-                                setShowInteractionForceFields(static_cast<GNode *>(getParent())->getShowInteractionForceFields());
-                if (getShowWireFrame() == -1)
-                                setShowWireFrame(static_cast<GNode *>(getParent())->getShowWireFrame());
-                if (getShowNormals() == -1)
-                                setShowNormals(static_cast<GNode *>(getParent())->getShowNormals());
+        if (getShowVisualModels() == -1)
+            setShowVisualModels(static_cast<GNode *>(getParent())->getShowVisualModels());
+        if (getShowBehaviorModels() == -1)
+                        setShowBehaviorModels(static_cast<GNode *>(getParent())->getShowBehaviorModels());
+        if (getShowCollisionModels() == -1)
+                        setShowCollisionModels(static_cast<GNode *>(getParent())->getShowCollisionModels());
+        if (getShowBoundingCollisionModels() == -1)
+                        setShowBoundingCollisionModels(static_cast<GNode *>(getParent())->getShowBoundingCollisionModels());
+        if (getShowMappings() == -1)
+                        setShowMappings(static_cast<GNode *>(getParent())->getShowMappings());
+        if (getShowMechanicalMappings() == -1)
+                        setShowMechanicalMappings(static_cast<GNode *>(getParent())->getShowMechanicalMappings());
+        if (getShowForceFields() == -1)
+                        setShowForceFields(static_cast<GNode *>(getParent())->getShowForceFields());
+        if (getShowInteractionForceFields() == -1)
+                        setShowInteractionForceFields(static_cast<GNode *>(getParent())->getShowInteractionForceFields());
+        if (getShowWireFrame() == -1)
+                        setShowWireFrame(static_cast<GNode *>(getParent())->getShowWireFrame());
+        if (getShowNormals() == -1)
+                        setShowNormals(static_cast<GNode *>(getParent())->getShowNormals());
         #ifdef SOFA_SMP
-                if (getShowProcessorColor() == -1)
-                                setShowProcessorColor(static_cast<GNode *>(getParent())->getShowProcessorColor());
+        if (getShowProcessorColor() == -1)
+                        setShowProcessorColor(static_cast<GNode *>(getParent())->getShowProcessorColor());
         #endif
-        */
+         */
     }
 }
 

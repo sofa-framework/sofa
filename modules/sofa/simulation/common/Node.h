@@ -97,7 +97,7 @@ namespace simulation
    The other nodes are not visible (unknown scene graph).
 
    @author The SOFA team </www.sofa-framework.org>
-*/
+ */
 class SOFA_SIMULATION_COMMON_API Node : public core::objectmodel::BaseNode, public sofa::core::objectmodel::Context
 {
 
@@ -109,6 +109,9 @@ public:
     Node(const std::string& name="");
 
     virtual ~Node();
+
+    /// Create, add, then return the new child of this Node
+    virtual Node* createChild(const std::string& nodeName)=0;
 
     /// @name High-level interface
     /// @{
@@ -617,6 +620,7 @@ protected:
 
     // Added by FF to model component dependencies
 public:
+
     virtual void addListener(MutationListener* obj);
     virtual void removeListener(MutationListener* obj);
     /// Pairs representing component dependencies. First must be initialized before second.
