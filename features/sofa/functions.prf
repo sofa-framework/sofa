@@ -145,11 +145,10 @@ defineTest(isExternal) {
 ##
 # This function tests whether sources of the specified module are available.
 # Sources are considered available if a project file having the specified name
-# exists in the specified directory.
+# exists.
 #
 defineTest(isSourceAvailable) {
-	name = $$1
-	project  = $$2
+	project  = $$1
 	isFeatureFile(project) | isProjectFile(project) {
 		test_path = $$ROOT_SRC_DIR/$$project
 	} else {
@@ -173,7 +172,7 @@ defineTest(addInstallableSubdir) {
 	name = $$1
 	dir  = $$2
 	deps = $$3
-	isSourceAvailable($$name, $$dir) {
+	isSourceAvailable($$dir) {
 		addSubdirs($$dir, $$deps)
 	} else {
 		!isInstalled($$name) {
@@ -203,7 +202,7 @@ defineTest(requireLib) {
 	#message(Using system lib $$name)
 
 	featureNoExt = $$replace(feature, ^(.+)\\.prf$, \\1)
-	isSourceAvailable($$name, $$feature) {
+	isSourceAvailable($$feature) {
 		dir = $$dirname(feature)
 		MY_FEATUREFILE = $$ROOT_SRC_DIR/$$featureNoExt
 	} else {
@@ -252,7 +251,7 @@ defineTest(requireExtLib) {
 		dir = $$project
 	}
 
-	isSourceAvailable($$name, $$project) {
+	isSourceAvailable($$project) {
 		#message(Using shipped version of $$name in $$dir)
 		MY_FEATUREFILE = $$ROOT_SRC_DIR/$$dir/$${name}
 		MY_INCLUDEPATH = $$ROOT_SRC_DIR/$$dir
@@ -301,14 +300,14 @@ defineTest(requireSofaLib) {
 
 	sourcedir = $$replace(project, (applications|framework|modules)/.+, \\1)
 
-	isSourceAvailable($$name, $$project) {
-		#message(Using shipped version of Sofa library: $$name in $$sourcedir)
+	isSourceAvailable($$project) {
+		#message(Using shipped version of Sofa library: $$name)
 		INCLUDEPATH *= $$ROOT_SRC_DIR/$$sourcedir
 		DEPENDPATH *= $$ROOT_SRC_DIR/$$sourcedir
 		#message($$INCLUDEPATH)
 		LIBS *= -L$$LIB_DESTDIR
 	} else {
-		#message(Using installed version of Sofa library: $$name in $$sourcedir)
+		#message(Using installed version of Sofa library: $$name)
 		INCLUDEPATH *= $$SOFA_INSTALL_INC_DIR/$$sourcedir
 		LIBS *= -L$$SOFA_INSTALL_LIB_DIR
 	}
@@ -440,7 +439,7 @@ defineTest(disable) {
 #
 defineTest(buildEnabledArtifacts) {
 	for(artifact, artifacts_registry) {
-		equals($${artifact}.enabled, true) {
+		equals($${artifact}.enabled, true) : isSourceAvailable($$eval($${artifact}.project)) {
 			clear(deps_dirs)
 			clear(tdeps)
 			tdeps = $$computeTransitiveDependencies($$artifact)
@@ -450,7 +449,7 @@ defineTest(buildEnabledArtifacts) {
 				equals($${dep}.enabled, true) {
 					#message($$escape_expand(\\t)$$dep)
 					dep_project = $$eval($${dep}.project)
-					!isFeatureFile(dep_project) {
+					!isFeatureFile(dep_project) : isSourceAvailable($$dep_project) {
 						deps_dirs += $$dep_project
 					}
 				}
@@ -487,11 +486,11 @@ defineTest(loadDependencies) {
 			requireLib($$name, $$project)
 		} else {
 			equals($${dep}.enabled, true) {
-				sofasrc = $$find(project, ^applications|framework|modules/.+$)
-				isEmpty(sofasrc) {
-					requireExtLib($$name, $$project)
-				} else {
+				extsrc = $$find(project, ^extlibs/.+$)
+				isEmpty(extsrc) {
 					requireSofaLib($$name, $$project)
+				} else {
+					requireExtLib($$name, $$project)
 				}
 			}
 		}
