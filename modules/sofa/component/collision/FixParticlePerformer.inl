@@ -58,9 +58,8 @@ void FixParticlePerformer<DataTypes>::start()
         return;
     }
 
-
     simulation::Node* nodeCollision = static_cast<simulation::Node*>(mstateCollision->getContext());
-    simulation::Node* nodeFixation = simulation::getSimulation()->newNode("FixationPoint");
+    simulation::Node* nodeFixation = nodeCollision->createChild("FixationPoint");
     fixations.push_back( nodeFixation );
 
     //Create the Container of points
@@ -88,9 +87,6 @@ void FixParticlePerformer<DataTypes>::start()
         distanceForceField->addSpring(0,points[i], stiffness*coeffStiffness, friction, 0);
     nodeFixation->addObject(distanceForceField);
 
-    //Add the nodes
-    nodeCollision->addChild(nodeFixation);
-    nodeFixation->updateContext();
     nodeFixation->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());
 }
 

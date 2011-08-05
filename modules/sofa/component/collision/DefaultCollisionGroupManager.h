@@ -56,12 +56,6 @@ public:
 
     virtual void clearGroups(core::objectmodel::BaseContext* scene)=0;
 
-    /** Overload this if yo want to design your collision group, e.g. with a MasterSolver.
-    Otherwise, an empty Node is returned.
-    The OdeSolver is added afterwards.
-    */
-    virtual simulation::Node* buildCollisionGroup();
-
 protected:
     //Given to nodes, we find the parent node in common: if none is found, we return NULL
     virtual simulation::Node* findCommonParent(simulation::Node *group1, simulation::Node* group2)=0;

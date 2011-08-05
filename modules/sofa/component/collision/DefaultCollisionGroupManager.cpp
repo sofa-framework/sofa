@@ -48,12 +48,6 @@ DefaultCollisionGroupManager::~DefaultCollisionGroupManager()
 {
 }
 
-simulation::Node* DefaultCollisionGroupManager::buildCollisionGroup()
-{
-    return simulation::getSimulation()->newNode("CollisionGroup");
-}
-
-
 void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<Contact*>& contacts)
 {
     int groupIndex = 1;
@@ -108,14 +102,11 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     char groupName[32];
                     snprintf(groupName,sizeof(groupName),"collision%d",groupIndex++);
                     // create a new group
-                    group = buildCollisionGroup();
-                    group->setName(groupName);
-                    parent->addChild(group);
+                    group = parent->createChild(groupName);
 
                     core::objectmodel::Context *current_context = dynamic_cast< core::objectmodel::Context *>(parent->getContext());
                     group->copyVisualContext( (*current_context));
 
-                    group->updateSimulationContext();
                     group->moveChild((simulation::Node*)group1);
                     group->moveChild((simulation::Node*)group2);
                     groupSet.insert(group);

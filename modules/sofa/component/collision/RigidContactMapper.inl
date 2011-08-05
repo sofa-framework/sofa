@@ -66,8 +66,7 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
             std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
             return NULL;
         }
-        child = simulation::getSimulation()->newNode(name);
-        parent->addChild(child); child->updateSimulationContext();
+        child = parent->createChild(name);
         outmodel = new MMechanicalObject; child->addObject(outmodel);
         outmodel->useMask.setValue(true);
         mapping = new MMapping(instate, outmodel); child->addObject(mapping);
@@ -80,8 +79,7 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
             std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
             return NULL;
         }
-        child = simulation::getSimulation()->newNode(name);
-        parent->addChild(child); child->updateSimulationContext();
+        child = parent->createChild(name);
         outmodel = new MMechanicalObject; child->addObject(outmodel);
         outmodel->useMask.setValue(true);
         mapping = NULL;
