@@ -119,7 +119,7 @@ HEADERS += \
 	objectmodel/OmniEvent.h \
 	objectmodel/GLInitializedEvent.h \
 	objectmodel/Tag.h \
-	visual/DisplayFlags.cpp \
+	visual/DisplayFlags.h \
 	visual/VisualParams.h \
 	visual/VisualModel.h \
 	visual/VisualManager.h \
