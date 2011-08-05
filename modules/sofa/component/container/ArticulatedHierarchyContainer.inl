@@ -40,11 +40,12 @@ namespace container
 {
 
 ArticulatedHierarchyContainer::ArticulationCenter::Articulation::Articulation():
-    axis(initData(&axis, (Vector3) Vector3(1,0,0), "rotationAxis", "Set the rotation axis for the articulation")),
+    axis(initData(&axis, (Vector3) Vector3(1,0,0), "axis", "Set the rotation axis for the articulation")),
     rotation(initData(&rotation, (bool) false, "rotation", "Rotation")),
     translation(initData(&translation, (bool) false, "translation", "Translation")),
     articulationIndex(initData(&articulationIndex, (int) 0, "articulationIndex", "Articulation index"))
 {
+    this->addAlias(&axis, "rotationAxis");
 }
 
 ArticulatedHierarchyContainer::ArticulationCenter::ArticulationCenter():

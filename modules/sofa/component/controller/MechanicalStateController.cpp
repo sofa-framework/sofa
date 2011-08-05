@@ -137,40 +137,22 @@ void MechanicalStateController<Vec1dTypes>::applyController()
     }
     else
     {
-        //if (mState)
-        //{
-        //  helper::WriteAccessor<Data<VecCoord> > xfree = *mState->write(sofa::core::VecCoordId::restPosition());
-        //	if (mouseMode==BtLeft || mouseMode==BtRight)
-        //	{
-        //			//sout<<"mouseMode==BtLeft"<<sendl;
+        if (mState)
+        {
+            helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
+            if (mouseMode==BtMiddle)
+            {
+                x0[0].x() =  -0.4;
+                x0[1].x() =  -0.4;
 
-        //			if (x0[0].x() < -0.01)
-        //				x0[0].x() += 0.01;
-        //			else
-        //				x0[0].x() =  -0.01;
-        //
-        //			if (x0[1].x() > 0.01)
-        //				x0[1].x() -= 0.01;
-        //			else
-        //				x0[1].x() = 0.01;
+            }
+            else
+            {
+                x0[0].x() =  0.0;
+                x0[1].x() =  0.0;
 
-        //	}
-        //	else
-        //	{
-        //			//sout<<"mouseMode==Release"<<sendl;
-
-        //			if (x0[0].x() > -0.7)
-        //				x0[0].x() -= 0.01;
-        //			else
-        //				x0[0].x() = -0.7;
-        //
-        //			if (x0[1].x() < 0.7)
-        //				x0[1].x() += 0.01;
-        //			else
-        //				x0[1].x() = 0.7;
-
-        //	}
-        //}
+            }
+        }
     }
 
 
