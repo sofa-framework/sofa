@@ -8,6 +8,7 @@
     <MeshGmshLoader name="loader"  filename="mesh/torus2_low_res.msh"/>
     <Mesh src="@loader"/> <!-- or MeshTopology -->			
     <MechanicalObject src="@loader" />
+    <FixedConstraint name="FixedConstraint" indices="0" /> 
     <UniformMass totalmass="5" />
     <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large"/>
     <Node name="Visu">

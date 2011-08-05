@@ -7,7 +7,8 @@
 	<CollisionGroup />
 
 	<Node name="H">
-		<CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10"/>
+		<EulerImplicitSolver />
+		<CGLinearSolver />
 		<MeshGmshLoader name="meshLoader" filename="mesh/nine_hexa.msh"/>
 		<MechanicalObject name="Hexa" src="@meshLoader" />
 		<include href="Objects/HexahedronSetTopology.xml" src="@meshLoader" />
