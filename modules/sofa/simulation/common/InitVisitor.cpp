@@ -82,8 +82,7 @@ struct MoveObjectFunctor
         if (itFound == simuToVisu.end())
         {
             //If not, we create a new node, and add it to the Visual Graph
-            nodeInVisualGraph = getSimulation()->newNode(node->getName());
-            getSimulation()->getVisualRoot()->addChild(nodeInVisualGraph);
+            nodeInVisualGraph = getSimulation()->getVisualRoot()->createChild(node->getName());
             simuToVisu.insert(std::make_pair(node, nodeInVisualGraph));
             node->nodeInVisualGraph.add(nodeInVisualGraph);
             const core::objectmodel::Context &nodeContext=*static_cast<core::objectmodel::Context*>(node->getContext());

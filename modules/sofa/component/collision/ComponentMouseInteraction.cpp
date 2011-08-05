@@ -65,20 +65,13 @@ ComponentMouseInteraction::~ComponentMouseInteraction()
 void ComponentMouseInteraction::init(Node* node)
 {
     parentNode = node;
-    //nodeRayPick = simulation::getSimulation()->newNode("RayPick");
-}
-
-void ComponentMouseInteraction::createRayPickNode(Node* /*node*/)
-{
-    //parentNode = node;
-    nodeRayPick = simulation::getSimulation()->newNode("RayPick");
 }
 
 void ComponentMouseInteraction::activate()
 {
-    if (!nodeRayPick) createRayPickObjects(parentNode);
-    parentNode->addChild(nodeRayPick);
-    nodeRayPick->updateContext();
+    if (!nodeRayPick)
+        if(parentNode)
+            createRayPickObjects(parentNode);
 }
 
 void ComponentMouseInteraction::deactivate()

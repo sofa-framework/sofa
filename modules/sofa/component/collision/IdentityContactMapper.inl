@@ -66,8 +66,7 @@ typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Ide
         std::cerr << "ERROR: IdentityContactMapper only works for scenegraph scenes.\n";
         return NULL;
     }
-    simulation::Node* child = simulation::getSimulation()->newNode(name);
-    parent->addChild(child); child->updateSimulationContext();
+    simulation::Node* child = parent->createChild(name);
     MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
     mstate->useMask.setValue(true);
     mapping = new MMapping(model->getMechanicalState(), mstate); child->addObject(mapping);
