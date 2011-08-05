@@ -1,29 +1,29 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
-*                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
-*******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 //
 // C++ Implementation: BglNode
 //
@@ -179,6 +179,13 @@ void BglNode::removeParent(BglNode *node)
     parents.remove(node);
 }
 
+/// Create, add, then return the new child of this Node
+Node* BglNode::createChild(const std::string& nodeName)
+{
+    BglNode* newchild = new BglNode(nodeName);
+    this->addChild(newchild); newchild->updateSimulationContext();
+    return newchild;
+}
 
 void BglNode::addChild(core::objectmodel::BaseNode* c)
 {
@@ -471,67 +478,67 @@ void BglNode::initVisualContext()
         this->setDisplayWorldGravity(false); //only display gravity for the root: it will be propagated at each time step
         /// @TODO: This method is now broken because getShow*() methods never return -1
         /*
-                    if (getShowVisualModels() == -1)
-                      {
-                        setShowVisualModels(0);
-                        for (ParentIterator it=parents.begin();it!=parents.end();++it)
-                          setShowVisualModels(getShowVisualModels()!=0 || (*it)->getShowVisualModels()!=0);
-                      }
-                    if (getShowBehaviorModels() == -1)
-                      {
-                        setShowBehaviorModels(0);
-                        for (ParentIterator it=parents.begin();it!=parents.end();++it)
-                          setShowBehaviorModels(getShowBehaviorModels()==1 || (*it)->getShowBehaviorModels()==1);
-                      }
-                    if (getShowCollisionModels()== -1)
-                      {
-                        setShowCollisionModels(0);
-                        for (ParentIterator it=parents.begin();it!=parents.end();++it)
-                          setShowCollisionModels(getShowCollisionModels()==1 || (*it)->getShowCollisionModels()==1);
-                      }
-                    if (getShowBoundingCollisionModels()== -1)
-                      {
-                        setShowBoundingCollisionModels(0);
-                        for (ParentIterator it=parents.begin();it!=parents.end();++it)
-                          setShowBoundingCollisionModels(getShowBoundingCollisionModels()==1 || (*it)->getShowBoundingCollisionModels()==1);
-                      }
-                    if (getShowMappings()== -1)
-                      {
-                        setShowMappings(0);
-                        for (ParentIterator it=parents.begin();it!=parents.end();++it)
-                          setShowMappings(getShowMappings()==1 || (*it)->getShowMappings()==1);
-                      }
-                    if (getShowMechanicalMappings()== -1)
-                      {
-                        setShowMechanicalMappings(0);
-                        for (ParentIterator it=parents.begin();it!=parents.end();++it)
-                          setShowMechanicalMappings(getShowMechanicalMappings()==1 || (*it)->getShowMechanicalMappings()==1);
-                      }
-                    if (getShowForceFields()== -1)
-                      {
-                        setShowForceFields(0);
-                        for (ParentIterator it=parents.begin();it!=parents.end();++it)
-                          setShowForceFields(getShowForceFields()==1 || (*it)->getShowForceFields()==1);
-                      }
-                    if (getShowInteractionForceFields()== -1)
-                      {
-                        setShowInteractionForceFields(0);
-                        for (ParentIterator it=parents.begin();it!=parents.end();++it)
-                          setShowInteractionForceFields(getShowInteractionForceFields()==1 || (*it)->getShowInteractionForceFields()==1);
-                      }
-                    if (getShowWireFrame()== -1)
-                      {
-                        setShowWireFrame(0);
-                        for (ParentIterator it=parents.begin();it!=parents.end();++it)
-                          setShowWireFrame(getShowWireFrame()==1 || (*it)->getShowWireFrame()==1);
-                      }
-                    if (getShowNormals()== -1)
-                      {
-                        setShowNormals(0);
-                        for (ParentIterator it=parents.begin();it!=parents.end();++it)
-                          setShowNormals(getShowNormals()==1 || (*it)->getShowNormals()==1);
-                      }
-        */
+            if (getShowVisualModels() == -1)
+              {
+                setShowVisualModels(0);
+                for (ParentIterator it=parents.begin();it!=parents.end();++it)
+                  setShowVisualModels(getShowVisualModels()!=0 || (*it)->getShowVisualModels()!=0);
+              }
+            if (getShowBehaviorModels() == -1)
+              {
+                setShowBehaviorModels(0);
+                for (ParentIterator it=parents.begin();it!=parents.end();++it)
+                  setShowBehaviorModels(getShowBehaviorModels()==1 || (*it)->getShowBehaviorModels()==1);
+              }
+            if (getShowCollisionModels()== -1)
+              {
+                setShowCollisionModels(0);
+                for (ParentIterator it=parents.begin();it!=parents.end();++it)
+                  setShowCollisionModels(getShowCollisionModels()==1 || (*it)->getShowCollisionModels()==1);
+              }
+            if (getShowBoundingCollisionModels()== -1)
+              {
+                setShowBoundingCollisionModels(0);
+                for (ParentIterator it=parents.begin();it!=parents.end();++it)
+                  setShowBoundingCollisionModels(getShowBoundingCollisionModels()==1 || (*it)->getShowBoundingCollisionModels()==1);
+              }
+            if (getShowMappings()== -1)
+              {
+                setShowMappings(0);
+                for (ParentIterator it=parents.begin();it!=parents.end();++it)
+                  setShowMappings(getShowMappings()==1 || (*it)->getShowMappings()==1);
+              }
+            if (getShowMechanicalMappings()== -1)
+              {
+                setShowMechanicalMappings(0);
+                for (ParentIterator it=parents.begin();it!=parents.end();++it)
+                  setShowMechanicalMappings(getShowMechanicalMappings()==1 || (*it)->getShowMechanicalMappings()==1);
+              }
+            if (getShowForceFields()== -1)
+              {
+                setShowForceFields(0);
+                for (ParentIterator it=parents.begin();it!=parents.end();++it)
+                  setShowForceFields(getShowForceFields()==1 || (*it)->getShowForceFields()==1);
+              }
+            if (getShowInteractionForceFields()== -1)
+              {
+                setShowInteractionForceFields(0);
+                for (ParentIterator it=parents.begin();it!=parents.end();++it)
+                  setShowInteractionForceFields(getShowInteractionForceFields()==1 || (*it)->getShowInteractionForceFields()==1);
+              }
+            if (getShowWireFrame()== -1)
+              {
+                setShowWireFrame(0);
+                for (ParentIterator it=parents.begin();it!=parents.end();++it)
+                  setShowWireFrame(getShowWireFrame()==1 || (*it)->getShowWireFrame()==1);
+              }
+            if (getShowNormals()== -1)
+              {
+                setShowNormals(0);
+                for (ParentIterator it=parents.begin();it!=parents.end();++it)
+                  setShowNormals(getShowNormals()==1 || (*it)->getShowNormals()==1);
+              }
+         */
     }
 }
 
