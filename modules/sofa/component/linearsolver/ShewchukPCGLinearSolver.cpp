@@ -65,6 +65,7 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     , f_update_step( initData(&f_update_step,(unsigned)1,"update_step","Number of steps before the next refresh of precondtioners") )
     , f_use_precond( initData(&f_use_precond,true,"use_precond","Use preconditioner") )
     , f_build_precond( initData(&f_build_precond,true,"build_precond","Build the preconditioners, if false build the preconditioner only at the initial step") )
+    , f_use_first_precond( initData(&f_use_first_precond,false,"use_first_precond","Use only first precond") )
     , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
@@ -235,7 +236,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         preconditioners[0]->setSystemRHVector(b);
         preconditioners[0]->solveSystem();
 
-        if (preconditioners.size() > 1)   // use if multiple preconds
+        if ((preconditioners.size() > 1) && (!f_use_first_precond.getValue()))   // use if multiple preconds
         {
             Vector& t = *vtmp.createTempVector();
             for (unsigned int i=1; i<preconditioners.size(); ++i)
@@ -282,7 +283,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
             preconditioners[0]->setSystemRHVector(r);
             preconditioners[0]->solveSystem();
 
-            if (preconditioners.size()>1)  // use if multiple preconds
+            if ((preconditioners.size()>1) && (!f_use_first_precond.getValue()))  // use if multiple preconds
             {
                 Vector& t = *vtmp.createTempVector();
                 for (unsigned int i=1; i<preconditioners.size(); ++i)
