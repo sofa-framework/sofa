@@ -57,6 +57,9 @@ public:
     Node* load(const char* filename);
     void unload(Node* root);
 
+    ///create a new graph(or tree) and return its root node
+    Node* createNewGraph(const std::string& name="");
+
     /// Delayed Creation of a graph node and attach a new Node to it, then return the Node
     Node* newNode(const std::string& name="");
 

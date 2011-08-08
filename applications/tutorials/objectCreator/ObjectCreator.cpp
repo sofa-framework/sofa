@@ -66,7 +66,7 @@ namespace sofa
 simulation::Node *ObjectCreator::CreateRootWithCollisionPipeline(const std::string &simulationType, const std::string& responseType)
 {
 
-    simulation::Node* root = simulation::getSimulation()->newNode("root");
+    simulation::Node* root = simulation::getSimulation()->createNewGraph("root");
 
     //Components for collision management
     //------------------------------------

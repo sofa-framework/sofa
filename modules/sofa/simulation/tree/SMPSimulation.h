@@ -72,6 +72,8 @@ public:
     virtual void animate(Node* root, double dt=0.0);
     virtual void generateTasks(Node* root, double dt=0.0);
 
+    ///create a new graph(or tree) and return its root node
+    Node* createNewGraph(const std::string& name="");
     /// Create a new Node of the simulation
     Node* newNode(const std::string& name);
 protected:

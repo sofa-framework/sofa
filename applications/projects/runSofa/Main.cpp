@@ -213,7 +213,7 @@ int main(int argc, char** argv)
     sofa::simulation::Node* groot = dynamic_cast<sofa::simulation::Node*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
     if (groot==NULL)
     {
-        groot = sofa::simulation::getSimulation()->newNode("");
+        groot = sofa::simulation::getSimulation()->createNewGraph("");
     }
 
     if (!verif.empty())

@@ -70,6 +70,12 @@ BglSimulation::BglSimulation()
 
 
 /// Create a graph node and attach a new Node to it, then return the Node
+Node* BglSimulation::createNewGraph(const std::string& name)
+{
+    return new BglNode(name);
+}
+
+/// Create a graph node and attach a new Node to it, then return the Node
 Node* BglSimulation::newNode(const std::string& name)
 {
     return new BglNode(name);

@@ -613,7 +613,7 @@ void QtOgreViewer::createScene()
 
     if (groot==NULL)
     {
-        groot = simulation::getSimulation()->newNode("");
+        groot = simulation::getSimulation()->createNewGraph("");
     }
 
     DotSceneLoader loader;

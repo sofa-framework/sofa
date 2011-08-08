@@ -79,7 +79,6 @@ public:
     //Pure Virtual method from Node
     virtual Node* createChild(const std::string& nodeName);
 
-
     /// Add a child node
     void addChild(core::objectmodel::BaseNode* node);
 

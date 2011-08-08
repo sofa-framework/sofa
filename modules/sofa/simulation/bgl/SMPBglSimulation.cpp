@@ -215,6 +215,12 @@ void SMPBglSimulation::init( Node* root )
 }
 
 /// Create a graph node and attach a new Node to it, then return the Node
+Node* SMPBglSimulation::createNewGraph(const std::string& name)
+{
+    return new BglNode(name);
+}
+
+/// Create a graph node and attach a new Node to it, then return the Node
 Node* SMPBglSimulation::newNode(const std::string& name)
 {
     return new BglNode(name);
