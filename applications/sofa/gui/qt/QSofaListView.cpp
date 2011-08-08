@@ -405,7 +405,7 @@ void QSofaListView::RemoveNode()
         if ( node == simulation::getSimulation()->getContext() )
         {
             //Attempt to destroy the Root node : create an empty node to handle new graph interaction
-            Node *root = simulation::getSimulation()->newNode( "Root" );
+            Node *root = simulation::getSimulation()->createNewGraph( "Root" );
 
             root->setShowVisualModels ( 1 );
             root->setShowCollisionModels ( 0 );

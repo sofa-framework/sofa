@@ -42,7 +42,7 @@ namespace simulation
 /** Main controller of the scene.
     Defines how the scene is inited at the beginning, and updated at each time step.
     Derives from BaseObject in order to model the parameters as Datas, which makes their edition easy in the GUI.
-*/
+ */
 class SOFA_SIMULATION_COMMON_API Simulation: public virtual sofa::core::objectmodel::BaseObject
 {
 public:
@@ -109,6 +109,9 @@ public:
 
     virtual Node *getVisualRoot()=0;
 
+    ///create a new graph(or tree) and return its root node
+    virtual Node* createNewGraph(const std::string& name)=0;//Todo replace newNode method
+
     /// Create a new Node of the simulation
     virtual Node* newNode(const std::string& name)=0;
 
@@ -140,7 +143,7 @@ SOFA_SIMULATION_COMMON_API void setSimulation(Simulation* s);
 
 /** Get the (unique) simulation which controls the scene.
     Automatically creates one if no Simulation has been set.
-*/
+ */
 SOFA_SIMULATION_COMMON_API Simulation* getSimulation();
 
 } // namespace simulation

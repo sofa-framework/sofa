@@ -195,6 +195,12 @@ void SMPSimulation::init( Node* root )
 }
 
 /// Create a new node
+Node* SMPSimulation::createNewGraph(const std::string& name)
+{
+    return new GNode(name);
+}
+
+/// Create a new node
 Node* SMPSimulation::newNode(const std::string& name)
 {
     return new GNode(name);
