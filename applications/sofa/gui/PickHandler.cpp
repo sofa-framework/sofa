@@ -60,7 +60,9 @@ PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED),mous
 {
     operations[LEFT] = operations[MIDDLE] = operations[RIGHT] = NULL;
 
-    mouseNode = simulation::getSimulation()->newNode("Mouse");
+    //get a node of scene (root), create a new child (mouseNode), config it, then detach it from scene by default
+    Node *root = simulation::getSimulation()->getVisualRoot();
+    mouseNode = root->createChild("Mouse");
 
     mouseContainer = new MouseContainer; mouseContainer->resize(1);
     mouseContainer->setName("MousePosition");
@@ -89,6 +91,8 @@ PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED),mous
         instanceComponents.back()->init(mouseNode);
     }
     interaction = instanceComponents.back();
+
+    mouseNode->detachFromGraph();
 }
 
 
