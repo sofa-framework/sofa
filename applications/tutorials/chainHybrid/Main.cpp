@@ -63,8 +63,7 @@ Node *createChainHybrid(Node *root)
 
     //Elements of the scene
     //------------------------------------
-    Node* chain = getSimulation()->newNode("Chain");
-    root->addChild(chain);
+    Node* chain = root->createChild("Chain");
 
     //************************************
     //Torus Fixed
