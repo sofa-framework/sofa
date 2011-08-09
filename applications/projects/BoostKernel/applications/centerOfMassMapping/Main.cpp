@@ -36,7 +36,6 @@
 #include <sofa/helper/system/FileRepository.h>
 
 
-#include <sofa/component/container/MeshLoader.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/collision/SphereModel.h>

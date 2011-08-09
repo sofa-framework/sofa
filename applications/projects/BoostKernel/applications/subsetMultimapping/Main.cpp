@@ -56,7 +56,7 @@ using namespace sofa::simulation;
 using namespace sofa::component::forcefield;
 using namespace sofa::component::collision;
 using namespace sofa::component::topology;
-using sofa::component::container::MeshLoader;
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
