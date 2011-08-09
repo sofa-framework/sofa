@@ -154,7 +154,7 @@ simulation::Node *ObjectCreator::CreateObstacle(const std::string &filenameColli
 {
     simulation::Node* nodeFixed = simulation::getSimulation()->newNode("Fixed");
 
-    component::container::MeshLoader* loaderFixed = new component::container::MeshLoader;
+    sofa::component::loader::MeshObjLoader* loaderFixed = new sofa::component::loader::MeshObjLoader;
     loaderFixed->setFilename(sofa::helper::system::DataRepository.getFile(filenameCollision));
     nodeFixed->addObject(loaderFixed);
 
@@ -196,7 +196,7 @@ simulation::Node *ObjectCreator::CreateCollisionNodeVec3(MechanicalObject3* dof,
     //Node COLLISION
     simulation::Node* CollisionNode = simulation::getSimulation()->newNode("Collision");
 
-    component::container::MeshLoader* loader_surf = new component::container::MeshLoader;
+    sofa::component::loader::MeshObjLoader* loader_surf = new sofa::component::loader::MeshObjLoader;
     loader_surf->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     CollisionNode->addObject(loader_surf);
 
@@ -255,7 +255,7 @@ simulation::Node *ObjectCreator::CreateCollisionNodeRigid(MechanicalObjectRigid3
     simulation::Node* CollisionNode = simulation::getSimulation()->newNode("Collision");
 
 
-    component::container::MeshLoader* loader_surf = new component::container::MeshLoader;
+    sofa::component::loader::MeshObjLoader* loader_surf = new sofa::component::loader::MeshObjLoader;
     loader_surf->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     CollisionNode->addObject(loader_surf);
 

@@ -30,6 +30,7 @@
 
 #include <string>
 #include <sofa/simulation/common/Node.h>
+#include <sofa/component/loader/MeshObjLoader.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
