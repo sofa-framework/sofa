@@ -34,7 +34,7 @@ contains (DEFINES, SOFA_GPU_CUDA) {
 		CUDA_DIR = $${system(which nvcc | sed 's,/bin/*nvcc$,,')}
 		INCLUDEPATH += $${CUDA_DIR}/include
 
-		contains(TARGET_ARCH, 64) {
+		contains(TARGET_ARCH, 64) : !macx {
 			QMAKE_LIBDIR += $${CUDA_DIR}/lib64
 		} else {
 			QMAKE_LIBDIR += $${CUDA_DIR}/lib
@@ -56,10 +56,12 @@ contains (DEFINES, SOFA_GPU_CUDA) {
 		contains(CONFIGDEBUG, debug) {
 			CUDA_FLAGS *= -g
 		}
-		contains(QMAKE_CFLAGS,-m32): CUDA_FLAGS *= -m32
-		contains(QMAKE_CFLAGS,-m64): CUDA_FLAGS *= -m64
-		contains(CONFIG,x86): CUDA_FLAGS *= -m32
-		contains(CONFIG,x86_64): CUDA_FLAGS *= -m64
+		equals(TARGET_ARCH, 32) {
+			CUDA_FLAGS *= -m32
+		}
+		equals(TARGET_ARCH, 64) {
+			contains(QMAKE_CFLAGS, -m32) | contains(CONFIG, x86) : CUDA_FLAGS *= -m32
+		}
 		cuda.commands = nvcc -c $$CUDA_FLAGS -Xcompiler -fPIC,$${join(QMAKE_CXXFLAGS_RELEASE,",")}  $${join(DEFINES," -D","-D")} $(INCPATH) ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
 		cuda.dependency_type = TYPE_C
 #		macx: cuda.commands += --host-compilation 'C'

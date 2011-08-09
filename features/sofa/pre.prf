@@ -158,7 +158,9 @@ exists($${INSTALLED_FEATURES_FILE}.prf) {
     # message("64 bits target")
     TARGET_ARCH=64
   } else {
-    contains(QMAKE_HOST.arch, x86_64) {
+    CXX_HOST=$$system("$$QMAKE_CXX -v 2>&1 | sed -n -e 's/.*--host=\\([^ ]*\\).*/\\1/p'")
+    is64 = $$find(CXX_HOST, x86_64)
+    !isEmpty(is64) {
       # message("64 bits target (host default)")
       TARGET_ARCH=64
     } else {
