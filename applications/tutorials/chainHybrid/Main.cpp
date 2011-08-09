@@ -38,9 +38,10 @@
 #include <sofa/helper/system/FileRepository.h>
 
 
-#include <sofa/component/container/MeshLoader.h>
+#include <sofa/component/loader/MeshGmshLoader.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
+
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
@@ -49,6 +50,7 @@
 // ---------------------------------------------------------------------
 using namespace sofa::simulation;
 using namespace sofa::component::container;
+using namespace sofa::component::loader;
 using namespace sofa::component::topology;
 
 Node *createChainHybrid(Node *root)
@@ -77,8 +79,9 @@ Node *createChainHybrid(Node *root)
         Node* torusFEM = sofa::ObjectCreator::CreateEulerSolverNode("FEM");
         chain->addChild(torusFEM);
 
-        MeshLoader* loaderFEM = new MeshLoader;
-        loaderFEM->load(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh").c_str());
+        MeshGmshLoader* loaderFEM = new MeshGmshLoader;
+        loaderFEM->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh"));
+        loaderFEM->load();
         torusFEM->addObject(loaderFEM);
 
         MeshTopology* meshTorusFEM = new MeshTopology;
@@ -118,8 +121,10 @@ Node *createChainHybrid(Node *root)
         Node* torusSpring = sofa::ObjectCreator::CreateEulerSolverNode("Spring");
         chain->addChild(torusSpring);
 
-        MeshLoader* loaderSpring = new MeshLoader;
-        loaderSpring->load(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh").c_str());
+        MeshGmshLoader* loaderSpring = new MeshGmshLoader;
+        loaderSpring->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh"));
+        loaderSpring->load();
+
         torusSpring->addObject(loaderSpring);
         loaderSpring->init();
 

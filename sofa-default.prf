@@ -290,6 +290,8 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 #Uncomment if you want to have Wiimote support in VRPN
 #DEFINES += VRPN_USE_WIIUSE
 
+#Uncomment if you want to compile the tutorial applications
+#DEFINES += SOFA_HAVE_TUTORIALS
 ########################################################################
 # Plugins
 ########################################################################

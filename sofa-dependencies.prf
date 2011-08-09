@@ -89,13 +89,13 @@ declare(sofagpucuda, modules/sofa/gpu/cuda, sofacomponentmisc cuda csparse cudpp
 ######################################################################
 # Applications
 ######################################################################
-
+#----- Sofa -----#
 declare(sofagui,     applications/sofa/gui/libgui.pro,     sofacomponentconfigurationsetting)
 declare(sofaguiqt,   applications/sofa/gui/qt,             sofagui qwt QGLViewer)
 declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut sofacomponent sofagpucuda)
 declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
 declare(sofaguifltk, applications/sofa/gui/fltk,           sofaguiqt fltk)
-
+#--- Projects ---#
 declare(runSofa,          applications/projects/runSofa,          sofaguimain)
 declare(generateDoc,      applications/projects/generateDoc,      sofacomponent sofagpucuda)
 declare(GenerateRigid,    applications/projects/GenerateRigid,    sofacomponent sofagpucuda)
@@ -112,7 +112,13 @@ declare(sofatests,        tests,                                  sofacore)
 # SofaVRPN
 # SofaDevices
 # Haptic
-
+#--- Tutorials ---#
+declare(sofaobjectcreator,   applications/tutorials/objectCreator,    sofacomponent)
+declare(chainHybrid,         applications/tutorials/chainHybrid,      sofacomponent sofaguimain sofaobjectcreator)
+declare(houseOfCards,        applications/tutorials/houseOfCards,     sofacomponent sofaguimain sofaobjectcreator)
+declare(mixedPendulum,       applications/tutorials/mixedPendulum,    sofacomponent sofaguimain)
+declare(oneParticule,        applications/tutorials/oneParticule,     sofacomponent sofaguimain)
+declare(oneTetrahedron,      applications/tutorials/oneTetrahedron,   sofacomponent sofaguimain)
 ######################################################################
 # Enable artifacts
 ######################################################################
@@ -236,5 +242,17 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 contains (DEFINES, SOFA_PML) {
 	enable(sofapml)
 }
+
+contains (DEFINES, SOFA_HAVE_TUTORIALS) {
+	enable(sofaobjectcreator)
+	enable(chainHybrid)
+	enable(houseOfCards)
+	enable(mixedPendulum)
+	enable(oneParticule)
+	enable(oneTetrahedron)
+}
+
+
+
 
 }

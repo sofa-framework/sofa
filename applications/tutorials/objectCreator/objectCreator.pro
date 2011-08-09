@@ -1,16 +1,13 @@
-SOFA_DIR=../../..
+# Target is a library: sofagui
+load(sofa/pre)
+
 TEMPLATE = lib
-TARGET = sofaobjectcreator$$LIBSUFFIX
+TARGET = sofaobjectcreator
 
-include($${SOFA_DIR}/sofa.cfg)
 
-CONFIG += $$CONFIGLIBRARIES
-LIBS += $$SOFA_LIBS
-LIBS += $$SOFA_EXT_LIBS
-QMAKE_LIBDIR += /usr/local/cuda/lib/
+SOURCES += ObjectCreator.cpp
 
-INCLUDEPATH += $$SOFA_DIR/extlibs
+HEADERS += ObjectCreator.h
 
-SOURCES = ObjectCreator.cpp
 
-HEADERS = ObjectCreator.h
+load(sofa/post)
