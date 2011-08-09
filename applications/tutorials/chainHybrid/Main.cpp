@@ -76,8 +76,7 @@ Node *createChainHybrid(Node *root)
     //************************************
     //Torus FEM
     {
-        Node* torusFEM = sofa::ObjectCreator::CreateEulerSolverNode("FEM");
-        chain->addChild(torusFEM);
+        Node* torusFEM = sofa::ObjectCreator::CreateEulerSolverNode(chain,"FEM");
 
         MeshGmshLoader* loaderFEM = new MeshGmshLoader;
         loaderFEM->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh"));
@@ -118,8 +117,7 @@ Node *createChainHybrid(Node *root)
     //************************************
     //Torus Spring
     {
-        Node* torusSpring = sofa::ObjectCreator::CreateEulerSolverNode("Spring");
-        chain->addChild(torusSpring);
+        Node* torusSpring = sofa::ObjectCreator::CreateEulerSolverNode(chain,"Spring");
 
         MeshGmshLoader* loaderSpring = new MeshGmshLoader;
         loaderSpring->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh"));
@@ -163,8 +161,7 @@ Node *createChainHybrid(Node *root)
     //************************************
     //Torus FFD
     {
-        Node* torusFFD = sofa::ObjectCreator::CreateEulerSolverNode("FFD");
-        chain->addChild(torusFFD);
+        Node* torusFFD = sofa::ObjectCreator::CreateEulerSolverNode(chain,"FFD");
 
         const Deriv3 translation(7.5,0,0);
         const Deriv3 rotation(90,0,0);
@@ -204,8 +201,7 @@ Node *createChainHybrid(Node *root)
     //************************************
     //Torus Rigid
     {
-        Node* torusRigid = sofa::ObjectCreator::CreateEulerSolverNode("Rigid");
-        chain->addChild(torusRigid);
+        Node* torusRigid = sofa::ObjectCreator::CreateEulerSolverNode(chain,"Rigid");
 
         const Deriv3 translation(10,0,0);
         const Deriv3 rotation(0,0,0);

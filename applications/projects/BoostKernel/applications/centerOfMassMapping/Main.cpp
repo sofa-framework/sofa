@@ -113,9 +113,7 @@ int main( int argc, char** argv )
 
     if (!implicit) scheme="Explicit";
 
-    Node* SolverNode = sofa::ObjectCreator::CreateEulerSolverNode("SolverNode", scheme);
-
-    root->addChild(SolverNode);
+    Node* SolverNode = sofa::ObjectCreator::CreateEulerSolverNode(root,"SolverNode", scheme);
 
     Node* cube1 = createCube( 0,0,0   );
     Node* cube2 = createCube( 10,0,0  );
