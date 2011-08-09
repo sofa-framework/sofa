@@ -64,15 +64,13 @@ Node *createChainHybrid(Node *root)
 
     //Elements of the scene
     //------------------------------------
-    Node* chain = getSimulation()->newNode("Chain");
-    root->addChild(chain);
+    Node* chain = root->createChild("Chain");
 
 
     //************************************
     //Torus Fixed
 
-    Node* torusFixed = sofa::ObjectCreator::CreateObstacle("mesh/torus_for_collision.obj", "mesh/torus.obj", "gray");
-    chain->addChild(torusFixed);
+    Node* torusFixed = sofa::ObjectCreator::CreateObstacle(chain,"mesh/torus_for_collision.obj", "mesh/torus.obj", "gray");
 
     //************************************
     //Torus FEM
@@ -108,12 +106,10 @@ Node *createChainHybrid(Node *root)
     torusFEM->addObject(tetraFEMFF);
 
     //Node VISUAL
-    Node* FEMVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(dofFEM,visualModel, "red", translationFEM, rotationFEM);
-    torusFEM->addChild(FEMVisualNode);
+    Node* FEMVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusFEM,dofFEM,visualModel, "red", translationFEM, rotationFEM);
 
     //Node COLLISION
-    Node* FEMCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(dofFEM,collisionModel, modelTypes, translationFEM, rotationFEM );
-    torusFEM->addChild(FEMCollisionNode);
+    Node* FEMCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusFEM, dofFEM,collisionModel, modelTypes, translationFEM, rotationFEM );
 
     //************************************
     //Torus Spring
@@ -152,12 +148,10 @@ Node *createChainHybrid(Node *root)
 
 
     //Node VISUAL
-    Node* SpringVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(dofSpring, visualModel,"green", translationSpring, rotationSpring);
-    torusSpring->addChild(SpringVisualNode);
+    Node* SpringVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusSpring,dofSpring, visualModel,"green", translationSpring, rotationSpring);
 
     //Node COLLISION
-    Node* SpringCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(dofSpring, collisionModel, modelTypes, translationSpring, rotationSpring);
-    torusSpring->addChild(SpringCollisionNode);
+    Node* SpringCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusSpring ,dofSpring, collisionModel, modelTypes, translationSpring, rotationSpring);
 
     //************************************
     //Torus FFD
@@ -191,12 +185,10 @@ Node *createChainHybrid(Node *root)
     torusFFD->addObject(FFDFF);
 
     //Node VISUAL
-    Node* FFDVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(dofFFD, visualModel,"yellow", translationFFD);
-    torusFFD->addChild(FFDVisualNode);
+    Node* FFDVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusFFD, dofFFD, visualModel,"yellow", translationFFD);
 
     //Node COLLISION
-    Node* FFDCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(dofFFD,collisionModel,  modelTypes, translationFFD);
-    torusFFD->addChild(FFDCollisionNode);
+    Node* FFDCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusFFD,dofFFD,collisionModel,  modelTypes, translationFFD);
 
 
 
@@ -218,23 +210,20 @@ Node *createChainHybrid(Node *root)
     torusRigid->addObject(uniMassRigid);
 
     //Node VISUAL
-    Node* RigidVisualNode = sofa::ObjectCreator::CreateVisualNodeRigid(dofRigid, visualModel,"gray");
-    torusRigid->addChild(RigidVisualNode);
+    Node* RigidVisualNode = sofa::ObjectCreator::CreateVisualNodeRigid(torusRigid, dofRigid, visualModel,"gray");
 
     //Node COLLISION
-    Node* RigidCollisionNode = sofa::ObjectCreator::CreateCollisionNodeRigid(dofRigid,collisionModel, modelTypes);
-    torusRigid->addChild(RigidCollisionNode);
+    Node* RigidCollisionNode = sofa::ObjectCreator::CreateCollisionNodeRigid(torusRigid,dofRigid,collisionModel, modelTypes);
 
 
     //************************************
     //Multi Mapping
-    Node* MultiParentsNode = getSimulation()->newNode("MultiParentsNode");
-    MultiParentsNode->setShowCollisionModels(false);
-
-    torusFEM->addChild(MultiParentsNode);
+    Node* MultiParentsNode =torusFEM->createChild("MultiParentsNode");
     torusSpring->addChild(MultiParentsNode);
     torusFFD->addChild(MultiParentsNode);
     torusRigid->addChild(MultiParentsNode);
+
+    MultiParentsNode->setShowCollisionModels(false);
 
     MechanicalObject3* dofMultiMapping = new MechanicalObject3; dofMultiMapping->setName("Center Of Mass");
     MultiParentsNode->addObject(dofMultiMapping);

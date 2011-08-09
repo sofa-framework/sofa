@@ -106,13 +106,10 @@ Node *createCard(Node* parent, const Coord3& position, const Coord3& rotation)
     card->addObject(uniMassRigid);
 
     //Node VISUAL
-    Node* RigidVisualNode = sofa::ObjectCreator::CreateVisualNodeRigid(dofRigid, visualModel,colors[(colorIdx++)%7]);
-    card->addChild(RigidVisualNode);
+    Node* RigidVisualNode = sofa::ObjectCreator::CreateVisualNodeRigid(card, dofRigid, visualModel,colors[(colorIdx++)%7]);
 
     //Node COLLISION
-    Node* RigidCollisionNode = sofa::ObjectCreator::CreateCollisionNodeRigid(dofRigid,collisionModel,modelTypes);
-    card->addChild(RigidCollisionNode);
-
+    Node* RigidCollisionNode = sofa::ObjectCreator::CreateCollisionNodeRigid(card, dofRigid,collisionModel,modelTypes);
 
     return card;
 }
@@ -247,8 +244,7 @@ int main(int argc, char** argv)
 
     //************************************
     //Floor
-    Node* torusFixed = sofa::ObjectCreator::CreateObstacle("mesh/floor.obj", "mesh/floor.obj", "gray");
-    root->addChild(torusFixed);
+    Node* torusFixed = sofa::ObjectCreator::CreateObstacle(root,"mesh/floor.obj", "mesh/floor.obj", "gray");
 
     //Add the objects
     createHouseOfCards(root,sizeHouseOfCards,distanceInBetween, angle);

@@ -200,12 +200,6 @@ Node* SMPSimulation::createNewGraph(const std::string& name)
     return new GNode(name);
 }
 
-/// Create a new node
-Node* SMPSimulation::newNode(const std::string& name)
-{
-    return new GNode(name);
-}
-
 // Execute one timestep. If dt is 0, the dt parameter in the graph will be used
 void SMPSimulation::animate ( Node* root, double dt )
 {

@@ -112,9 +112,6 @@ public:
     ///create a new graph(or tree) and return its root node
     virtual Node* createNewGraph(const std::string& name)=0;//Todo replace newNode method
 
-    /// Create a new Node of the simulation
-    virtual Node* newNode(const std::string& name)=0;
-
     /// Pause the simulation
     virtual void setPaused(bool paused);
 

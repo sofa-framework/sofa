@@ -798,10 +798,11 @@ Iterative::IterativePartition* Node::getFirstPartition()
 }
 #endif
 
+
 template <class RealObject>
 void Node::create( RealObject*& obj, sofa::simulation::xml::Element<sofa::core::objectmodel::BaseNode>*& arg)
 {
-    obj=(RealObject*)getSimulation()->newNode(arg->getName());
+    obj=(RealObject*)getSimulation()->createNewGraph(arg->getName());
     obj->parse(arg);
 }
 
