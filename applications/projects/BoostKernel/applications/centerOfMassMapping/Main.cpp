@@ -54,14 +54,14 @@ using namespace sofa::component::container;
 using namespace sofa::component::topology;
 using namespace sofa::component::collision;
 
-Node* createCube(double dx, double dy, double dz)
+Node* createCube(Node* parent, double dx, double dy, double dz)
 {
     static int i = 1;
     std::ostringstream oss;
     oss << "cube_" << i++;
 
 
-    Node* cube_node =getSimulation()->newNode(oss.str());
+    Node* cube_node = parent->createChild(oss.str());
     MechanicalObject3* DOF = new MechanicalObject3;
     cube_node->addObject(DOF);
     DOF->setName("cube");
@@ -115,11 +115,14 @@ int main( int argc, char** argv )
 
     Node* SolverNode = sofa::ObjectCreator::CreateEulerSolverNode(root,"SolverNode", scheme);
 
-    Node* cube1 = createCube( 0,0,0   );
-    Node* cube2 = createCube( 10,0,0  );
-    Node* cube3 = createCube( 0,0,10  );
-    Node* cube4 = createCube( 10,0,10 );
-    Node* MultiParentsNode = getSimulation()->newNode("MultiParentsNode");
+    Node* cube1 = createCube(SolverNode, 0,0,0   );
+    Node* cube2 = createCube(SolverNode,  10,0,0  );
+    Node* cube3 = createCube(SolverNode,  0,0,10  );
+    Node* cube4 = createCube(SolverNode,  10,0,10 );
+    Node* MultiParentsNode = cube1->createChild("MultiParentsNode");
+    cube2->addChild(MultiParentsNode);
+    cube3->addChild(MultiParentsNode);
+    cube4->addChild(MultiParentsNode);
 
     MechanicalObject3* dofMultiMapping = new MechanicalObject3; dofMultiMapping->setName("Center Of Mass");
 
@@ -140,21 +143,10 @@ int main( int argc, char** argv )
     MultiParentsNode->addObject(constantFF) ;
     MultiParentsNode->addObject( new SphereModel);
 
-    cube1->addChild(MultiParentsNode);
-    cube2->addChild(MultiParentsNode);
-    cube3->addChild(MultiParentsNode);
-    cube4->addChild(MultiParentsNode);
-
-    SolverNode->addChild( cube1 );
-    SolverNode->addChild( cube2 );
-    SolverNode->addChild( cube3 );
-    SolverNode->addChild( cube4 );
+    //cube1->addChild(MultiParentsNode);
 
 
     MultiParentsNode->setShowCollisionModels(true);
-
-
-
 
 
     root->setAnimate(false);

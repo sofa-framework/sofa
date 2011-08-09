@@ -85,11 +85,6 @@ Node* TreeSimulation::createNewGraph(const std::string& name)
     return new GNode(name);
 }
 
-/// Create a new node
-Node* TreeSimulation::newNode(const std::string& name)
-{
-    return new GNode(name);
-}
 
 SOFA_DECL_CLASS ( TreeSimulation );
 // Register in the Factory

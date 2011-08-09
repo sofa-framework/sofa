@@ -57,8 +57,6 @@ public:
     ///create a new graph(or tree) and return its root node
     Node* createNewGraph(const std::string& name="");
 
-    /// Create a new Node of the simulation
-    Node* newNode(const std::string& name);
 protected:
     std::auto_ptr<Node> visualNode;
 };

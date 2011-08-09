@@ -61,13 +61,13 @@ using namespace sofa::component::topology;
 // ---
 // ---------------------------------------------------------------------
 
-Node* createRegularGrid(double x, double y, double z)
+Node* createRegularGrid(Node* parent, double x, double y, double z)
 {
     static unsigned int i = 1;
     std::ostringstream oss;
     oss << "regularGrid_" << i;
 
-    Node* node = sofa::simulation::getSimulation()->newNode(oss.str());
+    Node* node =parent->createChild(oss.str()) ;
 
     RegularGridTopology* grid = new RegularGridTopology(3,3,3);
     grid->setPos(-1+x,1+x,-1+y,1+y,-1+z,1+z);
@@ -89,8 +89,7 @@ Node* createRegularGrid(double x, double y, double z)
     const Deriv3 translation(x,y,z);
 
     //Node VISUAL
-    Node* VisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(dof,"mesh/ball.obj", "red", translation);
-    node->addChild(VisualNode);
+    Node* VisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(node,dof,"mesh/ball.obj", "red", translation);
 
     node->setShowBehaviorModels(true);
     return node;
@@ -116,10 +115,8 @@ int main(int argc, char** argv)
 
     Node* solverNode = sofa::ObjectCreator::CreateEulerSolverNode(root,"Solver");
 
-    Node* grid1 = createRegularGrid(-1.5,0,0);
-    Node* grid2 = createRegularGrid(1.5,0,0);
-    solverNode->addChild(grid1);
-    solverNode->addChild(grid2);
+    Node* grid1 = createRegularGrid(solverNode,-1.5,0,0);
+    Node* grid2 = createRegularGrid(solverNode,1.5,0,0);
 
 
     MechanicalObject3* subsetDof = new MechanicalObject3;
@@ -159,7 +156,9 @@ int main(int argc, char** argv)
     ff->setMethod(1);
 
 
-    Node* multiParentsNode = getSimulation()->newNode("MultiParents");
+    Node* multiParentsNode = grid1->createChild("MultiParents");
+    grid2->addChild(multiParentsNode);
+
     multiParentsNode->addObject(topology);
     multiParentsNode->addObject(subsetDof);
     multiParentsNode->addObject(subsetMultiMapping);
@@ -169,8 +168,6 @@ int main(int argc, char** argv)
     multiParentsNode->setShowForceFields(true);
 
 
-    grid1->addChild(multiParentsNode);
-    grid2->addChild(multiParentsNode);
     root->setAnimate(false);
 
     getSimulation()->init(root);

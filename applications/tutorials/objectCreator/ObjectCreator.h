@@ -45,15 +45,15 @@ public:
     static simulation::Node *CreateEulerSolverNode(simulation::Node* parent, const std::string& name, const std::string &integrationScheme=std::string("Implicit"));
 
 
-    static simulation::Node *CreateObstacle(const std::string &filenameCollision, const std::string filenameVisual, const std::string& color,
+    static simulation::Node *CreateObstacle(simulation::Node* parent, const std::string &filenameCollision, const std::string filenameVisual, const std::string& color,
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
 
     //Create a collision node using Barycentric Mapping, using a 3d model specified by filename.
     //elements is a vector of type of collision models (Triangle, Line, Point, Sphere)
     //an initial transformation can be performed
-    static simulation::Node *CreateCollisionNodeVec3(MechanicalObject3* dof, const std::string &filename, const std::vector<std::string> &elements,
+    static simulation::Node *CreateCollisionNodeVec3(simulation::Node* parent, MechanicalObject3* dof, const std::string &filename, const std::vector<std::string> &elements,
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
-    static simulation::Node *CreateVisualNodeVec3(MechanicalObject3* dof,  const std::string &filename, const std::string& color,
+    static simulation::Node *CreateVisualNodeVec3(simulation::Node* parent, MechanicalObject3* dof,  const std::string &filename, const std::string& color,
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
 
 
@@ -61,9 +61,9 @@ public:
     //Create a collision node using Rigid Mapping, using a 3d model specified by filename.
     //elements is a vector of type of collision models (Triangle, Line, Point, Sphere)
     //an initial transformation can be performed
-    static simulation::Node *CreateCollisionNodeRigid(MechanicalObjectRigid3* dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
+    static simulation::Node *CreateCollisionNodeRigid(simulation::Node* parent, MechanicalObjectRigid3* dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
-    static simulation::Node *CreateVisualNodeRigid(MechanicalObjectRigid3* dofRigid,  const std::string &filename, const std::string& color,
+    static simulation::Node *CreateVisualNodeRigid(simulation::Node* parent, MechanicalObjectRigid3* dofRigid,  const std::string &filename, const std::string& color,
             const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
 
 private:

@@ -149,10 +149,10 @@ simulation::Node *ObjectCreator::CreateEulerSolverNode(simulation::Node* parent,
 }
 
 
-simulation::Node *ObjectCreator::CreateObstacle(const std::string &filenameCollision, const std::string filenameVisual,  const std::string& color,
+simulation::Node *ObjectCreator::CreateObstacle(simulation::Node* parent, const std::string &filenameCollision, const std::string filenameVisual,  const std::string& color,
         const Deriv3& translation, const Deriv3 &rotation)
 {
-    simulation::Node* nodeFixed = simulation::getSimulation()->newNode("Fixed");
+    simulation::Node* nodeFixed = parent->createChild("Fixed");
 
     sofa::component::loader::MeshObjLoader* loaderFixed = new sofa::component::loader::MeshObjLoader;
     loaderFixed->setFilename(sofa::helper::system::DataRepository.getFile(filenameCollision));
@@ -190,11 +190,11 @@ simulation::Node *ObjectCreator::CreateObstacle(const std::string &filenameColli
 }
 
 
-simulation::Node *ObjectCreator::CreateCollisionNodeVec3(MechanicalObject3* dof, const std::string &filename, const std::vector<std::string> &elements,
+simulation::Node *ObjectCreator::CreateCollisionNodeVec3(simulation::Node* parent, MechanicalObject3* dof, const std::string &filename, const std::vector<std::string> &elements,
         const Deriv3& translation, const Deriv3 &rotation)
 {
     //Node COLLISION
-    simulation::Node* CollisionNode = simulation::getSimulation()->newNode("Collision");
+    simulation::Node* CollisionNode = parent->createChild("Collision");
 
     sofa::component::loader::MeshObjLoader* loader_surf = new sofa::component::loader::MeshObjLoader;
     loader_surf->setFilename(sofa::helper::system::DataRepository.getFile(filename));
@@ -218,10 +218,10 @@ simulation::Node *ObjectCreator::CreateCollisionNodeVec3(MechanicalObject3* dof,
     return CollisionNode;
 }
 
-simulation::Node *ObjectCreator::CreateVisualNodeVec3(MechanicalObject3* dof,  const std::string &filename, const std::string& color,
+simulation::Node *ObjectCreator::CreateVisualNodeVec3(simulation::Node* parent, MechanicalObject3* dof,  const std::string &filename, const std::string& color,
         const Deriv3& translation, const Deriv3 &rotation)
 {
-    simulation::Node* VisualNode = simulation::getSimulation()->newNode("Visu");
+    simulation::Node* VisualNode =parent->createChild("Visu");
 
     const std::string nameVisual="Visual";
     const std::string refVisual = "@" + nameVisual;
@@ -245,14 +245,14 @@ simulation::Node *ObjectCreator::CreateVisualNodeVec3(MechanicalObject3* dof,  c
 
 
 
-simulation::Node *ObjectCreator::CreateCollisionNodeRigid(MechanicalObjectRigid3* dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
+simulation::Node *ObjectCreator::CreateCollisionNodeRigid(simulation::Node* parent, MechanicalObjectRigid3* dofRigid,  const std::string &filename, const std::vector<std::string> &elements,
         const Deriv3& translation, const Deriv3 &rotation)
 {
     const std::string refdofRigid = "@../" + dofRigid->getName();
     const std::string dofSurfName = "CollisionObject";
     const std::string refdofSurf = "@"+dofSurfName;
     //Node COLLISION
-    simulation::Node* CollisionNode = simulation::getSimulation()->newNode("Collision");
+    simulation::Node* CollisionNode =parent->createChild("Collision");
 
 
     sofa::component::loader::MeshObjLoader* loader_surf = new sofa::component::loader::MeshObjLoader;
@@ -277,10 +277,10 @@ simulation::Node *ObjectCreator::CreateCollisionNodeRigid(MechanicalObjectRigid3
     return CollisionNode;
 }
 
-simulation::Node *ObjectCreator::CreateVisualNodeRigid(MechanicalObjectRigid3* dofRigid,  const std::string &filename, const std::string& color,
+simulation::Node *ObjectCreator::CreateVisualNodeRigid(simulation::Node* parent, MechanicalObjectRigid3* dofRigid,  const std::string &filename, const std::string& color,
         const Deriv3& translation, const Deriv3 &rotation)
 {
-    simulation::Node* RigidVisualNode = simulation::getSimulation()->newNode("Visu");
+    simulation::Node* RigidVisualNode =parent->createChild("Visu");
 
     const std::string nameVisual="Visual";
     const std::string refVisual="@"+nameVisual;
