@@ -64,7 +64,7 @@ SReal convertDegreeToRadian(const SReal& angle)
     return angle*PI/180.0;
 }
 
-Node *createCard(const Coord3& position, const Coord3& rotation)
+Node *createCard(Node* parent, const Coord3& position, const Coord3& rotation)
 {
     const std::string visualModel="mesh/card.obj";
     const std::string collisionModel="mesh/cardCollision.obj";
@@ -76,7 +76,7 @@ Node *createCard(const Coord3& position, const Coord3& rotation)
     modelTypes.push_back("Line");
     modelTypes.push_back("Point");
 
-    Node* card = sofa::ObjectCreator::CreateEulerSolverNode("Rigid","Implicit");
+    Node* card = sofa::ObjectCreator::CreateEulerSolverNode(parent,"Rigid","Implicit");
 
     sofa::component::odesolver::EulerImplicitSolver *odeSolver; card->get(odeSolver);
     odeSolver->f_rayleighStiffness.setValue(0.1);
@@ -113,10 +113,11 @@ Node *createCard(const Coord3& position, const Coord3& rotation)
     Node* RigidCollisionNode = sofa::ObjectCreator::CreateCollisionNodeRigid(dofRigid,collisionModel,modelTypes);
     card->addChild(RigidCollisionNode);
 
+
     return card;
 }
 
-std::pair<Node *, Node* > create2Cards(const Coord3& globalPosition, SReal distanceInBetween=SReal(0.1), SReal angle=SReal(15.0))
+std::pair<Node *, Node* > create2Cards(Node* parent, const Coord3& globalPosition, SReal distanceInBetween=SReal(0.1), SReal angle=SReal(15.0))
 {
     //We assume the card has a 2 unit length, centered in (0,0,0)
     const SReal displacement=sin(convertDegreeToRadian(angle));
@@ -126,13 +127,13 @@ std::pair<Node *, Node* > create2Cards(const Coord3& globalPosition, SReal dista
     //Left Rigid Card
     const Coord3 positionLeft=globalPosition + separation;
     const Coord3 rotationLeft(0,0,angle);
-    Node* leftCard = createCard(positionLeft, rotationLeft);
+    Node* leftCard = createCard(parent, positionLeft, rotationLeft);
 
     //************************************
     //Right Rigid Card
     const Coord3 positionRight=globalPosition - separation;
     const Coord3 rotationRight(0,0,-angle);
-    Node* rightCard = createCard(positionRight, rotationRight);
+    Node* rightCard = createCard(parent, positionRight, rotationRight);
 
     return std::make_pair(leftCard, rightCard);
 }
@@ -163,9 +164,7 @@ Node *createHouseOfCards(Node *root,  unsigned int size, SReal distanceInBetween
             Coord3 position=Coord3((i+j)*(distanceH)*0.5,
                     (i-j)*(distanceV),
                     0);
-            const std::pair<Node *, Node*> &cards=create2Cards(position,distanceInBetween, angle);
-            houseOfCards->addChild(cards.first);
-            houseOfCards->addChild(cards.second);
+            const std::pair<Node *, Node*> &cards=create2Cards(houseOfCards, position,distanceInBetween, angle);
             std::ostringstream out;
             out << "Card["<< i << "|" << j << "]";
             cards.first->setName("Left"+out.str());
@@ -180,8 +179,7 @@ Node *createHouseOfCards(Node *root,  unsigned int size, SReal distanceInBetween
             Coord3 position((i+j)*distanceH*0.5,
                     (i-j)*distanceV-space*0.5+distanceInBetween*(j%2),
                     0);
-            Node *supportCard=createCard(position-initPosition, supportRotation);
-            houseOfCards->addChild(supportCard);
+            Node *supportCard=createCard(houseOfCards, position-initPosition, supportRotation);
             std::ostringstream out;
             out << "SupportCard["<< i << "|" << j << "]";
             supportCard->setName(out.str());

@@ -110,14 +110,11 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
     sofa::gui::GUIManager::Init(argv[0]);
 
-    Node* solverNode = sofa::ObjectCreator::CreateEulerSolverNode("Solver");
-
-
     // The graph root node
     Node* root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
     root->setGravity( Coord3(0,0,0) );
 
-    root->addChild(solverNode);
+    Node* solverNode = sofa::ObjectCreator::CreateEulerSolverNode(root,"Solver");
 
     Node* grid1 = createRegularGrid(-1.5,0,0);
     Node* grid2 = createRegularGrid(1.5,0,0);
