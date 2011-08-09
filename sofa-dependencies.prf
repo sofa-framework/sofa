@@ -104,10 +104,16 @@ declare(meshconv,         applications/projects/meshconv,         sofacomponent)
 declare(sofamodeler,      applications/projects/Modeler/lib,      sofaguimain)
 declare(Modeler,          applications/projects/Modeler/exec,     sofamodeler)
 declare(sofaCUDA,         applications/projects/sofaCUDA,         sofaguimain sofagpucuda)
-declare(sofaCUDA_Bench,         applications/projects/sofaCUDA_Bench,         sofaguimain sofagpucuda)
+declare(sofaCUDA_Bench,   applications/projects/sofaCUDA_Bench,         sofaguimain sofagpucuda)
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofacomponent sofagpucuda)
 declare(sofaVerification, applications/projects/sofaVerification, sofacomponent sofagpucuda)
+
+declare(centerOfMassMapping,            applications/projects/BoostKernel/applications/centerOfMassMapping,             sofacomponent sofaobjectcreator sofaguimain)
+declare(centerOfMassMulti2MappingChain, applications/projects/BoostKernel/applications/centerOfMassMulti2MappingChain,  sofacomponent sofaobjectcreator sofaguimain)
+declare(centerOfMassMultiMappingChain,  applications/projects/BoostKernel/applications/centerOfMassMultiMappingChain,   sofacomponent sofaobjectcreator sofaguimain)
+declare(subsetMultimapping,             applications/projects/BoostKernel/applications/subsetMultimapping,              sofacomponent sofaobjectcreator sofaguimain)
+
 declare(sofatests,        tests,                                  sofacore)
 # SofaVRPN
 # SofaDevices
@@ -253,6 +259,14 @@ contains (DEFINES, SOFA_HAVE_TUTORIALS) {
 }
 
 
+contains (DEFINES, SOFA_HAVE_BOOSTKERNEL) {
+# SOFA_HAVE_BOOSTKERNEL depend of SOFA_HAVE_TUTORIALS
+DEFINES += SOFA_HAVE_BOOSTKERNEL
+	enable(centerOfMassMapping)
+	enable(centerOfMassMulti2MappingChain)
+	enable(centerOfMassMultiMappingChain)
+	enable(subsetMultimapping)
+}
 
 
 }
