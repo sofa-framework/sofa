@@ -201,7 +201,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
             Deriv dx = p1[index] - p0[ext_index];
             Springs_dir[i] = p1[index] - p0[ext_index];
             Springs_dir[i].normalize();
-            f1[index] -=  dx * k[index] ;
+            f1[index] -=  dx * k[i] ;
 
             //	if (dx.norm()>0.00000001)
             //		std::cout<<"force on point "<<index<<std::endl;
@@ -237,7 +237,7 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const core::MechanicalPara
     {
         for (unsigned int i=0; i<m_indices.size(); i++)
         {
-            df1[m_indices[i]] -=  dx1[m_indices[i]] * k[m_indices[i]] * kFactor ;
+            df1[m_indices[i]] -=  dx1[m_indices[i]] * k[i] * kFactor ;
         }
     }
 }
@@ -291,7 +291,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
                 //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[curIndex]);
                 //	}
 
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[curIndex]);
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[i]);
             }
         }
     }
