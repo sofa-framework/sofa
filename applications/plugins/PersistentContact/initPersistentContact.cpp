@@ -25,8 +25,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-
 #include "PersistentContact.h"
+
 
 namespace sofa
 {
@@ -76,7 +76,7 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "PersistentContactBarycentricMapping, PersistentFrictionContact, PersistentContactRigidMapping, PersistentUnilateralInteractionConstraint";
+    return "FreeMotionVelocityMasterSolver, PersistentContactBarycentricMapping, PersistentContactMapping, PersistentFrictionContact, PersistentContactRigidMapping, PersistentUnilateralInteractionConstraint";
 }
 
 } // namespace component
@@ -92,8 +92,9 @@ void initPersistentContact()
     }
 }
 
-
+SOFA_LINK_CLASS(FreeMotionVelocityMasterSolver)
 SOFA_LINK_CLASS(PersistentContactBarycentricMapping)
+SOFA_LINK_CLASS(PersistentContactMapping)
 SOFA_LINK_CLASS(PersistentContactRigidMapping)
 SOFA_LINK_CLASS(PersistentFrictionContact)
 SOFA_LINK_CLASS(PersistentUnilateralInteractionConstraint)

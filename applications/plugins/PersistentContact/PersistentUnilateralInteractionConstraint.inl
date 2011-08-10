@@ -179,11 +179,11 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::getPositionViolation(
     Real dfree_t	= (Real)0.0;
     Real dfree_s	= (Real)0.0;
 
-    const unsigned int cSize = contacts.size();
+    const unsigned int cSize = this->contacts.size();
 
     for (unsigned int i = 0; i < cSize; i++)
     {
-        const Contact& c = contacts[i];
+        const Contact& c = this->contacts[i];
 
         // Compute dfree, dfree_t and d_free_s
 
@@ -256,11 +256,11 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::getVelocityViolation(
     const VecDeriv &PvfreeVec = this->getMState2()->read(core::ConstVecDerivId::freeVelocity())->getValue();
     const VecDeriv &QvfreeVec = this->getMState1()->read(core::ConstVecDerivId::freeVelocity())->getValue();
 
-    const unsigned int cSize = contacts.size();
+    const unsigned int cSize = this->contacts.size();
 
     for (unsigned int i = 0; i < cSize; i++)
     {
-        const Contact& c = contacts[i];
+        const Contact& c = this->contacts[i];
 
         const Deriv QP_vfree = PvfreeVec[c.m2] - QvfreeVec[c.m1];
 
