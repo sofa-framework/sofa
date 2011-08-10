@@ -1055,7 +1055,7 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 
 // new API for non building the constraint system during solving process //
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)
+void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)
 {
     constraint_force = f;
     const MatrixDeriv& c = *this->mstate->getC();

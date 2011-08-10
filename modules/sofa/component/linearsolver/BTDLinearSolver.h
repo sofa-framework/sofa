@@ -41,7 +41,7 @@ namespace component
 namespace linearsolver
 {
 
-/// Simple bloc full matrix container
+/// Simple bloc full matrix container (used for InvMatrixType)
 template<int N, typename T>
 class BlocFullMatrix : public defaulttype::BaseMatrix
 {
@@ -800,13 +800,15 @@ public:
     //////////////////////////// for subpartSolve
     MysparseM H; // force transfer
     MysparseMit H_it;
-    Vector _acc_result;  //
+    Vector bwdContributionOnLH;  //
+    Vector fwdContributionOnRH;
+
     Vector _rh_buf;		 //				// buf the right hand term
     //Vector _df_buf;		 //
-    SubVector _acc_rh_current_block;		// accumulation of rh through the browsing of the structure
-    SubVector _acc_lh_current_block;		// accumulation of lh through the browsing of the strucutre
-    int	current_block, first_block;
-    std::vector<SubVector> Vec_df;			// buf the df on block that are not current_block...
+    SubVector _acc_rh_bloc;		// accumulation of rh through the browsing of the structure
+    SubVector _acc_lh_bloc;		// accumulation of lh through the browsing of the strucutre
+    int	current_bloc, first_block;
+    std::vector<SubVector> Vec_dRH;			// buf the dRH on block that are not current_bloc...
     ////////////////////////////
 
     helper::vector<int> nBlockComputedMinv;
@@ -854,18 +856,51 @@ public:
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
 
 
+    /// Init the partial solve
+    void init_partial_solve();
+
     /// partial solve :
     /// b is accumulated
     /// db is a sparse vector that is added to b
     /// partial_x is a sparse vector (with sparse map given) that provide the result of M x = b+db
     /// Solve Mx=b
+    //void partial_solve_old(ListIndex&  Iout, ListIndex&  Iin , bool NewIn);
     void partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn);
+
+
+
+    void init_partial_inverse(const int &nb, const int &bsize);
 
 
 
     template<class RMatrix, class JMatrix>
     bool addJMInvJt(RMatrix& result, JMatrix& J, double fact);
 
+
+
+private:
+
+
+    int _indMaxNonNullForce; // point with non null force which index is the greatest and for which globalAccumulate was not proceed
+
+    int _indMaxLHComputed;  // computation of LH is refreshed for points between [current_bloc _indMaxLHComputed]
+
+    /// private functions for partial solve
+    /// step1=> accumulate RH locally for the InBloc (only if a new force is detected on RH)
+    void bwdAccumulateRHinBloc(int indMaxBloc);   // indMaxBloc should be equal to _indMaxNonNullForce
+
+
+    /// step2=> accumulate LH globally to step down the value of current_bloc to 0
+    void bwdAccumulateLHGlobal( );
+
+
+    /// step3=> accumulate RH globally to step up the value of current_bloc to the smallest value needed in OutBloc
+    void fwdAccumulateRHGlobal(int indMinBloc);
+
+
+    /// step4=> compute solution for the indices in the bloc
+    /// (and accumulate the potential local dRH (set in Vec_dRH) [set in step1] that have not been yet taken into account by the global bwd and fwd
+    void fwdComputeLHinBloc(int indMaxBloc);
 
 
 

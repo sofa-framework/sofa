@@ -74,6 +74,10 @@ public:
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem() = 0;
 
+
+    ///
+    virtual void init_partial_solve() {serr<<"WARNING : partial_solve is not implemented yet"<<sendl; }
+
     ///
     virtual void partial_solve(std::list<int>& /*I_last_Disp*/, std::list<int>& /*I_last_Dforce*/, bool /*NewIn*/) {serr<<"WARNING : partial_solve is not implemented yet"<<sendl; }
 

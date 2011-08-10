@@ -114,7 +114,7 @@ public:
     /// @name Unbuilt constraint system during resolution
     /// @{
 
-    virtual void resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)  ;
+    virtual void resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)  ;
 
     virtual bool hasConstraintNumber(int index) ;  // virtual ???
 

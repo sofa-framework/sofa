@@ -4,6 +4,7 @@
 #include "BTDLinearSolver.h"
 
 
+
 namespace sofa
 {
 
@@ -116,27 +117,7 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
 
     if(subpartSolve.getValue() )
     {
-        H.clear();
-        //_acc_result=0;
-        _acc_result.resize(nb*bsize);
-        //_rh_buf = 0;
-        _rh_buf.resize(nb*bsize);
-        //_df_buf = 0;
-        //_df_buf.resize(nb*bsize);
-        _acc_rh_current_block=0;
-        _acc_rh_current_block.resize(bsize);
-        _acc_lh_current_block=0;
-        _acc_lh_current_block.resize(bsize);
-        current_block = nb-1;
-
-        Vec_df.resize(nb);
-        for (int i=0; i<nb; i++)
-        {
-            Vec_df[i]=0;
-            Vec_df[i].resize(bsize);
-        }
-
-
+        this->init_partial_inverse(nb,bsize);
     }
 
     SubMatrix A, C;
@@ -228,11 +209,15 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(int i, int j)
 
     if (i < j)
     {
-        // lower diagonal
+        // i < j correspond to the upper diagonal
+        // for the computation, we use the lower diagonal matrix
         int t = i; i = j; j = t;
     }
     if (nBlockComputedMinv[i] > i-j) return; // the block was already computed
 
+
+
+    ///// the block was not computed yet :
 
     // the block is computed now :
     // 1. all the diagonal block between N and i need to be computed
@@ -240,63 +225,64 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(int i, int j)
     int i0 = i;
     while (nBlockComputedMinv[i0]==0)
         ++i0;
-    // i0 is the first block of the diagonal that is computed
+    // i0 is the "closest" block of the diagonal that is computed
+    // we need to compute all the Minv[i0][i0] (with i0>=i) till i0=i
     while (i0 > i)
     {
         //serr<<"i0 ="<<i0<<"nBlockComputedMinv[i0]="<<nBlockComputedMinv[i0]<<sendl;
-        if (nBlockComputedMinv[i0] == 1)
+        if (nBlockComputedMinv[i0] == 1) // only the bloc on the diagonal is computed : need of the the bloc [i0][i0-1]
         {
             // compute bloc (i0,i0-1)
+            //Minv[i0][i0-1] = Minv[i0][i0]*-L[i0-1].t()
             Minv.asub((i0  ),(i0-1),bsize,bsize) = Minv.asub((i0  ),(i0  ),bsize,bsize)*(-(lambda[i0-1].t()));
             ++nBlockComputedMinv[i0];
 
             if(subpartSolve.getValue() )
             {
-                helper::vector<SubMatrix> iHi_1; // bizarre: pb compilation avec SubMatrix nHn_1 = B[i] *alpha_inv[i];
-                iHi_1.resize(1);
-                iHi_1[0] = - lambda[i0-1].t();
-                H.insert( make_pair(  IndexPair(i0, i0-1), iHi_1[0]  ) );
-                //serr<<" Add pair H("<<i0<<","<<i0-1<<")"<<sendl;
-                // compute bloc (i0,i0-1)
+                // store -L[i0-1].t() H structure
+                SubMatrix iHi_1;
+                iHi_1 = - lambda[i0-1].t();
+                H.insert( make_pair(  IndexPair(i0, i0-1), iHi_1  ) );
+                // compute bloc (i0,i0-1) :  the upper diagonal blocks Minv[i0-1][i0]
                 Minv.asub((i0-1),(i0),bsize,bsize) = -lambda[i0-1] * Minv.asub((i0  ),(i0  ),bsize,bsize);
             }
 
         }
-        // compute bloc (i0-1,i0-1)
+
+
+        // compute bloc (i0-1,i0-1)  : //Minv[i0-1][i0-1] = inv(M[i0-1][i0-1]) + L[i0-1] * Minv[i0][i0-1]
         Minv.asub((i0-1),(i0-1),bsize,bsize) = alpha_inv[i0-1] - lambda[i0-1]*Minv.asub((i0  ),(i0-1),bsize,bsize);
 
         if(subpartSolve.getValue() )
         {
-            SubMatrix iHi; // bizarre: pb compilation avec SubMatrix nHn_1 = B[i] *alpha_inv[i];
+            // store Id in H structure
+            SubMatrix iHi;
             my_identity(iHi, bsize);
             H.insert( make_pair(  IndexPair(i0-1, i0-1), iHi  ) );
-            //serr<<" Add pair ("<<i0-1<<","<<i0-1<<")"<<sendl;
         }
 
-        ++nBlockComputedMinv[i0-1];
-        --i0;
+        ++nBlockComputedMinv[i0-1]; // now Minv[i0-1][i0-1] is computed so   nBlockComputedMinv[i0-1] = 1
+        --i0;                       // we can go down to the following block (till we reach i)
     }
 
-    //serr<<"here i0 ="<<i0<<" should be equal to i ="<<i<<sendl;
 
     //2. all the block on the lines of block i between the diagonal and the block j are computed
+    // i0=i
+
     int j0 = i-nBlockComputedMinv[i];
 
 
     /////////////// ADD : Calcul pour faire du partial_solve //////////
+    // first iHj is initiallized to iHj0+1 (that is supposed to be already computed)
     SubMatrix iHj ;
     if(subpartSolve.getValue() )
     {
 
-        //if (i<current_block){
-        //	current_block=i;
-        //	first_block=i;
-        //	}
 
         H_it = H.find( IndexPair(i0,j0+1) );
         //serr<<" find pair ("<<i<<","<<j0+1<<")"<<sendl;
 
-        if (H_it == H.end()) // ? si jamais l'élément qu'on cherche est justement H.end() ??
+        if (H_it == H.end())
         {
             my_identity(iHj, bsize);
             if (i0!=j0+1)
@@ -314,14 +300,16 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(int i, int j)
     while (j0 >= j)
     {
         // compute bloc (i0,j0)
+        // Minv[i][j0] = Minv[i][j0+1] * (-L[j0].t)
         Minv.asub((i0  ),(j0  ),bsize,bsize) = Minv.asub((i0  ),(j0+1),bsize,bsize)*(-lambda[j0].t());
         if(subpartSolve.getValue() )
         {
+            // iHj0 = iHj0+1 * (-L[j0].t)
             iHj = iHj * -lambda[j0].t();
             H.insert(make_pair(IndexPair(i0,j0),iHj));
-            // compute bloc (i0,j0)
+
+            // compute bloc (j0,i0)  the upper diagonal blocks Minv[j0][i0]
             Minv.asub((j0  ),(i0  ),bsize,bsize) = -lambda[j0]*Minv.asub((j0+1),(i0),bsize,bsize);
-            //serr<<" Add pair ("<<i<<","<<j0<<")"<<sendl;
         }
         ++nBlockComputedMinv[i0];
         --j0;
@@ -335,7 +323,7 @@ double BTDLinearSolver<Matrix,Vector>::getMinvElement(int i, int j)
     if (i < j)
     {
         // lower diagonal
-        int t = i; i = j; j = t;
+        return getMinvElement(j,i);
     }
     computeMinvBlock(i/bsize, j/bsize);
     return Minv.element(i,j);
@@ -420,375 +408,310 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* result,
     return false;
 }
 
-/////// NEW : partial solve :
-// b is accumulated
-// db is a sparse vector that is added to b
-// partial_x is a sparse vector (with sparse map given) that provide the result of M x = b+db
-// Solve Mx=b
-// Iin donne un block en entrée (dans rh) => derniers blocks dont on a modifié la valeur: on verifie que cette valeur a réellement changé (TODO: éviter en introduisant un booléen)
-// Iout donne les block en sortie (dans result)
-// ils sont tous les deux tries en ordre croissant
+
+
+///////////////////////////////////////
+///////  partial solve  //////////
+///////////////////////////////////////
+
+
+template<class Matrix, class Vector>
+void BTDLinearSolver<Matrix,Vector>::init_partial_inverse(const int &/*nb*/, const int &/*bsize*/)
+{
+    // need to stay in init_partial_inverse (called before inverse)
+    H.clear();
+
+}
+
+template<class Matrix, class Vector>
+void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
+{
+
+    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    const int nb = this->currentGroup->systemRHVector->size() / bsize;
+
+    //TODO => optimisation ??
+    bwdContributionOnLH.clear();
+    bwdContributionOnLH.resize(nb*bsize);
+    fwdContributionOnRH.clear();
+    fwdContributionOnRH.resize(nb*bsize);
+
+
+    _rh_buf.resize(nb*bsize);
+    _acc_rh_bloc=0;
+    _acc_rh_bloc.resize(bsize);
+    _acc_lh_bloc=0;
+    _acc_lh_bloc.resize(bsize);
+
+    // Bloc that is currently being proceed => start from the end (so that we use step2 bwdAccumulateLHGlobal and accumulate potential initial forces)
+    current_bloc = nb-1;
+
+
+    // DF represents the variation of the right hand side of the equation (Force in mechanics)
+    Vec_dRH.resize(nb);
+    for (int i=0; i<nb; i++)
+    {
+        Vec_dRH[i]=0;
+        Vec_dRH[i].resize(bsize);
+        _rh_buf.asub(i,bsize) = this->currentGroup->systemRHVector->asub(i,bsize) ;
+
+    }
+
+
+
+
+}
+
+
+
+template<class Matrix, class Vector>
+void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(int indMaxBloc)
+{
+    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+
+    int b=indMaxBloc;
+
+    //debug
+    if (indMaxBloc <  current_bloc)
+    {
+        std::cout<<" WARNING in bwdAccumulateRHinBloc : indMaxBloc = "<<indMaxBloc <<" <  "<<" current_bloc = "<<current_bloc<<std::endl;
+    }
+
+    std::cout<<" in step 1: start accumulating from bloc "<<b<<std::endl;
+
+    SubVector RHbloc;
+    RHbloc.resize(bsize);
+
+    _acc_lh_bloc=0;
+
+
+    while(b > current_bloc )
+    {
+
+        // evaluate the Right Hand Term for the bloc b
+        RHbloc = this->currentGroup->systemRHVector->asub(b,bsize) ;
+
+        // compute the contribution on LH created by RH
+        _acc_lh_bloc  += Minv.asub(b,b,bsize,bsize) * RHbloc;
+
+
+        b--;
+        // accumulate this contribution on LH on the lower blocs
+        _acc_lh_bloc =  -(lambda[b]*_acc_lh_bloc);
+
+
+
+        // store the contribution as bwdContributionOnLH
+        bwdContributionOnLH.asub(b,bsize) = _acc_lh_bloc;
+
+    }
+
+    // here b==current_bloc
+}
+
+template<class Matrix, class Vector>
+void BTDLinearSolver<Matrix,Vector>::bwdAccumulateLHGlobal( )
+{
+    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    _acc_lh_bloc =  bwdContributionOnLH.asub(current_bloc, bsize);
+
+    while( current_bloc > 0)
+    {
+        // BwdLH += Minv*RH
+        _acc_lh_bloc +=  Minv.asub(current_bloc,current_bloc,bsize,bsize) * this->currentGroup->systemRHVector->asub(current_bloc,bsize) ;
+
+        current_bloc--;
+        // BwdLH(n-1) = H(n-1)(n)*BwdLH(n)
+        _acc_lh_bloc = -(lambda[current_bloc]*_acc_lh_bloc);
+
+        bwdContributionOnLH.asub(current_bloc, bsize) = _acc_lh_bloc;
+    }
+
+    // at this point, current_bloc must be equal to 0
+
+    // all the forces from RH were accumulated through bwdAccumulation:
+    _indMaxNonNullForce = 0;
+
+    // need to update all the value of LH during forward
+    _indMaxLHComputed = 0;
+
+    // init fwdContribution
+    fwdContributionOnRH.asub(0, bsize) = 0;
+
+
+}
+
+
+
+
+template<class Matrix, class Vector>
+void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(int indMinBloc)
+{
+    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+    _acc_rh_bloc =fwdContributionOnRH.asub(current_bloc, bsize);
+
+    while( current_bloc< indMinBloc)
+    {
+
+        // fwdRH(n) += RH(n)
+        _acc_rh_bloc += this->currentGroup->systemRHVector->asub(current_bloc,bsize);
+
+        // fwdRH(n+1) = H(n+1)(n) * fwdRH(n)
+        _acc_rh_bloc = -(lambda[current_bloc].t() * _acc_rh_bloc);
+        current_bloc++;
+
+        fwdContributionOnRH.asub(current_bloc, bsize) = _acc_rh_bloc;
+
+    }
+
+}
+
+
+template<class Matrix, class Vector>
+void BTDLinearSolver<Matrix,Vector>::fwdComputeLHinBloc(int indMaxBloc)
+{
+
+    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+
+    while(_indMaxLHComputed < indMaxBloc )
+    {
+        int b = _indMaxLHComputed;
+
+        if(b>=0)
+        {
+            // fwdRH(n+1) = H(n+1)(n) * (fwdRH(n) + RH(n))
+            fwdContributionOnRH.asub(b+1, bsize) = (-lambda[b].t())* ( fwdContributionOnRH.asub(b, bsize) + this->currentGroup->systemRHVector->asub(b,bsize) ) ;
+        }
+
+        _indMaxLHComputed++; b++;
+
+        // compute the bloc which indice is _indMaxLHComputed
+        this->currentGroup->systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->currentGroup->systemRHVector->asub(b,bsize) ) +
+                bwdContributionOnLH.asub(b, bsize);
+
+
+    }
+
+
+}
+
 template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn)  ///*Matrix& M, Vector& result, Vector& rh, */
 {
-    std::cerr<<" partial_solve......";
+
+
+
+
+
+    int MinIdBloc_OUT = Iout.front();
+    int MaxIdBloc_OUT = Iout.back();
+
+
+    std::cout<<"partial_solve: need update on position for bloc between dofs "<< MinIdBloc_OUT<< "  and "<<MaxIdBloc_OUT<<std::endl;
+    if (verification.getValue())
+    {
+        const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+        std::cout<<" input Force= ";
+        for (int i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
+        {
+            std::cout<<"     ["<<i<<"] "<<this->currentGroup->systemRHVector->asub(i,bsize);
+        }
+        std::cout<<" "<<std::endl;
+    }
+
+
+    if( NewIn)
+    {
+
+        int MinIdBloc_IN = Iin.front(); //  Iin needs to be sorted
+        int MaxIdBloc_IN = Iin.back();  //
+
+
+
+        //debug
+        std::cout<<"STEP1: new force on bloc between dofs "<< MinIdBloc_IN<< "  and "<<MaxIdBloc_IN<<std::endl;
+
+        if (MaxIdBloc_IN > this->_indMaxNonNullForce)
+            this->_indMaxNonNullForce = MaxIdBloc_IN;
+
+        //step 1:
+        bwdAccumulateRHinBloc(this->_indMaxNonNullForce );
+
+        // need to update (in step 4) all the values corresponding to the bloc
+        this->_indMaxLHComputed = MinIdBloc_IN -1;
+
+    }
+
+
+    if (current_bloc > MinIdBloc_OUT)
+    {
+        //debug
+        std::cout<<"STEP2 (bwd GLOBAL on structure) : current_bloc ="<<current_bloc<<" > to  MinIdBloc_OUT ="<<MinIdBloc_OUT<<std::endl;
+
+        // step 2:
+        bwdAccumulateLHGlobal();
+
+        //debug
+        std::cout<<" new current_bloc = "<<current_bloc<<std::endl;
+    }
+
+
+    if (current_bloc < MinIdBloc_OUT)
+    {
+        //debug
+        std::cout<<"STEP3 (fwd GLOBAL on structure) : current_bloc ="<<current_bloc<<" < to  MinIdBloc_OUT ="<<MinIdBloc_OUT<<std::endl;
+
+        //step 3:
+        fwdAccumulateRHGlobal(MinIdBloc_OUT);
+
+        // debug
+        std::cout<<" new current_bloc = "<<current_bloc<<std::endl;
+    }
+
+
+
+    if ( _indMaxLHComputed < MaxIdBloc_OUT)
+    {
+        //debug
+        std::cout<<" STEP 4 :_indMaxLHComputed = "<<_indMaxLHComputed<<" < "<<"MaxIdBloc_OUT = "<<MaxIdBloc_OUT<<"  - verify that current_bloc="<<current_bloc<<" == "<<" MinIdBloc_OUT ="<<MinIdBloc_OUT<<std::endl;
+
+        fwdComputeLHinBloc(MaxIdBloc_OUT );
+
+        std::cout<<"  new _indMaxLHComputed = "<<_indMaxLHComputed<<std::endl;
+    }
+
+
+
+
+
 
 
 
     // debug: test
     if (verification.getValue())
     {
+        const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+        std::cout<<" Found solution for bloc OUT :";
+        for (int i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
+        {
+            std::cout<<"     ["<<i<<"] "<<this->currentGroup->systemLHVector->asub(i,bsize);
+        }
+        std::cout<<std::endl;
+
         solve(*this->currentGroup->systemMatrix,*this->currentGroup->systemLHVector, *this->currentGroup->systemRHVector);
+
+        std::cout<<" after complete resolution OUT :";
+        for (int i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
+        {
+            std::cout<<"     ["<<i<<"] "<<this->currentGroup->systemLHVector->asub(i,bsize);
+        }
+        std::cout<<std::endl;
+
+
         return;
     }
-    std::cerr<<" step 0"<<std::endl;
 
 
-    const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
-
-    std::list<int>::const_iterator block_it;
-    //SubMatrix iHj;
-
-
-
-    //debug
-
-    if(Iin.size() > 0)
-    {
-        std::cout<<"partial_solve block (in : "<<*Iin.begin()<<")  OUT : "<<*Iout.begin()<<"current_block (should be equal to in) = "<<current_block<<std::endl;
-    }
-    else
-    {
-        std::cout<<"partial_solve block (in is NULL) =>  OUT : "<<*Iout.begin()<<"current_block = "<<current_block<<std::endl;
-    }
-
-
-    std::cerr<<" step 1:"<<std::endl;
-
-    /////////////////////////  step 1 .changement des forces en entrée /////////////////////////
-    // debug
-    //test_perf.getValue() ||
-    bool new_forces = false;
-    if(test_perf.getValue() || NewIn)
-    {
-
-
-        //on regarde si la force a changé sur les block en entrée
-        // si le block actuel == bock en entrée => on accumule ces forces dans _acc_rh_current_block
-        // si le block actuel > block en entrée => pb ne devrait pas arriver... pour des forces actives !
-        // si le block actuel < block en entrée => on accumule les déplacements entre le block en entrée et le block actuel	+ on stocke la force actuelle pour qu'elle soit prise en compte lors de la prochaine remontée
-
-        for(block_it=Iin.begin(); block_it!=Iin.end(); block_it++)
-        {
-            int block = *block_it;
-
-            //// computation of DF
-            SubVector DF;
-            DF.resize(bsize);
-            DF += this->currentGroup->systemRHVector->asub(block,bsize) - _rh_buf.asub(block,bsize);
-            _rh_buf.asub(block,bsize) = this->currentGroup->systemRHVector->asub(block,bsize) ;
-            ////
-
-
-            if (DF.norm() > 0.0)
-            {
-
-                // debug //
-                new_forces = true;
-                if (current_block< block)
-                {
-
-                    SubVector DU;
-                    DU.resize(bsize);
-                    DU =  Minv.asub(block,block,bsize,bsize) * DF;
-
-
-                    //std::cout<<"Vec_df["<<block<<"]"<<Vec_df[block] ;
-                    Vec_df[block] += DF;
-                    //std::cout<<"Vec_df["<<block<<"] += DF "<<Vec_df[block]<<std::endl;
-                    // Un += DUacc
-                    //_acc_result.asub(block,bsize)  += DU;		 // NON ! DU n'est ajouté que pour les blocks [current_block block[
-                    // dans les calculs ultérieur.. pour les blocks [block N[ le calcul se dans le step 4 avec Vec_df
-                    // jusqu'�  ce que current_block== block dans ce cas, DF étant déj�  dans this->currentGroup->systemRHVector->asub(block,bsize) il est définitivement pris en compte
-                    //std::cout<<"la force sur le block en entrée vient du block "<<block<<" et le block courant est"<<current_block<<" ... on remonte le déplacement engendré "<<DU<<std::endl;
-                    while( block > current_block)
-                    {
-                        block--;
-                        // DUacc = Hn,n+1 * DUacc
-                        DU = -(lambda[block]*DU);
-
-                        // Un += DUacc
-                        _acc_result.asub(block,bsize)  += DU;
-
-                    }
-                }
-                else
-                {
-
-                    if (current_block > block)
-                        serr<<"WARNING step1 forces en entrée: current_block= "<<current_block<<" should be inferior or equal to  block= "<<block<<" problem with sort in Iin"<<sendl;
-                    else
-                    {
-                        //std::cout<<"la force sur le block en entrée vient du block "<<block<<" et le block courant est"<<current_block<<" ajout �  _acc_rh_current_block"<<std::endl;
-                        _acc_rh_current_block +=  DF;  // current_block==block
-                    }
-                    /*
-                     if(current_block == block)
-                     my_identity(iHj, bsize);
-                     else
-                     {
-                     H_it = H.find( IndexPair(current_block,block) );
-                     iHj=H_it->second;
-                     if (H_it == H.end())
-                     {
-                     my_identity(iHj, bsize);
-                     serr<<"WARNING !! element("<<current_block<<","<<block<<") not found "<<sendl;
-                     }
-                     }
-                     */
-                }
-            }
-        }
-    }
-
-
-    if (NewIn && !new_forces)
-        std::cout<<"problem : newIn is true but should be false"<<std::endl;
-
-    // debug
-    /*
-    if (new_forces)
-        std::cout<<"Nouvelles forces détectées et ajoutées"<<std::endl;
-    */
-
-
-
-    // accumulate DF jusqu'au block d'ordre le plus élevé dans Iout
-    // on accumule les forces en parcourant la structure par ordre croissant
-    // si la valeur max du "out" est plus petite que la valeur du block courant, c'est qu'on a fini de parcourir la strucure => on remonte jusqu'�  "first_block" (pour l'instant, jusqu'�  0 pour debug)
-
-    int block_out = *Iout.begin();
-
-    std::cerr<<" step 2:"<<std::endl;
-    ///////////////////////// step2 parcours de la structure pour descendre les déplacements	/////////////////////////
-    if (block_out< current_block)
-    {
-
-        //debug
-        //std::cout<<" on remonte la structure : block_out= "<<block_out<<"  current_block = "<<current_block<<std::endl;
-
-        //// on inverse le dernier block
-        //debug
-        //std::cout<<"Un = Kinv(n,n)*(accF + Fn) // accF="<<_acc_rh_current_block<<"   - Fn= "<< this->currentGroup->systemRHVector->asub(current_block,bsize)<<std::endl;
-        /// Un = Kinv(n,n)*(accF + Fn)
-
-        //_acc_result.asub(current_block,bsize) =  Minv.asub(current_block,current_block*bsize,bsize,bsize) * (  _acc_rh_current_block +  this->currentGroup->systemRHVector->asub(current_block,bsize) );
-
-        /// Uacc = Kinv(n,n) * (accF+ Fn)
-        _acc_lh_current_block =  Minv.asub(current_block,current_block,bsize,bsize) *  this->currentGroup->systemRHVector->asub(current_block,bsize);
-        Vec_df[ current_block ] =  this->currentGroup->systemRHVector->asub(current_block,bsize);
-        //debug
-        //std::cout<<"Uacc = Kinv("<<current_block<<","<<current_block<<")*Fn = "<<_acc_lh_current_block<<std::endl;
-
-
-
-
-        while (current_block> 0)
-        {
-            current_block--;
-            //std::cout<<"descente des déplacements  : current_block = "<<current_block;
-            // Uacc += Hn,n+1 * Uacc
-            _acc_lh_current_block = -(lambda[current_block]*_acc_lh_current_block);
-
-            // Un = Uacc
-            _acc_result.asub(current_block,bsize)  = _acc_lh_current_block;
-
-            // debug
-            SubVector Fn;
-            Fn =this->currentGroup->systemRHVector->asub(current_block,bsize);
-            if (Fn.norm()>0.0)
-            {
-                Vec_df[ current_block ] =  this->currentGroup->systemRHVector->asub(current_block,bsize);
-                //std::cout<<"non null force detected on block "<<current_block<<" : Fn= "<< Fn;
-                // Uacc += Kinv* Fn
-                _acc_lh_current_block += Minv.asub(current_block,current_block,bsize,bsize) * this->currentGroup->systemRHVector->asub(current_block,bsize) ;
-            }
-
-
-            //std::cout<<std::endl;
-
-
-
-        }
-
-
-        //debug
-        //std::cout<<"VERIFY : current_block = "<<current_block<<"  must be 0"<<std::endl;
-
-        //facc=f0;
-        _acc_rh_current_block = this->currentGroup->systemRHVector->asub(0,bsize);
-
-
-        // debug
-        SubVector DF;
-        DF = Vec_df[0];
-        if (DF.norm()> 0.0)
-            serr<<"WARNING: Vec_df added on block 0... strange..."<<sendl;
-
-
-        //_acc_result.asub(0, bsize) += alpha_inv[0] * this->currentGroup->systemRHVector->asub(0,bsize);
-//			_rh_buf.asub(0,bsize)  =  this->currentGroup->systemRHVector->asub(0,bsize);
-
-        // accumulation of right hand term is reinitialized
-//			_acc_rh_current_block= this->currentGroup->systemRHVector->asub(0,bsize);
-    }
-
-    std::cerr<<" step 3:"<<std::endl;
-
-    ///////////////////////// step3 parcours de la structure pour remonter les forces /////////////////////////
-    while(current_block<block_out)
-    {
-        //std::cout<<"remontée des forces  : current_block = "<<current_block<<std::endl;
-
-
-        // Fbuf = Fn
-        //serr<<"Fbuf = Fn"<<sendl;
-        // la contribution du block [current_block+1] est prise en compte dans le mouvement actuel : ne sert �  rien ?? = _rh_buf n'est utilisé que pour calculer DF
-        //_rh_buf.asub((current_block+1),bsize)  =  this->currentGroup->systemRHVector->asub((current_block+1),bsize) ;
-
-        // Facc = Hn+1,n * Facc
-        //serr<<"Facc = Hn+1,n * Facc"<<sendl;
-        // on accumule les forces le long de la structure
-        /*
-        H_it = H.find( IndexPair(current_block+1,current_block) );
-        if (H_it==H.end())
-        {
-                            serr<<"WARNING : H["<<current_block+1<<"]["<<current_block<<"] not found"<<sendl;
-        }
-        iHj=H_it->second;
-        // debug
-        Vector test;
-        test = _acc_rh_current_block;
-        _acc_rh_current_block = iHj * _acc_rh_current_block;
-        test = -lambda[current_block].t() * test;
-
-        test -= _acc_rh_current_block;
-
-        if (test.norm()>0.0000000001*_acc_rh_current_block.norm())
-        {
-                            serr<<"WARNING matrix iHj = \n"<<iHj<<"\n and lambda["<<current_block<<"].t() =\n"<<lambda[current_block].t()<<"\n are not equal !!!"<<sendl;
-
-        }
-        */
-
-        _acc_rh_current_block = -(lambda[current_block].t() * _acc_rh_current_block);
-
-        current_block++;
-
-        // debug: Facc+=Fn
-        SubVector subV;
-        subV =  this->currentGroup->systemRHVector->asub(current_block,bsize);
-        _acc_rh_current_block += subV;
-        //std::cout<<"step3 : Facc+= F["<<current_block<<"] : result : Facc ="<<_acc_rh_current_block<<std::endl;
-
-        // df of current block is now included in _acc_rh_current_block
-        Vec_df[current_block] = 0;
-        //std::cout<<"Vec_df["<<current_block<<"] is set to zero: "<< Vec_df[current_block] <<std::endl;
-
-    }
-
-
-
-    ///////////////////////// now current_block == block_out : on calcule le déplacement engendré ////////
-    //std::cout<<"VERIFY : current_block = "<<current_block<<"  must be equal to block_out :"<<block_out<<std::endl;
-
-
-    //debug:
-    //bool show_result = false;
-
-
-    std::cerr<<" step 4:"<<std::endl;
-    ////////////////////////// step 4 on calcule le déplacement engendré sur les blocks en sortie ////////////////////////
-
-    for(block_it=Iout.begin(); block_it!=Iout.end(); block_it++)
-    {
-        int block = *block_it;
-        // debug
-        if (current_block>block)
-            serr<<"WARNING : step 4 : blocks en sortie : current_block= "<<current_block<<" must be inferior or equal to  block= "<<block<<" problem with sort in Iout"<<sendl;
-
-        SubVector LH_block;
-        LH_block.resize(bsize);
-
-        // un = Forces from
-        SubVector PreviousU; // displacement of LH_block due to forces from on other blocks > block (from step 2)
-        PreviousU =  _acc_result.asub(block,bsize);
-        LH_block = Minv.asub( block, current_block *bsize,bsize,bsize) * _acc_rh_current_block + PreviousU;
-
-
-
-        for (int b=current_block; b<block; b++)
-        {
-            SubVector DF ;
-            DF = Vec_df[b+1];
-            if (DF.norm())
-            {
-                //std::cout<<"step 4. Vec_df["<<b+1<<"] in NOT 0: "<<DF<<"   -> calcul du déplacement sur "<<block<<std::endl;
-                LH_block += Minv.asub( block, (b+1),bsize,bsize) * DF;
-            }
-            else
-            {
-                //std::cout<<"step4. Vec_df["<<b+1<<"] is null  :"<<DF<<std::endl;
-            }
-        }
-
-        /*
-        if (LH_block.norm()>0.0)
-        {
-            show_result=true;
-            std::cout<< " LH_block ["<<block<<"] = "<<LH_block<<" previousU = "<< PreviousU <<" _acc_rh_current_block = "<<_acc_rh_current_block<<std::endl;
-        }
-        else
-        {
-            std::cout<< " LH_block ["<<block<<"] is null "<<std::endl;
-
-        }
-        */
-
-
-        if (verification.getValue())
-        {
-            SubVector LH_block2;
-            LH_block2.resize(bsize);
-            LH_block2 = this->currentGroup->systemLHVector->asub(block,bsize);
-            //std::cout<< " solution ["<<block<<"] = "<<LH_block2<<std::endl;
-
-            SubVector delta_result ;
-            delta_result= LH_block - LH_block2;
-
-            if (delta_result.norm() > 0.0001 * LH_block.norm() )
-            {
-                std::cout<<"++++++++++++++++++++++++++++++++ Problem : delta_result = "<<delta_result<<" +++++++++++++++++++++++++++++++++"<<std::endl;
-                // pour faire un seg fault:
-                delta_result +=  Minv.asub(0, 0,bsize+1,bsize) *delta_result ;
-
-
-            }
-        }
-
-
-        // apply the result on "this->currentGroup->systemLHVector"
-
-        this->currentGroup->systemLHVector->asub(block,bsize) = LH_block;
-
-
-
-    }
-
-
-
-
-    std::cerr<<"end "<<std::endl;
 
 }
 
@@ -873,7 +796,7 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
                     acc += val1 * getMinvElement(col1,col2) * val2;
                 }
             }
-            //sout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<sendl;
+            sout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<sendl;
             acc *= fact;
             result.add(row1,row2,acc);
             if (row1!=row2)
