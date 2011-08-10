@@ -95,7 +95,7 @@ public:
         , _prev(prev)
         , _active(active)
     {
-        nbLines=3;
+        this->nbLines=3;
     }
 
     virtual void init(int line, double** w, double* force);
