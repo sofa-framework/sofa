@@ -1,5 +1,6 @@
 #include "SofaViewer.h"
 #include <sofa/helper/Factory.inl>
+#include <sofa/component/visualmodel/VisualStyle.h>
 
 namespace sofa
 {
@@ -75,11 +76,21 @@ void SofaViewer::setScene(sofa::simulation::Node* scene, const char* filename /*
         if (!currentCamera)
         {
             currentCamera = new component::visualmodel::InteractiveCamera();
+            currentCamera->setName(core::objectmodel::Base::shortName(currentCamera));
             groot->addObject(currentCamera);
             currentCamera->p_position.forceSet();
             currentCamera->p_orientation.forceSet();
             currentCamera->bwdInit();
 
+        }
+        component::visualmodel::VisualStyle* visualStyle = NULL;
+        groot->get(visualStyle);
+        if (!visualStyle)
+        {
+            visualStyle = new component::visualmodel::VisualStyle();
+            visualStyle->setName(core::objectmodel::Base::shortName(visualStyle));
+            groot->addObject(visualStyle);
+            visualStyle->init();
         }
         sofa::defaulttype::Vector3 minBBox, maxBBox;
 

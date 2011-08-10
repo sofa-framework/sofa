@@ -1,6 +1,7 @@
 #ifndef SOFA_COMPONENT_VISUALMODEL_VISUALSTYLE_H
 #define SOFA_COMPONENT_VISUALMODEL_VISUALSTYLE_H
 
+#include <sofa/component/component.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
@@ -8,10 +9,10 @@ namespace sofa
 {
 namespace component
 {
-namespace visual
+namespace visualmodel
 {
 
-class VisualStyle : public sofa::core::visual::VisualModel
+class SOFA_COMPONENT_VISUALMODEL_API VisualStyle : public sofa::core::visual::VisualModel
 {
 public:
     SOFA_CLASS(VisualStyle,sofa::core::visual::VisualModel);

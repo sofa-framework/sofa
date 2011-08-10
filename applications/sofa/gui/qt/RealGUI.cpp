@@ -51,7 +51,7 @@
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/DeactivatedNodeVisitor.h>
-
+#include <sofa/component/visualmodel/VisualStyle.h>
 #include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/core/visual/VisualParams.h>
@@ -272,7 +272,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
       backgroundImage(NULL),
       left_stack(NULL),
       recentlyOpenedFilesManager("config/Sofa.ini"),
-      saveReloadFile(false)
+      saveReloadFile(false),
+      displayFlag(NULL)
 {
 
 #ifdef SOFA_GUI_INTERACTION
@@ -305,14 +306,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     QMenu *recentMenu = recentlyOpenedFilesManager.createWidget(this);
     fileMenu->insertItem(QPixmap(),recentMenu,indexRecentlyOpened,indexRecentlyOpened);
     connect(recentMenu, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
-
-
-
-
-    displayFlag = new DisplayFlagWidget(tabView);
-    connect( displayFlag, SIGNAL( change(int,bool)), this, SLOT(showhideElements() ));
-    gridLayout1->addWidget(displayFlag,0,0);
-
 
     left_stack = new QWidgetStack ( splitter2 );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
@@ -363,6 +356,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     TabStats->layout()->add(statWidget);
 
     createViewers(viewername);
+
 
     currentTabChanged ( tabs->currentPage() );
 
@@ -532,8 +526,10 @@ RealGUI::~RealGUI()
         lmlreader = NULL;
     }
 #endif
-    delete displayFlag;
-
+    if( displayFlag != NULL )
+    {
+        delete displayFlag;
+    }
 #ifdef SOFA_DUMP_VISITOR_INFO
     delete windowTraceVisitor;
     delete handleTraceVisitor;
@@ -834,6 +830,8 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     this->setWindowFilePath(filename.c_str());
     setScene ( root, filename.c_str(), temporaryFile );
 
+
+
     configureGUI(root);
 
     //need to create again the output streams !!
@@ -918,7 +916,6 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         }
 
     }
-
     if (tabInstrument!= NULL)
     {
         tabs->removePage(tabInstrument);
@@ -926,6 +923,32 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         tabInstrument = NULL;
     }
     viewer->setScene ( root, filename );
+
+    if( displayFlag != NULL)
+    {
+        gridLayout1->removeWidget(displayFlag);
+        delete displayFlag;
+        displayFlag = NULL;
+    }
+
+    component::visualmodel::VisualStyle* visualStyle = NULL;
+
+    if( root )
+    {
+        root->get(visualStyle);
+        if(visualStyle)
+        {
+            displayFlag = new DisplayFlagsDataWidget(tabView,"displayFlagwidget",&visualStyle->displayFlags);
+            displayFlag->createWidgets();
+            displayFlag->updateWidgetValue();
+            connect( displayFlag, SIGNAL( WidgetDirty(bool) ), this, SLOT(showhideElements() ));
+            displayFlag->setMinimumSize(50,100);
+            gridLayout1->addWidget(displayFlag,0,0);
+            connect(tabs,SIGNAL(currentChanged(QWidget*)),displayFlag, SLOT( updateWidgetValue() ));
+        }
+    }
+
+
     this->setWindowFilePath(filename);
     viewer->resetView();
 
@@ -933,20 +956,7 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
 
     if (root)
     {
-        // set state of display flags
-        displayFlag->setFlag(DisplayFlagWidget::VISUALMODELS,root->getContext()->getShowVisualModels());
-        displayFlag->setFlag(DisplayFlagWidget::BEHAVIORMODELS,root->getContext()->getShowBehaviorModels());
-        displayFlag->setFlag(DisplayFlagWidget::COLLISIONMODELS,root->getContext()->getShowCollisionModels());
-        displayFlag->setFlag(DisplayFlagWidget::BOUNDINGCOLLISIONMODELS,root->getContext()->getShowBoundingCollisionModels());
-        displayFlag->setFlag(DisplayFlagWidget::MAPPINGS,root->getContext()->getShowMappings());
-        displayFlag->setFlag(DisplayFlagWidget::MECHANICALMAPPINGS,root->getContext()->getShowMechanicalMappings());
-        displayFlag->setFlag(DisplayFlagWidget::FORCEFIELDS,root->getContext()->getShowForceFields());
-        displayFlag->setFlag(DisplayFlagWidget::INTERACTIONFORCEFIELDS,root->getContext()->getShowInteractionForceFields());
-        displayFlag->setFlag(DisplayFlagWidget::WIREFRAME,root->getContext()->getShowWireFrame());
-        displayFlag->setFlag(DisplayFlagWidget::NORMALS,root->getContext()->getShowNormals());
-#ifdef SOFA_SMP
-        displayFlag->setFlag(DisplayFlagWidget::PROCESSORCOLOR,root->getContext()->getShowProcessorColor());
-#endif
+
 
         //simulation::getSimulation()->updateVisualContext ( root );
         startButton->setOn ( root->getContext()->getAnimate() );
@@ -2082,28 +2092,7 @@ void RealGUI::updateBackgroundImage()
 
 void RealGUI::showhideElements()
 {
-    Node* root = getScene();
-    if ( root )
-    {
-        root->setShowVisualModels(displayFlag->getFlag(DisplayFlagWidget::VISUALMODELS));
-        root->setShowBehaviorModels(displayFlag->getFlag(DisplayFlagWidget::BEHAVIORMODELS));
-        root->setShowCollisionModels(displayFlag->getFlag(DisplayFlagWidget::COLLISIONMODELS));
-        root->setShowBoundingCollisionModels(displayFlag->getFlag(DisplayFlagWidget::BOUNDINGCOLLISIONMODELS));
-        root->setShowMappings(displayFlag->getFlag(DisplayFlagWidget::MAPPINGS));
-        root->setShowMechanicalMappings(displayFlag->getFlag(DisplayFlagWidget::MECHANICALMAPPINGS));
-        root->setShowForceFields(displayFlag->getFlag(DisplayFlagWidget::FORCEFIELDS));
-        root->setShowInteractionForceFields(displayFlag->getFlag(DisplayFlagWidget::INTERACTIONFORCEFIELDS));
-        root->setShowWireFrame(displayFlag->getFlag(DisplayFlagWidget::WIREFRAME));
-        root->setShowNormals(displayFlag->getFlag(DisplayFlagWidget::NORMALS));
-#ifdef SOFA_SMP
-        root->seShowProcessorColor(displayFlag->getFlag(DisplayFlagWidget::PROCESSOR_COLOR));
-#endif
-
-        sofa::simulation::getSimulation()->updateVisualContext ( root );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-        sofa::simulation::getSimulation()->updateVisualContext ( sofa::simulation::getSimulation()->getVisualRoot() );
-#endif
-    }
+    displayFlag->updateDataValue();
     viewer->getQWidget()->update();
 }
 

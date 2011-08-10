@@ -62,6 +62,7 @@ signals:
     void change(int,bool);
     void clicked();
 
+
 protected:
     virtual void contentsMousePressEvent ( QMouseEvent * e );
 
@@ -84,6 +85,7 @@ public:
     }
 
     virtual bool createWidgets();
+
 protected:
 
     virtual void readFromData();
