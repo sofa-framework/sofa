@@ -632,7 +632,7 @@ void HexahedronSetTopologyModifier::renumberPoints(const sofa::helper::vector<un
     m_container->checkTopology();
 }
 
-
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
@@ -650,6 +650,7 @@ void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 
     QuadSetTopologyModifier::propagateTopologicalEngineChanges();
 }
+#endif
 
 } // namespace topology
 

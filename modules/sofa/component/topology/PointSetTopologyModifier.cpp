@@ -180,19 +180,22 @@ void PointSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector
 void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
+#ifndef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params /* PARAMS FIRST */, m_container);
 
-// std::cout << getName() << " propagation du truc: " << getContext()->getName() << std::endl;
-// for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
-// std:: cout << (*it)->getChangeType() << std::endl;
+    // std::cout << getName() << " propagation du truc: " << getContext()->getName() << std::endl;
+    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
+    // std:: cout << (*it)->getChangeType() << std::endl;
 
     getContext()->executeVisitor(&a);
 
-    //TODO: temporary code to test topology engine pipeline. Commented by default for the moment
-    //this->propagateTopologicalEngineChanges();
-
+#else
+    //TODO: temporary code to test topology engine pipeline.
+    this->propagateTopologicalEngineChanges();
+#endif
     // remove the changes we just propagated, so that we don't send them again next time
     m_container->resetTopologyChangeList();
 }
@@ -203,9 +206,9 @@ void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params /* PARAMS FIRST */, m_container);
 
-// std::cout << getName() << " propagation du truc: " << getContext()->getName() << std::endl;
-// for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
-// std:: cout << (*it)->getChangeType() << std::endl;
+    // std::cout << getName() << " propagation du truc: " << getContext()->getName() << std::endl;
+    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
+    // std:: cout << (*it)->getChangeType() << std::endl;
 
     getContext()->executeVisitor(&a);
 
@@ -215,7 +218,7 @@ void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
 }
 
 
-
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
@@ -231,7 +234,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
             topoEngine->update();
     }
 }
-
+#endif
 void PointSetTopologyModifier::propagateStateChanges()
 {
     if (m_container->beginStateChange() == m_container->endStateChange()) return; // nothing to do if no event is stored

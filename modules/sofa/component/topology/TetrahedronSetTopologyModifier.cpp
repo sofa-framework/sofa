@@ -549,6 +549,7 @@ void TetrahedronSetTopologyModifier::renumberPoints( const sofa::helper::vector<
     m_container->checkTopology();
 }
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
@@ -566,6 +567,7 @@ void TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 
     TriangleSetTopologyModifier::propagateTopologicalEngineChanges();
 }
+#endif
 
 } // namespace topology
 

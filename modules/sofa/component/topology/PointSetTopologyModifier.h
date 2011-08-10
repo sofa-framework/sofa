@@ -146,10 +146,14 @@ public:
     * @sa endChange()
     */
     void propagateTopologicalChanges();
+
+    /// TODO: doc ??
     void propagateTopologicalChangesWithoutReset();
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     /// TODO: temporary duplication of topological events (commented by default)
     virtual void propagateTopologicalEngineChanges();
+#endif
 
     /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
     *
