@@ -430,7 +430,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge()
 
 void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 {
-    /////// Analyse des contacts à regrouper //////
+    /////// Analyse des contacts �  regrouper //////
     double criterion=0.0;
     int numContacts = _numConstraints/3;
 
@@ -905,16 +905,24 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
     /// each constraintCorrection has an internal force vector that is set to "0"
 
     // if necessary: modify the sequence of contact
-    std::list<int> contact_sequence;
+    std::list<unsigned int> contact_sequence;
+    contact_sequence.clear();
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetForUnbuiltResolution(f, contact_sequence);
+
+        if(this->f_printLog.getValue())
+        {
+            core::ConstraintParams cparams;
+            cc->addComplianceInConstraintSpace(&cparams, _W);
+        }
     }
 
-    // debug
-    // std::cout<<"getBlockDiagonalCompliance  Wdiag = "<<(* _Wdiag)<<std::endl;
+
+
+
     // return 1;
     if ( displayTime.getValue() )
     {
@@ -922,10 +930,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
         time = (double) timer.getTime();
     }
 
-    bool change_contact_sequence = false;
-
-    if(contact_sequence.size() ==_numConstraints)
-        change_contact_sequence=true;
 
 
     //////// Important component if the LCP is not build :
@@ -992,17 +996,24 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
     /////////// for each contact, the pair of constraintcorrection is called to add the contribution
     for (c1=0; c1<numContacts; c1++)
     {
-        //debug
-        //std::cout<<"contact "<<c1<<" cclist_elem1 : "<<_cclist_elem1[c1]->getName()<<std::endl;
+
+        if (this->f_printLog.getValue())  //debug
+            std::cout<<"contact "<<c1<<" cclist_elem1 : "<<_cclist_elem1[c1]->getName();
+
         // compliance of object1
         _cclist_elem1[c1]->getBlockDiagonalCompliance(_Wdiag, 3*c1, 3*c1+2);
+
         // compliance of object2 (if object2 exists)
         if(_cclist_elem2[c1] != NULL)
         {
             _cclist_elem2[c1]->getBlockDiagonalCompliance(_Wdiag, 3*c1, 3*c1+2);
-            // debug
-            //std::cout<<"_cclist_elem2[c1]"<<std::endl;
+
+
+            if (this->f_printLog.getValue()) // debug
+                std::cout<<"  _cclist_elem2 : "<<_cclist_elem2[c1]->getName();
         }
+        if (this->f_printLog.getValue()) // debug
+            std::cout<<" "<<std::endl;
     }
 
 
@@ -1027,7 +1038,11 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
     }
 
     // debug
-    // std::cout<<"getBlockDiagonalCompliance  Wdiag = "<<(* _Wdiag)<<std::endl;
+    if(this->f_printLog.getValue())
+    {
+        sout<<" Compliance In constraint Space : \n W ="<<(* _W)<<sendl;
+        sout<<"getBlockDiagonalCompliance   \n Wdiag = "<<(* _Wdiag)<<sendl;
+    }
     // return 1;
     if ( displayTime.getValue() )
     {
@@ -1040,19 +1055,22 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
 
     for (it=0; it<_maxIt; it++)
     {
-        std::list<int>::iterator it_c = contact_sequence.begin();
-        error =0;
-        for (int c=0; c<numContacts; c++)
-        {
-            if(change_contact_sequence)
-            {
-                int constraint = *it_c;
-                c1 = constraint/3;
-                it_c++; it_c++; it_c++;
 
-            }
-            else
-                c1=c;
+        std::cout<<" +++++++++++++ NEW ITERATION ++++++++++++"<<std::endl;
+        std::list<unsigned int>::iterator it_c ;
+
+        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; it_c++ )
+        {
+
+            error =0;
+
+            int constraint = *it_c;
+            c1 = constraint/3;
+
+            //constraints are treated 3x3 (friction contact)
+            it_c++; it_c++;
+
+
 
             //std::cout<<"it"<<it << " - c1 :"<<c1<<std::endl;
 
@@ -1061,14 +1079,9 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
             // violation when no contact force
             d[3*c1]=dfree[3*c1]; d[3*c1+1]=dfree[3*c1+1]; d[3*c1+2]=dfree[3*c1+2];
 
-            // debug
-            //if(c1<2)
-            //	std::cout<<"free displacement for contact : dn_free = "<< d[3*c1] <<"  dt_free = "<<d[3*c1+1]<<"  ds_free = "<<d[3*c1+2]<<std::endl;
-
 
             // set current force in fn, ft, fs
             fn0=fn=f[3*c1]; ft=f[3*c1+1]; fs=f[3*c1+2];
-            //f[3*c1] = 0.0; f[3*c1+1] = 0.0; f[3*c1+2] = 0.0;
 
             // displacement of object1 due to contact force
             _cclist_elem1[c1]->addConstraintDisplacement(d, 3*c1, 3*c1+2);
@@ -1080,32 +1093,18 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
 
             // set displacement in dn, dt, ds
             dn=d[3*c1]; dt=d[3*c1+1]; ds=d[3*c1+2];
-            //d[3*c1  ] = dn + (W33[c1].w[0]*fn + W33[c1].w[1]*ft + W33[c1].w[2]*fs);
-            //d[3*c1+1] = dt + (W33[c1].w[1]*fn + W33[c1].w[3]*ft + W33[c1].w[4]*fs);
-            //d[3*c1+2] = ds + (W33[c1].w[2]*fn + W33[c1].w[4]*ft + W33[c1].w[5]*fs);
-
-            // debug
-            //if(c1<2)
-            //	std::cout<<"New_GS_State called : dn = "<<dn<<"  dt = "<<dt<<"  ds = "<<ds<<"  fn = "<<fn<<"  ft = "<<ft<<"  fs = "<<fs<<std::endl;
-
-
-
 
 
             // compute a new state for stick/slip
             /// ATTENTION  NOUVEAU GS_STATE : maintenant dn, dt et ds inclue les forces fn, ft, fs
             W33[c1].New_GS_State(_mu,dn,dt,ds,fn,ft,fs);
-            //W33[c1].GS_State(_mu,dn,dt,ds,fn,ft,fs);
-            // debug
-            //if(c1<2)
-            //	std::cout<<"New_GS_State solved for contact "<<c1<<" : dn = "<<dn<<"  dt = "<<dt<<"  ds = "<<ds<<"  fn = "<<fn<<"  ft = "<<ft<<"  fs = "<<fs<<std::endl;
 
             // evaluate an error (based on displacement)
             error += helper::absError(dn,dt,ds,d[3*c1],d[3*c1+1],d[3*c1+2]);
 
             bool update;
             if (fn0 == 0.0 && fn == 0.0)
-                update=false;
+                update=false;               // the contact is not active and was not active in the previous step
             else
                 update=true;
 
@@ -1130,7 +1129,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
             }
 
 
-            ///// debug : verifie si on retrouve le mÃªme dn
+            ///// debug : verifie si on retrouve le meme dn
             /*
             d[3*c1]=dfree[3*c1]; d[3*c1+1]=dfree[3*c1+1]; d[3*c1+2]=dfree[3*c1+2];
             _cclist_elem1[c1]->addConstraintDisplacement(d, 3*c1, 3*c1+2);
@@ -1164,6 +1163,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
             return 1;
         }
     }
+
     sofa::helper::AdvancedTimer::valSet("GS iterations", it);
 
     //free(d);
@@ -1179,6 +1179,10 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
     //afficheLCP(dfree,W,f,dim);
     return 0;
 }
+
+
+
+
 
 int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f)
 {
@@ -1208,8 +1212,14 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f)
     double _tol = tol.getValue();
     int _maxIt = maxIt.getValue();
 
-    // if necessary: modify the sequence of contact
-    std::list<int> contact_sequence;
+    // indirection of the sequence of contact
+    std::list<unsigned int> contact_sequence;
+
+    for (unsigned int c=0; c< _numConstraints; c++)
+    {
+        contact_sequence.push_back(c);
+    }
+
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -1223,10 +1233,6 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f)
         time = (double) timer.getTime();
     }
 
-    bool change_contact_sequence = false;
-
-    if(contact_sequence.size() ==_numConstraints)
-        change_contact_sequence=true;
 
 
     //////// Important component if the LCP is not build :
@@ -1310,19 +1316,13 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f)
 
     for (it=0; it<_maxIt; it++)
     {
-        std::list<int>::iterator it_c = contact_sequence.begin();
+        std::list<unsigned int>::iterator it_c;
         error =0;
-        for (int c=0; c<numContacts; c++)
-        {
-            if(change_contact_sequence)
-            {
-                int constraint = *it_c;
-                c1 = constraint;
-                it_c++;
 
-            }
-            else
-                c1=c;
+        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end(); it_c++)
+        {
+
+            c1 = *it_c;
 
             // compute the current violation :
             // violation when no contact force
@@ -1402,7 +1402,7 @@ void LCPConstraintSolver::lockConstraintProblem(ConstraintProblem* l1, Constrain
     else
         lcp = &lcp3; // lcp1 et lcp2 sont lockés, donc lcp3 n'est pas locké
 
-    // Mise à jour de _W _dFree et _result
+    // Mise �  jour de _W _dFree et _result
     _W = &lcp->W;
     _dFree = &lcp->dFree;
     _result = &lcp->f;

@@ -538,9 +538,12 @@ void LinearSolverConstraintCorrection<DataTypes>::verify_constraints()
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<int>& renumbering)
+void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& renumbering)
 {
+
+    //std::cout<<" \n \n \n +++++++ resetForUnbuiltResolution  +++++++++ "<<std::endl;
     verify_constraints();
+
 
     const MatrixDeriv& constraints = *this->mstate->getC();
 
@@ -551,7 +554,6 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     constraint_force.resize(this->mstate->getSize());
 
     constraint_dofs.clear();
-    id_to_localIndex.clear();
 
     ////// TODO : supprimer le classement par indice max
     //std::vector<unsigned int> VecMaxDof;
@@ -561,35 +563,15 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     std::vector<unsigned int> VecMinDof;
     VecMinDof.resize(nbConstraints);
 
-    int maxIndex = -1;
     unsigned int c = 0;
 
     MatrixDerivRowConstIterator rowItEnd = constraints.end();
 
     for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        I_last_Dforce.clear();
 
-        const int indexC = rowIt.index();
+        const int indexC = rowIt.index(); // id constraint
 
-        // resize table if necessary
-        if (indexC > maxIndex)
-        {
-            id_to_localIndex.resize(indexC + 1, -1);   // debug : -1 value allows to know if the table is badly filled
-            maxIndex = indexC;
-        }
-
-        if(id_to_localIndex[indexC] != -1)
-        {
-            serr << " WARNING: id_to_localIndex[" << indexC << "] has already a constraint : " << id_to_localIndex[indexC] << " concurrent constraint =" << c << sendl;
-        }
-
-        // buf the table of local indices
-        id_to_localIndex[indexC] = c;
-
-        // debug //
-        //if (c==0)
-        //	f[indexC]=1.0;
 
         // buf the value of force applied on concerned dof : constraint_force
         // buf a table of indice of involved dof : constraint_dofs
@@ -603,23 +585,14 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
             {
                 const unsigned int dof = colIt.index();
                 constraint_force[dof] += colIt.val() * fC;
-                I_last_Dforce.push_back(dof);
             }
         }
 
         //////////// for wire optimization ////////////
+        // VecMinDof contains the smallest id of the dofs involved in each constraint [c]
 
         MatrixDerivColConstIterator colItEnd = rowIt.end();
 
-        //VecMaxDof[c] = 0;
-
-        /*for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
-        {
-            const unsigned int dof = colIt.index();
-            constraint_dofs.push_back(dof);
-            if (dof > VecMaxDof[c])
-                    VecMaxDof[c] = dof;
-        }*/
 
         VecMinDof[c] = this->mstate->getSize()+1;
 
@@ -633,11 +606,16 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
         c++;
     }
+    // constraint_dofs buff the DOF that are involved with the constraints
+    constraint_dofs.unique();
 
     if (wire_optimization.getValue())
     {
-        std::vector< std::vector<int> > ordering_per_dof;
-        ordering_per_dof.resize(this->mstate->getSize());
+        //std::cout<<" wire_optimization "<<std::endl;
+
+
+        std::vector< std::vector<unsigned int> > ordering_per_dof;
+        ordering_per_dof.resize(this->mstate->getSize());   // for each dof, provide the list of constraint for which this dof is the smallest involved
 
         MatrixDerivRowConstIterator rowItEnd = constraints.end();
         unsigned int c = 0;
@@ -648,36 +626,24 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
             c++;
         }
 
-        renumbering.clear();
+
+        // fill the renumbering list...
+        renumbering.clear(); // TODO !!! => avoid renumbering of dofs that are not involved with this object !!
 
         for (int dof = 0; dof < this->mstate->getSize(); dof++)
         {
             for (unsigned int c = 0; c < ordering_per_dof[dof].size(); c++)
             {
-                renumbering.push_back(ordering_per_dof[dof][c]);
+                renumbering.push_back(ordering_per_dof[dof][c]); // push_back the list of constraint by starting from the smallest dof
             }
         }
+
+        //std::cout<<" +++++ RENUBERING= [";
+        //for (std::list<int>::iterator it_c = renumbering.begin(); it_c!=  renumbering.end(); it_c++)
+        //    std::cout<<(*it_c)<<" ";
+        //std::cout<<"]"<<std::endl;
     }
 
-    // debug
-    //std::cout<<"in resetConstraintForce : constraint_force ="<<constraint_force<<std::endl;
-
-    // constraint_dofs buff the DOF that are involved with the constraints
-    constraint_dofs.unique();
-
-    I_last_Dforce.sort();
-    I_last_Dforce.unique();
-
-    // debug
-    /*std::cout<<"in resetConstraintForce I_last_Dforce.size() = "<<I_last_Dforce.size()<<"value : "<<std::endl;
-    std::list<int>::const_iterator lit(I_last_Dforce.begin()), lend(I_last_Dforce.end());
-    for(;lit!=lend;++lit)
-    {
-            int dof =*lit;
-            std::cout<<dof<<" - ";
-    }
-    std::cout<<" "<<std::endl;
-    */
 
     /////////////// SET INFO FOR LINEAR SOLVER /////////////
 
@@ -686,6 +652,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
     linearsolvers[0]->setSystemRHVector(forceID);
     linearsolvers[0]->setSystemLHVector(dxID);
+
 
     systemMatrix_buf   = linearsolvers[0]->getSystemBaseMatrix();
     systemRHVector_buf = linearsolvers[0]->getSystemRHBaseVector();
@@ -699,47 +666,52 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     systemLHVector_buf->resize(systemSize) ;
     //std::cerr<<"resize ok"<<std::endl;
 
+    //std::cout<<"resetForUnbuiltResolution constraint_force ="<<constraint_force<<std::endl;
+
+
     for ( int i=0; i<this->mstate->getSize(); i++)
     {
         for  (unsigned int j=0; j<derivDim; j++)
             systemRHVector_buf->set(i*derivDim+j, constraint_force[i][j]);
     }
 
-    // debug !!
-    //double values[12];
-    //values[0]=0.0;
-    //addConstraintDisplacement(values, 0,0) ;
-    //std::cout<<"values[0] ="<<values[0]<<std::endl;
+    // Init the internal data of the solver for partial solving
+    linearsolvers[0]->init_partial_solve();
 
-    ///////// new : précalcul des liste d'indice ///////
-    Vec_I_list_dof.clear(); // clear = the list is fill during the block compliance computation
+
+    ///////// new : precalcul des liste d'indice ///////
+    Vec_I_list_dof.clear(); // clear = the list is filled during the block compliance computation
     Vec_I_list_dof.resize(nbConstraints);
     last_disp = 0;
     last_force = nbConstraints - 1;
-    _new_force = true;
+    _new_force = false;
 }
 
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin, int end)
 {
+    //std::cout<<" addConstraintDisplacement... begin ="<<begin<<"  end ="<<end<<std::endl ;
+
     const MatrixDeriv& constraints = *this->mstate->getC();
     const unsigned int derivDim = Deriv::size();
 
     last_disp = begin;
 
+
     linearsolvers[0]->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
 
     _new_force = false;
 
+    // TODO => optimisation => for each bloc store J[bloc,dof]
     for (int i = begin; i <= end; i++)
     {
-        MatrixDerivRowConstIterator rowIt = constraints.readLine(id_to_localIndex[i]);
+        MatrixDerivRowConstIterator rowIt = constraints.readLine(i);
 
-        if (rowIt != constraints.end())
+        if (rowIt != constraints.end()) // useful ??
         {
-            MatrixDerivColConstIterator colItEnd = rowIt.end();
+            MatrixDerivColConstIterator rowEnd = rowIt.end();
 
-            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
             {
                 const unsigned int dof = colIt.index();
                 Deriv disp;
@@ -749,7 +721,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
                     disp[j] = (Real)(systemLHVector_buf->element(dof * derivDim + j) * odesolver->getPositionIntegrationFactor());
                 }
 
-                d[i] += colIt.val() * disp;
+                d[i] += colIt.val() * disp;  // J[bloc[i],dof] * D[dof]  // dof= Vec_I_list_dof[i][colIt ]
             }
         }
     }
@@ -758,19 +730,28 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df, int begin, int end, bool update)
 {
+
+
     const MatrixDeriv& constraints = *this->mstate->getC();
     const unsigned int derivDim = Deriv::size();
+
+
+    last_force = begin;
 
     if (!update)
         return;
 
     _new_force = true;
 
-    Deriv DF_c;
 
+
+    //std::cout<<" setConstraintDForce : df = ";
+    // TODO => optimisation !!!
     for (int i = begin; i <= end; i++)
     {
-        MatrixDerivRowConstIterator rowIt = constraints.readLine(id_to_localIndex[i]);
+
+        //std::cout<<"["<<i<<"]="<<df[i]<<"  ";
+        MatrixDerivRowConstIterator rowIt = constraints.readLine(i);
 
         if (rowIt != constraints.end())
         {
@@ -781,35 +762,33 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
                 const Deriv n = colIt.val();
                 const unsigned int dof = colIt.index();
 
-                constraint_force[dof] += n * df[i];
-                DF_c +=  n * df[i];
+                constraint_force[dof] += n * df[i]; // sum of the constraint force in the DOF space
+
             }
         }
     }
+    //std::cout<<std::endl;
 
-    /*
-    if (df[begin]<0)
-    {
-    std::cout<<" DF_c : "<< DF_c<< std::endl;
-    }
-    */
+    //std::cout<<"constraint_force = "<<constraint_force<<std::endl;
 
-    last_force = begin;
-    //debug
 
+    // course on indices of the dofs involved invoved in the bloc //
     std::list<int>::const_iterator it_dof(Vec_I_list_dof[last_force].begin()), it_end(Vec_I_list_dof[last_force].end());
     for(; it_dof!=it_end; ++it_dof)
     {
         int dof =(*it_dof) ;
-        //std::cout<<"dof -  "<<dof <<std::endl;
         for  (unsigned int j=0; j<derivDim; j++)
             systemRHVector_buf->set(dof * derivDim + j, constraint_force[dof][j]);
     }
+
 }
 
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
 {
+
+    // std::cout<<" getBlockDiagonalCompliance..." ;
+
     if (!this->mstate || !odesolver || (linearsolvers.size()==0)) return;
 
     // use the OdeSolver to get the position integration factor
@@ -827,9 +806,9 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
 
     for (int i = begin; i <= end; i++)
     {
-        int c1 = id_to_localIndex[i];
 
-        MatrixDerivRowConstIterator rowIt = constraints.readLine(c1);
+
+        MatrixDerivRowConstIterator rowIt = constraints.readLine(i);
 
         if (rowIt != constraints.end())
         {
@@ -867,9 +846,9 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
 
     for (int i = begin; i <= end; i++)
     {
-        int c = id_to_localIndex[i];
 
-        MatrixDerivRowConstIterator rowIt = constraints.readLine(c);
+
+        MatrixDerivRowConstIterator rowIt = constraints.readLine(i);
 
         if (rowIt != constraints.end())
         {
@@ -889,6 +868,9 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
     {
         Vec_I_list_dof[i] = list_dof;
     }
+
+    //std::cout<<" end "<<std::endl;
+
 }
 
 } // namespace constraintset

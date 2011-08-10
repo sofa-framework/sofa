@@ -505,7 +505,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
                 errF[l] = force[j+l];
                 d[j+l] = dfree[j+l];
             }
-            //   (b) contribution of forces are added to d
+            //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
             for(k=0; k<dimension; k++)
                 for(l=0; l<nb; l++)
                     d[j+l] += w[j+l][k] * force[k];

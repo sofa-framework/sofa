@@ -122,7 +122,7 @@ public:
 
     virtual bool hasConstraintNumber(int index) ;  // virtual ???
 
-    virtual void resetForUnbuiltResolution(double * f, std::list<int>& renumbering);
+    virtual void resetForUnbuiltResolution(double * f, std::list<unsigned int>& renumbering);
 
     virtual void addConstraintDisplacement(double *d, int begin,int end) ;
 
@@ -163,19 +163,16 @@ private:
     // new :  for non building the constraint system during solving process //
     VecDeriv constraint_disp, constraint_force;
     std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint // TODO : verify if useful !!
-    std::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
     defaulttype::BaseMatrix* systemMatrix_buf;
     defaulttype::BaseVector* systemRHVector_buf;
     defaulttype::BaseVector* systemLHVector_buf;
-    // remplacer ces listes (construite à chaque fois)
-    std::list<int> I_last_Dforce;
-    std::list<int> I_last_Disp;
 
-    // par un vecteur de listes précaclulés pour chaque contrainte
-    std::vector< ListIndex > Vec_I_list_dof;   // vecteur donnant la liste des indices par block de contrainte
-    int last_force, last_disp;
-    bool _new_force;
-    // et un indice permettant de pointer dans le vecteur
+
+    // par un vecteur de listes precaclues pour chaque contrainte
+    std::vector< ListIndex > Vec_I_list_dof;   // vecteur donnant la liste des indices des dofs par block de contrainte
+    int last_force, last_disp; //last_force indice du dof le plus petit portant la force/le dpt qui a ?t? modifi? pour la derni?re fois (wire optimisation only?)
+    bool _new_force; // if true, a "new" force was added in setConstraintDForce which is not yet integrated by a new computation in addConstraintDisplacements
+
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)

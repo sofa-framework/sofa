@@ -112,7 +112,7 @@ public:
 
     virtual bool hasConstraintNumber(int index) ;  // virtual ???
 
-    virtual void resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)  ;
+    virtual void resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)  ;
 
     virtual void addConstraintDisplacement(double *d, int begin,int end) ;
 

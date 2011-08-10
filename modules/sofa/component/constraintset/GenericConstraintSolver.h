@@ -64,7 +64,7 @@ public:
 
     // For unbuilt version :
     SparseMatrix<double> Wdiag;
-    std::list<int> constraints_sequence;
+    std::list<unsigned int> constraints_sequence;
     bool change_sequence;
     std::vector<core::behavior::BaseConstraintCorrection*> cclist_elem1, cclist_elem2;
 
