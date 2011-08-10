@@ -34,6 +34,7 @@ namespace component
 namespace mapping
 {
 
+SOFA_DECL_CLASS(PersistentContactMapping)
 
 PersistentContactMapping::PersistentContactMapping()
     : m_nameOfInputMap(initData(&m_nameOfInputMap, "nameOfInputMap", "if contactDuplicate == true, it provides the name of the input mapping"))

@@ -1,0 +1,7 @@
+includeOnce($$_FILE_) {
+	declare(PersistentContact, applications/plugins/PersistentContact, sofahelper sofacomponentbase sofacomponentcollision )
+	
+	contains(DEFINES, SOFA_HAVE_PERSISTENTCONTACT) {
+		enable(PersistentContact)
+	}
+}

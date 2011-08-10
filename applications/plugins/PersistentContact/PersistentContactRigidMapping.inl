@@ -153,8 +153,8 @@ void PersistentContactRigidMapping<TIn, TOut>::bwdInit()
 
         parentNode->getTreeObjects< Inherit, helper::vector< Inherit* > >(&inherits);
 
-        helper::vector< Inherit* >::const_iterator it = inherits.begin();
-        helper::vector< Inherit* >::const_iterator itEnd = inherits.end();
+        typename helper::vector< Inherit* >::const_iterator it = inherits.begin();
+        typename helper::vector< Inherit* >::const_iterator itEnd = inherits.end();
 
         while (it != itEnd)
         {
