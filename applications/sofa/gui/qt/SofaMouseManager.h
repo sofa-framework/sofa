@@ -29,9 +29,11 @@
 #ifndef SOFA_GUI_QT_MOUSEMANAGER_H
 #define SOFA_GUI_QT_MOUSEMANAGER_H
 
-#include <sofa/gui/qt/UI/MouseManager.h>
 #include <sofa/gui/PickHandler.h>
+#include <QDialog>
+#include <memory>
 
+class Ui_MouseManager;
 
 namespace sofa
 {
@@ -41,9 +43,10 @@ namespace qt
 {
 
 
-class SofaMouseManager: public MouseManager
+class SofaMouseManager : public QDialog
 {
     Q_OBJECT
+    std::auto_ptr<Ui_MouseManager> gui;
 public:
 
     SofaMouseManager();

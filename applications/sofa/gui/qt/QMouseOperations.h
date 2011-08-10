@@ -36,6 +36,8 @@
 #include <QSlider>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QGroupBox>
+#include <QComboBox>
 #else
 #include <qwidget.h>
 #include <qlineedit.h>
