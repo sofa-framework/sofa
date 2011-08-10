@@ -29,7 +29,7 @@
 #ifndef SOFA_GUI_QT_MOUSEMANAGER_H
 #define SOFA_GUI_QT_MOUSEMANAGER_H
 
-#include "MouseManager.h"
+#include <sofa/gui/qt/UI/MouseManager.h>
 #include <sofa/gui/PickHandler.h>
 
 
