@@ -1,27 +1,27 @@
 /******************************************************************************
- *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
- *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
- *                                                                             *
- * This library is free software; you can redistribute it and/or modify it     *
- * under the terms of the GNU Lesser General Public License as published by    *
- * the Free Software Foundation; either version 2.1 of the License, or (at     *
- * your option) any later version.                                             *
- *                                                                             *
- * This library is distributed in the hope that it will be useful, but WITHOUT *
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
- * for more details.                                                           *
- *                                                                             *
- * You should have received a copy of the GNU Lesser General Public License    *
- * along with this library; if not, write to the Free Software Foundation,     *
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
- *******************************************************************************
- *                               SOFA :: Modules                               *
- *                                                                             *
- * Authors: The SOFA Team and external contributors (see Authors.txt)          *
- *                                                                             *
- * Contact information: contact@sofa-framework.org                             *
- ******************************************************************************/
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #include <sofa/component/mastersolver/MasterConstraintSolver.h>
 
 #include <sofa/component/constraintset/ConstraintSolverImpl.h>
@@ -101,7 +101,7 @@ void ConstraintProblem::clear(int dim, const double &tol)
             _constraintsResolutions[i] = NULL;
         }
     }
-
+    _dFree.clear();
     _dFree.resize(dim);
     _d.resize(dim);
     _W.resize(dim,dim);
@@ -116,7 +116,7 @@ void ConstraintProblem::clear(int dim, const double &tol)
 void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax)
 {
 
-    //	sout<<"------------------------------------ new iteration ---------------------------------"<<sendl;
+//	sout<<"------------------------------------ new iteration ---------------------------------"<<sendl;
     int i, j, k, l, nb;
 
     double errF[6];
@@ -129,12 +129,12 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
     double timeScale = 1.0 / (double)CTime::getTicksPerSec();
 
     /* // no init: the constraint problem has already been solved in the simulation...
-    for(i=0; i<dim; )
-    {
-    	res[i]->init(i, w, force);
-    	i += res[i]->nbLines;
-    }
-     */
+    	for(i=0; i<dim; )
+    	{
+    		res[i]->init(i, w, force);
+    		i += res[i]->nbLines;
+    	}
+    */
 
     for(i=0; i<numItMax; i++)
     {
@@ -241,15 +241,15 @@ MasterConstraintSolver::MasterConstraintSolver(simulation::Node* gnode)
     bufCP1 = false;
 
     _graphErrors.setWidget("graph");
-    //	_graphErrors.setReadOnly(true);
+//	_graphErrors.setReadOnly(true);
     _graphErrors.setGroup("Graph");
 
     _graphConstraints.setWidget("graph");
-    //	_graphConstraints.setReadOnly(true);
+//	_graphConstraints.setReadOnly(true);
     _graphConstraints.setGroup("Graph");
 
     _graphForces.setWidget("graph");
-    //	_graphForces.setReadOnly(true);
+//	_graphForces.setReadOnly(true);
     _graphForces.setGroup("Graph2");
 
     CP1.clear(0,_tol.getValue());
@@ -542,8 +542,13 @@ void MasterConstraintSolver::correctiveMotion(const core::ExecParams* params /* 
     sofa::helper::AdvancedTimer::stepEnd ("Corrective Motion");
 }
 
-void MasterConstraintSolver::step( const core::ExecParams* params /* PARAMS FIRST */, double dt )
+void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIRST */, double dt )
 {
+
+    static double simulationTime=0.0;
+
+    simulationTime+=dt;
+
     sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
 
     {
@@ -561,6 +566,12 @@ void MasterConstraintSolver::step( const core::ExecParams* params /* PARAMS FIRS
     for( unsigned i=0; i<numMechSteps.getValue(); i++ )
     {
         this->gnode->execute ( beh );
+
+
+        if (simulationTime>0.1)
+            activateSubGraph.setValue(true);
+        else
+            activateSubGraph.setValue(false);
 
         time = 0.0;
         double totaltime = 0.0;
@@ -752,10 +763,10 @@ void MasterConstraintSolver::step( const core::ExecParams* params /* PARAMS FIRS
 
         /// CORRECTIVE MOTION
         correctiveMotion(params /* PARAMS FIRST */, this->gnode);
-        //       if (doubleBuffer.getValue() && bufCP1)
-        //           std::cout << " #C: " << CP2.getSize() << " constraints" << std::endl;
-        //       else
-        //           std::cout << " #C: " << CP1.getSize() << " constraints" << std::endl;
+//       if (doubleBuffer.getValue() && bufCP1)
+//           std::cout << " #C: " << CP2.getSize() << " constraints" << std::endl;
+//       else
+//           std::cout << " #C: " << CP1.getSize() << " constraints" << std::endl;
 
 
         if ( displayTime.getValue() )
@@ -852,13 +863,13 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
     std::map < std::string, sofa::helper::vector<double> >* graphs = _graphForces.beginEdit();
     graphs->clear();
     /*	for(j=0; j<dim; j++)
-    {
-    	std::ostringstream oss;
-    	oss << "f" << j;
+    	{
+    		std::ostringstream oss;
+    		oss << "f" << j;
 
-    	sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
-    	graph_force.clear();
-    }	*/
+    		sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
+    		graph_force.clear();
+    	}	*/
     _graphForces.endEdit();
 
 
@@ -923,10 +934,10 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 
                 ///////////// debug //////////
                 /*		if (i<3 && j<3)
-                {
-                	std::cerr<<".............. iteration "<<i<< std::endl;
-                	std::cerr<<"d ["<<j<<"]="<<d[j]<<"  - d ["<<j+1<<"]="<<d[j+1]<<"  - d ["<<j+2<<"]="<<d[j+2]<<std::endl;
-                }*/
+                		{
+                			std::cerr<<".............. iteration "<<i<< std::endl;
+                			std::cerr<<"d ["<<j<<"]="<<d[j]<<"  - d ["<<j+1<<"]="<<d[j+1]<<"  - d ["<<j+2<<"]="<<d[j+2]<<std::endl;
+                		}*/
                 //////////////////////////////
 
                 //3. the specific resolution of the constraint(s) is called
