@@ -165,7 +165,7 @@ void EdgeSetTopologyModifier::removeEdgesWarning(sofa::helper::vector<unsigned i
     EdgesRemoved *e = new EdgesRemoved(edges);
     addTopologyChange(e);
 
-    std::cout<<"addTopologyChange EdgesRemoved"<<std::endl;
+    //std::cout<<"addTopologyChange EdgesRemoved"<<std::endl;
 }
 
 
@@ -889,6 +889,7 @@ bool EdgeSetTopologyModifier::removeIsolatedElements(unsigned int scaleElem)
 }
 
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
@@ -906,6 +907,7 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
 
     PointSetTopologyModifier::propagateTopologicalEngineChanges();
 }
+#endif
 
 } // namespace topology
 

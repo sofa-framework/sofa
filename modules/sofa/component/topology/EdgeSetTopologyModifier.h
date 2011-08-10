@@ -59,8 +59,10 @@ public:
 
     virtual void init();
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     /// TODO: temporary duplication of topological events (commented by default)
     virtual void propagateTopologicalEngineChanges();
+#endif
 
     /** \brief Sends a message to warn that some edges were added in this topology.
     *

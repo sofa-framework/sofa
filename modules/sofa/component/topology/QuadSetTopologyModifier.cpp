@@ -445,7 +445,7 @@ void QuadSetTopologyModifier::renumberPoints( const sofa::helper::vector<unsigne
     m_container->checkTopology();
 }
 
-
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
@@ -463,6 +463,7 @@ void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
 
     EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 }
+#endif
 
 } // namespace topology
 

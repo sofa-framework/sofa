@@ -95,6 +95,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 # Uncomment if you want to use indexedmap
 # DEFINES += SOFA_HAVE_INDEXEDMAP
+
+# Uncomment if you want to use the new topogical change design
+# DEFINES += SOFA_HAVE_NEW_TOPOLOGYCHANGES
 } # END SOFA_DEV
 
 ########################################################################

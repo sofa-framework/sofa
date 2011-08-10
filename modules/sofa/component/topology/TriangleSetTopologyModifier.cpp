@@ -671,6 +671,7 @@ void TriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa::helper:
 }
 
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
@@ -688,6 +689,7 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
 
     EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 }
+#endif
 
 } // namespace topology
 
