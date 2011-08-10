@@ -52,6 +52,19 @@ namespace component
 namespace constraintset
 {
 
+inline double sign(double &toto)
+{
+    if (toto<0.0)
+        return -1.0;
+    return 1.0;
+}
+inline float sign(float &toto)
+{
+    if (toto<0.0f)
+        return -1.0f;
+    return 1.0f;
+}
+
 class BilateralConstraintResolution : public core::behavior::ConstraintResolution
 {
 public:
@@ -175,8 +188,15 @@ protected:
     Data<helper::vector<int> > m1;
     Data<helper::vector<int> > m2;
     Data<unsigned int> activateAtIteration;
-
+    Data<bool> merge;
+    Data<bool> derivative;
     std::vector<double> prevForces;
+
+
+    // grouped square constraints
+    bool squareXYZ[3];
+    Deriv dfree_square_total;
+
 
     bool activated;
 public:
@@ -186,6 +206,8 @@ public:
         , m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
         , activateAtIteration( initData(&activateAtIteration, (unsigned int)0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
+        , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
+        , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
     {
     }
 
@@ -194,6 +216,8 @@ public:
         , m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
         , activateAtIteration( initData(&activateAtIteration, (unsigned int)0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
+        , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
+        , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
     {
     }
 
@@ -201,6 +225,8 @@ public:
         : m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
         , activateAtIteration( initData(&activateAtIteration, (unsigned int)0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
+        , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
+        , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
     {
     }
 
@@ -225,6 +251,9 @@ public:
 
     void getConstraintViolation(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
             , const DataVecDeriv &v1, const DataVecDeriv &v2);
+
+
+    void getVelocityViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2, const DataVecDeriv &v1, const DataVecDeriv &v2);
 
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 
