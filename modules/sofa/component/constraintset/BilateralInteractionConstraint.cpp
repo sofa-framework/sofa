@@ -147,6 +147,14 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const 
             v->set(cid[pid]+i, dfree[pid][i]);
     }
 }
+
+
+template <>
+void BilateralInteractionConstraint<Rigid3dTypes>::getVelocityViolation(defaulttype::BaseVector */*v*/, const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/, const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
+{
+
+}
+
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -232,6 +240,12 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const 
         for (unsigned int i=0 ; i<dfree[pid].size() ; i++)
             v->set(cid[pid]+i, dfree[pid][i]);
     }
+}
+
+template <>
+void BilateralInteractionConstraint<Rigid3fTypes>::getVelocityViolation(defaulttype::BaseVector */*v*/, const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/, const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
+{
+
 }
 
 #ifdef SOFA_DEV
