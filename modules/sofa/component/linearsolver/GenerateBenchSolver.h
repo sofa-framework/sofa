@@ -59,7 +59,7 @@ public:
     Data< bool > f_max_size;
 
     bool newStep;
-    int max_size;
+    unsigned int max_size;
 
     GenerateBenchSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
