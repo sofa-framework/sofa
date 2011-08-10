@@ -89,6 +89,8 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::WFl
     for (int i=0; i<ALLFLAGS; ++i)  mapFlag.insert(std::make_pair(itemShowFlag[i],i));
 }
 
+
+
 void DisplayFlagWidget::findChildren(Q3CheckListItem *item, std::vector<Q3CheckListItem* > &children)
 {
     Q3CheckListItem * child = (Q3CheckListItem * )item->firstChild();
@@ -126,7 +128,10 @@ bool DisplayFlagsDataWidget::createWidgets()
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->add(flags);
     connect(flags, SIGNAL(clicked()), this, SLOT(setWidgetDirty()));
-    flags->setMinimumSize(QSize(50,400));
+    //flags->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
+    //flags->setMinimumSize(QSize(50,400));
+    setMinimumSize(QSize(50,400));
+    //setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
     return true;
 }
 
@@ -168,6 +173,7 @@ void DisplayFlagsDataWidget::writeToData()
     this->getData()->endEdit();
 
 }
+
 
 
 

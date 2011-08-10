@@ -7,7 +7,7 @@ namespace sofa
 {
 namespace component
 {
-namespace visual
+namespace visualmodel
 {
 
 using namespace sofa::core::visual;

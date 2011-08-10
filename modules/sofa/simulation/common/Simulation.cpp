@@ -150,6 +150,7 @@ void Simulation::init ( Node* root )
     {
         sout<<"WARNING(simulation::init) : Default Animation Master Solver will be used. Add DefaultAnimationMasterSolver to the root node of scene file to remove this warning"<<sendl;
         m_RootSolver = new DefaultAnimationMasterSolver(root);
+        m_RootSolver->setName(core::objectmodel::BaseObject::shortName(m_RootSolver));
         root->addObject(m_RootSolver);
     }
 

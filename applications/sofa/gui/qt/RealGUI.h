@@ -207,13 +207,13 @@ public:
     void dropEvent(QDropEvent* event);
 
 
+
 public slots:
     void NewRootNode(sofa::simulation::Node* root, const char* path);
     void ActivateNode(sofa::simulation::Node* , bool );
     void Update();
     virtual void fileSaveAs(sofa::simulation::Node *node);
     void LockAnimation(bool);
-
     void fileRecentlyOpened(int id);
     void playpauseGUI(bool value);
 //#ifdef SOFA_GUI_INTERACTION
@@ -341,7 +341,7 @@ private:
     LMLReader *lmlreader;
 #endif
 
-    DisplayFlagWidget *displayFlag;
+    DisplayFlagsDataWidget *displayFlag;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     WindowVisitor* windowTraceVisitor;
