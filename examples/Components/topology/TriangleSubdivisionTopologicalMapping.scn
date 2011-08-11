@@ -9,32 +9,32 @@
 		<MeshGmshLoader name="loader" filename="mesh/square3.msh" />	
 
 		<MechanicalObject name="dofs" position="@loader.position" scale="10" />
-		<TriangleSetTopologyContainer  name="Container1" src="@loader"/>
+		<TriangleSetTopologyContainer  name="Container1" src="@loader" />
 		<TriangleSetTopologyModifier   name="Modifier" />
 		<TriangleSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
-		<TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" drawTriangles="0"/>
+		<TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" drawTriangles="0" drawColorTriangles="0 0.7 0.8"/>
 
 		
                 <FixedConstraint indices="0 1"/>
 		<TriangularFEMForceField name="FEM" youngModulus="150" poissonRatio="0.3" method="large" />  
 		<TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0"/>
 		<DiagonalMass massDensity="0.51" name="mass"/>
-
+		<Triangle />
 		<Node name="TriangleTopology2">
 		      <TriangleSubdivisionTopologicalMapping name="subMapping" object1="Container1" object2="Container1" 
 			  inputPositions="@../dofs.position" inputTriangles="@../Container1.triangles"/>	
 	  
-  		      <TriangleSetTopologyContainer  name="Container2" position="@subMapping.outputPositions" />
+  		      <TriangleSetTopologyContainer  name="Container2" position="@subMapping.outputPositions" triangles="@subMapping.outputTriangles"/>
 		      <TriangleSetTopologyModifier   name="Modifier" />
 		      <TriangleSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
-		      <TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" drawTriangles="0"/>
+		      <TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" showPointIndices="0" drawEdges="1" drawColorEdges="1 0 0"/>
 
 
 			<MechanicalObject position="@subMapping.outputPositions"/>
-<!-- 			<Triangle /> triangles="@subMapping.outputTriangles"-->
+
 
 		    <Node name="visu">
-		      <OglModel name="Visual" color="red"/>
+		      <OglModel name="Visual" color="blue"/>
 		      <IdentityMapping object1="../.." object2="Visual"/>
 		    </Node>
 
