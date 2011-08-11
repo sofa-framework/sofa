@@ -58,7 +58,7 @@ class SOFA_COMPONENT_COLLISION_API BaseMouseInteractor : public core::BehaviorMo
 public:
     typedef sofa::component::collision::RayModel MouseCollisionModel;
     typedef helper::vector< InteractionPerformer* > VecPerformer;
-    BaseMouseInteractor(): isAttached(false),distanceFromMouse(0) {};
+    BaseMouseInteractor(): isAttached(false),distanceFromMouse(0) {}
 
     virtual void draw(const core::visual::VisualParams*);
 
@@ -76,13 +76,13 @@ public:
 
     virtual core::behavior::BaseMechanicalState *getMouseContainer()=0;
 
-    bool isMouseAttached() const { return isAttached;};
-    void setMouseAttached(bool b) {isAttached=b;};
+    bool isMouseAttached() const { return isAttached;}
+    void setMouseAttached(bool b) {isAttached=b;}
 
-    MouseCollisionModel *getMouseRayModel() {return mouseCollision;};
+    MouseCollisionModel *getMouseRayModel() {return mouseCollision;}
     void setMouseRayModel( MouseCollisionModel* model) {mouseCollision=model;}
 
-    BodyPicked getBodyPicked() const {return lastPicked;};
+    BodyPicked getBodyPicked() const {return lastPicked;}
     void setBodyPicked( BodyPicked picked) {lastPicked=picked;}
 
     SReal getDistanceFromMouse() const {return distanceFromMouse;};

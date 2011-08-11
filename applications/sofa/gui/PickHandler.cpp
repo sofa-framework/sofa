@@ -1,29 +1,29 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
-*                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
-*******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/gui/PickHandler.h>
 
 #include <sofa/component/collision/ComponentMouseInteraction.h>
@@ -59,40 +59,6 @@ PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED),mous
     _fboAllocated(false)
 {
     operations[LEFT] = operations[MIDDLE] = operations[RIGHT] = NULL;
-
-    //get a node of scene (root), create a new child (mouseNode), config it, then detach it from scene by default
-    Node *root = simulation::getSimulation()->getVisualRoot();
-    mouseNode = root->createChild("Mouse");
-
-    mouseContainer = new MouseContainer; mouseContainer->resize(1);
-    mouseContainer->setName("MousePosition");
-    mouseNode->addObject(mouseContainer);
-
-
-    mouseCollision = new MouseCollisionModel;
-    mouseCollision->setNbRay(1);
-    mouseCollision->getRay(0).setL(1000000);
-    mouseCollision->setName("MouseCollisionModel");
-    mouseNode->addObject(mouseCollision);
-
-
-    mouseNode->init(sofa::core::ExecParams::defaultInstance());
-    mouseContainer->init();
-    mouseCollision->init();
-
-
-
-
-    typedef component::collision::ComponentMouseInteraction::ComponentMouseInteractionFactory MouseFactory;
-    const MouseFactory *factory = MouseFactory::getInstance();
-    for (MouseFactory::const_iterator it = factory->begin(); it != factory->end(); ++it)
-    {
-        instanceComponents.push_back(it->second->createInstance(NULL));
-        instanceComponents.back()->init(mouseNode);
-    }
-    interaction = instanceComponents.back();
-
-    mouseNode->detachFromGraph();
 }
 
 
@@ -144,6 +110,38 @@ void PickHandler::destroySelectionBuffer()
 
 void PickHandler::init()
 {
+
+    //get a node of scene (root), create a new child (mouseNode), config it, then detach it from scene by default
+    Node *root = dynamic_cast<Node*>(simulation::getSimulation()->getContext());
+    mouseNode = root->createChild("Mouse");
+
+    mouseContainer = new MouseContainer; mouseContainer->resize(1);
+    mouseContainer->setName("MousePosition");
+    mouseNode->addObject(mouseContainer);
+
+
+    mouseCollision = new MouseCollisionModel;
+    mouseCollision->setNbRay(1);
+    mouseCollision->getRay(0).setL(1000000);
+    mouseCollision->setName("MouseCollisionModel");
+    mouseNode->addObject(mouseCollision);
+
+
+    mouseNode->init(sofa::core::ExecParams::defaultInstance());
+    mouseContainer->init();
+    mouseCollision->init();
+
+    typedef component::collision::ComponentMouseInteraction::ComponentMouseInteractionFactory MouseFactory;
+    const MouseFactory *factory = MouseFactory::getInstance();
+    for (MouseFactory::const_iterator it = factory->begin(); it != factory->end(); ++it)
+    {
+        instanceComponents.push_back(it->second->createInstance(NULL));
+    }
+    interaction = instanceComponents.back();
+
+    mouseNode->detachFromGraph();
+
+
     core::collision::Pipeline *pipeline;
     simulation::getSimulation()->getContext()->get(pipeline, core::objectmodel::BaseContext::SearchRoot);
 
@@ -182,7 +180,7 @@ void PickHandler::activateRay(int width, int height)
     {
         Node *root = static_cast<Node*>(simulation::getSimulation()->getContext());
         root->addChild(mouseNode);
-        interaction->activate();
+        interaction->attach(mouseNode);
         if( pickingMethod == SELECTION_BUFFER)
         {
             allocateSelectionBuffer(width,height);
@@ -201,7 +199,7 @@ void PickHandler::deactivateRay()
         operations[MIDDLE]->endOperation();
         operations[RIGHT]->endOperation();
 
-        interaction->deactivate();
+        interaction->detach();
         if( pickingMethod == SELECTION_BUFFER)
         {
             destroySelectionBuffer();
@@ -232,9 +230,9 @@ void PickHandler::setCompatibleInteractor()
             if (instanceComponents[i] != interaction &&
                 instanceComponents[i]->isCompatible(lastPicked.body->getContext()))
             {
-                interaction->deactivate();
+                interaction->detach();
                 interaction = instanceComponents[i];
-                interaction->activate();
+                interaction->attach(mouseNode);
             }
         }
     }
@@ -246,9 +244,9 @@ void PickHandler::setCompatibleInteractor()
             if (instanceComponents[i] != interaction &&
                 instanceComponents[i]->isCompatible(lastPicked.mstate->getContext()))
             {
-                interaction->deactivate();
+                interaction->detach();
                 interaction = instanceComponents[i];
-                interaction->activate();
+                interaction->attach(mouseNode);
             }
         }
     }
@@ -275,7 +273,6 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
             callbacks[i]->execute(lastPicked);
         }
     }
-
 
     if(mouseButton != NONE)
     {
