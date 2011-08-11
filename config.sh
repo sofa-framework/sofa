@@ -32,5 +32,5 @@ if [ "$PLATFORM" = "macx" ]; then
 fi
 
 if [ "$BUILD_DIR" != "$SRC_DIR" ]; then
-  export SOFA_DATA_PATH=$SRC_DIR/examples:$SRC_DIR/share
+  export SOFA_DATA_PATH=$SRC_DIR/examples:$SRC_DIR/share:$SOFA_DATA_PATH
 fi
