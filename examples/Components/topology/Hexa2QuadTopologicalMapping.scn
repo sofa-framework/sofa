@@ -12,7 +12,7 @@
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MeshGmshLoader name="meshLoader" filename="mesh/nine_hexa.msh"/>
 		<MechanicalObject name="Hexa" src="@meshLoader"/>
-		<include href="Objects/HexahedronSetTopology.xml" src="@meshLoader" />
+		<include href="Objects/HexahedronSetTopology.xml" src="@meshLoader" drawHexa="1" />
 
 		<HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3"  method="large" />
 		<DiagonalMass massDensity="0.5" />
@@ -22,11 +22,11 @@
 		<Node name="Q">
 			<include href="Objects/QuadSetTopology.xml" />
 			<Hexa2QuadTopologicalMapping object1="../../Container" object2="Container"/>	
-
            		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>
 			<TriangleSet/>
 			<Node name="Visu">
-				<OglModel name="Visual" color="blue" />
+				<OglModel name="Visual" color="blue" quads="@../Container.quads" />
+<!-- 				<OglModel name="Visual" color="blue" /> -->
 				<IdentityMapping object1="../../../Hexa" object2="Visual" />
 			</Node>
 		</Node>
