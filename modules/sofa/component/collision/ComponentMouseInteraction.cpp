@@ -48,7 +48,11 @@ namespace collision
 {
 
 
-ComponentMouseInteraction::ComponentMouseInteraction():parentNode(NULL), nodeRayPick(NULL), mouseInteractor(NULL)/* ,mouseCollision(NULL) */
+ComponentMouseInteraction::ComponentMouseInteraction():
+    nodeRayPick(NULL),
+    mouseInSofa(NULL),
+    mouseMapping(NULL),
+    mouseInteractor(NULL)
 {
 }
 
@@ -62,19 +66,22 @@ ComponentMouseInteraction::~ComponentMouseInteraction()
 }
 
 
-void ComponentMouseInteraction::init(Node* node)
+
+void ComponentMouseInteraction::attach(Node* parentNode)
 {
-    parentNode = node;
+    if(parentNode)
+    {
+        if (!nodeRayPick)
+        {
+            nodeRayPick = parentNode->createChild("MouseInteraction");
+            createInteractionComponents(parentNode,nodeRayPick);
+            nodeRayPick->detachFromGraph();
+        }
+        parentNode->addChild(nodeRayPick);
+    }
 }
 
-void ComponentMouseInteraction::activate()
-{
-    if (!nodeRayPick)
-        if(parentNode)
-            createRayPickObjects(parentNode);
-}
-
-void ComponentMouseInteraction::deactivate()
+void ComponentMouseInteraction::detach()
 {
     if (nodeRayPick)
         nodeRayPick->detachFromGraph();

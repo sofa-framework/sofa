@@ -54,13 +54,12 @@ public:
 
     virtual ~ComponentMouseInteraction();
 
-    virtual void init(simulation::Node* node);
+    virtual void createInteractionComponents(sofa::simulation::Node* parent,
+            sofa::simulation::Node* current) = 0;
 
-    virtual void createRayPickObjects(simulation::Node* node) = 0;
+    void attach(simulation::Node* parentNode);
 
-    void activate();
-
-    void deactivate();
+    void detach();
 
     void reset();
 
@@ -74,9 +73,7 @@ public:
         obj = new RealObject;
     }
 
-
     //Components
-    simulation::Node* parentNode;
     simulation::Node* nodeRayPick;
     sofa::core::behavior::BaseMechanicalState* mouseInSofa;
     sofa::core::BaseMapping* mouseMapping;
@@ -96,7 +93,7 @@ class TComponentMouseInteraction : public ComponentMouseInteraction
 public:
 
 
-    void createRayPickObjects(simulation::Node* node);
+    void createInteractionComponents(sofa::simulation::Node* parent, sofa::simulation::Node* current);
 
     bool  isCompatible( core::objectmodel::BaseContext *context) const;
 

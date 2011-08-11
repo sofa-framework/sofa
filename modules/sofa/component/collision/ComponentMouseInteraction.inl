@@ -49,7 +49,7 @@ namespace component
 namespace collision
 {
 
-using sofa::simulation::Node;
+using namespace sofa::simulation;
 using sofa::component::collision::BodyPicked;
 
 
@@ -57,29 +57,28 @@ using sofa::component::collision::BodyPicked;
 
 
 template <class DataTypes>
-void TComponentMouseInteraction<DataTypes>::createRayPickObjects(Node* node)
+void TComponentMouseInteraction<DataTypes>::createInteractionComponents(Node* parent, Node* current)
 {
-    nodeRayPick = node->createChild("");
-    nodeRayPick->setName(nodeRayPick->getName() + "_" + DataTypes::Name());
+    if( parent )
+    {
+        current->setName( current->getName() + "_" + DataTypes::Name() );
 
-    mouseInSofa = new MouseContainer; mouseInSofa->resize(1);
-    mouseInSofa->setName("MousePosition");
-    nodeRayPick->addObject(mouseInSofa);
+        mouseInSofa = new MouseContainer; mouseInSofa->resize(1);
+        mouseInSofa->setName("MousePosition");
+        current->addObject(mouseInSofa);
 
-    mouseInteractor = new Interactor;
-    mouseInteractor->setName("MouseInteractor");
-    nodeRayPick->addObject(mouseInteractor);
+        mouseInteractor = new Interactor;
+        mouseInteractor->setName("MouseInteractor");
+        current->addObject(mouseInteractor);
 
-    MousePosition *mecha = dynamic_cast<MousePosition*>(node->getMechanicalState());
-    mouseMapping = new IdentityMechanicalMapping(mecha, static_cast<MouseContainer*>(mouseInSofa));
-    nodeRayPick->addObject(mouseMapping);
+        MousePosition *mecha = dynamic_cast<MousePosition*>(parent->getMechanicalState());
+        mouseMapping = new IdentityMechanicalMapping(mecha, static_cast<MouseContainer*>(mouseInSofa));
+        current->addObject(mouseMapping);
 
-    mouseMapping->setNonMechanical();
+        mouseMapping->setNonMechanical();
 
-    mouseInSofa->init();
-    mouseInteractor->init();
-    mouseMapping->init();
-
+        current->execute<InitVisitor>(sofa::core::ExecParams::defaultInstance());
+    }
 }
 
 template <class DataTypes>
