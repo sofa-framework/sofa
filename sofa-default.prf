@@ -343,6 +343,11 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Uncomment if you want to use the plugin SoHuSim
 # DEFINES += SOFA_HAVE_SOHUSIM
 
+contains(DEFINES,SOFA_HAVE_NEW_TOPOLOGYCHANGES){ # BEGIN SOFA_HAVE_NEW_TOPOLOGYCHANGES
+# Uncomment if you want to use test components using topology engines
+# usePlugin(TopologyEnginesProto)
+} # END SOFA_HAVE_NEW_TOPOLOGYCHANGES
+
 } # END SOFA_DEV
 
 # Uncomment if you want to use the QtOgreViewer
