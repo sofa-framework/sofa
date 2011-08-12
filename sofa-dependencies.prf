@@ -84,7 +84,7 @@ declare(sofacomponentconfigurationsetting, modules/sofa/component/configurations
 declare(sofacomponent, modules/sofa/component/libcomponent.pro, \
   sofacomponentconfigurationsetting sofacomponentloader sofacomponentengine)
 
-declare(sofagpucuda, modules/sofa/gpu/cuda, sofacomponentmisc cuda csparse cudpp taucs taucs_mt system-taucs)
+declare(sofagpucuda, modules/sofa/gpu/cuda, sofacomponentmisc sofahelper csparse cudpp taucs taucs_mt system-taucs cuda)
 
 ######################################################################
 # Applications
