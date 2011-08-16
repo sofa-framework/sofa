@@ -37,7 +37,7 @@
 			   triangles="@Container.triangles" tetrahedra="@../Container.tetrahedra" name="boxROI"/>
 
 			<Node name="Visu">
-				<OglModel name="Visual" color="blue" />
+				<VisualModel template="ExtVec3f" name="Visual"  material="Default Diffuse 1 0 0 1 0.5 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
 				<IdentityMapping object1="../../../Volume" object2="Visual" />
 			</Node>						
 		</Node>
