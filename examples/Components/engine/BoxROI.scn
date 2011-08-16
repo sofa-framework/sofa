@@ -6,7 +6,8 @@
 	<MinProximityIntersection name="Proximity"  alarmDistance="0.8"  contactDistance="0.5" />
 	<TreeCollisionGroupManager name="default2" />
 	<Node 	name="SquareGravity" gravity="0 -9.81 0"  >
-		<CGImplicitSolver name="default3"  iterations="40"  tolerance="1e-06"  threshold="1e-10" />
+		<EulerImplicit name="cg_odesolver" printLog="false"/>
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
  		<MeshGmshLoader name="loader"  filename="mesh/square3.msh" />
  		<MechanicalObject src="@loader" template="Vec3d" name="mecaObj"  scale3d="10 10 10"  restScale="1" />
  		<TriangleSetTopologyContainer src="@loader" name="Container" />
@@ -20,10 +21,14 @@
 		<TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
 		<TriangularBendingSprings template="Vec3d" name="FEM-Bend"  stiffness="300"  damping="1" />
 		<TTriangleModel template="Vec3d" name="default7" />
-		<OglModel template="ExtVec3f" name="Visual"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-		<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8"  object1=".."  object2="Visual" />
+
 		<BoxROI template="Vec3d" box="3 3 0 6 6 1" drawBoxes="1"
  		position="@mecaObj.position" drawTriangles="1"
  		triangles="@Container.triangles" name="boxROI"/>
+ 	
+		<Node name="visu">
+		    <VisualModel template="ExtVec3f" name="Visual"  material="Default Diffuse 1 1 0 0 0.6 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+		    <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8"  object1="../.."  object2="Visual" />
+		</Node>
 	</Node>
 </Node>
