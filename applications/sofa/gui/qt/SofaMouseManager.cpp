@@ -63,6 +63,10 @@ SofaMouseManager::SofaMouseManager()
     RegisterOperation("Suture").add< QAddSutureOperation >();
 }
 
+SofaMouseManager::~SofaMouseManager()
+{
+}
+
 void SofaMouseManager::updateContent()
 {
     gui->LeftOperationCombo->clear();

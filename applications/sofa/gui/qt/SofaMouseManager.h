@@ -50,6 +50,7 @@ class SofaMouseManager : public QDialog
 public:
 
     SofaMouseManager();
+    ~SofaMouseManager();
 
     static SofaMouseManager* getInstance()
     {
