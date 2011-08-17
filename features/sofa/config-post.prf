@@ -35,6 +35,26 @@ win32 {
 }
 
 ########################################################################
+# Deprecated lib and include directories (when using dependencies packages)
+# This section should be removed when scripts will be updated to use installed
+# version of the libraries.
+########################################################################
+
+win32 {
+	CONFIG(debug, debug|release) : VCCONFIGDIR = Debug
+	else :                         VCCONFIGDIR = Release
+	
+	win32-msvc2005 : VCCONFIGDIR = $${VCCONFIGDIR}VC8
+	else :           VCCONFIGDIR = $${VCCONFIGDIR}VC9
+
+	LIBS *= -L$$ROOT_SRC_DIR/lib/win32/$$VCCONFIGDIR -L$$ROOT_SRC_DIR/lib/win32/Common
+}
+macx {
+	LIBS *= -L$$ROOT_SRC_DIR/lib/macx
+}
+INCLUDEPATH *= $$ROOT_SRC_DIR/include
+
+########################################################################
 # Cuda Support
 # It is necessary to define the Cuda compiler here and not in cuda.prf
 # because it needs to have access to the final values of the variables:
@@ -110,24 +130,3 @@ contains (DEFINES, SOFA_GPU_CUDA) {
 #		macx: cuda.commands += --host-compilation 'C'
 	}
 }
-
-
-########################################################################
-# Deprecated lib and include directories (when using dependencies packages)
-# This section should be removed when scripts will be updated to use installed
-# version of the libraries.
-########################################################################
-
-win32 {
-	CONFIG(debug, debug|release) : VCCONFIGDIR = Debug
-	else :                         VCCONFIGDIR = Release
-	
-	win32-msvc2005 : VCCONFIGDIR = $${VCCONFIGDIR}VC8
-	else :           VCCONFIGDIR = $${VCCONFIGDIR}VC9
-
-	LIBS *= -L$$ROOT_SRC_DIR/lib/win32/$$VCCONFIGDIR -L$$ROOT_SRC_DIR/lib/win32/Common
-}
-macx {
-	LIBS *= -L$$ROOT_SRC_DIR/lib/macx
-}
-INCLUDEPATH *= $$ROOT_SRC_DIR/include
