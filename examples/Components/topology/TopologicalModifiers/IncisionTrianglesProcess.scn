@@ -17,7 +17,7 @@ showWireFrame="1" >
 		<MeshGmshLoader name="loader"  filename="mesh/square3.msh"/>
 		<MechanicalObject src="@loader" template="Vec3d" name="default4"  scale3d="10 10 10" restScale="1" />
 		
-		<TriangleSetTopologyContainer src="@loader" name="Container" />
+		<TriangleSetTopologyContainer src="@loader" name="Triangle_topo" />
 		<TriangleSetTopologyModifier name="Modifier" />
 		<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
@@ -33,14 +33,14 @@ showWireFrame="1" >
 		<TriangleModel name="default7" selfCollision="true"/>
 		
 		<Node name="edges">
-		    <EdgeSetTopologyContainer name="Container"/>
+		    <EdgeSetTopologyContainer name="Edge_topo"/>
 		    <EdgeSetTopologyModifier name="Modifier"/>
                     <EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
                     <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawEdges="1"/>
-                    <Triangle2EdgeTopologicalMapping name="Mapping" object1="../../Container" object2="Container"/>
+                    <Triangle2EdgeTopologicalMapping name="Mapping" object1="../../Triangle_topo" object2="Edge_topo"/>
 		</Node>
 		
-		<OglModel template="ExtVec3f" name="Visual"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+		<VisualModel template="ExtVec3f" name="Visual"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
 		<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8"  object1=".."  object2="Visual" />
 		
 		<TopologicalChangeProcessor listening="1" 

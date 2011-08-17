@@ -11,7 +11,10 @@
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MeshGmshLoader name="loader" filename="mesh/nine_hexa.msh"/>
 		<MechanicalObject src="@loader" name="Hexa" />
-		<include href="Objects/HexahedronSetTopology.xml" src="@loader" />
+		<HexahedronSetTopologyContainer  name="Hexa_topo" src="@loader" />
+		<HexahedronSetTopologyModifier   name="Modifier" />
+		<HexahedronSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+		<HexahedronSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
 
 		<TopologicalChangeProcessor listening="1" filename="RemovingHexa2QuadProcess.txt"/>
 		<HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3"  method="large" />
@@ -20,11 +23,11 @@
 		<BoxConstraint box="0 3 0 0 3 1 3 3 0 3 3 1" />
 		
 		<Node name="Q">
-			<QuadSetTopologyContainer  name="Container" src=""/>
+			<QuadSetTopologyContainer  name="Quad_topo" src=""/>
 			<QuadSetTopologyModifier  name="Modifier" />
 			<QuadSetTopologyAlgorithms name="TopoAlgo"  template="Vec3d" />
 			<QuadSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" drawQuads="1"/>
-			<Hexa2QuadTopologicalMapping object1="../../Container" object2="Container"/>	
+			<Hexa2QuadTopologicalMapping object1="../../Hexa_topo" object2="Quad_topo"/>	
 
            		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>
 			<TriangleSet />

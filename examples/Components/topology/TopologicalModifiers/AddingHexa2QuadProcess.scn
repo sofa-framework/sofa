@@ -11,7 +11,7 @@
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MeshGmshLoader name="loader" filename="mesh/cubeDof.msh"/>
 		<MechanicalObject src="@loader" name="Hexa" />
-		<HexahedronSetTopologyContainer src="@loader" name="Container" listening="1"/>
+		<HexahedronSetTopologyContainer src="@loader" name="Hexa_topo" listening="1"/>
 		<HexahedronSetTopologyModifier name="Modifier" />
 		<HexahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		<HexahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawHexa="1"/>
@@ -22,12 +22,12 @@
 <!--		<FixedConstraint" indices="12 15 28 31" />     -->
 		
 		<Node name="Q">
-		  <QuadSetTopologyContainer name="Container" listening="1"/>
+		  <QuadSetTopologyContainer name="Quad_topo" listening="1"/>
 		  <QuadSetTopologyModifier name="Modifier" />
 		  <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		  <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawQuads="1"/>
 
-			<Hexa2QuadTopologicalMapping object1="../../Container" object2="Container"/>	
+			<Hexa2QuadTopologicalMapping object1="../../Hexa_topo" object2="Quad_topo"/>	
 
 <!--           		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>-->
 			<TriangleSet/>

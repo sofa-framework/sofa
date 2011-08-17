@@ -11,7 +11,7 @@
 		<MeshGmshLoader name="loader" filename="mesh/cubeDof.msh"/>
 		<MechanicalObject src="@loader" name="Quads" />
 
-		<QuadSetTopologyContainer src="@loader" name="Container" listening="1"/>
+		<QuadSetTopologyContainer src="@loader" name="Quad_topo" listening="1"/>
 		<QuadSetTopologyModifier name="Modifier" />
 		<QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		<QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawQuads="1"/>
@@ -23,18 +23,18 @@
 		<BoxConstraint box="0 3 0 0 3 0 3 3 0 3 3 0" />
 
 		<Node name="T">
-		  <TriangleSetTopologyContainer name="Container" listening="1"/>
+		  <TriangleSetTopologyContainer name="Triangle_topo" listening="1"/>
 		  <TriangleSetTopologyModifier name="Modifier" />
 		  <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		  <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1"/>
-			<Quad2TriangleTopologicalMapping object1="../../Container" object2="Container"/>            
+			<Quad2TriangleTopologicalMapping object1="../../Quad_topo" object2="Triangle_topo"/>            
 
     <!--      		<TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
 			<TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>		-->
 			<TriangleSet/>							
 	
 <!--			<Node name="Visu">
-				<OglModel name="Visual" color="red" />
+				<VisualModel name="Visual" color="red" />
 				<IdentityMapping object1="../../../Quads" object2="Visual" />
 			</Node>	-->
 		</Node>
