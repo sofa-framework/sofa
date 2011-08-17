@@ -87,6 +87,10 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 		usePlugin(PersistentContact)
 	}
 
+	contains(DEFINES, SOFA_HAVE_ASCLEPIOS) {
+		usePlugin(sofa-asclepios)
+	}
+
 } # END SOFA_DEV
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_FEM) {
