@@ -126,7 +126,7 @@ public:
 
     virtual void reinit();
 
-    virtual void reset();
+    virtual void readDataFile();
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event);
 

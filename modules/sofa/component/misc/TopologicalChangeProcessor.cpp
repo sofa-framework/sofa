@@ -73,7 +73,7 @@ TopologicalChangeProcessor::TopologicalChangeProcessor()
     , m_quadsToRemove (initData (&m_quadsToRemove, "quadsToRemove", "List of quad IDs to be removed."))
     , m_tetrahedraToRemove (initData (&m_tetrahedraToRemove, "tetrahedraToRemove", "List of tetrahedron IDs to be removed."))
     , m_hexahedraToRemove (initData (&m_hexahedraToRemove, "hexahedraToRemove", "List of hexahedron IDs to be removed."))
-    , m_saveIndicesAtInit( initData(&m_saveIndicesAtInit, true, "saveIndicesAtInit", "set to 'true' to save the incision to do in the init to incise even after a movement"))
+    , m_saveIndicesAtInit( initData(&m_saveIndicesAtInit, false, "saveIndicesAtInit", "set to 'true' to save the incision to do in the init to incise even after a movement"))
     , m_epsilonSnapPath( initData(&m_epsilonSnapPath, (Real)0.1, "epsilonSnapPath", "epsilon snap path"))
     , m_epsilonSnapBorder( initData(&m_epsilonSnapBorder, (Real)0.25, "epsilonSnapBorder", "epsilon snap path"))
     , m_draw( initData(&m_draw, false, "draw", "draw information"))
@@ -106,18 +106,18 @@ void TopologicalChangeProcessor::init()
     m_topology = dynamic_cast<core::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
 
     if (!m_useDataInputs.getValue())
-        reset();
+        this->readDataFile();
 }
 
 void TopologicalChangeProcessor::reinit()
 {
     if (!m_useDataInputs.getValue())
-        reset();
+        this->readDataFile();
 }
 
 
 
-void TopologicalChangeProcessor::reset()
+void TopologicalChangeProcessor::readDataFile()
 {
     if (infile)
     {
@@ -163,12 +163,18 @@ void TopologicalChangeProcessor::reset()
 
     if (m_saveIndicesAtInit.getValue())
         saveIndices();
+
+    return;
 }
 
 
 void TopologicalChangeProcessor::setTime(double time)
 {
-    if (time < nextTime) {reset();}
+    if (time < nextTime)
+    {
+        if (!m_useDataInputs.getValue())
+            this->readDataFile();
+    }
 }
 
 
