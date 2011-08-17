@@ -1,8 +1,8 @@
 <Node name="Group"> 
-  <Object type="ManifoldEdgeSetTopologyContainer"  name="Container" src="" />
-  <Object type="ManifoldEdgeSetTopologyModifier"   name="Modifier" />
-  <Object type="ManifoldEdgeSetTopologyAlgorithms" name="TopoAlgo"  template="Vec3d" />
-  <Object type="ManifoldEdgeSetGeometryAlgorithms" name="GeomAlgo"  template="Vec3d" />
+  <ManifoldEdgeSetTopologyContainer  name="Container" src="" />
+  <ManifoldEdgeSetTopologyModifier   name="Modifier" />
+  <ManifoldEdgeSetTopologyAlgorithms name="TopoAlgo"  template="Vec3d" />
+  <ManifoldEdgeSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" />
 </Node>
 <!-- 
      Template List 

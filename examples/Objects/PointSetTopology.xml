@@ -1,8 +1,8 @@
 <Node name="Group"> 
-  <Object type="PointSetTopologyContainer"  name="Container" src="" />
-  <Object type="PointSetTopologyModifier"   name="Modifier" />
-  <Object type="PointSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
-  <Object type="PointSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d"  />
+  <PointSetTopologyContainer  name="Container" src="" />
+  <PointSetTopologyModifier   name="Modifier" />
+  <PointSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+  <PointSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d"  />
 </Node>
 <!-- 
      Template List 
