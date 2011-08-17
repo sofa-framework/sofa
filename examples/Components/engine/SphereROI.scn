@@ -24,7 +24,7 @@
 		
 
 		<Node name="T">
-			<include href="Objects/TriangleSetTopology.xml" />
+			<include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />
 			<Tetra2TriangleTopologicalMapping object1="../../Container" object2="Container"/>
 
             		<TriangularFEMForceField name="FEM" youngModulus="50" poissonRatio="0.3" method="large" /> 

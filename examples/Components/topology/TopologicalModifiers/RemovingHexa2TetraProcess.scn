@@ -22,7 +22,7 @@
 			<TetrahedronSetTopologyModifier name="Modifier"/>
 			<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
-			<Hexa2TetraTopologicalMapping name="default28" object1="../../grid" object2="Container"/>
+			<Hexa2TetraTopologicalMapping name="default28" object1="../../grid" object2="Tetra_topo"/>
 			<Node 	name="Triangles" 
 				gravity="0 -9.81 0" 
 				 >
@@ -37,7 +37,7 @@
 				<Node 	name="Visu" 
 					gravity="0 -9.81 0" 
 					 >
-					<OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45"/>
+					<VisualModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45"/>
 					<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default33" object1="../.." object2="Visual"/>
 				</Node>
 			</Node>

@@ -10,7 +10,7 @@
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
 		<MechanicalObject src="@loader" name="Volume" />
-		<include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
+		<include href="Objects/TetrahedronSetTopology.xml" src="@loader" tags=" "/>
 
         	<DiagonalMass massDensity="0.5" />
 		<FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1"/>
@@ -19,7 +19,7 @@
 
 		<TriangleSet/>
 		<Node name="T">
-			<include href="Objects/TriangleSetTopology.xml" />
+			<include href="Objects/TriangleSetTopology.xml" src="@" tags=" "/>
 			<Tetra2TriangleTopologicalMapping
 			object1="../../Container" object2="Container" noNewTriangles="1"/>
 
@@ -34,7 +34,7 @@
 		</Node>
 
 		<Node name="T">
-		  <include href="Objects/TriangleSetTopology.xml" />
+		  <include href="Objects/TriangleSetTopology.xml" src="@" tags=" "/>
 		  <Tetra2TriangleTopologicalMapping
 			  object1="../../Container" object2="Container" noInitialTriangles="1" />
 
