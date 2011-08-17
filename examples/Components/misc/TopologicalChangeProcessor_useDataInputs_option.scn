@@ -8,7 +8,7 @@
 		<EulerImplicit name="cg_odesolver" printLog="false"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MeshGmshLoader name="loader"  filename="mesh/square3.msh" />
-		<MechanicalObject src="@loader" template="Vec3d" name="default4"  scale3d="10 10 10"  restScale="1" />
+		<MechanicalObject name="mecaObj" src="@loader" template="Vec3d" scale3d="10 10 10"  restScale="1" />
 		<TriangleSetTopologyContainer src="@loader" name="Container" />
 		<TriangleSetTopologyModifier name="Modifier" />
 		<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
@@ -17,13 +17,15 @@
 		<TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
 		<TriangularBendingSprings template="Vec3d" name="FEM-Bend"  stiffness="300"  damping="1" />
 		<TriangleModel name="default7" />
-		<OglModel template="ExtVec3f" name="Visual"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+		<VisualModel template="ExtVec3f" name="Visual"  material="Default Diffuse 1 0 0 1 0.6 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
 		<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8"  object1=".."  object2="Visual" />
 
-		<PlaneROI plane="2 0 0 7 0 0 7 -7 0 5" drawTriangles="0" name="trash"/>
-
+		<BoxROI template="Vec3d" box="2 0 -1 8 -3 1" drawBoxes="1"
+ 		position="@mecaObj.position" drawTriangles="1"
+ 		triangles="@Container.triangles" name="trash"/>
+ 		
 		<TopologicalChangeProcessor listening="1" useDataInputs="1"
-		trianglesToRemove="@trash.triangleIndices" timeToRemove="0.5" interval="0.05"/>
+		trianglesToRemove="@trash.triangleIndices" timeToRemove="0.1" interval="0.05"/>
 
 	</Node>
 
