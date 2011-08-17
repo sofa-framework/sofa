@@ -1,10 +1,7 @@
-SOFA_DIR = ..
+load(sofa/pre)
+
 TEMPLATE = app
 TARGET = sofatests
-
-include($${SOFA_DIR}/sofa.cfg)
-
-DESTDIR = $$SOFA_DIR/bin
 
 SOURCES = \
 	main.cpp \
@@ -18,12 +15,4 @@ contains(DEFINES, SOFA_HAVE_BOOST) {
 		framework/sofa/helper/system/thread/CircularQueueTest.cpp
 }
 
-contains(CONFIGSTATIC, static) {
-	LIBS += -Wl,--start-group
-	LIBS += -Wl,--whole-archive
-}
-LIBS += $$SOFA_LIBS
-contains(CONFIGSTATIC, static) {
-	LIBS += -Wl,--no-whole-archive
-	LIBS += -Wl,--end-group
-}
+load(sofa/post)
