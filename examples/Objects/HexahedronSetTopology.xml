@@ -1,8 +1,8 @@
 <Node name="Group"> 
-  <Object type="HexahedronSetTopologyContainer"  name="Container" src="" />
-  <Object type="HexahedronSetTopologyModifier"   name="Modifier" />
-  <Object type="HexahedronSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
-  <Object type="HexahedronSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" />
+  <HexahedronSetTopologyContainer  name="Container" src="" />
+  <HexahedronSetTopologyModifier   name="Modifier" />
+  <HexahedronSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+  <HexahedronSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
 </Node>
 <!-- 
      Template List 

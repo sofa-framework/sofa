@@ -1,8 +1,8 @@
 <Node name="Group"> 
-  <Object type="EdgeSetTopologyContainer"  name="Container" src=""/>
-  <Object type="EdgeSetTopologyModifier"   name="Modifier" />
-  <Object type="EdgeSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
-  <Object type="EdgeSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" />
+  <EdgeSetTopologyContainer  name="Container" src=""/>
+  <EdgeSetTopologyModifier   name="Modifier" />
+  <EdgeSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+  <EdgeSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
 </Node>
 <!-- 
      Template List 
