@@ -82,6 +82,7 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 
     initTriangleInformation();
 
+    serr << "TrianglePressureForceField::addDForce not yet implemented" << sendl;
 }
 
 
@@ -105,9 +106,15 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 }
 
 template<class DataTypes>
-void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
 {
     //Todo
+
+    //Remove warning
+    double kFactor = mparams->kFactor();
+    (void)kFactor;
+
+    return;
 }
 
 template<class DataTypes>
