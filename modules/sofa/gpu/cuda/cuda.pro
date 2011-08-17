@@ -9,15 +9,13 @@ DEFINES += SOFA_BUILD_GPU_CUDA
 
 DEFINES += CUDPP_STATIC_LIB
 
-CONFIG(debug, debug|release) {
-	QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
-} else {
-	QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
-}
-
-
 win32 {
-QMAKE_CXXFLAGS += /bigobj
+	CONFIG(debug, debug|release) {
+		QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
+	} else {
+		QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
+	}
+	QMAKE_CXXFLAGS += /bigobj
 }
 
 HEADERS += mycuda.h \
