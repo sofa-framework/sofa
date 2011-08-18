@@ -211,6 +211,10 @@ protected:
 
     void clearEdgesAroundVertex();
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    virtual void updateTopologyEngineGraph();
+#endif
+
 protected:
 
     /** \brief Returns a non-const list of Edge indices around the ith DOF for subsequent modification.
