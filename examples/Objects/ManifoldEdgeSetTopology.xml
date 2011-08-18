@@ -1,5 +1,5 @@
 <Node name="Group"> 
-  <ManifoldEdgeSetTopologyContainer  name="Container" src="" />
+  <ManifoldEdgeSetTopologyContainer  name="Container" src="@" tags=" " />
   <ManifoldEdgeSetTopologyModifier   name="Modifier" />
   <ManifoldEdgeSetTopologyAlgorithms name="TopoAlgo"  template="Vec3d" />
   <ManifoldEdgeSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" />

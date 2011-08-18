@@ -1,5 +1,5 @@
 <Node name="Group"> 
-  <PointSetTopologyContainer  name="Container" src="" />
+  <PointSetTopologyContainer  name="Container" src="@" tags=" " />
   <PointSetTopologyModifier   name="Modifier" />
   <PointSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
   <PointSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d"  />
