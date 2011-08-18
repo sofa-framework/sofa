@@ -6,17 +6,18 @@
 	<CollisionGroup />
 
 	<Node name="H">
-		<CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10"/>
+		<EulerImplicit name="cg_odesolver" printLog="false"/>
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MeshGmshLoader name="loader" filename="mesh/nine_hexa.msh"/>
 		<MechanicalObject src="@loader" name="Hexa" />
-		<include href="Objects/HexahedronSetTopology.xml" src="@loader" />
+		<include href="Objects/HexahedronSetTopology.xml" src="@loader" tags=" "/>
 
 		<HexahedralFEMForceField name="FEM" youngModulus="10" poissonRatio="0.3" method="large" />
 		<DiagonalMass massDensity="0.5" />
 		<FixedConstraint indices="12 15 28 31" />     
 		
 		<Node name="Q">
-			<include href="Objects/QuadSetTopology.xml" />
+			<include href="Objects/QuadSetTopology.xml" src="@" tags=" "/>
 			<Hexa2QuadTopologicalMapping object1="../../Container" object2="Container"/>	
 
            		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>
@@ -27,7 +28,7 @@
 			</Node>
 
 			<Node name="T">
-				<include href="Objects/TriangleSetTopology.xml" />
+				<include href="Objects/TriangleSetTopology.xml" src="@" tags=" "/>
 				<Quad2TriangleTopologicalMapping object1="../../Container" object2="Container"/>
 
              		<TriangularFEMForceField name="FEM" youngModulus="10" poissonRatio="0.3" method="large" />
