@@ -42,21 +42,12 @@ CopyAspectVisitor::~CopyAspectVisitor()
 
 CopyAspectVisitor::Result CopyAspectVisitor::processNodeTopDown(Node* node)
 {
+    node->copyAspect(destAspect, srcAspect);
     for(Node::ObjectIterator iObj = node->object.begin(), endObj = node->object.end(); iObj != endObj; ++iObj)
     {
         fprintf(stderr, "Copy node: %s, object: %s\n", node->getName().c_str(), (*iObj)->getName().c_str());
         (*iObj)->copyAspect(destAspect, srcAspect);
     }
-//    for(Node::ObjectIterator iObj = node->componentInVisualGraph.begin(), endObj = node->componentInVisualGraph.end(); iObj != endObj; ++iObj)
-//    {
-//        fprintf(stderr, "Copy vnode: %s, object: %s\n", node->getName().c_str(), (*iObj)->getName().c_str());
-//        (*iObj)->copyAspect(destAspect, srcAspect);
-//    }
-//    for(Node::Sequence<core::visual::VisualModel>::iterator iObj = node->visualModelInVisualGraph.begin(), endObj = node->visualModelInVisualGraph.end(); iObj != endObj; ++iObj)
-//    {
-//        fprintf(stderr, "Copy vnode: %s, object: %s\n", node->getName().c_str(), (*iObj)->getName().c_str());
-//        (*iObj)->copyAspect(destAspect, srcAspect);
-//    }
     for(Node::ChildIterator iVNode = node->childInVisualGraph.begin(), endVNode = node->childInVisualGraph.end(); iVNode != endVNode; ++iVNode)
     {
         processNodeTopDown(*iVNode);

@@ -527,6 +527,8 @@ MultithreadGUI::MultithreadGUI()
     pick.changeOperation(LEFT,   "Attach");
     pick.changeOperation(MIDDLE, "Incise");
     pick.changeOperation(RIGHT,  "Remove");
+
+    vparams.drawTool() = &drawTool;
 }
 
 
