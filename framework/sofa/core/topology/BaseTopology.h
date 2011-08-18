@@ -291,6 +291,9 @@ public:
 
 
 protected:
+
+    virtual void updateTopologyEngineGraph() {}
+
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     Data <sofa::helper::list<const TopologyChange *> >m_changeList;
 
