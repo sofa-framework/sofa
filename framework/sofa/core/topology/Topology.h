@@ -166,15 +166,17 @@ public:
 
     virtual void init()
     {
-        this->addInput(&m_changeList);
+        // this->addInput(&m_changeList);
         this->addOutput(m_topologicalData);
+
+        this->createEngineName();
     }
 
-    virtual void handleTopologyChange() {};
+    virtual void handleTopologyChange() {}
 
 
 public:
-
+    // really need to be a Data??
     Data <sofa::helper::list<const TopologyChange *> >m_changeList;
 
     unsigned int getNumberOfTopologicalChanges() {return (m_changeList.getValue()).size();}
@@ -189,9 +191,18 @@ public:
 
     virtual const t_topologicalData* getTopologicalData() {return m_topologicalData;}
 
-protected:
+    virtual void createEngineName() {}
 
+    const std::string& getName() const { return m_name; }
+
+    void setName(const std::string& name) { m_name=name; }
+
+protected:
+    /// Data handle by the topological engine
     t_topologicalData* m_topologicalData;
+
+    /// Engine name base on Data handled
+    std::string m_name;
 
 };
 

@@ -109,6 +109,7 @@ void TopologyContainer::addTopologyEngine(TopologyEngine *_topologyEngine)
 {
     m_topologyEngineList.push_back(_topologyEngine);
     m_topologyEngineList.back()->m_changeList.setParent(&this->m_changeList);
+    this->updateTopologyEngineGraph();
 }
 
 
