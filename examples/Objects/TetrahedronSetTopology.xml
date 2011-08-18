@@ -1,5 +1,5 @@
 <Node name="Group"> 
-  <TetrahedronSetTopologyContainer  name="Container" src=""/>
+  <TetrahedronSetTopologyContainer  name="Container" src="@" tags=" "/>
   <TetrahedronSetTopologyModifier   name="Modifier" />
   <TetrahedronSetTopologyAlgorithms name="TopoAlgo"  template="Vec3d" />
   <TetrahedronSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" />
