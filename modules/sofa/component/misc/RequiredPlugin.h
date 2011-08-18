@@ -62,8 +62,10 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        create (obj, context, arg);
+        obj = new T;
+        if (arg) obj->parse(arg);
         dynamic_cast<RequiredPlugin*>(obj)->loadPlugin();
+        delete obj;
         return BaseObject::canCreate(obj, context, arg);
     }
 
