@@ -10,6 +10,7 @@ iniFile=verification.ini
 resetMode=0
 addMode=0
 defaultDirectory=1
+topologyMode=0
 
 #----------------------------------------------------------------------------------------------
 #Interpreting the command line
@@ -18,6 +19,7 @@ defaultDirectory=1
 # -r : to save new references for the scenes: just record the positions of the dofs
 # -f : to specify the reference set of files. By default, we use "verification.ini"
 # -a : to add set of files to the reference set of files, and record them
+# -t : to use sofaVerification in a specific mode to run tests on topology
 
 while [[ $# -gt 0 ]]
 do
@@ -30,6 +32,7 @@ do
         shift ;;
     -r) resetMode=1 ;;
     -d) directory=$2 ; shift ;;
+    -t) topologyMode=1 ; shift ;;
     *) echo "Invalid argument $1"; exit 1 ;;
     esac
     shift
@@ -70,6 +73,12 @@ then
     setFiles=$addFiles
 else
     setFiles=$iniFile
+fi
+
+if [[ $topologyMode == 1 ]]
+then
+    arguments=$(echo $arguments -t)
+    echo Running Verification on topology structure
 fi
 
 
