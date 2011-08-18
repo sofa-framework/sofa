@@ -151,8 +151,12 @@ public:
     }
 
 
-protected:
 
+
+protected:
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    virtual void updateTopologyEngineGraph();
+#endif
 
     Data<unsigned int> nbPoints;
 

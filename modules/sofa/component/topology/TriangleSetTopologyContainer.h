@@ -325,6 +325,10 @@ protected:
     virtual TrianglesAroundEdge& getTrianglesAroundEdgeForModification(const EdgeID edgeIndex);
 
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    virtual void updateTopologyEngineGraph();
+#endif
+
 protected:
 
     /// provides the set of triangles.

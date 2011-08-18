@@ -72,6 +72,11 @@ void TriangleSetTopologyContainer::init()
 {
     EdgeSetTopologyContainer::init();
     d_triangle.updateIfDirty(); // make sure m_triangle is up to date
+
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    d_triangle.addInput(&this->d_edge);
+
+#endif
 }
 
 
@@ -1060,6 +1065,17 @@ void TriangleSetTopologyContainer::clear()
     clearBorderElementLists();
     EdgeSetTopologyContainer::clear();
 }
+
+
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+void TriangleSetTopologyContainer::updateTopologyEngineGraph()
+{
+    std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
+
+    // will concatenate with edges one:
+    EdgeSetTopologyContainer::updateTopologyEngineGraph();
+}
+#endif
 
 } // namespace topology
 

@@ -81,6 +81,12 @@ void EdgeSetTopologyContainer::init()
         }
     }
     // std::cout << "coords: " << getPX(m_edge[1][0]) << " " << getPY(m_edge[1][0]) << " " << getPZ(m_edge[1][0]) << std::endl;
+
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    d_edge.addInput(&this->d_initPoints);
+
+#endif
+
     PointSetTopologyContainer::init();
 }
 
@@ -565,6 +571,16 @@ void EdgeSetTopologyContainer::clear()
 
     PointSetTopologyContainer::clear();
 }
+
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+void EdgeSetTopologyContainer::updateTopologyEngineGraph()
+{
+    std::cout << "EdgeSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
+
+    // will concatenate with points one:
+    PointSetTopologyContainer::updateTopologyEngineGraph();
+}
+#endif
 
 } // namespace topology
 

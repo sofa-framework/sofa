@@ -583,6 +583,12 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<unsigned in
 void EdgeSetTopologyModifier::removeEdges(sofa::helper::vector< unsigned int >& edges,
         const bool removeIsolatedPoints, const bool resetTopoChange)
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    /// test:
+    m_container->d_edge.setDirtyValue();
+#endif
+
+
     /// add the topological changes in the queue
     removeEdgesWarning(edges);
     // inform other objects that the edges are going to be removed
@@ -594,6 +600,12 @@ void EdgeSetTopologyModifier::removeEdges(sofa::helper::vector< unsigned int >& 
     removeEdgesProcess( edges, removeIsolatedPoints );
 
     m_container->checkTopology();
+
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    /// test:
+    m_container->d_edge.cleanDirty();
+#endif
+
 }
 
 void EdgeSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
@@ -892,19 +904,34 @@ bool EdgeSetTopologyModifier::removeIsolatedElements(unsigned int scaleElem)
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
 {
+    std::cout << "EdgeSetTopologyModifier::propagateTopologicalEngineChanges"  << std::endl;
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
     std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_edge).getOutputs();
     std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+
+    std::cout << "d_edge.isDirty(): " << m_container->d_edge.isDirty() << std::endl;
 
     std::cout << "Number of outputs for edge array: " << _outs.size() << std::endl;
     for ( it = _outs.begin(); it!=_outs.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
         if (topoEngine)
+        {
+            std::cout << "topoEngine here: "<< topoEngine->getName() << std::endl;
             topoEngine->update();
+        }
+
+        sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
+        if (d)
+        {
+            std::cout << "Data " << d->getName() << std::endl;
+        }
+        else
+            std::cout << "not Data here :(" << std::endl;
     }
 
+    std::cout << "EdgeSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl;
     PointSetTopologyModifier::propagateTopologicalEngineChanges();
 }
 #endif

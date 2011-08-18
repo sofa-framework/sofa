@@ -141,6 +141,12 @@ void PointSetTopologyContainer::removePoint()
     nbPoints.setValue(nbPoints.getValue()-1);
 }
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+void PointSetTopologyContainer::updateTopologyEngineGraph()
+{
+    std::cout << "PointSetTopologyModifier::updateTopologyEngineGraph()" << std::endl;
+}
+#endif
 
 } // namespace topology
 

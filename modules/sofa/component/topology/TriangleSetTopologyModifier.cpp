@@ -278,6 +278,11 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
 
     if (removeTrianglesPreconditions(triangles)) // Test if the topology will still fullfil the conditions if these triangles are removed.
     {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+        /// test:
+        m_container->d_triangle.setDirtyValue();
+#endif
+
         /// add the topological changes in the queue
         removeTrianglesWarning(triangles);
         // inform other objects that the triangles are going to be removed
@@ -286,6 +291,11 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
         removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
 
         m_container->checkTopology();
+
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+        /// test:
+        m_container->d_triangle.cleanDirty();
+#endif
     }
     else
     {
@@ -406,6 +416,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
         m_triangle.resize( lastTriangle ); // resizing to erase multiple occurence of the triangle.
     }
 
+    std::cout << "d_triangle.isDirty() while removing triangle: " << m_container->d_triangle.isDirty() << std::endl;
 
     removeTrianglesPostProcessing(edgeToBeRemoved, vertexToBeRemoved); // Arrange the current topology.
 
@@ -428,7 +439,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
         removePointsProcess(vertexToBeRemoved);
     }
 
-
+    std::cout << "sors du remove triangle" << std::endl;
 #ifndef NDEBUG // TO BE REMOVED WHEN SURE.
     Debug();
 #endif
@@ -674,18 +685,34 @@ void TriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa::helper:
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
 {
+    std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges"  << std::endl;
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
     std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_triangle).getOutputs();
     std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+
+    std::cout << "d_triangle.isDirty(): " << m_container->d_triangle.isDirty() << std::endl;
 
     std::cout << "Number of outputs for triangle array: " << _outs.size() << std::endl;
     for ( it = _outs.begin(); it!=_outs.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
         if (topoEngine)
+        {
+            std::cout << "topoEngine here: "<< topoEngine->getName() << std::endl;
             topoEngine->update();
+        }
+
+        sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
+        if (d)
+        {
+            std::cout << "Data " << d->getName() << std::endl;
+        }
+        else
+            std::cout << "not Data here :(" << std::endl;
     }
+
+    std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl;
 
     EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 }
