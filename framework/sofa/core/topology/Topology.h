@@ -166,8 +166,11 @@ public:
 
     virtual void init()
     {
+        // TODO: see if necessary or not....
         // this->addInput(&m_changeList);
-        this->addOutput(m_topologicalData);
+
+        // TODO: understand why this crash!!
+        //this->addOutput(this->m_topologicalData);
 
         this->createEngineName();
     }
@@ -191,7 +194,15 @@ public:
 
     virtual const t_topologicalData* getTopologicalData() {return m_topologicalData;}
 
-    virtual void createEngineName() {}
+    virtual void createEngineName()
+    {
+        if (m_data_name.empty())
+            m_name = m_prefix + "no_name";
+        else
+            m_name = m_prefix + m_data_name;
+
+        return;
+    }
 
     const std::string& getName() const { return m_name; }
 
@@ -201,9 +212,12 @@ protected:
     /// Data handle by the topological engine
     t_topologicalData* m_topologicalData;
 
-    /// Engine name base on Data handled
+    /// Engine name base on Data handled: m_name = m_prefix+Data_name
     std::string m_name;
-
+    /// use to define engine name.
+    std::string m_prefix;
+    /// use to define data handled name.
+    std::string m_data_name;
 };
 
 
