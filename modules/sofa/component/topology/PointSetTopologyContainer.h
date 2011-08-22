@@ -156,6 +156,18 @@ public:
 protected:
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     virtual void updateTopologyEngineGraph();
+
+    virtual void displayDataGraph();
+
+    /// List of Topological Data link to this Data. TODO: check if necessary or doublon with engine list
+    sofa::helper::list<sofa::core::objectmodel::BaseData*> m_topologyDataDependencies;
+
+    /// graph map
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
+
+    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+
 #endif
 
     Data<unsigned int> nbPoints;
