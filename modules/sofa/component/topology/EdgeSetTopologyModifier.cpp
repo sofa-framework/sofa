@@ -910,28 +910,28 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
     std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_edge).getOutputs();
     std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
 
-    std::cout << "d_edge.isDirty(): " << m_container->d_edge.isDirty() << std::endl;
+    std::cout << "EdgeSetTopologyModifier - d_edge.isDirty(): " << m_container->d_edge.isDirty() << std::endl;
 
-    std::cout << "Number of outputs for edge array: " << _outs.size() << std::endl;
+    std::cout << "EdgeSetTopologyModifier - Number of outputs for edge array: " << _outs.size() << std::endl;
     for ( it = _outs.begin(); it!=_outs.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
         if (topoEngine)
         {
-            std::cout << "topoEngine here: "<< topoEngine->getName() << std::endl;
+            std::cout << "EdgeSetTopologyModifier - topoEngine here: "<< topoEngine->getName() << std::endl;
             topoEngine->update();
         }
 
         sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
         if (d)
         {
-            std::cout << "Data " << d->getName() << std::endl;
+            std::cout << "EdgeSetTopologyModifier - Data " << d->getName() << std::endl;
         }
         else
-            std::cout << "not Data here :(" << std::endl;
+            std::cout << "EdgeSetTopologyModifier - not Data here :(" << std::endl;
     }
 
-    std::cout << "EdgeSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl;
+    std::cout << "EdgeSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl << std::endl ;
     PointSetTopologyModifier::propagateTopologicalEngineChanges();
 }
 #endif

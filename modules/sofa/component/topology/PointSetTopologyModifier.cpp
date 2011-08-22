@@ -205,10 +205,12 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     //TODO: temporary code to test topology engine pipeline.
+    std::cout << std::endl << "******* START ENGINE PROCESSING *********" << std::endl;
     this->propagateTopologicalEngineChanges();
 #endif
 
     // remove the changes we just propagated, so that we don't send them again next time
+    std::cout << std::endl << "******* START ENGINE PROCESSING END *********" << std::endl;
     m_container->resetTopologyChangeList();
 }
 
@@ -239,28 +241,28 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_initPoints).getOutputs();
     std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
 
-    std::cout << "d_initPoints.isDirty(): " << m_container->d_initPoints.isDirty() << std::endl;
+    std::cout << "PointSetTopologyModifier - d_initPoints.isDirty(): " << m_container->d_initPoints.isDirty() << std::endl;
 
-    std::cout << std::endl << "*** Number of outputs for points array: ***" << _outs.size() << std::endl;
+    std::cout << "PointSetTopologyModifier - Number of outputs for points array: " << _outs.size() << std::endl;
     for ( it = _outs.begin(); it!=_outs.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast <sofa::core::topology::TopologyEngine*> ( (*it));
         if (topoEngine)
         {
-            std::cout << "topoEngine here: "<< topoEngine->getName() << std::endl;
+            std::cout << "PointSetTopologyModifier - topoEngine here: "<< topoEngine->getName() << std::endl;
             topoEngine->update();
         }
 
         sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
         if (d)
         {
-            std::cout << "Data " << d->getName() << std::endl;
+            std::cout << "PointSetTopologyModifier - Data " << d->getName() << std::endl;
         }
         else
-            std::cout << "not Data here :(" << std::endl;
+            std::cout << "PointSetTopologyModifier - not Data here :(" << std::endl;
 
     }
-    std::cout << "PointSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl;
+    std::cout << "PointSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl << std::endl ;
 }
 #endif
 void PointSetTopologyModifier::propagateStateChanges()

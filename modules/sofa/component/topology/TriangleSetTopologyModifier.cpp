@@ -283,6 +283,7 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
         m_container->d_triangle.setDirtyValue();
 #endif
 
+        std::cout << "d_triangle.isDirty() while removing triangle 2: " << m_container->d_triangle.isDirty() << std::endl;
         /// add the topological changes in the queue
         removeTrianglesWarning(triangles);
         // inform other objects that the triangles are going to be removed
@@ -416,7 +417,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
         m_triangle.resize( lastTriangle ); // resizing to erase multiple occurence of the triangle.
     }
 
-    std::cout << "d_triangle.isDirty() while removing triangle: " << m_container->d_triangle.isDirty() << std::endl;
+    std::cout << "d_triangle.isDirty() while removing triangle 2: " << m_container->d_triangle.isDirty() << std::endl;
 
     removeTrianglesPostProcessing(edgeToBeRemoved, vertexToBeRemoved); // Arrange the current topology.
 
@@ -691,28 +692,28 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_triangle).getOutputs();
     std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
 
-    std::cout << "d_triangle.isDirty(): " << m_container->d_triangle.isDirty() << std::endl;
+    std::cout << "TriangleSetTopologyModifier - d_triangle.isDirty(): " << m_container->d_triangle.isDirty() << std::endl;
 
-    std::cout << "Number of outputs for triangle array: " << _outs.size() << std::endl;
+    std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << _outs.size() << std::endl;
     for ( it = _outs.begin(); it!=_outs.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
         if (topoEngine)
         {
-            std::cout << "topoEngine here: "<< topoEngine->getName() << std::endl;
+            //std::cout << "topoEngine here: "<< topoEngine->getName() << std::endl;
             topoEngine->update();
         }
 
         sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
         if (d)
         {
-            std::cout << "Data " << d->getName() << std::endl;
+            std::cout << "TriangleSetTopologyModifier - Data " << d->getName() << std::endl;
         }
         else
-            std::cout << "not Data here :(" << std::endl;
+            std::cout << "TriangleSetTopologyModifier - not Data here :(" << std::endl;
     }
 
-    std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl;
+    std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl << std::endl ;
 
     EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 }
