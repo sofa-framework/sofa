@@ -52,7 +52,7 @@ typedef boost::intrusive_ptr<Aspect> AspectRef;
  * aspect ownership to the caller.
  * It is safe to use this class from several threads.
  */
-class Aspect
+class SOFA_CORE_API Aspect
 {
 public:
     ~Aspect();
@@ -70,8 +70,8 @@ private:
     int id;
     helper::system::atomic<int> counter;
 
-    friend void intrusive_ptr_add_ref(Aspect* b);
-    friend void intrusive_ptr_release(Aspect* b);
+    friend SOFA_CORE_API void intrusive_ptr_add_ref(Aspect* b);
+    friend SOFA_CORE_API void intrusive_ptr_release(Aspect* b);
 };
 
 
@@ -80,7 +80,7 @@ private:
  * This class is responsible for managing the pool of available aspects numbers.
  * It is safe to use this class from several thread.
  */
-class AspectPool
+class SOFA_CORE_API AspectPool
 {
 public:
     AspectPool();
