@@ -91,10 +91,10 @@ void OglModel::drawGroup(int ig, bool transparent)
     if (ig < 0)
     {
         g.materialId = -1;
-        g.t0 = 0;
-        g.nbt = triangles.size();
-        g.q0 = 0;
-        g.nbq = quads.size();
+        g.triID = 0;
+        g.nbTri = triangles.size();
+        g.quadID = 0;
+        g.nbQuad = quads.size();
     }
     else
     {
@@ -199,26 +199,26 @@ void OglModel::drawGroup(int ig, bool transparent)
     if(VBOGenDone && useVBO.getValue())
     {
 #ifdef SOFA_HAVE_GLEW
-        if (g.nbt > 0)
+        if (g.nbTri > 0)
         {
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-            glDrawElements(GL_TRIANGLES, g.nbt * 3, GL_UNSIGNED_INT, (unsigned int*)NULL + (g.t0 * 3));
+            glDrawElements(GL_TRIANGLES, g.nbTri * 3, GL_UNSIGNED_INT, (unsigned int*)NULL + (g.triID * 3));
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
         }
-        if (g.nbq > 0)
+        if (g.nbQuad > 0)
         {
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-            glDrawElements(GL_QUADS, g.nbq * 4, GL_UNSIGNED_INT, (unsigned int*)NULL + (g.q0 * 4));
+            glDrawElements(GL_QUADS, g.nbQuad * 4, GL_UNSIGNED_INT, (unsigned int*)NULL + (g.quadID * 4));
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
         }
 #endif
     }
     else
     {
-        if (g.nbt > 0)
-            glDrawElements(GL_TRIANGLES, g.nbt * 3, GL_UNSIGNED_INT, triangles.getData() + g.t0);
-        if (g.nbq > 0)
-            glDrawElements(GL_QUADS, g.nbq * 4, GL_UNSIGNED_INT, quads.getData() + g.q0);
+        if (g.nbTri > 0)
+            glDrawElements(GL_TRIANGLES, g.nbTri * 3, GL_UNSIGNED_INT, triangles.getData() + g.triID);
+        if (g.nbQuad > 0)
+            glDrawElements(GL_QUADS, g.nbQuad * 4, GL_UNSIGNED_INT, quads.getData() + g.quadID);
     }
 
     if (!tex && m.useTexture && m.activated)

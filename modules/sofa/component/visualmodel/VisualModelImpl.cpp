@@ -256,22 +256,22 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
         // compute the triangle and quad index corresponding to each facet
         // convert the groups info
-        int nbt = 0, nbq = 0;
+        int nbTri = 0, nbQuad = 0;
         helper::vector< std::pair<int, int> > facet2tq;
         facet2tq.resize(facetsImport.size()+1);
         for (unsigned int i = 0; i < facetsImport.size(); i++)
         {
-            facet2tq[i] = std::make_pair(nbt, nbq);
+            facet2tq[i] = std::make_pair(nbTri, nbQuad);
             const vector<vector <int> >& vertNormTexIndex = facetsImport[i];
             const vector<int>& verts = vertNormTexIndex[0];
             if (verts.size() < 3)
                 ; // ignore lines
             else if (verts.size() == 4)
-                nbq += 1;
+                nbQuad += 1;
             else
-                nbt += verts.size()-2;
+                nbTri += verts.size()-2;
         }
-        facet2tq[facetsImport.size()] = std::make_pair(nbt, nbq);
+        facet2tq[facetsImport.size()] = std::make_pair(nbTri, nbQuad);
         groups.resize(objLoader.getGroups().size());
         for (unsigned int ig = 0; ig < groups.size(); ig++)
         {
@@ -282,10 +282,10 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             if (g0.groupName.empty())    g.groupName = "defaultGroup";
             else                         g.groupName = g0.groupName;
             g.materialId = g0.materialId;
-            g.t0 = facet2tq[g0.p0].first;
-            g.nbt = facet2tq[g0.p0+g0.nbp].first - g.t0;
-            g.q0 = facet2tq[g0.p0].second;
-            g.nbq = facet2tq[g0.p0+g0.nbp].second - g.q0;
+            g.triID = facet2tq[g0.p0].first;
+            g.nbTri = facet2tq[g0.p0+g0.nbp].first - g.triID;
+            g.quadID = facet2tq[g0.p0].second;
+            g.nbQuad = facet2tq[g0.p0+g0.nbp].second - g.quadID;
             if (g.materialId == -1 && !g0.materialName.empty())
                 serr << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << sendl;
         }
@@ -1229,15 +1229,15 @@ void VisualModelImpl::handleTopologyChange()
             const sofa::component::topology::TrianglesAdded *ta = static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
             Triangle t;
             const unsigned int nbAddedTriangles = ta->getNbAddedTriangles();
-            const unsigned int nbTriangles = triangles.size();
-            triangles.resize(nbTriangles + nbAddedTriangles);
+            const unsigned int nbTririangles = triangles.size();
+            triangles.resize(nbTririangles + nbAddedTriangles);
 
             for (unsigned int i = 0; i < nbAddedTriangles; ++i)
             {
                 t[0] = (int)(ta->triangleArray[i])[0];
                 t[1] = (int)(ta->triangleArray[i])[1];
                 t[2] = (int)(ta->triangleArray[i])[2];
-                triangles[nbTriangles + i] = t;
+                triangles[nbTririangles + i] = t;
             }
 
             break;
@@ -1254,8 +1254,8 @@ void VisualModelImpl::handleTopologyChange()
             const sofa::component::topology::QuadsAdded *qa = static_cast< const sofa::component::topology::QuadsAdded * >( *itBegin );
             Quad q;
             const unsigned int nbAddedQuads = qa->getNbAddedQuads();
-            const unsigned int nbQuads = triangles.size();
-            quads.resize(nbQuads + nbAddedQuads);
+            const unsigned int nbQuaduads = triangles.size();
+            quads.resize(nbQuaduads + nbAddedQuads);
 
             for (unsigned int i = 0; i < nbAddedQuads; ++i)
             {
@@ -1263,8 +1263,8 @@ void VisualModelImpl::handleTopologyChange()
                 //q[1] = (int)(qa->getQuad(i))[1];
                 //q[2] = (int)(qa->getQuad(i))[2];
                 //q[3] = (int)(qa->getQuad(i))[3];
-                //quads[nbQuads + i] = q;
-                quads[nbQuads + i] = (qa->getQuad(i));
+                //quads[nbQuaduads + i] = q;
+                quads[nbQuaduads + i] = (qa->getQuad(i));
             }
 
             break;
@@ -1696,10 +1696,10 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         }
     }
 
-    int nbt = 0;
+    int nbTri = 0;
     if (!vtexcoords.empty())
     {
-        nbt = vtexcoords.size();
+        nbTri = vtexcoords.size();
         for (unsigned int i=0; i<vtexcoords.size(); i++)
         {
             *out << "vt "<< std::fixed << vtexcoords[i][0]<<' '<< std::fixed <<vtexcoords[i][1]<<'\n';
@@ -1739,7 +1739,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     *out << sendl;
     vindex+=nbv;
     nindex+=nbn;
-    tindex+=nbt;
+    tindex+=nbTri;
 }
 
 } // namespace visualmodel
