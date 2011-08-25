@@ -3,6 +3,8 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = sofatests
 
+CONFIG += console
+
 SOURCES = \
 	main.cpp \
 	framework/sofa/defaulttype/VecTypesTest.cpp \

@@ -35,7 +35,7 @@ namespace sofa
 namespace simulation
 {
 
-class ReleaseAspectVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API ReleaseAspectVisitor : public Visitor
 {
 public:
     ReleaseAspectVisitor(const core::ExecParams* params, int aspect);

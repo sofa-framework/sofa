@@ -48,7 +48,7 @@ namespace thread
  * array according to thread-safety requirements.
  */
 template<class T, template<class T> class StoragePolicy, class ThreadAccessPolicy>
-class SOFA_HELPER_API CircularQueue : public StoragePolicy<T>, public ThreadAccessPolicy
+class CircularQueue : public StoragePolicy<T>, public ThreadAccessPolicy
 {
 public:
     CircularQueue();
