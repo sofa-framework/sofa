@@ -211,7 +211,6 @@ private:
     GLboolean		_facetNormal;
     float			_zoom;
     int				_renderingMode;
-    bool			_waitForRender;
     //GLuint			_logoTexture;
     Texture			*texLogo;
     ctime_t			_beginTime;
