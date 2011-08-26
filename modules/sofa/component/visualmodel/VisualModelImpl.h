@@ -280,21 +280,26 @@ public:
     class FaceGroup
     {
     public:
-        int triID, nbTri;
-        int quadID, nbQuad;
+        /// tri0: first triangle index of a group
+        /// nbt: number of texture element per triangle
+        int tri0, nbt;
+
+        /// quad0: first quad index of a group
+        /// nbq: number of texture element per quad
+        int quad0, nbq;
         std::string materialName;
         std::string groupName;
         int materialId;
-        FaceGroup() : triID(0), nbTri(0), quadID(0), nbQuad(0), materialName("defaultMaterial"), groupName("defaultGroup"), materialId(-1) {}
+        FaceGroup() : tri0(0), nbt(0), quad0(0), nbq(0), materialName("defaultMaterial"), groupName("defaultGroup"), materialId(-1) {}
         inline friend std::ostream& operator << (std::ostream& out, const FaceGroup &g)
         {
-            out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.triID << " " << g.nbTri << " " << g.quadID << " " << g.nbQuad;
+            out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.tri0 << " " << g.nbt << " " << g.quad0 << " " << g.nbq;
             return out;
         }
         inline friend std::istream& operator >> (std::istream& in, FaceGroup &g)
         {
 
-            in >> g.groupName >> g.materialName >> g.materialId >> g.triID >> g.nbTri >> g.quadID >> g.nbQuad;
+            in >> g.groupName >> g.materialName >> g.materialId >> g.tri0 >> g.nbt >> g.quad0 >> g.nbq;
             return in;
         }
     };

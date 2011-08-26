@@ -256,22 +256,22 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
         // compute the triangle and quad index corresponding to each facet
         // convert the groups info
-        int nbTri = 0, nbQuad = 0;
+        int nbt = 0, nbq = 0;
         helper::vector< std::pair<int, int> > facet2tq;
         facet2tq.resize(facetsImport.size()+1);
         for (unsigned int i = 0; i < facetsImport.size(); i++)
         {
-            facet2tq[i] = std::make_pair(nbTri, nbQuad);
+            facet2tq[i] = std::make_pair(nbt, nbq);
             const vector<vector <int> >& vertNormTexIndex = facetsImport[i];
             const vector<int>& verts = vertNormTexIndex[0];
             if (verts.size() < 3)
                 ; // ignore lines
             else if (verts.size() == 4)
-                nbQuad += 1;
+                nbq += 1;
             else
-                nbTri += verts.size()-2;
+                nbt += verts.size()-2;
         }
-        facet2tq[facetsImport.size()] = std::make_pair(nbTri, nbQuad);
+        facet2tq[facetsImport.size()] = std::make_pair(nbt, nbq);
         groups.resize(objLoader.getGroups().size());
         for (unsigned int ig = 0; ig < groups.size(); ig++)
         {
@@ -282,10 +282,10 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             if (g0.groupName.empty())    g.groupName = "defaultGroup";
             else                         g.groupName = g0.groupName;
             g.materialId = g0.materialId;
-            g.triID = facet2tq[g0.p0].first;
-            g.nbTri = facet2tq[g0.p0+g0.nbp].first - g.triID;
-            g.quadID = facet2tq[g0.p0].second;
-            g.nbQuad = facet2tq[g0.p0+g0.nbp].second - g.quadID;
+            g.tri0 = facet2tq[g0.p0].first;
+            g.nbt = facet2tq[g0.p0+g0.nbp].first - g.tri0;
+            g.quad0 = facet2tq[g0.p0].second;
+            g.nbq = facet2tq[g0.p0+g0.nbp].second - g.quad0;
             if (g.materialId == -1 && !g0.materialName.empty())
                 serr << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << sendl;
         }
@@ -1696,10 +1696,10 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         }
     }
 
-    int nbTri = 0;
+    int nbt = 0;
     if (!vtexcoords.empty())
     {
-        nbTri = vtexcoords.size();
+        nbt = vtexcoords.size();
         for (unsigned int i=0; i<vtexcoords.size(); i++)
         {
             *out << "vt "<< std::fixed << vtexcoords[i][0]<<' '<< std::fixed <<vtexcoords[i][1]<<'\n';
@@ -1739,7 +1739,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     *out << sendl;
     vindex+=nbv;
     nindex+=nbn;
-    tindex+=nbTri;
+    tindex+=nbt;
 }
 
 } // namespace visualmodel
