@@ -182,16 +182,16 @@ void MultithreadGUI::simulationLoop()
 {
     core::ExecParams* ep = core::ExecParams::defaultInstance();
     ep->setAspectID(simuAspect->aspectID());
+    groot->getContext()->setAnimate(true);
     while(!closeSimu)
     {
-        //step();
-        boost::thread::sleep(boost::get_system_time() + boost::posix_time::milliseconds(500));
+        step();
+        //boost::thread::sleep(boost::get_system_time() + boost::posix_time::milliseconds(500));
         AspectRef renderAspect = aspectPool.allocate();
-        fprintf(stderr, "Allocated aspect %d for render\nCopy from %d to %d\n", renderAspect->aspectID(), simuAspect->aspectID(), renderAspect->aspectID());
+        //fprintf(stderr, "Allocated aspect %d for render\nCopy from %d to %d\n", renderAspect->aspectID(), simuAspect->aspectID(), renderAspect->aspectID());
         simulation::CopyAspectVisitor copyAspect(ep, renderAspect->aspectID(), simuAspect->aspectID());
         groot->execute(copyAspect);
         renderMsgQueue.push(renderAspect);
-        redraw();
     }
 }
 
@@ -388,6 +388,11 @@ void MultithreadGUI::glut_idle()
 //            CTime::sleep(0.01);
 //        instance->animate();
 //    }
+    if (instance)
+    {
+        CTime::sleep(0.001);
+        instance->animate();
+    }
 }
 
 
@@ -462,7 +467,6 @@ MultithreadGUI::MultithreadGUI()
     _materialMode = 0;
     _facetNormal = GL_FALSE;
     _renderingMode = GL_RENDER;
-    _waitForRender = false;
     _mouseTrans = false;
     _mouseRotate = false;
     sceneBBoxIsValid = false;
@@ -1703,9 +1707,6 @@ void MultithreadGUI::paintGL()
 #endif
             screenshot(2);
     }
-
-    if (_waitForRender)
-        _waitForRender = false;
 }
 
 void MultithreadGUI::eventNewStep()
@@ -2654,7 +2655,6 @@ void MultithreadGUI::SwitchToPresetView()
 void MultithreadGUI::step()
 {
     {
-        if (_waitForRender) return;
         //groot->setLogTime(true);
 #ifdef SOFA_SMP
         mg->step();
@@ -2668,11 +2668,7 @@ void MultithreadGUI::step()
         if( m_exportGnuplot )
             getSimulation()->exportGnuplot( groot, groot->getTime() );
 
-
-        _waitForRender = true;
         eventNewStep();
-
-        redraw();
     }
 
     if (_animationOBJ)
