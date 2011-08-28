@@ -42,6 +42,7 @@ class PointSetTopologyModifier;
 using core::topology::BaseMeshTopology;
 
 typedef BaseMeshTopology::PointID			PointID;
+typedef Data< sofa::helper::vector < void* > > t_topologicalData;
 
 /** The container class that stores a set of points and provides access
 to each point. This set of point may be a subset of the DOF of the mechanical model */
@@ -155,7 +156,10 @@ public:
 
 protected:
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+
     virtual void updateTopologyEngineGraph();
+
+    virtual void updateDataEngineGraph(Data< sofa::helper::vector < sofa::helper::vector <void*> > >& my_Data);
 
     virtual void displayDataGraph();
 

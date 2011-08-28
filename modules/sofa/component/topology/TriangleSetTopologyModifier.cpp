@@ -286,11 +286,13 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
         std::cout << "d_triangle.isDirty() while removing triangle 2: " << m_container->d_triangle.isDirty() << std::endl;
         /// add the topological changes in the queue
         removeTrianglesWarning(triangles);
+        std::cout << "d_triangle.isDirty() while removing triangle 3: " << m_container->d_triangle.isDirty() << std::endl;
         // inform other objects that the triangles are going to be removed
         propagateTopologicalChanges();
+        std::cout << "d_triangle.isDirty() while removing triangle 4: " << m_container->d_triangle.isDirty() << std::endl;
         // now destroy the old triangles.
         removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
-
+        std::cout << "d_triangle.isDirty() while removing triangle 5: " << m_container->d_triangle.isDirty() << std::endl;
         m_container->checkTopology();
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
@@ -686,6 +688,7 @@ void TriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa::helper:
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
 {
+    std::cout << "d_triangle.isDirty() while removing triangle 3.1: " << m_container->d_triangle.isDirty() << std::endl;
     std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges"  << std::endl;
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
