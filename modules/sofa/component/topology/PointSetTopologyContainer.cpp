@@ -145,6 +145,16 @@ void PointSetTopologyContainer::removePoint()
 void PointSetTopologyContainer::updateTopologyEngineGraph()
 {
     std::cout << "PointSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
+    this->updateDataEngineGraph(this->d_initPoints);
+
+    std::cout << "PointSetTopologyContainer::updateTopologyEngineGraph() end" << std::endl;
+}
+
+
+
+void PointSetTopologyContainer::updateDataEngineGraph(Data<sofa::helper::vector<sofa::helper::vector<void *> > > &my_Data)
+{
+    std::cout << "PointSetTopologyContainer::updateDataEngineGraph()" << std::endl;
 
     // clear data stored by previous call of this function
     m_enginesList.clear();
@@ -152,7 +162,7 @@ void PointSetTopologyContainer::updateTopologyEngineGraph()
     m_dataGraph.clear();
 
 
-    sofa::helper::list <sofa::core::objectmodel::DDGNode* > _outs = (this->d_initPoints).getOutputs();
+    sofa::helper::list <sofa::core::objectmodel::DDGNode* > _outs = my_Data->getOutputs();
     sofa::helper::list <sofa::core::objectmodel::DDGNode* >::iterator it;
 
     std::cout << "PointSetTopologyContainer - Number of outputs for points array: " << _outs.size() << std::endl;
@@ -274,7 +284,7 @@ void PointSetTopologyContainer::updateTopologyEngineGraph()
         std::cout << (*it_engines)->getName() << "   -------- ";
     std::cout << std::endl;
 
-    std::cout << "PointSetTopologyContainer::updateTopologyEngineGraph() end" << std::endl;
+    std::cout << "PointSetTopologyContainer::updateDataEngineGraph() end" << std::endl;
 
     this->displayDataGraph();
     return;
