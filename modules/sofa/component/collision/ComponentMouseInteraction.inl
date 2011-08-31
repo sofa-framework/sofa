@@ -76,8 +76,9 @@ void TComponentMouseInteraction<DataTypes>::createInteractionComponents(Node* pa
         current->addObject(mouseMapping);
 
         mouseMapping->setNonMechanical();
-
-        current->execute<InitVisitor>(sofa::core::ExecParams::defaultInstance());
+        mouseInSofa->init();
+        mouseInteractor->init();
+        mouseMapping->init();
     }
 }
 

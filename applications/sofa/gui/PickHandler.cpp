@@ -30,6 +30,7 @@
 #include <sofa/component/collision/RayContact.h>
 
 #include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -54,7 +55,14 @@ using namespace component::collision;
 namespace gui
 {
 
-PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED),mouseButton(NONE),renderCallback(NULL),
+PickHandler::PickHandler():
+    interactorInUse(false),
+    mouseStatus(DEACTIVATED),
+    mouseButton(NONE),
+    mouseNode(NULL),
+    mouseContainer(NULL),
+    mouseCollision(NULL),
+    renderCallback(NULL),
     pickingMethod(RAY_CASTING),
     _fboAllocated(false)
 {
@@ -68,6 +76,20 @@ PickHandler::~PickHandler()
     {
         delete operations[i];
     }
+    if(mouseNode)
+    {
+        mouseNode->execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+        delete mouseNode;
+        mouseNode = NULL;
+    }
+    std::vector< ComponentMouseInteraction *>::iterator it;
+    for( it = instanceComponents.begin(); it != instanceComponents.end(); ++it)
+    {
+        if(*it != NULL ) delete *it;
+    }
+    instanceComponents.clear();
+
+
 }
 
 void PickHandler::allocateSelectionBuffer(int width, int height)
@@ -110,6 +132,18 @@ void PickHandler::destroySelectionBuffer()
 
 void PickHandler::init()
 {
+    if(mouseNode)
+    {
+        mouseNode->execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+        delete mouseNode;
+        mouseNode = NULL;
+    }
+    std::vector< ComponentMouseInteraction *>::iterator it;
+    for( it = instanceComponents.begin(); it != instanceComponents.end(); ++it)
+    {
+        if(*it != NULL ) delete *it;
+    }
+    instanceComponents.clear();
 
     //get a node of scene (root), create a new child (mouseNode), config it, then detach it from scene by default
     Node *root = dynamic_cast<Node*>(simulation::getSimulation()->getContext());

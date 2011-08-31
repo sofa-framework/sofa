@@ -92,17 +92,16 @@ void SofaViewer::setScene(sofa::simulation::Node* scene, const char* filename /*
             groot->addObject(visualStyle);
             visualStyle->init();
         }
-        sofa::defaulttype::Vector3 minBBox, maxBBox;
-
-        //sofa::simulation::getSimulation()->computeBBox(simulation::getSimulation()->getVisualRoot(), minBBox.ptr(),maxBBox.ptr());
 
         currentCamera->setBoundingBox(groot->f_bbox.getValue().minBBox(), groot->f_bbox.getValue().maxBBox());
 
+        // init pickHandler
+        pick.init();
+        pick.setColourRenderCallback(&colourPickingRenderCallBack);
+
     }
 
-    // init pickHandler
-    pick.init();
-    pick.setColourRenderCallback(&colourPickingRenderCallBack);
+
 
 }
 
