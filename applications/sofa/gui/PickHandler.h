@@ -114,6 +114,7 @@ public:
 
     void init( );
     void reset();
+    void unload();
 
     void setColourRenderCallback(CallBackRender * colourRender)
     {
