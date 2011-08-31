@@ -132,18 +132,7 @@ void PickHandler::destroySelectionBuffer()
 
 void PickHandler::init()
 {
-    if(mouseNode)
-    {
-        mouseNode->execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-        delete mouseNode;
-        mouseNode = NULL;
-    }
-    std::vector< ComponentMouseInteraction *>::iterator it;
-    for( it = instanceComponents.begin(); it != instanceComponents.end(); ++it)
-    {
-        if(*it != NULL ) delete *it;
-    }
-    instanceComponents.clear();
+
 
     //get a node of scene (root), create a new child (mouseNode), config it, then detach it from scene by default
     Node *root = dynamic_cast<Node*>(simulation::getSimulation()->getContext());
@@ -177,7 +166,7 @@ void PickHandler::init()
 
 
     core::collision::Pipeline *pipeline;
-    simulation::getSimulation()->getContext()->get(pipeline, core::objectmodel::BaseContext::SearchRoot);
+    root->get(pipeline, core::objectmodel::BaseContext::SearchRoot);
 
     useCollisions = (pipeline != NULL);
 }
@@ -187,6 +176,23 @@ void PickHandler::reset()
     deactivateRay();
     mouseButton = NONE;
     for (unsigned int i=0; i<instanceComponents.size(); ++i) instanceComponents[i]->reset();
+}
+
+void PickHandler::unload()
+{
+    if(mouseNode)
+    {
+        mouseNode->execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+        delete mouseNode;
+        mouseNode = NULL;
+    }
+    std::vector< ComponentMouseInteraction *>::iterator it;
+    for( it = instanceComponents.begin(); it != instanceComponents.end(); ++it)
+    {
+        if(*it != NULL ) delete *it;
+    }
+    instanceComponents.clear();
+
 }
 
 Operation *PickHandler::changeOperation(sofa::component::configurationsetting::MouseButtonSetting* setting)

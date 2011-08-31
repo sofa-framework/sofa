@@ -699,18 +699,6 @@ void BglGraphManager::printEdges(Graph &g)
     std::cout << std::endl;
 }
 
-Node *BglGraphManager::getVisualRoot()
-{
-    if (visualNode) return visualNode;
-    else
-    {
-        visualNode = new BglNode("VisualNode");
-        visualNode->addTag(core::objectmodel::Tag("Visual"));
-        addVertex(visualNode);
-        visualRoot = h_node_vertex_map[visualNode];
-        return visualNode;
-    }
-}
 }
 }
 }

@@ -148,15 +148,7 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
 Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 {
     for_each(this, node, node->visualModel,              &VisualUpdateVisitor::processVisualModel);
-    for_each(this, node, node->visualModelInVisualGraph, &VisualUpdateVisitor::processVisualModel);
 
-    {
-        for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-        {
-            simulation::Node *child=*itChild;
-            child->execute<VisualUpdateVisitor>(params);
-        }
-    }
     return RESULT_CONTINUE;
 }
 
@@ -174,15 +166,7 @@ void ParallelVisualUpdateVisitor::processVisualModel(simulation::Node*, core::vi
 Visitor::Result VisualInitVisitor::processNodeTopDown(simulation::Node* node)
 {
     for_each(this, node, node->visualModel,              &VisualInitVisitor::processVisualModel);
-    for_each(this, node, node->visualModelInVisualGraph, &VisualInitVisitor::processVisualModel);
 
-    {
-        for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-        {
-            simulation::Node *child=*itChild;
-            child->execute<VisualInitVisitor>(params);
-        }
-    }
     return RESULT_CONTINUE;
 }
 void VisualInitVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)

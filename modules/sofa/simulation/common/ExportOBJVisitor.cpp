@@ -60,17 +60,7 @@ simulation::Visitor::Result ExportOBJVisitor::processNodeTopDown(Node* node)
 {
     //simulation::Node* node = static_cast<simulation::Node*>(n);
     for_each(this, node, node->visualModel,              &ExportOBJVisitor::processVisualModel);
-    for_each(this, node, node->visualModelInVisualGraph, &ExportOBJVisitor::processVisualModel);
-
-    for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-    {
-        simulation::Node *child=*itChild;
-        ExportOBJVisitor act (params /* PARAMS FIRST */, out,mtl);
-        child->execute ( &act );
-    }
-
     count = 0;
-
     return RESULT_CONTINUE;
 }
 

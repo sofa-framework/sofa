@@ -1160,16 +1160,14 @@ void SimpleGUI::DisplayOBJs(bool shadowPass)
     }
 
     {
-        Node *visualRoot = simulation::getSimulation()->getVisualRoot();
+
         if (shadowPass)
         {
             getSimulation()->drawShadows(groot);
-            getSimulation()->drawShadows(visualRoot);
         }
         else
         {
             getSimulation()->draw(&vparams,groot);
-            getSimulation()->draw(&vparams,visualRoot);
         }
         if (_axis)
         {
@@ -1471,7 +1469,6 @@ void SimpleGUI::calcProjection()
     //if (!sceneBBoxIsValid)
     {
         getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        getSimulation()->computeBBox(getSimulation()->getVisualRoot(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         sceneBBoxIsValid = true;
     }
     //std::cout << "Scene BBox = "<<sceneMinBBox<<" - "<<sceneMaxBBox<<"\n";
@@ -2577,7 +2574,7 @@ void SimpleGUI::step()
 #else
         getSimulation()->animate(groot);
 #endif
-        getSimulation()->updateVisual(getSimulation()->getVisualRoot());
+        getSimulation()->updateVisual(groot);
 
         if( m_dumpState )
             getSimulation()->dumpState( groot, *m_dumpStateStream );
@@ -2640,7 +2637,6 @@ void SimpleGUI::resetScene()
     if (groot)
     {
         getSimulation()->reset(groot);
-        getSimulation()->reset(getSimulation()->getVisualRoot());
         redraw();
     }
 }
@@ -2797,7 +2793,7 @@ void SimpleGUI::exportOBJ(bool exportMTL)
     ofilename << ".obj";
     std::string filename = ofilename.str();
     std::cout << "Exporting OBJ Scene "<<filename<<std::endl;
-    getSimulation()->exportOBJ(simulation::getSimulation()->getVisualRoot(), filename.c_str(),exportMTL);
+    getSimulation()->exportOBJ(groot, filename.c_str(),exportMTL);
 }
 
 void SimpleGUI::setScene(sofa::simulation::Node* scene, const char* filename, bool)

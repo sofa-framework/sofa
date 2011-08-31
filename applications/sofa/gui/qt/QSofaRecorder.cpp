@@ -402,7 +402,7 @@ void QSofaRecorder::loadSimulation(bool one_step )
         sleep(root->getDt(), sleep_time);
     emit NewTime();
 
-    simulation::getSimulation()->getVisualRoot()->execute< sofa::simulation::UpdateMappingVisitor >(sofa::core::ExecParams::defaultInstance());
+    root->execute< sofa::simulation::UpdateMappingVisitor >(sofa::core::ExecParams::defaultInstance());
 
 }
 void QSofaRecorder::sleep(float seconds, float init_time)

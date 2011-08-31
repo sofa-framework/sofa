@@ -40,23 +40,6 @@ Visitor::Result DeactivationVisitor::processNodeTopDown(simulation::Node* node)
             child->setActive(active);
         }
 
-        if (!node->nodeInVisualGraph.empty())
-        {
-            simulation::Node *visualNode=node->nodeInVisualGraph;
-            visualNode->setActive(active);
-
-            DeactivationVisitor activationVisitor(this->params, active);
-            visualNode->executeVisitor(&activationVisitor);
-        }
-        for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-        {
-            simulation::Node *child=*itChild;
-            child->setActive(active);
-
-            DeactivationVisitor activationVisitor(this->params,active);
-            child->executeVisitor(&activationVisitor);
-        }
-
     }
     return RESULT_CONTINUE;
 }
@@ -66,23 +49,6 @@ void DeactivationVisitor::processNodeBottomUp(simulation::Node* node)
     if (!active)
     {
         node->setActive(active);
-
-        if (!node->nodeInVisualGraph.empty())
-        {
-            simulation::Node *visualNode=node->nodeInVisualGraph;
-            DeactivationVisitor deactivationVisitor(this->params,active);
-            visualNode->executeVisitor(&deactivationVisitor);
-        }
-
-        for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-        {
-            simulation::Node *child=*itChild;
-            child->setActive(active);
-
-            DeactivationVisitor deactivationVisitor(this->params,active);
-            child->executeVisitor(&deactivationVisitor);
-        }
-
     }
 
 }

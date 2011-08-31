@@ -243,12 +243,6 @@ Node* SMPBglSimulation::load(const char* f)
     //         return roots.back();
 }
 
-
-Node *SMPBglSimulation::getVisualRoot()
-{
-    return BglGraphManager::getInstance()->getVisualRoot();
-}
-
 void SMPBglSimulation::reset(Node* root)
 {
     sofa::simulation::Simulation::reset(root);
@@ -263,7 +257,7 @@ void SMPBglSimulation::unload(Node* root)
     n->getParents(parents);
     if (parents.empty()) //Root
     {
-        Simulation::unload(getVisualRoot());
+        Simulation::unload(root);
     }
 }
 

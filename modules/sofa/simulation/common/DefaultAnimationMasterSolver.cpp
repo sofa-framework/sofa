@@ -115,9 +115,7 @@ void DefaultAnimationMasterSolver::step(const core::ExecParams* params, double d
         gnode->execute ( beh );
         gnode->execute ( act );
         gnode->setTime ( startTime + (i+1)* act.getDt() );
-        simulation::getSimulation()->getVisualRoot()->setTime ( gnode->getTime() );
         gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
-        simulation::getSimulation()->getVisualRoot()->execute<UpdateSimulationContextVisitor>(params);
         nbMechSteps.setValue(nbMechSteps.getValue() + 1);
     }
 

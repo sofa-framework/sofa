@@ -132,10 +132,6 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
            )
             this->processObject(obj);
     }
-    for (simulation::Node::ObjectIterator it = node->componentInVisualGraph.begin(); it != node->componentInVisualGraph.end(); ++it)
-    {
-        this->processObject(*it);
-    }
 
     return RESULT_CONTINUE;
 }
@@ -153,13 +149,6 @@ void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
 #endif
            )
             this->processObject(obj);
-    }
-
-    for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-    {
-        simulation::Node *child=*itChild;
-        XMLPrintVisitor printVisualChild(params /* PARAMS FIRST */, m_out,compact); printVisualChild.setLevel(level);
-        child->executeVisitor(&printVisualChild);
     }
 
     --level;

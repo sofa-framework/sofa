@@ -69,15 +69,6 @@ TreeSimulation::~TreeSimulation()
 
 }
 
-Node *TreeSimulation::getVisualRoot()
-{
-    if (visualNode.get() == 0)
-    {
-        visualNode.reset(new GNode("VisualNode"));
-        visualNode->addTag(core::objectmodel::Tag("Visual"));
-    }
-    return visualNode.get();
-}
 
 /// Create a new graph
 Node* TreeSimulation::createNewGraph(const std::string& name)

@@ -60,13 +60,13 @@ public:
 
 
     /** @name Hierarchical graph
-        This graph (hgraph) reflects the sofa mechanical mapping hierarchy.
-        The vertices contains sofa simulation nodes, while the edges contain nothing.
-        The (mechanical) mappings are not in the edges because in future work we want to allow a single mapping to read input from several parents. Thus, the mappings remain associated with the Nodes as usual.
+    This graph (hgraph) reflects the sofa mechanical mapping hierarchy.
+    The vertices contains sofa simulation nodes, while the edges contain nothing.
+    The (mechanical) mappings are not in the edges because in future work we want to allow a single mapping to read input from several parents. Thus, the mappings remain associated with the Nodes as usual.
 
-        A dual graph (rgraph) is used for convenience.
-        It is the same as the hierarchical graph, but its edges are in the opposite directions.
-        (BTW, do we really need it ?)
+    A dual graph (rgraph) is used for convenience.
+    It is the same as the hierarchical graph, but its edges are in the opposite directions.
+    (BTW, do we really need it ?)
     */
 
 
@@ -140,9 +140,9 @@ public:
     typedef std::map<Node*, Rvertex> R_node_vertex_map;                    //  sofa node->rvertex
 
     /** @name interaction graph
-        This auxiliary graph represents the interactions between the simulated objects.
-        It is created temporarily and used to build the interaction groups.
-        Contrary to the hierarchical graph, it is not oriented.
+    This auxiliary graph represents the interactions between the simulated objects.
+    It is created temporarily and used to build the interaction groups.
+    Contrary to the hierarchical graph, it is not oriented.
     */
     ///@{
     // same Vertices as Hgraph
@@ -165,9 +165,9 @@ public:
     ///@}
 
     /** @name interactions
-        Interactions can be defined at any level of the hgraph.
-        Based on a list of interactions, we build interaction groups : lists of objects and the interactions between them.
-        Each object is represented by its root in the hierarchical graph.
+    Interactions can be defined at any level of the hgraph.
+    Based on a list of interactions, we build interaction groups : lists of objects and the interactions between them.
+    Each object is represented by its root in the hierarchical graph.
     */
     ///@{
     struct InteractionData
@@ -225,8 +225,6 @@ public:
     template <typename Container>
     void getRoots(Container &data);
 
-    Node *getVisualRoot();
-
     //*********************************************************************************
     //Visitors implementation
     /// breadth visit from the given vertex
@@ -246,7 +244,7 @@ public:
 protected:
 
     /** Compute the interaction graph and the connected components, based on interactions and hroots
-     */
+    */
     void computeInteractionGraphAndConnectedComponents();
 
     /** Determine if we have to recompute the interaction graph

@@ -695,7 +695,7 @@ void QtViewer::DisplayOBJs()
     {
 
         getSimulation()->draw(vparams,groot);
-        getSimulation()->draw(vparams,simulation::getSimulation()->getVisualRoot());
+
         if (_axis)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);

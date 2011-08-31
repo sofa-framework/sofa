@@ -668,8 +668,6 @@ void QtGLViewer::DisplayOBJs()
     {
         //Draw Debug information of the components
         simulation::getSimulation()->draw(vparams,groot);
-        //Draw Visual Models
-        simulation::getSimulation()->draw(vparams,simulation::getSimulation()->getVisualRoot());
         if (_axis)
         {
             this->setSceneBoundingBox(qglviewer::Vec(vparams->sceneBBox().minBBoxPtr()),

@@ -155,10 +155,6 @@ public:
     sofa::gui::qt::viewer::SofaViewer* viewer;
     QSofaListView* simulationGraph;
 
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-    QSofaListView* visualGraph;
-#endif
-
     RealGUI( const char* viewername, const std::vector<std::string>& options = std::vector<std::string>() );
     ~RealGUI();
 

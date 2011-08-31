@@ -54,15 +54,6 @@ PropagateEventVisitor::~PropagateEventVisitor()
 Visitor::Result PropagateEventVisitor::processNodeTopDown(simulation::Node* node)
 {
     for_each(this, node, node->object, &PropagateEventVisitor::processObject);
-    for_each(this, node, node->componentInVisualGraph, &PropagateEventVisitor::processObject);
-    for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-    {
-        simulation::Node *child=*itChild;
-
-        PropagateEventVisitor visualProp(params /* PARAMS FIRST */, m_event);
-        child->executeVisitor(&visualProp);
-    }
-
 
     if( m_event->isHandled() )
         return Visitor::RESULT_PRUNE;

@@ -35,42 +35,6 @@ namespace simulation
 {
 
 
-Visitor::Result DeleteVisitor::processNodeTopDown(Node* node)
-{
-    //If a corresponding visual node exists...
-    if (!node->nodeInVisualGraph.empty())
-    {
-        //... and is the Visual Root, we remove all the component (we cannot launch a DeleteVisitor from the VisualRoot, as it would delete eventual visual child node, with no way of inform the simulation nodes
-        if (node->nodeInVisualGraph == getSimulation()->getVisualRoot())
-        {
-            while (!node->componentInVisualGraph.empty())
-            {
-                core::objectmodel::BaseObject* object = *node->componentInVisualGraph.begin();
-                node->nodeInVisualGraph->removeObject(object);
-                node->componentInVisualGraph.remove(object);
-                delete object;
-            }
-        }
-        else
-        {
-            DeleteVisitor deleteV(params);
-            node->nodeInVisualGraph->executeVisitor(&deleteV);
-            node->nodeInVisualGraph->detachFromGraph();
-            delete node->nodeInVisualGraph;
-        }
-    }
-    for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-    {
-        simulation::Node *child=*itChild;
-        DeleteVisitor deleteV(params);
-        child->executeVisitor(&deleteV);
-        child->detachFromGraph();
-        delete child;
-    }
-
-    return RESULT_CONTINUE;
-}
-
 void DeleteVisitor::processNodeBottomUp(Node* node)
 {
     while (!node->child.empty())
