@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_BUOYANTFORCEFIELD_INL
 
 #include <sofa/component/forcefield/BuoyantForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/gl/template.h>
 #include <vector>
 #include <set>

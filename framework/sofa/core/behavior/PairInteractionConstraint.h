@@ -128,9 +128,15 @@ public:
         if (arg->getAttribute("object1") || arg->getAttribute("object2"))
         {
             if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
+            {
+                std::cout << "ERROR[" << arg->getAttribute("name") << "] object1: name(" << arg->getAttribute("object1") << ") has template " <<arg->findObject(arg->getAttribute("object1",".."))->getTemplateName() << " and should be " << arg->getAttribute("template") << std::endl;
                 return false;
+            }
             if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+            {
+                std::cout << "ERROR[" << arg->getAttribute("name") << "] object2: name(" << arg->getAttribute("object2") << ") has template " <<arg->findObject(arg->getAttribute("object2",".."))->getTemplateName() << " and should be " << arg->getAttribute("template") << std::endl;
                 return false;
+            }
         }
         else
         {
