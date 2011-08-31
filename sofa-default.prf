@@ -47,9 +47,6 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Options
 ########################################################################
 
-# Uncomment if you want to use 'old-way' scene graph (visual & mechanic in the same graph)
-# DEFINES += SOFA_CLASSIC_SCENE_GRAPH
-
 # Uncomment if you want to hide the recorder from the Qt GUI to save space
 # DEFINES += SOFA_GUI_QT_NO_RECORDER
 
