@@ -66,7 +66,7 @@ public:
     Node* createNewGraph(const std::string& name="");
 
 
-    Node *getVisualRoot();
+
 
     void reset ( Node* root );
 

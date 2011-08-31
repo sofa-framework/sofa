@@ -52,8 +52,6 @@ public:
     TreeSimulation();
     ~TreeSimulation(); // this is a terminal class
 
-    Node *getVisualRoot();
-
     ///create a new graph(or tree) and return its root node
     Node* createNewGraph(const std::string& name="");
 

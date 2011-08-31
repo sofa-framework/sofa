@@ -34,11 +34,6 @@
 #include "sofa/gui/qt/QSofaListView.h"
 #include <algorithm>
 
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
-#endif
-
-
 #ifdef SOFA_HAVE_CHAI3D
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/core/objectmodel/GLInitializedEvent.h>
@@ -256,9 +251,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     : viewerName ( viewername ),
       viewer ( NULL ),
       simulationGraph(NULL),
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-      visualGraph(NULL),
-#endif
       currentTab ( NULL ),
       tabInstrument (NULL),
 #ifndef SOFA_GUI_QT_NO_RECORDER
@@ -402,15 +394,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
     ((QVBoxLayout*)TabGraph->layout())->addWidget(simulationGraph);
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-    visualGraph = new QSofaListView(VISUAL,TabVisualGraph,"VisualGraph");
-    ((QVBoxLayout*)TabVisualGraph->layout())->addWidget(visualGraph);
-    connect ( ExportVisualGraphButton, SIGNAL ( clicked() ), visualGraph, SLOT ( Export() ) );
-#else
 #ifdef SOFA_QT4
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
 #endif
-#endif
+
 
 #ifndef SOFA_DUMP_VISITOR_INFO
     //Remove option to see visitor trace
@@ -459,15 +446,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
     connect(simulationGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-    connect(visualGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ) , this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
-    connect(visualGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
-    connect(visualGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
-    connect(visualGraph, SIGNAL(focusChanged(sofa::core::objectmodel::BaseObject*)),
-            viewer->getQWidget(), SLOT(fitObjectBBox(sofa::core::objectmodel::BaseObject*)) );
-    connect(visualGraph, SIGNAL( focusChanged(sofa::core::objectmodel::BaseNode*) ),
-            viewer->getQWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) ) );
-#endif
     connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
@@ -675,13 +653,10 @@ void RealGUI::changeViewer()
             /* cleanup previous viewer */
             if ( viewer->getScene() !=NULL )
             {
+                viewer->getPickHandler()->unload();
                 simulation::getSimulation()->unload ( viewer->getScene() );
                 delete viewer->getScene() ;
                 viewer->setScene(NULL);
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-                if(visualGraph->getListener() != NULL )
-                    simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
-#endif
             }
             viewer->removeViewerTab(tabs);
             left_stack->removeWidget(viewer->getQWidget() );
@@ -736,13 +711,10 @@ void RealGUI::updateViewerList()
             {
                 if ( viewer->getScene() !=NULL )
                 {
+                    viewer->getPickHandler()->unload();
                     simulation::getSimulation()->unload ( viewer->getScene() );
                     delete viewer->getScene() ;
                     viewer->setScene(NULL);
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-                    if(visualGraph->getListener() != NULL )
-                        simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
-#endif
                 }
                 viewer->removeViewerTab(tabs);
                 left_stack->removeWidget(viewer->getQWidget() );
@@ -809,12 +781,9 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     if ( viewer->getScene() !=NULL )
     {
         viewer->getPickHandler()->reset();//activateRay(false);
+        viewer->getPickHandler()->unload();
 
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-        if(visualGraph->getListener() != NULL )
-            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
-#endif
     }
     //Clear the list of modified dialog opened
 
@@ -853,10 +822,6 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     if ( viewer->getScene() !=NULL )
     {
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-        if(visualGraph->getListener() != NULL )
-            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
-#endif
 
     }
     GNode *simuNode = dynamic_cast< GNode *> (simulation::getSimulation()->load ( scene.c_str() ));
@@ -963,9 +928,7 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         dtEdit->setText ( QString::number ( root->getDt() ) );
 
         simulationGraph->Clear(root);
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-        visualGraph->Clear(dynamic_cast<Node*>(simulation::getSimulation()->getVisualRoot()) );
-#endif
+
         statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()) );
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
@@ -1051,9 +1014,7 @@ void RealGUI::Clear()
 #endif
 
     simulationGraph->Clear(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-    visualGraph->Clear(dynamic_cast<Node*>(simulation::getSimulation()->getVisualRoot()));
-#endif
+
     statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
 
 
@@ -1543,15 +1504,7 @@ void RealGUI::step()
         //T=T+DT
         SReal dt=root->getDt();
         simulation::getSimulation()->animate ( root, dt );
-#ifdef SOFA_CLASSIC_SCENE_GRAPH
         simulation::getSimulation()->updateVisual( root , dt );
-#else
-        simulation::getSimulation()->updateVisual( simulation::getSimulation()->getVisualRoot() , dt );
-        sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-        simulation::getSimulation()->getVisualRoot()->execute<sofa::simulation::UpdateBoundingBoxVisitor>(params);
-
-#endif
-
 
         if ( m_dumpState )
             simulation::getSimulation()->dumpState ( root, *m_dumpStateStream );
@@ -1572,11 +1525,8 @@ void RealGUI::step()
         if ( ( counter++ % CAPTURE_PERIOD ) ==0 )
 #endif
         {
-#ifdef SOFA_CLASSIC_SCENE_GRAPH
             exportOBJ ( getScene(), false );
-#else
-            exportOBJ ( getSimulation()->getVisualRoot(), false );
-#endif
+
             ++_animationOBJcounter;
         }
     }
@@ -1678,17 +1628,7 @@ void RealGUI::currentTabChanged ( QWidget* widget )
     {
         simulationGraph->Freeze();
     }
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-    else if ( widget == TabVisualGraph )
-    {
-        visualGraph->Unfreeze( );
-    }
-    else if ( currentTab == TabVisualGraph )
-    {
-        visualGraph->Freeze( );
 
-    }
-#endif
     else if (widget == TabStats)
         statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
 
@@ -1750,13 +1690,9 @@ void RealGUI::resetScene()
         root->setTime(0.);
         eventNewTime();
         simulation::getSimulation()->reset ( root );
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-        simulation::getSimulation()->reset ( simulation::getSimulation()->getVisualRoot() );
-#endif
+
         UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(root);
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-        UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(simulation::getSimulation()->getVisualRoot());
-#endif
+
         emit newStep();
     }
 
@@ -1896,11 +1832,8 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     case Qt::Key_O:
         // --- export to OBJ
     {
-#ifdef SOFA_CLASSIC_SCENE_GRAPH
         exportOBJ ( getScene() );
-#else
-        exportOBJ ( getSimulation()->getVisualRoot() );
-#endif
+
         break;
     }
     case Qt::Key_P:
@@ -2138,14 +2071,10 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
     simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), activate);
     node->executeVisitor(&v);
 
-
-
     using core::objectmodel::BaseNode;
     std::list< BaseNode* > nodeToProcess;
     nodeToProcess.push_front((BaseNode*)node);
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-    std::list< BaseNode* > visualNodeToProcess;
-#endif
+
 
     std::list< BaseNode* > nodeToChange;
     //Breadth First approach to activate all the nodes
@@ -2156,14 +2085,10 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
         nodeToProcess.pop_front();
 
         nodeToChange.push_front(n);
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-        if (!n->nodeInVisualGraph.empty()) visualNodeToProcess.push_front( n->nodeInVisualGraph );
-#endif
+
         //We add to the list of node to process all its children
         std::copy(n->child.begin(), n->child.end(), std::back_inserter(nodeToProcess));
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-        std::copy(n->childInVisualGraph.begin(), n->childInVisualGraph.end(), std::back_inserter(visualNodeToProcess));
-#endif
+
     }
     {
         ActivationFunctor activator( activate, sofalistview->getListener() );
@@ -2172,24 +2097,6 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
 
     nodeToChange.clear();
 
-#ifndef SOFA_CLASSIC_SCENE_GRAPH
-    while (!visualNodeToProcess.empty())
-    {
-        //We take the first element of the list
-        Node* n=(Node*)visualNodeToProcess.front();
-        visualNodeToProcess.pop_front();
-
-        nodeToChange.push_front(n);
-
-        //We add to the list of node to process all its children
-        core::objectmodel::BaseNode::Children children=n->getChildren();
-        std::copy(children.begin(), children.end(), std::back_inserter(visualNodeToProcess));
-    }
-    {
-        ActivationFunctor activator(activate, visualGraph->getListener() );
-        std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
-    }
-#endif
     Update();
 
     if ( sofalistview == simulationGraph && activate )

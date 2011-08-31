@@ -107,8 +107,6 @@ public:
     /// Unload a scene from a Node.
     virtual void unload(Node * /* root */);
 
-    virtual Node *getVisualRoot()=0;
-
     ///create a new graph(or tree) and return its root node
     virtual Node* createNewGraph(const std::string& name)=0;//Todo replace newNode method
 

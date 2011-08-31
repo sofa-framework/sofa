@@ -38,7 +38,6 @@ class SOFA_SIMULATION_COMMON_API DeleteVisitor : public Visitor
 public:
     DeleteVisitor(const core::ExecParams* params) : Visitor(params) {}
 
-    virtual Result processNodeTopDown(Node* node);
     virtual void processNodeBottomUp(Node* node);
     virtual const char* getClassName() const { return "DeleteVisitor"; }
 };

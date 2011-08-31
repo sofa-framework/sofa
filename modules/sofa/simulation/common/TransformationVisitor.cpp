@@ -51,23 +51,6 @@ Visitor::Result TransformationVisitor::processNodeTopDown(simulation::Node* node
     for_each(this, node, node->visualModel, &TransformationVisitor::processVisualModel);
     for_each(this, node, node->mechanicalState, &TransformationVisitor::processMechanicalState);
 
-    //Visual Graph transmission
-    for_each(this, node, node->visualModelInVisualGraph, &TransformationVisitor::processVisualModel);
-
-    if (!node->childInVisualGraph.empty())
-    {
-        TransformationVisitor transform(params);
-        transform.setTranslation(translation[0], translation[1], translation[2]);
-        transform.setRotation(rotation[0], rotation[1], rotation[2]);
-        transform.setScale(scale[0], scale[1], scale[2]);
-
-        for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-        {
-            simulation::Node *child=*itChild;
-            child->executeVisitor(&transform);
-        }
-    }
-
     return RESULT_CONTINUE;
 }
 

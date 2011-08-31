@@ -103,11 +103,6 @@ Node* BglSimulation::load(const char* f)
 }
 
 
-Node *BglSimulation::getVisualRoot()
-{
-    return BglGraphManager::getInstance()->getVisualRoot();
-}
-
 void BglSimulation::reset(Node* root)
 {
     sofa::simulation::Simulation::reset(root);
@@ -122,7 +117,7 @@ void BglSimulation::unload(Node* root)
     n->getParents(parents);
     if (parents.empty()) //Root
     {
-        Simulation::unload(getVisualRoot());
+        //Simulation::unload(root);
     }
 }
 }

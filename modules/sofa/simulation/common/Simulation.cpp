@@ -170,7 +170,6 @@ void Simulation::init ( Node* root )
 
     // propagate the visualization settings (showVisualModels, etc.) in the whole graph
     updateVisualContext(root);
-    updateVisualContext(getVisualRoot());
 }
 
 

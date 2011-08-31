@@ -92,13 +92,7 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 
     for_each(this, node, node->object,  &TopologyChangeVisitor::processTopologyChange);
 
-    //Propagate the topology changes to the Visual Graph components
-    for_each(this, node, node->componentInVisualGraph,  &TopologyChangeVisitor::processTopologyChangeNoCheck);
-    for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-    {
-        simulation::Node *child=*itChild;
-        child->execute<HandleTopologyChangeVisitor>(params);
-    }
+
 
     return RESULT_CONTINUE;
 }

@@ -783,11 +783,8 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
 
         simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
         this->gnode->execute(&endVisitor);
-
         this->gnode->setTime ( startTime + (i+1)* act.getDt() );
-        sofa::simulation::getSimulation()->getVisualRoot()->setTime ( this->gnode->getTime() );
         this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
-        sofa::simulation::getSimulation()->getVisualRoot()->execute<UpdateSimulationContextVisitor>(params);
         nbMechSteps.setValue(nbMechSteps.getValue() + 1);
     }
 
