@@ -209,7 +209,10 @@ void TriangleSetTopologyModifier::addTrianglesWarning(const unsigned int nTriang
         const sofa::helper::vector< Triangle >& trianglesList,
         const sofa::helper::vector< unsigned int >& trianglesIndexList)
 {
-    // Warning that quads just got created
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    m_container->d_triangle.setDirtyValue();
+#endif
+    // Warning that triangles just got created
     TrianglesAdded *e = new TrianglesAdded(nTriangles, trianglesList, trianglesIndexList);
     addTopologyChange(e);
 }
@@ -221,6 +224,9 @@ void TriangleSetTopologyModifier::addTrianglesWarning(const unsigned int nTriang
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    m_container->d_triangle.setDirtyValue();
+#endif
     // Warning that triangles just got created
     TrianglesAdded *e=new TrianglesAdded(nTriangles, trianglesList,trianglesIndexList,ancestors,baryCoefs);
     addTopologyChange(e);
@@ -282,17 +288,13 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
         /// test:
         m_container->d_triangle.setDirtyValue();
 #endif
-
-        std::cout << "d_triangle.isDirty() while removing triangle 2: " << m_container->d_triangle.isDirty() << std::endl;
         /// add the topological changes in the queue
         removeTrianglesWarning(triangles);
-        std::cout << "d_triangle.isDirty() while removing triangle 3: " << m_container->d_triangle.isDirty() << std::endl;
         // inform other objects that the triangles are going to be removed
         propagateTopologicalChanges();
-        std::cout << "d_triangle.isDirty() while removing triangle 4: " << m_container->d_triangle.isDirty() << std::endl;
         // now destroy the old triangles.
         removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
-        std::cout << "d_triangle.isDirty() while removing triangle 5: " << m_container->d_triangle.isDirty() << std::endl;
+
         m_container->checkTopology();
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
@@ -310,6 +312,11 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
 
 void TriangleSetTopologyModifier::removeTrianglesWarning(sofa::helper::vector<unsigned int> &triangles)
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    // other way
+    m_container->setTopologyToDirty();
+#endif
+
     /// sort vertices to remove in a descendent order
     std::sort( triangles.begin(), triangles.end(), std::greater<unsigned int>() );
 
@@ -419,8 +426,6 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
         m_triangle.resize( lastTriangle ); // resizing to erase multiple occurence of the triangle.
     }
 
-    std::cout << "d_triangle.isDirty() while removing triangle 2: " << m_container->d_triangle.isDirty() << std::endl;
-
     removeTrianglesPostProcessing(edgeToBeRemoved, vertexToBeRemoved); // Arrange the current topology.
 
     if(!edgeToBeRemoved.empty())
@@ -442,7 +447,6 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
         removePointsProcess(vertexToBeRemoved);
     }
 
-    std::cout << "sors du remove triangle" << std::endl;
 #ifndef NDEBUG // TO BE REMOVED WHEN SURE.
     Debug();
 #endif
@@ -688,33 +692,27 @@ void TriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa::helper:
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
 {
-    std::cout << "d_triangle.isDirty() while removing triangle 3.1: " << m_container->d_triangle.isDirty() << std::endl;
     std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges"  << std::endl;
-    if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
+    if (m_container->beginChange() == m_container->endChange()) // nothing to do if no event is stored
+        return;
 
-    std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_triangle).getOutputs();
-    std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+    if (!m_container->isTopologyDirty()) // triangle Data has not been touched
+        return;
 
-    std::cout << "TriangleSetTopologyModifier - d_triangle.isDirty(): " << m_container->d_triangle.isDirty() << std::endl;
+    // get directly the list of engines created at init: case of removing.... for the moment
+    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
 
-    std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << _outs.size() << std::endl;
-    for ( it = _outs.begin(); it!=_outs.end(); ++it)
+    std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
+    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
+        // no need to dynamic cast this time? TO BE CHECKED!
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine)
-        {
-            //std::cout << "topoEngine here: "<< topoEngine->getName() << std::endl;
             topoEngine->update();
-        }
-
-        sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
-        if (d)
-        {
-            std::cout << "TriangleSetTopologyModifier - Data " << d->getName() << std::endl;
-        }
-        else
-            std::cout << "TriangleSetTopologyModifier - not Data here :(" << std::endl;
     }
+
+    // other way
+    m_container->cleanTopologyFromDirty();
 
     std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl << std::endl ;
 

@@ -172,6 +172,9 @@ protected:
 
     sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
 
+
+    // Use a specific boolen to know if topology Data is dirty or not.
+    // TODO: check if we can't use d_topologyData.isDirty()
     void setTopologyToDirty()
     {
         this->m_topologyDirty = true;

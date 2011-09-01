@@ -117,6 +117,9 @@ void EdgeSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge >
 
 void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges)
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    m_container->d_edge.setDirtyValue();
+#endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges);
     addTopologyChange(e);
@@ -127,6 +130,9 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
         const sofa::helper::vector< Edge >& edgesList,
         const sofa::helper::vector< unsigned int >& edgesIndexList)
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    m_container->d_edge.setDirtyValue();
+#endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList);
     addTopologyChange(e);
@@ -138,6 +144,9 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
         const sofa::helper::vector< unsigned int >& edgesIndexList,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors)
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    m_container->d_edge.setDirtyValue();
+#endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors);
     addTopologyChange(e);
@@ -150,6 +159,9 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    m_container->d_edge.setDirtyValue();
+#endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
     addTopologyChange(e);
@@ -158,6 +170,9 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
 
 void EdgeSetTopologyModifier::removeEdgesWarning(sofa::helper::vector<unsigned int> &edges )
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    m_container->d_edge.setDirtyValue();
+#endif
     // sort edges to remove in a descendent order
     std::sort( edges.begin(), edges.end(), std::greater<unsigned int>() );
 
@@ -232,7 +247,6 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<unsi
 
     if (! vertexToBeRemoved.empty())
     {
-        std::cout<<" vertexToBeRemoved is not empty !! "<<std::endl;
         removePointsWarning(vertexToBeRemoved);
         // inform other objects that the points are going to be removed
         propagateTopologicalChanges();
@@ -905,31 +919,26 @@ bool EdgeSetTopologyModifier::removeIsolatedElements(unsigned int scaleElem)
 void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     std::cout << "EdgeSetTopologyModifier::propagateTopologicalEngineChanges"  << std::endl;
-    if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
+    if (m_container->beginChange() == m_container->endChange()) // nothing to do if no event is stored
+        return;
 
-    std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_edge).getOutputs();
-    std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+    if (!m_container->isTopologyDirty()) // edge Data has not been touched
+        return;
 
-    std::cout << "EdgeSetTopologyModifier - d_edge.isDirty(): " << m_container->d_edge.isDirty() << std::endl;
+    // get directly the list of engines created at init: case of removing.... for the moment
+    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
 
-    std::cout << "EdgeSetTopologyModifier - Number of outputs for edge array: " << _outs.size() << std::endl;
-    for ( it = _outs.begin(); it!=_outs.end(); ++it)
+    std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
+    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
+        // no need to dynamic cast this time? TO BE CHECKED!
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine)
-        {
-            std::cout << "EdgeSetTopologyModifier - topoEngine here: "<< topoEngine->getName() << std::endl;
             topoEngine->update();
-        }
-
-        sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
-        if (d)
-        {
-            std::cout << "EdgeSetTopologyModifier - Data " << d->getName() << std::endl;
-        }
-        else
-            std::cout << "EdgeSetTopologyModifier - not Data here :(" << std::endl;
     }
+
+    // other way
+    m_container->cleanTopologyFromDirty();
 
     std::cout << "EdgeSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl << std::endl ;
     PointSetTopologyModifier::propagateTopologicalEngineChanges();

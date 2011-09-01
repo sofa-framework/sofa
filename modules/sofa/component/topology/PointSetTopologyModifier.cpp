@@ -73,6 +73,9 @@ void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
 
 void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints, const bool addDOF)
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    m_container->setTopologyToDirty();
+#endif
     if(addDOF)
     {
         PointsAdded *e2 = new PointsAdded(nPoints);
@@ -91,6 +94,9 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< double       > >& coefs,
         const bool addDOF)
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    m_container->setTopologyToDirty();
+#endif
     if(addDOF)
     {
         PointsAdded *e2 = new PointsAdded(nPoints, ancestors, coefs);
@@ -109,12 +115,6 @@ void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <un
         const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
         const bool moveDOF)
 {
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    /// test:
-    m_container->d_initPoints.setDirtyValue();
-#endif
-
-
     if(moveDOF)
     {
         PointsMoved *ev = new PointsMoved(id, ancestors, coefs);
@@ -126,11 +126,6 @@ void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <un
     PointsMoved *ev2 = new PointsMoved(id, ancestors, coefs);
     this->addTopologyChange(ev2);
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    /// test:
-    m_container->d_initPoints.cleanDirty();
-#endif
-
 }
 
 
@@ -138,6 +133,9 @@ void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <un
 void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    m_container->setTopologyToDirty();
+#endif
     // sort points so that they are removed in a descending order
     std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
 
@@ -207,10 +205,9 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     //TODO: temporary code to test topology engine pipeline.
     std::cout << std::endl << "******* START ENGINE PROCESSING *********" << std::endl;
     this->propagateTopologicalEngineChanges();
-#endif
-
-    // remove the changes we just propagated, so that we don't send them again next time
     std::cout << std::endl << "******* START ENGINE PROCESSING END *********" << std::endl;
+#endif
+    // remove the changes we just propagated, so that we don't send them again next time
     m_container->resetTopologyChangeList();
 }
 
@@ -236,32 +233,27 @@ void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
 void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     std::cout << "PointSetTopologyModifier::propagateTopologicalEngineChanges"  << std::endl;
-    if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
+    if (m_container->beginChange() == m_container->endChange()) // nothing to do if no event is stored
+        return;
 
-    std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_initPoints).getOutputs();
-    std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+    if (!m_container->isTopologyDirty()) // triangle Data has not been touched
+        return;
 
-    std::cout << "PointSetTopologyModifier - d_initPoints.isDirty(): " << m_container->d_initPoints.isDirty() << std::endl;
+    // get directly the list of engines created at init: case of removing.... for the moment
+    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
 
-    std::cout << "PointSetTopologyModifier - Number of outputs for points array: " << _outs.size() << std::endl;
-    for ( it = _outs.begin(); it!=_outs.end(); ++it)
+    std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
+    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast <sofa::core::topology::TopologyEngine*> ( (*it));
+        // no need to dynamic cast this time? TO BE CHECKED!
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine)
-        {
-            std::cout << "PointSetTopologyModifier - topoEngine here: "<< topoEngine->getName() << std::endl;
             topoEngine->update();
-        }
-
-        sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
-        if (d)
-        {
-            std::cout << "PointSetTopologyModifier - Data " << d->getName() << std::endl;
-        }
-        else
-            std::cout << "PointSetTopologyModifier - not Data here :(" << std::endl;
-
     }
+
+    // other way
+    m_container->cleanTopologyFromDirty();
+
     std::cout << "PointSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl << std::endl ;
 }
 #endif
