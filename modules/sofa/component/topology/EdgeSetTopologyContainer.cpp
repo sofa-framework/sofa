@@ -577,6 +577,9 @@ void EdgeSetTopologyContainer::updateTopologyEngineGraph()
 {
     std::cout << "EdgeSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
 
+    this->updateDataEngineGraph(this->d_edge);
+    std::cout << "EdgeSetTopologyContainer::updateTopologyEngineGraph() end" << std::endl;
+
     // will concatenate with points one:
     PointSetTopologyContainer::updateTopologyEngineGraph();
 }

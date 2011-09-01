@@ -159,12 +159,12 @@ protected:
 
     virtual void updateTopologyEngineGraph();
 
-    virtual void updateDataEngineGraph(Data< sofa::helper::vector < sofa::helper::vector <void*> > >& my_Data);
+    virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data);
 
-    virtual void displayDataGraph();
+    virtual void displayDataGraph(sofa::core::objectmodel::BaseData& my_Data);
 
     /// List of Topological Data link to this Data. TODO: check if necessary or doublon with engine list
-    sofa::helper::list<sofa::core::objectmodel::BaseData*> m_topologyDataDependencies;
+    //sofa::helper::list<sofa::core::objectmodel::BaseData*> m_topologyDataDependencies;
 
     /// graph map
     sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
@@ -172,6 +172,19 @@ protected:
 
     sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
 
+    void setTopologyToDirty()
+    {
+        this->m_topologyDirty = true;
+    }
+
+    void cleanTopologyFromDirty()
+    {
+        this->m_topologyDirty = false;
+    }
+
+    const bool& isTopologyDirty() {return this->m_topologyDirty;}
+
+    bool m_topologyDirty;
 #endif
 
     Data<unsigned int> nbPoints;

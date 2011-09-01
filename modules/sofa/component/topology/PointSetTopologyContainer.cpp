@@ -152,17 +152,17 @@ void PointSetTopologyContainer::updateTopologyEngineGraph()
 
 
 
-void PointSetTopologyContainer::updateDataEngineGraph(Data<sofa::helper::vector<sofa::helper::vector<void *> > > &my_Data)
+void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data)
 {
     std::cout << "PointSetTopologyContainer::updateDataEngineGraph()" << std::endl;
 
     // clear data stored by previous call of this function
-    m_enginesList.clear();
-    m_enginesGraph.clear();
-    m_dataGraph.clear();
+    this->m_enginesList.clear();
+    this->m_enginesGraph.clear();
+    this->m_dataGraph.clear();
 
 
-    sofa::helper::list <sofa::core::objectmodel::DDGNode* > _outs = my_Data->getOutputs();
+    sofa::helper::list <sofa::core::objectmodel::DDGNode* > _outs = my_Data.getOutputs();
     sofa::helper::list <sofa::core::objectmodel::DDGNode* >::iterator it;
 
     std::cout << "PointSetTopologyContainer - Number of outputs for points array: " << _outs.size() << std::endl;
@@ -227,14 +227,14 @@ void PointSetTopologyContainer::updateDataEngineGraph(Data<sofa::helper::vector<
                 }
             }
 
-            m_dataGraph.push_back(dataNames);
+            this->m_dataGraph.push_back(dataNames);
             dataNames.clear();
         }
 
 
         // Iterate:
         _engines.insert(_engines.end(), next_enginesLevel.begin(), next_enginesLevel.end());
-        m_enginesGraph.push_back(enginesNames);
+        this->m_enginesGraph.push_back(enginesNames);
 
         if (next_GraphLevel.empty()) // end
             allDone = true;
@@ -264,7 +264,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(Data<sofa::helper::vector<
         //std::cout << "engine name: " << name << std::endl;
         bool find = false;
 
-        for ( it_engines = m_enginesList.begin(); it_engines!=m_enginesList.end(); ++it_engines)
+        for ( it_engines = this->m_enginesList.begin(); it_engines!=this->m_enginesList.end(); ++it_engines)
         {
             std::string nameStored = (*it_engines)->getName();
             //std::cout << "engine name stored: " << nameStored << std::endl;
@@ -277,27 +277,27 @@ void PointSetTopologyContainer::updateDataEngineGraph(Data<sofa::helper::vector<
         }
 
         if (!find)
-            m_enginesList.push_back((*it_engines_rev));
+            this->m_enginesList.push_back((*it_engines_rev));
     }
 
-    for ( it_engines = m_enginesList.begin(); it_engines!=m_enginesList.end(); ++it_engines)
+    for ( it_engines = this->m_enginesList.begin(); it_engines!=this->m_enginesList.end(); ++it_engines)
         std::cout << (*it_engines)->getName() << "   -------- ";
     std::cout << std::endl;
 
     std::cout << "PointSetTopologyContainer::updateDataEngineGraph() end" << std::endl;
 
-    this->displayDataGraph();
+    this->displayDataGraph(my_Data);
     return;
 }
 
 
-void PointSetTopologyContainer::displayDataGraph()
+void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseData& my_Data)
 {
     std::cout << "PointSetTopologyContainer::displayDataGraph()" << std::endl;
     // A cout very lite version
     std::string name;
 
-    name = this->d_initPoints.getName();
+    name = my_Data.getName();
     std::cout << name << std::endl;
     std::cout << std::endl;
 
@@ -306,16 +306,16 @@ void PointSetTopologyContainer::displayDataGraph()
 
 
 
-    for (unsigned int i=0; i<m_enginesGraph.size(); ++i ) // per engine level
+    for (unsigned int i=0; i<this->m_enginesGraph.size(); ++i ) // per engine level
     {
-        sofa::helper::vector <std::string> enginesNames = m_enginesGraph[i];
+        sofa::helper::vector <std::string> enginesNames = this->m_enginesGraph[i];
 
         unsigned int cpt_engine_tmp = cpt_engine;
         for (unsigned int j=0; j<enginesNames.size(); ++j) // per engine on the same level
         {
             std::cout << enginesNames[j];
 
-            for (unsigned int k=0; k<m_enginesGraph[cpt_engine].size(); ++k) // create espace between engines name
+            for (unsigned int k=0; k<this->m_enginesGraph[cpt_engine].size(); ++k) // create espace between engines name
                 std::cout << "     ";
 
             cpt_engine++;
@@ -326,7 +326,7 @@ void PointSetTopologyContainer::displayDataGraph()
 
         for (unsigned int j=0; j<enginesNames.size(); ++j) // per engine on the same level
         {
-            sofa::helper::vector <std::string> dataNames = m_dataGraph[cpt_engine];
+            sofa::helper::vector <std::string> dataNames = this->m_dataGraph[cpt_engine];
             for (unsigned int k=0; k<dataNames.size(); ++k)
                 std::cout << dataNames[k] << "     " ;
             std::cout << "            ";
