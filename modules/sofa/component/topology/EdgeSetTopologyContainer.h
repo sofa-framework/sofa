@@ -213,6 +213,14 @@ protected:
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     virtual void updateTopologyEngineGraph();
+
+    /// graph map
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
+
+    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+
+    bool m_topologyDirty;
 #endif
 
 protected:

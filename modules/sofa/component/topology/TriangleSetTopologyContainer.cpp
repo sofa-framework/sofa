@@ -1072,6 +1072,9 @@ void TriangleSetTopologyContainer::updateTopologyEngineGraph()
 {
     std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
 
+    this->updateDataEngineGraph(this->d_triangle);
+    std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph() end" << std::endl;
+
     // will concatenate with edges one:
     EdgeSetTopologyContainer::updateTopologyEngineGraph();
 }
