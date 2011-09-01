@@ -647,6 +647,10 @@ void QtGLViewer::DisplayOBJs()
 
     if (!groot->f_bbox.getValue().isValid()) viewAll();
 
+
+    sofa::defaulttype::BoundingBox& bbox = vparams->sceneBBox();
+    bbox = groot->f_bbox.getValue();
+
     Enable<GL_LIGHTING> light;
     Enable<GL_DEPTH_TEST> depth;
 

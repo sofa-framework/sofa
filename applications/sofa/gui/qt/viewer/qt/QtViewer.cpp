@@ -678,6 +678,9 @@ void QtViewer::DisplayOBJs()
     Enable<GL_LIGHTING> light;
     Enable<GL_DEPTH_TEST> depth;
 
+
+    vparams->sceneBBox() = groot->f_bbox.getValue();
+
     glShadeModel(GL_SMOOTH);
     //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glColor4f(1, 1, 1, 1);
