@@ -1150,6 +1150,9 @@ void SimpleGUI::DisplayOBJs(bool shadowPass)
     glColor4f(1,1,1,1);
     glDisable(GL_COLOR_MATERIAL);
 
+
+    vparams.sceneBBox() = groot->f_bbox.getValue();
+
     if (!initTexturesDone)
     {
 //         std::cout << "-----------------------------------> initTexturesDone\n";
