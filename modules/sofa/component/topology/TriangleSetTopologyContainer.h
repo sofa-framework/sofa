@@ -334,7 +334,7 @@ protected:
 
     sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
 
-    bool m_topologyDirty;
+    // bool m_topologyDirty;
 #endif
 
 protected:

@@ -82,11 +82,6 @@ void EdgeSetTopologyContainer::init()
     }
     // std::cout << "coords: " << getPX(m_edge[1][0]) << " " << getPY(m_edge[1][0]) << " " << getPZ(m_edge[1][0]) << std::endl;
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    d_edge.addInput(&this->d_initPoints);
-
-#endif
-
     PointSetTopologyContainer::init();
 }
 
@@ -577,8 +572,8 @@ void EdgeSetTopologyContainer::updateTopologyEngineGraph()
 {
     std::cout << "EdgeSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
 
-    this->updateDataEngineGraph(this->d_edge);
-    std::cout << "EdgeSetTopologyContainer::updateTopologyEngineGraph() end" << std::endl;
+    this->updateDataEngineGraph(this->d_edge, this->m_enginesList);
+    //std::cout << "EdgeSetTopologyContainer::updateTopologyEngineGraph() end" << std::endl;
 
     // will concatenate with points one:
     PointSetTopologyContainer::updateTopologyEngineGraph();

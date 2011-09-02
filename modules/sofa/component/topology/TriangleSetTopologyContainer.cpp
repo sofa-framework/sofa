@@ -72,11 +72,6 @@ void TriangleSetTopologyContainer::init()
 {
     EdgeSetTopologyContainer::init();
     d_triangle.updateIfDirty(); // make sure m_triangle is up to date
-
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    d_triangle.addInput(&this->d_edge);
-
-#endif
 }
 
 
@@ -1072,11 +1067,15 @@ void TriangleSetTopologyContainer::updateTopologyEngineGraph()
 {
     std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
 
-    this->updateDataEngineGraph(this->d_triangle);
-    std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph() end" << std::endl;
+    this->updateDataEngineGraph(this->d_triangle, this->m_enginesList);
+    //std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph() end" << std::endl;
 
     // will concatenate with edges one:
     EdgeSetTopologyContainer::updateTopologyEngineGraph();
+
+    std::cout << "point m_enginesList.size(): " << PointSetTopologyContainer::m_enginesList.size() << std::endl;
+    std::cout << "edge m_enginesList.size(): " << EdgeSetTopologyContainer::m_enginesList.size() << std::endl;
+    std::cout << "triangle m_enginesList.size(): " << this->m_enginesList.size() << std::endl;
 }
 #endif
 
