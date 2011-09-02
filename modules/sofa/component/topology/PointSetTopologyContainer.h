@@ -159,7 +159,7 @@ protected:
 
     virtual void updateTopologyEngineGraph();
 
-    virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data);
+    virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, sofa::helper::list <sofa::core::topology::TopologyEngine *>& my_enginesList);
 
     virtual void displayDataGraph(sofa::core::objectmodel::BaseData& my_Data);
 
@@ -186,6 +186,11 @@ protected:
     }
 
     const bool& isTopologyDirty() {return this->m_topologyDirty;}
+
+    void addEngineToList(sofa::core::topology::TopologyEngine * _engine)
+    {
+        this->m_enginesList.push_back(_engine);
+    }
 
     bool m_topologyDirty;
 #endif

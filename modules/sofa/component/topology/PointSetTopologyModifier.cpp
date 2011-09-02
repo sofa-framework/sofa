@@ -237,7 +237,10 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         return;
 
     if (!m_container->isTopologyDirty()) // triangle Data has not been touched
+    {
+        std::cout << "points not dirty" << std::endl;
         return;
+    }
 
     // get directly the list of engines created at init: case of removing.... for the moment
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
@@ -248,7 +251,10 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         // no need to dynamic cast this time? TO BE CHECKED!
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine)
+        {
+            std::cout << "performing: " << topoEngine->getName() << std::endl;
             topoEngine->update();
+        }
     }
 
     // other way

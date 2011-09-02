@@ -118,7 +118,7 @@ void EdgeSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge >
 void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->d_edge.setDirtyValue();
+    m_container->setTopologyToDirty();
 #endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges);
@@ -131,7 +131,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
         const sofa::helper::vector< unsigned int >& edgesIndexList)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->d_edge.setDirtyValue();
+    m_container->setTopologyToDirty();
 #endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList);
@@ -145,7 +145,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->d_edge.setDirtyValue();
+    m_container->setTopologyToDirty();
 #endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors);
@@ -160,7 +160,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->d_edge.setDirtyValue();
+    m_container->setTopologyToDirty();
 #endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
@@ -171,7 +171,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
 void EdgeSetTopologyModifier::removeEdgesWarning(sofa::helper::vector<unsigned int> &edges )
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->d_edge.setDirtyValue();
+    m_container->setTopologyToDirty();
 #endif
     // sort edges to remove in a descendent order
     std::sort( edges.begin(), edges.end(), std::greater<unsigned int>() );
@@ -597,12 +597,6 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<unsigned in
 void EdgeSetTopologyModifier::removeEdges(sofa::helper::vector< unsigned int >& edges,
         const bool removeIsolatedPoints, const bool resetTopoChange)
 {
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    /// test:
-    m_container->d_edge.setDirtyValue();
-#endif
-
-
     /// add the topological changes in the queue
     removeEdgesWarning(edges);
     // inform other objects that the edges are going to be removed
@@ -614,12 +608,6 @@ void EdgeSetTopologyModifier::removeEdges(sofa::helper::vector< unsigned int >& 
     removeEdgesProcess( edges, removeIsolatedPoints );
 
     m_container->checkTopology();
-
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    /// test:
-    m_container->d_edge.cleanDirty();
-#endif
-
 }
 
 void EdgeSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
@@ -923,7 +911,10 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
         return;
 
     if (!m_container->isTopologyDirty()) // edge Data has not been touched
-        return;
+    {
+        std::cout << "edges not dirty" << std::endl;
+        return PointSetTopologyModifier::propagateTopologicalEngineChanges();
+    }
 
     // get directly the list of engines created at init: case of removing.... for the moment
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
