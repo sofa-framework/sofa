@@ -23,6 +23,7 @@ CylinderMesh<DataTypes>::CylinderMesh()
     : m_diameter(initData(&m_diameter, 5.0, "diameter", "Diameter"))
     , m_length(initData(&m_length, 50.0, "length", "Length"))
     , m_number(initData(&m_number, 5, "number", "Number of intervals"))
+    , m_bScale(initData(&m_bScale, true, "scale", "Scale or not"))
     , m_viewPoints(initData(&m_viewPoints, true, "viewPoints", "Display Points"))
     , m_viewTetras(initData(&m_viewTetras, true, "viewTetras", "Display Tetrahedra"))
     , m_points(initData(&m_points, "outputPoints", "Points"))
@@ -421,8 +422,14 @@ void CylinderMesh<DataTypes>::update()
     m_nbTetras = tetras.size();
     std::cout << "num of tetras = " << m_nbTetras << std::endl;
 
-    std::cout << "scale..." << std::endl;
-    scale();
+    if(m_bScale.getValue())
+    {
+        std::cout << "scale..." << std::endl;
+        scale();
+    }
+
+    std::cout << "orientate..." << std::endl;
+    orientate();
 
     std::cout << "finished!" << std::endl;
 }
@@ -471,68 +478,105 @@ void CylinderMesh<DataTypes>::scale()
 }
 
 template <class DataTypes>
+void CylinderMesh<DataTypes>::orientate()
+{
+    helper::ReadAccessor< Data< VecCoord > > points = m_points;
+    helper::WriteAccessor< Data< SeqTetrahedra > > tetras = m_tetras;
+    for(unsigned i = 0; i < tetras.size(); ++i)
+    {
+        Coord p[4];
+        for(unsigned j = 0; j < 4; ++j)
+        {
+            p[j] = points[tetras[i][j]];
+        }
+        Coord p0p1 = p[1] - p[0];
+        Coord p0p2 = p[2] - p[0];
+        Coord p0p3 = p[3] - p[0];
+        if(cross(p0p1, p0p2)*p0p3 < 0)
+            std::swap(tetras[i][0], tetras[i][1]);
+    }
+
+}
+
+template <class DataTypes>
 void CylinderMesh<DataTypes>::draw()
 {
     if (m_viewPoints.getValue())
     {
         glDisable(GL_LIGHTING);
         helper::ReadAccessor< Data< VecCoord > > points = m_points;
-        glPointSize(5);
+        glPointSize(8);
         glBegin(GL_POINTS);
         //vertices
+        //glColor3f(1.0, 0.0, 0.0);
         glColor3f(0.0, 0.0, 1.0);
         for (int i = 0; i < m_nbVertices; ++i)
             sofa::helper::gl::glVertexT(points[i]);
         //centers
+        //glColor3f(0.0, 0.0, 0.0);
         glColor3f(1.0, 0.0, 0.0);
         for (int i = m_nbVertices; i < m_nbVertices+m_nbCenters; ++i)
             sofa::helper::gl::glVertexT(points[i]);
         //boundary centers
+        //glColor3f(0.0, 0.0, 0.0);
         glColor3f(0.0, 1.0, 0.0);
         for (unsigned int i = m_nbVertices+m_nbCenters; i < points.size(); ++i)
             sofa::helper::gl::glVertexT(points[i]);
         glEnd();
 
-        //bounding box
-        glColor3f(1.0, 1.0, 1.0);
-        glBegin(GL_LINE_LOOP);
-        glVertex3f((2*a-n)*t, n*t, -m*t);
-        glVertex3f(n*t, (2*a-n)*t, -m*t);
-        glVertex3f(n*t, (n-2*a)*t, -m*t);
-        glVertex3f((2*a-n)*t, -n*t, -m*t);
-        glVertex3f((n-2*a)*t, -n*t, -m*t);
-        glVertex3f(-n*t, (n-2*a)*t, -m*t);
-        glVertex3f(-n*t, (2*a-n)*t, -m*t);
-        glVertex3f((n-2*a)*t, n*t, -m*t);
-        glEnd();
-        glBegin(GL_LINE_LOOP);
-        glVertex3f((2*a-n)*t, n*t, m*t);
-        glVertex3f(n*t, (2*a-n)*t, m*t);
-        glVertex3f(n*t, (n-2*a)*t, m*t);
-        glVertex3f((2*a-n)*t, -n*t, m*t);
-        glVertex3f((n-2*a)*t, -n*t, m*t);
-        glVertex3f(-n*t, (n-2*a)*t, m*t);
-        glVertex3f(-n*t, (2*a-n)*t, m*t);
-        glVertex3f((n-2*a)*t, n*t, m*t);
-        glEnd();
-        glBegin(GL_LINES);
-        glVertex3f((2*a-n)*t, n*t, -m*t);
-        glVertex3f((2*a-n)*t, n*t, m*t);
-        glVertex3f(n*t, (2*a-n)*t, -m*t);
-        glVertex3f(n*t, (2*a-n)*t, m*t);
-        glVertex3f(n*t, (n-2*a)*t, -m*t);
-        glVertex3f(n*t, (n-2*a)*t, m*t);
-        glVertex3f((2*a-n)*t, -n*t, -m*t);
-        glVertex3f((2*a-n)*t, -n*t, m*t);
-        glVertex3f((n-2*a)*t, -n*t, -m*t);
-        glVertex3f((n-2*a)*t, -n*t, m*t);
-        glVertex3f(-n*t, (n-2*a)*t, -m*t);
-        glVertex3f(-n*t, (n-2*a)*t, m*t);
-        glVertex3f(-n*t, (2*a-n)*t, -m*t);
-        glVertex3f(-n*t, (2*a-n)*t, m*t);
-        glVertex3f((n-2*a)*t, n*t, -m*t);
-        glVertex3f((n-2*a)*t, n*t, m*t);
-        glEnd();
+//        //bounding box
+//        glColor3f(1.0, 0.0, 0.0);
+//		glLineWidth(10);
+//        glBegin(GL_LINE_LOOP);
+//        glVertex3f((2*a-n)*t, n*t, -m*t);
+//        glVertex3f(n*t, (2*a-n)*t, -m*t);
+//        glVertex3f(n*t, (n-2*a)*t, -m*t);
+//        glVertex3f((2*a-n)*t, -n*t, -m*t);
+//        glVertex3f((n-2*a)*t, -n*t, -m*t);
+//        glVertex3f(-n*t, (n-2*a)*t, -m*t);
+//        glVertex3f(-n*t, (2*a-n)*t, -m*t);
+//        glVertex3f((n-2*a)*t, n*t, -m*t);
+//        glEnd();
+//        glBegin(GL_LINE_LOOP);
+//        glVertex3f((2*a-n)*t, n*t, m*t);
+//        glVertex3f(n*t, (2*a-n)*t, m*t);
+//        glVertex3f(n*t, (n-2*a)*t, m*t);
+//        glVertex3f((2*a-n)*t, -n*t, m*t);
+//        glVertex3f((n-2*a)*t, -n*t, m*t);
+//        glVertex3f(-n*t, (n-2*a)*t, m*t);
+//        glVertex3f(-n*t, (2*a-n)*t, m*t);
+//        glVertex3f((n-2*a)*t, n*t, m*t);
+//        glEnd();
+//        glBegin(GL_LINES);
+//        glVertex3f((2*a-n)*t, n*t, -m*t);
+//        glVertex3f((2*a-n)*t, n*t, m*t);
+//        glVertex3f(n*t, (2*a-n)*t, -m*t);
+//        glVertex3f(n*t, (2*a-n)*t, m*t);
+//        glVertex3f(n*t, (n-2*a)*t, -m*t);
+//        glVertex3f(n*t, (n-2*a)*t, m*t);
+//        glVertex3f((2*a-n)*t, -n*t, -m*t);
+//        glVertex3f((2*a-n)*t, -n*t, m*t);
+//        glVertex3f((n-2*a)*t, -n*t, -m*t);
+//        glVertex3f((n-2*a)*t, -n*t, m*t);
+//        glVertex3f(-n*t, (n-2*a)*t, -m*t);
+//        glVertex3f(-n*t, (n-2*a)*t, m*t);
+//        glVertex3f(-n*t, (2*a-n)*t, -m*t);
+//        glVertex3f(-n*t, (2*a-n)*t, m*t);
+//        glVertex3f((n-2*a)*t, n*t, -m*t);
+//        glVertex3f((n-2*a)*t, n*t, m*t);
+//        glEnd();
+//
+//		//circle
+//		glColor3f(0.0, 0.0, 1.0);
+//		int n = 1000;
+//		float R = 0.5*m_diameter.getValue();
+//		float L = 0.5*m_length.getValue();
+//		float Pi = 3.1415926536f;
+//		glBegin(GL_LINE_LOOP);
+//		for(int i=0; i<n; ++i)
+//         glVertex3f(R*cos(2*Pi/n*i), R*sin(2*Pi/n*i), L);
+//		glEnd();
+//		glLineWidth(1);
 
 //        glBegin(GL_LINES);
 //        glVertex3f(0.0, 0.0, m*t);
@@ -562,7 +606,7 @@ void CylinderMesh<DataTypes>::draw()
         helper::ReadAccessor< Data< SeqTetrahedra > > tetras = m_tetras;
 
         glDisable(GL_LIGHTING);
-        glColor3f(0.5, 0.5, 0.5);
+        glColor3f(0, 0, 0);
         glBegin(GL_LINES);
         for(int i = 0; i < /*4*/m_nbTetras; ++i)
         {

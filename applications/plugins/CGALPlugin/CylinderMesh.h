@@ -57,6 +57,7 @@ public:
 
     void update();
     void scale();
+    void orientate();
     void draw();
 
     virtual std::string getTemplateName() const
@@ -73,6 +74,7 @@ public:
     Data<double> m_diameter;
     Data<double> m_length;
     Data<int> m_number;
+    Data<bool> m_bScale;
     Data<bool> m_viewPoints;
     Data<bool> m_viewTetras;
 
