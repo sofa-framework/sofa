@@ -547,9 +547,6 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
     const MatrixDeriv& constraints = *this->mstate->getC();
 
-    constraint_disp.clear();
-    constraint_disp.resize(this->mstate->getSize());
-
     constraint_force.clear();
     constraint_force.resize(this->mstate->getSize());
 
@@ -609,6 +606,10 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     // constraint_dofs buff the DOF that are involved with the constraints
     constraint_dofs.unique();
 
+
+    // in the following the list "renumbering" is modified so that the constraint, in the list appears from the smallest dof to the greatest
+    // However some constraints are not concerned by the structure... in such case, their order should not be changed
+    // (in practice they will be put at the beginning of the list)
     if (wire_optimization.getValue())
     {
         //std::cout<<" wire_optimization "<<std::endl;
@@ -620,15 +621,18 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
         MatrixDerivRowConstIterator rowItEnd = constraints.end();
         unsigned int c = 0;
 
+
+        // we process each constraint of the Mechanical State to know the smallest dofs
+        // the constraints that are concerns the object are removed
         for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
         {
             ordering_per_dof[VecMinDof[c]].push_back(rowIt.index());
             c++;
+            renumbering.remove( rowIt.index() );
         }
 
 
-        // fill the renumbering list...
-        renumbering.clear(); // TODO !!! => avoid renumbering of dofs that are not involved with this object !!
+        // fill the end renumbering list with the new order
 
         for (int dof = 0; dof < this->mstate->getSize(); dof++)
         {
@@ -638,10 +642,12 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
             }
         }
 
-        //std::cout<<" +++++ RENUBERING= [";
-        //for (std::list<int>::iterator it_c = renumbering.begin(); it_c!=  renumbering.end(); it_c++)
-        //    std::cout<<(*it_c)<<" ";
-        //std::cout<<"]"<<std::endl;
+
+
+//        std::cout<<" +++++ RENUBERING END= [";
+//        for (std::list<unsigned int>::iterator it_c = renumbering.begin(); it_c!=  renumbering.end(); it_c++)
+//            std::cout<<(*it_c)<<" ";
+//        std::cout<<"]"<<std::endl;
     }
 
 
@@ -666,7 +672,6 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     systemLHVector_buf->resize(systemSize) ;
     //std::cerr<<"resize ok"<<std::endl;
 
-    //std::cout<<"resetForUnbuiltResolution constraint_force ="<<constraint_force<<std::endl;
 
 
     for ( int i=0; i<this->mstate->getSize(); i++)

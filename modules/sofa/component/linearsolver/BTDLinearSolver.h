@@ -818,7 +818,7 @@ public:
 
     BTDLinearSolver()
         : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-        , problem(initData(&problem, false,"showProblem", "Suppress the computation of all elements of the inverse") )
+        , problem(initData(&problem, false,"showProblem", "display debug informations about subpartSolve computation") )
         , subpartSolve(initData(&subpartSolve, false,"subpartSolve", "Allows for the computation of a subpart of the system") )
         , verification(initData(&verification, false,"verification", "verification of the subpartSolve"))
         , test_perf(initData(&test_perf, false,"test_perf", "verification of performance"))
@@ -883,7 +883,7 @@ private:
 
     int _indMaxNonNullForce; // point with non null force which index is the greatest and for which globalAccumulate was not proceed
 
-    int _indMaxLHComputed;  // computation of LH is refreshed for points between [current_bloc _indMaxLHComputed]
+    int _indMaxFwdLHComputed;  // indice of node from which bwdLH is accurate
 
     /// private functions for partial solve
     /// step1=> accumulate RH locally for the InBloc (only if a new force is detected on RH)

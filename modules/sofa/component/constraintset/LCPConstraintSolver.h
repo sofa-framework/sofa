@@ -148,6 +148,7 @@ public:
     void draw(const core::visual::VisualParams*);
 
 
+    Data<bool> displayDebug;
     Data<bool> displayTime;
     Data<bool> initial_guess;
     Data<bool> build_lcp;
@@ -219,9 +220,9 @@ private:
 
     /// for unbuilt lcp ///
     void build_problem_info();
-    int lcp_gaussseidel_unbuilt(double *dfree, double *f);
-    int nlcp_gaussseidel_unbuilt(double *dfree, double *f);
-    int gaussseidel_unbuilt(double *dfree, double *f) { if (_mu == 0.0) return lcp_gaussseidel_unbuilt(dfree, f); else return nlcp_gaussseidel_unbuilt(dfree, f); }
+    int lcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = NULL);
+    int nlcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = NULL);
+    int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = NULL) { if (_mu == 0.0) return lcp_gaussseidel_unbuilt(dfree, f, residuals); else return nlcp_gaussseidel_unbuilt(dfree, f, residuals); }
 
     SparseMatrix<double> *_Wdiag;
     //std::vector<helper::LocalBlock33 *> _Wdiag;
