@@ -113,9 +113,11 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
 
 bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
+
+    std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
+
     if (build_lcp.getValue())
     {
-        std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
 
         double _tol = tol.getValue();
         int _maxIt = maxIt.getValue();
@@ -190,27 +192,35 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
     }
     else
     {
+
+        sofa::helper::vector<double>& graph_error = graph["Error"];
+        graph_error.clear();
         //std::cout<<"gaussseidel_unbuilt"<<std::endl;
         //std::cout<<"_result-before :"<<_result<<std::endl;
         sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel Unbuild");
-        gaussseidel_unbuilt(_dFree->ptr(), _result->ptr());
+        gaussseidel_unbuilt(_dFree->ptr(), _result->ptr(), &graph_error);
         sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel Unbuild");
-        //std::cout<<"\n_result unbuilt:"<<(*_result)<<std::endl;
 
-        /////// debug
-        /*
-        _result->resize(_numConstraints);
+        if (displayDebug.getValue())
+        {
+            std::cout<<"\n_result unbuilt:"<<(*_result)<<std::endl;
 
-        double _tol = tol.getValue();
-        int _maxIt = maxIt.getValue();
+            /////// debug
 
-        build_LCP();
-        helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
-        std::cout<<"\n_result nlcp :"<<(*_result)<<std::endl;
-        */
-        //std::cout<<"LCP:"<<std::endl;
-        //helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
-        //std::cout<<"build_problem_info is called"<<std::endl;
+            _result->resize(_numConstraints);
+
+            double _tol = tol.getValue();
+            int _maxIt = maxIt.getValue();
+
+            build_LCP();
+
+            helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
+            std::cout<<"\n_result nlcp :"<<(*_result)<<std::endl;
+
+            //std::cout<<"LCP:"<<std::endl;
+            //helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
+            //std::cout<<"build_problem_info is called"<<std::endl;
+        }
 
         ////////
     }
@@ -257,7 +267,8 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
 //#define DISPLAY_TIME
 
 LCPConstraintSolver::LCPConstraintSolver()
-    : displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of LCPConstraintSolver."))
+    : displayDebug(initData(&displayDebug, false, "displayDebug","Display debug information."))
+    , displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of LCPConstraintSolver."))
     , initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
     , build_lcp(initData(&build_lcp, true, "build_lcp", "LCP is not fully built to increase performance in some case."))
     , tol( initData(&tol, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
@@ -861,7 +872,7 @@ void LCPConstraintSolver::keepContactForcesValue()
 }
 
 
-int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
+int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals)
 {
     if(!_numConstraints)
         return 0;
@@ -904,9 +915,14 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
 
     /// each constraintCorrection has an internal force vector that is set to "0"
 
-    // if necessary: modify the sequence of contact
+    // indirection of the sequence of contact
     std::list<unsigned int> contact_sequence;
-    contact_sequence.clear();
+
+    for (unsigned int c=0; c< _numConstraints; c++)
+    {
+        contact_sequence.push_back(c);
+    }
+
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -1056,13 +1072,14 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
     for (it=0; it<_maxIt; it++)
     {
 
-        std::cout<<" +++++++++++++ NEW ITERATION ++++++++++++"<<std::endl;
+        // std::cout<<" +++++++++++++ NEW ITERATION ++++++++++++"<<std::endl;
         std::list<unsigned int>::iterator it_c ;
+        error =0;
 
         for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; it_c++ )
         {
 
-            error =0;
+
 
             int constraint = *it_c;
             c1 = constraint/3;
@@ -1141,6 +1158,9 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
             helper::set3Dof(f,c1,fn,ft,fs);
         }
 
+        residuals->push_back(error);
+
+
         if (error < _tol*(numContacts+1))
         {
             //free(d);
@@ -1162,6 +1182,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
 
             return 1;
         }
+
     }
 
     sofa::helper::AdvancedTimer::valSet("GS iterations", it);
@@ -1184,7 +1205,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
 
 
 
-int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f)
+int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* /*residuals*/)
 {
     //helper::system::thread::CTime timer;
     double time = 0.0;
