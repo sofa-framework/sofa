@@ -29,8 +29,6 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
@@ -413,11 +411,9 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             if ( EleType == "Triangle" || EleType == "Triangles")
             {
                 sofa::component::topology::TriangleSetTopologyModifier* topoMod;
-                sofa::component::topology::TriangleSetTopologyContainer* topoCon;
                 m_topology->getContext()->get(topoMod);
-                m_topology->getContext()->get(topoCon);
 
-                if (!topoMod || !topoCon)
+                if (!topoMod)
                 {
                     serr<< "TopologicalChangeProcessor: Error: No TriangleTopology available" << sendl;
                     continue;
@@ -425,22 +421,12 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 helper::vector<helper::fixed_array <unsigned int,3> > vitems;
                 vitems.resize (nbElements);
-                sofa::helper::vector <unsigned int> trianglesID;
-                unsigned int cpt = topoCon->getNbTriangles();
 
                 for (unsigned int i = 0; i<nbElements; ++i)
-                {
                     Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2];
-                    trianglesID.push_back(cpt + i);
-                }
 
                 //std::cout << "SIN: " << vitems << std::endl;
-
-                topoMod->addTrianglesProcess(vitems);
-
-                //HACK to propagate changes: TODO: this should not be done here!
-                topoMod->addTrianglesWarning(trianglesID.size(), vitems, trianglesID);
-                topoMod->propagateTopologicalChanges();
+                topoMod->addTriangles(vitems);
             }
             else if ( EleType == "Quad" || EleType == "Quads")
             {
@@ -461,7 +447,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 //std::cout << "SIN: " << vitems << std::endl;
 
-                topoMod->addQuadsProcess(vitems);
+                topoMod->addQuads(vitems);
             }
             else if ( EleType == "Tetrahedron" || EleType == "Tetrahedra")
             {
@@ -482,7 +468,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 //std::cout << "SIN: " << vitems << std::endl;
 
-                topoMod->addTetrahedraProcess(vitems);
+                topoMod->addTetrahedra(vitems);
             }
             else if ( EleType == "Hexahedron" || EleType == "Hexahedra")
             {
@@ -504,7 +490,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 //std::cout << "SIN: " << vitems << std::endl;
 
-                topoMod->addHexahedraProcess(vitems);
+                topoMod->addHexahedra(vitems);
             }
             else
             {
