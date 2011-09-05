@@ -1164,14 +1164,11 @@ void SimpleGUI::DisplayOBJs(bool shadowPass)
 
     {
 
-        if (shadowPass)
-        {
-            getSimulation()->drawShadows(groot);
-        }
-        else
+        if (!shadowPass)
         {
             getSimulation()->draw(&vparams,groot);
         }
+
         if (_axis)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);

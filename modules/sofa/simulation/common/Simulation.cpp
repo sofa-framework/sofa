@@ -367,16 +367,6 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root  )
     }
 }
 
-
-/// Render the scene - shadow pass
-void Simulation::drawShadows ( Node* root )
-{
-    if ( !root ) return;
-
-    //VisualDrawVisitor act ( core::VisualModel::Shadow );
-    //root->execute ( &act );
-}
-
 /// Export a scene to an OBJ 3D Scene
 void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
 {

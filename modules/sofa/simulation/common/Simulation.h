@@ -85,9 +85,6 @@ public:
     /// Render the scene
     virtual void draw(sofa::core::visual::VisualParams* vparams, Node* root);
 
-    /// Render the scene - Shadows pass
-    virtual void drawShadows(Node* root);
-
     /// Export a scene to an OBJ 3D Scene
     virtual void exportOBJ(Node* root, const char* filename, bool exportMTL = true);
 
