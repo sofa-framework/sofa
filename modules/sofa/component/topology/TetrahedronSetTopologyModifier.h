@@ -77,6 +77,22 @@ public:
     virtual void propagateTopologicalEngineChanges();
 #endif
 
+    /** \brief add a set of tetrahedra
+    @param tetrahedra an array of vertex indices describing the tetrahedra to be created
+    */
+    virtual void addTetrahedra(const sofa::helper::vector< Tetrahedron > &tetrahedra);
+
+    /** \brief add a set of tetrahedra
+    @param quads an array of vertex indices describing the tetrahedra to be created
+    @param ancestors for each tetrahedron to be created provides an array of tetrahedron ancestors (optional)
+    @param baryCoefs for each tetrahedron provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
+    *
+    */
+    virtual void addTetrahedra(const sofa::helper::vector< Tetrahedron > &tetrahedra,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
+
+
     /** \brief Sends a message to warn that some tetrahedra were added in this topology.
     *
     * \sa addTetrahedraProcess

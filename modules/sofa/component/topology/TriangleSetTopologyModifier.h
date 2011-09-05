@@ -66,6 +66,25 @@ public:
     virtual void propagateTopologicalEngineChanges();
 #endif
 
+    /** \brief add a set of triangles
+    @param triangles an array of vertex indices describing the triangles to be created
+     * Test precondition and apply:
+     * TriangleSetTopologyModifier::addTrianglesProcess
+     * TriangleSetTopologyModifier::addTrianglesPostProcessing
+    */
+    virtual void addTriangles(const sofa::helper::vector< Triangle > &triangles);
+
+    /** \brief add a set of triangles
+    @param triangles an array of vertex indices describing the triangles to be created
+    @param ancestors for each triangle to be created provides an array of triangle ancestors (optional)
+    @param baryCoefs for each triangle provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
+    *
+    */
+    virtual void addTriangles(const sofa::helper::vector< Triangle > &triangles,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
+
+
     /** \brief Sends a message to warn that some triangles were added in this topology.
      *
      * \sa addTrianglesProcess
@@ -84,22 +103,13 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
 
-    /** \brief add a triangle to the topology.
+    /** \brief Effectively add a triangle to the topology.
      */
-    void addSingleTriangleProcess (Triangle t);
+    void addTriangleProcess (Triangle t);
 
-    /** \brief Add some triangles. Test precondition and apply:
-     * TriangleSetTopologyModifier::addSingleTriangleProcess
-     * TriangleSetTopologyModifier::addTrianglesPostProcessing
-     * \sa addTrianglesWarning
-     */
+    /** \brief Effectively Add some triangles. Test precondition and apply:
+    */
     virtual void addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles);
-
-    /** \brief Add a triangle. Test precondition and apply:
-     * TriangleSetTopologyModifier::addSingleTriangleProcess
-     * TriangleSetTopologyModifier::addTrianglesPostProcessing
-     */
-    void addTriangleProcess(Triangle e);
 
     /** \brief Add some points to this topology.
      *

@@ -52,6 +52,51 @@ void QuadSetTopologyModifier::init()
 }
 
 
+void QuadSetTopologyModifier::addQuads(const sofa::helper::vector<Quad> &quads)
+{
+    unsigned int nQuads = m_container->getNbQuads();
+
+    /// effectively add triangles in the topology container
+    addQuadsProcess(quads);
+
+    sofa::helper::vector<unsigned int> quadsIndex;
+    quadsIndex.reserve(quads.size());
+
+    for (unsigned int i=0; i<quads.size(); ++i)
+        quadsIndex.push_back(nQuads+i);
+
+    // add topology event in the stack of topological events
+    addQuadsWarning( quads.size(), quads, quadsIndex);
+
+    // inform other objects that the edges are already added
+    propagateTopologicalChanges();
+}
+
+
+
+void QuadSetTopologyModifier::addQuads(const sofa::helper::vector<Quad> &quads,
+        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
+        const sofa::helper::vector<sofa::helper::vector<double> > &baryCoefs)
+{
+    unsigned int nQuads = m_container->getNbQuads();
+
+    /// effectively add triangles in the topology container
+    addQuadsProcess(quads);
+
+    sofa::helper::vector<unsigned int> quadsIndex;
+    quadsIndex.reserve(quads.size());
+
+    for (unsigned int i=0; i<quads.size(); ++i)
+        quadsIndex.push_back(nQuads+i);
+
+    // add topology event in the stack of topological events
+    addQuadsWarning( quads.size(), quads, quadsIndex, ancestors, baryCoefs);
+
+    // inform other objects that the edges are already added
+    propagateTopologicalChanges();
+}
+
+
 void QuadSetTopologyModifier::addQuadProcess(Quad t)
 {
 #ifndef NDEBUG

@@ -703,7 +703,7 @@ void ManifoldTriangleSetTopologyModifier::addRemoveTriangles (const unsigned int
     for (unsigned int i = 0; i <nTri2Add; i++)
     {
         // Use the most low level function to add triangle. I.e without any preliminary test.
-        TriangleSetTopologyModifier::addSingleTriangleProcess (triangles2Add[i]);
+        TriangleSetTopologyModifier::addTriangleProcess (triangles2Add[i]);
     }
 
     // Warn for the creation of all the triangles registered to be created

@@ -54,6 +54,51 @@ void HexahedronSetTopologyModifier::init()
 }
 
 
+void HexahedronSetTopologyModifier::addHexahedra(const sofa::helper::vector<Hexahedron> &hexahedra)
+{
+    unsigned int nhexa = m_container->getNbHexahedra();
+
+    /// effectively add triangles in the topology container
+    addHexahedraProcess(hexahedra);
+
+    sofa::helper::vector<unsigned int> hexahedraIndex;
+    hexahedraIndex.reserve(hexahedra.size());
+
+    for (unsigned int i=0; i<hexahedra.size(); ++i)
+        hexahedraIndex.push_back(nhexa+i);
+
+    // add topology event in the stack of topological events
+    addHexahedraWarning (hexahedra.size(), hexahedra, hexahedraIndex);
+
+    // inform other objects that the edges are already added
+    propagateTopologicalChanges();
+}
+
+
+void HexahedronSetTopologyModifier::addHexahedra(const sofa::helper::vector<Hexahedron> &hexahedra,
+        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
+        const sofa::helper::vector<sofa::helper::vector<double> > &baryCoefs)
+{
+    unsigned int nhexa = m_container->getNbHexahedra();
+
+    /// effectively add triangles in the topology container
+    addHexahedraProcess(hexahedra);
+
+    sofa::helper::vector<unsigned int> hexahedraIndex;
+    hexahedraIndex.reserve(hexahedra.size());
+
+    for (unsigned int i=0; i<hexahedra.size(); ++i)
+        hexahedraIndex.push_back(nhexa+i);
+
+    // add topology event in the stack of topological events
+    addHexahedraWarning (hexahedra.size(), hexahedra, hexahedraIndex, ancestors, baryCoefs);
+
+    // inform other objects that the edges are already added
+    propagateTopologicalChanges();
+}
+
+
+
 void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 {
 #ifndef NDEBUG

@@ -59,8 +59,52 @@ void TetrahedronSetTopologyModifier::init()
 
 void TetrahedronSetTopologyModifier::reinit()
 {
+    TriangleSetTopologyModifier::reinit();
 }
 
+
+void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::helper::vector<Tetrahedron> &tetrahedra)
+{
+    unsigned int ntetra = m_container->getNbTetrahedra();
+
+    /// effectively add triangles in the topology container
+    addTetrahedraProcess(tetrahedra);
+
+    sofa::helper::vector<unsigned int> tetrahedraIndex;
+    tetrahedraIndex.reserve(tetrahedra.size());
+
+    for (unsigned int i=0; i<tetrahedra.size(); ++i)
+        tetrahedraIndex.push_back(ntetra+i);
+
+    // add topology event in the stack of topological events
+    addTetrahedraWarning (tetrahedra.size(), tetrahedra, tetrahedraIndex);
+
+    // inform other objects that the edges are already added
+    propagateTopologicalChanges();
+}
+
+
+void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::helper::vector<Tetrahedron> &tetrahedra,
+        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
+        const sofa::helper::vector<sofa::helper::vector<double> > &baryCoefs)
+{
+    unsigned int ntetra = m_container->getNbTetrahedra();
+
+    /// effectively add triangles in the topology container
+    addTetrahedraProcess(tetrahedra);
+
+    sofa::helper::vector<unsigned int> tetrahedraIndex;
+    tetrahedraIndex.reserve(tetrahedra.size());
+
+    for (unsigned int i=0; i<tetrahedra.size(); ++i)
+        tetrahedraIndex.push_back(ntetra+i);
+
+    // add topology event in the stack of topological events
+    addTetrahedraWarning (tetrahedra.size(), tetrahedra, tetrahedraIndex, ancestors, baryCoefs);
+
+    // inform other objects that the edges are already added
+    propagateTopologicalChanges();
+}
 
 void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 {
