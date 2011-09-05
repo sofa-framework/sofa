@@ -29,6 +29,8 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
@@ -411,9 +413,11 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             if ( EleType == "Triangle" || EleType == "Triangles")
             {
                 sofa::component::topology::TriangleSetTopologyModifier* topoMod;
+                sofa::component::topology::TriangleSetTopologyContainer* topoCon;
                 m_topology->getContext()->get(topoMod);
+                m_topology->getContext()->get(topoCon);
 
-                if (!topoMod)
+                if (!topoMod || !topoCon)
                 {
                     serr<< "TopologicalChangeProcessor: Error: No TriangleTopology available" << sendl;
                     continue;
@@ -421,13 +425,22 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 helper::vector<helper::fixed_array <unsigned int,3> > vitems;
                 vitems.resize (nbElements);
+                sofa::helper::vector <unsigned int> trianglesID;
+                unsigned int cpt = topoCon->getNbTriangles();
 
                 for (unsigned int i = 0; i<nbElements; ++i)
+                {
                     Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2];
+                    trianglesID.push_back(cpt + i);
+                }
 
                 //std::cout << "SIN: " << vitems << std::endl;
 
                 topoMod->addTrianglesProcess(vitems);
+
+                //HACK to propagate changes: TODO: this should not be done here!
+                topoMod->addTrianglesWarning(trianglesID.size(), vitems, trianglesID);
+                topoMod->propagateTopologicalChanges();
             }
             else if ( EleType == "Quad" || EleType == "Quads")
             {
@@ -656,11 +669,11 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 ind_ta = ind_tb;
                 firstCut = false;
 
-                triangleMod->propagateTopologicalChanges();
+                //triangleMod->propagateTopologicalChanges();
                 // notify the end for the current sequence of topological change events
-                triangleMod->notifyEndingEvent();
+                //triangleMod->notifyEndingEvent();
 
-                triangleMod->propagateTopologicalChanges();
+                //triangleMod->propagateTopologicalChanges();
             }
 
             ++it;
@@ -1290,6 +1303,9 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
 
         //Duplicates the given edges
         triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
+
+        if (reachBorder)
+            std::cout <<"INCISION HAS REACHED A BORDER" << std::endl;
 
         if (!end_points.empty())
         {
