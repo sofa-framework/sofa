@@ -334,7 +334,26 @@ protected:
 
     sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
 
-    // bool m_topologyDirty;
+    // Use a specific boolen to know if topology Data is dirty or not.
+    // TODO: check if we can't use d_topologyData.isDirty()
+    void setTriangleTopologyToDirty()
+    {
+        this->m_triangleTopologyDirty = true;
+    }
+
+    void cleanTriangleTopologyFromDirty()
+    {
+        this->m_triangleTopologyDirty = false;
+    }
+
+    const bool& isTriangleTopologyDirty() {return this->m_triangleTopologyDirty;}
+
+    void addEngineToList(sofa::core::topology::TopologyEngine * _engine)
+    {
+        this->m_enginesList.push_back(_engine);
+    }
+
+    bool m_triangleTopologyDirty;
 #endif
 
 protected:

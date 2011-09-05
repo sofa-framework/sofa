@@ -220,7 +220,26 @@ protected:
 
     sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
 
-    //bool m_topologyDirty;
+    // Use a specific boolen to know if topology Data is dirty or not.
+    // TODO: check if we can't use d_topologyData.isDirty()
+    void setEdgeTopologyToDirty()
+    {
+        this->m_edgeTopologyDirty = true;
+    }
+
+    void cleanEdgeTopologyFromDirty()
+    {
+        this->m_edgeTopologyDirty = false;
+    }
+
+    const bool& isEdgeTopologyDirty() {return this->m_edgeTopologyDirty;}
+
+    void addEngineToList(sofa::core::topology::TopologyEngine * _engine)
+    {
+        this->m_enginesList.push_back(_engine);
+    }
+
+    bool m_edgeTopologyDirty;
 #endif
 
 protected:

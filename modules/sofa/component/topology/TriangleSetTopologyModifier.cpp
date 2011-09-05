@@ -210,7 +210,7 @@ void TriangleSetTopologyModifier::addTrianglesWarning(const unsigned int nTriang
         const sofa::helper::vector< unsigned int >& trianglesIndexList)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->setTopologyToDirty();
+    m_container->setTriangleTopologyToDirty();
 #endif
     // Warning that triangles just got created
     TrianglesAdded *e = new TrianglesAdded(nTriangles, trianglesList, trianglesIndexList);
@@ -225,7 +225,7 @@ void TriangleSetTopologyModifier::addTrianglesWarning(const unsigned int nTriang
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->setTopologyToDirty();
+    m_container->setTriangleTopologyToDirty();
 #endif
     // Warning that triangles just got created
     TrianglesAdded *e=new TrianglesAdded(nTriangles, trianglesList,trianglesIndexList,ancestors,baryCoefs);
@@ -305,7 +305,7 @@ void TriangleSetTopologyModifier::removeTrianglesWarning(sofa::helper::vector<un
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     // other way
-    m_container->setTopologyToDirty();
+    m_container->setTriangleTopologyToDirty();
 #endif
 
     /// sort vertices to remove in a descendent order
@@ -691,7 +691,7 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     if (m_container->beginChange() == m_container->endChange()) // nothing to do if no event is stored
         return;
 
-    if (!m_container->isTopologyDirty()) // triangle Data has not been touched
+    if (!m_container->isTriangleTopologyDirty()) // triangle Data has not been touched
     {
         std::cout << "triangles not dirty" << std::endl;
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
@@ -713,7 +713,7 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     }
 
     // other way
-    m_container->cleanTopologyFromDirty();
+    m_container->cleanTriangleTopologyFromDirty();
 
     std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl << std::endl ;
 

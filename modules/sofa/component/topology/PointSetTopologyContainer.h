@@ -175,24 +175,24 @@ protected:
 
     // Use a specific boolen to know if topology Data is dirty or not.
     // TODO: check if we can't use d_topologyData.isDirty()
-    void setTopologyToDirty()
+    void setPointTopologyToDirty()
     {
-        this->m_topologyDirty = true;
+        this->m_pointTopologyDirty = true;
     }
 
-    void cleanTopologyFromDirty()
+    void cleanPointTopologyFromDirty()
     {
-        this->m_topologyDirty = false;
+        this->m_pointTopologyDirty = false;
     }
 
-    const bool& isTopologyDirty() {return this->m_topologyDirty;}
+    const bool& isPointTopologyDirty() {return this->m_pointTopologyDirty;}
 
     void addEngineToList(sofa::core::topology::TopologyEngine * _engine)
     {
         this->m_enginesList.push_back(_engine);
     }
 
-    bool m_topologyDirty;
+    bool m_pointTopologyDirty;
 #endif
 
     Data<unsigned int> nbPoints;
