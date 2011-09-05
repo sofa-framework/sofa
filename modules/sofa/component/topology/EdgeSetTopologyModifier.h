@@ -64,6 +64,22 @@ public:
     virtual void propagateTopologicalEngineChanges();
 #endif
 
+    /** \brief add a set of edges
+    @param edges an array of pair of vertex indices describing the edge to be created
+    *
+    */
+    virtual void addEdges(const sofa::helper::vector< Edge >& edges) ;
+
+    /** \brief add a set of edges
+    @param edges an array of pair of vertex indices describing the edge to be created
+    @param ancestors for each edge to be created provides an array of edge ancestors (optional)
+    @param baryCoefs for each edge provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
+    *
+    */
+    virtual void addEdges( const sofa::helper::vector< Edge >& edges,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
+
     /** \brief Sends a message to warn that some edges were added in this topology.
     *
     * \sa addEdgesProcess
@@ -97,14 +113,14 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
 
-    /** \brief Add an edge.
+    /** \brief Effectively Add an edge.
     */
     void addEdgeProcess(Edge e);
 
-    /** \brief Add some edges to this topology.
+    /** \brief Effectively Add some edges to this topology.
     *
-    * \sa addEdgesWarning
-    */
+    	* \sa addEdgesWarning
+    	*/
     virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
 
     /** \brief Sends a message to warn that some edges are about to be deleted.
@@ -181,8 +197,8 @@ public:
 
     /** \brief Remove a set  of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
-    *
-    */
+    	*
+    	*/
     // side effect: edges are sorted in removeEdgesWarning
     virtual void removeEdges(/*const*/ sofa::helper::vector< unsigned int >& edges,
             const bool removeIsolatedPoints = true, const bool resetTopoChange = true);
@@ -195,22 +211,6 @@ public:
     */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int> & index,
             const sofa::helper::vector<unsigned int> & inv_index);
-
-    /** \brief add a set  of edges
-    @param edges an array of pair of vertex indices describing the edge to be created
-    *
-    */
-    virtual void addEdges(const sofa::helper::vector< Edge >& edges) ;
-
-    /** \brief add a set  of edges
-    @param edges an array of pair of vertex indices describing the edge to be created
-    @param ancestors for each edge to be created provides an array of edge ancestors (optional)
-    @param baryCoefs for each edge provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
-    *
-    */
-    virtual void addEdges(const sofa::helper::vector< Edge >& edges,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
 
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
     *

@@ -74,6 +74,11 @@ void TriangleSetTopologyContainer::init()
     d_triangle.updateIfDirty(); // make sure m_triangle is up to date
 }
 
+void TriangleSetTopologyContainer::reinit()
+{
+    EdgeSetTopologyContainer::reinit();
+}
+
 
 void TriangleSetTopologyContainer::createTriangleSetArray()
 {

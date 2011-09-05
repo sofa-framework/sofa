@@ -66,6 +66,8 @@ public:
 
     virtual void init();
 
+    virtual void reinit();
+
 
     /// Procedural creation methods
     /// @{

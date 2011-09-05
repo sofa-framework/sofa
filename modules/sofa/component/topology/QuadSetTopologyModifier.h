@@ -66,6 +66,21 @@ public:
     virtual void propagateTopologicalEngineChanges();
 #endif
 
+    /** \brief add a set of quads
+    @param quads an array of vertex indices describing the quads to be created
+    */
+    virtual void addQuads(const sofa::helper::vector< Quad > &quads);
+
+    /** \brief add a set of quads
+    @param quads an array of vertex indices describing the quads to be created
+    @param ancestors for each quad to be created provides an array of quad ancestors (optional)
+    @param baryCoefs for each quad provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
+    *
+    */
+    virtual void addQuads(const sofa::helper::vector< Quad > &quads,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
+
 
     /** \brief Sends a message to warn that some quads were added in this topology.
     *
@@ -85,14 +100,14 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
 
-    /** \brief Add a quad.
+    /** \brief Effectively Add a quad.
     */
     void addQuadProcess(Quad e);
 
-    /** \brief Actually Add some quads to this topology.
+    /** \brief Effectively Add some quads to this topology.
     *
-    * \sa addQuadsWarning
-    */
+    	* \sa addQuadsWarning
+    	*/
     virtual void addQuadsProcess(const sofa::helper::vector< Quad > &quads);
 
     /** \brief Sends a message to warn that some quads are about to be deleted.

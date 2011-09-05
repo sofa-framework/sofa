@@ -70,6 +70,20 @@ public:
     virtual void propagateTopologicalEngineChanges();
 #endif
 
+    /** \brief add a set of hexahedra
+    @param hexahedra an array of vertex indices describing the hexahedra to be created
+    */
+    virtual void addHexahedra(const sofa::helper::vector< Hexahedron > &hexahedra);
+
+    /** \brief add a set of hexahedra
+    @param quads an array of vertex indices describing the hexahedra to be created
+    @param ancestors for each hexahedron to be created provides an array of hexahedron ancestors (optional)
+    @param baryCoefs for each hexahedron provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
+    *
+    */
+    virtual void addHexahedra(const sofa::helper::vector< Hexahedron > &hexahedra,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
 
     /** \brief Sends a message to warn that some hexahedra were added in this topology.
     *

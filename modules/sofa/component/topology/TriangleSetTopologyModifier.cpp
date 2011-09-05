@@ -91,15 +91,64 @@ void TriangleSetTopologyModifier::reinit()
 
 
 
-void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
+void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triangle> &triangles)
 {
-    sofa::helper::vector <Triangle> triangles;
-    triangles.push_back(t);
+    unsigned int nTriangles = m_container->getNbTriangles();
 
-    if (addTrianglesPreconditions(triangles))// Test if the topology will still fullfil the conditions if this triangles is added.
+    // Test if the topology will still fullfil the conditions if this triangles is added.
+    if (addTrianglesPreconditions(triangles))
     {
-        addSingleTriangleProcess(t); // add the triangle
-        addTrianglesPostProcessing(triangles); // Apply postprocessing to arrange the topology.
+        /// effectively add triangles in the topology container
+        addTrianglesProcess(triangles);
+
+        // Apply postprocessing to arrange the topology.
+        addTrianglesPostProcessing(triangles);
+
+        sofa::helper::vector<unsigned int> trianglesIndex;
+        trianglesIndex.reserve(triangles.size());
+
+        for (unsigned int i=0; i<triangles.size(); ++i)
+            trianglesIndex.push_back(nTriangles+i);
+
+        // add topology event in the stack of topological events
+        addTrianglesWarning( triangles.size(), triangles, trianglesIndex);
+
+        // inform other objects that the edges are already added
+        propagateTopologicalChanges();
+    }
+    else
+    {
+        std::cout << " TriangleSetTopologyModifier::addTriangleProcess(), preconditions for adding this triangle are not fullfil. " << std::endl;
+    }
+}
+
+
+void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triangle> &triangles,
+        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
+        const sofa::helper::vector<sofa::helper::vector<double> > &baryCoefs)
+{
+    unsigned int nTriangles = m_container->getNbTriangles();
+
+    // Test if the topology will still fullfil the conditions if this triangles is added.
+    if (addTrianglesPreconditions(triangles))
+    {
+        /// actually add triangles in the topology container
+        addTrianglesProcess(triangles);
+
+        // Apply postprocessing to arrange the topology.
+        addTrianglesPostProcessing(triangles);
+
+        sofa::helper::vector<unsigned int> trianglesIndex;
+        trianglesIndex.reserve(triangles.size());
+
+        for (unsigned int i=0; i<triangles.size(); ++i)
+            trianglesIndex.push_back(nTriangles+i);
+
+        // add topology event in the stack of topological events
+        addTrianglesWarning( triangles.size(), triangles, trianglesIndex, ancestors, baryCoefs);
+
+        // inform other objects that the edges are already added
+        propagateTopologicalChanges();
     }
     else
     {
@@ -110,26 +159,12 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 
 void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles)
 {
-    if (addTrianglesPreconditions(triangles)) // Test if the topology will still fullfil the conditions if these triangles are added.
-    {
-        helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
-        m_triangle.reserve(m_triangle.size() + triangles.size());
-
-        for(unsigned int i=0; i<triangles.size(); ++i)
-        {
-            addSingleTriangleProcess(triangles[i]); //add triangle one by one.
-        }
-
-        addTrianglesPostProcessing(triangles); // Apply postprocessing to arrange the topology.
-    }
-    else
-    {
-        std::cout << " TriangleSetTopologyModifier::addTrianglesProcess(), preconditions for adding these triangles are not fullfil. " << std::endl;
-    }
+    for(unsigned int i=0; i<triangles.size(); ++i)
+        addTriangleProcess(triangles[i]); //add triangle one by one.
 }
 
 
-void TriangleSetTopologyModifier::addSingleTriangleProcess(Triangle t)
+void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 {
 
 #ifndef NDEBUG
