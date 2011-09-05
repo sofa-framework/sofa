@@ -118,7 +118,7 @@ void EdgeSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge >
 void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->setTopologyToDirty();
+    m_container->setEdgeTopologyToDirty();
 #endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges);
@@ -131,7 +131,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
         const sofa::helper::vector< unsigned int >& edgesIndexList)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->setTopologyToDirty();
+    m_container->setEdgeTopologyToDirty();
 #endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList);
@@ -145,7 +145,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->setTopologyToDirty();
+    m_container->setEdgeTopologyToDirty();
 #endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors);
@@ -160,7 +160,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->setTopologyToDirty();
+    m_container->setEdgeTopologyToDirty();
 #endif
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
@@ -171,7 +171,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
 void EdgeSetTopologyModifier::removeEdgesWarning(sofa::helper::vector<unsigned int> &edges )
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->setTopologyToDirty();
+    m_container->setEdgeTopologyToDirty();
 #endif
     // sort edges to remove in a descendent order
     std::sort( edges.begin(), edges.end(), std::greater<unsigned int>() );
@@ -910,7 +910,7 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
     if (m_container->beginChange() == m_container->endChange()) // nothing to do if no event is stored
         return;
 
-    if (!m_container->isTopologyDirty()) // edge Data has not been touched
+    if (!m_container->isEdgeTopologyDirty()) // edge Data has not been touched
     {
         std::cout << "edges not dirty" << std::endl;
         return PointSetTopologyModifier::propagateTopologicalEngineChanges();
@@ -929,7 +929,7 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
     }
 
     // other way
-    m_container->cleanTopologyFromDirty();
+    m_container->cleanEdgeTopologyFromDirty();
 
     std::cout << "EdgeSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl << std::endl ;
     PointSetTopologyModifier::propagateTopologicalEngineChanges();

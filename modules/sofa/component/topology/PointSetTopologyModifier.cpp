@@ -74,7 +74,7 @@ void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
 void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints, const bool addDOF)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->setTopologyToDirty();
+    m_container->setPointTopologyToDirty();
 #endif
     if(addDOF)
     {
@@ -95,7 +95,7 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
         const bool addDOF)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->setTopologyToDirty();
+    m_container->setPointTopologyToDirty();
 #endif
     if(addDOF)
     {
@@ -134,7 +134,7 @@ void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<unsigned
         const bool removeDOF)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    m_container->setTopologyToDirty();
+    m_container->setPointTopologyToDirty();
 #endif
     // sort points so that they are removed in a descending order
     std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
@@ -236,7 +236,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     if (m_container->beginChange() == m_container->endChange()) // nothing to do if no event is stored
         return;
 
-    if (!m_container->isTopologyDirty()) // triangle Data has not been touched
+    if (!m_container->isPointTopologyDirty()) // triangle Data has not been touched
     {
         std::cout << "points not dirty" << std::endl;
         return;
@@ -258,7 +258,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     }
 
     // other way
-    m_container->cleanTopologyFromDirty();
+    m_container->cleanPointTopologyFromDirty();
 
     std::cout << "PointSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl << std::endl ;
 }
