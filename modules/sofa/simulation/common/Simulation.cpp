@@ -59,6 +59,7 @@
 #include <string.h>
 
 #include <sofa/simulation/common/DefaultAnimationMasterSolver.h>
+#include <sofa/simulation/common/DefaultVisualManagerLoop.h>
 
 
 // #include <sofa/simulation/common/FindByTypeVisitor.h>
@@ -152,6 +153,16 @@ void Simulation::init ( Node* root )
         m_RootSolver = new DefaultAnimationMasterSolver(root);
         m_RootSolver->setName(core::objectmodel::BaseObject::shortName(m_RootSolver));
         root->addObject(m_RootSolver);
+    }
+
+    core::visual::VisualManager* m_rootVisualManager;
+    root->get(m_rootVisualManager);
+    if(!m_rootVisualManager)
+    {
+        sout<<"WARNING(simulation::init) : Default Visual Manager will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning"<<sendl;
+        m_rootVisualManager = new DefaultVisualManagerLoop(root);
+        m_rootVisualManager->setName(core::objectmodel::BaseObject::shortName(m_rootVisualManager));
+        root->addObject(m_rootVisualManager);
     }
 
     // apply the init() and bwdInit() methods to all the components.
