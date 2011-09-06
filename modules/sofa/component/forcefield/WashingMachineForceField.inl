@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/WashingMachineForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
 #include <assert.h>
@@ -63,7 +64,7 @@ void WashingMachineForceField<DataTypes>::addDForce(const core::MechanicalParams
 template<class DataTypes>
 void WashingMachineForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields() || !_alreadyInit ) return;
+    if (!vparams->displayFlags().getShowForceFields() || !_alreadyInit ) return;
     for(int i=0; i<6; ++i)
 // 				_planes[i]->drawPlane(_size.getValue()[0]);
         _planes[i]->draw(vparams);

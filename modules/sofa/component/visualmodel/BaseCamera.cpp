@@ -1,4 +1,5 @@
 #include <sofa/component/visualmodel/BaseCamera.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/SolidTypes.h>

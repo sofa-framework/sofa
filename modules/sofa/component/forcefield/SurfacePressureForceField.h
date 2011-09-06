@@ -98,7 +98,7 @@ public:
         mparams->kFactor();
     };
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     void setPressure(const Real _pressure)
     {

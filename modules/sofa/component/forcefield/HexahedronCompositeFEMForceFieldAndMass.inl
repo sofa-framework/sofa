@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELD_INL
 
 #include <sofa/component/forcefield/HexahedronCompositeFEMForceFieldAndMass.h>
+#include <sofa/core/visual/VisualParams.h>
 
 
 #include <sofa/component/linearsolver/NewMatMatrix.h>
@@ -2447,9 +2448,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeightsRamification
 template<class T>
 void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
-    if (this->getContext()->getShowWireFrame()) return;
+    if (vparams->displayFlags().getShowWireFrame()) return;
 
 
     if( _drawColor.getValue() == -1 ) return;
@@ -2510,7 +2511,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
 
 
-    if (this->getContext()->getShowBehaviorModels())
+    if (vparams->displayFlags().getShowBehaviorModels())
     {
         // 					glColor3f(0.95, 0.95, 0.7);
         // 			  for(unsigned i=0;i<x.size();++i)

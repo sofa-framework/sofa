@@ -35,6 +35,7 @@
 //
 
 #include <sofa/component/controller/BaseController.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/JoystickEvent.h>

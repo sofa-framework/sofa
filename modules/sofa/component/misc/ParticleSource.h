@@ -382,8 +382,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams)
     {
-        if (!this->getContext()->
-            getShowBehaviorModels()) return;
+        if (!vparams->displayFlags().getShowBehaviorModels()) return;
         if (!this->mstate) return;
         if (lastparticles.empty()) return;
         double time = this->getContext()->getTime();

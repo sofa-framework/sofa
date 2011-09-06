@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_INL
 
 #include <sofa/component/collision/RigidContactMapper.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/DeleteVisitor.h>

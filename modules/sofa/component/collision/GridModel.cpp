@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/GridModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 #include <math.h>
@@ -171,7 +172,7 @@ void GridModel::draw(const core::visual::VisualParams* vparams,int index)
 
 void GridModel::draw(const core::visual::VisualParams* vparams)
 {
-    if (!isActive() || !((getNext()==NULL)?getContext()->getShowCollisionModels():getContext()->getShowBoundingCollisionModels())) return;
+    if (!isActive() || !((getNext()==NULL)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
     glDisable(GL_LIGHTING);
     int level=0;
     CollisionModel* m = getPrevious();

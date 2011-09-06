@@ -221,7 +221,7 @@ protected:
     ResizableExtVector<int> vertNormIdx;
 
     /// Rendering method.
-    virtual void internalDraw(bool /*transparent*/) {};
+    virtual void internalDraw(const core::visual::VisualParams* /*vparams*/, bool /*transparent*/) {}
 
 public:
 
@@ -318,9 +318,9 @@ public:
     bool hasTransparent();
     bool hasOpaque();
 
-    void drawVisual(const core::visual::VisualParams* );
-    void drawTransparent(const core::visual::VisualParams* );
-    void drawShadow(const core::visual::VisualParams* );
+    void drawVisual(const core::visual::VisualParams* vparams);
+    void drawTransparent(const core::visual::VisualParams* vparams);
+    void drawShadow(const core::visual::VisualParams* vparams);
 
     virtual bool loadTextures() {return false;}
     virtual bool loadTexture(const std::string& /*filename*/) { return false; }

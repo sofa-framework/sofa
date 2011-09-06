@@ -70,7 +70,7 @@ protected:
     GLuint vbo, iboTriangles, iboQuads;
     bool canUseVBO, VBOGenDone, initDone, useTriangles, useQuads;
     unsigned int oldVerticesSize, oldTrianglesSize, oldQuadsSize;
-    void internalDraw(bool transparent);
+    void internalDraw(const core::visual::VisualParams* vparams, bool transparent);
 
     void drawGroup(int ig, bool transparent);
     void drawGroups(bool transparent);
@@ -94,7 +94,7 @@ public:
     void initTextures();
     virtual void initVisual();
 
-    virtual void init() { VisualModelImpl::init(); };
+    virtual void init() { VisualModelImpl::init(); }
 
     virtual void updateBuffers();
 

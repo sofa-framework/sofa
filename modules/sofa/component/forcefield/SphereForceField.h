@@ -140,7 +140,7 @@ public:
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_CPP)

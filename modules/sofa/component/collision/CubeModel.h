@@ -123,7 +123,7 @@ public:
 
     void draw(const core::visual::VisualParams*,int index);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     int addCube(Cube subcellsBegin, Cube subcellsEnd);
     void updateCube(int index);

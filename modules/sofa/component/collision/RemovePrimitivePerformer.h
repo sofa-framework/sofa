@@ -85,7 +85,7 @@ public:
     void start();
     void execute();
     void end();
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 protected:
 

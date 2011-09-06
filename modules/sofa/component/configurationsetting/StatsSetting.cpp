@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/configurationsetting/StatsSetting.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

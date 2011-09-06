@@ -77,7 +77,7 @@ public:
 
     virtual void reinit();
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     void computeIndicesScale();
 

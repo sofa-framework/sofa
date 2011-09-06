@@ -256,7 +256,7 @@ template<class DataTypes>
 void LMLConstraint<DataTypes>::draw()
 {
 
-    if (!this->getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     VecCoord& x = *mmodel->getX();
     glDisable (GL_LIGHTING);

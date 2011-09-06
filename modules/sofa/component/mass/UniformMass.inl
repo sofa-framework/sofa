@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_INL
 
 #include <sofa/component/mass/UniformMass.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/Context.h>
@@ -424,7 +425,7 @@ void UniformMass<DataTypes, MassType>::getElementMass ( unsigned int /* index */
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
-    if ( !this->getContext()->getShowBehaviorModels() )
+    if ( !vparams->displayFlags().getShowBehaviorModels() )
         return;
     helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
 
@@ -470,7 +471,7 @@ void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vp
         {0.0f,0.0f,1.0f,1.0f},
         {0.5f,.5f,.5f,1.0f}
     };
-    if(this->getContext()->getShowProcessorColor())
+    if(vparams->displayFlags().getShowProcessorColor())
     {
         unsigned int proc=Core::Processor::get_current()->get_pid();
         color = colorTab[proc%12];

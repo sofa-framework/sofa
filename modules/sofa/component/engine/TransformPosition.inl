@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/TransformPosition.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/Quater.h>
 #include <math.h>

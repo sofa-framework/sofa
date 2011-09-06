@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/constraintset/LMConstraintSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/FullVector.h>

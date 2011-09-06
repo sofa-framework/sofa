@@ -309,9 +309,9 @@ else
 
 
 template<>
-void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualParams* )
+void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields())
+    if (!vparams->displayFlags().getShowForceFields())
         return;  /// \todo put this in the parent class
 
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p0 = *(useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));

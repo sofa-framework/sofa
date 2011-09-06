@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/behaviormodel/eulerianfluid/Fluid2D.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
@@ -101,7 +102,7 @@ void Fluid2D::updatePosition(double dt)
     Grid2D* p = fluid; fluid=fnext; fnext=p;
 }
 
-void Fluid2D::draw(const core::visual::VisualParams* )
+void Fluid2D::draw(const core::visual::VisualParams* vparams)
 {
     updateVisual();
     glPushMatrix();
@@ -111,7 +112,7 @@ void Fluid2D::draw(const core::visual::VisualParams* )
 
     glTranslatef(-(nx-1)*cellwidth/2,-(ny-1)*cellwidth/2,0.0f);
     glScalef(cellwidth,cellwidth,cellwidth);
-    //if (getContext()->getShowBehaviorModels())
+    //if (vparams->displayFlags().getShowBehaviorModels())
     {
         glDisable(GL_LIGHTING);
         glColor4f(1,1,1,1);
@@ -123,7 +124,7 @@ void Fluid2D::draw(const core::visual::VisualParams* )
         glVertex2i( nx-1,    0 ); glVertex2i( nx-1, ny-1 );
         glEnd();
     }
-    if (getContext()->getShowBehaviorModels())
+    if (vparams->displayFlags().getShowBehaviorModels())
     {
         glDisable(GL_LIGHTING);
         const real s = (real)getContext()->getDt()*5;
@@ -179,9 +180,9 @@ void Fluid2D::draw(const core::visual::VisualParams* )
         glEnd();
         glPointSize(1);
     }
-    if (getContext()->getShowVisualModels())
+    if (vparams->displayFlags().getShowVisualModels())
     {
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glEnable(GL_LIGHTING);
 
@@ -206,7 +207,7 @@ void Fluid2D::draw(const core::visual::VisualParams* )
         glEnd();
 
         glDisable(GL_LIGHTING);
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     glPopMatrix();

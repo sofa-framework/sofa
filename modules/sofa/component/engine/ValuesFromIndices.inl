@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_ENGINE_VALUESFROMINDICES_INL
 
 #include <sofa/component/engine/ValuesFromIndices.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 
 namespace sofa

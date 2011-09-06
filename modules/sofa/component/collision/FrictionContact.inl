@@ -27,6 +27,7 @@
 #define SOFA_COMPONENT_COLLISION_FRICTIONCONTACT_INL
 
 #include <sofa/component/collision/FrictionContact.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/DefaultContactManager.h>
 #include <sofa/component/collision/BarycentricContactMapper.h>
 #include <sofa/component/collision/IdentityContactMapper.h>

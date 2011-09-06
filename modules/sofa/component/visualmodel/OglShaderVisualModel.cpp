@@ -30,6 +30,7 @@
  */
 
 #include <sofa/component/visualmodel/OglShaderVisualModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/component/topology/PointSetTopologyChange.h>

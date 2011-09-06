@@ -82,7 +82,7 @@ public:
     virtual void computeBoundingTree(int maxDepth);
 
     void draw(const core::visual::VisualParams*,int index);
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     core::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
     // ----------------------------

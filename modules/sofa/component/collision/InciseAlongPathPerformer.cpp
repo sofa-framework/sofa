@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
@@ -218,7 +219,7 @@ InciseAlongPathPerformer::~InciseAlongPathPerformer()
     this->interactor->setBodyPicked(firstIncisionBody);
 }
 
-void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
+void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 {
     if (firstBody.body == NULL) return;
 

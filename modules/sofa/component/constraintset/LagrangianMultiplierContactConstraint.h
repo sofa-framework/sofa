@@ -102,7 +102,7 @@ public:
         return 0;
     }
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 
     /// The contact law is simplified during using the LagrangeMultiplier constraint to process the contact response:

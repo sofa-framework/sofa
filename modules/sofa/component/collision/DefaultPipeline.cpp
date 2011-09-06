@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/DefaultPipeline.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/simulation/common/Node.h>
@@ -254,7 +255,7 @@ helper::set< std::string > DefaultPipeline::getResponseList() const
     return listResponse;
 }
 
-void DefaultPipeline::draw(const core::visual::VisualParams* )
+void DefaultPipeline::draw(const core::visual::VisualParams* vparams)
 {
     if (!bDraw.getValue()) return;
     if (!narrowPhaseDetection) return;

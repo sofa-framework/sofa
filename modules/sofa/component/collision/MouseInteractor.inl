@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_INL
 
 #include <sofa/component/collision/MouseInteractor.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>
 
 #include <map>

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FixedRotationConstraint_INL
 
 #include <sofa/component/projectiveconstraintset/FixedRotationConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 
 
 
@@ -192,7 +193,7 @@ void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalP
 
 
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::draw(const core::visual::VisualParams* )
+void FixedRotationConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 }
 

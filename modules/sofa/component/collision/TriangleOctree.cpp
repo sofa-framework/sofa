@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/collision/TriangleModel.inl>
 #include <sofa/component/collision/TriangleOctree.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/RayTriangleIntersection.h>
 #include <sofa/component/collision/RayTriangleIntersection.h>

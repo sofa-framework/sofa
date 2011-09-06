@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/interactionforcefield/PenalityContactForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 #include <cassert>
 #include <sofa/helper/gl/template.h>
@@ -161,7 +162,7 @@ double PenalityContactForceField<DataTypes>::getPotentialEnergy(const core::Mech
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields())) return;
+    if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
     glDisable(GL_LIGHTING);
@@ -201,7 +202,7 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
 
 
     std::vector< defaulttype::Vector3 > pointsN;
-    if (this->getContext()->getShowNormals())
+    if (vparams->displayFlags().getShowNormals())
     {
         for (unsigned int i=0; i<contacts.getValue().size(); i++)
         {

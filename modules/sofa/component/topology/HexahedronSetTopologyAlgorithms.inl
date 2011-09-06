@@ -28,6 +28,7 @@
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <sofa/component/topology/HexahedronSetTopologyModifier.h>
 #include <sofa/component/topology/HexahedronSetTopologyAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>

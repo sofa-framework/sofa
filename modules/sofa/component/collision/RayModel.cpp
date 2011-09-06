@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/RayModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/gl/template.h>
@@ -118,7 +119,7 @@ void RayModel::draw(const core::visual::VisualParams* ,int index)
 
 void RayModel::draw(const core::visual::VisualParams* vparams)
 {
-    if (getContext()->getShowCollisionModels())
+    if (vparams->displayFlags().getShowCollisionModels())
     {
         glDisable(GL_LIGHTING);
         glColor4fv(getColor4f());
@@ -127,7 +128,7 @@ void RayModel::draw(const core::visual::VisualParams* vparams)
             draw(vparams,i);
         }
     }
-    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
+    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

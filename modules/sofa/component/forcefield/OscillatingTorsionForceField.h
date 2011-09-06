@@ -77,7 +77,7 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 };
 
@@ -167,7 +167,7 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 };
 

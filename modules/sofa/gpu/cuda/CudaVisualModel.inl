@@ -284,41 +284,40 @@ void CudaVisualModel< TDataTypes >::updateNormals()
 template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::updateVisual()
 {
-    if (!getContext()->getShowVisualModels()) return;
     updateTopology();
     if (computeNormals.getValue())
         updateNormals();
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::drawVisual(const core::visual::VisualParams*)
+void CudaVisualModel< TDataTypes >::drawVisual(const core::visual::VisualParams* vparams)
 {
     bool transparent = (matDiffuse.getValue()[3] < 1.0);
-    if (!transparent) internalDraw();
+    if (!transparent) internalDraw(vparams);
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::drawTransparent(const core::visual::VisualParams*)
+void CudaVisualModel< TDataTypes >::drawTransparent(const core::visual::VisualParams* vparams)
 {
     bool transparent = (matDiffuse.getValue()[3] < 1.0);
-    if (transparent) internalDraw();
+    if (transparent) internalDraw(vparams);
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::drawShadow(const core::visual::VisualParams*)
+void CudaVisualModel< TDataTypes >::drawShadow(const core::visual::VisualParams* vparams)
 {
     bool transparent = (matDiffuse.getValue()[3] < 1.0);
-    if (!transparent /* && getCastShadow() */ ) internalDraw();
+    if (!transparent /* && getCastShadow() */ ) internalDraw(vparams);
 }
 
 template<class TDataTypes>
-void CudaVisualModel< TDataTypes >::internalDraw()
+void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowVisualModels()) return;
+    if (!vparams->displayFlags().getShowVisualModels()) return;
 
     if (!topology || !state || !state->getX()->size()) return;
 
-    if (getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glEnable(GL_LIGHTING);
@@ -429,10 +428,10 @@ void CudaVisualModel< TDataTypes >::internalDraw()
     }
     glDisable(GL_LIGHTING);
 
-    if (getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    if (getContext()->getShowNormals())
+    if (vparams->displayFlags().getShowNormals())
     {
         glColor3f (1.0, 1.0, 1.0);
         for (unsigned int i = 0; i < x.size(); i++)

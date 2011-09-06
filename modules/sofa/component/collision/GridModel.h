@@ -83,7 +83,7 @@ public:
 
     void draw(const core::visual::VisualParams*,int index);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 };
 
 inline GridCell::GridCell(GridModel* model, int index)

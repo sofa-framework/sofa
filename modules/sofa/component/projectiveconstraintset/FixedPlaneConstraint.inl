@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/component/projectiveconstraintset/FixedPlaneConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -204,9 +205,9 @@ template <class DataTypes> void FixedPlaneConstraint<DataTypes>::handleTopologyC
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams* )
+void FixedPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *this->mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);

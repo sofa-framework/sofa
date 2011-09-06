@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/HexahedronSetTopologyModifier.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/HexahedronSetTopologyChange.h>
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <algorithm>

@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/BruteForceDetection.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/Sphere.h>
 #include <sofa/component/collision/Triangle.h>
 #include <sofa/component/collision/Line.h>
@@ -478,7 +479,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     //sout << "Narrow phase "<<cm1->getLast()->getName()<<"("<<gettypename(typeid(*cm1->getLast()))<<") - "<<cm2->getLast()->getName()<<"("<<gettypename(typeid(*cm2->getLast()))<<"): "<<elemPairs.size()-size0<<" contacts."<<sendl;
 }
 
-void BruteForceDetection::draw(const core::visual::VisualParams* )
+void BruteForceDetection::draw(const core::visual::VisualParams* vparams)
 {
     if (!bDraw.getValue()) return;
     /*

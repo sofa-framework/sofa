@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/collision/LineLocalMinDistanceFilter.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/component/topology/PointData.inl>
 

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/CommonAlgorithms.h>
 #include <sofa/component/container/MechanicalObject.inl>
 

@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/Spiral.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
@@ -123,9 +124,9 @@ void Spiral<DataTypes>::update()
 }
 
 template <class DataTypes>
-void Spiral<DataTypes>::draw(const core::visual::VisualParams* )
+void Spiral<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 }
 

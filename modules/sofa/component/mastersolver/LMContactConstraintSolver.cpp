@@ -23,6 +23,7 @@
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
 #include <sofa/component/mastersolver/LMContactConstraintSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/constraintset/LMConstraintSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>

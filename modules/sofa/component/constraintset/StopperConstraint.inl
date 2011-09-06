@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_INL
 
 #include <sofa/component/constraintset/StopperConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>

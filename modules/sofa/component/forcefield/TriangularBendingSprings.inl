@@ -37,6 +37,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_INL
 
 #include <sofa/component/forcefield/TriangularBendingSprings.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -694,13 +695,13 @@ void TriangularBendingSprings<DataTypes>::updateLameCoefficients()
 
 
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* )
+void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     unsigned int i;
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const VecCoord& x = *this->mstate->getX();
@@ -765,7 +766,7 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
     }
     glEnd();
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

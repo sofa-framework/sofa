@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <iostream>
 #include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/system/gl.h>
@@ -2541,7 +2542,7 @@ const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElements
 
 
 
-void MeshTopology::draw(const core::visual::VisualParams* )
+void MeshTopology::draw(const core::visual::VisualParams* vparams)
 {
     //Draw edges
     if (_drawEdges.getValue())

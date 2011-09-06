@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_INL
 
 #include <sofa/component/forcefield/SPHFluidForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/container/SpatialGridContainer.inl>
 #include <sofa/helper/system/config.h>
@@ -326,9 +327,9 @@ void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mpar
 }
 
 template<class DataTypes>
-void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     //if (grid != NULL)
     //	grid->draw(vparams);
     const VecCoord& x = *this->mstate->getX();

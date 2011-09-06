@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_INL
 
 #include <sofa/component/mapping/PCAOnRigidFrameMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Multi2Mapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -556,7 +557,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(typename In::MatrixDeri
 template <class TIn, class TInRoot, class TOut>
 void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getShow()) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
     std::vector< Vector3 > points;
     Vector3 point;
 

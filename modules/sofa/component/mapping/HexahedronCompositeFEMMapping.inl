@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMMapping_INL
 
 #include <sofa/component/mapping/HexahedronCompositeFEMMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/gl/template.h>
@@ -402,7 +403,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT ( InVecDeriv& out, con
 template <class BasicMapping>
 void HexahedronCompositeFEMMapping<BasicMapping>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getShow()) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
 
     std::vector< Vector3 > points;
     Vector3 point;

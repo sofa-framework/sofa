@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_INL
 
 #include <sofa/component/forcefield/OscillatingTorsionPressureForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/TriangleSubsetData.inl>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
@@ -277,12 +278,12 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesFromString(
 
 
 template<class DataTypes>
-void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
+void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
@@ -303,7 +304,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
     }
     glEnd();
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

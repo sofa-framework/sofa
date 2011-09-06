@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_LAGRANGIANMULTIPLIERATTACHCONSTRAINT_INL
 
 #include <sofa/component/constraintset/LagrangianMultiplierAttachConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/Constraint.inl>
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/helper/system/config.h>
@@ -140,7 +141,7 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addDForce(VecDeriv& f1, Ve
 template<class DataTypes>
 void LagrangianMultiplierAttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
+    if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
     const LMVecCoord& lambda = *this->lambda->getX();
@@ -156,7 +157,7 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::draw(const core::visual::V
     }
     glEnd();
 
-    //if (getContext()->getShowNormals())
+    //if (vparams->displayFlags().getShowNormals())
     {
         glColor4f(1,1,0,1);
         glBegin(GL_LINES);

@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/DefaultCollisionGroupManager.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/SolverMerger.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/common/Node.h>
@@ -104,8 +105,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     // create a new group
                     group = parent->createChild(groupName);
 
-                    core::objectmodel::Context *current_context = dynamic_cast< core::objectmodel::Context *>(parent->getContext());
-                    group->copyVisualContext( (*current_context));
+                    //core::objectmodel::Context *current_context = dynamic_cast< core::objectmodel::Context *>(parent->getContext());
+                    //group->copyVisualContext( (*current_context));
 
                     group->moveChild((simulation::Node*)group1);
                     group->moveChild((simulation::Node*)group2);

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_INL
 
 #include <sofa/component/forcefield/QuadularBendingSprings.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 
 #include <sofa/helper/gl/template.h>
@@ -775,12 +776,12 @@ void QuadularBendingSprings<DataTypes>::updateLameCoefficients()
 
 
 template<class DataTypes>
-void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* )
+void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const VecCoord& x = *this->mstate->getX();
@@ -850,7 +851,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* )
     glEnd();
 
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 

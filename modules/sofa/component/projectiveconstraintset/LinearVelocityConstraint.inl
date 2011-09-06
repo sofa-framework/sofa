@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_INL
 
 #include <sofa/component/projectiveconstraintset/LinearVelocityConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/helper/gl/template.h>
@@ -351,9 +352,9 @@ void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(const core::Mec
 
 //display the path the constrained dofs will go through
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams* )
+void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
+    if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);

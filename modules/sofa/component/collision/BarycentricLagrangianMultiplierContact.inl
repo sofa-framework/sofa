@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICLAGRANGIANMULTIPLIERCONTACT_INL
 
 #include <sofa/component/collision/BarycentricLagrangianMultiplierContact.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {

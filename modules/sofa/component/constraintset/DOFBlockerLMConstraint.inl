@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_INL
 
 #include <sofa/component/constraintset/DOFBlockerLMConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/template.h>
@@ -195,9 +196,9 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& l
 }
 
 template <class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams*)
+void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     const VecCoord& x = *this->constrainedObject1->getX();
 
     const SetIndexArray & indices = f_indices.getValue().getArray();

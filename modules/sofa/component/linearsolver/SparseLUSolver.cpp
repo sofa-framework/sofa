@@ -26,6 +26,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/linearsolver/SparseLUSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"

@@ -33,6 +33,7 @@
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/component/collision/SphereModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/gl.h>
@@ -151,9 +152,9 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
 template<class DataTypes>
 void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (getContext()->getShowCollisionModels())
+    if (vparams->displayFlags().getShowCollisionModels())
     {
-        vparams->drawTool()->setPolygonMode(0,getContext()->getShowWireFrame());
+        vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
 
         glEnable(GL_LIGHTING);
         glEnable(GL_COLOR_MATERIAL);
@@ -179,7 +180,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
-    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
+    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 
     vparams->drawTool()->setPolygonMode(0,false);

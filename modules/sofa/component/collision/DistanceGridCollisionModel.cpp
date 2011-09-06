@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <fstream>
@@ -240,9 +241,9 @@ void RigidDistanceGridCollisionModel::updateGrid()
 void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive()) return;
-    if (getContext()->getShowCollisionModels())
+    if (vparams->displayFlags().getShowCollisionModels())
     {
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDisable(GL_LIGHTING);
         glColor4fv(getColor4f());
@@ -252,7 +253,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpa
             draw(vparams,i);
         }
         glPointSize(1);
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     if (getPrevious()!=NULL)
@@ -719,9 +720,9 @@ FFDDistanceGridCollisionModel::DeformedCube::Plane FFDDistanceGridCollisionModel
 void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive()) return;
-    if (getContext()->getShowCollisionModels())
+    if (vparams->displayFlags().getShowCollisionModels())
     {
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDisable(GL_LIGHTING);
         glColor4fv(getColor4f());
@@ -729,14 +730,14 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
         {
             draw(vparams,i);
         }
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     if (getPrevious()!=NULL)
         getPrevious()->draw(vparams);
 }
 
-void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,int index)
+void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams,int index)
 {
     //DistanceGrid* grid = getGrid(index);
     DeformedCube& cube = getDeformCube( index );
@@ -806,7 +807,7 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,int 
         for (unsigned int j=0; j<cube.deformedPoints.size(); j++)
             helper::gl::glVertexT(cube.deformedPoints[j]);
         glEnd();
-        if (this->getContext()->getShowNormals())
+        if (vparams->displayFlags().getShowNormals())
         {
             glBegin(GL_LINES);
             for (unsigned int j=0; j<cube.deformedNormals.size(); j++)

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_ENGINE_MAPINDICES_INL
 
 #include <sofa/component/engine/MapIndices.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 
 namespace sofa

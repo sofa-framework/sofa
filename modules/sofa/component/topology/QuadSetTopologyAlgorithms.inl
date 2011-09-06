@@ -28,6 +28,7 @@
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
 #include <sofa/component/topology/QuadSetTopologyAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>

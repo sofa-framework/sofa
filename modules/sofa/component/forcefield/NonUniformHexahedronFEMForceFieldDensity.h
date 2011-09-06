@@ -94,7 +94,7 @@ public:
     }
 
     void init();
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
     // 	virtual void rein
     void drawSphere(double r, int lats, int longs, const Coord &pos);
 

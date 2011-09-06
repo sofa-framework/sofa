@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/loader/MeshTrianLoader.h>
+#include <sofa/core/visual/VisualParams.h>
 
 //#include <sofa/helper/system/FileRepository.h>
 //#include <stdlib.h>

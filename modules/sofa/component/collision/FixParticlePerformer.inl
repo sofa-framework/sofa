@@ -24,6 +24,7 @@
  ******************************************************************************/
 
 #include <sofa/component/collision/FixParticlePerformer.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 
 #include <sofa/simulation/common/Simulation.h>
@@ -103,10 +104,11 @@ void FixParticlePerformer<DataTypes>::draw(const core::visual::VisualParams* vpa
 {
     for (unsigned int i=0; i<fixations.size(); ++i)
     {
-        bool b = fixations[i]->getContext()->getShowBehaviorModels();
-        fixations[i]->getContext()->setShowBehaviorModels(true);
+        bool b = vparams->displayFlags().getShowBehaviorModels();
+        core::visual::DisplayFlags* flags = const_cast<core::visual::DisplayFlags*>(&vparams->displayFlags());
+        flags->setShowBehaviorModels(true);
         simulation::getSimulation()->draw(const_cast<core::visual::VisualParams*>(vparams),fixations[i]);
-        fixations[i]->getContext()->setShowBehaviorModels(b);
+        flags->setShowBehaviorModels(b);
     }
 }
 

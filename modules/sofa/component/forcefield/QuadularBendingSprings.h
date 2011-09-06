@@ -153,7 +153,7 @@ public:
     virtual void handleTopologyChange();
 
     // -- VisualModel interface
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
     void initTextures() { };
     void update() { };
 

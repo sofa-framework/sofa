@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/CubeModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
@@ -181,7 +182,7 @@ void CubeModel::draw(const core::visual::VisualParams* , int index)
 
 void CubeModel::draw(const core::visual::VisualParams* vparams)
 {
-    if (!isActive() || !((getNext()==NULL)?getContext()->getShowCollisionModels():getContext()->getShowBoundingCollisionModels())) return;
+    if (!isActive() || !((getNext()==NULL)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
 
     int level=0;
     CollisionModel* m = getPrevious();

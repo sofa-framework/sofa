@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_INL
 
 #include <sofa/component/mapping/SkinningMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/core/Mapping.inl>
@@ -334,7 +335,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
     glDisable ( GL_LIGHTING );
 
-    if ( this->getShow() )
+    if ( vparams->displayFlags().getShowMappings() )
     {
         // Display mapping links between in and out elements
         glPointSize ( 1 );

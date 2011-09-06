@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_INL
 
 #include <sofa/component/interactionforcefield/RepulsiveSpringForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
 
 namespace sofa

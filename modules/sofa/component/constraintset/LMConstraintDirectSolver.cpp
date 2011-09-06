@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/constraintset/LMConstraintDirectSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/constraintset/ContactDescription.h>
 #include <sofa/core/ObjectFactory.h>
 #include <Eigen/QR>

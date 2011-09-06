@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/collision/TriangleLocalMinDistanceFilter.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/component/topology/PointData.inl>
 #include <sofa/component/topology/TriangleData.inl>

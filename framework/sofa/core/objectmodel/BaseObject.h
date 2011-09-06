@@ -56,6 +56,7 @@ class Topology;
 namespace visual
 {
 class VisualParams;
+class DisplayFlags;
 }
 
 

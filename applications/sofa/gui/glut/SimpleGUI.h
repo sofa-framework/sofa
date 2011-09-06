@@ -206,16 +206,7 @@ public:
     void resetScene();
     void resetView();
     void saveView();
-    void showVisual(bool);
-    void showBehavior(bool);
-    void showCollision(bool);
-    void showBoundingCollision(bool);
-    void showMapping(bool);
-    void showMechanicalMapping(bool);
-    void showForceField(bool);
-    void showInteractionForceField(bool);
-    void showWireFrame(bool);
-    void showNormals(bool);
+
     void screenshot(int compression_level = -1);
     void exportOBJ(bool exportMTL=true);
     void dumpState(bool);

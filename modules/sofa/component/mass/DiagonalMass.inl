@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_INL
 
 #include <sofa/component/mass/DiagonalMass.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
@@ -652,7 +653,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const MassVector &masses= f_mass.getValue();
     if (masses.empty()) return;
 

@@ -1,4 +1,5 @@
 #include <sofa/component/visualmodel/RecordedCamera.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
@@ -381,7 +382,7 @@ void RecordedCamera::drawRotation()
 }
 
 
-void RecordedCamera::draw(const core::visual::VisualParams* )
+void RecordedCamera::draw(const core::visual::VisualParams* vparams)
 {
     if(p_drawRotation.getValue())
     {

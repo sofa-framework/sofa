@@ -179,7 +179,7 @@ public:
     /// @deprecated
     virtual bool isCubeActive(int /*index*/) { return true; }
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     virtual bool hasVolume() { return ( ( getNbTetrahedra() + getNbHexahedra() ) > 0 ); }
     virtual bool hasSurface() { return ( ( getNbTriangles() + getNbQuads() ) > 0 ); }

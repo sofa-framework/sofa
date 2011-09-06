@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
@@ -183,7 +184,7 @@ PointSetGeometryAlgorithms<DataTypes>::computeAngle(PointID ind_p0, PointID ind_
 
 
 template<class DataTypes>
-void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* )
+void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 
     if (showPointIndices.getValue())

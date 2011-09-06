@@ -68,10 +68,10 @@ template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstr
 
 #ifndef SOFA_FLOAT
 template <>
-void FixedTranslationConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* )
+void FixedTranslationConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();
     glDisable(GL_LIGHTING);
@@ -97,10 +97,10 @@ void FixedTranslationConstraint<Vec6dTypes>::draw(const core::visual::VisualPara
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void FixedTranslationConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* )
+void FixedTranslationConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();
     glDisable(GL_LIGHTING);

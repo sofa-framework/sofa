@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPARSEGRIDSPRINGFORCEFIELD_INL
 
 #include <sofa/component/interactionforcefield/SparseGridSpringForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
 #include <sofa/helper/gl/template.h>
 
@@ -407,7 +408,7 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
 template<class DataTypes>
 void SparseGridSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields())
+    if (!vparams->displayFlags().getShowForceFields())
         return;
     assert(this->object1);
     assert(this->object2);

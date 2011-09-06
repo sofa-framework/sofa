@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/constraintset/GenericConstraintSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>

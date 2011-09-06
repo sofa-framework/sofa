@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/loader/OffSequenceLoader.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/core/ObjectFactory.h>

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/collision/TriangleModel.inl>
 #include <sofa/component/collision/TriangleOctreeModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Triangle.h>
 #include <sofa/core/CollisionElement.h>
@@ -61,9 +62,9 @@ TriangleOctreeModel::TriangleOctreeModel ()
 void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 {
     TriangleModel::draw(vparams);
-    if (isActive () && getContext ()->getShowCollisionModels ())
+    if (isActive () && vparams->displayFlags().getShowCollisionModels ())
     {
-        if (getContext ()->getShowWireFrame ())
+        if (vparams->displayFlags().getShowWireFrame ())
             glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
 
         glEnable (GL_LIGHTING);
@@ -81,7 +82,7 @@ void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 
         glColor3f (1.0f, 1.0f, 1.0f);
         glDisable (GL_LIGHTING);
-        if (getContext ()->getShowWireFrame ())
+        if (vparams->displayFlags().getShowWireFrame ())
             glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
     }
 }

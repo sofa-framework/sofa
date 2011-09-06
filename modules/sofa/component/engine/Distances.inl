@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/Distances.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.inl>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
 #include <sofa/component/container/VoxelGridLoader.h>
@@ -713,7 +714,7 @@ void Distances< DataTypes >::getNeighbors ( const HexaID& hexaID, helper::set<He
 }
 
 template<class DataTypes>
-void Distances< DataTypes >::draw(const core::visual::VisualParams* )
+void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
 {
     // Display the distance on each hexa of the grid
     if ( showDistanceMap.getValue() )

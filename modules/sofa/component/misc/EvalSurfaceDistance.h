@@ -79,7 +79,7 @@ public:
     virtual SReal  eval();
     /// Init the computation
     virtual void init();
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void draw(const core::visual::VisualParams* vparams);
 
 protected:
 

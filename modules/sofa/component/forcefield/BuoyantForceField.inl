@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_BUOYANTFORCEFIELD_INL
 
 #include <sofa/component/forcefield/BuoyantForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/gl/template.h>
 #include <vector>
@@ -599,12 +600,12 @@ typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::getImm
 }
 
 template<class DataTypes>
-void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT, GL_LINE);
 
     glDisable(GL_LIGHTING);
@@ -770,7 +771,7 @@ void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* )
         }
     }
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

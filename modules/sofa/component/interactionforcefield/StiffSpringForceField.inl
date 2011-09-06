@@ -29,6 +29,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_INL
 
 #include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/interactionforcefield/SpringForceField.inl>
 #include <cassert>
 

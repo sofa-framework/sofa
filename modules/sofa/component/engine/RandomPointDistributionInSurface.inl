@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/RandomPointDistributionInSurface.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 #include <cstdlib>
@@ -272,12 +273,12 @@ void RandomPointDistributionInSurface<DataTypes>::update()
 }
 
 template <class DataTypes>
-void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::VisualParams* )
+void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels() || !isVisible.getValue())
+    if (!vparams->displayFlags().getShowBehaviorModels() || !isVisible.getValue())
         return;
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     //DRAW
@@ -317,7 +318,7 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
     //
     //trianglesOctree.octreeRoot->draw(vparams);
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glEnable(GL_LIGHTING);

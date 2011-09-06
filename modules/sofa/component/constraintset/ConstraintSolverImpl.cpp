@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/constraintset/ConstraintSolverImpl.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {

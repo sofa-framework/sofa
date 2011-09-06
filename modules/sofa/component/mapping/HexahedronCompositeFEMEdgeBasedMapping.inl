@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMEdgeBasedMapping_INL
 
 #include <sofa/component/mapping/HexahedronCompositeFEMEdgeBasedMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/behavior/MechanicalMapping.inl>

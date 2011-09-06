@@ -198,7 +198,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         singleForce = force.getValue();
     }
 
-    if ((!this->getContext()->getShowForceFields() && (aSC==0)) || (aSC < 0.0)) return;
+    if ((!vparams->displayFlags().getShowForceFields() && (aSC==0)) || (aSC < 0.0)) return;
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
     const Deriv f_end = (f.empty()? singleForce : f[f.size()-1]);

@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/topology/ManifoldEdgeSetTopologyContainer.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 // Use BOOST GRAPH LIBRARY :

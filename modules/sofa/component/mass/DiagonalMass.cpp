@@ -93,7 +93,7 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPar
 
 {
     const MassVector &masses= f_mass.getValue();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     Real totalMass=0;
     RigidTypes::Vec3 gravityCenter;
@@ -197,7 +197,7 @@ template <>
 void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualParams* vparams)
 {
     const MassVector &masses= f_mass.getValue();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
@@ -262,7 +262,7 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualPar
 
 {
     const MassVector &masses= f_mass.getValue();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     Real totalMass=0;
     RigidTypes::Vec3 gravityCenter;
@@ -336,7 +336,7 @@ template <>
 void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualParams* vparams)
 {
     const MassVector &masses= f_mass.getValue();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {

@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/SubsetTopology.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
@@ -589,9 +590,9 @@ void SubsetTopology<DataTypes>::update()
 }
 
 template <class DataTypes>
-void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* )
+void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
     const VecCoord* x0 = &f_X0.getValue();

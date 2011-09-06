@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_INL
 
 #include <sofa/component/forcefield/SurfacePressureForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>
@@ -280,12 +281,12 @@ const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceFi
 
 
 template<class DataTypes>
-void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
@@ -322,7 +323,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
     glEnd();
 
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

@@ -34,6 +34,7 @@
 //
 //
 #include <sofa/component/visualmodel/OglRenderingSRGB.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 

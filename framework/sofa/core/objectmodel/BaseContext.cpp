@@ -116,72 +116,6 @@ Iterative::IterativePartition* BaseContext::getPartition() const
 }
 #endif
 
-/// Display flags: Collision Models
-bool BaseContext::getShowCollisionModels() const
-{
-    return false;
-}
-
-/// Display flags: Bounding Collision Models
-bool BaseContext::getShowBoundingCollisionModels() const
-{
-    return false;
-}
-
-/// Display flags: Behavior Models
-bool BaseContext::getShowBehaviorModels() const
-{
-    return true;
-}
-
-/// Display flags: Visual Models
-bool BaseContext::getShowVisualModels() const
-{
-    return true;
-}
-
-/// Display flags: Mappings
-bool BaseContext::getShowMappings() const
-{
-    return false;
-}
-
-/// Display flags: Mechanical Mappings
-bool BaseContext::getShowMechanicalMappings() const
-{
-    return false;
-}
-
-/// Display flags: ForceFields
-bool BaseContext::getShowForceFields() const
-{
-    return false;
-}
-
-/// Display flags: InteractionForceFields
-bool BaseContext::getShowInteractionForceFields() const
-{
-    return false;
-}
-
-/// Display flags: WireFrame
-bool BaseContext::getShowWireFrame() const
-{
-    return false;
-}
-
-/// Display flags: Normals
-bool BaseContext::getShowNormals() const
-{
-    return false;
-}
-
-#ifdef SOFA_SMP
-bool BaseContext::getShowProcessorColor() const
-{
-    return false;
-}
-#endif
 
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
@@ -343,7 +277,6 @@ std::ostream& operator << (std::ostream& out, const BaseContext& c )
     out<<std::endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAccelerationInWorld();
 #endif
 #endif // SOFA_DEV
-    out<<std::endl<<"showBehaviorModels = "<<c.getShowBehaviorModels();
     return out;
 }
 

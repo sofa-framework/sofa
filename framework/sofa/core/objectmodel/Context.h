@@ -30,7 +30,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/visual/DisplayFlags.h>
 
 #include <iostream>
 #include <map>
@@ -59,7 +58,7 @@ class SOFA_CORE_API Context : public BaseContext
 public:
     SOFA_CLASS(Context, BaseContext);
 
-    typedef sofa::core::visual::DisplayFlags DisplayFlags;
+
 
     Data<bool> is_activated;
     Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
@@ -111,45 +110,6 @@ public:
 
     /// Animation flag
     virtual bool getAnimate() const;
-
-    /// Display flags
-    DisplayFlags& displayFlags() { return displayFlags_; }
-    const DisplayFlags& displayFlags() const { return displayFlags_; }
-
-    /// Display flags: Collision Models
-    virtual bool getShowCollisionModels() const;
-
-    /// Display flags: Bounding Collision Models
-    virtual bool getShowBoundingCollisionModels() const;
-
-    /// Display flags: Behavior Models
-    virtual bool getShowBehaviorModels() const;
-
-    /// Display flags: Visual Models
-    virtual bool getShowVisualModels() const;
-
-    /// Display flags: Mappings
-    virtual bool getShowMappings() const;
-
-    /// Display flags: Mechanical Mappings
-    virtual bool getShowMechanicalMappings() const;
-
-    /// Display flags: ForceFields
-    virtual bool getShowForceFields() const;
-
-    /// Display flags: InteractionForceFields
-    virtual bool getShowInteractionForceFields() const;
-
-    /// Display flags: WireFrame
-    virtual bool getShowWireFrame() const;
-
-    /// Display flags: Normals
-    virtual bool getShowNormals() const;
-
-
-#ifdef SOFA_SMP
-    virtual bool getShowProcessorColor() const;
-#endif
 
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
@@ -212,42 +172,8 @@ public:
     /// Animation flag
     virtual void setAnimate(bool val);
 
-    /// Display flags: Collision Models
-    virtual void setShowCollisionModels(bool val);
-
-    /// Display flags: Behavior Models
-    virtual void setShowBehaviorModels(bool val);
-
-    /// Display flags: Bounding Collision Models
-    virtual void setShowBoundingCollisionModels(bool val);
-
-    /// Display flags: Visual Models
-    virtual void setShowVisualModels(bool val);
-
-    /// Display flags: Mappings
-    virtual void setShowMappings(bool val);
-
-    /// Display flags: Mechanical Mappings
-    virtual void setShowMechanicalMappings(bool val);
-
-    /// Display flags: ForceFields
-    virtual void setShowForceFields(bool val);
-
-    /// Display flags: InteractionForceFields
-    virtual void setShowInteractionForceFields(bool val);
-
-    /// Display flags: WireFrame
-    virtual void setShowWireFrame(bool val);
-
-    /// Display flags: Normals
-    virtual void setShowNormals(bool val);
-
     /// Display flags: Gravity
     virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }
-
-#ifdef SOFA_SMP
-    virtual void setShowProcessorColor(bool val);
-#endif
 
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
@@ -275,17 +201,6 @@ public:
 
     /// Copy the context variables of visualization from the given instance
     void copySimulationContext(const Context& c);
-
-    /// Copy the context variables of visualization from the given instance
-    void copyVisualContext(const Context& c);
-
-    /// Fusion the context variables of visualization from the given instance with the current instance
-    void fusionVisualContext(const Context& c);
-
-protected:
-
-    core::visual::DisplayFlags displayFlags_;
-
 
 
 

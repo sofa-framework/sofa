@@ -28,6 +28,7 @@
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
 #include <sofa/component/topology/TetrahedronSetTopologyAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>

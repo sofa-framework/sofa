@@ -317,7 +317,7 @@ template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
     const MassVector& masses = f_mass.getValue();
-    if ( !this->getContext()->getShowBehaviorModels() ) return;
+    if ( !vparams->displayFlags().getShowBehaviorModels() ) return;
     helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
     if ( x.size() != masses.size()) return;
     for ( unsigned int i=0; i<x.size(); i++ )

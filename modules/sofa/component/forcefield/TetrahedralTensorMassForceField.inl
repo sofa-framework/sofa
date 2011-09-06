@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_INL
 
 #include <sofa/component/forcefield/TetrahedralTensorMassForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
@@ -410,12 +411,12 @@ void TetrahedralTensorMassForceField<DataTypes>::updateLameCoefficients()
 
 
 template<class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 // 	VecCoord& x = *this->mstate->getX();
@@ -441,7 +442,7 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
     	glEnd();
 
     */
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

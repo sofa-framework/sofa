@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/visualmodel/OglModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/gl/RAII.h>
@@ -255,13 +256,13 @@ void OglModel::drawGroups(bool transparent)
     }
 }
 
-void OglModel::internalDraw(bool transparent)
+void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool transparent)
 {
     m_vtexcoords.updateIfDirty();
 //    serr<<" OglModel::internalDraw()"<<sendl;
-    if (!getContext()->getShowVisualModels()) return;
+    if (!vparams->displayFlags().getShowVisualModels()) return;
 
-    if (getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const ResizableExtVector<Coord>& vertices = this->getVertices();
@@ -435,10 +436,10 @@ void OglModel::internalDraw(bool transparent)
         glDepthMask(GL_TRUE);
     }
 
-    if (getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    if (getContext()->getShowNormals())
+    if (vparams->displayFlags().getShowNormals())
     {
         glColor3f (1.0, 1.0, 1.0);
         for (unsigned int i=0; i<xforms.size(); i++)

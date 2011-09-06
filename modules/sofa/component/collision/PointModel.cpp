@@ -34,6 +34,7 @@
 
 
 #include <sofa/component/collision/PointModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/PointLocalMinDistanceFilter.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
@@ -148,9 +149,9 @@ void PointModel::draw(const core::visual::VisualParams* ,int index)
 
 void PointModel::draw(const core::visual::VisualParams* vparams)
 {
-    if (getContext()->getShowCollisionModels())
+    if (vparams->displayFlags().getShowCollisionModels())
     {
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,true);
 
         // Check topological modifications
@@ -195,11 +196,11 @@ void PointModel::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->drawPoints(pointsPFree, 3, Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
         }
 
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,false);
     }
 
-    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
+    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

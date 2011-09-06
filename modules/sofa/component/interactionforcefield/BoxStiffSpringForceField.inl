@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/interactionforcefield/BoxStiffSpringForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
@@ -156,7 +157,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 template <class DataTypes>
 void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowInteractionForceFields())
+    if (!vparams->displayFlags().getShowInteractionForceFields())
         return;
 
     Inherit::draw(vparams);

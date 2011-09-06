@@ -67,7 +67,7 @@ public:
 
     virtual double getPotentialEnergy() const;
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 
 public:

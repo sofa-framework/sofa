@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 // Use BOOST GRAPH LIBRARY :

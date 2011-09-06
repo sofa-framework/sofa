@@ -38,6 +38,7 @@
 #define SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_INL
 
 #include <sofa/component/controller/EdgeSetController.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
@@ -589,9 +590,9 @@ bool EdgeSetController<DataTypes>::modifyTopology(void)
 
 
 template <class DataTypes>
-void EdgeSetController<DataTypes>::draw(const core::visual::VisualParams* )
+void EdgeSetController<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     glDisable(GL_LIGHTING);
 

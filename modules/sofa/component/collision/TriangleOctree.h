@@ -126,7 +126,7 @@ public:
             childVec[i] = NULL;
     }
 
-    void draw (const core::visual::VisualParams*);
+    void draw (const core::visual::VisualParams* vparams);
 
     /// Find the nearest triangle intersecting the given ray, or -1 of not found
     int trace (Vector3 origin, Vector3 direction, traceResult &result);

@@ -105,7 +105,7 @@ public:
     virtual void handleTopologyChange();
 
     void init();
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
     void resetConstraint();
 
     // -- LMConstraint interface

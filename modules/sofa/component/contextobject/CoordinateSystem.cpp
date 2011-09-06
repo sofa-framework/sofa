@@ -27,6 +27,7 @@
 // Copyright: See COPYING file that comes with this distribution
 
 #include <sofa/component/contextobject/CoordinateSystem.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/Node.h>
 #include <iostream>

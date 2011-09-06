@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_PARALLELCGLINEARSOLVER_INL
 #define SOFA_COMPONENT_LINEARSOLVER_PARALLELCGLINEARSOLVER_INL
 #include <sofa/component/linearsolver/ParallelCGLinearSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <math.h>
 #include <iostream>

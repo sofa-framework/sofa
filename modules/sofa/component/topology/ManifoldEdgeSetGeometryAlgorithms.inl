@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/ManifoldEdgeSetGeometryAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {

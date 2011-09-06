@@ -24,6 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP
 #include <sofa/component/linearsolver/FullVector.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {

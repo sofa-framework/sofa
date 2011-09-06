@@ -79,7 +79,7 @@ public:
 
     virtual void applyJT ( typename In::VecDeriv& parentForces, const typename Out::VecDeriv& childForces );
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 
 protected :

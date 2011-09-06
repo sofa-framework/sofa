@@ -27,6 +27,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/projectiveconstraintset/FixedTranslationConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 
@@ -204,10 +205,10 @@ void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::Me
 
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParams* )
+void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();
     glDisable(GL_LIGHTING);

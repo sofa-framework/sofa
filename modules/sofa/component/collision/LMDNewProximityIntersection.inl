@@ -27,6 +27,7 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/component/collision/LMDNewProximityIntersection.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>

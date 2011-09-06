@@ -23,9 +23,11 @@
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
 #include <sofa/component/misc/TopologicalChangeProcessor.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/component/misc/TopologicalChangeProcessor.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
@@ -1367,7 +1369,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     if(!m_draw.getValue())
         return;
 
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
     sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
@@ -1376,7 +1378,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     if (!triangleGeo)
         return;
 
-//                if (this->getContext()->getShowWireFrame())
+//                if (vparams->displayFlags().getShowWireFrame())
 //                      vparams->drawTool()->setPolygonMode(0,true);
 
     unsigned int nbTriangles = m_topology->getNbTriangles();
@@ -1429,7 +1431,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawTriangles(trianglesToDraw,
                 Vec<4,float>(1.0,(Real)rand() / (Real)RAND_MAX, (Real)rand() / (Real)RAND_MAX, 1.0));
     }
-//                if (this->getContext()->getShowWireFrame())
+//                if (vparams->displayFlags().getShowWireFrame())
 //                      vparams->drawTool()->setPolygonMode(0,false);
 }
 

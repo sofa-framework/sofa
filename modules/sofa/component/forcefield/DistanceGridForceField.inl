@@ -413,7 +413,7 @@ void DistanceGridForceField<DataTypes>::addKToMatrix(const sofa::core::Mechanica
 template<class DataTypes>
 void DistanceGridForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     drawDistanceGrid(vparams);
 }
 

@@ -2,6 +2,7 @@
 #define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_INL
 
 #include <sofa/component/mapping/SubsetMultiMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/MultiMapping.inl>
 

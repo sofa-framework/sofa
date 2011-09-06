@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/PlaneROI.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
@@ -408,9 +409,9 @@ void PlaneROI<DataTypes>::update()
 }
 
 template <class DataTypes>
-void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* )
+void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
     const VecCoord* x0 = &f_X0.getValue();

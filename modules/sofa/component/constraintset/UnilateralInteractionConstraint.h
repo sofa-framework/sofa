@@ -270,7 +270,7 @@ public:
     bool isActive();
 #endif
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 };
 
 

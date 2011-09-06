@@ -24,6 +24,7 @@
  ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/loader/MeshVTKLoader.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <iostream>
 //#include <fstream> // we can't use iostream because the windows implementation gets confused by the mix of text and binary

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <sofa/component/collision/MinProximityIntersection.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
@@ -818,9 +819,9 @@ int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputV
 	return 1;
 }
 */
-void MinProximityIntersection::draw(const core::visual::VisualParams* )
+void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowCollisionModels())
+    if (!vparams->displayFlags().getShowCollisionModels())
         return;
 }
 

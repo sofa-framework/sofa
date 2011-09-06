@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_INL
 
 #include <sofa/component/forcefield/EdgePressureForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/EdgeSubsetData.inl>
 #include <sofa/helper/gl/template.h>
 #include <vector>
@@ -307,11 +308,11 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromString()
 
 }
 template<class DataTypes>
-void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     double aSC = arrowSizeCoef.getValue();
 
-    if ((!this->getContext()->getShowForceFields() && (aSC==0)) || (aSC < 0.0)) return;
+    if ((!vparams->displayFlags().getShowForceFields() && (aSC==0)) || (aSC < 0.0)) return;
     if (!this->mstate) return;
 
     const VecCoord& x = *this->mstate->getX();
@@ -340,7 +341,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* )
     }
     glEnd();
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 }

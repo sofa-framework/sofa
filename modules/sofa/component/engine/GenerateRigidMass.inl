@@ -32,6 +32,7 @@
 #define SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_INL
 
 #include <sofa/component/engine/GenerateRigidMass.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 

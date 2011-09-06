@@ -31,6 +31,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_INL
 
 #include <sofa/component/linearsolver/WarpPreconditioner.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/core/objectmodel/BaseContext.h>

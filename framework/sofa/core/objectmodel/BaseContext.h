@@ -121,38 +121,7 @@ public:
     /// Animation flag
     virtual bool getAnimate() const;
 
-    /// Display flags: Collision Models
-    virtual bool getShowCollisionModels() const;
-
-    /// Display flags: Bounding Collision Models
-    virtual bool getShowBoundingCollisionModels() const;
-
-    /// Display flags: Behavior Models
-    virtual bool getShowBehaviorModels() const;
-
-    /// Display flags: Visual Models
-    virtual bool getShowVisualModels() const;
-
-    /// Display flags: Mappings
-    virtual bool getShowMappings() const;
-
-    /// Display flags: Mechanical Mappings
-    virtual bool getShowMechanicalMappings() const;
-
-    /// Display flags: ForceFields
-    virtual bool getShowForceFields() const;
-
-    /// Display flags: InteractionForceFields
-    virtual bool getShowInteractionForceFields() const;
-
-    /// Display flags: WireFrame
-    virtual bool getShowWireFrame() const;
-
-    /// Display flags: Normals
-    virtual bool getShowNormals() const;
-
 #ifdef SOFA_SMP
-    virtual bool getShowProcessorColor() const;
     virtual int  getProcessor() const;
     virtual void  setProcessor(int) {}
     virtual Iterative::IterativePartition*  getPartition() const;
@@ -368,51 +337,6 @@ public:
     /// Animation flag
     virtual void setAnimate(bool /*val*/)
     { }
-
-    /// Display flags: Collision Models
-    virtual void setShowCollisionModels(bool /*val*/)
-    { }
-
-    /// Display flags: Bounding Collision Models
-    virtual void setShowBoundingCollisionModels(bool /*val*/)
-    { }
-
-    /// Display flags: Behavior Models
-    virtual void setShowBehaviorModels(bool /*val*/)
-    { }
-
-    /// Display flags: Visual Models
-    virtual void setShowVisualModels(bool /*val*/)
-    { }
-
-    /// Display flags: Mappings
-    virtual void setShowMappings(bool /*val*/)
-    { }
-
-    /// Display flags: Mechanical Mappings
-    virtual void setShowMechanicalMappings(bool /*val*/)
-    { }
-
-    /// Display flags: ForceFields
-    virtual void setShowForceFields(bool /*val*/)
-    { }
-
-    /// Display flags: InteractionForceFields
-    virtual void setShowInteractionForceFields(bool /*val*/)
-    { }
-
-    /// Display flags: WireFrame
-    virtual void setShowWireFrame(bool /*val*/)
-    { }
-
-    /// Display flags: Normals
-    virtual void setShowNormals(bool /*val*/)
-    { }
-
-#ifdef SOFA_SMP
-    virtual void setShowProcessorColor(bool /*val*/)
-    { }
-#endif
 
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION

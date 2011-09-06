@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/collision/LocalMinDistanceFilter.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/mapping/RigidMapping.h>
 #include <limits>

@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/ValuesFromPositions.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 
 #include <sofa/simulation/common/Node.h>
@@ -431,7 +432,7 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
 
 
 template <class DataTypes>
-void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* )
+void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (p_drawVectors.getValue())
     {

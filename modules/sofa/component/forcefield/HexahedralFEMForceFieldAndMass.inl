@@ -27,6 +27,7 @@
 
 
 #include <sofa/component/forcefield/HexahedralFEMForceFieldAndMass.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/forcefield/HexahedralFEMForceField.inl>
 
 #include <sofa/component/topology/PointData.inl>
@@ -639,7 +640,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
 {
     HexahedralFEMForceFieldT::draw(vparams);
 
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();
     glDisable (GL_LIGHTING);

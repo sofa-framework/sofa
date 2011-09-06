@@ -39,7 +39,7 @@ public:
     Data<double> p_panSpeed;
     Data<int> p_pivot;
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 private:
     int currentMode;

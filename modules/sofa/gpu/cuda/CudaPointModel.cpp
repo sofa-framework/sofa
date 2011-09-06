@@ -91,9 +91,9 @@ void CudaPointModel::draw(const core::visual::VisualParams* ,int index)
 
 void CudaPointModel::draw(const core::visual::VisualParams* vparams)
 {
-    if (isActive() && getContext()->getShowCollisionModels())
+    if (isActive() && vparams->displayFlags().getShowCollisionModels())
     {
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glDisable(GL_LIGHTING);
@@ -108,10 +108,10 @@ void CudaPointModel::draw(const core::visual::VisualParams* vparams)
         glColor3f(1.0f, 1.0f, 1.0f);
         glDisable(GL_LIGHTING);
         glPointSize(1);
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
+    if (isActive() && getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

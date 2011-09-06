@@ -188,7 +188,7 @@ public:
         f_poissonRatio.setValue((Real)ratio);
     }
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 

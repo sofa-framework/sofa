@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MISC_READTOPOLOGY_INL
 
 #include <sofa/component/misc/ReadTopology.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 

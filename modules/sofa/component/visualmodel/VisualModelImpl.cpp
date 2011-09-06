@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
 
@@ -208,22 +209,22 @@ bool VisualModelImpl::hasOpaque()
     return false;
 }
 
-void VisualModelImpl::drawVisual(const core::visual::VisualParams* )
+void VisualModelImpl::drawVisual(const core::visual::VisualParams* vparams)
 {
     if (hasOpaque())
-        internalDraw(false);
+        internalDraw(vparams,false);
 }
 
-void VisualModelImpl::drawTransparent(const core::visual::VisualParams* )
+void VisualModelImpl::drawTransparent(const core::visual::VisualParams* vparams)
 {
     if (hasTransparent())
-        internalDraw(true);
+        internalDraw(vparams,true);
 }
 
-void VisualModelImpl::drawShadow(const core::visual::VisualParams* )
+void VisualModelImpl::drawShadow(const core::visual::VisualParams* vparams)
 {
     if (hasOpaque() && getCastShadow())
-        internalDraw(false);
+        internalDraw(vparams, false);
 }
 
 void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
@@ -1060,7 +1061,7 @@ void VisualModelImpl::updateVisual()
 
 #ifdef SOFA_SMP
 
-    if(getContext()->getShowProcessorColor())
+    if(vparams->displayFlags().getShowProcessorColor())
     {
         sofa::core::objectmodel::Context *context=dynamic_cast<sofa::core::objectmodel::Context *>(this->getContext());
         if(context&&context->getPartition())
@@ -1081,11 +1082,11 @@ void VisualModelImpl::updateVisual()
         }
     }
 
-    if(previousProcessorColor&&!getContext()->getShowProcessorColor())
+    if(previousProcessorColor&&!vparams->displayFlags().getShowProcessorColor())
     {
         material.setValue(originalMaterial);
     }
-    previousProcessorColor=getContext()->getShowProcessorColor();
+    previousProcessorColor=vparams->displayFlags().getShowProcessorColor();
 #endif
 }
 
