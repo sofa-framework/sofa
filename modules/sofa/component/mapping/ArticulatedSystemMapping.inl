@@ -27,6 +27,7 @@
 #define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_INL
 
 #include <sofa/component/mapping/ArticulatedSystemMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Multi2Mapping.inl>
 
@@ -632,7 +633,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
 {
     using container::ArticulatedHierarchyContainer;
 
-    if (!this->getShow()) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
     std::vector< Vector3 > points;
     std::vector< Vector3 > pointsLine;
 

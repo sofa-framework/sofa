@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MASS_MESHMATRIXMASS_INL
 
 #include <sofa/component/mass/MeshMatrixMass.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/topology/TopologyChangedEvent.h>
@@ -1160,7 +1161,7 @@ void MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index, def
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();

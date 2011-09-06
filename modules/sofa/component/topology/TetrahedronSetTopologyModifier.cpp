@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/TetrahedronSetTopologyChange.h>
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <algorithm>

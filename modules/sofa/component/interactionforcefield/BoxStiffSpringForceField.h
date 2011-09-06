@@ -77,7 +77,7 @@ public:
     Data<SReal> factorRestLength;
     // -- VisualModel interface
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 };
 

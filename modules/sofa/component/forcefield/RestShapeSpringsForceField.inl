@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include "RestShapeSpringsForceField.h"
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -299,7 +300,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
 
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 
 }

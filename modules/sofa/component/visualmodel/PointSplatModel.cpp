@@ -35,6 +35,7 @@
 #include <sofa/component/container/VoxelGridLoader.h>
 
 #include <sofa/component/visualmodel/PointSplatModel.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -133,9 +134,9 @@ void PointSplatModel::reinit()
     setColor(color.getValue());
 }
 
-void PointSplatModel::drawTransparent(const core::visual::VisualParams*)
+void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
 {
-    if(!getContext()->getShowVisualModels()) return;
+    if(!vparams->displayFlags().getShowVisualModels()) return;
 
     const helper::vector<unsigned char>& pData = pointData.getValue();
 

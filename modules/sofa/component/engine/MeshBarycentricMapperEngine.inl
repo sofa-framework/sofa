@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/MeshBarycentricMapperEngine.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
@@ -332,7 +333,7 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::draw(const core::visual::VisualParams* )
+void MeshBarycentricMapperEngine<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 
 

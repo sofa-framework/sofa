@@ -2,6 +2,7 @@
 #define SOFA_COMPONENT_COLLISION_INTERACTIONPERFOMER_CPP
 
 #include <sofa/component/collision/InteractionPerformer.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/Factory.inl>
 

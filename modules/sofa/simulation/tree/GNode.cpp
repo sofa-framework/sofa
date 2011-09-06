@@ -409,33 +409,6 @@ void GNode::initVisualContext()
     if (getParent() != NULL)
     {
         this->setDisplayWorldGravity(false); //only display gravity for the root: it will be propagated at each time step
-        /// @TODO: This method is now broken because getShow*() methods never return -1
-        /*
-        if (getShowVisualModels() == -1)
-            setShowVisualModels(static_cast<GNode *>(getParent())->getShowVisualModels());
-        if (getShowBehaviorModels() == -1)
-                        setShowBehaviorModels(static_cast<GNode *>(getParent())->getShowBehaviorModels());
-        if (getShowCollisionModels() == -1)
-                        setShowCollisionModels(static_cast<GNode *>(getParent())->getShowCollisionModels());
-        if (getShowBoundingCollisionModels() == -1)
-                        setShowBoundingCollisionModels(static_cast<GNode *>(getParent())->getShowBoundingCollisionModels());
-        if (getShowMappings() == -1)
-                        setShowMappings(static_cast<GNode *>(getParent())->getShowMappings());
-        if (getShowMechanicalMappings() == -1)
-                        setShowMechanicalMappings(static_cast<GNode *>(getParent())->getShowMechanicalMappings());
-        if (getShowForceFields() == -1)
-                        setShowForceFields(static_cast<GNode *>(getParent())->getShowForceFields());
-        if (getShowInteractionForceFields() == -1)
-                        setShowInteractionForceFields(static_cast<GNode *>(getParent())->getShowInteractionForceFields());
-        if (getShowWireFrame() == -1)
-                        setShowWireFrame(static_cast<GNode *>(getParent())->getShowWireFrame());
-        if (getShowNormals() == -1)
-                        setShowNormals(static_cast<GNode *>(getParent())->getShowNormals());
-        #ifdef SOFA_SMP
-        if (getShowProcessorColor() == -1)
-                        setShowProcessorColor(static_cast<GNode *>(getParent())->getShowProcessorColor());
-        #endif
-         */
     }
 }
 
@@ -463,15 +436,6 @@ void GNode::updateSimulationContext()
         copySimulationContext(*parent);
     }
     simulation::Node::updateSimulationContext();
-}
-
-void GNode::updateVisualContext()
-{
-    if ( getParent() != NULL )
-    {
-        copyVisualContext(*parent);
-    }
-    simulation::Node::updateVisualContext();
 }
 
 /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object

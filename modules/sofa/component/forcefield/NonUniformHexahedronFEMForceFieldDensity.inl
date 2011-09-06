@@ -27,6 +27,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldDensity.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
 
 #include <fstream>
@@ -384,17 +385,17 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::drawSphere(double r, i
 
 
 template<class DataTypes>
-void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw(const core::visual::VisualParams* )
+void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
     if (this->_indexedElements->size() == 0) return;
 
 
     const VecCoord& x = *this->mstate->getX();
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glDisable(GL_LIGHTING);
@@ -442,7 +443,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw(const core::visua
         glColor4f((float)((*it_stiff).second.second/max), 0.0f, (float)(1.0f-(*it_stiff).second.second/max),1.0f);
         drawSphere(radius*(1+2*(*it_stiff).second.second/max),10,10,x[ (*it_stiff).first ]);
     }
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     //   if(this->_sparseGrid )

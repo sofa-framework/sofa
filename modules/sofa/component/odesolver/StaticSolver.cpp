@@ -26,6 +26,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/odesolver/StaticSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/VectorOperations.h>

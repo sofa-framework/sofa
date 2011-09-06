@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_INL
 
 #include <sofa/component/constraintset/FixedLMConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 
@@ -227,7 +228,7 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNu
 template <class DataTypes>
 void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *this->constrainedObject1->getX();
     //serr<<"FixedLMConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 

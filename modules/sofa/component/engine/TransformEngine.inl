@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_INL
 
 #include <sofa/component/engine/TransformEngine.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/rmath.h> //M_PI
 
 namespace sofa

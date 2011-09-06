@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/TextureInterpolation.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -197,7 +198,7 @@ void TextureInterpolation<DataTypes>::resetGraph()
 
 
 template <class DataTypes>
-void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* )
+void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     // to force update. getX() must have call to endEdit()
     _outputCoord.getValue();

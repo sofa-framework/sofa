@@ -28,6 +28,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/BaseLMConstraint.h>
 #include <sofa/component/constraintset/DistanceLMContactConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -337,7 +338,7 @@ void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualPara
 {
     //if (this->l0.size() != pointPairs.getValue().size()) updateRestLength();
 
-    if (this->getContext()->getShowBehaviorModels())
+    if (vparams->displayFlags().getShowBehaviorModels())
     {
         const VecCoord &x1=*(this->constrainedObject1->getX());
         const VecCoord &x2=*(this->constrainedObject2->getX());

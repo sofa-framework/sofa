@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/GridTopology.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/simulation/common/Simulation.h>
@@ -1295,13 +1296,13 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessPolar( Vecto
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
     const VecCoord& x = *this->mstate->getX();
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
 
 
@@ -1346,7 +1347,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     vparams->drawTool()->drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
     vparams->drawTool()->drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,false);
 }
 

@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/BoxROI.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
@@ -357,9 +358,9 @@ void BoxROI<DataTypes>::update()
 }
 
 template <class DataTypes>
-void BoxROI<DataTypes>::draw(const core::visual::VisualParams* )
+void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels() && !this->_drawSize.getValue())
+    if (!vparams->displayFlags().getShowBehaviorModels() && !this->_drawSize.getValue())
         return;
 
     const VecCoord* x0 = &f_X0.getValue();

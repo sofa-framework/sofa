@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_INL
 
 #include <sofa/component/projectiveconstraintset/AttachConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -760,9 +761,9 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
 
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* )
+void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();

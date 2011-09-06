@@ -27,6 +27,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/interactionforcefield/FrameSpringForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Cylinder.h>
@@ -182,9 +183,9 @@ void FrameSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /
 }
 
 template<class DataTypes>
-void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if ( ! ( ( this->mstate1 == this->mstate2 ) ?this->getContext()->getShowForceFields() :this->getContext()->getShowInteractionForceFields() ) ) return;
+    if ( ! ( ( this->mstate1 == this->mstate2 ) ?vparams->displayFlags().getShowForceFields() :vparams->displayFlags().getShowInteractionForceFields() ) ) return;
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
 

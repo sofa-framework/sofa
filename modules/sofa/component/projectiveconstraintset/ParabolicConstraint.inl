@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARABOLICCONSTRAINT_INL
 
 #include <sofa/component/projectiveconstraintset/ParabolicConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 
 namespace sofa
@@ -216,9 +217,9 @@ void ParabolicConstraint<DataTypes>::projectJacobianMatrix(const core::Mechanica
 
 
 template <class DataTypes>
-void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* )
+void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     Real dt = (Real) this->getContext()->getDt();
     Real t = m_tEnd.getValue() - m_tBegin.getValue();

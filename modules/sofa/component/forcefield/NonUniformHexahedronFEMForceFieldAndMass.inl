@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_INL
 
 #include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldAndMass.h>
+#include <sofa/core/visual/VisualParams.h>
 
 
 

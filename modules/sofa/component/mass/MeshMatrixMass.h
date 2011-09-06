@@ -188,7 +188,7 @@ public:
     double getElementMass(unsigned int index) const;
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     bool addBBox(double* minBBox, double* maxBBox);
 

@@ -60,7 +60,7 @@ public:
     typedef helper::vector< InteractionPerformer* > VecPerformer;
     BaseMouseInteractor(): isAttached(false),distanceFromMouse(0) {}
 
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void draw(const core::visual::VisualParams* vparams);
 
     void cleanup();
 

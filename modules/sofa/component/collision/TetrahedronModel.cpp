@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/TetrahedronModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/common/Node.h>
@@ -92,7 +93,7 @@ void TetrahedronModel::handleTopologyChange()
     resize(_topology->getNbTetrahedra());
 }
 
-void TetrahedronModel::draw(const core::visual::VisualParams* ,int index)
+void TetrahedronModel::draw(const core::visual::VisualParams* vparams,int index)
 {
     Tetrahedron t(this,index);
     glBegin(GL_TRIANGLES);
@@ -130,7 +131,7 @@ void TetrahedronModel::draw(const core::visual::VisualParams* ,int index)
     helper::gl::glVertexT(p3);
     helper::gl::glVertexT(p4);
     glEnd();
-    if (getContext()->getShowNormals())
+    if (vparams->displayFlags().getShowNormals())
     {
         Coord p;
         glBegin(GL_LINES);
@@ -152,9 +153,9 @@ void TetrahedronModel::draw(const core::visual::VisualParams* ,int index)
 
 void TetrahedronModel::draw(const core::visual::VisualParams* vparams)
 {
-    if (mstate && _topology && getContext()->getShowCollisionModels())
+    if (mstate && _topology && vparams->displayFlags().getShowCollisionModels())
     {
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glEnable(GL_LIGHTING);
@@ -175,10 +176,10 @@ void TetrahedronModel::draw(const core::visual::VisualParams* vparams)
 
         glColor3f(1.0f, 1.0f, 1.0f);
         glDisable(GL_LIGHTING);
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
+    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

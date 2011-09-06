@@ -38,6 +38,7 @@
 #define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_INL
 
 #include <sofa/component/container/SpatialGridContainer.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/component/topology/PointSetTopologyModifier.h>
@@ -561,7 +562,7 @@ void SpatialGrid<DataTypes>::reorderIndices(helper::vector<unsigned int>* old2ne
 }
 
 template<class DataTypes>
-void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
+void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const float cscale = (float)(cellWidth);
     const float gscale = (float)(cellWidth*GRIDDIM);

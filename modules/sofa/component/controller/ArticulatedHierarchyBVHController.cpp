@@ -34,6 +34,7 @@
 //
 //
 #include <sofa/component/controller/ArticulatedHierarchyBVHController.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/ObjectFactory.h>
 

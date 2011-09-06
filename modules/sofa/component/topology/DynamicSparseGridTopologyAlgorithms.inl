@@ -28,6 +28,7 @@
 #include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
 #include <sofa/component/topology/DynamicSparseGridTopologyModifier.h>
 #include <sofa/component/topology/DynamicSparseGridTopologyAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>

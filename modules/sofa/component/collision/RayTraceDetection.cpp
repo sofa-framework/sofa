@@ -35,6 +35,7 @@
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/RayTraceDetection.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Node.h>
 #include <map>
 #include <queue>

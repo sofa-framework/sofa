@@ -72,7 +72,7 @@ public:
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
 
     virtual void init();
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 protected:
 

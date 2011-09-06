@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_INL
 
 #include <sofa/component/constraintset/SlidingConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/constraintset/BilateralInteractionConstraint.h>
 #include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
 
@@ -162,9 +163,9 @@ void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::beh
 
 
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* )
+void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowInteractionForceFields()) return;
+    if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);
     glPointSize(10);

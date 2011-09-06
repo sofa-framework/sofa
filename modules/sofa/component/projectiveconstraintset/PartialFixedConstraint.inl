@@ -28,6 +28,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/component/projectiveconstraintset/PartialFixedConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
@@ -306,7 +307,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()-> getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     if (!this->isActive())
         return;

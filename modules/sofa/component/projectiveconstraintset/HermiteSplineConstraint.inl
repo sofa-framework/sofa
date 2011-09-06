@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_INL
 
 #include <sofa/component/projectiveconstraintset/HermiteSplineConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 
 namespace sofa
@@ -229,9 +230,9 @@ void HermiteSplineConstraint<DataTypes>::projectJacobianMatrix(const core::Mecha
 }
 
 template <class DataTypes>
-void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* )
+void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     Real dt = (Real) this->getContext()->getDt();
     Real DT = m_tEnd.getValue() - m_tBegin.getValue();

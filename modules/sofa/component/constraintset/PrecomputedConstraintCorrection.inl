@@ -878,9 +878,9 @@ void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 
 
 template< class DataTypes >
-void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::VisualParams* )
+void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels() || !m_rotations.getValue())
+    if (!vparams->displayFlags().getShowBehaviorModels() || !m_rotations.getValue())
         return;
 
     using sofa::component::forcefield::TetrahedronFEMForceField;

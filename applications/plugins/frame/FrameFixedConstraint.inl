@@ -248,8 +248,7 @@ void FrameFixedConstraint<DataTypes>::projectPosition(const core::MechanicalPara
 template <class DataTypes>
 void FrameFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->
-        getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
     const VecCoord& x = *this->mstate->getX();
     //serr<<"FrameFixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;

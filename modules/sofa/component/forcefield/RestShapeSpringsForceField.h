@@ -101,7 +101,7 @@ public:
     /// Brings ForceField contribution to the global system stiffness matrix.
     virtual void addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix );
 
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void draw(const core::visual::VisualParams* vparams);
     bool addBBox(double* minBBox, double* maxBBox);
 
 protected :

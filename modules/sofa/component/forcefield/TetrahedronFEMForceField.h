@@ -330,7 +330,7 @@ public:
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);

@@ -27,6 +27,7 @@
 
 //#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/interactionforcefield/InteractionEllipsoidForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/glut.h>
@@ -307,9 +308,9 @@ double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnerg
 }
 
 template<class DataTypes1, class DataTypes2>
-void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::visual::VisualParams* )
+void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
     Real1 cx1=0, cy1=0, cz1=0;

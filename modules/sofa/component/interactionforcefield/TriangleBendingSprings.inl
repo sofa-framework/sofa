@@ -37,6 +37,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_INL
 
 #include <sofa/component/interactionforcefield/TriangleBendingSprings.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
 

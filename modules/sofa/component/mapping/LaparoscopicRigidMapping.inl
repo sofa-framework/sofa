@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_INL
 
 #include <sofa/component/mapping/LaparoscopicRigidMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Mapping.inl>
 
@@ -81,9 +82,9 @@ void LaparoscopicRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams *
 }
 
 template <class TIn, class TOut>
-void LaparoscopicRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* )
+void LaparoscopicRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getShow())
+    if (!vparams->displayFlags().getShowMappings())
         return;
 }
 

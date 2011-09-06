@@ -29,6 +29,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_JACOBIPRECONDITIONER_INL
 
 #include <sofa/component/linearsolver/JacobiPreconditioner.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/DiagonalMatrix.h>

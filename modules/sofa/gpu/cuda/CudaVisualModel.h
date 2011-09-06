@@ -109,7 +109,7 @@ public:
 
     virtual void init();
     virtual void reinit();
-    virtual void internalDraw();
+    virtual void internalDraw(const core::visual::VisualParams* vparams);
     virtual void drawVisual(const core::visual::VisualParams*);
     virtual void drawTransparent(const core::visual::VisualParams*);
     virtual void drawShadow(const core::visual::VisualParams*);

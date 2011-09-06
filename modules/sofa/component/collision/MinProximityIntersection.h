@@ -92,7 +92,7 @@ public:
     int computeIntersection(Triangle&, Sphere&, OutputVector*);
     //int computeIntersection(Ray&, Triangle&, OutputVector*);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 private:
     double mainAlarmDistance;

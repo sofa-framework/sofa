@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_INL
 
 #include <sofa/component/collision/BarycentricPenalityContact.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/RigidContactMapper.inl>
 
 namespace sofa
@@ -236,7 +237,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
-void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* )
+void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     //	if (ff!=NULL)
     //		ff->draw(vparams);

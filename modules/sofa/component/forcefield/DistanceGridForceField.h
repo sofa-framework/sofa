@@ -215,7 +215,7 @@ public:
     virtual void addDForce(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) ;
     virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix) ;
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
     void drawDistanceGrid(const core::visual::VisualParams*, float size=0.0f);
     bool addBBox(double* minBBox, double* maxBBox);
 

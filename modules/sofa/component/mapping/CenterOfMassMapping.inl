@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_INL
 
 #include <sofa/component/mapping/CenterOfMassMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Mapping.inl>
 

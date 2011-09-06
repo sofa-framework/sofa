@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/ParallelCollisionPipeline.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ParallelCollisionModel.h>
 #include <sofa/core/collision/ParallelNarrowPhaseDetection.h>
 #include <sofa/simulation/tree/GNode.h>

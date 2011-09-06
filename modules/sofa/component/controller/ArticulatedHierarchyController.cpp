@@ -35,6 +35,7 @@
 //
 
 #include <sofa/component/controller/ArticulatedHierarchyController.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/ObjectFactory.h>

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_TUBULARMAPPING_INL
 
 #include <sofa/component/mapping/TubularMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Mapping.inl>
 

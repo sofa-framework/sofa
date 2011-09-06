@@ -485,8 +485,6 @@ public:
     }
 
 protected:
-    /// If true, display the mapping
-    bool getShow() const { return this->getContext()->getShowMappings(); }
 
     void matrixApplyJ( OutVecDeriv& /* out */, const InVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
     void matrixApplyJT( InVecDeriv& /* out */, const OutVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);

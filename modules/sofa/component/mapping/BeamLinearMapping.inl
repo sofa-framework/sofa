@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_INL
 
 #include <sofa/component/mapping/BeamLinearMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Mapping.inl>
 
@@ -280,7 +281,7 @@ void BeamLinearMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
 template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getShow()) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
     std::vector< Vector3 > points;
     Vector3 point;
 

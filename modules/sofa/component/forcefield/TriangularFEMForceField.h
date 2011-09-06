@@ -223,7 +223,7 @@ public:
     virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
     virtual void handleTopologyChange();
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
     Vec3d getVertexColor(Index vertexIndex, double maxStress, double minStress);
 
     int method;

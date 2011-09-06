@@ -406,17 +406,6 @@ void QSofaListView::RemoveNode()
         {
             //Attempt to destroy the Root node : create an empty node to handle new graph interaction
             Node *root = simulation::getSimulation()->createNewGraph( "Root" );
-
-            root->setShowVisualModels ( 1 );
-            root->setShowCollisionModels ( 0 );
-            root->setShowBoundingCollisionModels ( 0 );
-            root->setShowBehaviorModels ( 0 );
-            root->setShowMappings ( 0 );
-            root->setShowMechanicalMappings ( 0 );
-            root->setShowForceFields ( 0 );
-            root->setShowInteractionForceFields ( 0 );
-            root->setShowWireFrame ( 0 );
-            root->setShowNormals ( 0 );
             graphListener_->removeChild ( NULL, node);
             graphListener_->addChild ( NULL, root );
             emit RootNodeChanged(root,NULL);

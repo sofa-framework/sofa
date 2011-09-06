@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/behaviormodel/eulerianfluid/Fluid3D.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
@@ -105,7 +106,7 @@ void Fluid3D::updatePosition(double dt)
     Grid3D* p = fluid; fluid=fnext; fnext=p;
 }
 
-void Fluid3D::draw(const core::visual::VisualParams* )
+void Fluid3D::draw(const core::visual::VisualParams* vparams)
 {
     updateVisual();
     glPushMatrix();
@@ -116,7 +117,7 @@ void Fluid3D::draw(const core::visual::VisualParams* )
     const real& cellwidth = f_cellwidth.getValue();
     glTranslatef(center[0]-(nx-1)*cellwidth/2,center[1]-(ny-1)*cellwidth/2,center[2]-(nz-1)*cellwidth/2);
     glScalef(cellwidth,cellwidth,cellwidth);
-    //if (getContext()->getShowBehaviorModels())
+    //if (vparams->displayFlags().getShowBehaviorModels())
     {
         glDisable(GL_LIGHTING);
         glColor4f(1,1,1,1);
@@ -137,7 +138,7 @@ void Fluid3D::draw(const core::visual::VisualParams* )
         glVertex3i( nx-1, ny-1,    0 ); glVertex3i( nx-1, ny-1, nz-1 );
         glEnd();
     }
-    if (getContext()->getShowBehaviorModels())
+    if (vparams->displayFlags().getShowBehaviorModels())
     {
         glDisable(GL_LIGHTING);
         const real s = (real)getContext()->getDt()*5;
@@ -195,9 +196,9 @@ void Fluid3D::draw(const core::visual::VisualParams* )
         glEnd();
         glPointSize(1);
     }
-    if (getContext()->getShowVisualModels())
+    if (vparams->displayFlags().getShowVisualModels())
     {
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glEnable(GL_LIGHTING);
@@ -223,7 +224,7 @@ void Fluid3D::draw(const core::visual::VisualParams* )
         glEnd();
 
         glDisable(GL_LIGHTING);
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     glPopMatrix();

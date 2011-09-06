@@ -81,7 +81,7 @@ public:
     }
 
     /* for debugging */
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 };
 
 } // namespace collision

@@ -27,6 +27,7 @@
 #define SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_INL
 
 #include <sofa/component/mapping/LineSetSkinningMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -196,9 +197,9 @@ void LineSetSkinningMapping<TIn, TOut>::reinit()
 }
 
 template <class TIn, class TOut>
-void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* )
+void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getShow()) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
     glDisable (GL_LIGHTING);
     glLineWidth(1);
 

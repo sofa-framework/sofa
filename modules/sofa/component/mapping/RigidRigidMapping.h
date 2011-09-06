@@ -32,7 +32,7 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
-
+#include <sofa/core/visual/VisualParams.h>
 #include <vector>
 
 namespace sofa
@@ -132,7 +132,7 @@ public:
         return NULL;
     }
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     void clear();
 
@@ -143,9 +143,9 @@ public:
 
 protected:
 
-    bool getShow(const core::objectmodel::BaseObject* m) const { return m->getContext()->getShowMappings(); }
+    bool getShow(const core::objectmodel::BaseObject* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMappings(); }
 
-    bool getShow(const core::BaseMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
+    bool getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMechanicalMappings(); }
 };
 
 using sofa::defaulttype::Rigid2dTypes;

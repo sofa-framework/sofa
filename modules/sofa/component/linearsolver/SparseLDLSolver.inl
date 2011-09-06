@@ -29,6 +29,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
 
 #include <sofa/component/linearsolver/SparseLDLSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"

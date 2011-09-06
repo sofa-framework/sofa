@@ -64,10 +64,10 @@ template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<Rigid3fTypes>;
 
 #ifndef SOFA_FLOAT
 template <>
-void FixedLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* )
+void FixedLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *constrainedObject1->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
@@ -85,7 +85,7 @@ template <>
 void FixedLMConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *constrainedObject1->getX();
 
     std::vector< Vector3 > points;

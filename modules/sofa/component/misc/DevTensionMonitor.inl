@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/misc/DevTensionMonitor.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {

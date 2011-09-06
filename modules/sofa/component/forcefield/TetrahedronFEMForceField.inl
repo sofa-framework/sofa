@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/GridTopology.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/PolarDecompose.h>
@@ -1513,12 +1514,12 @@ void TetrahedronFEMForceField<DataTypes>::addDForce(const core::MechanicalParams
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
     const VecCoord& x = *this->mstate->getX();
 
-    const bool edges = (drawAsEdges.getValue() || this->getContext()->getShowWireFrame());
+    const bool edges = (drawAsEdges.getValue() || vparams->displayFlags().getShowWireFrame());
     const bool heterogeneous = (drawHeterogeneousTetra.getValue() && minYoung!=maxYoung);
 
     const VecReal & youngModulus = _youngModulus.getValue();
@@ -1646,7 +1647,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     }
 
     ////////////// AFFICHAGE DES ROTATIONS ////////////////////////
-    if (this->getContext()->getShowNormals())
+    if (vparams->displayFlags().getShowNormals())
     {
 
         std::vector< Vector3 > points[3];

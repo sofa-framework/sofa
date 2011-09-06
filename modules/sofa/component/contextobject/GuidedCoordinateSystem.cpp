@@ -34,6 +34,7 @@
 //
 //
 #include <sofa/component/contextobject/GuidedCoordinateSystem.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 
 

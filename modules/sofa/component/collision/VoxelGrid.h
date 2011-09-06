@@ -92,7 +92,7 @@ public:
     // Create a voxel grid define by minx, miny, minz, maxx, maxy, maxz and the number of subdivision on x, y, z
     void createVoxelGrid (const Vector3 &min, const Vector3 &max, const Vector3 &nbSubdivision);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     void add(core::CollisionModel *cm, int phase);
 

@@ -141,8 +141,8 @@ public:
     DrawTool*& drawTool() { return m_drawTool; }
     DrawTool*& drawTool() const { return m_drawTool; }
 
-    DisplayFlags& displayflags() { return m_displayflags; }
-    const DisplayFlags& displayflags() const { return m_displayflags; }
+    DisplayFlags& displayFlags() { return m_displayflags; }
+    const DisplayFlags& displayFlags() const { return m_displayflags; }
 
     sofa::defaulttype::BoundingBox&  sceneBBox()    { return m_sceneBoundingBox; }
     const sofa::defaulttype::BoundingBox&  sceneBBox() const   { return m_sceneBoundingBox; }

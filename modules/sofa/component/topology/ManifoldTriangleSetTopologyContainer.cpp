@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/ManifoldTriangleSetTopologyContainer.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/component/container/MeshLoader.h>
 

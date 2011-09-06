@@ -51,7 +51,7 @@ public:
 
     virtual void parallelComputeCollisions();
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
     long int contactSum;
     sofa::helper::vector<int> procs;
     sofa::helper::vector<core::ParallelCollisionModel*> parallelCollisionModels;

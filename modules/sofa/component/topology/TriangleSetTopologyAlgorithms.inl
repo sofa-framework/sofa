@@ -28,6 +28,7 @@
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 
 #include <sofa/component/container/MechanicalObject.h>

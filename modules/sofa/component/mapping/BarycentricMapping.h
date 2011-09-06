@@ -1165,7 +1165,7 @@ public:
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     // handle topology changes depending on the topology
     virtual void handleTopologyChange(core::topology::Topology* t);

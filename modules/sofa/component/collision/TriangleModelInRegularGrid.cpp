@@ -1,4 +1,5 @@
 #include <sofa/component/collision/TriangleModelInRegularGrid.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/TriangleModel.inl>
 #include <sofa/component/topology/TriangleData.inl>

@@ -74,7 +74,7 @@ public:
     */
     virtual void handleEvent( core::objectmodel::Event* ev );
 
-    virtual void draw (const core::visual::VisualParams*);
+    virtual void draw (const core::visual::VisualParams* vparams);
 
     ///create gnuplot files
     virtual void initGnuplot ( const std::string path );

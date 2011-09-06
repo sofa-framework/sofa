@@ -49,7 +49,7 @@ public:
 
     DefaultPipeline();
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     /// get the set of response available with the current collision pipeline
     helper::set< std::string > getResponseList() const;

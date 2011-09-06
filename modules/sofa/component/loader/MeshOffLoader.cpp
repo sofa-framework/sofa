@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/loader/MeshOffLoader.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 
 namespace sofa

@@ -3,6 +3,7 @@
 #define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_INL
 
 #include <sofa/component/controller/LCPForceFeedback.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/component/constraintset/ConstraintSolverImpl.h>
 #include <sofa/core/objectmodel/BaseContext.h>

@@ -110,7 +110,7 @@ void AspirationForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix
 template<class DataTypes>
 void AspirationForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields() || (f_arrowSizeCoef.getValue()==0)) return;
+    if (!vparams->displayFlags().getShowForceFields() || (f_arrowSizeCoef.getValue()==0)) return;
 
     const VecCoord & x = *this->mstate->getX();
     RigidCoord position = f_positionRigid.getValue();

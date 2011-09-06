@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_INL
 
 #include <sofa/component/visualmodel/OglVariable.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

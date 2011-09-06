@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/HexahedralFEMForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
@@ -656,15 +657,15 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
     const VecCoord& x = *this->mstate->getX();
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glDisable(GL_LIGHTING);
@@ -737,7 +738,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         glEnd();
     }
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 }

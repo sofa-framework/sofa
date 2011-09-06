@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_INL
 
 #include <sofa/component/mapping/RigidMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.inl>
@@ -961,7 +962,7 @@ void RigidMapping<TIn, TOut>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getShow())
+    if (!vparams->displayFlags().getShowMappings())
         return;
     std::vector<Vector3> points;
     Vector3 point;

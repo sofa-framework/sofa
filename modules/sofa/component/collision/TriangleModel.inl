@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_INL
 
 #include <sofa/component/collision/TriangleModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/TriangleLocalMinDistanceFilter.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Triangle.h>
@@ -593,13 +594,13 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* ,int inde
 template<class DataTypes>
 void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (getContext()->getShowCollisionModels())
+    if (vparams->displayFlags().getShowCollisionModels())
     {
         //if( size != _topology->getNbTriangles())
         //  updateFromTopology();
 
-        if (bothSide.getValue() || getContext()->getShowWireFrame())
-            vparams->drawTool()->setPolygonMode(0,getContext()->getShowWireFrame());
+        if (bothSide.getValue() || vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
         else
         {
             vparams->drawTool()->setPolygonMode(2,true);
@@ -627,7 +628,7 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->setPolygonMode(0,false);
 
 
-        if (getContext()->getShowNormals())
+        if (vparams->displayFlags().getShowNormals())
         {
             std::vector< Vector3 > points;
             for (int i=0; i<size; i++)
@@ -641,7 +642,7 @@ void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
         }
     }
-    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
+    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

@@ -80,7 +80,7 @@ void DistanceLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* 
 {
     if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
 
-    if (this->getContext()->getShowBehaviorModels())
+    if (vparams->displayFlags().getShowBehaviorModels())
     {
         const VecCoord &x1=*(this->constrainedObject1->getX());
         const VecCoord &x2=*(this->constrainedObject2->getX());
@@ -112,7 +112,7 @@ void DistanceLMConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* 
 {
     if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
 
-    if (this->getContext()->getShowBehaviorModels())
+    if (vparams->displayFlags().getShowBehaviorModels())
     {
         const VecCoord &x1=*(this->constrainedObject1->getX());
         const VecCoord &x2=*(this->constrainedObject2->getX());

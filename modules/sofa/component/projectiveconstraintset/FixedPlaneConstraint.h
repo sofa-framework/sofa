@@ -104,7 +104,7 @@ public:
     void selectVerticesAlongPlane();
     void setDminAndDmax(const Real _dmin,const Real _dmax) {dmin=_dmin; dmax=_dmax; selectVerticesFromPlanes=true;}
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 protected:
 
     sofa::core::topology::BaseMeshTopology* topology;

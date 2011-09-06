@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/ExtrudeQuadsAndGenerateHexas.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 

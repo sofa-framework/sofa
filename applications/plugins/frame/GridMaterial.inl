@@ -2735,7 +2735,7 @@ bool GridMaterial< MaterialTypes>::HeatDiffusion( const VecSCoord& points, const
 /*************************/
 
 template<class MaterialTypes>
-void GridMaterial< MaterialTypes>::draw()
+void GridMaterial< MaterialTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!nbVoxels) return;
 
@@ -2751,7 +2751,7 @@ void GridMaterial< MaterialTypes>::draw()
         unsigned int i;
         //        Real s=(voxelSize.getValue()[0]+voxelSize.getValue()[1]+voxelSize.getValue()[2])/3.;
         float color[4], specular[]= {0,0,0,0};
-        showWireframe=this->getContext()->getShowWireFrame();
+        showWireframe=vparams->displayFlags().getShowWireFrame();
 
         float label=-1;
 

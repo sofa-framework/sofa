@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_INL
 
 #include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/container/SpatialGridContainer.inl>
 
 #include <sofa/core/Mapping.inl>
@@ -406,7 +407,7 @@ void SPHFluidSurfaceMapping<In,Out>::applyJ(const core::MechanicalParams * /*mpa
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowMappings()) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
     if (!grid) return;
     grid->draw(vparams);
 

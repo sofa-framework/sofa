@@ -159,7 +159,7 @@ template<class DataTypes>
 void LMLForce<DataTypes>::draw()
 {
     //display a little green segment with force direction
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     VecCoord& x = *mmodel->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);

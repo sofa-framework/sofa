@@ -211,7 +211,7 @@ public:
 
     void draw(const core::visual::VisualParams*,int index);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 };
 
 inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index)
@@ -474,7 +474,7 @@ public:
 
     void draw(const core::visual::VisualParams*,int index);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 };
 
 inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index)

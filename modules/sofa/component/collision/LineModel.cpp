@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/LineModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/LineLocalMinDistanceFilter.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Line.h>
@@ -399,9 +400,9 @@ void LineModel::draw(const core::visual::VisualParams* ,int index)
 
 void LineModel::draw(const core::visual::VisualParams* vparams)
 {
-    if (getContext()->getShowCollisionModels())
+    if (vparams->displayFlags().getShowCollisionModels())
     {
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,true);
 
         std::vector< Vector3 > points;
@@ -433,10 +434,10 @@ void LineModel::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->drawLines(pointsFree, 1, Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
         }
 
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,false);
     }
-    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
+    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

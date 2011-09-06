@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/PCGLinearSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>

@@ -36,6 +36,7 @@
 #include <sofa/component/container/VoxelGridLoader.h>
 
 #include <sofa/component/visualmodel/SlicedVolumetricModel.h>
+#include <sofa/core/visual/VisualParams.h>
 
 
 #define GETCOORD(i) Coord((Real)_mstate->getPX(i), (Real)_mstate->getPY(i), (Real)_mstate->getPZ(i) )
@@ -159,9 +160,9 @@ void SlicedVolumetricModel::reinit()
 
 }
 
-void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams*)
+void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vparams)
 {
-    if(!getContext()->getShowVisualModels()) return;
+    if(!vparams->displayFlags().getShowVisualModels()) return;
 
     if( _first )
     {

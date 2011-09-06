@@ -28,6 +28,7 @@
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/topology/EdgeSetTopologyModifier.h>
 #include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 
 #include <sofa/component/topology/PointSetTopologyAlgorithms.inl>

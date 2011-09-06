@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_INL
 
 #include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/PairInteractionConstraint.inl>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
@@ -414,9 +415,9 @@ bool UnilateralInteractionConstraint<DataTypes>::isActive()
 #endif
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* )
+void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowInteractionForceFields()) return;
+    if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);
 

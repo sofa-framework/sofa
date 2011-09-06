@@ -31,6 +31,7 @@
 #endif
 
 #include <sofa/component/forcefield/TriangularFEMForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TriangleData.inl>
@@ -1789,12 +1790,12 @@ Vec3d TriangularFEMForceField<DataTypes>::getVertexColor(Index vertexIndex, doub
 }
 
 template<class DataTypes>
-void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields())
+    if (!vparams->displayFlags().getShowForceFields())
         return;
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const VecCoord& x = *this->mstate->getX();
@@ -1991,7 +1992,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     */
     //	}
     triangleInfo.endEdit();
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

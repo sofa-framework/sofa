@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/forcefield/TensorForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/gl.h>
 #include <fstream> // for reading the file
@@ -426,7 +427,7 @@ double TensorForceField<DataTypes>::getPotentialEnergy()
 template<class DataTypes>
 void TensorForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     const VecCoord& p1 = *object_->getX();
     glDisable(GL_LIGHTING);
     glColor4f(1,1,1,1);

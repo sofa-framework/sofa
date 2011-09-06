@@ -207,7 +207,7 @@ public:
             dataMatOutRootConst[0]->endEdit();
     }
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     //We have to overload canCreate & create because input2 can be empty
     template<class T>

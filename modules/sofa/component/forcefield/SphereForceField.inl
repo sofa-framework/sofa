@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include "SphereForceField.h"
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/system/gl.h>
@@ -177,9 +178,9 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
 }
 
 template<class DataTypes>
-void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
     const Coord center = sphereCenter.getValue();

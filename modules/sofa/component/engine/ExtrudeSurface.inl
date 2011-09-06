@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/ExtrudeSurface.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
@@ -219,7 +220,7 @@ void ExtrudeSurface<DataTypes>::update()
 }
 
 template <class DataTypes>
-void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* )
+void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 
     const helper::vector<BaseMeshTopology::TriangleID> &surfaceTriangles = f_surfaceTriangles.getValue();
@@ -227,10 +228,10 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* )
     helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles;
     glDisable(GL_LIGHTING);
 
-    if (!this->getContext()->getShowBehaviorModels() || !isVisible.getValue())
+    if (!vparams->displayFlags().getShowBehaviorModels() || !isVisible.getValue())
         return;
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const helper::vector<BaseMeshTopology::Triangle> &extrusionTriangles = f_extrusionTriangles.getValue();
@@ -283,7 +284,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* )
     }
     glEnd();
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glEnable(GL_LIGHTING);

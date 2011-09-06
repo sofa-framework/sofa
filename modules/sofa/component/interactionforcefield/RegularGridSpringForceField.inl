@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_INL
 
 #include <sofa/component/interactionforcefield/RegularGridSpringForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
 #include <sofa/helper/gl/template.h>
 
@@ -422,7 +423,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalPar
 template<class DataTypes>
 void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields())) return;
+    if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     assert(this->mstate1);
     assert(this->mstate2);
     // Draw any custom springs

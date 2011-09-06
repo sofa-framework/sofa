@@ -108,7 +108,7 @@ public:
     void initVisual();
     void init();
     void reinit();
-    void drawVisual(const core::visual::VisualParams*);
+    void drawVisual(const core::visual::VisualParams* vparams);
     void updateVisual();
 
     void start();

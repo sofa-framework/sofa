@@ -806,9 +806,9 @@ void FlowVisualModel<DataTypes>::drawTetra()
 }
 
 template <class DataTypes>
-void FlowVisualModel<DataTypes>::draw(const core::visual::VisualParams* )
+void FlowVisualModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowVisualModels()) return;
+    if (!vparams->displayFlags().getShowVisualModels()) return;
 
     glDepthMask(GL_TRUE);
     glDisable(GL_LIGHTING);
@@ -932,9 +932,9 @@ void FlowVisualModel<DataTypes>::draw(const core::visual::VisualParams* )
 }
 
 template <class DataTypes>
-void FlowVisualModel<DataTypes>::drawTransparent(const core::visual::VisualParams*)
+void FlowVisualModel<DataTypes>::drawTransparent(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowVisualModels()) return;
+    if (!vparams->displayFlags().getShowVisualModels()) return;
     glDepthMask(GL_FALSE);
     glDisable(GL_LIGHTING);
     const core::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
@@ -951,7 +951,7 @@ void FlowVisualModel<DataTypes>::drawTransparent(const core::visual::VisualParam
         //VecCoord& x = *this->fstate->getX();
 
 
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
@@ -998,7 +998,7 @@ void FlowVisualModel<DataTypes>::drawTransparent(const core::visual::VisualParam
         if (showTetrahedra.getValue())
             drawTetra();
 
-        if (getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }

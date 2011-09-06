@@ -88,7 +88,7 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     /// this constraint is holonomic
     bool isHolonomic() {return true;}

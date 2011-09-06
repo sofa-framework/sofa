@@ -28,6 +28,7 @@
 #define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_INL
 
 #include <sofa/component/collision/ComponentMouseInteraction.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/component/collision/RayModel.h>

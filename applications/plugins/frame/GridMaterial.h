@@ -161,7 +161,7 @@ public:
     /*   draw	              */
     /*************************/
 
-    void draw();
+    void draw(const core::visual::VisualParams* vparams);
 
 
     /*************************/

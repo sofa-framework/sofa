@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_INL
 
 #include <sofa/component/constraintset/BilateralInteractionConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/Constraint.inl>
 
 #include <sofa/defaulttype/Vec.h>
@@ -380,9 +381,9 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(sofa::core::objectmo
 
 
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* )
+void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowInteractionForceFields()) return;
+    if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     for (unsigned i=0; i<min(m1.getValue().size(),m2.getValue().size()); i++)
     {

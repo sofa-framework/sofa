@@ -99,7 +99,7 @@ public:
     /// Control the keepAlive flag of the contact.
     virtual void setKeepAlive(bool val) { f_keepAlive.setValue(val); }
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 };
 
 } // namespace collision

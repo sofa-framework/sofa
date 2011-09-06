@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/SphereROI.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
@@ -390,9 +391,9 @@ void SphereROI<DataTypes>::update()
 }
 
 template <class DataTypes>
-void SphereROI<DataTypes>::draw(const core::visual::VisualParams* )
+void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
     const VecCoord* x0 = &f_X0.getValue();

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_BarycentricDistanceLMConstraintContact_INL
 
 #include <sofa/component/collision/BarycentricDistanceLMConstraintContact.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -230,7 +231,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
-void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* )
+void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     //	if (ff!=NULL)
     //		ff->draw(vparams);

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_INL
 
 #include <sofa/component/collision/SubsetContactMapper.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/DeleteVisitor.h>

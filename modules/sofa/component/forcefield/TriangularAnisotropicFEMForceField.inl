@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_INL
 
 #include <sofa/component/forcefield/TriangularAnisotropicFEMForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -331,7 +332,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
     glEnable(GL_POLYGON_OFFSET_FILL);
     Inherited::draw(vparams);
     glDisable(GL_POLYGON_OFFSET_FILL);
-    if (!this->getContext()->getShowForceFields())
+    if (!vparams->displayFlags().getShowForceFields())
         return;
 
     helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());

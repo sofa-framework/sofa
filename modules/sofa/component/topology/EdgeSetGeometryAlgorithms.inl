@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.inl>
 

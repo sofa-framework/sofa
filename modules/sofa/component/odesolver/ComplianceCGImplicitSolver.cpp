@@ -27,6 +27,7 @@
 // Copyright: See COPYING file that comes with this distribution
 
 #include <sofa/component/odesolver/ComplianceCGImplicitSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>

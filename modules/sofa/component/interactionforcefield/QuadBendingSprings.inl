@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_QUADBENDINGSPRINGS_INL
 
 #include <sofa/component/interactionforcefield/QuadBendingSprings.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
 

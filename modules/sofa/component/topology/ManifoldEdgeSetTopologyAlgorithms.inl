@@ -28,6 +28,7 @@
 #include <sofa/component/topology/ManifoldEdgeSetTopologyContainer.h>
 #include <sofa/component/topology/ManifoldEdgeSetTopologyModifier.h>
 #include <sofa/component/topology/ManifoldEdgeSetTopologyAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/ManifoldEdgeSetGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>

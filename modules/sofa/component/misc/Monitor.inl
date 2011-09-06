@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MISC_MONITOR_INL
 
 #include <sofa/component/misc/Monitor.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/DataTypeInfo.h>

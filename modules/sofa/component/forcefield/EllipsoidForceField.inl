@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_INL
 
 #include <sofa/component/forcefield/EllipsoidForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
@@ -147,9 +148,9 @@ void EllipsoidForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
 }
 
 template<class DataTypes>
-void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
     Real cx=0, cy=0, cz=0;

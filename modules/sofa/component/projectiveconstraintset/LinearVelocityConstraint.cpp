@@ -47,10 +47,10 @@ using namespace sofa::helper;
 //display specialisation for rigid types
 #ifndef SOFA_FLOAT
 template <>
-void LinearVelocityConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* )
+void LinearVelocityConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
@@ -61,10 +61,10 @@ void LinearVelocityConstraint<Rigid3dTypes>::draw(const core::visual::VisualPara
     glEnd();
 }
 template <>
-void LinearVelocityConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* )
+void LinearVelocityConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
@@ -77,10 +77,10 @@ void LinearVelocityConstraint<Vec6dTypes>::draw(const core::visual::VisualParams
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void LinearVelocityConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* )
+void LinearVelocityConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
@@ -91,10 +91,10 @@ void LinearVelocityConstraint<Rigid3fTypes>::draw(const core::visual::VisualPara
     glEnd();
 }
 template <>
-void LinearVelocityConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* )
+void LinearVelocityConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);

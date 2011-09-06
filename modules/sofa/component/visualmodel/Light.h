@@ -129,7 +129,7 @@ public:
     DirectionalLight();
     virtual ~DirectionalLight();
     virtual void drawLight();
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void draw(const core::visual::VisualParams* vparams);
 
 
 };
@@ -146,7 +146,7 @@ public:
     PositionalLight();
     virtual ~PositionalLight();
     virtual void drawLight();
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void draw(const core::visual::VisualParams* vparams);
     virtual const sofa::defaulttype::Vector3 getPosition() { return position.getValue(); }
 
 };
@@ -164,7 +164,7 @@ public:
     SpotLight();
     virtual ~SpotLight();
     virtual void drawLight();
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void draw(const core::visual::VisualParams* vparams);
 
     void preDrawShadow(core::visual::VisualParams*  vp);
     GLuint getDepthTexture();

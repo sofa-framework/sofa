@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_VECTORSPRINGFORCEFIELD_INL
 
 #include <sofa/component/interactionforcefield/VectorSpringForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/component/topology/EdgeData.inl>
@@ -394,7 +395,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 template<class DataTypes>
 void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields()))
+    if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields()))
         return;
     //const VecCoord& p = *this->mstate->getX();
     const VecCoord& x1 = *this->mstate1->getX();

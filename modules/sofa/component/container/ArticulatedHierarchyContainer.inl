@@ -27,6 +27,7 @@
 #define SOFA_COMPONENT_CONTAINER_ARTICULATEDHIERARCHYCONTAINER_INL
 
 #include <sofa/component/container/ArticulatedHierarchyContainer.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/common/Simulation.h>
 

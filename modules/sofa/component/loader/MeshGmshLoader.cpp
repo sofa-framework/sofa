@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/loader/MeshGmshLoader.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 
 namespace sofa

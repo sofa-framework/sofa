@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_INL
 
 #include <sofa/component/mapping/DeformableOnRigidFrameMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Multi2Mapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -819,7 +820,7 @@ m_fromModel->getContext()->get(m_fromRootModel, core::objectmodel::BaseContext::
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getShow()) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
     std::vector< Vector3 > points;
     Vector3 point;
 

@@ -103,7 +103,7 @@ public:
     void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 
     SeqTriangles triangles; // Topology of toModel (used for weight display)
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 };
 

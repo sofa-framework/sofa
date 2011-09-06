@@ -141,14 +141,11 @@ double Context::getTime() const
     return time_.getValue();
 }
 
-
 /// Gravity vector in world coordinates
 const Context::Vec3& Context::getGravity() const
 {
     return worldGravity_.getValue();
 }
-
-
 
 /// Animation flag
 bool Context::getAnimate() const
@@ -156,72 +153,6 @@ bool Context::getAnimate() const
     return animate_.getValue();
 }
 
-/// Display flags: Collision Models
-bool Context::getShowCollisionModels() const
-{
-    return displayFlags_.getShowCollisionModels();
-}
-
-/// Display flags: Bounding Collision Models
-bool Context::getShowBoundingCollisionModels() const
-{
-    return displayFlags_.getShowBoundingCollisionModels();
-}
-
-/// Display flags: Behavior Models
-bool Context::getShowBehaviorModels() const
-{
-    return displayFlags_.getShowBehaviorModels();
-}
-
-/// Display flags: Visual Models
-bool Context::getShowVisualModels() const
-{
-    return displayFlags_.getShowVisualModels();
-}
-
-/// Display flags: Mappings
-bool Context::getShowMappings() const
-{
-    return displayFlags_.getShowMappings();
-}
-
-/// Display flags: Mechanical Mappings
-bool Context::getShowMechanicalMappings() const
-{
-    return displayFlags_.getShowMechanicalMappings();
-}
-
-/// Display flags: ForceFields
-bool Context::getShowForceFields() const
-{
-    return displayFlags_.getShowForceFields();
-}
-
-/// Display flags: InteractionForceFields
-bool Context::getShowInteractionForceFields() const
-{
-    return displayFlags_.getShowInteractionForceFields();
-}
-
-/// Display flags: WireFrame
-bool Context::getShowWireFrame() const
-{
-    return displayFlags_.getShowWireFrame();
-}
-
-/// Display flags: Normal
-bool Context::getShowNormals() const
-{
-    return displayFlags_.getShowNormals();
-}
-#ifdef SOFA_SMP
-/// Display flags: Normal
-bool Context::getShowProcessorColor() const
-{
-    return displayFlags_.getShowProcessorColor();
-}
-#endif
 
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
@@ -274,73 +205,6 @@ void Context::setAnimate(bool val)
     animate_.setValue(val);
 }
 
-/// Display flags: Collision Models
-void Context::setShowCollisionModels(bool val)
-{
-    displayFlags_.setShowCollisionModels(val);
-}
-
-/// Display flags: Bounding Collision Models
-void Context::setShowBoundingCollisionModels(bool val)
-{
-    displayFlags_.setShowBoundingCollisionModels(val);
-}
-
-/// Display flags: Behavior Models
-void Context::setShowBehaviorModels(bool val)
-{
-    displayFlags_.setShowBehaviorModels(val);
-}
-
-/// Display flags: Visual Models
-void Context::setShowVisualModels(bool val)
-{
-    displayFlags_.setShowVisualModels(val);
-
-}
-
-/// Display flags: Mappings
-void Context::setShowMappings(bool val)
-{
-    displayFlags_.setShowMappings(val);
-}
-
-/// Display flags: Mechanical Mappings
-void Context::setShowMechanicalMappings(bool val)
-{
-    displayFlags_.setShowMechanicalMappings(val);
-}
-
-/// Display flags: ForceFields
-void Context::setShowForceFields(bool val)
-{
-    displayFlags_.setShowForceFields(val);
-}
-
-/// Display flags: InteractionForceFields
-void Context::setShowInteractionForceFields(bool val)
-{
-    displayFlags_.setShowInteractionForceFields(val);
-}
-
-/// Display flags: WireFrame
-void Context::setShowWireFrame(bool val)
-{
-    displayFlags_.setShowWireFrame(val);
-}
-
-/// Display flags: Normals
-void Context::setShowNormals(bool val)
-{
-    displayFlags_.setShowNormals(val);
-}
-
-#ifdef SOFA_SMP
-void Context::setShowProcessorColor(bool val)
-{
-    displayFlags_.setShowProcessorColor(val);
-}
-#endif
 
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
@@ -383,7 +247,7 @@ void Context::copyContext(const Context& c)
     // *this = c;
 
     copySimulationContext(c);
-    copyVisualContext(c);
+
 }
 #ifdef SOFA_SMP
 int Context::getProcessor() const
@@ -454,38 +318,6 @@ void Context::copySimulationContext(const Context& c)
 
 #endif
 
-}
-
-void Context::copyVisualContext(const Context& c)
-{
-    setShowCollisionModels(c.getShowCollisionModels());
-    setShowBoundingCollisionModels(c.getShowBoundingCollisionModels());
-    setShowBehaviorModels(c.getShowBehaviorModels());
-    setShowVisualModels(c.getShowVisualModels());
-    setShowMappings(c.getShowMappings());
-    setShowMechanicalMappings(c.getShowMechanicalMappings());
-    setShowForceFields(c.getShowForceFields());
-    setShowInteractionForceFields(c.getShowInteractionForceFields());
-    setShowWireFrame(c.getShowWireFrame());
-    setShowNormals(c.getShowNormals());
-#ifdef SOFA_SMP
-    setShowProcessorColor(c.getShowProcessorColor());
-#endif
-}
-
-
-void Context::fusionVisualContext(const Context& c)
-{
-    setShowCollisionModels(getShowCollisionModels() || c.getShowCollisionModels());
-    setShowBoundingCollisionModels(getShowBoundingCollisionModels() || c.getShowBoundingCollisionModels());
-    setShowBehaviorModels(getShowBehaviorModels() || c.getShowBehaviorModels());
-    setShowVisualModels(getShowVisualModels() || c.getShowVisualModels());
-    setShowMappings(getShowMappings() || c.getShowMappings());
-    setShowMechanicalMappings(getShowMechanicalMappings() || c.getShowMechanicalMappings());
-    setShowForceFields(getShowForceFields() || c.getShowForceFields());
-    setShowInteractionForceFields(getShowInteractionForceFields() || c.getShowInteractionForceFields());
-    setShowWireFrame(getShowWireFrame() || c.getShowWireFrame());
-    setShowNormals(getShowNormals() || c.getShowNormals());
 }
 
 

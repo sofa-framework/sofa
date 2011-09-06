@@ -27,6 +27,7 @@
 
 #include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
 #include <sofa/component/projectiveconstraintset/OscillatorConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <math.h>
 
 namespace sofa

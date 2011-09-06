@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICSTICKCONTACT_INL
 
 #include <sofa/component/collision/BarycentricStickContact.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -234,7 +235,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
-void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* )
+void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     //	if (dynamic_cast<core::VisualModel*>(ff)!=NULL)
     //		dynamic_cast<core::VisualModel*>(ff)->draw(vparams);

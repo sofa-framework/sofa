@@ -73,9 +73,9 @@ void OglTetrahedralModel<DataTypes>::init()
 }
 
 template<class DataTypes>
-void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualParams*)
+void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowVisualModels()) return;
+    if (!vparams->displayFlags().getShowVisualModels()) return;
 
     if(blending.getValue())
         glEnable(GL_BLEND);

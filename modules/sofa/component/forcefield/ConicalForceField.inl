@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/ConicalForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Quat.h>
 
 #include <sofa/helper/system/config.h>
@@ -162,9 +163,9 @@ void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 }
 
 template<class DataTypes>
-void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
     const Real a = coneAngle.getValue();

@@ -89,7 +89,7 @@ public:
 
     virtual double getPotentialEnergy(const core::MechanicalParams* params /* PARAMS FIRST */, const DataVecCoord& x) const;
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
     bool addBBox(double* minBBox, double* maxBBox);
 };
 

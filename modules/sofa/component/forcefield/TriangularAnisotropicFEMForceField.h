@@ -83,7 +83,7 @@ public:
 
     void init();
     void reinit();
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     TriangularAnisotropicFEMForceField();
     void computeMaterialStiffness(int i, Index& a, Index& b, Index& c);

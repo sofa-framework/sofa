@@ -84,7 +84,7 @@ public:
 
     LinearForceField();
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     /// methods to add/remove some indices, keyTimes, keyForces
     void addPoint(unsigned index);

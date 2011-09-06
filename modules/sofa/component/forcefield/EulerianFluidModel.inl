@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_EULERIANFLUIDMODEL_INL
 
 #include <sofa/component/forcefield/EulerianFluidModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 
@@ -375,7 +376,7 @@ void EulerianFluidModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         //glEnd();
 
         // draw constraint boudary
-        if(getContext()->getShowBehaviorModels() && m_bDisplayBoundary.getValue())
+        if(vparams->displayFlags().getShowBehaviorModels() && m_bDisplayBoundary.getValue())
         {
             glDisable(GL_LIGHTING);
             glLineWidth(3.0f);
@@ -418,7 +419,7 @@ void EulerianFluidModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         {
         case TriangleMesh:
             // draw vorticity
-            if(getContext()->getShowBehaviorModels() && m_bDisplayVorticity.getValue())
+            if(vparams->displayFlags().getShowBehaviorModels() && m_bDisplayVorticity.getValue())
             {
                 glShadeModel(GL_SMOOTH);
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -448,7 +449,7 @@ void EulerianFluidModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         case RegularQuadMesh:
 
             // draw vorticity
-            if(getContext()->getShowBehaviorModels() && m_bDisplayVorticity.getValue())
+            if(vparams->displayFlags().getShowBehaviorModels() && m_bDisplayVorticity.getValue())
             {
                 glDisable(GL_LIGHTING);
                 glShadeModel(GL_SMOOTH);
@@ -480,7 +481,7 @@ void EulerianFluidModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         }
 
         // draw velocity
-        if(getContext()->getShowBehaviorModels() && m_bDisplayVelocity.getValue())
+        if(vparams->displayFlags().getShowBehaviorModels() && m_bDisplayVelocity.getValue())
         {
             glDisable(GL_LIGHTING);
             glLineWidth(1.0f);
@@ -520,7 +521,7 @@ void EulerianFluidModel<DataTypes>::draw(const core::visual::VisualParams* vpara
             }
         }
         // draw backtrack velocity
-        if(getContext()->getShowBehaviorModels() && m_bDisplayBkVelocity.getValue())
+        if(vparams->displayFlags().getShowBehaviorModels() && m_bDisplayBkVelocity.getValue())
         {
             //velocity at backtrack centers
             for(FaceID i = 0; i < m_nbFaces; ++i)
@@ -536,7 +537,7 @@ void EulerianFluidModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         }
 
         //draw dual mesh
-        if(getContext()->getShowBehaviorModels() && m_bDisplayDualMesh.getValue())
+        if(vparams->displayFlags().getShowBehaviorModels() && m_bDisplayDualMesh.getValue())
         {
             glDisable(GL_LIGHTING);
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -581,7 +582,7 @@ void EulerianFluidModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         }
 
         //draw backtrack dual mesh
-        if(getContext()->getShowBehaviorModels() && m_bDisplayBkMesh.getValue())
+        if(vparams->displayFlags().getShowBehaviorModels() && m_bDisplayBkMesh.getValue())
         {
             glDisable(GL_LIGHTING);
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

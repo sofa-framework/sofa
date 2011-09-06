@@ -26,6 +26,7 @@
 #define _OGL_ATTRIBUTE_INL_
 
 #include <sofa/component/visualmodel/OglAttribute.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/component/topology/TriangleSetTopologyChange.h>
 #include <sofa/component/topology/QuadSetTopologyChange.h>

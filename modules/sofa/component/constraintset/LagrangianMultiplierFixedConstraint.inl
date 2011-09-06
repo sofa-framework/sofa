@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_LAGRANGIANMULTIPLIERFIXEDCONSTRAINT_INL
 
 #include <sofa/component/constraintset/LagrangianMultiplierFixedConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/Constraint.inl>
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/helper/system/config.h>
@@ -141,7 +142,7 @@ double LagrangianMultiplierFixedConstraint<DataTypes>::getPotentialEnergy(const 
 template<class DataTypes>
 void LagrangianMultiplierFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     const VecCoord& p = *this->mstate->getX();
     const LMVecCoord& lambda = *this->lambda->getX();
     glDisable(GL_LIGHTING);

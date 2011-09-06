@@ -35,6 +35,7 @@
 //
 
 #include <sofa/component/visualmodel/Light.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/visualmodel/LightManager.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/core/ObjectFactory.h>
@@ -331,7 +332,7 @@ void DirectionalLight::drawLight()
     glLightfv(GL_LIGHT0+lightID, GL_POSITION, dir);
 }
 
-void DirectionalLight::draw(const core::visual::VisualParams* )
+void DirectionalLight::draw(const core::visual::VisualParams* vparams)
 {
 
 }
@@ -374,9 +375,9 @@ void PositionalLight::drawLight()
 
 }
 
-void PositionalLight::draw(const core::visual::VisualParams* )
+void PositionalLight::draw(const core::visual::VisualParams* vparams)
 {
-    if (drawSource.getValue() && getContext()->getShowVisualModels())
+    if (drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
     {
         Vector3 sceneMinBBox, sceneMaxBBox;
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
@@ -438,9 +439,9 @@ void SpotLight::drawLight()
     }
 }
 
-void SpotLight::draw(const core::visual::VisualParams* )
+void SpotLight::draw(const core::visual::VisualParams* vparams)
 {
-    if (drawSource.getValue() && getContext()->getShowVisualModels())
+    if (drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
     {
         Vector3 sceneMinBBox, sceneMaxBBox;
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());

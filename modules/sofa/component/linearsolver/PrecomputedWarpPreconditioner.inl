@@ -725,11 +725,11 @@ void PrecomputedWarpPreconditioner<TDataTypes>::init()
 }
 
 template<class TDataTypes>
-void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualParams* )
+void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (! use_rotations.getValue()) return;
     if (draw_rotations_scale.getValue() <= 0.0) return;
-    if (! this->getContext()->getShowBehaviorModels()) return;
+    if (! vparams->displayFlags().getShowBehaviorModels()) return;
     if (mstate==NULL) return;
 
     const VecCoord& x = *mstate->getX();

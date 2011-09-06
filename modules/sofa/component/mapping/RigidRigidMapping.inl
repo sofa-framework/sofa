@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_INL
 
 #include <sofa/component/mapping/RigidRigidMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Mapping.inl>
 
@@ -970,9 +971,9 @@ void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(const core::MechanicalP
 }
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* )
+void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!getShow(this)) return;
+    if (!getShow(this,vparams)) return;
     const typename Out::VecCoord& x = *this->toModel->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {

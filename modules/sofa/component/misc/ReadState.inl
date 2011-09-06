@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MISC_READSTATE_INL
 
 #include <sofa/component/misc/ReadState.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 

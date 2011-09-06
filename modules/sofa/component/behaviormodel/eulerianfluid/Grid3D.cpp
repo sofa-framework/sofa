@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <iostream>
 #include <sofa/component/behaviormodel/eulerianfluid/Grid3D.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <cstring>
 
 namespace sofa

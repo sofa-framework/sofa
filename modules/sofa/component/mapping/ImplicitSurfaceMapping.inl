@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_INL
 
 #include <sofa/component/mapping/ImplicitSurfaceMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/Mapping.inl>
 #include <sofa/helper/rmath.h>
 #include <map>

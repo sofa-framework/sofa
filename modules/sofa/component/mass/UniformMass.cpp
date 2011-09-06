@@ -208,7 +208,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
 template <> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *mstate->getX();
     RigidTypes::Vec3 gravityCenter;
@@ -264,7 +264,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPara
 template <> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *mstate->getX();
     defaulttype::Vec3d len;
@@ -313,9 +313,9 @@ double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const core::Me
 
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* )
+void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *mstate->getX();
     const VecCoord& x0 = *mstate->getX0();
@@ -502,7 +502,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
 template <> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *mstate->getX();
     RigidTypes::Vec3 gravityCenter;
@@ -546,7 +546,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualPara
 template <> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *mstate->getX();
     defaulttype::Vec3d len;
@@ -594,9 +594,9 @@ double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const core::Me
 
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* )
+void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *mstate->getX();
     const VecCoord& x0 = *mstate->getX0();

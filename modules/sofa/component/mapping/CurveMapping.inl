@@ -37,6 +37,7 @@
 #define SOFA_COMPONENT_MAPPING_CURVEMAPPING_INL
 
 #include <sofa/component/mapping/CurveMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Mapping.inl>
 #include <sofa/core/VecId.h>
@@ -479,7 +480,7 @@ void CurveMapping<TIn, TOut>::handleEvent(sofa::core::objectmodel::Event* event)
 template <class TIn, class TOut>
 void CurveMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getShow()) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
     std::vector< Vector3 > points;
     Vector3 point;
 

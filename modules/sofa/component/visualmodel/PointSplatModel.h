@@ -64,7 +64,7 @@ public:
 
     virtual bool isTransparent() {return true;}
 
-    virtual void drawTransparent(const core::visual::VisualParams*);
+    virtual void drawTransparent(const core::visual::VisualParams* vparams);
 
 private:
     void setColor(float r, float g, float b, float a);

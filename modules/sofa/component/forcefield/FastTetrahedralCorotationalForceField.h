@@ -186,7 +186,7 @@ public:
     {
         decompositionMethod=m;
     }
-    void draw();
+    void draw(const core::visual::VisualParams* vparams);
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 

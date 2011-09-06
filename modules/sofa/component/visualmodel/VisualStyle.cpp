@@ -1,4 +1,5 @@
 #include <sofa/component/visualmodel/VisualStyle.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
@@ -25,28 +26,13 @@ VisualStyle::VisualStyle()
 
 void VisualStyle::fwdDraw(VisualParams* vparams)
 {
-    Node* node = dynamic_cast<Node*>(this->getContext() );
-    backupFlags = node->displayFlags();
-    vparams->displayflags() = displayFlags.getValue(vparams);
-    node->displayFlags() = displayFlags.getValue(vparams);
-    //launch update visual flags visitor to propagate the changes to
-    //the subgraph of this node;
-    UpdateVisualContextVisitor act(vparams);
-    node->executeVisitor(&act);
-
-
-
+    backupFlags = vparams->displayFlags();
+    vparams->displayFlags() = displayFlags.getValue(vparams);
 }
 
 void VisualStyle::bwdDraw(VisualParams* vparams)
 {
-    Node* node = dynamic_cast<Node*>(this->getContext() );
-    node->displayFlags()    = backupFlags;
-    vparams->displayflags() = backupFlags;
-    //launch update visual flags visitor to propagate the changes to
-    //the subgraph of this node;
-    UpdateVisualContextVisitor act(vparams);
-    node->executeVisitor(&act);
+    vparams->displayFlags() = backupFlags;
 
 }
 

@@ -24,6 +24,7 @@
  ******************************************************************************/
 
 #include <sofa/component/linearsolver/DefaultMultiMatrixAccessor.h>
+#include <sofa/core/visual/VisualParams.h>
 
 
 namespace sofa

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_INL
 
 #include <sofa/component/forcefield/TriangularBiquadraticSpringsForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
@@ -530,12 +531,12 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 
 
 template<class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const VecCoord& x = *this->mstate->getX();
@@ -560,7 +561,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
     glEnd();
 
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

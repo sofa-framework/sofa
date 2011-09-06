@@ -123,7 +123,7 @@ public:
 
     virtual void addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix );
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
     void drawPlane(const core::visual::VisualParams*, float size=0.0f);
     bool addBBox(double* minBBox, double* maxBBox);
 

@@ -513,9 +513,6 @@ protected:
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());      }
     void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, helper::vector<const OutDataMatrixDeriv*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());       }
-
-    /// If true, display the mapping
-    bool getShow() const { return this->getContext()->getShowMappings(); }
 };
 
 } // namespace core

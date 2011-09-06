@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPEDOBJECT_INL
 
 #include <sofa/component/container/MappedObject.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa

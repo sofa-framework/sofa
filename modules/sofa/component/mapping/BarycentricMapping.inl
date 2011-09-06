@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_INL
 
 #include <sofa/component/mapping/BarycentricMapping.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/Mapping.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -3402,7 +3403,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,O
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if ( !this->getShow() ) return;
+    if ( !vparams->displayFlags().getShowMappings() ) return;
 
     const OutVecCoord& out = *this->toModel->getX();
     std::vector< Vector3 > points;

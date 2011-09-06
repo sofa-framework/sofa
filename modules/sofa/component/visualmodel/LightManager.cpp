@@ -34,6 +34,7 @@
 //
 //
 #include <sofa/component/visualmodel/LightManager.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -308,7 +309,7 @@ void LightManager::bwdDraw(core::visual::VisualParams* )
 
 }
 
-void LightManager::draw(const core::visual::VisualParams* )
+void LightManager::draw(const core::visual::VisualParams* vparams)
 {
     /*
     //Debug

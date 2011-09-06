@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/topology/SparseGridTopology.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>

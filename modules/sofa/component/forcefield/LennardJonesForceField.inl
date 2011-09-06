@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_INL
 
 #include <sofa/component/forcefield/LennardJonesForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
@@ -145,7 +146,7 @@ void LennardJonesForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 template<class DataTypes>
 void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     const VecCoord& p1 = *this->mstate->getX();
 
     std::vector< defaulttype::Vector3 > points[2];

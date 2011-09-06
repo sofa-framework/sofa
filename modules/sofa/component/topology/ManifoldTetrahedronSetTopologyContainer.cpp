@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/topology/ManifoldTetrahedronSetTopologyContainer.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 

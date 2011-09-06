@@ -110,7 +110,7 @@ public:
 
     void draw(const core::visual::VisualParams*,int index);
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }

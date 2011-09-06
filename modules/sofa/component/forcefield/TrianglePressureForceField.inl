@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_INL
 
 #include <sofa/component/forcefield/TrianglePressureForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/TriangleSubsetData.inl>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
@@ -198,12 +199,12 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesFromString()
 
 }
 template<class DataTypes>
-void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
@@ -225,7 +226,7 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
     glEnd();
 
 
-    if (this->getContext()->getShowWireFrame())
+    if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

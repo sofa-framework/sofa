@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/collision/AttachBodyPerformer.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/MouseInteractor.h>
 
 
@@ -79,10 +80,11 @@ void AttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vpar
 {
     if (forcefield)
     {
-        bool b = forcefield->getContext()->getShowInteractionForceFields();
-        forcefield->getContext()->setShowInteractionForceFields(true);
+        core::visual::DisplayFlags* flags = const_cast<core::visual::DisplayFlags*>(&vparams->displayFlags());
+        bool b = flags->getShowInteractionForceFields();
+        flags->setShowInteractionForceFields(true);
         forcefield->draw(vparams);
-        forcefield->getContext()->setShowInteractionForceFields(b);
+        flags->setShowInteractionForceFields(b);
     }
 }
 

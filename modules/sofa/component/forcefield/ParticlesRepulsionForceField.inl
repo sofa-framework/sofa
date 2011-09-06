@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/ParticlesRepulsionForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/container/SpatialGridContainer.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
@@ -187,9 +188,9 @@ void ParticlesRepulsionForceField<DataTypes>::addDForce(const core::MechanicalPa
 }
 
 template<class DataTypes>
-void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowForceFields() && !this->getContext()->getShowInteractionForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields() && !vparams->displayFlags().getShowInteractionForceFields()) return;
     //if (grid != NULL)
     //	grid->draw(vparams);
     const VecCoord& x = *this->mstate->getX();

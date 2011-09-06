@@ -278,7 +278,7 @@ public:
 
     //@}
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
     void clear ( int reserve=0 );
 

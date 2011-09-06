@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/PointSetTopologyModifier.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/StateChangeVisitor.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/TopologyChangeVisitor.h>

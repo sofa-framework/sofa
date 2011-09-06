@@ -427,7 +427,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
     // 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::draw()  "<<this->_indexedElements->size()<<""<<sendl;
     HexahedronFEMForceFieldT::draw(vparams);
 
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();
     glDisable (GL_LIGHTING);

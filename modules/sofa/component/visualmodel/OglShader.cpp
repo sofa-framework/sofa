@@ -34,6 +34,7 @@
 //
 //
 #include <sofa/component/visualmodel/OglShader.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -280,7 +281,7 @@ void OglShader::initVisual()
 
 }
 
-void OglShader::drawVisual(const core::visual::VisualParams*)
+void OglShader::drawVisual(const core::visual::VisualParams* vparams)
 {
 
 }

@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include "VaccumSphereForceField.h"
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/system/gl.h>
@@ -191,11 +192,11 @@ void VaccumSphereForceField<DataTypes>::handleEvent(sofa::core::objectmodel::Eve
 
 
 template<class DataTypes>
-void VaccumSphereForceField<DataTypes>::draw(const core::visual::VisualParams* )
+void VaccumSphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!active.getValue()) return;
 
-    if (!this->getContext()->getShowForceFields()) return;
+    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
     const Coord center = sphereCenter.getValue();

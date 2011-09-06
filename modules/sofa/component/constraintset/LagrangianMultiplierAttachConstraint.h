@@ -94,7 +94,7 @@ public:
     /// this constraint is holonomic
     bool isHolonomic() {return true;}
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams);
 
 };
 
