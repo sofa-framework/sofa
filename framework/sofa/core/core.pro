@@ -121,6 +121,7 @@ HEADERS += \
 	objectmodel/Tag.h \
 	visual/DisplayFlags.h \
 	visual/VisualParams.h \
+	visual/VisualLoop.h \
 	visual/VisualModel.h \
 	visual/VisualManager.h \
 	visual/DrawTool.h \
