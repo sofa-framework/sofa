@@ -59,7 +59,7 @@ public:
     virtual void execute()=0;
 
     virtual void handleEvent(core::objectmodel::Event * ) {}
-    virtual void draw(const core::visual::VisualParams* vparams) {}
+    virtual void draw(const core::visual::VisualParams* ) {}
 
     virtual void setPerformerFreeze() {freezePerformer = true;}
 

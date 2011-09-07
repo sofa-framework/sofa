@@ -281,7 +281,7 @@ void OglShader::initVisual()
 
 }
 
-void OglShader::drawVisual(const core::visual::VisualParams* vparams)
+void OglShader::drawVisual(const core::visual::VisualParams* )
 {
 
 }

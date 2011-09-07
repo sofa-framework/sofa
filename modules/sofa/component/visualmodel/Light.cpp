@@ -332,7 +332,7 @@ void DirectionalLight::drawLight()
     glLightfv(GL_LIGHT0+lightID, GL_POSITION, dir);
 }
 
-void DirectionalLight::draw(const core::visual::VisualParams* vparams)
+void DirectionalLight::draw(const core::visual::VisualParams* )
 {
 
 }

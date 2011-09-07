@@ -333,7 +333,7 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void MeshBarycentricMapperEngine<DataTypes>::draw(const core::visual::VisualParams* )
 {
 
 

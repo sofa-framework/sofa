@@ -195,7 +195,7 @@ SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& 
 
 //-------------------------------- draw ------------------------------------
 template<class DataTypes>
-void EvalPointsDistance<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void EvalPointsDistance<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (!f_draw.getValue())
         return;

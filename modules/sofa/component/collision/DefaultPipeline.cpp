@@ -255,7 +255,7 @@ helper::set< std::string > DefaultPipeline::getResponseList() const
     return listResponse;
 }
 
-void DefaultPipeline::draw(const core::visual::VisualParams* vparams)
+void DefaultPipeline::draw(const core::visual::VisualParams* )
 {
     if (!bDraw.getValue()) return;
     if (!narrowPhaseDetection) return;

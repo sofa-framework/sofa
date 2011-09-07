@@ -479,7 +479,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     //sout << "Narrow phase "<<cm1->getLast()->getName()<<"("<<gettypename(typeid(*cm1->getLast()))<<") - "<<cm2->getLast()->getName()<<"("<<gettypename(typeid(*cm2->getLast()))<<"): "<<elemPairs.size()-size0<<" contacts."<<sendl;
 }
 
-void BruteForceDetection::draw(const core::visual::VisualParams* vparams)
+void BruteForceDetection::draw(const core::visual::VisualParams* )
 {
     if (!bDraw.getValue()) return;
     /*

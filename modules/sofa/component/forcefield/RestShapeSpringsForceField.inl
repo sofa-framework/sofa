@@ -300,7 +300,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
 
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* )
 {
 
 }

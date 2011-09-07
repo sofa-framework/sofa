@@ -562,7 +562,7 @@ void SpatialGrid<DataTypes>::reorderIndices(helper::vector<unsigned int>* old2ne
 }
 
 template<class DataTypes>
-void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
 {
     const float cscale = (float)(cellWidth);
     const float gscale = (float)(cellWidth*GRIDDIM);
