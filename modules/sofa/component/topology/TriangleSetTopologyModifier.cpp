@@ -342,6 +342,10 @@ void TriangleSetTopologyModifier::removeTrianglesWarning(sofa::helper::vector<un
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     // other way
     m_container->setTriangleTopologyToDirty();
+
+    // TODO: understand why this bug:
+    //m_container->d_triangle.setDirtyValue();
+    //m_container->d_triangle.cleanDirty();
 #endif
 
     /// sort vertices to remove in a descendent order
@@ -728,23 +732,23 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
         return;
 
     if (!m_container->isTriangleTopologyDirty()) // triangle Data has not been touched
-    {
-        std::cout << "triangles not dirty" << std::endl;
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
-    }
+
 
     // get directly the list of engines created at init: case of removing.... for the moment
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
 
-    std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
+    std::cout << "triangles is dirty" << std::endl;
+    //std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
-        if (topoEngine)
+        if (topoEngine->isDirty())
         {
             std::cout << "performing: " << topoEngine->getName() << std::endl;
             topoEngine->update();
+            topoEngine->cleanDirty();
         }
     }
 

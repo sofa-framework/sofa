@@ -205,6 +205,16 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     //TODO: temporary code to test topology engine pipeline.
     std::cout << std::endl << "******* START ENGINE PROCESSING *********" << std::endl;
+
+    // Declare all engines to dirty:
+    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        std::cout << "Set engine to dirty: " << topoEngine->getName() << std::endl;
+        topoEngine->setDirtyValue();
+    }
+
     this->propagateTopologicalEngineChanges();
     std::cout << std::endl << "******* START ENGINE PROCESSING END *********" << std::endl;
 #endif
@@ -238,23 +248,21 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         return;
 
     if (!m_container->isPointTopologyDirty()) // triangle Data has not been touched
-    {
-        std::cout << "points not dirty" << std::endl;
         return;
-    }
 
     // get directly the list of engines created at init: case of removing.... for the moment
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
-
-    std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
+    std::cout << "points is dirty" << std::endl;
+    //std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
-        if (topoEngine)
+        if (topoEngine->isDirty())
         {
             std::cout << "performing: " << topoEngine->getName() << std::endl;
             topoEngine->update();
+            topoEngine->cleanDirty();
         }
     }
 
