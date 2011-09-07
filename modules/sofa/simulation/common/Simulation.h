@@ -65,7 +65,7 @@ public:
     virtual void animate(Node* root, double dt=0.0);
 
     /// Update the Visual Models: triggers the Mappings
-    virtual void updateVisual(Node* root, double dt=0.0);
+    virtual void updateVisual(Node* root);
 
     /// Reset to initial state
     virtual void reset(Node* root);

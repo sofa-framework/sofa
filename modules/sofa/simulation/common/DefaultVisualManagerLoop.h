@@ -57,13 +57,13 @@ public:
     virtual ~DefaultVisualManagerLoop();
 
     /// Initialize the textures
-    virtual void initTextures(Node* root) {}
+    virtual void initTextures() {}
 
     /// Update the Visual Models: triggers the Mappings
-    virtual void updateVisual(Node* root, double dt=0.0) {}
+    virtual void updateVisual() {}
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    virtual void updateVisualContext(Node* root) {}
+    virtual void updateVisualContext() {}
 
     /// Compute the bounding box of the scene. If init is set to "true", then minBBox and maxBBox will be initialised to a default value
     virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true) {}

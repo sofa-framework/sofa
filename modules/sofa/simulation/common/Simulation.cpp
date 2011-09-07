@@ -232,7 +232,7 @@ void Simulation::animate ( Node* root, double dt )
 
 }
 
-void Simulation::updateVisual ( Node* root, double dt )
+void Simulation::updateVisual ( Node* root)
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -243,6 +243,7 @@ void Simulation::updateVisual ( Node* root, double dt )
     root->execute<UpdateMappingVisitor>(params);
     sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
     {
+        double dt=root->getDt();
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( params /* PARAMS FIRST */, &ev );
         root->execute ( act );
