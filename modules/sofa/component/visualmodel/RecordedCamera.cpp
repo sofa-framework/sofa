@@ -382,7 +382,7 @@ void RecordedCamera::drawRotation()
 }
 
 
-void RecordedCamera::draw(const core::visual::VisualParams* vparams)
+void RecordedCamera::draw(const core::visual::VisualParams* )
 {
     if(p_drawRotation.getValue())
     {

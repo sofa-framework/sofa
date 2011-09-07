@@ -644,7 +644,7 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElem
 //***************************************************************************************************************
 
 template <class DataTypes>
-void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (picked.body == NULL) return;
 

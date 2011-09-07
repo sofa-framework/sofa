@@ -432,7 +432,7 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
 
 
 template <class DataTypes>
-void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* )
 {
     if (p_drawVectors.getValue())
     {

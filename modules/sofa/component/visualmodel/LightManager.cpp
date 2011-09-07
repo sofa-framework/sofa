@@ -309,7 +309,7 @@ void LightManager::bwdDraw(core::visual::VisualParams* )
 
 }
 
-void LightManager::draw(const core::visual::VisualParams* vparams)
+void LightManager::draw(const core::visual::VisualParams* )
 {
     /*
     //Debug

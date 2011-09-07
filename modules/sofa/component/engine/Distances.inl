@@ -714,7 +714,7 @@ void Distances< DataTypes >::getNeighbors ( const HexaID& hexaID, helper::set<He
 }
 
 template<class DataTypes>
-void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
+void Distances< DataTypes >::draw(const core::visual::VisualParams* )
 {
     // Display the distance on each hexa of the grid
     if ( showDistanceMap.getValue() )
