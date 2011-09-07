@@ -377,9 +377,9 @@ double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::
 }
 
 template <>
-void UniformMass<gpu::cuda::CudaRigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* )
+void UniformMass<gpu::cuda::CudaRigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams )
 {
-    if (!getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *mstate->getX();
     defaulttype::Vec3d len;

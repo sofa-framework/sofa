@@ -266,7 +266,14 @@ void BaseContext::executeVisitor( simulation::Visitor* )
     //assert(false);
 }
 
-std::ostream& operator << (std::ostream& out, const BaseContext& c )
+std::ostream& operator << (std::ostream& out, const BaseContext&
+#ifdef SOFA_DEV
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+        c
+#endif
+#endif // SOFA_DEV
+                          )
+
 {
 #ifdef SOFA_DEV
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
