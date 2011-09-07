@@ -58,8 +58,7 @@
 #include <fstream>
 #include <string.h>
 
-#include <sofa/simulation/common/DefaultAnimationMasterSolver.h>
-#include <sofa/simulation/common/DefaultVisualManagerLoop.h>
+
 
 
 // #include <sofa/simulation/common/FindByTypeVisitor.h>
@@ -89,6 +88,8 @@ Simulation::Simulation()
     , instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used"))
     , paused(false)
 {
+    m_RootAmimateLoop = NULL;
+    m_RootVisualLoop  = NULL;
 }
 
 
@@ -101,6 +102,7 @@ std::auto_ptr<Simulation> Simulation::theSimulation;
 void setSimulation ( Simulation* s )
 {
     Simulation::theSimulation.reset(s);
+
 }
 
 Simulation* getSimulation()
@@ -145,25 +147,31 @@ void Simulation::init ( Node* root )
 
     setContext( root->getContext());
 
-    sofa::core::behavior::MasterSolver* m_RootSolver;
-    root->get(m_RootSolver);
-    if(!m_RootSolver)
+    root->get(m_RootAmimateLoop);
+    if(!m_RootAmimateLoop)
     {
-        sout<<"WARNING(simulation::init) : Default Animation Master Solver will be used. Add DefaultAnimationMasterSolver to the root node of scene file to remove this warning"<<sendl;
-        m_RootSolver = new DefaultAnimationMasterSolver(root);
-        m_RootSolver->setName(core::objectmodel::BaseObject::shortName(m_RootSolver));
-        root->addObject(m_RootSolver);
+        root->getContext()->sout
+                <<"Default Animation Manager Loop will be used. Add DefaultAnimationMasterSolver to the root node of scene file to remove this warning"
+                        <<root->getContext()->sendl;
+
+        m_RootAmimateLoop = new DefaultAnimationMasterSolver(root);
+        m_RootAmimateLoop->setName(core::objectmodel::BaseObject::shortName(m_RootAmimateLoop));
+        root->addObject(m_RootAmimateLoop);
     }
 
-    core::visual::VisualManager* m_rootVisualManager;
-    root->get(m_rootVisualManager);
-    if(!m_rootVisualManager)
+
+    root->get(m_RootVisualLoop);
+    if(!m_RootVisualLoop)
     {
-        sout<<"WARNING(simulation::init) : Default Visual Manager will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning"<<sendl;
-        m_rootVisualManager = new DefaultVisualManagerLoop(root);
-        m_rootVisualManager->setName(core::objectmodel::BaseObject::shortName(m_rootVisualManager));
-        root->addObject(m_rootVisualManager);
+        root->getContext()->sout
+                <<"Default Visual Manager Loop will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning"
+                        <<root->getContext()->sendl;
+
+        m_RootVisualLoop = new DefaultVisualManagerLoop(root);
+        m_RootVisualLoop->setName(core::objectmodel::BaseObject::shortName(m_RootVisualLoop));
+        root->addObject(m_RootVisualLoop);
     }
+
 
     // apply the init() and bwdInit() methods to all the components.
     // and put the VisualModels in a separate graph, rooted at getVisualRoot()
@@ -218,11 +226,9 @@ void Simulation::animate ( Node* root, double dt )
     simulation::Visitor::printNode(std::string("Step"));
 #endif
 
-    sofa::core::behavior::MasterSolver* m_RootSolver;
-    root->get(m_RootSolver);
-    if(m_RootSolver)
+    if(m_RootAmimateLoop)
     {
-        m_RootSolver->step(params,dt);
+        m_RootAmimateLoop->step(params,dt);
     }
     else
     {
@@ -232,31 +238,18 @@ void Simulation::animate ( Node* root, double dt )
 
 }
 
-void Simulation::updateVisual ( Node* root)
+void Simulation::updateVisual ( Node* /*root*/)
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printNode(std::string("UpdateVisual"));
-#endif
-    sofa::helper::AdvancedTimer::begin("UpdateVisual");
-    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
-    root->execute<UpdateMappingVisitor>(params);
-    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
+    if(m_RootVisualLoop)
     {
-        double dt=root->getDt();
-        UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( params /* PARAMS FIRST */, &ev );
-        root->execute ( act );
+        m_RootVisualLoop->updateStep(params);
     }
-    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
-    root->execute<VisualUpdateVisitor>(params);
-    sofa::helper::AdvancedTimer::end("UpdateVisual");
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printCloseNode(std::string("UpdateVisual"));
-#endif
-
-
-
+    else
+    {
+        serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
+        return;
+    }
 }
 
 /// Reset to initial state
@@ -276,39 +269,34 @@ void Simulation::reset ( Node* root )
 /// Initialize the textures
 void Simulation::initTextures ( Node* root )
 {
+
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    root->execute<VisualInitVisitor>(params);
-    // Do a visual update now as it is not done in load() anymore
-    /// \todo Separate this into another method?
-    root->execute<VisualUpdateVisitor>(params);
+
+    if(m_RootVisualLoop)
+    {
+        m_RootVisualLoop->initStep(params);
+    }
+    else
+    {
+        serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
+        return;
+    }
 }
 
 
 /// Compute the bounding box of the scene.
-void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
+void Simulation::computeBBox ( Node* /*root*/, SReal* minBBox, SReal* maxBBox, bool init )
 {
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
-    VisualComputeBBoxVisitor act(vparams);
-    if ( root )
-        root->execute ( act );
-    if (init)
+    if(m_RootVisualLoop)
     {
-        minBBox[0] = (SReal)(act.minBBox[0]);
-        minBBox[1] = (SReal)(act.minBBox[1]);
-        minBBox[2] = (SReal)(act.minBBox[2]);
-        maxBBox[0] = (SReal)(act.maxBBox[0]);
-        maxBBox[1] = (SReal)(act.maxBBox[1]);
-        maxBBox[2] = (SReal)(act.maxBBox[2]);
+        m_RootVisualLoop->computeBBoxStep(vparams, minBBox, maxBBox, init);
     }
     else
     {
-        if ((SReal)(act.minBBox[0]) < minBBox[0] ) minBBox[0] = (SReal)(act.minBBox[0]);
-        if ((SReal)(act.minBBox[1]) < minBBox[1] ) minBBox[1] = (SReal)(act.minBBox[1]);
-        if ((SReal)(act.minBBox[2]) < minBBox[2] ) minBBox[2] = (SReal)(act.minBBox[2]);
-        if ((SReal)(act.maxBBox[0]) > maxBBox[0] ) maxBBox[0] = (SReal)(act.maxBBox[0]);
-        if ((SReal)(act.maxBBox[1]) > maxBBox[1] ) maxBBox[1] = (SReal)(act.maxBBox[1]);
-        if ((SReal)(act.maxBBox[2]) > maxBBox[2] ) maxBBox[2] = (SReal)(act.maxBBox[2]);
+        serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
+        return;
     }
 }
 
@@ -335,48 +323,71 @@ void Simulation::updateVisualContext (Node* root)
 {
     if ( !root ) return;
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
-    UpdateVisualContextVisitor vis(vparams);
-    vis.execute(root);
-}
-/// Render the scene
-void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root  )
-{
-    if ( !root ) return;
-    if (root->visualManager.empty())
+
+    if(m_RootVisualLoop)
     {
-        vparams->pass() = sofa::core::visual::VisualParams::Std;
-        VisualDrawVisitor act ( vparams );
-        root->execute ( &act );
-        vparams->pass() = sofa::core::visual::VisualParams::Transparent;
-        VisualDrawVisitor act2 ( vparams );
-        root->execute ( &act2 );
+        m_RootVisualLoop->updateContextStep(vparams);
     }
     else
     {
-        Node::Sequence<core::visual::VisualManager>::iterator begin = root->visualManager.begin(), end = root->visualManager.end(), it;
-        for (it = begin; it != end; ++it)
-            (*it)->preDrawScene(vparams);
-        bool rendered = false; // true if a manager did the rendering
-        for (it = begin; it != end; ++it)
-            if ((*it)->drawScene(vparams))
-            {
-                rendered = true;
-                break;
-            }
-        if (!rendered) // do the rendering
-        {
-            vparams->pass() = sofa::core::visual::VisualParams::Std;
-
-            VisualDrawVisitor act ( vparams );
-            root->execute ( &act );
-            vparams->pass() = sofa::core::visual::VisualParams::Transparent;
-            VisualDrawVisitor act2 ( vparams );
-            root->execute ( &act2 );
-        }
-        Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = root->visualManager.rbegin(), rend = root->visualManager.rend(), rit;
-        for (rit = rbegin; rit != rend; ++rit)
-            (*rit)->postDrawScene(vparams);
+        serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
+        return;
     }
+
+    /*
+    UpdateVisualContextVisitor vis(vparams);
+    vis.execute(root);*/
+}
+/// Render the scene
+void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* /*root*/  )
+{
+    if(m_RootVisualLoop)
+    {
+        m_RootVisualLoop->drawStep(vparams);
+    }
+    else
+    {
+        serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
+        return;
+    }
+
+    /*
+    if ( !root ) return;
+    if (root->visualManager.empty())
+    {
+    vparams->pass() = sofa::core::visual::VisualParams::Std;
+    VisualDrawVisitor act ( vparams );
+    root->execute ( &act );
+    vparams->pass() = sofa::core::visual::VisualParams::Transparent;
+    VisualDrawVisitor act2 ( vparams );
+    root->execute ( &act2 );
+    }
+    else
+    {
+    Node::Sequence<core::visual::VisualManager>::iterator begin = root->visualManager.begin(), end = root->visualManager.end(), it;
+    for (it = begin; it != end; ++it)
+    (*it)->preDrawScene(vparams);
+    bool rendered = false; // true if a manager did the rendering
+    for (it = begin; it != end; ++it)
+    if ((*it)->drawScene(vparams))
+    {
+      rendered = true;
+      break;
+    }
+    if (!rendered) // do the rendering
+    {
+    vparams->pass() = sofa::core::visual::VisualParams::Std;
+
+    VisualDrawVisitor act ( vparams );
+    root->execute ( &act );
+    vparams->pass() = sofa::core::visual::VisualParams::Transparent;
+    VisualDrawVisitor act2 ( vparams );
+    root->execute ( &act2 );
+    }
+    Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = root->visualManager.rbegin(), rend = root->visualManager.rend(), rit;
+    for (rit = rbegin; rit != rend; ++rit)
+    (*rit)->postDrawScene(vparams);
+    }*/
 }
 
 /// Export a scene to an OBJ 3D Scene

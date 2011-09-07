@@ -32,6 +32,9 @@
 #include <sofa/simulation/common/xml/XML.h>
 #include <memory>
 
+#include <sofa/simulation/common/DefaultAnimationMasterSolver.h>
+#include <sofa/simulation/common/DefaultVisualManagerLoop.h>
+
 namespace sofa
 {
 
@@ -128,6 +131,10 @@ public:
     static Node* processXML(xml::BaseElement* xml, const char *filename);
 
     static std::auto_ptr<Simulation> theSimulation;
+
+private :
+    sofa::core::behavior::MasterSolver* m_RootAmimateLoop;
+    core::visual::VisualLoop*           m_RootVisualLoop;
 };
 
 /// Set the (unique) simulation which controls the scene

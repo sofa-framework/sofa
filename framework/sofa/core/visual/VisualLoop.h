@@ -16,79 +16,62 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_DEFAULTVISUALMANAGERLOOP_H
-#define SOFA_SIMULATION_DEFAULTVISUALMANAGERLOOP_H
+#ifndef SOFA_CORE_VISUAL_VISUALLOOP_H
+#define SOFA_CORE_VISUAL_VISUALLOOP_H
 
-#include <sofa/core/visual/VisualLoop.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/common.h>
-#include <sofa/simulation/common/Node.h>
-
-using namespace sofa::core::objectmodel;
-using namespace sofa::core::behavior;
 
 namespace sofa
 {
 
-namespace simulation
+namespace core
 {
 
-/**
- *  \brief Default VisualManager Loop to be created when no VisualManager found on simulation::node.
+namespace visual
+{
+/*
+ * VisualLoop is an API managing steps for drawing, rendering scene.
+ * Components inherit from this API need to be unique in the root node of the scene
+ * These components launch all visual visitor and managing visual steps.
  *
- *
- */
-
-class SOFA_SIMULATION_COMMON_API DefaultVisualManagerLoop : public core::visual::VisualLoop
+ * */
+class VisualLoop : public virtual VisualModel
 {
 public:
-    typedef core::visual::VisualLoop Inherit;
-    SOFA_CLASS(DefaultVisualManagerLoop,core::visual::VisualLoop);
+    SOFA_CLASS(VisualLoop, VisualModel);
 
-    DefaultVisualManagerLoop(simulation::Node* gnode);
-
-    virtual ~DefaultVisualManagerLoop();
+    /// Destructor
+    virtual ~VisualLoop() { }
 
     /// Initialize the textures
-    virtual void initStep(sofa::core::ExecParams* params);
+    virtual void initStep(sofa::core::ExecParams* /*params*/) {}
 
     /// Update the Visual Models: triggers the Mappings
-    virtual void updateStep(sofa::core::ExecParams* params);
+    virtual void updateStep(sofa::core::ExecParams* /*params*/) {}
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    virtual void updateContextStep(sofa::core::visual::VisualParams* vparams);
+    virtual void updateContextStep(sofa::core::visual::VisualParams* /*vparams*/) {}
 
     /// Render the scene
-    virtual void drawStep(sofa::core::visual::VisualParams* vparams);
+    virtual void drawStep(sofa::core::visual::VisualParams* /*vparams*/) {}
 
     /// Compute the bounding box of the scene. If init is set to "true", then minBBox and maxBBox will be initialised to a default value
-    virtual void computeBBoxStep(sofa::core::visual::VisualParams* vparams, SReal* minBBox, SReal* maxBBox, bool init);
-
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static void create(T*& obj, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        obj = new T(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-    }
-
-private:
-
-    simulation::Node* gRoot;
+    virtual void computeBBoxStep(sofa::core::visual::VisualParams* /*vparams*/, SReal* /*minBBox*/, SReal* /*maxBBox*/, bool /*init*/) {}
 };
 
-} // namespace simulation
+} // namespace visual
+
+} // namespace core
 
 } // namespace sofa
 
-#endif  /* SOFA_SIMULATION_DEFAULTVISUALMANAGERLOOP_H */
+#endif /* SOFA_CORE_VISUAL_VISUALLOOP_H */
