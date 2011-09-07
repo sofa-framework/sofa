@@ -1504,7 +1504,7 @@ void RealGUI::step()
         //T=T+DT
         SReal dt=root->getDt();
         simulation::getSimulation()->animate ( root, dt );
-        simulation::getSimulation()->updateVisual( root , dt );
+        simulation::getSimulation()->updateVisual( root );
 
         if ( m_dumpState )
             simulation::getSimulation()->dumpState ( root, *m_dumpStateStream );
