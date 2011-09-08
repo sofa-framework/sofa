@@ -151,10 +151,10 @@ void Simulation::init ( Node* root )
     if(!m_RootAmimateLoop)
     {
         root->getContext()->sout
-                <<"Default Animation Manager Loop will be used. Add DefaultAnimationMasterSolver to the root node of scene file to remove this warning"
+                <<"Default Animation Manager Loop will be used. Add DefaultAnimationLoop to the root node of scene file to remove this warning"
                         <<root->getContext()->sendl;
 
-        m_RootAmimateLoop = new DefaultAnimationMasterSolver(root);
+        m_RootAmimateLoop = new DefaultAnimationLoop(root);
         m_RootAmimateLoop->setName(core::objectmodel::BaseObject::shortName(m_RootAmimateLoop));
         root->addObject(m_RootAmimateLoop);
     }

@@ -22,7 +22,7 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#include <sofa/simulation/common/DefaultAnimationMasterSolver.h>
+#include <sofa/simulation/common/DefaultAnimationLoop.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/common/PrintVisitor.h>
@@ -67,27 +67,27 @@ namespace sofa
 namespace simulation
 {
 
-SOFA_DECL_CLASS(DefaultAnimationMasterSolver);
+SOFA_DECL_CLASS(DefaultAnimationLoop);
 
-int DefaultAnimationMasterSolverClass = core::RegisterObject("The simplest master solver, created by default when user do not put on scene")
-        .add< DefaultAnimationMasterSolver >()
+int DefaultAnimationLoopClass = core::RegisterObject("The simplest master solver, created by default when user do not put on scene")
+        .add< DefaultAnimationLoop >()
         ;
 
 
 
-DefaultAnimationMasterSolver::DefaultAnimationMasterSolver(simulation::Node* _gnode)
+DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _gnode)
     : Inherit()
     , gnode(_gnode)
 {
     assert(gnode);
 }
 
-DefaultAnimationMasterSolver::~DefaultAnimationMasterSolver()
+DefaultAnimationLoop::~DefaultAnimationLoop()
 {
 
 }
 
-void DefaultAnimationMasterSolver::step(const core::ExecParams* params, double dt)
+void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
 {
     sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
 
@@ -155,7 +155,7 @@ void DefaultAnimationMasterSolver::step(const core::ExecParams* params, double d
 }
 
 
-const DefaultAnimationMasterSolver::Solvers& DefaultAnimationMasterSolver::getSolverSequence()
+const DefaultAnimationLoop::Solvers& DefaultAnimationLoop::getSolverSequence()
 {
     return gnode->solver;
 }
