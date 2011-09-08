@@ -155,13 +155,6 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
 }
 
 
-const DefaultAnimationLoop::Solvers& DefaultAnimationLoop::getSolverSequence()
-{
-    return gnode->solver;
-}
-
-
-
 } // namespace simulation
 
 } // namespace sofa

@@ -147,7 +147,7 @@ bool LMContactConstraintSolver::isCollisionDetected()
     return (rasterizer->getNbPairs() != 0);
 }
 
-void LMContactConstraintSolver::step(double dt)
+void LMContactConstraintSolver::step(const core::ExecParams* params, double dt)
 {
     sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
 
