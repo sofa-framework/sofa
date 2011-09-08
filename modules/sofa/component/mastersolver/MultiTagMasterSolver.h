@@ -48,13 +48,13 @@ public:
 
     MultiTagMasterSolver(simulation::Node* gnode);
 
-    void init();
+    virtual void init();
 
-    void clear();
+    virtual void clear();
 
     virtual ~MultiTagMasterSolver();
 
-    void step (const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt);
+    virtual void step (const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt);
 
     /// Construction method called by ObjectFactory.
     template<class T>
@@ -66,6 +66,7 @@ public:
         if (arg) obj->parse(arg);
     }
 
+private:
     sofa::core::objectmodel::TagSet tagList;
 };
 

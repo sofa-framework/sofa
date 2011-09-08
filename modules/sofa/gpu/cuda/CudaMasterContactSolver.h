@@ -253,7 +253,7 @@ public:
     CudaMasterContactSolver();
     // virtual const char* getTypeName() const { return "MasterSolver"; }
 
-    void step (const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, double dt);
+    virtual void step (const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, double dt);
 
     //virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
 
