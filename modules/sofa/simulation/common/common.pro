@@ -28,7 +28,7 @@ HEADERS += common.h \
            CollisionVisitor.h \  
            Colors.h \
            DeactivatedNodeVisitor.h \
-           DefaultAnimationMasterSolver.h \
+           DefaultAnimationLoop.h \
            DefaultVisualManagerLoop.h \
            DeleteVisitor.h \
            ExportGnuplotVisitor.h \
@@ -88,7 +88,7 @@ SOURCES += Node.cpp \
            CleanupVisitor.cpp \
            CollisionVisitor.cpp \
            DeactivatedNodeVisitor.cpp \
-           DefaultAnimationMasterSolver.cpp \
+           DefaultAnimationLoop.cpp \
            DefaultVisualManagerLoop.cpp \
            DeleteVisitor.cpp \
            ExportGnuplotVisitor.cpp \

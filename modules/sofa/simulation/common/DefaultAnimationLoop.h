@@ -47,15 +47,15 @@ namespace simulation
  *
  */
 
-class SOFA_SIMULATION_COMMON_API DefaultAnimationMasterSolver : public sofa::core::behavior::MasterSolver
+class SOFA_SIMULATION_COMMON_API DefaultAnimationLoop : public sofa::core::behavior::MasterSolver
 {
 public:
     typedef sofa::core::behavior::MasterSolver Inherit;
-    SOFA_CLASS(DefaultAnimationMasterSolver,sofa::core::behavior::MasterSolver);
+    SOFA_CLASS(DefaultAnimationLoop,sofa::core::behavior::MasterSolver);
 
-    DefaultAnimationMasterSolver(simulation::Node* gnode);
+    DefaultAnimationLoop(simulation::Node* gnode);
 
-    virtual ~DefaultAnimationMasterSolver();
+    virtual ~DefaultAnimationLoop();
 
     virtual void step(const core::ExecParams* params, double dt);
 

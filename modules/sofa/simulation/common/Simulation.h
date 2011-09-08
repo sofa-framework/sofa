@@ -32,7 +32,7 @@
 #include <sofa/simulation/common/xml/XML.h>
 #include <memory>
 
-#include <sofa/simulation/common/DefaultAnimationMasterSolver.h>
+#include <sofa/simulation/common/DefaultAnimationLoop.h>
 #include <sofa/simulation/common/DefaultVisualManagerLoop.h>
 
 namespace sofa
