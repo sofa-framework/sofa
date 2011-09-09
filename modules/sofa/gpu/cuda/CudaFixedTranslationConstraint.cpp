@@ -79,7 +79,7 @@ template <>
 void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();
     glDisable(GL_LIGHTING);
