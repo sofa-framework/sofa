@@ -14,7 +14,7 @@ namespace core
 namespace visual
 {
 
-struct tristate
+struct SOFA_CORE_API tristate
 {
     enum state_t { false_value, true_value, neutral_value } state;
     tristate(bool b):state(b ? state = true_value : state = false_value )
@@ -52,7 +52,7 @@ inline tristate merge_tristate(const tristate& previous, const tristate& current
     else return current;
 }
 
-class FlagTreeItem
+class SOFA_CORE_API FlagTreeItem
 {
 protected:
     std::string m_showName;
@@ -190,7 +190,7 @@ protected:
 #endif
 };
 
-DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
+SOFA_CORE_API DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
 
 
 }
