@@ -17,7 +17,7 @@ namespace visual
 struct SOFA_CORE_API tristate
 {
     enum state_t { false_value, true_value, neutral_value } state;
-    tristate(bool b):state(b ? state = true_value : state = false_value )
+    tristate(bool b):state(b==true ? true_value : false_value )
     {
     }
     tristate():state(true_value)
