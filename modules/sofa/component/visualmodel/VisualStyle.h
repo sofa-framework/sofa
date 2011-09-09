@@ -11,7 +11,32 @@ namespace component
 {
 namespace visualmodel
 {
-
+/** \brief VisualStyle component controls the DisplayFlags state
+* embedded in the VisualParams for the current subgraph.
+* It merges the DisplayFlags conveyed by the VisualParams with
+* its own DisplayFlags.
+*
+* example:
+* <VisualStyle displayFlags="hideVisual showCollision showWireframe" />
+*
+* allowed values for displayFlags data are a combination of the following:
+* showAll, hideAll,
+*   showVisual, hideVisual,
+*     showVisualModels, hideVisualModels,
+*   showBehavior, hideBehavior,
+*     showBehaviorModels, hideBehaviorModels,
+*     showForceFields, hideForceFields,
+*     showInteractionForceFields, hideInteractionForceFields
+*   showMapping, hideMapping
+*     showMappings, hideMappings
+*     showMechanicalMappings, hideMechanicalMappings
+*   showCollision, hideCollision
+*      showCollisionModels, hideCollisionModels
+*      showBoundingCollisionModels, hideBoundingCollisionModels
+* showOptions hideOptions
+*   showNormals hideNormals
+*   showWireframe hideWireframe
+*/
 class SOFA_COMPONENT_VISUALMODEL_API VisualStyle : public sofa::core::visual::VisualModel
 {
 public:

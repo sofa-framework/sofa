@@ -14,86 +14,34 @@ namespace core
 namespace visual
 {
 
-struct tristate
-{
-    enum state_t { false_value, true_value, neutral_value } state;
-    tristate(bool b):state(b ? state = true_value : state = false_value )
-    {
-    }
-    tristate():state(true_value)
-    {
-    }
-    tristate(state_t state):state(state) {}
-    bool operator==(const tristate& other) const
-    {
-        return (this->state == other.state);
-    }
-    bool operator!=(const tristate& other) const
-    {
-        return !(*this==other);
-    }
-    operator bool() const
-    {
-        return state == true_value ? true : false;
-    }
-    friend inline tristate fusion_tristate(const tristate& lhs, const tristate& rhs);
-    friend inline tristate merge_tristate(const tristate& previous, const tristate& current);
-};
+class FlagTreeItem;
 
-inline tristate fusion_tristate(const tristate &lhs, const tristate &rhs)
-{
-    if( lhs == rhs  ) return lhs;
-    else return tristate(tristate::neutral_value);
-}
-
-inline tristate merge_tristate(const tristate& previous, const tristate& current)
-{
-    if(current.state == tristate::neutral_value ) return previous;
-    else return current;
-}
-
-
-class FlagTreeItem
-{
-protected:
-    std::string m_showName;
-    std::string m_hideName;
-    tristate m_state;
-
-    FlagTreeItem* m_parent;
-    sofa::helper::vector<FlagTreeItem*> m_child;
-
-    typedef helper::vector<FlagTreeItem*>::iterator ChildIterator;
-    typedef helper::vector<FlagTreeItem*>::const_iterator ChildConstIterator;
-
-public:
-    FlagTreeItem(const std::string& showName, const std::string& hideName, const tristate& state, FlagTreeItem* parent = NULL);
-
-    const tristate& state( ) const {return m_state;}
-    tristate& state() {return m_state;}
-
-    friend std::ostream& operator<< ( std::ostream& os, const FlagTreeItem& root )
-    {
-        return root.write(os);
-    }
-    friend std::istream& operator>> ( std::istream& in, FlagTreeItem& root )
-    {
-        return root.read(in);
-    }
-    std::ostream& write(std::ostream& os) const;
-    std::istream& read(std::istream& in);
-
-    void setValue(const tristate& state);
-
-protected:
-    void propagateStateDown(FlagTreeItem* origin);
-    void propagateStateUp(FlagTreeItem* origin);
-    static std::map<std::string,bool> create_flagmap(FlagTreeItem* root);
-    static void create_parse_map(FlagTreeItem* root, std::map<std::string,bool>& map);
-    static void read_recursive(FlagTreeItem* root, const std::map<std::string,bool>& map);
-    static void write_recursive(const FlagTreeItem* root,  std::string& str);
-};
-
+/** \brief Class which describes the display of components in a hierarchical fashion
+* DisplayFlags are conveyed by the VisualParams, and therefore are accessible in a
+* read only fashion inside a Component draw method.
+* A component can tell if it should draw something on the display by looking at the current state
+* of the displayFlags through the VisualParams parameter.
+* DisplayFlags are embeddable inside a Data and can therefore read/write their state
+* from a stream.
+*
+* root
+* |--all
+* |  |--visual
+* |  |  |--visualmodels
+* |  |--behavior
+* |  |  |--behaviormodels
+* |  |  |--forcefields
+* |  |  |--interactionforcefields
+* |  |--collision
+* |  |  |--collisionmodels
+* |  |  |--boundingcollisionmodels
+* |  |--mapping
+* |  |  |--visualmappings
+* |  |  |--mechanicalmappings
+* |--options
+* |  |--wireframe
+* |  |--normals
+*/
 class SOFA_CORE_API DisplayFlags
 {
 public:
@@ -165,9 +113,86 @@ protected:
 #endif
 };
 
-DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
+DisplayFlags SOFA_CORE_API merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
 
+struct tristate
+{
+    enum state_t { false_value, true_value, neutral_value } state;
+    tristate(bool b):state(b ? state = true_value : state = false_value )
+    {
+    }
+    tristate():state(true_value)
+    {
+    }
+    tristate(state_t state):state(state) {}
+    bool operator==(const tristate& other) const
+    {
+        return (this->state == other.state);
+    }
+    bool operator!=(const tristate& other) const
+    {
+        return !(*this==other);
+    }
+    operator bool() const
+    {
+        return state == true_value ? true : false;
+    }
+    friend inline tristate fusion_tristate(const tristate& lhs, const tristate& rhs);
+    friend inline tristate merge_tristate(const tristate& previous, const tristate& current);
+};
 
+inline tristate fusion_tristate(const tristate &lhs, const tristate &rhs)
+{
+    if( lhs == rhs  ) return lhs;
+    else return tristate(tristate::neutral_value);
+}
+
+inline tristate merge_tristate(const tristate& previous, const tristate& current)
+{
+    if(current.state == tristate::neutral_value ) return previous;
+    else return current;
+}
+
+class FlagTreeItem
+{
+protected:
+    std::string m_showName;
+    std::string m_hideName;
+    tristate m_state;
+
+    FlagTreeItem* m_parent;
+    sofa::helper::vector<FlagTreeItem*> m_child;
+
+    typedef helper::vector<FlagTreeItem*>::iterator ChildIterator;
+    typedef helper::vector<FlagTreeItem*>::const_iterator ChildConstIterator;
+
+public:
+    FlagTreeItem(const std::string& showName, const std::string& hideName, const tristate& state, FlagTreeItem* parent = NULL);
+
+    const tristate& state( ) const {return m_state;}
+    tristate& state() {return m_state;}
+
+    friend std::ostream& operator<< ( std::ostream& os, const FlagTreeItem& root )
+    {
+        return root.write(os);
+    }
+    friend std::istream& operator>> ( std::istream& in, FlagTreeItem& root )
+    {
+        return root.read(in);
+    }
+    std::ostream& write(std::ostream& os) const;
+    std::istream& read(std::istream& in);
+
+    void setValue(const tristate& state);
+
+protected:
+    void propagateStateDown(FlagTreeItem* origin);
+    void propagateStateUp(FlagTreeItem* origin);
+    static std::map<std::string,bool> create_flagmap(FlagTreeItem* root);
+    static void create_parse_map(FlagTreeItem* root, std::map<std::string,bool>& map);
+    static void read_recursive(FlagTreeItem* root, const std::map<std::string,bool>& map);
+    static void write_recursive(const FlagTreeItem* root,  std::string& str);
+};
 
 }
 
