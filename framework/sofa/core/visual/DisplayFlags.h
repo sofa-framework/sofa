@@ -158,7 +158,7 @@ public:
         return flags.m_root.read(in);
     }
 
-    friend DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
+    friend SOFA_CORE_API DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
 
 protected:
     FlagTreeItem m_root;
@@ -190,7 +190,7 @@ protected:
 #endif
 };
 
-DisplayFlags SOFA_CORE_API merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
+DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
 
 
 }
