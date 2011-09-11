@@ -80,11 +80,12 @@ void AttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vpar
 {
     if (forcefield)
     {
-        core::visual::DisplayFlags* flags = const_cast<core::visual::DisplayFlags*>(&vparams->displayFlags());
-        bool b = flags->getShowInteractionForceFields();
-        flags->setShowInteractionForceFields(true);
+        // FF commented out this because it crashes
+//          core::visual::DisplayFlags* flags = const_cast<core::visual::DisplayFlags*>(&vparams->displayFlags());
+//          bool b = flags->getShowInteractionForceFields();
+//          flags->setShowInteractionForceFields(true);
         forcefield->draw(vparams);
-        flags->setShowInteractionForceFields(b);
+//          flags->setShowInteractionForceFields(b);
     }
 }
 
