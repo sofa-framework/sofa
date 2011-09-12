@@ -1,12 +1,12 @@
 /*
- * CylinderMesh.h
+ * CuboidMesh.h
  *
- *  Created on: 21 mar. 2010
+ *  Created on: 12 sep. 2011
  *      Author: Yiyi
  */
 
-#ifndef CGALPLUGIN_CYLINDERMESH_H
-#define CGALPLUGIN_CYLINDERMESH_H
+#ifndef CGALPLUGIN_CUBOIDMESH_H
+#define CGALPLUGIN_CUBOIDMESH_H
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -21,10 +21,10 @@ namespace cgal
 {
 
 template <class DataTypes>
-class CylinderMesh : public sofa::core::DataEngine
+class CuboidMesh : public sofa::core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(CylinderMesh,DataTypes),sofa::core::DataEngine);
+    SOFA_CLASS(SOFA_TEMPLATE(CuboidMesh,DataTypes),sofa::core::DataEngine);
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Point;
@@ -33,7 +33,7 @@ public:
     typedef sofa::helper::fixed_array<int, 3> Index;
     //    typedef sofa::helper::vector<Real> VecReal;
 
-//        typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
+    //        typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
     //    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     //    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     //    typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
@@ -49,14 +49,13 @@ public:
 
 
 public:
-    CylinderMesh();
-    virtual ~CylinderMesh() { };
+    CuboidMesh();
+    virtual ~CuboidMesh() { };
 
     void init();
     void reinit();
 
     void update();
-    void scale();
     void orientate();
     void draw();
 
@@ -65,16 +64,15 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const CylinderMesh<DataTypes>* = NULL)
+    static std::string templateName(const CuboidMesh<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
 
     //Inputs
-    Data<double> m_diameter;
     Data<double> m_length;
+    Data<double> m_height;
     Data<int> m_number;
-    Data<bool> m_bScale;
     Data<bool> m_viewPoints;
     Data<bool> m_viewTetras;
 
@@ -92,16 +90,16 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(CGALPLUGIN_CYLINDERMESH_CPP)
+#if defined(WIN32) && !defined(CGALPLUGIN_CUBOIDMESH_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API CylinderMesh<defaulttype::Vec3dTypes>;
+template class SOFA_CGALPLUGIN_API CuboidMesh<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API CylinderMesh<defaulttype::Vec3fTypes>;
+template class SOFA_CGALPLUGIN_API CuboidMesh<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 
 } //cgal
 
-#endif /* CGALPLUGIN_CYLINDERMESH_H */
+#endif /* CGALPLUGIN_CUBOIDMESH_H */
