@@ -30,6 +30,7 @@
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/component/interactionforcefield/SpringForceField.h>
 #include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa
 {
@@ -90,6 +91,7 @@ protected:
 
     MouseContactMapper   *mapper;
     MouseForceField      *forcefield;
+    core::visual::DisplayFlags flags;
 };
 
 

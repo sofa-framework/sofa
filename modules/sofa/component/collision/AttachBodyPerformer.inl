@@ -80,12 +80,12 @@ void AttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vpar
 {
     if (forcefield)
     {
-        // FF commented out this because it crashes
-//          core::visual::DisplayFlags* flags = const_cast<core::visual::DisplayFlags*>(&vparams->displayFlags());
-//          bool b = flags->getShowInteractionForceFields();
-//          flags->setShowInteractionForceFields(true);
-        forcefield->draw(vparams);
-//          flags->setShowInteractionForceFields(b);
+
+        core::visual::VisualParams* vp = const_cast<core::visual::VisualParams*>(vparams);
+        core::visual::DisplayFlags backup = vp->displayFlags();
+        vp->displayFlags() = flags;
+        forcefield->draw(vp);
+        vp->displayFlags() = backup;
     }
 }
 
@@ -95,6 +95,8 @@ AttachBodyPerformer<DataTypes>::AttachBodyPerformer(BaseMouseInteractor *i):
     mapper(NULL),
     forcefield(NULL)
 {
+    flags.setShowVisualModels(false);
+    flags.setShowInteractionForceFields(true);
 }
 
 template <class DataTypes>
