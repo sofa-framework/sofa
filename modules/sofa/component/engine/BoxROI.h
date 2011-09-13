@@ -82,7 +82,7 @@ public:
 
     void update();
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams*);
 
     bool addBBox(double* minBBox, double* maxBBox);
 
@@ -162,10 +162,12 @@ public:
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Vec3dTypes>;
 template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Rigid3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Vec6dTypes>; //Phuoc
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Vec3fTypes>;
 template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Rigid3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Vec6fTypes>; //Phuoc
 #endif //SOFA_DOUBLE
 #endif
 

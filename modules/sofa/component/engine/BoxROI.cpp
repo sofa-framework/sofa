@@ -42,20 +42,24 @@ int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangl
 #ifndef SOFA_FLOAT
         .add< BoxROI<Vec3dTypes> >()
         .add< BoxROI<Rigid3dTypes> >()
+        .add< BoxROI<Vec6dTypes> >() //Phuoc
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
         .add< BoxROI<Vec3fTypes> >()
         .add< BoxROI<Rigid3fTypes> >()
+        .add< BoxROI<Vec6fTypes> >() //Phuoc
 #endif //SOFA_DOUBLE
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3dTypes>;
 template class SOFA_COMPONENT_ENGINE_API BoxROI<Rigid3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec6dTypes>; //Phuoc
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3fTypes>;
 template class SOFA_COMPONENT_ENGINE_API BoxROI<Rigid3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec6fTypes>; //Phuoc
 #endif //SOFA_DOUBLE
 
 
