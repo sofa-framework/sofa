@@ -30,7 +30,6 @@
 #endif
 
 #include <sofa/component/engine/BoxROI.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
@@ -93,8 +92,10 @@ BoxROI<DataTypes>::BoxROI()
 template <class DataTypes>
 void BoxROI<DataTypes>::init()
 {
+    //cerr<<"BoxROI<DataTypes>::init() is called "<<endl;
     if (!f_X0.isSet())
     {
+        //cerr<<"BoxROI<DataTypes>::init() f_X0 is not set "<<endl;
         BaseMechanicalState* mstate;
         this->getContext()->get(mstate);
         if (mstate)
@@ -171,6 +172,10 @@ void BoxROI<DataTypes>::init()
     addOutput(&f_trianglesInROI);
     addOutput(&f_tetrahedraInROI);
     setDirtyValue();
+
+    //cerr<<"BoxROI<DataTypes>::init() -> f_X0 = "<<f_X0<<endl;
+    //cerr<<"BoxROI<DataTypes>::init() -> boxes = "<<boxes<<endl;
+    //cerr<<"BoxROI<DataTypes>::init() -> f_indices = "<<f_indices<<endl;
 }
 
 template <class DataTypes>
@@ -358,9 +363,9 @@ void BoxROI<DataTypes>::update()
 }
 
 template <class DataTypes>
-void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void BoxROI<DataTypes>::draw(const core::visual::VisualParams* )
 {
-    if (!vparams->displayFlags().getShowBehaviorModels() && !this->_drawSize.getValue())
+    if (!this->getContext()->getShowBehaviorModels() && !this->_drawSize.getValue())
         return;
 
     const VecCoord* x0 = &f_X0.getValue();
