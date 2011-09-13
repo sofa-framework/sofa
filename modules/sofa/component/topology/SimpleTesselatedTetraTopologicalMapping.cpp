@@ -33,6 +33,8 @@
 #include <sofa/component/topology/EdgeSetTopologyChange.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
 
+#include <sofa/component/topology/TetrahedronData.inl>
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>

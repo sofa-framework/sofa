@@ -28,6 +28,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/component/container/VoxelGridLoader.h>
+#include <sofa/component/topology/HexahedronData.inl>
 
 namespace sofa
 {

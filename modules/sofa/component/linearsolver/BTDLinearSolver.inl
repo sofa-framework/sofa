@@ -652,7 +652,7 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
     //std::cout<<"partial_solve: need update on position for bloc between dofs "<< MinIdBloc_OUT<< "  and "<<MaxIdBloc_OUT<<std::endl;
     if (verification.getValue())
     {
-        const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
+//        const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
 //        std::cout<<" input Force= ";
 //        for (int i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
 //        {
@@ -757,8 +757,8 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
         (*DR) -= (*Result_partial_Solve);
 
 
-        double normDR;
-        double normR;
+        double normDR = 0.0;
+        double normR = 0.0;
         for (int i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
         {
             normDR += (DR->asub(i,bsize)).norm();
