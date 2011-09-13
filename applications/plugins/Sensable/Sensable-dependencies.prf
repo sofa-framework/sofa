@@ -1,0 +1,13 @@
+includeOnce($$_FILE_) {
+	!equals(ROOT_SRC_DIR, $$PWD) {
+		prefix = $$PLUGINS_PATH/Sensable/
+	}
+
+#DECLARE ALL THE VARIABLES
+	declare(SensablePlugin, $${prefix}Sensable, sofagui sofaguiqt sofacomponent)
+
+
+#ENABLE ALL THE LIBS AND INIT
+	enable(SensablePlugin)
+
+}
