@@ -29,7 +29,6 @@
 
 #include <sofa/component/container/VoxelGridLoader.h>
 
-#include <sofa/component/topology/HexahedronData.h>
 #include <sofa/component/topology/HexahedronData.inl>
 
 #include <set>
