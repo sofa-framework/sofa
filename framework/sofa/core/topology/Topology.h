@@ -203,59 +203,59 @@ public:
     // Generic methods to apply changes on the Data
     //{
     /// Apply adding points elements.
-    virtual void applyCreatePointFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyCreatePointFunction(const sofa::helper::vector<unsigned int>& ) {}
     /// Apply removing points elements.
-    virtual void applyDestroyPointFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyDestroyPointFunction(const sofa::helper::vector<unsigned int>& ) {}
 
     /// Apply adding edges elements.
-    virtual void applyCreateEdgeFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyCreateEdgeFunction(const sofa::helper::vector<unsigned int>& ) {}
     /// Apply removing edges elements.
-    virtual void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int>& ) {}
 
     /// Apply adding triangles elements.
-    virtual void applyCreateTriangleFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyCreateTriangleFunction(const sofa::helper::vector<unsigned int>& ) {}
     /// Apply removing triangles elements.
-    virtual void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int>& ) {}
 
     /// Apply adding quads elements.
-    virtual void applyCreateQuadFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyCreateQuadFunction(const sofa::helper::vector<unsigned int>& ) {}
     /// Apply removing quads elements.
-    virtual void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int>& ) {}
 
     /// Apply adding tetrahedra elements.
-    virtual void applyCreateTetrahedronFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyCreateTetrahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
     /// Apply removing tetrahedra elements.
-    virtual void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
 
     /// Apply adding hexahedra elements.
-    virtual void applyCreateHexahedronFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyCreateHexahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
     /// Apply removing hexahedra elements.
-    virtual void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int>& indices) {}
+    virtual void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
     //}
 
     // Data specific methods
-    virtual void add(unsigned int nbElements, const sofa::helper::vector<T>& elements,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs) {}
+    virtual void add(unsigned int , const sofa::helper::vector<T>& ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
 
     /// Add some values. Values are added at the end of the vector.
-    virtual void add(unsigned int nbElements,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs) {}
+    virtual void add(unsigned int ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
 
     /// Remove the values corresponding to the points removed.
-    virtual void remove( const sofa::helper::vector<unsigned int>& index ) {}
+    virtual void remove( const sofa::helper::vector<unsigned int>& ) {}
 
     /// Swaps values at indices i1 and i2.
-    virtual void swap( unsigned int i1, unsigned int i2 ) {}
+    virtual void swap( unsigned int , unsigned int ) {}
 
     /// Reorder the values.
-    virtual void renumber( const sofa::helper::vector<unsigned int>& index ) {}
+    virtual void renumber( const sofa::helper::vector<unsigned int>& ) {}
 
     /// Move a list of points
-    virtual void move( const sofa::helper::vector<unsigned int>& indexList,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs) {}
+    virtual void move( const sofa::helper::vector<unsigned int>& ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
 
 };
 
