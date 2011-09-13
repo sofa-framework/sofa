@@ -261,7 +261,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         if (topoEngine->isDirty())
         {
             std::cout << "performing: " << topoEngine->getName() << std::endl;
-            topoEngine->update();
+            topoEngine->updateIfDirty();
             topoEngine->cleanDirty();
         }
     }
