@@ -93,7 +93,7 @@ int main(int argc, char** argv)
 
     sofa::simulation::tree::getSimulation()->init(groot);
     groot->setAnimate(false);
-    groot->setShowBehaviorModels(true);
+    //groot->setShowBehaviorModels(true);
 
     //=======================================
     // Run the main loop

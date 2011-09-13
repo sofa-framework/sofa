@@ -137,16 +137,16 @@ int main(int argc, char** argv)
     // Init the scene
     sofa::simulation::tree::getSimulation()->init(groot);
     groot->setAnimate(false);
-    groot->setShowNormals(false);
-    groot->setShowInteractionForceFields(false);
-    groot->setShowMechanicalMappings(false);
-    groot->setShowCollisionModels(false);
-    groot->setShowBoundingCollisionModels(false);
-    groot->setShowMappings(false);
-    groot->setShowForceFields(true);
-    groot->setShowWireFrame(true);
-    groot->setShowVisualModels(true);
-    groot->setShowBehaviorModels(true);
+    /*    groot->setShowNormals(false);
+        groot->setShowInteractionForceFields(false);
+        groot->setShowMechanicalMappings(false);
+        groot->setShowCollisionModels(false);
+        groot->setShowBoundingCollisionModels(false);
+        groot->setShowMappings(false);
+        groot->setShowForceFields(true);
+        groot->setShowWireFrame(true);
+        groot->setShowVisualModels(true);
+        groot->setShowBehaviorModels(true);*/
 
 
 
