@@ -492,7 +492,7 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::Ba
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
+    if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
     if (showMovement.getValue())
     {
