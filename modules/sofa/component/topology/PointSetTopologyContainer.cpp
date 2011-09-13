@@ -288,7 +288,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
     std::cout << "updateDataEngineGraph() end" << std::endl;
 
-    this->displayDataGraph(my_Data);
+    //this->displayDataGraph(my_Data);
     return;
 }
 
