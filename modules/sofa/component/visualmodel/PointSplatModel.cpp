@@ -37,6 +37,8 @@
 #include <sofa/component/visualmodel/PointSplatModel.h>
 #include <sofa/core/visual/VisualParams.h>
 
+#include <sofa/component/topology/PointData.inl>
+
 namespace sofa
 {
 
