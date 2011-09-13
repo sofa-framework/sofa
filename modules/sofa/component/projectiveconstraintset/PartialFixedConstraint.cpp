@@ -85,7 +85,7 @@ template <>
 void PartialFixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
     const VecCoord& x = *mstate->getX();
@@ -103,10 +103,10 @@ void PartialFixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams
 }
 
 template <>
-void PartialFixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams* )
+void PartialFixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
     const VecCoord& x = *mstate->getX();
@@ -130,7 +130,7 @@ template <>
 void PartialFixedConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
     const VecCoord& x = *mstate->getX();
@@ -148,10 +148,10 @@ void PartialFixedConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams
 }
 
 template <>
-void PartialFixedConstraint<Rigid2fTypes>::draw(const core::visual::VisualParams* )
+void PartialFixedConstraint<Rigid2fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);

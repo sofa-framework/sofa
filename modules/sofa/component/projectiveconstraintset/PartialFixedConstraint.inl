@@ -306,7 +306,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()-> getShowBehaviorModels())
+    if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     if (!this->isActive())
         return;
