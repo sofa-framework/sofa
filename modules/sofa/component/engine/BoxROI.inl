@@ -363,6 +363,7 @@ void BoxROI<DataTypes>::update()
     f_tetrahedronIndices.endEdit();
 }
 
+
 template <class DataTypes>
 void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
