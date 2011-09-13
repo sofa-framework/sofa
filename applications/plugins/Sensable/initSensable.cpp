@@ -59,6 +59,7 @@ extern "C" {
     SOFA_SENSABLEPLUGIN_API void initExternalModule();
     SOFA_SENSABLEPLUGIN_API const char* getModuleName();
     SOFA_SENSABLEPLUGIN_API const char* getModuleVersion();
+    SOFA_SENSABLEPLUGIN_API const char* getModuleLicense();
     SOFA_SENSABLEPLUGIN_API const char* getModuleDescription();
     SOFA_SENSABLEPLUGIN_API const char* getModuleComponentList();
 }
@@ -92,7 +93,10 @@ const char* getModuleComponentList()
     return "ForceFeedback controllers ";
 }
 
-
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
 }
 
