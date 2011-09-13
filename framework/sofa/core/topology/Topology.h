@@ -180,6 +180,26 @@ public:
     {
     }
 
+
+    /** Constructor
+    \param helpMsg help on the field
+     */
+    TopologicalData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, sofa::core::objectmodel::Base* owner=NULL, const char* name="")
+        : Data<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
+    {
+
+    }
+
+    /** Constructor
+    \param value default value
+    \param helpMsg help on the field
+     */
+    TopologicalData( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, sofa::core::objectmodel::Base* owner=NULL, const char* name="")
+        : Data<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
+    {
+    }
+
+
     // Generic methods to apply changes on the Data
     //{
     /// Apply adding points elements.
