@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_INL
+#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_INL
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_INL
 
 #include <sofa/component/projectiveconstraintset/PartialLinearMovementConstraint.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/simulation/common/Simulation.h>
@@ -493,7 +492,7 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::Ba
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
+    if (!this->getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
     if (showMovement.getValue())
     {
