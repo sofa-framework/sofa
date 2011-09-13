@@ -28,7 +28,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/component/projectiveconstraintset/PartialFixedConstraint.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
@@ -137,7 +136,7 @@ void PartialFixedConstraint<DataTypes>::init()
 
     // Initialize functions and parameters
     topology::PointSubset my_subset = f_indices.getValue();
-
+//cerr<<"PartialFixedConstraint<DataTypes>::init() -> f_indices = "<<f_indices<<endl;
     my_subset.setTestFunction(FCTestNewPointFunction);
     my_subset.setRemovalFunction(FCRemovalFunction);
 
@@ -307,7 +306,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowBehaviorModels())
+    if (!this->getContext()-> getShowBehaviorModels())
         return;
     if (!this->isActive())
         return;
