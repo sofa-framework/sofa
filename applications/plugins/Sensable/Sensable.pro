@@ -22,6 +22,7 @@ else {
 
 
 
+LIBS += -lHLU -lHDU -lHL -lHD -lPHANToMIO
 
 
 SOURCES = \
@@ -30,6 +31,8 @@ NewOmniDriver.cpp
 
 HEADERS = \
 NewOmniDriver.h
+
+
 
 README_FILE = PluginSensable.txt
 unix : QMAKE_POST_LINK = cp $$SRC_DIR/$$README_FILE $$LIB_DESTDIR 
