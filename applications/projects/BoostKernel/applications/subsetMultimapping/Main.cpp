@@ -91,7 +91,7 @@ Node* createRegularGrid(Node* parent, double x, double y, double z)
     //Node VISUAL
     Node* VisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(node,dof,"mesh/ball.obj", "red", translation);
 
-    node->setShowBehaviorModels(true);
+    //node->setShowBehaviorModels(true);
     return node;
 }
 
@@ -165,7 +165,7 @@ int main(int argc, char** argv)
 
     multiParentsNode->addObject(ff);
 
-    multiParentsNode->setShowForceFields(true);
+    //multiParentsNode->setShowForceFields(true);
 
 
     root->setAnimate(false);
