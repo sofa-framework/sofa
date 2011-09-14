@@ -58,11 +58,11 @@
 #include <sofa/component/projectiveconstraintset/OscillatorConstraint.h>
 #include <sofa/component/projectiveconstraintset/ParabolicConstraint.h>
 #include <sofa/component/projectiveconstraintset/PartialFixedConstraint.h>
+#include <sofa/component/projectiveconstraintset/PartialLinearMovementConstraint.h>
 #include <sofa/component/misc/ParticleSink.h>
 #include <sofa/component/misc/ParticleSource.h>
 #include <sofa/component/projectiveconstraintset/ProjectionLineConstraint.h>
 #include <sofa/component/projectiveconstraintset/ProjectionPlaneConstraint.h>
-
 
 
 //---------------------------------------------------------------------------------------------
@@ -166,7 +166,13 @@ typedef  sofa::component::projectiveconstraintset::PartialFixedConstraint< sofa:
 typedef  sofa::component::projectiveconstraintset::PartialFixedConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > PartialFixedConstraint3d;
 typedef  sofa::component::projectiveconstraintset::PartialFixedConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,double>, sofa::defaulttype::Vec<6,double>,double> > PartialFixedConstraint6d;
 
-
+//---------------------------------------------------------------------------------------------
+//Typedef for PartialLinearMovementConstraint
+typedef  sofa::component::projectiveconstraintset::PartialLinearMovementConstraint< sofa::defaulttype::StdRigidTypes<3,double> > PartialLinearMovementConstraintRigid3d;
+typedef  sofa::component::projectiveconstraintset::PartialLinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,double>, sofa::defaulttype::Vec<1,double>,double> > PartialLinearMovementConstraint1d;
+typedef  sofa::component::projectiveconstraintset::PartialLinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,double>, sofa::defaulttype::Vec<2,double>,double> > PartialLinearMovementConstraint2d;
+typedef  sofa::component::projectiveconstraintset::PartialLinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > PartialLinearMovementConstraint3d;
+typedef  sofa::component::projectiveconstraintset::PartialLinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,double>, sofa::defaulttype::Vec<6,double>,double> > PartialLinearMovementConstraint6d;
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ParticleSink
@@ -242,6 +248,11 @@ typedef PartialFixedConstraint1d PartialFixedConstraint1;
 typedef PartialFixedConstraint2d PartialFixedConstraint2;
 typedef PartialFixedConstraint3d PartialFixedConstraint3;
 typedef PartialFixedConstraint6d PartialFixedConstraint6;
+typedef PartialLinearMovementConstraintRigid3d PartialLinearMovementConstraintRigid3;
+typedef PartialLinearMovementConstraint1d PartialLinearMovementConstraint1;
+typedef PartialLinearMovementConstraint2d PartialLinearMovementConstraint2;
+typedef PartialLinearMovementConstraint3d PartialLinearMovementConstraint3;
+typedef PartialLinearMovementConstraint6d PartialLinearMovementConstraint6;
 typedef ParticleSink2d ParticleSink2;
 typedef ParticleSink3d ParticleSink3;
 typedef ParticleSource2d ParticleSource2;
