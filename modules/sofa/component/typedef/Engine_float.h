@@ -86,6 +86,7 @@ typedef  sofa::component::engine::AverageCoord< sofa::defaulttype::StdVectorType
 //Typedef for BoxROI
 typedef  sofa::component::engine::BoxROI< sofa::defaulttype::StdRigidTypes<3,float> > BoxROIRigid3f;
 typedef  sofa::component::engine::BoxROI< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > BoxROI3f;
+typedef  sofa::component::engine::BoxROI< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > BoxROI6f;//Phuoc
 
 
 
@@ -241,6 +242,7 @@ typedef AverageCoord2f AverageCoord2;
 typedef AverageCoord3f AverageCoord3;
 typedef BoxROIRigid3f BoxROIRigid3;
 typedef BoxROI3f BoxROI3;
+typedef BoxROI6f BoxROI6;//Phuoc
 typedef Distances3f Distances3;
 typedef ExtrudeSurface3f ExtrudeSurface3;
 typedef GenerateRigidMassRigid3f GenerateRigidMassRigid3;
