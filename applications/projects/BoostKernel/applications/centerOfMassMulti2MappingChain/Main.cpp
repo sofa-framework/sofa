@@ -223,7 +223,7 @@ Node *createChainHybrid(Node *root)
     torusFFD->addChild(MultiParentsNode);
     torusRigid->addChild(MultiParentsNode);
 
-    MultiParentsNode->setShowCollisionModels(false);
+    //MultiParentsNode->setShowCollisionModels(false);
 
     MechanicalObject3* dofMultiMapping = new MechanicalObject3; dofMultiMapping->setName("Center Of Mass");
     MultiParentsNode->addObject(dofMultiMapping);
@@ -242,7 +242,7 @@ Node *createChainHybrid(Node *root)
     spheres->setRadius(0.5);
     MultiParentsNode->addObject( spheres);
 
-    MultiParentsNode->setShowCollisionModels(true);
+    //MultiParentsNode->setShowCollisionModels(true);
     return root;
 }
 

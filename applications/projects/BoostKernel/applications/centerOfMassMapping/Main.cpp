@@ -85,7 +85,7 @@ Node* createCube(Node* parent, double dx, double dy, double dz)
     uniMassCube->setTotalMass(1);
     cube_node->addObject(uniMassCube);
 
-    cube_node->setShowForceFields(true);
+    //cube_node->setShowForceFields(true);
 
     return cube_node;
 }
@@ -146,7 +146,7 @@ int main( int argc, char** argv )
     //cube1->addChild(MultiParentsNode);
 
 
-    MultiParentsNode->setShowCollisionModels(true);
+    //MultiParentsNode->setShowCollisionModels(true);
 
 
     root->setAnimate(false);
