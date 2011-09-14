@@ -32,7 +32,6 @@
 #include <iostream>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 
 #include <sofa/core/core.h>
