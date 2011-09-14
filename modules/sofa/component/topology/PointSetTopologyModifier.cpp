@@ -216,6 +216,11 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     }
 
     this->propagateTopologicalEngineChanges();
+
+    // security to avoid loops
+    for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
+        (*it)->cleanDirty();
+
     std::cout << std::endl << "******* START ENGINE PROCESSING END *********" << std::endl;
 #endif
     // remove the changes we just propagated, so that we don't send them again next time
@@ -261,8 +266,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         if (topoEngine->isDirty())
         {
             std::cout << "performing: " << topoEngine->getName() << std::endl;
-            topoEngine->updateIfDirty();
-            topoEngine->cleanDirty();
+            topoEngine->update();
         }
     }
 

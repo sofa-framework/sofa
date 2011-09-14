@@ -926,8 +926,7 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
         if (topoEngine->isDirty())
         {
             std::cout << "performing: " << topoEngine->getName() << std::endl;
-            topoEngine->updateIfDirty();
-            topoEngine->cleanDirty();
+            topoEngine->update();
         }
     }
 
