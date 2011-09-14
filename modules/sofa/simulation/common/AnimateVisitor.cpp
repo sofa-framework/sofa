@@ -109,9 +109,9 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     {
         firstNodeVisited=true;
 
-        core::behavior::MasterSolver* presenceMasterSolver;
-        node->get(presenceMasterSolver, core::objectmodel::BaseContext::SearchDown);
-        if (!presenceMasterSolver)
+        core::behavior::BaseAnimationLoop* presenceAnimationManager;
+        node->get(presenceAnimationManager, core::objectmodel::BaseContext::SearchDown);
+        if (!presenceAnimationManager)
         {
             sofa::core::MechanicalParams mparams(*this->params);
             mparams.setDt(dt);

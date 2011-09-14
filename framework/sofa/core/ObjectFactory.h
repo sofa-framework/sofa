@@ -46,7 +46,7 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/MasterSolver.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/behavior/BaseController.h>
@@ -390,8 +390,8 @@ public:
         	  entry.baseClasses.insert("OdeSolver");
         	if (implements<RealObject,core::behavior::LinearSolver>())
         	  entry.baseClasses.insert("LinearSolver");
-                if (implements<RealObject,core::behavior::MasterSolver>())
-                    entry.baseClasses.insert("MasterSolver");
+                if (implements<RealObject,core::behavior::BaseAnimationLoop>())
+                    entry.baseClasses.insert("BaseAnimationLoop");
                 if (implements<RealObject,core::topology::Topology>())
         	  entry.baseClasses.insert("Topology");
                 if (implements<RealObject,core::topology::BaseTopologyObject>())

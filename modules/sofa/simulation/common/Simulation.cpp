@@ -232,7 +232,7 @@ void Simulation::animate ( Node* root, double dt )
     }
     else
     {
-        serr<<"ERROR : MasterSolver expected at the root node"<<sendl;
+        serr<<"ERROR : AnimationLoop expected at the root node"<<sendl;
         return;
     }
 

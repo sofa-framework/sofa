@@ -34,7 +34,7 @@
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/MasterSolver.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/collision/Pipeline.h>
 
 using namespace sofa::core;

@@ -105,7 +105,7 @@
  *  Simulated bodies in SOFA are split into components storing the current
  *  state (MechanicalState), handling mass properties (Mass), computing
  *  forces (ForceField) and constraints (Constraint), and managing the
- *  integration algorithm (MasterSolver, OdeSolver).
+ *  integration algorithm (AnimationLoop, OdeSolver).
  *
  *  Depending on the solvers used, two modes of computations are used :
  *  \li <i>vector</i> mode : computations are done directly in the vectors

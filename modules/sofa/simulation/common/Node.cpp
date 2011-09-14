@@ -223,7 +223,7 @@ void Node::doAddObject(BaseObject* obj)
     obj->setContext(this);
     object.add(obj);
     int inserted=0;
-    inserted+= masterSolver.add(dynamic_cast< core::behavior::MasterSolver* >(obj));
+    inserted+= animationManager.add(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
     inserted+= solver.add(dynamic_cast< core::behavior::OdeSolver* >(obj));
     inserted+= linearSolver.add(dynamic_cast< core::behavior::LinearSolver* >(obj));
     inserted+= constraintSolver.add(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
@@ -276,7 +276,7 @@ void Node::doRemoveObject(BaseObject* obj)
         obj->setContext(NULL);
     }
     object.remove(obj);
-    masterSolver.remove(dynamic_cast< core::behavior::MasterSolver* >(obj));
+    animationManager.remove(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
     solver.remove(dynamic_cast< core::behavior::OdeSolver* >(obj));
     linearSolver.remove(dynamic_cast< core::behavior::LinearSolver* >(obj));
     constraintSolver.remove(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
@@ -475,7 +475,7 @@ bool Node::getDebug() const
 
 void Node::removeControllers()
 {
-    removeObject(masterSolver);
+    removeObject(animationManager);
     typedef Sequence<core::behavior::OdeSolver> Solvers;
     Solvers solverRemove = solver;
     for ( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; i++ )
@@ -647,8 +647,8 @@ void Node::printComponents()
     using core::objectmodel::ContextObject;
     using core::collision::Pipeline;
 
-    cerr<<"MasterSolver: ";
-    for ( Single<MasterSolver>::iterator i=masterSolver.begin(), iend=masterSolver.end(); i!=iend; i++ )
+    cerr<<"BaseAnimationLoop: ";
+    for ( Single<BaseAnimationLoop>::iterator i=animationManager.begin(), iend=animationManager.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"OdeSolver: ";
     for ( Sequence<OdeSolver>::iterator i=solver.begin(), iend=solver.end(); i!=iend; i++ )

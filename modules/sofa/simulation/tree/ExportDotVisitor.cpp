@@ -192,16 +192,16 @@ std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
                 dynamic_cast<core::collision::CollisionGroupManager*>(obj)))
         return getName(node->collisionPipeline);
     /// \todo consider all solvers instead of the first one (FF)
-    if (node->mechanicalState!=obj && node->solver[0]!=obj  && node->masterSolver!=obj && display(node->mechanicalState))
+    if (node->mechanicalState!=obj && node->solver[0]!=obj  && node->animationManager!=obj && display(node->mechanicalState))
         return getName(node->mechanicalState);
-    if (node->solver[0]!=obj && node->masterSolver!=obj && display(node->solver[0]))
+    if (node->solver[0]!=obj && node->animationManager!=obj && display(node->solver[0]))
         return getName(node->solver[0]);
-    if (node->masterSolver!=obj && display(node->solver[0]))
-        return getName(node->masterSolver);
+    if (node->animationManager!=obj && display(node->solver[0]))
+        return getName(node->animationManager);
     if ((node->mechanicalState==obj || node->solver[0]==obj) && node->mechanicalMapping==NULL && node->parent!=NULL && display(node->parent->solver[0]))
         return getName(node->parent->solver[0]);
-    if ((node->mechanicalState==obj || node->solver[0]==obj || node->masterSolver==obj) && node->mechanicalMapping==NULL && node->parent!=NULL && display(node->parent->masterSolver))
-        return getName(node->parent->masterSolver);
+    if ((node->mechanicalState==obj || node->solver[0]==obj || node->animationManager==obj) && node->mechanicalMapping==NULL && node->parent!=NULL && display(node->parent->animationManager))
+        return getName(node->parent->animationManager);
     return "";
 }
 

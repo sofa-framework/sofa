@@ -89,7 +89,7 @@ DefaultAnimationLoop::~DefaultAnimationLoop()
 
 void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
 {
-    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
+    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 
     sofa::helper::AdvancedTimer::begin("Animate");
 
@@ -104,7 +104,7 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
     double mechanicalDt = dt/numMechSteps.getValue();
     //double nextTime = gnode->getTime() + gnode->getDt();
 
-    // CHANGE to support MasterSolvers : CollisionVisitor is now activated within AnimateVisitor
+    // CHANGE to support AnimationStep : CollisionVisitor is now activated within AnimateVisitor
     //gnode->execute<CollisionVisitor>(params);
 
     AnimateVisitor act(params);
@@ -151,7 +151,7 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
     ///////////////////////////////////////////////////////////////////////
 
     sofa::helper::AdvancedTimer::end("Animate");
-    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
+    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
 

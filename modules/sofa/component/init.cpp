@@ -42,6 +42,7 @@
 #include <sofa/component/mapping/initMapping.h>
 #include <sofa/component/mass/initMass.h>
 #include <sofa/component/mastersolver/initMasterSolver.h>
+#include <sofa/component/animationloop/initAnimationLoop.h>
 #include <sofa/component/misc/initMisc.h>
 #include <sofa/component/odesolver/initOdeSolver.h>
 #include <sofa/component/topology/initTopology.h>
@@ -78,6 +79,7 @@ void init()
         initMapping();
         initMass();
         initMasterSolver();
+        initAnimationLoop();
         initMisc();
         initOdeSolver();
         initTopology();

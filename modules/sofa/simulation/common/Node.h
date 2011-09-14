@@ -60,7 +60,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/core/behavior/MasterSolver.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -320,7 +320,7 @@ public:
     Sequence<core::objectmodel::BaseObject> object;
     typedef Sequence<core::objectmodel::BaseObject>::iterator ObjectIterator;
 
-    Single<core::behavior::MasterSolver> masterSolver;
+    Single<core::behavior::BaseAnimationLoop> animationManager;
     Sequence<core::behavior::OdeSolver> solver;
     Sequence<core::behavior::ConstraintSolver> constraintSolver;
     Sequence<core::behavior::LinearSolver> linearSolver;

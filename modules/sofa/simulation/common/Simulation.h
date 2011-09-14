@@ -133,8 +133,8 @@ public:
     static std::auto_ptr<Simulation> theSimulation;
 
 private :
-    sofa::core::behavior::MasterSolver* m_RootAmimateLoop;
-    core::visual::VisualLoop*           m_RootVisualLoop;
+    sofa::core::behavior::BaseAnimationLoop* m_RootAmimateLoop;
+    core::visual::VisualLoop*                m_RootVisualLoop;
 };
 
 /// Set the (unique) simulation which controls the scene
