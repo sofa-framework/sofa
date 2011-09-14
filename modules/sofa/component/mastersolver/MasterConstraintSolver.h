@@ -33,7 +33,7 @@
 
 #include <sofa/component/linearsolver/FullMatrix.h>
 
-#include <sofa/simulation/common/MasterSolverImpl.h>
+#include <sofa/simulation/common/CollisionAnimationLoop.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/Node.h>
 
@@ -226,12 +226,12 @@ public:
     void gaussSeidelConstraintTimed(double &timeout, int numItMax);
 };
 
-class SOFA_COMPONENT_MASTERSOLVER_API MasterConstraintSolver : public sofa::simulation::MasterSolverImpl
+class SOFA_COMPONENT_MASTERSOLVER_API MasterConstraintSolver : public sofa::simulation::CollisionAnimationLoop
 {
 public:
-    typedef sofa::simulation::MasterSolverImpl Inherit;
+    typedef sofa::simulation::CollisionAnimationLoop Inherit;
 
-    SOFA_CLASS(MasterConstraintSolver, sofa::simulation::MasterSolverImpl);
+    SOFA_CLASS(MasterConstraintSolver, sofa::simulation::CollisionAnimationLoop);
 
     MasterConstraintSolver(simulation::Node* gnode);
     virtual ~MasterConstraintSolver();

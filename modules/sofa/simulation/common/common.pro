@@ -37,7 +37,7 @@ HEADERS += common.h \
            FindByTypeVisitor.h \
            InitVisitor.h \  
            LocalStorage.h \
-           MasterSolverImpl.h \
+#           MasterSolverImpl.h \
            MechanicalComputeEnergyVisitor.h \
            MechanicalMatrixVisitor.h \
 	         MechanicalOperations.h \
@@ -96,7 +96,7 @@ SOURCES += Node.cpp \
            ExportGnuplotVisitor.cpp \
            ExportOBJVisitor.cpp \
            InitVisitor.cpp \   
-           MasterSolverImpl.cpp \
+#           MasterSolverImpl.cpp \
            MechanicalComputeEnergyVisitor.cpp \
 		   MechanicalOperations.cpp \
 	       MechanicalMatrixVisitor.cpp \

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MASTERSOLVER_LMCONTACTCONSTRAINTSOLVER_H
 
 #include <sofa/core/behavior/MasterSolver.h>
-#include <sofa/simulation/common/MasterSolverImpl.h>
+#include <sofa/simulation/common/CollisionAnimationLoop.h>
 #include <sofa/component/component.h>
 
 namespace sofa
@@ -39,12 +39,12 @@ namespace mastersolver
 {
 
 
-class SOFA_COMPONENT_MASTERSOLVER_API LMContactConstraintSolver : public sofa::simulation::MasterSolverImpl
+class SOFA_COMPONENT_MASTERSOLVER_API LMContactConstraintSolver : public sofa::simulation::CollisionAnimationLoop
 {
 public:
-    typedef sofa::simulation::MasterSolverImpl Inherit;
+    typedef sofa::simulation::CollisionAnimationLoop Inherit;
 
-    SOFA_CLASS(LMContactConstraintSolver, sofa::simulation::MasterSolverImpl);
+    SOFA_CLASS(LMContactConstraintSolver, sofa::simulation::CollisionAnimationLoop);
 
     LMContactConstraintSolver(simulation::Node* gnode);
     virtual ~LMContactConstraintSolver();

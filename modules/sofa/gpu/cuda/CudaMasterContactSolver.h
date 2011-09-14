@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_CUDAMASTERCONTACTSOLVER_H
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/simulation/common/MasterSolverImpl.h>
+#include <sofa/simulation/common/CollisionAnimationLoop.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
@@ -234,10 +234,10 @@ private:
 };
 
 template<class real>
-class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl
+class CudaMasterContactSolver : public sofa::simulation::CollisionAnimationLoop
 {
 public:
-    SOFA_CLASS(CudaMasterContactSolver,sofa::simulation::MasterSolverImpl);
+    SOFA_CLASS(CudaMasterContactSolver,sofa::simulation::CollisionAnimationLoop);
     Data<int> useGPU_d;
 #ifdef DISPLAY_TIME
     Data<bool> print_info;
