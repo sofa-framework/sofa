@@ -66,6 +66,7 @@ namespace simulation
  *
  */
 
+
 class SOFA_SIMULATION_COMMON_API CollisionAnimationLoop : public sofa::core::behavior::BaseAnimationLoop
 {
 public:
