@@ -271,7 +271,7 @@ void SMPSimulation::generateTasks ( Node* root, double dt )
     double mechanicalDt = dt/numMechSteps.getValue();
     //double nextTime = root->getTime() + root->getDt();
 
-    // CHANGE to support MasterSolvers : CollisionVisitor is now activated within AnimateVisitor
+    // CHANGE to support AnimationLoop : CollisionVisitor is now activated within AnimateVisitor
     //root->execute<CollisionVisitor>();
 
     AnimateVisitor act( params );

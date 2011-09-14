@@ -86,7 +86,7 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             flags |= 1 << IFFIELD;
         else if (dynamic_cast<core::behavior::BaseForceField*>(obj))
             flags |= 1 << FFIELD;
-        if (dynamic_cast<core::behavior::MasterSolver*>(obj)
+        if (dynamic_cast<core::behavior::BaseAnimationLoop*>(obj)
             || dynamic_cast<core::behavior::OdeSolver*>(obj))
             flags |= 1 << SOLVER;
         if (dynamic_cast<core::collision::Pipeline*>(obj)

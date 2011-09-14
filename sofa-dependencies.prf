@@ -68,8 +68,10 @@ declare(sofacomponentlinearsolver,  modules/sofa/component/linearsolver,  sofaco
 declare(sofacomponentinteractionforcefield,    modules/sofa/component/interactionforcefield,   sofacomponentforcefield)
 declare(sofacomponentprojectiveconstraintset,  modules/sofa/component/projectiveconstraintset, sofacomponentlinearsolver sofacomponentmass)
 declare(sofacomponentmastersolver,  modules/sofa/component/mastersolver,  sofacomponentconstraintset sofacomponentprojectiveconstraintset)
+declare(sofacomponentanimationloop,  modules/sofa/component/animationloop,  sofacomponentconstraintset sofacomponentprojectiveconstraintset)
 
-declare(sofacomponentcontroller, modules/sofa/component/controller, sofacomponentmastersolver sofacomponentinteractionforcefield)
+
+declare(sofacomponentcontroller, modules/sofa/component/controller, sofacomponentanimationloop sofacomponentmastersolver sofacomponentinteractionforcefield)
 
 declare(sofacomponentcollision, modules/sofa/component/collision, \
   sofacomponentconstraintset sofacomponentprojectiveconstraintset \
@@ -185,6 +187,8 @@ enable(sofacomponentloader)
 enable(sofacomponentmapping)
 enable(sofacomponentmass)
 enable(sofacomponentmastersolver)
+enable(sofacomponentanimationloop)
+
 enable(sofacomponentmisc)
 enable(sofacomponentodesolver)
 enable(sofacomponentprojectiveconstraintset)

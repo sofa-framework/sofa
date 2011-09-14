@@ -42,7 +42,7 @@ namespace common
 
 
 /**
- *  \brief Implementation of LinearSolver/OdeSolver/MasterSolver relying on GNode.
+ *  \brief Implementation of LinearSolver/OdeSolver/AnimationLoop relying on GNode.
  *
  */
 class ParallelSolverImpl : public virtual sofa::simulation::SolverImpl

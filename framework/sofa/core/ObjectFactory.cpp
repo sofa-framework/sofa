@@ -47,7 +47,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/MasterSolver.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/TopologicalMapping.h>
@@ -421,8 +421,8 @@ RegisterObject& RegisterObject::addBaseClasses(const core::objectmodel::BaseClas
         entry.baseClasses.insert("ConstraintSolver");
     if (mclass->hasParent(core::behavior::LinearSolver::GetClass()))
         entry.baseClasses.insert("LinearSolver");
-    if (mclass->hasParent(core::behavior::MasterSolver::GetClass()))
-        entry.baseClasses.insert("MasterSolver");
+    if (mclass->hasParent(core::behavior::BaseAnimationLoop::GetClass()))
+        entry.baseClasses.insert("BaseAnimationLoop");
     if (mclass->hasParent(core::topology::Topology::GetClass()))
         entry.baseClasses.insert("Topology");
     if (mclass->hasParent(core::topology::BaseTopologyObject::GetClass()))
