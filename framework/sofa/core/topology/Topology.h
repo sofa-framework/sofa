@@ -35,6 +35,7 @@
 #include <sofa/core/DataEngine.h>
 
 #include <sofa/helper/vector.h>
+#include <sofa/helper/fixed_array.h>
 namespace sofa
 {
 
@@ -43,6 +44,8 @@ namespace core
 
 namespace topology
 {
+
+using namespace sofa::helper;
 
 /// The enumeration used to give unique identifiers to TopologyChange objects.
 enum TopologyChangeType
@@ -153,6 +156,7 @@ template < class T = void*, class VecT = helper::vector<T> >
 class SOFA_CORE_API TopologicalData : public sofa::core::objectmodel::Data <T>
 {
 public:
+    //SOFA_CLASS(SOFA_TEMPLATE2(TopologicalData,T,VecT), SOFA_TEMPLATE(sofa::core::objectmodel::Data, T));
 
     class InitData : public sofa::core::objectmodel::BaseData::BaseInitData
     {
@@ -233,14 +237,34 @@ public:
     virtual void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
     //}
 
-    // Data specific methods
-    virtual void add(unsigned int , const sofa::helper::vector<T>& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
-
     /// Add some values. Values are added at the end of the vector.
     virtual void add(unsigned int ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+
+    /// Temporary Hack: find a way to have a generic description of topological element:
+    /// add Edge
+    virtual void add( unsigned int ,
+            const sofa::helper::vector< fixed_array<unsigned int,2> >& ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+
+    /// add Triangle
+    virtual void add( unsigned int ,
+            const sofa::helper::vector< fixed_array<unsigned int,3> >& ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+
+    /// add Quad & Tetrahedron
+    virtual void add( unsigned int ,
+            const sofa::helper::vector< fixed_array<unsigned int,4> >& ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+
+    /// add Hexahedron
+    virtual void add( unsigned int ,
+            const sofa::helper::vector< fixed_array<unsigned int,8> >& ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
             const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
 
     /// Remove the values corresponding to the points removed.
