@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MASTERSOLVER_MULTITAGMASTERSOLVER_H
 
 #include <sofa/core/behavior/MasterSolver.h>
-#include <sofa/simulation/common/MasterSolverImpl.h>
+#include <sofa/simulation/common/CollisionAnimationLoop.h>
 #include <sofa/component/component.h>
 
 namespace sofa
@@ -40,11 +40,11 @@ namespace mastersolver
 
 /** Simple master solver that given a list of tags, animate the graph one tag after another.
 */
-class SOFA_COMPONENT_MASTERSOLVER_API MultiTagMasterSolver : public sofa::simulation::MasterSolverImpl
+class SOFA_COMPONENT_MASTERSOLVER_API MultiTagMasterSolver : public sofa::simulation::CollisionAnimationLoop
 {
 public:
-    typedef sofa::simulation::MasterSolverImpl Inherit;
-    SOFA_CLASS(MultiTagMasterSolver,sofa::simulation::MasterSolverImpl);
+    typedef sofa::simulation::CollisionAnimationLoop Inherit;
+    SOFA_CLASS(MultiTagMasterSolver,sofa::simulation::CollisionAnimationLoop);
 
     MultiTagMasterSolver(simulation::Node* gnode);
 
