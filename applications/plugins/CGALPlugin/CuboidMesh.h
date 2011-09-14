@@ -70,19 +70,21 @@ public:
     }
 
     //Inputs
+    Data<unsigned> m_debug;
     Data<double> m_length;
     Data<double> m_height;
     Data<int> m_number;
     Data<bool> m_viewPoints;
     Data<bool> m_viewTetras;
-    Data<unsigned> m_debug;
 
     //Outputs
     Data<VecCoord> m_points;
     Data<SeqTetrahedra> m_tetras;
 
     //Parameters
-    unsigned m_nbBdVertices, m_nbInVertices, m_nbCenters, m_nbTetras_i, m_nbTetras_j, m_nbTetras_k;
+    unsigned m_nbVertices, m_nbCenters;
+    unsigned m_nbBdCenters_i, m_nbBdCenters_j, m_nbBdCenters_k;
+    unsigned m_nbTetras_i, m_nbTetras_j, m_nbTetras_k;
     int n, m, a;
     Real l, h, dl, t;
     std::map<Index, unsigned> m_ptID;

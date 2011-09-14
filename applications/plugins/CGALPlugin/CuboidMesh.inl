@@ -20,12 +20,12 @@ namespace cgal
 
 template <class DataTypes>
 CuboidMesh<DataTypes>::CuboidMesh()
-    : m_length(initData(&m_length, 5.0, "length", "side length"))
+    :  m_debug(initData(&m_debug, (unsigned)0, "debug", "for test"))
+    , m_length(initData(&m_length, 5.0, "length", "side length"))
     , m_height(initData(&m_height, 50.0, "height", "height"))
     , m_number(initData(&m_number, 5, "interval", "number of intervals"))
     , m_viewPoints(initData(&m_viewPoints, true, "viewPoints", "Display Points"))
     , m_viewTetras(initData(&m_viewTetras, true, "viewTetras", "Display Tetrahedra"))
-    , m_debug(initData(&m_debug, (unsigned)0, "debug", "for test"))
     , m_points(initData(&m_points, "outputPoints", "Points"))
     , m_tetras(initData(&m_tetras, "outputTetras", "Tetrahedra"))
 {
@@ -86,74 +86,108 @@ void CuboidMesh<DataTypes>::update()
 
     //generate the points
     std::cout << "generate points..." << std::endl;
-    int count = 0;
-    //hexa vertices on two ends of height
-    for(int k = -m; k <= m; k+=2*m)
-    {
-        for(int j = -n; j <= n; j+=2)
-        {
-            int b1 = MAX(-n, MAX(-2*n+2-j, -2*n+2+j));
-            int b2 = MIN(n, MIN(2*n-2+j, 2*n-2-j));
-            for(int i = b1; i <= b2; i+=2)
-            {
-                Point p(i*t, j*t, k*t);
-                points.push_back(p);
-                Index g(i,j,k);
-                m_ptID.insert(std::make_pair(g,count));
-                //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
-                ++count;
-            }
-        }
-    }
-    m_nbBdVertices = count;
-    std::cout << "num of boundary vertices = " << m_nbBdVertices << std::endl;
 
-    //interior hexa vertices
-    for(int k = -m+2; k <= m-2; k+=2)
+    //hexa vertices
+    m_nbVertices = 0;
+    for(int i = -n; i <= n; i+=2)
     {
         for(int j = -n; j <= n; j+=2)
         {
-            for(int i = -n; i <= n; i+=2)
+            for(int k = -m; k <= m; k+=2)
             {
+                Index g(i,j,k);
+                m_ptID.insert(std::make_pair(g, points.size()));
                 Point p(i*t, j*t, k*t);
                 points.push_back(p);
-                Index g(i,j,k);
-                m_ptID.insert(std::make_pair(g,count));
                 //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
-                ++count;
+                ++m_nbVertices;
             }
         }
     }
-    m_nbInVertices = count - m_nbBdVertices;
-    std::cout << "num of interior vertices = " << m_nbInVertices << std::endl;
+    std::cout << "num of vertices = " << m_nbVertices << std::endl;
 
     //hexa centers
-    for(int k = -m+1; k <= m-1; k+=2)
+    m_nbCenters = 0;
+    for(int i = -n+1; i <= n-1 ; i+=2)
     {
         for(int j = -n+1; j <= n-1; j+=2)
         {
-            for(int i = -n+1; i <= n-1 ; i+=2)
+            for(int k = -m+1; k <= m-1; k+=2)
             {
+                Index g(i,j,k);
+                m_ptID.insert(std::make_pair(g, points.size()));
                 Point p(i*t, j*t, k*t);
                 points.push_back(p);
-                Index g(i,j,k);
-                m_ptID.insert(std::make_pair(g,count));
                 //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
-                ++count;
+                ++m_nbCenters;
             }
         }
     }
-    m_nbCenters = count - m_nbInVertices - m_nbBdVertices;
     std::cout << "num of centers = " << m_nbCenters << std::endl;
+
+    //hexa boundary centers
+    m_nbBdCenters_i = 0;
+    for(int i = -n-1; i <= n+1 ; i+=2*(n+1))
+    {
+        for(int j = -n+1; j <= n-1; j+=2)
+        {
+            for(int k = -m+1; k <= m-1; k+=2)
+            {
+                Index g(i,j,k);
+                m_ptID.insert(std::make_pair(g, points.size()));
+                Point p(i*t, j*t, k*t);
+                points.push_back(p);
+                //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
+                ++m_nbBdCenters_i;
+            }
+        }
+    }
+    std::cout << "num of bdCenters_i = " << m_nbBdCenters_i << std::endl;
+
+    m_nbBdCenters_j = 0;
+    for(int i = -n+1; i <= n-1 ; i+=2)
+    {
+        for(int j = -n-1; j <= n+1; j+=2*(n+1))
+        {
+            for(int k = -m+1; k <= m-1; k+=2)
+            {
+                Index g(i,j,k);
+                m_ptID.insert(std::make_pair(g, points.size()));
+                Point p(i*t, j*t, k*t);
+                points.push_back(p);
+                //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
+                ++m_nbBdCenters_j;
+            }
+        }
+    }
+    std::cout << "num of bdCenters_j = " << m_nbBdCenters_j << std::endl;
+
+    m_nbBdCenters_k = 0;
+    for(int i = -n+1; i <= n-1 ; i+=2)
+    {
+        for(int j = -n+1; j <= n-1; j+=2)
+        {
+            for(int k = -m-1; k <= m+1; k+=2*(m+1))
+            {
+                Index g(i,j,k);
+                m_ptID.insert(std::make_pair(g, points.size()));
+                Point p(i*t, j*t, k*t);
+                points.push_back(p);
+                //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
+                ++m_nbBdCenters_k;
+            }
+        }
+    }
+    std::cout << "num of bdCenters_k = " << m_nbBdCenters_k << std::endl;
     std::cout << "num of points = " << points.size() << std::endl << std::endl;
 
     std::cout << "generate tetras..." << std::endl;
     //generate tetrahedra between c(i,j,k) and c(i+2,j,k) ((i+n), (j+n), (k+m) are odd numbers))
-    for(int k = -m+1; k <= m-1; k+=2)
+    for(int i = -n-1; i <= n-1; i+=2)
     {
         for(int j = -n+1; j <= n-1; j+=2)
         {
-            for(int i = -n+1; i <= n-3; i+=2)
+            for(int k = -m+1; k <= m-1; k+=2)
             {
                 Index c1(i,j,k), c2(i+2,j,k);
                 if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
@@ -173,11 +207,11 @@ void CuboidMesh<DataTypes>::update()
     std::cout << "num of tetras_i = " << m_nbTetras_i << std::endl;
 
     //generate tetrahedra between c(i,j,k) and c(i,j+2,k) ((i+n), (j+n), (k+m) are odd numbers))
-    for(int k = -m+1; k <= m-1; k+=2)
+    for(int i = -n+1; i <= n-1; i+=2)
     {
-        for(int i = -n+1; i <= n-1; i+=2)
+        for(int j = -n-1; j <= n-1; j+=2)
         {
-            for(int j = -n+1; j <= n-3; j+=2)
+            for(int k = -m+1; k <= m-1; k+=2)
             {
                 Index c1(i,j,k), c2(i,j+2,k);
                 if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
@@ -201,7 +235,7 @@ void CuboidMesh<DataTypes>::update()
     {
         for(int j = -n+1; j <= n-1; j+=2)
         {
-            for(int k = -m+1; k <= m-3; k+=2)
+            for(int k = -m-1; k <= m-1; k+=2)
             {
                 Index c1(i,j,k), c2(i,j,k+2);
                 Index p[4] = {Index(i-1,j-1,k+1), Index(i+1,j-1,k+1), Index(i+1,j+1,k+1), Index(i-1,j+1,k+1)};
@@ -257,28 +291,52 @@ void CuboidMesh<DataTypes>::draw()
         helper::ReadAccessor< Data< VecCoord > > points = m_points;
         glPointSize(8);
         glBegin(GL_POINTS);
-        if(debug & 1)
+        if(debug & 1)//1
         {
             //vertices
-            //std::cout << "draw boundary vertices" << std::endl;
-            glColor3f(0.0, 0.0, 1.0);
-            for(unsigned i = 0; i < m_nbBdVertices; ++i)
+            //std::cout << "draw vertices" << std::endl;
+            glColor3f(1.0, 0.0, 0.0);
+            for(unsigned i = 0; i < m_nbVertices; ++i)
                 sofa::helper::gl::glVertexT(points[i]);
         }
-        if(debug & 2)
-        {
-            //vertices
-            //std::cout << "draw interior vertices" << std::endl;
-            glColor3f(0.0, 1.0, 0.0);
-            for(unsigned i = m_nbBdVertices; i < m_nbInVertices + m_nbBdVertices; ++i)
-                sofa::helper::gl::glVertexT(points[i]);
-        }
-        if(debug & 4)
+        if(debug & 1<<1)//2
         {
             //centers
             //std::cout << "draw centers" << std::endl;
-            glColor3f(1.0, 0.0, 0.0);
-            for (unsigned i = m_nbBdVertices + m_nbInVertices; i < m_nbInVertices + m_nbBdVertices + m_nbCenters; ++i)
+            glColor3f(0.0, 1.0, 0.0);
+            unsigned begin = m_nbVertices;
+            unsigned end = m_nbVertices + m_nbCenters;
+            for(unsigned i = begin; i < end; ++i)
+                sofa::helper::gl::glVertexT(points[i]);
+        }
+        if(debug & 1<<2)//4
+        {
+            //bdCenters_i
+            //std::cout << "draw bdCenters_i" << std::endl;
+            glColor3f(0.0, 0.0, 1.0);
+            unsigned begin = m_nbVertices + m_nbCenters;
+            unsigned end = m_nbVertices + m_nbCenters + m_nbBdCenters_i;
+            for(unsigned i = begin; i < end; ++i)
+                sofa::helper::gl::glVertexT(points[i]);
+        }
+        if(debug & 1<<3)//8
+        {
+            //bdCenters_j
+            //std::cout << "draw bdCenters_j" << std::endl;
+            glColor3f(0.0, 0.0, 1.0);
+            unsigned begin = m_nbVertices + m_nbCenters + m_nbBdCenters_i;
+            unsigned end = m_nbVertices + m_nbCenters + m_nbBdCenters_i + m_nbBdCenters_j;
+            for(unsigned i = begin; i < end; ++i)
+                sofa::helper::gl::glVertexT(points[i]);
+        }
+        if(debug & 1<<4)//16
+        {
+            //bdCenters_i
+            //std::cout << "draw bdCenters_i" << std::endl;
+            glColor3f(0.0, 0.0, 1.0);
+            unsigned begin = m_nbVertices + m_nbCenters + m_nbBdCenters_i + m_nbBdCenters_j;
+            unsigned end = m_nbVertices + m_nbCenters + m_nbBdCenters_i + m_nbBdCenters_j + m_nbBdCenters_k;
+            for(unsigned i = begin; i < end; ++i)
                 sofa::helper::gl::glVertexT(points[i]);
         }
         glEnd();
@@ -294,7 +352,7 @@ void CuboidMesh<DataTypes>::draw()
         glDisable(GL_LIGHTING);
         glColor3f(0, 0, 0);
         glBegin(GL_LINES);
-        if(debug & 8)
+        if(debug & 1<<5)//32
         {
             for(unsigned i = 0; i < m_nbTetras_i; ++i)
             {
@@ -308,7 +366,7 @@ void CuboidMesh<DataTypes>::draw()
                 }
             }
         }
-        if(debug & 16)
+        if(debug & 1<<6)//64
         {
             for(unsigned i = m_nbTetras_i; i < m_nbTetras_i + m_nbTetras_j; ++i)
             {
@@ -322,7 +380,7 @@ void CuboidMesh<DataTypes>::draw()
                 }
             }
         }
-        if(debug & 32)
+        if(debug & 1<<7)//128
         {
             for(unsigned i = m_nbTetras_i + m_nbTetras_j; i < m_nbTetras_i + m_nbTetras_j + m_nbTetras_k; ++i)
             {
