@@ -7,14 +7,13 @@ namespace core
 namespace visual
 {
 
-FlagTreeItem::FlagTreeItem(const std::string& showName, const std::string& hideName, const tristate& state, FlagTreeItem* parent):
+FlagTreeItem::FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent):
     m_showName(showName),
     m_hideName(hideName),
-    m_state(state),
+    m_state(tristate::neutral_value),
     m_parent(parent)
 {
     if( m_parent ) m_parent->m_child.push_back(this);
-    propagateStateUp(this);
 }
 
 
@@ -40,12 +39,13 @@ void FlagTreeItem::propagateStateUp(FlagTreeItem* origin)
     FlagTreeItem* parent = origin->m_parent;
     if(!parent) return;
 
-    ChildIterator iter;
-    tristate flag = parent->m_child[0]->m_state;
-    for( iter = parent->m_child.begin(); iter != parent->m_child.end(); ++iter )
+    tristate flag = origin->m_state;
+    for( int i = 0 ; i < parent->m_child.size(); ++i)
     {
-        flag = fusion_tristate((*iter)->m_state,flag);
+        FlagTreeItem* current = parent->m_child[i];
+        flag = fusion_tristate(current->m_state,flag);
     }
+
     parent->m_state=flag;
     propagateStateUp(parent);
 }
@@ -143,27 +143,116 @@ void FlagTreeItem::write_recursive(const FlagTreeItem* root, std::string& str )
 }
 
 DisplayFlags::DisplayFlags():
-    m_root(FlagTreeItem("showRoot","hideRoot",true,NULL)),
-    m_showAll(FlagTreeItem("showAll","hideAll",true,&m_root)),
-    m_showVisual(FlagTreeItem("showVisual","hideVisual",true,&m_showAll)),
-    m_showVisualModels(FlagTreeItem("showVisualModels","hideVisualModels",true,&m_showVisual)),
-    m_showBehavior(FlagTreeItem("showBehavior","hideBehavior",tristate::neutral_value,&m_showAll)),
-    m_showBehaviorModels(FlagTreeItem("showBehaviorModels","hideBehaviorModels",tristate::neutral_value,&m_showBehavior)),
-    m_showForceFields(FlagTreeItem("showForceFields","hideForceFields",tristate::neutral_value,&m_showBehavior)),
-    m_showInteractionForceFields(FlagTreeItem("showInteractionForceFields","hideInteractionForceFields",tristate::neutral_value,&m_showBehavior)),
-    m_showCollision(FlagTreeItem("showCollision","hideCollision",tristate::neutral_value,&m_showAll)),
-    m_showCollisionModels(FlagTreeItem("showCollisionModels","hideCollisionModels",tristate::neutral_value,&m_showCollision)),
-    m_showBoundingCollisionModels(FlagTreeItem("showBoundingCollisionModels","hideBoundingCollisionModels",tristate::neutral_value,&m_showCollision)),
-    m_showMapping(FlagTreeItem("showMapping","hideMapping",tristate::neutral_value,&m_showAll)),
-    m_showVisualMappings(FlagTreeItem("showMappings","hideMappings",tristate::neutral_value,&m_showMapping)),
-    m_showMechanicalMappings(FlagTreeItem("showMechanicalMappings","",tristate::neutral_value,&m_showMapping)),
-    m_showOptions(FlagTreeItem("showOptions","hideOptions",tristate::neutral_value,&m_root)),
-    m_showWireframe(FlagTreeItem("showWireframe","hideWireframe",tristate::neutral_value,&m_showOptions)),
-    m_showNormals(FlagTreeItem("showNormals","hideNormals",tristate::neutral_value,&m_showOptions))
+    m_root(FlagTreeItem("showRoot","hideRoot",NULL)),
+    m_showAll(FlagTreeItem("showAll","hideAll",&m_root)),
+    m_showVisual(FlagTreeItem("showVisual","hideVisual",&m_showAll)),
+    m_showVisualModels(FlagTreeItem("showVisualModels","hideVisualModels",&m_showVisual)),
+    m_showBehavior(FlagTreeItem("showBehavior","hideBehavior",&m_showAll)),
+    m_showBehaviorModels(FlagTreeItem("showBehaviorModels","hideBehaviorModels",&m_showBehavior)),
+    m_showForceFields(FlagTreeItem("showForceFields","hideForceFields",&m_showBehavior)),
+    m_showInteractionForceFields(FlagTreeItem("showInteractionForceFields","hideInteractionForceFields",&m_showBehavior)),
+    m_showCollision(FlagTreeItem("showCollision","hideCollision",&m_showAll)),
+    m_showCollisionModels(FlagTreeItem("showCollisionModels","hideCollisionModels",&m_showCollision)),
+    m_showBoundingCollisionModels(FlagTreeItem("showBoundingCollisionModels","hideBoundingCollisionModels",&m_showCollision)),
+    m_showMapping(FlagTreeItem("showMapping","hideMapping",&m_showAll)),
+    m_showVisualMappings(FlagTreeItem("showMappings","hideMappings",&m_showMapping)),
+    m_showMechanicalMappings(FlagTreeItem("showMechanicalMappings","",&m_showMapping)),
+    m_showOptions(FlagTreeItem("showOptions","hideOptions",&m_root)),
+    m_showWireframe(FlagTreeItem("showWireframe","hideWireframe",&m_showOptions)),
+    m_showNormals(FlagTreeItem("showNormals","hideNormals",&m_showOptions))
 #ifdef SOFA_SMP
-    m_showProcessorColor(FlagTreeItem("showProcessorColor","hideProcessorColor",tristate::neutral_value,&m_showOptions))
+    m_showProcessorColor(FlagTreeItem("showProcessorColor","hideProcessorColor",&m_showOptions))
 #endif
 {
+    m_showVisualModels.setValue(tristate::true_value);
+    m_showBehaviorModels.setValue(tristate::neutral_value);
+    m_showForceFields.setValue(tristate::neutral_value);
+    m_showInteractionForceFields.setValue(tristate::neutral_value);
+    m_showCollisionModels.setValue(tristate::neutral_value);
+    m_showBoundingCollisionModels.setValue(tristate::neutral_value);
+    m_showVisualMappings.setValue(tristate::neutral_value);
+    m_showMechanicalMappings.setValue(tristate::neutral_value);
+    m_showWireframe.setValue(tristate::neutral_value);
+    m_showNormals.setValue(tristate::neutral_value);
+#ifdef SOFA_SMP
+    m_showProcessorColor.setValue(tristate::neutral_value);
+#endif
+}
+
+DisplayFlags::DisplayFlags(const DisplayFlags & other):
+    m_root(FlagTreeItem("showRoot","hideRoot",NULL)),
+    m_showAll(FlagTreeItem("showAll","hideAll",&m_root)),
+    m_showVisual(FlagTreeItem("showVisual","hideVisual",&m_showAll)),
+    m_showVisualModels(FlagTreeItem("showVisualModels","hideVisualModels",&m_showVisual)),
+    m_showBehavior(FlagTreeItem("showBehavior","hideBehavior",&m_showAll)),
+    m_showBehaviorModels(FlagTreeItem("showBehaviorModels","hideBehaviorModels",&m_showBehavior)),
+    m_showForceFields(FlagTreeItem("showForceFields","hideForceFields",&m_showBehavior)),
+    m_showInteractionForceFields(FlagTreeItem("showInteractionForceFields","hideInteractionForceFields",&m_showBehavior)),
+    m_showCollision(FlagTreeItem("showCollision","hideCollision",&m_showAll)),
+    m_showCollisionModels(FlagTreeItem("showCollisionModels","hideCollisionModels",&m_showCollision)),
+    m_showBoundingCollisionModels(FlagTreeItem("showBoundingCollisionModels","hideBoundingCollisionModels",&m_showCollision)),
+    m_showMapping(FlagTreeItem("showMapping","hideMapping",&m_showAll)),
+    m_showVisualMappings(FlagTreeItem("showMappings","hideMappings",&m_showMapping)),
+    m_showMechanicalMappings(FlagTreeItem("showMechanicalMappings","",&m_showMapping)),
+    m_showOptions(FlagTreeItem("showOptions","hideOptions",&m_root)),
+    m_showWireframe(FlagTreeItem("showWireframe","hideWireframe",&m_showOptions)),
+    m_showNormals(FlagTreeItem("showNormals","hideNormals",&m_showOptions))
+#ifdef SOFA_SMP
+    m_showProcessorColor(FlagTreeItem("showProcessorColor","hideProcessorColor",&m_showOptions))
+#endif
+{
+    m_showVisualModels.setValue(other.m_showVisualModels.state());
+    m_showBehaviorModels.setValue(other.m_showBehaviorModels.state());
+    m_showForceFields.setValue(other.m_showForceFields.state());
+    m_showInteractionForceFields.setValue(other.m_showInteractionForceFields.state());
+    m_showCollisionModels.setValue(other.m_showCollisionModels.state());
+    m_showBoundingCollisionModels.setValue(other.m_showBoundingCollisionModels.state());
+    m_showVisualMappings.setValue(other.m_showVisualMappings.state());
+    m_showMechanicalMappings.setValue(other.m_showMechanicalMappings.state());
+    m_showWireframe.setValue(other.m_showWireframe.state());
+    m_showNormals.setValue(other.m_showNormals.state());
+#ifdef SOFA_SMP
+    m_showProcessorColor.setValue(other.m_showProcessorColor.state());
+#endif
+}
+
+DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
+{
+    if( this != &other)
+    {
+        m_showVisualModels.setValue(other.m_showVisualModels.state());
+        m_showBehaviorModels.setValue(other.m_showBehaviorModels.state());
+        m_showForceFields.setValue(other.m_showForceFields.state());
+        m_showInteractionForceFields.setValue(other.m_showInteractionForceFields.state());
+        m_showCollisionModels.setValue(other.m_showCollisionModels.state());
+        m_showBoundingCollisionModels.setValue(other.m_showBoundingCollisionModels.state());
+        m_showVisualMappings.setValue(other.m_showVisualMappings.state());
+        m_showMechanicalMappings.setValue(other.m_showMechanicalMappings.state());
+        m_showWireframe.setValue(other.m_showWireframe.state());
+        m_showNormals.setValue(other.m_showNormals.state());
+#ifdef SOFA_SMP
+        m_showProcessorColor.setValue(other.m_showProcessorColor.state());
+#endif
+    }
+    return *this;
+}
+
+bool DisplayFlags::isNeutral() const
+{
+    return m_showVisualModels.state().state == tristate::neutral_value
+            && m_showBehaviorModels.state().state == tristate::neutral_value
+            && m_showForceFields.state().state  == tristate::neutral_value
+            && m_showInteractionForceFields.state().state == tristate::neutral_value
+            && m_showBoundingCollisionModels.state().state == tristate::neutral_value
+            && m_showCollisionModels.state().state == tristate::neutral_value
+            && m_showVisualMappings.state().state == tristate::neutral_value
+            && m_showMechanicalMappings.state().state == tristate::neutral_value
+            && m_showWireframe.state().state == tristate::neutral_value
+            && m_showNormals.state().state == tristate::neutral_value
+#ifdef SOFA_SMP
+            && m_showProcessorColor.state().state == tristate::neutral_value
+#endif
+            ;
 }
 
 DisplayFlags merge_displayFlags(const DisplayFlags &previous, const DisplayFlags &current)
@@ -185,6 +274,24 @@ DisplayFlags merge_displayFlags(const DisplayFlags &previous, const DisplayFlags
     return merge;
 }
 
+DisplayFlags difference_displayFlags(const DisplayFlags& previous, const DisplayFlags& current)
+{
+    DisplayFlags difference;
+    difference.m_showVisualModels.setValue( difference_tristate(previous.m_showVisualModels.state(),current.m_showVisualModels.state()) );
+    difference.m_showBehaviorModels.setValue( difference_tristate(previous.m_showBehaviorModels.state(),current.m_showBehaviorModels.state()) );
+    difference.m_showForceFields.setValue( difference_tristate(previous.m_showForceFields.state(),current.m_showForceFields.state()) );
+    difference.m_showInteractionForceFields.setValue( difference_tristate(previous.m_showInteractionForceFields.state(),current.m_showInteractionForceFields.state()) );
+    difference.m_showCollisionModels.setValue( difference_tristate(previous.m_showCollisionModels.state(),current.m_showCollisionModels.state()) );
+    difference.m_showBoundingCollisionModels.setValue( difference_tristate(previous.m_showBoundingCollisionModels.state(),current.m_showBoundingCollisionModels.state()) );
+    difference.m_showVisualMappings.setValue( difference_tristate(previous.m_showVisualMappings.state(),current.m_showVisualMappings.state()) );
+    difference.m_showMechanicalMappings.setValue( difference_tristate(previous.m_showMechanicalMappings.state(),current.m_showMechanicalMappings.state()) );
+    difference.m_showWireframe.setValue( difference_tristate(previous.m_showWireframe.state(),current.m_showWireframe.state()) );
+    difference.m_showNormals.setValue( difference_tristate(previous.m_showNormals.state(),current.m_showNormals.state()) );
+#ifdef SOFA_SMP
+    difference.m_showProcessorColor.setValue( difference_tristate(previous.m_showProcessorColor.state(),current.m_showProcessorColor.state()) )
+#endif
+    return difference;
+}
 }
 
 }

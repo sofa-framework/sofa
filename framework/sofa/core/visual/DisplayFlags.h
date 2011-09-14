@@ -24,31 +24,31 @@ struct SOFA_CORE_API tristate
     {
     }
     tristate(state_t state):state(state) {}
-    bool operator==(const tristate& other) const
-    {
-        return (this->state == other.state);
-    }
-    bool operator!=(const tristate& other) const
-    {
-        return !(*this==other);
-    }
+
     operator bool() const
     {
         return state == true_value ? true : false;
     }
     friend inline tristate fusion_tristate(const tristate& lhs, const tristate& rhs);
     friend inline tristate merge_tristate(const tristate& previous, const tristate& current);
+    friend inline tristate difference_tristate(const tristate& previous, const tristate& current);
 };
 
 inline tristate fusion_tristate(const tristate &lhs, const tristate &rhs)
 {
-    if( lhs == rhs  ) return lhs;
+    if( lhs.state == rhs.state ) return lhs;
     else return tristate(tristate::neutral_value);
 }
 
 inline tristate merge_tristate(const tristate& previous, const tristate& current)
 {
     if(current.state == tristate::neutral_value ) return previous;
+    else return current;
+}
+inline tristate difference_tristate(const tristate& previous, const tristate& current)
+{
+    if( current.state == tristate::neutral_value || current.state == previous.state )
+        return tristate::neutral_value;
     else return current;
 }
 
@@ -66,7 +66,7 @@ protected:
     typedef helper::vector<FlagTreeItem*>::const_iterator ChildConstIterator;
 
 public:
-    FlagTreeItem(const std::string& showName, const std::string& hideName, const tristate& state, FlagTreeItem* parent = NULL);
+    FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent = NULL);
 
     const tristate& state( ) const {return m_state;}
     tristate& state() {return m_state;}
@@ -123,6 +123,9 @@ class SOFA_CORE_API DisplayFlags
 {
 public:
     DisplayFlags();
+    DisplayFlags(const DisplayFlags& );
+    DisplayFlags& operator=(const DisplayFlags& );
+
     bool getShowVisualModels() const { return m_showVisualModels.state(); }
     bool getShowBehaviorModels() const { return m_showBehaviorModels.state(); }
     bool getShowForceFields() const { return m_showForceFields.state(); }
@@ -158,9 +161,11 @@ public:
         return flags.m_root.read(in);
     }
 
-    friend SOFA_CORE_API DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
+    bool isNeutral() const;
 
-protected:
+    friend SOFA_CORE_API DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
+    friend SOFA_CORE_API DisplayFlags difference_displayFlags(const DisplayFlags& parent, const DisplayFlags& child);
+public:
     FlagTreeItem m_root;
 
     FlagTreeItem m_showAll;
@@ -191,7 +196,7 @@ protected:
 };
 
 SOFA_CORE_API DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
-
+SOFA_CORE_API DisplayFlags difference_displayFlags(const DisplayFlags& parent, const DisplayFlags& child);
 
 }
 
