@@ -25,6 +25,7 @@ HEADERS += \
 	CollisionElement.h \
 	CollisionModel.h \
 	DataEngine.h \
+	behavior/BaseAnimationLoop.h \
 	behavior/BaseController.h \
 	behavior/BaseConstraint.h \
 	behavior/BaseConstraintSet.h \
@@ -164,6 +165,7 @@ SOURCES +=  \
 	Multi2Mapping.cpp \
 	CollisionModel.cpp \
 	DataEngine.cpp \
+	behavior/BaseAnimationLoop.cpp \
 	behavior/LinearSolver.cpp \
 	behavior/MasterSolver.cpp \
 	behavior/MultiMatrix.cpp \

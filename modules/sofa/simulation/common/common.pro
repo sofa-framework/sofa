@@ -23,6 +23,7 @@ HEADERS += common.h \
            CactusStackStorage.h \  
            ClassSystem.h \  
            CleanupVisitor.h \
+           CollisionAnimationLoop.h \
            CollisionBeginEvent.h \
            CollisionEndEvent.h \
            CollisionVisitor.h \  
@@ -86,6 +87,7 @@ SOURCES += Node.cpp \
            BehaviorUpdatePositionVisitor.cpp \
            CactusStackStorage.cpp \
            CleanupVisitor.cpp \
+           CollisionAnimationLoop.cpp \
            CollisionVisitor.cpp \
            DeactivatedNodeVisitor.cpp \
            DefaultAnimationLoop.cpp \
