@@ -206,6 +206,11 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::handleTopologyChange()
 {
+
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    std::cout << "ATTENTION IL PASSE ENCORE LA: TriangularFEMForceField<DataTypes>::handleTopologyChange()" << std::endl;
+#endif
+
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
@@ -280,19 +285,33 @@ void TriangularFEMForceField<DataTypes>::reinit()
     triangleInf.resize(_topology->getNbTriangles());
     /// prepare to store info in the edge array
     edgeInf.resize(_topology->getNbEdges());
+
     unsigned int nbPoints = _topology->getNbPoints();
     helper::vector<VertexInformation>& vi = *(vertexInfo.beginEdit());
     vi.resize(nbPoints);
+
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    edgeInfo.createTopologicalEngine(_topology);
+    edgeInfo.registerTopologicalData();
+
+    vertexInfo.createTopologicalEngine(_topology);
+    vertexInfo.registerTopologicalData();
+#endif
     vertexInfo.endEdit();
 
     for (int i=0; i<_topology->getNbTriangles(); ++i)
     {
         TRQSTriangleCreationFunction(i, (void*) this, triangleInf[i],  _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0, (const sofa::helper::vector< double >)0);
     }
-
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    triangleInfo.createTopologicalEngine(_topology);
+#endif
     triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
     triangleInfo.setCreateParameter( (void *) this );
     triangleInfo.setDestroyParameter( (void *) this );
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    triangleInfo.registerTopologicalData();
+#endif
 
     edgeInfo.endEdit();
     triangleInfo.endEdit();

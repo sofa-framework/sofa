@@ -43,7 +43,6 @@
 #include <iostream> //for debugging
 
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
 
 namespace sofa
@@ -326,6 +325,10 @@ TriangularBendingSprings<DataTypes>::~TriangularBendingSprings()
 
 template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopologyChange()
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    std::cout << "ATTENTION IL PASSE ENCORE LA: TriangularFEMForceField<DataTypes>::handleTopologyChange()" << std::endl;
+#endif
+
     bool debug_mode = false;
 
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
@@ -472,6 +475,13 @@ void TriangularBendingSprings<DataTypes>::init()
         return;
     }
 
+    this->reinit();
+}
+
+
+template<class DataTypes>
+void TriangularBendingSprings<DataTypes>::reinit()
+{
     /// prepare to store info in the edge array
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     edgeInf.resize(_topology->getNbEdges());
@@ -494,12 +504,17 @@ void TriangularBendingSprings<DataTypes>::init()
     }
     TriangularBSTriangleCreationFunction(triangleAdded,(void*) this,
             edgeInf);
-
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    edgeInfo.createTopologicalEngine(_topology);
+#endif
     edgeInfo.setCreateFunction(TriangularBSEdgeCreationFunction);
     edgeInfo.setCreateTriangleFunction(TriangularBSTriangleCreationFunction);
     edgeInfo.setDestroyTriangleFunction(TriangularBSTriangleDestructionFunction);
     edgeInfo.setCreateParameter( (void *) this );
     edgeInfo.setDestroyParameter( (void *) this );
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    edgeInfo.registerTopologicalData();
+#endif
 
     edgeInfo.endEdit();
 }
