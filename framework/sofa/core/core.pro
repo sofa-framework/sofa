@@ -61,7 +61,6 @@ HEADERS += \
 	behavior/MixedInteractionConstraint.inl \
 	behavior/Mass.h \
 	behavior/Mass.inl \
-#	behavior/MasterSolver.h \
 	behavior/MechanicalState.h \
 	behavior/MultiVec.h \
 	behavior/MultiMatrix.h \
@@ -167,7 +166,6 @@ SOURCES +=  \
 	DataEngine.cpp \
 	behavior/BaseAnimationLoop.cpp \
 	behavior/LinearSolver.cpp \
-#	behavior/MasterSolver.cpp \
 	behavior/MultiMatrix.cpp \
 	behavior/MultiMatrixAccessor.cpp \
 	behavior/OdeSolver.cpp \

@@ -22,8 +22,8 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASTERSOLVER_LMCONTACTCONSTRAINTSOLVER_H
-#define SOFA_COMPONENT_MASTERSOLVER_LMCONTACTCONSTRAINTSOLVER_H
+#ifndef SOFA_COMPONENT_ANIMATIONLOOP_LMCONTACTCONSTRAINTLOOP_H
+#define SOFA_COMPONENT_ANIMATIONLOOP_LMCONTACTCONSTRAINTLOOP_H
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
@@ -35,19 +35,19 @@ namespace sofa
 namespace component
 {
 
-namespace mastersolver
+namespace animationloop
 {
 
 
-class SOFA_COMPONENT_MASTERSOLVER_API LMContactConstraintSolver : public sofa::simulation::CollisionAnimationLoop
+class SOFA_COMPONENT_ANIMATIONLOOP_API LMContactConstraintLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
 
-    SOFA_CLASS(LMContactConstraintSolver, sofa::simulation::CollisionAnimationLoop);
+    SOFA_CLASS(LMContactConstraintLoop, sofa::simulation::CollisionAnimationLoop);
 
-    LMContactConstraintSolver(simulation::Node* gnode);
-    virtual ~LMContactConstraintSolver();
+    LMContactConstraintLoop(simulation::Node* gnode);
+    virtual ~LMContactConstraintLoop();
 
     virtual void bwdInit();
 
@@ -76,10 +76,10 @@ private:
     bool isCollisionDetected();
 };
 
-} // namespace mastersolver
+} // namespace animationloop
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif /* SOFA_COMPONENT_ANIMATIONLOOP_LMCONTACTCONSTRAINTLOOP_H */

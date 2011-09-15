@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASTERSOLVER_MULTITAGMASTERSOLVER_H
-#define SOFA_COMPONENT_MASTERSOLVER_MULTITAGMASTERSOLVER_H
+#ifndef SOFA_COMPONENT_MASTERSOLVER_MULTITAGANIMATIONLOOP_H
+#define SOFA_COMPONENT_MASTERSOLVER_MULTITAGANIMATIONLOOP_H
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
@@ -35,24 +35,24 @@ namespace sofa
 namespace component
 {
 
-namespace mastersolver
+namespace animationloop
 {
 
 /** Simple master solver that given a list of tags, animate the graph one tag after another.
 */
-class SOFA_COMPONENT_MASTERSOLVER_API MultiTagMasterSolver : public sofa::simulation::CollisionAnimationLoop
+class SOFA_COMPONENT_ANIMATIONLOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
-    SOFA_CLASS(MultiTagMasterSolver,sofa::simulation::CollisionAnimationLoop);
+    SOFA_CLASS(MultiTagAnimationLoop,sofa::simulation::CollisionAnimationLoop);
 
-    MultiTagMasterSolver(simulation::Node* gnode);
+    MultiTagAnimationLoop(simulation::Node* gnode);
 
     virtual void init();
 
     virtual void clear();
 
-    virtual ~MultiTagMasterSolver();
+    virtual ~MultiTagAnimationLoop();
 
     virtual void step (const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt);
 
@@ -70,10 +70,10 @@ private:
     sofa::core::objectmodel::TagSet tagList;
 };
 
-} // namespace mastersolver
+} // namespace animationloop
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif /* SOFA_COMPONENT_MASTERSOLVER_MULTITAGANIMATIONLOOP_H */

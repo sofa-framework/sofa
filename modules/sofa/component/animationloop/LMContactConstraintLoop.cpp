@@ -22,7 +22,7 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#include <sofa/component/mastersolver/LMContactConstraintSolver.h>
+#include <sofa/component/animationloop/LMContactConstraintLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/constraintset/LMConstraintSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
@@ -44,33 +44,33 @@ namespace sofa
 namespace component
 {
 
-namespace mastersolver
+namespace animationloop
 {
 
-int LMContactConstraintSolverClass = core::RegisterObject("invert the Sofa simulation pipeline: first integration, than collision detection until no more collision is found.")
-        .add< LMContactConstraintSolver >()
+int LMContactConstraintLoopClass = core::RegisterObject("invert the Sofa simulation pipeline: first integration, than collision detection until no more collision is found.")
+        .add< LMContactConstraintLoop >()
         ;
 
-SOFA_DECL_CLASS(LMContactConstraintSolver);
+SOFA_DECL_CLASS(LMContactConstraintLoop);
 
-LMContactConstraintSolver::LMContactConstraintSolver(simulation::Node* gnode)
+LMContactConstraintLoop::LMContactConstraintLoop(simulation::Node* gnode)
     : Inherit(gnode)
     , maxCollisionSteps( initData(&maxCollisionSteps,(unsigned int)1,"maxSteps", "number of collision steps between each frame rendering") )
 {
 }
 
-LMContactConstraintSolver::~LMContactConstraintSolver()
+LMContactConstraintLoop::~LMContactConstraintLoop()
 {
 }
 
 
-void LMContactConstraintSolver::bwdInit()
+void LMContactConstraintLoop::bwdInit()
 {
     //  sout << "collision" << sendl;
     computeCollision();
 }
 
-bool LMContactConstraintSolver::needPriorStatePropagation()
+bool LMContactConstraintLoop::needPriorStatePropagation()
 {
     using core::behavior::BaseLMConstraint;
     bool needPriorPropagation=false;
@@ -90,7 +90,7 @@ bool LMContactConstraintSolver::needPriorStatePropagation()
     return needPriorPropagation;
 }
 
-void LMContactConstraintSolver::solveConstraints(bool needPropagation)
+void LMContactConstraintLoop::solveConstraints(bool needPropagation)
 {
     //  sout << "apply constraints" << sendl;
     simulation::MechanicalExpressJacobianVisitor JacobianVisitor(this->gnode);
@@ -120,7 +120,7 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
     propagateState.execute(this->gnode);
 }
 
-bool LMContactConstraintSolver::isCollisionDetected()
+bool LMContactConstraintLoop::isCollisionDetected()
 {
     //  sout << "collision" << sendl;
     {
@@ -147,7 +147,7 @@ bool LMContactConstraintSolver::isCollisionDetected()
     return (rasterizer->getNbPairs() != 0);
 }
 
-void LMContactConstraintSolver::step(const core::ExecParams* params, double dt)
+void LMContactConstraintLoop::step(const core::ExecParams* params, double dt)
 {
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 
@@ -229,7 +229,7 @@ void LMContactConstraintSolver::step(const core::ExecParams* params, double dt)
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
-} // namespace mastersolver
+} // namespace animationloop
 
 } // namespace component
 
