@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <Node name="root"  dt="1.0" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
 	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
@@ -5,7 +6,7 @@
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Object type="CollisionGroup" name="Group" />
 
-	<Object type="MultiStepMasterSolver" collisionSteps="10" integrationSteps="2"/>
+	<Object type="MultiStepAnimationLoop" collisionSteps="10" integrationSteps="2"/>
 	<Node name="ChainRigid">
 		<Node name="TorusFixed">
         		<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_for_collision.obj"/>
