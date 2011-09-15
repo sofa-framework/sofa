@@ -22,7 +22,7 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#include <sofa/component/mastersolver/MultiTagMasterSolver.h>
+#include <sofa/component/animationloop/MultiTagAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
@@ -35,25 +35,25 @@ namespace sofa
 namespace component
 {
 
-namespace mastersolver
+namespace animationloop
 {
 
-int MultiTagMasterSolverClass = core::RegisterObject("Simple master solver that given a list of tags, animate the graph one tag after another.")
-        .add< MultiTagMasterSolver >()
+int MultiTagAnimationLoopClass = core::RegisterObject("Simple master solver that given a list of tags, animate the graph one tag after another.")
+        .add< MultiTagAnimationLoop >()
         ;
 
-SOFA_DECL_CLASS(MultiTagMasterSolver);
+SOFA_DECL_CLASS(MultiTagAnimationLoop);
 
-MultiTagMasterSolver::MultiTagMasterSolver(simulation::Node* gnode)
+MultiTagAnimationLoop::MultiTagAnimationLoop(simulation::Node* gnode)
     : Inherit(gnode)
 {
 }
 
-MultiTagMasterSolver::~MultiTagMasterSolver()
+MultiTagAnimationLoop::~MultiTagAnimationLoop()
 {
 }
 
-void MultiTagMasterSolver::init()
+void MultiTagAnimationLoop::init()
 {
     tagList = this->getTags();
     sofa::core::objectmodel::TagSet::iterator it;
@@ -64,7 +64,7 @@ void MultiTagMasterSolver::init()
 
 
 
-void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
+void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
 {
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 
@@ -90,15 +90,15 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
         {
             this->addTag (*it);
 
-            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin constraints reset" << sendl;
+            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin constraints reset" << sendl;
             sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
-            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end constraints reset" << sendl;
-            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin collision for tag: "<< *it << sendl;
+            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end constraints reset" << sendl;
+            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin collision for tag: "<< *it << sendl;
             computeCollision(params);
-            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end collision" << sendl;
-            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin integration  for tag: "<< *it << sendl;
+            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end collision" << sendl;
+            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin integration  for tag: "<< *it << sendl;
             integrate(params /* PARAMS FIRST */, dt);
-            if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end integration" << sendl;
+            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end integration" << sendl;
 
             this->removeTag (*it);
         }
@@ -138,7 +138,7 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
-void MultiTagMasterSolver::clear()
+void MultiTagAnimationLoop::clear()
 {
     if (!tagList.empty())
     {

@@ -22,8 +22,8 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASTERSOLVER_MASTERCONSTRAINTSOLVER_H
-#define SOFA_COMPONENT_MASTERSOLVER_MASTERCONSTRAINTSOLVER_H
+#ifndef SOFA_COMPONENT_ANIMATIONLOOP_CONSTRAINTANIMATIONLOOP_H
+#define SOFA_COMPONENT_ANIMATIONLOOP_CONSTRAINTANIMATIONLOOP_H
 
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MultiVecId.h>
@@ -46,14 +46,14 @@ namespace sofa
 namespace component
 {
 
-namespace mastersolver
+namespace animationloop
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 
-class SOFA_COMPONENT_MASTERSOLVER_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
+class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalGetConstraintResolutionVisitor(const core::ExecParams* params /* PARAMS FIRST */, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
@@ -95,7 +95,7 @@ private:
 };
 
 
-class SOFA_COMPONENT_MASTERSOLVER_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
+class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalSetConstraint(const core::ConstraintParams* _cparams /* PARAMS FIRST  = sofa::core::ConstraintParams::defaultInstance()*/, core::MultiMatrixDerivId _res, unsigned int &_contactId)
@@ -151,7 +151,7 @@ protected:
 };
 
 
-class SOFA_COMPONENT_MASTERSOLVER_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
+class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams /* PARAMS FIRST  = sofa::core::ConstraintParams::defaultInstance()*/, core::MultiMatrixDerivId _res)
@@ -198,7 +198,7 @@ protected:
 
 
 
-class SOFA_COMPONENT_MASTERSOLVER_API ConstraintProblem
+class SOFA_COMPONENT_ANIMATIONLOOP_API ConstraintProblem
 {
 protected:
     LPtrFullMatrix<double> _W;
@@ -226,15 +226,18 @@ public:
     void gaussSeidelConstraintTimed(double &timeout, int numItMax);
 };
 
-class SOFA_COMPONENT_MASTERSOLVER_API MasterConstraintSolver : public sofa::simulation::CollisionAnimationLoop
+
+
+
+class SOFA_COMPONENT_ANIMATIONLOOP_API ConstraintAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
 
-    SOFA_CLASS(MasterConstraintSolver, sofa::simulation::CollisionAnimationLoop);
+    SOFA_CLASS(ConstraintAnimationLoop, sofa::simulation::CollisionAnimationLoop);
 
-    MasterConstraintSolver(simulation::Node* gnode);
-    virtual ~MasterConstraintSolver();
+    ConstraintAnimationLoop(simulation::Node* gnode);
+    virtual ~ConstraintAnimationLoop();
     // virtual const char* getTypeName() const { return "AnimationLoop"; }
 
     virtual void step(const core::ExecParams* params /* PARAMS FIRST */, double dt);
@@ -325,10 +328,10 @@ private:
     ConstraintProblem CP1, CP2;
 };
 
-} // namespace mastersolver
+} // namespace animationloop
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif /* SOFA_COMPONENT_ANIMATIONLOOP_CONSTRAINTANIMATIONLOOP_H */

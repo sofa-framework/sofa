@@ -1,28 +1,28 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
-#include <sofa/component/mastersolver/MasterConstraintSolver.h>
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
+#include <sofa/component/animationloop/ConstraintAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/component/constraintset/ConstraintSolverImpl.h>
@@ -55,7 +55,7 @@ namespace sofa
 namespace component
 {
 
-namespace mastersolver
+namespace animationloop
 {
 
 using namespace sofa::defaulttype;
@@ -117,7 +117,7 @@ void ConstraintProblem::clear(int dim, const double &tol)
 void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax)
 {
 
-//	sout<<"------------------------------------ new iteration ---------------------------------"<<sendl;
+    //	sout<<"------------------------------------ new iteration ---------------------------------"<<sendl;
     int i, j, k, l, nb;
 
     double errF[6];
@@ -130,12 +130,12 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
     double timeScale = 1.0 / (double)CTime::getTicksPerSec();
 
     /* // no init: the constraint problem has already been solved in the simulation...
-    	for(i=0; i<dim; )
-    	{
-    		res[i]->init(i, w, force);
-    		i += res[i]->nbLines;
-    	}
-    */
+    for(i=0; i<dim; )
+    {
+    	res[i]->init(i, w, force);
+    	i += res[i]->nbLines;
+    }
+     */
 
     for(i=0; i<numItMax; i++)
     {
@@ -223,9 +223,9 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
 }
 
 
-MasterConstraintSolver::MasterConstraintSolver(simulation::Node* gnode)
+ConstraintAnimationLoop::ConstraintAnimationLoop(simulation::Node* gnode)
     : Inherit(gnode)
-    , displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of MasterConstraintSolver."))
+    , displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of ConstraintAnimationLoop."))
     , _tol( initData(&_tol, 0.00001, "tolerance", "Tolerance of the Gauss-Seidel"))
     , _maxIt( initData(&_maxIt, 1000, "maxIterations", "Maximum number of iterations of the Gauss-Seidel"))
     , doCollisionsFirst(initData(&doCollisionsFirst, false, "doCollisionsFirst","Compute the collisions first (to support penality-based contacts)"))
@@ -242,15 +242,15 @@ MasterConstraintSolver::MasterConstraintSolver(simulation::Node* gnode)
     bufCP1 = false;
 
     _graphErrors.setWidget("graph");
-//	_graphErrors.setReadOnly(true);
+    //	_graphErrors.setReadOnly(true);
     _graphErrors.setGroup("Graph");
 
     _graphConstraints.setWidget("graph");
-//	_graphConstraints.setReadOnly(true);
+    //	_graphConstraints.setReadOnly(true);
     _graphConstraints.setGroup("Graph");
 
     _graphForces.setWidget("graph");
-//	_graphForces.setReadOnly(true);
+    //	_graphForces.setReadOnly(true);
     _graphForces.setGroup("Graph2");
 
     CP1.clear(0,_tol.getValue());
@@ -258,10 +258,10 @@ MasterConstraintSolver::MasterConstraintSolver(simulation::Node* gnode)
 
     timer = 0;
 
-    std::cerr << "WARNING : MasterConstraintSolver is deprecated. Please use the combination of FreeMotionAnimationLoop and GenericConstraintSolver." << std::endl;
+    std::cerr << "WARNING : ConstraintAnimationLoop is deprecated. Please use the combination of FreeMotionAnimationLoop and GenericConstraintSolver." << std::endl;
 }
 
-MasterConstraintSolver::~MasterConstraintSolver()
+ConstraintAnimationLoop::~ConstraintAnimationLoop()
 {
     if (timer != 0)
     {
@@ -270,7 +270,7 @@ MasterConstraintSolver::~MasterConstraintSolver()
     }
 }
 
-void MasterConstraintSolver::init()
+void ConstraintAnimationLoop::init()
 {
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())
@@ -282,7 +282,7 @@ void MasterConstraintSolver::init()
 }
 
 
-void MasterConstraintSolver::launchCollisionDetection(const core::ExecParams* params)
+void ConstraintAnimationLoop::launchCollisionDetection(const core::ExecParams* params)
 {
     if (debug)
         sout<<"computeCollision is called"<<sendl;
@@ -302,7 +302,7 @@ void MasterConstraintSolver::launchCollisionDetection(const core::ExecParams* pa
 }
 
 
-void MasterConstraintSolver::freeMotion(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, double &dt)
+void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, double &dt)
 {
     if (debug)
         sout<<"Free Motion is called"<<sendl;
@@ -362,7 +362,7 @@ void MasterConstraintSolver::freeMotion(const core::ExecParams* params /* PARAMS
     }
 }
 
-void MasterConstraintSolver::setConstraintEquations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
+void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
 {
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -412,7 +412,7 @@ void MasterConstraintSolver::setConstraintEquations(const core::ExecParams* para
     }
 }
 
-void MasterConstraintSolver::writeAndAccumulateAndCountConstraintDirections(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, unsigned int &numConstraints)
+void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, unsigned int &numConstraints)
 {
     // calling resetConstraint on LMConstraints and MechanicalStates
     simulation::MechanicalResetConstraintVisitor(params).execute(context);
@@ -441,7 +441,7 @@ void MasterConstraintSolver::writeAndAccumulateAndCountConstraintDirections(cons
         CP1.clear(numConstraints,this->_tol.getValue());*/
 }
 
-void MasterConstraintSolver::getIndividualConstraintViolations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
+void ConstraintAnimationLoop::getIndividualConstraintViolations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
 {
     //if (debug)
     //    sout << "   2. compute violation" << sendl;
@@ -453,7 +453,7 @@ void MasterConstraintSolver::getIndividualConstraintViolations(const core::ExecP
     constraintset::MechanicalGetConstraintViolationVisitor(&cparams, getCP()->getDfree()).execute(context);
 }
 
-void MasterConstraintSolver::getIndividualConstraintSolvingProcess(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
+void ConstraintAnimationLoop::getIndividualConstraintSolvingProcess(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
 {
     /// calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
     //if (debug)
@@ -462,7 +462,7 @@ void MasterConstraintSolver::getIndividualConstraintSolvingProcess(const core::E
     MechanicalGetConstraintResolutionVisitor(params, getCP()->getConstraintResolutions(), 0).execute(context);
 }
 
-void MasterConstraintSolver::computeComplianceInConstraintSpace()
+void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
 {
     /// calling getCompliance => getDelassusOperator(_W) = H*C*Ht
     if (debug)
@@ -484,7 +484,7 @@ void MasterConstraintSolver::computeComplianceInConstraintSpace()
 
 }
 
-void MasterConstraintSolver::correctiveMotion(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
+void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
 {
 
     if (debug)
@@ -543,7 +543,7 @@ void MasterConstraintSolver::correctiveMotion(const core::ExecParams* params /* 
     sofa::helper::AdvancedTimer::stepEnd ("Corrective Motion");
 }
 
-void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIRST */, double dt )
+void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FIRST */, double dt )
 {
 
     static double simulationTime=0.0;
@@ -621,7 +621,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
         debug = this->f_printLog.getValue();
 
         if (debug)
-            sout << "MasterConstraintSolver::step is called" << sendl;
+            sout << "ConstraintAnimationLoop::step is called" << sendl;
 
 
         // This solver will work in freePosition and freeVelocity vectors.
@@ -764,10 +764,10 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
 
         /// CORRECTIVE MOTION
         correctiveMotion(params /* PARAMS FIRST */, this->gnode);
-//       if (doubleBuffer.getValue() && bufCP1)
-//           std::cout << " #C: " << CP2.getSize() << " constraints" << std::endl;
-//       else
-//           std::cout << " #C: " << CP1.getSize() << " constraints" << std::endl;
+        //       if (doubleBuffer.getValue() && bufCP1)
+        //           std::cout << " #C: " << CP2.getSize() << " constraints" << std::endl;
+        //       else
+        //           std::cout << " #C: " << CP1.getSize() << " constraints" << std::endl;
 
 
         if ( displayTime.getValue() )
@@ -819,7 +819,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
-void MasterConstraintSolver::computePredictiveForce(int dim, double* force, std::vector<core::behavior::ConstraintResolution*>& res)
+void ConstraintAnimationLoop::computePredictiveForce(int dim, double* force, std::vector<core::behavior::ConstraintResolution*>& res)
 {
     for(int i=0; i<dim; )
     {
@@ -828,7 +828,7 @@ void MasterConstraintSolver::computePredictiveForce(int dim, double* force, std:
     }
 }
 
-void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, double** w, double* force,
+void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, double** w, double* force,
         double* d, std::vector<ConstraintResolution*>& res, double* df=NULL)
 {
     if(!dim)
@@ -861,13 +861,13 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
     std::map < std::string, sofa::helper::vector<double> >* graphs = _graphForces.beginEdit();
     graphs->clear();
     /*	for(j=0; j<dim; j++)
-    	{
-    		std::ostringstream oss;
-    		oss << "f" << j;
+    {
+    	std::ostringstream oss;
+    	oss << "f" << j;
 
-    		sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
-    		graph_force.clear();
-    	}	*/
+    	sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
+    	graph_force.clear();
+    }	*/
     _graphForces.endEdit();
 
 
@@ -932,10 +932,10 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 
                 ///////////// debug //////////
                 /*		if (i<3 && j<3)
-                		{
-                			std::cerr<<".............. iteration "<<i<< std::endl;
-                			std::cerr<<"d ["<<j<<"]="<<d[j]<<"  - d ["<<j+1<<"]="<<d[j+1]<<"  - d ["<<j+2<<"]="<<d[j+2]<<std::endl;
-                		}*/
+                {
+                std::cerr<<".............. iteration "<<i<< std::endl;
+                std::cerr<<"d ["<<j<<"]="<<d[j]<<"  - d ["<<j+1<<"]="<<d[j+1]<<"  - d ["<<j+2<<"]="<<d[j+2]<<std::endl;
+                }*/
                 //////////////////////////////
 
                 //3. the specific resolution of the constraint(s) is called
@@ -1086,7 +1086,7 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 
 
 
-void MasterConstraintSolver::debugWithContact(int numConstraints)
+void ConstraintAnimationLoop::debugWithContact(int numConstraints)
 {
 
     double mu=0.8;
@@ -1106,13 +1106,13 @@ void MasterConstraintSolver::debugWithContact(int numConstraints)
 }
 
 
-SOFA_DECL_CLASS ( MasterConstraintSolver )
+SOFA_DECL_CLASS ( ConstraintAnimationLoop )
 
-int MasterConstraintSolverClass = core::RegisterObject ( "Constraint solver" )
-        .add< MasterConstraintSolver >()
+int ConstraintAnimationLoopClass = core::RegisterObject ( "Constraint animation loop manager" )
+        .add< ConstraintAnimationLoop >()
         ;
 
-} // namespace odesolver
+} // namespace animationloop
 
 } // namespace component
 
