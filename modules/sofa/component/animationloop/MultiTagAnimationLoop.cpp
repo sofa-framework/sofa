@@ -152,7 +152,7 @@ void MultiTagAnimationLoop::clear()
 
 
 
-} // namespace mastersolver
+} // namespace animationloop
 
 } // namespace component
 
