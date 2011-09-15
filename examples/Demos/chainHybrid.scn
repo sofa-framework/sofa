@@ -1,7 +1,4 @@
 <Node name="root"  dt="0.02" >
-	<OptixCollisionPipeline />
-	<OptixDetection Kpressure="500"/>
-    <DefaultContactManager />
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="Chain">
 		<Node name="Fixed">
@@ -13,8 +10,8 @@
 		</Node>
 
 		<include name="FEM"         href="Objects/TorusFEM.xml"       dx="2.5"         />
-		<!--<include name="Spring"      href="Objects/TorusSpring.xml"    dx="5"   rx="90" />
+		<include name="Spring"      href="Objects/TorusSpring.xml"    dx="5"   rx="90" />
 		<include name="FFD"         href="Objects/TorusFFD.xml"       dx="7.5"         />
-		<include name="TorusRigid"  href="Objects/TorusRigid.xml"     dx="10"  rx="90" /> -->
+		<include name="TorusRigid"  href="Objects/TorusRigid.xml"     dx="10"  rx="90" />
 	</Node>
 </Node>

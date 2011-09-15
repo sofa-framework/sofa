@@ -23,7 +23,7 @@
 
 	<BoxROI name="boxF" box="-2.2 -1 6.88 2.2  10  10" drawBoxes="true" />
     <ConstantForceField points="@boxF.indices" force="7.5 -6.63 -15" arrowSizeCoef="0.1" />
-    <PlaneForceField 
+    <PlaneForceField /> 
 <!--
 		<Node name="Surf">
 			<Mesh filename="mesh/raptor_35kp.obj"/>

@@ -16,7 +16,7 @@
 				<Object type="IdentityMapping" object1="../.." object2="Visual"/>
 			</Node>
 			<Object type="MeshLoader" filename="mesh/smCube27.mesh" name="loader"/>
-			<Object type="Mesh" src="@loader" src="@loader"/>
+			<Object type="Mesh" src="@loader" />
 			<Node name="Surf">
 				<MechanicalObject dz="-21.0"/>
 				<Object type="Sphere" filename="mesh/smCube27b.sph"/>
@@ -49,7 +49,7 @@
 				<Object type="IdentityMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Object type="MeshLoader" filename="mesh/smCube27.mesh" name="loader"/>
-			<Object type="Mesh" src="@loader" src="@loader"/>
+			<Object type="Mesh" src="@loader" />
 			<Node name="Surf">
 				<MechanicalObject/>
 				<Object type="Sphere" filename="mesh/smCube27b.sph" />
@@ -82,7 +82,7 @@
 				<Object type="IdentityMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Object type="MeshLoader" filename="mesh/smCube27.mesh" name="loader"/>
-			<Object type="Mesh" src="@loader" src="@loader"/>
+			<Object type="Mesh" src="@loader" />
 			<Node name="Surf">
 				<MechanicalObject dz="21"/>
 				<Object type="Sphere" filename="mesh/smCube27b.sph"/>
