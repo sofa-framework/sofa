@@ -34,8 +34,6 @@ public:
 
     virtual bool VisitEnter( const TiXmlElement&, const TiXmlAttribute* );
     ~DiscoverDisplayFlagsVisitor();
-
-    std::vector<TiXmlElement* > leaves;
     std::map<const TiXmlElement*,sofa::core::visual::DisplayFlags*> map_displayFlags;
 
 };

@@ -62,27 +62,37 @@ int main(int argc, char** argv)
                 DisplayFlags* root_flags = it_root->second;
                 convert_false_to_neutral(*root_flags);
                 TiXmlElement* visualStyle;
-                if( (visualStyle = v_nodes.rootNode()->FirstChildElement("VisualStyle") ) == NULL )
+                if( ! root_flags->isNeutral() )
                 {
-                    TiXmlElement* visualstyle = new TiXmlElement("VisualStyle");
-                    std::ostringstream oss;
-                    oss << *root_flags;
-                    visualstyle->SetAttribute("displayFlags",oss.str());
-                    TiXmlElement* first_child = v_nodes.rootNode()->FirstChildElement();
-                    if(first_child) v_nodes.rootNode()->InsertBeforeChild(first_child,*visualstyle);
-                    else v_nodes.rootNode()->LinkEndChild(visualstyle);
+                    if( (visualStyle = v_nodes.rootNode()->FirstChildElement("VisualStyle") ) == NULL )
+                    {
+                        TiXmlElement* visualstyle = new TiXmlElement("VisualStyle");
+                        std::ostringstream oss;
+                        oss << *root_flags;
+                        visualstyle->SetAttribute("displayFlags",oss.str());
+                        TiXmlElement* first_child = v_nodes.rootNode()->FirstChildElement();
+                        if(first_child) v_nodes.rootNode()->InsertBeforeChild(first_child,*visualstyle);
+                        else v_nodes.rootNode()->LinkEndChild(visualstyle);
+                    }
+                    else
+                    {
+                        std::ostringstream oss;
+                        oss << *root_flags;
+                        visualStyle->SetAttribute("displayFlags",oss.str());
+                    }
                 }
                 else
                 {
-                    std::ostringstream oss;
-                    oss << *root_flags;
-                    visualStyle->SetAttribute("displayFlags",oss.str());
+                    if( (visualStyle = v_nodes.rootNode()->FirstChildElement("VisualStyle")) != NULL )
+                    {
+                        v_nodes.rootNode()->RemoveChild(visualStyle);
+                    }
                 }
             }
         }
 
         doc->Print();
-
+        std::cout.flush();
         delete doc;
         return 0;
     }

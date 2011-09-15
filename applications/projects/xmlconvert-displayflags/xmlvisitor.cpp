@@ -34,9 +34,9 @@ bool DiscoverNodes::VisitEnter(const TiXmlElement& element, const TiXmlAttribute
 
 bool DiscoverDisplayFlagsVisitor::VisitEnter(const TiXmlElement & element, const TiXmlAttribute * attribute)
 {
+
     // skip elements other than Nodes
     if(element.ValueStr() != std::string("Node") ) return true;
-
 
     // if this is the first time we discover this node, turn all its flags to neutral
     if( map_displayFlags.find(&element) == map_displayFlags.end() )
@@ -131,6 +131,7 @@ bool DiscoverDisplayFlagsVisitor::VisitEnter(const TiXmlElement & element, const
         }
 
     }
+
     //map_displayFlags[&element] = flags;
 
     return true;
@@ -186,12 +187,12 @@ void createVisualStyleVisitor(TiXmlElement* origin, const std::map<const TiXmlEl
 
     if(it_current == map_displayFlags.end() )
     {
-        std::cerr << "Could not find displayFlags for element : " << origin << std::endl;
+        std::cerr << "Could not find displayFlags for element : " << *origin << std::endl;
         return;
     }
     if(it_parent == map_displayFlags.end() )
     {
-        std::cerr << "Could not find displayFlags for element : " << parent_element << std::endl;
+        std::cerr << "Could not find displayFlags for element : " << *parent_element << std::endl;
         return;
     }
 
