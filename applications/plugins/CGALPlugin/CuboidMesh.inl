@@ -21,13 +21,15 @@ namespace cgal
 template <class DataTypes>
 CuboidMesh<DataTypes>::CuboidMesh()
     :  m_debug(initData(&m_debug, (unsigned)0, "debug", "for test"))
-    , m_length(initData(&m_length, 5.0, "length", "side length"))
+    , m_radius(initData(&m_radius, 5.0, "radius", "radius"))
     , m_height(initData(&m_height, 50.0, "height", "height"))
     , m_number(initData(&m_number, 5, "interval", "number of intervals"))
     , m_viewPoints(initData(&m_viewPoints, true, "viewPoints", "Display Points"))
     , m_viewTetras(initData(&m_viewTetras, true, "viewTetras", "Display Tetrahedra"))
     , m_points(initData(&m_points, "outputPoints", "Points"))
     , m_tetras(initData(&m_tetras, "outputTetras", "Tetrahedra"))
+    , m_nbVertices(0), m_nbBdVertices(0), m_nbCenters(0), m_nbBdCenters(0)
+    , m_nbTetras_i(0), m_nbTetras_j(0), m_nbTetras_k(0)
 {
 }
 
@@ -58,24 +60,24 @@ void CuboidMesh<DataTypes>::reinit()
 template <class DataTypes>
 void CuboidMesh<DataTypes>::update()
 {
-    l = m_length.getValue();
+    r = m_radius.getValue();
     h = m_height.getValue();
     n = m_number.getValue();
-    if(l <=0 || h <=0 || n<=0)
+    if(r <=0 || h <=0 || n<=0)
     {
         std::cout << "ERROR: illegal parameters of the cuboid" << std::endl;
         return;
     }
-    dl = l / n;
-    m = ceil(h/dl);
-    h = dl * m;
-    t = dl / 2;
+    d = r / n;
+    m = ceil(h/d);
+    h = d * m;
+    t = d / 2;
 
-    std::cout << "length = " << l << std::endl;
+    std::cout << "radius = " << r << std::endl;
     std::cout << "height = " << h << std::endl;
-    std::cout << "interval = " << dl << std::endl;
+    std::cout << "interval = " << d << std::endl;
 
-    std::cout << "n = " << n << std::endl;
+    std::cout << "n = " << 2*n << std::endl;
     std::cout << "m = " << m << std::endl << std::endl;
 
     helper::WriteAccessor< Data< VecCoord > > points = m_points;
@@ -90,9 +92,11 @@ void CuboidMesh<DataTypes>::update()
     m_nbVertices = 0;
     for(int k = -m; k <= m; k+=2)
     {
-        for(int j = -n; j <= n; j+=2)
+        for(int j = -2*n; j <= 2*n; j+=2)
         {
-            for(int i = -n; i <= n; i+=2)
+            int begin = MAX(-2*n, MAX(-2*n-j, -2*n+j));
+            int end = MIN(2*n, MIN(2*n+j, 2*n-j));
+            for(int i = begin; i <= end; i+=2)
             {
                 Index g(i,j,k);
                 m_ptID.insert(std::make_pair(g, points.size()));
@@ -105,15 +109,53 @@ void CuboidMesh<DataTypes>::update()
     }
     std::cout << "num of vertices = " << m_nbVertices << std::endl;
 
+    //hexa boundary vertices
+    m_nbBdVertices = 0;
+    for(int k = m+2; k <= m+2*n; k+=2)
+    {
+        for(int j = -(2*n+m-k); j <= (2*n+m-k); j+=2)
+        {
+            int begin = MAX(-2*n, MAX(-2*n-j, -2*n+j));
+            int end = MIN(2*n, MIN(2*n+j, 2*n-j));
+            for(int i = begin; i <= end; i+=2)
+            {
+                Index g(i,j,k);
+                m_ptID.insert(std::make_pair(g, points.size()));
+                Point p(i*t, j*t, k*t);
+                points.push_back(p);
+                //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
+                ++m_nbBdVertices;
+            }
+        }
+    }
+    for(int k = -(m+2); k >= -(m+2*n); k-=2)
+    {
+        for(int j = -(2*n+m+k); j <= (2*n+m+k); j+=2)
+        {
+            int begin = MAX(-2*n, MAX(-2*n-j, -2*n+j));
+            int end = MIN(2*n, MIN(2*n+j, 2*n-j));
+            for(int i = begin; i <= end; i+=2)
+            {
+                Index g(i,j,k);
+                m_ptID.insert(std::make_pair(g, points.size()));
+                Point p(i*t, j*t, k*t);
+                points.push_back(p);
+                //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
+                ++m_nbBdVertices;
+            }
+        }
+    }
+    std::cout << "num of bdVertices = " << m_nbBdVertices << std::endl;
+
     //hexa centers
     m_nbCenters = 0;
     for(int k = -m+1; k <= m-1; k+=2)
     {
-        for(int j = -n-1; j <= n+1; j+=2)
+        for(int j = -2*n+1; j <= 2*n-1; j+=2)
         {
-            int begin = MAX(-(n+1), MAX(-2*n-j, -2*n+j));
-            int end = MIN((n+1), MIN(2*n+j, 2*n-j));
-            for(int i = begin; i <= end ; i+=2)
+            int begin = MAX(-2*n+1, MAX(-2*n-j, -2*n+j));
+            int end = MIN(2*n-1, MIN(2*n+j, 2*n-j));
+            for(int i = begin; i <= end; i+=2)
             {
                 Index g(i,j,k);
                 m_ptID.insert(std::make_pair(g, points.size()));
@@ -127,11 +169,30 @@ void CuboidMesh<DataTypes>::update()
     std::cout << "num of centers = " << m_nbCenters << std::endl;
 
     m_nbBdCenters = 0;
-    for(int k = -m-1; k <= m+1; k+=2*(m+1))
+    for(int k = m+1; k <= m+2*n; k+=2)
     {
-        for(int j = -n+1; j <= n-1; j+=2)
+        for(int j = -(2*n+m-k); j <= (2*n+m-k); j+=2)
         {
-            for(int i = -n+1; i <= n-1 ; i+=2)
+            int begin = MAX(-2*n+1, MAX(-2*n-j, -2*n+j));
+            int end = MIN(2*n-1, MIN(2*n+j, 2*n-j));
+            for(int i = begin; i <= end; i+=2)
+            {
+                Index g(i,j,k);
+                m_ptID.insert(std::make_pair(g, points.size()));
+                Point p(i*t, j*t, k*t);
+                points.push_back(p);
+                //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
+                ++m_nbBdCenters;
+            }
+        }
+    }
+    for(int k = -(m+1); k >= -(m+2*n); k-=2)
+    {
+        for(int j = -(2*n+m+k); j <= (2*n+m+k); j+=2)
+        {
+            int begin = MAX(-2*n+1, MAX(-2*n-j, -2*n+j));
+            int end = MIN(2*n-1, MIN(2*n+j, 2*n-j));
+            for(int i = begin; i <= end; i+=2)
             {
                 Index g(i,j,k);
                 m_ptID.insert(std::make_pair(g, points.size()));
@@ -148,41 +209,18 @@ void CuboidMesh<DataTypes>::update()
     std::cout << "generate tetras..." << std::endl;
     //generate tetrahedra between c(i,j,k) and c(i+2,j,k) ((i+n), (j+n), (k+m) are odd numbers))
     m_nbTetras_i = 0;
-    for(int k = -m+1; k <= m-1; k+=2)
+    for(int k = -(m+2*n-1); k <= (m+2*n-1); k+=2)
     {
-        for(int j = -n-1; j <= n+1; j+=2)
+        for(int j = -2*n+1; j <= 2*n-1; j+=2)
         {
-            int begin = MAX(-(n+1), MAX(-2*n-j, -2*n+j));
-            int end = MIN((n+1), MIN(2*n+j, 2*n-j));
-            for(int i = begin; i <= end-2 ; i+=2)
+            for(int i = -2*n+1; i <= 2*n-1; i+=2)
             {
                 Index c1(i,j,k), c2(i+2,j,k);
                 if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
-                    std::cout << "ERROR: tetrahedron is out of boundary. c "<< std::endl;
-                Index p[4] = {Index(i+1,j-1,k-1), Index(i+1,j+1,k-1), Index(i+1,j+1,k+1), Index(i+1,j-1,k+1)};
-                for(int s = 0; s < 4; ++s)
                 {
-                    if(m_ptID.find(p[s]) == m_ptID.end() || m_ptID.find(p[(s+1)%4]) == m_ptID.end())
-                    {
-                        //std::cout << "tetrahedron is out of boundary. p "<< std::endl;
-                        continue;
-                    }
-                    Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
-                    tetras.push_back(t);
-                    ++m_nbTetras_i;
+                    //std::cout << "tetrahedron is out of boundary. c "<< std::endl;
+                    continue;
                 }
-            }
-        }
-    }
-    for(int k = -m-1; k <= m+1; k+=2*(m+1))
-    {
-        for(int j = -n+1; j <= n-1; j+=2)
-        {
-            for(int i = -n+1; i <= n-3 ; i+=2)
-            {
-                Index c1(i,j,k), c2(i+2,j,k);
-                if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
-                    std::cout << "ERROR: tetrahedron is out of boundary. c "<< std::endl;
                 Index p[4] = {Index(i+1,j-1,k-1), Index(i+1,j+1,k-1), Index(i+1,j+1,k+1), Index(i+1,j-1,k+1)};
                 for(int s = 0; s < 4; ++s)
                 {
@@ -202,41 +240,18 @@ void CuboidMesh<DataTypes>::update()
 
     //generate tetrahedra between c(i,j,k) and c(i,j+2,k) ((i+n), (j+n), (k+m) are odd numbers))
     m_nbTetras_j = 0;
-    for(int k = -m+1; k <= m-1; k+=2)
+    for(int k = -(m+2*n-1); k <= (m+2*n-1); k+=2)
     {
-        for(int i = -n-1; i <= n+1; i+=2)
+        for(int j = -2*n+1; j <= 2*n-1; j+=2)
         {
-            int begin = MAX(-(n+1), MAX(-2*n-i, -2*n+i));
-            int end = MIN((n+1), MIN(2*n+i, 2*n-i));
-            for(int j = begin; j <= end-2 ; j+=2)
+            for(int i = -2*n+1; i <= 2*n-1; i+=2)
             {
                 Index c1(i,j,k), c2(i,j+2,k);
                 if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
-                    std::cout << "ERROR: tetrahedron is out of boundary. c"<< std::endl;
-                Index p[4] = {Index(i-1,j+1,k-1), Index(i+1,j+1,k-1), Index(i+1,j+1,k+1), Index(i-1,j+1,k+1)};
-                for(int s = 0; s < 4; ++s)
                 {
-                    if(m_ptID.find(p[s]) == m_ptID.end() || m_ptID.find(p[(s+1)%4]) == m_ptID.end())
-                    {
-                        //std::cout << "tetrahedron is out of boundary. p "<< std::endl;
-                        continue;
-                    }
-                    Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
-                    tetras.push_back(t);
-                    ++m_nbTetras_j;
+                    //std::cout << "tetrahedron is out of boundary. c"<< std::endl;
+                    continue;
                 }
-            }
-        }
-    }
-    for(int k = -m-1; k <= m+1; k+=2*(m+1))
-    {
-        for(int i = -n+1; i <= n-1; i+=2)
-        {
-            for(int j = -n+1; j <= n-3 ; j+=2)
-            {
-                Index c1(i,j,k), c2(i,j+2,k);
-                if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
-                    std::cout << "ERROR: tetrahedron is out of boundary. c "<< std::endl;
                 Index p[4] = {Index(i-1,j+1,k-1), Index(i+1,j+1,k-1), Index(i+1,j+1,k+1), Index(i-1,j+1,k+1)};
                 for(int s = 0; s < 4; ++s)
                 {
@@ -256,47 +271,24 @@ void CuboidMesh<DataTypes>::update()
 
     //generate tetrahedra between c(i,j,k) and c(i,j,k+2) ((i+n), (j+n), (k+m) are odd numbers))
     m_nbTetras_k = 0;
-    for(int k = -m+1; k <= m-3; k+=2)
+    for(int k = -(m+2*n-1); k <= (m+2*n-1); k+=2)
     {
-        for(int j = -n-1; j <= n+1; j+=2)
+        for(int j = -2*n+1; j <= 2*n-1; j+=2)
         {
-            int begin = MAX(-(n+1), MAX(-2*n-j, -2*n+j));
-            int end = MIN((n+1), MIN(2*n+j, 2*n-j));
-            for(int i = begin; i <= end ; i+=2)
+            for(int i = -2*n+1; i <= 2*n-1; i+=2)
             {
                 Index c1(i,j,k), c2(i,j,k+2);
                 Index p[4] = {Index(i-1,j-1,k+1), Index(i+1,j-1,k+1), Index(i+1,j+1,k+1), Index(i-1,j+1,k+1)};
                 if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
-                    std::cout << "ERROR: tetrahedron is out of boundary. c"<< std::endl;
-                for(int s = 0; s < 4; ++s)
                 {
-                    if(m_ptID.find(p[s]) == m_ptID.end() || m_ptID.find(p[(s+1)%4]) == m_ptID.end())
-                    {
-                        //std::cout << "ERROR: tetrahedron is out of boundary. p"<< std::endl;
-                        continue;
-                    }
-                    Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
-                    tetras.push_back(t);
-                    ++m_nbTetras_k;
+                    //std::cout << "tetrahedron is out of boundary. c"<< std::endl;
+                    continue;
                 }
-            }
-        }
-    }
-    for(int k = -m-1; k <= m-1; k+=2*m)
-    {
-        for(int j = -n+1; j <= n-1; j+=2)
-        {
-            for(int i = -n+1; i <= n-1 ; i+=2)
-            {
-                Index c1(i,j,k), c2(i,j,k+2);
-                Index p[4] = {Index(i-1,j-1,k+1), Index(i+1,j-1,k+1), Index(i+1,j+1,k+1), Index(i-1,j+1,k+1)};
-                if(m_ptID.find(c1) == m_ptID.end() || m_ptID.find(c2) == m_ptID.end())
-                    std::cout << "ERROR: tetrahedron is out of boundary. c"<< std::endl;
                 for(int s = 0; s < 4; ++s)
                 {
                     if(m_ptID.find(p[s]) == m_ptID.end() || m_ptID.find(p[(s+1)%4]) == m_ptID.end())
                     {
-                        //std::cout << "ERROR: tetrahedron is out of boundary. p"<< std::endl;
+                        //std::cout << "tetrahedron is out of boundary. p"<< std::endl;
                         continue;
                     }
                     Tetra t(m_ptID[c1], m_ptID[c2], m_ptID[p[s]], m_ptID[p[(s+1)%4]]);
@@ -353,23 +345,33 @@ void CuboidMesh<DataTypes>::draw()
             for(unsigned i = 0; i < m_nbVertices; ++i)
                 sofa::helper::gl::glVertexT(points[i]);
         }
-        if(debug & 1<<1)//2
+        if(debug & (1<<1))//2
         {
             //centers
-            //std::cout << "draw centers" << std::endl;
-            glColor3f(0.0, 1.0, 0.0);
+            //std::cout << "draw bdVertices" << std::endl;
+            glColor3f(1.0, 0.0, 0.0);
             unsigned begin = m_nbVertices;
-            unsigned end = m_nbVertices + m_nbCenters;
+            unsigned end = m_nbVertices + m_nbBdVertices;
             for(unsigned i = begin; i < end; ++i)
                 sofa::helper::gl::glVertexT(points[i]);
         }
-        if(debug & 1<<2)//4
+        if(debug & (1<<2))//4
+        {
+            //centers
+            //std::cout << "draw centers" << std::endl;
+            glColor3f(1.0, 1.0, 0.0);
+            unsigned begin = m_nbVertices + m_nbBdVertices;
+            unsigned end = m_nbVertices + m_nbBdVertices + m_nbCenters;
+            for(unsigned i = begin; i < end; ++i)
+                sofa::helper::gl::glVertexT(points[i]);
+        }
+        if(debug & (1<<3))//8
         {
             //bdCenters_i
             //std::cout << "draw bdCenters" << std::endl;
-            glColor3f(0.0, 0.0, 1.0);
-            unsigned begin = m_nbVertices + m_nbCenters;
-            unsigned end = m_nbVertices + m_nbCenters + m_nbBdCenters;
+            glColor3f(1.0, 1.0, 0.0);
+            unsigned begin = m_nbVertices + m_nbBdVertices + m_nbCenters;
+            unsigned end = m_nbVertices + m_nbBdVertices + m_nbCenters + m_nbBdCenters;
             for(unsigned i = begin; i < end; ++i)
                 sofa::helper::gl::glVertexT(points[i]);
         }

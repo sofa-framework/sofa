@@ -71,7 +71,7 @@ public:
 
     //Inputs
     Data<unsigned> m_debug;
-    Data<double> m_length;
+    Data<double> m_radius;
     Data<double> m_height;
     Data<int> m_number;
     Data<bool> m_viewPoints;
@@ -82,10 +82,10 @@ public:
     Data<SeqTetrahedra> m_tetras;
 
     //Parameters
-    unsigned m_nbVertices, m_nbCenters, m_nbBdCenters;
+    unsigned m_nbVertices, m_nbBdVertices, m_nbCenters, m_nbBdCenters;
     unsigned m_nbTetras_i, m_nbTetras_j, m_nbTetras_k;
     int n, m, a;
-    Real l, h, dl, t;
+    Real r, h, d, t;
     std::map<Index, unsigned> m_ptID;
     unsigned short debug;
 
