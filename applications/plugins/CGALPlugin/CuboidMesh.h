@@ -82,8 +82,7 @@ public:
     Data<SeqTetrahedra> m_tetras;
 
     //Parameters
-    unsigned m_nbVertices, m_nbCenters;
-    unsigned m_nbBdCenters_i, m_nbBdCenters_j, m_nbBdCenters_k;
+    unsigned m_nbVertices, m_nbCenters, m_nbBdCenters;
     unsigned m_nbTetras_i, m_nbTetras_j, m_nbTetras_k;
     int n, m, a;
     Real l, h, dl, t;
