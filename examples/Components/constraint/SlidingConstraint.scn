@@ -1,5 +1,5 @@
 <Node name="root"  dt="0.001" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" showInteractionForceFields="1" gravity="0 -9.81 0">
-	<FreeMotionMasterSolver/> 
+	<FreeMotionAnimationLoop/> 
 	<GenericConstraintSolver />
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />

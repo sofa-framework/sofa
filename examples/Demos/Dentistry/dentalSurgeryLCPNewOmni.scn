@@ -5,7 +5,7 @@
 	<BruteForceDetection name="detection" />
 	<DefaultContactManager name="response"  response="FrictionContact" />
 	<LocalMinDistance name="proximity"  alarmDistance="0.3"  contactDistance="0.15"  angleCone="0" />
-	<MasterContactSolver name="default37" />
+	<FreeMotionAnimationLoop name="default37" />
 	<NewOmniDriver name="default38"  listening="1"  scale="50"  positionBase="0 1 -0.5"  permanent="1"  omniVisu="0" />
 	<Node 	name="Omni" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
 		<MechanicalObject template="Rigid" name="DOFs"  position="1.2 1.6 -3.55 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  internalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1" />

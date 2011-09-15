@@ -1,5 +1,5 @@
 <Node name="root"  dt="0.03" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0"  showMappings="0" showForceFields="0" showWireFrame="0">
-	<Object type="MasterContactSolver" initial_guess="true" displayTime="1" maxIt="100" build_lcp="false"/>   
+	<Object type="FreeMotionAnimationLoop" initial_guess="true" displayTime="1" maxIt="100" build_lcp="false"/>   
 	<Object type="CollisionPipeline" depth="8" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="LocalMinDistance" name="Proximity" alarmDistance="0.35" contactDistance="0.1" />

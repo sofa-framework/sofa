@@ -1,5 +1,5 @@
 <Node dt="0.001" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" gravity="0 -5 0" >
-<!--  <MultiStepMasterSolver integrationSteps="2" /> -->
+<!--  <MultiStepAnimationLoop integrationSteps="2" /> -->
 	<Node name="fluid">
 		<CentralDifferenceSolver/>
 <!--
