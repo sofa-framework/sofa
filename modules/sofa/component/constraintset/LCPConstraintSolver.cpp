@@ -322,7 +322,7 @@ void LCPConstraintSolver::init()
 {
     core::behavior::ConstraintSolver::init();
 
-    // Prevents ConstraintCorrection accumulation due to multiple MasterSolver initialization on dynamic components Add/Remove operations.
+    // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())
     {
         constraintCorrections.clear();
@@ -442,7 +442,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge()
 
 void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 {
-    /////// Analyse des contacts Ã  regrouper //////
+    /////// Analyse des contacts ï¿½  regrouper //////
     double criterion=0.0;
     int numContacts = _numConstraints/3;
 
@@ -1424,7 +1424,7 @@ void LCPConstraintSolver::lockConstraintProblem(ConstraintProblem* l1, Constrain
     else
         lcp = &lcp3; // lcp1 et lcp2 sont lockÃ©s, donc lcp3 n'est pas lockÃ©
 
-    // Mise Ã  jour de _W _dFree et _result
+    // Mise ï¿½  jour de _W _dFree et _result
     _W = &lcp->W;
     _dFree = &lcp->dFree;
     _result = &lcp->f;

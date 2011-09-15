@@ -92,7 +92,7 @@ void FreeMotionAnimationLoop::init()
 
 void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
 {
-    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
+    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
@@ -278,7 +278,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
 #endif
     nbSteps.setValue(nbSteps.getValue() + 1);
 
-    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
+    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
 
