@@ -104,7 +104,6 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     //cerr<<"AnimateVisitor::process Node  "<<node->getName()<<endl;
     if (!node->isActive()) return Visitor::RESULT_PRUNE;
 #ifdef SOFA_HAVE_EIGEN2
-    //If we have a mastersolver in the scene, we let him rule the simulation, and chose when to reset the constraints
     if (!firstNodeVisited)
     {
         firstNodeVisited=true;
