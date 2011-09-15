@@ -91,7 +91,7 @@ void GenericConstraintSolver::init()
 {
     core::behavior::ConstraintSolver::init();
 
-    // Prevents ConstraintCorrection accumulation due to multiple MasterSolver initialization on dynamic components Add/Remove operations.
+    // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())
     {
         constraintCorrections.clear();

@@ -251,7 +251,7 @@ public:
     Data < helper::set<int> > constraintGroups;
 
     CudaMasterContactSolver();
-    // virtual const char* getTypeName() const { return "MasterSolver"; }
+    // virtual const char* getTypeName() const { return "AnimationLoop"; }
 
     virtual void step (const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, double dt);
 

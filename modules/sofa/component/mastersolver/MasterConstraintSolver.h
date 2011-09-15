@@ -235,7 +235,7 @@ public:
 
     MasterConstraintSolver(simulation::Node* gnode);
     virtual ~MasterConstraintSolver();
-    // virtual const char* getTypeName() const { return "MasterSolver"; }
+    // virtual const char* getTypeName() const { return "AnimationLoop"; }
 
     virtual void step(const core::ExecParams* params /* PARAMS FIRST */, double dt);
 

@@ -149,7 +149,7 @@ bool LMContactConstraintSolver::isCollisionDetected()
 
 void LMContactConstraintSolver::step(const core::ExecParams* params, double dt)
 {
-    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
+    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 
     {
         AnimateBeginEvent ev ( dt );
@@ -226,7 +226,7 @@ void LMContactConstraintSolver::step(const core::ExecParams* params, double dt)
 #endif
     nbSteps.setValue(nbSteps.getValue() + 1);
 
-    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
+    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
 } // namespace mastersolver

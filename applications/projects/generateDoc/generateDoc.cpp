@@ -81,7 +81,7 @@ static const char* baseClasses[] =
     "MechanicalState",
     "MechanicalMapping",
     "AnimationLoop",
-    "MasterSolver",
+    "AnimationLoop",
     "OdeSolver",
     "Mass",
     "ForceField",

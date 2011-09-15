@@ -66,7 +66,7 @@ void MultiTagMasterSolver::init()
 
 void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
 {
-    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
+    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 
     {
         AnimateBeginEvent ev ( dt );
@@ -135,7 +135,7 @@ void MultiTagMasterSolver::step(const sofa::core::ExecParams* params /* PARAMS F
 #endif
     nbSteps.setValue(nbSteps.getValue() + 1);
 
-    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
+    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
 void MultiTagMasterSolver::clear()

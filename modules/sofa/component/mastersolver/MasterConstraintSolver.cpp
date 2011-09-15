@@ -258,7 +258,7 @@ MasterConstraintSolver::MasterConstraintSolver(simulation::Node* gnode)
 
     timer = 0;
 
-    std::cerr << "WARNING : MasterConstraintSolver is deprecated. Please use the combination of FreeMotionMasterSolver and GenericConstraintSolver." << std::endl;
+    std::cerr << "WARNING : MasterConstraintSolver is deprecated. Please use the combination of FreeMotionAnimationLoop and GenericConstraintSolver." << std::endl;
 }
 
 MasterConstraintSolver::~MasterConstraintSolver()
@@ -272,7 +272,7 @@ MasterConstraintSolver::~MasterConstraintSolver()
 
 void MasterConstraintSolver::init()
 {
-    // Prevents ConstraintCorrection accumulation due to multiple MasterSolver initialization on dynamic components Add/Remove operations.
+    // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())
     {
         constraintCorrections.clear();
@@ -550,7 +550,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
 
     simulationTime+=dt;
 
-    sofa::helper::AdvancedTimer::stepBegin("MasterSolverStep");
+    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 
     {
         AnimateBeginEvent ev ( dt );
@@ -816,7 +816,7 @@ void MasterConstraintSolver::step ( const core::ExecParams* params /* PARAMS FIR
 #endif
     nbSteps.setValue(nbSteps.getValue() + 1);
 
-    sofa::helper::AdvancedTimer::stepEnd("MasterSolverStep");
+    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
 void MasterConstraintSolver::computePredictiveForce(int dim, double* force, std::vector<core::behavior::ConstraintResolution*>& res)
