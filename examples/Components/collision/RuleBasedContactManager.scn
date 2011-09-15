@@ -1,6 +1,6 @@
 <Node name="root"  dt="0.01" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
 	
-	<MasterContactSolver/>
+	<FreeMotionAnimationLoop/>
 
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />

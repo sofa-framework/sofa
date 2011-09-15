@@ -1,5 +1,5 @@
 <Node name="root"  gravity="0 -.98 0" dt="0.5" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
-	<MasterContactSolver/>
+	<FreeMotionAnimationLoop/>
 	<CollisionPipeline verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" />

@@ -1,5 +1,5 @@
 <Node name="root"  dt="0.01" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1" showInteractionForceFields="1" gravity="0 -0.981 0">
-	<FreeMotionMasterSolver/>
+	<FreeMotionAnimationLoop/>
 	<GenericConstraintSolver/>
    
 	<Node name="Beam1">	  

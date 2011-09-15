@@ -10,7 +10,7 @@
 	<Object type="BruteForceDetection" name="detection" />
 	<Object type="CollisionResponse" name="response" response="FrictionContact" />
 	<Object type="LocalMinDistance" name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
-	<Object type="MasterContactSolver"/>
+	<Object type="FreeMotionAnimationLoop"/>
 	<Object type="OmniDriver" scale="0.1" orientation="180 -90 0"/>
 
 	<Node name="Tooth" >

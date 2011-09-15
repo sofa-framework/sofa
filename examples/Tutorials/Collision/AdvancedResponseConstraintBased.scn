@@ -2,7 +2,7 @@
 <!-- See http://wiki.sofa-framework.org/wiki/TutorialCollisionUncoupledConstraints -->
 <Node name="root" dt="0.01" gravity="0 -9.81 0" showBehavior="1" showCollision="1">
   <!-- Basic Components to perform the collision detection -->
-  <MasterContactSolver name="MasterContactSolver"/>
+  <FreeMotionAnimationLoop name="FreeMotionAnimationLoop"/>
   <CollisionPipeline name="CollisionPipeline"/>
   <BruteForceDetection name="BruteForceDetection"/>
   <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0"/>
