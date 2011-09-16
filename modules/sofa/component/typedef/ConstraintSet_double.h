@@ -48,6 +48,8 @@
 
 #include <sofa/component/constraintset/BeamConstraint.h>
 #include <sofa/component/constraintset/BilateralInteractionConstraint.h>
+#include <sofa/gpu/cuda/CudaLDIContactLMConstraint.h>
+#include <sofa/gpu/cuda/CudaLDISimpleContactConstraint.h>
 #include <sofa/component/constraintset/DOFBlockerLMConstraint.h>
 #include <sofa/component/constraintset/DistanceLMConstraint.h>
 #include <sofa/component/constraintset/DistanceLMContactConstraint.h>
@@ -60,59 +62,71 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for BeamConstraint
-typedef  sofa::component::constraintset::BeamConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > BeamConstraint3d;
+typedef sofa::component::constraintset::BeamConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > BeamConstraint3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for BilateralInteractionConstraint
-typedef  sofa::component::constraintset::BilateralInteractionConstraint< sofa::defaulttype::StdRigidTypes<3,double> > BilateralInteractionConstraintRigid3d;
-typedef  sofa::component::constraintset::BilateralInteractionConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > BilateralInteractionConstraint3d;
+typedef sofa::component::constraintset::BilateralInteractionConstraint<sofa::defaulttype::StdRigidTypes<3, double> > BilateralInteractionConstraintRigid3d;
+typedef sofa::component::constraintset::BilateralInteractionConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > BilateralInteractionConstraint3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for CudaLDIContactLMConstraint
+typedef sofa::gpu::cuda::CudaLDIContactLMConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > CudaLDIContactLMConstraint3d_3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for CudaLDISimpleContactConstraint
+typedef sofa::gpu::cuda::CudaLDISimpleContactConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > CudaLDISimpleContactConstraint3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DOFBlockerLMConstraint
-typedef  sofa::component::constraintset::DOFBlockerLMConstraint< sofa::defaulttype::StdRigidTypes<3,double> > DOFBlockerLMConstraintRigid3d;
-typedef  sofa::component::constraintset::DOFBlockerLMConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > DOFBlockerLMConstraint3d;
+typedef sofa::component::constraintset::DOFBlockerLMConstraint<sofa::defaulttype::StdRigidTypes<3, double> > DOFBlockerLMConstraintRigid3d;
+typedef sofa::component::constraintset::DOFBlockerLMConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > DOFBlockerLMConstraint3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DistanceLMConstraint
-typedef  sofa::component::constraintset::DistanceLMConstraint< sofa::defaulttype::StdRigidTypes<3,double> > DistanceLMConstraintRigid3d;
-typedef  sofa::component::constraintset::DistanceLMConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > DistanceLMConstraint3d;
+typedef sofa::component::constraintset::DistanceLMConstraint<sofa::defaulttype::StdRigidTypes<3, double> > DistanceLMConstraintRigid3d;
+typedef sofa::component::constraintset::DistanceLMConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > DistanceLMConstraint3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DistanceLMContactConstraint
-typedef  sofa::component::constraintset::DistanceLMContactConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > DistanceLMContactConstraint3d;
+typedef sofa::component::constraintset::DistanceLMContactConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > DistanceLMContactConstraint3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for FixedLMConstraint
-typedef  sofa::component::constraintset::FixedLMConstraint< sofa::defaulttype::StdRigidTypes<3,double> > FixedLMConstraintRigid3d;
-typedef  sofa::component::constraintset::FixedLMConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > FixedLMConstraint3d;
+typedef sofa::component::constraintset::FixedLMConstraint<sofa::defaulttype::StdRigidTypes<3, double> > FixedLMConstraintRigid3d;
+typedef sofa::component::constraintset::FixedLMConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > FixedLMConstraint3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SlidingConstraint
-typedef  sofa::component::constraintset::SlidingConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > SlidingConstraint3d;
+typedef sofa::component::constraintset::SlidingConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > SlidingConstraint3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for StopperConstraint
-typedef  sofa::component::constraintset::StopperConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,double>, sofa::defaulttype::Vec<1,double>,double> > StopperConstraint1d;
+typedef sofa::component::constraintset::StopperConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > StopperConstraint1d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for UnilateralInteractionConstraint
-typedef  sofa::component::constraintset::UnilateralInteractionConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > UnilateralInteractionConstraint3d;
+typedef sofa::component::constraintset::UnilateralInteractionConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > UnilateralInteractionConstraint3d;
 
 
 
@@ -122,6 +136,8 @@ typedef  sofa::component::constraintset::UnilateralInteractionConstraint< sofa::
 typedef BeamConstraint3d BeamConstraint3;
 typedef BilateralInteractionConstraintRigid3d BilateralInteractionConstraintRigid3;
 typedef BilateralInteractionConstraint3d BilateralInteractionConstraint3;
+typedef CudaLDIContactLMConstraint3d_3d CudaLDIContactLMConstraint3_3;
+typedef CudaLDISimpleContactConstraint3d CudaLDISimpleContactConstraint3;
 typedef DOFBlockerLMConstraintRigid3d DOFBlockerLMConstraintRigid3;
 typedef DOFBlockerLMConstraint3d DOFBlockerLMConstraint3;
 typedef DistanceLMConstraintRigid3d DistanceLMConstraintRigid3;

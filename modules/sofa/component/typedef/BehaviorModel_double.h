@@ -53,14 +53,14 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MouseInteractor
-typedef  sofa::component::collision::MouseInteractor< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > MouseInteractor3d;
-typedef  sofa::component::collision::MouseInteractor< sofa::defaulttype::StdRigidTypes<3,double> > MouseInteractorRigid3d;
+typedef sofa::component::collision::MouseInteractor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > MouseInteractor3d;
+typedef sofa::component::collision::MouseInteractor<sofa::defaulttype::StdRigidTypes<3, double> > MouseInteractorRigid3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for VectorField
-typedef  sofa::component::forcefield::VectorField< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > VectorField3d;
+typedef sofa::component::forcefield::VectorField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > VectorField3d;
 
 
 

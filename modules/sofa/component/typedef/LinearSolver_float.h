@@ -53,13 +53,15 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for PrecomputedWarpPreconditioner
-typedef  sofa::component::linearsolver::PrecomputedWarpPreconditioner< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > PrecomputedWarpPreconditioner3f;
+typedef sofa::component::linearsolver::PrecomputedWarpPreconditioner<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PrecomputedWarpPreconditioner3f;
+typedef sofa::component::linearsolver::PrecomputedWarpPreconditioner<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PrecomputedWarpPreconditionerCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for WarpPreconditioner
-typedef  sofa::component::linearsolver::WarpPreconditioner< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > WarpPreconditioner3f;
+typedef sofa::component::linearsolver::WarpPreconditioner<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > WarpPreconditioner3f;
+typedef sofa::component::linearsolver::WarpPreconditioner<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > WarpPreconditionerCuda3f;
 
 
 
@@ -67,7 +69,9 @@ typedef  sofa::component::linearsolver::WarpPreconditioner< sofa::defaulttype::S
 
 #ifdef SOFA_FLOAT
 typedef PrecomputedWarpPreconditioner3f PrecomputedWarpPreconditioner3;
+typedef PrecomputedWarpPreconditionerCuda3f PrecomputedWarpPreconditionerCuda3;
 typedef WarpPreconditioner3f WarpPreconditioner3;
+typedef WarpPreconditionerCuda3f WarpPreconditionerCuda3;
 #endif
 
 #endif

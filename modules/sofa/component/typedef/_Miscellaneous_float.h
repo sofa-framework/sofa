@@ -62,77 +62,84 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DevAngleCollisionMonitor
-typedef  sofa::component::misc::DevAngleCollisionMonitor< sofa::defaulttype::StdRigidTypes<3,float> > DevAngleCollisionMonitorRigid3f;
+typedef sofa::component::misc::DevAngleCollisionMonitor<sofa::defaulttype::StdRigidTypes<3, float> > DevAngleCollisionMonitorRigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DevTensionMonitor
-typedef  sofa::component::misc::DevTensionMonitor< sofa::defaulttype::StdRigidTypes<3,float> > DevTensionMonitorRigid3f;
+typedef sofa::component::misc::DevTensionMonitor<sofa::defaulttype::StdRigidTypes<3, float> > DevTensionMonitorRigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DistanceOnGrid
-typedef  sofa::component::topology::DistanceOnGrid< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > DistanceOnGrid3f;
+typedef sofa::component::topology::DistanceOnGrid<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > DistanceOnGrid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for EvalPointsDistance
-typedef  sofa::component::misc::EvalPointsDistance< sofa::defaulttype::StdRigidTypes<3,float> > EvalPointsDistanceRigid3f;
-typedef  sofa::component::misc::EvalPointsDistance< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > EvalPointsDistance3f;
+typedef sofa::component::misc::EvalPointsDistance<sofa::defaulttype::StdRigidTypes<3, float> > EvalPointsDistanceRigid3f;
+typedef sofa::component::misc::EvalPointsDistance<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > EvalPointsDistance3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for EvalSurfaceDistance
-typedef  sofa::component::misc::EvalSurfaceDistance< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > EvalSurfaceDistance3f;
+typedef sofa::component::misc::EvalSurfaceDistance<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > EvalSurfaceDistance3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ExtraMonitor
-typedef  sofa::component::misc::ExtraMonitor< sofa::defaulttype::StdRigidTypes<3,float> > ExtraMonitorRigid3f;
-typedef  sofa::component::misc::ExtraMonitor< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ExtraMonitor3f;
-typedef  sofa::component::misc::ExtraMonitor< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > ExtraMonitor6f;
+typedef sofa::component::misc::ExtraMonitor<sofa::defaulttype::StdRigidTypes<3, float> > ExtraMonitorRigid3f;
+typedef sofa::component::misc::ExtraMonitor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ExtraMonitor3f;
+typedef sofa::component::misc::ExtraMonitor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > ExtraMonitor6f;
+typedef sofa::component::misc::ExtraMonitor<sofa::gpu::cuda::CudaRigidTypes<3, float> > ExtraMonitorCudaRigid3f;
+typedef sofa::component::misc::ExtraMonitor<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > ExtraMonitorCuda6f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MappedObject
-typedef  sofa::component::container::MappedObject< sofa::defaulttype::StdRigidTypes<2,float> > MappedObjectRigid2f;
-typedef  sofa::component::container::MappedObject< sofa::defaulttype::StdRigidTypes<3,float> > MappedObjectRigid3f;
-typedef  sofa::component::container::MappedObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > MappedObject1f;
-typedef  sofa::component::container::MappedObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > MappedObject2f;
-typedef  sofa::component::container::MappedObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > MappedObject3f;
-typedef  sofa::component::container::MappedObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > MappedObject6f;
+typedef sofa::component::container::MappedObject<sofa::defaulttype::StdRigidTypes<2, float> > MappedObjectRigid2f;
+typedef sofa::component::container::MappedObject<sofa::defaulttype::StdRigidTypes<3, float> > MappedObjectRigid3f;
+typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > MappedObject1f;
+typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > MappedObject2f;
+typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MappedObject3f;
+typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > MappedObject6f;
+typedef sofa::component::container::MappedObject<sofa::gpu::cuda::CudaRigidTypes<3, float> > MappedObjectCudaRigid3f;
+typedef sofa::component::container::MappedObject<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MappedObjectCuda3f;
+typedef sofa::component::container::MappedObject<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > MappedObjectCuda6f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for Monitor
-typedef  sofa::component::misc::Monitor< sofa::defaulttype::StdRigidTypes<3,float> > MonitorRigid3f;
-typedef  sofa::component::misc::Monitor< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > Monitor3f;
-typedef  sofa::component::misc::Monitor< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > Monitor6f;
+typedef sofa::component::misc::Monitor<sofa::defaulttype::StdRigidTypes<3, float> > MonitorRigid3f;
+typedef sofa::component::misc::Monitor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > Monitor3f;
+typedef sofa::component::misc::Monitor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > Monitor6f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for RotationFinder
-typedef  sofa::component::container::RotationFinder< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > RotationFinder3f;
+typedef sofa::component::container::RotationFinder<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RotationFinder3f;
+typedef sofa::component::container::RotationFinder<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RotationFinderCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SpatialGridContainer
-typedef  sofa::component::container::SpatialGridContainer< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SpatialGridContainer3f;
+typedef sofa::component::container::SpatialGridContainer<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SpatialGridContainer3f;
+typedef sofa::component::container::SpatialGridContainer<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SpatialGridContainerCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SpringIt
-typedef  sofa::component::misc::SpringIt< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > SpringIt3f;
+typedef sofa::component::misc::SpringIt<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SpringIt3f;
 
 
 
@@ -148,17 +155,24 @@ typedef EvalSurfaceDistance3f EvalSurfaceDistance3;
 typedef ExtraMonitorRigid3f ExtraMonitorRigid3;
 typedef ExtraMonitor3f ExtraMonitor3;
 typedef ExtraMonitor6f ExtraMonitor6;
+typedef ExtraMonitorCudaRigid3f ExtraMonitorCudaRigid3;
+typedef ExtraMonitorCuda6f ExtraMonitorCuda6;
 typedef MappedObjectRigid2f MappedObjectRigid2;
 typedef MappedObjectRigid3f MappedObjectRigid3;
 typedef MappedObject1f MappedObject1;
 typedef MappedObject2f MappedObject2;
 typedef MappedObject3f MappedObject3;
 typedef MappedObject6f MappedObject6;
+typedef MappedObjectCudaRigid3f MappedObjectCudaRigid3;
+typedef MappedObjectCuda3f MappedObjectCuda3;
+typedef MappedObjectCuda6f MappedObjectCuda6;
 typedef MonitorRigid3f MonitorRigid3;
 typedef Monitor3f Monitor3;
 typedef Monitor6f Monitor6;
 typedef RotationFinder3f RotationFinder3;
+typedef RotationFinderCuda3f RotationFinderCuda3;
 typedef SpatialGridContainer3f SpatialGridContainer3;
+typedef SpatialGridContainerCuda3f SpatialGridContainerCuda3;
 typedef SpringIt3f SpringIt3;
 #endif
 

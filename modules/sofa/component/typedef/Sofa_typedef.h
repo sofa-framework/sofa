@@ -49,6 +49,7 @@
 #include <sofa/component/typedef/ForceField_combination.h>
 #include <sofa/component/typedef/InteractionForceField_combination.h>
 #include <sofa/component/typedef/Mapping_combination.h>
+#include <sofa/component/typedef/Topology_combination.h>
 
 #endif
 #endif
