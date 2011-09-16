@@ -34,6 +34,7 @@
 
 #include <sofa/component/typedef/Particles_double.h>
 #include <sofa/component/typedef/BehaviorModel_double.h>
+#include <sofa/component/typedef/CollisionAlgorithm_double.h>
 #include <sofa/component/typedef/CollisionModel_double.h>
 #include <sofa/component/typedef/ConstraintSet_double.h>
 #include <sofa/component/typedef/ConstraintSolver_double.h>
@@ -46,6 +47,7 @@
 #include <sofa/component/typedef/Mass_double.h>
 #include <sofa/component/typedef/MechanicalState_double.h>
 #include <sofa/component/typedef/ProjectiveConstraintSet_double.h>
+#include <sofa/component/typedef/Topology_double.h>
 #include <sofa/component/typedef/TopologyObject_double.h>
 #include <sofa/component/typedef/VisualModel_double.h>
 #include <sofa/component/typedef/_Miscellaneous_double.h>

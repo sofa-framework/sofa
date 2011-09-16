@@ -70,161 +70,173 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DynamicSparseGridGeometryAlgorithms
-typedef  sofa::component::topology::DynamicSparseGridGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > DynamicSparseGridGeometryAlgorithms1f;
-typedef  sofa::component::topology::DynamicSparseGridGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > DynamicSparseGridGeometryAlgorithms2f;
-typedef  sofa::component::topology::DynamicSparseGridGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > DynamicSparseGridGeometryAlgorithms3f;
+typedef sofa::component::topology::DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > DynamicSparseGridGeometryAlgorithms1f;
+typedef sofa::component::topology::DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > DynamicSparseGridGeometryAlgorithms2f;
+typedef sofa::component::topology::DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > DynamicSparseGridGeometryAlgorithms3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DynamicSparseGridTopologyAlgorithms
-typedef  sofa::component::topology::DynamicSparseGridTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > DynamicSparseGridTopologyAlgorithms1f;
-typedef  sofa::component::topology::DynamicSparseGridTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > DynamicSparseGridTopologyAlgorithms2f;
-typedef  sofa::component::topology::DynamicSparseGridTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > DynamicSparseGridTopologyAlgorithms3f;
+typedef sofa::component::topology::DynamicSparseGridTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > DynamicSparseGridTopologyAlgorithms1f;
+typedef sofa::component::topology::DynamicSparseGridTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > DynamicSparseGridTopologyAlgorithms2f;
+typedef sofa::component::topology::DynamicSparseGridTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > DynamicSparseGridTopologyAlgorithms3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for EdgeSetGeometryAlgorithms
-typedef  sofa::component::topology::EdgeSetGeometryAlgorithms< sofa::defaulttype::StdRigidTypes<2,float> > EdgeSetGeometryAlgorithmsRigid2f;
-typedef  sofa::component::topology::EdgeSetGeometryAlgorithms< sofa::defaulttype::StdRigidTypes<3,float> > EdgeSetGeometryAlgorithmsRigid3f;
-typedef  sofa::component::topology::EdgeSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > EdgeSetGeometryAlgorithms1f;
-typedef  sofa::component::topology::EdgeSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > EdgeSetGeometryAlgorithms2f;
-typedef  sofa::component::topology::EdgeSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > EdgeSetGeometryAlgorithms3f;
+typedef sofa::component::topology::EdgeSetGeometryAlgorithms<sofa::defaulttype::StdRigidTypes<2, float> > EdgeSetGeometryAlgorithmsRigid2f;
+typedef sofa::component::topology::EdgeSetGeometryAlgorithms<sofa::defaulttype::StdRigidTypes<3, float> > EdgeSetGeometryAlgorithmsRigid3f;
+typedef sofa::component::topology::EdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > EdgeSetGeometryAlgorithms1f;
+typedef sofa::component::topology::EdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > EdgeSetGeometryAlgorithms2f;
+typedef sofa::component::topology::EdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > EdgeSetGeometryAlgorithms3f;
+typedef sofa::component::topology::EdgeSetGeometryAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > EdgeSetGeometryAlgorithmsCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for EdgeSetTopologyAlgorithms
-typedef  sofa::component::topology::EdgeSetTopologyAlgorithms< sofa::defaulttype::StdRigidTypes<2,float> > EdgeSetTopologyAlgorithmsRigid2f;
-typedef  sofa::component::topology::EdgeSetTopologyAlgorithms< sofa::defaulttype::StdRigidTypes<3,float> > EdgeSetTopologyAlgorithmsRigid3f;
-typedef  sofa::component::topology::EdgeSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > EdgeSetTopologyAlgorithms1f;
-typedef  sofa::component::topology::EdgeSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > EdgeSetTopologyAlgorithms2f;
-typedef  sofa::component::topology::EdgeSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > EdgeSetTopologyAlgorithms3f;
+typedef sofa::component::topology::EdgeSetTopologyAlgorithms<sofa::defaulttype::StdRigidTypes<2, float> > EdgeSetTopologyAlgorithmsRigid2f;
+typedef sofa::component::topology::EdgeSetTopologyAlgorithms<sofa::defaulttype::StdRigidTypes<3, float> > EdgeSetTopologyAlgorithmsRigid3f;
+typedef sofa::component::topology::EdgeSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > EdgeSetTopologyAlgorithms1f;
+typedef sofa::component::topology::EdgeSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > EdgeSetTopologyAlgorithms2f;
+typedef sofa::component::topology::EdgeSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > EdgeSetTopologyAlgorithms3f;
+typedef sofa::component::topology::EdgeSetTopologyAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > EdgeSetTopologyAlgorithmsCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for HexahedronSetGeometryAlgorithms
-typedef  sofa::component::topology::HexahedronSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > HexahedronSetGeometryAlgorithms1f;
-typedef  sofa::component::topology::HexahedronSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > HexahedronSetGeometryAlgorithms2f;
-typedef  sofa::component::topology::HexahedronSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > HexahedronSetGeometryAlgorithms3f;
+typedef sofa::component::topology::HexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > HexahedronSetGeometryAlgorithms1f;
+typedef sofa::component::topology::HexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > HexahedronSetGeometryAlgorithms2f;
+typedef sofa::component::topology::HexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > HexahedronSetGeometryAlgorithms3f;
+typedef sofa::component::topology::HexahedronSetGeometryAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > HexahedronSetGeometryAlgorithmsCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for HexahedronSetTopologyAlgorithms
-typedef  sofa::component::topology::HexahedronSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > HexahedronSetTopologyAlgorithms1f;
-typedef  sofa::component::topology::HexahedronSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > HexahedronSetTopologyAlgorithms2f;
-typedef  sofa::component::topology::HexahedronSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > HexahedronSetTopologyAlgorithms3f;
+typedef sofa::component::topology::HexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > HexahedronSetTopologyAlgorithms1f;
+typedef sofa::component::topology::HexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > HexahedronSetTopologyAlgorithms2f;
+typedef sofa::component::topology::HexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > HexahedronSetTopologyAlgorithms3f;
+typedef sofa::component::topology::HexahedronSetTopologyAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > HexahedronSetTopologyAlgorithmsCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ManifoldEdgeSetGeometryAlgorithms
-typedef  sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms< sofa::defaulttype::StdRigidTypes<2,float> > ManifoldEdgeSetGeometryAlgorithmsRigid2f;
-typedef  sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms< sofa::defaulttype::StdRigidTypes<3,float> > ManifoldEdgeSetGeometryAlgorithmsRigid3f;
-typedef  sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > ManifoldEdgeSetGeometryAlgorithms1f;
-typedef  sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > ManifoldEdgeSetGeometryAlgorithms2f;
-typedef  sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ManifoldEdgeSetGeometryAlgorithms3f;
+typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdRigidTypes<2, float> > ManifoldEdgeSetGeometryAlgorithmsRigid2f;
+typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdRigidTypes<3, float> > ManifoldEdgeSetGeometryAlgorithmsRigid3f;
+typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > ManifoldEdgeSetGeometryAlgorithms1f;
+typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ManifoldEdgeSetGeometryAlgorithms2f;
+typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ManifoldEdgeSetGeometryAlgorithms3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ManifoldEdgeSetTopologyAlgorithms
-typedef  sofa::component::topology::ManifoldEdgeSetTopologyAlgorithms< sofa::defaulttype::StdRigidTypes<2,float> > ManifoldEdgeSetTopologyAlgorithmsRigid2f;
-typedef  sofa::component::topology::ManifoldEdgeSetTopologyAlgorithms< sofa::defaulttype::StdRigidTypes<3,float> > ManifoldEdgeSetTopologyAlgorithmsRigid3f;
-typedef  sofa::component::topology::ManifoldEdgeSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > ManifoldEdgeSetTopologyAlgorithms1f;
-typedef  sofa::component::topology::ManifoldEdgeSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > ManifoldEdgeSetTopologyAlgorithms2f;
-typedef  sofa::component::topology::ManifoldEdgeSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ManifoldEdgeSetTopologyAlgorithms3f;
+typedef sofa::component::topology::ManifoldEdgeSetTopologyAlgorithms<sofa::defaulttype::StdRigidTypes<2, float> > ManifoldEdgeSetTopologyAlgorithmsRigid2f;
+typedef sofa::component::topology::ManifoldEdgeSetTopologyAlgorithms<sofa::defaulttype::StdRigidTypes<3, float> > ManifoldEdgeSetTopologyAlgorithmsRigid3f;
+typedef sofa::component::topology::ManifoldEdgeSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > ManifoldEdgeSetTopologyAlgorithms1f;
+typedef sofa::component::topology::ManifoldEdgeSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ManifoldEdgeSetTopologyAlgorithms2f;
+typedef sofa::component::topology::ManifoldEdgeSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ManifoldEdgeSetTopologyAlgorithms3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ManifoldTriangleSetTopologyAlgorithms
-typedef  sofa::component::topology::ManifoldTriangleSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > ManifoldTriangleSetTopologyAlgorithms1f;
-typedef  sofa::component::topology::ManifoldTriangleSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > ManifoldTriangleSetTopologyAlgorithms2f;
-typedef  sofa::component::topology::ManifoldTriangleSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ManifoldTriangleSetTopologyAlgorithms3f;
+typedef sofa::component::topology::ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > ManifoldTriangleSetTopologyAlgorithms1f;
+typedef sofa::component::topology::ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ManifoldTriangleSetTopologyAlgorithms2f;
+typedef sofa::component::topology::ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ManifoldTriangleSetTopologyAlgorithms3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MultilevelHexahedronSetGeometryAlgorithms
-typedef  sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > MultilevelHexahedronSetGeometryAlgorithms1f;
-typedef  sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > MultilevelHexahedronSetGeometryAlgorithms2f;
-typedef  sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > MultilevelHexahedronSetGeometryAlgorithms3f;
+typedef sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > MultilevelHexahedronSetGeometryAlgorithms1f;
+typedef sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > MultilevelHexahedronSetGeometryAlgorithms2f;
+typedef sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MultilevelHexahedronSetGeometryAlgorithms3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MultilevelHexahedronSetTopologyAlgorithms
-typedef  sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > MultilevelHexahedronSetTopologyAlgorithms1f;
-typedef  sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > MultilevelHexahedronSetTopologyAlgorithms2f;
-typedef  sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > MultilevelHexahedronSetTopologyAlgorithms3f;
+typedef sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > MultilevelHexahedronSetTopologyAlgorithms1f;
+typedef sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > MultilevelHexahedronSetTopologyAlgorithms2f;
+typedef sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MultilevelHexahedronSetTopologyAlgorithms3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for PointSetGeometryAlgorithms
-typedef  sofa::component::topology::PointSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > PointSetGeometryAlgorithms1f;
-typedef  sofa::component::topology::PointSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > PointSetGeometryAlgorithms2f;
-typedef  sofa::component::topology::PointSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > PointSetGeometryAlgorithms3f;
+typedef sofa::component::topology::PointSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > PointSetGeometryAlgorithms1f;
+typedef sofa::component::topology::PointSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > PointSetGeometryAlgorithms2f;
+typedef sofa::component::topology::PointSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PointSetGeometryAlgorithms3f;
+typedef sofa::component::topology::PointSetGeometryAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PointSetGeometryAlgorithmsCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for PointSetTopologyAlgorithms
-typedef  sofa::component::topology::PointSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > PointSetTopologyAlgorithms1f;
-typedef  sofa::component::topology::PointSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > PointSetTopologyAlgorithms2f;
-typedef  sofa::component::topology::PointSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > PointSetTopologyAlgorithms3f;
+typedef sofa::component::topology::PointSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > PointSetTopologyAlgorithms1f;
+typedef sofa::component::topology::PointSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > PointSetTopologyAlgorithms2f;
+typedef sofa::component::topology::PointSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PointSetTopologyAlgorithms3f;
+typedef sofa::component::topology::PointSetTopologyAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PointSetTopologyAlgorithmsCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for QuadSetGeometryAlgorithms
-typedef  sofa::component::topology::QuadSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > QuadSetGeometryAlgorithms1f;
-typedef  sofa::component::topology::QuadSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > QuadSetGeometryAlgorithms2f;
-typedef  sofa::component::topology::QuadSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > QuadSetGeometryAlgorithms3f;
+typedef sofa::component::topology::QuadSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > QuadSetGeometryAlgorithms1f;
+typedef sofa::component::topology::QuadSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > QuadSetGeometryAlgorithms2f;
+typedef sofa::component::topology::QuadSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > QuadSetGeometryAlgorithms3f;
+typedef sofa::component::topology::QuadSetGeometryAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > QuadSetGeometryAlgorithmsCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for QuadSetTopologyAlgorithms
-typedef  sofa::component::topology::QuadSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > QuadSetTopologyAlgorithms1f;
-typedef  sofa::component::topology::QuadSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > QuadSetTopologyAlgorithms2f;
-typedef  sofa::component::topology::QuadSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > QuadSetTopologyAlgorithms3f;
+typedef sofa::component::topology::QuadSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > QuadSetTopologyAlgorithms1f;
+typedef sofa::component::topology::QuadSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > QuadSetTopologyAlgorithms2f;
+typedef sofa::component::topology::QuadSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > QuadSetTopologyAlgorithms3f;
+typedef sofa::component::topology::QuadSetTopologyAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > QuadSetTopologyAlgorithmsCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TetrahedronSetGeometryAlgorithms
-typedef  sofa::component::topology::TetrahedronSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > TetrahedronSetGeometryAlgorithms1f;
-typedef  sofa::component::topology::TetrahedronSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > TetrahedronSetGeometryAlgorithms2f;
-typedef  sofa::component::topology::TetrahedronSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > TetrahedronSetGeometryAlgorithms3f;
+typedef sofa::component::topology::TetrahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > TetrahedronSetGeometryAlgorithms1f;
+typedef sofa::component::topology::TetrahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > TetrahedronSetGeometryAlgorithms2f;
+typedef sofa::component::topology::TetrahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TetrahedronSetGeometryAlgorithms3f;
+typedef sofa::component::topology::TetrahedronSetGeometryAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TetrahedronSetGeometryAlgorithmsCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TetrahedronSetTopologyAlgorithms
-typedef  sofa::component::topology::TetrahedronSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > TetrahedronSetTopologyAlgorithms1f;
-typedef  sofa::component::topology::TetrahedronSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > TetrahedronSetTopologyAlgorithms2f;
-typedef  sofa::component::topology::TetrahedronSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > TetrahedronSetTopologyAlgorithms3f;
+typedef sofa::component::topology::TetrahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > TetrahedronSetTopologyAlgorithms1f;
+typedef sofa::component::topology::TetrahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > TetrahedronSetTopologyAlgorithms2f;
+typedef sofa::component::topology::TetrahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TetrahedronSetTopologyAlgorithms3f;
+typedef sofa::component::topology::TetrahedronSetTopologyAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TetrahedronSetTopologyAlgorithmsCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TriangleSetGeometryAlgorithms
-typedef  sofa::component::topology::TriangleSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > TriangleSetGeometryAlgorithms1f;
-typedef  sofa::component::topology::TriangleSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > TriangleSetGeometryAlgorithms2f;
-typedef  sofa::component::topology::TriangleSetGeometryAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > TriangleSetGeometryAlgorithms3f;
+typedef sofa::component::topology::TriangleSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > TriangleSetGeometryAlgorithms1f;
+typedef sofa::component::topology::TriangleSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > TriangleSetGeometryAlgorithms2f;
+typedef sofa::component::topology::TriangleSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TriangleSetGeometryAlgorithms3f;
+typedef sofa::component::topology::TriangleSetGeometryAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TriangleSetGeometryAlgorithmsCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TriangleSetTopologyAlgorithms
-typedef  sofa::component::topology::TriangleSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > TriangleSetTopologyAlgorithms1f;
-typedef  sofa::component::topology::TriangleSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > TriangleSetTopologyAlgorithms2f;
-typedef  sofa::component::topology::TriangleSetTopologyAlgorithms< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > TriangleSetTopologyAlgorithms3f;
+typedef sofa::component::topology::TriangleSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > TriangleSetTopologyAlgorithms1f;
+typedef sofa::component::topology::TriangleSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > TriangleSetTopologyAlgorithms2f;
+typedef sofa::component::topology::TriangleSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TriangleSetTopologyAlgorithms3f;
+typedef sofa::component::topology::TriangleSetTopologyAlgorithms<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TriangleSetTopologyAlgorithmsCuda3f;
 
 
 
@@ -242,17 +254,21 @@ typedef EdgeSetGeometryAlgorithmsRigid3f EdgeSetGeometryAlgorithmsRigid3;
 typedef EdgeSetGeometryAlgorithms1f EdgeSetGeometryAlgorithms1;
 typedef EdgeSetGeometryAlgorithms2f EdgeSetGeometryAlgorithms2;
 typedef EdgeSetGeometryAlgorithms3f EdgeSetGeometryAlgorithms3;
+typedef EdgeSetGeometryAlgorithmsCuda3f EdgeSetGeometryAlgorithmsCuda3;
 typedef EdgeSetTopologyAlgorithmsRigid2f EdgeSetTopologyAlgorithmsRigid2;
 typedef EdgeSetTopologyAlgorithmsRigid3f EdgeSetTopologyAlgorithmsRigid3;
 typedef EdgeSetTopologyAlgorithms1f EdgeSetTopologyAlgorithms1;
 typedef EdgeSetTopologyAlgorithms2f EdgeSetTopologyAlgorithms2;
 typedef EdgeSetTopologyAlgorithms3f EdgeSetTopologyAlgorithms3;
+typedef EdgeSetTopologyAlgorithmsCuda3f EdgeSetTopologyAlgorithmsCuda3;
 typedef HexahedronSetGeometryAlgorithms1f HexahedronSetGeometryAlgorithms1;
 typedef HexahedronSetGeometryAlgorithms2f HexahedronSetGeometryAlgorithms2;
 typedef HexahedronSetGeometryAlgorithms3f HexahedronSetGeometryAlgorithms3;
+typedef HexahedronSetGeometryAlgorithmsCuda3f HexahedronSetGeometryAlgorithmsCuda3;
 typedef HexahedronSetTopologyAlgorithms1f HexahedronSetTopologyAlgorithms1;
 typedef HexahedronSetTopologyAlgorithms2f HexahedronSetTopologyAlgorithms2;
 typedef HexahedronSetTopologyAlgorithms3f HexahedronSetTopologyAlgorithms3;
+typedef HexahedronSetTopologyAlgorithmsCuda3f HexahedronSetTopologyAlgorithmsCuda3;
 typedef ManifoldEdgeSetGeometryAlgorithmsRigid2f ManifoldEdgeSetGeometryAlgorithmsRigid2;
 typedef ManifoldEdgeSetGeometryAlgorithmsRigid3f ManifoldEdgeSetGeometryAlgorithmsRigid3;
 typedef ManifoldEdgeSetGeometryAlgorithms1f ManifoldEdgeSetGeometryAlgorithms1;
@@ -275,27 +291,35 @@ typedef MultilevelHexahedronSetTopologyAlgorithms3f MultilevelHexahedronSetTopol
 typedef PointSetGeometryAlgorithms1f PointSetGeometryAlgorithms1;
 typedef PointSetGeometryAlgorithms2f PointSetGeometryAlgorithms2;
 typedef PointSetGeometryAlgorithms3f PointSetGeometryAlgorithms3;
+typedef PointSetGeometryAlgorithmsCuda3f PointSetGeometryAlgorithmsCuda3;
 typedef PointSetTopologyAlgorithms1f PointSetTopologyAlgorithms1;
 typedef PointSetTopologyAlgorithms2f PointSetTopologyAlgorithms2;
 typedef PointSetTopologyAlgorithms3f PointSetTopologyAlgorithms3;
+typedef PointSetTopologyAlgorithmsCuda3f PointSetTopologyAlgorithmsCuda3;
 typedef QuadSetGeometryAlgorithms1f QuadSetGeometryAlgorithms1;
 typedef QuadSetGeometryAlgorithms2f QuadSetGeometryAlgorithms2;
 typedef QuadSetGeometryAlgorithms3f QuadSetGeometryAlgorithms3;
+typedef QuadSetGeometryAlgorithmsCuda3f QuadSetGeometryAlgorithmsCuda3;
 typedef QuadSetTopologyAlgorithms1f QuadSetTopologyAlgorithms1;
 typedef QuadSetTopologyAlgorithms2f QuadSetTopologyAlgorithms2;
 typedef QuadSetTopologyAlgorithms3f QuadSetTopologyAlgorithms3;
+typedef QuadSetTopologyAlgorithmsCuda3f QuadSetTopologyAlgorithmsCuda3;
 typedef TetrahedronSetGeometryAlgorithms1f TetrahedronSetGeometryAlgorithms1;
 typedef TetrahedronSetGeometryAlgorithms2f TetrahedronSetGeometryAlgorithms2;
 typedef TetrahedronSetGeometryAlgorithms3f TetrahedronSetGeometryAlgorithms3;
+typedef TetrahedronSetGeometryAlgorithmsCuda3f TetrahedronSetGeometryAlgorithmsCuda3;
 typedef TetrahedronSetTopologyAlgorithms1f TetrahedronSetTopologyAlgorithms1;
 typedef TetrahedronSetTopologyAlgorithms2f TetrahedronSetTopologyAlgorithms2;
 typedef TetrahedronSetTopologyAlgorithms3f TetrahedronSetTopologyAlgorithms3;
+typedef TetrahedronSetTopologyAlgorithmsCuda3f TetrahedronSetTopologyAlgorithmsCuda3;
 typedef TriangleSetGeometryAlgorithms1f TriangleSetGeometryAlgorithms1;
 typedef TriangleSetGeometryAlgorithms2f TriangleSetGeometryAlgorithms2;
 typedef TriangleSetGeometryAlgorithms3f TriangleSetGeometryAlgorithms3;
+typedef TriangleSetGeometryAlgorithmsCuda3f TriangleSetGeometryAlgorithmsCuda3;
 typedef TriangleSetTopologyAlgorithms1f TriangleSetTopologyAlgorithms1;
 typedef TriangleSetTopologyAlgorithms2f TriangleSetTopologyAlgorithms2;
 typedef TriangleSetTopologyAlgorithms3f TriangleSetTopologyAlgorithms3;
+typedef TriangleSetTopologyAlgorithmsCuda3f TriangleSetTopologyAlgorithmsCuda3;
 #endif
 
 #endif

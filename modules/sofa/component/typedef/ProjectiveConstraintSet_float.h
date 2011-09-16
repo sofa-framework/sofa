@@ -54,11 +54,11 @@
 #include <sofa/component/projectiveconstraintset/FixedTranslationConstraint.h>
 #include <sofa/component/projectiveconstraintset/HermiteSplineConstraint.h>
 #include <sofa/component/projectiveconstraintset/LinearMovementConstraint.h>
-#include <sofa/component/projectiveconstraintset/PartialLinearMovementConstraint.h>
 #include <sofa/component/projectiveconstraintset/LinearVelocityConstraint.h>
 #include <sofa/component/projectiveconstraintset/OscillatorConstraint.h>
 #include <sofa/component/projectiveconstraintset/ParabolicConstraint.h>
 #include <sofa/component/projectiveconstraintset/PartialFixedConstraint.h>
+#include <sofa/component/projectiveconstraintset/PartialLinearMovementConstraint.h>
 #include <sofa/component/misc/ParticleSink.h>
 #include <sofa/component/misc/ParticleSource.h>
 #include <sofa/component/projectiveconstraintset/ProjectionLineConstraint.h>
@@ -68,140 +68,155 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for AttachConstraint
-typedef  sofa::component::projectiveconstraintset::AttachConstraint< sofa::defaulttype::StdRigidTypes<2,float> > AttachConstraintRigid2f;
-typedef  sofa::component::projectiveconstraintset::AttachConstraint< sofa::defaulttype::StdRigidTypes<3,float> > AttachConstraintRigid3f;
-typedef  sofa::component::projectiveconstraintset::AttachConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > AttachConstraint1f;
-typedef  sofa::component::projectiveconstraintset::AttachConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > AttachConstraint2f;
-typedef  sofa::component::projectiveconstraintset::AttachConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > AttachConstraint3f;
+typedef sofa::component::projectiveconstraintset::AttachConstraint<sofa::defaulttype::StdRigidTypes<2, float> > AttachConstraintRigid2f;
+typedef sofa::component::projectiveconstraintset::AttachConstraint<sofa::defaulttype::StdRigidTypes<3, float> > AttachConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::AttachConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > AttachConstraint1f;
+typedef sofa::component::projectiveconstraintset::AttachConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > AttachConstraint2f;
+typedef sofa::component::projectiveconstraintset::AttachConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > AttachConstraint3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DisplacementConstraint
-typedef  sofa::component::projectiveconstraintset::DisplacementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > DisplacementConstraint1f;
-typedef  sofa::component::projectiveconstraintset::DisplacementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > DisplacementConstraint2f;
-typedef  sofa::component::projectiveconstraintset::DisplacementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > DisplacementConstraint3f;
+typedef sofa::component::projectiveconstraintset::DisplacementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > DisplacementConstraint1f;
+typedef sofa::component::projectiveconstraintset::DisplacementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > DisplacementConstraint2f;
+typedef sofa::component::projectiveconstraintset::DisplacementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > DisplacementConstraint3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for FixedConstraint
-typedef  sofa::component::projectiveconstraintset::FixedConstraint< sofa::defaulttype::StdRigidTypes<2,float> > FixedConstraintRigid2f;
-typedef  sofa::component::projectiveconstraintset::FixedConstraint< sofa::defaulttype::StdRigidTypes<3,float> > FixedConstraintRigid3f;
-typedef  sofa::component::projectiveconstraintset::FixedConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > FixedConstraint1f;
-typedef  sofa::component::projectiveconstraintset::FixedConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > FixedConstraint2f;
-typedef  sofa::component::projectiveconstraintset::FixedConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > FixedConstraint3f;
-typedef  sofa::component::projectiveconstraintset::FixedConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > FixedConstraint6f;
+typedef sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::StdRigidTypes<2, float> > FixedConstraintRigid2f;
+typedef sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::StdRigidTypes<3, float> > FixedConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > FixedConstraint1f;
+typedef sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > FixedConstraint2f;
+typedef sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > FixedConstraint3f;
+typedef sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > FixedConstraint6f;
+typedef sofa::component::projectiveconstraintset::FixedConstraint<sofa::gpu::cuda::CudaRigidTypes<3, float> > FixedConstraintCudaRigid3f;
+typedef sofa::component::projectiveconstraintset::FixedConstraint<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > FixedConstraintCuda3f;
+typedef sofa::component::projectiveconstraintset::FixedConstraint<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > FixedConstraintCuda6f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for FixedPlaneConstraint
-typedef  sofa::component::projectiveconstraintset::FixedPlaneConstraint< sofa::defaulttype::StdRigidTypes<3,float> > FixedPlaneConstraintRigid3f;
-typedef  sofa::component::projectiveconstraintset::FixedPlaneConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > FixedPlaneConstraint3f;
-typedef  sofa::component::projectiveconstraintset::FixedPlaneConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > FixedPlaneConstraint6f;
+typedef sofa::component::projectiveconstraintset::FixedPlaneConstraint<sofa::defaulttype::StdRigidTypes<3, float> > FixedPlaneConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::FixedPlaneConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > FixedPlaneConstraint3f;
+typedef sofa::component::projectiveconstraintset::FixedPlaneConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > FixedPlaneConstraint6f;
+typedef sofa::component::projectiveconstraintset::FixedPlaneConstraint<sofa::gpu::cuda::CudaRigidTypes<3, float> > FixedPlaneConstraintCudaRigid3f;
+typedef sofa::component::projectiveconstraintset::FixedPlaneConstraint<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > FixedPlaneConstraintCuda3f;
+typedef sofa::component::projectiveconstraintset::FixedPlaneConstraint<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > FixedPlaneConstraintCuda6f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for FixedRotationConstraint
-typedef  sofa::component::projectiveconstraintset::FixedRotationConstraint< sofa::defaulttype::StdRigidTypes<3,float> > FixedRotationConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::FixedRotationConstraint<sofa::defaulttype::StdRigidTypes<3, float> > FixedRotationConstraintRigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for FixedTranslationConstraint
-typedef  sofa::component::projectiveconstraintset::FixedTranslationConstraint< sofa::defaulttype::StdRigidTypes<2,float> > FixedTranslationConstraintRigid2f;
-typedef  sofa::component::projectiveconstraintset::FixedTranslationConstraint< sofa::defaulttype::StdRigidTypes<3,float> > FixedTranslationConstraintRigid3f;
-typedef  sofa::component::projectiveconstraintset::FixedTranslationConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > FixedTranslationConstraint6f;
+typedef sofa::component::projectiveconstraintset::FixedTranslationConstraint<sofa::defaulttype::StdRigidTypes<2, float> > FixedTranslationConstraintRigid2f;
+typedef sofa::component::projectiveconstraintset::FixedTranslationConstraint<sofa::defaulttype::StdRigidTypes<3, float> > FixedTranslationConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::FixedTranslationConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > FixedTranslationConstraint6f;
+typedef sofa::component::projectiveconstraintset::FixedTranslationConstraint<sofa::gpu::cuda::CudaRigidTypes<3, float> > FixedTranslationConstraintCudaRigid3f;
+typedef sofa::component::projectiveconstraintset::FixedTranslationConstraint<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > FixedTranslationConstraintCuda6f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for HermiteSplineConstraint
-typedef  sofa::component::projectiveconstraintset::HermiteSplineConstraint< sofa::defaulttype::StdRigidTypes<3,float> > HermiteSplineConstraintRigid3f;
-typedef  sofa::component::projectiveconstraintset::HermiteSplineConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > HermiteSplineConstraint3f;
+typedef sofa::component::projectiveconstraintset::HermiteSplineConstraint<sofa::defaulttype::StdRigidTypes<3, float> > HermiteSplineConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::HermiteSplineConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > HermiteSplineConstraint3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for LinearMovementConstraint
-typedef  sofa::component::projectiveconstraintset::LinearMovementConstraint< sofa::defaulttype::StdRigidTypes<3,float> > LinearMovementConstraintRigid3f;
-typedef  sofa::component::projectiveconstraintset::LinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > LinearMovementConstraint1f;
-typedef  sofa::component::projectiveconstraintset::LinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > LinearMovementConstraint2f;
-typedef  sofa::component::projectiveconstraintset::LinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > LinearMovementConstraint3f;
-typedef  sofa::component::projectiveconstraintset::LinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > LinearMovementConstraint6f;
+typedef sofa::component::projectiveconstraintset::LinearMovementConstraint<sofa::defaulttype::StdRigidTypes<3, float> > LinearMovementConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::LinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > LinearMovementConstraint1f;
+typedef sofa::component::projectiveconstraintset::LinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > LinearMovementConstraint2f;
+typedef sofa::component::projectiveconstraintset::LinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > LinearMovementConstraint3f;
+typedef sofa::component::projectiveconstraintset::LinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > LinearMovementConstraint6f;
+typedef sofa::component::projectiveconstraintset::LinearMovementConstraint<sofa::gpu::cuda::CudaRigidTypes<3, float> > LinearMovementConstraintCudaRigid3f;
+typedef sofa::component::projectiveconstraintset::LinearMovementConstraint<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > LinearMovementConstraintCuda6f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for LinearVelocityConstraint
-typedef  sofa::component::projectiveconstraintset::LinearVelocityConstraint< sofa::defaulttype::StdRigidTypes<3,float> > LinearVelocityConstraintRigid3f;
-typedef  sofa::component::projectiveconstraintset::LinearVelocityConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > LinearVelocityConstraint1f;
-typedef  sofa::component::projectiveconstraintset::LinearVelocityConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > LinearVelocityConstraint2f;
-typedef  sofa::component::projectiveconstraintset::LinearVelocityConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > LinearVelocityConstraint3f;
-typedef  sofa::component::projectiveconstraintset::LinearVelocityConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > LinearVelocityConstraint6f;
+typedef sofa::component::projectiveconstraintset::LinearVelocityConstraint<sofa::defaulttype::StdRigidTypes<3, float> > LinearVelocityConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::LinearVelocityConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > LinearVelocityConstraint1f;
+typedef sofa::component::projectiveconstraintset::LinearVelocityConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > LinearVelocityConstraint2f;
+typedef sofa::component::projectiveconstraintset::LinearVelocityConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > LinearVelocityConstraint3f;
+typedef sofa::component::projectiveconstraintset::LinearVelocityConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > LinearVelocityConstraint6f;
+typedef sofa::component::projectiveconstraintset::LinearVelocityConstraint<sofa::gpu::cuda::CudaRigidTypes<3, float> > LinearVelocityConstraintCudaRigid3f;
+typedef sofa::component::projectiveconstraintset::LinearVelocityConstraint<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > LinearVelocityConstraintCuda6f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for OscillatorConstraint
-typedef  sofa::component::projectiveconstraintset::OscillatorConstraint< sofa::defaulttype::StdRigidTypes<3,float> > OscillatorConstraintRigid3f;
-typedef  sofa::component::projectiveconstraintset::OscillatorConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > OscillatorConstraint3f;
+typedef sofa::component::projectiveconstraintset::OscillatorConstraint<sofa::defaulttype::StdRigidTypes<3, float> > OscillatorConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::OscillatorConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > OscillatorConstraint3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ParabolicConstraint
-typedef  sofa::component::projectiveconstraintset::ParabolicConstraint< sofa::defaulttype::StdRigidTypes<3,float> > ParabolicConstraintRigid3f;
-typedef  sofa::component::projectiveconstraintset::ParabolicConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ParabolicConstraint3f;
+typedef sofa::component::projectiveconstraintset::ParabolicConstraint<sofa::defaulttype::StdRigidTypes<3, float> > ParabolicConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::ParabolicConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ParabolicConstraint3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for PartialFixedConstraint
-typedef  sofa::component::projectiveconstraintset::PartialFixedConstraint< sofa::defaulttype::StdRigidTypes<2,float> > PartialFixedConstraintRigid2f;
-typedef  sofa::component::projectiveconstraintset::PartialFixedConstraint< sofa::defaulttype::StdRigidTypes<3,float> > PartialFixedConstraintRigid3f;
-typedef  sofa::component::projectiveconstraintset::PartialFixedConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > PartialFixedConstraint1f;
-typedef  sofa::component::projectiveconstraintset::PartialFixedConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > PartialFixedConstraint2f;
-typedef  sofa::component::projectiveconstraintset::PartialFixedConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > PartialFixedConstraint3f;
-typedef  sofa::component::projectiveconstraintset::PartialFixedConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > PartialFixedConstraint6f;
+typedef sofa::component::projectiveconstraintset::PartialFixedConstraint<sofa::defaulttype::StdRigidTypes<2, float> > PartialFixedConstraintRigid2f;
+typedef sofa::component::projectiveconstraintset::PartialFixedConstraint<sofa::defaulttype::StdRigidTypes<3, float> > PartialFixedConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::PartialFixedConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > PartialFixedConstraint1f;
+typedef sofa::component::projectiveconstraintset::PartialFixedConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > PartialFixedConstraint2f;
+typedef sofa::component::projectiveconstraintset::PartialFixedConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PartialFixedConstraint3f;
+typedef sofa::component::projectiveconstraintset::PartialFixedConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > PartialFixedConstraint6f;
+
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for PartialLinearMovementConstraint
-typedef  sofa::component::projectiveconstraintset::PartialLinearMovementConstraint< sofa::defaulttype::StdRigidTypes<3,float> > PartialLinearMovementConstraintRigid3f;
-typedef  sofa::component::projectiveconstraintset::PartialLinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > PartialLinearMovementConstraint1f;
-typedef  sofa::component::projectiveconstraintset::PartialLinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > PartialLinearMovementConstraint2f;
-typedef  sofa::component::projectiveconstraintset::PartialLinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > PartialLinearMovementConstraint3f;
-typedef  sofa::component::projectiveconstraintset::PartialLinearMovementConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > PartialLinearMovementConstraint6f;
+typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstraint<sofa::defaulttype::StdRigidTypes<3, float> > PartialLinearMovementConstraintRigid3f;
+typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > PartialLinearMovementConstraint1f;
+typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > PartialLinearMovementConstraint2f;
+typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PartialLinearMovementConstraint3f;
+typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > PartialLinearMovementConstraint6f;
+
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ParticleSink
-typedef  sofa::component::misc::ParticleSink< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > ParticleSink2f;
-typedef  sofa::component::misc::ParticleSink< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ParticleSink3f;
+typedef sofa::component::misc::ParticleSink<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ParticleSink2f;
+typedef sofa::component::misc::ParticleSink<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ParticleSink3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ParticleSource
-typedef  sofa::component::misc::ParticleSource< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > ParticleSource2f;
-typedef  sofa::component::misc::ParticleSource< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ParticleSource3f;
+typedef sofa::component::misc::ParticleSource<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ParticleSource2f;
+typedef sofa::component::misc::ParticleSource<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ParticleSource3f;
+typedef sofa::component::misc::ParticleSource<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ParticleSourceCuda3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ProjectionLineConstraint
-typedef  sofa::component::projectiveconstraintset::ProjectionLineConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > ProjectionLineConstraint1f;
-typedef  sofa::component::projectiveconstraintset::ProjectionLineConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > ProjectionLineConstraint2f;
-typedef  sofa::component::projectiveconstraintset::ProjectionLineConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ProjectionLineConstraint3f;
+typedef sofa::component::projectiveconstraintset::ProjectionLineConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > ProjectionLineConstraint1f;
+typedef sofa::component::projectiveconstraintset::ProjectionLineConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ProjectionLineConstraint2f;
+typedef sofa::component::projectiveconstraintset::ProjectionLineConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ProjectionLineConstraint3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ProjectionPlaneConstraint
-typedef  sofa::component::projectiveconstraintset::ProjectionPlaneConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > ProjectionPlaneConstraint3f;
+typedef sofa::component::projectiveconstraintset::ProjectionPlaneConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ProjectionPlaneConstraint3f;
 
 
 
@@ -222,13 +237,21 @@ typedef FixedConstraint1f FixedConstraint1;
 typedef FixedConstraint2f FixedConstraint2;
 typedef FixedConstraint3f FixedConstraint3;
 typedef FixedConstraint6f FixedConstraint6;
+typedef FixedConstraintCudaRigid3f FixedConstraintCudaRigid3;
+typedef FixedConstraintCuda3f FixedConstraintCuda3;
+typedef FixedConstraintCuda6f FixedConstraintCuda6;
 typedef FixedPlaneConstraintRigid3f FixedPlaneConstraintRigid3;
 typedef FixedPlaneConstraint3f FixedPlaneConstraint3;
 typedef FixedPlaneConstraint6f FixedPlaneConstraint6;
+typedef FixedPlaneConstraintCudaRigid3f FixedPlaneConstraintCudaRigid3;
+typedef FixedPlaneConstraintCuda3f FixedPlaneConstraintCuda3;
+typedef FixedPlaneConstraintCuda6f FixedPlaneConstraintCuda6;
 typedef FixedRotationConstraintRigid3f FixedRotationConstraintRigid3;
 typedef FixedTranslationConstraintRigid2f FixedTranslationConstraintRigid2;
 typedef FixedTranslationConstraintRigid3f FixedTranslationConstraintRigid3;
 typedef FixedTranslationConstraint6f FixedTranslationConstraint6;
+typedef FixedTranslationConstraintCudaRigid3f FixedTranslationConstraintCudaRigid3;
+typedef FixedTranslationConstraintCuda6f FixedTranslationConstraintCuda6;
 typedef HermiteSplineConstraintRigid3f HermiteSplineConstraintRigid3;
 typedef HermiteSplineConstraint3f HermiteSplineConstraint3;
 typedef LinearMovementConstraintRigid3f LinearMovementConstraintRigid3;
@@ -236,11 +259,15 @@ typedef LinearMovementConstraint1f LinearMovementConstraint1;
 typedef LinearMovementConstraint2f LinearMovementConstraint2;
 typedef LinearMovementConstraint3f LinearMovementConstraint3;
 typedef LinearMovementConstraint6f LinearMovementConstraint6;
+typedef LinearMovementConstraintCudaRigid3f LinearMovementConstraintCudaRigid3;
+typedef LinearMovementConstraintCuda6f LinearMovementConstraintCuda6;
 typedef LinearVelocityConstraintRigid3f LinearVelocityConstraintRigid3;
 typedef LinearVelocityConstraint1f LinearVelocityConstraint1;
 typedef LinearVelocityConstraint2f LinearVelocityConstraint2;
 typedef LinearVelocityConstraint3f LinearVelocityConstraint3;
 typedef LinearVelocityConstraint6f LinearVelocityConstraint6;
+typedef LinearVelocityConstraintCudaRigid3f LinearVelocityConstraintCudaRigid3;
+typedef LinearVelocityConstraintCuda6f LinearVelocityConstraintCuda6;
 typedef OscillatorConstraintRigid3f OscillatorConstraintRigid3;
 typedef OscillatorConstraint3f OscillatorConstraint3;
 typedef ParabolicConstraintRigid3f ParabolicConstraintRigid3;
@@ -260,6 +287,7 @@ typedef ParticleSink2f ParticleSink2;
 typedef ParticleSink3f ParticleSink3;
 typedef ParticleSource2f ParticleSource2;
 typedef ParticleSource3f ParticleSource3;
+typedef ParticleSourceCuda3f ParticleSourceCuda3;
 typedef ProjectionLineConstraint1f ProjectionLineConstraint1;
 typedef ProjectionLineConstraint2f ProjectionLineConstraint2;
 typedef ProjectionLineConstraint3f ProjectionLineConstraint3;
