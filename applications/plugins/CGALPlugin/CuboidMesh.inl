@@ -43,7 +43,9 @@ void CuboidMesh<DataTypes>::init()
     debug = m_debug.getValue();
     if(debug == 0)
         debug = ~debug;
+#ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
     std::cout << "debug = " << debug << std::endl;
+#endif
 }
 
 template <class DataTypes>
@@ -52,9 +54,10 @@ void CuboidMesh<DataTypes>::reinit()
     debug = m_debug.getValue();
     if(debug == 0)
         debug = ~debug;
+#ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
     std::cout << "debug = " << debug << std::endl;
-
-    //update();
+#endif
+    update();
 }
 
 template <class DataTypes>
