@@ -63,13 +63,13 @@ void CuboidMesh<DataTypes>::update()
     r = m_radius.getValue();
     h = m_height.getValue();
     n = m_number.getValue();
-    if(r <=0 || h <=0 || n<=0)
+    if(r <=0 || h < 0 || n<=0)
     {
         std::cout << "ERROR: illegal parameters of the cuboid" << std::endl;
         return;
     }
     d = r / n;
-    m = ceil(h/d);
+    m = ceil(h / d);
     h = d * m;
     t = d / 2;
 
@@ -78,7 +78,9 @@ void CuboidMesh<DataTypes>::update()
     std::cout << "interval = " << d << std::endl;
 
     std::cout << "n = " << n << std::endl;
-    std::cout << "m = " << m << std::endl << std::endl;
+    std::cout << "m = " << m << std::endl;
+    std::cout << "n_diameter = " << 2*n << std::endl;
+    std::cout << "n_height = " << m+2*n << std::endl << std::endl;
 
     helper::WriteAccessor< Data< VecCoord > > points = m_points;
     helper::WriteAccessor< Data< SeqTetrahedra > > tetras = m_tetras;
@@ -86,12 +88,17 @@ void CuboidMesh<DataTypes>::update()
     tetras.clear();
     m_ptID.clear();
 
+#ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
+    unsigned count = 0;
+    double dif = 0;
+#endif
+
     //generate the points
     std::cout << "generate points..." << std::endl;
     //hexa vertices
     m_nbVertices = 0;
 #ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
-    unsigned count = 0;
+    count = 0;
 #endif
     for(int k = -m; k <= m; k+=2)
     {
@@ -135,18 +142,14 @@ void CuboidMesh<DataTypes>::update()
     }
 #endif
 
-    //boundary hexa vertices
+    //hexa boundary vertices
     m_nbBdVertices = 0;
-#ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
-    count = 0;
-#endif
     for(int k = m+2; k <= m+2*n; k+=2)
     {
-        int n1 = (2*n+m-k)/2;
-        for(int j = -2*n1; j <= 2*n1; j+=2)
+        for(int j = -(2*n+m-k); j <= (2*n+m-k); j+=2)
         {
-            int begin = MAX(-2*n1-j, -2*n1+j);
-            int end = MIN(2*n1+j, 2*n1-j);
+            int begin = MAX(-2*n-j, -2*n+j);
+            int end = MIN(2*n+j, 2*n-j);
             for(int i = begin; i <= end; i+=2)
             {
                 Index g1(i,j,k);
@@ -157,64 +160,34 @@ void CuboidMesh<DataTypes>::update()
                 m_ptID.insert(std::make_pair(g2, points.size()));
                 Point p2(i*t, j*t, -k*t);
                 points.push_back(p2);
-                //std::cout << "p[" << i/2 << ","<< j/2 << ","<< -k/2 << "," << "] = " << p << std::endl;
                 m_nbBdVertices += 2;
             }
         }
-#ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
-        for(int i = -2*n1; i <= 2*n1; i+=2)
-        {
-            int begin = MAX(-2*n1-i, -2*n1+i);
-            int end = MIN(2*n1+i, 2*n1-i);
-            for(int j = begin; j <= end; j+=2)
-            {
-                Index g1(i,j,k);
-                if(m_ptID.find(g1) == m_ptID.end())
-                {
-                    std::cout << "ERROR: bdVertices(k>=(m+2))" << "(" << i << ", " << j << ", " << k << ")" << std::endl;
-                }
-                Index g2(i,j,-k);
-                if(m_ptID.find(g2) == m_ptID.end())
-                {
-                    std::cout << "ERROR: bdVertices(k<=-(m+2))" << "(" << i << ", " << j << ", " << -k << ")" << std::endl;
-                }
-                count += 2;
-            }
-        }
-#endif
     }
-    std::cout << "num of bdVertices = " << m_nbBdVertices << " == n(2＊n^2+1)／3 * 2 = " << n*(2*n*n+1)/3 * 2 << std::endl;
-#ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
-    if(count != m_nbBdVertices || count != (unsigned)n*(2*n*n+1)/3*2)
-    {
-        std::cout << "ERROR: num of bdVertices" << std::endl;
-        std::cout << "count = " << count << std::endl;
-    }
+    std::cout << "num of bdVertices = " << m_nbBdVertices << std::endl;
 
-    count = 0;
+#ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
+    count = 0, dif = 0;
     for(int k = -(m+2); k >= -(m+2*n); k-=2)
     {
-        int n1 = (2*n+m+k)/2;
-        for(int i = -2*n1; i <= 2*n1; i+=2)
+        for(int j = -(2*n+m+k); j <= (2*n+m+k); j+=2)
         {
-            int begin = MAX(-2*n1-i, -2*n1+i);
-            int end = MIN(2*n1+i, 2*n1-i);
-            for(int j = begin; j <= end; j+=2)
+            int begin = MAX(-2*n-j, -2*n+j);
+            int end = MIN(2*n+j, 2*n-j);
+            for(int i = begin; i <= end; i+=2)
             {
                 Index g(i,j,k);
                 if(m_ptID.find(g) == m_ptID.end())
                 {
-                    std::cout << "ERROR: bdVertices(k<=-(m+2))" << "(" << i << ", " << j << ", " << k << ")" << std::endl;
+                    std::cout << "ERROR: bdVertices(k<=-(m+2))" << std::endl;
                 }
+                Point p(i*t, j*t, k*t);
+                dif += (points[m_ptID[g]] - p).norm();
                 ++count;
             }
         }
     }
-    if(count != m_nbBdVertices/2 || count != (unsigned)n*(2*n*n+1)/3)
-    {
-        std::cout << "ERROR: num of bdVertices (k<=-(m+2)" << std::endl;
-        std::cout << "count = " << count << std::endl;
-    }
+    std::cout << "dif = " << dif << " count = " << count << " == bdVertices/2 = " << m_nbBdVertices/2.0 << std::endl;
 #endif
 
     //hexa centers
@@ -234,7 +207,6 @@ void CuboidMesh<DataTypes>::update()
                 m_ptID.insert(std::make_pair(g, points.size()));
                 Point p(i*t, j*t, k*t);
                 points.push_back(p);
-                //std::cout << "p[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p << std::endl;
                 ++m_nbCenters;
             }
         }
@@ -270,59 +242,51 @@ void CuboidMesh<DataTypes>::update()
 #endif
     for(int k = m+1; k <= m+2*n-1; k+=2)
     {
-        int n1 = (2*n+m-k+1)/2;
-        for(int j = -2*n1+1; j <= 2*n1-1; j+=2)
+        for(int j = -(2*n+m-k); j <= (2*n+m-k); j+=2)
         {
-            int begin = MAX(-2*n1-j, -2*n1+j);
-            int end = MIN(2*n1+j, 2*n1-j);
+            int begin = MAX(-2*n-j, -2*n+j);
+            int end = MIN(2*n+j, 2*n-j);
             for(int i = begin; i <= end; i+=2)
             {
                 Index g1(i,j,k);
                 m_ptID.insert(std::make_pair(g1, points.size()));
                 Point p1(i*t, j*t, k*t);
                 points.push_back(p1);
-                //std::cout << "p1[" << i/2 << ","<< j/2 << ","<< k/2 << "," << "] = " << p1 << std::endl;
-
                 Index g2(i,j,-k);
                 m_ptID.insert(std::make_pair(g2, points.size()));
                 Point p2(i*t, j*t, -k*t);
                 points.push_back(p2);
-                //std::cout << "p2[" << i/2 << ","<< j/2 << ","<< -k/2 << "," << "] = " << p2 << std::endl;
-                m_nbBdCenters+=2;
+                m_nbBdCenters += 2;
             }
         }
-#ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
-        for(int i = -2*n1+1; i <= 2*n1-1; i+=2)
-        {
-            int begin = MAX(-2*n1-i, -2*n1+i);
-            int end = MIN(2*n1+i, 2*n1-i);
-            for(int j = begin; j <= end; j+=2)
-            {
-                Index g1(i,j,k);
-                if(m_ptID.find(g1) == m_ptID.end())
-                {
-                    std::cout << "ERROR: bdCenters(k>=(m+1))" << "(" << i << ", " << j << ", " << k << ")" << std::endl;
-                }
-                Index g2(i,j,-k);
-                if(m_ptID.find(g2) == m_ptID.end())
-                {
-                    std::cout << "ERROR: bdCenters(k<=-(m+1))" << "(" << i << ", " << j << ", " << -k << ")" << std::endl;
-                }
-                count += 2;
-            }
-        }
-#endif
     }
-    std::cout << "num of bdCenters = " << m_nbBdCenters << " == 4/3*n(n+1)(n+2) = " << 4*n*(n+1)*(n+2)/3 << std::endl;
-#ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
-    if(count != m_nbBdCenters || count != (unsigned)4*n*(n+1)*(n+2)/3)
-    {
-        std::cout << "ERROR: num of bdCenters" << std::endl;
-        std::cout << "count = " << count << std::endl;
-    }
-#endif
-    std::cout << "num of points = " << points.size() << std::endl << std::endl;
+    std::cout << "num of bdCenters = " << m_nbBdCenters << std::endl;
 
+#ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
+    dif = 0, count = 0;
+    for(int k = -(m+1); k >= -(m+2*n); k-=2)
+    {
+        for(int j = -(2*n+m+k); j <= (2*n+m+k); j+=2)
+        {
+            int begin = MAX(-2*n-j, -2*n+j);
+            int end = MIN(2*n+j, 2*n-j);
+            for(int i = begin; i <= end; i+=2)
+            {
+                Index g(i,j,k);
+                if(m_ptID.find(g) == m_ptID.end())
+                {
+                    std::cout << "ERROR: bdCenters(k<=-(m+1))" << std::endl;
+                }
+                Point p(i*t, j*t, k*t);
+                dif += (points[m_ptID[g]] - p).norm();
+                ++count;
+            }
+        }
+    }
+    std::cout << "dif = " << dif << " count = " << count << " == bdCenters/2 = " << m_nbBdCenters/2.0 << std::endl;
+#endif
+
+    std::cout << "num of points = " << points.size() << std::endl << std::endl;
 
     std::cout << "generate tetras..." << std::endl;
     //generate tetrahedra between c(i,j,k) and c(i+2,j,k) ((i+n), (j+n), (k+m) are odd numbers))
@@ -417,12 +381,12 @@ void CuboidMesh<DataTypes>::update()
         }
     }
     std::cout << "num of tetras_k = " << m_nbTetras_k << std::endl;
-    std::cout << "num of tetras = " << tetras.size() << std::endl;
+    std::cout << "num of tetras = " << tetras.size() << std::endl << std::endl;
 
-    std::cout << "orientate..." << std::endl;
+    std::cout << "orientate..." << std::endl << std::endl;
     orientate();
 
-    std::cout << "finished!" << std::endl;
+    std::cout << "finished!" << std::endl << std::endl;
 }
 
 template <class DataTypes>
@@ -467,7 +431,7 @@ void CuboidMesh<DataTypes>::draw()
         {
             //centers
             //std::cout << "draw bdVertices" << std::endl;
-            glColor3f(1.0, 0.2, 0.2);
+            glColor3f(1.0, 0.0, 0.0);
             unsigned begin = m_nbVertices;
             unsigned end = m_nbVertices + m_nbBdVertices;
             for(unsigned i = begin; i < end; ++i)
@@ -487,7 +451,7 @@ void CuboidMesh<DataTypes>::draw()
         {
             //bdCenters_i
             //std::cout << "draw bdCenters" << std::endl;
-            glColor3f(1.0, 1.0, 0.2);
+            glColor3f(1.0, 1.0, 0.0);
             unsigned begin = m_nbVertices + m_nbBdVertices + m_nbCenters;
             unsigned end = m_nbVertices + m_nbBdVertices + m_nbCenters + m_nbBdCenters;
             for(unsigned i = begin; i < end; ++i)
@@ -504,7 +468,7 @@ void CuboidMesh<DataTypes>::draw()
         helper::ReadAccessor< Data< SeqTetrahedra > > tetras = m_tetras;
 
         glDisable(GL_LIGHTING);
-        glColor3f(0, 0, 0);
+        glColor3f(1.0, 1.0, 1.0);
         glBegin(GL_LINES);
         if(debug & 1<<5)//32
         {
