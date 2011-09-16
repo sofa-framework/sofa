@@ -1,6 +1,7 @@
 #include "SofaViewer.h"
 #include <sofa/helper/Factory.inl>
 #include <sofa/component/visualmodel/VisualStyle.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa
 {
@@ -89,6 +90,11 @@ void SofaViewer::setScene(sofa::simulation::Node* scene, const char* filename /*
         {
             visualStyle = new component::visualmodel::VisualStyle();
             visualStyle->setName(core::objectmodel::Base::shortName(visualStyle));
+
+            core::visual::DisplayFlags* displayFlags = visualStyle->displayFlags.beginEdit();
+            displayFlags->setShowVisualModels(sofa::core::visual::tristate::true_value);
+            visualStyle->displayFlags.endEdit();
+
             groot->addObject(visualStyle);
             visualStyle->init();
         }

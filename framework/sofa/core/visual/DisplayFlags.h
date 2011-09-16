@@ -125,28 +125,39 @@ public:
     DisplayFlags();
     DisplayFlags(const DisplayFlags& );
     DisplayFlags& operator=(const DisplayFlags& );
-
-    bool getShowVisualModels() const { return m_showVisualModels.state(); }
-    bool getShowBehaviorModels() const { return m_showBehaviorModels.state(); }
-    bool getShowForceFields() const { return m_showForceFields.state(); }
-    bool getShowInteractionForceFields() const { return m_showInteractionForceFields.state(); }
-    bool getShowCollisionModels() const { return m_showCollisionModels.state(); }
-    bool getShowBoundingCollisionModels() const { return m_showBoundingCollisionModels.state(); }
-    bool getShowMappings() const { return m_showVisualMappings.state(); }
-    bool getShowMechanicalMappings() const { return m_showMechanicalMappings.state(); }
-    bool getShowWireFrame() const { return m_showWireframe.state(); }
-    bool getShowNormals() const { return m_showNormals.state(); }
+    tristate getShowAll() const { return m_showAll.state(); }
+    tristate getShowVisual() const { return m_showVisual.state(); }
+    tristate getShowVisualModels() const { return m_showVisualModels.state(); }
+    tristate getShowBehavior() const { return m_showBehavior.state(); }
+    tristate getShowBehaviorModels() const { return m_showBehaviorModels.state(); }
+    tristate getShowForceFields() const { return m_showForceFields.state(); }
+    tristate getShowInteractionForceFields() const { return m_showInteractionForceFields.state(); }
+    tristate getShowCollision() const { return m_showCollision.state(); }
+    tristate getShowCollisionModels() const { return m_showCollisionModels.state(); }
+    tristate getShowBoundingCollisionModels() const { return m_showBoundingCollisionModels.state(); }
+    tristate getShowMapping() const { return m_showMapping.state(); }
+    tristate getShowMappings() const { return m_showVisualMappings.state(); }
+    tristate getShowMechanicalMappings() const { return m_showMechanicalMappings.state(); }
+    tristate getShowOptions() const { return m_showOptions.state(); }
+    tristate getShowWireFrame() const { return m_showWireframe.state(); }
+    tristate getShowNormals() const { return m_showNormals.state(); }
 #ifdef SOFA_SMP
-    bool getShowProcessorColor() const { return m_showProcessorColor.state(); }
+    tristate getShowProcessorColor() const { return m_showProcessorColor.state(); }
 #endif
+    void setShowAll(tristate v) { m_showAll.setValue(v); }
+    void setShowVisual(tristate v ) { m_showVisual.setValue(v); }
     void setShowVisualModels(tristate v)  { m_showVisualModels.setValue(v) ; }
+    void setShowBehavior(tristate v) { m_showBehavior.setValue(v); }
     void setShowBehaviorModels(tristate v)  { m_showBehaviorModels.setValue(v) ; }
     void setShowForceFields(tristate v)  { m_showForceFields.setValue(v) ; }
     void setShowInteractionForceFields(tristate v) { m_showInteractionForceFields.setValue(v) ; }
+    void setShowCollision(tristate v ) { m_showCollisionModels.setValue(v); }
     void setShowCollisionModels(tristate v) { m_showCollisionModels.setValue(v) ; }
     void setShowBoundingCollisionModels(tristate v) { m_showBoundingCollisionModels.setValue(v) ; }
+    void setShowMapping(tristate v) { m_showMapping.setValue(v); }
     void setShowMappings(tristate v) { m_showVisualMappings.setValue(v) ; }
     void setShowMechanicalMappings(tristate v) { m_showMechanicalMappings.setValue(v) ; }
+    void setShowOptions(tristate v) { m_showOptions.setValue(v); }
     void setShowWireFrame(tristate v) { m_showWireframe.setValue(v) ; }
     void setShowNormals(tristate v) { m_showNormals.setValue(v) ; }
 #ifdef SOFA_SMP
@@ -165,7 +176,7 @@ public:
 
     friend SOFA_CORE_API DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
     friend SOFA_CORE_API DisplayFlags difference_displayFlags(const DisplayFlags& parent, const DisplayFlags& child);
-public:
+protected:
     FlagTreeItem m_root;
 
     FlagTreeItem m_showAll;

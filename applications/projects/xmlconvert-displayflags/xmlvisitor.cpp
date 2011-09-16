@@ -56,78 +56,78 @@ bool DiscoverDisplayFlagsVisitor::VisitEnter(const TiXmlElement & element, const
 
         if( attribute_name == "showAll")
         {
-            if(attribute_value == "1" ) flags->m_showAll.setValue(tristate::true_value);
-            if(attribute_value == "0" ) flags->m_showAll.setValue(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowAll(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowAll(tristate::false_value);
         }
         if( attribute_name == "showVisual" )
         {
-            if(attribute_value == "1" )  flags->m_showVisual.setValue(tristate::true_value);
-            if(attribute_value == "0" )  flags->m_showVisual.setValue(tristate::false_value);
+            if(attribute_value == "1" )  flags->setShowVisual(tristate::true_value);
+            if(attribute_value == "0" )  flags->setShowVisual(tristate::false_value);
         }
         if( attribute_name == "showVisualModels")
         {
-            if(attribute_value == "1" )  flags->m_showVisualModels.setValue(tristate::true_value);
-            if(attribute_value == "0" )  flags->m_showVisualModels.setValue(tristate::false_value);
+            if(attribute_value == "1" )  flags->setShowVisualModels(tristate::true_value);
+            if(attribute_value == "0" )  flags->setShowVisualModels(tristate::false_value);
         }
         if( attribute_name == "showBehavior")
         {
-            if(attribute_value == "1" )  flags->m_showBehavior.setValue(tristate::true_value);
-            if(attribute_value == "0" )  flags->m_showBehavior.setValue(tristate::false_value);
+            if(attribute_value == "1" )  flags->setShowBehavior(tristate::true_value);
+            if(attribute_value == "0" )  flags->setShowBehavior(tristate::false_value);
         }
         if( attribute_name == "showForceFields")
         {
-            if(attribute_value == "1" ) flags->m_showForceFields.setValue(tristate::true_value);
-            if(attribute_value == "0" ) flags->m_showForceFields.setValue(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowForceFields(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowForceFields(tristate::false_value);
         }
         if( attribute_name == "showInteractionForceFields" )
         {
-            if(attribute_value == "1" ) flags->m_showForceFields.setValue(tristate::true_value);
-            if(attribute_value == "0" ) flags->m_showForceFields.setValue(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowInteractionForceFields(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowInteractionForceFields(tristate::false_value);
         }
         if( attribute_name == "showBehaviorModels")
         {
-            if(attribute_value == "1" ) flags->m_showBehaviorModels.setValue(tristate::true_value);
-            if(attribute_value == "0" ) flags->m_showBehaviorModels.setValue(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowBehaviorModels(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowBehaviorModels(tristate::false_value);
         }
         if( attribute_name == "showCollision" )
         {
-            if(attribute_value == "1" ) flags->m_showCollision.setValue(tristate::true_value);
-            if(attribute_value == "0" ) flags->m_showCollision.setValue(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowCollision(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowCollision(tristate::false_value);
         }
         if( attribute_name == "showCollisionModels" )
         {
-            if(attribute_value == "1" ) flags->m_showCollisionModels.setValue(tristate::true_value);
-            if(attribute_value == "0" ) flags->m_showCollisionModels.setValue(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowCollisionModels(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowCollisionModels(tristate::false_value);
         }
         if( attribute_name == "showBoundingCollisionModels")
         {
-            if(attribute_value == "1") flags->m_showBoundingCollisionModels.setValue(tristate::true_value);
-            if(attribute_value == "0") flags->m_showBoundingCollisionModels.setValue(tristate::false_value);
+            if(attribute_value == "1") flags->setShowBoundingCollisionModels(tristate::true_value);
+            if(attribute_value == "0") flags->setShowBoundingCollisionModels(tristate::false_value);
         }
         if( attribute_name == "showMapping")
         {
-            if(attribute_value == "1" ) flags->m_showMapping.setValue(tristate::true_value);
-            if(attribute_value == "0" ) flags->m_showMapping.setValue(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowMapping(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowMapping(tristate::false_value);
         }
         if( attribute_name == "showMappings")
         {
-            if(attribute_value == "1" ) flags->m_showVisualMappings.setValue(tristate::true_value);
-            if(attribute_value == "0" ) flags->m_showVisualMappings.setValue(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowMappings(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowMappings(tristate::false_value);
         }
         if( attribute_name == "showMechanicalMappings")
         {
-            if(attribute_value == "1" ) flags->m_showMechanicalMappings.setValue(tristate::true_value);
-            if(attribute_value == "0" ) flags->m_showMechanicalMappings.setValue(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowMechanicalMappings(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowMechanicalMappings(tristate::false_value);
         }
         if( attribute_name == "showWireFrame" )
         {
-            if(attribute_value == "1" ) flags->m_showWireframe.setValue(tristate::true_value);
-            if(attribute_value == "0" ) flags->m_showWireframe.setValue(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowWireFrame(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowWireFrame(tristate::false_value);
         }
         if( attribute_name == "showNormals" )
         {
-            if(attribute_value == "1" ) flags->m_showNormals.setValue(tristate::true_value);
-            if(attribute_value == "0" ) flags->m_showNormals.setValue(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowNormals(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowNormals(tristate::false_value);
         }
 
     }
@@ -241,26 +241,26 @@ void removeShowAttributes(TiXmlElement* node)
 
 void convert_false_to_neutral(DisplayFlags& flags)
 {
-    if( flags.m_showVisualModels.state().state == tristate::false_value )
-        flags.m_showVisualModels.setValue(tristate::neutral_value);
-    if( flags.m_showBehaviorModels.state().state == tristate::false_value )
-        flags.m_showBehaviorModels.setValue(tristate::neutral_value);
-    if( flags.m_showCollisionModels.state().state == tristate::false_value )
-        flags.m_showCollisionModels.setValue(tristate::neutral_value);
-    if( flags.m_showBoundingCollisionModels.state().state == tristate::false_value )
-        flags.m_showBoundingCollisionModels.setValue(tristate::neutral_value);
-    if( flags.m_showVisualMappings.state().state == tristate::false_value )
-        flags.m_showVisualMappings.setValue(tristate::neutral_value);
-    if( flags.m_showMechanicalMappings.state().state == tristate::false_value )
-        flags.m_showMechanicalMappings.setValue(tristate::neutral_value);
-    if( flags.m_showForceFields.state().state == tristate::false_value )
-        flags.m_showForceFields.setValue(tristate::neutral_value);
-    if( flags.m_showInteractionForceFields.state().state == tristate::false_value )
-        flags.m_showInteractionForceFields.setValue(tristate::neutral_value);
-    if( flags.m_showWireframe.state().state == tristate::false_value  )
-        flags.m_showWireframe.setValue(tristate::neutral_value);
-    if( flags.m_showNormals.state().state == tristate::false_value )
-        flags.m_showNormals.setValue(tristate::neutral_value);
+    if( flags.getShowVisualModels().state == tristate::false_value )
+        flags.setShowVisualModels(tristate::neutral_value);
+    if( flags.getShowBehaviorModels().state == tristate::false_value )
+        flags.setShowBehaviorModels(tristate::neutral_value);
+    if( flags.getShowCollisionModels().state == tristate::false_value )
+        flags.setShowCollisionModels(tristate::neutral_value);
+    if( flags.getShowBoundingCollisionModels().state == tristate::false_value )
+        flags.setShowBoundingCollisionModels(tristate::neutral_value);
+    if( flags.getShowMappings().state == tristate::false_value )
+        flags.setShowMappings(tristate::neutral_value);
+    if( flags.getShowMechanicalMappings().state == tristate::false_value )
+        flags.setShowMechanicalMappings(tristate::neutral_value);
+    if( flags.getShowForceFields().state == tristate::false_value )
+        flags.setShowForceFields(tristate::neutral_value);
+    if( flags.getShowInteractionForceFields().state == tristate::false_value )
+        flags.setShowInteractionForceFields(tristate::neutral_value);
+    if( flags.getShowWireFrame().state == tristate::false_value  )
+        flags.setShowWireFrame(tristate::neutral_value);
+    if( flags.getShowNormals().state == tristate::false_value )
+        flags.setShowNormals(tristate::neutral_value);
 }
 
 } // namespace xml
