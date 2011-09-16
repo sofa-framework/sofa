@@ -40,7 +40,7 @@ void FlagTreeItem::propagateStateUp(FlagTreeItem* origin)
     if(!parent) return;
 
     tristate flag = origin->m_state;
-    for( int i = 0 ; i < parent->m_child.size(); ++i)
+    for( unsigned int i = 0 ; i < parent->m_child.size(); ++i)
     {
         FlagTreeItem* current = parent->m_child[i];
         flag = fusion_tristate(current->m_state,flag);
@@ -164,7 +164,7 @@ DisplayFlags::DisplayFlags():
     m_showProcessorColor(FlagTreeItem("showProcessorColor","hideProcessorColor",&m_showOptions))
 #endif
 {
-    m_showVisualModels.setValue(tristate::true_value);
+    m_showVisualModels.setValue(tristate::neutral_value);
     m_showBehaviorModels.setValue(tristate::neutral_value);
     m_showForceFields.setValue(tristate::neutral_value);
     m_showInteractionForceFields.setValue(tristate::neutral_value);
