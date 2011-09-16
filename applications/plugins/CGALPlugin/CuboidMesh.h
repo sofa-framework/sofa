@@ -84,7 +84,7 @@ public:
     //Parameters
     unsigned m_nbVertices, m_nbBdVertices, m_nbCenters, m_nbBdCenters;
     unsigned m_nbTetras_i, m_nbTetras_j, m_nbTetras_k;
-    int n, m, a;
+    int n, m;
     Real r, h, d, t;
     std::map<Index, unsigned> m_ptID;
     unsigned short debug;
