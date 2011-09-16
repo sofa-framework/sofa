@@ -153,7 +153,7 @@ public:
 
 /** A class that define topological Data general methods*/
 template < class T = void*, class VecT = helper::vector<T> >
-class SOFA_CORE_API TopologicalData : public sofa::core::objectmodel::Data <T>
+class TopologicalData : public sofa::core::objectmodel::Data <T>
 {
 public:
     //SOFA_CLASS(SOFA_TEMPLATE2(TopologicalData,T,VecT), SOFA_TEMPLATE(sofa::core::objectmodel::Data, T));
