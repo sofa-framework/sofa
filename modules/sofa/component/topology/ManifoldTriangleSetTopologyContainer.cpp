@@ -1,29 +1,28 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/component/topology/ManifoldTriangleSetTopologyContainer.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/component/container/MeshLoader.h>
 
@@ -184,11 +183,11 @@ bool ManifoldTriangleSetTopologyContainer::checkTopology() const
 
 
             /*
-              Test if there is at least 1 and not more than 2 triangles adjacent to each edge.
-              Test if edges are well oriented in the triangles: in the first triangle of m_trianglesAroundEdge, vertices of the
-              correspondant edge are in oriented in counterclockwise direction in this triangle.
-              And in the clockwise direction in the second triangle (if this one exist)
-            */
+             Test if there is at least 1 and not more than 2 triangles adjacent to each edge.
+             Test if edges are well oriented in the triangles: in the first triangle of m_trianglesAroundEdge, vertices of the
+             correspondant edge are in oriented in counterclockwise direction in this triangle.
+             And in the clockwise direction in the second triangle (if this one exist)
+             */
             if (nbrEdgesInTriangle > 0)
             {
                 vertexTriangle = m_triangle[ m_trianglesAroundEdge[indexEdge][0] ];
@@ -363,9 +362,9 @@ void ManifoldTriangleSetTopologyContainer::createEdgesAroundVertexArray()
 
 
     /*	Creation of the differents maps: For each vertex i of each triangles:
-    	- map_NextEdgeVertex: key = vertex i+1, value = Edge i+2
-    	- map_OppositeEdgeVertex: key = vertex i+1, value = vertex i+2
-    	- map_Adjacents: key = vertex i+1 et i+2, value = Edge i	*/
+     - map_NextEdgeVertex: key = vertex i+1, value = Edge i+2
+     - map_OppositeEdgeVertex: key = vertex i+1, value = vertex i+2
+     - map_Adjacents: key = vertex i+1 et i+2, value = Edge i	*/
     for (unsigned int triangleIndex = 0; triangleIndex < nbrTriangles; triangleIndex++)
     {
         vertexTriangle = getTriangleArray()[triangleIndex];
@@ -481,9 +480,9 @@ void ManifoldTriangleSetTopologyContainer::createTrianglesAroundVertexArray ()
     map_PreviousVertex.resize(nbrVertices);
 
     /*	Creation of the differents maps: For each vertex i of each triangles:
-    	- map_Triangles: key = vertex i+1, value = index triangle
-    	- map_Nextvertex: key = vertex i+1, value = vertex i+2
-    	- map_PreviousVertex: key = vertex i+2, value = vertex i+1	*/
+     - map_Triangles: key = vertex i+1, value = index triangle
+     - map_Nextvertex: key = vertex i+1, value = vertex i+2
+     - map_PreviousVertex: key = vertex i+2, value = vertex i+1	*/
     for (unsigned int triangleIndex = 0; triangleIndex < nbrTriangles; ++triangleIndex)
     {
         vertexTriangle = getTriangleArray()[triangleIndex];
@@ -1063,6 +1062,18 @@ int ManifoldTriangleSetTopologyContainer::getPreviousEdgesAroundVertex(PointID v
     return -2;
 }
 
+int ManifoldTriangleSetTopologyContainer::getEdgeTriangleOrientation(const Triangle& f, const Edge& e)
+{
+    unsigned i = 0;
+    for(; i < 3; ++i)
+    {
+        if(e[0] == f[i] && e[1] == f[(i+1)%3])
+            return 1;
+        if(e[0] == f[i] && e[1] == f[(i+2)%3])
+            return -1;
+    }
+    return 0;
+}
 
 sofa::helper::vector< TriangleID > &ManifoldTriangleSetTopologyContainer::getTrianglesAroundEdgeForModification(const unsigned int i)
 {
