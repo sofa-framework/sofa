@@ -74,6 +74,7 @@ public:
     Data<double> m_radius;
     Data<double> m_height;
     Data<int> m_number;
+    Data<bool> m_convex;
     Data<bool> m_viewPoints;
     Data<bool> m_viewTetras;
 
