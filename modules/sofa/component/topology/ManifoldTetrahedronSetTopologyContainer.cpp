@@ -1,30 +1,29 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 
 #include <sofa/component/topology/ManifoldTetrahedronSetTopologyContainer.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 
@@ -67,13 +66,13 @@ void ManifoldTetrahedronSetTopologyContainer::reinit()
     //	int test;
 
     /*	Tetrahedron tetra_test=Tetrahedron(m_tetrahedron[1][0], m_tetrahedron[1][3], m_tetrahedron[1][2], m_tetrahedron[1][1]);
-    test = getTetrahedronOrientation(m_tetrahedron[1], tetra_test);
-    std::cout << "res: " << test<< std::endl;
+     test = getTetrahedronOrientation(m_tetrahedron[1], tetra_test);
+     std::cout << "res: " << test<< std::endl;
 
-    Tetrahedron tetra_test2=Tetrahedron(m_tetrahedron[1][2], m_tetrahedron[1][3], m_tetrahedron[1][0], m_tetrahedron[1][1]);
-    test = getTetrahedronOrientation(m_tetrahedron[1], tetra_test2);
-    std::cout << "res: " << test<< std::endl;
-    */
+     Tetrahedron tetra_test2=Tetrahedron(m_tetrahedron[1][2], m_tetrahedron[1][3], m_tetrahedron[1][0], m_tetrahedron[1][1]);
+     test = getTetrahedronOrientation(m_tetrahedron[1], tetra_test2);
+     std::cout << "res: " << test<< std::endl;
+     */
 
 
 
@@ -82,14 +81,14 @@ void ManifoldTetrahedronSetTopologyContainer::reinit()
 
 
     /*		for (unsigned int i = 0 ; i <m_edge.size();i++)
-      std::cout << i  << " => " << m_edge[i] <<std::endl;
+     std::cout << i  << " => " << m_edge[i] <<std::endl;
 
-    for (unsigned int i = 0; i < m_tetrahedraAroundEdge.size(); i++)
-      std::cout << i << " => " << m_tetrahedraAroundEdge[i] << std::endl;
+     for (unsigned int i = 0; i < m_tetrahedraAroundEdge.size(); i++)
+     std::cout << i << " => " << m_tetrahedraAroundEdge[i] << std::endl;
 
-    for (unsigned int i =0; i<m_tetrahedron.size();i++)
-      std::cout << i << " => "<<m_tetrahedron[i] << std::endl;
-    */
+     for (unsigned int i =0; i<m_tetrahedron.size();i++)
+     std::cout << i << " => "<<m_tetrahedron[i] << std::endl;
+     */
 }
 
 
@@ -387,6 +386,18 @@ int ManifoldTetrahedronSetTopologyContainer::getTetrahedronOrientation (const Te
     else
         return 0;
 }
+int ManifoldTetrahedronSetTopologyContainer::getEdgeTriangleOrientation(const Triangle& f, const Edge& e)
+{
+    unsigned i = 0;
+    for(; i < 3; ++i)
+    {
+        if(e[0] == f[i] && e[1] == f[(i+1)%3])
+            return 1;
+        if(e[0] == f[i] && e[1] == f[(i+2)%3])
+            return -1;
+    }
+    return 0;
+}
 
 int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (const Tetrahedron &t, const Triangle &tri )
 {
@@ -453,41 +464,41 @@ int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (
 
 /*
 
-  - equivalent to TrianglesAroundEdge [i]
-  - first triangle of the tetrahedron should be in positive orientation
-  - This first triangle is the one on the border if tetrahedron is on border.
-  - return either negatif or positive orientation in the tetrahedron or -1 if error.
+ - equivalent to TrianglesAroundEdge [i]
+ - first triangle of the tetrahedron should be in positive orientation
+ - This first triangle is the one on the border if tetrahedron is on border.
+ - return either negatif or positive orientation in the tetrahedron or -1 if error.
 
-  => should be used in createTetrahedraAroundTriangleArray
+ => should be used in createTetrahedraAroundTriangleArray
 
 
 
-  for(TetraID i = 0; i < m_nbTetrahedra; ++i)
-  {
-  const Tetra& t = m_topo->getTetrahedron(i);
-  const TrianglesInTetrahedron& tFaces = m_topo->getTrianglesInTetrahedron(i);
-  for(int l = 0; l < 4; ++l)
-  {
-  int sign = 1;
-  const Triangle& f = m_topo->getTriangle(tFaces[l]);
+ for(TetraID i = 0; i < m_nbTetrahedra; ++i)
+ {
+ const Tetra& t = m_topo->getTetrahedron(i);
+ const TrianglesInTetrahedron& tFaces = m_topo->getTrianglesInTetrahedron(i);
+ for(int l = 0; l < 4; ++l)
+ {
+ int sign = 1;
+ const Triangle& f = m_topo->getTriangle(tFaces[l]);
 
-  int m = 0;
-  while(t[m] == f[0] || t[m] == f[1] || t[m] == f[2])
-  ++m;
-  if(m%2 == 1)
-  sign *= -1;
+ int m = 0;
+ while(t[m] == f[0] || t[m] == f[1] || t[m] == f[2])
+ ++m;
+ if(m%2 == 1)
+ sign *= -1;
 
-  int n = 0;
-  while(f[0] != t[n])
-  ++n;
+ int n = 0;
+ while(f[0] != t[n])
+ ++n;
 
-  if((n+1)%4 == m && f[2] == t[(n+2)%4])
-  sign *= -1;
-  if((n+1)%4 != m && f[2] == t[(n+1)%4])
-  sign *= -1;
-  }
-  }
-*/
+ if((n+1)%4 == m && f[2] == t[(n+2)%4])
+ sign *= -1;
+ if((n+1)%4 != m && f[2] == t[(n+1)%4])
+ sign *= -1;
+ }
+ }
+ */
 
 //no warnings:
 

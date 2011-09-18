@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYCONTAINER_H
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYCONTAINER_H
 
@@ -49,8 +49,8 @@ typedef BaseMeshTopology::TrianglesAroundVertex	TrianglesAroundVertex;
 typedef BaseMeshTopology::TrianglesAroundEdge	TrianglesAroundEdge;
 
 /** A class that stores a set of triangles and provides access
-to each triangle, triangle's edges and vertices.
-This topology is contraint by the manifold property: each edge is adjacent to either one or at most two Triangles.*/
+ to each triangle, triangle's edges and vertices.
+ This topology is contraint by the manifold property: each edge is adjacent to either one or at most two Triangles.*/
 class SOFA_COMPONENT_CONTAINER_API ManifoldTriangleSetTopologyContainer : public TriangleSetTopologyContainer
 {
 
@@ -130,6 +130,16 @@ public:
      * return -2 if the vertex does not belongs to the edge or if there is an other error.
      */
     int getPreviousEdgesAroundVertex(PointID vertexIndex, EdgeID edgeIndex);
+
+    /** \brief return the orientation of an edge relatively to one triangle
+     *
+     * @param Ref to the triangle of reference
+     * @parem Ref to the edge to test.
+     * @return 1 if positive orientation
+     * @return -1 if negative orientation
+     * @return 0 if edge doesn't belongs to this triangle
+     */
+    int getEdgeTriangleOrientation(const Triangle& f, const Edge& e);
 
 protected:
 
