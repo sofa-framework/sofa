@@ -183,7 +183,7 @@ private:
 };
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_CPP)
+#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_PROJECTIVECONSTRAINTSET)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<defaulttype::Vec2dTypes>;
