@@ -3,17 +3,6 @@ defineAsPlugin(PluginExample)
 
 TARGET = PluginExample
 
-#set configuration to dynamic library
-
-contains (DEFINES, SOFA_QT4) {	
-	CONFIG += qt 
-	QT += opengl qt3support xml
-}
-else {
-	CONFIG += qt
-	QT += opengl
-}
-
 DEFINES += SOFA_BUILD_PLUGINEXAMPLE
 
 SOURCES = MyBehaviorModel.cpp \
