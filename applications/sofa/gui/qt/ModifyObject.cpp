@@ -132,13 +132,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 connect( transformation, SIGNAL(TransformationDirty(bool)), buttonUpdate, SLOT( setEnabled(bool) ) );
                 connect( transformation, SIGNAL(TransformationDirty(bool)), this, SIGNAL( componentDirty(bool) ) );
             }
-            //add the widgets to display the visual flags
-            {
-                std::vector<QTabulationModifyObject* > &tabs=groupTabulation[std::string("Visualization")];
-                tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
-
-                connect(tabs.back(), SIGNAL(nodeNameModification(simulation::Node *)), this, SIGNAL(nodeNameModification(simulation::Node *)));
-            }
         }
 
         for( std::vector< std::pair<std::string, core::objectmodel::BaseData*> >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
