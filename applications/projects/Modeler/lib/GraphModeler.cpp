@@ -694,7 +694,7 @@ void GraphModeler::loadPreset(std::string presetName)
     {
         if (it->getName() == std::string("VisualNode") || it->getType() == std::string("OglModel")) elementPresent[1] = true;
         else if (it->getName() == std::string("CollisionNode")) elementPresent[2] = true;
-        else if (it->getType() == std::string("MeshLoader") || it->getType() == std::string("SparseGrid")) elementPresent[0] = true;
+        else if (it->getType() == std::string("MeshObjLoader") || it->getType() == std::string("SparseGrid")) elementPresent[0] = true;
     }
 
     if (!DialogAdd)
@@ -738,7 +738,7 @@ void GraphModeler::loadPreset(GNode *parent, std::string presetFile,
         {
             updatePresetNode(*it, std::string(), translation, rotation, scale);
         }
-        if (it->getType() == std::string("MeshLoader") || it->getType() == std::string("SparseGrid"))
+        if (it->getType() == std::string("MeshObjLoader") || it->getType() == std::string("SparseGrid"))
         {
             updatePresetNode(*it, filenames[0], translation, rotation, scale);
             meshMecha = it;
@@ -774,7 +774,7 @@ void GraphModeler::loadPreset(GNode *parent, std::string presetFile,
                 {
                     updatePresetNode(*it_collision, std::string(), translation, rotation, scale);
                 }
-                if (it_collision->getType() == std::string("MeshLoader"))
+                if (it_collision->getType() == std::string("MeshObjLoader"))
                 {
                     updatePresetNode(*it_collision, filenames[2], translation, rotation, scale);
                 }

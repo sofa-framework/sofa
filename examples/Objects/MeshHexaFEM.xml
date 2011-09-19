@@ -1,7 +1,7 @@
 <Node name="MeshHexaFEM">
 	<EulerImplicitSolver rayleighStiffness="0.01" />
 	<CGLinearSolver iterations="25" threshold="0.00000001" />	 
-	<MeshLoader name="loader" filename="file"/>
+	<MeshObjLoader name="loader" filename="file"/>
 	<Mesh src="@loader"/> 
 	<MechanicalObject src="@loader" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
 	<UniformMass totalmass="5" />

@@ -186,7 +186,7 @@ void AddPreset::fileOpen()
     else
         fileName=sofa::helper::system::DataRepository.getFirstPath();
 
-    QString s  = getOpenFileName(this, QString(fileName.c_str()), "Mesh File (*.msh *.mesh *.obj *.sph *.xs3 *.bvh *.rigid);;All (*)", "open file dialog",  "Choose a file to open" );
+    QString s  = getOpenFileName(this, QString(fileName.c_str()), "Mesh File (*.obj );;All (*)", "open file dialog",  "Choose a file to open" );
     const std::string SofaPath (sofa::helper::system::DataRepository.getFirstPath().c_str());
 
     if (s.isNull() ) return;
