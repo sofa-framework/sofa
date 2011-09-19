@@ -1,7 +1,7 @@
 <Node name="FEM">
 	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
 	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001"  />
-	<Object type="MeshLoader" name="loader" filename="file"/>
+	<Object type="MeshObjLoader" name="loader" filename="file"/>
 	<Object type="Mesh" src="@loader"  />
 	<Object type="MechanicalObject" src="@loader" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
 	<Object type="UniformMass" totalmass="1" />
