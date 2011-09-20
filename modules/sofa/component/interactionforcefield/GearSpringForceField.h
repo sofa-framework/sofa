@@ -62,8 +62,8 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef Vec<N,Real> Vector;
 
-    unsigned int  p1, p2;			/// the two parents of each extremity
     unsigned int  m1, m2;			/// the two extremities of the spring: masses m1 and m2
+    unsigned int  p1, p2;			/// the two parents of each extremity
     Real previousAngle1, previousAngle2; // angle between parent and child in previous time step (modulo 2pi)
     Real angle1, angle2; // total angle between parent and child accumulated over time steps
     Coord ini1 , ini2; // use initial positions if parent = child
