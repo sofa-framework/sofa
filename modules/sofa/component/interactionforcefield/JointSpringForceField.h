@@ -71,8 +71,6 @@ public:
 
     Vector  initTrans;		/// offset length of the spring
     Quat initRot;			/// offset orientation of the spring
-    bool needToInitializeTrans;
-    bool needToInitializeRot;
 
     sofa::defaulttype::Vec<6,bool> freeMovements;	///defines the axis where the movements is free. (0,1,2)--> translation axis (3,4,5)-->rotation axis
     Real softStiffnessTrans;	///stiffness to apply on axis where the translations are free (default 0.0)
@@ -80,6 +78,8 @@ public:
     Real softStiffnessRot;	///stiffness to apply on axis where the rotations are free (default 0.0)
     Real hardStiffnessRot;	///stiffness to apply on axis where the rotations are forbidden (default 10000.0)
     Real blocStiffnessRot;	///stiffness to apply on axis where the rotations are bloqued (=hardStiffnessRot/100)
+    bool needToInitializeTrans;
+    bool needToInitializeRot;
 
     sofa::defaulttype::Vec<6,Real> limitAngles; ///limit angles on rotation axis (default no limit)
 
