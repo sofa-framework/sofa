@@ -208,7 +208,7 @@ protected:
     MState* _to_DOFs;
 
     Data<unsigned int> smoothIterations;
-    PointData<typename DataTypes::Coord> smoothedMesh0;
+    PointData<sofa::helper::vector<typename DataTypes::Coord> > smoothedMesh0;
     OglFloatAttribute* segmentationID; // segmentation ID for each vertex of the mesh
     OglFloat3Attribute* restPosition; // Rest position for each vertex of the mesh
     OglFloat3Attribute* restNormal; // Rest normal for each vertex of the mesh

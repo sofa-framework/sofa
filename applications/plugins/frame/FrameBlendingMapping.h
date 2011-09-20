@@ -150,8 +150,8 @@ protected:
     PhysicalMapping* physicalMapping;
     virtual void updateMapping(const bool& computeWeights = false);
 
-    PointData<InOut> inout;  ///< Data specific to the conversion between the types
-    PointData<DQInOut> dqinout;  ///< Data specific to the conversion between the types
+    PointData<sofa::helper::vector<InOut> > inout;  ///< Data specific to the conversion between the types
+    PointData<sofa::helper::vector<DQInOut> > dqinout;  ///< Data specific to the conversion between the types
     Data<bool> useDQ;  // use dual quat blending instead of linear blending
     Data<bool> useAdaptivity;  // use automatic adaptation of frames and samples
 
@@ -159,13 +159,13 @@ protected:
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
-    PointData<OutCoord> f_initPos;            // initial child coordinates in the world reference frame
-    PointData<Vec<nbRef,unsigned int> > f_index;   ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
-    PointData<unsigned int> f_groups;            // child group for restricting interpolation (initialized from trianglegroupes)
+    PointData<sofa::helper::vector<OutCoord> > f_initPos;            // initial child coordinates in the world reference frame
+    PointData<sofa::helper::vector<Vec<nbRef,unsigned int> > > f_index;   ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
+    PointData<sofa::helper::vector<unsigned int> > f_groups;            // child group for restricting interpolation (initialized from trianglegroupes)
 
-    PointData<Vec<nbRef,InReal> >       weight;
-    PointData<Vec<nbRef,MaterialCoord> > weightDeriv;
-    PointData<Vec<nbRef,MaterialMat> >   weightDeriv2;
+    PointData<sofa::helper::vector<Vec<nbRef,InReal> > >       weight;
+    PointData<sofa::helper::vector<Vec<nbRef,MaterialCoord> > > weightDeriv;
+    PointData<sofa::helper::vector<Vec<nbRef,MaterialMat> > >   weightDeriv2;
 
     core::topology::BaseMeshTopology* to_topo; // Used to manage topological changes
 
