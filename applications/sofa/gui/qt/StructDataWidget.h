@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/component/interactionforcefield/SpringForceField.h>
 #include <sofa/component/interactionforcefield/JointSpringForceField.h>
+#include <sofa/component/interactionforcefield/GearSpringForceField.h>
 /* #include <../../../projects/vulcain/lib/DiscreteElementModel.h> */
 #include <sofa/helper/io/Mesh.h>
 
@@ -527,6 +528,40 @@ template<class T> STRUCT_DATA_VAR(CLASS, 23,  "Initial rotation of the spring X"
 template<class T> STRUCT_DATA_VAR(CLASS, 24,  "Initial rotation of the spring Y", "Rot init spring Y", SReal, initRot[1]);
 template<class T> STRUCT_DATA_VAR(CLASS, 25,  "Initial rotation of the spring Z", "Rot init spring Z", SReal, initRot[2]);
 template<class T> STRUCT_DATA_VAR(CLASS, 26,  "Initial rotation of the spring W", "Rot init spring W", SReal, initRot[3]);
+
+template<class T>
+class data_widget_container < CLASS > : public struct_data_widget_container < CLASS >
+{};
+
+#undef CLASS
+
+////////////////////////////////////////////////////////////////
+/// sofa::component::forcefield::GearSpring support
+////////////////////////////////////////////////////////////////
+
+#define CLASS typename sofa::component::interactionforcefield::GearSpring< T >
+
+template<class T>
+class struct_data_trait < CLASS >
+{
+public:
+    typedef CLASS data_type;
+    enum { NVAR = 10 };
+    static void set( data_type& /*d*/)
+    {
+    }
+};
+
+template<class T> STRUCT_DATA_VAR(CLASS, 0,  "Parent 1", "Parent 1", unsigned int, p1);
+template<class T> STRUCT_DATA_VAR(CLASS, 1,  "Index 1", "Index 1", unsigned int, m1);
+template<class T> STRUCT_DATA_VAR(CLASS, 2,  "Parent 2", "Parent 2", unsigned int, p2);
+template<class T> STRUCT_DATA_VAR(CLASS, 3,  "Index 2", "Index 2", unsigned int, m2);
+template<class T> STRUCT_DATA_VAR(CLASS, 4, "Axis 1", "Axis 1", unsigned int, freeAxis[0]);
+template<class T> STRUCT_DATA_VAR(CLASS, 5, "Axis 2", "Axis 2", unsigned int, freeAxis[1]);
+template<class T> STRUCT_DATA_VAR(CLASS, 6,  "Pivot Stiffness Translation", "Ks Trans", typename data_type::Real, hardStiffnessTrans);
+template<class T> STRUCT_DATA_VAR(CLASS, 7,  "Gear Stiffness Rotation", "Gear Ks Rot", typename data_type::Real, softStiffnessRot);
+template<class T> STRUCT_DATA_VAR(CLASS, 8,  "Pivot Stiffness Rotation", "Pivot Ks Rot", typename data_type::Real, hardStiffnessRot);
+template<class T> STRUCT_DATA_VAR(CLASS, 9,  "Damping", "Kd", typename data_type::Real, kd);
 
 template<class T>
 class data_widget_container < CLASS > : public struct_data_widget_container < CLASS >

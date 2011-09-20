@@ -160,6 +160,9 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::JointSpring<sofa::defaulttype::Rigid3fTypes> > > > DWClass_vectorJointSpring3f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::JointSpring<sofa::defaulttype::Rigid3dTypes> > > > DWClass_vectorJointSpring3d("default",true);
 
+Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::GearSpring<sofa::defaulttype::Rigid3fTypes> > > > DWClass_vectorGearSpring3f("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::GearSpring<sofa::defaulttype::Rigid3dTypes> > > > DWClass_vectorGearSpring3d("default",true);
+
 
 // Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::DiscreteElementModelInternalData<sofa::defaulttype::Vec3fTypes> > > > DWClass_vectorDiscreteElementModelInternalData3f("default", true);
 // Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::DiscreteElementModelInternalData<sofa::defaulttype::Vec3dTypes> > > > DWClass_vectorDiscreteElementModelInternalData3d("default", true);
