@@ -152,7 +152,7 @@ public:
 
 
 /** A class that define topological Data general methods*/
-template < class T = void*, class VecT = helper::vector<T> >
+template < class T = void* >
 class TopologicalData : public sofa::core::objectmodel::Data <T>
 {
 public:
