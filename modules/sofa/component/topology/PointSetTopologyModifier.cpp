@@ -200,7 +200,7 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
     // std:: cout << (*it)->getChangeType() << std::endl;
 
-    //getContext()->executeVisitor(&a);
+    getContext()->executeVisitor(&a);
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     //TODO: temporary code to test topology engine pipeline.
