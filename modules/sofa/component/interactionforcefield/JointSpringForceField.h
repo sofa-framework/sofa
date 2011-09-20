@@ -307,8 +307,8 @@ protected:
 
     double m_potentialEnergy;
 
-    std::ofstream* outfile;
     std::ifstream* infile;
+    std::ofstream* outfile;
 
 
     JointSpringForceFieldInternalData<DataTypes> data;

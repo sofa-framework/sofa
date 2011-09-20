@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_INL
 
 #include <sofa/component/interactionforcefield/GearSpringForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
@@ -53,24 +54,24 @@ namespace interactionforcefield
 template<class DataTypes>
 GearSpringForceField<DataTypes>::GearSpringForceField(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
+    , outfile(NULL)
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping"))
     , f_filename( initData(&f_filename, "filename", "output file name"))
     , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
     , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
     , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
-    , outfile(NULL)
     , lastTime((Real)0.0)
 {
 }
 
 template<class DataTypes>
 GearSpringForceField<DataTypes>::GearSpringForceField()
-    : springs(initData(&springs,"spring","pairs of indices, stiffness, damping"))
+    : outfile(NULL)
+    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping"))
     , f_filename( initData(&f_filename, "filename", "output file name"))
     , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
     , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
     , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
-    , outfile(NULL)
     , lastTime((Real)0.0)
 {
 }
@@ -198,7 +199,7 @@ void GearSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy*
     {
         if(f_reinit.getValue())  outfile->seekp(std::ios::beg);
 
-        double time = getContext()->getTime();
+        double time = this->getContext()->getTime();
         if (time >= (lastTime + f_period.getValue()))
         {
             lastTime += f_period.getValue();
