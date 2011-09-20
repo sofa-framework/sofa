@@ -57,7 +57,7 @@ typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeCreationFunction(int /*edgeIndex*/, void* param, EdgeRestInformation &ei,
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeCreationFunction(int, void* param, EdgeRestInformation &ei,
         const Edge& ,  const helper::vector< unsigned int > &,
         const helper::vector< double >&)
 {

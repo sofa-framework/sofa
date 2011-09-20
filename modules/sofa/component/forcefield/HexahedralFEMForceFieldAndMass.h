@@ -137,11 +137,11 @@ protected :
     Data<Real> _density;
     Data<bool> _useLumpedMass;
 
-    HexahedronData<ElementMass> _elementMasses; ///< mass matrices per element
-    HexahedronData<Real>		_elementTotalMass; ///< total mass per element
+    HexahedronData<sofa::helper::vector<ElementMass> > _elementMasses; ///< mass matrices per element
+    HexahedronData<sofa::helper::vector<Real> >		_elementTotalMass; ///< total mass per element
 
-    PointData<Real> _particleMasses; ///< masses per particle in order to compute gravity
-    PointData<Coord> _lumpedMasses; ///< masses per particle computed by lumping mass matrices
+    PointData<sofa::helper::vector<Real> > _particleMasses; ///< masses per particle in order to compute gravity
+    PointData<sofa::helper::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)

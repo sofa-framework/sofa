@@ -107,7 +107,7 @@ protected:
         }
     };
 
-    EdgeData<EdgeRestInformation> edgeInfo;
+    EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
 
     sofa::core::topology::BaseMeshTopology* _topology;
     VecCoord  _initialPoints;///< the intial positions of the points
@@ -153,7 +153,7 @@ public:
 
 protected :
 
-    EdgeData<EdgeRestInformation> &getEdgeInfo() {return edgeInfo;}
+    EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
     static void TriangularTMEdgeCreationFunction(int edgeIndex, void* param,
             EdgeRestInformation &ei,

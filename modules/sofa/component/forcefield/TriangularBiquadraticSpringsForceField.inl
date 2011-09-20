@@ -91,7 +91,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunc
 
         unsigned int j,k,l;
 
-        EdgeData<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation> &edgeInfo=ff->getEdgeInfo();
+        EdgeData<helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation> > &edgeInfo=ff->getEdgeInfo();
         typename DataTypes::Real area,restSquareLength[3],cotangent[3];
         typename DataTypes::Real lambda=ff->getLambda();
         typename DataTypes::Real mu=ff->getMu();
@@ -142,7 +142,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunc
 
 
 template< class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleDestroyFunction(int triangleIndex, void* param, typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation &tinfo)
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleDestroyFunction(int triangleIndex, void* param, typename TriangularBiquadraticSpringsForceField<DataTypes> ::TriangleRestInformation &tinfo)
 {
     TriangularBiquadraticSpringsForceField<DataTypes> *ff= (TriangularBiquadraticSpringsForceField<DataTypes> *)param;
     if (ff)
@@ -150,7 +150,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleDestroyFunct
 
         unsigned int j;
 
-        EdgeData<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation> &edgeInfo=ff->getEdgeInfo();
+        EdgeData<helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation> > &edgeInfo=ff->getEdgeInfo();
 
         helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 

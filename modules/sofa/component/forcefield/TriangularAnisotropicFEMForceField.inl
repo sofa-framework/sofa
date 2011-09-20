@@ -33,7 +33,6 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
-#include <sofa/component/topology/PointData.inl>
 #include <sofa/helper/system/gl.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -74,7 +73,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
 
 template< class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleCreationFunction (int triangleIndex, void* param,
-        Deriv &/*tinfo*/,
+        helper::vector<Deriv> &/*tinfo*/,
         const Triangle& /*t*/,
         const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)

@@ -81,7 +81,7 @@ private:
 
     unsigned char *texture_data;
     float r,g,b,a;
-    component::topology::PointData<unsigned char>		pointData;
+    component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData;
 
     typedef defaulttype::ExtVec3fTypes::Coord Coord;
     typedef defaulttype::ExtVec3fTypes::VecCoord VecCoord;

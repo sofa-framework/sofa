@@ -222,7 +222,7 @@ public:
 
 protected:
     /// container that stotes all requires information for each hexahedron
-    HexahedronData<HexahedronInformation> hexahedronInfo;
+    HexahedronData<sofa::helper::vector<HexahedronInformation> > hexahedronInfo;
 
     HexahedronSetTopologyContainer* _topology;
 

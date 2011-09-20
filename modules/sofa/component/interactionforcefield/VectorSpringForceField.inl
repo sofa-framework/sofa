@@ -49,7 +49,7 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
-void VectorSpringForceField<DataTypes>::springCreationFunction(int /*index*/,
+void VectorSpringForceField<DataTypes>::springCreationFunction(int ,
         void* param, Spring& t,
         const topology::Edge& e,
         const sofa::helper::vector< unsigned int > &ancestors,
@@ -58,7 +58,6 @@ void VectorSpringForceField<DataTypes>::springCreationFunction(int /*index*/,
     VectorSpringForceField<DataTypes> *ff= static_cast<VectorSpringForceField<DataTypes> *>(param);
     if (ff)
     {
-
 
         //EdgeSetGeometryAlgorithms<DataTypes> *ga=topology->getEdgeSetGeometryAlgorithms();
         //t.restLength=ga->computeRestEdgeLength(index);

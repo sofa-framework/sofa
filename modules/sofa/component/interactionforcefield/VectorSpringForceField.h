@@ -104,7 +104,7 @@ protected:
     /// indices in case we don't use the topology
     sofa::helper::vector<topology::Edge> edgeArray;
     /// where the springs information are stored
-    sofa::component::topology::EdgeData<Spring> springArray;
+    sofa::component::topology::EdgeData<sofa::helper::vector<Spring> > springArray;
 
     /// the filename where to load the spring information
     sofa::core::objectmodel::DataFileName m_filename;
@@ -115,7 +115,7 @@ protected:
 
     void resizeArray(unsigned int n);
 
-    static void springCreationFunction(int /*index*/,
+    static void springCreationFunction(int index,
             void* param, Spring& t,
             const topology::Edge& e,
             const sofa::helper::vector< unsigned int > &ancestors,
@@ -163,7 +163,7 @@ public:
     {
         return (Real)(m_viscosity.getValue());
     }
-    const topology::EdgeData<Spring>& getSpringArray() const
+    const topology::EdgeData<sofa::helper::vector<Spring> >& getSpringArray() const
     {
         return springArray;
     }

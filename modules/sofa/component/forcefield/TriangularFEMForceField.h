@@ -195,9 +195,9 @@ protected:
         }
     };
 
-    TriangleData<TriangleInformation> triangleInfo;
-    PointData<VertexInformation> vertexInfo;
-    EdgeData<EdgeInformation> edgeInfo;
+    TriangleData<sofa::helper::vector<TriangleInformation> > triangleInfo;
+    PointData<sofa::helper::vector<VertexInformation> > vertexInfo;
+    EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
 
     sofa::core::topology::BaseMeshTopology* _topology;
     //const VecElement *_indexedElements;

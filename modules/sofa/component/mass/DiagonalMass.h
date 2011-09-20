@@ -65,7 +65,7 @@ class DiagonalMassInternalData
 {
 public :
 
-    typedef sofa::component::topology::PointData<TMassType> VecMass;
+    typedef sofa::component::topology::PointData<sofa::helper::vector<TMassType> > VecMass;
     typedef helper::vector<TMassType> MassVector;
 
 };
@@ -187,7 +187,7 @@ public:
     double getElementMass(unsigned int index) const;
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
-    bool isDiagonal() {return true;};
+    bool isDiagonal() {return true;}
 
     void draw(const core::visual::VisualParams* vparams);
 

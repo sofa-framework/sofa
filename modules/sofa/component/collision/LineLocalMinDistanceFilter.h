@@ -193,8 +193,8 @@ public:
     static void LMDFilterLineCreationFunction(int , void*, LineInfo &, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
 private:
-    topology::PointData< PointInfo > m_pointInfo;
-    topology::EdgeData< LineInfo > m_lineInfo;
+    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
+    topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo;
 
     core::topology::BaseMeshTopology *bmt;
 

@@ -148,7 +148,7 @@ protected:
     //just for draw forces
     VecDeriv _forces;
 
-    topology::EdgeData<BeamInfo> beamsData;
+    topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
 
     const VecElement *_indexedElements;
     unsigned int maxPoints;
