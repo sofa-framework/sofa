@@ -155,7 +155,7 @@ public:
     static const unsigned int num_spatial_dimensions=In::spatial_dimensions;
     enum {InVSize= defaulttype::InDataTypesInfo<In>::VSize};
     typedef FrameMass<num_spatial_dimensions,InVSize,InReal> FrameMassType;
-    typedef sofa::component::topology::PointData<FrameMassType> VecMass;
+    typedef sofa::component::topology::PointData<sofa::helper::vector<FrameMassType> > VecMass;
     typedef helper::vector<FrameMassType> MassVector;
 
     FrameData ()
