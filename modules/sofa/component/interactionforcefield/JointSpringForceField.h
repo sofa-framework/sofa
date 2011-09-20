@@ -33,7 +33,7 @@
 #include <sofa/component/component.h>
 #include <vector>
 #include <sofa/core/MechanicalParams.h>
-
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -63,14 +63,16 @@ public:
 
     int  m1, m2;			/// the two extremities of the spring: masses m1 and m2
     Real kd;				/// damping factor
-    Vector  initTrans;		/// rest length of the spring
-    Quat initRot;			/// rest orientation of the spring
-//	  Quat lawfulTorsion;	/// general (lawful) torsion of the springs (used to fix a bug with large rotations)
-//	  Quat extraTorsion;	/// extra (illicit) torsion of the springs (used to fix a bug with large rotations)
     Vector torsion;		/// torsion of the springs in axis/angle format
     Vector lawfulTorsion;	/// projected torsion in allowed angles
     Vector KT;	// linear stiffness
     Vector KR;	// angular stiffness
+    Quat ref; // referential of the spring (p1) to use it in addSpringDForce()
+
+    Vector  initTrans;		/// offset length of the spring
+    Quat initRot;			/// offset orientation of the spring
+    bool needToInitializeTrans;
+    bool needToInitializeRot;
 
     sofa::defaulttype::Vec<6,bool> freeMovements;	///defines the axis where the movements is free. (0,1,2)--> translation axis (3,4,5)-->rotation axis
     Real softStiffnessTrans;	///stiffness to apply on axis where the translations are free (default 0.0)
@@ -80,10 +82,6 @@ public:
     Real blocStiffnessRot;	///stiffness to apply on axis where the rotations are bloqued (=hardStiffnessRot/100)
 
     sofa::defaulttype::Vec<6,Real> limitAngles; ///limit angles on rotation axis (default no limit)
-
-    //Vector bloquage;
-    bool needToInitializeTrans;
-    bool needToInitializeRot;
 
     ///constructors
     JointSpring()
@@ -222,7 +220,6 @@ public:
             }
         }
 
-
         s.needToInitializeTrans = initTransFound;
         s.needToInitializeRot = initTransFound;
 
@@ -310,8 +307,8 @@ protected:
 
     double m_potentialEnergy;
 
-    /// the list of the local referentials of the springs
-    VecCoord springRef;
+    std::ofstream* outfile;
+    std::ifstream* infile;
 
 
     JointSpringForceFieldInternalData<DataTypes> data;
@@ -336,6 +333,7 @@ public:
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
+    virtual void init();
     virtual void bwdInit();
 
     virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
@@ -378,7 +376,6 @@ public:
         s.initTrans = x2[m2].getCenter() - x1[m1].getCenter();
         s.initRot = x2[m2].getOrientation()*x1[m1].getOrientation().inverse();
 
-        sout << s.initTrans << " =T  : " << s.initRot << " = R" << sendl;
         springs.beginEdit()->push_back(s);
         springs.endEdit();
     }
@@ -387,6 +384,12 @@ public:
 
     /// the list of the springs
     Data<sofa::helper::vector<Spring> > springs;
+    sofa::core::objectmodel::DataFileName f_outfilename;
+    sofa::core::objectmodel::DataFileName f_infilename;
+    Data < Real > f_period;
+    Data<bool> f_reinit;
+    Real lastTime;
+
     /// bool to allow the display of the 2 parts of springs torsions
     Data<bool> showLawfulTorsion;
     Data<bool> showExtraTorsion;
