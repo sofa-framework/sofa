@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_CATMULLROMSPLINEMAPPING_INL
 
 #include <sofa/component/mapping/CatmullRomSplineMapping.h>
-
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/core/Mapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -173,7 +173,6 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
         to_estm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
     }
 
-    reinit();
     Inherit::init();
 }
 
