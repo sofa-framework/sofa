@@ -59,8 +59,8 @@ GearSpringForceField<DataTypes>::GearSpringForceField(MechanicalState* object1, 
     , f_filename( initData(&f_filename, "filename", "output file name"))
     , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
     , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
-    , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
     , lastTime((Real)0.0)
+    , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
 }
 
@@ -71,8 +71,8 @@ GearSpringForceField<DataTypes>::GearSpringForceField()
     , f_filename( initData(&f_filename, "filename", "output file name"))
     , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
     , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
-    , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
     , lastTime((Real)0.0)
+    , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
 {
 }
 
