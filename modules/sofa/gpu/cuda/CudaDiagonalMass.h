@@ -52,7 +52,7 @@ template<>
 class DiagonalMassInternalData<CudaVec3dTypes,double>
 {
 public :
-    typedef sofa::component::topology::PointData<double, CudaVector<double> > VecMass;
+    typedef sofa::component::topology::PointData<CudaVector<double> > VecMass;
     typedef CudaVector<double> MassVector;
 };
 #endif
