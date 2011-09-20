@@ -36,7 +36,6 @@
 #include <sofa/component/forcefield/TriangularFEMForceField.h>
 #include <sofa/component/topology/TriangleData.h>
 #include <sofa/component/topology/EdgeData.h>
-#include <sofa/component/topology/PointData.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
 
@@ -97,13 +96,13 @@ public:
     Data<VecCoord> f_fiberCenter;
     Data<bool> showFiber;
 
-    TriangleData<Deriv> localFiberDirection;
+    TriangleData<helper::vector<Deriv> > localFiberDirection;
 
     virtual void handleTopologyChange();
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    static void TRQSTriangleCreationFunction (int , void* , Deriv &, const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
+    static void TRQSTriangleCreationFunction (int , void* , helper::vector<Deriv> &, const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
 };
 

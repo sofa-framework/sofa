@@ -107,7 +107,7 @@ protected:
         }
     };
 
-    EdgeData<EdgeRestInformation> edgeInfo;
+    EdgeData<helper::vector<EdgeRestInformation> > edgeInfo;
 
     sofa::core::topology::BaseMeshTopology* _topology;
     VecCoord  _initialPoints;///< the intial positions of the points
@@ -152,7 +152,7 @@ public:
 
 protected :
 
-    EdgeData<EdgeRestInformation> &getEdgeInfo() {return edgeInfo;}
+    EdgeData<helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
     static void TetrahedralTMEdgeCreationFunction(int edgeIndex, void* param,
             EdgeRestInformation &ei,

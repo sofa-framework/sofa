@@ -136,8 +136,8 @@ protected:
         {
         }
     };
-    EdgeData<EdgeRestInformation> edgeInfo;
-    TetrahedronData<TetrahedronRestInformation> tetrahedronInfo;
+    EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
+    TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo;
 
 
     sofa::core::topology::BaseMeshTopology* _topology;
@@ -196,7 +196,7 @@ protected :
 
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
-    EdgeData<EdgeRestInformation> &getEdgeInfo() {return edgeInfo;}
+    EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
     static void CorotationalTetrahedronCreationFunction (int , void* ,
             TetrahedronRestInformation &,

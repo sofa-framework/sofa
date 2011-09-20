@@ -59,7 +59,7 @@ typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 template< class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::CorotationalTetrahedronCreationFunction (int tetrahedronIndex, void* param,
-        TetrahedronRestInformation &tinfo,
+        TetrahedronRestInformation &my_tinfo,
         const Tetrahedron& ,
         const helper::vector< unsigned int > &,
         const helper::vector< double >&)
@@ -69,7 +69,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::CorotationalTetrahedronCr
     {
         const std::vector< Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
         //		const std::vector< Edge> &edgeArray=ff->_topology->getEdges() ;
-
         unsigned int j,k,l,m,n;
         typename DataTypes::Real lambda=ff->getLambda();
         typename DataTypes::Real mu=ff->getMu();
@@ -88,7 +87,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::CorotationalTetrahedronCr
         /// compute 6 times the rest volume
         volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
         /// store the rest volume
-        tinfo.restVolume=volume/6;
+        my_tinfo.restVolume=volume/6;
         mu*=fabs(volume)/6;
         lambda*=fabs(volume)/6;
 
@@ -96,9 +95,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::CorotationalTetrahedronCr
         for(j=0; j<4; ++j)
         {
             if ((j%2)==0)
-                tinfo.shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
+                my_tinfo.shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
             else
-                tinfo.shapeVector[j]= -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
+                my_tinfo.shapeVector[j]= -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
         }
 
         /// compute the edge stiffness of the linear elastic material
@@ -109,27 +108,27 @@ void FastTetrahedralCorotationalForceField<DataTypes>::CorotationalTetrahedronCr
             l=e[1];
 
             // store the rest edge vector
-            tinfo.restEdgeVector[j]=point[l]-point[k];
+            my_tinfo.restEdgeVector[j]=point[l]-point[k];
 
             // the linear stiffness matrix using shape vectors and Lam� coefficients
-            val=mu*dot(tinfo.shapeVector[l],tinfo.shapeVector[k]);
+            val=mu*dot(my_tinfo.shapeVector[l],my_tinfo.shapeVector[k]);
             for(m=0; m<3; ++m)
             {
                 for(n=0; n<3; ++n)
                 {
-                    tinfo.linearDfDx[j][m][n]=lambda*tinfo.shapeVector[k][n]*tinfo.shapeVector[l][m]+
-                            mu*tinfo.shapeVector[l][n]*tinfo.shapeVector[k][m];
+                    my_tinfo.linearDfDx[j][m][n]=lambda*my_tinfo.shapeVector[k][n]*my_tinfo.shapeVector[l][m]+
+                            mu*my_tinfo.shapeVector[l][n]*my_tinfo.shapeVector[k][m];
 
                     if (m==n)
                     {
-                        tinfo.linearDfDx[j][m][m]+=(Real)val;
+                        my_tinfo.linearDfDx[j][m][m]+=(Real)val;
                     }
                 }
             }
-            tinfo.transposedLinearDfDx[j]=tinfo.linearDfDx[j].transposed();
+            my_tinfo.transposedLinearDfDx[j]=my_tinfo.linearDfDx[j].transposed();
         }
         // compute the rotation matrix of the initial tetrahedron for the QR decomposition
-        computeQRRotation(tinfo.restRotation,tinfo.restEdgeVector);
+        computeQRRotation(my_tinfo.restRotation,my_tinfo.restEdgeVector);
     }
 
 }
@@ -186,7 +185,7 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     }
 
 
-    helper::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
     tetrahedronInf.resize(_topology->getNbTetrahedra());
 
 
@@ -204,12 +203,13 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     }
 
     int i;
+
     /// initialize the data structure associated with each tetrahedron
     for (i=0; i<_topology->getNbTetrahedra(); ++i)
     {
         CorotationalTetrahedronCreationFunction(i, (void*) this, tetrahedronInf[i],
-                _topology->getTetrahedron(i),  (const std::vector< unsigned int > )0,
-                (const std::vector< double >)0);
+                _topology->getTetrahedron(i),  (const helper::vector< unsigned int > )0,
+                (const helper::vector< double >)0);
     }
     /// set the call back function upon creation of a tetrahedron
     tetrahedronInfo.setCreateFunction(CorotationalTetrahedronCreationFunction);

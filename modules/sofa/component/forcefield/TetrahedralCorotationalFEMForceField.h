@@ -136,7 +136,7 @@ protected:
         }
     };
     /// container that stotes all requires information for each tetrahedron
-    TetrahedronData<TetrahedronInformation> tetrahedronInfo;
+    TetrahedronData<sofa::helper::vector<TetrahedronInformation> > tetrahedronInfo;
 
     /// @name Full system matrix assembly support
     /// @{

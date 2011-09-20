@@ -129,7 +129,7 @@ protected:
         }
     };
 
-    EdgeData<EdgeInformation> edgeInfo;
+    EdgeData<helper::vector<EdgeInformation> > edgeInfo;
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
@@ -173,7 +173,7 @@ public:
 
 protected:
 
-    EdgeData<EdgeInformation> &getEdgeInfo() {return edgeInfo;}
+    EdgeData<helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
     static void TriangularBSEdgeCreationFunction(int edgeIndex, void* param,
             EdgeInformation &ei,

@@ -96,8 +96,8 @@ public:
 
 
     /// Mass info are stocked on vertices and edges (if lumped matrix)
-    PointData<MassType>  vertexMassInfo;
-    EdgeData<MassType>   edgeMassInfo;
+    PointData<sofa::helper::vector<MassType> >  vertexMassInfo;
+    EdgeData<helper::vector<MassType> >   edgeMassInfo;
 
 
     /// the mass density used to compute the mass from a mesh topology and geometry

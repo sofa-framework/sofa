@@ -134,8 +134,8 @@ protected:
         }
     };
 
-    TriangleData<TriangleRestInformation> triangleInfo;
-    EdgeData<EdgeRestInformation> edgeInfo;
+    TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo;
+    EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
 
     sofa::core::topology::BaseMeshTopology* _topology;
     Data< VecCoord > _initialPoints;										///< the intial positions of the points
@@ -188,7 +188,7 @@ public:
 
 protected :
 
-    EdgeData<EdgeRestInformation> &getEdgeInfo() {return edgeInfo;}
+    EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
     static void TRQSEdgeCreationFunction(int edgeIndex, void* param, EdgeRestInformation &ei,
             const Edge& ,  const sofa::helper::vector< unsigned int > &,

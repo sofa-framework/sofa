@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 
 #include <sofa/component/topology/PointData.h>
-#include <sofa/component/topology/HexahedronData.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
@@ -568,7 +567,7 @@ public:
     typedef typename Inherit::MatrixType MatrixType;
 
 protected:
-    topology::PointData< MappingData >  map;
+    topology::PointData< sofa::helper::vector<MappingData > > map;
     topology::EdgeSetTopologyContainer*			_fromContainer;
     topology::EdgeSetGeometryAlgorithms<In>*	_fromGeomAlgo;
     helper::ParticleMask *maskFrom;
@@ -664,7 +663,7 @@ public:
     typedef typename Inherit::MatrixType MatrixType;
 
 protected:
-    topology::PointData< MappingData >		map;
+    topology::PointData< sofa::helper::vector<MappingData> > map;
     topology::TriangleSetTopologyContainer*			_fromContainer;
     topology::TriangleSetGeometryAlgorithms<In>*	_fromGeomAlgo;
     helper::ParticleMask *maskFrom;
@@ -760,7 +759,7 @@ public:
     typedef typename Inherit::MatrixType MatrixType;
 
 protected:
-    topology::PointData< MappingData >  map;
+    topology::PointData< sofa::helper::vector<MappingData> >  map;
     topology::QuadSetTopologyContainer*			_fromContainer;
     topology::QuadSetGeometryAlgorithms<In>*	_fromGeomAlgo;
     helper::ParticleMask *maskFrom;
@@ -858,8 +857,8 @@ public:
     typedef typename Inherit::MatrixType MatrixType;
 
 protected:
-    topology::PointData< MappingData >  map;
-    topology::PointData< MappingData >  mapOrient[3];
+    topology::PointData< sofa::helper::vector<MappingData > >  map;
+    topology::PointData< sofa::helper::vector<MappingData > >  mapOrient[3];
 
     VecCoord actualTetraPosition;
 
@@ -975,7 +974,7 @@ public:
     typedef typename Inherit::MatrixType MatrixType;
 
 protected:
-    topology::PointData< MappingData >  map;
+    topology::PointData< sofa::helper::vector<MappingData> >  map;
     topology::HexahedronSetTopologyContainer*		_fromContainer;
     topology::HexahedronSetGeometryAlgorithms<In>*	_fromGeomAlgo;
 

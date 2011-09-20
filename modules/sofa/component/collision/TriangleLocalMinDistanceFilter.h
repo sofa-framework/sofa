@@ -231,9 +231,9 @@ public:
     static void LMDFilterTriangleCreationFunction(int , void*, TriangleInfo &, const topology::Triangle&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
 private:
-    topology::PointData< PointInfo > m_pointInfo;
-    topology::EdgeData< LineInfo > m_lineInfo;
-    topology::TriangleData< TriangleInfo > m_triangleInfo;
+    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
+    topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo;
+    topology::TriangleData< sofa::helper::vector<TriangleInfo> > m_triangleInfo;
 };
 
 

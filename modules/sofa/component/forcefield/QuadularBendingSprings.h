@@ -116,7 +116,7 @@ protected:
         }
     };
 
-    EdgeData<EdgeInformation> edgeInfo;
+    EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
@@ -154,12 +154,12 @@ public:
 
     // -- VisualModel interface
     void draw(const core::visual::VisualParams* vparams);
-    void initTextures() { };
-    void update() { };
+    void initTextures() { }
+    void update() { }
 
 protected:
 
-    EdgeData<EdgeInformation> &getEdgeInfo() {return edgeInfo;}
+    EdgeData<sofa::helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
     static void QuadularBSEdgeCreationFunction(int edgeIndex, void* param,
             EdgeInformation &ei,

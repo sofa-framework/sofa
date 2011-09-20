@@ -67,7 +67,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::apply ( const core::Mech
     OutVecCoord& out = *dOut.beginEdit();
 
     if (!topoMap) return;
-    const topology::PointData<int>& pointMap = topoMap->getPointMappedFromPoint();
+    const topology::PointData<sofa::helper::vector<int> >& pointMap = topoMap->getPointMappedFromPoint();
     const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge();
     if (pointMap.getValue().empty() && edgeMap.empty()) return;
     const core::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
@@ -94,7 +94,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( const core::Mech
     OutVecDeriv& out = *dOut.beginEdit();
 
     if (!topoMap) return;
-    const topology::PointData<int>& pointMap = topoMap->getPointMappedFromPoint();
+    const topology::PointData<sofa::helper::vector<int> >& pointMap = topoMap->getPointMappedFromPoint();
     const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge();
     if (pointMap.getValue().empty() && edgeMap.empty()) return;
     const core::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
@@ -120,7 +120,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::Mec
     InVecDeriv& out = *dOut.beginEdit();
 
     if (!topoMap) return;
-    const topology::PointData<int>& pointMap = topoMap->getPointMappedFromPoint();
+    const topology::PointData<sofa::helper::vector<int> >& pointMap = topoMap->getPointMappedFromPoint();
     const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge();
     if (pointMap.getValue().empty() && edgeMap.empty()) return;
     const core::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
@@ -151,7 +151,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::Con
 
     if (!topoMap) return;
 
-    const topology::PointData<int>& pointSource = topoMap->getPointSource();
+    const topology::PointData<sofa::helper::vector<int> >& pointSource = topoMap->getPointSource();
     if (pointSource.getValue().empty()) return;
 
     const core::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();

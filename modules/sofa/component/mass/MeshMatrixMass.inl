@@ -747,7 +747,7 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
 
         // set edge tensor to 0
         for (unsigned int i = 0; i<nbEdges; ++i)
-            EdgeMassCreationFunction (i, (void*) this, my_edgeMassInfo[i], _topology->getEdge(i),
+            EdgeMassCreationFunction (i, (void*) this, my_edgeMassInfo[i], _topology->getEdge(0),
                     (const sofa::helper::vector< unsigned int > )0,
                     (const sofa::helper::vector< double >)0);
 

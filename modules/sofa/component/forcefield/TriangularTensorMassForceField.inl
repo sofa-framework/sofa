@@ -52,7 +52,7 @@ using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction(int /*edgeIndex*/, void* param, EdgeRestInformation &ei,
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction(int edgeIndex, void* param, EdgeRestInformation &ei,
         const Edge& ,  const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
 {

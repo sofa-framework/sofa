@@ -197,8 +197,8 @@ private:
 
     std::list<const TopologyChange *>	m_changeListFine;
 
-    HexahedronData<Component*>		_coarseComponents;	// map between hexahedra and components - coarse
-    HexahedronData<Component*>		_fineComponents;	// map between hexahedra and components - fine
+    HexahedronData<sofa::helper::vector<Component*> >		_coarseComponents;	// map between hexahedra and components - coarse
+    HexahedronData<sofa::helper::vector<Component*> >		_fineComponents;	// map between hexahedra and components - fine
 
     // the fine mesh must be a regular grid - store its parameters here
 

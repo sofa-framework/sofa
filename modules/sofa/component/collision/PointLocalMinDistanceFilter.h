@@ -150,7 +150,7 @@ public:
     static void LMDFilterPointCreationFunction(int, void*, PointInfo &, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
 private:
-    topology::PointData< PointInfo > m_pointInfo;
+    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
 };
 
 
