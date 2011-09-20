@@ -53,33 +53,33 @@ namespace interactionforcefield
 template<class DataTypes>
 JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
+    , infile(NULL)
+    , outfile(NULL)
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , f_outfilename( initData(&f_outfilename, "outfile", "output file name"))
     , f_infilename( initData(&f_infilename, "infile", "input file containing constant joint force"))
     , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
     , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
+    , lastTime((Real)0.0)
     , showLawfulTorsion(initData(&showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
     , showExtraTorsion(initData(&showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
     , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
-    , infile(NULL)
-    , outfile(NULL)
-    , lastTime((Real)0.0)
 {
 }
 
 template<class DataTypes>
 JointSpringForceField<DataTypes>::JointSpringForceField()
-    : springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    : infile(NULL)
+    , outfile(NULL)
+    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , f_outfilename( initData(&f_outfilename, "outfile", "output file name"))
     , f_infilename( initData(&f_infilename, "infile", "input file containing constant joint force"))
     , f_period( initData(&f_period, (Real)0.0, "period", "period between outputs"))
     , f_reinit( initData(&f_reinit, false, "reinit", "flag enabling reinitialization of the output file at each timestep"))
+    , lastTime((Real)0.0)
     , showLawfulTorsion(initData(&showLawfulTorsion, false, "showLawfulTorsion", "display the lawful part of the joint rotation"))
     , showExtraTorsion(initData(&showExtraTorsion, false, "showExtraTorsion", "display the illicit part of the joint rotation"))
     , showFactorSize(initData(&showFactorSize, (Real)1.0, "showFactorSize", "modify the size of the debug information of a given factor" ))
-    , infile(NULL)
-    , outfile(NULL)
-    , lastTime((Real)0.0)
 {
 }
 
@@ -293,7 +293,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     {
         if(f_reinit.getValue()) outfile->seekp(std::ios::beg);
 
-        double time = getContext()->getTime();
+        double time = this->getContext()->getTime();
         if (time >= (lastTime + f_period.getValue()))
         {
             lastTime += f_period.getValue();
