@@ -60,7 +60,8 @@ BuoyantForceField<DataTypes>::BuoyantForceField():
     m_flipNormals(initData(&m_flipNormals, false, "flipNormals", "flip normals to inverse the forces applied on the object")),
     m_showPressureForces(initData(&m_showPressureForces, false, "showPressureForces", "Show the pressure forces applied on the surface of the mesh if true")),
     m_showViscosityForces(initData(&m_showViscosityForces, false, "showViscosityForces", "Show the viscosity forces applied on the surface of the mesh if true")),
-    m_showBoxOrPlane(initData(&m_showBoxOrPlane, false, "showBoxOrPlane", "Show the box or the plane"))
+    m_showBoxOrPlane(initData(&m_showBoxOrPlane, false, "showBoxOrPlane", "Show the box or the plane")),
+    m_showFactorSize(initData(&m_showFactorSize, (Real)1.0, "showFactorSize", "Size factor applied to shown forces"))
 {
 
 }
@@ -108,24 +109,20 @@ bool BuoyantForceField<DataTypes>::checkParameters()
 
     if ( m_minBoxPrev != m_minBox.getValue() ||  m_maxBoxPrev!= m_maxBox.getValue())
     {
+        Coord tempMin = m_minBox.getValue() , tempMax = m_maxBox.getValue();
+
         for ( unsigned int i = 0 ; i < 3 ; i++)
-        {
-            if (m_minBox.getValue()[i] > m_maxBox.getValue()[i])
+            if (tempMin[i] > tempMax[i])
             {
                 std::cout << "Switch value " << i << " between min and max" << std::endl;
-
-                Coord tempMin = m_minBox.getValue();
                 tempMin[i] = m_maxBox.getValue()[i];
-
-                Coord tempMax = m_maxBox.getValue();
                 tempMax[i] = m_minBox.getValue()[i];
-
-                m_minBox.setValue(tempMin);
-                m_maxBox.setValue(tempMax);
             }
-        }
-        m_minBoxPrev = m_minBox.getValue();
-        m_maxBoxPrev = m_maxBox.getValue();
+        m_minBoxPrev = tempMin;
+        m_maxBoxPrev = tempMax;
+
+        m_minBox.setValue(tempMin);
+        m_maxBox.setValue(tempMax);
 
         recomputeFluidSurface = true;
         change = true;
@@ -161,45 +158,21 @@ bool BuoyantForceField<DataTypes>::checkParameters()
         }
         else
         {
-            Deriv direction1 = Coord(m_maxBox.getValue()[0], m_minBox.getValue()[1], m_minBox.getValue()[2])
-                    - m_minBox.getValue();
-            Deriv direction2 = Coord(m_minBox.getValue()[0], m_maxBox.getValue()[1], m_minBox.getValue()[2])
-                    - m_minBox.getValue();
-            Deriv direction3 = Coord(m_minBox.getValue()[0], m_minBox.getValue()[1], m_maxBox.getValue()[2])
-                    - m_minBox.getValue();
+            int dir=1;
 
-            Real angle1 = fabs(dot(direction1, m_gravity)/( m_gravityNorm * direction1.norm()));
-            Real angle2 = fabs(dot(direction2, m_gravity)/( m_gravityNorm * direction2.norm()));
-            Real angle3 = fabs(dot(direction3, m_gravity)/( m_gravityNorm * direction3.norm()));
+            if(fabs(m_gravity[0])>fabs(m_gravity[1]) && fabs(m_gravity[0])>fabs(m_gravity[2])) dir=(m_gravity[0]>0)?1:-1;
+            else if(fabs(m_gravity[1])>fabs(m_gravity[0]) && fabs(m_gravity[1])>fabs(m_gravity[2])) dir=(m_gravity[1]>0)?2:-2;
+            else if(fabs(m_gravity[2])>fabs(m_gravity[0]) && fabs(m_gravity[2])>fabs(m_gravity[1])) dir=(m_gravity[2]>0)?3:-3;
 
-            Deriv minDirection;
-            if (angle1 >= angle2 && angle1 >= angle3)
+            switch(dir)
             {
-                minDirection = direction1 ;
+            case -1:  m_fluidSurfaceDirection = Coord((Real)1.0,(Real)0.0,(Real)0.0);  m_fluidSurfaceOrigin = m_maxBox.getValue();  break;
+            case 1: m_fluidSurfaceDirection = Coord((Real)-1.0,(Real)0.0,(Real)0.0);  m_fluidSurfaceOrigin = m_minBox.getValue();  break;
+            case -2:  m_fluidSurfaceDirection = Coord((Real)0.0,(Real)1.0,(Real)0.0);  m_fluidSurfaceOrigin = m_maxBox.getValue();  break;
+            case 2: m_fluidSurfaceDirection = Coord((Real)0.0,(Real)-1.0,(Real)0.0);  m_fluidSurfaceOrigin = m_minBox.getValue();  break;
+            case -3:  m_fluidSurfaceDirection = Coord((Real)0.0,(Real)0.0,(Real)1.0);  m_fluidSurfaceOrigin = m_maxBox.getValue();  break;
+            case 3: m_fluidSurfaceDirection = Coord((Real)0.0,(Real)0.0,(Real)-1.0);  m_fluidSurfaceOrigin = m_minBox.getValue();  break;
             }
-            else if (angle2 >= angle1 && angle2 >= angle3)
-            {
-                minDirection = direction2 ;
-            }
-            else if (angle3 >= angle1 && angle3 >= angle1)
-            {
-                minDirection = direction3;
-            }
-            else
-            {
-                std::cout << "ERROR(BuoyantForceField) : case not anticipated in init()" << std::endl;
-            }
-
-            Deriv origin = m_minBox.getValue();
-
-            //as the box is axis-oriented
-            if (   dot(minDirection, m_gravity) < 0 )
-            {
-                origin += minDirection;
-            }
-
-            m_fluidSurfaceOrigin = Coord(origin[0], origin[1], origin[2]);
-            m_fluidSurfaceDirection = Coord(minDirection[0], minDirection[1], minDirection[2]);
         }
     }
     return change;
@@ -211,74 +184,27 @@ void BuoyantForceField<DataTypes>::init()
     checkParameters();
 
     this->core::behavior::ForceField<DataTypes>::init();
-//	m_TetraTopo = this->getContext()->getMeshTopology();
-    this->getContext()->get(m_tetraTopology);
+    this->getContext()->get(m_topology);
+
+    if (!m_topology)	{        std::cout << "WARNING: BuoyantForceField requires mesh topology" <<std::endl;		return;    }
 
     if (this->f_printLog.getValue())
     {
-        std::cout << "BuoyantForceField " << this->getName() << " coupled with " << m_tetraTopology->getName() << std::endl;
+        std::cout << "BuoyantForceField " << this->getName() << " coupled with " << m_topology->getName() << std::endl;
+        if (m_flipNormals.getValue())     std::cout << "BuoyantForceField::" << this->getName() << " Normals are flipped to inverse the forces" << std::endl;
     }
 
-    if (!m_tetraTopology)
-    {
-        std::cout << "WARNING: BuoyantForceField requires tetrahedral topology" <<std::endl;
-    }
-    else
-    {
-        if (this->f_printLog.getValue())
-        {
-            std::cout << "BuoyantForceField::" << this->getName() <<  " The topology " << m_tetraTopology->getName() << " is well tetrahedrical" << std::endl;
-        }
+    if (m_fluidDensity.getValue() <= 0.f)        serr << "Warning(BuoyantForceField):The density of the fluid is negative!" << sendl;
 
-        m_tetraTopology->getContext()->get(m_tetraGeo);
-        if (!m_tetraGeo)
-        {
-            std::cout << "ERROR(BuoyantForceField):Cannot get the geometry from the topology" <<std::endl;
-        }
+    //get all the surfacic triangles from the topology
+    m_triangles.clear();
+    const seqTriangles &triangleArray=m_topology->getTriangles();
+    for (unsigned int i=0; i<triangleArray.size(); ++i)
+        if (m_topology->getTetrahedraAroundTriangle(i).size()<=1)
+            m_triangles.push_back(i);
 
-        m_tetraTopology->getContext()->get(m_tetraContainer);
-        if (!m_tetraContainer)
-        {
-            std::cout << "ERROR(BuoyantForceField):Cannot get the container from the topology" <<std::endl;
-        }
-
-        if (m_fluidDensity.getValue() <= 0.f)
-        {
-            serr << "Warning(BuoyantForceField):The density of the fluid is negative!" << sendl;
-        }
-
-        m_surfaceTriangles.clear();
-
-        //get all the triangles from the tetrahedral topology
-        const sofa::helper::vector<Triangle> &triangleArray=m_tetraTopology->getTriangles();
-
-        if (this->f_printLog.getValue())
-        {
-            std::cout << "BuoyantForceField::" << this->getName() << " There are " << triangleArray.size()<< " triangles in the topology" << std::endl;
-        }
-
-        unsigned int nb_surface_triangles = 0;
-        for (unsigned int i=0; i<triangleArray.size(); ++i)
-        {
-            if (m_tetraTopology->getTetrahedraAroundTriangle(i).size()==1)
-            {
-                m_surfaceTriangles.push_back(i);
-                nb_surface_triangles+=1;
-            }
-        }
-
-        if (this->f_printLog.getValue())
-        {
-            std::cout << "BuoyantForceField::" << this->getName() << " There are " << nb_surface_triangles << " triangles on the surface of the topology" << std::endl;
-        }
-    }
-    if (this->f_printLog.getValue())
-    {
-        if (m_flipNormals.getValue())
-        {
-            std::cout << "BuoyantForceField::" << this->getName() << " Normals are flipped to inverse the forces" << std::endl;
-        }
-    }
+    if (this->f_printLog.getValue())        std::cout << "BuoyantForceField::" << this->getName() << " There are " << triangleArray.size()<< " triangles in the topology" << std::endl
+                << "BuoyantForceField::" << this->getName() << " There are " << m_triangles.size() << " triangles on the surface of the topology" << std::endl;
 }
 
 
@@ -286,159 +212,135 @@ void BuoyantForceField<DataTypes>::init()
 template <class DataTypes>
 void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
+    if (!m_topology) return;
+    if (!m_triangles.size()) return;
+    if (!m_gravityNorm) return;
+
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
-    const VecDeriv& v =d_v.getValue();
+    const VecDeriv& v = d_v.getValue();
 
-    if (m_tetraContainer)
+    checkParameters();
+
+    m_showForce.clear();
+    m_showPosition.clear();
+    m_showViscosityForce.clear();
+
+    for (unsigned int i = 0 ; i < m_triangles.size() ; i++)
     {
-        checkParameters();
+        const ID triangleID = m_triangles[i];
+        const Triangle tri = m_topology->getTriangle(triangleID);
 
-        m_debugForce.clear();
-        m_debugPosition.clear();
-        m_debugViscosityForce.clear();
+        Coord centreTriangle =  (x[tri[0]] + x[tri[1]] + x[tri[2]]) / (Real) 3.0;
 
-        //get number of tetrahedra
-        int nbTetrahedra = m_tetraContainer->getNbTetrahedra();
-
-        if (!nbTetrahedra)
+        if (isPointInFluid(centreTriangle))
         {
-            serr << "Error(BuoyantForceField):No tetrahedron found in the topology" << sendl;
-        }
-        else
-        {
-            if (!m_gravityNorm)
+            //get triangle attributes
+            Coord normalArea = (x[tri[1]]-x[tri[0]]).cross( x[tri[2]]-x[tri[0]])*(Real)0.5; ;
+            if (m_flipNormals.getValue())				normalArea = -normalArea;
+
+            //get the distance between the centroid and the surface of the fluid
+            Real z = (distanceFromFluidSurface(centreTriangle) );
+            //the pressure applied by the fluid on the current triangle
+            Real pressure = m_atmosphericPressure.getValue() + m_fluidDensity.getValue() * m_gravityNorm * z;
+            //the force acting on the triangle due to the pressure
+            Coord triangleForcePressure = normalArea * pressure ;
+            //the force acting on the points of the triangle due to the pressure
+            Coord pointForcePressure = triangleForcePressure / (Real)3.0;
+
+            //apply force
+            for ( int j = 0 ; j < 3 ; j++)
             {
-                serr << "Error(BuoyantForceField):Buoyancy works with gravity, but gravity is null  here" << sendl;
-                d_f.endEdit();
-                return;
+                f[tri[j]] += pointForcePressure;
+                if (this->m_showPressureForces.getValue())		m_showForce.push_back(pointForcePressure);
+                if (this->m_showPressureForces.getValue() || this->m_showViscosityForces.getValue())	m_showPosition.push_back(x[tri[j]]);
             }
 
-            //compute the immersed volume but maybe useless
-            Real immersedVolume = static_cast<Real>(0.0f);
-            for (int i = 0 ; i < m_tetraContainer->getNbTetras() ; i++)
+            // viscosity Forces
+            if ( m_enableViscosity.getValue())
             {
-                Tetra tetra = m_tetraContainer->getTetra(i);
-                int nbPointsInside = isTetraInFluid(tetra, x);
+                Real dragForce;
 
-                if ( nbPointsInside > 0)
+                if (m_turbulentFlow.getValue())		dragForce = - (Real)0.5f * m_fluidDensity.getValue() * normalArea.norm();
+                else //laminar flow
                 {
-                    immersedVolume += m_tetraGeo->computeTetrahedronVolume(i);
-                }
-            }
-            m_immersedVolume.setValue(immersedVolume);
-//		           std::cout << "Immersed Volume >> " << m_immersedVolume.getValue() << std::endl;
+                    //Coord circumcenter = m_geo->computeTriangleCircumcenter(triangleID);
+                    //Coord firstCorner = x[tri[0]];
+                    //Real circumradius = (circumcenter - firstCorner).norm();
 
-            //if there is a part of the volume of the object immersed
-            if ( m_immersedVolume.getValue() > static_cast<Real>(0.f))
-            {
-                //for each triangle of the surface
-                for (unsigned int i = 0 ; i < m_surfaceTriangles.size() ; i++)
+                    Real	a = (x[tri[1]]-x[tri[0]]).norm() ,	b = (x[tri[2]]-x[tri[0]]).norm() ,	c = (x[tri[1]]-x[tri[2]]).norm() ;
+                    Real circumradius = a*b*c / sqrt( (a+b+c)*(a+b-c)*(a-b+c)*(-a+b+c) ) ;
+
+                    dragForce = - (Real)6.0 * (Real)M_PI * m_fluidViscosity.getValue() * circumradius;
+                }
+
+                //apply force
+                Deriv viscosityForce , velocity;
+                for ( int j = 0 ; j < 3 ; j++)
                 {
-                    Triangle tri = m_tetraTopology->getTriangle(m_surfaceTriangles[i]);
-                    //test if the triangle is in the fluid
-                    if (isTriangleInFluid(tri , x))
-                    {
-                        //get the normal and the area of the triangle
-                        Deriv normal = m_tetraGeo->computeTriangleNormal(m_surfaceTriangles[i]);
-                        if (m_flipNormals.getValue())
-                        {
-                            normal = -normal;
-                        }
-                        Real area = m_tetraGeo->computeTriangleArea(m_surfaceTriangles[i]);
-
-                        //get the centroid of the current triangle
-                        Deriv centreTriangle =  m_tetraGeo->computeTriangleCenter(m_surfaceTriangles[i]);
-
-                        //get the distance between the centroid and the surface of the fluid
-                        Real z = fabs(distanceFromFluidSurface(centreTriangle) );
-
-                        //the pressure applied by the fluid on the current triangle
-                        Real pressure = m_atmosphericPressure.getValue() + m_fluidDensity.getValue() * m_gravityNorm * z;
-                        //the force acting on the triangle due to the pressure
-                        Deriv triangleForcePressure = normal * (  area * pressure /  normal.norm() );
-                        //the force acting on the points of the triangle due to the pressure
-                        Deriv pointForcePressure = triangleForcePressure / static_cast<Real>(3.0f);
-                        //std::cout << "pointForcePressure = " << pointForcePressure << std::endl;
-
-                        //the drag force
-                        Real dragForce = (Real)0.f;
-                        if ( m_enableViscosity.getValue())
-                        {
-                            if (m_turbulentFlow.getValue())
-                            {
-                                dragForce = - (Real)0.5f * m_fluidDensity.getValue() * area;
-                            }
-                            else //laminar flow
-                            {
-                                Coord circumcenter = m_tetraGeo->computeTriangleCircumcenter(m_surfaceTriangles[i]);
-                                Coord firstCorner = x[tri[0]];
-                                Real radius = (circumcenter - firstCorner).norm();
-                                dragForce = - (Real)6.0f * M_PI * m_fluidViscosity.getValue() * radius;
-                            }
-                        }
-
-                        //apply the force on the points
-                        for ( int j = 0 ; j < 3 ; j++)
-                        {
-                            Deriv velocity = v[tri[j]];
-                            f[tri[j]] += pointForcePressure;
-                            if ( m_enableViscosity.getValue())
-                            {
-                                Deriv viscosityForce;
-                                if ( m_turbulentFlow.getValue())
-                                {
-                                    viscosityForce = velocity  * ( dragForce * velocity.norm() );
-                                }
-                                else //laminar flow
-                                {
-                                    viscosityForce = velocity  * ( dragForce);
-                                }
-
-                                //apply the viscosity forces
-                                f[tri[j]] +=viscosityForce;
-
-                                if (this->m_showViscosityForces.getValue())
-                                {
-                                    m_debugViscosityForce.push_back(viscosityForce);
-                                }
-                            }
-
-                            //push back the forces for debug
-                            if (this->m_showPressureForces.getValue())
-                            {
-                                m_debugForce.push_back(pointForcePressure);
-                            }
-                            if (this->m_showPressureForces.getValue() || this->m_showViscosityForces.getValue())
-                            {
-                                m_debugPosition.push_back(x[tri[j]]);
-                            }
-                        }
-                    }
+                    velocity = v[tri[j]];
+                    if (m_turbulentFlow.getValue())		viscosityForce = velocity  * ( dragForce * velocity.norm() );
+                    else								viscosityForce = velocity  * ( dragForce);
+                    f[tri[j]] +=viscosityForce;
+                    if (this->m_showViscosityForces.getValue()) m_showViscosityForce.push_back(viscosityForce);
                 }
+
             }
         }
-
-
     }
-//
+
     d_f.endEdit();
 }
 
 template <class DataTypes>
-typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::distanceFromFluidSurface(const Deriv &x)
+void BuoyantForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
 {
-    if (fluidModel == AABOX)
-    {
-        Deriv originToPoint = x - m_fluidSurfaceOrigin;
-        Deriv projectedOfPointOnDirection = m_fluidSurfaceDirection * dot(m_fluidSurfaceDirection, originToPoint) / m_fluidSurfaceDirection.norm2();
+    if (!m_topology) return;
 
-        return projectedOfPointOnDirection.norm();
-    }
-    else
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    const VecCoord& x = *this->mstate->getX();
+    Real kf = (Real)mparams->kFactor();
+
+    for (unsigned int i = 0 ; i < m_triangles.size() ; i++)
     {
-        return (dot(m_gravity/ m_gravityNorm, x) + m_heightPlane.getValue());
+        const ID triangleID = m_triangles[i];
+        const Triangle tri = m_topology->getTriangle(triangleID);
+
+        Coord centreTriangle =  (x[tri[0]] + x[tri[1]] + x[tri[2]]) / (Real) 3.0;
+        if (isPointInFluid(centreTriangle))
+        {
+            Coord normalArea = (x[tri[1]]-x[tri[0]]).cross( x[tri[2]]-x[tri[0]])*(Real)0.5;
+            if (m_flipNormals.getValue())				normalArea = -normalArea;
+            Deriv DcentreTriangle =  (dx[tri[0]] + dx[tri[1]] + dx[tri[2]]) / (Real) 3.0;
+            Deriv dpointForcePressure = normalArea * m_fluidDensity.getValue() * m_gravityNorm * D_distanceFromFluidSurface(DcentreTriangle) / (Real)3.0;
+
+            // BG. adding this term is less stable due to non linearity ?
+            //Coord dnormalArea = ( (dx[tri[1]]-dx[tri[0]]).cross( x[tri[2]]-x[tri[0]]) + (x[tri[1]]-x[tri[0]]).cross( dx[tri[2]]-dx[tri[0]]) )*(Real)0.5;
+            //dpointForcePressure += dnormalArea * (m_atmosphericPressure.getValue() + m_fluidDensity.getValue() * m_gravityNorm * distanceFromFluidSurface(centreTriangle) )  / (Real)3.0;
+
+            for ( int j = 0 ; j < 3 ; j++) 	 df[tri[j]] += dpointForcePressure * kf;
+        }
     }
+
+    d_df.endEdit();
+}
+
+
+
+template <class DataTypes>
+typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::distanceFromFluidSurface(const Coord &x)
+{
+    if (fluidModel == AABOX)    return -dot(m_fluidSurfaceDirection, x - m_fluidSurfaceOrigin);
+    else	return (dot(m_gravity/ m_gravityNorm, x) + m_heightPlane.getValue());
+}
+
+
+template <class DataTypes>
+typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::D_distanceFromFluidSurface(const Deriv &dx)
+{
+    if (fluidModel == AABOX) return -dot(m_fluidSurfaceDirection, dx);
+    else     return dot(m_gravity/ m_gravityNorm, dx) ;
 }
 
 template <class DataTypes>
@@ -486,124 +388,15 @@ int BuoyantForceField<DataTypes>::isTriangleInFluid(const Triangle &tri, const V
     return nbPointsInFluid;
 }
 
-template <class DataTypes>
-int BuoyantForceField<DataTypes>::isTetraInFluid(const Tetra &tetra, const VecCoord& x)
-{
-    int nbPointsInFluid = 0;
 
-    for (unsigned int i = 0 ; i < 4 ; i++)
-    {
-        if (isPointInFluid(x[ tetra[i] ] )  )
-        {
-            nbPointsInFluid++;
-        }
-    }
-
-    return nbPointsInFluid;
-}
-
-template <class DataTypes>
-bool BuoyantForceField<DataTypes>::isCornerInTetra(const Tetra &tetra, const VecCoord& x) const
-{
-    if ( fluidModel == AABOX)
-    {
-        Deriv a = x[tetra[0]];
-        Deriv b = x[tetra[ (0 + 1)%4 ]];
-        Deriv c = x[tetra[ (0 + 2)%4 ]];
-        Deriv d = x[tetra[ (0 + 3)%4 ]];
-
-        Deriv ab = b - a;
-        Deriv ac = c - a;
-        Deriv ad = d - a;
-
-        for ( int i = 0 ; i < 1 ; i++)
-        {
-            for (int j = 0 ; j < 1 ; j++)
-            {
-                for (int k = 0 ; k < 1 ; k++)
-                {
-                    Deriv corner(
-                        i%2 ? m_minBox.getValue()[0] : m_maxBox.getValue()[0],
-                        j%2 ? m_minBox.getValue()[1] : m_maxBox.getValue()[1],
-                        k%2 ? m_minBox.getValue()[2] : m_maxBox.getValue()[2]
-                    );
-
-                    Real c0 = dot(ab.cross(ac), corner - a);
-                    Real c1 = dot((c-b).cross(b-d), corner - b);
-                    Real c2 = dot((b-a).cross(d-a), corner - a);
-                    Real c3 = dot((c-a).cross(d-a), corner - a);
-
-                    if ( c0 < 0 || c1 < 0 || c2 < 0 || c3 < 0 )
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-    return false;
-}
-
-template <class DataTypes>
-typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::getImmersedVolume(const Tetra &tetra, const VecCoord& x)
-{
-    Real immersedVolume = static_cast<Real>(0.f);
-
-    int nbPointsInside = isTetraInFluid(tetra, x);
-
-    if ( nbPointsInside > 0)
-    {
-        //the whole tetra is in the fluid
-        if ( nbPointsInside == 4)
-        {
-
-            int index = m_tetraTopology->getTetrahedronIndex(tetra[0], tetra[1], tetra[2], tetra[3]);
-//            Deriv ab = x[tetra[1]] - x[tetra[0]];
-//            Deriv ac = x[tetra[2]] - x[tetra[0]];
-//            Deriv ad = x[tetra[3]] - x[tetra[0]];
-
-            return m_tetraGeo->computeTetrahedronVolume(index);
-        }
-        //the tetra is partially in the fluid
-//        else if ( nbPointsInside < 4)
-//        {
-//            int firstPointInside = 0;
-//
-//            //find the first point which is in the fluid
-//            for ( int i = 0 ; i < 4 ; i++)
-//            {
-//                if (isPointInFluid(x[ tetra[i] ] )  )
-//                {
-//                    firstPointInside = i;
-//                    break;
-//                }
-//            }
-//
-//            Deriv a = x[tetra[ firstPointInside ] ];
-//            Deriv b = x[tetra[ (firstPointInside + 1)%4 ]];
-//            Deriv c = x[tetra[ (firstPointInside + 2)%4 ]];
-//            Deriv d = x[tetra[ (firstPointInside + 3)%4 ]];
-//
-//            //check if a corner of the box (fluid) is inside the tetrahedron
-//            if ( isCornerInTetra(tetra, x))
-//            {
-//                //then a corner of the box (fluid) is in a tetrahedron and it's a annoying
-//                return 0.f;
-//            }
-
-        return immersedVolume;
-
-//        }
-    }
-
-    return immersedVolume;
-}
 
 template<class DataTypes>
 void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
+
+    glPushAttrib( GL_LIGHTING_BIT || GL_LINE_BIT || GL_ENABLE_BIT  || GL_POLYGON_BIT || GL_DEPTH_BUFFER_BIT || GL_COLOR_BUFFER_BIT);
+
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT, GL_LINE);
@@ -618,9 +411,6 @@ void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 
         if ( fluidModel == AABOX)
         {
-            //                glEnable (GL_BLEND);
-            //                glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
             glLineWidth(5.0f);
             glBegin(GL_LINE_LOOP);
             glColor4f(0.f, 0.f, 1.0f, 1.f);
@@ -696,32 +486,55 @@ void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
         }
         else if (fluidModel == PLANE)
         {
-            Coord n = m_gravity;
-            if (n!=Coord())
+            if (m_gravityNorm)
             {
                 Coord firstPoint, secondPoint, thirdPoint, fourthPoint;
                 Real largeValue = 1000.0;
 
-                if ( n[2])
+                int dir=1;
+
+                if(fabs(m_gravity[0])>fabs(m_gravity[1]) && fabs(m_gravity[0])>fabs(m_gravity[2])) dir=(m_gravity[0]>0)?1:-1;
+                else if(fabs(m_gravity[1])>fabs(m_gravity[0]) && fabs(m_gravity[1])>fabs(m_gravity[2])) dir=(m_gravity[1]>0)?2:-2;
+                else if(fabs(m_gravity[2])>fabs(m_gravity[0]) && fabs(m_gravity[2])>fabs(m_gravity[1])) dir=(m_gravity[2]>0)?3:-3;
+
+                switch(dir)
                 {
-                    firstPoint = Coord(largeValue, largeValue, - (m_heightPlane.getValue() + n[0] * largeValue + n[1] * largeValue) / n[2] );
-                    secondPoint = Coord(-largeValue, largeValue, - (m_heightPlane.getValue() - n[0] * largeValue + n[1] * largeValue) / n[2] );
-                    thirdPoint = Coord(largeValue, -largeValue, - (m_heightPlane.getValue() + n[0] * largeValue - n[1] * largeValue) / n[2] );
-                    fourthPoint = Coord(-largeValue, -largeValue, - (m_heightPlane.getValue() - n[0] * largeValue - n[1] * largeValue) / n[2] );
-                }
-                else if (n[1])
-                {
-                    firstPoint = Coord(largeValue, largeValue, - (m_heightPlane.getValue() + n[0] * largeValue + n[2] * largeValue) / n[1] );
-                    secondPoint = Coord(-largeValue, largeValue, - (m_heightPlane.getValue() - n[0] * largeValue + n[2] * largeValue) / n[1] );
-                    thirdPoint = Coord(largeValue, -largeValue, - (m_heightPlane.getValue() + n[0] * largeValue - n[2] * largeValue) / n[1] );
-                    fourthPoint = Coord(-largeValue, -largeValue, - (m_heightPlane.getValue() - n[0] * largeValue - n[2] * largeValue) / n[1] );
-                }
-                else
-                {
-                    firstPoint = Coord(largeValue, largeValue, - (m_heightPlane.getValue() + n[2] * largeValue + n[1] * largeValue) / n[0] );
-                    secondPoint = Coord(-largeValue, largeValue, - (m_heightPlane.getValue() - n[2] * largeValue + n[1] * largeValue) / n[0] );
-                    thirdPoint = Coord(largeValue, -largeValue, - (m_heightPlane.getValue() + n[2] * largeValue - n[1] * largeValue) / n[0] );
-                    fourthPoint = Coord(-largeValue, -largeValue, - (m_heightPlane.getValue() - n[2] * largeValue - n[1] * largeValue) / n[0] );
+                case 1:
+                    firstPoint =  Coord(- m_heightPlane.getValue(), largeValue, largeValue    );
+                    secondPoint = Coord(- m_heightPlane.getValue(),  -largeValue, largeValue  );
+                    thirdPoint =  Coord(- m_heightPlane.getValue(), -largeValue, -largeValue  );
+                    fourthPoint = Coord(- m_heightPlane.getValue(), largeValue, -largeValue  );
+                    break;
+                case -1:
+                    firstPoint =  Coord( m_heightPlane.getValue(), largeValue, largeValue    );
+                    secondPoint = Coord( m_heightPlane.getValue(),  -largeValue, largeValue  );
+                    thirdPoint =  Coord( m_heightPlane.getValue(), -largeValue, -largeValue  );
+                    fourthPoint = Coord( m_heightPlane.getValue(), largeValue, -largeValue  );
+                    break;
+                case 2:
+                    firstPoint = Coord(largeValue  , - m_heightPlane.getValue(), largeValue   );
+                    secondPoint = Coord(-largeValue, - m_heightPlane.getValue(), largeValue );
+                    thirdPoint = Coord(-largeValue , - m_heightPlane.getValue(), -largeValue );
+                    fourthPoint = Coord(largeValue , - m_heightPlane.getValue(), -largeValue );
+                    break;
+                case -2:
+                    firstPoint = Coord(largeValue  ,  m_heightPlane.getValue(), largeValue   );
+                    secondPoint = Coord(-largeValue,  m_heightPlane.getValue(), largeValue );
+                    thirdPoint = Coord(-largeValue ,  m_heightPlane.getValue(), -largeValue );
+                    fourthPoint = Coord(largeValue ,  m_heightPlane.getValue(), -largeValue );
+                    break;
+                case 3:
+                    firstPoint = Coord(largeValue, largeValue, - m_heightPlane.getValue() );
+                    secondPoint = Coord(-largeValue, largeValue, - m_heightPlane.getValue() );
+                    thirdPoint = Coord(-largeValue, -largeValue, - m_heightPlane.getValue() );
+                    fourthPoint = Coord(largeValue, -largeValue, - m_heightPlane.getValue() );
+                    break;
+                case -3:
+                    firstPoint = Coord(largeValue, largeValue,  m_heightPlane.getValue() );
+                    secondPoint = Coord(-largeValue, largeValue,  m_heightPlane.getValue() );
+                    thirdPoint = Coord(-largeValue, -largeValue,  m_heightPlane.getValue() );
+                    fourthPoint = Coord(largeValue, -largeValue,  m_heightPlane.getValue() );
+                    break;
                 }
 
                 //disable depth test to draw transparency
@@ -733,47 +546,183 @@ void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
                 glBegin(GL_QUADS);
                 glColor4f(1.f, 1.f, 1.0f, 0.2f);
                 glVertex3d(firstPoint[0],firstPoint[1],firstPoint[2]);
+                glVertex3d(secondPoint[0],secondPoint[1],secondPoint[2]);
                 glVertex3d(thirdPoint[0],thirdPoint[1],thirdPoint[2]);
                 glVertex3d(fourthPoint[0],fourthPoint[1],fourthPoint[2]);
-                glVertex3d(secondPoint[0],secondPoint[1],secondPoint[2]);
                 glEnd();
 
                 glEnable(GL_DEPTH_TEST);
-
             }
         }
     }
-    if ( m_tetraTopology)
-    {
-        if (this->m_showPressureForces.getValue())
+
+
+    if (vparams->displayFlags().getShowForceFields())
+        if ( m_topology)
         {
-            glColor4f(1.f, 0.f, 0.0f, 1.0f);
-
-            glBegin(GL_LINES);
-            for ( unsigned int i = 0 ; i < m_debugPosition.size() ; i++)
+            if (this->m_showPressureForces.getValue())
             {
-                glVertex3d(m_debugPosition[i][0], m_debugPosition[i][1], m_debugPosition[i][2]);
-                glVertex3d(m_debugPosition[i][0] - m_debugForce[i][0], m_debugPosition[i][1] -  m_debugForce[i][1], m_debugPosition[i][2] - m_debugForce[i][2]);
-            }
-            glEnd();
-        }
-        if (this->m_showViscosityForces.getValue())
-        {
-            glColor4f(0.f, 1.f, 1.0f, 1.0f);
+                glColor4f(1.f, 0.f, 0.0f, 1.0f);
 
-            glBegin(GL_LINES);
-            for ( unsigned int i = 0 ; i < m_debugPosition.size() ; i++)
+                glBegin(GL_LINES);
+                for ( unsigned int i = 0 ; i < m_showPosition.size() ; i++)
+                {
+                    glVertex3d(m_showPosition[i][0], m_showPosition[i][1], m_showPosition[i][2]);
+                    glVertex3d(m_showPosition[i][0] - m_showForce[i][0]*m_showFactorSize.getValue(), m_showPosition[i][1] -  m_showForce[i][1]*m_showFactorSize.getValue(), m_showPosition[i][2] - m_showForce[i][2]*m_showFactorSize.getValue());
+                }
+                glEnd();
+            }
+            if (this->m_showViscosityForces.getValue())
             {
-                glVertex3d(m_debugPosition[i][0], m_debugPosition[i][1], m_debugPosition[i][2]);
-                glVertex3d(m_debugPosition[i][0] - m_debugViscosityForce[i][0], m_debugPosition[i][1] -  m_debugViscosityForce[i][1], m_debugPosition[i][2] - m_debugViscosityForce[i][2]);
-            }
-            glEnd();
-        }
-    }
+                glColor4f(0.f, 1.f, 1.0f, 1.0f);
 
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                glBegin(GL_LINES);
+                for ( unsigned int i = 0 ; i < m_showPosition.size() ; i++)
+                {
+                    glVertex3d(m_showPosition[i][0], m_showPosition[i][1], m_showPosition[i][2]);
+                    glVertex3d(m_showPosition[i][0] - m_showViscosityForce[i][0]*m_showFactorSize.getValue(), m_showPosition[i][1] -  m_showViscosityForce[i][1]*m_showFactorSize.getValue(), m_showPosition[i][2] - m_showViscosityForce[i][2]*m_showFactorSize.getValue());
+                }
+                glEnd();
+            }
+        }
+
+    glPopAttrib();
 }
+
+
+/*  OLD IMPLEMENTATION
+
+ compute the immersed volume but maybe useless
+ Real immersedVolume = static_cast<Real>(0.0f);
+ for (int i = 0 ; i < m_topology->getNbTetrahedra() ; i++)
+ {
+     Tetra tetra = m_tetraContainer->getTetra(i);
+     int nbPointsInside = isTetraInFluid(tetra, x);
+
+     if ( nbPointsInside > 0)
+     {
+       immersedVolume += m_tetraGeo->computeTetrahedronVolume(i);
+     }
+ }
+ m_immersedVolume.setValue(immersedVolume);
+           std::cout << "Immersed Volume >> " << m_immersedVolume.getValue() << std::endl;
+
+
+
+template <class DataTypes>
+int BuoyantForceField<DataTypes>::isTetraInFluid(const Tetra &tetra, const VecCoord& x)
+{
+    int nbPointsInFluid = 0;
+
+    for (unsigned int i = 0 ; i < 4 ; i++)
+    {
+        if (isPointInFluid(x[ tetra[i] ] )  )
+        {
+            nbPointsInFluid++;
+        }
+    }
+
+    return nbPointsInFluid;
+}
+
+template <class DataTypes>
+bool BuoyantForceField<DataTypes>::isCornerInTetra(const Tetra &tetra, const VecCoord& x) const
+{
+        if ( fluidModel == AABOX)
+        {
+        Deriv a = x[tetra[0]];
+        Deriv b = x[tetra[ (0 + 1)%4 ]];
+        Deriv c = x[tetra[ (0 + 2)%4 ]];
+        Deriv d = x[tetra[ (0 + 3)%4 ]];
+
+        Deriv ab = b - a;
+        Deriv ac = c - a;
+        Deriv ad = d - a;
+
+        for ( int i = 0 ; i < 1 ; i++)
+        {
+            for (int j = 0 ; j < 1 ; j++)
+            {
+                for (int k = 0 ; k < 1 ; k++)
+                {
+                    Deriv corner(
+                            i%2 ? m_minBox.getValue()[0] : m_maxBox.getValue()[0],
+                            j%2 ? m_minBox.getValue()[1] : m_maxBox.getValue()[1],
+                            k%2 ? m_minBox.getValue()[2] : m_maxBox.getValue()[2]
+                            );
+
+                    Real c0 = dot(ab.cross(ac), corner - a);
+                    Real c1 = dot((c-b).cross(b-d), corner - b);
+                    Real c2 = dot((b-a).cross(d-a), corner - a);
+                    Real c3 = dot((c-a).cross(d-a), corner - a);
+
+                    if ( c0 < 0 || c1 < 0 || c2 < 0 || c3 < 0 )
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        }
+        return false;
+}
+
+template <class DataTypes>
+typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::getImmersedVolume(const Tetra &tetra, const VecCoord& x)
+{
+    Real immersedVolume = static_cast<Real>(0.f);
+
+    int nbPointsInside = isTetraInFluid(tetra, x);
+
+    if ( nbPointsInside > 0)
+    {
+        //the whole tetra is in the fluid
+        if ( nbPointsInside == 4)
+        {
+
+            int index = m_topology->getTetrahedronIndex(tetra[0], tetra[1], tetra[2], tetra[3]);
+//            Deriv ab = x[tetra[1]] - x[tetra[0]];
+//            Deriv ac = x[tetra[2]] - x[tetra[0]];
+//            Deriv ad = x[tetra[3]] - x[tetra[0]];
+
+            return m_tetraGeo->computeTetrahedronVolume(index);
+        }
+        //the tetra is partially in the fluid
+//        else if ( nbPointsInside < 4)
+//        {
+//            int firstPointInside = 0;
+//
+//            //find the first point which is in the fluid
+//            for ( int i = 0 ; i < 4 ; i++)
+//            {
+//                if (isPointInFluid(x[ tetra[i] ] )  )
+//                {
+//                    firstPointInside = i;
+//                    break;
+//                }
+//            }
+//
+//            Deriv a = x[tetra[ firstPointInside ] ];
+//            Deriv b = x[tetra[ (firstPointInside + 1)%4 ]];
+//            Deriv c = x[tetra[ (firstPointInside + 2)%4 ]];
+//            Deriv d = x[tetra[ (firstPointInside + 3)%4 ]];
+//
+//            //check if a corner of the box (fluid) is inside the tetrahedron
+//            if ( isCornerInTetra(tetra, x))
+//            {
+//                //then a corner of the box (fluid) is in a tetrahedron and it's a annoying
+//                return 0.f;
+//            }
+
+            return immersedVolume;
+
+//        }
+    }
+
+    return immersedVolume;
+}*/
+
+
 
 } // namespace forcefield
 
