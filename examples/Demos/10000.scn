@@ -1,39 +1,37 @@
-<?xml version="1.0"?>
-<Node name="root" dt="0.02" >
-  <CollisionPipeline name="Pipeline" verbose="0" draw="0"/>
-  <BruteForceDetection name="N2" />
-  <NewProximityIntersection name="Proximity" alarmDistance="0.06" contactDistance="0.05" />
-  <CollisionResponse name="Response" response="default" />
-  <CollisionGroup name="Group" />
-
-  <LightManager /> 
-  <DirectionalLight name="light1" color="1 1 1" direction="-1 1 1"/> 
-  <DirectionalLight name="light2" color="0.5 0.5 1" direction="0 1 -0.5"/> 
-
-  <MeshObjLoader name="Surf0" filename="mesh/n0-red75-d02.obj" />
-  <MeshObjLoader name="Surf1" filename="mesh/n1-red75-d02.obj" />
-  <MeshVTKLoader name="Vol0" filename="mesh/n0-585.vtu" />
-  <MeshVTKLoader name="Vol1" filename="mesh/n1-336.vtu" />
-  <Node name="N0">
-	<EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-	<CGLinearSolver iterations="25" threshold="0.00000001"  />
-    <MeshTopology src="@../Vol0" />
-    <MechanicalObject name="DOFs" translation2="2.6 0 0" />
-    <UniformMass totalMass="183" />
-    <TetrahedralCorotationalFEMForceField youngModulus="100000" poissonRatio="0.4" />
-    <WashingMachineForceField center="2.0 0.5 0" size="2.5 1 1" speed="0.04" axis="1 0 0" stiffness="200" damping="10" />
-    <Node name="C">
-      <MeshTopology src="@../../Surf0" />
-      <MechanicalObject name="CMpts" />
-      <TriangleModel name="CM" contactStiffness="30" />
-      <BarycentricMapping input="@../DOFs" output="@CMpts" useRestPosition="true" />
+<?xml version="1.0" ?>
+<Node name="root" dt="0.02">
+    <CollisionPipeline name="Pipeline" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <NewProximityIntersection name="Proximity" alarmDistance="0.06" contactDistance="0.05" />
+    <CollisionResponse name="Response" response="default" />
+    <CollisionGroup name="Group" />
+    <LightManager />
+    <DirectionalLight name="light1" color="1 1 1" direction="-1 1 1" />
+    <DirectionalLight name="light2" color="0.5 0.5 1" direction="0 1 -0.5" />
+    <MeshObjLoader name="Surf0" filename="mesh/n0-red75-d02.obj" />
+    <MeshObjLoader name="Surf1" filename="mesh/n1-red75-d02.obj" />
+    <MeshVTKLoader name="Vol0" filename="mesh/n0-585.vtu" />
+    <MeshVTKLoader name="Vol1" filename="mesh/n1-336.vtu" />
+    <Node name="N0">
+        <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
+        <CGLinearSolver iterations="25" threshold="0.00000001" />
+        <MeshTopology src="@../Vol0" />
+        <MechanicalObject name="DOFs" translation2="2.6 0 0" />
+        <UniformMass totalMass="183" />
+        <TetrahedralCorotationalFEMForceField youngModulus="100000" poissonRatio="0.4" />
+        <WashingMachineForceField center="2.0 0.5 0" size="2.5 1 1" speed="0.04" axis="1 0 0" stiffness="200" damping="10" />
+        <Node name="C">
+            <MeshTopology src="@../../Surf0" />
+            <MechanicalObject name="CMpts" />
+            <TriangleModel name="CM" contactStiffness="30" />
+            <BarycentricMapping input="@../DOFs" output="@CMpts" useRestPosition="true" />
+        </Node>
+        <Node name="V">
+            <OglModel name="VM" filename="mesh/n0.obj" NOsrc="@../../Surf0" translation="2.6 0 0" color="1 0.5 0 1" />
+            <BarycentricMapping input="@../DOFs" output="@VM" useRestPosition="false" />
+        </Node>
     </Node>
-    <Node name="V">
-      <OglModel name="VM" filename="mesh/n0.obj" NOsrc="@../../Surf0" translation="2.6 0 0" color="1 0.5 0 1" />
-      <BarycentricMapping input="@../DOFs" output="@VM" useRestPosition="false" />
-    </Node>
-  </Node>
-<!--
+    <!--
   <Node name="N0">
 	<EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
 	<CGLinearSolver iterations="25" threshold="0.00000001"  />
@@ -54,77 +52,76 @@
     </Node>
   </Node>
 -->
-  <Node name="N0Rigid">
-	<EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-	<CGLinearSolver iterations="25" threshold="0.0000000001"  />
-    <MechanicalObject template="Rigid" name="DOFs" translation2="1.75 0 0" position="1.0688487862 0.4269655685 0.1499999780 0 0 0 1" />
-    <UniformMass filename="mesh/n0.rigid" mass="300" />
-    <Node name="C">
-      <MeshTopology src="@../../Surf0" />
-      <MechanicalObject name="CMpts" translation="-1.0688487862 -0.4269655685 -0.1499999780" />
-      <TriangleModel name="CM" contactStiffness="30" />
-      <RigidMapping input="@../DOFs" output="@CMpts" />
-      <WashingMachineForceField center="2.0 0.5 0" size="2.5 1 1" speed="0.04" axis="1 0 0" stiffness="10000" damping="10" />
+    <Node name="N0Rigid">
+        <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
+        <CGLinearSolver iterations="25" threshold="0.0000000001" />
+        <MechanicalObject template="Rigid" name="DOFs" translation2="1.75 0 0" position="1.0688487862 0.4269655685 0.1499999780 0 0 0 1" />
+        <UniformMass filename="mesh/n0.rigid" mass="300" />
+        <Node name="C">
+            <MeshTopology src="@../../Surf0" />
+            <MechanicalObject name="CMpts" translation="-1.0688487862 -0.4269655685 -0.1499999780" />
+            <TriangleModel name="CM" contactStiffness="30" />
+            <RigidMapping input="@../DOFs" output="@CMpts" />
+            <WashingMachineForceField center="2.0 0.5 0" size="2.5 1 1" speed="0.04" axis="1 0 0" stiffness="10000" damping="10" />
+        </Node>
+        <Node name="V">
+            <OglModel name="VM" filename="mesh/n0.obj" NOsrc="@../../Surf0" translation="-1.0688487862 -0.4269655685 -0.1499999780" color="0.5 0.5 0.5 1" />
+            <RigidMapping input="@../DOFs" output="@VM" />
+        </Node>
     </Node>
-    <Node name="V">
-      <OglModel name="VM" filename="mesh/n0.obj" NOsrc="@../../Surf0" translation="-1.0688487862 -0.4269655685 -0.1499999780" color="0.5 0.5 0.5 1" />
-      <RigidMapping input="@../DOFs" output="@VM" />
+    <Node name="N0">
+        <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
+        <CGLinearSolver iterations="25" threshold="0.00000001" />
+        <MeshTopology src="@../Vol0" />
+        <MechanicalObject name="DOFs" translation2="0.9 0 0" />
+        <UniformMass totalMass="183" />
+        <TetrahedralCorotationalFEMForceField youngModulus="100000" poissonRatio="0.4" />
+        <WashingMachineForceField center="2.0 0.5 0" size="2.5 1 1" speed="0.04" axis="1 0 0" stiffness="200" damping="10" />
+        <Node name="C">
+            <MeshTopology src="@../../Surf0" />
+            <MechanicalObject name="CMpts" />
+            <TriangleModel name="CM" contactStiffness="30" />
+            <BarycentricMapping input="@../DOFs" output="@CMpts" useRestPosition="true" />
+        </Node>
+        <Node name="V">
+            <OglModel name="VM" filename="mesh/n0.obj" NOsrc="@../../Surf0" translation="0.9 0 0" color="1 0.5 0 1" />
+            <BarycentricMapping input="@../DOFs" output="@VM" useRestPosition="false" />
+        </Node>
     </Node>
-  </Node>
-
-  <Node name="N0">
-	<EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-	<CGLinearSolver iterations="25" threshold="0.00000001"  />
-    <MeshTopology src="@../Vol0" />
-    <MechanicalObject name="DOFs" translation2="0.9 0 0" />
-    <UniformMass totalMass="183" />
-    <TetrahedralCorotationalFEMForceField youngModulus="100000" poissonRatio="0.4" />
-    <WashingMachineForceField center="2.0 0.5 0" size="2.5 1 1" speed="0.04" axis="1 0 0" stiffness="200" damping="10" />
-    <Node name="C">
-      <MeshTopology src="@../../Surf0" />
-      <MechanicalObject name="CMpts" />
-      <TriangleModel name="CM" contactStiffness="30" />
-      <BarycentricMapping input="@../DOFs" output="@CMpts" useRestPosition="true" />
+    <Node name="N0Rigid">
+        <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
+        <CGLinearSolver iterations="25" threshold="0.0000000001" />
+        <MechanicalObject template="Rigid" name="DOFs" position="1.0688487862 0.4269655685 0.1499999780 0 0 0 1" />
+        <UniformMass filename="mesh/n0.rigid" mass="300" />
+        <Node name="C">
+            <MeshTopology src="@../../Surf0" />
+            <MechanicalObject name="CMpts" translation="-1.0688487862 -0.4269655685 -0.1499999780" />
+            <TriangleModel name="CM" contactStiffness="30" />
+            <RigidMapping input="@../DOFs" output="@CMpts" />
+            <WashingMachineForceField center="2.0 0.5 0" size="2.5 1 1" speed="0.04" axis="1 0 0" stiffness="10000" damping="10" />
+        </Node>
+        <Node name="V">
+            <OglModel name="VM" filename="mesh/n0.obj" NOsrc="@../../Surf0" translation="-1.0688487862 -0.4269655685 -0.1499999780" color="0.5 0.5 0.5 1" />
+            <RigidMapping input="@../DOFs" output="@VM" />
+        </Node>
     </Node>
-    <Node name="V">
-      <OglModel name="VM" filename="mesh/n0.obj" NOsrc="@../../Surf0" translation="0.9 0 0" color="1 0.5 0 1" />
-      <BarycentricMapping input="@../DOFs" output="@VM" useRestPosition="false" />
+    <Node name="N1">
+        <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
+        <CGLinearSolver iterations="25" threshold="0.00000001" />
+        <MeshTopology src="@../Vol1" />
+        <MechanicalObject name="DOFs" src="@../Vol1" />
+        <UniformMass totalMass="115" />
+        <TetrahedralCorotationalFEMForceField youngModulus="50000" poissonRatio="0.4" />
+        <WashingMachineForceField center="2.0 0.5 0" size="2.5 1 1" speed="0.04" axis="1 0 0" stiffness="200" damping="10" />
+        <Node name="C">
+            <MeshTopology src="@../../Surf1" />
+            <MechanicalObject name="CMpts" />
+            <TriangleModel name="CM" />
+            <BarycentricMapping input="@../DOFs" output="@CMpts" useRestPosition="true" />
+        </Node>
+        <Node name="V">
+            <OglModel name="VM" filename="mesh/n1.obj" NOsrc="@../../Surf1" color="1 0 0 1" />
+            <BarycentricMapping input="@../DOFs" output="@VM" useRestPosition="false" />
+        </Node>
     </Node>
-  </Node>
-  <Node name="N0Rigid">
-	<EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-	<CGLinearSolver iterations="25" threshold="0.0000000001"  />
-    <MechanicalObject template="Rigid" name="DOFs" position="1.0688487862 0.4269655685 0.1499999780 0 0 0 1" />
-    <UniformMass filename="mesh/n0.rigid" mass="300" />
-    <Node name="C">
-      <MeshTopology src="@../../Surf0" />
-      <MechanicalObject name="CMpts" translation="-1.0688487862 -0.4269655685 -0.1499999780" />
-      <TriangleModel name="CM" contactStiffness="30" />
-      <RigidMapping input="@../DOFs" output="@CMpts" />
-      <WashingMachineForceField center="2.0 0.5 0" size="2.5 1 1" speed="0.04" axis="1 0 0" stiffness="10000" damping="10" />
-    </Node>
-    <Node name="V">
-      <OglModel name="VM" filename="mesh/n0.obj" NOsrc="@../../Surf0" translation="-1.0688487862 -0.4269655685 -0.1499999780" color="0.5 0.5 0.5 1" />
-      <RigidMapping input="@../DOFs" output="@VM" />
-    </Node>
-  </Node>
-  <Node name="N1">
-	<EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-	<CGLinearSolver iterations="25" threshold="0.00000001"  />
-    <MeshTopology src="@../Vol1" />
-    <MechanicalObject name="DOFs" src="@../Vol1" />
-    <UniformMass totalMass="115" />
-    <TetrahedralCorotationalFEMForceField youngModulus="50000" poissonRatio="0.4" />
-    <WashingMachineForceField center="2.0 0.5 0" size="2.5 1 1" speed="0.04" axis="1 0 0" stiffness="200" damping="10" />
-    <Node name="C">
-      <MeshTopology src="@../../Surf1" />
-      <MechanicalObject name="CMpts" />
-      <TriangleModel name="CM"/>
-      <BarycentricMapping input="@../DOFs" output="@CMpts" useRestPosition="true" />
-    </Node>
-    <Node name="V">
-      <OglModel name="VM" filename="mesh/n1.obj" NOsrc="@../../Surf1" color="1 0 0 1" />
-      <BarycentricMapping input="@../DOFs" output="@VM" useRestPosition="false" />
-    </Node>
-  </Node>
 </Node>
