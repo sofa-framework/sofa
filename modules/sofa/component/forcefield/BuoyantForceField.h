@@ -30,19 +30,6 @@
 #include <sofa/component/component.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
-#include <sofa/component/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/TriangleSetTopologyChange.h>
-
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
-#include <sofa/component/topology/TetrahedronSetTopologyChange.h>
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-//#include <sofa/component/topology/EdgeSetTopologyChange.h>
-
-namespace sofa { namespace core { namespace topology { class BaseMeshTopology; } } }
-
 
 namespace sofa
 {
@@ -79,10 +66,15 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
+    typedef core::topology::BaseMeshTopology::index_type ID;
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::SeqTriangles seqTriangles;
 
-    enum FLUID { AABOX, PLANE, OBOX };
+
+
+    enum FLUID { AABOX, PLANE };
 
 protected:
 
@@ -103,26 +95,24 @@ protected:
     Data<bool>      m_enableViscosity;
     Data<bool>      m_turbulentFlow;    //1 for turbulent, 0 for laminar
 
-    sofa::helper::vector<int> m_surfaceTriangles;
+    sofa::helper::vector<ID> m_triangles;
 
-    Data<Real>      m_immersedVolume;
-    Data<Real>      m_immersedArea;
-    Data<Real>      m_globalForce;
+//    Data<Real>      m_immersedVolume;
+//    Data<Real>      m_immersedArea;
+//    Data<Real>      m_globalForce;
 
     Data<bool>      m_flipNormals;
 
     Data<bool>      m_showPressureForces;
     Data<bool>      m_showViscosityForces;
     Data<bool>      m_showBoxOrPlane;
+    Data<Real>      m_showFactorSize;
 
-    sofa::core::topology::BaseMeshTopology* m_tetraTopology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
-    sofa::component::topology::TetrahedronSetTopologyContainer* m_tetraContainer;
-    sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>* m_tetraGeo;
-
-    sofa::helper::vector<Deriv> m_debugForce;
-    sofa::helper::vector<Deriv> m_debugViscosityForce;
-    sofa::helper::vector<Deriv> m_debugPosition;
+    sofa::helper::vector<Deriv> m_showForce;
+    sofa::helper::vector<Deriv> m_showViscosityForce;
+    sofa::helper::vector<Deriv> m_showPosition;
 
     Coord      m_fluidSurfaceOrigin; //in case of a box, indicates which face is the surface
     Coord      m_fluidSurfaceDirection; //in case of a box, indicates which face is the surface
@@ -141,11 +131,7 @@ public:
     virtual void init();
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
-    {
-        //TODO: remove this line (avoid warning message) ...
-        mparams->kFactor();
-    };
+    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx );
 
     virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*kFact*/) {}
 
@@ -160,14 +146,15 @@ protected:
     /**
      * @brief Returns the number of point of a tetra included in the liquid
      */
-    inline int isTetraInFluid(const Tetra& /*tetra*/, const VecCoord& x);
+    //inline int isTetraInFluid(const Tetra& /*tetra*/, const VecCoord& x);
     inline int isTriangleInFluid(const Triangle& /*tetra*/, const VecCoord& x);
 
-    inline Real getImmersedVolume(const Tetra &tetra, const VecCoord& x);
+    //inline Real getImmersedVolume(const Tetra &tetra, const VecCoord& x);
 
-    inline bool isCornerInTetra(const Tetra &tetra, const VecCoord& x) const;
+    //inline bool isCornerInTetra(const Tetra &tetra, const VecCoord& x) const;
 
-    inline Real distanceFromFluidSurface(const Deriv& x);
+    inline Real distanceFromFluidSurface(const Coord& x);
+    inline Real D_distanceFromFluidSurface(const Deriv& dx);
 
     inline bool checkParameters();
 };
