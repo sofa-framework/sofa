@@ -1,96 +1,96 @@
-<Node name="root"  dt="0.02" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
-	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="NewProximityIntersection" name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-	<Object type="CollisionResponse" name="Response" response="default" />
-	<Object type="CollisionGroup" name="Group" />
-	<Node name="ChainSpring">
-		<Node name="TorusFixed">
-        		<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_for_collision.obj"/>
-			<Object type="Mesh" src="@loader" />
-			<Object type="MechanicalObject" src="@loader" />
-			<Object type="Triangle" simulated="0" moving="0" />
-			<Object type="OglModel" name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
-		</Node>
-		<Node name="TorusSpring">
-		        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-  	        	<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        		<Object type="MeshGmshLoader" name="loader"  filename="mesh/torus_low_res.msh"/>
-			<Object type="Mesh" src="@loader" />
-			<Object type="MechanicalObject" src="@loader" dx="2.5" />
-			<Object type="UniformMass" totalmass="5" />
-			<Object type="MeshSpringForceField" name="Springs" tetrasStiffness="400" tetrasDamping="0"/>
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" dx="2.5" color="green" />
-				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-        		        <Object type="MeshObjLoader" name="loader"  filename="mesh/torus_for_collision.obj"/>
-				<Object type="Mesh" src="@loader" />
-				<Object type="MechanicalObject" src="@loader" dx="2.5" />
-				<Object type="Triangle" />
-				<Object type="BarycentricMapping" />
-			</Node>
-		</Node>
-		<Node name="TorusSpring">
-		        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        		<Object type="MeshGmshLoader" name="loader"  filename="mesh/torus2_low_res.msh"/>
-			<Object type="Mesh" src="@loader" />
-			<Object type="MechanicalObject" src="@loader" dx="5" />
-			<Object type="UniformMass" totalmass="5" />
-			<Object type="MeshSpringForceField" name="Springs" tetrasStiffness="400" tetrasDamping="0"/>
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" fileMesh="mesh/torus2.obj" dx="5" color="green" />
-				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-	        		<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_for_collision.obj"/>
-				<Object type="Mesh" src="@loader" />
-				<Object type="MechanicalObject" src="@loader" dx="5" />
-				<Object type="Triangle" />
-				<Object type="BarycentricMapping" />
-			</Node>
-		</Node>
-		<Node name="TorusSpring">
- 	        	<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        		<Object type="MeshGmshLoader" name="loader"  filename="mesh/torus_low_res.msh"/>
-			<Object type="Mesh" src="@loader" />
-			<Object type="MechanicalObject" src="@loader" dx="7.5" />
-			<Object type="UniformMass" totalmass="5" />
-			<Object type="MeshSpringForceField" name="Springs" tetrasStiffness="400" tetrasDamping="0"/>
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" dx="7.5" color="green" />
-				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-        		        <Object type="MeshObjLoader" name="loader"  filename="mesh/torus_for_collision.obj"/>
-				<Object type="Mesh" src="@loader" />
-				<Object type="MechanicalObject" src="@loader" dx="7.5" />
-				<Object type="Triangle" />
-				<Object type="BarycentricMapping" />
-			</Node>
-		</Node>
-		<Node name="TorusSpring">
- 	        	<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        		<Object type="MeshGmshLoader" name="loader"  filename="mesh/torus2_low_res.msh"/>
-			<Object type="Mesh" src="@loader" />
-			<Object type="MechanicalObject" src="@loader" dx="10" />
-			<Object type="UniformMass" totalmass="5" />
-			<Object type="MeshSpringForceField" name="Springs" tetrasStiffness="400" tetrasDamping="0"/>
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" fileMesh="mesh/torus2.obj" dx="10" color="green" />
-				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-	        		<Object type="MeshObjLoader" name="loader" filename="mesh/torus2_for_collision.obj"/>
-				<Object type="Mesh" src="@loader" />
-				<Object type="MechanicalObject" src="@loader" dx="10" />
-				<Object type="Triangle" />
-				<Object type="BarycentricMapping" />
-			</Node>
-		</Node>
-	</Node>
+<Node name="root" dt="0.02">
+    <Object type="CollisionPipeline" depth="6" verbose="0" draw="0" />
+    <Object type="BruteForceDetection" name="N2" />
+    <Object type="NewProximityIntersection" name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <Object type="CollisionResponse" name="Response" response="default" />
+    <Object type="CollisionGroup" name="Group" />
+    <Node name="ChainSpring">
+        <Node name="TorusFixed">
+            <Object type="MeshObjLoader" name="loader" filename="mesh/torus2_for_collision.obj" />
+            <Object type="Mesh" src="@loader" />
+            <Object type="MechanicalObject" src="@loader" />
+            <Object type="Triangle" simulated="0" moving="0" />
+            <Object type="OglModel" name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
+        </Node>
+        <Node name="TorusSpring">
+            <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
+            <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <Object type="MeshGmshLoader" name="loader" filename="mesh/torus_low_res.msh" />
+            <Object type="Mesh" src="@loader" />
+            <Object type="MechanicalObject" src="@loader" dx="2.5" />
+            <Object type="UniformMass" totalmass="5" />
+            <Object type="MeshSpringForceField" name="Springs" tetrasStiffness="400" tetrasDamping="0" />
+            <Node name="Visu">
+                <Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" dx="2.5" color="green" />
+                <Object type="BarycentricMapping" object1="../.." object2="Visual" />
+            </Node>
+            <Node name="Surf2">
+                <Object type="MeshObjLoader" name="loader" filename="mesh/torus_for_collision.obj" />
+                <Object type="Mesh" src="@loader" />
+                <Object type="MechanicalObject" src="@loader" dx="2.5" />
+                <Object type="Triangle" />
+                <Object type="BarycentricMapping" />
+            </Node>
+        </Node>
+        <Node name="TorusSpring">
+            <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
+            <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <Object type="MeshGmshLoader" name="loader" filename="mesh/torus2_low_res.msh" />
+            <Object type="Mesh" src="@loader" />
+            <Object type="MechanicalObject" src="@loader" dx="5" />
+            <Object type="UniformMass" totalmass="5" />
+            <Object type="MeshSpringForceField" name="Springs" tetrasStiffness="400" tetrasDamping="0" />
+            <Node name="Visu">
+                <Object type="OglModel" name="Visual" fileMesh="mesh/torus2.obj" dx="5" color="green" />
+                <Object type="BarycentricMapping" object1="../.." object2="Visual" />
+            </Node>
+            <Node name="Surf2">
+                <Object type="MeshObjLoader" name="loader" filename="mesh/torus2_for_collision.obj" />
+                <Object type="Mesh" src="@loader" />
+                <Object type="MechanicalObject" src="@loader" dx="5" />
+                <Object type="Triangle" />
+                <Object type="BarycentricMapping" />
+            </Node>
+        </Node>
+        <Node name="TorusSpring">
+            <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
+            <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <Object type="MeshGmshLoader" name="loader" filename="mesh/torus_low_res.msh" />
+            <Object type="Mesh" src="@loader" />
+            <Object type="MechanicalObject" src="@loader" dx="7.5" />
+            <Object type="UniformMass" totalmass="5" />
+            <Object type="MeshSpringForceField" name="Springs" tetrasStiffness="400" tetrasDamping="0" />
+            <Node name="Visu">
+                <Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" dx="7.5" color="green" />
+                <Object type="BarycentricMapping" object1="../.." object2="Visual" />
+            </Node>
+            <Node name="Surf2">
+                <Object type="MeshObjLoader" name="loader" filename="mesh/torus_for_collision.obj" />
+                <Object type="Mesh" src="@loader" />
+                <Object type="MechanicalObject" src="@loader" dx="7.5" />
+                <Object type="Triangle" />
+                <Object type="BarycentricMapping" />
+            </Node>
+        </Node>
+        <Node name="TorusSpring">
+            <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
+            <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <Object type="MeshGmshLoader" name="loader" filename="mesh/torus2_low_res.msh" />
+            <Object type="Mesh" src="@loader" />
+            <Object type="MechanicalObject" src="@loader" dx="10" />
+            <Object type="UniformMass" totalmass="5" />
+            <Object type="MeshSpringForceField" name="Springs" tetrasStiffness="400" tetrasDamping="0" />
+            <Node name="Visu">
+                <Object type="OglModel" name="Visual" fileMesh="mesh/torus2.obj" dx="10" color="green" />
+                <Object type="BarycentricMapping" object1="../.." object2="Visual" />
+            </Node>
+            <Node name="Surf2">
+                <Object type="MeshObjLoader" name="loader" filename="mesh/torus2_for_collision.obj" />
+                <Object type="Mesh" src="@loader" />
+                <Object type="MechanicalObject" src="@loader" dx="10" />
+                <Object type="Triangle" />
+                <Object type="BarycentricMapping" />
+            </Node>
+        </Node>
+    </Node>
 </Node>

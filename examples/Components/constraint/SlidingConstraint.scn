@@ -1,72 +1,64 @@
-<Node name="root"  dt="0.001" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" showInteractionForceFields="1" gravity="0 -9.81 0">
-	<FreeMotionAnimationLoop/> 
-	<GenericConstraintSolver />
-	<CollisionPipeline depth="6" verbose="0" draw="0"/>
-	<BruteForceDetection name="N2" />
-	<LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0"/>
-	<CollisionResponse name="Response" response="FrictionContact"/> 
-	<CollisionGroup name="Group" />
-
-	<Node name="SlidingPoint">
-		<MechanicalObject name="points" template="Vec3d" position="1 1.25 -0.2 	1 1.25 0.2" free_position="1 1.25 -0.2 	1 1.25 0.2"/>
-	</Node>
-	
-	<Node name="CUBE_1">
-		<EulerImplicit printLog="false"/>
-		<CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
-		<MechanicalObject template="Rigid" scale="1.0"  dx="0.0" dy="0" dz="0.0"/>
-		<UniformMass totalmass="10.0"/>
-		<UncoupledConstraintCorrection/>
-		<Node name="Visu">
-			<OglModel name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0"/>
-			<RigidMapping object1="../.." object2="Visual" />
-		</Node>
-		<Node name="ColliCube">
-			<Mesh filename="mesh/cube.obj"/>
-			<MechanicalObject scale="1.0"/>
-			<Triangle contactStiffness="0.1"/> 
-			<Line contactStiffness="0.1"/>
-			<Point contactStiffness="0.1"/>
-			<RigidMapping/>
-		</Node>
-		
-		<Node name="Constraints">
-			<MechanicalObject name="points" template="Vec3d" position="1 1.25 1	1 1.25 -1	0 0 0"/>
-			<RigidMapping />
-		</Node>
-	</Node>
-	
-	<SlidingConstraint object1="SlidingPoint/points" object2="CUBE_1/Constraints/points" sliding_point="0" axis_1="0" axis_2="1" />
-	 
-	<Node name="Line">
-		<MechanicalObject name="points" template="Vec3d" position="6 1.25 1	6 1.25 -1" free_position="6 1.25 1	6 1.25 -1"/>
-	</Node>
-	
-	<Node name="CUBE_2">
-		<EulerImplicit printLog="false"/>
-		<CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
-		<MechanicalObject template="Rigid" scale="1.0"  dx="5.0" dy="0" dz="0.0"/>
-		<UniformMass totalmass="10.0"/>
-		<UncoupledConstraintCorrection/>
-		<Node name="Visu">
-			<OglModel name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0"/>
-			<RigidMapping object1="../.." object2="Visual" />
-		</Node>
-		<Node name="ColliCube">
-			<Mesh filename="mesh/cube.obj"/>
-			<MechanicalObject scale="1.0"/>
-			<Triangle contactStiffness="0.1"/> 
-			<Line contactStiffness="0.1"/>
-			<Point contactStiffness="0.1"/>
-			<RigidMapping/>
-		</Node>
-		
-		<Node name="Constraints">
-			<MechanicalObject name="points" template="Vec3d" position="1 1.25 1"/>
-			<RigidMapping/>
-		</Node>
-	</Node>
-	 
-	<SlidingConstraint object1="CUBE_2/Constraints/points" object2="Line/points" sliding_point="0" axis_1="0" axis_2="1" />
-	
+<Node name="root" dt="0.001" gravity="0 -9.81 0">
+    <VisualStyle displayFlags="showForceFields" />
+    <FreeMotionAnimationLoop />
+    <GenericConstraintSolver />
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
+    <CollisionResponse name="Response" response="FrictionContact" />
+    <CollisionGroup name="Group" />
+    <Node name="SlidingPoint">
+        <MechanicalObject name="points" template="Vec3d" position="1 1.25 -0.2 &#x09;1 1.25 0.2" free_position="1 1.25 -0.2 &#x09;1 1.25 0.2" />
+    </Node>
+    <Node name="CUBE_1">
+        <EulerImplicit printLog="false" />
+        <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0" dz="0.0" />
+        <UniformMass totalmass="10.0" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visu">
+            <OglModel name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0" />
+            <RigidMapping object1="../.." object2="Visual" />
+        </Node>
+        <Node name="ColliCube">
+            <Mesh filename="mesh/cube.obj" />
+            <MechanicalObject scale="1.0" />
+            <Triangle contactStiffness="0.1" />
+            <Line contactStiffness="0.1" />
+            <Point contactStiffness="0.1" />
+            <RigidMapping />
+        </Node>
+        <Node name="Constraints">
+            <MechanicalObject name="points" template="Vec3d" position="1 1.25 1&#x09;1 1.25 -1&#x09;0 0 0" />
+            <RigidMapping />
+        </Node>
+    </Node>
+    <SlidingConstraint object1="SlidingPoint/points" object2="CUBE_1/Constraints/points" sliding_point="0" axis_1="0" axis_2="1" />
+    <Node name="Line">
+        <MechanicalObject name="points" template="Vec3d" position="6 1.25 1&#x09;6 1.25 -1" free_position="6 1.25 1&#x09;6 1.25 -1" />
+    </Node>
+    <Node name="CUBE_2">
+        <EulerImplicit printLog="false" />
+        <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject template="Rigid" scale="1.0" dx="5.0" dy="0" dz="0.0" />
+        <UniformMass totalmass="10.0" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visu">
+            <OglModel name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0" />
+            <RigidMapping object1="../.." object2="Visual" />
+        </Node>
+        <Node name="ColliCube">
+            <Mesh filename="mesh/cube.obj" />
+            <MechanicalObject scale="1.0" />
+            <Triangle contactStiffness="0.1" />
+            <Line contactStiffness="0.1" />
+            <Point contactStiffness="0.1" />
+            <RigidMapping />
+        </Node>
+        <Node name="Constraints">
+            <MechanicalObject name="points" template="Vec3d" position="1 1.25 1" />
+            <RigidMapping />
+        </Node>
+    </Node>
+    <SlidingConstraint object1="CUBE_2/Constraints/points" object2="Line/points" sliding_point="0" axis_1="0" axis_2="1" />
 </Node>

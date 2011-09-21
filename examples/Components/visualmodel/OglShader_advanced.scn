@@ -1,123 +1,22 @@
-<Node name="root" dt="0.02" showBehaviorModels="0" showVisualModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
-
-	<Node name="Lens">
-		<Object type="MeshGmshLoader" filename="mesh/single_tetra.msh"  name="loader"/>
-		<Object type="MechanicalObject" src="@loader" template="Vec3d"/>
-		<include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
-		<Node  activated="0" >
-			<Object type="OglShader" geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="shaders/tetra.vert" geoFilename="shaders/tetra_triangles.geo" fragFilename="shaders/tetra.frag"/>
-			<Object type="OglFloatVector4Variable" id="MappingTable" values="
-	1 0 0 0 
-	0 0 0 1 
-	0 1 0 0 
-	0 0 1 0 
-	
-	1 0 0 0 
-	0 0 0 1 
-	0 0 1 0 
-	0 1 0 0 
-	
-	1 0 0 0 
-	0 0 1 0 
-	0 1 0 0 
-	0 0 0 1 
-	
-	1 0 0 0 
-	0 0 1 0 
-	0 0 0 1 
-	0 1 0 0 
-	
-	1 0 0 0 
-	0 1 0 0 
-	0 0 0 1 
-	0 0 1 0 
-	
-	1 0 0 0 
-	0 1 0 0 
-	0 0 1 0 
-	0 0 0 1 
-	
-	0 0 1 0 
-	1 0 0 0 
-	0 0 0 1 
-	0 1 0 0 
-	
-	0 0 0 1 
-	1 0 0 0 
-	0 0 1 0 
-	0 1 0 0" />
-			<Object type="OglFloatVector4Variable" id="RunSelectTable" values="
-0. 1. 0. 0.
-0. 0. 0. 0.
-0. 0. 1. 0.
-0. 0. 1. 0.
-1. 0. 0. 0.
-1. 0. 0. 0.
-0. 0. 0. 1.
-0. 0. 0. 1.
-0. 0. 1. 0.
-0. 1. 0. 0." />
-			<Object type="OglTetrahedralModel" />
-		</Node>
-		
-		<Node>
-			<Object type="OglShader" geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="shaders/PT.vert" geoFilename="shaders/PT.geo" fragFilename="shaders/PT.frag"/>
-						<Object type="OglFloat3Variable" id="fragmentColor" value="1.0 1.0 1.0" />
-			<Object type="OglFloatVariable" id="fragmentOpacity" value="1.0" />
-			<Object type="OglFloatVector4Variable" id="MappingTable" values="
-	1 0 0 0 
-	0 0 0 1 
-	0 1 0 0 
-	0 0 1 0 
-	
-	1 0 0 0 
-	0 0 0 1 
-	0 0 1 0 
-	0 1 0 0 
-	
-	1 0 0 0 
-	0 0 1 0 
-	0 1 0 0 
-	0 0 0 1 
-	
-	1 0 0 0 
-	0 0 1 0 
-	0 0 0 1 
-	0 1 0 0 
-	
-	1 0 0 0 
-	0 1 0 0 
-	0 0 0 1 
-	0 0 1 0 
-	
-	1 0 0 0 
-	0 1 0 0 
-	0 0 1 0 
-	0 0 0 1 
-	
-	0 0 1 0 
-	1 0 0 0 
-	0 0 0 1 
-	0 1 0 0 
-	
-	0 0 0 1 
-	1 0 0 0 
-	0 0 1 0 
-	0 1 0 0" />
-			<Object type="OglFloatVector4Variable" id="RunSelectTable" values="
-0. 1. 0. 0.
-0. 0. 0. 0.
-0. 0. 1. 0.
-0. 0. 1. 0.
-1. 0. 0. 0.
-1. 0. 0. 0.
-0. 0. 0. 1.
-0. 0. 0. 1.
-0. 0. 1. 0.
-0. 1. 0. 0." />
-			<Object type="OglTetrahedralModel" />
-		</Node>
-	</Node>
-	
-
+<Node name="root" dt="0.02">
+    <VisualStyle displayFlags="showVisual" />
+    <Node name="Lens">
+        <Object type="MeshGmshLoader" filename="mesh/single_tetra.msh" name="loader" />
+        <Object type="MechanicalObject" src="@loader" template="Vec3d" />
+        <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
+        <Node activated="0">
+            <Object type="OglShader" geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="shaders/tetra.vert" geoFilename="shaders/tetra_triangles.geo" fragFilename="shaders/tetra.frag" />
+            <Object type="OglFloatVector4Variable" id="MappingTable" values="&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;&#x0A;&#x09;0 0 1 0 &#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;0 0 0 1 &#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0" />
+            <Object type="OglFloatVector4Variable" id="RunSelectTable" values="&#x0A;0. 1. 0. 0.&#x0A;0. 0. 0. 0.&#x0A;0. 0. 1. 0.&#x0A;0. 0. 1. 0.&#x0A;1. 0. 0. 0.&#x0A;1. 0. 0. 0.&#x0A;0. 0. 0. 1.&#x0A;0. 0. 0. 1.&#x0A;0. 0. 1. 0.&#x0A;0. 1. 0. 0." />
+            <Object type="OglTetrahedralModel" />
+        </Node>
+        <Node>
+            <Object type="OglShader" geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="shaders/PT.vert" geoFilename="shaders/PT.geo" fragFilename="shaders/PT.frag" />
+            <Object type="OglFloat3Variable" id="fragmentColor" value="1.0 1.0 1.0" />
+            <Object type="OglFloatVariable" id="fragmentOpacity" value="1.0" />
+            <Object type="OglFloatVector4Variable" id="MappingTable" values="&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;&#x0A;&#x09;0 0 1 0 &#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;0 0 0 1 &#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0" />
+            <Object type="OglFloatVector4Variable" id="RunSelectTable" values="&#x0A;0. 1. 0. 0.&#x0A;0. 0. 0. 0.&#x0A;0. 0. 1. 0.&#x0A;0. 0. 1. 0.&#x0A;1. 0. 0. 0.&#x0A;1. 0. 0. 0.&#x0A;0. 0. 0. 1.&#x0A;0. 0. 0. 1.&#x0A;0. 0. 1. 0.&#x0A;0. 1. 0. 0." />
+            <Object type="OglTetrahedralModel" />
+        </Node>
+    </Node>
 </Node>

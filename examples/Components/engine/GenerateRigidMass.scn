@@ -1,47 +1,48 @@
-<?xml version="1.0"?>
-<Node 	name="Root" gravity="0 0 0" dt="0.02" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="1" showNormals="0"  >
-	<Node name="Livers"  >
-		<Node 	name="Green Liver"  >
-			<MeshObjLoader name="loader"  filename="mesh/liver-smooth.obj"  trianglesGroups="Mesh1  -1 0 4384" />
-			<GenerateRigidMass template="Rigid" name="massEngine"  density="1000"  position="@loader.position"  triangles="@loader.triangles"  quads="@loader.quads" />
-			<TransformPosition template="Vec3d" name="positionEngine"  input_position="@loader.position" translation="@massEngine.centerToOrigin"  method="translation" />
-			<MechanicalObject template="Rigid" name="RigidObject"  translation="@massEngine.massCenter" translation2="-5 10 0" />
-			<UniformMass template="Rigid" name="Mass"  mass="@massEngine.mass"  totalmass="0"  showAxisSizeFactor="1" />
-			<Node 	name="VisualNode" tags="Visual"  >
-				<OglModel template="ExtVec3f" name="Visual"  position="@../positionEngine.output_position"  normal="@../loader.normals"  triangles="@../loader.triangles"   material="Default Diffuse 1 0 0.8 0 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
-				<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VisualMapping"  object1="../.."  object2="Visual" />
-			</Node>
-		</Node>
-		<Node 	name="Red Liver"  >
-			<MeshObjLoader name="loader"  filename="mesh/liver-smooth.obj"  trianglesGroups="Mesh1  -1 0 4384" />
-			<MechanicalObject template="Rigid" name="RigidObject"  translation2="5 10 0" />
-			<UniformMass template="Rigid" name="Mass"  totalmass="1"  showAxisSizeFactor="1" />
-			<Node 	name="VisualNode" tags="Visual"  >
-				<OglModel template="ExtVec3f" name="Visual"  position="@../loader.position"  normal="@../loader.normals"  triangles="@../loader.triangles"  material="Default Diffuse 1 0.8 0 0 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
-				<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VisualMapping"  object1="../.."  object2="Visual" />
-			</Node>
-		</Node>
-	</Node>
-	<Node 	name="Dragons"  >
-		<Node 	name="Green Dragon"  >
-			<MeshObjLoader name="loader"  filename="mesh/dragon_clean.obj"  trianglesGroups="Mesh  -1 0 2484" />
-			<GenerateRigidMass template="Rigid" name="massEngine"  density="1000"  position="@loader.position"  triangles="@loader.triangles"  quads="@loader.quads" />
-			<TransformPosition template="Vec3d" name="positionEngine"  input_position="@loader.position"  translation="@massEngine.centerToOrigin"  method="translation" />
-			<MechanicalObject template="Rigid" name="RigidObject" translation="@massEngine.massCenter"  translation2="-15 0 0" />
-			<UniformMass template="Rigid" name="Mass"  mass="@massEngine.rigidMass"  totalmass="1"  showAxisSizeFactor="1" />
-			<Node 	name="VisualNode" tags="Visual"  >
-				<OglModel template="ExtVec3f" name="Visual"  position="@../positionEngine.output_position"  normal="@../loader.normals"  triangles="@../loader.triangles"  material="Default Diffuse 1 0 0.8 0 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
-				<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VisualMapping"  object1="../.."  object2="Visual" />
-			</Node>
-		</Node>
-		<Node 	name="Red Dragon 2"  >
-			<MeshObjLoader name="loader"  filename="mesh/dragon_clean.obj"  trianglesGroups="Mesh  -1 0 2484" />
-			<MechanicalObject template="Rigid" name="RigidObject"  translation2="15 0 0"  />
-			<UniformMass template="Rigid" name="Mass"  totalmass="1"  filename="BehaviorModels/dragon_clean.rigid"  showAxisSizeFactor="1" />
-			<Node 	name="VisualNode" tags="Visual"  >
-				<OglModel template="ExtVec3f" name="Visual"  position="@../loader.position"  normal="@../loader.normals"  triangles="@../loader.triangles"  material="Default Diffuse 1 0.8 0 0 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
-				<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VisualMapping"  object1="../.."  object2="Visual" />
-			</Node>
-		</Node>
-	</Node>
+<?xml version="1.0" ?>
+<Node name="Root" gravity="0 0 0" dt="0.02">
+    <VisualStyle displayFlags="showVisual showBehaviorModels showWireframe" />
+    <Node name="Livers">
+        <Node name="Green Liver">
+            <MeshObjLoader name="loader" filename="mesh/liver-smooth.obj" trianglesGroups="Mesh1  -1 0 4384" />
+            <GenerateRigidMass template="Rigid" name="massEngine" density="1000" position="@loader.position" triangles="@loader.triangles" quads="@loader.quads" />
+            <TransformPosition template="Vec3d" name="positionEngine" input_position="@loader.position" translation="@massEngine.centerToOrigin" method="translation" />
+            <MechanicalObject template="Rigid" name="RigidObject" translation="@massEngine.massCenter" translation2="-5 10 0" />
+            <UniformMass template="Rigid" name="Mass" mass="@massEngine.mass" totalmass="0" showAxisSizeFactor="1" />
+            <Node name="VisualNode" tags="Visual">
+                <OglModel template="ExtVec3f" name="Visual" position="@../positionEngine.output_position" normal="@../loader.normals" triangles="@../loader.triangles" material="Default Diffuse 1 0 0.8 0 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
+                <RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VisualMapping" object1="../.." object2="Visual" />
+            </Node>
+        </Node>
+        <Node name="Red Liver">
+            <MeshObjLoader name="loader" filename="mesh/liver-smooth.obj" trianglesGroups="Mesh1  -1 0 4384" />
+            <MechanicalObject template="Rigid" name="RigidObject" translation2="5 10 0" />
+            <UniformMass template="Rigid" name="Mass" totalmass="1" showAxisSizeFactor="1" />
+            <Node name="VisualNode" tags="Visual">
+                <OglModel template="ExtVec3f" name="Visual" position="@../loader.position" normal="@../loader.normals" triangles="@../loader.triangles" material="Default Diffuse 1 0.8 0 0 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
+                <RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VisualMapping" object1="../.." object2="Visual" />
+            </Node>
+        </Node>
+    </Node>
+    <Node name="Dragons">
+        <Node name="Green Dragon">
+            <MeshObjLoader name="loader" filename="mesh/dragon_clean.obj" trianglesGroups="Mesh  -1 0 2484" />
+            <GenerateRigidMass template="Rigid" name="massEngine" density="1000" position="@loader.position" triangles="@loader.triangles" quads="@loader.quads" />
+            <TransformPosition template="Vec3d" name="positionEngine" input_position="@loader.position" translation="@massEngine.centerToOrigin" method="translation" />
+            <MechanicalObject template="Rigid" name="RigidObject" translation="@massEngine.massCenter" translation2="-15 0 0" />
+            <UniformMass template="Rigid" name="Mass" mass="@massEngine.rigidMass" totalmass="1" showAxisSizeFactor="1" />
+            <Node name="VisualNode" tags="Visual">
+                <OglModel template="ExtVec3f" name="Visual" position="@../positionEngine.output_position" normal="@../loader.normals" triangles="@../loader.triangles" material="Default Diffuse 1 0 0.8 0 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
+                <RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VisualMapping" object1="../.." object2="Visual" />
+            </Node>
+        </Node>
+        <Node name="Red Dragon 2">
+            <MeshObjLoader name="loader" filename="mesh/dragon_clean.obj" trianglesGroups="Mesh  -1 0 2484" />
+            <MechanicalObject template="Rigid" name="RigidObject" translation2="15 0 0" />
+            <UniformMass template="Rigid" name="Mass" totalmass="1" filename="BehaviorModels/dragon_clean.rigid" showAxisSizeFactor="1" />
+            <Node name="VisualNode" tags="Visual">
+                <OglModel template="ExtVec3f" name="Visual" position="@../loader.position" normal="@../loader.normals" triangles="@../loader.triangles" material="Default Diffuse 1 0.8 0 0 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
+                <RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VisualMapping" object1="../.." object2="Visual" />
+            </Node>
+        </Node>
+    </Node>
 </Node>

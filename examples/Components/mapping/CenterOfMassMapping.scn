@@ -1,308 +1,226 @@
-<Node name="root" 
-	gravity="0 -9.81 0" 
-	dt="0.01" 
-	time="0" 
-	animate="0" 
-	showVisualModels="1" 
-	showBehaviorModels="0" 
-	showCollisionModels="1" 
-	showBoundingCollisionModels="0" 
-	showMappings="0" 
-	showMechanicalMappings="1" 
-	showForceFields="1" 
-	showInteractionForceFields="1" 
-	showWireFrame="1" 
-	showNormals="0" 
-	 >
-	<Object type="BruteForceDetection">
-		<Attribute type="name">
-			<Data value="default0"/>
-		</Attribute>
-	</Object>
-	<Object type="DefaultContactManager">
-		<Attribute type="name">
-			<Data value="default1"/>
-		</Attribute>
-	</Object>
-	<Object type="DefaultPipeline">
-		<Attribute type="name">
-			<Data value="default2"/>
-		</Attribute>
-	</Object>
-	<Object type="MinProximityIntersection">
-		<Attribute type="name">
-			<Data value="default3"/>
-		</Attribute>
-	</Object>
-	<Node name="pendulum" 
-		gravity="0 -9.81 0" 
-		dt="0.01" 
-		time="0" 
-		animate="0" 
-		showVisualModels="1" 
-		showBehaviorModels="0" 
-		showCollisionModels="1" 
-		showBoundingCollisionModels="0" 
-		showMappings="0" 
-		showMechanicalMappings="1" 
-		showForceFields="1" 
-		showInteractionForceFields="1" 
-		showWireFrame="1" 
-		showNormals="0" 
-		multiThreadSimulation="0" 
-		 >
-		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<Object type="MechanicalObject" template="Rigid">
-			<Attribute type="name">
-				<Data value="DOFs"/>
-			</Attribute>
-			<Attribute type="position">
-				<Data value="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1"/>
-			</Attribute>
-			<Attribute type="velocity">
-				<Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>
-			</Attribute>
-			<Attribute type="force">
-				<Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>
-			</Attribute>
-			<Attribute type="dx">
-				<Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>
-			</Attribute>
-			<Attribute type="free_position">
-				<Data value="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1"/>
-			</Attribute>
-			<Attribute type="free_velocity">
-				<Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>
-			</Attribute>
-			<Attribute type="rest_position">
-				<Data value="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1"/>
-			</Attribute>
-		</Object>
-		<Object type="UniformMass" template="Rigid">
-			<Attribute type="name">
-				<Data value="mass"/>
-			</Attribute>
-			<Attribute type="mass">
-				<Data value="1 1 [1 0 0,0 1 0,0 0 1]"/>
-			</Attribute>
-		</Object>
-		<Object type="FixedConstraint" template="Rigid">
-			<Attribute type="name">
-				<Data value="fixOrigin"/>
-			</Attribute>
-			<Attribute type="indices">
-				<Data value="0"/>
-			</Attribute>
-		</Object>
-		<Node name="segmentsNode" 
-			gravity="0 -9.81 0" 
-			dt="0.01" 
-			time="0" 
-			animate="0" 
-			showVisualModels="1" 
-			showBehaviorModels="0" 
-			showCollisionModels="1" 
-			showBoundingCollisionModels="0" 
-			showMappings="0" 
-			showMechanicalMappings="1" 
-			showForceFields="1" 
-			showInteractionForceFields="1" 
-			showWireFrame="1" 
-			showNormals="0" 
-			multiThreadSimulation="0" 
-			 >
-			<Object type="MechanicalObject" template="Rigid">
-				<Attribute type="name">
-					<Data value="attaches"/>
-				</Attribute>
-				<Attribute type="position">
-					<Data value="0 0 0 0.707914 0 0 0.707914 0 0 0 0.707914 0 0 0.707914 2 0 0 0.707914 0 0 0.707914 2 0 0 0.707914 0 0 0.707914 4 0 0 0.707914 0 0 0.707914 4 0 0 0.707914 0 0 0.707914 6 0 0 0.707914 0 0 0.707914 6 0 0 0.707914 0 0 0.707914 8 0 0 0.707914 0 0 0.707914"/>
-				</Attribute>
-				<Attribute type="velocity">
-					<Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>
-				</Attribute>
-				<Attribute type="force">
-					<Data value="-0.204691 0.493087 -1.55393 -15.7823 -4.91695 -0.011207 0.204691 -0.493087 1.55393 15.7823 4.91695 0.011207 -0.817747 -0.565234 -0.504438 15.6267 -1.41904 0.0182122 0.817747 0.565234 0.504438 -15.6267 1.41904 -0.0182122 -0.490036 0.948643 0.849816 10.3784 20.6947 0.014016 0.490036 -0.948643 -0.849816 -10.3784 -20.6947 -0.014016 -1.16244 -0.595626 0.268606 3.22919 22.0184 -0.0357184 1.16244 0.595626 -0.268606 -3.22919 -22.0184 0.0357184 0 0 0 0 0 0"/>
-				</Attribute>
-				<Attribute type="dx">
-					<Data value="0 0 0 0 0 0 -2.04691e-005 4.93087e-005 -0.000155393 -7.89115e-005 -2.45853e-005 2.00717e-007 -2.01601e-005 4.95435e-005 -5.1433e-006 -7.89115e-005 -2.45853e-005 2.00717e-007 -0.000101935 -6.97992e-006 -5.55871e-005 -8.0336e-007 -3.15395e-005 -6.3655e-005 -3.64901e-006 -8.78868e-005 -1.67401e-005 -8.0336e-007 -3.15395e-005 -6.3655e-005 -5.26526e-005 6.9775e-006 6.82415e-005 5.10966e-005 7.20224e-005 -0.000102151 6.00157e-005 0.000177406 0.000244762 5.10966e-005 7.20224e-005 -0.000102151 -5.62283e-005 0.000117843 0.000271622 6.71189e-005 0.000181679 6.29123e-005 7.75285e-006 1.00596e-005 0.000514622 6.71189e-005 0.000181679 6.29123e-005"/>
-				</Attribute>
-				<Attribute type="free_position">
-					<Data value="0 0 0 0.707914 0 0 0.707914 0 0 0 0.707914 0 0 0.707914 2 0 0 0.707914 0 0 0.707914 2 0 0 0.707914 0 0 0.707914 4 0 0 0.707914 0 0 0.707914 4 0 0 0.707914 0 0 0.707914 6 0 0 0.707914 0 0 0.707914 6 0 0 0.707914 0 0 0.707914 8 0 0 0.707914 0 0 0.707914"/>
-				</Attribute>
-				<Attribute type="free_velocity">
-					<Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>
-				</Attribute>
-				<Attribute type="rest_position">
-					<Data value="0 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914"/>
-				</Attribute>
-			</Object>
-			<Object type="RigidRigidMapping" template="MechanicalMapping&lt;MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt;,MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt; &gt; &gt;">
-				<Attribute type="name">
-					<Data value="default55"/>
-				</Attribute>
-				<Attribute type="initialPoints">
-					<Data value="0 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914"/>
-				</Attribute>
-				<Attribute type="repartition">
-					<Data value="1 2 2 2 2"/>
-				</Attribute>
-			</Object>
-			<Object type="JointSpringForceField" template="Rigid">
-				<Attribute type="name">
-					<Data value="joint springs"/>
-				</Attribute>
-				<Attribute type="spring">
-					<Data value="BEGIN_SPRING  0 1  FREE_AXIS 0 0 0 0 1 0  KS_R 0 200000  KD 1  R_LIM_X 0 0  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING
- BEGIN_SPRING  2 3  FREE_AXIS 0 0 0 0 1 0  KS_R 0 200000  KD 1  R_LIM_X 0 0  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING
- BEGIN_SPRING  4 5  FREE_AXIS 0 0 0 0 1 0  KS_R 0 200000  KD 1  R_LIM_X 0 0  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING
- BEGIN_SPRING  6 7  FREE_AXIS 0 0 0 0 1 0  KS_R 0 200000  KD 1  R_LIM_X 0 0  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING
-"/>
-				</Attribute>
-			</Object>
-		</Node>
-		<Node name="default65" 
-			gravity="0 -9.81 0" 
-			dt="0.01" 
-			time="0" 
-			animate="0" 
-			showVisualModels="1" 
-			showBehaviorModels="0" 
-			showCollisionModels="1" 
-			showBoundingCollisionModels="0" 
-			showMappings="0" 
-			showMechanicalMappings="1" 
-			showForceFields="1" 
-			showInteractionForceFields="1" 
-			showWireFrame="1" 
-			showNormals="0" 
-			multiThreadSimulation="0" 
-			 >
-			<Object type="OglModel">
-				<Attribute type="name">
-					<Data value="Visual"/>
-				</Attribute>
-				<Attribute type="position">
-					<Data value="0 -0.5 -0.5 0 0.5 -0.5 0 0.5 0.5 0 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 8 -0.5 -0.5 8 0.5 -0.5 8 0.5 0.5 8 -0.5 0.5"/>
-				</Attribute>
-				<Attribute type="normals">
-					<Data value="-0.57735 -0.57735 -0.57735 -0.666667 0.333333 -0.666667 -0.408248 0.816497 0.408248 -0.57735 -0.57735 0.57735 0.333333 -0.666667 -0.666667 0.666667 0.666667 -0.333333 0.408248 0.408248 0.816497 0.816497 -0.408248 0.408248 -0.57735 -0.57735 -0.57735 -0.666667 0.333333 -0.666667 -0.408248 0.816497 0.408248 -0.57735 -0.57735 0.57735 0.333333 -0.666667 -0.666667 0.666667 0.666667 -0.333333 0.408248 0.408248 0.816497 0.816497 -0.408248 0.408248 -0.57735 -0.57735 -0.57735 -0.666667 0.333333 -0.666667 -0.408248 0.816497 0.408248 -0.57735 -0.57735 0.57735 0.333333 -0.666667 -0.666667 0.666667 0.666667 -0.333333 0.408248 0.408248 0.816497 0.816497 -0.408248 0.408248 -0.57735 -0.57735 -0.57735 -0.666667 0.333333 -0.666667 -0.408248 0.816497 0.408248 -0.57735 -0.57735 0.57735 0.333333 -0.666667 -0.666667 0.666667 0.666667 -0.333333 0.408248 0.408248 0.816497 0.816497 -0.408248 0.408248"/>
-				</Attribute>
-				<Attribute type="triangles">
-					<Data value="3 1 0  3 2 1  3 6 2  3 7 6  7 5 6  7 4 5  4 1 5  4 0 1  5 1 2  2 6 5  4 7 3  4 3 0  11 9 8  11 10 9  11 14 10  11 15 14  15 13 14  15 12 13  12 9 13  12 8 9  13 9 10  10 14 13  12 15 11  12 11 8  19 17 16  19 18 17  19 22 18  19 23 22  23 21 22  23 20 21  20 17 21  20 16 17  21 17 18  18 22 21  20 23 19  20 19 16  27 25 24  27 26 25  27 30 26  27 31 30  31 29 30  31 28 29  28 25 29  28 24 25  29 25 26  26 30 29  28 31 27  28 27 24 "/>
-				</Attribute>
-			</Object>
-			<Object type="SkinningMapping" template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;">
-				<Attribute type="name">
-					<Data value="map"/>
-				</Attribute>
-				<Attribute type="object1">
-					<Data value="../.."/>
-				</Attribute>
-				<Attribute type="object2">
-					<Data value="Visual"/>
-				</Attribute>
-				<Attribute type="repartition">
-					<Data value="0 1 0 1 0 1 0 1 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 2 3 2 3 2 3 2 3 2 3 2 3 2 3 2 3 3 4 3 4 3 4 3 4 3 4 3 4 3 4 3 4 4 3 4 3 4 3 4 3"/>
-				</Attribute>
-				<Attribute type="coefs">
-					<Data value="0.75 0.25 0.75 0.25 0.75 0.25 0.75 0.25 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.863636 0.136364 0.863636 0.136364 0.863636 0.136364 0.863636 0.136364"/>
-				</Attribute>
-				<Attribute type="nbRefs">
-					<Data value="2"/>
-				</Attribute>
-			</Object>
-		</Node>
-		<Node name="CenterOfMass" 
-			gravity="0 -9.81 0" 
-			dt="0.01" 
-			time="0" 
-			animate="0" 
-			showVisualModels="1" 
-			showBehaviorModels="0" 
-			showCollisionModels="1" 
-			showBoundingCollisionModels="0" 
-			showMappings="0" 
-			showMechanicalMappings="1" 
-			showForceFields="1" 
-			showInteractionForceFields="1" 
-			showWireFrame="1" 
-			showNormals="0" 
-			multiThreadSimulation="0" 
-			 >
-			<Object type="MechanicalObject" template="Vec3d">
-				<Attribute type="name">
-					<Data value="default88"/>
-				</Attribute>
-				<Attribute type="listening">
-					<Data value="0"/>
-				</Attribute>
-				<Attribute type="printLog">
-					<Data value="0"/>
-				</Attribute>
-				<Attribute type="restScale">
-					<Data value="1"/>
-				</Attribute>
-				<Attribute type="position">
-					<Data value="3.2 0 0"/>
-				</Attribute>
-				<Attribute type="velocity">
-					<Data value="0 0 0"/>
-				</Attribute>
-				<Attribute type="force">
-					<Data value="0 0 0"/>
-				</Attribute>
-				<Attribute type="dx">
-					<Data value="-1.87325e-005 3.16272e-005 8.66385e-005"/>
-				</Attribute>
-				<Attribute type="free_position">
-					<Data value="3.2 0 0"/>
-				</Attribute>
-				<Attribute type="free_velocity">
-					<Data value="0 0 0"/>
-				</Attribute>
-				<Attribute type="rest_position">
-					<Data value="0 0 0"/>
-				</Attribute>
-			</Object>
-			<Object type="SphereModel">
-				<Attribute type="name">
-					<Data value="default88Sphere"/>
-				</Attribute>
-				<Attribute type="active">
-					<Data value="1"/>
-				</Attribute>
-				<Attribute type="moving">
-					<Data value="1"/>
-				</Attribute>
-				<Attribute type="simulated">
-					<Data value="1"/>
-				</Attribute>
-				<Attribute type="selfCollision">
-					<Data value="0"/>
-				</Attribute>
-				<Attribute type="proximity">
-					<Data value="0"/>
-				</Attribute>
-				<Attribute type="contactStiffness">
-					<Data value="10"/>
-				</Attribute>
-				<Attribute type="contactFriction">
-					<Data value="0.01"/>
-				</Attribute>
-				<Attribute type="color">
-					<Data value="1 0.5 0 1"/>
-				</Attribute>
-				<Attribute type="radius">
-					<Data value="0.2"/>
-				</Attribute>
-			</Object>
-			<Object type="CenterOfMassMapping" template="MechanicalMapping&lt;MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt;,MechanicalState&lt;StdVectorTypes&lt;Vec&lt;3,double&gt;,Vec&lt;3,double&gt;,double&gt; &gt; &gt; &gt;">
-				<Attribute type="name">
-					<Data value="default105"/>
-				</Attribute>
-			</Object>
-		</Node>
-	</Node>
+<Node name="root" gravity="0 -9.81 0" dt="0.01" time="0" animate="0">
+    <VisualStyle displayFlags="showVisual showForceFields showCollisionModels showMechanicalMappings showWireframe" />
+    <Object type="BruteForceDetection">
+        <Attribute type="name">
+            <Data value="default0" />
+        </Attribute>
+    </Object>
+    <Object type="DefaultContactManager">
+        <Attribute type="name">
+            <Data value="default1" />
+        </Attribute>
+    </Object>
+    <Object type="DefaultPipeline">
+        <Attribute type="name">
+            <Data value="default2" />
+        </Attribute>
+    </Object>
+    <Object type="MinProximityIntersection">
+        <Attribute type="name">
+            <Data value="default3" />
+        </Attribute>
+    </Object>
+    <Node name="pendulum" gravity="0 -9.81 0" dt="0.01" time="0" animate="0" multiThreadSimulation="0">
+        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
+        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <Object type="MechanicalObject" template="Rigid">
+            <Attribute type="name">
+                <Data value="DOFs" />
+            </Attribute>
+            <Attribute type="position">
+                <Data value="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1" />
+            </Attribute>
+            <Attribute type="velocity">
+                <Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+            </Attribute>
+            <Attribute type="force">
+                <Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+            </Attribute>
+            <Attribute type="dx">
+                <Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+            </Attribute>
+            <Attribute type="free_position">
+                <Data value="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1" />
+            </Attribute>
+            <Attribute type="free_velocity">
+                <Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+            </Attribute>
+            <Attribute type="rest_position">
+                <Data value="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1" />
+            </Attribute>
+        </Object>
+        <Object type="UniformMass" template="Rigid">
+            <Attribute type="name">
+                <Data value="mass" />
+            </Attribute>
+            <Attribute type="mass">
+                <Data value="1 1 [1 0 0,0 1 0,0 0 1]" />
+            </Attribute>
+        </Object>
+        <Object type="FixedConstraint" template="Rigid">
+            <Attribute type="name">
+                <Data value="fixOrigin" />
+            </Attribute>
+            <Attribute type="indices">
+                <Data value="0" />
+            </Attribute>
+        </Object>
+        <Node name="segmentsNode" gravity="0 -9.81 0" dt="0.01" time="0" animate="0" multiThreadSimulation="0">
+            <Object type="MechanicalObject" template="Rigid">
+                <Attribute type="name">
+                    <Data value="attaches" />
+                </Attribute>
+                <Attribute type="position">
+                    <Data value="0 0 0 0.707914 0 0 0.707914 0 0 0 0.707914 0 0 0.707914 2 0 0 0.707914 0 0 0.707914 2 0 0 0.707914 0 0 0.707914 4 0 0 0.707914 0 0 0.707914 4 0 0 0.707914 0 0 0.707914 6 0 0 0.707914 0 0 0.707914 6 0 0 0.707914 0 0 0.707914 8 0 0 0.707914 0 0 0.707914" />
+                </Attribute>
+                <Attribute type="velocity">
+                    <Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+                </Attribute>
+                <Attribute type="force">
+                    <Data value="-0.204691 0.493087 -1.55393 -15.7823 -4.91695 -0.011207 0.204691 -0.493087 1.55393 15.7823 4.91695 0.011207 -0.817747 -0.565234 -0.504438 15.6267 -1.41904 0.0182122 0.817747 0.565234 0.504438 -15.6267 1.41904 -0.0182122 -0.490036 0.948643 0.849816 10.3784 20.6947 0.014016 0.490036 -0.948643 -0.849816 -10.3784 -20.6947 -0.014016 -1.16244 -0.595626 0.268606 3.22919 22.0184 -0.0357184 1.16244 0.595626 -0.268606 -3.22919 -22.0184 0.0357184 0 0 0 0 0 0" />
+                </Attribute>
+                <Attribute type="dx">
+                    <Data value="0 0 0 0 0 0 -2.04691e-005 4.93087e-005 -0.000155393 -7.89115e-005 -2.45853e-005 2.00717e-007 -2.01601e-005 4.95435e-005 -5.1433e-006 -7.89115e-005 -2.45853e-005 2.00717e-007 -0.000101935 -6.97992e-006 -5.55871e-005 -8.0336e-007 -3.15395e-005 -6.3655e-005 -3.64901e-006 -8.78868e-005 -1.67401e-005 -8.0336e-007 -3.15395e-005 -6.3655e-005 -5.26526e-005 6.9775e-006 6.82415e-005 5.10966e-005 7.20224e-005 -0.000102151 6.00157e-005 0.000177406 0.000244762 5.10966e-005 7.20224e-005 -0.000102151 -5.62283e-005 0.000117843 0.000271622 6.71189e-005 0.000181679 6.29123e-005 7.75285e-006 1.00596e-005 0.000514622 6.71189e-005 0.000181679 6.29123e-005" />
+                </Attribute>
+                <Attribute type="free_position">
+                    <Data value="0 0 0 0.707914 0 0 0.707914 0 0 0 0.707914 0 0 0.707914 2 0 0 0.707914 0 0 0.707914 2 0 0 0.707914 0 0 0.707914 4 0 0 0.707914 0 0 0.707914 4 0 0 0.707914 0 0 0.707914 6 0 0 0.707914 0 0 0.707914 6 0 0 0.707914 0 0 0.707914 8 0 0 0.707914 0 0 0.707914" />
+                </Attribute>
+                <Attribute type="free_velocity">
+                    <Data value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+                </Attribute>
+                <Attribute type="rest_position">
+                    <Data value="0 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914" />
+                </Attribute>
+            </Object>
+            <Object type="RigidRigidMapping" template="MechanicalMapping&lt;MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt;,MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt; &gt; &gt;">
+                <Attribute type="name">
+                    <Data value="default55" />
+                </Attribute>
+                <Attribute type="initialPoints">
+                    <Data value="0 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914" />
+                </Attribute>
+                <Attribute type="repartition">
+                    <Data value="1 2 2 2 2" />
+                </Attribute>
+            </Object>
+            <Object type="JointSpringForceField" template="Rigid">
+                <Attribute type="name">
+                    <Data value="joint springs" />
+                </Attribute>
+                <Attribute type="spring">
+                    <Data value="BEGIN_SPRING  0 1  FREE_AXIS 0 0 0 0 1 0  KS_R 0 200000  KD 1  R_LIM_X 0 0  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A; BEGIN_SPRING  2 3  FREE_AXIS 0 0 0 0 1 0  KS_R 0 200000  KD 1  R_LIM_X 0 0  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A; BEGIN_SPRING  4 5  FREE_AXIS 0 0 0 0 1 0  KS_R 0 200000  KD 1  R_LIM_X 0 0  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A; BEGIN_SPRING  6 7  FREE_AXIS 0 0 0 0 1 0  KS_R 0 200000  KD 1  R_LIM_X 0 0  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A;" />
+                </Attribute>
+            </Object>
+        </Node>
+        <Node name="default65" gravity="0 -9.81 0" dt="0.01" time="0" animate="0" multiThreadSimulation="0">
+            <Object type="OglModel">
+                <Attribute type="name">
+                    <Data value="Visual" />
+                </Attribute>
+                <Attribute type="position">
+                    <Data value="0 -0.5 -0.5 0 0.5 -0.5 0 0.5 0.5 0 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 8 -0.5 -0.5 8 0.5 -0.5 8 0.5 0.5 8 -0.5 0.5" />
+                </Attribute>
+                <Attribute type="normals">
+                    <Data value="-0.57735 -0.57735 -0.57735 -0.666667 0.333333 -0.666667 -0.408248 0.816497 0.408248 -0.57735 -0.57735 0.57735 0.333333 -0.666667 -0.666667 0.666667 0.666667 -0.333333 0.408248 0.408248 0.816497 0.816497 -0.408248 0.408248 -0.57735 -0.57735 -0.57735 -0.666667 0.333333 -0.666667 -0.408248 0.816497 0.408248 -0.57735 -0.57735 0.57735 0.333333 -0.666667 -0.666667 0.666667 0.666667 -0.333333 0.408248 0.408248 0.816497 0.816497 -0.408248 0.408248 -0.57735 -0.57735 -0.57735 -0.666667 0.333333 -0.666667 -0.408248 0.816497 0.408248 -0.57735 -0.57735 0.57735 0.333333 -0.666667 -0.666667 0.666667 0.666667 -0.333333 0.408248 0.408248 0.816497 0.816497 -0.408248 0.408248 -0.57735 -0.57735 -0.57735 -0.666667 0.333333 -0.666667 -0.408248 0.816497 0.408248 -0.57735 -0.57735 0.57735 0.333333 -0.666667 -0.666667 0.666667 0.666667 -0.333333 0.408248 0.408248 0.816497 0.816497 -0.408248 0.408248" />
+                </Attribute>
+                <Attribute type="triangles">
+                    <Data value="3 1 0  3 2 1  3 6 2  3 7 6  7 5 6  7 4 5  4 1 5  4 0 1  5 1 2  2 6 5  4 7 3  4 3 0  11 9 8  11 10 9  11 14 10  11 15 14  15 13 14  15 12 13  12 9 13  12 8 9  13 9 10  10 14 13  12 15 11  12 11 8  19 17 16  19 18 17  19 22 18  19 23 22  23 21 22  23 20 21  20 17 21  20 16 17  21 17 18  18 22 21  20 23 19  20 19 16  27 25 24  27 26 25  27 30 26  27 31 30  31 29 30  31 28 29  28 25 29  28 24 25  29 25 26  26 30 29  28 31 27  28 27 24 " />
+                </Attribute>
+            </Object>
+            <Object type="SkinningMapping" template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;">
+                <Attribute type="name">
+                    <Data value="map" />
+                </Attribute>
+                <Attribute type="object1">
+                    <Data value="../.." />
+                </Attribute>
+                <Attribute type="object2">
+                    <Data value="Visual" />
+                </Attribute>
+                <Attribute type="repartition">
+                    <Data value="0 1 0 1 0 1 0 1 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 2 3 2 3 2 3 2 3 2 3 2 3 2 3 2 3 3 4 3 4 3 4 3 4 3 4 3 4 3 4 3 4 4 3 4 3 4 3 4 3" />
+                </Attribute>
+                <Attribute type="coefs">
+                    <Data value="0.75 0.25 0.75 0.25 0.75 0.25 0.75 0.25 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.863636 0.136364 0.863636 0.136364 0.863636 0.136364 0.863636 0.136364" />
+                </Attribute>
+                <Attribute type="nbRefs">
+                    <Data value="2" />
+                </Attribute>
+            </Object>
+        </Node>
+        <Node name="CenterOfMass" gravity="0 -9.81 0" dt="0.01" time="0" animate="0" multiThreadSimulation="0">
+            <Object type="MechanicalObject" template="Vec3d">
+                <Attribute type="name">
+                    <Data value="default88" />
+                </Attribute>
+                <Attribute type="listening">
+                    <Data value="0" />
+                </Attribute>
+                <Attribute type="printLog">
+                    <Data value="0" />
+                </Attribute>
+                <Attribute type="restScale">
+                    <Data value="1" />
+                </Attribute>
+                <Attribute type="position">
+                    <Data value="3.2 0 0" />
+                </Attribute>
+                <Attribute type="velocity">
+                    <Data value="0 0 0" />
+                </Attribute>
+                <Attribute type="force">
+                    <Data value="0 0 0" />
+                </Attribute>
+                <Attribute type="dx">
+                    <Data value="-1.87325e-005 3.16272e-005 8.66385e-005" />
+                </Attribute>
+                <Attribute type="free_position">
+                    <Data value="3.2 0 0" />
+                </Attribute>
+                <Attribute type="free_velocity">
+                    <Data value="0 0 0" />
+                </Attribute>
+                <Attribute type="rest_position">
+                    <Data value="0 0 0" />
+                </Attribute>
+            </Object>
+            <Object type="SphereModel">
+                <Attribute type="name">
+                    <Data value="default88Sphere" />
+                </Attribute>
+                <Attribute type="active">
+                    <Data value="1" />
+                </Attribute>
+                <Attribute type="moving">
+                    <Data value="1" />
+                </Attribute>
+                <Attribute type="simulated">
+                    <Data value="1" />
+                </Attribute>
+                <Attribute type="selfCollision">
+                    <Data value="0" />
+                </Attribute>
+                <Attribute type="proximity">
+                    <Data value="0" />
+                </Attribute>
+                <Attribute type="contactStiffness">
+                    <Data value="10" />
+                </Attribute>
+                <Attribute type="contactFriction">
+                    <Data value="0.01" />
+                </Attribute>
+                <Attribute type="color">
+                    <Data value="1 0.5 0 1" />
+                </Attribute>
+                <Attribute type="radius">
+                    <Data value="0.2" />
+                </Attribute>
+            </Object>
+            <Object type="CenterOfMassMapping" template="MechanicalMapping&lt;MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt;,MechanicalState&lt;StdVectorTypes&lt;Vec&lt;3,double&gt;,Vec&lt;3,double&gt;,double&gt; &gt; &gt; &gt;">
+                <Attribute type="name">
+                    <Data value="default105" />
+                </Attribute>
+            </Object>
+        </Node>
+    </Node>
 </Node>

@@ -1,114 +1,96 @@
-<Node name="root"  dt="0.03" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0"  showMappings="0" showForceFields="0" showWireFrame="0">
-	<Object type="FreeMotionAnimationLoop" initial_guess="true" displayTime="1" maxIt="100" build_lcp="false"/>   
-	<Object type="CollisionPipeline" depth="8" verbose="0" draw="0"/>
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="LocalMinDistance" name="Proximity" alarmDistance="0.35" contactDistance="0.1" />
-	<Object type="CollisionResponse" name="Response" response="FrictionContact"/>
-	
-	<Node>
-		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />	
-	<Object type="CollisionGroup" name="Group" />
-		
-				
-		<Node name="TORUS">
-
-			<Object type="MechanicalObject" template="Rigid" scale="1.0"  dx="0.0" dy="0.0" dz="0.0"/>
-			<Object type="UniformMass"  mass="40.0" printLog="true"/>
-			<Object type="UncoupledConstraintCorrection"/>
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="1.0 0.5 0.25 1.0" scale="1.0"/>
-				<Object type="RigidMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-				<Object type="MeshObjLoader" name="loader" filename="mesh/torus_for_collision.obj" triangulate="true"/>
-				<Object type="Mesh" src="@loader" />
-				<Object type="MechanicalObject" src="@loader" scale="1.0"/>
-				<Object type="Triangle" /> 
-				<Object type="Line" />
-				<Object type="Point" />
-				<Object type="RigidMapping" />
-			</Node>
-		</Node>
-		
-			
-		
-		<Node name="MAN">
-			<Object type="EulerSolver"/>
-			<Object type="MechanicalObject" template="Rigid"  dx="0.0" dy="0.0" dz="0.0"/>
-			<Object type="UniformMass"  mass="100.0" printLog="true"/>
-			<Object type="UncoupledConstraintCorrection"/>
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" fileMesh="mesh/man.obj" color="0.8 0.8 0.8 1.0" scale="10" dy="-3.0"/>
-				<Object type="RigidMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-				<Object type="MeshObjLoader" name="loader" filename="mesh/man.obj" triangulate="true"/>
-				<Object type="Mesh" src="@loader" />
-				<Object type="MechanicalObject" src="@loader" scale="10" dy="-3.0"/>
-				<Object type="Triangle" /> 
-				<Object type="Line" />
-				<Object type="Point" />
-				<Object type="RigidMapping" />
-			</Node>
-		</Node>
-				
-		
-		<Node name="CUBE">
-			<Object type="MechanicalObject" template="Rigid" scale="0.3"  dx="-2.0" dy="-2.0" dz="-0.5"/>
-			<Object type="UniformMass"  mass="100.0" printLog="true"/>
-			<Object type="UncoupledConstraintCorrection"/>
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.5 1.0" scale="0.3"/>
-				<Object type="RigidMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-					<Object type="MeshObjLoader" name="loader" filename="mesh/smCube27.obj" triangulate="true"/>
-				<Object type="Mesh" src="@loader" />
-				<Object type="MechanicalObject" src="@loader" scale="0.3"/>
-				<Object type="Triangle" /> 
-				<Object type="Line" />
-				<Object type="Point" />
-				<Object type="RigidMapping" />
-			</Node>
-		</Node>
-		
-	
-		
-		<Node name="DRAGON1">
-			<Object type="EulerSolver"/>
-			<Object type="MechanicalObject" template="Rigid"   dx="0.0" dy="2.5" dz="2.5"/>
-			<Object type="UniformMass"  mass="100.0" printLog="true"/>
-			<Object type="UncoupledConstraintCorrection"/>
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" fileMesh="mesh/dragon_clean.obj" color="0.2 0.2 0.8 1.0" scale="0.25"/>
-				<Object type="RigidMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-				<Object type="MeshObjLoader" name="loader" filename="mesh/dragon_clean.obj" triangulate="true"/>
-				<Object type="Mesh" src="@loader" />
-				<Object type="MechanicalObject" src="@loader" scale="0.25"/>
-				<Object type="Triangle" /> 
-				<Object type="Line" />
-				<Object type="Point" />
-				<Object type="RigidMapping" />
-			</Node>
-		</Node>
-
-
-
-
-		
-		<Node name="BOX">
-			<Object type="MeshObjLoader" name="loader" filename="mesh/box_inside.obj" triangulate="true"/>
-			<Object type="Mesh" src="@loader"/>
-			<Object type="MechanicalObject" src="@loader"/>
-			<Object type="Triangle" simulated="0" moving="0"/>	
-			<Object type="Line" simulated="0" moving="0"/>
-			<Object type="Point" simulated="0" moving="0"/>
-			<Object type="OglModel" name="Visual" fileMesh="mesh/box_outside.obj" color="1 0 0 0.3"/>
-		</Node>
-
-	</Node>
-	
+<Node name="root" dt="0.03">
+    <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <Object type="FreeMotionAnimationLoop" initial_guess="true" displayTime="1" maxIt="100" build_lcp="false" />
+    <Object type="CollisionPipeline" depth="8" verbose="0" draw="0" />
+    <Object type="BruteForceDetection" name="N2" />
+    <Object type="LocalMinDistance" name="Proximity" alarmDistance="0.35" contactDistance="0.1" />
+    <Object type="CollisionResponse" name="Response" response="FrictionContact" />
+    <Node>
+        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
+        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <Object type="CollisionGroup" name="Group" />
+        <Node name="TORUS">
+            <Object type="MechanicalObject" template="Rigid" scale="1.0" dx="0.0" dy="0.0" dz="0.0" />
+            <Object type="UniformMass" mass="40.0" printLog="true" />
+            <Object type="UncoupledConstraintCorrection" />
+            <Node name="Visu">
+                <Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="1.0 0.5 0.25 1.0" scale="1.0" />
+                <Object type="RigidMapping" object1="../.." object2="Visual" />
+            </Node>
+            <Node name="Surf2">
+                <Object type="MeshObjLoader" name="loader" filename="mesh/torus_for_collision.obj" triangulate="true" />
+                <Object type="Mesh" src="@loader" />
+                <Object type="MechanicalObject" src="@loader" scale="1.0" />
+                <Object type="Triangle" />
+                <Object type="Line" />
+                <Object type="Point" />
+                <Object type="RigidMapping" />
+            </Node>
+        </Node>
+        <Node name="MAN">
+            <Object type="EulerSolver" />
+            <Object type="MechanicalObject" template="Rigid" dx="0.0" dy="0.0" dz="0.0" />
+            <Object type="UniformMass" mass="100.0" printLog="true" />
+            <Object type="UncoupledConstraintCorrection" />
+            <Node name="Visu">
+                <Object type="OglModel" name="Visual" fileMesh="mesh/man.obj" color="0.8 0.8 0.8 1.0" scale="10" dy="-3.0" />
+                <Object type="RigidMapping" object1="../.." object2="Visual" />
+            </Node>
+            <Node name="Surf2">
+                <Object type="MeshObjLoader" name="loader" filename="mesh/man.obj" triangulate="true" />
+                <Object type="Mesh" src="@loader" />
+                <Object type="MechanicalObject" src="@loader" scale="10" dy="-3.0" />
+                <Object type="Triangle" />
+                <Object type="Line" />
+                <Object type="Point" />
+                <Object type="RigidMapping" />
+            </Node>
+        </Node>
+        <Node name="CUBE">
+            <Object type="MechanicalObject" template="Rigid" scale="0.3" dx="-2.0" dy="-2.0" dz="-0.5" />
+            <Object type="UniformMass" mass="100.0" printLog="true" />
+            <Object type="UncoupledConstraintCorrection" />
+            <Node name="Visu">
+                <Object type="OglModel" name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.5 1.0" scale="0.3" />
+                <Object type="RigidMapping" object1="../.." object2="Visual" />
+            </Node>
+            <Node name="Surf2">
+                <Object type="MeshObjLoader" name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+                <Object type="Mesh" src="@loader" />
+                <Object type="MechanicalObject" src="@loader" scale="0.3" />
+                <Object type="Triangle" />
+                <Object type="Line" />
+                <Object type="Point" />
+                <Object type="RigidMapping" />
+            </Node>
+        </Node>
+        <Node name="DRAGON1">
+            <Object type="EulerSolver" />
+            <Object type="MechanicalObject" template="Rigid" dx="0.0" dy="2.5" dz="2.5" />
+            <Object type="UniformMass" mass="100.0" printLog="true" />
+            <Object type="UncoupledConstraintCorrection" />
+            <Node name="Visu">
+                <Object type="OglModel" name="Visual" fileMesh="mesh/dragon_clean.obj" color="0.2 0.2 0.8 1.0" scale="0.25" />
+                <Object type="RigidMapping" object1="../.." object2="Visual" />
+            </Node>
+            <Node name="Surf2">
+                <Object type="MeshObjLoader" name="loader" filename="mesh/dragon_clean.obj" triangulate="true" />
+                <Object type="Mesh" src="@loader" />
+                <Object type="MechanicalObject" src="@loader" scale="0.25" />
+                <Object type="Triangle" />
+                <Object type="Line" />
+                <Object type="Point" />
+                <Object type="RigidMapping" />
+            </Node>
+        </Node>
+        <Node name="BOX">
+            <Object type="MeshObjLoader" name="loader" filename="mesh/box_inside.obj" triangulate="true" />
+            <Object type="Mesh" src="@loader" />
+            <Object type="MechanicalObject" src="@loader" />
+            <Object type="Triangle" simulated="0" moving="0" />
+            <Object type="Line" simulated="0" moving="0" />
+            <Object type="Point" simulated="0" moving="0" />
+            <Object type="OglModel" name="Visual" fileMesh="mesh/box_outside.obj" color="1 0 0 0.3" />
+        </Node>
+    </Node>
 </Node>

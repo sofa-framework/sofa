@@ -1,73 +1,50 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <!-- Mechanical MassSpring Group Basic Example -->
-<Node name="root" gravity="0 0 1"  dt="0.05" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1">
-
-  <Object type="CollisionPipeline" verbose="0" name="CollisionPipeline"/>
-  <Object type="BruteForceDetection" name="N2" />
-  <Object type="CollisionResponse" response="default" name="collision response"/>
-
-	<Node name="M1"> 	                   
- 	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-
-		<Object type="MechanicalObject" />
-		<Object type="UniformMass" mass="0.1" />
-		<Object type="RegularGrid"
-			nx="3" ny="3" nz="1"
-			xmin="10" xmax="19"
-			ymin="0" ymax="9"
-			zmin="4" zmax="5"
-		/>
-		<Object type="FixedConstraint" indices="0 8"/>
-		<Object type="TriangleFEMForceField" name="FEM1" youngModulus="5000" poissonRatio="0.3" method="large"/>
-		<Object type="Triangle" />
-		<Node name="Visu">
-			<Object type="OglModel" name="Visual" color="green"/>
-			<Object type="IdentityMapping" object1="../.." object2="Visual"/>
-		</Node>	
-		
-	</Node>
-
-	<Node name="M2">
- 	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-
-		<Object type="MechanicalObject" />
-		<Object type="UniformMass" mass="0.1" />
-		<Object type="RegularGrid"
-			nx="4" ny="4" nz="1"
-			xmin="20" xmax="29"
-			ymin="0" ymax="9"
-			zmin="8" zmax="9"
-		/>
-		<Object type="FixedConstraint" indices="0 15"/>
-		<Object type="TriangleFEMForceField" name="FEM2" youngModulus="5000" poissonRatio="0.3" method="large"/>
-		<Object type="Triangle" />
-		<Node name="Visu">
-			<Object type="OglModel" name="Visual" color="blue"/>
-			<Object type="IdentityMapping" object1="../.." object2="Visual"/>
-		</Node>		
-		
-	</Node>
-
-	<Node name="M3">
- 	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-
-		<Object type="MechanicalObject" />
-		<Object type="UniformMass" mass="0.1" />
-		<Object type="RegularGrid"
-			nx="10" ny="10" nz="1"
-			xmin="30" xmax="39"
-			ymin="0" ymax="9"
-			zmin="12" zmax="13"
-		/>
-		<Object type="FixedConstraint" indices="0 9 99"/>
-		<Object type="TriangleFEMForceField" name="FEM3" youngModulus="5000" poissonRatio="0.3" method="large"/>
-		<Object type="Triangle" />
-		<Node name="Visu">
-			<Object type="OglModel" name="Visual" color="yellow"/>
-			<Object type="IdentityMapping" object1="../.." object2="Visual"/>
-		</Node>
-	</Node>
+<Node name="root" gravity="0 0 1" dt="0.05">
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
+    <Object type="CollisionPipeline" verbose="0" name="CollisionPipeline" />
+    <Object type="BruteForceDetection" name="N2" />
+    <Object type="CollisionResponse" response="default" name="collision response" />
+    <Node name="M1">
+        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
+        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <Object type="MechanicalObject" />
+        <Object type="UniformMass" mass="0.1" />
+        <Object type="RegularGrid" nx="3" ny="3" nz="1" xmin="10" xmax="19" ymin="0" ymax="9" zmin="4" zmax="5" />
+        <Object type="FixedConstraint" indices="0 8" />
+        <Object type="TriangleFEMForceField" name="FEM1" youngModulus="5000" poissonRatio="0.3" method="large" />
+        <Object type="Triangle" />
+        <Node name="Visu">
+            <Object type="OglModel" name="Visual" color="green" />
+            <Object type="IdentityMapping" object1="../.." object2="Visual" />
+        </Node>
+    </Node>
+    <Node name="M2">
+        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
+        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <Object type="MechanicalObject" />
+        <Object type="UniformMass" mass="0.1" />
+        <Object type="RegularGrid" nx="4" ny="4" nz="1" xmin="20" xmax="29" ymin="0" ymax="9" zmin="8" zmax="9" />
+        <Object type="FixedConstraint" indices="0 15" />
+        <Object type="TriangleFEMForceField" name="FEM2" youngModulus="5000" poissonRatio="0.3" method="large" />
+        <Object type="Triangle" />
+        <Node name="Visu">
+            <Object type="OglModel" name="Visual" color="blue" />
+            <Object type="IdentityMapping" object1="../.." object2="Visual" />
+        </Node>
+    </Node>
+    <Node name="M3">
+        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
+        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <Object type="MechanicalObject" />
+        <Object type="UniformMass" mass="0.1" />
+        <Object type="RegularGrid" nx="10" ny="10" nz="1" xmin="30" xmax="39" ymin="0" ymax="9" zmin="12" zmax="13" />
+        <Object type="FixedConstraint" indices="0 9 99" />
+        <Object type="TriangleFEMForceField" name="FEM3" youngModulus="5000" poissonRatio="0.3" method="large" />
+        <Object type="Triangle" />
+        <Node name="Visu">
+            <Object type="OglModel" name="Visual" color="yellow" />
+            <Object type="IdentityMapping" object1="../.." object2="Visual" />
+        </Node>
+    </Node>
 </Node>

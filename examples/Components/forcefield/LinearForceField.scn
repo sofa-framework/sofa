@@ -1,26 +1,27 @@
-<Node name="root"  dt="0.005" gravity="0 0 0" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1">
-	<Node name="TorusRigidX">
-	  <Object type="EulerSolver"/>
-	  <Object type="CGLinearSolver" iterations="25" threshold="0.00000001"  />
-	  <Object type="MechanicalObject" template="Rigid"  dx="2" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  />
-	  <Object type="UniformMass" />
-	  <!-- forces for a rigid is composed of two parts translation of the rigid dof [x y z] and a quaternion for the rotation [x y z w] -->
-    <Object type="LinearForceField" points="0" forces="0 0 0 0 0 0  1 0 0 0 0 0  -1 0 0 0 0 0  -1 0 0 0 0 0  0 0 0 0 0 0" force="2.0" times="0 4 8 10 12"/>
-	  <Node name="Visu">
-	    <Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="0.3"/>
-	    <Object type="RigidMapping" object1="../.." object2="Visual" />
-	  </Node>
-	</Node>
-	<Node name="TorusRigidY">
-	  <Object type="EulerSolver"/>
-	  <Object type="CGLinearSolver" iterations="25" threshold="0.00000001"  />
-	  <Object type="MechanicalObject" template="Rigid"  dx="2" dy="2" dz="0" rx="0" ry="0" rz="0" scale="1.0"  />
-	  <Object type="UniformMass" />
-	  <!-- forces for a rigid is composed of two parts translation of the rigid dof [x y z] and a quaternion for the rotation [x y z w] -->
-    <Object type="LinearForceField" points="0" forces="0 0 0 0 0 0  0 1 0 0 0 0  0 -1 0 0 0 0  0 -1 0 0 0 0  0 0 0 0 0 0" force="2.0" times="0 4 8 10 12"/>
-	  <Node name="Visu">
-	    <Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="0.3"/>
-	    <Object type="RigidMapping" object1="../.." object2="Visual" />
-	  </Node>
-	</Node>
+<Node name="root" dt="0.005" gravity="0 0 0">
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <Node name="TorusRigidX">
+        <Object type="EulerSolver" />
+        <Object type="CGLinearSolver" iterations="25" threshold="0.00000001" />
+        <Object type="MechanicalObject" template="Rigid" dx="2" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
+        <Object type="UniformMass" />
+        <!-- forces for a rigid is composed of two parts translation of the rigid dof [x y z] and a quaternion for the rotation [x y z w] -->
+        <Object type="LinearForceField" points="0" forces="0 0 0 0 0 0  1 0 0 0 0 0  -1 0 0 0 0 0  -1 0 0 0 0 0  0 0 0 0 0 0" force="2.0" times="0 4 8 10 12" />
+        <Node name="Visu">
+            <Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="0.3" />
+            <Object type="RigidMapping" object1="../.." object2="Visual" />
+        </Node>
+    </Node>
+    <Node name="TorusRigidY">
+        <Object type="EulerSolver" />
+        <Object type="CGLinearSolver" iterations="25" threshold="0.00000001" />
+        <Object type="MechanicalObject" template="Rigid" dx="2" dy="2" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
+        <Object type="UniformMass" />
+        <!-- forces for a rigid is composed of two parts translation of the rigid dof [x y z] and a quaternion for the rotation [x y z w] -->
+        <Object type="LinearForceField" points="0" forces="0 0 0 0 0 0  0 1 0 0 0 0  0 -1 0 0 0 0  0 -1 0 0 0 0  0 0 0 0 0 0" force="2.0" times="0 4 8 10 12" />
+        <Node name="Visu">
+            <Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="0.3" />
+            <Object type="RigidMapping" object1="../.." object2="Visual" />
+        </Node>
+    </Node>
 </Node>

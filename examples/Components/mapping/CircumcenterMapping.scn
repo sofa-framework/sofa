@@ -1,27 +1,26 @@
-<?xml version="1.0"?>
-<Node name="root" dt="0.02" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="1">
-        <CollisionPipeline verbose="0" name="CollisionPipeline"/>
-        <BruteForceDetection name="N2" />
-        <CollisionResponse response="default" name="collision response"/>
-	<Node name="TriangleSetTopology">
-	  <EulerImplicit />
-          <CGLinearSolver iterations="25" />
-		<Object type="TriangleSetTopologyContainer" name="Container1" fileTopology="mesh/tshirt_0.msh" />
-		<Object type="TriangleSetTopologyModifier"/>
-		<Object type="TriangleSetGeometryAlgorithms"/>
-		<Object type="MechanicalObject" />
-		<Object type="DiagonalMass" filename="mesh/tshirt_0.msh" />
-		<Object type="FixedConstraint" indices="38 39 40 41 42 43 123 124 137"/>
-		<Object     type="TriangleFEMForceField"    name="FEM"
-          youngModulus="50000" poissonRatio="0.3" method="large"/>
-
-		<Node name="PointSetTopology">
-			<Object type="PointSetTopologyContainer" name="Container2"/>
-			<Object type="PointSetTopologyModifier"/>
-			<Object type="Mesh2PointTopologicalMapping" object1="Container1" object2="Container2" triangleBaryCoords="0.33 0.33 0" />
-			<Object type="MechanicalObject" />
- 			<Object type="CircumcenterMapping"/> 
-			<Object type="Sphere" radius="0.05" />
-		</Node>
-	</Node>
+<?xml version="1.0" ?>
+<Node name="root" dt="0.02">
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
+    <CollisionPipeline verbose="0" name="CollisionPipeline" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" name="collision response" />
+    <Node name="TriangleSetTopology">
+        <EulerImplicit />
+        <CGLinearSolver iterations="25" />
+        <Object type="TriangleSetTopologyContainer" name="Container1" fileTopology="mesh/tshirt_0.msh" />
+        <Object type="TriangleSetTopologyModifier" />
+        <Object type="TriangleSetGeometryAlgorithms" />
+        <Object type="MechanicalObject" />
+        <Object type="DiagonalMass" filename="mesh/tshirt_0.msh" />
+        <Object type="FixedConstraint" indices="38 39 40 41 42 43 123 124 137" />
+        <Object type="TriangleFEMForceField" name="FEM" youngModulus="50000" poissonRatio="0.3" method="large" />
+        <Node name="PointSetTopology">
+            <Object type="PointSetTopologyContainer" name="Container2" />
+            <Object type="PointSetTopologyModifier" />
+            <Object type="Mesh2PointTopologicalMapping" object1="Container1" object2="Container2" triangleBaryCoords="0.33 0.33 0" />
+            <Object type="MechanicalObject" />
+            <Object type="CircumcenterMapping" />
+            <Object type="Sphere" radius="0.05" />
+        </Node>
+    </Node>
 </Node>

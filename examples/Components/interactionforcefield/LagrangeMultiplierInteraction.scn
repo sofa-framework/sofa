@@ -1,58 +1,47 @@
-<?xml version="1.0"?>
-<Node name="root"  dt="0.005" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" showInteractionForceFields="1" gravity="0 -9.81 0">
-	<!--<Object type="ConstraintAnimationLoop"/>-->
-	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="NewProximityIntersection" name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-	<Object type="CollisionResponse" name="Response" response="default" />
-	<Object type="CollisionGroup" name="Group" />
-	
-	
-	
-	<Node name="Dynamics">
-		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-20" threshold="1.0e-20" />
-		
-		<Node name="CUBE_0">
-			<Object type="OglModel" name="Visual" fileMesh="mesh/cube.obj" color="1 0 0 1" dy="2.5"/>
-			<Node name="Constraints">
-				<Object type="MechanicalObject" name="points" template="Vec3d" position="1 1.25 1"/>
-			</Node>
-		</Node>	
-		
-		
-		<Node name="CUBE_1">
-			<!--<Object type="CGImplicit" iterations="25"/>-->
-			<Object type="MechanicalObject" template="Rigid" scale="1.0"  dx="0.0" dy="0" dz="0.0"/>
-			<Object type="UniformMass" totalmass="10.0"/>
-			<!--<Object type="UncoupledConstraintCorrection"/> -->
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" fileMesh="mesh/cube.obj" color="1 1 0 1.0"/>
-				<Object type="RigidMapping" object1="../.." object2="Visual" />
-				</Node>
-			<Node name="ColliCube">
-				<Object type="Mesh" filename="mesh/cube.obj"/>
-				<Object type="MechanicalObject" scale="1.0"/>
-				<Object type="Triangle"  contactStiffness="100"/> 
-				<Object type="Line"  contactStiffness="100"/>
-				<Object type="Point"  contactStiffness="100"/>
-				<Object type="RigidMapping" />
-				</Node>
-			
-			<Node name="Constraints">
-				<Object type="MechanicalObject" name="points" template="Vec3d" position="1 1.25 1 -1.25 -1.25 1.25"/>
-				<Object type="RigidMapping" />
-				</Node>
-		</Node>
-		
-		<Object type="BilateralInteractionConstraint" object1="CUBE_0/Constraints/points" object2="CUBE_1/Constraints/points" first_point="0" second_point="0" />
-		 
-		 
-		<Node name="LagrangeMultiplier">
-		      <Object type="MechanicalObject" name="LM" template="Vec1d" position="0 0 0" />
-		</Node>
-		<Object type="LagrangeMultiplierInteraction" object1="LagrangeMultiplier/LM" object2="CUBE_1/Constraints/points"/>
-		 
-		 
-	</Node>
+<?xml version="1.0" ?>
+<Node name="root" dt="0.005" gravity="0 -9.81 0">
+    <!--<Object type="ConstraintAnimationLoop"/>-->
+    <VisualStyle displayFlags="showForceFields" />
+    <Object type="CollisionPipeline" depth="6" verbose="0" draw="0" />
+    <Object type="BruteForceDetection" name="N2" />
+    <Object type="NewProximityIntersection" name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <Object type="CollisionResponse" name="Response" response="default" />
+    <Object type="CollisionGroup" name="Group" />
+    <Node name="Dynamics">
+        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
+        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-20" threshold="1.0e-20" />
+        <Node name="CUBE_0">
+            <Object type="OglModel" name="Visual" fileMesh="mesh/cube.obj" color="1 0 0 1" dy="2.5" />
+            <Node name="Constraints">
+                <Object type="MechanicalObject" name="points" template="Vec3d" position="1 1.25 1" />
+            </Node>
+        </Node>
+        <Node name="CUBE_1">
+            <!--<Object type="CGImplicit" iterations="25"/>-->
+            <Object type="MechanicalObject" template="Rigid" scale="1.0" dx="0.0" dy="0" dz="0.0" />
+            <Object type="UniformMass" totalmass="10.0" />
+            <!--<Object type="UncoupledConstraintCorrection"/> -->
+            <Node name="Visu">
+                <Object type="OglModel" name="Visual" fileMesh="mesh/cube.obj" color="1 1 0 1.0" />
+                <Object type="RigidMapping" object1="../.." object2="Visual" />
+            </Node>
+            <Node name="ColliCube">
+                <Object type="Mesh" filename="mesh/cube.obj" />
+                <Object type="MechanicalObject" scale="1.0" />
+                <Object type="Triangle" contactStiffness="100" />
+                <Object type="Line" contactStiffness="100" />
+                <Object type="Point" contactStiffness="100" />
+                <Object type="RigidMapping" />
+            </Node>
+            <Node name="Constraints">
+                <Object type="MechanicalObject" name="points" template="Vec3d" position="1 1.25 1 -1.25 -1.25 1.25" />
+                <Object type="RigidMapping" />
+            </Node>
+        </Node>
+        <Object type="BilateralInteractionConstraint" object1="CUBE_0/Constraints/points" object2="CUBE_1/Constraints/points" first_point="0" second_point="0" />
+        <Node name="LagrangeMultiplier">
+            <Object type="MechanicalObject" name="LM" template="Vec1d" position="0 0 0" />
+        </Node>
+        <Object type="LagrangeMultiplierInteraction" object1="LagrangeMultiplier/LM" object2="CUBE_1/Constraints/points" />
+    </Node>
 </Node>

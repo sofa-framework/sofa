@@ -1,11 +1,11 @@
-
-<Node name="root" dt="0.02" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="0" >
+<Node name="root" dt="0.02">
+    <VisualStyle displayFlags="showCollisionModels" />
     <Node name="extrude">
-	<Mesh name="meshLoader"  filename="mesh/liver.obj"/>
-	<MechanicalObject />
-	<SphereROI name="surface1" centers="2 4 0" radii="0.88" drawSize="0" isVisible="0"/>
-	<ExtrudeSurface template="Vec3d" name="extrusion" surfaceVertices="@meshLoader.points" surfaceTriangles="@surface1.triangleIndices" isVisible="0"/>
-	<RandomPointDistributionInSurface template="Vec3d" vertices="@extrusion.extrusionVertices" triangles="@extrusion.extrusionTriangles" numberOfInPoints="100" numberOfTests="3" minDistanceBetweenPoints="0.1"/>
+        <Mesh name="meshLoader" filename="mesh/liver.obj" />
+        <MechanicalObject />
+        <SphereROI name="surface1" centers="2 4 0" radii="0.88" drawSize="0" isVisible="0" />
+        <ExtrudeSurface template="Vec3d" name="extrusion" surfaceVertices="@meshLoader.points" surfaceTriangles="@surface1.triangleIndices" isVisible="0" />
+        <RandomPointDistributionInSurface template="Vec3d" vertices="@extrusion.extrusionVertices" triangles="@extrusion.extrusionTriangles" numberOfInPoints="100" numberOfTests="3" minDistanceBetweenPoints="0.1" />
     </Node>
     <!--<Node>
         <Mesh points="@../extrude/extrusion.extrusionVertices" triangles="@../extrude/extrusion.extrusionTriangles" />
@@ -15,7 +15,7 @@
         <Triangle/>
         <OglModel color="red" />
     </Node>-->
-	<Node>
-	<OglModel filename="mesh/liver.obj"/>
-	</Node>
+    <Node>
+        <OglModel filename="mesh/liver.obj" />
+    </Node>
 </Node>

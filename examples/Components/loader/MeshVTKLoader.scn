@@ -1,24 +1,21 @@
 <!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
-<Node 	name="Root" gravity="0 -9.81 0" dt="0.02" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="1" showMappings="1" showMechanicalMappings="1" showForceFields="1" showInteractionForceFields="1"  >
-	<DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6"/>
-	<BruteForceDetection name="Detection"/>
-	<MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2"/>
-	<DefaultContactManager name="Response" response="default"/>
-	<TreeCollisionGroupManager name="Group"/>
-	<Node name="vtk file">
-	  <EulerImplicit name="cg_odesolver" printLog="false"  />
-	  <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"  />
-	  <MeshVTKLoader name="VtkLoader" filename="mesh/liver.vtk"/>
-
-	  <!--	  <MeshGmshLoader name="loader" filename="mesh/square3.msh" /> -->
-	  <MechanicalObject  name="dofs" scale="1" src="@VtkLoader"  />
-	  
-	  <TriangleSetTopologyContainer  name="topo" src="@VtkLoader" />
-	  <TriangleSetTopologyModifier name="modif" />
-	  <TriangleSetTopologyAlgorithms name="algo" />
-	  <TriangleSetGeometryAlgorithms name="triGeo" />
-
- 	  <OglModel name="VisualModel" src="@VtkLoader" color="red" texturename="textures/liver-texture-square.png" />		    
-
-	</Node>
+<Node name="Root" gravity="0 -9.81 0" dt="0.02">
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollision showMapping" />
+    <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
+    <BruteForceDetection name="Detection" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <DefaultContactManager name="Response" response="default" />
+    <TreeCollisionGroupManager name="Group" />
+    <Node name="vtk file">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshVTKLoader name="VtkLoader" filename="mesh/liver.vtk" />
+        <!--	  <MeshGmshLoader name="loader" filename="mesh/square3.msh" /> -->
+        <MechanicalObject name="dofs" scale="1" src="@VtkLoader" />
+        <TriangleSetTopologyContainer name="topo" src="@VtkLoader" />
+        <TriangleSetTopologyModifier name="modif" />
+        <TriangleSetTopologyAlgorithms name="algo" />
+        <TriangleSetGeometryAlgorithms name="triGeo" />
+        <OglModel name="VisualModel" src="@VtkLoader" color="red" texturename="textures/liver-texture-square.png" />
+    </Node>
 </Node>

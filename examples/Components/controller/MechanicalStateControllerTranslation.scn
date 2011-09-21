@@ -1,34 +1,28 @@
-<Node name="root" dt="0.005" gravity="0 -10 0" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="1" >
-	
-	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="LocalMinDistance" name="Proximity" alarmDistance="1.0" contactDistance="0.5"/>
-	<Object type="CollisionResponse" name="Response" response="default" />
-	<Object type="CollisionGroup" name="Group" />
-	
-	<Node name="InstrumentEdgeSet">
-		<Object type="EulerImplicit" rayleighStiffness="0" printLog="false" />
-		<Object iterations="100" threshold="0.00000001" type="CGLinearSolver"/>
-		
-		
-			<Object template="Rigid" type="MechanicalObject"/> 
-			<Object type="UniformMass" mass="0"/>
-			<Node name="Visu"> 
-				<Object color="0.500 0.500 0.500" fileMesh="mesh/sphere.obj" name="Visual" type="OglModel" scale="50"/> 
-				<Object object1="../.." object2="Visual" type="RigidMapping"/>
-			</Node> 
-			<Node name="Surf2"> 
-				<Object type="MeshObjLoader" name="loader" filename="mesh/sphere.obj" />
-				<Object type="Mesh" src="@loader" />
-				<Object type="MechanicalObject" src="@loader" scale="50"/>
-				<Object type="Triangle"/> 
-				<Object type="Line"/> 
-				<Object type="Point"/> 
-				<Object type="RigidMapping"/> 
-			</Node> 
-
-		
-		<Object type="MechanicalStateController" template="Rigid" onlyTranslation="true" listening="true" handleEventTriggersUpdate="true"/>
-
-	</Node>
+<Node name="root" dt="0.005" gravity="0 -10 0">
+    <VisualStyle displayFlags="showForceFields showCollisionModels" />
+    <Object type="CollisionPipeline" depth="6" verbose="0" draw="0" />
+    <Object type="BruteForceDetection" name="N2" />
+    <Object type="LocalMinDistance" name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
+    <Object type="CollisionResponse" name="Response" response="default" />
+    <Object type="CollisionGroup" name="Group" />
+    <Node name="InstrumentEdgeSet">
+        <Object type="EulerImplicit" rayleighStiffness="0" printLog="false" />
+        <Object iterations="100" threshold="0.00000001" type="CGLinearSolver" />
+        <Object template="Rigid" type="MechanicalObject" />
+        <Object type="UniformMass" mass="0" />
+        <Node name="Visu">
+            <Object color="0.500 0.500 0.500" fileMesh="mesh/sphere.obj" name="Visual" type="OglModel" scale="50" />
+            <Object object1="../.." object2="Visual" type="RigidMapping" />
+        </Node>
+        <Node name="Surf2">
+            <Object type="MeshObjLoader" name="loader" filename="mesh/sphere.obj" />
+            <Object type="Mesh" src="@loader" />
+            <Object type="MechanicalObject" src="@loader" scale="50" />
+            <Object type="Triangle" />
+            <Object type="Line" />
+            <Object type="Point" />
+            <Object type="RigidMapping" />
+        </Node>
+        <Object type="MechanicalStateController" template="Rigid" onlyTranslation="true" listening="true" handleEventTriggersUpdate="true" />
+    </Node>
 </Node>

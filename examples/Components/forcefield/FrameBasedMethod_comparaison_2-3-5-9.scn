@@ -1,107 +1,89 @@
-<Node 	name="root" 
-	gravity="0 0 0" 
-	dt="1" 
-	showBehaviorModels="0" 
-	showVisualModels="0" 
-	showCollisionModels="0" 
-	showBoundingCollisionModels="0" 
-	showForceFields="0" 
-	showInteractionForceFields="1" 
-	showWireFrame="0" 
-	 >
-	<DefaultPipeline name="default21" verbose="0"/>
-	<BruteForceDetection name="N2"/>
-	<DefaultContactManager name="default22" response="default"/>
-	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5"/>
-	<DefaultCollisionGroupManager name="default23"/>
-
-
-	<Node 	name="FrameBased2" showVisualModels="1" showBehaviorModels="0" showCollisionModels="1" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-		<EulerImplicitSolver name="default2" />
-		<CGLinearSolver template="GraphScattered" name="default3"  iterations="50"  threshold="1e-08" />
-		<MechanicalObject template="Rigid" name="DOFs"  restScale="1"  position="0 0 0 0 0 0 1  0 0 2 0 0 0 1"/>
-		<FrameDiagonalMass template="Rigid" name="Mass"  massDensity="0.1"  showAxisSizeFactor="0.1"  damping="0" rotateMass="0"/>
-		<FrameHookeForceField template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>
-<!--		<FrameSpringForceField2 template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>-->
-		<FixedConstraint template="Rigid" name="FixOrigin"  indices="0" />
-		<ConstantForceField template="Rigid" points="1" force="0 -0.04 0 0 0 0" arrowSizeCoef="100"/>
-		<Node name="PointSet">
-			<MechanicalObject template="Vec3d" name="PointSet"  restScale="1" />
-			<RegularGridTopology name="default2" n="10 10 9" min="-0.45 -0.45 0" max="0.45 0.45 2" />
-			<SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2"  object1="../../DOFs"  object2="PointSet" computeJ="1"  computeAllMatrices="1"  wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1"/>
-		</Node>
-		<Node name="visualNode">
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="8 0 0"/>
-			<SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2"  object1="../../DOFs" object2="Visual" computeJ="0"  computeAllMatrices="0" wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005"/>
-		</Node>
-	</Node>
-
-
-
-	<Node 	name="FrameBased3" showVisualModels="1" showBehaviorModels="0" showCollisionModels="1" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-		<EulerImplicitSolver name="default2" />
-		<CGLinearSolver template="GraphScattered" name="default3"  iterations="50"  threshold="1e-08" />
-		<MechanicalObject template="Rigid" name="DOFs"  restScale="1"  position="0 0 0 0 0 0 1   0 0 1 0 0 0 1   0 0 2 0 0 0 1"/>
-		<FrameDiagonalMass template="Rigid" name="Mass"  massDensity="0.1"  showAxisSizeFactor="0.1"  damping="0" rotateMass="0"/>
-		<FrameHookeForceField template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>
-<!--		<FrameSpringForceField2 template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>-->
-		<FixedConstraint template="Rigid" name="FixOrigin"  indices="0" />
-		<ConstantForceField template="Rigid" points="2" force="0 -0.04 0 0 0 0" arrowSizeCoef="100"/>
-		<Node name="PointSet">
-			<MechanicalObject template="Vec3d" name="PointSet"  restScale="1" />
-			<RegularGridTopology name="default2" n="10 10 9" min="-0.45 -0.45 0" max="0.45 0.45 2" />
-			<SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2"  object1="../../DOFs"  object2="PointSet" computeJ="1"  computeAllMatrices="1"  wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1"/>
-		</Node>
-		<Node name="visualNode">
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="6 0 0"/>
-			<SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2"  object1="../../DOFs" object2="Visual" computeJ="0"  computeAllMatrices="0" wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005"/>
-		</Node>
-	</Node>
-
-
-
-	<Node 	name="FrameBased5" showVisualModels="1" showBehaviorModels="0" showCollisionModels="1" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-		<EulerImplicitSolver name="default2" />
-		<CGLinearSolver template="GraphScattered" name="default3"  iterations="50"  threshold="1e-08" />
-		<MechanicalObject template="Rigid" name="DOFs"  restScale="1"  position="0 0 0 0 0 0 1   0 0 0.5 0 0 0 1   0 0 1 0 0 0 1   0 0 1.5 0 0 0 1   0 0 2 0 0 0 1"/>
-		<FrameDiagonalMass template="Rigid" name="Mass"  massDensity="0.1"  showAxisSizeFactor="0.1"  damping="0" rotateMass="0"/>
-		<FrameHookeForceField template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>
-<!--		<FrameSpringForceField2 template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>-->
-		<FixedConstraint template="Rigid" name="FixOrigin"  indices="0" />
-		<ConstantForceField template="Rigid" points="4" force="0 -0.04 0 0 0 0" arrowSizeCoef="100"/>
-		<Node name="PointSet">
-			<MechanicalObject template="Vec3d" name="PointSet"  restScale="1" />
-			<RegularGridTopology name="default2" n="10 10 9" min="-0.45 -0.45 0" max="0.45 0.45 2" />
-			<SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2"  object1="../../DOFs"  object2="PointSet" computeJ="1"  computeAllMatrices="1"  wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1"/>
-		</Node>
-		<Node name="visualNode">
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="4 0 0"/>
-			<SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2"  object1="../../DOFs" object2="Visual" computeJ="0"  computeAllMatrices="0" wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005"/>
-		</Node>
-	</Node>
-
-
-
-	<Node 	name="FrameBased9" showVisualModels="1" showBehaviorModels="0" showCollisionModels="1" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-<!--<StaticSolver name="default2" />-->
-		<EulerImplicitSolver name="default2" />
-		<CGLinearSolver template="GraphScattered" name="default3"  iterations="50"  threshold="1e-08" />
-		<MechanicalObject template="Rigid" name="DOFs"  restScale="1"  position="0 0 0 0 0 0 1   0 0 0.25 0 0 0 1   0 0 0.5 0 0 0 1   0 0 0.75 0 0 0 1   0 0 1 0 0 0 1   0 0 1.25 0 0 0 1   0 0 1.5 0 0 0 1   0 0 1.75 0 0 0 1   0 0 2 0 0 0 1"/>
-		<FrameDiagonalMass template="Rigid" name="Mass"  massDensity="0.1"  showAxisSizeFactor="0.1"  damping="0" rotateMass="0"/>
-		<FrameHookeForceField template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>
-<!--		<FrameSpringForceField2 template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>-->
-		<FixedConstraint template="Rigid" name="FixOrigin"  indices="0" />
-		<ConstantForceField template="Rigid" points="8" force="0 -0.04 0 0 0 0" arrowSizeCoef="100"/>
-		<Node name="PointSet">
-			<MechanicalObject template="Vec3d" name="PointSet"  restScale="1" />
-			<RegularGridTopology name="default2" n="10 10 9" min="-0.45 -0.45 0" max="0.45 0.45 2" />
-			<SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2"  object1="../../DOFs"  object2="PointSet" computeJ="1"  computeAllMatrices="1"  wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1"/>
-		</Node>
-		<Node name="visualNode">
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="2 0 0"/>
-			<SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2"  object1="../../DOFs" object2="Visual" computeJ="0"  computeAllMatrices="0" wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005"/>
-		</Node>
-	</Node>
-
-
+<Node name="root" gravity="0 0 0" dt="1">
+    <VisualStyle displayFlags="showForceFields" />
+    <DefaultPipeline name="default21" verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="default22" response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultCollisionGroupManager name="default23" />
+    <Node name="FrameBased2">
+        <VisualStyle displayFlags="showVisual hideForceFields showCollisionModels hideMapping hideNormals" />
+        <EulerImplicitSolver name="default2" />
+        <CGLinearSolver template="GraphScattered" name="default3" iterations="50" threshold="1e-08" />
+        <MechanicalObject template="Rigid" name="DOFs" restScale="1" position="0 0 0 0 0 0 1  0 0 2 0 0 0 1" />
+        <FrameDiagonalMass template="Rigid" name="Mass" massDensity="0.1" showAxisSizeFactor="0.1" damping="0" rotateMass="0" />
+        <FrameHookeForceField template="Rigid" name="Hooke" youngModulus="1" poissonRatio="0" />
+        <!--		<FrameSpringForceField2 template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>-->
+        <FixedConstraint template="Rigid" name="FixOrigin" indices="0" />
+        <ConstantForceField template="Rigid" points="1" force="0 -0.04 0 0 0 0" arrowSizeCoef="100" />
+        <Node name="PointSet">
+            <MechanicalObject template="Vec3d" name="PointSet" restScale="1" />
+            <RegularGridTopology name="default2" n="10 10 9" min="-0.45 -0.45 0" max="0.45 0.45 2" />
+            <SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2" object1="../../DOFs" object2="PointSet" computeJ="1" computeAllMatrices="1" wheightingType="2" interpolationType="1" distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1" />
+        </Node>
+        <Node name="visualNode">
+            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="8 0 0" />
+            <SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2" object1="../../DOFs" object2="Visual" computeJ="0" computeAllMatrices="0" wheightingType="2" interpolationType="1" distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" />
+        </Node>
+    </Node>
+    <Node name="FrameBased3">
+        <VisualStyle displayFlags="showVisual hideForceFields showCollisionModels hideMapping hideNormals" />
+        <EulerImplicitSolver name="default2" />
+        <CGLinearSolver template="GraphScattered" name="default3" iterations="50" threshold="1e-08" />
+        <MechanicalObject template="Rigid" name="DOFs" restScale="1" position="0 0 0 0 0 0 1   0 0 1 0 0 0 1   0 0 2 0 0 0 1" />
+        <FrameDiagonalMass template="Rigid" name="Mass" massDensity="0.1" showAxisSizeFactor="0.1" damping="0" rotateMass="0" />
+        <FrameHookeForceField template="Rigid" name="Hooke" youngModulus="1" poissonRatio="0" />
+        <!--		<FrameSpringForceField2 template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>-->
+        <FixedConstraint template="Rigid" name="FixOrigin" indices="0" />
+        <ConstantForceField template="Rigid" points="2" force="0 -0.04 0 0 0 0" arrowSizeCoef="100" />
+        <Node name="PointSet">
+            <MechanicalObject template="Vec3d" name="PointSet" restScale="1" />
+            <RegularGridTopology name="default2" n="10 10 9" min="-0.45 -0.45 0" max="0.45 0.45 2" />
+            <SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2" object1="../../DOFs" object2="PointSet" computeJ="1" computeAllMatrices="1" wheightingType="2" interpolationType="1" distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1" />
+        </Node>
+        <Node name="visualNode">
+            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="6 0 0" />
+            <SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2" object1="../../DOFs" object2="Visual" computeJ="0" computeAllMatrices="0" wheightingType="2" interpolationType="1" distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" />
+        </Node>
+    </Node>
+    <Node name="FrameBased5">
+        <VisualStyle displayFlags="showVisual hideForceFields showCollisionModels hideMapping hideNormals" />
+        <EulerImplicitSolver name="default2" />
+        <CGLinearSolver template="GraphScattered" name="default3" iterations="50" threshold="1e-08" />
+        <MechanicalObject template="Rigid" name="DOFs" restScale="1" position="0 0 0 0 0 0 1   0 0 0.5 0 0 0 1   0 0 1 0 0 0 1   0 0 1.5 0 0 0 1   0 0 2 0 0 0 1" />
+        <FrameDiagonalMass template="Rigid" name="Mass" massDensity="0.1" showAxisSizeFactor="0.1" damping="0" rotateMass="0" />
+        <FrameHookeForceField template="Rigid" name="Hooke" youngModulus="1" poissonRatio="0" />
+        <!--		<FrameSpringForceField2 template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>-->
+        <FixedConstraint template="Rigid" name="FixOrigin" indices="0" />
+        <ConstantForceField template="Rigid" points="4" force="0 -0.04 0 0 0 0" arrowSizeCoef="100" />
+        <Node name="PointSet">
+            <MechanicalObject template="Vec3d" name="PointSet" restScale="1" />
+            <RegularGridTopology name="default2" n="10 10 9" min="-0.45 -0.45 0" max="0.45 0.45 2" />
+            <SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2" object1="../../DOFs" object2="PointSet" computeJ="1" computeAllMatrices="1" wheightingType="2" interpolationType="1" distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1" />
+        </Node>
+        <Node name="visualNode">
+            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="4 0 0" />
+            <SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2" object1="../../DOFs" object2="Visual" computeJ="0" computeAllMatrices="0" wheightingType="2" interpolationType="1" distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" />
+        </Node>
+    </Node>
+    <Node name="FrameBased9">
+        <!--<StaticSolver name="default2" />-->
+        <VisualStyle displayFlags="showVisual hideForceFields showCollisionModels hideMapping hideNormals" />
+        <EulerImplicitSolver name="default2" />
+        <CGLinearSolver template="GraphScattered" name="default3" iterations="50" threshold="1e-08" />
+        <MechanicalObject template="Rigid" name="DOFs" restScale="1" position="0 0 0 0 0 0 1   0 0 0.25 0 0 0 1   0 0 0.5 0 0 0 1   0 0 0.75 0 0 0 1   0 0 1 0 0 0 1   0 0 1.25 0 0 0 1   0 0 1.5 0 0 0 1   0 0 1.75 0 0 0 1   0 0 2 0 0 0 1" />
+        <FrameDiagonalMass template="Rigid" name="Mass" massDensity="0.1" showAxisSizeFactor="0.1" damping="0" rotateMass="0" />
+        <FrameHookeForceField template="Rigid" name="Hooke" youngModulus="1" poissonRatio="0" />
+        <!--		<FrameSpringForceField2 template="Rigid" name="Hooke"  youngModulus="1" poissonRatio="0"/>-->
+        <FixedConstraint template="Rigid" name="FixOrigin" indices="0" />
+        <ConstantForceField template="Rigid" points="8" force="0 -0.04 0 0 0 0" arrowSizeCoef="100" />
+        <Node name="PointSet">
+            <MechanicalObject template="Vec3d" name="PointSet" restScale="1" />
+            <RegularGridTopology name="default2" n="10 10 9" min="-0.45 -0.45 0" max="0.45 0.45 2" />
+            <SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2" object1="../../DOFs" object2="PointSet" computeJ="1" computeAllMatrices="1" wheightingType="2" interpolationType="1" distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1" />
+        </Node>
+        <Node name="visualNode">
+            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="2 0 0" />
+            <SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2" object1="../../DOFs" object2="Visual" computeJ="0" computeAllMatrices="0" wheightingType="2" interpolationType="1" distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" />
+        </Node>
+    </Node>
 </Node>

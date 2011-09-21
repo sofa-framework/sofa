@@ -1,109 +1,95 @@
-<Node name="root" 
-	gravity="0 -9.81 0" 
-	dt="0.01" 
-	time="0" 
-	animate="0" 
-	showVisualModels="1" 
-	showBehaviorModels="1" 
-	showCollisionModels="0" 
-	showBoundingCollisionModels="0" 
-	showMappings="0" 
-	showMechanicalMappings="0" 
-	showForceFields="0" 
-	showInteractionForceFields="1" 
-	showWireFrame="0" 
-	showNormals="0" 
-	 >
-	<CGImplicitSolver>
-		<Attribute type="name">
-			<Data value="solver"/>
-		</Attribute>
-		<Attribute type="printLog">
-			<Data value="0"/>
-		</Attribute>
-		<Attribute type="iterations">
-			<Data value="25"/>
-		</Attribute>
-		<Attribute type="rayleighStiffness">
-			<Data value="0"/>
-		</Attribute>
-		<Attribute type="rayleighMass">
-			<Data value="0"/>
-		</Attribute>
-	</CGImplicitSolver>
-  <MechanicalObject template="Vec3d">
-    <Attribute type="name">
-      <Data value="particleDOF"/>
-    </Attribute>
-    <Attribute type="position">
-      <Data value="0 0 0"/>
-    </Attribute>
-    <Attribute type="velocity">
-      <Data value="0 10 0"/>
-    </Attribute>
-    <Attribute type="derivX">
-      <Data value="0 0 0"/>
-    </Attribute>
-    <Attribute type="free_position">
-      <Data value="0 0 0"/>
-    </Attribute>
-    <Attribute type="free_velocity">
-      <Data value="0 0 0"/>
-    </Attribute>
-    <Attribute type="rest_position">
-      <Data value="0 0 0"/>
-    </Attribute>
-    <Attribute type="translation">
-      <Data value="0 0 0"/>
-    </Attribute>
-    <Attribute type="rotation">
-      <Data value="0 0 0"/>
-    </Attribute>
-    <Attribute type="scale">
-      <Data value="1"/>
-    </Attribute>
-  </MechanicalObject>
-	<HermiteSplineConstraint template="Vec3d">
-		<Attribute type="name">
-			<Data value="thierry"/>
-		</Attribute>
-		<Attribute type="indices">
-			<Data value="0"/>
-		</Attribute>
-		<Attribute type="BeginTime">
-			<Data value="0"/>
-		</Attribute>
-		<Attribute type="EndTime">
-			<Data value="5"/>
-		</Attribute>
-		<Attribute type="X0">
-			<Data value="0 0 0"/>
-		</Attribute>
-		<Attribute type="dX0">
-			<Data value="0 10 0"/>
-		</Attribute>
-		<Attribute type="X1">
-			<Data value="5 0 0"/>
-		</Attribute>
-		<Attribute type="dX1">
-			<Data value="0 5 0"/>
-		</Attribute>
-		<Attribute type="SX0">
-			<Data value="1 0"/>
-		</Attribute>
-		<Attribute type="SX1">
-			<Data value="0 2"/>
-		</Attribute>
-	</HermiteSplineConstraint>
-	<UniformMass template="Vec3d">
-		<Attribute type="name">
-			<Data value="particleMass"/>
-		</Attribute>
-		<Attribute type="mass">
-			<Data value="1"/>
-		</Attribute>
-		<Attribute type="totalmass">
-			<Data value="1"/>
-		</Attribute>
-	</UniformMass>
+<Node name="root" gravity="0 -9.81 0" dt="0.01" time="0" animate="0">
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields" />
+    <CGImplicitSolver>
+        <Attribute type="name">
+            <Data value="solver" />
+        </Attribute>
+        <Attribute type="printLog">
+            <Data value="0" />
+        </Attribute>
+        <Attribute type="iterations">
+            <Data value="25" />
+        </Attribute>
+        <Attribute type="rayleighStiffness">
+            <Data value="0" />
+        </Attribute>
+        <Attribute type="rayleighMass">
+            <Data value="0" />
+        </Attribute>
+    </CGImplicitSolver>
+    <MechanicalObject template="Vec3d">
+        <Attribute type="name">
+            <Data value="particleDOF" />
+        </Attribute>
+        <Attribute type="position">
+            <Data value="0 0 0" />
+        </Attribute>
+        <Attribute type="velocity">
+            <Data value="0 10 0" />
+        </Attribute>
+        <Attribute type="derivX">
+            <Data value="0 0 0" />
+        </Attribute>
+        <Attribute type="free_position">
+            <Data value="0 0 0" />
+        </Attribute>
+        <Attribute type="free_velocity">
+            <Data value="0 0 0" />
+        </Attribute>
+        <Attribute type="rest_position">
+            <Data value="0 0 0" />
+        </Attribute>
+        <Attribute type="translation">
+            <Data value="0 0 0" />
+        </Attribute>
+        <Attribute type="rotation">
+            <Data value="0 0 0" />
+        </Attribute>
+        <Attribute type="scale">
+            <Data value="1" />
+        </Attribute>
+    </MechanicalObject>
+    <HermiteSplineConstraint template="Vec3d">
+        <Attribute type="name">
+            <Data value="thierry" />
+        </Attribute>
+        <Attribute type="indices">
+            <Data value="0" />
+        </Attribute>
+        <Attribute type="BeginTime">
+            <Data value="0" />
+        </Attribute>
+        <Attribute type="EndTime">
+            <Data value="5" />
+        </Attribute>
+        <Attribute type="X0">
+            <Data value="0 0 0" />
+        </Attribute>
+        <Attribute type="dX0">
+            <Data value="0 10 0" />
+        </Attribute>
+        <Attribute type="X1">
+            <Data value="5 0 0" />
+        </Attribute>
+        <Attribute type="dX1">
+            <Data value="0 5 0" />
+        </Attribute>
+        <Attribute type="SX0">
+            <Data value="1 0" />
+        </Attribute>
+        <Attribute type="SX1">
+            <Data value="0 2" />
+        </Attribute>
+    </HermiteSplineConstraint>
+    <UniformMass template="Vec3d">
+        <Attribute type="name">
+            <Data value="particleMass" />
+        </Attribute>
+        <Attribute type="mass">
+            <Data value="1" />
+        </Attribute>
+        <Attribute type="totalmass">
+            <Data value="1" />
+        </Attribute>
+    </UniformMass>
 </Node>
