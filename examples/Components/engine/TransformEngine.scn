@@ -1,38 +1,37 @@
-<Node 	name="Root" gravity="0 0 0" dt="0.02" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-	<DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6"/>
-	<BruteForceDetection name="Detection"/>
-	<MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2"/>
-	<DefaultContactManager name="Response" response="default"/>
-	<TreeCollisionGroupManager name="Group"/>
-        <!-- Using the Transform Engine on the independent MechanicalState -->
-	<Node 	name="TransformedState" gravity="0 -9.81 0" >
-		<EulerImplicitSolver name="default12" rayleighStiffness="0.01"/>
-		<CGLinearSolver template="GraphScattered" name="default13" iterations="25" threshold="1e-08"/>
-		<SparseGridTopology name="default14" fileTopology="mesh/doubleBall.obj" n="6 6 6"/>
-                <TransformEngine name="transform" template="Vec3d" translation="10 0 0" rotation="0 0 90" scale="0.5 1 2" input_position="@[-1].position"/>
-		<MechanicalObject template="Vec3d" name="dofTransformed" position="@[-1].output_position" restScale="1"/>
-		<UniformMass template="Vec3d" name="default16" totalmass="5"/>
-		<HexahedronFEMForceField template="Vec3d" name="FEM" method="polar" poissonRatio="0.3" youngModulus="5000"/>
-		<Node 	name="VisualNode" gravity="0 -9.81 0" >
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/doubleBall.obj" texturename="textures/board.png" scaleTex="0.1 0.1" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45"/>
-			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default17" object1="../.." object2="Visual" hexamap="0 "/>
-		</Node>
-		<Node 	name="CollisionNode" gravity="0 -9.81 0">
-			<MeshObjLoader name="loader" filename="mesh/doubleBall.obj"/>
-			<MeshTopology src="@loader"name="default18"/>
-			<MechanicalObject src="@loader" template="Vec3d" name="default19" restScale="1"/>
-			<TriangleModel name="default20"/>
-			<LineModel name="default21"/>
-			<PointModel name="default22"/>
-			<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="default23" hexamap="0 "/>
-		</Node>
-	</Node>
-
-	<Node name="VisualModel">
-	  <MeshObjLoader name="ObjLoader" filename="mesh/floor3.obj"/>        
-          <TransformEngine name="transform" template="Vec3d" translation="5 0 0" rotation="0 0 -90" scale="0.1 0.3 0.1" input_position="@[-1].position"/>
-	  <OglModel name="VisualModel" src="@./ObjLoader" position="@[-1].output_position" texturename="textures/floor.bmp"/>
-	</Node>
-
-	</Node>
+<Node name="Root" gravity="0 0 0" dt="0.02">
+    <VisualStyle displayFlags="showVisual" />
+    <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
+    <BruteForceDetection name="Detection" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <DefaultContactManager name="Response" response="default" />
+    <TreeCollisionGroupManager name="Group" />
+    <!-- Using the Transform Engine on the independent MechanicalState -->
+    <Node name="TransformedState" gravity="0 -9.81 0">
+        <EulerImplicitSolver name="default12" rayleighStiffness="0.01" />
+        <CGLinearSolver template="GraphScattered" name="default13" iterations="25" threshold="1e-08" />
+        <SparseGridTopology name="default14" fileTopology="mesh/doubleBall.obj" n="6 6 6" />
+        <TransformEngine name="transform" template="Vec3d" translation="10 0 0" rotation="0 0 90" scale="0.5 1 2" input_position="@[-1].position" />
+        <MechanicalObject template="Vec3d" name="dofTransformed" position="@[-1].output_position" restScale="1" />
+        <UniformMass template="Vec3d" name="default16" totalmass="5" />
+        <HexahedronFEMForceField template="Vec3d" name="FEM" method="polar" poissonRatio="0.3" youngModulus="5000" />
+        <Node name="VisualNode" gravity="0 -9.81 0">
+            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/doubleBall.obj" texturename="textures/board.png" scaleTex="0.1 0.1" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default17" object1="../.." object2="Visual" hexamap="0 " />
+        </Node>
+        <Node name="CollisionNode" gravity="0 -9.81 0">
+            <MeshObjLoader name="loader" filename="mesh/doubleBall.obj" />
+            <MeshTopology src="@loader" name="default18" />
+            <MechanicalObject src="@loader" template="Vec3d" name="default19" restScale="1" />
+            <TriangleModel name="default20" />
+            <LineModel name="default21" />
+            <PointModel name="default22" />
+            <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="default23" hexamap="0 " />
+        </Node>
+    </Node>
+    <Node name="VisualModel">
+        <MeshObjLoader name="ObjLoader" filename="mesh/floor3.obj" />
+        <TransformEngine name="transform" template="Vec3d" translation="5 0 0" rotation="0 0 -90" scale="0.1 0.3 0.1" input_position="@[-1].position" />
+        <OglModel name="VisualModel" src="@./ObjLoader" position="@[-1].output_position" texturename="textures/floor.bmp" />
+    </Node>
+</Node>
 </Node>

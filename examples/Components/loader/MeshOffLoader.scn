@@ -1,22 +1,20 @@
 <!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
-<Node 	name="Root" gravity="0 -9.81 0" dt="0.02" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="1" showMappings="1" showMechanicalMappings="1" showForceFields="1" showInteractionForceFields="1"  >
-	<DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6"/>
-	<BruteForceDetection name="Detection"/>
-	<MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2"/>
-	<DefaultContactManager name="Response" response="default"/>
-	<TreeCollisionGroupManager name="Group"/>
-	<Node name="Off file">
-	  <EulerImplicit name="cg_odesolver" printLog="false"  />
-	  <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"  />
-	  <MeshOffLoader name="offLoader" filename="mesh/aneurysm3D_1.off"/>
-
-	  <MechanicalObject name="dofs" scale="1" src="@offLoader"  />
-	  
-	  <TriangleSetTopologyContainer name="topo" src="@offLoader" />
-	  <TriangleSetTopologyModifier name="modif" />
-	  <TriangleSetTopologyAlgorithms name="algo" />
-	  <TriangleSetGeometryAlgorithms name="triGeo" />
-
-	  <OglModel name="VisualModel" src="@offLoader" color="red"/>
-	</Node>
+<Node name="Root" gravity="0 -9.81 0" dt="0.02">
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollision showMapping" />
+    <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
+    <BruteForceDetection name="Detection" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <DefaultContactManager name="Response" response="default" />
+    <TreeCollisionGroupManager name="Group" />
+    <Node name="Off file">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshOffLoader name="offLoader" filename="mesh/aneurysm3D_1.off" />
+        <MechanicalObject name="dofs" scale="1" src="@offLoader" />
+        <TriangleSetTopologyContainer name="topo" src="@offLoader" />
+        <TriangleSetTopologyModifier name="modif" />
+        <TriangleSetTopologyAlgorithms name="algo" />
+        <TriangleSetGeometryAlgorithms name="triGeo" />
+        <OglModel name="VisualModel" src="@offLoader" color="red" />
+    </Node>
 </Node>

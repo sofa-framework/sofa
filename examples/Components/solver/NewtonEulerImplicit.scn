@@ -1,31 +1,30 @@
-<?xml version="1.0"?>
-<Node 	name="root" gravity="0 -9.81 0" dt="0.1" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0"  >
-	<DefaultPipeline name="CollisionPipeline"  verbose="0" />
-	<BruteForceDetection name="N2" />
-	<DefaultContactManager name="collision response"  response="default" />
-	<Node 	name="Liver" gravity="0 -9.81 0" depend="topo dofs"  >
-		<!--  changing NewtonEulerImplicit to EulerImplicit to see the difference   -->
-		<NewtonEulerImplicit name="cg_odesolver" firstOrder="false" printLog="0" newtonError="0.1" steps="10"/>
-		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="500"  tolerance="1e-09"  threshold="1e-09" />
-		<MeshGmshLoader name="loader"  filename="mesh/SimpleBeamTetra.msh"  />
-		<TetrahedronSetTopologyContainer src="@loader" name="TetraContainer" />
-		<MechanicalObject src="@loader" template="Vec3d" name="dofs" />
-		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-		<DiagonalMass template="Vec3d" name="computed using mass density"  massDensity="2.0" />
-		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="3000"  computeGlobalMatrix="0" />
-		<FixedConstraint template="Vec3d" indices="0 4 8 12" />
-
-		<Node name="InOutTool">
-			<TriangleSetTopologyContainer  name="TriangleContainer" />
-			<TriangleSetTopologyModifier   name="Modifier" />
-			<TriangleSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
-			<TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
-			<Tetra2TriangleTopologicalMapping input="@../TetraContainer" output="@TriangleContainer"/>			     
-			<TriangleSet/>
-		</Node>
-		<Node name="Visu">
-			<OglModel name="Visual" color="yellow" />
-			<IdentityMapping input="@../dofs" output="@Visual" />
-		</Node>
-	</Node>
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 0" dt="0.1">
+    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="collision response" response="default" />
+    <Node name="Liver" gravity="0 -9.81 0" depend="topo dofs">
+        <!--  changing NewtonEulerImplicit to EulerImplicit to see the difference   -->
+        <NewtonEulerImplicit name="cg_odesolver" firstOrder="false" printLog="0" newtonError="0.1" steps="10" />
+        <CGLinearSolver template="GraphScattered" name="linear solver" iterations="500" tolerance="1e-09" threshold="1e-09" />
+        <MeshGmshLoader name="loader" filename="mesh/SimpleBeamTetra.msh" />
+        <TetrahedronSetTopologyContainer src="@loader" name="TetraContainer" />
+        <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+        <DiagonalMass template="Vec3d" name="computed using mass density" massDensity="2.0" />
+        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+        <FixedConstraint template="Vec3d" indices="0 4 8 12" />
+        <Node name="InOutTool">
+            <TriangleSetTopologyContainer name="TriangleContainer" />
+            <TriangleSetTopologyModifier name="Modifier" />
+            <TriangleSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
+            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+            <Tetra2TriangleTopologicalMapping input="@../TetraContainer" output="@TriangleContainer" />
+            <TriangleSet />
+        </Node>
+        <Node name="Visu">
+            <OglModel name="Visual" color="yellow" />
+            <IdentityMapping input="@../dofs" output="@Visual" />
+        </Node>
+    </Node>
 </Node>

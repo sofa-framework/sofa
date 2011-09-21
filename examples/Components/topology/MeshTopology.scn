@@ -1,26 +1,29 @@
-<Node name="root"  dt="0.02" showBehaviorModels="1" showMappings="0" showForceFields="1">
-  <CollisionPipeline verbose="0" name="CollisionPipeline"/>
-  <BruteForceDetection name="N2" />
-  <CollisionResponse response="default" name="collision response"/>
-  <Node name="TorusFEM">
-    <EulerImplicit name="cg_odesolver" printLog="false"/>
-    <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-    <MeshGmshLoader name="loader"  filename="mesh/torus2_low_res.msh"/>
-    <Mesh src="@loader"/> <!-- or MeshTopology -->			
-    <MechanicalObject src="@loader" />
-    <FixedConstraint name="FixedConstraint" indices="0" /> 
-    <UniformMass totalmass="5" />
-    <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large"/>
-    <Node name="Visu">
-      <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="red"  />
-      <BarycentricMapping object1="../.." object2="Visual" />
+<Node name="root" dt="0.02">
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <CollisionPipeline verbose="0" name="CollisionPipeline" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" name="collision response" />
+    <Node name="TorusFEM">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
+        <Mesh src="@loader" />
+        <!-- or MeshTopology -->
+        <MechanicalObject src="@loader" />
+        <FixedConstraint name="FixedConstraint" indices="0" />
+        <UniformMass totalmass="5" />
+        <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
+        <Node name="Visu">
+            <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="red" />
+            <BarycentricMapping object1="../.." object2="Visual" />
+        </Node>
+        <Node name="Surf2">
+            <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
+            <Mesh src="@loader" />
+            <!-- or MeshTopology -->
+            <MechanicalObject src="@loader" />
+            <Triangle />
+            <BarycentricMapping />
+        </Node>
     </Node>
-    <Node name="Surf2">   
-      <MeshObjLoader name="loader"  filename="mesh/torus2_for_collision.obj"/>
-      <Mesh src="@loader"/> <!-- or MeshTopology -->
-      <MechanicalObject src="@loader" />
-      <Triangle />
-      <BarycentricMapping />
-    </Node>
-  </Node>
 </Node>

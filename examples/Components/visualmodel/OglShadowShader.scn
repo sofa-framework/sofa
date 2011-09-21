@@ -1,14 +1,11 @@
-<Node name="root" dt="0.02" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
-	<OglModel name="VisualModel" filename="mesh/dragon.obj" color="green" dz="-5.0" scale="0.3" />
- 	<OglModel name="FloorV" filename="mesh/floor.obj" color="0.5 0.5 0.5" dy="-2.5" scale="1" />
-	
-	<LightManager softShadows="true"/> <!-- change softShadows flag to enable (or not) soft shadows -->
-    <OglShadowShader/>
-	
-	<SpotLight position="0 5 -15" direction="0 -0.2 1.0" cutoff="45" shadowTextureSize="2048" />
-    <SpotLight position="0 5 10" direction="0 -0.2 -1.0" cutoff="45" shadowTextureSize="128"/>
-	<SpotLight position="-15 5 0" direction="1.0 -0.2 0.0" cutoff="45" shadowTextureSize="512" />
+<Node name="root" dt="0.02">
+    <OglModel name="VisualModel" filename="mesh/dragon.obj" color="green" dz="-5.0" scale="0.3" />
+    <OglModel name="FloorV" filename="mesh/floor.obj" color="0.5 0.5 0.5" dy="-2.5" scale="1" />
+    <LightManager softShadows="true" />
+    <!-- change softShadows flag to enable (or not) soft shadows -->
+    <OglShadowShader />
+    <SpotLight position="0 5 -15" direction="0 -0.2 1.0" cutoff="45" shadowTextureSize="2048" />
+    <SpotLight position="0 5 10" direction="0 -0.2 -1.0" cutoff="45" shadowTextureSize="128" />
+    <SpotLight position="-15 5 0" direction="1.0 -0.2 0.0" cutoff="45" shadowTextureSize="512" />
     <SpotLight position="10 5 0" direction="-1.0 -0.2 0.0" cutoff="45" shadowTextureSize="256" />
-    
 </Node>
-

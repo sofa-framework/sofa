@@ -1,42 +1,35 @@
-<Node name="root" dt="0.005" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" showBoundingTree="0" gravity="0 0 0">
-	<CollisionPipeline verbose="0" />
-	<BruteForceDetection name="N2" />
-	<CollisionResponse response="default" />
-	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-	<CollisionGroup />
-
-	<Node name="H">
-
-		<EulerImplicit name="cg_odesolver" printLog="false"/>
-		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<MeshGmshLoader name="loader" filename="mesh/cubeDof.msh"/>
-		<MechanicalObject src="@loader" name="Hexa" />
-		<HexahedronSetTopologyContainer src="@loader" name="Hexa_topo" listening="1"/>
-		<HexahedronSetTopologyModifier name="Modifier" />
-		<HexahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-		<HexahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawHexa="1"/>
-
-		<TopologicalChangeProcessor listening="1" filename="AddingHexahedraProcess.txt"/>
-<!--		<HexahedralFEMForceField" name="FEM" youngModulus="100" poissonRatio="0.3"  method="large" />-->
-		<UniformMass totalmass="1" />
-<!--		<FixedConstraint" indices="12 15 28 31" />     -->
-		
-		<Node name="Q">
-		  <QuadSetTopologyContainer name="Quad_topo" listening="1"/>
-		  <QuadSetTopologyModifier name="Modifier" />
-		  <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-		  <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawQuads="1"/>
-
-			<Hexa2QuadTopologicalMapping object1="../../Hexa_topo" object2="Quad_topo"/>	
-
-<!--           		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>-->
-			<TriangleSet/>
-<!--			<Node name="Visu">
+<Node name="root" dt="0.005" showBoundingTree="0" gravity="0 0 0">
+    <VisualStyle displayFlags="showBehaviorModels" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionGroup />
+    <Node name="H">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/cubeDof.msh" />
+        <MechanicalObject src="@loader" name="Hexa" />
+        <HexahedronSetTopologyContainer src="@loader" name="Hexa_topo" listening="1" />
+        <HexahedronSetTopologyModifier name="Modifier" />
+        <HexahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+        <HexahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawHexa="1" />
+        <TopologicalChangeProcessor listening="1" filename="AddingHexahedraProcess.txt" />
+        <!--		<HexahedralFEMForceField" name="FEM" youngModulus="100" poissonRatio="0.3"  method="large" />-->
+        <UniformMass totalmass="1" />
+        <!--		<FixedConstraint" indices="12 15 28 31" />     -->
+        <Node name="Q">
+            <QuadSetTopologyContainer name="Quad_topo" listening="1" />
+            <QuadSetTopologyModifier name="Modifier" />
+            <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+            <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawQuads="1" />
+            <Hexa2QuadTopologicalMapping object1="../../Hexa_topo" object2="Quad_topo" />
+            <!--           		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>-->
+            <TriangleSet />
+            <!--			<Node name="Visu">
 				<OglModel name="Visual" color="blue" />
 				<IdentityMapping object1="../../../Hexa" object2="Visual" />
 			</Node>-->
-		</Node>
-	</Node>
+        </Node>
+    </Node>
 </Node>
-
-

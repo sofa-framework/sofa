@@ -1,50 +1,52 @@
-<Node 	name="Root" gravity="0 -9.81 0" dt="0.002" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
-	<BruteForceDetection name="Detection" />
-	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
-	<DefaultContactManager name="Response"  response="default" />
-	<TreeCollisionGroupManager name="groupManager" />
-	<EulerSolver name="Explicit" />
-	<LMConstraintSolver name="ConstraintSolver"  printLog="0"  listening="1"  constraintVel="1"  constraintPos="1" />
-	<Node 	name="Ball1" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-		<MeshObjLoader name="loader"  filename="mesh/ball.obj" />
-		<MeshTopology src="@loader"name="default7" />
-		<MechanicalObject src="@loader" template="Vec3d" name="default8"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1"  restScale="1"  position="0 0 0" />
-		<TTriangleModel template="Vec3d" name="default9"  moving="0"  simulated="0" />
-		<LineModel name="default10"  moving="0"  simulated="0" />
-		<PointModel name="default11"  moving="0"  simulated="0" />
-		<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/ball.obj"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1"  material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
-	</Node>
-	<Node 	name="Ball2" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-		<MeshObjLoader name="loader"  filename="mesh/ball.obj" />
-		<MeshTopology src="@loader"name="default19" />
-		<MechanicalObject src="@loader" template="Vec3d" name="default20"  translation="4 0 0"  rotation="0 180 0"  scale3d="1 1 1"  restScale="1"  position="0 0 0" />
-		<TTriangleModel template="Vec3d" name="default21"  moving="0"  simulated="0" />
-		<LineModel name="default22"  moving="0"  simulated="0" />
-		<PointModel name="default23"  moving="0"  simulated="0" />
-		<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/ball.obj"  translation="4 0 0"  rotation="0 180 0"  scale3d="1 1 1"  material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
-	</Node>
-	<Node 	name="FEM" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-		<EulerImplicitSolver name="default152"  rayleighStiffness="0.01" />
-		<CGLinearSolver template="GraphScattered" name="default153"  iterations="25"  threshold="1e-08" />
-		<SparseGridTopology name="default154"  fileTopology="mesh/ball.obj"  n="6 6 6" />
-		<MechanicalObject template="Vec3d" name="default155"  translation="2 0 5"  rotation="0 0 0"  scale3d="0.2 0.2 0.2"  restScale="1"  position="0 0 0" />
-		<UniformMass template="Vec3d" name="default156"  totalmass="5" />
-		<HexahedronFEMForceField template="Vec3d" name="FEM"  method="polar"  poissonRatio="0.3"  youngModulus="50000" />
-		<Node 	name="VisualNode" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-			<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/ball.obj"  translation="0 0 0"  scale3d="1 1 1"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default157"  object1="../.."  object2="Visual"  hexamap="0 " />
-		</Node>
-		<Node 	name="CollisionNode" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-			<MeshObjLoader name="loader"  filename="mesh/ball.obj" />
-			<MeshTopology src="@loader"name="default158" />
-			<MechanicalObject src="@loader" template="Vec3d" name="default159"  translation="0 0 0"  scale3d="1 1 1"  restScale="1"  position="0 0 0" />
-			<TTriangleModel template="Vec3d" name="default160" />
-			<LineModel name="default161" />
-			<PointModel name="default162" />
-			<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="default163"  hexamap="0 " />
-		</Node>
-	</Node>
-	<DistanceLMConstraint template="Vec3d" name="Ball1->FEM"  object1="Ball1"  object2="FEM/CollisionNode"  vecConstraint="234 118 " />
-	<DistanceLMConstraint template="Vec3d" name="FEM->Ball2"  object1="Ball2"  object2="FEM/CollisionNode"  vecConstraint="234 234 " />
+<Node name="Root" gravity="0 -9.81 0" dt="0.002">
+    <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
+    <BruteForceDetection name="Detection" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <DefaultContactManager name="Response" response="default" />
+    <TreeCollisionGroupManager name="groupManager" />
+    <EulerSolver name="Explicit" />
+    <LMConstraintSolver name="ConstraintSolver" printLog="0" listening="1" constraintVel="1" constraintPos="1" />
+    <Node name="Ball1" gravity="0 -9.81 0">
+        <MeshObjLoader name="loader" filename="mesh/ball.obj" />
+        <MeshTopology src="@loader" name="default7" />
+        <MechanicalObject src="@loader" template="Vec3d" name="default8" translation="0 0 0" rotation="0 0 0" scale3d="1 1 1" restScale="1" position="0 0 0" />
+        <TTriangleModel template="Vec3d" name="default9" moving="0" simulated="0" />
+        <LineModel name="default10" moving="0" simulated="0" />
+        <PointModel name="default11" moving="0" simulated="0" />
+        <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/ball.obj" translation="0 0 0" rotation="0 0 0" scale3d="1 1 1" material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
+    </Node>
+    <Node name="Ball2" gravity="0 -9.81 0">
+        <MeshObjLoader name="loader" filename="mesh/ball.obj" />
+        <MeshTopology src="@loader" name="default19" />
+        <MechanicalObject src="@loader" template="Vec3d" name="default20" translation="4 0 0" rotation="0 180 0" scale3d="1 1 1" restScale="1" position="0 0 0" />
+        <TTriangleModel template="Vec3d" name="default21" moving="0" simulated="0" />
+        <LineModel name="default22" moving="0" simulated="0" />
+        <PointModel name="default23" moving="0" simulated="0" />
+        <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/ball.obj" translation="4 0 0" rotation="0 180 0" scale3d="1 1 1" material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
+    </Node>
+    <Node name="FEM" gravity="0 -9.81 0">
+        <VisualStyle displayFlags="hideBehaviorModels" />
+        <EulerImplicitSolver name="default152" rayleighStiffness="0.01" />
+        <CGLinearSolver template="GraphScattered" name="default153" iterations="25" threshold="1e-08" />
+        <SparseGridTopology name="default154" fileTopology="mesh/ball.obj" n="6 6 6" />
+        <MechanicalObject template="Vec3d" name="default155" translation="2 0 5" rotation="0 0 0" scale3d="0.2 0.2 0.2" restScale="1" position="0 0 0" />
+        <UniformMass template="Vec3d" name="default156" totalmass="5" />
+        <HexahedronFEMForceField template="Vec3d" name="FEM" method="polar" poissonRatio="0.3" youngModulus="50000" />
+        <Node name="VisualNode" gravity="0 -9.81 0">
+            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/ball.obj" translation="0 0 0" scale3d="1 1 1" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default157" object1="../.." object2="Visual" hexamap="0 " />
+        </Node>
+        <Node name="CollisionNode" gravity="0 -9.81 0">
+            <MeshObjLoader name="loader" filename="mesh/ball.obj" />
+            <MeshTopology src="@loader" name="default158" />
+            <MechanicalObject src="@loader" template="Vec3d" name="default159" translation="0 0 0" scale3d="1 1 1" restScale="1" position="0 0 0" />
+            <TTriangleModel template="Vec3d" name="default160" />
+            <LineModel name="default161" />
+            <PointModel name="default162" />
+            <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="default163" hexamap="0 " />
+        </Node>
+    </Node>
+    <DistanceLMConstraint template="Vec3d" name="Ball1-&gt;FEM" object1="Ball1" object2="FEM/CollisionNode" vecConstraint="234 118 " />
+    <DistanceLMConstraint template="Vec3d" name="FEM-&gt;Ball2" object1="Ball2" object2="FEM/CollisionNode" vecConstraint="234 234 " />
 </Node>

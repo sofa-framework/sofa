@@ -1,62 +1,26 @@
-<Node name="Root" gravity="0 0 0" dt="0.02" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="1" showMappings="1" showMechanicalMappings="1" showForceFields="1" showInteractionForceFields="1"  >
-  <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6"/>
-  <BruteForceDetection name="Detection"/>
-  <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2"/>
-  <DefaultContactManager name="Response" response="default"/>
-  <DefaultCollisionGroupManager name="Group"/>
-	
-  <Node name="MecaNode" gravity="0 0 0"  >
-    <MeshGmshLoader name="loader" tags="meca" filename="mesh/square3.msh"/>
-    <MechanicalObject src="@loader" template="Vec3d" name="mecaObj" tags="meca" scale="10" />
-    <TriangleSetTopologyContainer src="@loader" name="topo" tags="meca"/>
-
-    <Node name="ElecNode" gravity="0 0 0"  >
-      <EulerImplicitSolver name="euler" tags="elec"/>
-      <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" tags="elec" /> 
-      <MechanicalObject template="Vec1d" name="ElecObj"
-			position="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9 10 10 9 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 100 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-				  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" tags="elec" />
-
-      <!-- Components used in heat diffusion, still in work in Sophia. the potentiel
+<Node name="Root" gravity="0 0 0" dt="0.02">
+    <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollision showMapping" />
+    <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
+    <BruteForceDetection name="Detection" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
+    <Node name="MecaNode" gravity="0 0 0">
+        <MeshGmshLoader name="loader" tags="meca" filename="mesh/square3.msh" />
+        <MechanicalObject src="@loader" template="Vec3d" name="mecaObj" tags="meca" scale="10" />
+        <TriangleSetTopologyContainer src="@loader" name="topo" tags="meca" />
+        <Node name="ElecNode" gravity="0 0 0">
+            <EulerImplicitSolver name="euler" tags="elec" />
+            <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" tags="elec" />
+            <MechanicalObject template="Vec1d" name="ElecObj" position="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9 10 10 9 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 100 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" tags="elec" />
+            <!-- Components used in heat diffusion, still in work in Sophia. the potentiel
 	evolve and interpolation is computed at the same time to display the diffusion. -->
-
-      <!--   <TriangularDiffusionForceField template="Vec1d" name="ffDiffusion" tags="elec"/>
+            <!--   <TriangularDiffusionForceField template="Vec1d" name="ffDiffusion" tags="elec"/>
              <MatrixMass template="Vec1d" name="mass" tags="elec" />   -->
+        </Node>
+        <Node name="visu" gravity="0 0 0">
+            <TextureInterpolation template="Vec1d" name="EngineInterpolation" input_states="@../ElecNode/ElecObj.position" input_coordinates="@../mecaObj.position" min_value="0.0" max_value="10.0" manual_scale="1" drawPotentiels="1" />
+            <OglModel template="ExtVec3f" name="oglPotentiel" texcoords="@EngineInterpolation.output_coordinates" texturename="textures/heatColor.bmp" useVBO="0" />
+        </Node>
     </Node>
-    
-    
-    <Node name="visu" gravity="0 0 0" > 
-      <TextureInterpolation template="Vec1d" 
-			    name="EngineInterpolation" 
-			    input_states="@../ElecNode/ElecObj.position"
-			    input_coordinates="@../mecaObj.position"
-			    min_value="0.0"
-			    max_value="10.0"
-			    manual_scale="1"
-			    drawPotentiels="1"
-			    />
-
-      <OglModel template="ExtVec3f" name="oglPotentiel"
-		texcoords="@EngineInterpolation.output_coordinates" 
-		texturename="textures/heatColor.bmp" useVBO="0" />
-    </Node>
-
-  </Node>
 </Node>
