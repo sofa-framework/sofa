@@ -22,6 +22,8 @@ HEADERS += \
           Mat.h \
           Quat.h \
           Quat.inl \
+          #RigidInertia.h \
+          #RigidInertia.inl \
           RigidTypes.h \
           RigidVec6Types.h \
           SolidTypes.h \
@@ -36,6 +38,7 @@ SOURCES += \
           BaseMatrix.cpp \
 		  BoundingBox.cpp \
           Frame.cpp \
+          #RigidInertia.cpp \
           SolidTypes.cpp
 
 load(sofa/post)

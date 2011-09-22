@@ -10,10 +10,11 @@ message( "PRE-CONFIG: " $${CONFIG})
 # Enable plugins in addition of the standard Sofa libraries
 ########################################################################
 
-usePlugin(PluginExample)
+usePlugin(PluginExample) 
+#usePlugin(ldidetection)
 
 contains(DEFINES, SOFA_HAVE_ARTRACK) {
-	usePlugin(ARTrack)
+        usePlugin(ARTrack)
 }
 
 contains(DEFINES, SOFA_HAVE_SENSABLE) {
@@ -285,9 +286,9 @@ else {
 {
   message( "|  Qt GUI: DISABLED")
 }
-else {
-  message( "|  Qt GUI: ENABLED")
-}
+#else {
+ # message( "|  Qt GUI: ENABLED")
+#}
 }
 else {
   message( "|  Qt GUI: ENABLED")
