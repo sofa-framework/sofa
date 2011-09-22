@@ -97,10 +97,10 @@ RegularGridTopology::RegularGridTopology()
     computeQuadList(initData(&computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init")),
     computeEdgeList(initData(&computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init")),
     computePointList(initData(&computePointList, true, "computePointList", "put true if the list of Points is needed during init")),
-    min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
-    max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max")),
-    p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0")),
-    _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
+    min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min end of the diagonal")),
+    max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max end of the diagonal")),
+    p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "Offset all the grid points")),
+    _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
 {
 }
 

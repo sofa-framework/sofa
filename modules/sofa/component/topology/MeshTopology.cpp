@@ -2541,7 +2541,6 @@ const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElements
 
 
 
-
 void MeshTopology::draw(const core::visual::VisualParams* )
 {
     //Draw edges
@@ -2550,105 +2549,8 @@ void MeshTopology::draw(const core::visual::VisualParams* )
         glDisable(GL_LIGHTING);
         glColor3f(0.4f,1.0f,0.3f);
 
-        glPointSize(4);
-        for (int i=0; i<getNbEdges(); ++i)
-        {
-            const Edge& e = getEdge(i);
-            glBegin(GL_LINES);
-            glVertex3d(getPX(e[0]), getPY(e[0]), getPZ(e[0]));
-            glVertex3d(getPX(e[1]), getPY(e[1]), getPZ(e[1]));
-            glEnd();
 
-            glBegin(GL_POINTS);
-            glVertex3d(getPX(e[0]), getPY(e[0]), getPZ(e[0]));
-            glVertex3d(getPX(e[1]), getPY(e[1]), getPZ(e[1]));
-            glEnd();
-        }
-        glPointSize(1);
-    }
-
-
-    //Draw Triangles
-    if (_drawTriangles.getValue())
-    {
-        glDisable(GL_LIGHTING);
-        glColor3f(0.2f,1.0f,1.0f);
-
-        for (int i=0; i<getNbTriangles(); ++i)
-        {
-            const Triangle& t = getTriangle(i);
-            glBegin(GL_TRIANGLES);
-            for (unsigned int j = 0; j<3; j++)
-                glVertex3d(getPX(t[j]), getPY(t[j]), getPZ(t[j]));
-            glEnd();
-
-            glBegin(GL_LINES);
-            for (unsigned int j = 0; j<3; j++)
-            {
-                glVertex3d(getPX(t[j]), getPY(t[j]), getPZ(t[j]));
-                glVertex3d(getPX(t[(j+1)%3]), getPY(t[(j+1)%3]), getPZ(t[(j+1)%3]));
-            }
-            glEnd();
-        }
-    }
-
-
-    //Draw Quads
-    if(_drawQuads.getValue())
-    {
-        glDisable(GL_LIGHTING);
-        glColor3f(0.0f,0.4f,0.4f);
-
-        for (int i=0; i<getNbQuads(); ++i)
-        {
-            const Quad& q = getQuad(i);
-            glBegin(GL_QUADS);
-            for (unsigned int j = 0; j<4; j++)
-                glVertex3d(getPX(q[j]), getPY(q[j]), getPZ(q[j]));
-            glEnd();
-
-            glBegin(GL_LINES);
-            for (unsigned int j = 0; j<4; j++)
-            {
-                glVertex3d(getPX(q[j]), getPY(q[j]), getPZ(q[j]));
-                glVertex3d(getPX(q[(j+1)%4]), getPY(q[(j+1)%4]), getPZ(q[(j+1)%4]));
-            }
-            glEnd();
-        }
-    }
-
-
-    //Draw Tetra
-    if (_drawHexa.getValue())
-    {
-        glDisable(GL_LIGHTING);
-        glColor3f(1,1,0);
-
-        glBegin(GL_LINES);
-        for (int i=0; i<getNbTetrahedra(); ++i)
-        {
-            const Tetra& t = getTetra(i);
-            for (unsigned int j = 0; j<4; j++)
-            {
-                glVertex3d(getPX(t[j]), getPY(t[j]), getPZ(t[j]));
-                glVertex3d(getPX(t[(j+1)%4]), getPY(t[(j+1)%4]), getPZ(t[(j+1)%4]));
-            }
-
-            glVertex3d(getPX(t[0]), getPY(t[0]), getPZ(t[0]));
-            glVertex3d(getPX(t[2]), getPY(t[2]), getPZ(t[2]));
-
-            glVertex3d(getPX(t[1]), getPY(t[1]), getPZ(t[1]));
-            glVertex3d(getPX(t[3]), getPY(t[3]), getPZ(t[3]));
-        }
-        glEnd();
-    }
-
-    //Draw Hexa
-    if (_drawHexa.getValue())
-    {
-        glDisable(GL_LIGHTING);
         glColor3f(1,0,0);
-
         for (int i=0; i<getNbHexahedra(); i++)
         {
             const Hexa& c = getHexahedron(i);
@@ -2669,16 +2571,10 @@ void MeshTopology::draw(const core::visual::VisualParams* )
             glBegin(GL_LINES);
             glVertex3d(getPX(c[3]), getPY(c[3]), getPZ(c[3]));
             glVertex3d(getPX(c[7]), getPY(c[7]), getPZ(c[7]));
-            //glEnd();
-            //glBegin(GL_LINES);
             glVertex3d(getPX(c[2]), getPY(c[2]), getPZ(c[2]));
             glVertex3d(getPX(c[6]), getPY(c[6]), getPZ(c[6]));
-            //glEnd();
-            //glBegin(GL_LINES);
             glVertex3d(getPX(c[0]), getPY(c[0]), getPZ(c[0]));
             glVertex3d(getPX(c[4]), getPY(c[4]), getPZ(c[4]));
-            //glEnd();
-            //glBegin(GL_LINES);
             glVertex3d(getPX(c[1]), getPY(c[1]), getPZ(c[1]));
             glVertex3d(getPX(c[5]), getPY(c[5]), getPZ(c[5]));
             glEnd();

@@ -39,7 +39,11 @@ namespace topology
 
 using namespace sofa::defaulttype;
 
-
+/**
+  Regular grid in space.
+  In c++, resolution is set in the constructor or using method setSize of the parent class, while the spatial extent is set using method setPos.
+  In xml, see example files.
+  */
 class SOFA_COMPONENT_CONTAINER_API RegularGridTopology : public GridTopology
 {
 public:
@@ -49,6 +53,9 @@ public:
     RegularGridTopology(int nx, int ny, int nz);
     RegularGridTopology();
 
+    /// set the spatial extent|
+    void setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax);
+
     virtual void init();
 
     virtual void reinit()
@@ -57,12 +64,7 @@ public:
     }
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
-    void setP0(const Vector3& val) { p0 = val; }
-    void setDx(const Vector3& val) { dx = val; inv_dx2 = 1/(dx*dx); }
-    void setDy(const Vector3& val) { dy = val; inv_dy2 = 1/(dy*dy); }
-    void setDz(const Vector3& val) { dz = val; inv_dz2 = 1/(dz*dz); }
 
-    void setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax);
 
 
     const Vector3& getP0() const { return p0.getValue(); }
@@ -104,6 +106,11 @@ public:
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
     virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
     int findNearestHexa(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) { return findNearestCube(pos, fx, fy, fz); }
+
+    void setP0(const Vector3& val) { p0 = val; }
+    void setDx(const Vector3& val) { dx = val; inv_dx2 = 1/(dx*dx); }
+    void setDy(const Vector3& val) { dy = val; inv_dy2 = 1/(dy*dy); }
+    void setDz(const Vector3& val) { dz = val; inv_dz2 = 1/(dz*dz); }
 
 protected:
 

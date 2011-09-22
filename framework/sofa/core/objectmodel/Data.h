@@ -573,6 +573,11 @@ public:
     ~WriteAccessor() { if (dparams) data.endEdit(dparams); else data.endEdit(); }
 };
 
+/// Easy syntax for getting write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);
+template<class T>
+inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) { return WriteAccessor<core::objectmodel::Data<T> >(data); }
+
+
 } // namespace helper
 
 } // namespace sofa

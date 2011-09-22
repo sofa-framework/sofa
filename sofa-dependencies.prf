@@ -109,6 +109,7 @@ declare(sofaCUDA_Bench,   applications/projects/sofaCUDA_Bench,         sofaguim
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofacomponent sofagpucuda)
 declare(sofaVerification, applications/projects/sofaVerification, sofacomponent sofagpucuda)
+#declare(runLem,          applications/projects/fissuration/lem/exe,     sofaguimain)
 
 declare(centerOfMassMapping,            applications/projects/BoostKernel/applications/centerOfMassMapping,             sofacomponent sofaobjectcreator sofaguimain)
 declare(centerOfMassMulti2MappingChain, applications/projects/BoostKernel/applications/centerOfMassMulti2MappingChain,  sofacomponent sofaobjectcreator sofaguimain)
@@ -212,6 +213,7 @@ contains(DEFINES, SOFA_GUI_QTVIEWER) | contains(DEFINES, SOFA_GUI_QGLVIEWER) | c
 	#enable(sofaConfiguration) # not yet converted
 	enable(sofamodeler)
 	enable(Modeler)
+#	enable(runLem)
 }
 
 contains(DEFINES, SOFA_GPU_OPENCL) {

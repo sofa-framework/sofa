@@ -272,6 +272,9 @@ public:
     WriteAccessor(container_type& c) : Inherit(c) {}
 };
 
+
+
+
 } // namespace helper
 
 } // namespace sofa
