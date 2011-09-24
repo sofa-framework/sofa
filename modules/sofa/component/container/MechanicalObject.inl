@@ -48,6 +48,8 @@
 #include <assert.h>
 #include <iostream>
 
+#include <sofa/component/topology/PointData.inl>
+
 namespace
 {
 
@@ -275,9 +277,53 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
 }
 
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+template <class DataTypes>
+void MechanicalObject<DataTypes>::PointCreationFunction(int , void * param, Coord & , const sofa::helper::vector<unsigned int> & ancestors, const sofa::helper::vector<double> & coefs)
+{
+    MechanicalObject<DataTypes> *meca = (MechanicalObject<DataTypes>*) param;
+
+    if (!meca)
+        return;
+
+    if (!ancestors.empty() )
+    {
+        const unsigned int prevSizeMechObj = meca->getSize();
+        meca->vsize =prevSizeMechObj + 1;
+
+        meca->computeWeightedValue( prevSizeMechObj + 1, ancestors, coefs );
+    }
+    else
+    {
+        // No ancestors specified, resize DOFs vectors and set new values to the reset default value.
+        meca->vsize = meca->getSize() + 1;
+    }
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::PointDestroyFunction(int , void * param, Coord &)
+{
+    MechanicalObject<DataTypes> *meca = (MechanicalObject<DataTypes>*) param;
+    if (!meca)
+        return;
+
+    unsigned int prevSizeMechObj   = meca->getSize();
+    //unsigned int lastIndexMech = prevSizeMechObj - 1;
+
+    meca->vsize = prevSizeMechObj - 1;
+    //meca->replaceValue(lastIndexMech, index );
+    //meca->resize( prevSizeMechObj - 1 );
+}
+
+#endif
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    std::cout << "WARNING MechanicalObject<DataTypes>::handleStateChange()" << std::endl;
+#else
     using sofa::core::topology::TopologyChange;
 
     std::list< const TopologyChange * >::const_iterator itBegin = m_topology->beginStateChange();
@@ -398,6 +444,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
         ++itBegin;
     }
+#endif
 }
 
 template <class DataTypes>
@@ -405,7 +452,6 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
 {
     //const unsigned int maxIndex = std::max(inputIndex, outputIndex);
     const unsigned int maxIndex = inputIndex<outputIndex ? outputIndex : inputIndex;
-
     const unsigned int vecCoordSize = vectorsCoord.size();
     for (unsigned int i = 0; i < vecCoordSize; i++)
     {
@@ -443,7 +489,6 @@ void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
 
     Coord tmp;
     Deriv tmp2;
-
     unsigned int i;
     for (i=0; i<vectorsCoord.size(); i++)
     {
@@ -592,7 +637,7 @@ void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
 template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
 /*    template <>
-bool MechanicalObject<Vec1dTypes>::addBBox(double* minBBox, double* maxBBox)*/;
+bool MechanicalObject<Vec1dTypes>::addBBox(double* minBBox, double* maxBBox);*/
 #endif
 #ifndef SOFA_DOUBLE
 template<>
@@ -917,7 +962,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(VecId dest, con
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
-#ifdef SOFA_SMP_NUMA
+#ifdef SOFA_SMP_NUMA1
     if(this->getContext()->getProcessor()!=-1)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
@@ -982,8 +1027,8 @@ void MechanicalObject<DataTypes>::init()
 
     reinit();
 
-
     VecCoord *x0_edit = x0.beginEdit();
+
 
     // Rest position
     if (x0_edit->size() == 0)
@@ -996,6 +1041,29 @@ void MechanicalObject<DataTypes>::init()
                 (*x0_edit)[i] *= s;
         }
     }
+
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    x0.createTopologicalEngine(m_topology);
+    //x0.setCreateFunction(PointCreationFunction);
+    //x0.setDestroyFunction(PointDestroyFunction);
+    //x0.setCreateParameter( (void *) this );
+    //x0.setDestroyParameter( (void *) this );
+    x0.registerTopologicalData();
+
+    x.createTopologicalEngine(m_topology);
+    x.setCreateFunction(PointCreationFunction);
+    x.setDestroyFunction(PointDestroyFunction);
+    x.setCreateParameter( (void *) this );
+    x.setDestroyParameter( (void *) this );
+    x.registerTopologicalData();
+
+    v.createTopologicalEngine(m_topology);
+    v.registerTopologicalData();
+
+    f.createTopologicalEngine(m_topology);
+    f.registerTopologicalData();
+#endif
+
 
     x0.endEdit();
 
@@ -1530,6 +1598,7 @@ void MechanicalObject<DataTypes>::setVecDeriv(unsigned int index, Data< VecDeriv
 
     vectorsDeriv[index] = v;
 }
+
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::setVecMatrixDeriv(unsigned int index, Data < MatrixDeriv > *m)

@@ -41,6 +41,8 @@
 #include <vector>
 #include <fstream>
 
+#include <sofa/component/topology/PointData.h>
+
 namespace sofa
 {
 
@@ -52,6 +54,7 @@ namespace container
 
 using namespace core::behavior;
 using namespace core::objectmodel;
+using namespace sofa::component::topology;
 using sofa::defaulttype::Vector3;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -104,6 +107,24 @@ public:
 
     virtual void parse ( BaseObjectDescription* arg );
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    PointData< VecCoord > x;
+    PointData< VecDeriv > v;
+    PointData< VecDeriv > f;
+    Data< VecDeriv > externalForces;
+    Data< VecDeriv > dx;
+    Data< VecCoord > xfree;
+    Data< VecDeriv > vfree;
+    PointData< VecCoord > x0;
+    Data< MatrixDeriv > c;
+    Data< VecCoord > reset_position;
+    Data< VecDeriv > reset_velocity;
+
+    static void PointCreationFunction (int , void* , Coord &, const sofa::helper::vector< unsigned int > & ,   const sofa::helper::vector< double >&);
+
+    static void PointDestroyFunction (int, void*, Coord&);
+
+#else
     Data< VecCoord > x;
     Data< VecDeriv > v;
     Data< VecDeriv > f;
@@ -115,6 +136,7 @@ public:
     Data< MatrixDeriv > c;
     Data< VecCoord > reset_position;
     Data< VecDeriv > reset_velocity;
+#endif
 
     defaulttype::MapMapSparseMatrix< Deriv > c2;
 
@@ -174,6 +196,7 @@ public:
     double getPX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)x; }
     double getPY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)y; }
     double getPZ(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)z; }
+
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
      *
@@ -394,6 +417,7 @@ protected :
      * @brief Inserts MatrixDeriv DOF  at index in the MatrixDeriv container.
      */
     void setVecMatrixDeriv(unsigned int /*index*/, Data< MatrixDeriv> * /*mDeriv*/);
+
 
     /// @}
 
