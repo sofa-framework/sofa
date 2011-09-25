@@ -200,8 +200,6 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
     // std:: cout << (*it)->getChangeType() << sendl;
 
-    //getContext()->executeVisitor(&a);
-
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     //TODO: temporary code to test topology engine pipeline.
     sout << sendl << "******* START ENGINE PROCESSING *********" << sendl;
@@ -222,6 +220,8 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
         (*it)->cleanDirty();
 
     sout << sendl << "******* START ENGINE PROCESSING END *********" << sendl;
+#else
+    getContext()->executeVisitor(&a);
 #endif
     // remove the changes we just propagated, so that we don't send them again next time
     m_container->resetTopologyChangeList();
