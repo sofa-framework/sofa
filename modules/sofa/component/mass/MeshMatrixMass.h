@@ -105,7 +105,7 @@ public:
 
     /// to display the center of gravity of the system
     Data< bool >         showCenterOfGravity;
-    Data< Real >        showAxisSize;
+    Data< Real >         showAxisSize;
     Data< bool >         lumping;
     Data< bool >         printMass;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
@@ -132,7 +132,7 @@ public:
 
     MeshMatrixMass();
 
-    ~MeshMatrixMass() {};
+    ~MeshMatrixMass() {}
 
     void clear();
 
