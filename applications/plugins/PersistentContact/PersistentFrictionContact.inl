@@ -700,9 +700,9 @@ int PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepThePersist
 
 #ifdef DEBUG_INACTIVE_CONTACTS
 template < class TCollisionModel1, class TCollisionModel2 >
-void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::draw()
+void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowInteractionForceFields()) return;
+    if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);
 

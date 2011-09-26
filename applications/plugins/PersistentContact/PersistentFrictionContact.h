@@ -142,7 +142,7 @@ public:
     void init();
 
 #ifdef DEBUG_INACTIVE_CONTACTS
-    void draw();
+    void draw(const core::visual::VisualParams* vparams);
 #endif
 
 protected:
