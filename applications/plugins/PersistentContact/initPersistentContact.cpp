@@ -76,7 +76,7 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "FreeMotionVelocityMasterSolver, PersistentContactBarycentricMapping, PersistentContactMapping, PersistentFrictionContact, PersistentContactRigidMapping, PersistentUnilateralInteractionConstraint";
+    return "PersistentContactBarycentricMapping, PersistentContactMapping, PersistentFrictionContact, PersistentContactRigidMapping, PersistentUnilateralInteractionConstraint";
 }
 
 } // namespace component
@@ -92,7 +92,6 @@ void initPersistentContact()
     }
 }
 
-SOFA_LINK_CLASS(FreeMotionVelocityMasterSolver)
 SOFA_LINK_CLASS(PersistentContactBarycentricMapping)
 SOFA_LINK_CLASS(PersistentContactMapping)
 SOFA_LINK_CLASS(PersistentContactRigidMapping)

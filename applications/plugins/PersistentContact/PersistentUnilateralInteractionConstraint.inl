@@ -470,9 +470,9 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::debugContactStates()
 }
 
 template<class DataTypes>
-void PersistentUnilateralInteractionConstraint<DataTypes>::draw()
+void PersistentUnilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!this->getContext()->getShowInteractionForceFields()) return;
+    if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);
 
