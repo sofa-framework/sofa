@@ -411,9 +411,7 @@ void DiagonalMass<DataTypes, MassType>::handleTopologyChange()
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
-//	VecMass& masses = *f_mass.beginEdit();
     f_mass.handleTopologyEvents(itBegin,itEnd);
-//	f_mass.endEdit();
 }
 
 
@@ -543,6 +541,7 @@ void DiagonalMass<DataTypes, MassType>::init()
     // add the functions to handle topology changes.
 
     //	VecMass& masses = *f_mass.beginEdit();
+    f_mass.createTopologicalEngine(_topology);
     f_mass.setCreateFunction(MassPointCreationFunction<MassType>);
     f_mass.setCreateEdgeFunction(MassEdgeCreationFunction<DataTypes,MassType,MassVector>);
     f_mass.setDestroyEdgeFunction(MassEdgeDestroyFunction<DataTypes,MassType,MassVector>);
@@ -550,9 +549,10 @@ void DiagonalMass<DataTypes, MassType>::init()
     f_mass.setDestroyTriangleFunction(MassTriangleDestroyFunction<DataTypes,MassType,MassVector>);
     f_mass.setCreateTetrahedronFunction(MassTetrahedronCreationFunction<DataTypes,MassType,MassVector>);
     f_mass.setDestroyTetrahedronFunction(MassTetrahedronDestroyFunction<DataTypes,MassType,MassVector>);
-
     f_mass.setCreateParameter( (void *) this );
     f_mass.setDestroyParameter( (void *) this );
+    f_mass.registerTopologicalData();
+
     //    f_mass.endEdit();
 
     if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())

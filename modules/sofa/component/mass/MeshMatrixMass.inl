@@ -680,37 +680,18 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     this->getContext()->get(hexaGeo);
 
     // add the functions to handle topology changes for Vertex informations
+    vertexMassInfo.createTopologicalEngine(_topology);
     vertexMassInfo.setCreateFunction(VertexMassCreationFunction);
     vertexMassInfo.setCreateParameter ((void *) this );
-    // Triangle
-    vertexMassInfo.setCreateTriangleFunction(VertexMassTriangleCreationFunction);
-    vertexMassInfo.setDestroyTriangleFunction(VertexMassTriangleDestroyFunction);
-    // Quad
-    vertexMassInfo.setCreateQuadFunction(VertexMassQuadCreationFunction);
-    vertexMassInfo.setDestroyQuadFunction(VertexMassQuadDestroyFunction);
-    // Tetrahedron
-    vertexMassInfo.setCreateTetrahedronFunction(VertexMassTetrahedronCreationFunction);
-    vertexMassInfo.setDestroyTetrahedronFunction(VertexMassTetrahedronDestroyFunction);
-    // Hexahedron (NOT HANDLE YET)
-    //vertexMassInfo.setCreateHexahedronFunction(VertexMassHexahedronCreationFunction);
-    //vertexMassInfo.setDestroyHexahedronFunction(VertexMassHexahedronDestroyFunction);
+    vertexMassInfo.setDestroyParameter( (void *) this );
 
 
     // add the functions to handle topology changes for Edge informations
+    edgeMassInfo.createTopologicalEngine(_topology);
     edgeMassInfo.setCreateFunction(EdgeMassCreationFunction);
     edgeMassInfo.setCreateParameter ((void *) this );
-    // Triangle
-    edgeMassInfo.setCreateTriangleFunction(EdgeMassTriangleCreationFunction);
-    edgeMassInfo.setDestroyTriangleFunction(EdgeMassTriangleDestroyFunction);
-    // Quad
-    edgeMassInfo.setCreateQuadFunction(EdgeMassQuadCreationFunction);
-    edgeMassInfo.setDestroyQuadFunction(EdgeMassQuadDestroyFunction);
-    // Tetrahedron
-    edgeMassInfo.setCreateTetrahedronFunction(EdgeMassTetrahedronCreationFunction);
-    edgeMassInfo.setDestroyTetrahedronFunction(EdgeMassTetrahedronDestroyFunction);
-    // Hexahedron (NOT HANDLE YET)
-    //edgeMassInfo.setCreateHexahedronFunction(EdgeMassHexahedronCreationFunction);
-    //edgeMassInfo.setDestroyHexahedronFunction(EdgeMassHexahedronDestroyFunction);
+    edgeMassInfo.setDestroyParameter( (void *) this );
+
 
     if ((vertexMassInfo.getValue().size()==0 || edgeMassInfo.getValue().size()==0) && (_topology!=0))
         reinit();
@@ -723,7 +704,6 @@ void MeshMatrixMass<DataTypes, MassType>::init()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::reinit()
 {
-
     if (_topology && ((m_massDensity.getValue() > 0 && (vertexMassInfo.getValue().size() == 0 || edgeMassInfo.getValue().size() == 0)) || (m_massDensity.getValue()!= savedMass) ))
     {
         // resize array
@@ -765,6 +745,13 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             VertexMassHexahedronCreationFunction(hexahedraAdded, (void*) this, my_vertexMassInfo);
             EdgeMassHexahedronCreationFunction(hexahedraAdded, (void*) this, my_edgeMassInfo);
             massLumpingCoeff = 2.5;
+
+            // Hexahedron (NOT HANDLE YET)
+            //vertexMassInfo.setCreateHexahedronFunction(VertexMassHexahedronCreationFunction);
+            //vertexMassInfo.setDestroyHexahedronFunction(VertexMassHexahedronDestroyFunction);
+
+            //edgeMassInfo.setCreateHexahedronFunction(EdgeMassHexahedronCreationFunction);
+            //edgeMassInfo.setDestroyHexahedronFunction(EdgeMassHexahedronDestroyFunction);
         }
         else if (_topology->getNbTetrahedra()>0 && tetraGeo)  // Tetrahedron topology
         {
@@ -778,6 +765,13 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             VertexMassTetrahedronCreationFunction(tetrahedraAdded, (void*) this, my_vertexMassInfo);
             EdgeMassTetrahedronCreationFunction(tetrahedraAdded, (void*) this, my_edgeMassInfo);
             massLumpingCoeff = 2.5;
+
+            // Tetrahedron
+            vertexMassInfo.setCreateTetrahedronFunction(VertexMassTetrahedronCreationFunction);
+            vertexMassInfo.setDestroyTetrahedronFunction(VertexMassTetrahedronDestroyFunction);
+
+            edgeMassInfo.setCreateTetrahedronFunction(EdgeMassTetrahedronCreationFunction);
+            edgeMassInfo.setDestroyTetrahedronFunction(EdgeMassTetrahedronDestroyFunction);
         }
 
         else if (_topology->getNbQuads()>0 && quadGeo)  // Quad topology
@@ -792,6 +786,13 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             VertexMassQuadCreationFunction(quadsAdded, (void*) this, my_vertexMassInfo);
             EdgeMassQuadCreationFunction(quadsAdded, (void*) this, my_edgeMassInfo);
             massLumpingCoeff = 2.0;
+
+            // Quad
+            vertexMassInfo.setCreateQuadFunction(VertexMassQuadCreationFunction);
+            vertexMassInfo.setDestroyQuadFunction(VertexMassQuadDestroyFunction);
+
+            edgeMassInfo.setCreateQuadFunction(EdgeMassQuadCreationFunction);
+            edgeMassInfo.setDestroyQuadFunction(EdgeMassQuadDestroyFunction);
         }
         else if (_topology->getNbTriangles()>0 && triangleGeo) // Triangle topology
         {
@@ -805,7 +806,20 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             VertexMassTriangleCreationFunction(trianglesAdded, (void*) this, my_vertexMassInfo);
             EdgeMassTriangleCreationFunction(trianglesAdded, (void*) this, my_edgeMassInfo);
             massLumpingCoeff = 2.0;
+
+            // Triangle
+            vertexMassInfo.setCreateTriangleFunction(VertexMassTriangleCreationFunction);
+            vertexMassInfo.setDestroyTriangleFunction(VertexMassTriangleDestroyFunction);
+
+            edgeMassInfo.setCreateTriangleFunction(EdgeMassTriangleCreationFunction);
+            edgeMassInfo.setDestroyTriangleFunction(EdgeMassTriangleDestroyFunction);
         }
+
+        vertexMassInfo.registerTopologicalData();
+        edgeMassInfo.registerTopologicalData();
+
+        vertexMassInfo.endEdit();
+        edgeMassInfo.endEdit();
     }
 }
 
