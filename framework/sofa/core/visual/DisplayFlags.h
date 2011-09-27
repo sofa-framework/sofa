@@ -154,8 +154,8 @@ public:
     void setShowCollision(tristate v=true ) { m_showCollisionModels.setValue(v); }
     void setShowCollisionModels(tristate v=true) { m_showCollisionModels.setValue(v) ; }
     void setShowBoundingCollisionModels(tristate v=true) { m_showBoundingCollisionModels.setValue(v) ; }
-    void setShowMapping(tristate v) { m_showMapping.setValue(v=true); }
-    void setShowMappings(tristate v) { m_showVisualMappings.setValue(v=true) ; }
+    void setShowMapping(tristate v=true) { m_showMapping.setValue(v); }
+    void setShowMappings(tristate v=true) { m_showVisualMappings.setValue(v) ; }
     void setShowMechanicalMappings(tristate v=true) { m_showMechanicalMappings.setValue(v) ; }
     void setShowOptions(tristate v=true) { m_showOptions.setValue(v); }
     void setShowWireFrame(tristate v=true) { m_showWireframe.setValue(v) ; }
