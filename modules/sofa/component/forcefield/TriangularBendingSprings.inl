@@ -504,17 +504,14 @@ void TriangularBendingSprings<DataTypes>::reinit()
     }
     TriangularBSTriangleCreationFunction(triangleAdded,(void*) this,
             edgeInf);
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+
     edgeInfo.createTopologicalEngine(_topology);
-#endif
     edgeInfo.setCreateFunction(TriangularBSEdgeCreationFunction);
     edgeInfo.setCreateTriangleFunction(TriangularBSTriangleCreationFunction);
     edgeInfo.setDestroyTriangleFunction(TriangularBSTriangleDestructionFunction);
     edgeInfo.setCreateParameter( (void *) this );
     edgeInfo.setDestroyParameter( (void *) this );
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     edgeInfo.registerTopologicalData();
-#endif
 
     edgeInfo.endEdit();
 }

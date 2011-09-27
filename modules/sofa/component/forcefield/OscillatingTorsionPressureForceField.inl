@@ -90,6 +90,11 @@ template <class DataTypes> void OscillatingTorsionPressureForceField<DataTypes>:
     origVecFromCenter.resize( numPts );
     origCenter.resize( numPts );
 
+    //trianglePressureMap.createTopologicalEngine(_topology);
+    trianglePressureMap.setCreateParameter( (void *) this );
+    trianglePressureMap.setDestroyParameter( (void *) this );
+    //trianglePressureMap.registerTopologicalData();
+
     initTriangleInformation();
 
 }

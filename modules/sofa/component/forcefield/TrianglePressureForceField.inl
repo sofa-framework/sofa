@@ -81,6 +81,11 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
         selectTrianglesFromString();
     }
 
+    //trianglePressureMap.createTopologicalEngine(_topology);
+    trianglePressureMap.setCreateParameter( (void *) this );
+    trianglePressureMap.setDestroyParameter( (void *) this );
+    //trianglePressureMap.registerTopologicalData();
+
     initTriangleInformation();
 
     serr << "TrianglePressureForceField::addDForce not yet implemented" << sendl;

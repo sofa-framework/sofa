@@ -322,12 +322,13 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     TetrahedralTMTetrahedronCreationFunction(tetrahedronAdded,(void*) this,
             edgeInf);
 
-
+    edgeInfo.createTopologicalEngine(_topology);
     edgeInfo.setCreateFunction(TetrahedralTMEdgeCreationFunction);
     edgeInfo.setCreateTetrahedronFunction(TetrahedralTMTetrahedronCreationFunction);
     edgeInfo.setDestroyTetrahedronFunction(TetrahedralTMTetrahedronDestructionFunction);
     edgeInfo.setCreateParameter( (void *) this );
     edgeInfo.setDestroyParameter( (void *) this );
+    edgeInfo.registerTopologicalData();
 
     edgeInfo.endEdit();
 }

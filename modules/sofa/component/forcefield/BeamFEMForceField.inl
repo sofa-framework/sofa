@@ -109,9 +109,11 @@ void BeamFEMForceField<DataTypes>::init()
         }
     }
 
+    beamsData.createTopologicalEngine(_topology);
     beamsData.setCreateFunction(BeamFEMEdgeCreationFunction);
     beamsData.setCreateParameter( (void *) this );
     beamsData.setDestroyParameter( (void *) this );
+    beamsData.registerTopologicalData();
 
     reinit();
 }

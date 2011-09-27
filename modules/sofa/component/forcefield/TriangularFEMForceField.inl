@@ -290,28 +290,26 @@ void TriangularFEMForceField<DataTypes>::reinit()
     helper::vector<VertexInformation>& vi = *(vertexInfo.beginEdit());
     vi.resize(nbPoints);
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     edgeInfo.createTopologicalEngine(_topology);
+    edgeInfo.setCreateParameter( (void *) this );
+    edgeInfo.setDestroyParameter( (void *) this );
     edgeInfo.registerTopologicalData();
 
     vertexInfo.createTopologicalEngine(_topology);
+    vertexInfo.setCreateParameter( (void *) this );
+    vertexInfo.setDestroyParameter( (void *) this );
     vertexInfo.registerTopologicalData();
-#endif
     vertexInfo.endEdit();
 
     for (int i=0; i<_topology->getNbTriangles(); ++i)
     {
         TRQSTriangleCreationFunction(i, (void*) this, triangleInf[i],  _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0, (const sofa::helper::vector< double >)0);
     }
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     triangleInfo.createTopologicalEngine(_topology);
-#endif
     triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
     triangleInfo.setCreateParameter( (void *) this );
     triangleInfo.setDestroyParameter( (void *) this );
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     triangleInfo.registerTopologicalData();
-#endif
 
     edgeInfo.endEdit();
     triangleInfo.endEdit();

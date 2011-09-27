@@ -218,16 +218,23 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
                 (const sofa::helper::vector< double >)0);
     }
 
+    // Edge info
+    edgeInfo.createTopologicalEngine(_topology);
     edgeInfo.setCreateFunction(TRQSEdgeCreationFunction);
-    triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
-    triangleInfo.setDestroyFunction(TRQSTriangleDestroyFunction);
     edgeInfo.setCreateParameter( (void *) this );
     edgeInfo.setDestroyParameter( (void *) this );
+    edgeInfo.registerTopologicalData();
+    edgeInfo.endEdit();
+
+    // Triangle info
+    triangleInfo.createTopologicalEngine(_topology);
+    triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
+    triangleInfo.setDestroyFunction(TRQSTriangleDestroyFunction);
     triangleInfo.setCreateParameter( (void *) this );
     triangleInfo.setDestroyParameter( (void *) this );
-
-    edgeInfo.endEdit();
+    triangleInfo.registerTopologicalData();
     triangleInfo.endEdit();
+
 }
 
 template <class DataTypes>
