@@ -319,11 +319,13 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
             edgeInf);
 
 
+    edgeInfo.createTopologicalEngine(_topology);
     edgeInfo.setCreateFunction(TriangularTMEdgeCreationFunction);
     edgeInfo.setCreateTriangleFunction(TriangularTMTriangleCreationFunction);
     edgeInfo.setDestroyTriangleFunction(TriangularTMTriangleDestructionFunction);
     edgeInfo.setCreateParameter( (void *) this );
     edgeInfo.setDestroyParameter( (void *) this );
+    edgeInfo.registerTopologicalData();
 
     edgeInfo.endEdit();
 }

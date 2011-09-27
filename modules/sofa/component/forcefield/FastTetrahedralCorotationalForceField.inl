@@ -212,9 +212,11 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
                 (const helper::vector< double >)0);
     }
     /// set the call back function upon creation of a tetrahedron
+    tetrahedronInfo.createTopologicalEngine(_topology);
     tetrahedronInfo.setCreateFunction(CorotationalTetrahedronCreationFunction);
     tetrahedronInfo.setCreateParameter( (void *) this );
     tetrahedronInfo.setDestroyParameter( (void *) this );
+    tetrahedronInfo.registerTopologicalData();
     tetrahedronInfo.endEdit();
 
     updateTopologyInfo=true;

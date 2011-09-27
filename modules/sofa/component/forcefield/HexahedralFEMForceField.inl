@@ -138,9 +138,11 @@ void HexahedralFEMForceField<DataTypes>::reinit()
                 (const std::vector< double >)0);
     }
 
+    hexahedronInfo.createTopologicalEngine(_topology);
     hexahedronInfo.setCreateFunction(FHexahedronCreationFunction);
     hexahedronInfo.setCreateParameter( (void *) this );
     hexahedronInfo.setDestroyParameter( (void *) this );
+    hexahedronInfo.registerTopologicalData();
 
     hexahedronInfo.endEdit();
 }

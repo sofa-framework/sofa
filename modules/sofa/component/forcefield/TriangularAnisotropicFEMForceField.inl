@@ -73,7 +73,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
 
 template< class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleCreationFunction (int triangleIndex, void* param,
-        helper::vector<Deriv> &/*tinfo*/,
+        Deriv &/*tinfo*/,
         const Triangle& /*t*/,
         const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
@@ -107,7 +107,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
     _topology = this->getContext()->getMeshTopology();
 
     Inherited::init();
-    //reinit();
+    reinit();
 }
 
 template <class DataTypes>
@@ -132,9 +132,11 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
     localFiberDirection.endEdit();
     Inherited::reinit();
 
-//	localFiberDirection.setCreateFunction(TRQSTriangleCreationFunction);
-//	localFiberDirection.setCreateParameter( (void *) this );
-//	localFiberDirection.setDestroyParameter( (void *) this );
+    localFiberDirection.createTopologicalEngine(_topology);
+    localFiberDirection.setCreateFunction(TRQSTriangleCreationFunction);
+    localFiberDirection.setCreateParameter( (void *) this );
+    localFiberDirection.setDestroyParameter( (void *) this );
+    localFiberDirection.registerTopologicalData();
 }
 
 template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::handleTopologyChange()
