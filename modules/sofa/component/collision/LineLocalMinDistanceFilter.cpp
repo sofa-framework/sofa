@@ -217,17 +217,24 @@ void LineLocalMinDistanceFilter::init()
     {
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
+
+        m_pointInfo.createTopologicalEngine(bmt);
+        m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
+        m_pointInfo.setCreateParameter( (void *) this );
+        m_pointInfo.setDestroyParameter( (void *) this );
+        m_pointInfo.registerTopologicalData();
         m_pointInfo.endEdit();
 
-        m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
-        m_pointInfo.setCreateParameter((void *) this);
 
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
-        m_lineInfo.endEdit();
 
+        m_lineInfo.createTopologicalEngine(bmt);
         m_lineInfo.setCreateFunction(LMDFilterLineCreationFunction);
         m_lineInfo.setCreateParameter((void *) this);
+        m_lineInfo.setDestroyParameter( (void *) this );
+        m_lineInfo.registerTopologicalData();
+        m_lineInfo.endEdit();
     }
 }
 

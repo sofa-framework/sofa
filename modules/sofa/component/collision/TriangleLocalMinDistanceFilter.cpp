@@ -93,9 +93,12 @@ void TriangleLocalMinDistanceFilter::init()
     if (bmt != 0)
     {
 
-
+        m_pointInfo.createTopologicalEngine(bmt);
         m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
         m_pointInfo.setCreateParameter((void *) this);
+        m_pointInfo.setDestroyParameter( (void *) this );
+        m_pointInfo.registerTopologicalData();
+
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
         int i;
@@ -109,9 +112,12 @@ void TriangleLocalMinDistanceFilter::init()
 
 
 
-
+        m_lineInfo.createTopologicalEngine(bmt);
         m_lineInfo.setCreateFunction(LMDFilterLineCreationFunction);
         m_lineInfo.setCreateParameter((void *) this);
+        m_lineInfo.setDestroyParameter( (void *) this );
+        m_lineInfo.registerTopologicalData();
+
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
         for (i=0; i<bmt->getNbEdges(); i++)
@@ -125,9 +131,12 @@ void TriangleLocalMinDistanceFilter::init()
 
 
 
-
+        m_triangleInfo.createTopologicalEngine(bmt);
         m_triangleInfo.setCreateFunction(LMDFilterTriangleCreationFunction);
         m_triangleInfo.setCreateParameter((void *) this);
+        m_triangleInfo.setDestroyParameter( (void *) this );
+        m_triangleInfo.registerTopologicalData();
+
         helper::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
         tInfo.resize(bmt->getNbTriangles());
         for (i=0; i<bmt->getNbTriangles(); i++)
