@@ -76,6 +76,11 @@ public:
     Data<unsigned> f_vecId;  ///< index of the vector (default value corresponds to core::VecCoordId::position() )
     Data<Coord> f_average;       ///< result
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
 
     static std::string templateName(const AverageCoord<DataTypes>* = NULL)
     {
