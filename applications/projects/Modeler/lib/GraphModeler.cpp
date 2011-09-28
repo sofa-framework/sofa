@@ -279,7 +279,9 @@ void GraphModeler::dropEvent(QDropEvent* event)
         if (newComponent)
         {
             Q3ListViewItem *after = graphListener->items[newComponent];
-            after->setText(0, QString(newComponent->getName().c_str()));
+            std::ostringstream oss;
+            oss << newComponent->getClassName() << " " << newComponent->getName();
+            after->setText(0, QString(oss.str().c_str()));
             Q3ListViewItem *item = itemAt(event->pos());
             if (getObject(item)) initItem(after, item);
         }
