@@ -120,9 +120,9 @@ public:
     Data< VecCoord > reset_position;
     Data< VecDeriv > reset_velocity;
 
-    static void PointCreationFunction (int , void* , Coord &, const sofa::helper::vector< unsigned int > & ,   const sofa::helper::vector< double >&);
+    //static void PointCreationFunction (int , void* , Coord &, const sofa::helper::vector< unsigned int > & ,   const sofa::helper::vector< double >&);
 
-    static void PointDestroyFunction (int, void*, Coord&);
+    //static void PointDestroyFunction (int, void*, Coord&);
 
 #else
     Data< VecCoord > x;

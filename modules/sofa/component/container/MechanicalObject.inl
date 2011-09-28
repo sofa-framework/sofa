@@ -277,7 +277,7 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
 }
 
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+#if 0 //SOFA_HAVE_NEW_TOPOLOGYCHANGES
 template <class DataTypes>
 void MechanicalObject<DataTypes>::PointCreationFunction(int , void * param, Coord & , const sofa::helper::vector<unsigned int> & ancestors, const sofa::helper::vector<double> & coefs)
 {
@@ -321,9 +321,9 @@ void MechanicalObject<DataTypes>::PointDestroyFunction(int , void * param, Coord
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    std::cout << "WARNING MechanicalObject<DataTypes>::handleStateChange()" << std::endl;
-#else
+//#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+//    std::cout << "WARNING MechanicalObject<DataTypes>::handleStateChange()" << std::endl;
+//#else
     using sofa::core::topology::TopologyChange;
 
     std::list< const TopologyChange * >::const_iterator itBegin = m_topology->beginStateChange();
@@ -444,7 +444,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
         ++itBegin;
     }
-#endif
+//#endif
 }
 
 template <class DataTypes>
@@ -1042,7 +1042,7 @@ void MechanicalObject<DataTypes>::init()
         }
     }
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+#if 0// SOFA_HAVE_NEW_TOPOLOGYCHANGES
     x0.createTopologicalEngine(m_topology);
     //x0.setCreateFunction(PointCreationFunction);
     //x0.setDestroyFunction(PointDestroyFunction);
