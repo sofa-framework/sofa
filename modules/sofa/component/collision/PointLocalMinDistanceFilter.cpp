@@ -216,10 +216,12 @@ void PointLocalMinDistanceFilter::init()
     {
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
-        m_pointInfo.endEdit();
-
+        m_pointInfo.createTopologicalEngine(bmt);
         m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
-        m_pointInfo.setCreateParameter((void *) this);
+        m_pointInfo.setCreateParameter( (void *) this );
+        m_pointInfo.setDestroyParameter( (void *) this );
+        m_pointInfo.registerTopologicalData();
+        m_pointInfo.endEdit();
     }
     if(this->isRigid())
     {
