@@ -270,6 +270,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Uncomment if you want to use Sensable Phantom with CHAI3D
 # DEFINES += SOFA_HAVE_CHAI3D
 
+# Uncomment if you want to use Haption Phantom
+#DEFINES += SOFA_HAVE_HAPTION
+
 # Uncomment if you want to use Xitact IHP and ITP tools
 # DEFINES += SOFA_HAVE_XITACT
 
