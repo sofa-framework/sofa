@@ -49,7 +49,7 @@ namespace objectmodel
 
 class Event;
 class MouseEvent;
-class OmniEvent;
+//class OmniEvent;
 class KeypressedEvent;
 class KeyreleasedEvent;
 class JoystickEvent;
@@ -96,12 +96,12 @@ public:
     /**
     * @brief Omni event callback.
     */
-    virtual void onOmniEvent(core::objectmodel::OmniEvent *) {};
+    //virtual void onOmniEvent(core::objectmodel::OmniEvent *){};
 
     /**
     * @brief Xitact event callback.
     */
-    virtual void onXitactEvent(core::objectmodel::OmniEvent *) {};
+    //virtual void onXitactEvent(core::objectmodel::OmniEvent *){};
 
 
     /**

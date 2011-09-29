@@ -97,63 +97,62 @@ void MechanicalStateController<Vec1dTypes>::applyController()
 
     //std::cout<<" applyController() : omni "<< omni << "  buttonOmni " <<buttonOmni<<std::endl;
 
-    if(omni)
+//	if(omni)
+//	{
+    if(mState)
     {
-        if(mState)
+        helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
+        if(buttonOmni)
         {
-            helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
-
-            if(buttonOmni)
-            {
-                if (x0[0].x() < -0.001)
-                    x0[0].x() += 0.05;
-                else
-                    x0[0].x() =  -0.001;
-
-                if (x0[1].x() > 0.001)
-                    x0[1].x() -= 0.05;
-                else
-                    x0[1].x() = 0.001;
-            }
+            if (x0[0].x() < -0.1) //angle de fermeture max
+                x0[0].x() += 0.01; //vitesse de fermeture
             else
-            {
-                //sout<<"mouseMode==Release"<<sendl;
+                x0[0].x() =  -0.1;
+            /*
+            				if (x0[1].x() > 0.001)
+            					x0[1].x() -= 0.05;
+            				else
+            					x0[1].x() = 0.001;*/
+        }
+        else
+        {
+            //sout<<"mouseMode==Release"<<sendl;
 
-                if (x0[0].x() > -0.3)
-                    x0[0].x() -= 0.05;
-                else
-                    x0[0].x() = -0.3;
+            if (x0[0].x() > -0.5)	 //angle d'ouverture max
+                x0[0].x() -= 0.05;   //vitesse d'ouverture
+            else
+                x0[0].x() = -0.5;
 
-                if (x0[1].x() < 0.3)
-                    x0[1].x() += 0.05;
-                else
-                    x0[1].x() = 0.3;
-
-            }
-
+            //if (x0[1].x() < 0.3)
+            //	x0[1].x() += 0.05;
+            //else
+            //	x0[1].x() = 0.3;
 
         }
 
+
     }
-    else
+
+//	}
+    /*else
+    {*/
+    if (mState)
     {
-        if (mState)
+        helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
+        if (mouseMode==BtMiddle)
         {
-            helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
-            if (mouseMode==BtMiddle)
-            {
-                x0[0].x() =  -0.4;
-                x0[1].x() =  -0.4;
+            x0[0].x() =  -0.4;
+            x0[1].x() =  -0.4;
 
-            }
-            else
-            {
-                x0[0].x() =  0.0;
-                x0[1].x() =  0.0;
+        }
+        else
+        {
+            x0[0].x() =  0.0;
+            x0[1].x() =  0.0;
 
-            }
         }
     }
+    //}
 
 
 
@@ -213,42 +212,42 @@ void MechanicalStateController<Vec1fTypes>::applyController()
         }
 
     }
-    else
-    {
-        //if (mState)
-        //{
-        //	if (mouseMode==BtLeft || mouseMode==BtRight)
-        //	{
-        //			//sout<<"mouseMode==BtLeft"<<sendl;
+    //else
+    //{
+    //if (mState)
+    //{
+    //	if (mouseMode==BtLeft || mouseMode==BtRight)
+    //	{
+    //			//sout<<"mouseMode==BtLeft"<<sendl;
 
-        //			if (x0[0].x() < -0.01f)
-        //				x0[0].x() += 0.01f;
-        //			else
-        //				x0[0].x() =  -0.01f;
-        //
-        //			if (x0[1].x() > 0.01f)
-        //				x0[1].x() -= 0.01f;
-        //			else
-        //				x0[1].x() = 0.01f;
+    //			if (x0[0].x() < -0.01f)
+    //				x0[0].x() += 0.01f;
+    //			else
+    //				x0[0].x() =  -0.01f;
+    //
+    //			if (x0[1].x() > 0.01f)
+    //				x0[1].x() -= 0.01f;
+    //			else
+    //				x0[1].x() = 0.01f;
 
-        //	}
-        //	else
-        //	{
-        //			//sout<<"mouseMode==Release"<<sendl;
+    //	}
+    //	else
+    //	{
+    //			//sout<<"mouseMode==Release"<<sendl;
 
-        //			if (x0[0].x() > -0.7f)
-        //				x0[0].x() -= 0.01f;
-        //			else
-        //				x0[0].x() = -0.7f;
-        //
-        //			if (x0[1].x() < 0.7f)
-        //				x0[1].x() += 0.01f;
-        //			else
-        //				x0[1].x() = 0.7f;
+    //			if (x0[0].x() > -0.7f)
+    //				x0[0].x() -= 0.01f;
+    //			else
+    //				x0[0].x() = -0.7f;
+    //
+    //			if (x0[1].x() < 0.7f)
+    //				x0[1].x() += 0.01f;
+    //			else
+    //				x0[1].x() = 0.7f;
 
-        //	}
-        //}
-    }
+    //	}
+    //}
+    //}
 
 
 

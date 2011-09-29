@@ -3,6 +3,8 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = Modeler
 
+CONFIG += console
+
 INCLUDEPATH += $$BUILD_DIR/../lib/$$UI_DIR # HACK: some uic generated headers are generated in another .pro
 
 macx : {

@@ -61,7 +61,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
 
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::init()
+void RestShapeSpringsForceField<DataTypes>::bwdInit()
 {
     core::behavior::ForceField<DataTypes>::init();
 

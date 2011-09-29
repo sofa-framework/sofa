@@ -1,32 +1,16 @@
 
 ######  GENERAL PLUGIN CONFIGURATION, you shouldn't have to modify it
 
-SOFA_DIR=../../..
+load(sofa/pre)
+defineAsPlugin(Xitact)
 TEMPLATE = lib
-
-include($${SOFA_DIR}/sofa.cfg)
-
-DESTDIR = $$SOFA_DIR/lib/sofa-plugins
-
-#set configuration to dynamic library
-CONFIG += $$CONFIGLIBRARIES
-!contains(CONFIGSTATIC, static) {
-	CONFIG -= staticlib
-CONFIG += dll
-}
 
 ###### SPECIFIC PLUGIN CONFIGURATION, you should modify it to configure your plugin
 
-TARGET = Xitact$$LIBSUFFIX
+TARGET = Xitact
 DEFINES += SOFA_BUILD_XITACTPLUGIN
 
-#INCLUDEPATH += $$SOFA_DIR/extlibs/Xitact
-INCLUDEPATH += $$SOFA_DIR/include
-
-LIBS += $$SOFA_LIBS
-LIBS += $$SOFA_EXT_LIBS
 LIBS += -lXiRobot
-
 
 HEADERS = \
 initXitact.h \
@@ -42,11 +26,9 @@ IHPDriver.cpp \
 ITPDriver.cpp 
 
 
-
-
-
-
 README_FILE = PluginXitact.txt
 
-unix : QMAKE_POST_LINK = cp $$README_FILE $$DESTDIR 
-win32 : QMAKE_POST_LINK = copy \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"
+unix : QMAKE_POST_LINK = cp $$SRC_DIR/$$README_FILE $$LIB_DESTDIR 
+win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$LIB_DESTDIR"
+
+load(sofa/post)

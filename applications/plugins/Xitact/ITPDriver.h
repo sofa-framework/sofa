@@ -43,7 +43,6 @@
 //#include <sofa/component/collision/HeartSimulationManager.h>
 #include "initXitact.h"
 
-
 namespace sofa
 {
 namespace simulation { class Node; }

@@ -90,7 +90,7 @@ public:
     RestShapeSpringsForceField();
 
     /// BaseObject initialization method.
-    void init();
+    void bwdInit();
 
     /// Add the forces.
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);

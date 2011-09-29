@@ -26,6 +26,10 @@ contains(DEFINES, SOFA_HAVE_XITACT) {
 }
 
 
+contains (DEFINES, SOFA_HAVE_HAPTION) {
+usePlugin(Haption)
+}
+
 contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 
 	contains (DEFINES, SOFA_HAVE_VULCAIN) {
@@ -107,6 +111,8 @@ contains (DEFINES, SOFA_HAVE_STABLEFLUID_PLUGIN) {
 }
 
 
+
+
 ########################################################################
 # Generate SUBDIRS specifications to build everything
 ########################################################################
@@ -159,6 +165,8 @@ contains (CONFIGDEBUG, release) {
     }
   }
 }
+
+
 
 contains(DEFINES,SOFA_QT4) {
   message( "|  Qt version: 4.x")

@@ -1,8 +1,5 @@
 includeOnce($$_FILE_) {
-#DECLARE ALL THE VARIABLES
-	declare(SensablePlugin, applications/plugins/Sensable , sofagui sofaguiqt sofacomponent, lHLU, lHDU, lHL, lHD, lPHANToMIO)
+	declare(SensablePlugin, applications/plugins/Sensable, sofacomponent sofasimulation)
 
-#ENABLE ALL THE LIBS AND INIT
 	enable(SensablePlugin)
-
 }

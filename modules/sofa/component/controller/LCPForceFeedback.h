@@ -27,6 +27,7 @@
 
 #include <sofa/component/component.h>
 #include <sofa/component/controller/ForceFeedback.h>
+#include <sofa/component/controller/MechanicalStateForceFeedback.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/constraintset/ConstraintSolverImpl.h>
 
@@ -52,12 +53,12 @@ using namespace core;
 * LCP force field
 */
 template <class TDataTypes>
-class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback : public sofa::component::controller::ForceFeedback
+class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>
 {
 
 public:
 
-    SOFA_CLASS(SOFA_TEMPLATE(LCPForceFeedback,TDataTypes),sofa::component::controller::ForceFeedback);
+    SOFA_CLASS(SOFA_TEMPLATE(LCPForceFeedback,TDataTypes),sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>);
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -76,7 +77,7 @@ public:
     {
         // draw the haptic_freq in the openGL window
 
-        std::cout << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
+        //std::cout << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
     }
 
     Data<double> forceCoef;
