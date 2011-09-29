@@ -10,7 +10,7 @@
 		<EulerImplicit name="TissueSolver" printLog="false" rayleighStiffness="0.3" rayleighMass="0.2"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MechanicalObject template="Vec3d"/>
-		<UniformMass mass="0.0005"/>
+		<UniformMass mass="0.001"/>
 		<RegularGrid name="grid"
 				nx="10" ny="4" nz="10"
 				xmin="-0.05" xmax="0.05"
