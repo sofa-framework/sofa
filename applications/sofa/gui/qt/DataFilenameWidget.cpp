@@ -32,7 +32,7 @@ bool DataFileNameWidget::createWidgets()
 
     layout->add(openFilePath);
     layout->add(openFileButton);
-    connect( openFileButton, SIGNAL( clicked() ), this, SLOT( raiseFileDialog() ) );
+    connect( openFileButton, SIGNAL( clicked() ), this, SLOT( raiseDialog() ) );
     connect( openFilePath, SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
     return true;
 }
@@ -40,7 +40,7 @@ bool DataFileNameWidget::createWidgets()
 
 void DataFileNameWidget::readFromData()
 {
-    const std::string& filepath = this->getData()->virtualGetValue();
+    const std::string& filepath = this->getData()->getValue();
     if (openFilePath->text().ascii() != filepath)
         openFilePath->setText(QString(filepath.c_str()) );
 }
@@ -49,7 +49,7 @@ void DataFileNameWidget::writeToData()
 {
     std::string fileName( openFilePath->text().ascii() );
     if (this->getData()->getValueString() != fileName)
-        this->getData()->virtualSetValue(fileName);
+        this->getData()->setValue(fileName);
 
 }
 
