@@ -198,7 +198,8 @@ int main(int argc, char** argv)
             mrulist.close();
         }
         else
-            fileName = "Demos/10000.scn";
+            fileName = "C:/Users/SOFA/Documents/stage/haptic4.scn";	  //Demos/10000.scn
+        //fileName = "Demos/10000.scn";
 
         fileName = sofa::helper::system::DataRepository.getFile(fileName);
     }

@@ -116,7 +116,6 @@ HEADERS += \
 	objectmodel/KeyreleasedEvent.h \
 	objectmodel/MouseEvent.h \
 	objectmodel/ObjectRef.h \
-	objectmodel/OmniEvent.h \
 	objectmodel/GLInitializedEvent.h \
 	objectmodel/Tag.h \
 	visual/DisplayFlags.h \
@@ -151,7 +150,6 @@ SOURCES +=  \
 	objectmodel/KeypressedEvent.cpp \
 	objectmodel/KeyreleasedEvent.cpp \
 	objectmodel/MouseEvent.cpp \
-	objectmodel/OmniEvent.cpp \
 	objectmodel/ObjectRef.cpp \
 	objectmodel/Tag.cpp \
 	ObjectFactory.cpp \

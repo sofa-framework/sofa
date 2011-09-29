@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 -9.81" dt="0.02" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+	<FreeMotionMasterSolver name="freeMotionMasterSolver6" />
+	<LCPConstraintSolver name="lCPConstraintSolver7"  group="0" />
+	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
+	<BruteForceDetection name="Detection" />
+	<LocalMinDistance name="localMinDistance0"  alarmDistance="0.3"  contactDistance="0.15" />
+	<DefaultContactManager name="Response"  response="FrictionContact" />
+	<Node 	name="haption" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+		<EulerImplicitSolver name="eulerImplicitSolver1" />
+		<LULinearSolver template="NewMat" name="lULinearSolver0" />
+		<HaptionDriver name="haptionDriver1"  listening="1"  haptionVisu="0"  positionBase="0 0 0 0 0 -0.707107 0.707107" />
+		<MechanicalStateController template="Rigid" name="mechanicalStateController1"  buttonDeviceState="@haptionDriver1.state_button"  mainDirection="0 0 -1" />
+		<MechanicalObject template="Rigid" name="instrumentState"  listening="1"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001" />
+		<UniformMass template="Rigid" name="uniformMass2"  totalmass="0.1" />
+		<LinearSolverConstraintCorrection template="Rigid" name="linearSolverConstraintCorrection4" />
+		<LCPForceFeedback template="Rigid" name="lCPForceFeedback5"  listening="1"  activate="1"  forceCoef="0.1" />
+		<RestShapeSpringsForceField template="Rigid" name="restShapeSpringsForceField4"  stiffness="200"  angularStiffness="200" />
+		<Node 	name="visual" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+			<OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="mesh/dental_instrument.obj"  translation="-1.2 -1.6 3.55"  rotation="180 0 150"  scale3d="1 1 1"  material="Default Diffuse 1 0 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+			<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="RigidMapping"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@../instrumentState"  output="@InstrumentVisualModel" />
+		</Node>
+		<Node 	name="CollisionModel" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+			<MeshLoader name="meshLoader9"  filename="mesh/dental_instrument.obj" />
+			<MeshTopology name="meshTopology10" />
+			<MechanicalObject template="Vec3d" name="instrumentCollisionState"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  translation="-1.1 -1.6 3.55"  rotation="180 0 150"  scale3d="1 1 1" />
+			<TTriangleModel template="Vec3d" name="tTriangleModel1" />
+			<LineModel name="lineModel12" />
+			<PointModel name="pointModel13" />
+			<RigidMapping template="Mapping&lt;Rigid,Vec3d&gt;" name="map"  input="@../instrumentState"  output="@instrumentCollisionState" />
+		</Node>
+	</Node>
+	<Node 	name="Obstacle" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+		<MeshTopology name="Mesh"  fileTopology="mesh/cube.obj" />
+		<MechanicalObject template="Vec3d" name="Obstacle"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  translation="0 0 -10"  rotation="0 0 0"  scale3d="40 40 0.1" />
+		<TTriangleModel template="Vec3d" name="Triangles"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
+		<LineModel name="Lines"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
+		<PointModel name="Points"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
+		<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/cube.obj"  translation="0 0 -10"  rotation="0 0 0"  scale3d="40 40 0.1"  material="Default Diffuse 1 0.494118 0.494118 0.494118 1 Ambient 1 0.0901961 0.0901961 0.0901961 1 Specular 0 0.494118 0.494118 0.494118 1 Emissive 0 0.494118 0.494118 0.494118 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+	</Node>
+	<Node 	name="Object" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+		<EulerImplicitSolver name="Implicit Euler Solver" />
+		<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
+		<SparseGridTopology name="Embedded Sparse Grid"  fileTopology="mesh/liver.obj"  n="7 6 5" />
+		<MechanicalObject template="Vec3d" name="Particles"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
+		<UniformMass template="Vec3d" name="Mass"  mass="0.1"  totalmass="2" />
+		<PrecomputedConstraintCorrection template="Vec3d" name="precomputedConstraintCorrection0"  rotations="1" />
+		<HexahedronFEMForceField template="Vec3d" name="FEM"  poissonRatio="0.45"  youngModulus="3" />
+		<Node 	name="VisualNode" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+			<OglModel template="ExtVec3f" name="Objective"  fileMesh="mesh/liver.obj"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="Visual Mapping"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Objective" />
+		</Node>
+		<Node 	name="CollisionNode" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+			<MeshTopology name="Mesh"  fileTopology="mesh/liver.obj" />
+			<MechanicalObject template="Vec3d" name="CollisionObject"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  scale3d="1 1 1" />
+			<PointModel name="Points" />
+			<LineModel name="Lines" />
+			<TTriangleModel template="Vec3d" name="Triangles" />
+			<BarycentricMapping template="Mapping&lt;Vec3d,Vec3d&gt;" name="MechanicalMapping"  input="@.."  output="@." />
+		</Node>
+	</Node>
+	<Node 	name="TORUS" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+		<EulerImplicitSolver name="cg_odesolver"  printLog="0"  rayleighStiffness="0.001"  rayleighMass="30" />
+		<CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  iterations="25"  tolerance="1e-009"  threshold="1e-015" />
+		<MechanicalObject template="Rigid" name="mechanicalObject2"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  translation="10 0 0"  scale3d="1 1 1" />
+		<UniformMass template="Rigid" name="uniformMass1"  mass="0.01 1 [1 0 0,0 1 0,0 0 1]" />
+		<UncoupledConstraintCorrection template="Rigid" name="uncoupledConstraintCorrection1" />
+		<Node 	name="Visu" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+			<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/torus.obj"  rotation="90 0 0"  scale3d="1 1 1"  material="Default Diffuse 1 1 0.498039 0.247059 1 Ambient 1 0.2 0.0980392 0.0470588 1 Specular 0 1 0.498039 0.247059 1 Emissive 0 1 0.498039 0.247059 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+			<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="rigidMapping1"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Visual" />
+		</Node>
+		<Node 	name="Surf2" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+			<MeshLoader name="meshLoader"  filename="mesh/torus_for_collision.obj"  triangulate="1" />
+			<MeshTopology name="meshTopology2" />
+			<MechanicalObject template="Vec3d" name="mechanicalObject3"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  rotation="90 0 0"  scale3d="1 1 1" />
+			<TTriangleModel template="Vec3d" name="tTriangleModel2" />
+			<LineModel name="lineModel2" />
+			<PointModel name="pointModel2" />
+			<RigidMapping template="Mapping&lt;Rigid,Vec3d&gt;" name="rigidMapping2"  input="@.."  output="@." />
+		</Node>
+	</Node>
+</Node>

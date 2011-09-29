@@ -366,16 +366,27 @@ void LCPForceFeedback<Rigid3dTypes>::computeWrench(const SolidTypes<double>::Tra
     }
 
 
+    Rigid3dTypes::VecCoord state;
+    Rigid3dTypes::VecDeriv forces;
+    state.resize(1);
+    state[0].getCenter()	  = world_H_tool.getOrigin();
+    state[0].getOrientation() = world_H_tool.getOrientation();
+
+
+    computeForce(state,forces);
+
+    W_tool_world.setForce(getVCenter(forces[0]));
+    W_tool_world.setTorque(getVOrientation(forces[0]));
 
 
 
-    Vec3d Force(0.0,0.0,0.0);
+    //Vec3d Force(0.0,0.0,0.0);
 
-    this->computeForce(world_H_tool.getOrigin()[0], world_H_tool.getOrigin()[1],world_H_tool.getOrigin()[2],
-            world_H_tool.getOrientation()[0], world_H_tool.getOrientation()[1], world_H_tool.getOrientation()[2], world_H_tool.getOrientation()[3],
-            Force[0],  Force[1], Force[2]);
+    //this->computeForce(world_H_tool.getOrigin()[0], world_H_tool.getOrigin()[1],world_H_tool.getOrigin()[2],
+    //				   world_H_tool.getOrientation()[0], world_H_tool.getOrientation()[1], world_H_tool.getOrientation()[2], world_H_tool.getOrientation()[3],
+    //				   Force[0],  Force[1], Force[2]);
 
-    W_tool_world.setForce(Force);
+    //W_tool_world.setForce(Force);
 
 
 

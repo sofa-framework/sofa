@@ -3,6 +3,8 @@ load(sofa/pre)
 TEMPLATE = app
 TARGET = runSofa
 
+CONFIG += console
+
 macx {
 	CONFIG += app_bundle
 	RC_FILE = runSOFA.icns

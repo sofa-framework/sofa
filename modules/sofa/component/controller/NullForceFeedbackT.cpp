@@ -22,56 +22,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
-#define SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
+#include <sofa/component/controller/NullForceFeedbackT.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/common/Node.h>
-#include <sofa/core/behavior/BaseController.h>
-#include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/component/component.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
-
-using namespace sofa::defaulttype;
+using namespace std;
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace controller
 {
 
+//void NullForceFeedback::init()
+//{
+//	this->ForceFeedback::init();
+//};
+//
+//void NullForceFeedback::computeForce(SReal /*x*/, SReal /*y*/, SReal /*z*/, SReal /*u*/, SReal /*v*/, SReal /*w*/, SReal /*q*/, SReal& fx, SReal& fy, SReal& fz)
+//{
+//	fx = fy = fz = 0.0;
+//};
+//
+//void NullForceFeedback::computeWrench(const SolidTypes<SReal>::Transform &/*world_H_tool*/, const SolidTypes<SReal>::SpatialVector &/*V_tool_world*/, SolidTypes<SReal>::SpatialVector &W_tool_world )
+//{
+//	W_tool_world.clear();
+//};
+int nullForceFeedbackTClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
+#ifndef SOFA_FLOAT
+        .add< NullForceFeedbackT<sofa::defaulttype::Vec1dTypes> >()
+        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< NullForceFeedbackT<sofa::defaulttype::Vec1fTypes> >()
+        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3fTypes> >()
+#endif
+        ;
 
-/**
-* Omni driver force field
-*/
-class SOFA_COMPONENT_CONTROLLER_API ForceFeedback : public core::behavior::BaseController
-{
+//int nullForceFeedbackClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
+//    .add< NullForceFeedback >();
 
-public:
-    SOFA_CLASS(ForceFeedback,core::behavior::BaseController);
-    Data<bool> f_activate;
-
-    simulation::Node *context;
-
-    ForceFeedback():
-        f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
-    {
-    }
-
-    virtual void init() {context = dynamic_cast<simulation::Node *>(this->getContext());};
-    virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
-    virtual void computeWrench(const SolidTypes<SReal>::Transform &, const SolidTypes<SReal>::SpatialVector &, SolidTypes<SReal>::SpatialVector & )=0;
-
-    virtual void setReferencePosition(SolidTypes<SReal>::Transform& /*referencePosition*/) {};
-};
+SOFA_DECL_CLASS(NullForceFeedbackT)
 
 } // namespace controller
-
 } // namespace component
-
 } // namespace sofa
-
-#endif

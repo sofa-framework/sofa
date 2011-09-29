@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <ITPDriver.h>
+#include "ITPDriver.h"
 
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/core/objectmodel/XitactEvent.h>

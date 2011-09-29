@@ -36,6 +36,14 @@
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
 #include <sofa/component/controller/LCPForceFeedback.h>
+#include <sofa/component/controller/MechanicalStateForceFeedback.h>
+#include <sofa/component/controller/NullForceFeedbackT.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/component/visualmodel/OglModel.h>
+#include <sofa/component/mapping/RigidMapping.h>
+#include <sofa/simulation/common/Simulation.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #ifdef SOFA_DEV
 #include <sofa/component/controller/VMechanismsForceFeedback.h>
 #endif
@@ -64,7 +72,8 @@ static float FFthresholdRoll;
 
 typedef struct
 {
-    LCPForceFeedback<defaulttype::Vec1dTypes>* lcp_forceFeedback;//= NULL;
+    //MechanicalStateForceFeedback<Rigid3dTypes>* lcp_forceFeedback;//= NULL;
+    LCPForceFeedback<Rigid3dTypes>* lcp_forceFeedback;//= NULL;
 #ifdef SOFA_DEV
     VMechanismsForceFeedback<defaulttype::Vec1dTypes>* vm_forceFeedback;// = NULL;
 #endif
@@ -82,7 +91,26 @@ typedef struct
     XiToolState restState;       // for initial haptic state
     XiToolForce hapticForce;
 
+    //RigidTypes::VecCoord positionBaseGlobal;
+
+    Vec3d posBase;
+    Quat quatBase;
+
+
 } XiToolDataIHP;
+
+typedef struct
+{
+    vector<XiToolDataIHP*>  xiToolData;
+} allXiToolDataIHP;
+
+typedef struct
+{
+    simulation::Node *node;
+    sofa::component::visualmodel::OglModel *visu;
+    sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  > *mapping;
+
+} VisualComponent;
 
 
 /**
@@ -95,6 +123,7 @@ class SOFA_XITACTPLUGIN_API IHPDriver : public sofa::component::controller::Cont
 
 public:
     SOFA_CLASS(IHPDriver,sofa::component::controller::Controller);
+    typedef RigidTypes::VecCoord VecCoord;
 
     Data<double> Scale;
     Data<double> forceScale;
@@ -104,13 +133,24 @@ public:
     Data<bool> showToolStates;
     Data<bool> testFF;
     Data<int> RefreshFrequency;
+    Data<bool> xitactVisu;
+    Data< VecCoord > positionBase;
+    Data<string> locPosBati;
+    Data<int> deviceIndex;
+    Data<Vec1d> openTool;
+    Data<double> maxTool;
+    Data<double> minTool;
 
+    allXiToolDataIHP allData;
+    XiToolDataIHP data;
 
-    XiToolDataIHP	data;
+    vector<IHPDriver*> otherXitact;
 
     IHPDriver();
     virtual ~IHPDriver();
-
+#ifdef XITACT_VISU
+    virtual void init();
+#endif
     virtual void bwdInit();
     virtual void reset();
     void reinit();
@@ -118,7 +158,7 @@ public:
     void cleanup();
     //virtual void draw();
 
-    void setLCPForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff);
+    void setLCPForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff);
 #ifdef SOFA_DEV
     void setVMForceFeedback(VMechanismsForceFeedback<defaulttype::Vec1dTypes>* ff);
 #endif
@@ -145,8 +185,8 @@ public:
 
     bool operation; // true = right, false = left
 
+
 private:
-    sofa::core::behavior::MechanicalState<Vec1dTypes> *_mstate;
     void handleEvent(core::objectmodel::Event *);
     sofa::component::visualmodel::OglModel *visu_base, *visu_end;
     bool noDevice;
@@ -156,6 +196,30 @@ private:
     sofa::component::controller::PaceMaker* myPaceMaker;
 
     bool findForceFeedback;
+
+    bool initVisu;
+    bool changeScale;
+    float oldScale;
+    VisualComponent visualNode[7];
+    simulation::Node *nodePrincipal;
+    simulation::Node *nodeBati;
+    simulation::Node *nodeAxes;
+    simulation::Node *nodeTool;
+    simulation::Node *nodeAxesVisual;
+    simulation::Node *nodeXitactVisual;
+    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>  *visualAxesDOF;
+    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>  *visualXitactDOF;
+
+
+    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *posBati;
+    //sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *rigidDOF;
+    //sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *axes;
+    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *posTool;
+    bool visuActif;
+    bool visuAxes;
+    bool modX,modY,modZ,modS;
+    bool firstDevice;
+
 
 
 
