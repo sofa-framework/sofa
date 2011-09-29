@@ -101,8 +101,9 @@ namespace controller
 
 template <class DataTypes>
 LCPForceFeedback<DataTypes>::LCPForceFeedback()
-    : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef.")),
-      haptic_freq(0.0)
+    :forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef.")),
+     haptic_freq(0.0),
+     f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
 {
     this->f_listening.setValue(true);
     mCP[0] = NULL;
@@ -152,7 +153,7 @@ template <class DataTypes>
 void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv& forces)
 {
     const unsigned int stateSize = state.size();
-    // Resize du vecteur force. Initialization à 0 ?
+    // Resize du vecteur force. Initialization ï¿½ 0 ?
     forces.resize(stateSize);
 
 
@@ -175,7 +176,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
     mCurBufferId = mNextBufferId;
 
     const MatrixDeriv& constraints = mConstraints[mCurBufferId];
-//	std::vector<int> &id_buf = mId_buf[mCurBufferId];
+    //	std::vector<int> &id_buf = mId_buf[mCurBufferId];
     VecCoord &val = mVal[mCurBufferId];
     component::constraintset::ConstraintProblem* cp = mCP[mCurBufferId];
 
@@ -275,7 +276,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
 
     MatrixDeriv& constraints = mConstraints[buf_index];
 
-//	std::vector<int>& id_buf = mId_buf[buf_index];
+    //	std::vector<int>& id_buf = mId_buf[buf_index];
     VecCoord& val = mVal[buf_index];
 
     // Update LCP
@@ -286,7 +287,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
 
     // Update constraints and id_buf
     constraints.clear();
-//	id_buf.clear();
+    //	id_buf.clear();
 
     const MatrixDeriv& c = *(mState->getC());
 
