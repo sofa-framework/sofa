@@ -55,12 +55,12 @@ void HaptionDriver::haptic_callback(VirtContext, void *param)
     {
         (data->forceFeedback)->computeWrench(sofaWorld_H_Tool, Twist_tool_inWorld, Wrench_tool_inWorld);
 
-        float force[6] = {Wrench_tool_inWorld.getForce()[0]*data->forceScale,
-                Wrench_tool_inWorld.getForce()[1]*data->forceScale,
-                Wrench_tool_inWorld.getForce()[2]*data->forceScale,
-                Wrench_tool_inWorld.getTorque()[0]*data->torqueScale,
-                Wrench_tool_inWorld.getTorque()[1]*data->torqueScale,
-                Wrench_tool_inWorld.getTorque()[2]*data->torqueScale
+        float force[6] = {(float) Wrench_tool_inWorld.getForce()[0]*data->forceScale,
+                (float) Wrench_tool_inWorld.getForce()[1]*data->forceScale,
+                (float) Wrench_tool_inWorld.getForce()[2]*data->forceScale,
+                (float) Wrench_tool_inWorld.getTorque()[0]*data->torqueScale,
+                (float) Wrench_tool_inWorld.getTorque()[1]*data->torqueScale,
+                (float) Wrench_tool_inWorld.getTorque()[2]*data->torqueScale
                          };
 
         for(int i=0; i<3; i++)
@@ -149,7 +149,8 @@ void HaptionDriver::init()
     if(visualHaptionDOF == NULL && visualAxesDOF == NULL)
     {
         cout<<"init Visual"<<endl;
-        simulation::Node *context = dynamic_cast<simulation::Node*>(this->getContext());
+        simulation::Node *context;
+        context = dynamic_cast<simulation::Node*>(this->getContext());
 
         //Haption node
         nodeHaptionVisual = sofa::simulation::getSimulation()->createNewGraph("nodeHaptionVisual");
@@ -333,16 +334,16 @@ void HaptionDriver::reset()
 void HaptionDriver::reinit()
 {
     std::cout<<"HaptionDriver::reinit() is called" <<std::endl;
-    myData.scale = scale.getValue();
-    myData.torqueScale = torqueScale.getValue();
-    myData.forceScale = forceScale.getValue();
+    myData.scale = (float) scale.getValue();
+    myData.torqueScale = (float) torqueScale.getValue();
+    myData.forceScale = (float) forceScale.getValue();
 }
 
 int HaptionDriver::initDevice(char* ip)
 {
     cout<<"HaptionDriver::initDevice() called"<<endl;
 
-    connection_device = false;
+    connection_device = 0;
     /*m_indexingMode = INDEXING_ALL_FORCE_FEEDBACK_INHIBITION;*/
     m_indexingMode = INDEXING_ALL;
     m_speedFactor = 1.0;
@@ -382,13 +383,13 @@ int HaptionDriver::initDevice(char* ip)
     virtSaturateTorque(myData.m_virtContext, 15.0f,0.7f);
 
     cout<<posBase.getValue()[0].getCenter()<<" "<<posBase.getValue()[0].getOrientation()<<endl;
-    float baseFrame[7] = { posBase.getValue()[0].getCenter().x()/scale.getValue(),
-            posBase.getValue()[0].getCenter().y()/scale.getValue(),
-            posBase.getValue()[0].getCenter().z()/scale.getValue(),
-            posBase.getValue()[0].getOrientation()[0],
-            posBase.getValue()[0].getOrientation()[1],
-            posBase.getValue()[0].getOrientation()[2],
-            posBase.getValue()[0].getOrientation()[3]
+    float baseFrame[7] = { (float) posBase.getValue()[0].getCenter().x()/(float) scale.getValue(),
+            (float) posBase.getValue()[0].getCenter().y()/(float) scale.getValue(),
+            (float) posBase.getValue()[0].getCenter().z()/(float) scale.getValue(),
+            (float) posBase.getValue()[0].getOrientation()[0],
+            (float) posBase.getValue()[0].getOrientation()[1],
+            (float) posBase.getValue()[0].getOrientation()[2],
+            (float) posBase.getValue()[0].getOrientation()[3]
                          };
 
 
@@ -497,13 +498,13 @@ void HaptionDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 
         if(modX || modY || modZ)
         {
-            float baseFrame[7] = { posBase.getValue()[0].getCenter()[0]/scale.getValue(),
-                    posBase.getValue()[0].getCenter()[1]/scale.getValue(),
-                    posBase.getValue()[0].getCenter()[2]/scale.getValue(),
-                    posBase.getValue()[0].getOrientation()[0],
-                    posBase.getValue()[0].getOrientation()[1],
-                    posBase.getValue()[0].getOrientation()[2],
-                    posBase.getValue()[0].getOrientation()[3]
+            float baseFrame[7] = { (float) posBase.getValue()[0].getCenter()[0]/(float) scale.getValue(),
+                    (float) posBase.getValue()[0].getCenter()[1]/(float) scale.getValue(),
+                    (float) posBase.getValue()[0].getCenter()[2]/(float) scale.getValue(),
+                    (float) posBase.getValue()[0].getOrientation()[0],
+                    (float) posBase.getValue()[0].getOrientation()[1],
+                    (float) posBase.getValue()[0].getOrientation()[2],
+                    (float) posBase.getValue()[0].getOrientation()[3]
                                  };
 
 

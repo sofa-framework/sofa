@@ -125,7 +125,7 @@ private:
     float m_speedFactor;
     float m_forceFactor;
     float haptic_time_step;
-    bool connection_device;
+    int connection_device;
     sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *rigidDOF;
     bool initCallback;
     simulation::Node *nodeHaptionVisual;
