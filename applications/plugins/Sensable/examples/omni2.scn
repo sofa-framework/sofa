@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<Node 	name="Root" dt="0.02"  >
+	<LCPConstraintSolver name="lCPConstraintSolver1"  printLog="0"  displayTime="0"  initial_guess="1"  build_lcp="1"  tolerance="1e-010"  maxIt="3000"  mu="0.7"  group="0" />
+	<DefaultPipeline name="defaultPipeline1"  verbose="0"  draw="0"  depth="6" />
+	<BruteForceDetection name="N2" />
+	<LocalMinDistance name="Proximity"  alarmDistance="6"  contactDistance="1.5"  angleCone="-0.001"  coneFactor="0.5" />
+	<FreeMotionAnimationLoop name="freeMotionAnimationLoop1" />
+	<DefaultContactManager name="Response"  response="FrictionContact" />
+	<Node 	name="xitact"  >
+		<NewOmniDriver name="newOmniDriver2"  listening="1"  forceScale="0.01"  positionBase="20 0 0"  permanent="0"  deviceName="Omni1"  deviceIndex="1" />
+		<NewOmniDriver name="newOmniDriver1"  listening="1"  forceScale="0.01"  deviceIndex="0" />
+		<EulerImplicitSolver name="eulerImplicitSolver2"  rayleighStiffness="0.01"  rayleighMass="0.1" />
+		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="40"  tolerance="1e-009"  threshold="1e-015" />
+		<MechanicalObject template="Rigid" name="tool"  position="0 0 0 -0.707107 0 0 0.707107 0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  rest_position="0 0 0 0 0 0 1 0 0 0 0 0 0 1"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001" />
+		<UniformMass template="Rigid" name="uniformMass3"  totalmass="0.01" />
+		<RestShapeSpringsForceField template="Rigid" name="restShapeSpringsForceField1"  points="0 1"  stiffness="1000 1000"  angularStiffness="10000 10000" />
+		<LCPForceFeedback template="Rigid" name="lCPForceFeedback7"  listening="1"  activate="1" />
+		<UncoupledConstraintCorrection template="Rigid" name="uncoupledConstraintCorrection2"  compliance="1e-005 1e-009 0 0 1e-009 0 1e-009" />
+		<Node 	name="Tool1VM"  >
+			<OglModel template="ExtVec3f" name="VM"  fileMesh="dt/aspi.trian"  rotation="0 0 0"  scale3d="1 1 1"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+			<RigidMapping template="Rigid,ExtVec3f" name="rigidMapping6"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@VM"  index="0" />
+		</Node>
+		<Node 	name="Tool1CM"  >
+			<RegularGridTopology name="regularGridTopology1"  fileTopology="dt/aspi.trian"  n="1 2 1"  min="0 -350 0"  max="0 0 0"  p0="0 -350 0" />
+			<MechanicalObject template="Vec3d" name="Endoscope Collision State"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  rotation="-90 0 0"  filename="dt/aspi.trian" />
+			<LineModel name="lineModel4"  group="1" />
+			<PointModel name="pointModel4"  group="1" />
+			<RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@.."  output="@."  index="0" />
+		</Node>
+		<Node 	name="Tool2VM"  >
+			<OglModel template="ExtVec3f" name="VM"  fileMesh="dt/aspi.trian"  rotation="0 0 0"  scale3d="1 1 1"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+			<RigidMapping template="Rigid,ExtVec3f" name="rigidMapping6"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@VM"  index="1" />
+		</Node>
+		<Node 	name="Tool2CM"  >
+			<RegularGridTopology name="regularGridTopology1"  fileTopology="dt/aspi.trian"  n="1 2 1"  min="0 -350 0"  max="0 0 0"  p0="0 -350 0" />
+			<MechanicalObject template="Vec3d" name="Endoscope Collision State"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  rotation="-90 0 0"  filename="dt/aspi.trian" />
+			<LineModel name="lineModel4"  group="1" />
+			<PointModel name="pointModel4"  group="1" />
+			<RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@.."  output="@."  index="1" />
+		</Node>
+	</Node>
+	<Node 	name="BOX"  >
+		<MeshObjLoader name="meshLoader"  filename="mesh/box_inside.obj"  trianglesGroups="Plane  -1 0 12"  triangulate="1"  faceList="[ [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3], [ 0, 1, 3], [ 0, 3, 2], [ 0, 4, 5], [ 0, 5, 1], [ 0, 2, 6], [ 0, 6, 4], [ 6, 2, 3], [ 6, 3, 7], [ 4, 6, 7], [ 4, 7, 5], [ 1, 5, 7], [ 1, 7, 3]]"  vertices="5 5 5 5 5 -5 5 -5 5 5 -5 -5 -5 5 5 -5 5 -5 -5 -5 5 -5 -5 -5" />
+		<MeshTopology name="meshTopology1"  position="@meshLoader.position"  edges="@meshLoader.edges"  triangles="@meshLoader.triangles"  quads="@meshLoader.quads"  tetrahedra="@meshLoader.tetras"  hexahedra="@meshLoader.hexas" />
+		<MechanicalObject template="Vec3d" name="mechanicalObject1"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  translation="0 0 250"  rotation="@meshLoader.rotation"  scale3d="50 50 100" />
+		<TTriangleModel template="Vec3d" name="tTriangleModel1"  moving="0"  simulated="0" />
+		<LineModel name="lineModel1"  moving="0"  simulated="0" />
+		<PointModel name="pointModel1"  moving="0"  simulated="0" />
+		<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/box_outside.obj"  translation="0 0 250"  scale3d="50 50 100"  material="Default Diffuse 1 0 0.4 0.6 0.2 Ambient 1 0 0.0784314 0.117647 0.2 Specular 0 0 0.4 0.6 0.2 Emissive 0 0 0.4 0.6 0.2 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+	</Node>
+</Node>
