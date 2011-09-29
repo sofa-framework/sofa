@@ -720,97 +720,97 @@
         <sender>showNodes</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showObjects</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showBehaviorModels</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showCollisionModels</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showVisualModels</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showMappings</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showContext</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showCollisionPipeline</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showSolvers</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showMechanicalStates</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showForceFields</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showInteractionForceFields</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showConstraints</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showMass</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showTopology</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
     <connection>
         <sender>showMechanicalMappings</sender>
         <signal>toggled(bool)</signal>
         <receiver>presetFilter</receiver>
-        <slot>clearEdit()</slot>
+        <slot>clearEditText()</slot>
     </connection>
 </connections>
 <tabstops>
