@@ -11,11 +11,11 @@ TARGET = HaptionPlugin
 DEFINES += SOFA_BUILD_HAPTIONPLUGIN
 
 win32 {
-	CONFIG(debug, debug|release) {
+#	CONFIG(debug, debug|release) {
 		QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
-	} else {
+#	} else {
 		QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
-	}
+#	}
 }
 
 SOURCES = \
