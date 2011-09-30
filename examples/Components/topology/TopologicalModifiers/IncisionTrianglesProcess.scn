@@ -18,7 +18,7 @@
         <BoxConstraint box="0 9.5 -0.5 10 10.5 0.5" name="box" drawBoxes="true" />
         <BoxConstraint box="0 -0.5 -0.5 10 0.5 0.5" name="box" drawBoxes="true" />
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.45" youngModulus="30000" />
-        <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="10000" damping="1" />
+        <!--<TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="10000" damping="1" />-->
         <TriangleModel name="default7" selfCollision="true" />
         <Node name="edges">
             <EdgeSetTopologyContainer name="Edge_topo" />

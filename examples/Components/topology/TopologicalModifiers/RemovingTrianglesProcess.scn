@@ -1,5 +1,5 @@
 <Node name="root" gravity="0 -9 1" dt="0.01">
-    <VisualStyle displayFlags="showBehaviorModels" />
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="default1" response="default" />

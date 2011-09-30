@@ -5,7 +5,8 @@
     <NewProximityIntersection name="Proximity" alarmDistance="0.06" contactDistance="0.05" />
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
-    <LightManager />
+        
+    	<LightManager listening="true"/>
     <DirectionalLight name="light1" color="1 1 1" direction="-1 1 1" />
     <DirectionalLight name="light2" color="0.5 0.5 1" direction="0 1 -0.5" />
     <MeshObjLoader name="Surf0" filename="mesh/n0-red75-d02.obj" />
@@ -124,4 +125,6 @@
             <BarycentricMapping input="@../DOFs" output="@VM" useRestPosition="false" />
         </Node>
     </Node>
+
+	
 </Node>
