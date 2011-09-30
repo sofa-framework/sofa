@@ -101,9 +101,9 @@ namespace controller
 
 template <class DataTypes>
 LCPForceFeedback<DataTypes>::LCPForceFeedback()
-    :forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef.")),
-     haptic_freq(0.0),
-     f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
+    : f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
+    , forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
+    , haptic_freq(0.0)
 {
     this->f_listening.setValue(true);
     mCP[0] = NULL;
