@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 3" dt="0.05"  >
+	<DefaultPipeline name="defaultPipeline1"  verbose="0" />
+	<BruteForceDetection name="N2" />
+	<DefaultContactManager name="defaultContactManager1"  response="default" />
+	<MinProximityIntersection name="Proximity"  alarmDistance="0.8"  contactDistance="0.5" />
+	<TreeCollisionGroupManager name="treeCollisionGroupManager1" />
+	<Node 	name="SquareGravity"  >
+		<EulerImplicitSolver name="Euler Implicit"  printLog="0"  rayleighStiffness="0.1"  rayleighMass="0.1"  vdamping="0"  verbose="0" />
+		<CGLinearSolver template="GraphScattered" name="CG Solver"  printLog="0"  iterations="40"  tolerance="1e-06"  threshold="1e-10"  verbose="0" />
+		<MeshGmshLoader name="loader"  filename="mesh/square3.msh" />
+		<MechanicalObject template="Vec3d" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="@loader.translation"  rotation="@loader.rotation"  scale3d="@loader.scale3d" />
+		<TriangleSetTopologyContainer name="Container"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles" />
+		<TriangleSetTopologyModifier name="Modifier" />
+		<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+		<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+		<DiagonalMass template="Vec3d" name="diagonalMass1"  massDensity="0.15" />
+
+		<TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
+		<TriangularBendingSprings template="Vec3d" name="FEM-Bend"  stiffness="300"  damping="1" />
+		<TTriangleModel template="Vec3d" name="tTriangleModel1" />
+		<OglModel template="ExtVec3f" name="Visual"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+		<IdentityMapping template="Vec3d,ExtVec3f" name="identityMap1"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@."  output="@Visual" />
+		<Node 	name="Edge Mesh"  >
+			<EdgeSetTopologyContainer name="Container" />
+			<EdgeSetTopologyModifier name="Modifier" />
+			<EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+			<EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  drawEdges="1" />
+			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Container"  output="@Container" />
+			<EdgePressureForceField template="Vec3d" name="edgePressureFF0"  edgeList="@Container.edges" pressure="0 0 -0.1" normal="0 0 1"  p_intensity="1" arrowSizeCoef="10"/>
+		</Node>
+		<StiffSpringForceField template="Vec3d" name="FF" />
+	</Node>
+</Node>
