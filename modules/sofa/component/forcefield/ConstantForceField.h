@@ -58,11 +58,15 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
 public:
-
+    /// indices of the points the force applies to
     Data< VecIndex > points;
+    /// Per-point forces.
     Data< VecDeriv > forces;
+    /// Force applied at each point, if per-point forces are not specified
     Data< Deriv > force;
+    /// Sum of the forces applied at each point, if per-point forces are not specified
     Data< Deriv > totalForce;
+    ///S for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data< double > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
     Data< bool > indexFromEnd;
@@ -82,6 +86,7 @@ public:
         mparams->kFactor();
     };
 
+    /// Constant force has null variation
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
 
     /// Constant force has null variation

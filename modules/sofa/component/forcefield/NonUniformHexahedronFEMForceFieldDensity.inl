@@ -83,11 +83,6 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
         serr<<this->_mesh->getNbPoints()<<sendl;
         return;
     }
-#ifdef SOFA_NEW_HEXA
-    this->_indexedElements = & (this->_mesh->getHexahedra());
-#else
-    this->_indexedElements = & (this->_mesh->getCubes());
-#endif
 
     this->_sparseGrid = dynamic_cast<topology::SparseGridTopology*>(this->_mesh);
 
@@ -99,10 +94,10 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
         this->_initialPoints.setValue(p);
     }
 
-    this->_materialsStiffnesses.resize(this->_indexedElements->size() );
-    this->_rotations.resize( this->_indexedElements->size() );
-    this->_rotatedInitialElements.resize(this->_indexedElements->size());
-    // 	stiffnessFactor.resize(this->_indexedElements->size());
+    this->_materialsStiffnesses.resize(this->getIndexedElements()->size() );
+    this->_rotations.resize( this->getIndexedElements()->size() );
+    this->_rotatedInitialElements.resize(this->getIndexedElements()->size());
+    // 	stiffnessFactor.resize(this->getIndexedElements()->size());
 
 
     // 	NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init();
@@ -120,8 +115,8 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 
 
 
-    this->_elementStiffnesses.beginEdit()->resize(this->_indexedElements->size());
-    this->_elementMasses.beginEdit()->resize(this->_indexedElements->size());
+    this->_elementStiffnesses.beginEdit()->resize(this->getIndexedElements()->size());
+    this->_elementMasses.beginEdit()->resize(this->getIndexedElements()->size());
 
     //Load Gray scale density from RAW file
 
@@ -156,16 +151,16 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
         this->setMethod(HexahedronFEMForceFieldT::POLAR);
 
 
-    for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+    for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
     {
 
 
         Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
-            nodes[w] = this->_initialPoints.getValue()[(*this->_indexedElements)[i][this->_indices[w]]];
+            nodes[w] = this->_initialPoints.getValue()[(*this->getIndexedElements())[i][this->_indices[w]]];
 #else
-            nodes[w] = this->_initialPoints.getValue()[(*this->_indexedElements)[i][w]];
+            nodes[w] = this->_initialPoints.getValue()[(*this->getIndexedElements())[i][w]];
 #endif
 
 
@@ -184,9 +179,9 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 
         for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
-            this->_rotatedInitialElements[i][w] = R_0_1*this->_initialPoints.getValue()[(*this->_indexedElements)[i][this->_indices[w]]];
+            this->_rotatedInitialElements[i][w] = R_0_1*this->_initialPoints.getValue()[(*this->getIndexedElements())[i][this->_indices[w]]];
 #else
-            this->_rotatedInitialElements[i][w] = R_0_1*this->_initialPoints.getValue()[(*this->_indexedElements)[i][w]];
+            this->_rotatedInitialElements[i][w] = R_0_1*this->_initialPoints.getValue()[(*this->getIndexedElements())[i][w]];
 #endif
 
         computeCoarseElementStiffness( (*this->_elementStiffnesses.beginEdit())[i],
@@ -215,7 +210,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 
 
         int i=0;
-        for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+        for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
             Vec<8,Coord> nodes;
             for(int w=0; w<8; ++w)
@@ -241,7 +236,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
     {
         this->_particleMasses.resize( this->_initialPoints.getValue().size() );
 
-        Real mass = this->_totalMass.getValue() / Real(this->_indexedElements->size());
+        Real mass = this->_totalMass.getValue() / Real(this->getIndexedElements()->size());
         for(unsigned i=0; i<this->_particleMasses.size(); ++i)
             this->_particleMasses[ i ] = mass;
     }
@@ -390,7 +385,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw(const core::visua
 
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
-    if (this->_indexedElements->size() == 0) return;
+    if (this->getIndexedElements()->size() == 0) return;
 
 
     const VecCoord& x = *this->mstate->getX();
@@ -406,12 +401,12 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw(const core::visua
     int hexa_elem;
 
     double radius=std::min(
-            (x[ (*this->_indexedElements)[0][1] ][0] - x[ (*this->_indexedElements)[0][0] ][0]) ,
-            std::min( (x[ (*this->_indexedElements)[0][3] ][1] - x[ (*this->_indexedElements)[0][0] ][1]) ,
-                    (x[ (*this->_indexedElements)[0][4] ][2] - x[ (*this->_indexedElements)[0][0] ][2]) )
+            (x[ (*this->getIndexedElements())[0][1] ][0] - x[ (*this->getIndexedElements())[0][0] ][0]) ,
+            std::min( (x[ (*this->getIndexedElements())[0][3] ][1] - x[ (*this->getIndexedElements())[0][0] ][1]) ,
+                    (x[ (*this->getIndexedElements())[0][4] ][2] - x[ (*this->getIndexedElements())[0][0] ][2]) )
             )/8.0;
 
-    for(it = this->_indexedElements->begin(), hexa_elem = 0 ; it != this->_indexedElements->end() ; ++it, ++hexa_elem)
+    for(it = this->getIndexedElements()->begin(), hexa_elem = 0 ; it != this->getIndexedElements()->end() ; ++it, ++hexa_elem)
     {
         for (unsigned int elem=0; elem<8; ++elem)
         {

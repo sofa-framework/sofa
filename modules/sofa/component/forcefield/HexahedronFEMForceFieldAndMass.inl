@@ -69,7 +69,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
     _particleMasses.resize( this->_initialPoints.getValue().size() );
 
     int i=0;
-    for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+    for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
         Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
@@ -100,7 +100,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
     {
         _lumpedMasses.resize( this->_initialPoints.getValue().size() );
         i=0;
-        for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+        for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
 
             const ElementMass& mass=_elementMasses.getValue()[i];
@@ -147,7 +147,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 
     int i=0;
     typename VecElement::const_iterator it;
-    for(it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+    for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
         Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
@@ -246,7 +246,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
         unsigned int i=0;
         typename VecElement::const_iterator it;
 
-        for(it=this->_indexedElements->begin(); it!=this->_indexedElements->end(); ++it,++i)
+        for(it=this->getIndexedElements()->begin(); it!=this->getIndexedElements()->end(); ++it,++i)
         {
 
             Vec<24, Real> actualDx, actualF;
@@ -296,7 +296,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
 
-    for(it = this->_indexedElements->begin(), e=0 ; it != this->_indexedElements->end() ; ++it,++e)
+    for(it = this->getIndexedElements()->begin(), e=0 ; it != this->getIndexedElements()->end() ; ++it,++e)
     {
         const ElementMass &Me = _elementMasses.getValue()[e];
 
@@ -424,7 +424,7 @@ double HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    // 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::draw()  "<<this->_indexedElements->size()<<""<<sendl;
+    // 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::draw()  "<<this->getIndexedElements()->size()<<""<<sendl;
     HexahedronFEMForceFieldT::draw(vparams);
 
     if (!vparams->displayFlags().getShowBehaviorModels())

@@ -18,9 +18,15 @@ public:
     typedef std::pair< Vector3, Vector3 > bbox_t;
 
     BoundingBox();
-    BoundingBox(const Vector3& minBBox,
-            const Vector3& maxBBox);
+    /// Define using the endpoints of the main diagonal
+    BoundingBox(const Vector3& minBBox, const Vector3& maxBBox);
     BoundingBox(const bbox_t& bbox);
+    /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
+    BoundingBox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax );
+    /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
+    BoundingBox(const Vec6f& bbox);
+    /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
+    BoundingBox(const Vec6d& bbox);
 
     static BoundingBox neutral_bbox();
 

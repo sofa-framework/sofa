@@ -41,7 +41,7 @@ namespace core
 
 /**
  *  \brief Specialized interface to describe many to many mapping.
- *   Currently supports only one type for inputs and one type for outputs.
+ *   All the input must have the same type, and all the output must have the same type. See also class Multi2Mapping.
  */
 
 template <class TIn, class TOut>
@@ -106,10 +106,10 @@ public:
     virtual helper::vector<behavior::BaseMechanicalState*> getMechTo();
 
     /// Apply ///
-    /// Apply the mapping on position vectors.
+    /// Apply the mapping to position vectors.
     ///
-    /// If the Mapping can be represented as a matrix J, this method computes
-    /// $ out = J in $
+    /// If the Mapping can be represented as a matrix \f$ J \f$, this method computes
+    /// \f$ out = J in \f$
     virtual void apply (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecCoordId outPos, ConstMultiVecCoordId inPos );
 
     /// This method must be reimplemented by all mappings.
@@ -143,10 +143,9 @@ public:
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJ ///
-    /// Apply the mapping on derived (velocity, displacement) vectors.
-    ///
-    /// If the Mapping can be represented as a matrix J, this method computes
-    /// $ out = J in $
+    /// Apply the mapping to derived (velocity, displacement) vectors.
+    /// \f$ out = J in \f$
+    /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
     virtual void applyJ (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
 
     /// This method must be reimplemented by all mappings.
@@ -180,10 +179,9 @@ public:
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJT (Force)///
-    /// Apply the reverse mapping on force vectors.
-    ///
-    /// If the MechanicalMapping can be represented as a matrix J, this method computes
-    /// $ out += J^t in $
+    /// Apply the reverse mapping to force vectors.
+    /// \f$ out += J^t in \f$
+    /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
     virtual void applyJT (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId inForce, ConstMultiVecDerivId outForce );
 
     /// This method must be reimplemented by all mappings.

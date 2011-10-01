@@ -116,7 +116,7 @@ public:
     helper::vector<BaseState*> getTo();
 
     /// Apply ///
-    /// Apply the mapping on position vectors.
+    /// Apply the mapping to position vectors.
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
@@ -137,10 +137,9 @@ public:
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJ ///
-    /// Apply the mapping on derived (velocity, displacement) vectors.
-    ///
-    /// If the Mapping can be represented as a matrix J, this method computes
+    /// Apply the mapping to derived (velocity, displacement) vectors.
     /// $ out = J in $
+    /// where J is the tangent operator (the linear approximation) of the mapping
     virtual void applyJ(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
 
     /// This method must be reimplemented by all mappings.
@@ -158,10 +157,9 @@ public:
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJT (Force)///
-    /// Apply the reverse mapping on force vectors.
-    ///
-    /// If the MechanicalMapping can be represented as a matrix J, this method computes
+    /// Apply the reverse mapping to force vectors.
     /// $ out += J^t in $
+    /// where J is the tangent operator (the linear approximation) of the mapping
     virtual void applyJT(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId inForce, ConstMultiVecDerivId outForce );
 
     /// This method must be reimplemented by all mappings.
@@ -182,8 +180,9 @@ public:
     /// Apply the change of force due to the nonlinearity of the mapping and the last propagated displacement.
     /// The default implementation does nothing, assuming a linear mapping.
     ///
-    /// If the MechanicalMapping can be represented as a matrix J, this method computes
+    /// This method computes
     /// \f$ f_p += dJ^t f_c \f$, where \f$ f_p \f$ is the parent force and  \f$ f_c \f$ is the child force.
+    /// where J is the tangent operator (the linear approximation) of the mapping
     /// The child force is accessed in the child state using mparams->readF() .  This requires that the child force vector is used by the solver to compute the force \f$ f(x,v)\f$ corresponding to the current positions and velocities, and not to store auxiliary values.
     /// The displacement is accessed in the parent state using mparams->readDx() .
     /// This method corresponds to a non-symmetric matrix. Thus, it is called only if the symmetry flag is not set in the MechanicalParam

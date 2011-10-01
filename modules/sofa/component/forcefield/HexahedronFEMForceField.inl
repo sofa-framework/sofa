@@ -106,15 +106,6 @@ void HexahedronFEMForceField<DataTypes>::init()
         serr<<_mesh->getNbPoints()<<sendl;
         return;
     }
-// 	if (!_mesh->getCubes().empty())
-// 	else
-// 	{
-#ifdef SOFA_NEW_HEXA
-    _indexedElements = & (_mesh->getHexahedra());
-#else
-    _indexedElements = & (_mesh->getCubes());
-#endif
-// 	}
     _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_mesh);
 
 
@@ -125,15 +116,15 @@ void HexahedronFEMForceField<DataTypes>::init()
         _initialPoints.setValue(p);
     }
 
-    _materialsStiffnesses.resize(_indexedElements->size() );
-    _rotations.resize( _indexedElements->size() );
-    _rotatedInitialElements.resize(_indexedElements->size());
+    _materialsStiffnesses.resize(this->getIndexedElements()->size() );
+    _rotations.resize( this->getIndexedElements()->size() );
+    _rotatedInitialElements.resize(this->getIndexedElements()->size());
 
 
 
 
 // 	if( _elementStiffnesses.getValue().empty() )
-// 		_elementStiffnesses.beginEdit()->resize(_indexedElements->size());
+// 		_elementStiffnesses.beginEdit()->resize(this->getIndexedElements()->size());
     // 	_stiffnesses.resize( _initialPoints.getValue().size()*3 ); // assembly ?
 
 
@@ -143,7 +134,7 @@ void HexahedronFEMForceField<DataTypes>::init()
 
 // 	unsigned int i=0;
 // 	typename VecElement::const_iterator it;
-// 	for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+// 	for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
 // 	{
 // 		Element c = *it;
 // 		for(int w=0;w<8;++w)
@@ -169,7 +160,7 @@ void HexahedronFEMForceField<DataTypes>::reinit()
     {
         unsigned int i=0;
         typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
             computeMaterialStiffness(i);
             initLarge(i,*it);
@@ -180,7 +171,7 @@ void HexahedronFEMForceField<DataTypes>::reinit()
     {
         unsigned int i=0;
         typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
             computeMaterialStiffness(i);
             initPolar(i,*it);
@@ -214,7 +205,7 @@ void HexahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     {
     case LARGE :
     {
-        for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
+        for(it=this->getIndexedElements()->begin(); it!=this->getIndexedElements()->end(); ++it,++i)
         {
             accumulateForceLarge( _f, _p, i, *it );
         }
@@ -222,7 +213,7 @@ void HexahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     }
     case POLAR :
     {
-        for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
+        for(it=this->getIndexedElements()->begin(); it!=this->getIndexedElements()->end(); ++it,++i)
         {
             accumulateForcePolar( _f, _p, i, *it );
         }
@@ -246,7 +237,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
     unsigned int i = 0;
     typename VecElement::const_iterator it;
 
-    for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+    for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
         // Transformation R_0_2;
         // R_0_2.transpose(_rotations[i]);
@@ -1116,7 +1107,7 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
 
-    for(it = _indexedElements->begin(), e=0 ; it != _indexedElements->end() ; ++it,++e)
+    for(it = this->getIndexedElements()->begin(), e=0 ; it != this->getIndexedElements()->end() ; ++it,++e)
     {
         const ElementStiffness &Ke = _elementStiffnesses.getValue()[e];
 //         const Transformation& Rt = _rotations[e];
@@ -1171,7 +1162,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     typename VecElement::const_iterator it;
     int i;
-    for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
+    for(it = this->getIndexedElements()->begin(), i = 0 ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
 
 

@@ -75,6 +75,36 @@ int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
         .add< RegularGridTopology >()
         ;
 
+RegularGridTopology::RegularGridTopology()
+    :
+    computeHexaList(initData(&computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init")),
+    computeQuadList(initData(&computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init")),
+    computeEdgeList(initData(&computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init")),
+    computePointList(initData(&computePointList, true, "computePointList", "put true if the list of Points is needed during init")),
+    min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min end of the diagonal")),
+    max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max end of the diagonal")),
+    p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "Offset all the grid points")),
+    _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
+{
+}
+
+RegularGridTopology::RegularGridTopology(Vec3i n, BoundingBox b)
+    : GridTopology(n),
+      computeHexaList(initData(&computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init")),
+      //  computeTetraList(initData(&computeTetraList, false, "computeTetraList", "put true if the list of Tetrahedra is needed during init")),
+      computeQuadList(initData(&computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init")),
+      //   computeTriList(initData(&computeTriList, false, "computeTriList", "put true if the list of Triangle is needed during init")),
+      computeEdgeList(initData(&computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init")),
+      computePointList(initData(&computePointList, true, "computePointList", "put true if the list of Points is needed during init")),
+      min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
+      max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max")),
+      p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0")),
+      _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
+
+{
+    setPos(b);
+}
+
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz),
       computeHexaList(initData(&computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init")),
@@ -88,19 +118,6 @@ RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
       p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0")),
       _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
 
-{
-}
-
-RegularGridTopology::RegularGridTopology()
-    :
-    computeHexaList(initData(&computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init")),
-    computeQuadList(initData(&computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init")),
-    computeEdgeList(initData(&computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init")),
-    computePointList(initData(&computePointList, true, "computePointList", "put true if the list of Points is needed during init")),
-    min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min end of the diagonal")),
-    max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max end of the diagonal")),
-    p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "Offset all the grid points")),
-    _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
 {
 }
 
@@ -155,6 +172,12 @@ void RegularGridTopology::init()
     //    MeshTopology::init();
 
     reinit();
+}
+
+void RegularGridTopology::setPos(BoundingBox b)
+{
+    Vector3 m=b.minBBox(), M=b.maxBBox();
+    setPos(m[0],M[0],m[1],M[1],m[2],M[2]);
 }
 
 void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax)

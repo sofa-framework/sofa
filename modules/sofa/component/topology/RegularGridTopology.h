@@ -50,11 +50,16 @@ public:
     typedef Vec<3, int> Vec3i;
     SOFA_CLASS(RegularGridTopology,GridTopology);
 
-    RegularGridTopology(int nx, int ny, int nz);
     RegularGridTopology();
+    /// Define using number of vertices
+    RegularGridTopology(int nx, int ny, int nz);
+    /// Define using number of vertices and size
+    RegularGridTopology( Vec3i numVertices, BoundingBox box );
 
-    /// set the spatial extent|
+    /// set the spatial extent
     void setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax);
+    /// set the spatial extent
+    void setPos(BoundingBox box);
 
     virtual void init();
 
