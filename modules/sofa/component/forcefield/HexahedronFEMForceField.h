@@ -131,7 +131,6 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _mesh;
     topology::SparseGridTopology* _sparseGrid;
-    const VecElement *_indexedElements;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
 
@@ -161,7 +160,6 @@ public:
         : _elementStiffnesses(initData(&_elementStiffnesses,"stiffnessMatrices", "Stiffness matrices per element (K_i)"))
         , _mesh(NULL)
         , _sparseGrid(NULL)
-        , _indexedElements(NULL)
         , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
         , data(new HexahedronFEMForceFieldInternalData<DataTypes>())
         , f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
@@ -234,6 +232,15 @@ public:
 
 protected:
 
+
+    inline const VecElement *getIndexedElements()
+    {
+#ifdef SOFA_NEW_HEXA
+        return & (_mesh->getHexahedra());
+#else
+        return & (_mesh->getCubes());
+#endif
+    }
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor=1.0);
     Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1, const Real u, const Real v, const Real w, const Mat33& J_1  );

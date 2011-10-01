@@ -41,7 +41,7 @@ namespace core
 
 /**
  *  \brief Specialized interface to describe many to many mapping.
- *   Currently supports only one type for inputs and one type for outputs.
+ *   The inputs can be of two different types, while all the outputs must be of the same type.
  */
 
 template <class TIn1, class TIn2, class TOut>
@@ -117,7 +117,7 @@ public:
     virtual helper::vector<behavior::BaseMechanicalState*> getMechTo();
 
     /// Apply ///
-    /// Apply the mapping on position vectors.
+    /// Apply the mapping to position vectors.
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
@@ -170,10 +170,9 @@ public:
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJ ///
-    /// Apply the mapping on derived (velocity, displacement) vectors.
-    ///
-    /// If the Mapping can be represented as a matrix J, this method computes
+    /// This method computes
     /// $ out = J in $
+    /// where J is the tangent operator (the linear approximation) of the mapping
     virtual void applyJ (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel, ConstMultiVecDerivId inVel )
     {
         helper::vector<OutDataVecDeriv*> vecOutVel;
@@ -221,7 +220,7 @@ public:
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJT (Force)///
-    /// Apply the mapping on Force vectors.
+    /// Apply the mapping to Force vectors.
     virtual void applyJT (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId inForce, ConstMultiVecDerivId outForce )
     {
         helper::vector<In1DataVecDeriv*> vecOut1Force;

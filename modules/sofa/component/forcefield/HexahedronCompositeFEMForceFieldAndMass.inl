@@ -487,7 +487,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
     // serr<<"HexahedronCompositeFEMForceFieldAndMass::computeMechanicalMatricesByCondensation"<<sendl;
     if( this->_nbVirtualFinerLevels.getValue() == 0 )
     {
-        for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+        for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
         {
             //Get the 8 indices of the coarser Hexa
             const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->getHexahedra()[i];
@@ -526,18 +526,18 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
 
 
     if( _finestToCoarse.getValue() )
-        for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+        for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
             computeMechanicalMatricesDirectlyFromTheFinestToCoarse( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i );
     else
     {
         topology::SparseGridRamificationTopology* sparseGridRamification = dynamic_cast<topology::SparseGridRamificationTopology*>( this->_sparseGrid );
         if( _useRamification.getValue() && sparseGridRamification )
         {
-            for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+            for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
                 computeMechanicalMatricesRecursivelyWithRamifications( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i, 0 );
 
 
-            for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+            for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
             {
                 Weight A; A.identity();
 
@@ -551,10 +551,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
         }
         else
         {
-            for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+            for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
                 computeMechanicalMatricesRecursively( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i, 0 );
 
-            for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+            for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
             {
                 Weight A; A.identity();
 
@@ -2545,14 +2545,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
 
 
-            int a = (*this->_indexedElements)[con[0]->_hexaIdx][0];
-            int b = (*this->_indexedElements)[con[0]->_hexaIdx][1];
-            int d = (*this->_indexedElements)[con[0]->_hexaIdx][3];
-            int c = (*this->_indexedElements)[con[0]->_hexaIdx][2];
-            int e = (*this->_indexedElements)[con[0]->_hexaIdx][4];
-            int f = (*this->_indexedElements)[con[0]->_hexaIdx][5];
-            int h = (*this->_indexedElements)[con[0]->_hexaIdx][7];
-            int g = (*this->_indexedElements)[con[0]->_hexaIdx][6];
+            int a = (*this->getIndexedElements())[con[0]->_hexaIdx][0];
+            int b = (*this->getIndexedElements())[con[0]->_hexaIdx][1];
+            int d = (*this->getIndexedElements())[con[0]->_hexaIdx][3];
+            int c = (*this->getIndexedElements())[con[0]->_hexaIdx][2];
+            int e = (*this->getIndexedElements())[con[0]->_hexaIdx][4];
+            int f = (*this->getIndexedElements())[con[0]->_hexaIdx][5];
+            int h = (*this->getIndexedElements())[con[0]->_hexaIdx][7];
+            int g = (*this->getIndexedElements())[con[0]->_hexaIdx][6];
 
 
 

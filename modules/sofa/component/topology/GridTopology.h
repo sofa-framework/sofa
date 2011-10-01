@@ -38,16 +38,22 @@ namespace topology
 
 using namespace sofa::defaulttype;
 
+/** Define a regular grid topology, with no spatial information.
+  */
+
 class SOFA_COMPONENT_CONTAINER_API GridTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(GridTopology,MeshTopology);
 
     GridTopology();
-
     GridTopology(int nx, int ny, int nz);
+    GridTopology(Vec3i nXnYnZ );
 
+    /// Set grid resolution, given the number of vertices
     void setSize(int nx, int ny, int nz);
+    /// set grid resolution, given the number of vertices
+    void setNumVertices( Vec3i nXnYnZ );
 
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
@@ -78,12 +84,12 @@ public:
 
     /*
     int getNbQuads() {
-    	if (n.getValue()[2] == 1)
-    		return (n.getValue()[0]-1)*(n.getValue()[1]-1);
-    	else if (n.getValue()[1] == 1)
-    		return (n.getValue()[0]-1)*(n.getValue()[2]-1);
-    	else
-    		return (n.getValue()[1]-1)*(n.getValue()[2]-1);
+    if (n.getValue()[2] == 1)
+    return (n.getValue()[0]-1)*(n.getValue()[1]-1);
+    else if (n.getValue()[1] == 1)
+    return (n.getValue()[0]-1)*(n.getValue()[2]-1);
+    else
+    return (n.getValue()[1]-1)*(n.getValue()[2]-1);
     }
     */
 
@@ -103,7 +109,7 @@ public:
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
 protected:
-    Data< Vec<3, int> > n;
+    Data< Vec3i > n;
 
     virtual void setSize();
     virtual void updateEdges();

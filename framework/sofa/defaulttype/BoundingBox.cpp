@@ -32,7 +32,22 @@ BoundingBox::BoundingBox(const bbox_t& bbox)
 BoundingBox::BoundingBox(const Vector3& minBBox, const Vector3& maxBBox)
     :bbox(std::make_pair(minBBox,maxBBox))
 {
+}
 
+BoundingBox::BoundingBox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax )
+    :bbox(std::make_pair(Vector3(xmin, ymin,zmin),Vector3(xmax,ymax,zmax)))
+{
+}
+
+
+BoundingBox::BoundingBox(const Vec6f& v )
+    :bbox(std::make_pair(Vector3(v[0],v[2],v[4]),Vector3(v[1],v[3],v[5])))
+{
+}
+
+BoundingBox::BoundingBox(const Vec6d& v )
+    :bbox(std::make_pair(Vector3(v[0],v[2],v[4]),Vector3(v[1],v[3],v[5])))
+{
 }
 
 

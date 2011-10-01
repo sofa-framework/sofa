@@ -43,23 +43,35 @@ int GridTopologyClass = core::RegisterObject("Base class fo a regular grid in 3D
         ;
 
 GridTopology::GridTopology()
-    : n(initData(&n,Vec<3, int>(2,2,2),"n","grid resolution"))
+    : n(initData(&n,Vec3i(2,2,2),"n","grid resolution"))
 {
 }
 
 GridTopology::GridTopology(int _nx, int _ny, int _nz)
-    : n(initData(&n,Vec<3, int>(_nx,_ny,_nz),"n","grid resolution"))
+    : n(initData(&n,Vec3i(_nx,_ny,_nz),"n","grid resolution"))
 {
     nbPoints = _nx*_ny*_nz;
-    this->n.setValue(Vec<3, int>(_nx,_ny,_nz));
+    this->n.setValue(Vec3i(_nx,_ny,_nz));
+}
+
+GridTopology::GridTopology( Vec3i np )
+    : n(initData(&n,np,"n","grid resolution"))
+{
+    nbPoints = np[0]*np[1]*np[2];
+    this->n.setValue(np);
 }
 
 void GridTopology::setSize(int nx, int ny, int nz)
 {
     if (nx == this->n.getValue()[0] && ny == this->n.getValue()[1] && nz == this->n.getValue()[2])
         return;
-    this->n.setValue(Vec<3, int>(nx,ny,nz));
+    this->n.setValue(Vec3i(nx,ny,nz));
     setSize();
+}
+
+void GridTopology::setNumVertices(Vec3i n)
+{
+    setSize(n[0],n[1],n[2]);
 }
 
 void GridTopology::setSize()

@@ -63,13 +63,11 @@ public:
     typedef fixed_array<Vector3,8> CubeCorners;
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio
 
-    typedef Vec<3, int> Vec3i;
-
     SparseGridTopology(bool _isVirtual=false);
 
-//	virtual void reinit() {updateMesh();};
+    /// Define using the resolution and the spatial size. The resolution corresponds to the number of points if all the cells were filled.
+    SparseGridTopology(Vec3i numVertices, BoundingBox box, bool _isVirtual=false);
 
-//	static const float WEIGHT[8][8];
     static const float WEIGHT27[8][27];
     static const int cornerIndicesFromFineToCoarse[8][8];
 
@@ -93,7 +91,6 @@ public:
     InverseHierarchicalCubeMap _inverseHierarchicalCubeMap;
 
     typedef std::map<int,float> AHierarchicalPointMap;
-// 	typedef helper::vector< std::pair<int,float> >  AHierarchicalPointMap;
     typedef helper::vector< AHierarchicalPointMap > HierarchicalPointMap; ///< a point indice -> corresponding 27 child indices on the potential _finerSparseGrid with corresponding weight
     HierarchicalPointMap _hierarchicalPointMap;
     typedef helper::vector< AHierarchicalPointMap > InverseHierarchicalPointMap; ///< a fine point indice -> corresponding some parent points for interpolation
@@ -113,8 +110,11 @@ public:
 
 
     helper::vector<SparseGridTopology*> _virtualFinerLevels; ///< saving the virtual levels (cf _nbVirtualFinerLevels)
+    int getNbVirtualFinerLevels() const { return _nbVirtualFinerLevels.getValue();}
+    void setNbVirtualFinerLevels(int n) {_nbVirtualFinerLevels.setValue(n);}
 
 
+    /// Resolution
     Vec<3, int> getN() const { return n.getValue();}
     int getNx() const { return n.getValue()[0]; }
     int getNy() const { return n.getValue()[1]; }
@@ -125,17 +125,12 @@ public:
     void setNy(int _n) { n.setValue(Vec3i(n.getValue()[0],_n             ,n.getValue()[2])); }
     void setNz(int _n) { n.setValue(Vec3i(n.getValue()[0],n.getValue()[1],_n)             ); }
 
-    int getNbVirtualFinerLevels() const { return _nbVirtualFinerLevels.getValue();}
-    void setNbVirtualFinerLevels(int n) {_nbVirtualFinerLevels.setValue(n);}
-
     void setMin(Vector3 val) {_min.setValue(val);}
     void setXmin(SReal val) { _min.setValue(Vector3(val             ,_min.getValue()[1],_min.getValue()[2])); }
     void setYmin(SReal val) { _min.setValue(Vector3(_min.getValue()[0],val             ,_min.getValue()[2])); }
     void setZmin(SReal val) { _min.setValue(Vector3(_min.getValue()[0],_min.getValue()[1],val)             ); }
 
-
     void setMax(Vector3 val) {_max.setValue(val);}
-
     void setXmax(SReal val) { _max.setValue(Vector3(val             ,_max.getValue()[1],_max.getValue()[2])); }
     void setYmax(SReal val) { _max.setValue(Vector3(_max.getValue()[0],val             ,_max.getValue()[2])); }
     void setZmax(SReal val) { _max.setValue(Vector3(_max.getValue()[0],_max.getValue()[1],val)             ); }
@@ -223,6 +218,13 @@ public:
     Data< SeqTriangles > input_triangles;
     Data< SeqQuads > input_quads;
 
+    /** Create the data structure based on resolution, size and filling.
+          \param numPoints  Number of points in the x,y,and z directions
+          \param box  Volume occupied by the grid
+          \param filling Voxel filling: true if the cell is defined, false if the cell is empty. Voxel order is: for(each z){ for(each y){ for(each x) }}}
+          */
+    void buildFromData( Vec3i numPoints, BoundingBox box, const vector<bool>& filling );
+
 protected:
     virtual void updateEdges();
     virtual void updateQuads();
@@ -262,15 +264,17 @@ protected:
 
     void buildFromRegularGridTypes(RegularGridTopology& regularGrid, const vector<Type>& regularGridTypes);
 
+
+
     /** Create a sparse grid from a .voxel file
-    	.voxel file format (ascii):
-    	512  // num voxels x
-    	512  // num voxels y
-    	246  // num voxels z
-    	0.7  // voxels size x [mm]
-    	0.7  // voxels size y [mm]
-    	2    // voxels size z [mm]
-    	0 0 255 0 0 ... // data
+    .voxel file format (ascii):
+    512  // num voxels x
+    512  // num voxels y
+    246  // num voxels z
+    0.7  // voxels size x [mm]
+    0.7  // voxels size y [mm]
+    2    // voxels size z [mm]
+    0 0 255 0 0 ... // data
     */
     void buildFromVoxelFile(const std::string& filename);
     void buildFromRawVoxelFile(const std::string& filename);
@@ -293,46 +297,47 @@ protected:
         {
             (*dataVoxels.beginEdit())[index] = 0;
         }
+        dataVoxels.beginEdit();
     };
 
 
     /*	/// to compute valid cubes (intersection between mesh segments and cubes)
     typedef struct segmentForIntersection{
-    	Vector3 center;
-    	Vector3 dir;
-    	SReal norm;
-    	segmentForIntersection(const Vector3& s0, const Vector3& s1)
-    	{
-    		center = (s0+s1)*.5;
-    		dir = center-s0;
-    		norm = dir.norm();
-    		dir /= norm;
-    	};
+    Vector3 center;
+    Vector3 dir;
+    SReal norm;
+    segmentForIntersection(const Vector3& s0, const Vector3& s1)
+    {
+    center = (s0+s1)*.5;
+    dir = center-s0;
+    norm = dir.norm();
+    dir /= norm;
+    };
     } SegmentForIntersection;
     struct ltSegmentForIntersection // for set of SegmentForIntersection
     {
-    	bool operator()(const SegmentForIntersection& s0, const SegmentForIntersection& s1) const
-    	{
-    		return s0.center < s1.center || s0.norm < s1.norm;
-    	}
+    bool operator()(const SegmentForIntersection& s0, const SegmentForIntersection& s1) const
+    {
+    return s0.center < s1.center || s0.norm < s1.norm;
+    }
     };
     typedef struct cubeForIntersection{
-    	Vector3 center;
-    	fixed_array<Vector3,3> dir;
-    	Vector3 norm;
-    	cubeForIntersection( const CubeCorners&  corners )
-    	{
-    		center = (corners[7] + corners[0]) * .5;
+    Vector3 center;
+    fixed_array<Vector3,3> dir;
+    Vector3 norm;
+    cubeForIntersection( const CubeCorners&  corners )
+    {
+    center = (corners[7] + corners[0]) * .5;
 
-    		norm[0] = (center[0] - corners[0][0]);
-    		dir[0] = Vector3(1,0,0);
+    norm[0] = (center[0] - corners[0][0]);
+    dir[0] = Vector3(1,0,0);
 
-    		norm[1] = (center[1] - corners[0][1]);
-    		dir[1] = Vector3(0,1,0);
+    norm[1] = (center[1] - corners[0][1]);
+    dir[1] = Vector3(0,1,0);
 
-    		norm[2] = (center[2] - corners[0][2]);
-    		dir[2] = Vector3(0,0,1);
-    	}
+    norm[2] = (center[2] - corners[0][2]);
+    dir[2] = Vector3(0,0,1);
+    }
     } CubeForIntersection;
     /// return true if there is an intersection between a SegmentForIntersection and a CubeForIntersection
     bool intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  ); */

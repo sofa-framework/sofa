@@ -130,7 +130,7 @@ protected:
 
 public:
     //Input
-    Data< helper::vector<Vec6> > boxes;
+    Data< helper::vector<Vec6> > boxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
     Data<VecCoord> f_X0;
     Data<helper::vector<Edge> > f_edges;
     Data<helper::vector<Triangle> > f_triangles;

@@ -28,15 +28,16 @@
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <sofa/component/topology/HexahedronData.h>
 #include <sofa/helper/map.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
+using defaulttype::Vec3i;
+
 namespace component
 {
 namespace topology
 {
-typedef defaulttype::Vec<3, int> Vec3i;
-
 /** a class that stores a sparse regular grid of hexahedra and provides a better loading and access to neighbors than HexahedronSetTopologyContainer */
 class SOFA_COMPONENT_CONTAINER_API DynamicSparseGridTopologyContainer : public HexahedronSetTopologyContainer
 {

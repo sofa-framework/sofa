@@ -81,11 +81,6 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         serr<<this->_mesh->getNbPoints()<<sendl;
         return;
     }
-#ifdef SOFA_NEW_HEXA
-    this->_indexedElements = & (this->_mesh->getHexahedra());
-#else
-    this->_indexedElements = & (this->_mesh->getCubes());
-#endif
 
     this->_sparseGrid = dynamic_cast<topology::SparseGridTopology*>(this->_mesh);
 
@@ -97,9 +92,9 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         this->_initialPoints.setValue(p);
     }
 
-    this->_materialsStiffnesses.resize(this->_indexedElements->size() );
-    this->_rotations.resize( this->_indexedElements->size() );
-    this->_rotatedInitialElements.resize(this->_indexedElements->size());
+    this->_materialsStiffnesses.resize(this->getIndexedElements()->size() );
+    this->_rotations.resize( this->getIndexedElements()->size() );
+    this->_rotatedInitialElements.resize(this->getIndexedElements()->size());
 
 
     // verify if it is wanted and possible to compute non-uniform stiffness
@@ -120,8 +115,8 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
 
 
-    this->_elementStiffnesses.beginEdit()->resize(this->_indexedElements->size());
-    this->_elementMasses.beginEdit()->resize(this->_indexedElements->size());
+    this->_elementStiffnesses.beginEdit()->resize(this->getIndexedElements()->size());
+    this->_elementMasses.beginEdit()->resize(this->getIndexedElements()->size());
 
 
 
@@ -133,14 +128,14 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     else if (this->f_method.getValue() == "polar")
         this->setMethod(HexahedronFEMForceFieldT::POLAR);
 
-    for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+    for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
     {
         Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
-            nodes[w] = this->_initialPoints.getValue()[(*this->_indexedElements)[i][this->_indices[w]]];
+            nodes[w] = this->_initialPoints.getValue()[(*this->getIndexedElements())[i][this->_indices[w]]];
 #else
-            nodes[w] = this->_initialPoints.getValue()[(*this->_indexedElements)[i][w]];
+            nodes[w] = this->_initialPoints.getValue()[(*this->getIndexedElements())[i][w]];
 #endif
 
 
@@ -157,9 +152,9 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
             computeRotationPolar( this->_rotations[i], nodes);
         for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
-            this->_rotatedInitialElements[i][w] = this->_rotations[i]*this->_initialPoints.getValue()[(*this->_indexedElements)[i][this->_indices[w]]];
+            this->_rotatedInitialElements[i][w] = this->_rotations[i]*this->_initialPoints.getValue()[(*this->getIndexedElements())[i][this->_indices[w]]];
 #else
-            this->_rotatedInitialElements[i][w] = this->_rotations[i]*this->_initialPoints.getValue()[(*this->_indexedElements)[i][w]];
+            this->_rotatedInitialElements[i][w] = this->_rotations[i]*this->_initialPoints.getValue()[(*this->getIndexedElements())[i][w]];
 #endif
     }
     //////////////////////
@@ -191,7 +186,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
 
         int i=0;
-        for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+        for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
             Vec<8,Coord> nodes;
             for(int w=0; w<8; ++w)
@@ -223,7 +218,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         {
             this->_lumpedMasses.resize( this->_initialPoints.getValue().size() );
             i=0;
-            for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+            for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
             {
 
                 const ElementMass& mass=this->_elementMasses.getValue()[i];
@@ -257,13 +252,13 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         this->_particleMasses.resize( this->_initialPoints.getValue().size() );
         // 		int nbboundary=0;
         // 		int i=0;
-        // 		for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+        // 		for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         // 		{
         // 			if( this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY ) ++nbboundary;
         // 		}
-        // 		Real semielemmass = _totalMass.getValue() / Real( 2*this->_indexedElements->size() - nbboundary);
+        // 		Real semielemmass = _totalMass.getValue() / Real( 2*this->getIndexedElements()->size() - nbboundary);
         //
-        // 		for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+        // 		for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         // 		{
         // 			for(int w=0;w<8;++w)
         // 				if( this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY )
@@ -272,7 +267,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         // 					this->_particleMasses[ (*it)[w] ] += 2.0*semielemmass;
         // 		}
 
-        Real mass = _totalMass.getValue() / Real(this->_indexedElements->size());
+        Real mass = _totalMass.getValue() / Real(this->getIndexedElements()->size());
         for(unsigned i=0; i<this->_particleMasses.size(); ++i)
             this->_particleMasses[ i ] = mass;
     }
@@ -294,7 +289,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 template<class T>
 void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation( )
 {
-    for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+    for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
     {
         computeMechanicalMatricesByCondensation( (*this->_elementStiffnesses.beginEdit())[i],
                 (*this->_elementMasses.beginEdit())[i],i,0);
