@@ -98,7 +98,7 @@ void BoxROI<DataTypes>::init()
     {
         //cerr<<"BoxROI<DataTypes>::init() f_X0 is not set "<<endl;
         BaseMechanicalState* mstate;
-        this->getContext()->get(mstate);
+        this->getContext()->get(mstate,BaseContext::Local);
         if (mstate)
         {
             BaseData* parent = mstate->findField("rest_position");
@@ -111,7 +111,7 @@ void BoxROI<DataTypes>::init()
         else
         {
             core::loader::MeshLoader* loader = NULL;
-            this->getContext()->get(loader);
+            this->getContext()->get(loader,BaseContext::Local);
             if (loader)
             {
                 BaseData* parent = loader->findField("position");
@@ -126,7 +126,7 @@ void BoxROI<DataTypes>::init()
     if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet())
     {
         BaseMeshTopology* topology;
-        this->getContext()->get(topology);
+        this->getContext()->get(topology,BaseContext::Local);
         if (topology)
         {
             if (!f_edges.isSet() && f_computeEdges.getValue())
