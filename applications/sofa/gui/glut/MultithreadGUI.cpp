@@ -197,13 +197,15 @@ void MultithreadGUI::simulationLoop()
 
 void MultithreadGUI::processMessages()
 {
-    fprintf(stderr, "Render begin\n");
+    fprintf(stderr, "Process Messages\n");
+    bool needUpdate = false;
     do
     {
         while(!renderMsgQueue.isEmpty())
         {
             renderMsgQueue.pop(glAspect);
             fprintf(stderr, "pop aspect\n");
+            needUpdate = true;
         }
         if(glAspect == 0)
         {
@@ -218,6 +220,11 @@ void MultithreadGUI::processMessages()
     core::ExecParams::defaultInstance()->setAspectID(glAspect->aspectID());
 //    core::ExecParams::defaultInstance()->setAspectID(0);
     fprintf(stderr, "Using aspect %d for display\n", core::ExecParams::defaultInstance()->aspectID());
+    if (needUpdate)
+    {
+        fprintf(stderr, "Update Visual\n");
+        getSimulation()->updateVisual(getSimulation()->getVisualRoot());
+    }
 }
 
 void MultithreadGUI::releaseAspect(int aspect)
@@ -2661,7 +2668,6 @@ void MultithreadGUI::step()
 #else
         getSimulation()->animate(groot);
 #endif
-        getSimulation()->updateVisual(getSimulation()->getVisualRoot());
 
         if( m_dumpState )
             getSimulation()->dumpState( groot, *m_dumpStateStream );
