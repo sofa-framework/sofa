@@ -101,8 +101,7 @@ namespace controller
 
 template <class DataTypes>
 LCPForceFeedback<DataTypes>::LCPForceFeedback()
-    : f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
-    , forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
+    : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
     , haptic_freq(0.0)
 {
     this->f_listening.setValue(true);
@@ -161,7 +160,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
         return;
 
 
-    if (!f_activate.getValue())
+    if (!this->f_activate.getValue())
     {
         return;
     }
@@ -361,7 +360,7 @@ void LCPForceFeedback<Rigid3dTypes>::computeWrench(const SolidTypes<double>::Tra
 {
     //std::cerr<<"WARNING : LCPForceFeedback::computeWrench is not implemented"<<std::endl;
 
-    if (!f_activate.getValue())
+    if (!this->f_activate.getValue())
     {
         return;
     }
