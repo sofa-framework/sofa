@@ -27,6 +27,7 @@
 
 #include "AspectPool.h"
 #include <sofa/helper/system/thread/CircularQueue.inl>
+#include <iostream>
 
 namespace sofa
 {
@@ -91,11 +92,13 @@ void intrusive_ptr_release(Aspect* a)
 AspectPool::AspectPool()
 {
     // Fill the list of free aspects.
+    std::cout << "AspectPool"<<this<<": filling " << SOFA_DATA_MAX_ASPECTS << " aspects" << std::endl;
     for(int i = 0; i < SOFA_DATA_MAX_ASPECTS; ++i)
     {
         AtomicInt aspectID(i);
         freeAspects.push(aspectID);
     }
+    std::cout << "AspectPool"<<this<<": " << freeAspects.size() << " aspects available" << std::endl;
 }
 
 /**
@@ -121,10 +124,15 @@ AspectRef AspectPool::allocate()
 {
     AspectRef ref;
     AtomicInt aspectID;
+    std::cout << "AspectPool"<<this<<": allocate" << std::endl;
+    std::cout << "AspectPool"<<this<<": " << freeAspects.size() << " aspects available" << std::endl;
     if(freeAspects.pop(aspectID))
     {
+        std::cout << "AspectPool"<<this<<": aspect " << aspectID << " allocated" << std::endl;
         ref = Aspect::create(this, aspectID);
     }
+    else
+        std::cout << "AspectPool"<<this<<": no aspect available" << std::endl;
     return ref;
 }
 
@@ -135,6 +143,7 @@ AspectRef AspectPool::allocate()
  */
 void AspectPool::release(int id)
 {
+    std::cout << "AspectPool"<<this<<": release aspect " << id << std::endl;
     if(releaseCallback != 0)
     {
         releaseCallback(id);
