@@ -70,30 +70,44 @@ protected:
         TrianglePressureInformation(const TrianglePressureInformation &e)
             : area(e.area),force(e.force)
         { }
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const TrianglePressureInformation& /*ei*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, TrianglePressureInformation& /*ei*/ )
+        {
+            return in;
+        }
     };
 
-    TriangleSubsetData<TrianglePressureInformation> trianglePressureMap;
+    TriangleSubsetData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap;
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
     Data<Deriv> pressure;
 
-    Data<std::string> triangleList;
+    Data<sofa::helper::vector<unsigned int> > triangleList;
 
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;
 
     Data<Real> dmin; // coordinates min of the plane for the vertex selection
     Data<Real> dmax;// coordinates max of the plane for the vertex selection
+    Data<bool> p_showForces;
 
 public:
 
-    TrianglePressureForceField():
-        pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
-        , triangleList(initData(&triangleList,std::string(),"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
+    TrianglePressureForceField()
+        : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+        , triangleList(initData(&triangleList,"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
         , normal(initData(&normal,"normal", "Normal direction for the plane selection of triangles"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
         , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+        , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
     {
     }
 

@@ -72,22 +72,35 @@ protected:
         TrianglePressureInformation(const TrianglePressureInformation &e)
             : area(e.area)
         { }
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const TrianglePressureInformation& /*ei*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, TrianglePressureInformation& /*ei*/ )
+        {
+            return in;
+        }
     };
+
     std::ofstream file;
 
-
 public:
-    TriangleSubsetData<TrianglePressureInformation> trianglePressureMap;
+    TriangleSubsetData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap;
     sofa::core::topology::BaseMeshTopology* _topology;
 
     Data<Real> moment;   // total moment/torque applied
-    Data<std::string> triangleList;
+    Data<sofa::helper::vector<unsigned int> > triangleList;
     Data<Deriv> axis;    // axis of rotation and normal used to define the edge subjected to the pressure force
     Data<Coord> center;  // center of rotation
     Data<Real> penalty;  // strength of penalty force
     Data<Real> frequency; // frequency of change
     Data<Real> dmin;     // coordinates min of the plane for the vertex selection
     Data<Real> dmax;     // coordinates max of the plane for the vertex selection
+    Data<bool> p_showForces;
 
 protected:
 
@@ -106,13 +119,14 @@ public:
 
     OscillatingTorsionPressureForceField():
         moment(initData(&moment, "moment", "Moment force applied on the entire surface"))
-        , triangleList(initData(&triangleList,std::string(),"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
+        , triangleList(initData(&triangleList, "triangleList", "Indices of triangles separated with commas where a pressure is applied"))
         , axis(initData(&axis, Coord(0,0,1), "axis", "Axis of rotation and normal direction for the plane selection of triangles"))
         , center(initData(&center,"center", "Center of rotation"))
         , penalty(initData(&penalty, (Real)1000, "penalty", "Strength of the penalty force"))
         , frequency(initData(&frequency, (Real)1, "frequency", "frequency of oscillation"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
         , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+        , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
     {
         rotationAngle = 0;
     }

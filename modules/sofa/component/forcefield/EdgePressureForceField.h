@@ -70,22 +70,36 @@ protected:
         EdgePressureInformation(const EdgePressureInformation &e)
             : length(e.length),force(e.force)
         { }
+
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgePressureInformation& /*ei*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, EdgePressureInformation& /*ei*/ )
+        {
+            return in;
+        }
     };
 
-    EdgeSubsetData<EdgePressureInformation> edgePressureMap;
+    EdgeSubsetData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap;
 
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::TriangleSetTopologyContainer* _completeTopology;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
 
     Data<Deriv> pressure;
-    Data<helper::vector<int> > edgeList;
+    Data<helper::vector<unsigned int> > edgeList;
     Data<Deriv> normal; // the normal used to define the edge subjected to the pressure force
     Data<Real> dmin; // coordinates min of the plane for the vertex selection
     Data<Real> dmax;// coordinates max of the plane for the vertex selection
     Data< double > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data< helper::vector<Real> > p_intensity; // pressure intensity on edge normal
     Data<Coord> p_binormal; // binormal of the 2D plane
+    Data<bool> p_showForces;
 
 public:
 
@@ -98,6 +112,7 @@ public:
         , arrowSizeCoef(initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
         , p_intensity(initData(&p_intensity,"p_intensity", "pressure intensity on edge normal"))
         , p_binormal(initData(&p_binormal,"binormal", "Binormal of the 2D plane"))
+        , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw arrows of edge pressures"))
     {
         _completeTopology = NULL;
     }
