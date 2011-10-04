@@ -183,8 +183,17 @@ void MultithreadGUI::simulationLoop()
     core::ExecParams* ep = core::ExecParams::defaultInstance();
     ep->setAspectID(simuAspect->aspectID());
     groot->getContext()->setAnimate(true);
+
+    AspectRef renderAspect = aspectPool.allocate();
+    fprintf(stderr, "Allocated aspect %d for render\nCopy from %d to %d\n", renderAspect->aspectID(), simuAspect->aspectID(), renderAspect->aspectID());
+    simulation::CopyAspectVisitor copyAspect(ep, renderAspect->aspectID(), simuAspect->aspectID());
+    groot->execute(copyAspect);
+    renderMsgQueue.push(renderAspect);
+
     while(!closeSimu)
     {
+        CTime::sleep(0.1);
+        /*
         step();
         //boost::thread::sleep(boost::get_system_time() + boost::posix_time::milliseconds(500));
         AspectRef renderAspect = aspectPool.allocate();
@@ -192,10 +201,11 @@ void MultithreadGUI::simulationLoop()
         simulation::CopyAspectVisitor copyAspect(ep, renderAspect->aspectID(), simuAspect->aspectID());
         groot->execute(copyAspect);
         renderMsgQueue.push(renderAspect);
+        */
     }
 }
 
-void MultithreadGUI::processMessages()
+bool MultithreadGUI::processMessages()
 {
     fprintf(stderr, "Process Messages\n");
     bool needUpdate = false;
@@ -219,12 +229,9 @@ void MultithreadGUI::processMessages()
 
     core::ExecParams::defaultInstance()->setAspectID(glAspect->aspectID());
 //    core::ExecParams::defaultInstance()->setAspectID(0);
-    fprintf(stderr, "Using aspect %d for display\n", core::ExecParams::defaultInstance()->aspectID());
     if (needUpdate)
-    {
-        fprintf(stderr, "Update Visual\n");
-        getSimulation()->updateVisual(getSimulation()->getVisualRoot());
-    }
+        fprintf(stderr, "Using aspect %d for display\n", core::ExecParams::defaultInstance()->aspectID());
+    return needUpdate;
 }
 
 void MultithreadGUI::releaseAspect(int aspect)
@@ -316,6 +323,7 @@ SofaGUI* MultithreadGUI::CreateGUI(const char* /*name*/, const std::vector<std::
     gui->setScene(groot, filename);
 
     gui->initializeGL();
+    gui->initTextures();
 
 #ifdef SOFA_HAVE_CHAI3D
     // Tell nodes that openGl is initialized
@@ -335,7 +343,6 @@ void MultithreadGUI::glut_display()
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     if (instance)
     {
-        instance->processMessages();
         instance->paintGL();
     }
     glutSwapBuffers ();
@@ -397,7 +404,7 @@ void MultithreadGUI::glut_idle()
 //    }
     if (instance)
     {
-        CTime::sleep(0.001);
+        CTime::sleep(0.1);
         instance->animate();
     }
 }
@@ -550,6 +557,18 @@ MultithreadGUI::~MultithreadGUI()
 {
     closeThreads();
     if (instance == this) instance = NULL;
+}
+
+void MultithreadGUI::initTextures()
+{
+    if (!initTexturesDone)
+    {
+        //         std::cout << "-----------------------------------> initTexturesDone\n";
+        //---------------------------------------------------
+        simulation::getSimulation()->initTextures(groot);
+        //---------------------------------------------------
+        initTexturesDone = true;
+    }
 }
 
 // -----------------------------------------------------------------
@@ -1245,15 +1264,7 @@ void MultithreadGUI::DisplayOBJs(bool shadowPass)
     glColor4f(1,1,1,1);
     glDisable(GL_COLOR_MATERIAL);
 
-    if (!initTexturesDone)
-    {
-//         std::cout << "-----------------------------------> initTexturesDone\n";
-        //---------------------------------------------------
-        simulation::getSimulation()->initTextures(groot);
-        //---------------------------------------------------
-        initTexturesDone = true;
-    }
-
+    if (initTexturesDone)
     {
         Node *visualRoot = simulation::getSimulation()->getVisualRoot();
         if (shadowPass)
@@ -1316,195 +1327,6 @@ void MultithreadGUI::DrawScene(void)
     _newQuat.buildRotationMatrix(_sceneTransform.rotation);
     calcProjection();
 
-#ifdef SOFA_HAVE_GLEW
-    if (_shadow)
-    {
-        //glGetDoublev(GL_MODELVIEW_MATRIX,lastModelviewMatrix);
-
-        // Update the light matrices for it's current position
-        StoreLightMatrices();
-
-        // Set the current viewport to our texture size
-        glViewport(0, 0, (int)SHADOW_WIDTH, (int)SHADOW_HEIGHT);
-
-        // Clear the screen and depth buffer so we can render from the light's view
-        glClearColor(0.0f,0.0f,0.0f,0.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Now we just need to set the matrices for the light before we render
-        glMatrixMode(GL_PROJECTION);
-
-        // Push on a matrix to make sure we can restore to the old matrix easily
-        glPushMatrix();
-        {
-            // Set the current projection matrix to our light's projection matrix
-            glLoadMatrixf(g_mProjection);
-
-            // Load modelview mode to set our light's modelview matrix
-            glMatrixMode(GL_MODELVIEW);
-            glPushMatrix();
-            {
-                // Load the light's modelview matrix before we render to a texture
-                glLoadMatrixf(g_mModelView);
-
-                // Since we don't care about color when rendering the depth values to
-                // the shadow-map texture, we disable color writing to increase speed.
-                glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-
-                // This turns of the polygon offset functionality to fix artifacts.
-                // Comment this out and run the program to see what artifacts I mean.
-                glEnable(GL_POLYGON_OFFSET_FILL);
-                glDisable(GL_BLEND);
-
-                // Eliminate artifacts caused by shadow mapping
-                //    glPolygonOffset(1.0f, 0.10f);
-                glPolygonOffset(g_DepthOffset[0], g_DepthOffset[1]);
-
-                _sceneTransform.Apply();
-                // Render the world according to the light's view
-                DisplayOBJs(true);
-
-                // Now that the world is rendered, save the depth values to a texture
-                glDisable(GL_BLEND);
-                //glEnable(GL_TEXTURE_2D);
-                glBindTexture(GL_TEXTURE_2D, g_DepthTexture);
-
-                glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, (int)SHADOW_WIDTH, (int)SHADOW_HEIGHT);
-
-                // We can turn color writing back on since we already stored the depth values
-                glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-                // Turn off polygon offsetting
-                glDisable(GL_POLYGON_OFFSET_FILL);
-
-            } glPopMatrix();
-            // Go back to the projection mode and restore the original matrix
-            glMatrixMode(GL_PROJECTION);
-            // Restore the original projection matrix
-        } glPopMatrix();
-
-        // Go back to modelview model to start drawing like normal
-        glMatrixMode(GL_MODELVIEW);
-
-        // Restore our normal viewport size to our screen width and height
-        glViewport(0, 0, GetWidth(), GetHeight());
-
-        // Clear the color and depth bits and start over from the camera's view
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        //glPushMatrix();{
-        //    glLoadIdentity();
-        //    _sceneTransform.ApplyInverse();
-        //    glGetFloatv(GL_MODELVIEW_MATRIX, g_mCameraInverse);
-        //}glPopMatrix();
-
-        glLightfv( GL_LIGHT0, GL_POSITION, _lightPosition );
-        /*
-        {
-            glEnable(GL_TEXTURE_2D);
-            glActiveTextureARB(GL_TEXTURE0_ARB);
-            glBindTexture(GL_TEXTURE_2D, g_Texture[SHADOW_ID]);
-            glTexEnvi(GL_TEXTURE_2D,GL_TEXTURE_ENV_MODE,  GL_REPLACE);
-            Disable<GL_DEPTH_TEST> dtoff;
-            Disable<GL_LIGHTING> dlight;
-            glColor3f(1,1,1);
-            glViewport(0, 0, 128, 128);
-            glMatrixMode(GL_PROJECTION);
-            glPushMatrix();
-            glLoadIdentity();
-            glOrtho(0,1,0,1,-1,1);
-            glMatrixMode(GL_MODELVIEW);
-            glPushMatrix();{
-                glLoadIdentity();
-                glBegin(GL_QUADS);{
-                    glTexCoord2f(0,0);
-                    glVertex2f(0,0);
-                    glTexCoord2f(0,1);
-                    glVertex2f(0,1);
-                    glTexCoord2f(1,1);
-                    glVertex2f(1,1);
-                    glTexCoord2f(1,0);
-                    glVertex2f(1,0);
-                }glEnd();
-            }glPopMatrix();
-            glMatrixMode(GL_PROJECTION);
-            glPopMatrix();
-            glMatrixMode(GL_MODELVIEW);
-            glViewport(0, 0, GetWidth(), GetHeight());
-        }
-        */
-
-
-        // Render the world and apply the shadow map texture to it
-        glMatrixMode(GL_PROJECTION);
-        glLoadMatrixd(lastProjectionMatrix);
-        glMatrixMode(GL_MODELVIEW);
-        ApplyShadowMap();
-        {
-            // NICO
-            Enable<GL_TEXTURE_2D> texture_on;
-            glDisable(GL_BLEND);
-            glBindTexture(GL_TEXTURE_2D, ShadowTextureMask);
-            glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, GetWidth(), GetHeight());
-        }
-        if (_background==0)
-            glClearColor(0.0589f, 0.0589f, 0.0589f, 1.0f);
-        else if (_background==1)
-            glClearColor(0.0f,0.0f,0.0f,0.0f);
-        else if (_background==2)
-            glClearColor(1.0f,1.0f,1.0f,1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        if (_background==0)
-            DrawLogo();
-        glPushMatrix();
-        _sceneTransform.Apply();
-        DisplayOBJs();
-        glPopMatrix();
-
-        {
-            float ofu = GetWidth()/(float)SHADOW_MASK_SIZE;
-            float ofv = GetHeight()/(float)SHADOW_MASK_SIZE;
-            glActiveTextureARB(GL_TEXTURE0_ARB);
-            glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D,ShadowTextureMask);
-            //glTexEnvi(GL_TEXTURE_2D,GL_TEXTURE_ENV_MODE,  GL_REPLACE);
-            Disable<GL_DEPTH_TEST> dtoff;
-            Disable<GL_LIGHTING> dlight;
-            Enable<GL_BLEND> blend_on;
-            glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
-            glColor3f(1,1,1);
-            glViewport(0, 0, GetWidth(), GetHeight());
-            glMatrixMode(GL_PROJECTION);
-            glPushMatrix();
-            glLoadIdentity();
-            glOrtho(0,1,0,1,-1,1);
-            glMatrixMode(GL_MODELVIEW);
-            glPushMatrix();
-            {
-                glLoadIdentity();
-                glBegin(GL_QUADS);
-                {
-                    glTexCoord2f(0,0);
-                    glVertex2f(0,0);
-                    glTexCoord2f(0,ofv);
-                    glVertex2f(0,1);
-                    glTexCoord2f(ofu,ofv);
-                    glVertex2f(1,1);
-                    glTexCoord2f(ofu,0);
-                    glVertex2f(1,0);
-                } glEnd();
-            } glPopMatrix();
-            glMatrixMode(GL_PROJECTION);
-            glPopMatrix();
-            glMatrixMode(GL_MODELVIEW);
-            glViewport(0, 0, GetWidth(), GetHeight());
-            glDisable(GL_TEXTURE_2D);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        }
-
-    }
-    else
-#endif
     {
         if (_background==0)
             DrawLogo();
@@ -1792,13 +1614,22 @@ void MultithreadGUI::eventNewStep()
 // ---------------------------------------------------------
 void MultithreadGUI::animate(void)
 {
+    bool needRedraw = false;
     if (_spinning)
     {
         _newQuat = _currentQuat + _newQuat;
+        needRedraw = true;
+    }
+    if (processMessages())
+    {
+        fprintf(stderr, "Update Visual\n");
+        getSimulation()->updateVisual(getSimulation()->getVisualRoot());
+        needRedraw = true;
     }
 
     // update the entire scene
-    redraw();
+    if (needRedraw)
+        redraw();
 }
 
 
@@ -2906,6 +2737,7 @@ void MultithreadGUI::setScene(sofa::simulation::Node* scene, const char* filenam
     groot = scene;
     initTexturesDone = false;
     sceneBBoxIsValid = false;
+    initTextures();
     redraw();
     pick.reset();
 }
