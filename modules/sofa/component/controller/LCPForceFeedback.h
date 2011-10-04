@@ -80,9 +80,8 @@ public:
         //std::cout << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
     }
 
-    Data<bool> f_activate;
-    Data<double> forceCoef;
-    Data<double> momentCoef;
+    Data< double > forceCoef;
+    Data< double > momentCoef;
 
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz);
     virtual void computeWrench(const SolidTypes<SReal>::Transform &world_H_tool, const SolidTypes<SReal>::SpatialVector &V_tool_world, SolidTypes<SReal>::SpatialVector &W_tool_world );
