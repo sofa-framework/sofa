@@ -144,7 +144,7 @@ private:
     void initThreads();
     void closeThreads();
     void simulationLoop();
-    void processMessages();
+    bool processMessages();
     void releaseAspect(int aspect);
 
     std::auto_ptr<boost::thread> simuThread;
@@ -245,6 +245,7 @@ public:
     void dumpState(bool);
     void displayComputationTime(bool);
     void setExportGnuplot(bool);
+    void initTextures();
 
     void initializeGL();
     void paintGL();
