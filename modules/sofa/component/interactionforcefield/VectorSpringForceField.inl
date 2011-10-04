@@ -49,7 +49,7 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
-void VectorSpringForceField<DataTypes>::springCreationFunction(int ,
+void VectorSpringForceField<DataTypes>::springCreationFunction(unsigned int ,
         void* param, Spring& t,
         const topology::Edge& e,
         const sofa::helper::vector< unsigned int > &ancestors,

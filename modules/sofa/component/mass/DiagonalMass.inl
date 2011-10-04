@@ -56,7 +56,7 @@ using namespace	sofa::component::topology;
 using namespace core::topology;
 
 template<class MassType>
-void MassPointCreationFunction(int ,
+void MassPointCreationFunction(unsigned int ,
         void* , MassType & t,
         const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)

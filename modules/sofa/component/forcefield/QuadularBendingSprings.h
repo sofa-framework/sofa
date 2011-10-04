@@ -161,7 +161,7 @@ protected:
 
     EdgeData<sofa::helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
-    static void QuadularBSEdgeCreationFunction(int edgeIndex, void* param,
+    static void QuadularBSEdgeCreationFunction(unsigned int edgeIndex, void* param,
             EdgeInformation &ei,
             const Edge& ,  const sofa::helper::vector< unsigned int > &,
             const sofa::helper::vector< double >&);

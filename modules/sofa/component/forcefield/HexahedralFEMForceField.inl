@@ -70,7 +70,7 @@ using namespace	sofa::component::topology;
 using namespace core::topology;
 
 template< class DataTypes>
-void HexahedralFEMForceField<DataTypes>::FHexahedronCreationFunction (int hexahedronIndex, void* param,
+void HexahedralFEMForceField<DataTypes>::FHexahedronCreationFunction (unsigned int hexahedronIndex, void* param,
         HexahedronInformation &,
         const Hexahedron& ,
         const helper::vector< unsigned int > &,

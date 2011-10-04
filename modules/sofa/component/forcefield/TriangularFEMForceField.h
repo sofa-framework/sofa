@@ -303,7 +303,7 @@ protected :
     void computePrincipalStrain(Index elementIndex, Vec<3,Real> &strain);
     void computePrincipalStress(Index elementIndex, Vec<3,Real> &stress);
 
-    static void TRQSTriangleCreationFunction (int , void* , TriangleInformation &, const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
+    static void TRQSTriangleCreationFunction (unsigned int , void* , TriangleInformation &, const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
     /// f += Kx where K is the stiffness matrix and x a displacement
     virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );

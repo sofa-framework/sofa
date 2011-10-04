@@ -253,7 +253,7 @@ protected:
 
     //sofa::helper::vector< sofa::helper::vector <Real> > subMatrix(unsigned int fr, unsigned int lr, unsigned int fc, unsigned int lc);
 
-    static void BeamFEMEdgeCreationFunction(int edgeIndex, void* param, BeamInfo &ei,
+    static void BeamFEMEdgeCreationFunction(unsigned int edgeIndex, void* param, BeamInfo &ei,
             const topology::Edge& ,  const sofa::helper::vector< unsigned int > &,
             const sofa::helper::vector< double >&);
 

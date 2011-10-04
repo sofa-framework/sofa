@@ -198,15 +198,15 @@ protected :
 
     EdgeData<helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
-    static void TRBSEdgeCreationFunction(int edgeIndex, void* param,EdgeRestInformation &ei,
+    static void TRBSEdgeCreationFunction(unsigned int edgeIndex, void* param,EdgeRestInformation &ei,
             const Edge& ,  const sofa::helper::vector< unsigned int > &,
             const sofa::helper::vector< double >&);
-    static void TRBSTriangleCreationFunction (int , void* ,
+    static void TRBSTriangleCreationFunction (unsigned int , void* ,
             TriangleRestInformation &,
             const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
 
-    static void TRBSTriangleDestroyFunction ( int , void* , TriangleRestInformation &);
+    static void TRBSTriangleDestroyFunction (unsigned int , void* , TriangleRestInformation &);
 
 };
 

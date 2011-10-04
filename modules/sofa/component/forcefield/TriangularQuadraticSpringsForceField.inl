@@ -49,7 +49,7 @@ using namespace	sofa::component::topology;
 using namespace core::topology;
 
 template< class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeCreationFunction(int edgeIndex, void* param, EdgeRestInformation &ei,
+void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeCreationFunction(unsigned int edgeIndex, void* param, EdgeRestInformation &ei,
         const Edge& ,  const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
 {
@@ -69,7 +69,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeCreationFunction(i
 
 
 template< class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleCreationFunction (int triangleIndex, void* param,
+void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleCreationFunction (unsigned int triangleIndex, void* param,
         TriangleRestInformation &tinfo,
         const Triangle& ,
         const sofa::helper::vector< unsigned int > &,
@@ -127,7 +127,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleCreationFuncti
 
 
 template< class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleDestroyFunction(int triangleIndex, void* param, typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation &tinfo)
+void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleDestroyFunction(unsigned int triangleIndex, void* param, typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation &tinfo)
 {
     TriangularQuadraticSpringsForceField<DataTypes> *ff= (TriangularQuadraticSpringsForceField<DataTypes> *)param;
     if (ff)

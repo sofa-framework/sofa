@@ -255,7 +255,7 @@ void LineLocalMinDistanceFilter::handleTopologyChange()
 
 
 
-void LineLocalMinDistanceFilter::LMDFilterPointCreationFunction(int, void *param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void LineLocalMinDistanceFilter::LMDFilterPointCreationFunction(unsigned int, void *param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
     const PointLocalMinDistanceFilter *pLMDFilter = static_cast< const PointLocalMinDistanceFilter * >(param);
     pInfo.setLMDFilters(pLMDFilter);
@@ -278,7 +278,7 @@ void LineLocalMinDistanceFilter::LMDFilterPointCreationFunction(int, void *param
 
 
 
-void LineLocalMinDistanceFilter::LMDFilterLineCreationFunction(int, void *param, LineInfo &lInfo, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void LineLocalMinDistanceFilter::LMDFilterLineCreationFunction(unsigned int, void *param, LineInfo &lInfo, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
     const LineLocalMinDistanceFilter *lLMDFilter = static_cast< const LineLocalMinDistanceFilter * >(param);
     lInfo.setLMDFilters(lLMDFilter);

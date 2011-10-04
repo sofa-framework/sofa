@@ -60,7 +60,7 @@ typedef BaseMeshTopology::Quad				Quad;
 typedef BaseMeshTopology::EdgesInQuad			EdgesInQuad;
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::QuadularBSEdgeCreationFunction(int , void* param, EdgeInformation &ei,
+void QuadularBendingSprings<DataTypes>::QuadularBSEdgeCreationFunction(unsigned int , void* param, EdgeInformation &ei,
         const Edge& ,  const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
 {

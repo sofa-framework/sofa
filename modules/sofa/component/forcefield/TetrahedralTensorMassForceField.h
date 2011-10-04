@@ -154,7 +154,7 @@ protected :
 
     EdgeData<helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
-    static void TetrahedralTMEdgeCreationFunction(int edgeIndex, void* param,
+    static void TetrahedralTMEdgeCreationFunction(unsigned int edgeIndex, void* param,
             EdgeRestInformation &ei,
             const Edge& ,  const helper::vector< unsigned int > &,
             const helper::vector< double >&);

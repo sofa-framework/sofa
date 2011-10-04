@@ -133,7 +133,7 @@ static Vec3d ColorMap[64] =
 // ---
 // --------------------------------------------------------------------------------------
 template< class DataTypes>
-void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction(int triangleIndex, void* param, TriangleInformation &/*tinfo*/,
+void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction(unsigned int triangleIndex, void* param, TriangleInformation &/*tinfo*/,
         const Triangle& t, const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
 {

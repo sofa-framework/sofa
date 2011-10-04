@@ -208,7 +208,7 @@ void TriangleLocalMinDistanceFilter::handleTopologyChange()
 
 
 
-void TriangleLocalMinDistanceFilter::LMDFilterPointCreationFunction(int, void *param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void TriangleLocalMinDistanceFilter::LMDFilterPointCreationFunction(unsigned int, void *param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
     std::cout<<"LMDFilterPointCreationFunction is called "<<std::endl;
     const PointLocalMinDistanceFilter *pLMDFilter = static_cast< const PointLocalMinDistanceFilter * >(param);
@@ -239,7 +239,7 @@ void TriangleLocalMinDistanceFilter::LMDFilterPointCreationFunction(int, void *p
 
 
 
-void TriangleLocalMinDistanceFilter::LMDFilterLineCreationFunction(int, void *param, LineInfo &lInfo, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void TriangleLocalMinDistanceFilter::LMDFilterLineCreationFunction(unsigned int, void *param, LineInfo &lInfo, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
     std::cout<<"LMDFilterLineCreationFunction is called "<<std::endl;
     const LineLocalMinDistanceFilter *lLMDFilter = static_cast< const LineLocalMinDistanceFilter * >(param);
@@ -269,7 +269,7 @@ void TriangleLocalMinDistanceFilter::LMDFilterLineCreationFunction(int, void *pa
 
 
 
-void TriangleLocalMinDistanceFilter::LMDFilterTriangleCreationFunction(int, void *param, TriangleInfo &tInfo, const topology::Triangle&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void TriangleLocalMinDistanceFilter::LMDFilterTriangleCreationFunction(unsigned int, void *param, TriangleInfo &tInfo, const topology::Triangle&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
     std::cout<<"LMDFilterTriangleCreationFunction is called "<<std::endl;
     const TriangleLocalMinDistanceFilter *tLMDFilter = static_cast< const TriangleLocalMinDistanceFilter * >(param);
