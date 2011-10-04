@@ -59,12 +59,12 @@ template <class DataTypes> void  OscillatingTorsionPressureForceField<DataTypes>
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
 
-    trianglePressureMap.handleTopologyEvents(itBegin,itEnd,_topology->getNbTriangles());
-
+    trianglePressureMap.handleTopologyEvents(itBegin,itEnd);
 }
+
+
 template <class DataTypes> void OscillatingTorsionPressureForceField<DataTypes>::init()
 {
-    //serr << "initializing OscillatingTorsionPressureForceField" << sendl;
     this->core::behavior::ForceField<DataTypes>::init();
     //file.open("testsofa.dat");
     // normalize axis:
@@ -76,7 +76,7 @@ template <class DataTypes> void OscillatingTorsionPressureForceField<DataTypes>:
     {
         selectTrianglesAlongPlane();
     }
-    if (triangleList.getValue().length()>0)
+    if (triangleList.getValue().size()>0)
     {
         selectTrianglesFromString();
     }
@@ -90,13 +90,12 @@ template <class DataTypes> void OscillatingTorsionPressureForceField<DataTypes>:
     origVecFromCenter.resize( numPts );
     origCenter.resize( numPts );
 
-    //trianglePressureMap.createTopologicalEngine(_topology);
+    trianglePressureMap.createTopologicalEngine(_topology);
     trianglePressureMap.setCreateParameter( (void *) this );
     trianglePressureMap.setDestroyParameter( (void *) this );
-    //trianglePressureMap.registerTopologicalData();
+    trianglePressureMap.registerTopologicalData();
 
     initTriangleInformation();
-
 }
 
 
@@ -116,11 +115,9 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
     const VecCoord& x = d_x.getValue();
 
     Deriv force;
-    Coord forceDir, deltaPos;
+    Coord deltaPos;
     Real avgRotAngle = 0;
     Real totalDist = 0;
-
-    typename topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
 
     // calculate average rotation angle:
     for (unsigned int i=0; i<x.size(); i++) if (pointActive[i])
@@ -184,6 +181,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
     //std::cout << "  RM = " << remainingMoment << "  ME = " << maxError << "  AM = " << appliedMoment << std::endl;
 }
 
+
 template<class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
 {
@@ -194,19 +192,20 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
     int idx[3];
     Real d[10];
 
-    typename topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
+    const sofa::helper::vector <unsigned int>& my_map = trianglePressureMap.getMap2Elements();
+    sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
 
-    for(it=trianglePressureMap.begin(); it!=trianglePressureMap.end(); it++ )
+    for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        (*it).second.area=triangleGeo->computeRestTriangleArea((*it).first);
+        my_subset[i].area=triangleGeo->computeRestTriangleArea(my_map[i]);
         // calculate distances for corner and intermediate points
-        for (int i=0; i<3; i++)
+        for (int j=0; j<3; j++)
         {
-            idx[i] = _topology->getTriangle((*it).first)[i];
-            pointActive[idx[i]] = true;
-            origVecFromCenter[idx[i]] = getVecFromRotAxis( (*x0)[idx[i]] );
-            origCenter[idx[i]] = (*x0)[idx[i]] - origVecFromCenter[idx[i]];
-            d[i] = origVecFromCenter[idx[i]].norm();
+            idx[j] = _topology->getTriangle(my_map[i])[j];
+            pointActive[idx[j]] = true;
+            origVecFromCenter[idx[j]] = getVecFromRotAxis( (*x0)[idx[j]] );
+            origCenter[idx[j]] = (*x0)[idx[j]] - origVecFromCenter[idx[j]];
+            d[j] = origVecFromCenter[idx[j]].norm();
         }
         d[3] = (d[0]+d[1])/2;
         d[4] = (d[1]+d[2])/2;
@@ -216,15 +215,19 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
         d[8] = (d[2]+d[5]+d[4])/3;
         d[9] = (d[0]+d[1]+d[2])/3;
 
-        relMomentToApply[idx[0]] += (d[0]*d[0] + d[3]*d[3] + d[5]*d[5] + d[6]*d[6] + d[9]*d[9]) * d[0] * (*it).second.area / 3;
-        relMomentToApply[idx[1]] += (d[1]*d[1] + d[4]*d[4] + d[3]*d[3] + d[7]*d[7] + d[9]*d[9]) * d[1] * (*it).second.area / 3;
-        relMomentToApply[idx[2]] += (d[2]*d[2] + d[5]*d[5] + d[4]*d[4] + d[8]*d[8] + d[9]*d[9]) * d[2] * (*it).second.area / 3;
+        relMomentToApply[idx[0]] += (d[0]*d[0] + d[3]*d[3] + d[5]*d[5] + d[6]*d[6] + d[9]*d[9]) * d[0] * my_subset[i].area / 3;
+        relMomentToApply[idx[1]] += (d[1]*d[1] + d[4]*d[4] + d[3]*d[3] + d[7]*d[7] + d[9]*d[9]) * d[1] * my_subset[i].area / 3;
+        relMomentToApply[idx[2]] += (d[2]*d[2] + d[5]*d[5] + d[4]*d[4] + d[8]*d[8] + d[9]*d[9]) * d[2] * my_subset[i].area / 3;
     }
 
     // normalize value to moment 1
     Real totalMoment = 0;
     for (unsigned int i=0; i<relMomentToApply.size(); i++) totalMoment += relMomentToApply[i];
     for (unsigned int i=0; i<relMomentToApply.size(); i++) relMomentToApply[i] /= totalMoment;
+
+    trianglePressureMap.endEdit();
+
+    return;
 }
 
 
@@ -242,6 +245,9 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane(
         vArray[i]=isPointInPlane(x[i]);
     }
 
+    sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
+    helper::vector<unsigned int> inputTriangles;
+
     for (int n=0; n<_topology->getNbTriangles(); ++n)
     {
         if ((vArray[_topology->getTriangle(n)[0]]) && (vArray[_topology->getTriangle(n)[1]])&& (vArray[_topology->getTriangle(n)[2]]) )
@@ -249,44 +255,43 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane(
             // insert a dummy element : computation of pressure done later
             TrianglePressureInformation t;
             t.area = 0;
-            trianglePressureMap[n]=t;
+            my_subset.push_back(t);
+            inputTriangles.push_back(n);
         }
     }
+    trianglePressureMap.endEdit();
+    trianglePressureMap.setMap2Elements(inputTriangles);
+
+    return;
 }
 
 
 template <class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesFromString()
 {
-    std::string inputString=triangleList.getValue();
-    unsigned int i;
-    do
+    sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
+    helper::vector<unsigned int> _triangleList = triangleList.getValue();
+
+    trianglePressureMap.setMap2Elements(_triangleList);
+
+    for (unsigned int i = 0; i < _triangleList.size(); ++i)
     {
-        const char *str=inputString.c_str();
-        for(i=0; (i<inputString.length())&&(str[i]!=','); ++i) ;
         TrianglePressureInformation t;
         t.area = 0;
-        if (i==inputString.length())
-        {
-            trianglePressureMap[(unsigned int)atoi(str)]=t;
-            inputString+=i;
-        }
-        else
-        {
-            inputString[i]='\0';
-            trianglePressureMap[(unsigned int)atoi(str)]=t;
-            inputString+=i+1;
-        }
+        my_subset.push_back(t);
     }
-    while (inputString.length()>0);
+
+    trianglePressureMap.endEdit();
+
+    return;
 }
 
 
 template<class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields()) return;
-    if (!this->mstate) return;
+    if (!p_showForces.getValue())
+        return;
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -299,13 +304,13 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
     glBegin(GL_TRIANGLES);
     glColor4f(0,1,0,1);
 
-    typename topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
+    const sofa::helper::vector <unsigned int>& my_map = trianglePressureMap.getMap2Elements();
 
-    for(it=trianglePressureMap.begin(); it!=trianglePressureMap.end(); it++ )
+    for (unsigned int i = 0; i < my_map.size(); ++i)
     {
-        helper::gl::glVertexT(x[_topology->getTriangle((*it).first)[0]]);
-        helper::gl::glVertexT(x[_topology->getTriangle((*it).first)[1]]);
-        helper::gl::glVertexT(x[_topology->getTriangle((*it).first)[2]]);
+        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[0]]);
+        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[1]]);
+        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[2]]);
     }
     glEnd();
 
