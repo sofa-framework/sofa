@@ -28,10 +28,11 @@ declare(QGLViewer,  extlibs/libQGLViewer-2.3.3/QGLViewer, qtgui)
 declare(miniFlowVR, extlibs/miniFlowVR, boost)
 declare(csparse,    extlibs/csparse)
 declare(cudpp,      extlibs/cudpp, cuda)
-#declare(cudpp,      extlibs/cudpp-svn/cudpp.pro, cuda)
+#declare(cudpp,     extlibs/cudpp-svn/cudpp.pro, cuda)
 declare(metis,      extlibs/metis)
 declare(taucs,      extlibs/taucs, cilk metis system-metis)
 declare(taucs_mt,   extlibs/taucs_mt, metis system-metis)
+declare(colladadom, extlibs/colladadom, tinyxml)
 
 ######################################################################
 # Framework
@@ -142,6 +143,9 @@ contains(DEFINES, SOFA_DEV) {
 	}
 	contains(DEFINES, SOFA_EXTLIBS_TAUCS_MT) {
 		enable(taucs_mt)
+	}
+	contains(DEFINES, SOFA_HAVE_COLLADADOM) {
+		enable(colladadom)
 	}
 }
 
