@@ -72,7 +72,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
 }
 
 template< class DataTypes>
-void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleCreationFunction (int triangleIndex, void* param,
+void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleCreationFunction (unsigned int triangleIndex, void* param,
         Deriv &/*tinfo*/,
         const Triangle& /*t*/,
         const sofa::helper::vector< unsigned int > &,

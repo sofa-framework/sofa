@@ -261,7 +261,7 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
 
 
 
-void PointLocalMinDistanceFilter::LMDFilterPointCreationFunction(int /*pointIndex*/, void* param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void PointLocalMinDistanceFilter::LMDFilterPointCreationFunction(unsigned int /*pointIndex*/, void* param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
 
     std::cout<<" LMDFilterPointCreationFunction is called"<<std::endl;

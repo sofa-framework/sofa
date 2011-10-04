@@ -175,7 +175,7 @@ protected:
 
     EdgeData<helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
-    static void TriangularBSEdgeCreationFunction(int edgeIndex, void* param,
+    static void TriangularBSEdgeCreationFunction(unsigned int edgeIndex, void* param,
             EdgeInformation &ei,
             const Edge& ,  const sofa::helper::vector< unsigned int > &,
             const sofa::helper::vector< double >&);

@@ -198,7 +198,7 @@ protected :
 
     EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
-    static void CorotationalTetrahedronCreationFunction (int , void* ,
+    static void CorotationalTetrahedronCreationFunction (unsigned int , void* ,
             TetrahedronRestInformation &,
             const Tetrahedron& , const helper::vector< unsigned int > &, const helper::vector< double >&);
 };

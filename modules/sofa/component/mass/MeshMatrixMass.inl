@@ -74,7 +74,7 @@ MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
 }
 
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::VertexMassCreationFunction(int, void* , MassType & VertexMass,
+void MeshMatrixMass<DataTypes, MassType>::VertexMassCreationFunction(unsigned int, void* , MassType & VertexMass,
         const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
 {
@@ -83,7 +83,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassCreationFunction(int, void* 
 
 
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::EdgeMassCreationFunction(int, void* , MassType & EdgeMass,
+void MeshMatrixMass<DataTypes, MassType>::EdgeMassCreationFunction(unsigned int, void* , MassType & EdgeMass,
         const Edge&,
         const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)

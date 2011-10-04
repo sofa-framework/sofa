@@ -185,12 +185,12 @@ public:
     /**
      * @brief New Points creations callback.
      */
-    static void LMDFilterPointCreationFunction(int, void*, PointInfo &, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
+    static void LMDFilterPointCreationFunction(unsigned int, void*, PointInfo &, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
     /**
      * @brief New Edges creations callback.
      */
-    static void LMDFilterLineCreationFunction(int , void*, LineInfo &, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
+    static void LMDFilterLineCreationFunction(unsigned int , void*, LineInfo &, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
 private:
     topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;

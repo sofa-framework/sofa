@@ -67,7 +67,7 @@ using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeCreationFunction(int , void* param, EdgeInformation &ei,
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeCreationFunction(unsigned int , void* param, EdgeInformation &ei,
         const Edge& ,  const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
 {

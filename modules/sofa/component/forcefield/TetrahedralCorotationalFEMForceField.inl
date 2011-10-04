@@ -57,7 +57,7 @@ using namespace	sofa::component::topology;
 using namespace core::topology;
 
 template< class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::CFTetrahedronCreationFunction (int tetrahedronIndex, void* param,
+void TetrahedralCorotationalFEMForceField<DataTypes>::CFTetrahedronCreationFunction (unsigned int tetrahedronIndex, void* param,
         TetrahedronInformation &,
         const Tetrahedron& ,
         const helper::vector< unsigned int > &,

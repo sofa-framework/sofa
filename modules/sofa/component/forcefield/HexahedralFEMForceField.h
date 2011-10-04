@@ -207,7 +207,7 @@ protected:
     virtual void accumulateForcePolar( WDataRefVecDeriv& f, RDataRefVecCoord & p, const int i);
 
     /// the callback function called when a hexahedron is created
-    static void FHexahedronCreationFunction (int , void* ,
+    static void FHexahedronCreationFunction (unsigned int , void* ,
             HexahedronInformation &,
             const Hexahedron& ,
             const helper::vector< unsigned int > &,

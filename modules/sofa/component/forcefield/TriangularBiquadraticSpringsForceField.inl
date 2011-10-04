@@ -59,7 +59,7 @@ typedef BaseMeshTopology::EdgesInTriangle		EdgesInTriangle;
 
 
 template< class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeCreationFunction(int edgeIndex, void* param, EdgeRestInformation &ei,
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeCreationFunction(unsigned int edgeIndex, void* param, EdgeRestInformation &ei,
         const Edge& ,  const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
 {
@@ -79,7 +79,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeCreationFunction
 
 
 template< class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunction (int triangleIndex, void* param,
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunction (unsigned int triangleIndex, void* param,
         TriangleRestInformation &tinfo,
         const Triangle& ,
         const sofa::helper::vector< unsigned int > &,
@@ -142,7 +142,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunc
 
 
 template< class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleDestroyFunction(int triangleIndex, void* param, typename TriangularBiquadraticSpringsForceField<DataTypes> ::TriangleRestInformation &tinfo)
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleDestroyFunction(unsigned int triangleIndex, void* param, typename TriangularBiquadraticSpringsForceField<DataTypes> ::TriangleRestInformation &tinfo)
 {
     TriangularBiquadraticSpringsForceField<DataTypes> *ff= (TriangularBiquadraticSpringsForceField<DataTypes> *)param;
     if (ff)

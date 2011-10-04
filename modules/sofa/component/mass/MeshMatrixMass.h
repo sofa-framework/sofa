@@ -199,12 +199,12 @@ public:
 protected:
     /// Mass initialization Creation Functions:
     /// Vertex mass coefficient matrix creation function
-    static void VertexMassCreationFunction(int, void* , MassType & VertexMass,
+    static void VertexMassCreationFunction(unsigned int, void* , MassType & VertexMass,
             const sofa::helper::vector< unsigned int > &,
             const sofa::helper::vector< double >&);
 
     /// Edge mass coefficient matrix creation function
-    static void EdgeMassCreationFunction(int, void* , MassType & EdgeMass,
+    static void EdgeMassCreationFunction(unsigned int, void* , MassType & EdgeMass,
             const Edge&,
             const sofa::helper::vector< unsigned int > &,
             const sofa::helper::vector< double >&);

@@ -155,7 +155,7 @@ protected :
 
     EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
-    static void TriangularTMEdgeCreationFunction(int edgeIndex, void* param,
+    static void TriangularTMEdgeCreationFunction(unsigned int edgeIndex, void* param,
             EdgeRestInformation &ei,
             const Edge& ,  const sofa::helper::vector< unsigned int > &,
             const sofa::helper::vector< double >&);

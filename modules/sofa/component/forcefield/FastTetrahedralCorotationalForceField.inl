@@ -58,7 +58,7 @@ typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::CorotationalTetrahedronCreationFunction (int tetrahedronIndex, void* param,
+void FastTetrahedralCorotationalForceField<DataTypes>::CorotationalTetrahedronCreationFunction (unsigned int tetrahedronIndex, void* param,
         TetrahedronRestInformation &my_tinfo,
         const Tetrahedron& ,
         const helper::vector< unsigned int > &,

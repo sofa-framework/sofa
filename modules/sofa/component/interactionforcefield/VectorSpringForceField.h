@@ -115,7 +115,7 @@ protected:
 
     void resizeArray(unsigned int n);
 
-    static void springCreationFunction(int index,
+    static void springCreationFunction(unsigned int index,
             void* param, Spring& t,
             const topology::Edge& e,
             const sofa::helper::vector< unsigned int > &ancestors,

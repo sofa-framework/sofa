@@ -173,7 +173,7 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::BeamFEMEdgeCreationFunction(int edgeIndex, void* param, BeamInfo &ei,
+void BeamFEMForceField<DataTypes>::BeamFEMEdgeCreationFunction(unsigned int edgeIndex, void* param, BeamInfo &ei,
         const topology::Edge& /*e*/,  const sofa::helper::vector< unsigned int > & /*a*/,
         const sofa::helper::vector< double >&)
 {

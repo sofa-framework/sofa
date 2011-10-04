@@ -102,7 +102,7 @@ public:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    static void TRQSTriangleCreationFunction (int , void* , Deriv &, const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
+    static void TRQSTriangleCreationFunction (unsigned int , void* , Deriv &, const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
 };
 
