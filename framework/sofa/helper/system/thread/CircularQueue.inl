@@ -30,6 +30,7 @@
 #if SOFA_HAVE_BOOST
 #include <boost/thread/thread.hpp>
 #endif
+#include <iostream>
 
 namespace sofa
 {
@@ -156,7 +157,7 @@ void ManyThreadsPerEnd::init(AtomicInt array[], int maxCapacity)
     }
 }
 
-bool ManyThreadsPerEnd::pop(AtomicInt array[], int /*maxSize*/, int maxCapacity, AtomicInt& item)
+bool ManyThreadsPerEnd::pop(AtomicInt array[], int maxSize, int maxCapacity, AtomicInt& item)
 {
     if(isEmpty())
     {
@@ -167,11 +168,13 @@ bool ManyThreadsPerEnd::pop(AtomicInt array[], int /*maxSize*/, int maxCapacity,
     }
     // atomically reserve the element to read
     int readIdx = head.exchange_and_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
+    std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": pop from " << readIdx << std::endl;
 
     // Active wait:
     // loop as long as other threads have not put any valid value in the element.
     // It happens when the queue is temporarily empty.
-    while((item = array[readIdx]) == -1);
+    while((item = array[readIdx]) == -1)
+        std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": pop wait loop" << std::endl;
 
     // mark the element as available
     array[readIdx] = -1;
@@ -191,7 +194,7 @@ bool ManyThreadsPerEnd::push(AtomicInt array[], int maxSize, int maxCapacity, co
 
     // atomically reserve the element to write
     int writeIdx = tail.exchange_and_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
-
+    std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": push " << (int)item << " to " << writeIdx << std::endl;
     // Active wait:
     // loop as long as the element has not been read by another thread (which is indicated by a -1 value).
     // It happens when the queue is temporarily full.

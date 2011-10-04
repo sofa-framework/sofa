@@ -63,7 +63,14 @@ public:
 template<int N>
 struct AlignPow2
 {
-    enum { val = AlignPow2<N/2>::val*2 };
+    enum { prev = AlignPow2<N/2>::val*2 };
+    enum { val = (prev >= N ? prev : prev*2) };
+};
+
+template<>
+struct AlignPow2<1>
+{
+    enum { val = 1 };
 };
 
 template<>
