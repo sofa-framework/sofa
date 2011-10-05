@@ -28,7 +28,6 @@
 #include <sofa/core/behavior/ForceField.h>
 
 #include <sofa/component/component.h>
-#include <sofa/component/topology/PointSubset.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -54,7 +53,6 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef topology::PointSubset VecIndex;
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 

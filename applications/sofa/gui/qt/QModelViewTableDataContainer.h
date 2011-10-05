@@ -29,7 +29,7 @@
 
 #include "SimpleDataWidget.h"
 #include "StructDataWidget.h"
-#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/topology/PointSubsetData.h>
 #include <sofa/component/topology/PointData.h>
 
 #include "QModelViewTableUpdater.h"
