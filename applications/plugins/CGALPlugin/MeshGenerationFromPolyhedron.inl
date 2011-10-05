@@ -452,7 +452,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
         helper::ReadAccessor< Data<SeqTriangles> > triangles = f_triangles;
         helper::ReadAccessor< Data<SeqQuads> > quads = f_quads;
 
-        if (this->getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,true);
 
         vparams->drawTool()->setLightingEnabled(false);
@@ -489,7 +489,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
 
         vparams->drawTool()->drawTriangles(points, defaulttype::Vec<4,float>(1.0,0.5,0.0,1.0));
 
-        if (this->getContext()->getShowWireFrame())
+        if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,false);
     }
 }
