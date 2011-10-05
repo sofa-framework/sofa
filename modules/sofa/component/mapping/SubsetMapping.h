@@ -28,7 +28,7 @@
 
 #include <sofa/core/Mapping.h>
 
-#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/topology/PointSubsetData.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
 #include <sofa/helper/vector.h>

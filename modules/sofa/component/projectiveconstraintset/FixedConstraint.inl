@@ -29,7 +29,6 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/PointSubset.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>

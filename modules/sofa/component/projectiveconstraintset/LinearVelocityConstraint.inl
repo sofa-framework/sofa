@@ -33,8 +33,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 
-#include <sofa/component/topology/PointSubset.h>
-
 
 namespace sofa
 {

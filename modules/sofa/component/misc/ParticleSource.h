@@ -42,7 +42,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/component/topology/PointSubset.inl>
+#include <sofa/component/topology/PointSubsetData.inl>
 #include <sofa/component/topology/PointSetTopologyModifier.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <vector>
@@ -112,7 +112,7 @@ public:
     Real maxdist;
     //int lastparticle;
     typedef typename VecCoord::template rebind<unsigned int>::other VecIndex;
-    topology::PointSubsetT< VecIndex > lastparticles;
+    topology::PointSubsetData< VecIndex > lastparticles;
     VecCoord lastpos;
 
     virtual void init()

@@ -27,7 +27,7 @@
 
 #include <sofa/core/MultiMapping.h>
 
-#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/topology/PointSubsetData.h>
 
 #include <sofa/defaulttype/Vec3Types.h>
 

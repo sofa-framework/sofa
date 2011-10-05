@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/topology/PointSubsetData.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
