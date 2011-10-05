@@ -35,7 +35,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -61,7 +61,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<6,Real> Vec6;
-    typedef topology::PointSubset SetIndex;
+    typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
     typedef defaulttype::Vec<3,Real> Vec3;

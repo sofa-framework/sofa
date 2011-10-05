@@ -63,13 +63,20 @@ public:
     typedef index_type           		TriangleID;
     typedef index_type                 		QuadID;
     typedef index_type	                	TetraID;
+    typedef index_type	                	TetrahedronID;
     typedef index_type	                	HexaID;
+    typedef index_type	                	HexahedronID;
+
+    typedef vector<index_type>                  SetIndex;
+    typedef vector<index_type>                  SetIndices;
 
     typedef fixed_array<PointID,2>              Edge;
     typedef fixed_array<PointID,3>              Triangle;
     typedef fixed_array<PointID,4>              Quad;
     typedef fixed_array<PointID,4>              Tetra;
+    typedef fixed_array<PointID,4>              Tetrahedron;
     typedef fixed_array<PointID,8>              Hexa;
+    typedef fixed_array<PointID,8>              Hexahedron;
 
     typedef vector<Edge> 		        SeqEdges;
     typedef vector<Triangle>		        SeqTriangles;
@@ -93,7 +100,7 @@ public:
     /// @{
     typedef fixed_array<EdgeID,3>		EdgesInTriangle;
     typedef fixed_array<EdgeID,4>		EdgesInQuad;
-    typedef fixed_array<TriangleID,4>	TrianglesInTetrahedron;
+    typedef fixed_array<TriangleID,4>	        TrianglesInTetrahedron;
     typedef fixed_array<EdgeID,6>		EdgesInTetrahedron;
     typedef fixed_array<QuadID,6>		QuadsInHexahedron;
     typedef fixed_array<EdgeID,12>		EdgesInHexahedron;
@@ -101,17 +108,17 @@ public:
 
     /// dynamic-size neighbors arrays
     /// @{
-    typedef vector<PointID>		VerticesAroundVertex;
+    typedef vector<PointID>		        VerticesAroundVertex;
     typedef vector<EdgeID>			EdgesAroundVertex;
-    typedef vector<TriangleID>	TrianglesAroundVertex;
+    typedef vector<TriangleID>	                TrianglesAroundVertex;
     typedef vector<QuadID>			QuadsAroundVertex;
-    typedef vector<TetraID>		TetrahedraAroundVertex;
+    typedef vector<TetraID>		        TetrahedraAroundVertex;
     typedef vector<HexaID>			HexahedraAroundVertex;
-    typedef vector<TriangleID>	TrianglesAroundEdge;
+    typedef vector<TriangleID>	                TrianglesAroundEdge;
     typedef vector<QuadID>			QuadsAroundEdge;
-    typedef vector<TetraID>		TetrahedraAroundEdge;
+    typedef vector<TetraID>		        TetrahedraAroundEdge;
     typedef vector<HexaID>			HexahedraAroundEdge;
-    typedef vector<TetraID>		TetrahedraAroundTriangle;
+    typedef vector<TetraID>		        TetrahedraAroundTriangle;
     typedef vector<HexaID>			HexahedraAroundQuad;
     /// @}
 

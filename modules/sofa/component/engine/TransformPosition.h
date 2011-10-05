@@ -33,7 +33,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
@@ -62,7 +62,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef topology::PointSubset SetIndex;
+    typedef sofa::helper::vector<unsigned int> SetIndex;
 
     typedef enum
     {

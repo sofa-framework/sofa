@@ -29,7 +29,6 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/PointSubset.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/component.h>
@@ -52,7 +51,7 @@ class MergePoints : public core::DataEngine
 public:
     SOFA_CLASS(SOFA_TEMPLATE(MergePoints,DataTypes),core::DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef topology::PointSubset SetIndex;
+    typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
 
 public:
 
