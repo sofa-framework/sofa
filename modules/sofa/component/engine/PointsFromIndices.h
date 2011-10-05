@@ -34,7 +34,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -59,7 +59,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(PointsFromIndices,DataTypes),core::DataEngine);
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef topology::PointSubset SetIndex;
+    typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
 
 public:
 

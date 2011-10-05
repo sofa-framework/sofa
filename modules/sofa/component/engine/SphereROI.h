@@ -34,9 +34,9 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/PointSubset.h>
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/gl/BasicShapes.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -66,7 +66,7 @@ public:
     typedef defaulttype::Vec<6,Real> Vec6;
     typedef helper::vector<BaseMeshTopology::EdgeID> SetEdge;
     typedef helper::vector<BaseMeshTopology::TriangleID> SetTriangle;
-    typedef topology::PointSubset SetIndex;
+    typedef BaseMeshTopology::SetIndex SetIndex;
 
     typedef typename DataTypes::CPos CPos;
 
