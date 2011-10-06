@@ -28,6 +28,7 @@ HEADERS += collision/BaseContactMapper.h \
            collision/SpatialGridPointModel.h \
            collision/SphereTreeModel.h \
            collision/TriangleOctree.h \
+           collision/TriangleOctreeModel.h \
            collision/RayModel.h \
            collision/LineLocalMinDistanceFilter.h \
            collision/LocalMinDistanceFilter.h \
@@ -52,6 +53,7 @@ SOURCES += collision/BaseContactMapper.cpp \
            collision/SpatialGridPointModel.cpp \
            collision/SphereTreeModel.cpp \
            collision/TriangleOctree.cpp \
+           collision/TriangleOctreeModel.cpp \
            collision/RayModel.cpp \
            collision/LineLocalMinDistanceFilter.cpp \
            collision/LocalMinDistanceFilter.cpp \

@@ -6,34 +6,28 @@ TARGET = sofa_misc_collision
 DEFINES += SOFA_BUILD_MISC_COLLISION
 
 HEADERS += collision/TetrahedronModel.h \
-           collision/SharpLineModel.h \
            collision/SpatialGridPointModel.h \
            collision/SphereTreeModel.h \
            collision/TriangleModelInRegularGrid.h \
-           collision/TriangleOctree.h \
-           collision/TriangleOctreeModel.h \
            collision/ContinuousIntersection.h \
-           collision/ContinuousTriangleIntersection.h \
            collision/RigidContactMapper.h \
            collision/RigidContactMapper.inl \
            collision/TreeCollisionGroupManager.h \
-           collision/BsplineModel.h \
-           collision/BsplineModel.inl \
-           collision/RuleBasedContactManager.h
+           collision/RuleBasedContactManager.h \
+           collision/DefaultCollisionGroupManager.h \
+           collision/SolverMerger.h
 
 SOURCES += collision/TetrahedronModel.cpp \
-           collision/SharpLineModel.cpp \
            collision/SpatialGridPointModel.cpp \
            collision/SphereTreeModel.cpp \
            collision/TriangleModelInRegularGrid.cpp \
-           collision/TriangleOctree.cpp \
-           collision/TriangleOctreeModel.cpp \
            collision/ContinuousIntersection.cpp \
-           collision/ContinuousTriangleIntersection.cpp \
            collision/RigidContactMapper.cpp \
            collision/TreeCollisionGroupManager.cpp \
-           collision/BsplineModel.cpp \
-           collision/RuleBasedContactManager.cpp
+           collision/RuleBasedContactManager.cpp \
+           collision/DefaultCollisionGroupManager.cpp \
+           collision/SolverMerger.cpp
+
 
 contains(DEFINES,SOFA_SMP){
 HEADERS += collision/ParallelCollisionPipeline.h

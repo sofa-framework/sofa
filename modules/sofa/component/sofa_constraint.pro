@@ -26,8 +26,9 @@ HEADERS += collision/LocalMinDistance.h \
            constraintset/LCPConstraintSolver.h \
            constraintset/ConstraintSolverImpl.h \
            animationloop/FreeMotionAnimationLoop.h \
-           constraintset/ContactDescription.h
-
+           constraintset/ContactDescription.h \
+           collision/BsplineModel.h \
+           collision/BsplineModel.inl
 
 SOURCES += collision/LocalMinDistance.cpp \
            collision/LMDNewProximityIntersection.cpp \
@@ -41,7 +42,8 @@ SOURCES += collision/LocalMinDistance.cpp \
            constraintset/LinearSolverConstraintCorrection.cpp \
            constraintset/LCPConstraintSolver.cpp \
            constraintset/ConstraintSolverImpl.cpp \
-           animationloop/FreeMotionAnimationLoop.cpp
+           animationloop/FreeMotionAnimationLoop.cpp \
+           collision/BsplineModel.cpp
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){
 HEADERS += collision/BarycentricDistanceLMConstraintContact.h \
