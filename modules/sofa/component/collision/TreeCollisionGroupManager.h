@@ -37,7 +37,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API TreeCollisionGroupManager : public DefaultCollisionGroupManager
+class SOFA_MISC_COLLISION_API TreeCollisionGroupManager : public DefaultCollisionGroupManager
 {
 public:
     SOFA_CLASS(TreeCollisionGroupManager, DefaultCollisionGroupManager);

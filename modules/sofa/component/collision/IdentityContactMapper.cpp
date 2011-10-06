@@ -42,9 +42,9 @@ ContactMapperCreator< ContactMapper<SphereModel> > SphereContactMapperClass("def
 ContactMapperCreator< ContactMapper<SphereTreeModel> > SphereTreeContactClass("default", true);
 ContactMapperCreator< ContactMapper<PointModel> > PointContactMapperClass("default",true);
 
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereModel>;
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereTreeModel>;
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<PointModel>;
+template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel>;
+template class SOFA_MESH_COLLISION_API ContactMapper<SphereTreeModel>;
+template class SOFA_MESH_COLLISION_API ContactMapper<PointModel>;
 } // namespace collision
 
 } // namespace component

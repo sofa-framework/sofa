@@ -53,7 +53,7 @@ using namespace core;
 * LCP force field
 */
 template <class TDataTypes>
-class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>
+class SOFA_HAPTICS_API LCPForceFeedback : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>
 {
 
 public:

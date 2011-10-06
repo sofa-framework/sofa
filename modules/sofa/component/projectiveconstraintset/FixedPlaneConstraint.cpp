@@ -58,14 +58,14 @@ int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a giv
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Rigid3dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Vec3dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Vec6dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Vec6dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Rigid3fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Vec3fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Vec6fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Vec6fTypes>;
 #endif
 
 #ifndef SOFA_FLOAT

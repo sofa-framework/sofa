@@ -54,10 +54,10 @@ int PenalityContactForceFieldClass = core::RegisterObject("Contact using repulsi
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API PenalityContactForceField<Vec3dTypes>;
+template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API PenalityContactForceField<Vec3fTypes>;
+template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<Vec3fTypes>;
 #endif
 
 } // namespace interactionforcefield

@@ -62,18 +62,18 @@ int LinearMovementConstraintClass = core::RegisterObject("translate given partic
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec3dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec2dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec1dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec6dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<Vec2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<Vec1dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<Vec6dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec3fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec2fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec1fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec6fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<Vec2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<Vec1fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<Vec6fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<Rigid3fTypes>;
 #endif
 
 } // namespace projectiveconstraintset

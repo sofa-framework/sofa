@@ -51,7 +51,7 @@ using namespace sofa::simulation;
 * @see ArticulatedCenter
 * @see Articulation
 */
-class SOFA_COMPONENT_CONTAINER_API ArticulatedHierarchyContainer : public virtual core::objectmodel::BaseObject
+class SOFA_RIGID_API ArticulatedHierarchyContainer : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ArticulatedHierarchyContainer,core::objectmodel::BaseObject);

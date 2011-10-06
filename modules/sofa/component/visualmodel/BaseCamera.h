@@ -57,7 +57,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_COMPONENT_VISUALMODEL_API BaseCamera : public core::objectmodel::BaseObject
+class SOFA_BASE_VISUAL_API BaseCamera : public core::objectmodel::BaseObject
 {
 public:
     typedef sofa::core::visual::VisualParams::CameraType CameraType;

@@ -64,7 +64,7 @@ using sofa::component::container::ArticulatedHierarchyContainer;
  * Mouse Buttons and Wheel are controlling the value.
  * Keyboard is used to select the controlled articulation.
  */
-class SOFA_COMPONENT_CONTROLLER_API ArticulatedHierarchyController : public Controller
+class SOFA_USER_INTERACTION_API ArticulatedHierarchyController : public Controller
 {
 public:
     SOFA_CLASS(ArticulatedHierarchyController,Controller);

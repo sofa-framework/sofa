@@ -64,7 +64,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
 /// a class to manage the handling of topological changes which have been requested from the Collision Model
-class SOFA_COMPONENT_COLLISION_API TopologicalChangeManager
+class SOFA_ADVANCED_INTERACTION_API TopologicalChangeManager
 {
 public:
     TopologicalChangeManager();

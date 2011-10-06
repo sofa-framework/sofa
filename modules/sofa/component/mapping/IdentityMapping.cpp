@@ -98,48 +98,48 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2dTypes, Vec2dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1dTypes, Vec1dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec6dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3dTypes, ExtVec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, ExtVec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Rigid3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2dTypes, Rigid2dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, ExtVec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2dTypes, Vec2dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2dTypes, Vec2dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1dTypes, Vec1dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec6dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, ExtVec3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, ExtVec3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Rigid3dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Rigid2dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, ExtVec3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Vec2dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2fTypes, Vec2fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1fTypes, Vec1fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6fTypes, Vec6fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3fTypes, ExtVec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, Rigid3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2fTypes, Rigid2fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, ExtVec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2fTypes, Vec2fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2fTypes, Vec2fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1fTypes, Vec1fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec6fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, ExtVec3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Rigid3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Rigid2fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Vec3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, ExtVec3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Vec2fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3fTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2dTypes, Vec2fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2fTypes, Vec2dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1dTypes, Vec1fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1fTypes, Vec1dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec6fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6fTypes, Vec6dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6fTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, Rigid3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Rigid3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2dTypes, Rigid2fTypes >;
-template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2fTypes, Rigid2dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2dTypes, Vec2fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2fTypes, Vec2dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1dTypes, Vec1fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1fTypes, Vec1dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec6fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec6dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Rigid3dTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Rigid3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Rigid2fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Rigid2dTypes >;
 #endif
 #endif
 

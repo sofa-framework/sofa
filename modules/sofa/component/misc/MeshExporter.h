@@ -20,7 +20,7 @@ namespace component
 namespace misc
 {
 
-class SOFA_COMPONENT_MISC_API MeshExporter : public core::objectmodel::BaseObject
+class SOFA_EXPORTER_API MeshExporter : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(MeshExporter,core::objectmodel::BaseObject);

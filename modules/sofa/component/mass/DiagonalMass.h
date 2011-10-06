@@ -207,18 +207,18 @@ public:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec3dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec2dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec1dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>;
-extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid2dTypes,defaulttype::Rigid2dMass>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec3dTypes,double>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec2dTypes,double>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec1dTypes,double>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid2dTypes,defaulttype::Rigid2dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec3fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec2fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec1fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>;
-extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid2fTypes,defaulttype::Rigid2fMass>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec3fTypes,float>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec2fTypes,float>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec1fTypes,float>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>;
+extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Rigid2fTypes,defaulttype::Rigid2fMass>;
 #endif
 #endif
 

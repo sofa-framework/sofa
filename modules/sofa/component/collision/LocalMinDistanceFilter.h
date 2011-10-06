@@ -122,7 +122,7 @@ protected:
  * It also manages an history of computed cones that allows faster computation for an already tested collision
  * primitive.
  */
-class SOFA_COMPONENT_COLLISION_API LocalMinDistanceFilter : public virtual core::objectmodel::BaseObject
+class SOFA_BASE_COLLISION_API LocalMinDistanceFilter : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(LocalMinDistanceFilter,sofa::core::objectmodel::BaseObject);
@@ -211,7 +211,7 @@ private:
 /**
  * @brief
  */
-class SOFA_COMPONENT_COLLISION_API EmptyFilter
+class SOFA_BASE_COLLISION_API EmptyFilter
 {
 public:
     /**

@@ -47,7 +47,7 @@ namespace linearsolver
   */
 
 template<class TMatrix, class TVector>
-class SOFA_COMPONENT_LINEARSOLVER_API SVDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+class SOFA_EIGEN2_SOLVER_API SVDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(SVDLinearSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));

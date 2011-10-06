@@ -96,16 +96,16 @@ protected:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Vec2dTypes>;
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid2dTypes>;
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid3dTypes>;
+template class SOFA_ENGINE_API AverageCoord<defaulttype::Vec2dTypes>;
+template class SOFA_ENGINE_API AverageCoord<defaulttype::Vec3dTypes>;
+template class SOFA_ENGINE_API AverageCoord<defaulttype::Rigid2dTypes>;
+template class SOFA_ENGINE_API AverageCoord<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Vec2fTypes>;
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid2fTypes>;
-template class SOFA_COMPONENT_ENGINE_API AverageCoord<defaulttype::Rigid3fTypes>;
+template class SOFA_ENGINE_API AverageCoord<defaulttype::Vec2fTypes>;
+template class SOFA_ENGINE_API AverageCoord<defaulttype::Vec3fTypes>;
+template class SOFA_ENGINE_API AverageCoord<defaulttype::Rigid2fTypes>;
+template class SOFA_ENGINE_API AverageCoord<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

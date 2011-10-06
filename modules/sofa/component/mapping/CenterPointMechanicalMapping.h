@@ -97,18 +97,18 @@ using sofa::defaulttype::ExtVec3fTypes;
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CENTERPOINTMECHANICALMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 #endif

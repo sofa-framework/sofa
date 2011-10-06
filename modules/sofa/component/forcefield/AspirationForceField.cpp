@@ -52,10 +52,10 @@ int AspirationForceFieldClass = core::RegisterObject("Constant forces applied to
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API AspirationForceField<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API AspirationForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API AspirationForceField<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API AspirationForceField<Vec3fTypes>;
 #endif
 
 } // namespace forcefield

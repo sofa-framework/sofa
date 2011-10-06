@@ -55,15 +55,15 @@ int HexahedronSetTopologyAlgorithmsClass = core::RegisterObject("Hexahedron set 
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec3dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec2dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec1dTypes>;
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec3dTypes>;
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec2dTypes>;
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec3fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec2fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec1fTypes>;
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec3fTypes>;
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec2fTypes>;
+template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<Vec1fTypes>;
 #endif
 
 } // namespace topology

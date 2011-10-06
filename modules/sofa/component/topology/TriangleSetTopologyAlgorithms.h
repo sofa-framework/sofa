@@ -58,6 +58,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangleSetTopologyAlgorithms,DataTypes), SOFA_TEMPLATE(EdgeSetTopologyAlgorithms,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecCoord VecDeriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
@@ -152,19 +153,19 @@ private:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Rigid2dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Rigid2fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec3fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

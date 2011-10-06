@@ -62,18 +62,18 @@ int PartialLinearMovementConstraintClass = core::RegisterObject("translate given
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec3dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec2dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec1dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec6dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec1dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec6dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec3fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec2fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec1fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Vec6fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API PartialLinearMovementConstraint<Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec1fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Vec6fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<Rigid3fTypes>;
 #endif
 
 } // namespace projectiveconstraintset

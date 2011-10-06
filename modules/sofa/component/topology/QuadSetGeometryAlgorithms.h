@@ -134,19 +134,19 @@ inline Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

@@ -43,7 +43,6 @@
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/component/visualmodel/DrawV.h>
 #include <iostream>
 
 
@@ -198,15 +197,15 @@ public:
 };
 
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_COLLISION)
-//extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereModel>;
-//extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereTreeModel>;
-//extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<PointModel>;
-extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<LineModel>;
-extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<TriangleModel>;
-extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<TetrahedronModel>;
-//extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
-extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<FFDDistanceGridCollisionModel>;
+#if defined(WIN32) && !defined(SOFA_BUILD_MESH_COLLISION)
+//extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel>;
+//extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereTreeModel>;
+//extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<TetrahedronModel>;
+//extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<FFDDistanceGridCollisionModel>;
 #endif
 
 } // namespace collision

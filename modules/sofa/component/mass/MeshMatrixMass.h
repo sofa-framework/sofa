@@ -286,14 +286,14 @@ protected:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec1dTypes,double>;
+extern template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<defaulttype::Vec3dTypes,double>;
+extern template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<defaulttype::Vec2dTypes,double>;
+extern template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<defaulttype::Vec1dTypes,double>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec1fTypes,float>;
+extern template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<defaulttype::Vec3fTypes,float>;
+extern template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<defaulttype::Vec2fTypes,float>;
+extern template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<defaulttype::Vec1fTypes,float>;
 #endif
 #endif
 

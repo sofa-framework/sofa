@@ -39,7 +39,7 @@ namespace component
 namespace configurationsetting
 {
 
-class SOFA_COMPONENT_CONFIGURATIONSETTING_API ViewerSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_GRAPH_COMPONENT_API ViewerSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
     SOFA_CLASS(ViewerSetting,core::objectmodel::ConfigurationSetting);

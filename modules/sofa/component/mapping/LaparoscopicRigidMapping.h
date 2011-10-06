@@ -101,7 +101,7 @@ protected:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_CPP)
 #pragma warning(disable : 4231)
-extern template class SOFA_COMPONENT_MAPPING_API LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes >;
+extern template class SOFA_RIGID_API LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes >;
 #endif
 
 } // namespace mapping

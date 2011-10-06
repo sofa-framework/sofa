@@ -59,7 +59,7 @@ namespace visualmodel
  */
 
 
-class SOFA_COMPONENT_VISUALMODEL_API Light : public virtual sofa::core::visual::VisualModel
+class SOFA_OPENGL_VISUAL_API Light : public virtual sofa::core::visual::VisualModel
 {
 public:
     SOFA_CLASS(Light, core::visual::VisualModel);
@@ -134,7 +134,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API PositionalLight : public Light
+class SOFA_OPENGL_VISUAL_API PositionalLight : public Light
 {
 public:
     SOFA_CLASS(PositionalLight, Light);
@@ -151,7 +151,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API SpotLight : public PositionalLight
+class SOFA_OPENGL_VISUAL_API SpotLight : public PositionalLight
 {
 public:
     SOFA_CLASS(SpotLight, PositionalLight);

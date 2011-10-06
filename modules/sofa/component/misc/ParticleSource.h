@@ -439,12 +439,12 @@ protected :
 #pragma warning(disable : 4231)
 using namespace sofa::defaulttype;
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec2dTypes>;
+extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3dTypes>;
+extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec2fTypes>;
+extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3fTypes>;
+extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2fTypes>;
 #endif
 #endif
 

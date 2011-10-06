@@ -164,10 +164,10 @@ using sofa::defaulttype::Vec3fTypes;
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API TriangleFEMForceField<Vec3dTypes>;
+extern template class SOFA_SIMPLE_FEM_API TriangleFEMForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API TriangleFEMForceField<Vec3fTypes>;
+extern template class SOFA_SIMPLE_FEM_API TriangleFEMForceField<Vec3fTypes>;
 #endif
 
 #endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)

@@ -189,13 +189,13 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_INTERACTIONFORCEFIELD)
+#if defined(WIN32) && !defined(SOFA_BUILD_DEFORMABLE)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API VectorSpringForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_DEFORMABLE_API VectorSpringForceField<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API VectorSpringForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_DEFORMABLE_API VectorSpringForceField<defaulttype::Vec3fTypes>;
 #endif
 #endif
 

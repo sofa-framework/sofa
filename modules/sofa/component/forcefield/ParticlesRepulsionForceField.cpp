@@ -56,12 +56,12 @@ int ParticlesRepulsionForceFieldClass = core::RegisterObject("ForceField using S
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec3dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec2dTypes>;
+template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3dTypes>;
+template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec3fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec2fTypes>;
+template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3fTypes>;
+template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2fTypes>;
 #endif
 
 

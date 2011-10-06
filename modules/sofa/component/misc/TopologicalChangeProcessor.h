@@ -69,7 +69,7 @@ using namespace defaulttype;
  *
  * SIMPLE METHODE FOR THE MOMENT. DON'T HANDLE MULTIPLE TOPOLOGIES
 */
-class SOFA_COMPONENT_MISC_API TopologicalChangeProcessor: public core::objectmodel::BaseObject
+class SOFA_MISC_TOPOLOGY_API TopologicalChangeProcessor: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(TopologicalChangeProcessor,core::objectmodel::BaseObject);

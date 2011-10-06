@@ -330,11 +330,11 @@ protected :
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularFEMForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_SIMPLE_FEM_API TriangularFEMForceField<defaulttype::Vec3dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularFEMForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_SIMPLE_FEM_API TriangularFEMForceField<defaulttype::Vec3fTypes>;
 #endif
 
 #endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)

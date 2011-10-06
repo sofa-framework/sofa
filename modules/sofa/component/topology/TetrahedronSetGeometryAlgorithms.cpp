@@ -57,15 +57,15 @@ int TetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Tetrahedron se
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec2dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec1dTypes>;
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec2dTypes>;
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec2fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec1fTypes>;
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec2fTypes>;
+template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec1fTypes>;
 #endif
 
 } // namespace topology

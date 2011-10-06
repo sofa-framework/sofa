@@ -94,24 +94,24 @@ using namespace sofa::defaulttype;
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid3dTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid2dTypes, Vec2dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid3dTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid3dTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2dTypes, Vec2dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, ExtVec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid2fTypes, Vec2fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid3fTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid3fTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2fTypes, Vec2fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, ExtVec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid2dTypes, Vec2fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Rigid2fTypes, Vec2dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2dTypes, Vec2fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2fTypes, Vec2dTypes >;
 #endif
 #endif
 #endif

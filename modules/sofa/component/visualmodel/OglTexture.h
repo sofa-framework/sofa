@@ -51,7 +51,7 @@ namespace visualmodel
  *  At the moment, only texture2D is supported.
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API OglTexture :  public core::visual::VisualModel, public OglShaderElement
+class SOFA_OPENGL_VISUAL_API OglTexture :  public core::visual::VisualModel, public OglShaderElement
 {
 public:
     SOFA_CLASS2(OglTexture, core::visual::VisualModel, OglShaderElement);
@@ -102,7 +102,7 @@ public:
     static void setActiveTexture(unsigned short unit);
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglTexture2D : public OglTexture
+class SOFA_OPENGL_VISUAL_API OglTexture2D : public OglTexture
 {
 public:
     SOFA_CLASS(OglTexture2D, OglTexture);

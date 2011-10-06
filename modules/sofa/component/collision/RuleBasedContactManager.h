@@ -36,7 +36,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API RuleBasedContactManager : public DefaultContactManager
+class SOFA_MISC_COLLISION_API RuleBasedContactManager : public DefaultContactManager
 {
 public:
     SOFA_CLASS(RuleBasedContactManager, DefaultContactManager);

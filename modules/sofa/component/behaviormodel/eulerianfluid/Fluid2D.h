@@ -42,7 +42,7 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
-class SOFA_COMPONENT_BEHAVIORMODEL_API Fluid2D : public sofa::core::BehaviorModel
+class SOFA_EULERIAN_FLUID_API Fluid2D : public sofa::core::BehaviorModel
 {
 public:
     SOFA_CLASS(Fluid2D, sofa::core::BehaviorModel);

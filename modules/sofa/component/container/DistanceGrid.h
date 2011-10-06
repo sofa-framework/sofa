@@ -41,7 +41,7 @@ namespace container
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-class SOFA_COMPONENT_CONTAINER_API DistanceGrid
+class SOFA_BASE_COLLISION_API DistanceGrid
 {
 public:
     static SReal maxDist() { return (SReal)1e10; }

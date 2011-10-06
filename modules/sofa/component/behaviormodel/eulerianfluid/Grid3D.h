@@ -51,7 +51,7 @@ using namespace sofa::helper;
 #define DEBUGGRID
 #endif
 
-class SOFA_COMPONENT_BEHAVIORMODEL_API Grid3D
+class SOFA_EULERIAN_FLUID_API Grid3D
 {
 public:
 

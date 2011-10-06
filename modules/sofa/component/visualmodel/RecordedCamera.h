@@ -13,7 +13,7 @@ namespace visualmodel
 {
 #define PI 3.14159265
 
-class SOFA_COMPONENT_VISUALMODEL_API RecordedCamera : public BaseCamera
+class SOFA_OPENGL_VISUAL_API RecordedCamera : public BaseCamera
 {
 public:
     SOFA_CLASS(RecordedCamera, BaseCamera);

@@ -83,7 +83,7 @@ public:
     virtual bool activeLine(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
 };
 
-class SOFA_COMPONENT_COLLISION_API LineModel : public core::CollisionModel
+class SOFA_BASE_COLLISION_API LineModel : public core::CollisionModel
 {
 public :
     SOFA_CLASS(LineModel,sofa::core::CollisionModel);

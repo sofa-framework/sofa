@@ -47,7 +47,7 @@ namespace collision
 {
 
 
-class SOFA_COMPONENT_COLLISION_API ComponentMouseInteraction
+class SOFA_USER_INTERACTION_API ComponentMouseInteraction
 {
 public:
     ComponentMouseInteraction();
@@ -101,14 +101,14 @@ public:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction<defaulttype::Rigid3fTypes>;
+extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3fTypes>;
+extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction<defaulttype::Rigid3dTypes>;
+extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3dTypes>;
+extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3dTypes>;
 #endif
-extern template class SOFA_COMPONENT_COLLISION_API helper::Factory<std::string, ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+extern template class SOFA_USER_INTERACTION_API helper::Factory<std::string, ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 #endif
 }
 }

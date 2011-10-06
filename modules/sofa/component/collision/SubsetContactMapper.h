@@ -43,7 +43,6 @@
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/component/visualmodel/DrawV.h>
 #include <iostream>
 
 

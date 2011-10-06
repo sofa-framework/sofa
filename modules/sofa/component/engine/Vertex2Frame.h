@@ -90,10 +90,10 @@ protected:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API Vertex2Frame<defaulttype::Rigid3dTypes>;
+template class SOFA_ENGINE_API Vertex2Frame<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API Vertex2Frame<defaulttype::Rigid3fTypes>;
+template class SOFA_ENGINE_API Vertex2Frame<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

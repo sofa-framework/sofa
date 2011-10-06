@@ -167,22 +167,22 @@ using sofa::defaulttype::Rigid3fTypes;
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3dTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid2dTypes, Vec2dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3dTypes, ExtVec3fTypes >;
+extern template class SOFA_RIGID_API RigidMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_RIGID_API RigidMapping< Rigid2dTypes, Vec2dTypes >;
+extern template class SOFA_RIGID_API RigidMapping< Rigid3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid2fTypes, Vec2fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3fTypes, ExtVec3fTypes >;
+extern template class SOFA_RIGID_API RigidMapping< Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_RIGID_API RigidMapping< Rigid2fTypes, Vec2fTypes >;
+extern template class SOFA_RIGID_API RigidMapping< Rigid3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid2dTypes, Vec2fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid2fTypes, Vec2dTypes >;
+extern template class SOFA_RIGID_API RigidMapping< Rigid3dTypes, Vec3fTypes >;
+extern template class SOFA_RIGID_API RigidMapping< Rigid3fTypes, Vec3dTypes >;
+extern template class SOFA_RIGID_API RigidMapping< Rigid2dTypes, Vec2fTypes >;
+extern template class SOFA_RIGID_API RigidMapping< Rigid2fTypes, Vec2dTypes >;
 #endif
 #endif
 #endif

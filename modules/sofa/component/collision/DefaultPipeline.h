@@ -38,7 +38,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API DefaultPipeline : public sofa::simulation::PipelineImpl
+class SOFA_BASE_COLLISION_API DefaultPipeline : public sofa::simulation::PipelineImpl
 {
 public:
     SOFA_CLASS(DefaultPipeline,sofa::simulation::PipelineImpl);

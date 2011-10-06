@@ -58,7 +58,7 @@ using namespace sofa::core;
 *
 */
 
-class SOFA_COMPONENT_TOPOLOGY_API Hexa2QuadTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Hexa2QuadTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(Hexa2QuadTopologicalMapping,TopologicalMapping);

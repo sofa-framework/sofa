@@ -44,7 +44,7 @@ using namespace sofa::defaulttype;
   In c++, resolution is set in the constructor or using method setSize of the parent class, while the spatial extent is set using method setPos.
   In xml, see example files.
   */
-class SOFA_COMPONENT_CONTAINER_API RegularGridTopology : public GridTopology
+class SOFA_BASE_TOPOLOGY_API RegularGridTopology : public GridTopology
 {
 public:
     typedef Vec<3, int> Vec3i;

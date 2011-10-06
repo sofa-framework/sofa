@@ -154,16 +154,16 @@ using sofa::defaulttype::Rigid3fTypes;
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CURVEMAPPING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API CurveMapping< Vec3dTypes, Rigid3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CurveMapping< Vec3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API CurveMapping< Vec3fTypes, Rigid3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CurveMapping< Vec3fTypes, Rigid3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API CurveMapping< Vec3dTypes, Rigid3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API CurveMapping< Vec3fTypes, Rigid3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CurveMapping< Vec3dTypes, Rigid3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CurveMapping< Vec3fTypes, Rigid3dTypes >;
 #endif
 #endif
 #endif

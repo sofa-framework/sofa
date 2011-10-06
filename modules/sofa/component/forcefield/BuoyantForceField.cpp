@@ -51,10 +51,10 @@ int BuoyantForceFieldClass = core::RegisterObject("Upward acting force exerted b
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API BuoyantForceField<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API BuoyantForceField<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<Vec3fTypes>;
 #endif
 
 

@@ -37,7 +37,7 @@ namespace component
 namespace loader
 {
 
-class SOFA_COMPONENT_LOADER_API MeshOffLoader : public sofa::core::loader::MeshLoader
+class SOFA_LOADER_API MeshOffLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(MeshOffLoader,sofa::core::loader::MeshLoader);

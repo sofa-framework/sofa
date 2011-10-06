@@ -66,12 +66,12 @@ int LineBendingSpringsClass = core::RegisterObject("Springs added to a polyline 
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API LineBendingSprings<Vec3dTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API LineBendingSprings<Vec2dTypes>;
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3dTypes>;
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API LineBendingSprings<Vec3fTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API LineBendingSprings<Vec2fTypes>;
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3fTypes>;
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2fTypes>;
 #endif
 } // namespace interactionforcefield
 

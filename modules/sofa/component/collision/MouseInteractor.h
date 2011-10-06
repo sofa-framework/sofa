@@ -26,8 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_H
 
 
-#include <sofa/component/collision/initCollision.h>
-
 #include <sofa/component/collision/InteractionPerformer.h>
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/simulation/common/Node.h>
@@ -53,7 +51,7 @@ struct BodyPicked
     double rayLength;
 };
 
-class SOFA_COMPONENT_COLLISION_API BaseMouseInteractor : public core::BehaviorModel
+class SOFA_USER_INTERACTION_API BaseMouseInteractor : public core::BehaviorModel
 {
 public:
     typedef sofa::component::collision::RayModel MouseCollisionModel;
@@ -135,13 +133,13 @@ protected:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP)
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Rigid3fTypes>;
+extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3fTypes>;
+extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3fTypes>;
 
 #endif
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Rigid3fTypes>;
+extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3dTypes>;
+extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3fTypes>;
 
 #endif
 #endif

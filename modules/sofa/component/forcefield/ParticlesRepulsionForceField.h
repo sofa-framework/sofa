@@ -111,13 +111,13 @@ using sofa::defaulttype::Vec2fTypes;
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec3dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec2dTypes>;
+extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3dTypes>;
+extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec3fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec2fTypes>;
+extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec3fTypes>;
+extern template class SOFA_SPH_FLUID_API ParticlesRepulsionForceField<Vec2fTypes>;
 #endif
 
 #endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)

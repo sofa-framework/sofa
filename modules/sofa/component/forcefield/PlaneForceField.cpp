@@ -280,18 +280,18 @@ int PlaneForceFieldClass = core::RegisterObject("Repulsion applied by a plane to
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec3dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec2dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec1dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec6dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec1dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec6dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec3fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec2fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec1fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec6fTypes>;
-//template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec1fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec6fTypes>;
+//template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Rigid3fTypes>;
 #endif
 
 } // namespace forcefield

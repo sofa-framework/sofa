@@ -33,13 +33,13 @@ int CenterOfMassMultiMappingClass = core::RegisterObject("Set the point to the c
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Rigid3dTypes, Rigid3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Rigid3dTypes, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Rigid3dTypes, Rigid3dTypes >;
+template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Rigid3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Rigid3fTypes, Rigid3fTypes >;
+template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 
 } // namespace mapping

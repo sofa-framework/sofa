@@ -112,10 +112,10 @@ using namespace sofa::defaulttype;
 
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
 #endif
 #endif
 

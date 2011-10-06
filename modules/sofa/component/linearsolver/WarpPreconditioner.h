@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/linearsolver/FullVector.h>
 #include <math.h>
-#include <sofa/component/linearsolver/RotationMatrix.h>
+#include <sofa/core/behavior/RotationMatrix.h>
 
 #include <map>
 

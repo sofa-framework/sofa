@@ -59,12 +59,12 @@ int GearSpringForceFieldClass = core::RegisterObject("Gear springs for Rigids")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API GearSpring<defaulttype::Rigid3dTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API GearSpringForceField<defaulttype::Rigid3dTypes>;
+template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3dTypes>;
+template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API GearSpring<defaulttype::Rigid3fTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API GearSpringForceField<defaulttype::Rigid3fTypes>;
+template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3fTypes>;
+template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3fTypes>;
 #endif
 
 

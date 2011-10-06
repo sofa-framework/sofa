@@ -164,10 +164,10 @@ protected:
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API BuoyantForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API BuoyantForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<defaulttype::Vec3fTypes>;
 #endif
 #endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_BuoyantForceField_CPP)
 

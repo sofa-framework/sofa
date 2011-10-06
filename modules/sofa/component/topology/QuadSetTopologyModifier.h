@@ -48,7 +48,7 @@ typedef BaseMeshTopology::EdgesInQuad EdgesInQuad;
 /**
 * A class that modifies the topology by adding and removing quads
 */
-class SOFA_COMPONENT_CONTAINER_API QuadSetTopologyModifier : public EdgeSetTopologyModifier
+class SOFA_BASE_TOPOLOGY_API QuadSetTopologyModifier : public EdgeSetTopologyModifier
 {
 public:
     SOFA_CLASS(QuadSetTopologyModifier,EdgeSetTopologyModifier);

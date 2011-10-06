@@ -54,7 +54,7 @@ protected:
 
 
 template <class DataTypes>
-class SOFA_COMPONENT_COLLISION_API SuturePointPerformer: public TInteractionPerformer<DataTypes>, public SuturePointPerformerConfiguration
+class SOFA_USER_INTERACTION_API SuturePointPerformer: public TInteractionPerformer<DataTypes>, public SuturePointPerformerConfiguration
 {
     typedef typename DataTypes::Real Real;
     typedef sofa::component::interactionforcefield::LinearSpring<Real> Spring;
@@ -84,10 +84,10 @@ protected:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_CPP)
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_COLLISION_API  SuturePointPerformer<defaulttype::Vec3fTypes>;
+extern template class SOFA_USER_INTERACTION_API  SuturePointPerformer<defaulttype::Vec3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_COLLISION_API  SuturePointPerformer<defaulttype::Vec3dTypes>;
+extern template class SOFA_USER_INTERACTION_API  SuturePointPerformer<defaulttype::Vec3dTypes>;
 #endif
 #endif
 

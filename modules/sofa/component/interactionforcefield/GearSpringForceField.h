@@ -334,15 +334,15 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_INTERACTIONFORCEFIELD)
+#if defined(WIN32) && !defined(SOFA_BUILD_MISC_FORCEFIELD)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API GearSpring<defaulttype::Rigid3dTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API GearSpringForceField<defaulttype::Rigid3dTypes>;
+extern template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3dTypes>;
+extern template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API GearSpring<defaulttype::Rigid3fTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API GearSpringForceField<defaulttype::Rigid3fTypes>;
+extern template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3fTypes>;
+extern template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 } // namespace interactionforcefield

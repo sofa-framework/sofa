@@ -91,7 +91,7 @@ using namespace sofa::defaulttype;
  *   \f$ ( M + h K ) v_{t+h} = f_ext \f$
  *
  */
-class SOFA_COMPONENT_ODESOLVER_API EulerImplicitSolver : public sofa::core::behavior::OdeSolver
+class SOFA_IMPLICIT_ODE_SOLVER_API EulerImplicitSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(EulerImplicitSolver, sofa::core::behavior::OdeSolver);

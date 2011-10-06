@@ -50,12 +50,12 @@ int ValuesFromPositionsClass = core::RegisterObject("Assign values to primitives
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API ValuesFromPositions<Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API ValuesFromPositions<Rigid3dTypes>;
+template class SOFA_ENGINE_API ValuesFromPositions<Vec3dTypes>;
+template class SOFA_ENGINE_API ValuesFromPositions<Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API ValuesFromPositions<Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API ValuesFromPositions<Rigid3fTypes>;
+template class SOFA_ENGINE_API ValuesFromPositions<Vec3fTypes>;
+template class SOFA_ENGINE_API ValuesFromPositions<Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 

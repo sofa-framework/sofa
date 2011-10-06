@@ -132,19 +132,19 @@ protected:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

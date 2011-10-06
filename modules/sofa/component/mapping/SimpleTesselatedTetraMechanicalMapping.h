@@ -94,18 +94,18 @@ protected:
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;
+extern template class SOFA_TOPOLOGY_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_TOPOLOGY_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ExtVec3fTypes >;
+extern template class SOFA_TOPOLOGY_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_TOPOLOGY_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Rigid3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3fTypes >;
+extern template class SOFA_TOPOLOGY_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Rigid3dTypes >;
+extern template class SOFA_TOPOLOGY_MAPPING_API SimpleTesselatedTetraMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3fTypes >;
 #endif
 #endif
 

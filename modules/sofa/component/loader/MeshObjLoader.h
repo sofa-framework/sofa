@@ -41,7 +41,7 @@ namespace loader
 //  using namespace sofa::helper::io;
 using sofa::defaulttype::Vec4f;
 
-class SOFA_COMPONENT_LOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
+class SOFA_LOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
 {
 public:
     enum FaceType { EDGE, TRIANGLE, QUAD };

@@ -12,7 +12,7 @@ namespace sofa
 namespace helper
 {
 //explicit instanciation of our factory class.
-template class SOFA_COMPONENT_COLLISION_API helper::Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
+template class SOFA_USER_INTERACTION_API helper::Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
 } // helper
 } // sofa
 #endif

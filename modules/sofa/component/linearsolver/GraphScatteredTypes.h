@@ -58,7 +58,7 @@ public:
     MultExpr(T1& a, T2& b) : a(a), b(b) {}
 };
 
-class SOFA_COMPONENT_LINEARSOLVER_API GraphScatteredMatrix
+class SOFA_BASE_LINEAR_SOLVER_API GraphScatteredMatrix
 {
 public:
     //simulation::SolverImpl* parent;
@@ -109,7 +109,7 @@ public:
     static const char* Name() { return "GraphScattered"; }
 };
 
-class SOFA_COMPONENT_LINEARSOLVER_API GraphScatteredVector : public sofa::core::behavior::MultiVecDeriv
+class SOFA_BASE_LINEAR_SOLVER_API GraphScatteredVector : public sofa::core::behavior::MultiVecDeriv
 {
 public:
     typedef sofa::core::behavior::MultiVecDeriv Inherit;
@@ -159,7 +159,7 @@ public:
 };
 
 #ifdef SOFA_SMP
-class SOFA_COMPONENT_LINEARSOLVER_API ParallelGraphScatteredVector : public sofa::core::behavior::ParallelMultiVecDeriv
+class SOFA_BASE_LINEAR_SOLVER_API ParallelGraphScatteredVector : public sofa::core::behavior::ParallelMultiVecDeriv
 {
 public:
     typedef sofa::core::behavior::ParallelMultiVecDeriv Inherit;

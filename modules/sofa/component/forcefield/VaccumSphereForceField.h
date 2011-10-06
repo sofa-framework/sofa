@@ -163,15 +163,15 @@ using sofa::defaulttype::Vec1fTypes;
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec3dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec2dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec1dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec3fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec2fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec1fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec1fTypes>;
 #endif
 
 #endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)

@@ -38,7 +38,7 @@ namespace component
 namespace configurationsetting
 {
 
-class SOFA_COMPONENT_CONFIGURATIONSETTING_API FixPickedParticleButtonSetting: public MouseButtonSetting
+class SOFA_GRAPH_COMPONENT_API FixPickedParticleButtonSetting: public MouseButtonSetting
 {
 public:
     SOFA_CLASS(FixPickedParticleButtonSetting,MouseButtonSetting);

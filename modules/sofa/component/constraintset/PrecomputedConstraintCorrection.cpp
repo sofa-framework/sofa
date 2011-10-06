@@ -40,7 +40,7 @@ namespace constraintset
 #ifndef SOFA_FLOAT
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection< defaulttype::Rigid3dTypes >::rotateConstraints(bool back)
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection< defaulttype::Rigid3dTypes >::rotateConstraints(bool back)
 {
     const VecCoord& x = *this->mstate->getX();
     const VecCoord& x0 = *this->mstate->getX0();
@@ -85,14 +85,14 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection< defaultty
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints(bool /*back*/)
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints(bool /*back*/)
 {
 }
 
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse()
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse()
 {
     helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = dxData.wref();
@@ -116,18 +116,18 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse()
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse()
 {
 }
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::draw(const core::visual::VisualParams* )
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::draw(const core::visual::VisualParams* )
 {
 }
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* )
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* )
 {
 }
 
@@ -137,7 +137,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection< defaulttype::Rigid3fTypes >::rotateConstraints(bool back)
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection< defaulttype::Rigid3fTypes >::rotateConstraints(bool back)
 {
     const VecCoord& x = *this->mstate->getX();
     const VecCoord& x0 = *this->mstate->getX0();
@@ -182,13 +182,13 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection< defaultty
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints(bool /*back*/)
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints(bool /*back*/)
 {
 }
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse()
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse()
 {
     helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = dxData.wref();
@@ -212,17 +212,17 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse()
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse()
 {
 }
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::draw(const core::visual::VisualParams* )
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::draw(const core::visual::VisualParams* )
 {
 }
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* )
+SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* )
 {
 }
 
@@ -246,14 +246,14 @@ int PrecomputedConstraintCorrectionClass = core::RegisterObject("Component compu
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec3dTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec1dTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Rigid3dTypes>;
+template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<Vec3dTypes>;
+template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<Vec1dTypes>;
+template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec3fTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Vec1fTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<Rigid3fTypes>;
+template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<Vec3fTypes>;
+template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<Vec1fTypes>;
+template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<Rigid3fTypes>;
 #endif
 
 } // namespace collision

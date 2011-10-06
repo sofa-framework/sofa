@@ -38,7 +38,7 @@ namespace component
 namespace configurationsetting
 {
 
-class SOFA_COMPONENT_CONFIGURATIONSETTING_API StatsSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_GRAPH_COMPONENT_API StatsSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
     SOFA_CLASS(StatsSetting,core::objectmodel::ConfigurationSetting);

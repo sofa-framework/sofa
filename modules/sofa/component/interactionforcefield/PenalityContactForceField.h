@@ -141,13 +141,13 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_INTERACTIONFORCEFIELD)
+#if defined(WIN32) && !defined(SOFA_BUILD_OBJECT_INTERACTION)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API PenalityContactForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API PenalityContactForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3fTypes>;
 #endif
 #endif
 

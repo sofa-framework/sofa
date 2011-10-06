@@ -41,7 +41,7 @@ using namespace std;
 * Omni driver force field
 */
 template<class TDataTypes>
-class SOFA_COMPONENT_CONTROLLER_API NullForceFeedbackT : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>
+class SOFA_HAPTICS_API NullForceFeedbackT : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>
 {
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;

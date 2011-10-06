@@ -45,7 +45,7 @@ using namespace sofa::defaulttype;
 ////////////////// ///////////////
 
 
-class SOFA_COMPONENT_CONTAINER_API ImplicitSurface : public virtual core::objectmodel::BaseObject
+class SOFA_VOLUMETRIC_DATA_API ImplicitSurface : public virtual core::objectmodel::BaseObject
 {
 
 public:

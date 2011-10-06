@@ -204,14 +204,14 @@ protected:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>;
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>;
+extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>;
+extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>;
+extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>;
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>;
+extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>;
+extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>;
+extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 

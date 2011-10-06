@@ -45,7 +45,7 @@ typedef BaseMeshTopology::PointID PointID;
 /**
 * A class that can apply basic topology transformations on a set of points.
 */
-class SOFA_COMPONENT_CONTAINER_API PointSetTopologyModifier : public core::topology::TopologyModifier
+class SOFA_BASE_TOPOLOGY_API PointSetTopologyModifier : public core::topology::TopologyModifier
 {
 public:
     SOFA_CLASS(PointSetTopologyModifier,core::topology::TopologyModifier);

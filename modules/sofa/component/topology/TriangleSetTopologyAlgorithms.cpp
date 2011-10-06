@@ -58,15 +58,15 @@ int TriangleSetTopologyAlgorithmsClass = core::RegisterObject("Triangle set topo
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec3dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec2dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec1dTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec3dTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec2dTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec3fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec2fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec1fTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec3fTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec2fTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec1fTypes>;
 #endif
 
 } // namespace topology

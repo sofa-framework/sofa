@@ -277,24 +277,24 @@ void MechanicalStateController<DataTypes>::onMouseEvent(core::objectmodel::Mouse
 
 #ifndef SOFA_FLOAT
 template <>
-SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Vec1dTypes>::applyController();
+SOFA_USER_INTERACTION_API void MechanicalStateController<defaulttype::Vec1dTypes>::applyController();
 
 template <>
-SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
+SOFA_USER_INTERACTION_API void MechanicalStateController<defaulttype::Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
 
 template <>
-SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Rigid3dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
+SOFA_USER_INTERACTION_API void MechanicalStateController<defaulttype::Rigid3dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
 #endif
 
 #ifndef SOFA_DOUBLE
 template <>
-SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Vec1fTypes>::applyController();
+SOFA_USER_INTERACTION_API void MechanicalStateController<defaulttype::Vec1fTypes>::applyController();
 
 template <>
-SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Vec1fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
+SOFA_USER_INTERACTION_API void MechanicalStateController<defaulttype::Vec1fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
 
 template <>
-SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Rigid3fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
+SOFA_USER_INTERACTION_API void MechanicalStateController<defaulttype::Rigid3fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev);
 #endif
 
 

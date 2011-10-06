@@ -64,7 +64,7 @@ namespace visualmodel
  *  and Ati's >2K series.
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API OglShader : public core::visual::Shader, public core::visual::VisualModel
+class SOFA_OPENGL_VISUAL_API OglShader : public core::visual::Shader, public core::visual::VisualModel
 {
 public:
     SOFA_CLASS2(OglShader, core::visual::Shader, core::visual::VisualModel);
@@ -174,7 +174,7 @@ public:
  *  and the id (or name) of the element.
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API OglShaderElement : public core::visual::ShaderElement
+class SOFA_OPENGL_VISUAL_API OglShaderElement : public core::visual::ShaderElement
 {
 protected:
     ///Name of element (corresponding with the shader)

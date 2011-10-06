@@ -171,7 +171,7 @@ public:
  *
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API VisualModelImpl : public core::visual::VisualModel, public ExtVec3fState //, public RigidState
+class SOFA_BASE_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public ExtVec3fState //, public RigidState
 {
 public:
     SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, ExtVec3fState);

@@ -48,7 +48,7 @@ namespace component
 namespace misc
 {
 
-class SOFA_COMPONENT_MISC_API RequiredPlugin : public core::objectmodel::BaseObject
+class SOFA_GRAPH_COMPONENT_API RequiredPlugin : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);

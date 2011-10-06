@@ -80,7 +80,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_COLLISION_API TetrahedronModel : public core::CollisionModel
+class SOFA_BASE_COLLISION_API TetrahedronModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(TetrahedronModel, core::CollisionModel);

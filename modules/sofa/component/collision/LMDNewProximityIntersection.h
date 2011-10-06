@@ -43,7 +43,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API LMDNewProximityIntersection : public DiscreteIntersection
+class SOFA_CONSTRAINT_API LMDNewProximityIntersection : public DiscreteIntersection
 {
 public:
     SOFA_CLASS(LMDNewProximityIntersection,DiscreteIntersection);

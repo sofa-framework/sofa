@@ -27,7 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/container/VoxelGridLoader.h>
+#include <sofa/core/loader/VoxelGridLoader.h>
 
 #include <sofa/component/topology/HexahedronData.inl>
 

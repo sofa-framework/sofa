@@ -73,18 +73,18 @@ int MechanicalStateControllerClass = core::RegisterObject("Provides a Mouse & Ke
         ;
 
 #ifndef SOFA_FLOAT
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec3dTypes>;
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec2dTypes>;
-template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec1dTypes>;
-template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid3dTypes>;
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid2dTypes>;
+//template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec3dTypes>;
+//template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec2dTypes>;
+template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec1dTypes>;
+template class SOFA_USER_INTERACTION_API MechanicalStateController<Rigid3dTypes>;
+//template class SOFA_USER_INTERACTION_API MechanicalStateController<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec3fTypes>;
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec2fTypes>;
-template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec1fTypes>;
-template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid3fTypes>;
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid2fTypes>;
+//template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec3fTypes>;
+//template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec2fTypes>;
+template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec1fTypes>;
+template class SOFA_USER_INTERACTION_API MechanicalStateController<Rigid3fTypes>;
+//template class SOFA_USER_INTERACTION_API MechanicalStateController<Rigid2fTypes>;
 #endif
 
 #ifndef SOFA_FLOAT

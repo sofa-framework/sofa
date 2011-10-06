@@ -53,10 +53,10 @@ int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API LennardJonesForceField<Vec3dTypes>;
+template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API LennardJonesForceField<Vec3fTypes>;
+template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3fTypes>;
 #endif
 
 

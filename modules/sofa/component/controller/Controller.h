@@ -73,7 +73,7 @@ namespace controller
  * Provides also an interface for BeginAnimation and EndAnimation events
  * launched at the beginning and the end of a time step.
  */
-class SOFA_COMPONENT_CONTROLLER_API Controller : public virtual core::behavior::BaseController
+class SOFA_USER_INTERACTION_API Controller : public virtual core::behavior::BaseController
 {
 
 public:

@@ -51,10 +51,10 @@ int SurfacePressureForceFieldClass = core::RegisterObject("SurfacePressure")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API SurfacePressureForceField<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API SurfacePressureForceField<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Vec3fTypes>;
 #endif
 
 

@@ -52,12 +52,12 @@ int ParticleSourceClass = core::RegisterObject("Parametrable particle generator"
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec2dTypes>;
+template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3dTypes>;
+template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec2fTypes>;
+template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3fTypes>;
+template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2fTypes>;
 #endif
 
 }

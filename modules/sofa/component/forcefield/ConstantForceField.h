@@ -114,20 +114,20 @@ using sofa::defaulttype::Rigid3fTypes;
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec3dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec2dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec1dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec6dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid3dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec1dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec6dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Rigid3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec3fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec2fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec1fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec6fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid3fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec1fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec6fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Rigid3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Rigid2fTypes>;
 #endif
 #endif
 

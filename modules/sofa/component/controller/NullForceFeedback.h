@@ -40,7 +40,7 @@ using namespace std;
 /**
 * Omni driver force field
 */
-class SOFA_COMPONENT_CONTROLLER_API NullForceFeedback : public sofa::component::controller::ForceFeedback
+class SOFA_HAPTICS_API NullForceFeedback : public sofa::component::controller::ForceFeedback
 {
 
 public:

@@ -46,7 +46,7 @@ namespace contextobject
 using namespace sofa::defaulttype;
 
 /** Override the default gravity */
-class SOFA_COMPONENT_CONTEXTOBJECT_API Gravity : public core::objectmodel::ContextObject
+class SOFA_GRAPH_COMPONENT_API Gravity : public core::objectmodel::ContextObject
 {
 public:
     SOFA_CLASS(Gravity, core::objectmodel::ContextObject);

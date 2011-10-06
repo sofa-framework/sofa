@@ -49,10 +49,10 @@ int SpiralClass = core::RegisterObject("This class truns on spiral any topologic
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API Spiral<Vec3dTypes>;
+template class SOFA_ENGINE_API Spiral<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API Spiral<Vec3fTypes>;
+template class SOFA_ENGINE_API Spiral<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 

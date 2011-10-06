@@ -68,10 +68,10 @@ int TriangularBendingSpringsClass = core::RegisterObject("Springs added to a tri
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API TriangularBendingSprings<Vec3dTypes>;
+template class SOFA_DEFORMABLE_API TriangularBendingSprings<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API TriangularBendingSprings<Vec3fTypes>;
+template class SOFA_DEFORMABLE_API TriangularBendingSprings<Vec3fTypes>;
 #endif
 
 

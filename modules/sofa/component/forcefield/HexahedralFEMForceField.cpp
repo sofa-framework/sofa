@@ -52,10 +52,10 @@ int HexahedralFEMForceFieldClass = core::RegisterObject("Hexahedral finite eleme
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API HexahedralFEMForceField<Vec3dTypes>;
+template class SOFA_SIMPLE_FEM_API HexahedralFEMForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API HexahedralFEMForceField<Vec3fTypes>;
+template class SOFA_SIMPLE_FEM_API HexahedralFEMForceField<Vec3fTypes>;
 #endif
 
 } // namespace forcefield

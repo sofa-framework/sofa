@@ -43,7 +43,7 @@ namespace misc
 
 /** Compare Topology vectors from file at each timestep
 */
-class SOFA_COMPONENT_MISC_API CompareTopology: public ReadTopology
+class SOFA_VALIDATION_API CompareTopology: public ReadTopology
 {
 public:
     SOFA_CLASS(CompareTopology,ReadTopology);
@@ -90,7 +90,7 @@ protected :
 
 
 /// Create CompareTopology component in the graph each time needed
-class SOFA_COMPONENT_MISC_API CompareTopologyCreator: public Visitor
+class SOFA_VALIDATION_API CompareTopologyCreator: public Visitor
 {
 public:
     CompareTopologyCreator(const core::ExecParams* params);
@@ -112,7 +112,7 @@ protected:
 };
 
 
-class SOFA_COMPONENT_MISC_API CompareTopologyResult: public Visitor
+class SOFA_VALIDATION_API CompareTopologyResult: public Visitor
 {
 public:
     CompareTopologyResult(const core::ExecParams* params);

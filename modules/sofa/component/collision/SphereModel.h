@@ -219,12 +219,12 @@ void TSphere<DataTypes>::translate(double dx, double dy, double dz)
 typedef TSphereModel<Vec3Types> SphereModel;
 typedef TSphere<Vec3Types> Sphere;
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_COLLISION)
+#if defined(WIN32) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
+extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_COLLISION_API TSphereModel<defaulttype::Vec3fTypes>;
+extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3fTypes>;
 #endif
 #endif
 

@@ -43,7 +43,7 @@ namespace loader
 #endif
 
 // Format doc: http://en.wikipedia.org/wiki/STL_(file_format)
-class SOFA_COMPONENT_LOADER_API MeshSTLLoader : public sofa::core::loader::MeshLoader
+class SOFA_LOADER_API MeshSTLLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(MeshSTLLoader,sofa::core::loader::MeshLoader);

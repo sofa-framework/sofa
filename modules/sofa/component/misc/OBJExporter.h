@@ -26,7 +26,7 @@ namespace component
 namespace misc
 {
 
-class SOFA_COMPONENT_MISC_API OBJExporter : public core::objectmodel::BaseObject
+class SOFA_EXPORTER_API OBJExporter : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(OBJExporter,core::objectmodel::BaseObject);

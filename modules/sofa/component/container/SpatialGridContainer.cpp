@@ -53,11 +53,11 @@ int SpatialGridContainerClass = core::RegisterObject("Hashing spatial grid conta
 
 #ifndef SOFA_FLOAT
 template class SpatialGridContainer< Vec3dTypes >;
-template class SOFA_COMPONENT_CONTAINER_API SpatialGrid< SpatialGridTypes< Vec3dTypes > >;
+template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3dTypes > >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SpatialGridContainer< Vec3fTypes >;
-template class SOFA_COMPONENT_CONTAINER_API SpatialGrid< SpatialGridTypes< Vec3fTypes > >;
+template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3fTypes > >;
 #endif
 
 } // namespace container

@@ -161,14 +161,14 @@ public:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Rigid3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Vec6dTypes>; //Phuoc
+template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3dTypes>;
+template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3dTypes>;
+template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6dTypes>; //Phuoc
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Rigid3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Vec6fTypes>; //Phuoc
+template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3fTypes>;
+template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3fTypes>;
+template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6fTypes>; //Phuoc
 #endif //SOFA_DOUBLE
 #endif
 

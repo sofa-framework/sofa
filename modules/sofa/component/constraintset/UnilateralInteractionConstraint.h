@@ -277,20 +277,20 @@ public:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Vec3dTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Vec2dTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Vec1dTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Vec6dTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Rigid2dTypes>;
+extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3dTypes>;
+//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec2dTypes>;
+//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec1dTypes>;
+//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec6dTypes>;
+//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Vec3fTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Vec2fTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Vec1fTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Vec6fTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Rigid2fTypes>;
+extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3fTypes>;
+//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec2fTypes>;
+//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec1fTypes>;
+//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec6fTypes>;
+//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

@@ -34,7 +34,7 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/component/container/VoxelGridLoader.h>
+#include <sofa/core/loader/VoxelGridLoader.h>
 #include <stack>
 
 namespace sofa
@@ -48,14 +48,14 @@ namespace topology
 
 using namespace sofa::defaulttype;
 using sofa::helper::MarchingCubeUtility;
-using sofa::component::container::VoxelGridLoader;
+using sofa::core::loader::VoxelGridLoader;
 
 
 /** A sparse grid topology. Like a sparse FFD building from the bounding box of the object. Starting from a RegularGrid, only valid cells containing matter (ie intersecting the original surface mesh or totally inside the object) are considered.
  * Valid cells are tagged by a Type BOUNDARY or INSIDE
  * WARNING: the corresponding node in the XML file has to be placed BEFORE the MechanicalObject node, in order to excute its init() before the MechanicalObject one in order to be able to give dofs
  */
-class SOFA_COMPONENT_CONTAINER_API SparseGridTopology : public MeshTopology
+class SOFA_BASE_TOPOLOGY_API SparseGridTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(SparseGridTopology,MeshTopology);

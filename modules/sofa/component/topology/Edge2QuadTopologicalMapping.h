@@ -62,7 +62,7 @@ using namespace sofa::core::behavior;
 *
 */
 
-class SOFA_COMPONENT_TOPOLOGY_API Edge2QuadTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Edge2QuadTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(Edge2QuadTopologicalMapping,TopologicalMapping);

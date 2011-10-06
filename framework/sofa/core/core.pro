@@ -39,6 +39,9 @@ HEADERS += \
 	behavior/BaseMechanicalState.h \
 	behavior/BaseProjectiveConstraintSet.h \
 	behavior/BaseVectorOperations.h \
+	behavior/BaseRotationFinder.h \
+        behavior/RotationMatrix.h \
+        behavior/ParallelizeBuildMatrixEvent.h \
 	behavior/Constraint.h \
 	behavior/Constraint.inl \
 	behavior/ConstraintCorrection.h \
@@ -89,6 +92,7 @@ HEADERS += \
 	loader/Material.h \
 	loader/MeshLoader.h \
 	loader/PrimitiveGroup.h \
+        loader/VoxelGridLoader.h \
 	Mapping.h \
 	Mapping.inl \
 	MultiMapping.h \
@@ -189,6 +193,7 @@ SOURCES +=  \
 	behavior/MixedInteractionConstraint.cpp \
 	behavior/ProjectiveConstraintSet.cpp \
 	loader/MeshLoader.cpp \
+        loader/VoxelGridLoader.cpp \
 	visual/DisplayFlags.cpp \
 	visual/DrawToolGL.cpp
 

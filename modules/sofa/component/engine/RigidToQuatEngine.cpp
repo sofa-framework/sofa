@@ -27,10 +27,10 @@ int RigidToQuatEngineClass = core::RegisterObject("Transform a couple of Vec3 an
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API RigidToQuatEngine<sofa::defaulttype::Vec3dTypes>;
+template class SOFA_ENGINE_API RigidToQuatEngine<sofa::defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API RigidToQuatEngine<sofa::defaulttype::Vec3fTypes>;
+template class SOFA_ENGINE_API RigidToQuatEngine<sofa::defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 

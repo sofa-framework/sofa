@@ -24,31 +24,12 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 
-#include <sofa/component/behaviormodel/initBehaviorModel.h>
-#include <sofa/component/collision/initCollision.h>
-#include <sofa/component/configurationsetting/initConfigurationSetting.h>
-#include <sofa/component/projectiveconstraintset/initProjectiveConstraintSet.h>
-#include <sofa/component/constraintset/initConstraintSet.h>
-#include <sofa/component/container/initContainer.h>
-#include <sofa/component/contextobject/initContextObject.h>
-#include <sofa/component/controller/initController.h>
-#include <sofa/component/engine/initEngine.h>
-
-#include <sofa/component/fem/initFEM.h>
-
-#include <sofa/component/forcefield/initForceField.h>
-#include <sofa/component/interactionforcefield/initInteractionForceField.h>
-#include <sofa/component/linearsolver/initLinearSolver.h>
-#include <sofa/component/mapping/initMapping.h>
-#include <sofa/component/mass/initMass.h>
-#include <sofa/component/animationloop/initAnimationLoop.h>
-#include <sofa/component/misc/initMisc.h>
-#include <sofa/component/odesolver/initOdeSolver.h>
-#include <sofa/component/topology/initTopology.h>
-#include <sofa/component/visualmodel/initVisualModel.h>
 #include <sofa/component/init.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/loader/initLoader.h>
+#include <sofa/component/initComponentBase.h>
+#include <sofa/component/initComponentCommon.h>
+#include <sofa/component/initComponentGeneral.h>
+#include <sofa/component/initComponentAdvanced.h>
+#include <sofa/component/initComponentMisc.h>
 
 namespace sofa
 {
@@ -62,27 +43,11 @@ void init()
     static bool first = true;
     if (first)
     {
-        initBehaviorModel();
-        initCollision();
-        initConfigurationSetting();
-        initProjectiveConstraintSet();
-        initConstraintSet();
-        initContainer();
-        initContextObject();
-        initController();
-        initEngine();
-        initFEM();
-        initForceField();
-        initInteractionForceField();
-        initLinearSolver();
-        initMapping();
-        initMass();
-        initAnimationLoop();
-        initMisc();
-        initOdeSolver();
-        initTopology();
-        initVisualModel();
-        initLoader();
+        initComponentBase();
+        initComponentCommon();
+        initComponentGeneral();
+        initComponentAdvanced();
+        initComponentMisc();
 
         first = false;
     }

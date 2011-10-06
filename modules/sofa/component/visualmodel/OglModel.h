@@ -58,7 +58,7 @@ namespace visualmodel
  *
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API OglModel : public VisualModelImpl
+class SOFA_OPENGL_VISUAL_API OglModel : public VisualModelImpl
 {
 public:
     SOFA_CLASS(OglModel, VisualModelImpl);

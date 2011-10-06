@@ -22,7 +22,7 @@ using namespace core;
 
 
 template<class TDataTypes>
-class SOFA_COMPONENT_CONTROLLER_API MechanicalStateForceFeedback : public sofa::component::controller::ForceFeedback
+class SOFA_HAPTICS_API MechanicalStateForceFeedback : public sofa::component::controller::ForceFeedback
 {
 
 public:

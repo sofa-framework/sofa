@@ -157,10 +157,10 @@ public:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConicalForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConicalForceField<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API ConicalForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConicalForceField<defaulttype::Vec3fTypes>;
 #endif
 #endif
 

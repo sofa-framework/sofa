@@ -45,7 +45,7 @@ namespace component
 
 namespace collision
 {
-class SOFA_COMPONENT_COLLISION_API DiscreteIntersection : public core::collision::Intersection
+class SOFA_BASE_COLLISION_API DiscreteIntersection : public core::collision::Intersection
 {
 public:
     SOFA_CLASS(DiscreteIntersection,sofa::core::collision::Intersection);

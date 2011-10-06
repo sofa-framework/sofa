@@ -52,7 +52,7 @@ typedef container::DistanceGrid DistanceGrid;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-class SOFA_COMPONENT_COLLISION_API RigidDistanceGridCollisionModel;
+class SOFA_BASE_COLLISION_API RigidDistanceGridCollisionModel;
 
 class RigidDistanceGridCollisionElement : public core::TCollisionElementIterator<RigidDistanceGridCollisionModel>
 {
@@ -84,7 +84,7 @@ public:
     void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 };
 
-class SOFA_COMPONENT_COLLISION_API RigidDistanceGridCollisionModel : public core::CollisionModel
+class SOFA_BASE_COLLISION_API RigidDistanceGridCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(RigidDistanceGridCollisionModel,sofa::core::CollisionModel);
@@ -260,7 +260,7 @@ public:
     void setGrid(DistanceGrid* surf);
 };
 
-class SOFA_COMPONENT_COLLISION_API FFDDistanceGridCollisionModel : public core::CollisionModel
+class SOFA_BASE_COLLISION_API FFDDistanceGridCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(FFDDistanceGridCollisionModel,sofa::core::CollisionModel);

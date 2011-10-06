@@ -56,14 +56,14 @@ int FixedTranslationConstraintClass = core::RegisterObject("Attach given rigids 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Rigid3dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Rigid2dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Vec6dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Vec6dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Rigid3fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Rigid2fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Vec6fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Vec6fTypes>;
 #endif
 
 #ifndef SOFA_FLOAT

@@ -46,7 +46,7 @@ namespace visualmodel
  *
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API OglShaderMacro : public OglShaderElement
+class SOFA_OPENGL_VISUAL_API OglShaderMacro : public OglShaderElement
 {
 public:
     SOFA_CLASS(OglShaderMacro, OglShaderElement);
@@ -58,7 +58,7 @@ public:
 };
 
 
-class SOFA_COMPONENT_VISUALMODEL_API OglShaderDefineMacro : public OglShaderMacro
+class SOFA_OPENGL_VISUAL_API OglShaderDefineMacro : public OglShaderMacro
 {
 public:
     SOFA_CLASS(OglShaderDefineMacro, OglShaderMacro);

@@ -224,14 +224,14 @@ public:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec3dTypes>;
-//extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec2dTypes>;
-//extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec1dTypes>;
+extern template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<defaulttype::Vec3dTypes>;
+//extern template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<defaulttype::Vec2dTypes>;
+//extern template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<defaulttype::Vec1dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec3fTypes>;
-//extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec2fTypes>;
-//extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec1fTypes>;
+extern template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<defaulttype::Vec3fTypes>;
+//extern template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<defaulttype::Vec2fTypes>;
+//extern template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<defaulttype::Vec1fTypes>;
 #endif
 #endif
 

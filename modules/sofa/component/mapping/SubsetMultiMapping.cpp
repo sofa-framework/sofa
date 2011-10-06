@@ -28,10 +28,10 @@ int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the inpu
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
 #endif
 
 } // namespace mapping

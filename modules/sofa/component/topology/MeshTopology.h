@@ -50,7 +50,7 @@ using helper::vector;
 using helper::fixed_array;
 
 
-class SOFA_COMPONENT_CONTAINER_API MeshTopology : public core::topology::BaseMeshTopology
+class SOFA_BASE_TOPOLOGY_API MeshTopology : public core::topology::BaseMeshTopology
 {
 public:
     SOFA_CLASS(MeshTopology,core::topology::BaseMeshTopology);

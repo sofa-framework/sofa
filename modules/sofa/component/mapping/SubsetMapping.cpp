@@ -71,26 +71,26 @@ int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Vec1dTypes, Vec1dTypes >;
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Vec3dTypes, ExtVec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Rigid3dTypes, Rigid3dTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1dTypes, Vec1dTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, ExtVec3fTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Vec1fTypes, Vec1fTypes >;
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Vec3fTypes, ExtVec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Rigid3fTypes, Rigid3fTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1fTypes, Vec1fTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3fTypes, ExtVec3fTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Vec3fTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Vec1dTypes, Vec1fTypes >;
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Vec1fTypes, Vec1dTypes >;
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Rigid3dTypes, Rigid3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API SubsetMapping< Rigid3fTypes, Rigid3dTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3fTypes, Vec3dTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1dTypes, Vec1fTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1fTypes, Vec1dTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3dTypes, Rigid3fTypes >;
+template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3fTypes, Rigid3dTypes >;
 #endif
 #endif
 

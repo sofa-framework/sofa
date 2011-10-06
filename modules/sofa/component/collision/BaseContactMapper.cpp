@@ -39,10 +39,10 @@ namespace collision
 using namespace defaulttype;
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_COLLISION_API BaseContactMapper< defaulttype::Vec3fTypes>;
+template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Vec3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_COLLISION_API BaseContactMapper< defaulttype::Vec3dTypes>;
+template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Vec3dTypes>;
 #endif
 
 } // namespace collision
@@ -52,10 +52,10 @@ template class SOFA_COMPONENT_COLLISION_API BaseContactMapper< defaulttype::Vec3
 namespace helper
 {
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3fTypes>, core::CollisionModel* >;
+template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3fTypes>, core::CollisionModel* >;
 #endif
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3dTypes>, core::CollisionModel* >;
+template class SOFA_BASE_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3dTypes>, core::CollisionModel* >;
 #endif
 } // namespace helper
 

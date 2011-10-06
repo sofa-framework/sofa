@@ -48,7 +48,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class SOFA_COMPONENT_COLLISION_API Identifier
+class SOFA_CONSTRAINT_API Identifier
 {
 public:
     Identifier()

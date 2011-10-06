@@ -27,10 +27,10 @@ int JoinPointsClass = core::RegisterObject("?")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API JoinPoints<Vec3dTypes>;
+template class SOFA_ENGINE_API JoinPoints<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API JoinPoints<Vec3fTypes>;
+template class SOFA_ENGINE_API JoinPoints<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 } // namespace engine

@@ -184,20 +184,20 @@ protected:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec3dTypes>;
-//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec1dTypes>;
-//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec6dTypes>;
-extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Rigid2dTypes>;
+//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec3dTypes>;
+//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec2dTypes>;
+extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec1dTypes>;
+//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec6dTypes>;
+extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec3fTypes>;
-//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec1fTypes>;
-//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec6fTypes>;
-extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Rigid2fTypes>;
+//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec3fTypes>;
+//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec2fTypes>;
+extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec1fTypes>;
+//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Vec6fTypes>;
+extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_USER_INTERACTION_API MechanicalStateController<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

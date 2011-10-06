@@ -52,14 +52,14 @@ int TextureInterpolationClass = core::RegisterObject("Create texture coordinate 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API TextureInterpolation <Vec1dTypes>;
-template class SOFA_COMPONENT_ENGINE_API TextureInterpolation <Vec2dTypes>;
-template class SOFA_COMPONENT_ENGINE_API TextureInterpolation <Vec3dTypes>;
+template class SOFA_ENGINE_API TextureInterpolation <Vec1dTypes>;
+template class SOFA_ENGINE_API TextureInterpolation <Vec2dTypes>;
+template class SOFA_ENGINE_API TextureInterpolation <Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API TextureInterpolation <Vec1fTypes>;
-template class SOFA_COMPONENT_ENGINE_API TextureInterpolation <Vec2fTypes>;
-template class SOFA_COMPONENT_ENGINE_API TextureInterpolation <Vec3fTypes>;
+template class SOFA_ENGINE_API TextureInterpolation <Vec1fTypes>;
+template class SOFA_ENGINE_API TextureInterpolation <Vec2fTypes>;
+template class SOFA_ENGINE_API TextureInterpolation <Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 

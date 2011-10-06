@@ -51,10 +51,10 @@ int EdgePressureForceFieldClass = core::RegisterObject("EdgePressure")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API EdgePressureForceField<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API EdgePressureForceField<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<Vec3fTypes>;
 #endif
 
 } // namespace forcefield

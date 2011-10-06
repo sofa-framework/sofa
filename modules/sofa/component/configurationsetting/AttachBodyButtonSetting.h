@@ -38,7 +38,7 @@ namespace component
 namespace configurationsetting
 {
 
-class SOFA_COMPONENT_CONFIGURATIONSETTING_API AttachBodyButtonSetting: public MouseButtonSetting
+class SOFA_GRAPH_COMPONENT_API AttachBodyButtonSetting: public MouseButtonSetting
 {
 public:
     SOFA_CLASS(AttachBodyButtonSetting,MouseButtonSetting);
