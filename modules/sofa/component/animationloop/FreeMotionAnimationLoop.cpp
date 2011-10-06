@@ -92,6 +92,9 @@ void FreeMotionAnimationLoop::init()
 
 void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
 {
+    if (dt == 0)
+        dt = this->gnode->getDt();
+
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
     {
         AnimateBeginEvent ev ( dt );
@@ -100,24 +103,27 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     }
 
     double startTime = this->gnode->getTime();
-    double mechanicalDt = dt/numMechSteps.getValue();
-    AnimateVisitor act(params);
-    act.setDt ( mechanicalDt );
-    BehaviorUpdatePositionVisitor beh(params , this->gnode->getDt());
-    for( unsigned i=0; i<numMechSteps.getValue(); i++ )
-    {
-        this->gnode->execute ( beh );
+    double mechanicalDt = dt / numMechSteps.getValue();
 
+    simulation::common::VectorOperations vop(params, this->getContext());
+    simulation::common::MechanicalOperations mop(params, this->getContext());
+
+    MultiVecCoord pos(&vop, core::VecCoordId::position() );
+    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
+    MultiVecCoord freePos(&vop, core::VecCoordId::freePosition() );
+    MultiVecDeriv freeVel(&vop, core::VecDerivId::freeVelocity() );
+
+    // This solver will work in freePosition and freeVelocity vectors.
+    // We need to initialize them if it's not already done.
+    simulation::MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
+    simulation::MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(this->gnode);
+
+    BehaviorUpdatePositionVisitor beh(params , this->gnode->getDt());
+
+    for (unsigned i = 0; i < numMechSteps.getValue(); i++ )
+    {
         using helper::system::thread::CTime;
         using sofa::helper::AdvancedTimer;
-
-        simulation::common::VectorOperations vop(params, this->getContext());
-        simulation::common::MechanicalOperations mop(params, this->getContext());
-
-        MultiVecCoord pos(&vop, core::VecCoordId::position() );
-        MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-        MultiVecCoord freePos(&vop, core::VecCoordId::freePosition() );
-        MultiVecDeriv freeVel(&vop, core::VecDerivId::freeVelocity() );
 
         double time = 0.0;
         double timeTotal = 0.0;
@@ -129,20 +135,13 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
             timeTotal = (double) CTime::getTime();
         }
 
-        // This solver will work in freePosition and freeVelocity vectors.
-        // We need to initialize them if it's not already done.
-        simulation::MechanicalVInitVisitor<core::V_COORD>(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
-        simulation::MechanicalVInitVisitor<core::V_DERIV>(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(this->gnode);
-
         // Update the BehaviorModels
         // Required to allow the RayPickInteractor interaction
-
         if (f_printLog.getValue())
             serr << "updatePos called" << sendl;
 
         AdvancedTimer::stepBegin("UpdatePosition");
-        simulation::BehaviorUpdatePositionVisitor updatePos(params, dt);
-        this->gnode->execute(&updatePos);
+        this->gnode->execute(&beh);
         AdvancedTimer::stepEnd("UpdatePosition");
 
         if (f_printLog.getValue())
@@ -245,7 +244,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
         simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
         this->gnode->execute(&endVisitor);
 
-        this->gnode->setTime ( startTime + (i+1)* act.getDt() );
+        this->gnode->setTime ( startTime + (i+1) * dt );
         this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
         nbMechSteps.setValue(nbMechSteps.getValue() + 1);
     }

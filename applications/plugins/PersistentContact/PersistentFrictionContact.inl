@@ -533,7 +533,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
     // Update mappings
     if (use_mapper_for_state1)
     {
-        std::cout<<" Q pos comes from mapper"<<std::endl;
+        //	std::cout<<" Q pos comes from mapper"<<std::endl;
         this->mapper1.update();
         this->mapper1.updateXfree();
     }
@@ -545,7 +545,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
 
     if (use_mapper_for_state2)
     {
-        std::cout<<" P pos comes from mapper"<<std::endl;
+        //	std::cout<<" P pos comes from mapper"<<std::endl;
         if (!this->selfCollision)
             this->mapper2.update();
 
