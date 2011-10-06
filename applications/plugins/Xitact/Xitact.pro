@@ -7,12 +7,13 @@ TEMPLATE = lib
 
 ###### SPECIFIC PLUGIN CONFIGURATION, you should modify it to configure your plugin
 
-TARGET = Xitact
+TARGET = XitactPlugin
 DEFINES += SOFA_BUILD_XITACTPLUGIN
 
 LIBS += -lXiRobot
 
 HEADERS = \
+XiTrocarInterface.h \
 initXitact.h \
 PaceMaker.h \
 IHPDriver.h \

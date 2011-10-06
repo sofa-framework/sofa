@@ -52,8 +52,16 @@ extern "C" {
     SOFA_XITACTPLUGIN_API const char* getModuleVersion();
     SOFA_XITACTPLUGIN_API const char* getModuleDescription();
     SOFA_XITACTPLUGIN_API const char* getModuleComponentList();
+    SOFA_XITACTPLUGIN_API const char* getModuleLicense();
 }
 
+namespace controller
+{
+extern "C" {
+    SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData);
+
+}
+}
 } //component
 } //sofa
 
