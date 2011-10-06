@@ -119,7 +119,7 @@ protected:
 /**
  * @brief
  */
-class SOFA_COMPONENT_COLLISION_API LineLocalMinDistanceFilter : public LocalMinDistanceFilter
+class SOFA_BASE_COLLISION_API LineLocalMinDistanceFilter : public LocalMinDistanceFilter
 {
 public:
     SOFA_CLASS(LineLocalMinDistanceFilter,sofa::component::collision::LocalMinDistanceFilter);

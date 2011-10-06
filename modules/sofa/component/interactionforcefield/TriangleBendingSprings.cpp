@@ -66,12 +66,12 @@ int TriangleBendingSpringsClass = core::RegisterObject("Springs added to a train
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API TriangleBendingSprings<Vec3dTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API TriangleBendingSprings<Vec2dTypes>;
+template class SOFA_DEFORMABLE_API TriangleBendingSprings<Vec3dTypes>;
+template class SOFA_DEFORMABLE_API TriangleBendingSprings<Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API TriangleBendingSprings<Vec3fTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API TriangleBendingSprings<Vec2fTypes>;
+template class SOFA_DEFORMABLE_API TriangleBendingSprings<Vec3fTypes>;
+template class SOFA_DEFORMABLE_API TriangleBendingSprings<Vec2fTypes>;
 #endif
 } // namespace interactionforcefield
 

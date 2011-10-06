@@ -209,19 +209,19 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_INTERACTIONFORCEFIELD)
+#if defined(WIN32) && !defined(SOFA_BUILD_DEFORMABLE)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API SpringForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API SpringForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API SpringForceField<defaulttype::Vec1dTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API SpringForceField<defaulttype::Vec6dTypes>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2dTypes>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1dTypes>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API SpringForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API SpringForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API SpringForceField<defaulttype::Vec1fTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API SpringForceField<defaulttype::Vec6fTypes>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2fTypes>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1fTypes>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6fTypes>;
 #endif
 #endif
 

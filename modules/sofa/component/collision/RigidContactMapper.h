@@ -43,7 +43,6 @@
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/component/visualmodel/DrawV.h>
 #include <sofa/core/VecId.h>
 #include <iostream>
 
@@ -212,16 +211,16 @@ public:
 
 
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_COLLISION)
+#if defined(WIN32) && !defined(SOFA_BUILD_MESH_COLLISION)
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_COLLISION_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3fTypes>;
+extern template class SOFA_MESH_COLLISION_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_COLLISION_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3dTypes>;
+extern template class SOFA_MESH_COLLISION_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3dTypes>;
 #endif
 
-extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
 
 #endif
 

@@ -144,8 +144,8 @@ int SparseCholeskySolverClass = core::RegisterObject("Direct linear solver based
         .add< SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> > >()
         ;
 
-template class SOFA_COMPONENT_LINEARSOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
-template class SOFA_COMPONENT_LINEARSOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
+template class SOFA_SPARSE_SOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
+template class SOFA_SPARSE_SOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
 
 } // namespace linearsolver
 

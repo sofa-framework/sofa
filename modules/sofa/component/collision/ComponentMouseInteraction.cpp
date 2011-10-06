@@ -115,7 +115,7 @@ helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TCo
 }
 namespace helper
 {
-template class SOFA_COMPONENT_COLLISION_API helper::Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+template class SOFA_USER_INTERACTION_API helper::Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 }
 }
 #endif // SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP

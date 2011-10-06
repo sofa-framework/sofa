@@ -36,7 +36,7 @@
 #include <iostream>
 #include <set>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/misc/ParallelizeBuildMatrixEvent.h>
+#include <sofa/core/behavior/ParallelizeBuildMatrixEvent.h>
 
 namespace sofa
 {

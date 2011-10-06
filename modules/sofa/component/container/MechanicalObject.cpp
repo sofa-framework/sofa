@@ -74,27 +74,27 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec3dTypes>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec2dTypes>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec1dTypes>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec6dTypes>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid3dTypes>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid2dTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec3dTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec2dTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec1dTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec6dTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Rigid3dTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec3fTypes>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec2fTypes>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec1fTypes>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec6fTypes>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid3fTypes>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid2fTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec3fTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec2fTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec1fTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec6fTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Rigid3fTypes>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<Rigid2fTypes>;
 #endif
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<LaparoscopicRigid3Types>;
+template class SOFA_BASE_MECHANICS_API MechanicalObject<LaparoscopicRigid3Types>;
 
 
 
 #ifndef SOFA_FLOAT
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q)
 {
     helper::WriteAccessor< Data<VecCoord> > x = *this->write(core::VecCoordId::position());
@@ -106,7 +106,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
     }
 }
 
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
 {
 
@@ -166,7 +166,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize
 
 }
 
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
@@ -227,7 +227,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core
 // }
 
 
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
@@ -301,7 +301,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
 #endif
 
 #ifndef SOFA_DOUBLE
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q)
 {
     helper::WriteAccessor< Data<VecCoord> > x = *this->write(core::VecCoordId::position());
@@ -314,7 +314,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
 }
 
 
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
 {
     if (dest.type == sofa::core::V_COORD)
@@ -372,7 +372,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize
 
 }
 
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
@@ -433,7 +433,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core
 //     return false; // ignore 1D DOFs for 3D bbox
 // }
 
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;
@@ -506,7 +506,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 
 #endif
 
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams)
 {
     Mat<4,4, GLfloat> modelviewM;

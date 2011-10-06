@@ -51,12 +51,12 @@ int SubsetTopologyClass = core::RegisterObject("Engine used to create subset top
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API SubsetTopology<Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API SubsetTopology<Rigid3dTypes>;
+template class SOFA_ENGINE_API SubsetTopology<Vec3dTypes>;
+template class SOFA_ENGINE_API SubsetTopology<Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API SubsetTopology<Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API SubsetTopology<Rigid3fTypes>;
+template class SOFA_ENGINE_API SubsetTopology<Vec3fTypes>;
+template class SOFA_ENGINE_API SubsetTopology<Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 

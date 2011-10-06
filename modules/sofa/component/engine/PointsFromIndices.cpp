@@ -51,12 +51,12 @@ int PointsFromIndicesClass = core::RegisterObject("Find the points given a list 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Vec3dTypes>;
-// template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Rigid3dTypes>;
+template class SOFA_ENGINE_API PointsFromIndices<Vec3dTypes>;
+// template class SOFA_ENGINE_API PointsFromIndices<Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Vec3fTypes>;
-// template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Rigid3fTypes>;
+template class SOFA_ENGINE_API PointsFromIndices<Vec3fTypes>;
+// template class SOFA_ENGINE_API PointsFromIndices<Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 

@@ -46,7 +46,7 @@ namespace constraintset
 using namespace sofa::defaulttype;
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init()
+SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init()
 {
     Inherit::init();
 
@@ -108,7 +108,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
+SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
 
@@ -191,7 +191,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 }
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix *m) const
+SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix *m) const
 {
     const VecReal &comp = compliance.getValue();
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
@@ -242,7 +242,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::computeDx(const Data< VecDeriv > &f_d)
+SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::computeDx(const Data< VecDeriv > &f_d)
 {
     const VecDeriv& f = f_d.getValue();
 
@@ -266,7 +266,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::applyContactForce(const defaulttype::BaseVector *f)
+SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::applyContactForce(const defaulttype::BaseVector *f)
 {
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
     VecDeriv& force = forceData.wref();
@@ -340,7 +340,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * df, int begin, int end, bool update)
+SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * df, int begin, int end, bool update)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
     const VecReal usedComp = compliance.getValue();
@@ -385,7 +385,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
 ///////////////////// ATTENTION : passer un indice début - fin (comme pour force et déplacement) pour calculer le block complet
 ///////////////////// et pas uniquement la diagonale.
 template<>
-SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
+SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
     const VecReal usedComp = compliance.getValue();
@@ -470,14 +470,14 @@ int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computi
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec1dTypes >;
-template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec3dTypes >;
-template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Rigid3dTypes >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1dTypes >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec3dTypes >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec1fTypes >;
-template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Vec3fTypes >;
-template class SOFA_COMPONENT_CONSTRAINTSET_API UncoupledConstraintCorrection< Rigid3fTypes >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1fTypes >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec3fTypes >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3fTypes >;
 #endif
 
 } // namespace constraintset

@@ -111,7 +111,7 @@ protected:
 /**
  * @brief
  */
-class SOFA_COMPONENT_COLLISION_API PointLocalMinDistanceFilter : public LocalMinDistanceFilter
+class SOFA_BASE_COLLISION_API PointLocalMinDistanceFilter : public LocalMinDistanceFilter
 {
 public:
     SOFA_CLASS(PointLocalMinDistanceFilter,LocalMinDistanceFilter);

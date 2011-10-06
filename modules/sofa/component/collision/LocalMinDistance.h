@@ -46,7 +46,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API LocalMinDistance : public DiscreteIntersection
+class SOFA_CONSTRAINT_API LocalMinDistance : public DiscreteIntersection
 {
 public:
     SOFA_CLASS(LocalMinDistance,DiscreteIntersection);

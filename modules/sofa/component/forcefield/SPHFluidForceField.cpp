@@ -56,12 +56,12 @@ int SPHFluidForceFieldClass = core::RegisterObject("Smooth Particle Hydrodynamic
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec3dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec2dTypes>;
+template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3dTypes>;
+template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec3fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec2fTypes>;
+template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec3fTypes>;
+template class SOFA_SPH_FLUID_API SPHFluidForceField<Vec2fTypes>;
 #endif
 
 

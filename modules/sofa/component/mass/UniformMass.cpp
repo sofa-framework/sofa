@@ -76,7 +76,7 @@ Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 
 
 #ifndef SOFA_FLOAT
-template<> SOFA_COMPONENT_MASS_API
+template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
 {
     if (this->totalMass.getValue()>0 && this->mstate!=NULL)
@@ -94,7 +94,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
     this->mass.endEdit();
 }
 
-template<> SOFA_COMPONENT_MASS_API
+template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
 {
 //  this->totalMass.setDisplayed(false);
@@ -205,7 +205,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
 }
 
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
@@ -261,7 +261,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPara
 
 
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
@@ -281,7 +281,7 @@ void UniformMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualPara
     }
 }
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const
 {
     double e = 0;
@@ -296,7 +296,7 @@ double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const core::Me
 }
 
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const
 {
     double e = 0;
@@ -312,7 +312,7 @@ double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const core::Me
 
 
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
@@ -346,7 +346,7 @@ void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vpa
     glEnd();
 }
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, double mFact, unsigned int& offset)
 {
     unsigned int derivDim = Deriv::size();
@@ -369,7 +369,7 @@ void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *re
 #endif
 
 #ifndef SOFA_DOUBLE
-template<> SOFA_COMPONENT_MASS_API
+template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
 {
     if (this->totalMass.getValue()>0 && this->mstate!=NULL)
@@ -387,7 +387,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
     this->mass.endEdit();
 }
 
-template<> SOFA_COMPONENT_MASS_API
+template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
 {
     this->totalMass.setDisplayed(false);
@@ -499,7 +499,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
 }
 
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
@@ -543,7 +543,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualPara
     }
 }
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
@@ -563,7 +563,7 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualPara
     }
 }
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx ) const
 {
     double e = 0;
@@ -577,7 +577,7 @@ double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const core::Me
     return e;
 }
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx) const
 {
     double e = 0;
@@ -593,7 +593,7 @@ double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const core::Me
 
 
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
@@ -628,7 +628,7 @@ void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* vpar
 }
 
 
-template <> SOFA_COMPONENT_MASS_API
+template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Vec3fTypes, float>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, SReal mFact, unsigned int& offset)
 {
     unsigned int derivDim = Deriv::size();
@@ -675,20 +675,20 @@ int UniformMassClass = core::RegisterObject("Define the same mass for all the pa
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MASS_API UniformMass<Vec3dTypes,double>;
-template class SOFA_COMPONENT_MASS_API UniformMass<Vec2dTypes,double>;
-template class SOFA_COMPONENT_MASS_API UniformMass<Vec1dTypes,double>;
-template class SOFA_COMPONENT_MASS_API UniformMass<Vec6dTypes,double>;
-template class SOFA_COMPONENT_MASS_API UniformMass<Rigid3dTypes,Rigid3dMass>;
-template class SOFA_COMPONENT_MASS_API UniformMass<Rigid2dTypes,Rigid2dMass>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec3dTypes,double>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec2dTypes,double>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec1dTypes,double>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec6dTypes,double>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Rigid3dTypes,Rigid3dMass>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Rigid2dTypes,Rigid2dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MASS_API UniformMass<Vec3fTypes,float>;
-template class SOFA_COMPONENT_MASS_API UniformMass<Vec2fTypes,float>;
-template class SOFA_COMPONENT_MASS_API UniformMass<Vec1fTypes,float>;
-template class SOFA_COMPONENT_MASS_API UniformMass<Vec6fTypes,float>;
-template class SOFA_COMPONENT_MASS_API UniformMass<Rigid3fTypes,Rigid3fMass>;
-template class SOFA_COMPONENT_MASS_API UniformMass<Rigid2fTypes,Rigid2fMass>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec3fTypes,float>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec2fTypes,float>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec1fTypes,float>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec6fTypes,float>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Rigid3fTypes,Rigid3fMass>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Rigid2fTypes,Rigid2fMass>;
 #endif
 
 } // namespace mass

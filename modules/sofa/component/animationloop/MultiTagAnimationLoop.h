@@ -40,7 +40,7 @@ namespace animationloop
 
 /** Simple master solver that given a list of tags, animate the graph one tag after another.
 */
-class SOFA_COMPONENT_ANIMATIONLOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+class SOFA_BASE_MASTER_SOLVER_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;

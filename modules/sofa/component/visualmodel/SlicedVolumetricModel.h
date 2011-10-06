@@ -52,7 +52,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_COMPONENT_VISUALMODEL_API SlicedVolumetricModel : public core::visual::VisualModel
+class SOFA_OPENGL_VISUAL_API SlicedVolumetricModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(SlicedVolumetricModel, core::visual::VisualModel);

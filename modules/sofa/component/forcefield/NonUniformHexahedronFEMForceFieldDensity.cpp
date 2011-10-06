@@ -54,10 +54,10 @@ int NonUniformHexahedronFEMForceFieldDensityClass = core::RegisterObject("Non un
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API NonUniformHexahedronFEMForceFieldDensity<Vec3dTypes>;
+template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceFieldDensity<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API NonUniformHexahedronFEMForceFieldDensity<Vec3fTypes>;
+template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceFieldDensity<Vec3fTypes>;
 #endif
 
 } // namespace forcefield

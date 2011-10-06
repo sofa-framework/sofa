@@ -344,10 +344,10 @@ defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphSc
 #endif
 
 // Force template instantiation
-template class SOFA_COMPONENT_LINEARSOLVER_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
+template class SOFA_BASE_LINEAR_SOLVER_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
 
 #ifdef SOFA_SMP
-template class SOFA_COMPONENT_LINEARSOLVER_API MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>;
+template class SOFA_BASE_LINEAR_SOLVER_API MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>;
 #endif
 
 } // namespace linearsolver

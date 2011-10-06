@@ -71,10 +71,10 @@ public:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)
 #pragma warning(disable : 4231)
-template class SOFA_COMPONENT_ENGINE_API MergeSets<int>;
-template class SOFA_COMPONENT_ENGINE_API MergeSets<unsigned int>;
-//template class SOFA_COMPONENT_ENGINE_API MergeSets<long long>;
-//template class SOFA_COMPONENT_ENGINE_API MergeSets<unsigned long long>;
+template class SOFA_ENGINE_API MergeSets<int>;
+template class SOFA_ENGINE_API MergeSets<unsigned int>;
+//template class SOFA_ENGINE_API MergeSets<long long>;
+//template class SOFA_ENGINE_API MergeSets<unsigned long long>;
 #endif
 
 } // namespace engine

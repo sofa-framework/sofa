@@ -68,7 +68,7 @@ protected:
 };
 
 
-class SOFA_COMPONENT_CONSTRAINTSET_API ConstraintSolverImpl : public sofa::core::behavior::ConstraintSolver
+class SOFA_CONSTRAINT_API ConstraintSolverImpl : public sofa::core::behavior::ConstraintSolver
 {
 public:
     virtual ConstraintProblem* getConstraintProblem() = 0;

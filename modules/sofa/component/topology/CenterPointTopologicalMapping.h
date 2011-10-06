@@ -52,7 +52,7 @@ using namespace sofa::core;
  *
 */
 
-class SOFA_COMPONENT_TOPOLOGY_API CenterPointTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API CenterPointTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(CenterPointTopologicalMapping,TopologicalMapping);

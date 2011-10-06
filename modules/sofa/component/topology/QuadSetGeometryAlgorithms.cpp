@@ -57,15 +57,15 @@ int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry alg
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec2dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec1dTypes>;
+template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
+template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec2dTypes>;
+template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec2fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec1fTypes>;
+template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
+template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec2fTypes>;
+template class SOFA_BASE_TOPOLOGY_API QuadSetGeometryAlgorithms<Vec1fTypes>;
 #endif
 
 } // namespace topology

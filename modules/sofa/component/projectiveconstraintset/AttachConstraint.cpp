@@ -60,22 +60,22 @@ int AttachConstraintClass = core::RegisterObject("Attach given pair of particles
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Vec3dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Vec2dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Vec1dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Rigid3dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Rigid2dTypes>;
+template class SOFA_OBJECT_INTERACTION_API AttachConstraint<Vec3dTypes>;
+template class SOFA_OBJECT_INTERACTION_API AttachConstraint<Vec2dTypes>;
+template class SOFA_OBJECT_INTERACTION_API AttachConstraint<Vec1dTypes>;
+template class SOFA_OBJECT_INTERACTION_API AttachConstraint<Rigid3dTypes>;
+template class SOFA_OBJECT_INTERACTION_API AttachConstraint<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Vec3fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Vec2fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Vec1fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Rigid3fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Rigid2fTypes>;
+template class SOFA_OBJECT_INTERACTION_API AttachConstraint<Vec3fTypes>;
+template class SOFA_OBJECT_INTERACTION_API AttachConstraint<Vec2fTypes>;
+template class SOFA_OBJECT_INTERACTION_API AttachConstraint<Vec1fTypes>;
+template class SOFA_OBJECT_INTERACTION_API AttachConstraint<Rigid3fTypes>;
+template class SOFA_OBJECT_INTERACTION_API AttachConstraint<Rigid2fTypes>;
 #endif
 
 #ifndef SOFA_FLOAT
-template <> SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API
+template <> SOFA_OBJECT_INTERACTION_API
 void AttachConstraint<Rigid3dTypes>::calcRestRotations()
 {
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();

@@ -118,7 +118,7 @@ private:
     VecConstArea& _areas;
 };
 
-class SOFA_COMPONENT_CONSTRAINTSET_API LCPConstraintSolver : public ConstraintSolverImpl
+class SOFA_CONSTRAINT_API LCPConstraintSolver : public ConstraintSolverImpl
 {
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef std::vector<list_cc> VecListcc;

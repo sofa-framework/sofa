@@ -130,10 +130,10 @@ private:
 #pragma warning(disable : 4231)
 #pragma warning(disable : 4244)
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API MeshBarycentricMapperEngine<defaulttype::Vec3dTypes>;
+template class SOFA_ENGINE_API MeshBarycentricMapperEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API MeshBarycentricMapperEngine<defaulttype::Vec3fTypes>;
+template class SOFA_ENGINE_API MeshBarycentricMapperEngine<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

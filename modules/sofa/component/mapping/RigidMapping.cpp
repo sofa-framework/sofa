@@ -63,23 +63,23 @@ int RigidMappingClass = core::RegisterObject("Set the positions and velocities o
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid2dTypes, Vec2dTypes >;
-template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3dTypes, ExtVec3fTypes >;
+template class SOFA_RIGID_API RigidMapping< Rigid3dTypes, Vec3dTypes >;
+template class SOFA_RIGID_API RigidMapping< Rigid2dTypes, Vec2dTypes >;
+template class SOFA_RIGID_API RigidMapping< Rigid3dTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3fTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid2fTypes, Vec2fTypes >;
-template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3fTypes, ExtVec3fTypes >;
+template class SOFA_RIGID_API RigidMapping< Rigid3fTypes, Vec3fTypes >;
+template class SOFA_RIGID_API RigidMapping< Rigid2fTypes, Vec2fTypes >;
+template class SOFA_RIGID_API RigidMapping< Rigid3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3dTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3fTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid2dTypes, Vec2fTypes >;
-template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid2fTypes, Vec2dTypes >;
+template class SOFA_RIGID_API RigidMapping< Rigid3dTypes, Vec3fTypes >;
+template class SOFA_RIGID_API RigidMapping< Rigid3fTypes, Vec3dTypes >;
+template class SOFA_RIGID_API RigidMapping< Rigid2dTypes, Vec2fTypes >;
+template class SOFA_RIGID_API RigidMapping< Rigid2fTypes, Vec2dTypes >;
 #endif
 #endif
 

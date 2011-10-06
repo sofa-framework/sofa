@@ -44,7 +44,7 @@ namespace topology
 Build a SparseGridTopology for several given Triangular meshes.
 A stiffness coefficient has to be assigned for each mesh. The last found stiffness coefficient is used for an element shared by several meshes => The mesh ordering is important, and so, more specific stiffness informations must appear in last.
 */
-class SOFA_COMPONENT_CONTAINER_API SparseGridMultipleTopology : public SparseGridRamificationTopology
+class SOFA_NON_UNIFORM_FEM_API SparseGridMultipleTopology : public SparseGridRamificationTopology
 {
 public :
     SOFA_CLASS(SparseGridMultipleTopology,SparseGridRamificationTopology);

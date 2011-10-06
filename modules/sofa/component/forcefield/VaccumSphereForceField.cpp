@@ -55,14 +55,14 @@ int VaccumSphereForceFieldClass = core::RegisterObject("Repulsion applied by a s
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec3dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec2dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec1dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec1dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec3fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec2fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec1fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API VaccumSphereForceField<Vec1fTypes>;
 #endif
 
 } // namespace forcefield

@@ -22,8 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/linearsolver/initLinearSolver.h>
+#ifndef SOFA_COMPONENT_MISC_PARALLELIZEBUILDMATRIXEVENT_H
+#define SOFA_COMPONENT_MISC_PARALLELIZEBUILDMATRIXEVENT_H
+
+#include <sofa/core/objectmodel/Event.h>
 
 namespace sofa
 {
@@ -31,30 +33,28 @@ namespace sofa
 namespace component
 {
 
-
-void initLinearSolver()
+namespace misc
 {
-    static bool first = true;
-    if (first)
-    {
-//         sout << "Sofa components initialized."<<sendl;
 
-        //std::ofstream ofile("sofa-classes.html");
-        //ofile << "<html><body>\n";
-        //sofa::core::ObjectFactory::getInstance()->dumpHTML(ofile);
-        //ofile << "</body></html>\n";
-        first = false;
-    }
-}
+using namespace sofa::defaulttype;
+
+class ParallelizeBuildMatrixEvent : public sofa::core::objectmodel::Event
+{
+public:
+
+    ParallelizeBuildMatrixEvent() {}
+
+    virtual ~ParallelizeBuildMatrixEvent() {}
+
+    virtual const char* getClassName() const { return "ParallelizeBuildMatrixEvent"; }
+};
+
+
+} // namespace misc
 
 } // namespace component
 
 } // namespace sofa
 
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(BTDLinearSolver)
-SOFA_LINK_CLASS(CGLinearSolver)
-SOFA_LINK_CLASS(LULinearSolver)
-#ifdef SOFA_DEV
+#endif
 
-#endif // SOFA_DEV

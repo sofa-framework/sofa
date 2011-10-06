@@ -171,17 +171,17 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_INTERACTIONFORCEFIELD)
+#if defined(WIN32) && !defined(SOFA_BUILD_DEFORMABLE)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API MeshSpringForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API MeshSpringForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API MeshSpringForceField<defaulttype::Vec1dTypes>;
+extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec2dTypes>;
+extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec1dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API MeshSpringForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API MeshSpringForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API MeshSpringForceField<defaulttype::Vec1fTypes>;
+extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec2fTypes>;
+extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec1fTypes>;
 #endif
 #endif
 

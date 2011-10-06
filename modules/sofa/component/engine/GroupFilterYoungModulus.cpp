@@ -50,10 +50,10 @@ int GroupFilterYoungModulusClass = core::RegisterObject("This class gives a vect
         ;
 /*
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API GroupFilterYoungModulus<Vec3dTypes>;
+template class SOFA_ENGINE_API GroupFilterYoungModulus<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API GroupFilterYoungModulus<Vec3fTypes>;
+template class SOFA_ENGINE_API GroupFilterYoungModulus<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 */
 

@@ -33,7 +33,7 @@
 
 #include <sofa/component/topology/SparseGridTopology.h>
 
-#include <sofa/component/container/VoxelGridLoader.h>
+#include <sofa/core/loader/VoxelGridLoader.h>
 
 #include <sofa/component/visualmodel/SlicedVolumetricModel.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -98,7 +98,7 @@ void SlicedVolumetricModel::init()
 
     VisualModel::init();
 
-    container::VoxelGridLoader *loader;
+    core::loader::VoxelGridLoader *loader;
     getContext()->get(loader);
     if(loader)
     {

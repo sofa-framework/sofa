@@ -51,10 +51,10 @@ int Vertex2FrameClass = core::RegisterObject("")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API Vertex2Frame<Rigid3dTypes>;
+template class SOFA_ENGINE_API Vertex2Frame<Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API Vertex2Frame<Rigid3fTypes>;
+template class SOFA_ENGINE_API Vertex2Frame<Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 

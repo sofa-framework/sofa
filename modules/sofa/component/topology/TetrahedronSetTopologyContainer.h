@@ -59,7 +59,7 @@ typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
 typedef sofa::helper::vector<TetraID>         VecTetraID;
 
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
-class SOFA_COMPONENT_CONTAINER_API TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
+class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
 {
     friend class TetrahedronSetTopologyModifier;
 

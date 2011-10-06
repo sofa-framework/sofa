@@ -39,7 +39,7 @@ namespace topology
 using namespace sofa::defaulttype;
 
 /// a SparseGridTopology where each resulting cube contains only one independant connexe component (nodes can be multiplied by using virtual nodes)
-class SOFA_COMPONENT_CONTAINER_API SparseGridRamificationTopology : public SparseGridTopology
+class SOFA_NON_UNIFORM_FEM_API SparseGridRamificationTopology : public SparseGridTopology
 {
 public:
     SOFA_CLASS(SparseGridRamificationTopology,SparseGridTopology);

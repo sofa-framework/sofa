@@ -45,7 +45,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class SOFA_COMPONENT_COLLISION_API BruteForceDetection :
+class SOFA_BASE_COLLISION_API BruteForceDetection :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {

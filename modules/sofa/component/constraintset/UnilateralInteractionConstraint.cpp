@@ -53,10 +53,10 @@ int UnilateralInteractionConstraintClass = core::RegisterObject("TODO-Unilateral
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<Vec3dTypes>;
+template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<Vec3fTypes>;
+template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<Vec3fTypes>;
 #endif
 
 

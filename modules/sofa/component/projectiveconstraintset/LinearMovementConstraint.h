@@ -171,18 +171,18 @@ private:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<defaulttype::Vec1dTypes>;
-//extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<defaulttype::Vec6dTypes>;
-extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<defaulttype::Rigid3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1dTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<defaulttype::Vec1fTypes>;
-//extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<defaulttype::Vec6fTypes>;
-extern template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<defaulttype::Rigid3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1fTypes>;
+//extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 

@@ -53,7 +53,7 @@ typedef sofa::helper::vector<TriangleID>                  VecTriangleID;
 /*! \class TriangleSetTopologyContainer
 \brief: Object that stores a set of triangles and provides access
 to each triangle and its edges and vertices */
-class SOFA_COMPONENT_CONTAINER_API TriangleSetTopologyContainer : public EdgeSetTopologyContainer
+class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyContainer : public EdgeSetTopologyContainer
 {
     friend class TriangleSetTopologyModifier;
 

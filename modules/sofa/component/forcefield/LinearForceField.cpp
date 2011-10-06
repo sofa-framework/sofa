@@ -59,20 +59,20 @@ int LinearForceFieldClass = core::RegisterObject("Linearly interpolated force ap
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec3dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec2dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec1dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec6dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid3dTypes>;
-// template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec1dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec6dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3dTypes>;
+// template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec3fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec2fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec1fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec6fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid3fTypes>;
-// template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec1fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec6fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3fTypes>;
+// template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2fTypes>;
 #endif
 
 #ifndef SOFA_FLOAT

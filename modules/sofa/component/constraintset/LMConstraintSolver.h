@@ -48,7 +48,7 @@ namespace constraintset
 using core::behavior::BaseLMConstraint;
 using core::behavior::ConstraintGroup;
 
-class SOFA_COMPONENT_CONSTRAINTSET_API LMConstraintSolver : public sofa::core::behavior::ConstraintSolver
+class SOFA_CONSTRAINT_API LMConstraintSolver : public sofa::core::behavior::ConstraintSolver
 {
 protected:
     typedef sofa::core::VecId VecId;

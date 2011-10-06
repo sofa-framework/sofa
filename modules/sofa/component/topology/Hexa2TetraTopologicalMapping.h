@@ -60,7 +60,7 @@ using namespace sofa::core;
 *
 */
 
-class SOFA_COMPONENT_CONTAINER_API Hexa2TetraTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Hexa2TetraTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(Hexa2TetraTopologicalMapping,TopologicalMapping);

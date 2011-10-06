@@ -53,10 +53,10 @@ int QuadularBendingSpringsClass = core::RegisterObject("Springs added to a quad 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API QuadularBendingSprings<Vec3dTypes>;
+template class SOFA_DEFORMABLE_API QuadularBendingSprings<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API QuadularBendingSprings<Vec3fTypes>;
+template class SOFA_DEFORMABLE_API QuadularBendingSprings<Vec3fTypes>;
 #endif
 
 } // namespace forcefield

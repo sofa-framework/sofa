@@ -46,7 +46,7 @@ template <class DataTypes>
 class MouseInteractor;
 
 
-class SOFA_COMPONENT_COLLISION_API InteractionPerformer
+class SOFA_USER_INTERACTION_API InteractionPerformer
 {
 public:
     typedef helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*> InteractionPerformerFactory;
@@ -90,7 +90,7 @@ public:
 };
 #if defined WIN32 && !defined(SOFA_COMPONENT_COLLISION_INTERACTIONPERFOMER_CPP)
 //delay load of the specialized Factory class. unique definition reside in the cpp file.
-extern template class SOFA_COMPONENT_COLLISION_API helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*>;
+extern template class SOFA_USER_INTERACTION_API helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*>;
 #endif
 
 }

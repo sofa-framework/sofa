@@ -46,12 +46,12 @@ namespace collision
 {
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_COLLISION_API  AttachBodyPerformer<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_COLLISION_API  AttachBodyPerformer<defaulttype::Rigid3fTypes>;
+template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3fTypes>;
+template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_COLLISION_API  AttachBodyPerformer<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_COLLISION_API  AttachBodyPerformer<defaulttype::Rigid3dTypes>;
+template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3dTypes>;
+template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3dTypes>;
 #endif
 
 

@@ -47,7 +47,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_COMPONENT_VISUALMODEL_API PostProcessManager : public core::visual::VisualManager
+class SOFA_OPENGL_VISUAL_API PostProcessManager : public core::visual::VisualManager
 {
 public:
     SOFA_CLASS(PostProcessManager,core::visual::VisualModel);

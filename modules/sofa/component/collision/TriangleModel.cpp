@@ -52,10 +52,10 @@ int TriangleModelClass = core::RegisterObject("collision model using a triangula
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_COLLISION_API TTriangleModel<defaulttype::Vec3dTypes>;
+template class SOFA_BASE_COLLISION_API TTriangleModel<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_COLLISION_API TTriangleModel<defaulttype::Vec3fTypes>;
+template class SOFA_BASE_COLLISION_API TTriangleModel<defaulttype::Vec3fTypes>;
 #endif
 
 } // namespace collision

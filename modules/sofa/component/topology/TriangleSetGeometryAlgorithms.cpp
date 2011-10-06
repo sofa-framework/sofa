@@ -58,19 +58,19 @@ int TriangleSetGeometryAlgorithmsClass = core::RegisterObject("Triangle set geom
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1dTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2dTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1fTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2fTypes>;
+template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1fTypes>;
 #endif
 
 
-void SOFA_COMPONENT_TOPOLOGY_API snapping_test_triangle(double epsilon, double alpha0, double alpha1, double alpha2,
+void SOFA_BASE_TOPOLOGY_API snapping_test_triangle(double epsilon, double alpha0, double alpha1, double alpha2,
         bool& is_snap_0, bool& is_snap_1, bool& is_snap_2)
 {
     is_snap_0=false;
@@ -94,7 +94,7 @@ void SOFA_COMPONENT_TOPOLOGY_API snapping_test_triangle(double epsilon, double a
     }
 }
 
-void SOFA_COMPONENT_TOPOLOGY_API snapping_test_edge(double epsilon,	double alpha0, double alpha1,
+void SOFA_BASE_TOPOLOGY_API snapping_test_edge(double epsilon,	double alpha0, double alpha1,
         bool& is_snap_0, bool& is_snap_1)
 {
     is_snap_0=false;

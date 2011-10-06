@@ -43,7 +43,7 @@ namespace misc
 
 /** Compare State vectors from file at each timestep
 */
-class SOFA_COMPONENT_MISC_API CompareState: public ReadState
+class SOFA_VALIDATION_API CompareState: public ReadState
 {
 public:
     SOFA_CLASS(CompareState,ReadState);
@@ -83,7 +83,7 @@ protected :
 };
 
 /// Create CompareState component in the graph each time needed
-class SOFA_COMPONENT_MISC_API CompareStateCreator: public Visitor
+class SOFA_VALIDATION_API CompareStateCreator: public Visitor
 {
 public:
     CompareStateCreator(const core::ExecParams* params);
@@ -105,7 +105,7 @@ protected:
     int counterCompareState; //avoid to have two same files if two mechanical objects has the same name
 };
 
-class SOFA_COMPONENT_MISC_API CompareStateResult: public Visitor
+class SOFA_VALIDATION_API CompareStateResult: public Visitor
 {
 public:
     CompareStateResult(const core::ExecParams* params) : Visitor(params)

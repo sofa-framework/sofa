@@ -117,10 +117,10 @@ protected:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3dTypes>;
+template class SOFA_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3fTypes>;
+template class SOFA_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

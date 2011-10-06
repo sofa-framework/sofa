@@ -371,10 +371,10 @@ protected:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_CONTAINER_API SpatialGrid< SpatialGridTypes< Vec3dTypes > >;
+extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3dTypes > >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_CONTAINER_API SpatialGrid< SpatialGridTypes< Vec3fTypes > >;
+extern template class SOFA_SPH_FLUID_API SpatialGrid< SpatialGridTypes< Vec3fTypes > >;
 #endif
 #endif
 

@@ -50,14 +50,14 @@ int LinearSolverContactCorrectionClass = core::RegisterObject("")
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec3dTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec1dTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Rigid3dTypes>;
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3dTypes>;
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1dTypes>;
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec3fTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Vec1fTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API LinearSolverConstraintCorrection<Rigid3fTypes>;
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3fTypes>;
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1fTypes>;
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Rigid3fTypes>;
 #endif
 
 

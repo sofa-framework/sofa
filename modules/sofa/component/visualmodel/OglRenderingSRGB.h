@@ -54,7 +54,7 @@ namespace visualmodel
  *  \brief The utility to enable/disable sRGB rendering
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API OglRenderingSRGB : public core::visual::VisualManager
+class SOFA_OPENGL_VISUAL_API OglRenderingSRGB : public core::visual::VisualManager
 {
 public:
     SOFA_CLASS(OglRenderingSRGB, core::visual::VisualManager);

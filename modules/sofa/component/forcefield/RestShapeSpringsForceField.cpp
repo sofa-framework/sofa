@@ -363,20 +363,20 @@ int RestShapeSpringsForceFieldClass = core::RegisterObject("Simple elastic sprin
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec3dTypes>;
-//template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec2dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec1dTypes>;
-//template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec6dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Rigid3dTypes>;
-//template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Rigid2dTypes>;
+template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec3dTypes>;
+//template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec2dTypes>;
+template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec1dTypes>;
+//template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec6dTypes>;
+template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid3dTypes>;
+//template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec3fTypes>;
-//template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec2fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec1fTypes>;
-//template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec6fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Rigid3fTypes>;
-//template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Rigid2fTypes>;
+template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec3fTypes>;
+//template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec2fTypes>;
+template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec1fTypes>;
+//template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec6fTypes>;
+template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid3fTypes>;
+//template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid2fTypes>;
 #endif
 
 } // namespace forcefield

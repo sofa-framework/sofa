@@ -60,7 +60,7 @@ namespace misc
  * Stop to write infos if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class SOFA_COMPONENT_MISC_API WriteTopology: public core::objectmodel::BaseObject
+class SOFA_EXPORTER_API WriteTopology: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(WriteTopology,core::objectmodel::BaseObject);
@@ -114,7 +114,7 @@ public:
 
 
 ///Create WriteTopology component in the graph each time needed
-class SOFA_COMPONENT_MISC_API WriteTopologyCreator: public Visitor
+class SOFA_EXPORTER_API WriteTopologyCreator: public Visitor
 {
 public:
     WriteTopologyCreator(const core::ExecParams* params);
@@ -141,7 +141,7 @@ protected:
 
 
 
-class SOFA_COMPONENT_MISC_API WriteTopologyActivator: public simulation::Visitor
+class SOFA_EXPORTER_API WriteTopologyActivator: public simulation::Visitor
 {
 public:
     WriteTopologyActivator( const core::ExecParams* params /* PARAMS FIRST */, bool active) : Visitor(params), state(active) {}

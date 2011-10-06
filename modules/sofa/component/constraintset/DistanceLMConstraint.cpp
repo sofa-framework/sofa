@@ -58,12 +58,12 @@ int DistanceLMConstraintClass = core::RegisterObject("Maintain constant the leng
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINTSET_API DistanceLMConstraint<Vec3dTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API DistanceLMConstraint<Rigid3dTypes>;
+template class SOFA_CONSTRAINT_API DistanceLMConstraint<Vec3dTypes>;
+template class SOFA_CONSTRAINT_API DistanceLMConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINTSET_API DistanceLMConstraint<Vec3fTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API DistanceLMConstraint<Rigid3fTypes>;
+template class SOFA_CONSTRAINT_API DistanceLMConstraint<Vec3fTypes>;
+template class SOFA_CONSTRAINT_API DistanceLMConstraint<Rigid3fTypes>;
 #endif
 
 

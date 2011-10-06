@@ -55,10 +55,10 @@ int TetrahedronFEMForceFieldClass = core::RegisterObject("Tetrahedral finite ele
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API TetrahedronFEMForceField<Vec3dTypes>;
+template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API TetrahedronFEMForceField<Vec3fTypes>;
+template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<Vec3fTypes>;
 #endif
 
 } // namespace forcefield

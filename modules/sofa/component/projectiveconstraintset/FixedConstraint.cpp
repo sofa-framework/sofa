@@ -64,20 +64,20 @@ int FixedConstraintClass = core::RegisterObject("Attach given particles to their
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec3dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec2dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec1dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec6dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Rigid3dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Rigid2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec1dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec6dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec3fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec2fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec1fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec6fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Rigid3fTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Rigid2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec1fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Vec6fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Rigid2fTypes>;
 #endif
 
 #ifndef SOFA_FLOAT

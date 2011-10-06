@@ -54,14 +54,14 @@ int DistanceGridForceFieldClass = core::RegisterObject("Force applied by a dista
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<Vec3dTypes>;
-//template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<Vec2dTypes>;
-//template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<Vec1dTypes>;
+template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<Vec3dTypes>;
+//template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<Vec2dTypes>;
+//template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<Vec1dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<Vec3fTypes>;
-//template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<Vec2fTypes>;
-//template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<Vec1fTypes>;
+template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<Vec3fTypes>;
+//template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<Vec2fTypes>;
+//template class SOFA_VOLUMETRIC_DATA_API DistanceGridForceField<Vec1fTypes>;
 #endif
 
 } // namespace forcefield

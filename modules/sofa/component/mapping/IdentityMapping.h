@@ -157,44 +157,44 @@ using sofa::defaulttype::Rigid3fTypes;
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2dTypes, Vec2dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1dTypes, Vec1dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec6dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Rigid3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2dTypes, Rigid2dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2dTypes, Vec2dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2dTypes, Vec2dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1dTypes, Vec1dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec6dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Rigid3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Rigid2dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, ExtVec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Vec2dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2fTypes, Vec2fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1fTypes, Vec1fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6fTypes, Vec6fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3fTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, Rigid3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2fTypes, Rigid2fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2fTypes, Vec2fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2fTypes, Vec2fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1fTypes, Vec1fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec6fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Rigid3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Rigid2fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, ExtVec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Vec2fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2dTypes, Vec2fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2fTypes, Vec2dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1dTypes, Vec1fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1fTypes, Vec1dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec6fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6fTypes, Vec6dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, Rigid3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Rigid3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2dTypes, Rigid2fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2fTypes, Rigid2dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2dTypes, Vec2fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2fTypes, Vec2dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1dTypes, Vec1fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1fTypes, Vec1dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec6fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec6dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Rigid3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Rigid3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Rigid2fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Rigid2dTypes >;
 #endif
 #endif
 

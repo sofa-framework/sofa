@@ -285,12 +285,12 @@ int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralIn
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Vec3dTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Rigid3dTypes>;
+template class SOFA_ADVANCED_CONSTRAINT_API BilateralInteractionConstraint<Vec3dTypes>;
+template class SOFA_ADVANCED_CONSTRAINT_API BilateralInteractionConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Vec3fTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Rigid3fTypes>;
+template class SOFA_ADVANCED_CONSTRAINT_API BilateralInteractionConstraint<Vec3fTypes>;
+template class SOFA_ADVANCED_CONSTRAINT_API BilateralInteractionConstraint<Rigid3fTypes>;
 #endif
 
 } // namespace constraintset

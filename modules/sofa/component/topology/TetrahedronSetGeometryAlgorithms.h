@@ -131,19 +131,19 @@ protected:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

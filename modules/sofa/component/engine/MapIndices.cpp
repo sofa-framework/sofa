@@ -48,12 +48,12 @@ int MapIndicesClass = core::RegisterObject("Apply a permutation to a set of indi
         .add< MapIndices< helper::fixed_array<unsigned int, 8> > >()
         ;
 
-template class SOFA_COMPONENT_ENGINE_API MapIndices<int>;
-template class SOFA_COMPONENT_ENGINE_API MapIndices<unsigned int>;
-template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;
-template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 3> >;
-template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 4> >;
-template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 8> >;
+template class SOFA_ENGINE_API MapIndices<int>;
+template class SOFA_ENGINE_API MapIndices<unsigned int>;
+template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;
+template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 3> >;
+template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 4> >;
+template class SOFA_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 8> >;
 
 } // namespace constraint
 

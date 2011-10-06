@@ -38,7 +38,7 @@ namespace odesolver
 {
 
 /** A popular time integration method, much more precise than the EulerSolver */
-class SOFA_COMPONENT_ODESOLVER_API RungeKutta2Solver : public sofa::core::behavior::OdeSolver
+class SOFA_EXPLICIT_ODE_SOLVER_API RungeKutta2Solver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(RungeKutta2Solver, sofa::core::behavior::OdeSolver);

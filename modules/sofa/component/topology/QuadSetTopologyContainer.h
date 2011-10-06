@@ -50,7 +50,7 @@ typedef sofa::helper::vector<QuadID>                  VecQuadID;
 
 /** Object that stores a set of quads and provides access
 to each quad and its edges and vertices */
-class SOFA_COMPONENT_CONTAINER_API QuadSetTopologyContainer : public EdgeSetTopologyContainer
+class SOFA_BASE_TOPOLOGY_API QuadSetTopologyContainer : public EdgeSetTopologyContainer
 {
     friend class QuadSetTopologyModifier;
 

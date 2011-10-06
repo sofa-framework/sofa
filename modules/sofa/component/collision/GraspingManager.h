@@ -44,7 +44,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API GraspingManager : public core::behavior::BaseController
+class SOFA_ADVANCED_INTERACTION_API GraspingManager : public core::behavior::BaseController
 {
 public:
     SOFA_CLASS(GraspingManager,sofa::core::behavior::BaseController);

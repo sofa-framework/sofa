@@ -53,10 +53,10 @@ int HexahedronCompositeFEMForceFieldAndMassClass = core::RegisterObject("Non uni
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MISC_API HexahedronCompositeFEMForceFieldAndMass<Vec3dTypes>;
+template class SOFA_NON_UNIFORM_FEM_API HexahedronCompositeFEMForceFieldAndMass<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MISC_API HexahedronCompositeFEMForceFieldAndMass<Vec3fTypes>;
+template class SOFA_NON_UNIFORM_FEM_API HexahedronCompositeFEMForceFieldAndMass<Vec3fTypes>;
 #endif
 
 } // namespace forcefield

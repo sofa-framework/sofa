@@ -63,18 +63,18 @@ int ImplicitSurfaceMappingClass = core::RegisterObject("Compute an iso-surface f
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
+template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
+template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes >;
+template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 

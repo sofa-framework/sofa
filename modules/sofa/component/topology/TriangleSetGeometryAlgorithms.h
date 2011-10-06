@@ -293,11 +293,11 @@ bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p,
         const sofa::defaulttype::Vec<3,Real>& c,
         unsigned int ind_p0, unsigned int ind_p1, unsigned int ind_p2);
 
-void SOFA_COMPONENT_TOPOLOGY_API snapping_test_triangle(double epsilon,
+void SOFA_BASE_TOPOLOGY_API snapping_test_triangle(double epsilon,
         double alpha0, double alpha1, double alpha2,
         bool& is_snap_0, bool& is_snap_1, bool& is_snap_2);
 
-void SOFA_COMPONENT_TOPOLOGY_API snapping_test_edge(double epsilon,
+void SOFA_BASE_TOPOLOGY_API snapping_test_edge(double epsilon,
         double alpha0, double alpha1,
         bool& is_snap_0, bool& is_snap_1);
 
@@ -313,19 +313,19 @@ inline Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
+extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

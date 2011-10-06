@@ -44,7 +44,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class SOFA_COMPONENT_COLLISION_API TriangleOctreeModel : public  TriangleModel, public TriangleOctreeRoot
+class SOFA_BASE_COLLISION_API TriangleOctreeModel : public  TriangleModel, public TriangleOctreeRoot
 {
 public:
     SOFA_CLASS(TriangleOctreeModel, TriangleModel);

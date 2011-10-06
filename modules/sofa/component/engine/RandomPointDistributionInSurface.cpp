@@ -48,10 +48,10 @@ int RandomPointDistributionInSurfaceClass = core::RegisterObject("This class tru
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API RandomPointDistributionInSurface<Vec3dTypes>;
+template class SOFA_ENGINE_API RandomPointDistributionInSurface<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API RandomPointDistributionInSurface<Vec3fTypes>;
+template class SOFA_ENGINE_API RandomPointDistributionInSurface<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 

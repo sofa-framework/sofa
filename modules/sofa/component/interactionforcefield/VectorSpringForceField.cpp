@@ -51,10 +51,10 @@ int VectorSpringForceFieldClass = core::RegisterObject("Spring force field actin
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API VectorSpringForceField<Vec3dTypes>;
+template class SOFA_DEFORMABLE_API VectorSpringForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API VectorSpringForceField<Vec3fTypes>;
+template class SOFA_DEFORMABLE_API VectorSpringForceField<Vec3fTypes>;
 #endif
 
 

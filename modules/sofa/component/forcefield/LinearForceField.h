@@ -143,20 +143,20 @@ using sofa::defaulttype::Rigid3fTypes;
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec3dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec2dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec1dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec6dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid3dTypes>;
-// template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec2dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec1dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec6dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3dTypes>;
+// template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec3fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec2fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec1fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec6fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid3fTypes>;
-// template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec2fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec1fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec6fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3fTypes>;
+// template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2fTypes>;
 #endif
 
 #endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)

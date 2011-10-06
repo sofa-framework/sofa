@@ -57,7 +57,7 @@ using namespace sofa::defaulttype;
  * The current implementation first computes $a_t$ directly (as in the explicit solvers), then solves the previous system to compute $a_{t+dt}$, and finally computes the new position and velocity.
  *
 */
-class SOFA_COMPONENT_ODESOLVER_API NewmarkImplicitSolver : public sofa::core::behavior::OdeSolver
+class SOFA_MISC_SOLVER_API NewmarkImplicitSolver : public sofa::core::behavior::OdeSolver
 {
 protected:
     unsigned int cpt;

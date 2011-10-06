@@ -383,18 +383,18 @@ int DiagonalMassClass = core::RegisterObject("Define a specific mass for each pa
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec3dTypes,double>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2dTypes,double>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec1dTypes,double>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid3dTypes,Rigid3dMass>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid2dTypes,Rigid2dMass>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec3dTypes,double>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec2dTypes,double>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec1dTypes,double>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid3dTypes,Rigid3dMass>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid2dTypes,Rigid2dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec3fTypes,float>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2fTypes,float>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec1fTypes,float>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid3fTypes,Rigid3fMass>;
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid2fTypes,Rigid2fMass>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec3fTypes,float>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec2fTypes,float>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec1fTypes,float>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid3fTypes,Rigid3fMass>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid2fTypes,Rigid2fMass>;
 #endif
 
 

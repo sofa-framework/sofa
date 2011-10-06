@@ -62,20 +62,20 @@ int TransformEngineClass = core::RegisterObject("Transform position of 3d points
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec1dTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec2dTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Rigid2dTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Rigid3dTypes>;
+template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec1dTypes>;
+template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec2dTypes>;
+template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec3dTypes>;
+template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid2dTypes>;
+template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec1fTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec2fTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Rigid2fTypes>;
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::Rigid3fTypes>;
+template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec1fTypes>;
+template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec2fTypes>;
+template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec3fTypes>;
+template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid2fTypes>;
+template class SOFA_ENGINE_API TransformEngine<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API TransformEngine<defaulttype::ExtVec3fTypes>;
+template class SOFA_ENGINE_API TransformEngine<defaulttype::ExtVec3fTypes>;
 
 
 } // namespace constraint

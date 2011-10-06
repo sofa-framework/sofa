@@ -75,9 +75,9 @@ private :
     void solveT(float * z, float * r);
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_LINEARSOLVER)
-extern template class SOFA_COMPONENT_LINEARSOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
-extern template class SOFA_COMPONENT_LINEARSOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
+#if defined(WIN32) && !defined(SOFA_BUILD_SPARSE_SOLVER)
+extern template class SOFA_SPARSE_SOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
+extern template class SOFA_SPARSE_SOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
 #endif
 
 } // namespace linearsolver

@@ -59,7 +59,7 @@ typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
 
 
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
-class SOFA_COMPONENT_CONTAINER_API ManifoldTetrahedronSetTopologyContainer : public TetrahedronSetTopologyContainer
+class SOFA_MISC_TOPOLOGY_API ManifoldTetrahedronSetTopologyContainer : public TetrahedronSetTopologyContainer
 {
     friend class TetrahedronSetTopologyModifier; // To be change to manifold one
 

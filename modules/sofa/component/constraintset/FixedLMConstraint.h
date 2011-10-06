@@ -149,18 +149,17 @@ protected :
 };
 
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_CONSTRAINTSET)
+#if defined(WIN32) && !defined(SOFA_BUILD_CONSTRAINT)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<defaulttype::Rigid3dTypes>;
+extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<defaulttype::Rigid3fTypes>;
+extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3fTypes>;
 #endif
 #endif
-
 
 } // namespace constraintset
 

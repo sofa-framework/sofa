@@ -596,86 +596,86 @@ void MatrixLinearSolver<Matrix,Vector>::deleteMatrix(Matrix* v)
 }
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP)
-extern template class SOFA_COMPONENT_LINEARSOLVER_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
+extern template class SOFA_BASE_LINEAR_SOLVER_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
 #endif
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::resetSystem();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::resizeSystem(int);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemRHVector(core::MultiVecDerivId v);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemLHVector(core::MultiVecDerivId v);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::solveSystem();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::createPersistentVector();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::deletePersistentVector(GraphScatteredVector* v);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::createMatrix();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::deleteMatrix(GraphScatteredMatrix* v);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemBaseMatrix();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemRHBaseVector();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemLHBaseVector();
 
 #ifdef SOFA_SMP
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::resetSystem();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::resizeSystem(int);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::setSystemRHVector(core::MultiVecDerivId v);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::setSystemLHVector(core::MultiVecDerivId v);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::solveSystem();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 ParallelGraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::createPersistentVector();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::deletePersistentVector(ParallelGraphScatteredVector* v);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::createMatrix();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::deleteMatrix(GraphScatteredMatrix* v);
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::getSystemBaseMatrix();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::getSystemRHBaseVector();
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API
+template<> SOFA_BASE_LINEAR_SOLVER_API
 defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,ParallelGraphScatteredVector>::getSystemLHBaseVector();
 #endif
 

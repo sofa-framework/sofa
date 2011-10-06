@@ -397,15 +397,15 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_INTERACTIONFORCEFIELD)
+#if defined(WIN32) && !defined(SOFA_BUILD_RIGID)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API JointSpring<defaulttype::Rigid3dTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API JointSpringForceField<defaulttype::Rigid3dTypes>;
+extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3dTypes>;
+extern template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API JointSpring<defaulttype::Rigid3fTypes>;
-extern template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API JointSpringForceField<defaulttype::Rigid3fTypes>;
+extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3fTypes>;
+extern template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 } // namespace interactionforcefield

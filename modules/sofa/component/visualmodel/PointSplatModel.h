@@ -50,7 +50,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_COMPONENT_VISUALMODEL_API PointSplatModel : public core::visual::VisualModel
+class SOFA_OPENGL_VISUAL_API PointSplatModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(PointSplatModel,core::visual::VisualModel);

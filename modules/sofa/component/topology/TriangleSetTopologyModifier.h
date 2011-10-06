@@ -46,7 +46,7 @@ typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 /**
  * A class that modifies the topology by adding and removing triangles
  */
-class SOFA_COMPONENT_CONTAINER_API TriangleSetTopologyModifier : public EdgeSetTopologyModifier
+class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyModifier : public EdgeSetTopologyModifier
 {
 public:
     SOFA_CLASS(TriangleSetTopologyModifier,EdgeSetTopologyModifier);

@@ -40,7 +40,7 @@ namespace constraintset
 using core::behavior::BaseLMConstraint;
 using core::behavior::ConstraintGroup;
 
-class SOFA_COMPONENT_CONSTRAINTSET_API LMConstraintDirectSolver : public LMConstraintSolver
+class SOFA_CONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
 {
     typedef Eigen::DynamicSparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
 

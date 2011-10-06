@@ -63,18 +63,18 @@ int Mesh2PointMechanicalMappingClass = core::RegisterObject("Mechanical mapping 
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
+template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API Mesh2PointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API Mesh2PointMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
+template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API Mesh2PointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
+template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 

@@ -54,10 +54,10 @@ int FrameSpringForceFieldClass = core::RegisterObject ( "Springs for Flexibles" 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API FrameSpringForceField<Rigid3dTypes>;
+template class SOFA_DEFORMABLE_API FrameSpringForceField<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API FrameSpringForceField<Rigid3fTypes>;
+template class SOFA_DEFORMABLE_API FrameSpringForceField<Rigid3fTypes>;
 #endif
 
 } // namespace interactionforcefield

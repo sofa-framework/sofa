@@ -41,7 +41,7 @@ using namespace sofa::defaulttype;
 /** Define a regular grid topology, with no spatial information.
   */
 
-class SOFA_COMPONENT_CONTAINER_API GridTopology : public MeshTopology
+class SOFA_BASE_TOPOLOGY_API GridTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(GridTopology,MeshTopology);

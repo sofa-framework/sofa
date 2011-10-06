@@ -62,16 +62,16 @@ int StiffSpringForceFieldClass = core::RegisterObject("Stiff springs for implici
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API StiffSpringForceField<Vec3dTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API StiffSpringForceField<Vec2dTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API StiffSpringForceField<Vec1dTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API StiffSpringForceField<Vec6dTypes>;
+template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec3dTypes>;
+template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec2dTypes>;
+template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec1dTypes>;
+template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec6dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API StiffSpringForceField<Vec3fTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API StiffSpringForceField<Vec2fTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API StiffSpringForceField<Vec1fTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API StiffSpringForceField<Vec6fTypes>;
+template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec3fTypes>;
+template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec2fTypes>;
+template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec1fTypes>;
+template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec6fTypes>;
 #endif
 
 

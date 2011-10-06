@@ -65,7 +65,7 @@ namespace visualmodel
  *
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API LightManager : public core::visual::VisualManager
+class SOFA_OPENGL_VISUAL_API LightManager : public core::visual::VisualManager
 {
 public:
     SOFA_CLASS(LightManager, core::visual::VisualManager);

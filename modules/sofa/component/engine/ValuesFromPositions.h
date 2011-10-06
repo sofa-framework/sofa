@@ -171,12 +171,12 @@ public:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API ValuesFromPositions<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API ValuesFromPositions<defaulttype::Rigid3dTypes>;
+template class SOFA_ENGINE_API ValuesFromPositions<defaulttype::Vec3dTypes>;
+template class SOFA_ENGINE_API ValuesFromPositions<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API ValuesFromPositions<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API ValuesFromPositions<defaulttype::Rigid3fTypes>;
+template class SOFA_ENGINE_API ValuesFromPositions<defaulttype::Vec3fTypes>;
+template class SOFA_ENGINE_API ValuesFromPositions<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

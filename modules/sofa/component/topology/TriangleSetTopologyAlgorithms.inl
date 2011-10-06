@@ -116,11 +116,16 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::Suture2Points(unsigned int ind_
     x_created.push_back((double) point_created[1]);
     x_created.push_back((double) point_created[2]);
 
-    ///TODO:Cast into a MechanicalObject ?
     MechanicalState<DataTypes>* state = m_geometryAlgorithms->getDOF();
-    MechanicalObject<DataTypes> *temp = dynamic_cast<MechanicalObject<DataTypes> *>(state);
-    temp->forcePointPosition(ind1, x_created);
-    temp->forcePointPosition(ind2, x_created);
+
+    sofa::helper::WriteAccessor< Data<VecCoord> > x_wA = *state->write(core::VecCoordId::position());
+    sofa::helper::WriteAccessor< Data<VecDeriv> > v_wA = *state->write(core::VecDerivId::velocity());
+
+    DataTypes::set(x_wA[ind1], x_created[0], x_created[1], x_created[2]);
+    DataTypes::set(v_wA[ind1], (Real) 0.0, (Real) 0.0, (Real) 0.0);
+
+    DataTypes::set(x_wA[ind2], x_created[0], x_created[1], x_created[2]);
+    DataTypes::set(v_wA[ind2], (Real) 0.0, (Real) 0.0, (Real) 0.0);
 
     return true;
 }

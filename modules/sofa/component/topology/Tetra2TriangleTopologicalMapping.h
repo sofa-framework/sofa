@@ -59,7 +59,7 @@ using namespace sofa::core;
  *
 */
 
-class SOFA_COMPONENT_TOPOLOGY_API Tetra2TriangleTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Tetra2TriangleTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(Tetra2TriangleTopologicalMapping,TopologicalMapping);

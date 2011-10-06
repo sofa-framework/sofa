@@ -42,7 +42,7 @@ namespace odesolver
 {
 
 /** Finds the static equilibrium of a system. Can diverge when there are an infinity of solutions. */
-class SOFA_COMPONENT_ODESOLVER_API StaticSolver : public sofa::core::behavior::OdeSolver
+class SOFA_IMPLICIT_ODE_SOLVER_API StaticSolver : public sofa::core::behavior::OdeSolver
 {
 
 public:

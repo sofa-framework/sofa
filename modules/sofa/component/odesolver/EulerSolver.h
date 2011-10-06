@@ -42,7 +42,7 @@ namespace odesolver
  If true (the default), the symplectic variant of Euler's method is applied:
  If false, the basic Euler's method is applied (less robust)
  */
-class SOFA_COMPONENT_ODESOLVER_API EulerSolver : public sofa::core::behavior::OdeSolver
+class SOFA_EXPLICIT_ODE_SOLVER_API EulerSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(EulerSolver, sofa::core::behavior::OdeSolver);

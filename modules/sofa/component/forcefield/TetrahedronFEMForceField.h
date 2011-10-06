@@ -32,8 +32,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/component.h>
-#include <sofa/component/misc/BaseRotationFinder.h>
-#include <sofa/component/linearsolver/RotationMatrix.h>
+#include <sofa/core/behavior/BaseRotationFinder.h>
+#include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
 
 // corotational tetrahedron from
@@ -379,10 +379,10 @@ protected:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API TetrahedronFEMForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API TetrahedronFEMForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<defaulttype::Vec3fTypes>;
 #endif
 #endif
 

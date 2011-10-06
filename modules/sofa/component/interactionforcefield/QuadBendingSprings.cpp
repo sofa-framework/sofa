@@ -57,12 +57,12 @@ int QuadBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API QuadBendingSprings<Vec3dTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API QuadBendingSprings<Vec2dTypes>;
+template class SOFA_DEFORMABLE_API QuadBendingSprings<Vec3dTypes>;
+template class SOFA_DEFORMABLE_API QuadBendingSprings<Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API QuadBendingSprings<Vec3fTypes>;
-template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API QuadBendingSprings<Vec2fTypes>;
+template class SOFA_DEFORMABLE_API QuadBendingSprings<Vec3fTypes>;
+template class SOFA_DEFORMABLE_API QuadBendingSprings<Vec2fTypes>;
 #endif
 
 

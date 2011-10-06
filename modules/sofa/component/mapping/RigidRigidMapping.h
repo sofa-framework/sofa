@@ -156,16 +156,16 @@ using sofa::defaulttype::Rigid3fTypes;
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3dTypes, Rigid3dTypes >;
+extern template class SOFA_RIGID_API RigidRigidMapping< Rigid3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3fTypes, Rigid3fTypes >;
+extern template class SOFA_RIGID_API RigidRigidMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3dTypes, Rigid3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3fTypes, Rigid3dTypes >;
+extern template class SOFA_RIGID_API RigidRigidMapping< Rigid3dTypes, Rigid3fTypes >;
+extern template class SOFA_RIGID_API RigidRigidMapping< Rigid3fTypes, Rigid3dTypes >;
 #endif
 #endif
 #endif

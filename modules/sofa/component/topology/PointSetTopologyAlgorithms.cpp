@@ -58,19 +58,19 @@ int PointSetTopologyAlgorithmsClass = core::RegisterObject("Point set topology a
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec3dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec2dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec1dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid3dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid2dTypes>;
+template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Vec3dTypes>;
+template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Vec2dTypes>;
+template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Vec1dTypes>;
+template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid3dTypes>;
+template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec3fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec2fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec1fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid3fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid2fTypes>;
+template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Vec3fTypes>;
+template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Vec2fTypes>;
+template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Vec1fTypes>;
+template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid3fTypes>;
+template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid2fTypes>;
 #endif
 
 } // namespace topology

@@ -55,14 +55,14 @@ int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec3dTypes,double>;
-template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec2dTypes,double>;
-template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec1dTypes,double>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec3dTypes,double>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec2dTypes,double>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec1dTypes,double>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec3fTypes,float>;
-template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec2fTypes,float>;
-template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec1fTypes,float>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec3fTypes,float>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec2fTypes,float>;
+template class SOFA_MISC_FORCEFIELD_API MeshMatrixMass<Vec1fTypes,float>;
 #endif
 
 

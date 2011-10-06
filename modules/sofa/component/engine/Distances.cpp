@@ -50,10 +50,10 @@ int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API Distances<Vec3dTypes>;
+template class SOFA_MISC_ENGINE_API Distances<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API Distances<Vec3fTypes>;
+template class SOFA_MISC_ENGINE_API Distances<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 

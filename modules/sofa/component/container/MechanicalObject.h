@@ -436,24 +436,24 @@ protected :
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec1dTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec6dTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Rigid3dTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Rigid2dTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3dTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2dTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1dTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6dTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3dTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2dTypes>;
 #ifdef SOFA_DEV
 #endif
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec1fTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec6fTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Rigid3fTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Rigid2fTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3fTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2fTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1fTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6fTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3fTypes>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2fTypes>;
 #endif
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
 #endif
 
 } // namespace container

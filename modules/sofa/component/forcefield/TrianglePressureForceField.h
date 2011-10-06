@@ -155,10 +155,10 @@ using sofa::defaulttype::Vec3fTypes;
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API TrianglePressureForceField<Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API TrianglePressureForceField<Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<Vec3fTypes>;
 #endif
 
 #endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_CPP)

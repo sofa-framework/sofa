@@ -38,7 +38,7 @@ namespace component
 namespace configurationsetting
 {
 
-class SOFA_COMPONENT_CONFIGURATIONSETTING_API SofaDefaultPathSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_GRAPH_COMPONENT_API SofaDefaultPathSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
     SOFA_CLASS(SofaDefaultPathSetting,core::objectmodel::ConfigurationSetting);

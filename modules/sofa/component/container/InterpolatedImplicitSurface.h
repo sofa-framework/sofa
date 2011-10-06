@@ -50,7 +50,7 @@ public:
 
 
 
-class SOFA_COMPONENT_CONTAINER_API InterpolatedImplicitSurface : public virtual ImplicitSurface
+class SOFA_VOLUMETRIC_DATA_API InterpolatedImplicitSurface : public virtual ImplicitSurface
 {
 
 public:

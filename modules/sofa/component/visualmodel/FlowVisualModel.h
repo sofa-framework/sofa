@@ -125,7 +125,7 @@ static defaulttype::Vec3f ColorMap[64] =
 };
 
 template <class DataTypes>
-class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::visual::VisualModel
+class SOFA_MISC_API FlowVisualModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(FlowVisualModel,DataTypes), core::visual::VisualModel);

@@ -46,7 +46,7 @@ typedef Data< sofa::helper::vector < void* > > t_topologicalData;
 
 /** The container class that stores a set of points and provides access
 to each point. This set of point may be a subset of the DOF of the mechanical model */
-class SOFA_COMPONENT_CONTAINER_API PointSetTopologyContainer : public core::topology::TopologyContainer
+class SOFA_BASE_TOPOLOGY_API PointSetTopologyContainer : public core::topology::TopologyContainer
 {
 public:
     SOFA_CLASS(PointSetTopologyContainer,core::topology::TopologyContainer);

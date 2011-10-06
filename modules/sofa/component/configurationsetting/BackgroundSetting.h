@@ -39,7 +39,7 @@ namespace component
 namespace configurationsetting
 {
 
-class SOFA_COMPONENT_CONFIGURATIONSETTING_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_GRAPH_COMPONENT_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
     SOFA_CLASS(BackgroundSetting,core::objectmodel::ConfigurationSetting);

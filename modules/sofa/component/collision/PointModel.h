@@ -74,7 +74,7 @@ public:
     virtual bool activePoint(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
 };
 
-class SOFA_COMPONENT_COLLISION_API PointModel : public core::CollisionModel
+class SOFA_BASE_COLLISION_API PointModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(PointModel, core::CollisionModel);

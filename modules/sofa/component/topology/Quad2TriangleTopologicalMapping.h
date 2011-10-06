@@ -60,7 +60,7 @@ using namespace sofa::core;
 *
 */
 
-class SOFA_COMPONENT_TOPOLOGY_API Quad2TriangleTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Quad2TriangleTopologicalMapping : public TopologicalMapping
 {
 
 public:

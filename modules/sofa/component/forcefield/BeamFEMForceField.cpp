@@ -54,10 +54,10 @@ int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API BeamFEMForceField<Rigid3dTypes>;
+template class SOFA_SIMPLE_FEM_API BeamFEMForceField<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API BeamFEMForceField<Rigid3fTypes>;
+template class SOFA_SIMPLE_FEM_API BeamFEMForceField<Rigid3fTypes>;
 #endif
 
 } // namespace forcefield

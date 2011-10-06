@@ -45,7 +45,7 @@ typedef BaseMeshTopology::EdgesAroundVertex	EdgesAroundVertex;
 typedef sofa::helper::vector<EdgeID>         VecEdgeID;
 
 /** a class that stores a set of edges  and provides access to the adjacency between points and edges */
-class SOFA_COMPONENT_CONTAINER_API EdgeSetTopologyContainer : public PointSetTopologyContainer
+class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyContainer : public PointSetTopologyContainer
 {
     friend class EdgeSetTopologyModifier;
 

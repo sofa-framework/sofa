@@ -68,9 +68,9 @@ int DynamicSparseGridGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos
     return HexahedronSetGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos(pos, baryC, distance);
 }
 
-template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec2dTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec1dTypes>;
+template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
+template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<Vec2dTypes>;
+template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -86,9 +86,9 @@ int DynamicSparseGridGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos
     return HexahedronSetGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos( pos, baryC, distance);
 }
 
-template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec2fTypes>;
-template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec1fTypes>;
+template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
+template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<Vec2fTypes>;
+template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<Vec1fTypes>;
 #endif
 
 } // namespace topology

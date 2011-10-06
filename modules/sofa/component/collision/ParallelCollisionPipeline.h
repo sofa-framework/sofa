@@ -38,7 +38,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API ParallelCollisionPipeline : public sofa::simulation::PipelineImpl, public sofa::core::collision::ParallelPipeline
+class SOFA_MISC_COLLISION_API ParallelCollisionPipeline : public sofa::simulation::PipelineImpl, public sofa::core::collision::ParallelPipeline
 {
 public:
     SOFA_CLASS2(ParallelCollisionPipeline,sofa::simulation::PipelineImpl,sofa::core::collision::ParallelPipeline);

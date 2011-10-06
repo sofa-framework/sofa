@@ -62,18 +62,18 @@ int SPHFluidSurfaceMappingClass = core::RegisterObject("TODO-SPHFluidSurfaceMapp
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API SPHFluidSurfaceMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_COMPONENT_MAPPING_API SPHFluidSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
+template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API SPHFluidSurfaceMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API SPHFluidSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
+template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API SPHFluidSurfaceMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API SPHFluidSurfaceMapping< Vec3fTypes, Vec3dTypes >;
+template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_SPH_FLUID_API SPHFluidSurfaceMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 

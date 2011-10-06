@@ -239,15 +239,15 @@ private:
     inline void addContribution ( double& valueWrite, int& nbTest, double*** valueRead, const int& x, const int& y, const int& z, const int coeff, const bool& useStiffnessMap );
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_ENGINE)
+#if defined(WIN32) && !defined(SOFA_BUILD_MISC_ENGINE)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_ENGINE_API Distances<defaulttype::Vec3dTypes>;
-//extern template class SOFA_COMPONENT_ENGINE_API Distances<defaulttype::Rigid3dTypes>;
+extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3dTypes>;
+//extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_ENGINE_API Distances<defaulttype::Vec3fTypes>;
-//extern template class SOFA_COMPONENT_ENGINE_API Distances<defaulttype::Rigid3fTypes>;
+extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3fTypes>;
+//extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

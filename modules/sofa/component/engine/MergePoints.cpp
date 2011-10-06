@@ -61,18 +61,18 @@ int MergePointsClass = core::RegisterObject("Merge 2 cordinate vectors")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec1dTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec2dTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid2dTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid3dTypes>;
+template class SOFA_ENGINE_API MergePoints<defaulttype::Vec1dTypes>;
+template class SOFA_ENGINE_API MergePoints<defaulttype::Vec2dTypes>;
+template class SOFA_ENGINE_API MergePoints<defaulttype::Vec3dTypes>;
+template class SOFA_ENGINE_API MergePoints<defaulttype::Rigid2dTypes>;
+template class SOFA_ENGINE_API MergePoints<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec1fTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec2fTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid2fTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Rigid3fTypes>;
+template class SOFA_ENGINE_API MergePoints<defaulttype::Vec1fTypes>;
+template class SOFA_ENGINE_API MergePoints<defaulttype::Vec2fTypes>;
+template class SOFA_ENGINE_API MergePoints<defaulttype::Vec3fTypes>;
+template class SOFA_ENGINE_API MergePoints<defaulttype::Rigid2fTypes>;
+template class SOFA_ENGINE_API MergePoints<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 

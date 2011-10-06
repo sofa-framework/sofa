@@ -59,16 +59,16 @@ int RigidRigidMappingClass = core::RegisterObject("Set the positions and velocit
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3dTypes, Rigid3dTypes >;
+template class SOFA_RIGID_API RigidRigidMapping< Rigid3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3fTypes, Rigid3fTypes >;
+template class SOFA_RIGID_API RigidRigidMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3dTypes, Rigid3fTypes >;
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3fTypes, Rigid3dTypes >;
+template class SOFA_RIGID_API RigidRigidMapping< Rigid3dTypes, Rigid3fTypes >;
+template class SOFA_RIGID_API RigidRigidMapping< Rigid3fTypes, Rigid3dTypes >;
 #endif
 #endif
 

@@ -42,7 +42,7 @@ using namespace sofa::defaulttype;
 
 class RayModel;
 
-class SOFA_COMPONENT_COLLISION_API BaseRayContact : public core::collision::Contact
+class SOFA_USER_INTERACTION_API BaseRayContact : public core::collision::Contact
 {
 public:
     typedef RayModel CollisionModel1;

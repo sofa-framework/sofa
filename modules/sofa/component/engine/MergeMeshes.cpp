@@ -61,18 +61,18 @@ int MergeMeshesClass = core::RegisterObject("Merge several meshes")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec1dTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec2dTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Rigid2dTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Rigid3dTypes>;
+template class SOFA_ENGINE_API MergeMeshes<defaulttype::Vec1dTypes>;
+template class SOFA_ENGINE_API MergeMeshes<defaulttype::Vec2dTypes>;
+template class SOFA_ENGINE_API MergeMeshes<defaulttype::Vec3dTypes>;
+template class SOFA_ENGINE_API MergeMeshes<defaulttype::Rigid2dTypes>;
+template class SOFA_ENGINE_API MergeMeshes<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec1fTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec2fTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Rigid2fTypes>;
-template class SOFA_COMPONENT_ENGINE_API MergeMeshes<defaulttype::Rigid3fTypes>;
+template class SOFA_ENGINE_API MergeMeshes<defaulttype::Vec1fTypes>;
+template class SOFA_ENGINE_API MergeMeshes<defaulttype::Vec2fTypes>;
+template class SOFA_ENGINE_API MergeMeshes<defaulttype::Vec3fTypes>;
+template class SOFA_ENGINE_API MergeMeshes<defaulttype::Rigid2fTypes>;
+template class SOFA_ENGINE_API MergeMeshes<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 
