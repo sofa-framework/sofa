@@ -89,6 +89,9 @@ DefaultAnimationLoop::~DefaultAnimationLoop()
 
 void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
 {
+    if (dt == 0)
+        dt = this->gnode->getDt();
+
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 
     sofa::helper::AdvancedTimer::begin("Animate");
@@ -99,25 +102,16 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
         gnode->execute ( act );
     }
 
-    //std::cout << "animate\n";
     double startTime = gnode->getTime();
-    double mechanicalDt = dt/numMechSteps.getValue();
-    //double nextTime = gnode->getTime() + gnode->getDt();
 
-    // CHANGE to support AnimationStep : CollisionVisitor is now activated within AnimateVisitor
-    //gnode->execute<CollisionVisitor>(params);
+    BehaviorUpdatePositionVisitor beh(params , dt);
+    gnode->execute ( beh );
 
-    AnimateVisitor act(params);
-    act.setDt ( mechanicalDt );
-    BehaviorUpdatePositionVisitor beh(params , gnode->getDt());
-    for( unsigned i=0; i<numMechSteps.getValue(); i++ )
-    {
-        gnode->execute ( beh );
-        gnode->execute ( act );
-        gnode->setTime ( startTime + (i+1)* act.getDt() );
-        gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
-        nbMechSteps.setValue(nbMechSteps.getValue() + 1);
-    }
+    AnimateVisitor act(params, dt);
+    gnode->execute ( act );
+
+    gnode->setTime ( startTime + dt );
+    gnode->execute< UpdateSimulationContextVisitor >(params);
 
     {
         AnimateEndEvent ev ( dt );
@@ -127,7 +121,7 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
 
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
-    gnode->execute<UpdateMappingVisitor>(params);
+    gnode->execute< UpdateMappingVisitor >(params);
     sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
@@ -138,13 +132,13 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
 
 #ifndef SOFA_NO_UPDATE_BBOX
     sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
-    gnode->execute<UpdateBoundingBoxVisitor>(params);
+    gnode->execute< UpdateBoundingBoxVisitor >(params);
     sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
 #endif
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
-    nbSteps.setValue(nbSteps.getValue() + 1);
+    nbSteps.setValue( nbSteps.getValue() + 1 );
 
     ///////////////////////////////////////////////////////////////////////
 
