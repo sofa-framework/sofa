@@ -3,7 +3,7 @@ includeOnce($$_FILE_) {
 		prefix=$$PLUGINS_PATH/Xitact
 	}
 	#declare(XiRobot, applications/plugins/Xitact)
-	#declare(XitactPlugin, applications/plugins/Xitact, sofacore sofacomponentcontroller sofaguimain XiRobot)
-	declare(XitactPlugin, applications/plugins/Xitact, sofacomponent sofagui)
+	#declare(XitactPlugin, applications/plugins/Xitact, sofacore sofacomponentcontroller sofaguimain XiRobot sofaguiqt)
+	declare(XitactPlugin, applications/plugins/Xitact, sofacomponent sofagui sofaguiqt)
 	enable(XitactPlugin)
 }
