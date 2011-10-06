@@ -38,7 +38,8 @@
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
 
-#include <sofa/gui/PickHandler.h>
+//#include <sofa/gui/PickHandler.h>
+//#include <sofa/gui/qt/SofaMouseManager.h>
 #include <sofa/component/collision/RayModel.h>
 //#include <sofa/component/collision/HeartSimulationManager.h>
 #include "initXitact.h"
