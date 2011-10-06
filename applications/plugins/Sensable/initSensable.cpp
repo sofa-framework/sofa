@@ -82,6 +82,11 @@ const char* getModuleVersion()
     return "beta 1.1";
 }
 
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
 const char* getModuleDescription()
 {
     return "Force feedback with sensable devices into SOFA Framework";

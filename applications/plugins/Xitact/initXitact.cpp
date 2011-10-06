@@ -56,6 +56,11 @@ const char* getModuleVersion()
     return "beta 1.0";
 }
 
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
 const char* getModuleDescription()
 {
     return "Force feedback with Xitact devices into SOFA Framework";
