@@ -135,8 +135,10 @@ SOFA_LINK_CLASS(HexahedronCompositeFEMMapping)
 SOFA_LINK_CLASS(ConstraintAnimationLoop)
 //SOFA_LINK_CLASS(EigenMatrixManipulator)
 SOFA_LINK_CLASS(SVDLinearSolver)
+#ifdef SOFA_HAVE_TAUCS
 SOFA_LINK_CLASS(SparseTAUCSSolver)
 SOFA_LINK_CLASS(IncompleteTAUCSSolver)
+#endif
 SOFA_LINK_CLASS(SparseTAUCSLLtSolver)
 //SOFA_LINK_CLASS(SparsePARDISOSolver)
 //SOFA_LINK_CLASS(Ogden)
