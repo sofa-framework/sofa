@@ -14,18 +14,14 @@ HEADERS += collision/MinProximityIntersection.h \
            collision/IdentityContactMapper.h \
            collision/IdentityContactMapper.inl \
            collision/SubsetContactMapper.h \
-           collision/SubsetContactMapper.inl \
-           collision/DefaultCollisionGroupManager.h \
-           collision/SolverMerger.h
+           collision/SubsetContactMapper.inl
 
 SOURCES += collision/MinProximityIntersection.cpp \
            collision/NewProximityIntersection.cpp \
            collision/BarycentricPenalityContact.cpp \
            collision/BarycentricContactMapper.cpp \
            collision/IdentityContactMapper.cpp \
-           collision/SubsetContactMapper.cpp \
-           collision/DefaultCollisionGroupManager.cpp \
-           collision/SolverMerger.cpp
+           collision/SubsetContactMapper.cpp
 
 
 # Make sure there are no cross-dependencies
