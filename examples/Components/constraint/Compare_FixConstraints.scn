@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<Node dt="0.02"  >
+	<VisualStyle displayFlags="showBehavior" />
+  <Node name="FixedConstraint" >
+	  <EulerImplicitSolver  />
+	  <CGLinearSolver  />
+	  <Node >
+		  <RegularGridTopology />
+		  <MechanicalObject showIndices="1"  showIndicesScale="0.0004" />
+		  <HexahedronFEMForceField  poissonRatio="0"  youngModulus="1000" />
+		  <BoxROI box="0 0.75 0 1 1 1"  position="@[-2].rest_position"   />
+		  <FixedConstraint indices="@[-1].indices" />
+		  <ConstantForceField points="0 1 4 5"  totalForce="0 -1000 0" />
+		  <UniformMass  />
+	  </Node>
+  </Node>
+  <Node name="FixedLMConstraint" >
+	  <EulerImplicitSolver  />
+	  <CGLinearSolver  />
+    <LMConstraintSolver />
+	  <VisualStyle displayFlags="showBehavior" />
+	  <Node >
+		  <RegularGridTopology p0="2 0 0" />
+		  <MechanicalObject showIndices="1"  showIndicesScale="0.0004" />
+		  <HexahedronFEMForceField  poissonRatio="0"  youngModulus="1000" />
+		  <BoxROI box="2 0.75 0 3 1 1"  position="@[-2].rest_position"   />
+		  <FixedLMConstraint indices="@[-1].indices" />
+		  <ConstantForceField points="0 1 4 5"  totalForce="0 -1000 0" />
+		  <UniformMass  />
+	  </Node>
+  </Node>
+  <Node name="DOFBlockerAllAxis" >
+    <EulerImplicitSolver  />
+	  <CGLinearSolver  />
+	  <LMConstraintSolver />
+	  <VisualStyle  displayFlags="showBehavior" />
+	  <Node >
+		  <RegularGridTopology  p0="4 0 0" />
+		  <MechanicalObject   showIndices="1"  showIndicesScale="0.0004" />
+		  <HexahedronFEMForceField   poissonRatio="0"  youngModulus="1000" />
+		  <BoxROI  box="4 0.75 0 5 1 1"  position="@[-2].rest_position"  indices="0" />
+		  <ConstantForceField  points="0 1 4 5"  totalForce="0 -1000 0" />
+		  <UniformMass   />
+		  <DOFBlockerLMConstraint rotationAxis="1 0 0 0 1 0 0 0 1"  indices="@[-3].indices" />
+	  </Node>
+  </Node>
+</Node>
