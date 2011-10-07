@@ -1,49 +1,23 @@
-<Node name="Root" gravity="0 -9.81 0" dt="0.02">
-    <VisualStyle displayFlags="showCollisionModels" />
-    <EulerImplicitSolver name="default12" rayleighStiffness="0.01" />
-    <LMConstraintSolver name="ConstraintSolver" constraintVel="1" constraintPos="1" />
-    <CGLinearSolver template="GraphScattered" name="default13" iterations="25" threshold="1e-08" />
-    <Node name="BALL" gravity="0 -9.81 0">
-        <SparseGridTopology name="default14" fileTopology="mesh/ball.obj" n="6 6 6" />
-        <MechanicalObject template="Vec3d" name="default15" translation="0 0 0" rotation="0 0 0" scale3d="1 1 1" restScale="1" />
-        <UniformMass template="Vec3d" name="default16" totalmass="5" />
-        <HexahedronFEMForceField template="Vec3d" name="FEM" method="polar" poissonRatio="0.3" youngModulus="5000" />
-        <Node name="VisualNode" gravity="0 -9.81 0">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/ball.obj" />
-            <BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default17" object1="../.." object2="Visual" hexamap="0 " />
-        </Node>
-        <Node name="CollisionNode" gravity="0 -9.81 0">
-            <VisualStyle displayFlags="showBehaviorModels" />
-            <MeshObjLoader name="loader" filename="mesh/ball.obj" />
-            <MeshTopology src="@loader" name="default18" />
-            <MechanicalObject src="@loader" template="Vec3d" name="default19" useMask="1" restScale="1" />
-            <TriangleModel name="default20" />
-            <LineModel name="default21" />
-            <PointModel name="default22" />
-            <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="default23" hexamap="0 " />
-            <FixedLMConstraint template="Vec3d" name="default1" indices="0" />
-        </Node>
-    </Node>
-    <Node name="RigidBodies" gravity="0 -9.81 0">
-        <MechanicalObject template="Rigid" name="DOFs" translation="0 -2 0" restScale="1" position="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1" />
-        <UniformMass template="Rigid" name="mass" mass="1 1 [1 0 0,0 1 0,0 0 1]" />
-        <Node name="Joints" gravity="0 -9.81 0">
-            <VisualStyle displayFlags="showBehaviorModels" />
-            <MechanicalObject template="Rigid" name="attaches" restScale="1" position="0 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914" />
-            <RigidRigidMapping template="MechanicalMapping&lt;Rigid,Rigid&gt;" name="default7" repartition="1 2 2 2 2" />
-            <JointSpringForceField template="Rigid" name="joint springs" spring="BEGIN_SPRING  0 1  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A; BEGIN_SPRING  2 3  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A; BEGIN_SPRING  4 5  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A; BEGIN_SPRING  6 7  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A;" />
-            <FixedLMConstraint template="Rigid" name="default0" indices="0" />
-        </Node>
-        <Node name="CollisionNode" gravity="0 -9.81 0">
-            <MechanicalObject template="Vec3d" name="default9" restScale="1" position="-1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5" />
-            <MeshTopology name="default10" edges="0 1  1 2  2 3  3 0  1 5  5 4  4 0  5 6  6 7  7 4  2 6  7 3  8 9  9 10  10 11  11 8  9 13  13 12  12 8  13 14  14 15  15 12  10 14  15 11  16 17  17 18  18 19  19 16  17 21  21 20  20 16  21 22  22 23  23 20  18 22  23 19  24 25  25 26  26 27  27 24  25 29  29 28  28 24  29 30  30 31  31 28  26 30  31 27 " triangles="3 1 0  3 2 1  3 6 2  3 7 6  7 5 6  7 4 5  4 1 5  4 0 1  5 1 2  2 6 5  4 7 3  4 3 0  11 9 8  11 10 9  11 14 10  11 15 14  15 13 14  15 12 13  12 9 13  12 8 9  13 9 10  10 14 13  12 15 11  12 11 8  19 17 16  19 18 17  19 22 18  19 23 22  23 21 22  23 20 21  20 17 21  20 16 17  21 17 18  18 22 21  20 23 19  20 19 16  27 25 24  27 26 25  27 30 26  27 31 30  31 29 30  31 28 29  28 25 29  28 24 25  29 25 26  26 30 29  28 31 27  28 27 24 " />
-            <TriangleModel name="default11" />
-            <LineModel name="default12" />
-            <RigidMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default13" repartition="0 8 8 8 8" />
-        </Node>
-        <Node name="VisualNode" gravity="0 -9.81 0">
-            <OglModel template="ExtVec3f" name="Visual" position="-1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5 -1 -0.5 -0.5 -1 0.5 -0.5 -1 0.5 0.5 -1 -0.5 0.5 1 -0.5 -0.5 1 0.5 -0.5 1 0.5 0.5 1 -0.5 0.5" triangles="3 1 0  3 2 1  3 6 2  3 7 6  7 5 6  7 4 5  4 1 5  4 0 1  5 1 2  2 6 5  4 7 3  4 3 0  11 9 8  11 10 9  11 14 10  11 15 14  15 13 14  15 12 13  12 9 13  12 8 9  13 9 10  10 14 13  12 15 11  12 11 8  19 17 16  19 18 17  19 22 18  19 23 22  23 21 22  23 20 21  20 17 21  20 16 17  21 17 18  18 22 21  20 23 19  20 19 16  27 25 24  27 26 25  27 30 26  27 31 30  31 29 30  31 28 29  28 25 29  28 24 25  29 25 26  26 30 29  28 31 27  28 27 24 " />
-            <RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="default21" object1="../.." object2="Visual" repartition="0 8 8 8 8" />
-        </Node>
-    </Node>
+<?xml version="1.0"?>
+<!-- Example scene for FixedLMConstraint : demonstrate the usage to fix a rigidObject as well as how to fix some mapped DOFS. 
+The outcome of this scene is a still object. The MechanicalObject is comprised by two Rigids connected with a jointspring. The first end is Fixed through the FixedLMConstraint on rigid. The second end is fixed as well, but because all the dofs that are mapped to this end are fixed as well. -->   
+
+<Node 	name="Root" dt="0.02"  >
+  <VisualStyle displayFlags="showCollisionModels showBehaviorModels" />
+	<EulerImplicitSolver  />
+	<CGLinearSolver  />
+	<LMConstraintSolver  />
+	<MechanicalObject template="Rigid" position="0 -1 0 0 0 0 1 0 1 0 0 0 0 1" />
+	<UniformMass template="Rigid"  />
+	<JointSpringForceField template="Rigid" name="jointSpringFF2"  spring="BEGIN_SPRING  0 1  REST_T 0 0.5 0 END_SPRING
+" />
+	<FixedLMConstraint template="Rigid"   indices="0" /> 
+	<Node>
+		<MeshObjLoader name="loader"  filename="mesh/cube.obj" />
+		<MeshTopology  src="@loader" />
+		<MechanicalObject  />
+    <TriangleModel />
+    <FixedLMConstraint indices="4 5 6 7"/>
+    <RigidMapping input="@.." output="@." repartition="4 4" />
+	</Node>
 </Node>
