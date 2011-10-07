@@ -24,8 +24,6 @@ HEADERS += mapping/BeamLinearMapping.h \
            mapping/TubularMapping.h \
            mapping/TubularMapping.inl \
            mapping/VoidMapping.h \
-           mapping/BeamBsplineMapping.h \
-           mapping/BeamBsplineMapping.inl \
            mapping/DiscreteBeamBsplineMapping.h \
            mapping/DiscreteBeamBsplineMapping.inl
 
@@ -39,7 +37,6 @@ SOURCES += mapping/BeamLinearMapping.cpp \
            mapping/SubsetMultiMapping.cpp \
            mapping/TubularMapping.cpp \
            mapping/VoidMapping.cpp \
-           mapping/BeamBsplineMapping.cpp \
            mapping/DiscreteBeamBsplineMapping.cpp \
            mapping/BarycentricMappingRigid.cpp
 

@@ -118,8 +118,8 @@ declare(sofagpucuda, modules/sofa/gpu/cuda, sofahelper csparse cudpp taucs taucs
 # Applications
 ######################################################################
 #----- Sofa -----#
-declare(sofagui,     applications/sofa/gui/libgui.pro,     sofa_component)
-declare(sofaguiqt,   applications/sofa/gui/qt,             sofagui qwt QGLViewer)
+declare(sofagui,     applications/sofa/gui/libgui.pro,     sofa_graph_component sofa_base_collision sofa_user_interaction)
+declare(sofaguiqt,   applications/sofa/gui/qt,             sofagui qwt QGLViewer sofa_base_visual sofa_exporter sofa_loader sofa_opengl_visual)
 declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut sofa_component sofagpucuda)
 declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
 declare(sofaguifltk, applications/sofa/gui/fltk,           sofaguiqt fltk)
