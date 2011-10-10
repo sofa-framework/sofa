@@ -251,13 +251,6 @@ public:
     {
         model->draw(vparams,index);
     }
-#ifndef SOFA_DEPRECATE_OLD_API
-    void draw()
-    {
-        model->draw(index);
-    }
-#endif
-
     /// @}
 
 

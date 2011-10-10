@@ -31,7 +31,6 @@
 #include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/component/collision/BaseContactMapper.h>
-#include <sofa/component/collision/RigidContactMapper.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 

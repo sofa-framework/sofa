@@ -54,7 +54,7 @@ typedef container::DistanceGrid DistanceGrid;
 
 class SOFA_BASE_COLLISION_API RigidDistanceGridCollisionModel;
 
-class RigidDistanceGridCollisionElement : public core::TCollisionElementIterator<RigidDistanceGridCollisionModel>
+class SOFA_BASE_COLLISION_API RigidDistanceGridCollisionElement : public core::TCollisionElementIterator<RigidDistanceGridCollisionModel>
 {
 public:
 
@@ -197,7 +197,7 @@ public:
     /// @}
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+//    void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 
     /// Update transformation matrices from current rigid state
     void updateState();
@@ -209,7 +209,7 @@ public:
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0);
 
-    void draw(const core::visual::VisualParams*,int index);
+    void draw(const core::visual::VisualParams*, int index);
 
     void draw(const core::visual::VisualParams* vparams);
 };
@@ -238,7 +238,7 @@ inline double RigidDistanceGridCollisionElement::getPrevDt() { return model->get
 
 inline void RigidDistanceGridCollisionElement::setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
 {
-    return model->setNewState(dt, grid, rotation, translation);
+    return model->setNewState(this->getIndex(), dt, grid, rotation, translation);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
