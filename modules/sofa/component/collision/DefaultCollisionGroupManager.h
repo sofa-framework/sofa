@@ -40,7 +40,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_MESH_COLLISION_API DefaultCollisionGroupManager : public core::collision::CollisionGroupManager
+class SOFA_MISC_COLLISION_API DefaultCollisionGroupManager : public core::collision::CollisionGroupManager
 {
 public:
     SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::collision::CollisionGroupManager);
