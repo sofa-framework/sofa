@@ -43,9 +43,14 @@ class TagSet;
 }
 namespace component
 {
+namespace container
+{
+template< class T > class MechanicalObject;
+} // namespace container
 
 namespace collision
 {
+
 struct BodyPicked;
 
 class AttachBodyPerformerConfiguration
