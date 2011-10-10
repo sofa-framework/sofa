@@ -30,7 +30,7 @@
 #ifdef SOFA_DEV
 #include <sofa/gpu/cuda/CudaDiagonalMatrix.h>
 #include <sofa/gpu/cuda/CudaRotationMatrix.h>
-#include <sofa/component/linearsolver/RotationMatrix.h>
+#include <sofa/core/behavior/RotationMatrix.h>
 #endif // SOFA_DEV
 namespace sofa
 {
