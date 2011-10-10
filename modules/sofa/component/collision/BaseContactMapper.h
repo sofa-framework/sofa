@@ -26,10 +26,24 @@
 #define SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/container/MechanicalObject.h>
+//#include <sofa/component/container/MechanicalObject.h>
+
+#include <sofa/helper/Factory.h>
+
+#include <sofa/component/component.h>
 
 namespace sofa
 {
+
+namespace core
+{
+
+namespace behavior
+{
+template <class T> class MechanicalState;
+} // namespace behavior
+
+} // namespace core
 
 namespace component
 {

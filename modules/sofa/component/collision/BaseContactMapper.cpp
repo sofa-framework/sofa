@@ -24,8 +24,11 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP
 
-#include <sofa/component/collision/BarycentricContactMapper.inl>
+#include <sofa/component/collision/BaseContactMapper.h>
+
 #include <sofa/helper/Factory.inl>
+
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
