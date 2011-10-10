@@ -70,6 +70,7 @@ public:
     typedef vector<index_type>                  SetIndex;
     typedef vector<index_type>                  SetIndices;
 
+    typedef fixed_array<PointID,1>              Point;
     typedef fixed_array<PointID,2>              Edge;
     typedef fixed_array<PointID,3>              Triangle;
     typedef fixed_array<PointID,4>              Quad;

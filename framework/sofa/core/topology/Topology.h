@@ -153,10 +153,10 @@ public:
 
 /** A class that define topological Data general methods*/
 template < class T = void* >
-class TopologicalData : public sofa::core::objectmodel::Data <T>
+class BaseTopologyData : public sofa::core::objectmodel::Data <T>
 {
 public:
-    //SOFA_CLASS(SOFA_TEMPLATE2(TopologicalData,T,VecT), SOFA_TEMPLATE(sofa::core::objectmodel::Data, T));
+    //SOFA_CLASS(SOFA_TEMPLATE2(BaseTopologyData,T,VecT), SOFA_TEMPLATE(sofa::core::objectmodel::Data, T));
 
     class InitData : public sofa::core::objectmodel::BaseData::BaseInitData
     {
@@ -171,7 +171,7 @@ public:
     /** Constructor
         this constructor should be used through the initData() methods
      */
-    explicit TopologicalData(const sofa::core::objectmodel::BaseData::BaseInitData& init)
+    explicit BaseTopologyData(const sofa::core::objectmodel::BaseData::BaseInitData& init)
         : Data<T>(init)
     {
     }
@@ -179,7 +179,7 @@ public:
     /** Constructor
         this constructor should be used through the initData() methods
      */
-    explicit TopologicalData(const InitData& init)
+    explicit BaseTopologyData(const InitData& init)
         : Data<T>(init)
     {
     }
@@ -188,7 +188,7 @@ public:
     /** Constructor
     \param helpMsg help on the field
      */
-    TopologicalData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, sofa::core::objectmodel::Base* owner=NULL, const char* name="")
+    BaseTopologyData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, sofa::core::objectmodel::Base* owner=NULL, const char* name="")
         : Data<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
     {
 
@@ -198,7 +198,7 @@ public:
     \param value default value
     \param helpMsg help on the field
      */
-    TopologicalData( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, sofa::core::objectmodel::Base* owner=NULL, const char* name="")
+    BaseTopologyData( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, sofa::core::objectmodel::Base* owner=NULL, const char* name="")
         : Data<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
     {
     }
@@ -343,6 +343,13 @@ public:
     const std::string& getName() const { return m_name; }
 
     void setName(const std::string& name) { m_name=name; }
+
+    virtual void linkToPointDataArray() {}
+    virtual void linkToEdgeDataArray() {}
+    virtual void linkToTriangleDataArray() {}
+    virtual void linkToQuadDataArray() {}
+    virtual void linkToTetrahedronDataArray() {}
+    virtual void linkToHexahedronDataArray() {}
 
 protected:
     /// Data handle by the topological engine
