@@ -40,9 +40,7 @@
 #include <sofa/component/topology/PointData.inl>
 #include <iostream>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/core/loader/MeshLoader.h>
-
-
+#include <sofa/component/loader/MeshObjLoader.h>
 namespace sofa
 {
 
@@ -191,18 +189,17 @@ void FrameBlendingMapping<TIn, TOut>::init()
 
 
     // Get the topology of toModel
-    sofa::core::loader::MeshLoader *meshLoader;
-    this->getContext()->get( meshLoader, core::objectmodel::BaseContext::Local);
-    if (meshLoader)
+    sofa::component::loader::MeshObjLoader *meshobjLoader;
+    this->getContext()->get( meshobjLoader, core::objectmodel::BaseContext::Local);
+    if (meshobjLoader)
     {
-
-        triangles.assign(meshLoader->triangles.getValue().begin(),meshLoader->triangles.getValue().end());
-        trianglesGroups.assign(meshLoader->trianglesGroups.getValue().begin(),meshLoader->trianglesGroups.getValue().end());
+        triangles.assign(meshobjLoader->triangles.getValue().begin(),meshobjLoader->triangles.getValue().end());
+        trianglesGroups.assign(meshobjLoader->trianglesGroups.getValue().begin(),meshobjLoader->trianglesGroups.getValue().end());
         std::cout<<"FrameBlendingMapping: Import triangle groups: ";
         for(unsigned int i=0; i<	trianglesGroups.size(); i++) std::cout<<		trianglesGroups[i]<<",";
         std::cout<<std::endl;
-
     }
+
     if(triangles.size() && trianglesGroups.size())
     {
         vector<unsigned int>& groups = *(f_groups.beginEdit());
@@ -1097,25 +1094,25 @@ void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
     // Display def tensor values for each points
     if ( this->showDefTensorsValues.getValue())
     {
-    char txt[100];
-    glColor3f( 0.5, 0.5, 0.5);
-    for ( unsigned int i=0;i<xto.size();i++ )
-    {
-    const Vec6& e = this->deformationTensors[i];
-    sprintf( txt, "( %i, %i, %i)", (int)(e[0]*scale), (int)(e[1]*scale), (int)(e[2]*scale));
-    sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
-    }
+        char txt[100];
+        glColor3f( 0.5, 0.5, 0.5);
+        for ( unsigned int i=0;i<xto.size();i++ )
+        {
+            const Vec6& e = this->deformationTensors[i];
+            sprintf( txt, "( %i, %i, %i)", (int)(e[0]*scale), (int)(e[1]*scale), (int)(e[2]*scale));
+            sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
+        }
     }
     */
 
     // Deformation tensor show
     if ( this->showStrain.getValue())
     {
-        if (!this->isPhysical)
-        {
-            serr << "The Frame Blending Mapping must be physical to display the strain tensors." << sendl;
-        }
-        else
+        //               if (!this->isPhysical)
+        //               {
+        //                   serr << "The Frame Blending Mapping must be physical to display the strain tensors." << sendl;
+        //}
+        //               else
         {
             glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
             glDisable( GL_LIGHTING);
@@ -1130,13 +1127,42 @@ void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
                         const unsigned int& indexP = triangles[i][j];
                         Vec3 e(0,0,0);
                         // (Ft * F - I) /2.0
-                        for (unsigned int k = 0; k < 3; ++k)
+
+                        if (!this->isPhysical) // create and map a def gradient
                         {
-                            for (unsigned int l = 0; l < 3; ++l)
-                                e[k] += xto[indexP][3+3*l+k]*xto[indexP][3+3*l+k];
-                            e[k] -= 1.0;
-                            e[k] /= 2.0;
+                            typedef typename defaulttype::DeformationGradientTypes<num_spatial_dimensions,num_material_dimensions,1,InReal> DefGrad1;
+                            typename DefGrad1::Coord out0,out;
+                            DefGrad1::set( out0, this->f_initPos.getValue()[indexP][0], this->f_initPos.getValue()[indexP][1], this->f_initPos.getValue()[indexP][2]);
+
+                            if(useDQ.getValue())
+                            {
+                                defaulttype::DualQuatBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > map;
+                                map.init(out0,f_index.getValue()[indexP],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weight.getValue()[indexP],weightDeriv.getValue()[indexP],weightDeriv2.getValue()[indexP]);
+                                out = map.apply( xfrom );
+                            }
+                            else
+                            {
+                                defaulttype::LinearBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > map;
+                                map.init(out0,f_index.getValue()[indexP],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weight.getValue()[indexP],weightDeriv.getValue()[indexP],weightDeriv2.getValue()[indexP]);
+                                out = map.apply( xfrom );
+                            }
+
+                            for (unsigned int k = 0; k < 3; ++k)
+                            {
+                                for (unsigned int l = 0; l < 3; ++l)
+                                    e[k] += out[3+3*l+k]*out[3+3*l+k];
+                                e[k] -= 1.0;
+                                e[k] /= 2.0;
+                            }
                         }
+                        else
+                            for (unsigned int k = 0; k < 3; ++k)
+                            {
+                                for (unsigned int l = 0; l < 3; ++l)
+                                    e[k] += xto[indexP][3+3*l+k]*xto[indexP][3+3*l+k];
+                                e[k] -= 1.0;
+                                e[k] /= 2.0;
+                            }
                         float color = ( e[0] + e[1] + e[2])/3.0;
                         if (color<0) color=2*color/(color+1.);
                         color*=1000 * this->showStrainScaleFactor.getValue();
@@ -1157,13 +1183,43 @@ void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
                 {
                     Vec3 e(0,0,0);
                     // (Ft * F - I) /2.0
-                    for (unsigned int k = 0; k < 3; ++k)
+
+                    if (!this->isPhysical) // create and map a def gradient
                     {
-                        for (unsigned int l = 0; l < 3; ++l)
-                            e[k] += xto[i][3+3*l+k]*xto[i][3+3*l+k];
-                        e[k] -= 1.0;
-                        e[k] /= 2.0;
+                        typedef typename defaulttype::DeformationGradientTypes<num_spatial_dimensions,num_material_dimensions,1,InReal> DefGrad1;
+                        typename DefGrad1::Coord out0,out;
+                        DefGrad1::set( out0, this->f_initPos.getValue()[i][0], this->f_initPos.getValue()[i][1], this->f_initPos.getValue()[i][2]);
+
+                        if(useDQ.getValue())
+                        {
+                            defaulttype::DualQuatBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > map;
+                            map.init(out0,f_index.getValue()[i],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weight.getValue()[i],weightDeriv.getValue()[i],weightDeriv2.getValue()[i]);
+                            out = map.apply( xfrom );
+                        }
+                        else
+                        {
+                            defaulttype::LinearBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > map;
+                            map.init(out0,f_index.getValue()[i],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weight.getValue()[i],weightDeriv.getValue()[i],weightDeriv2.getValue()[i]);
+                            out = map.apply( xfrom );
+                        }
+
+                        for (unsigned int k = 0; k < 3; ++k)
+                        {
+                            for (unsigned int l = 0; l < 3; ++l)
+                                e[k] += out[3+3*l+k]*out[3+3*l+k];
+                            e[k] -= 1.0;
+                            e[k] /= 2.0;
+                        }
                     }
+                    else
+                        for (unsigned int k = 0; k < 3; ++k)
+                        {
+                            for (unsigned int l = 0; l < 3; ++l)
+                                e[k] += xto[i][3+3*l+k]*xto[i][3+3*l+k];
+                            e[k] -= 1.0;
+                            e[k] /= 2.0;
+                        }
+
                     float color = ( e[0] + e[1] + e[2])/3.0;
                     if (color<0) color=2*color/(color+1.);
                     color*=1000 * this->showStrainScaleFactor.getValue();
@@ -1378,33 +1434,33 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
         ReadAccessor<Data<vector<Vec<nbRef,InReal> > > > m_weights ( weight );
         for (unsigned int i = 0; i < this->addedFrameIndices.size();)
         {
-        // Check all the elastons mapped by this frame.
-        double criteria = 0;
-        unsigned int nbElastons = 0;
-        for (unsigned int j = 0; j < index.size(); ++j)
-        {
-        for (unsigned int ref = 0; ref < nbRef; ++ref)
-        {
-        if ( index[j][ref] == this->addedFrameIndices[i] && m_weights[j][ref] != 0) // If this elaston is mapped by the frame
-        {
-        double elastonCriteria = 0;
-        for (unsigned int k = num_spatial_dimensions+9; k < OutCoord::total_size; ++k) // Check if the second order terms are < epsilon
-        elastonCriteria += out[i][k] * out[i][k];
-        criteria += sqrt( elastonCriteria) * pow (gridMaterial->getVolumeForVoronoi(j), 1/3.0);
-        nbElastons++;
-        }
-        }
-        }
-        criteria /= nbElastons;
+            // Check all the elastons mapped by this frame.
+            double criteria = 0;
+            unsigned int nbElastons = 0;
+            for (unsigned int j = 0; j < index.size(); ++j)
+            {
+                for (unsigned int ref = 0; ref < nbRef; ++ref)
+                {
+                    if ( index[j][ref] == this->addedFrameIndices[i] && m_weights[j][ref] != 0) // If this elaston is mapped by the frame
+                    {
+                        double elastonCriteria = 0;
+                        for (unsigned int k = num_spatial_dimensions+9; k < OutCoord::total_size; ++k) // Check if the second order terms are < epsilon
+                            elastonCriteria += out[i][k] * out[i][k];
+                        criteria += sqrt( elastonCriteria) * pow (gridMaterial->getVolumeForVoronoi(j), 1/3.0);
+                        nbElastons++;
+                    }
+                }
+            }
+            criteria /= nbElastons;
 
-        serr << "removal criteria[" << i << "]: " << criteria << sendl;
+            serr << "removal criteria[" << i << "]: " << criteria << sendl;
 
-        if (criteria < this->adaptativeCriteria.getValue())
-        {
-        removeFrame (i);
-        dofModified = true;
-        }
-        else ++i;
+            if (criteria < this->adaptativeCriteria.getValue())
+            {
+                removeFrame (i);
+                dofModified = true;
+            }
+            else ++i;
         }
         //*/
     }
