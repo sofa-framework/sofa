@@ -146,39 +146,14 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
-    {
-
-        PointInfo & Pi = m_pointInfo[pointIndex];
-        if(&Pi==NULL)
-        {
-            serr<<"Pi == NULL"<<sendl;
-            return true;
-        }
-
-        if(this->isRigid())
-        {
-            // filter is precomputed in the rest position
-            defaulttype::Vector3 PQtest;
-            PQtest = pos->getOrientation().inverseRotate(PQ);
-            return Pi.validate(pointIndex,PQtest);
-        }
-        //else
-
-        return Pi.validate(pointIndex,PQ);
-    }
+    bool validPoint(const int pointIndex, const defaulttype::Vector3 &PQ);
 
 
 
     /**
      * @brief Line Collision Primitive validation method.
      */
-    bool validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        //const Edge& bmt->getEdge(lineIndex);
-        // m_lineInfo[edgeIndex].validate(lineIndex, PQ);
-        return true;
-    }
+    bool validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/);
 
     //@}
 

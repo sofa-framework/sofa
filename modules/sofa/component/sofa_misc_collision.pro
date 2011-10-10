@@ -5,10 +5,7 @@ TARGET = sofa_misc_collision
 
 DEFINES += SOFA_BUILD_MISC_COLLISION
 
-HEADERS += collision/TetrahedronModel.h \
-           collision/SpatialGridPointModel.h \
-           collision/SphereTreeModel.h \
-           collision/TriangleModelInRegularGrid.h \
+HEADERS += collision/TriangleModelInRegularGrid.h \
            collision/RigidContactMapper.h \
            collision/RigidContactMapper.inl \
            collision/TreeCollisionGroupManager.h \
@@ -16,10 +13,7 @@ HEADERS += collision/TetrahedronModel.h \
            collision/DefaultCollisionGroupManager.h \
            collision/SolverMerger.h
 
-SOURCES += collision/TetrahedronModel.cpp \
-           collision/SpatialGridPointModel.cpp \
-           collision/SphereTreeModel.cpp \
-           collision/TriangleModelInRegularGrid.cpp \
+SOURCES += collision/TriangleModelInRegularGrid.cpp \
            collision/RigidContactMapper.cpp \
            collision/TreeCollisionGroupManager.cpp \
            collision/RuleBasedContactManager.cpp \
