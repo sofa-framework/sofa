@@ -9,10 +9,6 @@ HEADERS += collision/LocalMinDistance.h \
            collision/LocalMinDistance.inl \
            collision/LMDNewProximityIntersection.h \
            collision/LMDNewProximityIntersection.inl \
-           collision/LineLocalMinDistanceFilter.h \
-           collision/LocalMinDistanceFilter.h \
-           collision/PointLocalMinDistanceFilter.h \
-           collision/TriangleLocalMinDistanceFilter.h \
            collision/FrictionContact.h \
            collision/FrictionContact.inl \
            constraintset/UnilateralInteractionConstraint.h \
@@ -30,9 +26,6 @@ HEADERS += collision/LocalMinDistance.h \
 
 SOURCES += collision/LocalMinDistance.cpp \
            collision/LMDNewProximityIntersection.cpp \
-           collision/LineLocalMinDistanceFilter.cpp \
-           collision/PointLocalMinDistanceFilter.cpp \
-           collision/TriangleLocalMinDistanceFilter.cpp \
            collision/FrictionContact.cpp \
            constraintset/UnilateralInteractionConstraint.cpp \
            constraintset/UncoupledConstraintCorrection.cpp \
