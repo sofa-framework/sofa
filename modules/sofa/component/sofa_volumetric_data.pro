@@ -5,20 +5,16 @@ TARGET = sofa_volumetric_data
 
 DEFINES += SOFA_BUILD_VOLUMETRIC_DATA
 
-HEADERS += collision/DistanceGridCollisionModel.h \
-           container/ImplicitSurfaceContainer.h \
+HEADERS += container/ImplicitSurfaceContainer.h \
            container/InterpolatedImplicitSurface.h \
            container/InterpolatedImplicitSurface.inl \
-           container/DistanceGrid.h \
            forcefield/DistanceGridForceField.h \
            forcefield/DistanceGridForceField.inl \
            mapping/ImplicitSurfaceMapping.h \
            mapping/ImplicitSurfaceMapping.inl
 
-SOURCES += collision/DistanceGridCollisionModel.cpp \
-           container/ImplicitSurfaceContainer.cpp \
+SOURCES += container/ImplicitSurfaceContainer.cpp \
            container/InterpolatedImplicitSurface.cpp \
-           container/DistanceGrid.cpp \
            forcefield/DistanceGridForceField.cpp \
            mapping/ImplicitSurfaceMapping.cpp
 
