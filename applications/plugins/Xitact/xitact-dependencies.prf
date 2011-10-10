@@ -4,6 +4,6 @@ includeOnce($$_FILE_) {
 	}
 	#declare(XiRobot, applications/plugins/Xitact)
 	#declare(XitactPlugin, applications/plugins/Xitact, sofacore sofacomponentcontroller sofaguimain XiRobot sofaguiqt)
-	declare(XitactPlugin, applications/plugins/Xitact, sofacomponent sofagui sofaguiqt)
+	declare(XitactPlugin, applications/plugins/Xitact, sofa_component sofagui sofaguiqt)
 	enable(XitactPlugin)
 }
