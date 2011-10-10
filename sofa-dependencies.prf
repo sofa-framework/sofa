@@ -231,7 +231,9 @@ enable(sofa_user_interaction)
 enable(sofa_constraint)
 enable(sofa_haptics)
 enable(sofa_dense_solver)
-enable(sofa_sparse_solver)
+contains(DEFINES, SOFA_HAVE_CSPARSE) {
+	enable(sofa_sparse_solver)
+}
 enable(sofa_preconditioner)
 enable(sofa_opengl_visual)
 enable(sofa_eulerian_fluid)
