@@ -90,7 +90,13 @@ HEADERS += topology/CommonAlgorithms.h \
            topology/TetrahedronSubsetData.h \
            topology/TetrahedronSubsetData.inl \
            topology/HexahedronSubsetData.h \
-           topology/HexahedronSubsetData.inl
+           topology/HexahedronSubsetData.inl \
+           topology/TopologyData.h \
+           topology/TopologyData.inl \
+           topology/TopologySparseData.h \
+           topology/TopologySparseData.inl \
+           topology/TopologySubsetData.h \
+           topology/TopologySubsetData.inl
 
 SOURCES += topology/CubeTopology.cpp \
            topology/CylinderGridTopology.cpp \

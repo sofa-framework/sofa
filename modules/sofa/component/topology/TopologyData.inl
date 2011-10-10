@@ -77,6 +77,7 @@ void TopologyData <TopologyElementType, VecT>::addInputData(sofa::core::objectmo
 }
 
 
+// WARNING: This function is deprecated
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::handleTopologyEvents( std::list< const core::topology::TopologyChange *>::const_iterator changeIt,
         std::list< const core::topology::TopologyChange *>::const_iterator &end )
