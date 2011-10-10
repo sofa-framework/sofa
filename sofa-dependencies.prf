@@ -93,7 +93,7 @@ declare(sofa_misc_topology, modules/sofa/component/sofa_misc_topology.pro, sofa_
 declare(sofa_misc_topology_dev, modules/sofa/component/sofa_misc_topology_dev.pro, sofa_non_uniform_fem zlib)
 declare(sofa_misc_mapping, modules/sofa/component/sofa_misc_mapping.pro, sofa_simple_fem sofa_rigid)
 declare(sofa_misc_mapping_dev, modules/sofa/component/sofa_misc_mapping_dev.pro, sofa_simple_fem)
-declare(sofa_misc_forcefield, modules/sofa/component/sofa_misc_forcefield.pro, sofa_boundary_condition sofa_preconditioner sofa_misc_topology)
+declare(sofa_misc_forcefield, modules/sofa/component/sofa_misc_forcefield.pro, sofa_deformable sofa_boundary_condition sofa_preconditioner sofa_misc_topology)
 declare(sofa_misc_forcefield_dev, modules/sofa/component/sofa_misc_forcefield_dev.pro, sofa_boundary_condition sofa_preconditioner sofa_misc_topology)
 declare(sofa_misc_fem, modules/sofa/component/sofa_misc_fem.pro, sofa_advanced_fem)
 declare(sofa_misc_fem_dev, modules/sofa/component/sofa_misc_fem_dev.pro, sofa_advanced_fem)
@@ -118,7 +118,7 @@ declare(sofagpucuda, modules/sofa/gpu/cuda, sofahelper sofa_engine sofa_advanced
 # Applications
 ######################################################################
 #----- Sofa -----#
-declare(sofagui,     applications/sofa/gui/libgui.pro,     sofa_graph_component sofa_base_collision sofa_user_interaction)
+declare(sofagui,     applications/sofa/gui/libgui.pro,     sofa_graph_component sofa_base_collision sofa_user_interaction sofa_advanced_interaction)
 declare(sofaguiqt,   applications/sofa/gui/qt,             sofagui qwt QGLViewer sofa_base_visual sofa_exporter sofa_loader sofa_opengl_visual)
 declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut sofa_component sofagpucuda)
 declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
