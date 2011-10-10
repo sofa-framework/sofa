@@ -9,7 +9,6 @@ HEADERS += collision/TetrahedronModel.h \
            collision/SpatialGridPointModel.h \
            collision/SphereTreeModel.h \
            collision/TriangleModelInRegularGrid.h \
-           collision/ContinuousIntersection.h \
            collision/RigidContactMapper.h \
            collision/RigidContactMapper.inl \
            collision/TreeCollisionGroupManager.h \
@@ -21,13 +20,20 @@ SOURCES += collision/TetrahedronModel.cpp \
            collision/SpatialGridPointModel.cpp \
            collision/SphereTreeModel.cpp \
            collision/TriangleModelInRegularGrid.cpp \
-           collision/ContinuousIntersection.cpp \
            collision/RigidContactMapper.cpp \
            collision/TreeCollisionGroupManager.cpp \
            collision/RuleBasedContactManager.cpp \
            collision/DefaultCollisionGroupManager.cpp \
            collision/SolverMerger.cpp
 
+
+contains(DEFINES,SOFA_DEV){
+
+HEADERS += collision/ContinuousIntersection.h \
+
+SOURCES += collision/ContinuousIntersection.cpp \
+
+}
 
 contains(DEFINES,SOFA_SMP){
 HEADERS += collision/ParallelCollisionPipeline.h

@@ -20,11 +20,6 @@ HEADERS += forcefield/NonUniformHexahedralFEMForceFieldAndMass.h \
            topology/MultilevelHexahedronSetTopologyContainer.h \
            topology/SparseGridMultipleTopology.h \
            topology/SparseGridRamificationTopology.h \
-           topology/MultilevelHexahedronSetGeometryAlgorithms.h \
-           topology/MultilevelHexahedronSetGeometryAlgorithms.inl \
-           topology/MultilevelHexahedronSetTopologyAlgorithms.h \
-           topology/MultilevelHexahedronSetTopologyAlgorithms.inl \
-           topology/MultilevelHexahedronSetTopologyModifier.h \
            forcefield/HexahedronCompositeFEMForceFieldAndMass.h \
            forcefield/HexahedronCompositeFEMForceFieldAndMass.inl \
            mapping/HexahedronCompositeFEMMapping.h \
@@ -33,18 +28,26 @@ HEADERS += forcefield/NonUniformHexahedralFEMForceFieldAndMass.h \
 SOURCES += forcefield/NonUniformHexahedralFEMForceFieldAndMass.cpp \
            forcefield/NonUniformHexahedronFEMForceFieldAndMass.cpp \
            forcefield/NonUniformHexahedronFEMForceFieldDensity.cpp \
+           topology/MultilevelHexahedronSetTopologyContainer.cpp \
            topology/DynamicSparseGridGeometryAlgorithms.cpp \
            topology/DynamicSparseGridTopologyAlgorithms.cpp \
            topology/DynamicSparseGridTopologyContainer.cpp \
            topology/DynamicSparseGridTopologyModifier.cpp \
-           topology/MultilevelHexahedronSetTopologyContainer.cpp \
            topology/SparseGridMultipleTopology.cpp \
            topology/SparseGridRamificationTopology.cpp \
-           topology/MultilevelHexahedronSetGeometryAlgorithms.cpp \
-           topology/MultilevelHexahedronSetTopologyAlgorithms.cpp \
-           topology/MultilevelHexahedronSetTopologyModifier.cpp \
            forcefield/HexahedronCompositeFEMForceFieldAndMass.cpp \
            mapping/HexahedronCompositeFEMMapping.cpp
+
+contains(DEFINES,SOFA_DEV){
+HEADERS += topology/MultilevelHexahedronSetGeometryAlgorithms.h \
+           topology/MultilevelHexahedronSetGeometryAlgorithms.inl \
+           topology/MultilevelHexahedronSetTopologyAlgorithms.h \
+           topology/MultilevelHexahedronSetTopologyAlgorithms.inl \
+           topology/MultilevelHexahedronSetTopologyModifier.h \
+
+SOURCES += topology/MultilevelHexahedronSetGeometryAlgorithms.cpp \
+           topology/MultilevelHexahedronSetTopologyAlgorithms.cpp \
+           topology/MultilevelHexahedronSetTopologyModifier.cpp \
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){
 HEADERS += forcefield/NonUniformHexahedralFEMForceFieldAndMassCorrected.h \
@@ -62,6 +65,11 @@ SOURCES += topology/Hexa2TriangleTopologicalMapping.cpp \
            topology/MultilevelHexaTopologicalMapping.cpp \
            topology/MultilevelHexa2TriangleTopologicalMapping.cpp
 }
+
+
+}
+
+
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
