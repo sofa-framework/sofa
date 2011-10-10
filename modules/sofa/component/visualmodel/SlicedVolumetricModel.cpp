@@ -119,7 +119,7 @@ void SlicedVolumetricModel::init()
     {
         _minBBox[0]=_minBBox[1]=_minBBox[2]=999999999;
         _maxBBox[0]=_maxBBox[1]=_maxBBox[2]=-999999999;
-        _mstate->addBBox(_minBBox, _maxBBox);
+
     }
 
     _nbPlanesOld = _nbPlanes.getValue();

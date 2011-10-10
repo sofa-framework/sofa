@@ -82,7 +82,7 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    virtual bool addBBox(double* minBBox, double* maxBBox);
+    virtual void computeBBox(const core::ExecParams* /* params */);
 
     virtual void updateVisual();
 

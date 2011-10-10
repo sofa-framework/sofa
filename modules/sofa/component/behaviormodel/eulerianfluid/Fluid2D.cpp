@@ -29,6 +29,7 @@
 #include <iostream>
 #include <string.h>
 #include <sofa/helper/MarchingCubeUtility.h> // for marching cube tables
+#include <sofa/defaulttype/BoundingBox.h>
 
 namespace sofa
 {
@@ -412,20 +413,21 @@ void Fluid2D::updateVisual()
         points[i].n.normalize();
 }
 
-bool Fluid2D::addBBox(double* minBBox, double* maxBBox)
+void Fluid2D::computeBBox(const core::ExecParams*  params )
 {
-    const int& nx = f_nx.getValue();
-    const int& ny = f_ny.getValue();
-    const real& cellwidth = f_cellwidth.getValue();
+    const int& nx = f_nx.getValue(params);
+    const int& ny = f_ny.getValue(params);
+    const real& cellwidth = f_cellwidth.getValue(params);
 
+    SReal maxBBox[3];
     SReal size[3] = { (nx-1)*cellwidth, (ny-1)*cellwidth, cellwidth/2 };
-    SReal pos[3] = { -size[0]/2, -size[1]/2, 0 };
+    SReal minBBox[3] = { -size[0]/2, -size[1]/2, 0 };
     for (int c=0; c<3; c++)
     {
-        if (minBBox[c] > pos[c]        ) minBBox[c] = pos[c];
-        if (maxBBox[c] < pos[c]+size[c]) maxBBox[c] = pos[c]+size[c];
+        maxBBox[c] = minBBox[c]+size[c];
     }
-    return true;
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+
 }
 
 } // namespace eulerianfluid

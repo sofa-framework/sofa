@@ -654,24 +654,6 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
     glEnd();
 }
 
-
-template<class DataTypes>
-bool HexahedralFEMForceFieldAndMass<DataTypes>::addBBox(double* minBBox, double* maxBBox)
-{
-    const VecCoord& x = *this->mstate->getX();
-    for (unsigned int i=0; i<x.size(); i++)
-    {
-        Real p[3] = {0.0, 0.0, 0.0};
-        DataTypes::get(p[0],p[1],p[2],x[i]);
-        for (int c=0; c<3; c++)
-        {
-            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-            if (p[c] < minBBox[c]) minBBox[c] = p[c];
-        }
-    }
-    return true;
-}
-
 } // namespace forcefield
 
 } // namespace component

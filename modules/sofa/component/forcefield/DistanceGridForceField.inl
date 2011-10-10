@@ -525,13 +525,6 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
         vparams->drawTool()->drawTriangles(pointsTet, defaulttype::Vec<4,double>(0.8,0.8,0,0.25));
     }
 }
-
-template <class DataTypes>
-bool DistanceGridForceField<DataTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
-{
-    return false;
-}
-
 } // namespace forcefield
 
 } // namespace component

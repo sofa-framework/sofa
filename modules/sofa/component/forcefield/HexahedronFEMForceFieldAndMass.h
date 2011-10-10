@@ -111,8 +111,6 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    virtual bool addBBox(double* minBBox, double* maxBBox);
-
     virtual void initTextures() { }
 
     virtual void update() { }

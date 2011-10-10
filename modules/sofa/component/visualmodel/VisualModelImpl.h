@@ -447,7 +447,7 @@ public:
     virtual void computeMesh();
     virtual void computeNormals();
     virtual void computeTangents();
-    virtual void computeBBox();
+    virtual void computeBBox(sofa::core::ExecParams* params);
 
     virtual void updateBuffers() {};
 
@@ -459,8 +459,6 @@ public:
     void init();
 
     void initVisual();
-
-    bool addBBox(double* minBBox, double* maxBBox);
 
     /// Append this mesh to an OBJ format stream.
     /// The number of vertices position, normal, and texture coordinates already written is given as parameters

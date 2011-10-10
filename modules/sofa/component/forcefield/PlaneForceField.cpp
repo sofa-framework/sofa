@@ -27,6 +27,7 @@
 #include <sofa/component/forcefield/PlaneForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
+#include <limits>
 
 namespace sofa
 {
@@ -224,11 +225,16 @@ void PlaneForceField<Rigid3dTypes>::rotate( Deriv axe, Real angle )
 
 
 template<>
-bool PlaneForceField<Rigid3dTypes>::addBBox(double* minBBox, double* maxBBox)
+void PlaneForceField<Rigid3dTypes>::computeBBox(const core::ExecParams * params)
 {
-    if (!bDraw.getValue()) return false;
+    if (!bDraw.getValue(params)) return;
 
-    defaulttype::Vec3d normal; normal = planeNormal.getValue().getVCenter();
+    const Real max_real = std::numeric_limits<Real>::max();
+    const Real min_real = std::numeric_limits<Real>::min();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+
+    defaulttype::Vec3d normal; normal = planeNormal.getValue(params).getVCenter();
     double size=10.0;
 
     // find a first vector inside the plane
@@ -257,7 +263,7 @@ bool PlaneForceField<Rigid3dTypes>::addBBox(double* minBBox, double* maxBBox)
             if (corners[i][c] < minBBox[c]) minBBox[c] = corners[i][c];
         }
     }
-    return true;
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 

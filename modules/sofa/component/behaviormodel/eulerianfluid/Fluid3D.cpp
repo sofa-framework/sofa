@@ -28,6 +28,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include <string.h>
+#include <sofa/defaulttype/BoundingBox.h>
+
 namespace sofa
 {
 
@@ -454,18 +456,18 @@ void Fluid3D::updateVisual()
         points[i].n.normalize();
 }
 
-bool Fluid3D::addBBox(double* minBBox, double* maxBBox)
+void Fluid3D::computeBBox(const core::ExecParams*  params )
 {
-    vec3 center = f_center.getValue();
-    const real& cellwidth = f_cellwidth.getValue();
-    SReal size[3] = { (f_nx.getValue()-1)*cellwidth, (f_ny.getValue()-1)*cellwidth, (f_nz.getValue()-1)*cellwidth };
-    SReal pos[3] = { center[0]-size[0]/2, center[1]-size[1]/2, center[2]-size[2]/2 };
+    vec3 center = f_center.getValue(params);
+    const real& cellwidth = f_cellwidth.getValue(params);
+    SReal size[3] = { (f_nx.getValue()-1)*cellwidth, (f_ny.getValue(params)-1)*cellwidth, (f_nz.getValue(params)-1)*cellwidth };
+    SReal minBBox[3] = { center[0]-size[0]/2, center[1]-size[1]/2, center[2]-size[2]/2 };
+    SReal maxBBox[3];
     for (int c=0; c<3; c++)
     {
-        if (minBBox[c] > pos[c]        ) minBBox[c] = pos[c];
-        if (maxBBox[c] < pos[c]+size[c]) maxBBox[c] = pos[c]+size[c];
+        maxBBox[c] = minBBox[c]+size[c];
     }
-    return true;
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
 } // namespace eulerianfluid

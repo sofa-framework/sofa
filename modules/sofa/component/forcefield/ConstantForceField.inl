@@ -264,13 +264,6 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     }
 }
 
-
-template <class DataTypes>
-bool ConstantForceField<DataTypes>::addBBox(double*, double* )
-{
-    return false;
-}
-
 } // namespace forcefield
 
 } // namespace component

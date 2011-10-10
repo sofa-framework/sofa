@@ -220,11 +220,6 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core
     }
 
 }
-// template <>
-//     bool MechanicalObject<Vec1dTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
-// {
-//     return false; // ignore 1D DOFs for 3D bbox
-// }
 
 
 template<> SOFA_BASE_MECHANICS_API

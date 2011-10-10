@@ -123,8 +123,6 @@ public:
     bool isDiagonal() {return true;};
 
     void draw(const core::visual::VisualParams* vparams);
-
-    bool addBBox(double* minBBox, double* maxBBox);
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_UNIFORMMASS_CPP)

@@ -71,7 +71,7 @@ public:
 
     void init();
     void drawTransparent(const core::visual::VisualParams* vparams);
-    bool addBBox(double* minBBox, double* maxBBox);
+    void computeBBox(const core::ExecParams *);
 
     virtual std::string getTemplateName() const
     {
