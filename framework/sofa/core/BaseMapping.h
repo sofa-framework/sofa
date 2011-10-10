@@ -66,6 +66,7 @@ public:
     Data<bool> f_mapForces;
     Data<bool> f_mapConstraints;
     Data<bool> f_mapMasses;
+    Data<bool> f_mapMatrices;
 
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
     virtual void apply (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
@@ -86,6 +87,7 @@ public:
     virtual bool areForcesMapped() const;
     virtual bool areConstraintsMapped() const;
     virtual bool areMassesMapped() const;
+    virtual bool areMatricesMapped() const;
 
     virtual void setForcesMapped(bool b);
     virtual void setConstraintsMapped(bool b);
@@ -116,6 +118,8 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(const MechanicalParams* /*mparams*/);
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
+
+    virtual sofa::defaulttype::BaseMatrix* createMappedMatrix(behavior::BaseMechanicalState* state1, behavior::BaseMechanicalState* state2);
 
     ///<TO REMOVE>
     ///Necessary ?

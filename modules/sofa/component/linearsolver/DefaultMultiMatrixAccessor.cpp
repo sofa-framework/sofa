@@ -93,12 +93,12 @@ void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::
     }
 }
 
-#ifdef SOFA_SUPPORT_CRS_MATRIX
+
 void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mapping)
 {
     const sofa::defaulttype::BaseMatrix* jmatrix = mapping->getJ();
 
-    if (jmatrix != NULL && mapping->isMechanical())
+    if ((jmatrix != NULL) && (mapping->isMechanical()) && (mapping->areMatricesMapped()))
     {
         mappingList.push_back(mapping);
 
@@ -113,11 +113,7 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* m
         std::cout << "	-- Warning DefaultMultiMatrixAccessor : mapping " << mapping->getName()<<" is not mechanical or dont have J matrix " << std::endl;
     }
 }
-#else
-void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* /*mapping*/)
-{
-}
-#endif
+
 
 void DefaultMultiMatrixAccessor::addMappedMechanicalState(const sofa::core::behavior::BaseMechanicalState* /*mstate*/)
 {
