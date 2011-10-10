@@ -116,8 +116,6 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    virtual bool addBBox(double* minBBox, double* maxBBox);
-
 protected:
     virtual void computeElementMasses( ); ///< compute the mass matrices
     Real integrateVolume( int signx, int signy, int signz, Real l0, Real l1, Real l2 );

@@ -28,6 +28,8 @@
 #include "OglTetrahedralModel.h"
 
 #include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/defaulttype/BoundingBox.h>
+#include <limits>
 
 namespace sofa
 {
@@ -142,7 +144,7 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
 }
 
 template<class DataTypes>
-bool OglTetrahedralModel<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params)
 {
     if (nodes && topo)
     {
@@ -150,6 +152,12 @@ bool OglTetrahedralModel<DataTypes>::addBBox(double* minBBox, double* maxBBox)
         core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
         const VecCoord& x = *nodes->getX();
         Coord v;
+
+        const SReal max_real = std::numeric_limits<SReal>::max();
+        const SReal min_real = std::numeric_limits<SReal>::min();
+
+        SReal maxBBox[3] = {min_real,min_real,min_real};
+        SReal minBBox[3] = {max_real,max_real,max_real};
 
         for(it = vec.begin() ; it != vec.end() ; it++)
         {
@@ -166,10 +174,8 @@ bool OglTetrahedralModel<DataTypes>::addBBox(double* minBBox, double* maxBBox)
             }
         }
 
-        return true;
+        this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
     }
-
-    return false;
 }
 
 }

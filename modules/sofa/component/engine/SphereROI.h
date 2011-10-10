@@ -89,8 +89,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    bool addBBox(double* /*minBBox*/, double* /*maxBBox*/) { return false; };
-
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>

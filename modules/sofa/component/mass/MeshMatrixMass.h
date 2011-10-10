@@ -190,8 +190,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    bool addBBox(double* minBBox, double* maxBBox);
-
     /// Answer wether mass matrix is lumped or not
     bool isLumped() { return lumping.getValue(); }
 

@@ -189,8 +189,6 @@ public:
     virtual void resize( int vsize);
     virtual void reserve(int vsize);
 
-    virtual bool addBBox(double* minBBox, double* maxBBox);
-
     int getSize() const { return vsize; }
 
     double getPX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)x; }

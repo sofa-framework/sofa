@@ -33,6 +33,8 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/BoundingBox.h>
+#include <limits>
 
 namespace sofa
 {
@@ -509,9 +511,14 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+void BoxROI<DataTypes>::computeBBox(const core::ExecParams*  params )
 {
-    const helper::vector<Vec6>& vb=boxes.getValue();
+    const helper::vector<Vec6>& vb=boxes.getValue(params);
+    const Real max_real = std::numeric_limits<Real>::max();
+    const Real min_real = std::numeric_limits<Real>::min();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+
     for (unsigned int bi=0; bi<vb.size(); ++bi)
     {
         const Vec6& b=vb[bi];
@@ -522,7 +529,7 @@ bool BoxROI<DataTypes>::addBBox(double* minBBox, double* maxBBox)
         if (b[4] > maxBBox[1]) maxBBox[1] = b[4];
         if (b[5] > maxBBox[2]) maxBBox[2] = b[5];
     }
-    return true;
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 } // namespace engine

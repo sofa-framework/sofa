@@ -243,6 +243,11 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const core::MechanicalPara
     }
 }
 
+template<class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParams * /* vparams */ )
+{
+
+}
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
@@ -296,20 +301,6 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
             }
         }
     }
-}
-
-
-template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* )
-{
-
-}
-
-
-template <class DataTypes>
-bool RestShapeSpringsForceField<DataTypes>::addBBox(double*, double* )
-{
-    return false;
 }
 
 } // namespace forcefield

@@ -91,7 +91,7 @@ public:
 
     virtual void updateVisual();
 
-    virtual bool addBBox(double* minBBox, double* maxBBox);
+    virtual void computeBBox(const core::ExecParams*  params );
 
 protected:
     // marching cube

@@ -431,7 +431,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
     computeNormals();
     computeTangents();
-    computeBBox();
+
 }
 
 bool VisualModelImpl::load(const std::string& filename, const std::string& loader, const std::string& textureName)
@@ -517,10 +517,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             sout << "VisualModel: will use Topology." << sendl;
             useTopology = true;
         }
-        else
-        {
-            computeBBox();
-        }
+
         modified = true;
     }
 
@@ -861,11 +858,11 @@ void VisualModelImpl::computeTangents()
     m_vbitangents.endEdit();
 }
 
-void VisualModelImpl::computeBBox()
+void VisualModelImpl::computeBBox(sofa::core::ExecParams* params)
 {
-    const VecCoord& x = m_vertices.getValue();
-    Vec3f minBBox(1e10,1e10,1e10);
-    Vec3f maxBBox(-1e10,-1e10,-1e10);
+    const VecCoord& x = m_vertices.getValue(params);
+    SReal minBBox[3] = {1e10,1e10,1e10};
+    SReal maxBBox[3] = {-1e10,-1e10,-1e10};
     for (unsigned int i = 0; i < x.size(); i++)
     {
         const Coord& p = x[i];
@@ -875,29 +872,7 @@ void VisualModelImpl::computeBBox()
             if (p[c] < minBBox[c]) minBBox[c] = p[c];
         }
     }
-    bbox[0] = minBBox;
-    bbox[1] = maxBBox;
-}
-
-bool VisualModelImpl::addBBox(double* minBBox, double* maxBBox)
-{
-    if (bbox[0][0] > bbox[1][0]) return false;
-    for (unsigned int i=0; i<xforms.size(); i++)
-    {
-        const Vec3f& center = xforms[i].getCenter();
-        const Quat& orientation = xforms[i].getOrientation();
-        for (int j=0; j<8; j++)
-        {
-            Coord p ( bbox[(j>>0)&1][0], bbox[(j>>1)&1][1], bbox[(j>>2)&1][2]);
-            p = orientation.rotate(p) + center;
-            for (int c=0; c<3; c++)
-            {
-                if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-                if (p[c] < minBBox[c]) minBBox[c] = p[c];
-            }
-        }
-    }
-    return true;
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
 void VisualModelImpl::flipFaces()
@@ -1046,7 +1021,6 @@ void VisualModelImpl::updateVisual()
         computeNormals();
         if (m_updateTangents.getValue())
             computeTangents();
-        computeBBox();
         updateBuffers();
         modified = false;
     }

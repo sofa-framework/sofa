@@ -191,7 +191,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    bool addBBox(double* minBBox, double* maxBBox);
 
     virtual std::string getTemplateName() const
     {
