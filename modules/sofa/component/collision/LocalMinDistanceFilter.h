@@ -46,7 +46,7 @@ class LocalMinDistanceFilter;
  * @brief LocalMinDistance cone information class for an unique collision primitive.
  */
 //template< class TCollisionElement >
-class InfoFilter
+class SOFA_BASE_COLLISION_API InfoFilter
 {
 public:
     /**

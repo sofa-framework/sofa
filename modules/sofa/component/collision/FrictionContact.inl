@@ -31,6 +31,7 @@
 #include <sofa/component/collision/DefaultContactManager.h>
 #include <sofa/component/collision/BarycentricContactMapper.h>
 #include <sofa/component/collision/IdentityContactMapper.h>
+#include <sofa/component/collision/RigidContactMapper.h>
 #include <sofa/simulation/common/Node.h>
 #include <iostream>
 
