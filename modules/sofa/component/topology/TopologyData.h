@@ -285,32 +285,50 @@ public:
 
     /** Public fonction to apply creation and destruction functions */
     /// Apply adding points elements.
-    void applyCreatePointFunction(const sofa::helper::vector<unsigned int> & indices);
+    void applyCreatePointFunction(unsigned int nbElements,
+            const sofa::helper::vector< TopologyElementType >& elem,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing points elements.
     void applyDestroyPointFunction(const sofa::helper::vector<unsigned int> & indices);
 
     /// Apply adding edges elements.
-    void applyCreateEdgeFunction(const sofa::helper::vector<unsigned int> & indices);
+    void applyCreateEdgeFunction(unsigned int nbElements,
+            const sofa::helper::vector< TopologyElementType >& elem,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing edges elements.
     void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int> & indices);
 
     /// Apply adding triangles elements.
-    void applyCreateTriangleFunction(const sofa::helper::vector<unsigned int> & indices);
+    void applyCreateTriangleFunction(unsigned int nbElements,
+            const sofa::helper::vector< TopologyElementType >& elem,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing triangles elements.
     void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int> & indices);
 
     /// Apply adding quads elements.
-    void applyCreateQuadFunction(const sofa::helper::vector<unsigned int> & indices);
+    void applyCreateQuadFunction(unsigned int nbElements,
+            const sofa::helper::vector< TopologyElementType >& elem,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing quads elements.
     void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int> & indices);
 
     /// Apply adding tetrahedra elements.
-    void applyCreateTetrahedronFunction(const sofa::helper::vector<unsigned int> & indices);
+    void applyCreateTetrahedronFunction(unsigned int nbElements,
+            const sofa::helper::vector< TopologyElementType >& elem,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing tetrahedra elements.
     void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int> & indices);
 
     /// Apply adding hexahedra elements.
-    void applyCreateHexahedronFunction(const sofa::helper::vector<unsigned int> & indices);
+    void applyCreateHexahedronFunction(unsigned int nbElements,
+            const sofa::helper::vector< TopologyElementType >& elem,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing hexahedra elements.
     void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int> & indices);
 

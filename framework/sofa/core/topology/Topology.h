@@ -71,17 +71,23 @@ enum TopologyChangeType
     TRIANGLESMOVED_ADDING,     ///< For TrianglesMoved class.
     TRIANGLESRENUMBERING,      ///< For TrianglesRenumbering class.
 
-    TETRAHEDRAADDED,           ///< For TrianglesAdded class.
-    TETRAHEDRAREMOVED,         ///< For TrianglesRemoved class.
-    TETRAHEDRARENUMBERING,     ///< For TrianglesRenumbering class.
+    TETRAHEDRAADDED,           ///< For TetrahedraAdded class.
+    TETRAHEDRAREMOVED,         ///< For TetrahedraRemoved class.
+    TETRAHEDRAMOVED_REMOVING,  ///< For TetrahedraMoved class (event before changing state).
+    TETRAHEDRAMOVED_ADDING,    ///< For TetrahedraMoved class.
+    TETRAHEDRARENUMBERING,     ///< For TetrahedraRenumbering class.
 
     QUADSADDED,                ///< For QuadsAdded class.
     QUADSREMOVED,              ///< For QuadsRemoved class.
+    QUADSMOVED_REMOVING,       ///< For QuadsMoved class (event before changing state).
+    QUADSMOVED_ADDING,         ///< For QuadsMoved class.
     QUADSRENUMBERING,          ///< For QuadsRenumbering class.
 
-    HEXAHEDRAADDED,            ///< For TrianglesAdded class.
-    HEXAHEDRAREMOVED,          ///< For TrianglesRemoved class.
-    HEXAHEDRARENUMBERING,      ///< For TrianglesRenumbering class.
+    HEXAHEDRAADDED,            ///< For HexahedraAdded class.
+    HEXAHEDRAREMOVED,          ///< For HexahedraRemoved class.
+    HEXAHEDRAMOVED_REMOVING,   ///< For HexahedraMoved class (event before changing state).
+    HEXAHEDRAMOVED_ADDING,     ///< For HexahedraMoved class.
+    HEXAHEDRARENUMBERING,      ///< For HexahedraRenumbering class.
 
     TOPOLOGYCHANGE_LASTID      ///< user defined topology changes can start here
 };
