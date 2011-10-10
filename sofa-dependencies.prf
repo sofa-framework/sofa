@@ -91,7 +91,7 @@ declare(sofa_taucs_solver, modules/sofa/component/sofa_taucs_solver.pro, sofatre
 #declare(sofa_pardiso_solver, modules/sofa/component/sofa_pardiso_solver.pro, sofatree)
 declare(sofa_misc_topology, modules/sofa/component/sofa_misc_topology.pro, sofa_non_uniform_fem zlib miniFlowVR)
 declare(sofa_misc_topology_dev, modules/sofa/component/sofa_misc_topology_dev.pro, sofa_non_uniform_fem zlib)
-declare(sofa_misc_mapping, modules/sofa/component/sofa_misc_mapping.pro, sofa_simple_fem)
+declare(sofa_misc_mapping, modules/sofa/component/sofa_misc_mapping.pro, sofa_simple_fem sofa_rigid)
 declare(sofa_misc_mapping_dev, modules/sofa/component/sofa_misc_mapping_dev.pro, sofa_simple_fem)
 declare(sofa_misc_forcefield, modules/sofa/component/sofa_misc_forcefield.pro, sofa_boundary_condition sofa_preconditioner sofa_misc_topology)
 declare(sofa_misc_forcefield_dev, modules/sofa/component/sofa_misc_forcefield_dev.pro, sofa_boundary_condition sofa_preconditioner sofa_misc_topology)

@@ -22,7 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_CPP
 #include <sofa/component/mapping/BarycentricMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
