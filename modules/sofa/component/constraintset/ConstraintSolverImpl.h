@@ -43,7 +43,7 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using namespace sofa::component::linearsolver;
 
-class ConstraintProblem
+class SOFA_CONSTRAINT_API ConstraintProblem
 {
 public:
     LPtrFullMatrix<double> W;
