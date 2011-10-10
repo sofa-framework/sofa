@@ -127,14 +127,10 @@ DEFAULT_FEATURES_FILE = $$ROOT_SRC_DIR/sofa-default
 CUSTOM_FEATURES_FILE = $$ROOT_BUILD_DIR/sofa-local
 INSTALLED_FEATURES_FILE = $$FEATURES_DIR/sofa-local
 
-# If sofa-local.prf does not exist in the build dir, copy it from the sofa-default.prf in the source dir (if it exists)
+# If sofa-local.prf does not exist in the build dir, use sofa-default.prf instead
 !exists($${CUSTOM_FEATURES_FILE}.prf) {
 	exists($${DEFAULT_FEATURES_FILE}.prf) {
-		win32 {
-			system(copy /y $$toWindowsPath($$DEFAULT_FEATURES_FILE).prf $$toWindowsPath($$CUSTOM_FEATURES_FILE).prf >NUL 2>&1)
-		} else {
-			system(cp -f $${DEFAULT_FEATURES_FILE}.prf $${CUSTOM_FEATURES_FILE}.prf)
-		}
+        CUSTOM_FEATURES_FILE = $${DEFAULT_FEATURES_FILE}
 	}
 }
 
