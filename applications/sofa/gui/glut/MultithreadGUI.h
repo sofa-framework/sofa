@@ -196,8 +196,6 @@ private:
     bool			_animationOBJ; int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool			_axis;
     int 			_background;
-    bool			_shadow;
-    bool			_glshadow;
     float			_zoomSpeed;
     float			_panSpeed;
     Transformation	_sceneTransform;
@@ -230,16 +228,18 @@ public:
     void resetScene();
     void resetView();
     void saveView();
-    void showVisual(bool);
-    void showBehavior(bool);
-    void showCollision(bool);
-    void showBoundingCollision(bool);
-    void showMapping(bool);
-    void showMechanicalMapping(bool);
-    void showForceField(bool);
-    void showInteractionForceField(bool);
-    void showWireFrame(bool);
-    void showNormals(bool);
+    /*
+        void showVisual(bool);
+        void showBehavior(bool);
+        void showCollision(bool);
+        void showBoundingCollision(bool);
+        void showMapping(bool);
+        void showMechanicalMapping(bool);
+        void showForceField(bool);
+        void showInteractionForceField(bool);
+        void showWireFrame(bool);
+        void showNormals(bool);
+    */
     void screenshot(int compression_level = -1);
     void exportOBJ(bool exportMTL=true);
     void dumpState(bool);
@@ -264,9 +264,6 @@ public:
 
 protected:
     void calcProjection();
-    void ApplyShadowMap();
-    void CreateRenderTexture(GLuint& textureID, int sizeX, int sizeY, int channels, int type);
-    void StoreLightMatrices();
 
 public:
     void setScene(sofa::simulation::Node* scene, const char* filename=NULL, bool temporaryFile=false);
@@ -329,9 +326,9 @@ private:
     void	CreateOBJmodelDisplayList(int material_mode);
     //int     loadBMP(char *filename, TextureImage *texture);
     //void	LoadGLTexture(char *Filename);
-    void	DrawLogo(void);
-    void	DisplayOBJs(bool shadowPass = false);
-    void	DisplayMenu(void);
+    void	DrawLogo();
+    void	DisplayOBJs();
+    void	DisplayMenu();
     void	DrawScene();
     void	ApplySceneTransformation(int x, int y);
     //int		handle(int event);	// required by FLTK

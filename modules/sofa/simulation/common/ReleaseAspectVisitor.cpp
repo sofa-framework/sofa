@@ -42,13 +42,10 @@ ReleaseAspectVisitor::~ReleaseAspectVisitor()
 
 ReleaseAspectVisitor::Result ReleaseAspectVisitor::processNodeTopDown(Node* node)
 {
+    node->releaseAspect(aspect);
     for(Node::ObjectIterator iObj = node->object.begin(), endObj = node->object.end(); iObj != endObj; ++iObj)
     {
         (*iObj)->releaseAspect(aspect);
-    }
-    for(Node::ChildIterator iVNode = node->childInVisualGraph.begin(), endVNode = node->childInVisualGraph.end(); iVNode != endVNode; ++iVNode)
-    {
-        processNodeTopDown(*iVNode);
     }
     return RESULT_CONTINUE;
 }
