@@ -30,7 +30,9 @@
 #include "BatchGUI.h"
 #include "qt/RealGUI.h"
 #include "glut/SimpleGUI.h"
+#ifdef SOFA_HAVE_BOOST
 #include "glut/MultithreadGUI.h"
+#endif
 #include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
