@@ -395,23 +395,6 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
     out<<endl;
 }
 
-/// Initialize gnuplot file output
-void Simulation::initGnuplot ( Node* root )
-{
-    if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    InitGnuplotVisitor v(params /* PARAMS FIRST */, gnuplotDirectory.getFullPath());
-    root->execute( v );
-}
-
-/// Update gnuplot file output
-void Simulation::exportGnuplot ( Node* root, double time )
-{
-    if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    ExportGnuplotVisitor expg ( params /* PARAMS FIRST */, time);
-    root->execute ( expg );
-}
 
 /// Load a scene from a file
 Node* Simulation::processXML(xml::BaseElement* xml, const char *filename)

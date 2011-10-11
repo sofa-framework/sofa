@@ -35,6 +35,11 @@
 #include <algorithm>
 #include <string.h>
 
+#include <sofa/core/ExecParams.h>
+#include <sofa/simulation/common/ExportGnuplotVisitor.h>
+
+
+using namespace sofa::simulation;
 namespace sofa
 {
 
@@ -106,6 +111,17 @@ void SofaGUI::configureGUI(sofa::simulation::Node *groot)
     groot->get<sofa::component::configurationsetting::MouseButtonSetting>(&mouseConfiguration, sofa::core::objectmodel::BaseContext::SearchRoot);
 
     for (unsigned int i=0; i<mouseConfiguration.size(); ++i)  setMouseButtonConfiguration(mouseConfiguration[i]);
+
+}
+
+void SofaGUI::exportGnuplot(sofa::simulation::Node* node, std::string gnuplot_directory )
+{
+
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    InitGnuplotVisitor v(params , gnuplot_directory);
+    node->execute( v );
+    ExportGnuplotVisitor expg ( params /* PARAMS FIRST */, node->getTime());
+    node->execute ( expg );
 
 }
 

@@ -799,12 +799,8 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     this->setWindowFilePath(filename.c_str());
     setScene ( root, filename.c_str(), temporaryFile );
 
-
-
     configureGUI(root);
 
-    //need to create again the output streams !!
-    simulation::getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
     displayComputationTime(m_displayComputationTime);
     stopDumpVisitor();
@@ -881,12 +877,7 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         }
 
     }
-    if (tabInstrument!= NULL)
-    {
-        tabs->removePage(tabInstrument);
-        delete tabInstrument;
-        tabInstrument = NULL;
-    }
+
     viewer->setScene ( root, filename );
 
     if( displayFlag != NULL)
@@ -1313,8 +1304,6 @@ void RealGUI::editGnuplotDirectory()
     {
         gnuplot_directory = s.ascii();
         if (gnuplot_directory.at(gnuplot_directory.size()-1) != '/') gnuplot_directory+="/";
-
-        simulation::getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
         setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
     }
 }
@@ -1433,9 +1422,6 @@ void RealGUI::step()
 
     {
         if ( viewer->ready() ) return;
-
-
-
         //root->setLogTime(true);
         //T=T+DT
         SReal dt=root->getDt();
@@ -1445,7 +1431,7 @@ void RealGUI::step()
         if ( m_dumpState )
             simulation::getSimulation()->dumpState ( root, *m_dumpStateStream );
         if ( m_exportGnuplot )
-            simulation::getSimulation()->exportGnuplot ( root, root->getTime() );
+            exportGnuplot(root,gnuplot_directory);
 
         viewer->wait();
 
@@ -1657,10 +1643,9 @@ void RealGUI::setExportGnuplot ( bool exp )
 {
     Node* root = getScene();
     m_exportGnuplot = exp;
-    if ( m_exportGnuplot && root )
+    if ( exp && root )
     {
-        simulation::getSimulation()->initGnuplot ( root );
-        simulation::getSimulation()->exportGnuplot ( root, root->getTime() );
+        exportGnuplot(root,gnuplot_directory);
     }
 }
 

@@ -2579,10 +2579,9 @@ void SimpleGUI::step()
         if( m_dumpState )
             getSimulation()->dumpState( groot, *m_dumpStateStream );
         if( m_exportGnuplot )
-            getSimulation()->exportGnuplot( groot, groot->getTime() );
 
 
-        _waitForRender = true;
+            _waitForRender = true;
         eventNewStep();
 
         redraw();
@@ -2725,8 +2724,7 @@ void SimpleGUI::setExportGnuplot( bool exp )
     m_exportGnuplot = exp;
     if( m_exportGnuplot )
     {
-        getSimulation()->initGnuplot( groot );
-        getSimulation()->exportGnuplot( groot, groot->getTime() );
+        exportGnuplot(groot);
     }
 }
 

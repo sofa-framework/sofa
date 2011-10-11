@@ -84,6 +84,8 @@ public:
     virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting* /*button*/) {};
     /// @}
 
+    void exportGnuplot(sofa::simulation::Node* node, std::string gnuplot_directory="");
+
 
     static std::string& GetGUIName() { return guiName; }
     static const char* GetProgramName() { return programName; }
