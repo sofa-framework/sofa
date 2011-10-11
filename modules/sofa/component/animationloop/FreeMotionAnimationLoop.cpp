@@ -103,7 +103,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     }
 
     double startTime = this->gnode->getTime();
-    double mechanicalDt = dt / numMechSteps.getValue();
+//	double mechanicalDt = dt / numMechSteps.getValue();
 
     simulation::common::VectorOperations vop(params, this->getContext());
     simulation::common::MechanicalOperations mop(params, this->getContext());
