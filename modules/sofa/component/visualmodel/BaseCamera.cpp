@@ -357,6 +357,30 @@ void BaseCamera::computeZ()
     }
 }
 
+void BaseCamera::fitSphere(const Vec3 &center, SReal radius)
+{
+
+    SReal distance = 0.0;
+    const SReal yview = radius / sin(getFieldOfView()/2.0);
+    const SReal xview = radius / sin(getHorizontalFieldOfView()/2.0);
+    distance = std::max(xview,yview);
+    const Quat& orientation = p_orientation.getValue();
+    Vec3 viewDirection = orientation.rotate(Vec3(0.0, 0.0, -1.0));
+
+    Vec3 newPos = center - viewDirection*distance;
+    p_position.setValue(newPos);
+}
+
+void BaseCamera::fitBoundingBox(const Vec3 &min, const Vec3 &max)
+{
+    SReal diameter = std::max(fabs(max[1]-min[1]), fabs(max[0]-min[0]));
+    diameter = std::max(fabs(max[2]-min[2]), diameter);
+    Vec3 center = (min + max)*0.5;
+
+    fitSphere(center,0.5*diameter);
+
+}
+
 void BaseCamera::setView(const Vec3& position, const Quat &orientation)
 {
     p_position.setValue(position);

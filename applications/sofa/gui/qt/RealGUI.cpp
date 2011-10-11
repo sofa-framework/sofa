@@ -346,6 +346,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->add(statWidget);
 
+    simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
     createViewers(viewername);
 
 
@@ -390,7 +391,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     pmlreader = NULL;
     lmlreader = NULL;
 #endif
-    simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
+
     ((QVBoxLayout*)TabGraph->layout())->addWidget(simulationGraph);
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
 #ifdef SOFA_QT4
@@ -449,10 +450,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
     connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
-    connect(simulationGraph, SIGNAL(focusChanged(sofa::core::objectmodel::BaseObject*)),
-            viewer->getQWidget(), SLOT(fitObjectBBox(sofa::core::objectmodel::BaseObject*)) );
-    connect(simulationGraph, SIGNAL( focusChanged(sofa::core::objectmodel::BaseNode*) ),
-            viewer->getQWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) ) );
+
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
         connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setOn(bool) ) );
@@ -609,6 +607,10 @@ void RealGUI::initViewer()
     connect ( viewer->getQWidget(), SIGNAL ( resizeW ( int ) ), sizeW, SLOT ( setValue ( int ) ) );
     connect ( viewer->getQWidget(), SIGNAL ( resizeH ( int ) ), sizeH, SLOT ( setValue ( int ) ) );
     connect ( viewer->getQWidget(), SIGNAL ( quit (  ) ), this, SLOT ( fileExit (  ) ) );
+    connect(simulationGraph, SIGNAL(focusChanged(sofa::core::objectmodel::BaseObject*)),
+            viewer->getQWidget(), SLOT(fitObjectBBox(sofa::core::objectmodel::BaseObject*)) );
+    connect(simulationGraph, SIGNAL( focusChanged(sofa::core::objectmodel::BaseNode*) ),
+            viewer->getQWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) ) );
 
     QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
     splitter_ptr->moveToLast ( left_stack );

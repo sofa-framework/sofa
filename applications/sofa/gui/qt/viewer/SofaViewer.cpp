@@ -591,6 +591,39 @@ PickHandler* SofaViewer::getPickHandler()
     return &pick;
 }
 
+void SofaViewer::fitNodeBBox(sofa::core::objectmodel::BaseNode * node )
+{
+    if(!currentCamera) return;
+    if( node->f_bbox.getValue().isValid() && !node->f_bbox.getValue().isFlat() )
+        currentCamera->fitBoundingBox(
+            node->f_bbox.getValue().minBBox(),
+            node->f_bbox.getValue().maxBBox()
+        );
+
+    this->getQWidget()->update();
+
+}
+
+void SofaViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
+{
+    if(!currentCamera) return;
+
+    if( object->f_bbox.getValue().isValid() && !object->f_bbox.getValue().isFlat() )
+        currentCamera->fitBoundingBox(object->f_bbox.getValue().minBBox(),
+                object->f_bbox.getValue().maxBBox());
+    else
+    {
+        if(object->getContext()->f_bbox.getValue().isValid() && !object->getContext()->f_bbox.getValue().isFlat()  )
+        {
+            currentCamera->fitBoundingBox(
+                object->getContext()->f_bbox.getValue().minBBox(),
+                object->getContext()->f_bbox.getValue().maxBBox());
+        }
+    }
+    this->getQWidget()->update();
+
+}
+
 
 
 
