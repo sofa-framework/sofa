@@ -132,7 +132,7 @@ RigidMapping<TIn, TOut>::RigidMapping(core::State< In >* from, core::State< Out 
     , matrixJ()
     , updateJ(false)
 {
-    std::cout << "RigidMapping Creation\n";
+    //std::cout << "RigidMapping Creation\n";
 
     this->addAlias(&fileRigidMapping, "filename");
     maskFrom = NULL;
