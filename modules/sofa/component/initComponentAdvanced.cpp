@@ -24,6 +24,17 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <sofa/component/initComponentAdvanced.h>
+#include <sofa/component/initEulerianFluid.h>
+#include <sofa/component/initSPHFluid.h>
+#include <sofa/component/initVolumetricData.h>
+#include <sofa/component/initNonUniformFEM.h>
+#include <sofa/component/initAdvancedFEM.h>
+#include <sofa/component/initMJEDFEM.h>
+#include <sofa/component/initAdvancedInteraction.h>
+#include <sofa/component/initAdvancedConstraint.h>
+#include <sofa/component/initEigen2Solver.h>
+//#include <sofa/component/initTaucsSolver.h>
+//#include <sofa/component/initPardisoSolver.h>
 
 
 namespace sofa
@@ -40,117 +51,20 @@ void initComponentAdvanced()
     {
         first = false;
     }
+
+    initEulerianFluid();
+    initSPHFluid();
+    initVolumetricData();
+    initNonUniformFEM();
+    initAdvancedFEM();
+    initMJEDFEM();
+    initAdvancedInteraction();
+    initAdvancedConstraint();
+    initEigen2Solver();
+//    initTaucsSolver();
+//    initPardisoSolver();
+
 }
-
-SOFA_LINK_CLASS(DistanceGridCollisionModel)
-//SOFA_LINK_CLASS(RayModel)
-
-//SOFA_LINK_CLASS(TopologicalChangeManager)
-
-//SOFA_LINK_CLASS(AddFramePerformer)
-//SOFA_LINK_CLASS(InciseAlongPathPerformer)
-//SOFA_LINK_CLASS(RemovePrimitivePerformer)
-//SOFA_LINK_CLASS(BsplineFrictionContact)
-
-//SOFA_LINK_CLASS(ImplicitSurfaceContainer)
-SOFA_LINK_CLASS(InterpolatedImplicitSurface)
-SOFA_LINK_CLASS(SpatialGridContainer)
-SOFA_LINK_CLASS(DistanceGridForceField)
-SOFA_LINK_CLASS(NonUniformHexahedralFEMForceFieldAndMass)
-SOFA_LINK_CLASS(NonUniformHexahedronFEMForceFieldDensity)
-SOFA_LINK_CLASS(ParticlesRepulsionForceField)
-SOFA_LINK_CLASS(SPHFluidForceField)
-SOFA_LINK_CLASS(ImplicitSurfaceMapping)
-SOFA_LINK_CLASS(SPHFluidSurfaceMapping)
-SOFA_LINK_CLASS(Fluid2D)
-SOFA_LINK_CLASS(Fluid3D)
-//SOFA_LINK_CLASS(Grid2D)
-//SOFA_LINK_CLASS(Grid3D)
-//SOFA_LINK_CLASS(Material)
-//SOFA_LINK_CLASS(HyperelasticMaterial)
-//SOFA_LINK_CLASS(BoyceAndArruda)
-//SOFA_LINK_CLASS(STVenantKirchhoff)
-//SOFA_LINK_CLASS(NeoHookean)
-//SOFA_LINK_CLASS(MooneyRivlin)
-//SOFA_LINK_CLASS(VerondaWestman)
-//SOFA_LINK_CLASS(Costa)
-//SOFA_LINK_CLASS(NeoHookeanIsotropicMJED)
-//SOFA_LINK_CLASS(HyperelasticMaterialMJED)
-//SOFA_LINK_CLASS(BoyceAndArrudaMJED)
-//SOFA_LINK_CLASS(STVenantKirchhoffMJED)
-//SOFA_LINK_CLASS(NeoHookeanMJED)
-//SOFA_LINK_CLASS(MooneyRivlinMJED)
-//SOFA_LINK_CLASS(VerondaWestmanMJED)
-//SOFA_LINK_CLASS(CostaMJED)
-//SOFA_LINK_CLASS(OgdenMJED)
-SOFA_LINK_CLASS(DynamicSparseGridGeometryAlgorithms)
-SOFA_LINK_CLASS(DynamicSparseGridTopologyAlgorithms)
-SOFA_LINK_CLASS(DynamicSparseGridTopologyContainer)
-SOFA_LINK_CLASS(DynamicSparseGridTopologyModifier)
-SOFA_LINK_CLASS(MultilevelHexahedronSetTopologyContainer)
-SOFA_LINK_CLASS(SparseGridMultipleTopology)
-SOFA_LINK_CLASS(SparseGridRamificationTopology)
-SOFA_LINK_CLASS(ParticleSink)
-SOFA_LINK_CLASS(ParticleSource)
-SOFA_LINK_CLASS(HexahedronCompositeFEMForceFieldAndMass)
-SOFA_LINK_CLASS(HexahedronCompositeFEMMapping)
-//SOFA_LINK_CLASS(EigenMatrixManipulator)
-SOFA_LINK_CLASS(SVDLinearSolver)
-#ifdef SOFA_HAVE_TAUCS
-SOFA_LINK_CLASS(SparseTAUCSSolver)
-SOFA_LINK_CLASS(IncompleteTAUCSSolver)
-#endif
-#ifdef SOFA_HAVE_TAUCS_MT
-SOFA_LINK_CLASS(SparseTAUCSLLtSolver)
-#endif
-//SOFA_LINK_CLASS(SparsePARDISOSolver)
-//SOFA_LINK_CLASS(Ogden)
-//SOFA_LINK_CLASS(BaseMaterial)
-
-#ifdef SOFA_DEV
-SOFA_LINK_CLASS(EdgeRemoveContact)
-SOFA_LINK_CLASS(CarvingManager)
-SOFA_LINK_CLASS(ComplianceMatrixUpdateManager)
-SOFA_LINK_CLASS(ComplianceMatrixUpdateManagerCarving)
-SOFA_LINK_CLASS(CuttingManager)
-SOFA_LINK_CLASS(GraspingManager)
-SOFA_LINK_CLASS(SuturingManager)
-SOFA_LINK_CLASS(TetrahedronCuttingManager)
-SOFA_LINK_CLASS(TriangularFEMFractureManager)
-SOFA_LINK_CLASS(BeamBsplineContactMapper)
-SOFA_LINK_CLASS(AdhesiveSurfaceForceField)
-SOFA_LINK_CLASS(MJEDTetrahedralForceField)
-SOFA_LINK_CLASS(StandardTetrahedralFEMForceField)
-SOFA_LINK_CLASS(TetrahedralBiquadraticSpringsForceField)
-SOFA_LINK_CLASS(TetrahedralQuadraticSpringsForceField)
-SOFA_LINK_CLASS(TetrahedralTotalLagrangianForceField)
-SOFA_LINK_CLASS(NonUniformHexahedralFEMForceFieldAndMassCorrected)
-SOFA_LINK_CLASS(BeamBsplineMapping)
-SOFA_LINK_CLASS(ProjectionLineConstraint)
-SOFA_LINK_CLASS(ProjectionPlaneConstraint)
-SOFA_LINK_CLASS(DisplacementConstraint)
-SOFA_LINK_CLASS(PlasticMaterial)
-SOFA_LINK_CLASS(GenericConstraintSolver)
-SOFA_LINK_CLASS(StopperConstraint)
-SOFA_LINK_CLASS(SlidingConstraint)
-SOFA_LINK_CLASS(BilateralInteractionConstraint)
-SOFA_LINK_CLASS(BeamConstraint)
-SOFA_LINK_CLASS(ControllerVerification)
-SOFA_LINK_CLASS(JointSpringController)
-SOFA_LINK_CLASS(HandStateController)
-SOFA_LINK_CLASS(LaparoscopicController)
-SOFA_LINK_CLASS(RespirationController)
-SOFA_LINK_CLASS(VMechanismsForceFeedback)
-SOFA_LINK_CLASS(MultilevelHexahedronSetGeometryAlgorithms)
-SOFA_LINK_CLASS(MultilevelHexahedronSetTopologyAlgorithms)
-SOFA_LINK_CLASS(MultilevelHexahedronSetTopologyModifier)
-SOFA_LINK_CLASS(Hexa2TriangleTopologicalMapping)
-SOFA_LINK_CLASS(MultilevelHexaTopologicalMapping)
-SOFA_LINK_CLASS(MultilevelHexa2TriangleTopologicalMapping)
-SOFA_LINK_CLASS(ConstraintAnimationLoop)
-SOFA_LINK_CLASS(SharpLineModel)
-SOFA_LINK_CLASS(FractureManager)
-#endif
 
 
 } // namespace component

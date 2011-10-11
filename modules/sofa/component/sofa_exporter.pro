@@ -5,7 +5,8 @@ TARGET = sofa_exporter
 
 DEFINES += SOFA_BUILD_EXPORTER
 
-HEADERS += misc/WriteState.h \
+HEADERS += initExporter.h \
+           misc/WriteState.h \
            misc/WriteState.inl \
            misc/WriteTopology.h \
            misc/WriteTopology.inl \
@@ -13,7 +14,8 @@ HEADERS += misc/WriteState.h \
            misc/OBJExporter.h \
            misc/MeshExporter.h
 
-SOURCES += misc/WriteState.cpp \
+SOURCES += initExporter.cpp \
+           misc/WriteState.cpp \
            misc/WriteTopology.cpp \
            misc/VTKExporter.cpp \
            misc/OBJExporter.cpp \

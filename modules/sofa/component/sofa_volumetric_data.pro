@@ -5,7 +5,8 @@ TARGET = sofa_volumetric_data
 
 DEFINES += SOFA_BUILD_VOLUMETRIC_DATA
 
-HEADERS += container/ImplicitSurfaceContainer.h \
+HEADERS += initVolumetricData.h \
+           container/ImplicitSurfaceContainer.h \
            container/InterpolatedImplicitSurface.h \
            container/InterpolatedImplicitSurface.inl \
            forcefield/DistanceGridForceField.h \
@@ -13,11 +14,11 @@ HEADERS += container/ImplicitSurfaceContainer.h \
            mapping/ImplicitSurfaceMapping.h \
            mapping/ImplicitSurfaceMapping.inl
 
-SOURCES += container/ImplicitSurfaceContainer.cpp \
+SOURCES += initVolumetricData.cpp \
+           container/ImplicitSurfaceContainer.cpp \
            container/InterpolatedImplicitSurface.cpp \
            forcefield/DistanceGridForceField.cpp \
            mapping/ImplicitSurfaceMapping.cpp
-
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

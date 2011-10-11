@@ -5,7 +5,8 @@ TARGET = sofa_simple_fem
 
 DEFINES += SOFA_BUILD_SIMPLE_FEM
 
-HEADERS += forcefield/BeamFEMForceField.h \
+HEADERS += initSimpleFEM.h \
+           forcefield/BeamFEMForceField.h \
            forcefield/BeamFEMForceField.inl \
            forcefield/HexahedralFEMForceField.h \
            forcefield/HexahedralFEMForceField.inl \
@@ -26,7 +27,8 @@ HEADERS += forcefield/BeamFEMForceField.h \
            forcefield/TriangularFEMForceField.h \
            forcefield/TriangularFEMForceField.inl
 
-SOURCES += forcefield/BeamFEMForceField.cpp \
+SOURCES += initSimpleFEM.cpp \
+           forcefield/BeamFEMForceField.cpp \
            forcefield/HexahedralFEMForceField.cpp \
            forcefield/HexahedralFEMForceFieldAndMass.cpp \
            forcefield/HexahedronFEMForceField.cpp \

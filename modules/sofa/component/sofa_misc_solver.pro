@@ -5,10 +5,12 @@ TARGET = sofa_misc_solver
 
 DEFINES += SOFA_BUILD_MISC_SOLVER
 
-HEADERS += odesolver/DampVelocitySolver.h \
+HEADERS += initMiscSolver.h \
+           odesolver/DampVelocitySolver.h \
            odesolver/NewmarkImplicitSolver.h
 
-SOURCES += odesolver/DampVelocitySolver.cpp \
+SOURCES += initMiscSolver.cpp \
+           odesolver/DampVelocitySolver.cpp \
            odesolver/NewmarkImplicitSolver.cpp 
 
 # Make sure there are no cross-dependencies

@@ -5,7 +5,8 @@ TARGET = sofa_base_mechanics
 
 DEFINES += SOFA_BUILD_BASE_MECHANICS
 
-HEADERS += container/MappedObject.h \
+HEADERS += initBaseMechanics.h \
+           container/MappedObject.h \
            container/MappedObject.inl \
            container/MechanicalObject.h \
            container/MechanicalObject.inl \
@@ -21,7 +22,8 @@ HEADERS += container/MappedObject.h \
            mapping/SubsetMapping.h \
            mapping/SubsetMapping.inl
 
-SOURCES += container/MappedObject.cpp \
+SOURCES += initBaseMechanics.cpp \
+           container/MappedObject.cpp \
            container/MechanicalObject.cpp \
            mass/DiagonalMass.cpp \
            mass/UniformMass.cpp \

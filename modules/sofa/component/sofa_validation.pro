@@ -5,7 +5,8 @@ TARGET = sofa_validation
 
 DEFINES += SOFA_BUILD_VALIDATION
 
-HEADERS += misc/CompareState.h \
+HEADERS += initValidation.h \
+           misc/CompareState.h \
            misc/CompareTopology.h \
            misc/DevAngleCollisionMonitor.h \
            misc/DevAngleCollisionMonitor.inl \
@@ -21,7 +22,8 @@ HEADERS += misc/CompareState.h \
            misc/EvalSurfaceDistance.h \
            misc/EvalSurfaceDistance.inl
 
-SOURCES += misc/CompareState.cpp \
+SOURCES += initValidation.cpp \
+           misc/CompareState.cpp \
            misc/CompareTopology.cpp \
            misc/DevAngleCollisionMonitor.cpp \
            misc/DevTensionMonitor.cpp \

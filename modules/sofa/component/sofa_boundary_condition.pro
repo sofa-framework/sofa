@@ -5,7 +5,8 @@ TARGET = sofa_boundary_condition
 
 DEFINES += SOFA_BUILD_BOUNDARY_CONDITION
 
-HEADERS += forcefield/AspirationForceField.h \
+HEADERS += initBoundaryCondition.h \
+           forcefield/AspirationForceField.h \
            forcefield/AspirationForceField.inl \
            forcefield/BuoyantForceField.h \
            forcefield/BuoyantForceField.inl \
@@ -55,7 +56,8 @@ HEADERS += forcefield/AspirationForceField.h \
            projectiveconstraintset/PartialLinearMovementConstraint.inl
 
 
-SOURCES += forcefield/AspirationForceField.cpp \
+SOURCES += initBoundaryCondition.cpp \
+           forcefield/AspirationForceField.cpp \
            forcefield/BuoyantForceField.cpp \
            forcefield/ConicalForceField.cpp \
            forcefield/ConstantForceField.cpp \

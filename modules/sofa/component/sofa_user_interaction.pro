@@ -5,7 +5,8 @@ TARGET = sofa_user_interaction
 
 DEFINES += SOFA_BUILD_USER_INTERACTION
 
-HEADERS += collision/RayTraceDetection.h \
+HEADERS += initUserInteraction.h \
+           collision/RayTraceDetection.h \
            collision/RayContact.h \
            collision/ComponentMouseInteraction.h \
            collision/ComponentMouseInteraction.inl \
@@ -27,7 +28,8 @@ HEADERS += collision/RayTraceDetection.h \
            controller/MechanicalStateController.inl
 
 
-SOURCES += collision/RayTraceDetection.cpp \
+SOURCES += initUserInteraction.cpp \
+           collision/RayTraceDetection.cpp \
            collision/RayContact.cpp \
            collision/ComponentMouseInteraction.cpp \
            collision/MouseInteractor.cpp \

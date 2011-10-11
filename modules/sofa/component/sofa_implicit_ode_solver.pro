@@ -5,10 +5,12 @@ TARGET = sofa_implicit_ode_solver
 
 DEFINES += SOFA_BUILD_IMPLICIT_ODE_SOLVER
 
-HEADERS += odesolver/EulerImplicitSolver.h \
+HEADERS += initImplicitODESolver.h \
+           odesolver/EulerImplicitSolver.h \
            odesolver/StaticSolver.h
 
-SOURCES += odesolver/EulerImplicitSolver.cpp \
+SOURCES += initImplicitODESolver.cpp \
+           odesolver/EulerImplicitSolver.cpp \
            odesolver/StaticSolver.cpp
 
 # Make sure there are no cross-dependencies

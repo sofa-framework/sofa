@@ -5,7 +5,8 @@ TARGET = sofa_sparse_solver
 
 DEFINES += SOFA_BUILD_SPARSE_SOLVER
 
-HEADERS += linearsolver/PrecomputedLinearSolver.h \
+HEADERS += initSparseSolver.h \
+           linearsolver/PrecomputedLinearSolver.h \
            linearsolver/PrecomputedLinearSolver.inl \
            linearsolver/SparseCholeskySolver.h \
            linearsolver/SparseLUSolver.h \
@@ -14,11 +15,13 @@ HEADERS += linearsolver/PrecomputedLinearSolver.h \
            linearsolver/SparseXXTSolver.h \
            linearsolver/SparseXXTSolver.inl
 
-SOURCES += linearsolver/PrecomputedLinearSolver.cpp \
+SOURCES += initSparseSolver.cpp \
+           linearsolver/PrecomputedLinearSolver.cpp \
            linearsolver/SparseCholeskySolver.cpp \
            linearsolver/SparseLUSolver.cpp \
            linearsolver/SparseLDLSolver.cpp \
            linearsolver/SparseXXTSolver.cpp
+
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

@@ -5,7 +5,8 @@ TARGET = sofa_graph_component
 
 DEFINES += SOFA_BUILD_GRAPH_COMPONENT
 
-HEADERS += configurationsetting/AddFrameButtonSetting.h \
+HEADERS += initGraphComponent.h \
+           configurationsetting/AddFrameButtonSetting.h \
            configurationsetting/AttachBodyButtonSetting.h \
            configurationsetting/BackgroundSetting.h \
            configurationsetting/FixPickedParticleButtonSetting.h \
@@ -18,7 +19,8 @@ HEADERS += configurationsetting/AddFrameButtonSetting.h \
            misc/PauseAnimationOnEvent.h \
            misc/RequiredPlugin.h
 
-SOURCES += configurationsetting/AddFrameButtonSetting.cpp \
+SOURCES += initGraphComponent.cpp \
+           configurationsetting/AddFrameButtonSetting.cpp \
            configurationsetting/AttachBodyButtonSetting.cpp \
            configurationsetting/BackgroundSetting.cpp \
            configurationsetting/FixPickedParticleButtonSetting.cpp \

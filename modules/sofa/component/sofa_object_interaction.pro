@@ -5,7 +5,8 @@ TARGET = sofa_object_interaction
 
 DEFINES += SOFA_BUILD_OBJECT_INTERACTION
 
-HEADERS += projectiveconstraintset/AttachConstraint.h \
+HEADERS += initObjectInteraction.h \
+           projectiveconstraintset/AttachConstraint.h \
            projectiveconstraintset/AttachConstraint.inl \
            interactionforcefield/BoxStiffSpringForceField.h \
            interactionforcefield/BoxStiffSpringForceField.inl \
@@ -17,7 +18,8 @@ HEADERS += projectiveconstraintset/AttachConstraint.h \
            interactionforcefield/RepulsiveSpringForceField.inl
 
 
-SOURCES += projectiveconstraintset/AttachConstraint.cpp \
+SOURCES += initObjectInteraction.cpp \
+           projectiveconstraintset/AttachConstraint.cpp \
            interactionforcefield/BoxStiffSpringForceField.cpp \
            interactionforcefield/InteractionEllipsoidForceField.cpp \
            interactionforcefield/PenalityContactForceField.cpp \

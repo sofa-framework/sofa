@@ -5,7 +5,8 @@ TARGET = sofa_misc_mapping
 
 DEFINES += SOFA_BUILD_MISC_MAPPING
 
-HEADERS += mapping/BeamLinearMapping.h \
+HEADERS += initMiscMapping.h \
+           mapping/BeamLinearMapping.h \
            mapping/BeamLinearMapping.inl \
            mapping/CenterPointMechanicalMapping.h \
            mapping/CenterPointMechanicalMapping.inl \
@@ -27,7 +28,8 @@ HEADERS += mapping/BeamLinearMapping.h \
            mapping/DiscreteBeamBsplineMapping.h \
            mapping/DiscreteBeamBsplineMapping.inl
 
-SOURCES += mapping/BeamLinearMapping.cpp \
+SOURCES += initMiscMapping.cpp \
+           mapping/BeamLinearMapping.cpp \
            mapping/CenterPointMechanicalMapping.cpp \
            mapping/CenterOfMassMapping.cpp \
            mapping/CenterOfMassMultiMapping.cpp \

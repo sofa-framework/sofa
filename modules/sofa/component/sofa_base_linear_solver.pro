@@ -5,7 +5,8 @@ TARGET = sofa_base_linear_solver
 
 DEFINES += SOFA_BUILD_BASE_LINEAR_SOLVER
 
-HEADERS += linearsolver/CGLinearSolver.h \
+HEADERS += initBaseLinearSolver.h \
+           linearsolver/CGLinearSolver.h \
            linearsolver/CholeskySolver.h \
            linearsolver/BTDLinearSolver.h \
            linearsolver/BTDLinearSolver.inl \
@@ -25,7 +26,8 @@ HEADERS += linearsolver/CGLinearSolver.h \
            linearsolver/GenerateBenchSolver.inl \
            linearsolver/matrix_bloc_traits.h
 
-SOURCES += linearsolver/CGLinearSolver.cpp \
+SOURCES += initBaseLinearSolver.cpp \
+           linearsolver/CGLinearSolver.cpp \
            linearsolver/CholeskySolver.cpp \
            linearsolver/BTDLinearSolver.cpp \
            linearsolver/FullVector.cpp \

@@ -5,7 +5,8 @@ TARGET = sofa_non_uniform_fem
 
 DEFINES += SOFA_BUILD_NON_UNIFORM_FEM
 
-HEADERS += forcefield/NonUniformHexahedralFEMForceFieldAndMass.h \
+HEADERS += initNonUniformFEM.h \
+           forcefield/NonUniformHexahedralFEMForceFieldAndMass.h \
            forcefield/NonUniformHexahedralFEMForceFieldAndMass.inl \
            forcefield/NonUniformHexahedronFEMForceFieldAndMass.h \
            forcefield/NonUniformHexahedronFEMForceFieldAndMass.inl \
@@ -25,7 +26,8 @@ HEADERS += forcefield/NonUniformHexahedralFEMForceFieldAndMass.h \
            mapping/HexahedronCompositeFEMMapping.h \
            mapping/HexahedronCompositeFEMMapping.inl
 
-SOURCES += forcefield/NonUniformHexahedralFEMForceFieldAndMass.cpp \
+SOURCES += initNonUniformFEM.cpp \
+           forcefield/NonUniformHexahedralFEMForceFieldAndMass.cpp \
            forcefield/NonUniformHexahedronFEMForceFieldAndMass.cpp \
            forcefield/NonUniformHexahedronFEMForceFieldDensity.cpp \
            topology/MultilevelHexahedronSetTopologyContainer.cpp \

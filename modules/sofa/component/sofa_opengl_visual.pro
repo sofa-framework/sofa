@@ -5,7 +5,8 @@ TARGET = sofa_opengl_visual
 
 DEFINES += SOFA_BUILD_OPENGL_VISUAL
 
-HEADERS += visualmodel/OglModel.h \
+HEADERS += initOpenGLVisual.h \
+           visualmodel/OglModel.h \
            visualmodel/OglViewport.h \
            visualmodel/Light.h \
            visualmodel/LightManager.h \
@@ -16,7 +17,8 @@ HEADERS += visualmodel/OglModel.h \
            visualmodel/VisualStyle.h \
            visualmodel/RecordedCamera.h
 
-SOURCES += visualmodel/OglModel.cpp \
+SOURCES += initOpenGLVisual.cpp \
+           visualmodel/OglModel.cpp \
            visualmodel/OglViewport.cpp \
            visualmodel/Light.cpp \
            visualmodel/LightManager.cpp \

@@ -5,7 +5,8 @@ TARGET = sofa_base_topology
 
 DEFINES += SOFA_BUILD_BASE_TOPOLOGY
 
-HEADERS += topology/CommonAlgorithms.h \
+HEADERS += initBaseTopology.h \
+           topology/CommonAlgorithms.h \
            topology/CubeTopology.h \
            topology/CylinderGridTopology.h \
            topology/EdgeData.h \
@@ -98,7 +99,8 @@ HEADERS += topology/CommonAlgorithms.h \
            topology/TopologySubsetData.h \
            topology/TopologySubsetData.inl
 
-SOURCES += topology/CubeTopology.cpp \
+SOURCES += initBaseTopology.cpp \
+           topology/CubeTopology.cpp \
            topology/CylinderGridTopology.cpp \
            topology/EdgeSetGeometryAlgorithms.cpp \
            topology/EdgeSetTopologyAlgorithms.cpp \
