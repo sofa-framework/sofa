@@ -57,17 +57,29 @@ class Base;
 class SOFA_CORE_API BaseData : public DDGNode
 {
 public:
+    enum DataFlagsEnum
+    {
+        FLAG_NONE = 0,
+        FLAG_READONLY = 1 << 0,   ///< True if the Data will be readable only in the GUI
+        FLAG_DISPLAYED = 1 << 1,  ///< True if the Data will be displayed in the GUI
+        FLAG_PERSISTENT = 1 << 2, ///< True if the Data contain persistent information
+        FLAG_AUTOLINK = 1 << 3, ///< True if the Data should be autolinked
+        FLAG_ANIMATION_INSTANCE = 1 << 10,
+        FLAG_VISUAL_INSTANCE = 1 << 11,
+        FLAG_HAPTICS_INSTANCE = 1 << 12,
+    };
+    typedef unsigned DataFlags;
+
+    enum { FLAG_DEFAULT = FLAG_DISPLAYED | FLAG_PERSISTENT | FLAG_AUTOLINK };
 
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
     class BaseInitData
     {
     public:
-        BaseInitData() : data(NULL), helpMsg(""), isDisplayed(true), isReadOnly(false), isPersistent(true), owner(NULL), name(""), parentClass(""), group(""), widget("") {}
+        BaseInitData() : data(NULL), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(NULL), name(""), parentClass(""), group(""), widget("") {}
         BaseData* data;
         const char* helpMsg;
-        bool isDisplayed;
-        bool isReadOnly;
-        bool isPersistent;
+        DataFlags dataFlags;
         Base* owner;
         const char* name;
         const char* parentClass;
@@ -83,6 +95,7 @@ public:
     /** Constructor
      *  \param h help
      */
+    BaseData( const char* h, DataFlags flags = FLAG_DEFAULT, Base* owner=NULL, const char* name="");
     BaseData( const char* h, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="");
 
     /// Base destructor
@@ -117,6 +130,12 @@ public:
     /// @return true if copy was successfull
     virtual bool copyValue(const BaseData* parent);
 
+    /// Copy the value of an aspect into another one.
+    virtual void copyAspect(int destAspect, int srcAspect);
+
+    /// Release memory allocated for the specified aspect.
+    virtual void releaseAspect(int aspect) = 0;
+
     /// Get help message
     const char* getHelp() const { return help; }
 
@@ -147,35 +166,47 @@ public:
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)
-    bool isSet() const { return m_isSet; }
-
-    /// True if the Data has to be displayed in the GUI
-    bool isDisplayed() const { return m_isDisplayed; }
-
-    /// True if the Data will be readable only in the GUI
-    bool isReadOnly() const { return m_isReadOnly; }
-
-    /// True if the Data contain persistent information
-    bool isPersistent() const { return m_isPersistent; }
+    bool isSet() const { return m_isSets[currentAspect()]; }
 
     /// True if the counter of modification gives valid information.
-    virtual bool isCounterValid() const =0;
+    virtual bool isCounterValid() const = 0;
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this Data.
-    void unset() { m_isSet = false; }
+    void unset() { m_isSets[currentAspect()] = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    void forceSet() { m_isSet = true; }
+    void forceSet() { m_isSets[currentAspect()] = true; }
+
+    /// Set one of the flags
+    void setFlag(DataFlagsEnum flag, bool b)  { if(b) m_dataFlags |= (DataFlags)flag;  else m_dataFlags &= ~(DataFlags)flag; }
+
+    /// Get one flag
+    bool getFlag(DataFlagsEnum flag) const { return (m_dataFlags&(DataFlags)flag)!=0; }
+
+    /// True if the Data has to be displayed in the GUI
+    bool isDisplayed() const  { return getFlag(FLAG_DISPLAYED); }
+
+    /// True if the Data will be readable only in the GUI
+    bool isReadOnly() const   { return getFlag(FLAG_READONLY); }
+
+    /// True if the Data contains persistent information
+    bool isPersistent() const { return getFlag(FLAG_PERSISTENT); }
+
+    /// True if the Data should be autolinked when using src="" syntax
+    bool isAutoLink() const { return getFlag(FLAG_AUTOLINK); }
 
     /// Can dynamically change the status of a Data, by making it appear or disappear
-    void setDisplayed(bool b) {m_isDisplayed = b;}
+    void setDisplayed(bool b)  { setFlag(FLAG_DISPLAYED,b); }
     /// Can dynamically change the status of a Data, by making it readOnly
-    void setReadOnly(bool b) {m_isReadOnly = b;}
+    void setReadOnly(bool b)   { setFlag(FLAG_READONLY,b); }
     /// Can dynamically change the status of a Data, by making it persistent
-    void setPersistent(bool b) {m_isPersistent = b;}
+    void setPersistent(bool b) { setFlag(FLAG_PERSISTENT,b); }
+    /// Control whether this data should be autolinked when using src="" syntax
+    void setAutoLink(bool b) { setFlag(FLAG_AUTOLINK,b); }
+
     /// If we use the Data as a link and not as value directly
-    void setLinkPath(const std::string &path) {m_linkPath = path;};
-    std::string getLinkPath() const {return m_linkPath;};
+    void setLinkPath(const std::string &path) { m_linkPath = path; }
+    std::string getLinkPath() const { return m_linkPath; }
     /// Can this data be used as a linkPath
     /// True by default.
     /// Useful if you want to customize the use of @ syntax (see ObjectRef and DataObjectRef)
@@ -192,7 +223,7 @@ public:
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    int getCounter() const { return m_counter; }
+    int getCounter() const { return m_counters[currentAspect()]; }
 
 
     /// @name Optimized edition and retrieval API (for multi-threading performances)
@@ -244,15 +275,11 @@ protected:
     /// widget
     const char* widget;
     /// Number of changes since creation
-    int m_counter;
+    helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
     /// True if the Data is set, i.e. its value is different from the default value
-    bool m_isSet;
-    /// True if the Data will be displayed in the GUI
-    bool m_isDisplayed;
-    /// True if the Data will be readable only in the GUI
-    bool m_isReadOnly;
-    /// True if the Data contain persistent information
-    bool m_isPersistent;
+    helper::fixed_array<bool, SOFA_DATA_MAX_ASPECTS> m_isSets;
+    /// Flags indicating the purpose and behaviour of the Data
+    DataFlags m_dataFlags;
     /// Return the Base component owning this Data
     Base* m_owner;
     /// Data name within the Base component

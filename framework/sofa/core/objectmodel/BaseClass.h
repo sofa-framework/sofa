@@ -150,6 +150,15 @@ public:
     { return GetClass(); }                                              \
     template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
     initData(Data<SOFA_T>* field, const char* name, const char* help,   \
+             ::sofa::core::objectmodel::BaseData::DataFlags dataflags)                             \
+    {                                                                   \
+        ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
+        this->initData0(field, res, name, help, dataflags);             \
+        res.parentClass = GetClass()->className.c_str();                \
+        return res;                                                     \
+    }                                                                   \
+    template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
+    initData(Data<SOFA_T>* field, const char* name, const char* help,   \
              bool isDisplayed=true, bool isReadOnly=false)              \
     {                                                                   \
         ::sofa::core::objectmodel::BaseData::BaseInitData res;          \

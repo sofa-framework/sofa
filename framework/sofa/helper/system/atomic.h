@@ -150,10 +150,9 @@ public:
     int compare_and_swap(int cmp, int with)
     {
         int result;
-        __asm__ __volatile__ ( "lock\n\t"
-                "cmpxchg %3,%1"
+        __asm__ __volatile__ ( "lock cmpxchg %3,%1"
                 : "=a" (result), "+m" (val)
-                : "r" (cmp), "r" (with)
+                : "a" (cmp), "r" (with)
                 : "memory", "cc");
         return result;
     }

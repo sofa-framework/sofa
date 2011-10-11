@@ -54,6 +54,7 @@ BaseObject::BaseObject()
 /*        , m_isListening(false)
 , m_printLog(false)*/
 {
+    f_listening.setAutoLink(false);
 }
 
 BaseObject::~BaseObject()
@@ -242,10 +243,6 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 
     // -- Temporary patch, using exceptions. TODO: use a flag to set Data not to be automatically linked. --
     //{
-    it_map = dataLoaderMap.find ("name");
-    if (it_map != dataLoaderMap.end())
-        dataLoaderMap.erase (it_map);
-
     it_map = dataLoaderMap.find ("type");
     if (it_map != dataLoaderMap.end())
         dataLoaderMap.erase (it_map);
@@ -253,33 +250,25 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
     it_map = dataLoaderMap.find ("filename");
     if (it_map != dataLoaderMap.end())
         dataLoaderMap.erase (it_map);
-
-    it_map = dataLoaderMap.find ("tags");
-    if (it_map != dataLoaderMap.end())
-        dataLoaderMap.erase (it_map);
-
-    it_map = dataLoaderMap.find ("printLog");
-    if (it_map != dataLoaderMap.end())
-        dataLoaderMap.erase (it_map);
-
-    it_map = dataLoaderMap.find ("listening");
-    if (it_map != dataLoaderMap.end())
-        dataLoaderMap.erase (it_map);
-
-    it_map = dataLoaderMap.find("bbox");
-    if (it_map != dataLoaderMap.end() )
-        dataLoaderMap.erase(it_map);
     //}
 
 
     for (it_map = dataLoaderMap.begin(); it_map != dataLoaderMap.end(); ++it_map)
     {
-        BaseData* Data = obj->findField( (*it_map).first );
-        if (Data != NULL)
+        BaseData* data = obj->findField( (*it_map).first );
+        if (data != NULL)
         {
-            std::string linkPath = valueString+"."+(*it_map).first;
-            Data->setLinkPath(linkPath);
-            Data->setParent( (*it_map).second);
+            if (!data->isAutoLink())
+            {
+                sout << "Disabling autolink for Data " << data->getName() << sendl;
+            }
+            else
+            {
+                //serr << "Autolinking Data " << data->getName() << sendl;
+                std::string linkPath = valueString+"."+(*it_map).first;
+                data->setLinkPath(linkPath);
+                data->setParent( (*it_map).second);
+            }
         }
     }
 }

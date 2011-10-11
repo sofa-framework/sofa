@@ -133,7 +133,7 @@ private:
 
 
 
-class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< sofa::helper::vector<std::string> >
+class DataFileNameVector : public sofa::core::objectmodel::Data< sofa::helper::vector<std::string> >
 {
 public:
     typedef sofa::core::objectmodel::Data<sofa::helper::vector<std::string> > Inherit;

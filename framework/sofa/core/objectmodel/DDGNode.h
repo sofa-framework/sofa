@@ -31,6 +31,8 @@
 #pragma once
 #endif
 
+#include <sofa/helper/fixed_array.h>
+#include <sofa/core/ExecParams.h>
 #include <sofa/core/core.h>
 #include <list>
 
@@ -79,28 +81,34 @@ public:
     virtual void update() = 0;
 
     /// Returns true if the DDGNode needs to be updated
-    bool isDirty() const
+    bool isDirty(const core::ExecParams* params = 0) const
     {
-        return dirtyValue;
+        return dirtyFlags[currentAspect(params)].dirtyValue;
     }
 
     /// Indicate the value needs to be updated
-    virtual void setDirtyValue();
+    virtual void setDirtyValue(const core::ExecParams* params = 0);
 
     /// Indicate the outputs needs to be updated. This method must be called after changing the value of this node.
-    virtual void setDirtyOutputs();
+    virtual void setDirtyOutputs(const core::ExecParams* params = 0);
 
     /// Set dirty flag to false
-    void cleanDirty();
+    void cleanDirty(const core::ExecParams* params = 0);
 
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
-    void updateIfDirty() const
+    void updateIfDirty(const core::ExecParams* params = 0) const
     {
-        if (isDirty())
+        if (isDirty(params))
         {
             const_cast <DDGNode*> (this)->update();
         }
     }
+
+    /// Copy the value of an aspect into another one.
+    virtual void copyAspect(int destAspect, int srcAspect);
+
+    static size_t currentAspect();
+    static size_t currentAspect(const core::ExecParams* params);
 
 protected:
 
@@ -128,9 +136,28 @@ protected:
     }
 
 private:
-    bool dirtyValue;
-    bool dirtyOutputs;
+
+    struct DirtyFlags
+    {
+        DirtyFlags() : dirtyValue(false), dirtyOutputs(false) {}
+
+        bool dirtyValue;
+        bool dirtyOutputs;
+    };
+    helper::fixed_array<DirtyFlags, SOFA_DATA_MAX_ASPECTS> dirtyFlags;
 };
+
+inline size_t DDGNode::currentAspect()
+{
+    if(SOFA_DATA_MAX_ASPECTS == 1) return 0;
+    else                             return core::ExecParams::defaultInstance()->aspectID();
+}
+
+inline size_t DDGNode::currentAspect(const core::ExecParams* params)
+{
+    if(SOFA_DATA_MAX_ASPECTS == 1) return 0;
+    else                             return params != 0 ? params->aspectID() : core::ExecParams::defaultInstance()->aspectID();
+}
 
 } // namespace objectmodel
 

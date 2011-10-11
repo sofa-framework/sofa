@@ -114,7 +114,7 @@ DEFINES += SOFA_HAVE_GLEW
 # DEFINES += SOFA_HAVE_FLOWVR
 
 # Uncomment if you want to use Boost lib for multithread computing
-# DEFINES += SOFA_HAVE_BOOST
+DEFINES += SOFA_HAVE_BOOST
 win32{ # On Windows, the path where boost is install and the suffix of the dlls should be specified
 # BOOST_ROOT = "C:\Code\boost\boost_1_46_1"
 # BOOST_SUFFIX = -vc90-mt-1_46_1
@@ -130,6 +130,8 @@ win32{ # On Windows, the path where boost is install and the suffix of the dlls 
 # DEFINES += SOFA_SMP
 # Enables linking with kaapi without activating SOFA_SMP code
 # DEFINES += SOFA_HAVE_KAAPI
+
+DEFINES += SOFA_MAX_THREADS=3
 
 # Uncomment if you want to use LibXML instead of built-in TinyXML
 # DEFINES += SOFA_XML_PARSER_LIBXML
@@ -389,6 +391,9 @@ CONFIG += release
 # QMAKE_LDFLAGS *= -pg
 # QMAKE_LFLAGS_DEBUG *= -pg
 # QMAKE_LFLAGS_RELEASE *= -pg
+
+# Make sure undefined symbols are reported as error when linking each dynamic libraries instead of the first program using them
+QMAKE_LFLAGS *= -Wl,--no-undefined
 
 # Using GCC >= 4.3, the best know optimization flags to compile SOFA are :
 # QMAKE_CFLAGS_RELEASE   -= -O2 -march=i586 -mtune=generic -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=4

@@ -30,6 +30,7 @@
 #include "BatchGUI.h"
 #include "qt/RealGUI.h"
 #include "glut/SimpleGUI.h"
+#include "glut/MultithreadGUI.h"
 #include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
@@ -50,6 +51,10 @@ int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &Batc
 #ifdef SOFA_GUI_GLUT
 
 int SimpleGUIClass = GUIManager::RegisterGUI("glut", &glut::SimpleGUI::CreateGUI, &glut::SimpleGUI::InitGUI, 0);
+
+#ifdef SOFA_HAVE_BOOST
+int MtGUIClass = GUIManager::RegisterGUI("glut-mt", &glut::MultithreadGUI::CreateGUI, &glut::MultithreadGUI::InitGUI, 0);
+#endif
 #endif
 
 #ifdef SOFA_GUI_QGLVIEWER

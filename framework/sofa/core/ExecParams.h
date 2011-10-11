@@ -27,14 +27,23 @@
 #ifndef SOFA_CORE_EXEC_PARAMS_H
 #define SOFA_CORE_EXEC_PARAMS_H
 
+#include <sofa/helper/system/atomic.h>
+#include <sofa/core/core.h>
+
 namespace sofa
 {
 
 namespace core
 {
 
+#if defined(SOFA_MAX_THREADS)
+enum { SOFA_DATA_MAX_ASPECTS = 2*SOFA_MAX_THREADS };
+#else
+enum { SOFA_DATA_MAX_ASPECTS = 1 };
+#endif
+
 /// Class gathering parameters use by most components methods, and transmitted by all visitors
-class ExecParams
+class SOFA_CORE_API ExecParams
 {
 public:
 
@@ -49,39 +58,65 @@ public:
         EXEC_KAAPI
     };
 
+private:
+
+    static sofa::helper::system::atomic<int> g_nbThreads;
+
+    class SOFA_CORE_API ExecParamsThreadStorage
+    {
+    public:
+        /// Mode of execution requested
+        ExecMode execMode;
+
+        /// Index of current thread (0 corresponding to the only thread in sequential mode, or first thread in parallel mode)
+        int threadID;
+
+        /// Aspect index for the current thread
+        int aspectID;
+
+        ExecParamsThreadStorage(int tid);
+    };
+
+    static ExecParamsThreadStorage* threadStorage();
+
+    ExecParamsThreadStorage* storage;
+
+    ExecParams(ExecParamsThreadStorage* s)
+        : storage(s)
+    {
+    }
+
+public:
+
     /// Mode of execution requested
-    ExecMode execMode() const { return m_execMode; }
+    ExecMode execMode() const { return storage->execMode; }
 
     /// Index of current thread (0 corresponding to the only thread in sequential mode, or first thread in parallel mode)
-    int threadID() const { return m_threadID; }
+    int threadID() const { return storage->threadID; }
+
+    /// Number of threads currently known to Sofa
+    int nbThreads() const { return g_nbThreads; }
+
+    /// Aspect index for the current thread
+    int aspectID() const { return storage->aspectID; }
 
     ExecParams()
-        : m_execMode(EXEC_DEFAULT)
-        , m_threadID(0)
+        : storage(threadStorage())
     {
     }
 
     /// Get the default ExecParams, to be used to provide a default values for method parameters
-    static ExecParams* defaultInstance()
-    {
-        static ExecParams m_defaultInstance;
-
-        return &m_defaultInstance;
-    }
+    static ExecParams* defaultInstance();
 
     /// Request a specific mode of execution
-    ExecParams& setExecMode(ExecMode v) { m_execMode = v; return *this; }
+    ExecParams& setExecMode(ExecMode v) { storage->execMode = v; return *this; }
 
     /// Specify the index of the current thread
-    ExecParams& setThreadID(int v) { m_threadID = v; return *this; }
+    ExecParams& setThreadID(int v) { storage->threadID = v; return *this; }
 
-protected:
+    /// Specify the aspect index of the current thread
+    ExecParams& setAspectID(int v) { storage->aspectID = v; return *this; }
 
-    /// Mode of execution requested
-    ExecMode m_execMode;
-
-    /// Index of current thread (0 corresponding to the only thread in sequential mode, or first thread in parallel mode)
-    int m_threadID;
 };
 
 } // namespace core

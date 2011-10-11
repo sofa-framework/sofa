@@ -24,76 +24,105 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_HELPER_SYSTEM_THREAD_THREAD_SPECIFIC_PTR_H
+#define SOFA_HELPER_SYSTEM_THREAD_THREAD_SPECIFIC_PTR_H
 
-#include "TimeoutWatchdog.h"
-#include <iostream>
+#include <sofa/helper/system/config.h>
+
+
+#if defined(__GNUC__) && (defined(__linux__) || defined(WIN32))
+// use __thread
+#define SOFA_TLS_KEYWORD __thread
+#elif defined(WIN32)
+// use __declspec(thread)
+#define SOFA_TLS_KEYWORD __declspec(thread)
+#else
+// use pthread API
+#include <pthread.h>
+#define SOFA_TLS_PTHREAD
+#endif
 
 namespace sofa
 {
+
 namespace helper
 {
+
 namespace system
 {
+
 namespace thread
 {
-/**
- * Default constructor.
- */
-TimeoutWatchdog::TimeoutWatchdog()
-    : timeout_sec(0)
-{
-}
 
-/**
- * Destructor: interrupts the watchdog and cleans-up.
- */
-TimeoutWatchdog::~TimeoutWatchdog()
+template<class T> class thread_specific_ptr;
+
+#if defined(SOFA_TLS_KEYWORD)
+
+#define SOFA_THREAD_SPECIFIC_PTR(type,name) static SOFA_TLS_KEYWORD type * name = 0
+
+#elif defined(SOFA_TLS_PTHREAD)
+
+#define SOFA_THREAD_SPECIFIC_PTR(type,name) static ::sofa::helper::system::thread::thread_specific_ptr<type> name
+
+template<class T>
+class thread_specific_ptr
 {
-    if(timeout_sec > 0)
+private:
+    pthread_key_t key;
+
+    thread_specific_ptr(thread_specific_ptr&); // NO COPY
+    thread_specific_ptr& operator=(thread_specific_ptr&); // NO ASSIGNEMENT
+
+    T* get() const
     {
-        //std::cout << "Waiting for watchdog thread" << std::endl;
-        watchdogThread.interrupt();
-        watchdogThread.join();
-        //std::cout << "Watchdog thread closed" << std::endl;
+        void *ptr = pthread_getspecific(key);
+        /*
+                if (!ptr)
+                {
+                    ptr = new T;
+                    pthread_setspecific(key,ptr);
+                }
+        */
+        return static_cast<T*>(ptr);
     }
-}
 
-/**
- * Starts a thread that will terminate the program after the specified duration elapses.
- */
-void TimeoutWatchdog::start(unsigned timeout_sec)
-{
-    this->timeout_sec = timeout_sec;
-    if(timeout_sec > 0)
+public:
+    thread_specific_ptr()
     {
-        boost::thread newThread(boost::bind(&TimeoutWatchdog::threadProc, this));
-        watchdogThread.swap(newThread);
+        pthread_key_create(&key);
     }
-}
-
-/**
- * The thread "main" procedure: waits until the program lifespan has elapsed.
- */
-void TimeoutWatchdog::threadProc()
-{
-    //std::cout << "Entering watchdog thread" << std::endl;
-
-    // sleep method is interruptible, when calling interrupt() from another thread
-    // this thread should end inside the sleep method.
-    boost::thread::sleep(boost::get_system_time() + boost::posix_time::seconds(timeout_sec));
-
-    if(!boost::this_thread::interruption_requested())
+    ~thread_specific_ptr()
     {
-        std::cerr << "The program has been running for more than "
-                << timeout_sec <<
-                " seconds. It is going to shut down now." << std::endl;
-        exit(-1);
+        pthread_key_delete(key);
     }
-}
+    operator T*() const
+    {
+        return get();
+    }
+    T* operator=(T* ptr)
+    {
+        pthread_setspecific(key,ptr);
+        return ptr;
+    }
+    T* operator->() const
+    {
+        return get();
+    }
+    T& operator*() const
+    {
+        return *get();
+    }
+};
+#else
+#error thread local storage is not supported on your platform
+#endif
 
-}
-}
-}
-}
+} // namespace thread
 
+} // namespace system
 
+} // namespace helper
+
+} // namespace sofa
+
+#endif

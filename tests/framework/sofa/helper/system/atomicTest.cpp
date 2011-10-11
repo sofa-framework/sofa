@@ -16,43 +16,35 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Tests                                 *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/objectmodel/Base.h>
 
-namespace sofa
-{
+#include <sofa/helper/system/atomic.h>
+#include <boost/test/auto_unit_test.hpp>
 
-namespace core
-{
+using sofa::helper::system::atomic;
 
-namespace objectmodel
+BOOST_AUTO_TEST_CASE(dec_and_test_null)
 {
-
-void DataFileName::updatePath()
-{
-    fullpath = m_values[currentAspect()].getValue();
-    if (!fullpath.empty())
-        helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
+    atomic<int> value(3);
+    BOOST_CHECK_EQUAL(value.dec_and_test_null(), false);
+    BOOST_CHECK_EQUAL(value, 2);
+    BOOST_CHECK_EQUAL(value.dec_and_test_null(), false);
+    BOOST_CHECK_EQUAL(value, 1);
+    BOOST_CHECK_EQUAL(value.dec_and_test_null(), true);
+    BOOST_CHECK_EQUAL(value, 0);
 }
 
-void DataFileNameVector::updatePath()
+BOOST_AUTO_TEST_CASE(compare_and_swap)
 {
-    fullpath = m_values[currentAspect()].getValue();
-    if (!fullpath.empty())
-        for (unsigned int i=0 ; i<fullpath.size() ; i++)
-            helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
+    atomic<int> value(-1);
+    BOOST_CHECK_EQUAL(value.compare_and_swap(-1, 10), -1);
+    BOOST_CHECK_EQUAL(value, 10);
+
+    BOOST_CHECK_EQUAL(value.compare_and_swap(5, 25), 10);
+    BOOST_CHECK_EQUAL(value, 10);
 }
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa

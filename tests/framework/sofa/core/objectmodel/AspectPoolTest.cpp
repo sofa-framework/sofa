@@ -25,75 +25,42 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "TimeoutWatchdog.h"
-#include <iostream>
+#include <sofa/core/objectmodel/AspectPool.h>
+#include <boost/test/auto_unit_test.hpp>
 
-namespace sofa
-{
-namespace helper
-{
-namespace system
-{
-namespace thread
-{
-/**
- * Default constructor.
- */
-TimeoutWatchdog::TimeoutWatchdog()
-    : timeout_sec(0)
-{
-}
+using namespace sofa::core::objectmodel;
+using sofa::core::SOFA_DATA_MAX_ASPECTS;
 
-/**
- * Destructor: interrupts the watchdog and cleans-up.
- */
-TimeoutWatchdog::~TimeoutWatchdog()
+BOOST_AUTO_TEST_CASE(AspectPool_allocate)
 {
-    if(timeout_sec > 0)
+    AspectPool p;
     {
-        //std::cout << "Waiting for watchdog thread" << std::endl;
-        watchdogThread.interrupt();
-        watchdogThread.join();
-        //std::cout << "Watchdog thread closed" << std::endl;
+        AspectRef refs[SOFA_DATA_MAX_ASPECTS];
+        // allocate all available aspects
+        for(int i = 0; i < SOFA_DATA_MAX_ASPECTS; ++i)
+        {
+            refs[i] = p.allocate();
+            BOOST_CHECK(refs[i] != 0);
+            BOOST_CHECK_EQUAL(refs[i]->aspectID(), i);
+        }
+        AspectRef extraRef = p.allocate(); // try to allocate one more aspect
+        BOOST_CHECK(extraRef == 0); // it should have returned a null pointer
+
+        refs[SOFA_DATA_MAX_ASPECTS/2].reset(); // release an aspect
+        extraRef = p.allocate(); // allocate a new one: it should return the ID of the previously released one.
+        BOOST_CHECK(extraRef != 0);
+        BOOST_CHECK_EQUAL(extraRef->aspectID(), SOFA_DATA_MAX_ASPECTS/2);
+    }
+
+    AspectRef newRef = p.allocate(); // allocate an aspect after all have been released.
+    BOOST_CHECK(newRef != 0);
+    BOOST_CHECK_EQUAL(newRef->aspectID(), SOFA_DATA_MAX_ASPECTS/2); // it should return the 0 aspect
+
+    if(SOFA_DATA_MAX_ASPECTS > 1)
+    {
+        AspectRef extraRef = p.allocate();
+        BOOST_CHECK(extraRef != 0);
+        BOOST_CHECK_EQUAL(extraRef->aspectID(), SOFA_DATA_MAX_ASPECTS-1); // it should return the last aspect
     }
 }
-
-/**
- * Starts a thread that will terminate the program after the specified duration elapses.
- */
-void TimeoutWatchdog::start(unsigned timeout_sec)
-{
-    this->timeout_sec = timeout_sec;
-    if(timeout_sec > 0)
-    {
-        boost::thread newThread(boost::bind(&TimeoutWatchdog::threadProc, this));
-        watchdogThread.swap(newThread);
-    }
-}
-
-/**
- * The thread "main" procedure: waits until the program lifespan has elapsed.
- */
-void TimeoutWatchdog::threadProc()
-{
-    //std::cout << "Entering watchdog thread" << std::endl;
-
-    // sleep method is interruptible, when calling interrupt() from another thread
-    // this thread should end inside the sleep method.
-    boost::thread::sleep(boost::get_system_time() + boost::posix_time::seconds(timeout_sec));
-
-    if(!boost::this_thread::interruption_requested())
-    {
-        std::cerr << "The program has been running for more than "
-                << timeout_sec <<
-                " seconds. It is going to shut down now." << std::endl;
-        exit(-1);
-    }
-}
-
-}
-}
-}
-}
-
 

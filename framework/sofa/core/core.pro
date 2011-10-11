@@ -99,6 +99,7 @@ HEADERS += \
 	MultiMapping.inl \
 	Multi2Mapping.h \
 	Multi2Mapping.inl \
+	objectmodel/AspectPool.h \
 	objectmodel/Base.h \
 	objectmodel/BaseClass.h \
 	objectmodel/BaseContext.h \
@@ -135,7 +136,8 @@ HEADERS += \
 	CategoryLibrary.h \
 	ComponentLibrary.h
 
-SOURCES +=  \
+SOURCES += \
+	objectmodel/AspectPool.cpp \
 	objectmodel/Base.cpp \
 	objectmodel/BaseClass.cpp \
 	objectmodel/BaseData.cpp \
@@ -157,6 +159,7 @@ SOURCES +=  \
 	objectmodel/ObjectRef.cpp \
 	objectmodel/Tag.cpp \
 	ObjectFactory.cpp \
+	ExecParams.cpp \
 	SofaLibrary.cpp \
 	CategoryLibrary.cpp \
 	ComponentLibrary.cpp \
@@ -197,7 +200,6 @@ SOURCES +=  \
 	visual/DisplayFlags.cpp \
 	visual/DrawToolGL.cpp
 
-
 contains(DEFINES,SOFA_SMP) {
 	HEADERS += \
 		CallContext.h \
@@ -206,14 +208,14 @@ contains(DEFINES,SOFA_SMP) {
 		behavior/ParallelMultiVec.h \
 		collision/ParallelPipeline.h \
 		collision/ParallelNarrowPhaseDetection.h
-	
+
 	SOURCES += \
 		CallContext.cpp \
 		collision/ParallelPipeline.cpp \
 		objectmodel/BaseObjectTasks.cpp
 }
 
-contains(DEFINES, SOFA_SUPPORT_MOVING_FRAMES) {
+contains(DEFINES, SOFA_SUPPORT_MOVING_FRAMES){
 	HEADERS += \
 		behavior/InertiaForce.h
 }

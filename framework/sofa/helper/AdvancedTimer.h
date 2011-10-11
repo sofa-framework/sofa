@@ -196,39 +196,90 @@ public:
         step(id, IdObj(obj->getName()));
     }
 
+    // API using strings instead of Id, to remove the need for Id creation when no timing is recorded
+
+    static void stepBegin(const char* idStr);
+    static void stepBegin(const char* idStr, const char* objStr);
+    static void stepBegin(const char* idStr, const std::string& objStr);
+    template<class T>
+    static void stepBegin(const char* idStr, T* obj)
+    {
+        stepBegin(idStr, obj->getName());
+    }
+    static void stepEnd  (const char* idStr);
+    static void stepEnd  (const char* idStr, const char* objStr);
+    static void stepEnd  (const char* idStr, const std::string& objStr);
+    template<class T>
+    static void stepEnd  (const char* idStr, T* obj)
+    {
+        stepEnd(idStr, obj->getName());
+    }
+    static void stepNext (const char* prevIdStr, const char* nextIdStr);
+    static void step     (const char* idStr);
+    static void step     (const char* idStr, const char* objStr);
+    static void step     (const char* idStr, const std::string& objStr);
+    template<class T>
+    static void step     (const char* idStr, T* obj)
+    {
+        step(idStr, obj->getName());
+    }
+
     class StepVar
     {
     public:
-        IdStep id;
-        IdObj obj;
-        StepVar(IdStep id) : id(id)
+        const IdStep id;
+        const char* idStr;
+        const IdObj obj;
+        const char* objStr;
+        StepVar(IdStep id) : id(id), idStr(NULL), objStr(NULL)
         {
             stepBegin(id);
         }
-        StepVar(IdStep id, IdObj obj) : id(id), obj(obj)
+        StepVar(const char* idStr) : idStr(idStr), objStr(NULL)
+        {
+            stepBegin(idStr);
+        }
+        StepVar(IdStep id, IdObj obj) : id(id), idStr(NULL), obj(obj), objStr(NULL)
+        {
+            stepBegin(id, obj);
+        }
+        StepVar(const char* idStr, const char* objStr) : idStr(idStr), objStr(objStr)
+        {
+            stepBegin(idStr, objStr);
+        }
+        template<class T>
+        StepVar(IdStep id, T* obj) : id(id), idStr(NULL), obj(IdObj(obj->getName())), objStr(NULL)
         {
             stepBegin(id, obj);
         }
         template<class T>
-        StepVar(IdStep id, T* obj) : id(id), obj(IdObj(obj->getName()))
+        StepVar(const char* idStr, T* obj) : idStr(idStr), objStr(obj->getName().c_str())
         {
-            stepBegin(id, obj);
+            stepBegin(idStr, objStr);
         }
         ~StepVar()
         {
-            if (!obj)
-                stepEnd(id);
-            else
+            if (obj)
                 stepEnd(id, obj);
+            else if (id)
+                stepEnd(id);
+            else if (objStr)
+                stepEnd(idStr, objStr);
+            else if (idStr)
+                stepEnd(idStr);
         }
     };
 
     static void valSet(IdVal id, double val);
     static void valAdd(IdVal id, double val);
 
+    static void valSet(const char* idStr, double val);
+    static void valAdd(const char* idStr, double val);
+
 
     typedef void (*SyncCallBack)(void* userData);
     static std::pair<SyncCallBack,void*> setSyncCallBack(SyncCallBack cb, void* userData = NULL);
+
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_HELPER)

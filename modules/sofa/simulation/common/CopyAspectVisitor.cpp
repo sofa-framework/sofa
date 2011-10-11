@@ -16,43 +16,41 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/objectmodel/Base.h>
+
+#include "CopyAspectVisitor.h"
 
 namespace sofa
 {
 
-namespace core
+namespace simulation
 {
 
-namespace objectmodel
+CopyAspectVisitor::CopyAspectVisitor(const core::ExecParams* params, int destAspect, int srcAspect)
+    : Visitor(params), destAspect(destAspect), srcAspect(srcAspect)
 {
-
-void DataFileName::updatePath()
-{
-    fullpath = m_values[currentAspect()].getValue();
-    if (!fullpath.empty())
-        helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
 }
 
-void DataFileNameVector::updatePath()
+CopyAspectVisitor::~CopyAspectVisitor()
 {
-    fullpath = m_values[currentAspect()].getValue();
-    if (!fullpath.empty())
-        for (unsigned int i=0 ; i<fullpath.size() ; i++)
-            helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
 }
 
-} // namespace objectmodel
-
-} // namespace core
+CopyAspectVisitor::Result CopyAspectVisitor::processNodeTopDown(Node* node)
+{
+    node->copyAspect(destAspect, srcAspect);
+    for(Node::ObjectIterator iObj = node->object.begin(), endObj = node->object.end(); iObj != endObj; ++iObj)
+    {
+        fprintf(stderr, "Copy node: %s, object: %s\n", node->getName().c_str(), (*iObj)->getName().c_str());
+        (*iObj)->copyAspect(destAspect, srcAspect);
+    }
+    return RESULT_CONTINUE;
+}
 
 } // namespace sofa
+
+} // namespace simulation

@@ -145,6 +145,9 @@ public:
     /// Accessor to the map containing all the aliases of this object
     const std::multimap< std::string, BaseData* >& getAliases() const { return m_aliasData; }
 
+    void copyAspect(int destAspect, int srcAspect);
+
+    void releaseAspect(int aspect);
     /// @}
 
     /// @name tags
@@ -185,6 +188,7 @@ public:
 protected:
     /// Helper method used by initData()
     void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false );
+    void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags );
 
     /// Helper method used by initData()
     template<class T>
