@@ -5,10 +5,12 @@ TARGET = sofa_base_animation_loop
 
 DEFINES += SOFA_BUILD_BASE_ANIMATION_LOOP
 
-HEADERS += animationloop/MultiStepAnimationLoop.h \
+HEADERS += initBaseAnimationLoop.h \
+           animationloop/MultiStepAnimationLoop.h \
            animationloop/MultiTagAnimationLoop.h
 
-SOURCES += animationloop/MultiStepAnimationLoop.cpp \
+SOURCES += initBaseAnimationLoop.cpp \
+           animationloop/MultiStepAnimationLoop.cpp \
            animationloop/MultiTagAnimationLoop.cpp
 
 

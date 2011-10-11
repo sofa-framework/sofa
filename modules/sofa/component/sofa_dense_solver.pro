@@ -5,13 +5,15 @@ TARGET = sofa_dense_solver
 
 DEFINES += SOFA_BUILD_DENSE_SOLVER
 
-HEADERS += linearsolver/LULinearSolver.h \
+HEADERS += initDenseSolver.h \
+           linearsolver/LULinearSolver.h \
            linearsolver/NewMatVector.h \
            linearsolver/NewMatMatrix.h \
            linearsolver/NewMatCGLinearSolver.h \
            linearsolver/NewMatCholeskySolver.h
 
-SOURCES += linearsolver/LULinearSolver.cpp \
+SOURCES += initDenseSolver.cpp \
+           linearsolver/LULinearSolver.cpp \
            linearsolver/NewMatCGLinearSolver.cpp \
            linearsolver/NewMatCholeskySolver.cpp
 

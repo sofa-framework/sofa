@@ -5,7 +5,8 @@ TARGET = sofa_engine
 
 DEFINES += SOFA_BUILD_ENGINE
 
-HEADERS += engine/AverageCoord.h \
+HEADERS += initEngine.h \
+           engine/AverageCoord.h \
            engine/AverageCoord.inl \
            engine/BoxROI.h \
            engine/BoxROI.inl \
@@ -65,7 +66,8 @@ HEADERS += engine/AverageCoord.h \
            engine/NormalsFromPoints.inl
 
 
-SOURCES += engine/AverageCoord.cpp \
+SOURCES += initEngine.cpp \
+           engine/AverageCoord.cpp \
            engine/BoxROI.cpp \
            engine/PlaneROI.cpp \
            engine/SphereROI.cpp \

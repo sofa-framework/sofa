@@ -5,12 +5,14 @@ TARGET = sofa_misc_fem
 
 DEFINES += SOFA_BUILD_MISC_FEM
 
-HEADERS += forcefield/FastTetrahedralCorotationalForceField.h \
+HEADERS += initMiscFEM.h \
+           forcefield/FastTetrahedralCorotationalForceField.h \
            forcefield/FastTetrahedralCorotationalForceField.inl \
            forcefield/TetrahedralTensorMassForceField.h \
            forcefield/TetrahedralTensorMassForceField.inl 
 
-SOURCES += forcefield/FastTetrahedralCorotationalForceField.cpp \
+SOURCES += initMiscFEM.cpp \
+           forcefield/FastTetrahedralCorotationalForceField.cpp \
            forcefield/TetrahedralTensorMassForceField.cpp 
 
 # Make sure there are no cross-dependencies

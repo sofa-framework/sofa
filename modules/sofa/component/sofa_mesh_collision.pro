@@ -5,7 +5,8 @@ TARGET = sofa_mesh_collision
 
 DEFINES += SOFA_BUILD_MESH_COLLISION
 
-HEADERS += collision/MinProximityIntersection.h \
+HEADERS += initMeshCollision.h \
+           collision/MinProximityIntersection.h \
            collision/NewProximityIntersection.h \
            collision/BarycentricPenalityContact.h \
            collision/BarycentricPenalityContact.inl \
@@ -16,7 +17,8 @@ HEADERS += collision/MinProximityIntersection.h \
            collision/SubsetContactMapper.h \
            collision/SubsetContactMapper.inl
 
-SOURCES += collision/MinProximityIntersection.cpp \
+SOURCES += initMeshCollision.cpp \
+           collision/MinProximityIntersection.cpp \
            collision/NewProximityIntersection.cpp \
            collision/BarycentricPenalityContact.cpp \
            collision/BarycentricContactMapper.cpp \

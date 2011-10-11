@@ -5,7 +5,8 @@ TARGET = sofa_topology_mapping
 
 DEFINES += SOFA_BUILD_TOPOLOGY_MAPPING
 
-HEADERS += mapping/Mesh2PointMechanicalMapping.h \
+HEADERS += initTopologyMapping.h \
+           mapping/Mesh2PointMechanicalMapping.h \
            mapping/Mesh2PointMechanicalMapping.inl \
            mapping/SimpleTesselatedTetraMechanicalMapping.h \
            mapping/SimpleTesselatedTetraMechanicalMapping.inl \
@@ -21,7 +22,8 @@ HEADERS += mapping/Mesh2PointMechanicalMapping.h \
            topology/Triangle2EdgeTopologicalMapping.h
 
 
-SOURCES += mapping/Mesh2PointMechanicalMapping.cpp \
+SOURCES += initTopologyMapping.cpp \
+           mapping/Mesh2PointMechanicalMapping.cpp \
            mapping/SimpleTesselatedTetraMechanicalMapping.cpp \
            topology/CenterPointTopologicalMapping.cpp \
            topology/Edge2QuadTopologicalMapping.cpp \

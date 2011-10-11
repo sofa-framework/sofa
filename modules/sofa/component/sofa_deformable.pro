@@ -5,7 +5,8 @@ TARGET = sofa_deformable
 
 DEFINES += SOFA_BUILD_DEFORMABLE
 
-HEADERS += forcefield/QuadularBendingSprings.h \
+HEADERS += initDeformable.h \
+           forcefield/QuadularBendingSprings.h \
            forcefield/QuadularBendingSprings.inl \
            forcefield/RestShapeSpringsForceField.h \
            forcefield/RestShapeSpringsForceField.inl \
@@ -34,7 +35,8 @@ HEADERS += forcefield/QuadularBendingSprings.h \
            interactionforcefield/VectorSpringForceField.h \
            interactionforcefield/VectorSpringForceField.inl
 
-SOURCES += forcefield/QuadularBendingSprings.cpp \
+SOURCES += initDeformable.cpp \
+           forcefield/QuadularBendingSprings.cpp \
            forcefield/RestShapeSpringsForceField.cpp \
            forcefield/TriangularBendingSprings.cpp \
            forcefield/TriangularBiquadraticSpringsForceField.cpp \

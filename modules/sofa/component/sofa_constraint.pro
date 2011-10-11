@@ -5,7 +5,8 @@ TARGET = sofa_constraint
 
 DEFINES += SOFA_BUILD_CONSTRAINT
 
-HEADERS += collision/LocalMinDistance.h \
+HEADERS += initConstraint.h \
+           collision/LocalMinDistance.h \
            collision/LocalMinDistance.inl \
            collision/LMDNewProximityIntersection.h \
            collision/LMDNewProximityIntersection.inl \
@@ -24,7 +25,8 @@ HEADERS += collision/LocalMinDistance.h \
            animationloop/FreeMotionAnimationLoop.h \
            constraintset/ContactDescription.h \
 
-SOURCES += collision/LocalMinDistance.cpp \
+SOURCES += initConstraint.cpp \
+           collision/LocalMinDistance.cpp \
            collision/LMDNewProximityIntersection.cpp \
            collision/FrictionContact.cpp \
            constraintset/UnilateralInteractionConstraint.cpp \

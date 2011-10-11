@@ -5,7 +5,8 @@ TARGET = sofa_misc_forcefield
 
 DEFINES += SOFA_BUILD_MISC_FORCEFIELD
 
-HEADERS += mass/MatrixMass.h \
+HEADERS += initMiscForcefield.h \
+           mass/MatrixMass.h \
            mass/MatrixMass.inl \
            mass/MeshMatrixMass.h \
            mass/MeshMatrixMass.inl \
@@ -18,7 +19,8 @@ HEADERS += mass/MatrixMass.h \
            interactionforcefield/LineBendingSprings.h \
            interactionforcefield/LineBendingSprings.inl
 
-SOURCES += mass/MatrixMass.cpp \
+SOURCES += initMiscForcefield.cpp \
+           mass/MatrixMass.cpp \
            mass/MeshMatrixMass.cpp \
            forcefield/LennardJonesForceField.cpp \
            forcefield/WashingMachineForceField.cpp \

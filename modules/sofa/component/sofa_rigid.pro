@@ -5,7 +5,8 @@ TARGET = sofa_rigid
 
 DEFINES += SOFA_BUILD_RIGID
 
-HEADERS += container/ArticulatedHierarchyContainer.h \
+HEADERS += initRigid.h \
+           container/ArticulatedHierarchyContainer.h \
            container/ArticulatedHierarchyContainer.inl \
            mapping/ArticulatedSystemMapping.h \
            mapping/ArticulatedSystemMapping.inl \
@@ -22,7 +23,8 @@ HEADERS += container/ArticulatedHierarchyContainer.h \
            interactionforcefield/JointSpringForceField.h \
            interactionforcefield/JointSpringForceField.inl
 
-SOURCES += container/ArticulatedHierarchyContainer.cpp \
+SOURCES += initRigid.cpp \
+           container/ArticulatedHierarchyContainer.cpp \
            mapping/ArticulatedSystemMapping.cpp \
            mapping/LaparoscopicRigidMapping.cpp \
            mapping/LineSetSkinningMapping.cpp \

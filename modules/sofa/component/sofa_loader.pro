@@ -5,7 +5,8 @@ TARGET = sofa_loader
 
 DEFINES += SOFA_BUILD_LOADER
 
-HEADERS += loader/MeshGmshLoader.h \
+HEADERS += initLoader.h \
+           loader/MeshGmshLoader.h \
            loader/MeshObjLoader.h \
            loader/MeshOffLoader.h \
            loader/MeshTrianLoader.h \
@@ -19,7 +20,8 @@ HEADERS += loader/MeshGmshLoader.h \
            misc/ReadTopology.h \
            misc/ReadTopology.inl
 
-SOURCES += loader/MeshGmshLoader.cpp \
+SOURCES += initLoader.cpp \
+           loader/MeshGmshLoader.cpp \
            loader/MeshObjLoader.cpp \
            loader/MeshOffLoader.cpp \
            loader/MeshTrianLoader.cpp \

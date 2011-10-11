@@ -5,7 +5,8 @@ TARGET = sofa_sph_fluid
 
 DEFINES += SOFA_BUILD_SPH_FLUID
 
-HEADERS += container/SpatialGridContainer.h \
+HEADERS += initSPHFluid.h \
+           container/SpatialGridContainer.h \
            container/SpatialGridContainer.inl \
            forcefield/SPHFluidForceField.h \
            forcefield/SPHFluidForceField.inl \
@@ -16,7 +17,8 @@ HEADERS += container/SpatialGridContainer.h \
            forcefield/ParticlesRepulsionForceField.h \
            forcefield/ParticlesRepulsionForceField.inl
 
-SOURCES += container/SpatialGridContainer.cpp \
+SOURCES += initSPHFluid.cpp \
+           container/SpatialGridContainer.cpp \
            forcefield/SPHFluidForceField.cpp \
            mapping/SPHFluidSurfaceMapping.cpp \
            misc/ParticleSink.cpp \

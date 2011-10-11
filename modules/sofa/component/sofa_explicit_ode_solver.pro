@@ -5,13 +5,15 @@ TARGET = sofa_explicit_ode_solver
 
 DEFINES += SOFA_BUILD_EXPLICIT_ODE_SOLVER
 
-HEADERS += odesolver/CentralDifferenceSolver.h \
+HEADERS += initExplicitODESolver.h \
+           odesolver/CentralDifferenceSolver.h \
            odesolver/EulerSolver.h \
            odesolver/RungeKutta2Solver.h \
            odesolver/RungeKutta4Solver.h
 
 
-SOURCES += odesolver/CentralDifferenceSolver.cpp \
+SOURCES += initExplicitODESolver.cpp \
+           odesolver/CentralDifferenceSolver.cpp \
            odesolver/EulerSolver.cpp \
            odesolver/RungeKutta2Solver.cpp \
            odesolver/RungeKutta4Solver.cpp

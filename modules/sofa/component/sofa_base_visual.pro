@@ -5,10 +5,12 @@ TARGET = sofa_base_visual
 
 DEFINES += SOFA_BUILD_BASE_VISUAL
 
-HEADERS += visualmodel/BaseCamera.h \
+HEADERS += initBaseVisual.h \
+           visualmodel/BaseCamera.h \
            visualmodel/VisualModelImpl.h
 
-SOURCES += visualmodel/BaseCamera.cpp \
+SOURCES += initBaseVisual.cpp \
+           visualmodel/BaseCamera.cpp \
            visualmodel/VisualModelImpl.cpp
 
 

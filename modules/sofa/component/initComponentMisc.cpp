@@ -24,6 +24,21 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <sofa/component/initComponentMisc.h>
+#include <sofa/component/initMiscTopology.h>
+#include <sofa/component/initMiscTopologyDev.h>
+#include <sofa/component/initMiscMapping.h>
+#include <sofa/component/initMiscMappingDev.h>
+#include <sofa/component/initMiscForcefield.h>
+#include <sofa/component/initMiscForcefieldDev.h>
+#include <sofa/component/initMiscFEM.h>
+#include <sofa/component/initMiscFEMDev.h>
+#include <sofa/component/initMiscEngine.h>
+#include <sofa/component/initMiscCollision.h>
+#include <sofa/component/initMiscCollisionDev.h>
+#include <sofa/component/initMiscSolver.h>
+#include <sofa/component/initMiscSolverDev.h>
+#include <sofa/component/initMisc.h>
+#include <sofa/component/initMiscDev.h>
 
 
 namespace sofa
@@ -40,35 +55,34 @@ void initComponentMisc()
     {
         first = false;
     }
-}
 
 //SOFA_LINK_CLASS(ParallelCollisionPipeline)
 //SOFA_LINK_CLASS(TriangleModelInRegularGrid)
 //SOFA_LINK_CLASS(ContinuousTriangleIntersection)
 //SOFA_LINK_CLASS(RigidContactMapper)
 //SOFA_LINK_CLASS(RuleBasedContactMapper)
-SOFA_LINK_CLASS(DiscreteBeamBsplineMapping)
-SOFA_LINK_CLASS(TreeCollisionGroupManager)
-SOFA_LINK_CLASS(MatrixMass)
-SOFA_LINK_CLASS(MeshMatrixMass)
-SOFA_LINK_CLASS(FastTetrahedralCorotationalForceField)
-SOFA_LINK_CLASS(LennardJonesForceField)
-SOFA_LINK_CLASS(TetrahedralTensorMassForceField)
-SOFA_LINK_CLASS(WashingMachineForceField)
-SOFA_LINK_CLASS(BeamLinearMapping)
-SOFA_LINK_CLASS(CenterPointMechanicalMapping)
-SOFA_LINK_CLASS(CenterOfMassMapping)
-SOFA_LINK_CLASS(CenterOfMassMultiMapping)
-SOFA_LINK_CLASS(CenterOfMassMulti2Mapping)
-SOFA_LINK_CLASS(CurveMapping)
-SOFA_LINK_CLASS(ExternalInterpolationMapping)
-SOFA_LINK_CLASS(SubsetMultiMapping)
-SOFA_LINK_CLASS(TubularMapping)
-SOFA_LINK_CLASS(VoidMapping)
-SOFA_LINK_CLASS(Distances)
+    SOFA_LINK_CLASS(DiscreteBeamBsplineMapping)
+    SOFA_LINK_CLASS(TreeCollisionGroupManager)
+    SOFA_LINK_CLASS(MatrixMass)
+    SOFA_LINK_CLASS(MeshMatrixMass)
+    SOFA_LINK_CLASS(FastTetrahedralCorotationalForceField)
+    SOFA_LINK_CLASS(LennardJonesForceField)
+    SOFA_LINK_CLASS(TetrahedralTensorMassForceField)
+    SOFA_LINK_CLASS(WashingMachineForceField)
+    SOFA_LINK_CLASS(BeamLinearMapping)
+    SOFA_LINK_CLASS(CenterPointMechanicalMapping)
+    SOFA_LINK_CLASS(CenterOfMassMapping)
+    SOFA_LINK_CLASS(CenterOfMassMultiMapping)
+    SOFA_LINK_CLASS(CenterOfMassMulti2Mapping)
+    SOFA_LINK_CLASS(CurveMapping)
+    SOFA_LINK_CLASS(ExternalInterpolationMapping)
+    SOFA_LINK_CLASS(SubsetMultiMapping)
+    SOFA_LINK_CLASS(TubularMapping)
+    SOFA_LINK_CLASS(VoidMapping)
+    SOFA_LINK_CLASS(Distances)
 //SOFA_LINK_CLASS(IndexedMapTopology)
-SOFA_LINK_CLASS(MeshTetraStuffing)
-SOFA_LINK_CLASS(TopologicalChangeProcessor)
+    SOFA_LINK_CLASS(MeshTetraStuffing)
+    SOFA_LINK_CLASS(TopologicalChangeProcessor)
 //SOFA_LINK_CLASS(Triplet)
 //SOFA_LINK_CLASS(SubdivisionCell)
 //SOFA_LINK_CLASS(TopologyChangeTest)
@@ -76,31 +90,31 @@ SOFA_LINK_CLASS(TopologicalChangeProcessor)
 //SOFA_LINK_CLASS(TagRule)
 //SOFA_LINK_CLASS(ParallelCGLinearSolver)
 //SOFA_LINK_CLASS(DampVelocitySolver)
-SOFA_LINK_CLASS(NewmarkImplicitSolver)
+    SOFA_LINK_CLASS(NewmarkImplicitSolver)
 
 #ifdef SOFA_DEV
-SOFA_LINK_CLASS(ContinuousIntersection)
-SOFA_LINK_CLASS(TestDetection)
-SOFA_LINK_CLASS(BarycentricStickContact)
-SOFA_LINK_CLASS(BglCollisionGroupManager)
-SOFA_LINK_CLASS(ArborisDescription)
-SOFA_LINK_CLASS(ShapeMatchingForceField)
+    SOFA_LINK_CLASS(ContinuousIntersection)
+    SOFA_LINK_CLASS(TestDetection)
+    SOFA_LINK_CLASS(BarycentricStickContact)
+    SOFA_LINK_CLASS(BglCollisionGroupManager)
+    SOFA_LINK_CLASS(ArborisDescription)
+    SOFA_LINK_CLASS(ShapeMatchingForceField)
 //SOFA_LINK_CLASS(VectorField)
-SOFA_LINK_CLASS(ArborisMapping)
-SOFA_LINK_CLASS(CircumcenterMapping)
-SOFA_LINK_CLASS(DeformableOnRigidFrameMapping)
-SOFA_LINK_CLASS(PCAOnRigidFrameMapping)
-SOFA_LINK_CLASS(Triangle2DFEMForceField)
-SOFA_LINK_CLASS(TriangleBendingFEMForceField)
+    SOFA_LINK_CLASS(ArborisMapping)
+    SOFA_LINK_CLASS(CircumcenterMapping)
+    SOFA_LINK_CLASS(DeformableOnRigidFrameMapping)
+    SOFA_LINK_CLASS(PCAOnRigidFrameMapping)
+    SOFA_LINK_CLASS(Triangle2DFEMForceField)
+    SOFA_LINK_CLASS(TriangleBendingFEMForceField)
 //SOFA_LINK_CLASS(FluidSolidInteractionForceField)
-SOFA_LINK_CLASS(DistanceOnGrid)
-SOFA_LINK_CLASS(Edge2TetraTopologicalMapping)
-SOFA_LINK_CLASS(TriangleSubdivisionTopologicalMapping)
-SOFA_LINK_CLASS(SpringIt)
-SOFA_LINK_CLASS(GraphScenePartionner)
-SOFA_LINK_CLASS(MappedBeamToTetraForceField)
+    SOFA_LINK_CLASS(DistanceOnGrid)
+    SOFA_LINK_CLASS(Edge2TetraTopologicalMapping)
+    SOFA_LINK_CLASS(TriangleSubdivisionTopologicalMapping)
+    SOFA_LINK_CLASS(SpringIt)
+    SOFA_LINK_CLASS(GraphScenePartionner)
+    SOFA_LINK_CLASS(MappedBeamToTetraForceField)
 //SOFA_LINK_CLASS(FlowVisualModel)
-SOFA_LINK_CLASS(NewtonEulerImplicit)
+    SOFA_LINK_CLASS(NewtonEulerImplicit)
 #endif
 
 } // namespace component

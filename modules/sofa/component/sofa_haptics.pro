@@ -5,7 +5,8 @@ TARGET = sofa_haptics
 
 DEFINES += SOFA_BUILD_HAPTICS
 
-HEADERS += controller/ForceFeedback.h \
+HEADERS += initHaptics.h \
+           controller/ForceFeedback.h \
            controller/NullForceFeedbackT.h \
            controller/NullForceFeedback.h \
            controller/EnslavementForceFeedback.h \
@@ -13,7 +14,8 @@ HEADERS += controller/ForceFeedback.h \
            controller/LCPForceFeedback.inl \
            controller/MechanicalStateForceFeedback.h
 
-SOURCES += controller/NullForceFeedback.cpp \
+SOURCES += initHaptics.cpp \
+           controller/NullForceFeedback.cpp \
            controller/NullForceFeedbackT.cpp \
            controller/EnslavementForceFeedback.cpp \
            controller/LCPForceFeedback.cpp

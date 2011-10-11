@@ -10,7 +10,6 @@ HEADERS += misc/TopologicalChangeProcessor.h
 
 SOURCES += misc/TopologicalChangeProcessor.cpp
 
-
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
 

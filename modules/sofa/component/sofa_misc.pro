@@ -5,9 +5,11 @@ TARGET = sofa_misc
 
 DEFINES += SOFA_BUILD_MISC
 
-HEADERS += misc/MeshTetraStuffing.h
+HEADERS += initMisc.h \
+           misc/MeshTetraStuffing.h
 
-SOURCES += misc/MeshTetraStuffing.cpp
+SOURCES += initMisc.cpp \
+           misc/MeshTetraStuffing.cpp
 
 
 contains(DEFINES,SOFA_SMP){

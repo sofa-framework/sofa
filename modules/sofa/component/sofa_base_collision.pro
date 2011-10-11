@@ -5,7 +5,8 @@ TARGET = sofa_base_collision
 
 DEFINES += SOFA_BUILD_BASE_COLLISION
 
-HEADERS += collision/BaseContactMapper.h \
+HEADERS += initBaseCollision.h \
+           collision/BaseContactMapper.h \
            collision/DefaultPipeline.h \
            collision/Sphere.h \
            collision/SphereModel.h \
@@ -39,7 +40,8 @@ HEADERS += collision/BaseContactMapper.h \
            collision/DistanceGridCollisionModel.h \
            collision/RayTriangleIntersection.h \
 
-SOURCES += collision/BaseContactMapper.cpp \
+SOURCES += initBaseCollision.cpp \
+           collision/BaseContactMapper.cpp \
            collision/DefaultPipeline.cpp \
            collision/SphereModel.cpp \
            collision/CubeModel.cpp \
