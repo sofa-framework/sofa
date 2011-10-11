@@ -285,52 +285,51 @@ public:
 
     /** Public fonction to apply creation and destruction functions */
     /// Apply adding points elements.
-    void applyCreatePointFunction(unsigned int nbElements,
-            const sofa::helper::vector< TopologyElementType >& elem,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+    virtual void applyCreatePointFunction(const sofa::helper::vector< unsigned int >& indices,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing points elements.
-    void applyDestroyPointFunction(const sofa::helper::vector<unsigned int> & indices);
+    virtual void applyDestroyPointFunction(const sofa::helper::vector<unsigned int> & indices);
 
     /// Apply adding edges elements.
-    void applyCreateEdgeFunction(unsigned int nbElements,
-            const sofa::helper::vector< TopologyElementType >& elem,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+    virtual void applyCreateEdgeFunction(const sofa::helper::vector< unsigned int >& indices,
+            const sofa::helper::vector< TopologyElementType >& elems,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing edges elements.
-    void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int> & indices);
+    virtual void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int> & indices);
 
     /// Apply adding triangles elements.
-    void applyCreateTriangleFunction(unsigned int nbElements,
-            const sofa::helper::vector< TopologyElementType >& elem,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+    virtual void applyCreateTriangleFunction(const sofa::helper::vector< unsigned int >& indices,
+            const sofa::helper::vector< TopologyElementType >& elems,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing triangles elements.
-    void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int> & indices);
+    virtual void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int> & indices);
 
     /// Apply adding quads elements.
-    void applyCreateQuadFunction(unsigned int nbElements,
-            const sofa::helper::vector< TopologyElementType >& elem,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+    virtual void applyCreateQuadFunction(const sofa::helper::vector< unsigned int >& indices,
+            const sofa::helper::vector< TopologyElementType >& elems,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing quads elements.
-    void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int> & indices);
+    virtual void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int> & indices);
 
     /// Apply adding tetrahedra elements.
-    void applyCreateTetrahedronFunction(unsigned int nbElements,
-            const sofa::helper::vector< TopologyElementType >& elem,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+    virtual void applyCreateTetrahedronFunction(const sofa::helper::vector< unsigned int >& indices,
+            const sofa::helper::vector< TopologyElementType >& elems,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing tetrahedra elements.
-    void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int> & indices);
+    virtual void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int> & indices);
 
     /// Apply adding hexahedra elements.
-    void applyCreateHexahedronFunction(unsigned int nbElements,
-            const sofa::helper::vector< TopologyElementType >& elem,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+    virtual void applyCreateHexahedronFunction(const sofa::helper::vector< unsigned int >& indices,
+            const sofa::helper::vector< TopologyElementType >& elems,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing hexahedra elements.
-    void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int> & indices);
+    virtual void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int> & indices);
 
 
 
@@ -356,16 +355,24 @@ public:
 
 protected:
     /// Swaps values at indices i1 and i2.
-    virtual void swap( unsigned int i1, unsigned int i2 );
+    void swap( unsigned int i1, unsigned int i2 );
 
     /// Add some values. Values are added at the end of the vector.
-    virtual void add( unsigned int nbElements,
-            const sofa::helper::vector< TopologyElementType >& elem,
+    void add( unsigned int nbElements,
+            const sofa::helper::vector< TopologyElementType >& elems,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
     /// Remove the values corresponding to the Edges removed.
-    virtual void remove( const sofa::helper::vector<unsigned int> &index );
+    void remove( const sofa::helper::vector<unsigned int> &index );
+
+    /// Reorder the values.
+    void renumber( const sofa::helper::vector<unsigned int> &index );
+
+    /// Move a list of points
+    void move( const sofa::helper::vector<unsigned int> &indexList,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
 
     t_createFunc m_createFunc;
@@ -471,6 +478,14 @@ public:
     /// To create topological engine link to this Data. Pointer to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
 
+    void applyCreatePointFunction(unsigned int nbPoints,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing points elements.
+    void applyDestroyPointFunction(const sofa::helper::vector<unsigned int> & indices);
+
+
+
 protected:
     PointSetTopologyEngine<VecT>* m_topologicalEngine;
 
@@ -545,6 +560,14 @@ public:
     // Public functions to handle topological engine creation
     /// To create topological engine link to this Data. Edgeer to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
+
+    /// Apply adding edges elements.
+    void applyCreateEdgeFunction(unsigned int nbEdges,
+            const sofa::helper::vector< Edge >& elems,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing edges elements.
+    void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int> & indices);
 
 protected:
     EdgeSetTopologyEngine<VecT>* m_topologicalEngine;
@@ -621,6 +644,14 @@ public:
     /// To create topological engine link to this Data. Triangleer to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
 
+    /// Apply adding triangles elements.
+    void applyCreateTriangleFunction(unsigned int nbTriangles,
+            const sofa::helper::vector< Triangle >& elems,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing triangles elements.
+    void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int> & indices);
+
 protected:
     TriangleSetTopologyEngine<VecT>* m_topologicalEngine;
 
@@ -695,6 +726,14 @@ public:
     // Public functions to handle topological engine creation
     /// To create topological engine link to this Data. Quader to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
+
+    /// Apply adding quads elements.
+    void applyCreateQuadFunction(unsigned int nbQuads,
+            const sofa::helper::vector< Quad >& elems,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing quads elements.
+    void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int> & indices);
 
 protected:
     QuadSetTopologyEngine<VecT>* m_topologicalEngine;
@@ -771,6 +810,15 @@ public:
     /// To create topological engine link to this Data. Tetrahedroner to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
 
+    /// Apply adding tetrahedra elements.
+    void applyCreateTetrahedronFunction(unsigned int nbTetrahedra,
+            const sofa::helper::vector< Tetrahedron >& elems,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing tetrahedra elements.
+    void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int> & indices);
+
+
 protected:
     TetrahedronSetTopologyEngine<VecT>* m_topologicalEngine;
 
@@ -845,6 +893,15 @@ public:
     // Public functions to handle topological engine creation
     /// To create topological engine link to this Data. Hexahedroner to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
+
+    /// Apply adding hexahedra elements.
+    void applyCreateHexahedronFunction(unsigned int nbHexahedra,
+            const sofa::helper::vector< Hexahedron >& elems,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing hexahedra elements.
+    void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int> & indices);
+
 
 protected:
     HexahedronSetTopologyEngine<VecT>* m_topologicalEngine;
