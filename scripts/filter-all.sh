@@ -27,7 +27,7 @@ echo
 function qmake_process_dir {
     cd "$1"
     echo "Entering $PWD"
-    for f in *.pro *.pri *.cfg; do
+    for f in *.pro *.pri *.cfg *.prf; do
 	echo "Processing qmake project file $f"
 	let npro+=1
 	cp -pf $f $f.bak
