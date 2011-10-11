@@ -45,6 +45,7 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/config.h>
 
 class TiXmlElement;
 
@@ -105,6 +106,11 @@ public:
     Vec3 worldToCameraTransform(const Vec3& v);
     Vec3 screenToWorldCoordinates(int x, int y);
 
+
+    void fitSphere(const Vec3& center, SReal radius);
+    void fitBoundingBox(const Vec3& min,const Vec3& max);
+
+
     Vec3 getPosition()
     {
         return p_position.getValue();
@@ -137,6 +143,17 @@ public:
     double getFieldOfView()
     {
         return p_fieldOfView.getValue();
+    }
+
+    double getHorizontalFieldOfView()
+    {
+        GLint viewport[4];
+        glGetIntegerv( GL_VIEWPORT, viewport );
+        float screenwidth = (float)viewport[2];
+        float screenheight = (float)viewport[3];
+        float aspectRatio = screenwidth / screenheight;
+
+        return 2.0 * atan ( tan(getFieldOfView()/2.0) * aspectRatio );
     }
 
     int getCameraType() const
