@@ -19,28 +19,77 @@
 \begin{document}
 \maketitle
 
-\begin{abstract}
-This is an introduction to SOFA. More documentation is available online.
+\begin{abstract}	
+\sofa{} (Simulation Open Framework Architecture) is an open-source C++ library primarily  targeted at interactive medical simulation.
+\sofa{} facilitates collaborations between specialists from various domains, by decomposing complex simulators into components designed independently and organized in a scenegraph data structure.
+Each component encapsulates one of the aspects of a simulation, such as the degrees of freedom, the forces and constraints, the differential equations, the main loop algorithms, the linear solvers, the collision detection algorithms or the interaction devices. The simulated objects can be represented using several models, each of them optimized for a different task such as the computation of elastic forces, collision detection, haptics or visual display. To ensure a consistent simulation, these models are synchronized during the simulation using a mapping mechanism.
+CPU and GPU implementations can be transparently combined to exploit the computational power of modern hardware architectures.
+%Simulations descriptions files can be read from and written to xml files.
+As a result of this flexible and efficient architecture, \sofa{} can be used as a test-bed to compare models and algorithms, or as a basis for the development of complex, high-performance simulators.
+
 \end{abstract}
 
 \tableofcontents
 
 % This chapter is borrowed from a stand-alone document defined in directory introduction/
 \chapter{Introduction to \sofa}
-Fran\c{c}ois Faure
 
 \graphicspath{{../introduction/}}  % to include images
 \input{../introduction/introduction_body}
 
-% This chapter is borrowed from a stand-alone document defined in directory concepts/
-\chapter{Concepts}
-\graphicspath{{../concepts/}}  % to include images
-\input{../concepts/concepts_body}
+\chapter{Multi-Model approach}
+\graphicspath{{../multimodel/}}  % to include images
+\input{../multimodel/multimodel_body}
+\input{../multimodel/mappingsIntro_body}
+
 
 % This chapter is borrowed from a stand-alone document defined in directory design/
 \chapter{Design}
 \graphicspath{{../design/}}  % to include images
 \input{../design/design_body}
+
+
+
+%%%%%%%%%%%%%%%%%%%% COMPONENTS%%%%%%%%%
+%1 STATES
+\chapter{States}
+\section{Mechanical states}
+\section{Degrees of Freedom using template}
+\section{Other physical states}
+
+
+%2 MECA FORCES
+\chapter{Mechanical forces}
+\section{ForceField components}
+
+\section{Interaction ForceField}
+\label{sec:interactionforcefield}
+
+\section{Mass and inertial forces}
+
+
+%3 MAPPING
+\chapter{Mappings}
+\input{../mappings/mappings_body}
+\section{Barycentric Mapping}
+\section{Rigid Mapping}
+\section{Identity Mapping}
+\section{Skinning Mapping}
+
+\section{How to implement a new mapping ?}
+
+%4 COLLISION
+\chapter{Collision detection}
+
+
+%5 VISUAL
+\chapter{Visual Rendering}
+
+
+%6 HAPTIC
+\chapter{Haptic Rendering}
+
+
 
 
 \chapter{Modules}
@@ -83,5 +132,10 @@ HTML can be generated using the following command:\\
 \texttt{latex2html sofadocumentation.tex -mkdir -dir ./html -show\_section\_numbers -split 1}
 \\
 Currently, the listings do not appear in html.
+
+\bibliographystyle{plain}
+\bibliography{../biblio}
+
+
 
 \end{document}          
