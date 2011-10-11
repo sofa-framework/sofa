@@ -407,7 +407,7 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
     _max.setValue(box.maxBBox());
     Vector3 numVoxels(numPoints[0]-1,numPoints[1]-1,numPoints[2]-1);
 
-    dataVoxels.beginEdit()->resize(numVoxels[2]*numVoxels[1]*numVoxels[0], (unsigned char) 0);
+    dataVoxels.beginEdit()->resize((unsigned int)(numVoxels[2] * numVoxels[1] * numVoxels[0]), (unsigned char) 0);
     dataVoxels.endEdit();
 
     assert( filling.size()== (unsigned) numVoxels[2]*numVoxels[1]*numVoxels[0]);
@@ -420,7 +420,7 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
             {
                 if ( *f )
                 {
-                    setVoxel(x + numVoxels[0] * (y + numVoxels[1] * z),1);
+                    setVoxel(x + (int)numVoxels[0] * (y + (int)numVoxels[1] * z),1);
                 }
                 f++;
             }

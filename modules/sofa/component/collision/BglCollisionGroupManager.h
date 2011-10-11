@@ -37,7 +37,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_MISC_COLLISION_API BglCollisionGroupManager : public DefaultCollisionGroupManager
+class SOFA_MISC_COLLISION_DEV_API BglCollisionGroupManager : public DefaultCollisionGroupManager
 {
     ;
 public:
