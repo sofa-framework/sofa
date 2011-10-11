@@ -97,11 +97,6 @@ public:
     /// Dump the current state in the given stream
     virtual void dumpState( Node* root, std::ofstream& out );
 
-    /// Initialize gnuplot export (open files)
-    virtual void initGnuplot( Node* root );
-    /// Dump the current state in gnuplot files
-    virtual void exportGnuplot( Node* root, double time );
-
     /// Load a scene from a file.
     virtual Node* load(const char* /* filename */);
     /// Unload a scene from a Node.
