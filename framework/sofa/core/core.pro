@@ -99,7 +99,6 @@ HEADERS += \
 	MultiMapping.inl \
 	Multi2Mapping.h \
 	Multi2Mapping.inl \
-	objectmodel/AspectPool.h \
 	objectmodel/Base.h \
 	objectmodel/BaseClass.h \
 	objectmodel/BaseContext.h \
@@ -137,7 +136,6 @@ HEADERS += \
 	ComponentLibrary.h
 
 SOURCES += \
-	objectmodel/AspectPool.cpp \
 	objectmodel/Base.cpp \
 	objectmodel/BaseClass.cpp \
 	objectmodel/BaseData.cpp \
@@ -199,6 +197,16 @@ SOURCES += \
         loader/VoxelGridLoader.cpp \
 	visual/DisplayFlags.cpp \
 	visual/DrawToolGL.cpp
+
+contains(DEFINES,SOFA_HAVE_BOOST) {
+
+	HEADERS += \
+	objectmodel/AspectPool.h
+
+	SOURCES += \
+	objectmodel/AspectPool.cpp
+
+}
 
 contains(DEFINES,SOFA_SMP) {
 	HEADERS += \

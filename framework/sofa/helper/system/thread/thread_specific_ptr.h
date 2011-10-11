@@ -86,10 +86,14 @@ private:
         return static_cast<T*>(ptr);
     }
 
+    static void destructor(void*)
+    {
+    }
+
 public:
     thread_specific_ptr()
     {
-        pthread_key_create(&key);
+        pthread_key_create(&key, destructor);
     }
     ~thread_specific_ptr()
     {

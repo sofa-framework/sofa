@@ -311,7 +311,6 @@ template < class T = void* >
 class Data : public TData<T>
 {
 public:
-    using DDGNode::currentAspect;
     /// @name Construction / destruction
     /// @{
 
@@ -343,7 +342,7 @@ public:
         , m_values()
         , shared(NULL)
     {
-        m_values[currentAspect()] = ValueType(init.value);
+        m_values[DDGNode::currentAspect()] = ValueType(init.value);
     }
 
     /** Constructor
@@ -367,7 +366,7 @@ public:
         , m_values()
         , shared(NULL)
     {
-        m_values[currentAspect()] = ValueType(value);
+        m_values[DDGNode::currentAspect()] = ValueType(value);
     }
 
     virtual ~Data()
@@ -380,7 +379,7 @@ public:
 
     inline T* beginEdit(const core::ExecParams* params = 0)
     {
-        size_t aspect = currentAspect(params);
+        size_t aspect = DDGNode::currentAspect(params);
         this->updateIfDirty();
         ++this->m_counters[aspect];
         this->m_isSets[aspect] = true;
@@ -390,7 +389,7 @@ public:
 
     inline void endEdit(const core::ExecParams* params = 0)
     {
-        m_values[currentAspect(params)].endEdit();
+        m_values[DDGNode::currentAspect(params)].endEdit();
     }
 
     inline void setValue(const T& value)
@@ -408,7 +407,7 @@ public:
     inline const T& getValue(const core::ExecParams* params = 0) const
     {
         this->updateIfDirty();
-        return m_values[currentAspect(params)].getValue();
+        return m_values[DDGNode::currentAspect(params)].getValue();
     }
 
     void copyAspect(int destAspect, int srcAspect)
@@ -433,7 +432,7 @@ public:
     {
         const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
         if (d)
-            this->m_values[currentAspect()] = d->m_values[currentAspect()]; // is this ok for multi-values ?
+            this->m_values[DDGNode::currentAspect()] = d->m_values[DDGNode::currentAspect()]; // is this ok for multi-values ?
     }
 
     virtual T* virtualBeginEdit() { return beginEdit(); }
