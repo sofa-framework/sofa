@@ -193,6 +193,7 @@ public:
     virtual void internalUpdate() {}
 
     void handleEvent(sofa::core::objectmodel::Event* event);
+    void computeZ();
 protected:
     Vec3 sceneCenter;
     SReal sceneRadius;
@@ -204,7 +205,7 @@ protected:
     double currentDistance;
     double currentZNear, currentZFar;
 
-    void computeZ();
+
 
     void exportSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data, const std::string& comments = std::string());
     bool importSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data);

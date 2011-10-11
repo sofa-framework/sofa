@@ -326,9 +326,8 @@ void BaseCamera::computeZ()
         sceneRadius = 0.5*(maxBBox - minBBox).norm();
 
         double distanceCamToCenter = (currentPosition - sceneCenter).norm();
-        double zClippingCoeff = 3.5;
-        double zNearCoeff = 0.005;
-        double sceneRadius = (fabs(zFarTemp-zNearTemp))*0.5;
+        double zClippingCoeff = 5;
+        double zNearCoeff = 0.001;
 
         zFar = distanceCamToCenter + zClippingCoeff*sceneRadius ;
         zNear = distanceCamToCenter- zClippingCoeff*sceneRadius;
