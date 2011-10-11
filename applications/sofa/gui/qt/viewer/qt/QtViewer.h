@@ -184,6 +184,8 @@ public slots:
     virtual void moveView(const Vec3d& pos, const Quat &ori);
     virtual void captureEvent() { SofaViewer::captureEvent(); }
     virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
+    virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode * node ) { SofaViewer::fitNodeBBox(node); }
+    virtual void fitObjectBBox(sofa::core::objectmodel::BaseObject * obj) { SofaViewer::fitObjectBBox(obj); }
 
 signals:
     void redrawn();

@@ -252,7 +252,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
       viewer ( NULL ),
       simulationGraph(NULL),
       currentTab ( NULL ),
-      tabInstrument (NULL),
 #ifndef SOFA_GUI_QT_NO_RECORDER
       recorder(NULL),
 #else
