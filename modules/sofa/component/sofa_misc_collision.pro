@@ -15,6 +15,8 @@ HEADERS += initMiscCollision.h \
            collision/SolverMerger.h
 
 SOURCES += initMiscCollision.cpp \
+		   collision/BarycentricPenalityContact_DistanceGrid.cpp \
+		   collision/FrictionContact_DistanceGrid.cpp \
            collision/TriangleModelInRegularGrid.cpp \
            collision/RigidContactMapper.cpp \
            collision/TreeCollisionGroupManager.cpp \

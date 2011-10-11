@@ -7,7 +7,9 @@ DEFINES += SOFA_BUILD_BASE_LINEAR_SOLVER
 
 HEADERS += initBaseLinearSolver.h \
            linearsolver/CGLinearSolver.h \
+		   linearsolver/CGLinearSolver.inl \
            linearsolver/CholeskySolver.h \
+		   linearsolver/CholeskySolver.inl \
            linearsolver/BTDLinearSolver.h \
            linearsolver/BTDLinearSolver.inl \
            linearsolver/FullVector.h \

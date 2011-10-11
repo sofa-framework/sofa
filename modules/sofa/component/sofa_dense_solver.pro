@@ -8,9 +8,7 @@ DEFINES += SOFA_BUILD_DENSE_SOLVER
 HEADERS += initDenseSolver.h \
            linearsolver/LULinearSolver.h \
            linearsolver/NewMatVector.h \
-           linearsolver/NewMatMatrix.h \
-           linearsolver/NewMatCGLinearSolver.h \
-           linearsolver/NewMatCholeskySolver.h
+           linearsolver/NewMatMatrix.h
 
 SOURCES += initDenseSolver.cpp \
            linearsolver/LULinearSolver.cpp \

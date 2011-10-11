@@ -25,9 +25,10 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_H
 
-#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
+
 #include <sofa/helper/map.h>
+
 #include <math.h>
 
 
@@ -44,7 +45,7 @@ namespace linearsolver
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
-class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+class CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(CGLinearSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
@@ -83,25 +84,26 @@ public:
 
 };
 
-template<class TMatrix, class TVector>
-inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(const core::ExecParams* /*params*/ /* PARAMS FIRST */, Vector& p, Vector& r, double beta)
-{
-    p *= beta;
-    p += r; //z;
-}
 
-template<class TMatrix, class TVector>
-inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams* /*params*/ /* PARAMS FIRST */, Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
-{
-    x.peq(p,alpha);                 // x = x + alpha p
-    r.peq(q,-alpha);                // r = r - alpha q
-}
+#if defined(WIN32) && !defined(SOFA_BUILD_BASE_LINEAR_SOLVER)
 
-template<>
-void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* params /* PARAMS FIRST */, Vector& p, Vector& r, double beta);
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< FullMatrix<double>, FullVector<double> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< SparseMatrix<double>, FullVector<double> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<float>, FullVector<float> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<Mat<2,2,double> >, FullVector<double> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<Mat<2,2,float> >, FullVector<float> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<Mat<3,3,double> >, FullVector<double> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<Mat<3,3,float> >, FullVector<float> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<Mat<4,4,double> >, FullVector<double> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<Mat<4,4,float> >, FullVector<float> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<Mat<6,6,double> >, FullVector<double> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<Mat<6,6,float> >, FullVector<float> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<Mat<8,8,double> >, FullVector<double> >;
+extern template class SOFA_BASE_LINEAR_SOLVER_API CGLinearSolver< CompressedRowSparseMatrix<Mat<8,8,float> >, FullVector<float> >;
 
-template<>
-void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params /* PARAMS FIRST */, Vector& x, Vector& r, Vector& p, Vector& q, double alpha);
+#endif
 
 } // namespace linearsolver
 

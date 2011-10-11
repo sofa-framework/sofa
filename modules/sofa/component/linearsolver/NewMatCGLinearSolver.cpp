@@ -25,10 +25,9 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/component/linearsolver/CGLinearSolver.inl>
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/core/ObjectFactory.h>
-#include <iostream>
 
 namespace sofa
 {
@@ -39,13 +38,11 @@ namespace component
 namespace linearsolver
 {
 
-//SOFA_DECL_CLASS(NewMatCGLinearSolver)
-
 int NewMatCGLinearSolverClass = core::RegisterObject("NewMat linear system solver using the conjugate gradient iterative algorithm")
-        .add< CGLinearSolver<NewMatMatrix,NewMatVector> >()
-        .add< CGLinearSolver<NewMatSymmetricMatrix,NewMatVector> >()
-        .add< CGLinearSolver<NewMatBandMatrix,NewMatVector> >()
-        .add< CGLinearSolver<NewMatSymmetricBandMatrix,NewMatVector> >()
+        .add< CGLinearSolver< NewMatMatrix, NewMatVector > >()
+        .add< CGLinearSolver< NewMatSymmetricMatrix, NewMatVector > >()
+        .add< CGLinearSolver< NewMatBandMatrix, NewMatVector > >()
+        .add< CGLinearSolver< NewMatSymmetricBandMatrix, NewMatVector > >()
         ;
 
 } // namespace linearsolver

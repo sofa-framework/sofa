@@ -25,10 +25,10 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/CholeskySolver.h>
+#include <sofa/component/linearsolver/CholeskySolver.inl>
 #include <sofa/component/linearsolver/NewMatMatrix.h>
+
 #include <sofa/core/ObjectFactory.h>
-#include <math.h>
 
 namespace sofa
 {
@@ -43,10 +43,10 @@ namespace linearsolver
 //SOFA_DECL_CLASS(CholeskySolver)
 
 int NewMatCholeskySolverClass = core::RegisterObject("NewMat direct linear solver based on Cholesky factorization, for dense matrices")
-//.add< CholeskySolver<NewMatBandMatrix,NewMatVector> >(true)
-//.add< CholeskySolver<NewMatMatrix,NewMatVector> >()
-        .add< CholeskySolver<NewMatSymmetricMatrix,NewMatVector> >()
-//.add< CholeskySolver<NewMatSymmetricBandMatrix,NewMatVector> >()
+//.add< CholeskySolver< NewMatBandMatrix, NewMatVector > >(true)
+//.add< CholeskySolver< NewMatMatrix, NewMatVector > >()
+        .add< CholeskySolver< NewMatSymmetricMatrix, NewMatVector > >()
+//.add< CholeskySolver< NewMatSymmetricBandMatrix, NewMatVector > >()
         ;
 
 } // namespace linearsolver
