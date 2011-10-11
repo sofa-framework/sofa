@@ -22,8 +22,8 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#ifndef SOFA_SIMULATION_DEFAULTANIMATIONMASTERSOLVER_H
-#define SOFA_SIMULATION_DEFAULTANIMATIONMASTERSOLVER_H
+#ifndef SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H
+#define SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
@@ -80,4 +80,4 @@ private :
 
 } // namespace sofa
 
-#endif  /* SOFA_SIMULATION_DEFAULTANIMATIONMASTERSOLVER_H */
+#endif  /* SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H */

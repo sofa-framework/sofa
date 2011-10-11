@@ -1,9 +1,9 @@
 load(sofa/pre)
 
 TEMPLATE = lib
-TARGET = sofa_base_master_solver
+TARGET = sofa_base_animation_loop
 
-DEFINES += SOFA_BUILD_BASE_MASTER_SOLVER
+DEFINES += SOFA_BUILD_BASE_ANIMATION_LOOP
 
 HEADERS += animationloop/MultiStepAnimationLoop.h \
            animationloop/MultiTagAnimationLoop.h

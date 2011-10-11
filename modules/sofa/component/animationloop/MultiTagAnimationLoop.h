@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASTERSOLVER_MULTITAGANIMATIONLOOP_H
-#define SOFA_COMPONENT_MASTERSOLVER_MULTITAGANIMATIONLOOP_H
+#ifndef SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H
+#define SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
@@ -38,9 +38,9 @@ namespace component
 namespace animationloop
 {
 
-/** Simple master solver that given a list of tags, animate the graph one tag after another.
+/** Simple animation loop that given a list of tags, animate the graph one tag after another.
 */
-class SOFA_BASE_MASTER_SOLVER_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+class SOFA_BASE_ANIMATION_LOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
@@ -76,4 +76,4 @@ private:
 
 } // namespace sofa
 
-#endif /* SOFA_COMPONENT_MASTERSOLVER_MULTITAGANIMATIONLOOP_H */
+#endif /* SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H */

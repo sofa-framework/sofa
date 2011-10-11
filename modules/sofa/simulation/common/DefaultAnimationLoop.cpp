@@ -69,7 +69,7 @@ namespace simulation
 
 SOFA_DECL_CLASS(DefaultAnimationLoop);
 
-int DefaultAnimationLoopClass = core::RegisterObject("The simplest master solver, created by default when user do not put on scene")
+int DefaultAnimationLoopClass = core::RegisterObject("The simplest animation loop, created by default when user do not put on scene")
         .add< DefaultAnimationLoop >()
         ;
 

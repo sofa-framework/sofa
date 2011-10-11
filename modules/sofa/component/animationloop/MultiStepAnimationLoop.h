@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASTERSOLVER_MULTISTEPANIMATIONLOOP_H
-#define SOFA_COMPONENT_MASTERSOLVER_MULTISTEPANIMATIONLOOP_H
+#ifndef SOFA_COMPONENT_ANIMATIONLOOP_MULTISTEPANIMATIONLOOP_H
+#define SOFA_COMPONENT_ANIMATIONLOOP_MULTISTEPANIMATIONLOOP_H
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
@@ -38,9 +38,7 @@ namespace component
 namespace animationloop
 {
 
-/** The simplest master solver, equivalent to the default behavior when no master solver is used.
-*/
-class SOFA_BASE_MASTER_SOLVER_API MultiStepAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+class SOFA_BASE_ANIMATION_LOOP_API MultiStepAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
@@ -72,4 +70,4 @@ public:
 
 } // namespace sofa
 
-#endif /* SOFA_COMPONENT_MASTERSOLVER_MULTISTEPANIMATIONLOOP_H */
+#endif /* SOFA_COMPONENT_ANIMATIONLOOP_MULTISTEPANIMATIONLOOP_H */

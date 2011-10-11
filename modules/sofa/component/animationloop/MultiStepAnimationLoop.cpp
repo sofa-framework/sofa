@@ -41,7 +41,7 @@ namespace component
 namespace animationloop
 {
 
-int MultiStepAnimationLoopClass = core::RegisterObject("The simplest master solver, equivalent to the default behavior when no master solver is used.")
+int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation loop, multi integration steps in a single animation step are managed.")
         .add< MultiStepAnimationLoop >()
         ;
 

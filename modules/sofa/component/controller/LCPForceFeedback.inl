@@ -132,7 +132,7 @@ void LCPForceFeedback<DataTypes>::init()
 
     if (!constraintSolver)
     {
-        serr << "LCPForceFeedback has no binding MasterContactSolver. Initialisation failed." << sendl;
+        serr << "LCPForceFeedback has no binding ConstraintSolver. Initialisation failed." << sendl;
         return;
     }
 
