@@ -2,6 +2,7 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{wrapfig}
 \usepackage{color}
+%\usepackage{hyperref}
 
 % for latex2html
 \usepackage{html}
@@ -31,6 +32,7 @@
 \begin{htmlonly}
 \newcommand{\includecode}[2]{  \htmladdnormallink{#2}{../../#2} }
 \end{htmlonly}
+
 %\lstnewenvironment{code}{}{}
 \lstnewenvironment{code_bash}{\lstset{style=bash}}{}
 \lstnewenvironment{code_perl}{\lstset{style=Perl}}{}
@@ -46,6 +48,28 @@
 \newcommand{\sofa}{SOFA}
 \newcommand{\todo}[1]{}
 \newcommand{\eg}{\textit{e.g.} }
+
+\renewcommand{\vec}[1]{\ensuremath{\mathbf{#1 }}} % vector
+\newcommand{\Vx}{\vec{x} } % position vector
+\newcommand{\Vv}{\vec{v} } % velocity vector
+\newcommand{\Va}{\vec{a} } % acceleration vector
+\newcommand{\Vf}{\vec{f}} % force
+\newcommand{\Vdv}{\vec{\delta\Vv}} % change of velocity vector (unknown in implicit CG, and used in constraint solver
+\renewcommand{\P}{\mat{P} } % projection to a constrained space.
+
+\newcommand{\JNL}{\mathbf{\mathcal{J}} }     % mapping des positions
+\newcommand{\J}{\mat J }                 % mapping lineaire
+\newcommand{\M}{\mat M }             % matrice de masse
+\newcommand{\K}{\mat K }             % matrice de raideur
+\newcommand{\B}{\mat B }             % matrice d'amortissement
+\newcommand{\G}{\mat G }             % jacobien des contraintes
+
+
+
+% ---- inclusion de codes
+\definecolor{darkgreen}{rgb}{0,0.4,0}
+\definecolor{darkblue}{rgb}{0,0,0.4}
+\definecolor{darkgray}{rgb}{0.2,0.2,0.2}
 
 
 % macros mathematiques
