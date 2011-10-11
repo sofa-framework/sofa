@@ -22,16 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYALGORITHMS_INL
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYALGORITHMS_INL
+#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_INL
+#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_INL
 
-#include <sofa/component/topology/ManifoldEdgeSetTopologyContainer.h>
-#include <sofa/component/topology/ManifoldEdgeSetTopologyModifier.h>
-#include <sofa/component/topology/ManifoldEdgeSetTopologyAlgorithms.h>
+#include "ManifoldEdgeSetGeometryAlgorithms.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/ManifoldEdgeSetGeometryAlgorithms.h>
-#include <algorithm>
-#include <functional>
 
 namespace sofa
 {
@@ -41,17 +36,6 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-
-template<class DataTypes>
-void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::init()
-{
-    EdgeSetTopologyAlgorithms< DataTypes >::init();
-    this->getContext()->get(m_container);
-    this->getContext()->get(m_modifier);
-    this->getContext()->get(m_geometryAlgorithms);
-}
 
 } // namespace topology
 
@@ -59,4 +43,4 @@ void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::init()
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENTS_MANIFOLDEDGESETTOPOLOGYALGORITHMS_INL
+#endif // SOFA_COMPONENTS_MANIFOLDEDGESETGEOMETRYALGORITHMS_INL

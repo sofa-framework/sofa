@@ -1,0 +1,5 @@
+includeOnce($$_FILE_) {
+	declare(ManifoldTopologies, applications/plugins/ManifoldTopologies, sofa_base_topology)
+	
+	enable(ManifoldTopologies)
+}

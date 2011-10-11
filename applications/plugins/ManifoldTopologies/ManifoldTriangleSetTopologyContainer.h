@@ -51,7 +51,7 @@ typedef BaseMeshTopology::TrianglesAroundEdge	TrianglesAroundEdge;
 /** A class that stores a set of triangles and provides access
  to each triangle, triangle's edges and vertices.
  This topology is contraint by the manifold property: each edge is adjacent to either one or at most two Triangles.*/
-class SOFA_MISC_TOPOLOGY_API ManifoldTriangleSetTopologyContainer : public TriangleSetTopologyContainer
+class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyContainer : public TriangleSetTopologyContainer
 {
 
     friend class ManifoldTriangleSetTopologyModifier;

@@ -319,7 +319,7 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
     if(!hasTrianglesAroundEdge())	// Use the trianglesAroundEdgeArray. Should check if it is consistent
     {
 #ifndef NDEBUG
-        std::cout << "Warning. [ManifoldTriangleSetTopologyContainer::createElementsOnBorder] Triangle edge shell array is empty." << std::endl;
+        std::cout << "Warning. [TriangleSetTopologyContainer::createElementsOnBorder] Triangle edge shell array is empty." << std::endl;
 #endif
 
         createTrianglesAroundEdgeArray();

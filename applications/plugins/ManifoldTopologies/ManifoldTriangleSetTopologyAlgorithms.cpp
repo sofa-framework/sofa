@@ -22,8 +22,8 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#include <sofa/component/topology/ManifoldTriangleSetTopologyAlgorithms.h>
-#include <sofa/component/topology/ManifoldTriangleSetTopologyAlgorithms.inl>
+#include "ManifoldTriangleSetTopologyAlgorithms.h"
+#include "ManifoldTriangleSetTopologyAlgorithms.inl"
 
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>

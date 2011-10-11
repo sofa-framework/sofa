@@ -111,6 +111,11 @@ contains (DEFINES, SOFA_HAVE_STABLEFLUID_PLUGIN) {
 }
 
 
+contains (DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES) {
+	usePlugin(ManifoldTopologies)
+}
+
+
 
 
 ########################################################################

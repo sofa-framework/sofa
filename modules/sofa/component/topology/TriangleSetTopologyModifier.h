@@ -278,9 +278,6 @@ protected:
     virtual void removeTrianglesPostProcessing(const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved );
 
 
-    virtual void Debug() {}; // TO BE REMOVED WHEN MANIFOLD MODIFIER IS SURE.
-
-
     /** \brief Precondition to fulfill before adding triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
      *
      */

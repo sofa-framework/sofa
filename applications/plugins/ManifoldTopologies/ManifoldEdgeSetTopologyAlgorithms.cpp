@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/ManifoldEdgeSetTopologyAlgorithms.h>
-#include <sofa/component/topology/ManifoldEdgeSetTopologyAlgorithms.inl>
+#include "ManifoldEdgeSetTopologyAlgorithms.h"
+#include "ManifoldEdgeSetTopologyAlgorithms.inl"
 
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>

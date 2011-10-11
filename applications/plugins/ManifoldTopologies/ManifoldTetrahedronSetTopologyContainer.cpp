@@ -23,7 +23,7 @@
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
 
-#include <sofa/component/topology/ManifoldTetrahedronSetTopologyContainer.h>
+#include "ManifoldTetrahedronSetTopologyContainer.h"
 #include <sofa/core/ObjectFactory.h>
 
 
