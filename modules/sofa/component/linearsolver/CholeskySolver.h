@@ -45,7 +45,7 @@ namespace linearsolver
 
 /// Direct linear solver based on Cholesky factorization, for dense matrices
 template<class TMatrix, class TVector>
-class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+class CholeskySolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(CholeskySolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
@@ -64,6 +64,13 @@ private :
     FullMatrix<double> L;
     //Vector s;
 };
+
+#if defined(WIN32) && !defined(SOFA_BUILD_BASE_LINEAR_SOLVER)
+
+template class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
+template class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
+
+#endif
 
 } // namespace linearsolver
 
