@@ -286,8 +286,8 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params)
     {
         for (int c=0; c<3; c++)
         {
-            if (corners[i][c] > maxBBox[c]) maxBBox[c] = corners[i][c];
-            if (corners[i][c] < minBBox[c]) minBBox[c] = corners[i][c];
+            if (corners[i][c] > maxBBox[c]) maxBBox[c] = (Real)corners[i][c];
+            if (corners[i][c] < minBBox[c]) minBBox[c] = (Real)corners[i][c];
         }
     }
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));

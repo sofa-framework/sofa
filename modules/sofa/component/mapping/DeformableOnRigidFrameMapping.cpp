@@ -54,12 +54,12 @@ int DeformableOnRigidFrameMappingClass = core::RegisterObject("Set the positions
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
-//template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, ExtVec3fTypes >;
+template class SOFA_MISC_MAPPING_DEV_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
+//template class SOFA_MISC_MAPPING_DEV_API DeformableOnRigidFrameMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3fTypes, Rigid3dTypes, Vec3fTypes >;
-//template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3fTypes, ExtVec3fTypes >;
+template class SOFA_MISC_MAPPING_DEV_API DeformableOnRigidFrameMapping< Vec3fTypes, Rigid3dTypes, Vec3fTypes >;
+//template class SOFA_MISC_MAPPING_DEV_API DeformableOnRigidFrameMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 
 

@@ -54,12 +54,12 @@ int PCAOnRigidFrameMappingClass = core::RegisterObject("Set the positions and ve
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, Vec3dTypes >;
-//template class SOFA_MISC_MAPPING_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, ExtVec3fTypes >;
+template class SOFA_MISC_MAPPING_DEV_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, Vec3dTypes >;
+//template class SOFA_MISC_MAPPING_DEV_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API PCAOnRigidFrameMapping< Vec1fTypes, Rigid3fTypes, Vec3fTypes >;
-//template class SOFA_MISC_MAPPING_API PCAOnRigidFrameMapping< Vec1fTypes, Rigid3fTypes, ExtVec3fTypes >;
+template class SOFA_MISC_MAPPING_DEV_API PCAOnRigidFrameMapping< Vec1fTypes, Rigid3fTypes, Vec3fTypes >;
+//template class SOFA_MISC_MAPPING_DEV_API PCAOnRigidFrameMapping< Vec1fTypes, Rigid3fTypes, ExtVec3fTypes >;
 #endif
 
 

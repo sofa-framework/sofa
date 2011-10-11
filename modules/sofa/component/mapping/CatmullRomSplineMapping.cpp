@@ -64,17 +64,17 @@ int CatmullRomSplineMappingClass = core::RegisterObject("Map positions between p
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3dTypes, ExtVec3fTypes >;
+template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3fTypes, ExtVec3fTypes >;
+template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API CatmullRomSplineMapping< Vec3fTypes, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_MISC_MAPPING_DEV_API CatmullRomSplineMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 
