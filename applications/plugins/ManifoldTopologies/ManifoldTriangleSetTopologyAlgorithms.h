@@ -46,7 +46,7 @@ class TriangleSetGeometryAlgorithms;
  * A class that performs topology algorithms on an ManifoldTriangleSet.
  */
 template < class DataTypes >
-class ManifoldTriangleSetTopologyAlgorithms : public TriangleSetTopologyAlgorithms<DataTypes>
+class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms : public TriangleSetTopologyAlgorithms<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ManifoldTriangleSetTopologyAlgorithms,DataTypes), SOFA_TEMPLATE(TriangleSetTopologyAlgorithms,DataTypes));

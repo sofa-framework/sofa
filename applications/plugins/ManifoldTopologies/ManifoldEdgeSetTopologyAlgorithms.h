@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_H
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYALGORITHMS_H
+#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYALGORITHMS_H
 
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
 
 namespace sofa
 {
@@ -35,32 +35,35 @@ namespace component
 
 namespace topology
 {
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::EdgeID EdgeID;
-typedef BaseMeshTopology::Edge Edge;
-typedef BaseMeshTopology::SeqEdges SeqEdges;
-typedef BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
+class ManifoldEdgeSetTopologyContainer;
+
+class ManifoldEdgeSetTopologyModifier;
+
+template < class DataTypes >
+class ManifoldEdgeSetGeometryAlgorithms;
 
 /**
-* A class that provides geometry information on an ManifoldEdgeSet.
+* A class that performs topology algorithms on an ManifoldEdgeSet.
 */
 template < class DataTypes >
-class ManifoldEdgeSetGeometryAlgorithms : public EdgeSetGeometryAlgorithms<DataTypes>
+class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetTopologyAlgorithms : public EdgeSetTopologyAlgorithms<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ManifoldEdgeSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(ManifoldEdgeSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(EdgeSetTopologyAlgorithms,DataTypes));
 
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-
-    ManifoldEdgeSetGeometryAlgorithms()
-        : EdgeSetGeometryAlgorithms<DataTypes>()
+    ManifoldEdgeSetTopologyAlgorithms()
+        : EdgeSetTopologyAlgorithms<DataTypes>()
     {}
 
-    virtual ~ManifoldEdgeSetGeometryAlgorithms() {}
-};
+    virtual ~ManifoldEdgeSetTopologyAlgorithms() {}
 
+    virtual void init();
+
+private:
+    ManifoldEdgeSetTopologyContainer*					m_container;
+    ManifoldEdgeSetTopologyModifier*					m_modifier;
+    ManifoldEdgeSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
+};
 } // namespace topology
 
 } // namespace component

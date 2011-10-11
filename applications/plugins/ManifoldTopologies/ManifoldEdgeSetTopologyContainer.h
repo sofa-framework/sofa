@@ -47,7 +47,7 @@ typedef BaseMeshTopology::EdgesAroundVertex		EdgesAroundVertex;
 
 /** a class that stores a set of edges and provides access to the adjacency between points and edges.
   this topology is constraint by the manifold property : each vertex is adjacent either to one vertex or to two vertices. */
-class SOFA_MISC_TOPOLOGY_API ManifoldEdgeSetTopologyContainer : public EdgeSetTopologyContainer
+class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetTopologyContainer : public EdgeSetTopologyContainer
 {
     friend class ManifoldEdgeSetTopologyModifier;
 

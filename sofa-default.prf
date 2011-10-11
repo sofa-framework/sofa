@@ -346,6 +346,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Uncomment if you want to use the plugin Sofa-Asclepios
 # DEFINES += SOFA_HAVE_ASCLEPIOS
 
+# Uncomment if you want to use Manifold topologies in Sofa
+# DEFINES += SOFA_HAVE_MANIFOLDTOPOLOGIES
+
 contains(DEFINES,SOFA_HAVE_NEW_TOPOLOGYCHANGES){ # BEGIN SOFA_HAVE_NEW_TOPOLOGYCHANGES
 # Uncomment if you want to use test components using topology engines
 # usePlugin(TopologyEnginesProto)

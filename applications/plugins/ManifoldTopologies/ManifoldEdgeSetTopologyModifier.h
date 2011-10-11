@@ -46,7 +46,7 @@ typedef BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 /**
 * A class that can apply basic transformations on a set of points.
 */
-class SOFA_MISC_TOPOLOGY_API ManifoldEdgeSetTopologyModifier : public EdgeSetTopologyModifier
+class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetTopologyModifier : public EdgeSetTopologyModifier
 {
 public:
     SOFA_CLASS(ManifoldEdgeSetTopologyModifier,EdgeSetTopologyModifier);
