@@ -27,6 +27,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 
 //#include <stdlib.h>
 #include <string>
@@ -43,6 +44,8 @@ namespace core
 namespace loader
 {
 
+bool SOFA_CORE_API canLoad(const char* filename);
+
 class BaseLoader : public virtual objectmodel::BaseObject
 {
 public:
@@ -58,7 +61,59 @@ public:
 
     virtual bool load() = 0;
 
-    virtual bool canLoad() = 0;
+    virtual void parse(sofa::core::objectmodel::BaseObjectDescription *arg)
+    {
+        objectmodel::BaseObject::parse(arg);
+        if (canLoad())
+            load(/*m_filename.getFullPath().c_str()*/);
+        else
+            sout << "Doing nothing" << sendl;
+    }
+
+
+    virtual bool canLoad()
+    {
+        std::string cmd;
+
+        // -- Check filename field:
+        if(m_filename.getValue() == "")
+        {
+            serr << "Error: MeshLoader: No file name given." << sendl;
+            return false;
+        }
+
+
+        // -- Check if file exist:
+        const char* filename = m_filename.getFullPath().c_str();
+        std::string sfilename (filename);
+
+        if (!sofa::helper::system::DataRepository.findFile(sfilename))
+        {
+            serr << "Error: MeshLoader: File '" << m_filename << "' not found. " << sendl;
+            return false;
+        }
+
+        std::ifstream file(filename);
+
+        // -- Check if file is readable:
+        if (!file.good())
+        {
+            serr << "Error: MeshLoader: Cannot read file '" << m_filename << "'." << sendl;
+            return false;
+        }
+
+        // -- Step 2.2: Check first line.
+        file >> cmd;
+        if (cmd.empty())
+        {
+            serr << "Error: MeshLoader: Cannot read first line in file '" << m_filename << "'." << sendl;
+            file.close();
+            return false;
+        }
+
+        file.close();
+        return true;
+    };
 
 
     void setFilename(std::string f)

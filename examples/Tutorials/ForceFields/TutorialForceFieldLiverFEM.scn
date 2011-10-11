@@ -7,20 +7,21 @@
 	<DefaultContactManager name="collision response" response="default"/>
 	<Node 	name="LiverFEM" gravity="0 -9.81 0" depend="topo dofs" >
 		<EulerImplicitSolver name="cg_odesolver" printLog="0"/>
-		<CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09"/>
+		<CGLinearSolver  name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09"/>
 		<MeshTopology name="mesh" fileTopology="mesh/liver.msh"/>
 		<MechanicalObject template="Vec3d" name="dofs"/>
 		<TetrahedronFEMForceField template="Vec3d" name="FEM" youngModulus="50"/>
-		<UniformMass template="Vec3d" name="mass" totalmass="1"/>
-		<FixedConstraint template="Vec3d" name="FixedConstraint" indices="3 39 64"/>
+		<UniformMass  name="mass" totalmass="1"/>
+		<FixedConstraint name="FixedConstraint" indices="3 39 64"/>
 		<Node 	name="Visu" gravity="0 -9.81 0" >
-			<OglModel template="ExtVec3f" name="VisualModel" fileMesh="mesh/liver-smooth.obj"/>
-			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping" input="@../dofs" output="@VisualModel"/>
+			<OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj"/>
+			<BarycentricMapping  name="visual mapping" input="@../dofs" output="@VisualModel"/>
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0">
-			<MechanicalObject template="Vec3d" name="mappedMS"/>
-			<SphereModel name="CollisionModel" fileSphere="mesh/liver.sph"/>
-			<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="sphere mapping"  input="@../dofs" output="@mappedMS"/>
+		        <SphereLoader filename="mesh/liver.sph" />
+			<MechanicalObject name="mappedMS" position="@[-1].position" />
+			<SphereModel name="CollisionModel" listRadius="@[-1].listRadius" />
+			<BarycentricMapping name="sphere mapping"  input="@../dofs" output="@mappedMS"/>
 		</Node>
 	</Node>
 </Node>

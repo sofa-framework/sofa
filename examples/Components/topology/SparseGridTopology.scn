@@ -17,8 +17,9 @@
             <BarycentricMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
-            <MechanicalObject />
-            <Sphere filename="mesh/dragon.sph" />
+	    <SphereLoader filename="mesh/dragon.sph" />
+            <MechanicalObject position="@[-1].position" />
+            <Sphere listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>

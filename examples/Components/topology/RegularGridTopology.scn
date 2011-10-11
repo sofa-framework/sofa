@@ -16,8 +16,9 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Collision Surface">
-            <MechanicalObject />
-            <Sphere name="Surf" filename="mesh/liver.sph" translation="-5 0 0" />
+	    <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject position="@[-1].position" translation="-5 0 0" />
+            <Sphere name="Surf" listRadius="@[-2].listRadius" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
     </Node>
@@ -34,9 +35,10 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Collision Surface">
-            <MechanicalObject translation="5 0 0" />
-            <Sphere name="Surf" filename="mesh/liver.sph" translation="5 0 0" />
+	    <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject position="@[-1].position" translation="5 0 0" />
+            <Sphere name="Surf" listRadius="@[-2].listRadius" />
             <BarycentricMapping input="@.." output="@." />
-        </Node>
+       </Node>
     </Node>
 </Node>

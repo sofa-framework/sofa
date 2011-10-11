@@ -18,8 +18,9 @@
             <Object type="BarycentricMapping" object1="../.." object2="VisualModel" />
         </Node>
         <Node name="Surf">
-            <MechanicalObject />
-            <Object type="Sphere" name="CollisionModel" filename="mesh/liver.sph" />
+	    <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject position="@[-1].position" />
+            <Object type="Sphere" name="CollisionModel" listRadius="@[-2].listRadius" />
             <Object type="BarycentricMapping" />
         </Node>
     </Node>

@@ -14,6 +14,7 @@ HEADERS += initLoader.h \
            loader/MeshSTLLoader.h \
            loader/MeshXspLoader.h \
            loader/OffSequenceLoader.h \
+           loader/SphereLoader.h \
            misc/InputEventReader.h \
            misc/ReadState.h \
            misc/ReadState.inl \
@@ -29,6 +30,7 @@ SOURCES += initLoader.cpp \
            loader/MeshSTLLoader.cpp \
            loader/MeshXspLoader.cpp \
            loader/OffSequenceLoader.cpp \
+           loader/SphereLoader.cpp \
            misc/InputEventReader.cpp \
            misc/ReadState.cpp \
            misc/ReadTopology.cpp

@@ -68,10 +68,6 @@ public:
     const Coord& pFree() const;
     const Coord& v() const;
 
-    /** @brief  Translates center of sphere. It modifies the center of the sphere with index "i"
-      i.e. it modifies one element of the DOF's of the collision model*/
-    void translate(double dx, double dy, double dz);
-
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
 
@@ -115,18 +111,9 @@ public:
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
-    virtual bool load(const char* filename);
-
-    void applyTranslation(const double /*dx*/, const double /*dy*/, const double /*dz*/);
-
-    int addSphere(const Vector3& pos, Real r);
-    void setSphere(int i, const Vector3& pos, Real r);
-
     const VecReal& getR() const { return this->radius.getValue(); }
 
     Real getRadius(const int i) const;
-    void setRadius(const int i, const Real r);
-    void setRadius(const Real r);
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -135,8 +122,7 @@ public:
     {
         if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
             return false;
-        /*if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == NULL)
-            return false;*/
+
         return BaseObject::canCreate(obj, context, arg);
     }
 
@@ -167,13 +153,9 @@ public:
 
     Data< VecReal > radius;
     Data< SReal > defaultRadius;
-    Data< Vector3 > translation;
-    sofa::core::objectmodel::DataFileName filename;
-
 
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
-    class Loader;
 };
 
 template<class DataTypes>
@@ -204,16 +186,6 @@ inline typename DataTypes::Real TSphere<DataTypes>::r() const { return (Real) th
 
 template<class DataTypes>
 inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
-
-template<class DataTypes>
-void TSphere<DataTypes>::translate(double dx, double dy, double dz)
-{
-    helper::WriteAccessor<Data<VecCoord> > xData = *this->model->mstate->write(core::VecCoordId::position());
-    Coord& pos = xData.wref()[this->index];
-    pos.x() += (Real)dx;
-    pos.y() += (Real)dy;
-    pos.z() += (Real)dz;
-}
 
 
 typedef TSphereModel<Vec3Types> SphereModel;

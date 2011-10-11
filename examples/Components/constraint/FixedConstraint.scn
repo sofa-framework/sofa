@@ -8,7 +8,7 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
-        <MechanicalObject src="@loader" template="Vec3f" name="dofs" />
+        <MechanicalObject src="@loader" name="dofs" />
         <UniformMass name="mass" mass="0.05" />
         <TetrahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
@@ -17,8 +17,9 @@
             <BarycentricMapping object1="../.." object2="VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf">
-            <MechanicalObject />
-            <Sphere name="CollisionModel" filename="mesh/liver.sph" />
+	    <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject position="@[-1].position" />
+            <Sphere name="CollisionModel" listRadius="@[-2].listRadius" />
             <BarycentricMapping name="sphere mapping" />
         </Node>
     </Node>

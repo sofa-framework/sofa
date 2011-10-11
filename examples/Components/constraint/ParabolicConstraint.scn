@@ -16,8 +16,9 @@
             <Object type="RigidMapping" object1="../.." object2="VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf">
-            <Object type="MechanicalObject" />
-            <Object type="Sphere" name="CollisionModel" filename="mesh/liver.sph" />
+	    <SphereLoader filename="mesh/liver.sph" />
+            <Object type="MechanicalObject" position="@[-1].position" />
+            <Object type="Sphere" name="CollisionModel" listRadius="@[-2].listRadius" />
             <Object type="RigidMapping" name="sphere mapping" />
         </Node>
     </Node>
