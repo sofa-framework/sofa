@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASTERSOLVER_FREEMOTIONANIMATIONLOOP_H
-#define SOFA_COMPONENT_MASTERSOLVER_FREEMOTIONANIMATIONLOOP_H
+#ifndef SOFA_COMPONENT_ANIMATIONLOOP_FREEMOTIONANIMATIONLOOP_H
+#define SOFA_COMPONENT_ANIMATIONLOOP_FREEMOTIONANIMATIONLOOP_H
 
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
 
@@ -95,4 +95,4 @@ private :
 
 } // namespace sofa
 
-#endif /* SOFA_COMPONENT_MASTERSOLVER_FREEMOTIONANIMATIONLOOP_H */
+#endif /* SOFA_COMPONENT_ANIMATIONLOOP_FREEMOTIONANIMATIONLOOP_H */

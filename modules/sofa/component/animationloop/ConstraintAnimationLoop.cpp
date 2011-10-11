@@ -356,7 +356,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params /* PARAM
 
     if ( displayTime.getValue() )
     {
-        sout << ">>>>> Begin display MasterContactSolver time" << sendl;
+        sout << ">>>>> Begin display ConstraintAnimationLoop time" << sendl;
         sout<<" Free Motion                           " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
         time = (double) timer->getTime();
     }
@@ -779,7 +779,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
             else
                 sout << " With : " << CP1.getSize() << " constraints" << sendl;
 
-            sout << "<<<<< End display MasterContactSolver time." << sendl;
+            sout << "<<<<< End display ConstraintAnimationLoop time." << sendl;
         }
 
         simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);

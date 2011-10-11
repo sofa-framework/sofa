@@ -38,7 +38,7 @@ namespace sofa
 namespace simulation
 {
 
-/** Used by the master solver: send the solve signal to the others solvers
+/** Used by the animation loop: send the solve signal to the others solvers
 
  */
 class SOFA_SIMULATION_COMMON_API SolveVisitor : public Visitor
