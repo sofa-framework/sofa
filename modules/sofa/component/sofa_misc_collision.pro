@@ -13,7 +13,9 @@ HEADERS += collision/TriangleModelInRegularGrid.h \
            collision/DefaultCollisionGroupManager.h \
            collision/SolverMerger.h
 
-SOURCES += collision/TriangleModelInRegularGrid.cpp \
+SOURCES += collision/BarycentricPenalityContact_DistanceGrid.cpp \
+		   collision/FrictionContact_DistanceGrid.cpp \
+		   collision/TriangleModelInRegularGrid.cpp \
            collision/RigidContactMapper.cpp \
            collision/TreeCollisionGroupManager.cpp \
            collision/RuleBasedContactManager.cpp \
@@ -33,6 +35,10 @@ contains(DEFINES,SOFA_SMP){
 HEADERS += collision/ParallelCollisionPipeline.h
 
 SOURCES += collision/ParallelCollisionPipeline.cpp
+}
+
+contains(DEFINES,SOFA_HAVE_EIGEN2){
+SOURCES += collision/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp
 }
 
 # Make sure there are no cross-dependencies
