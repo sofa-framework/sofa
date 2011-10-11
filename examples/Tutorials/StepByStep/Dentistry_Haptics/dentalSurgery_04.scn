@@ -1,0 +1,49 @@
+<!-- 
+ + Added a collision pipeline using hierarchical bounding boxes and a proximity detection algorithm 
+ + Added collision model (Triangle, Line, Point) for the tooth
+ + Added collision model (Line, Point) for the instrument
+    ++ NOTE: The collision model mesh is charged using the objects MeshLoader and Mesh
+ + Added a mapping (RigidMapping) to "connect" the Mechanical Model and the Collision Model
+-->
+
+<Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
+
+	<Object type="Gravity" name="G" gravity="0.0 -9.81 0" />
+	<Object type="CollisionPipeline" name="pipeline" depth="6" verbose="0"/>
+	<Object type="BruteForceDetection" name="detection" />
+	<Object type="CollisionResponse" name="response" response="default" />
+	<Object type="MinProximityIntersection" name="proximity" alarmDistance="0.05" contactDistance="0.05" />
+	
+	<Node name="Tooth" >
+		<Node name="VisualModel" >
+			<Object type="OglModel" name="ToothVisualModel" fileMesh="data/mesh/tooth_closed.obj" color="white" />
+		</Node>
+		<Node name="CollisionModel" >
+		 	<Object type="MeshObjLoader" filename="data/mesh/tooth_closed.obj"  name="loader"/>
+			<Object type="Mesh" src="@loader" name="ToothCollisionModel" />
+			<Object type="MechanicalObject" src="@loader" name="toothState" />		
+			<Object type="Triangle" name="tooth" contactStiffness="5" simulated="0" moving="0"/>
+			<Object type="Line" name="tooth" contactStiffness="5" simulated="0" moving="0"/>	
+			<Object type="Point" name="tooth" contactStiffness="5" simulated="0" moving="0"/>	
+		</Node>
+	</Node>
+		
+	<Node name="Instrument" >
+		<Object type="EulerImplicitSolver" name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
+		<Object type="CGLinearSolver" name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
+		<Object type="MechanicalObject" name="instrumentState" template="Rigid" />
+		<Object type="UniformMass" name="mass" totalmass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
+		<Node name="VisualModel" >
+			<Object type="OglModel" name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="1.0 0.2 0.2 1.0" />
+			<Object type="RigidMapping" name="MM->VM mapping" object1="instrumentState" object2="InstrumentVisualModel" />
+		</Node>
+		<Node name="CollisionModel" >
+		 	<Object type="MeshObjLoader" filename="data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<Object type="Mesh" src="@loader" name="InstrumentCollisionModel" />
+			<Object type="MechanicalObject" src="@loader" name="instrumentCollisionState" /> 
+			<Object type="Line" name="instrument" contactStiffness="5" />
+			<Object type="Point" name="instrument" contactStiffness="5" /> 
+			<Object type="RigidMapping" name="MM->CM mapping" object1="instrumentState" object2="instrumentCollisionState" />
+		</Node>
+	</Node>  	
+</Node>

@@ -1,0 +1,12 @@
+<!-- 
+ + Added the visual model for the instrument in a separate node of the graph
+-->
+
+<Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
+	<Node name="Tooth">
+		<Object type="OglModel" name="ToothVisualModel" fileMesh="data/mesh/tooth_closed.obj" color="white" />
+	</Node>
+	<Node name="Instrument">
+		<Object type="OglModel" name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="1.0 0.2 0.2 1.0" />
+	</Node>
+</Node>
