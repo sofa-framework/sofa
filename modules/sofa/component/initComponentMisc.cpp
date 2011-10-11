@@ -57,20 +57,22 @@ void initComponentMisc()
     }
 
     initMiscTopology();
-    initMiscTopologyDev();
     initMiscMapping();
-    initMiscMappingDev();
     initMiscForcefield();
-    initMiscForcefieldDev();
     initMiscFEM();
-    initMiscFEMDev();
     initMiscEngine();
     initMiscCollision();
-    initMiscCollisionDev();
     initMiscSolver();
-    initMiscSolverDev();
     initMisc();
+#ifdef SOFA_DEV
+    initMiscTopologyDev();
+    initMiscMappingDev();
+    initMiscForcefieldDev();
+    initMiscFEMDev();
+    initMiscCollisionDev();
+    initMiscSolverDev();
     initMiscDev();
+#endif
 }
 
 } // namespace component
