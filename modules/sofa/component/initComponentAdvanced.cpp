@@ -56,11 +56,13 @@ void initComponentAdvanced()
     initSPHFluid();
     initVolumetricData();
     initNonUniformFEM();
+    initEigen2Solver();
+#ifdef SOFA_DEV
     initAdvancedFEM();
     initMJEDFEM();
     initAdvancedInteraction();
     initAdvancedConstraint();
-    initEigen2Solver();
+#endif
 //    initTaucsSolver();
 //    initPardisoSolver();
 

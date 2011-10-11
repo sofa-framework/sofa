@@ -57,9 +57,9 @@ SOFA_LINK_CLASS(HexahedronCompositeFEMMapping)
 SOFA_LINK_CLASS(MultilevelHexahedronSetGeometryAlgorithms)
 SOFA_LINK_CLASS(MultilevelHexahedronSetTopologyAlgorithms)
 SOFA_LINK_CLASS(MultilevelHexahedronSetTopologyModifier)
-#endif
 #ifdef SOFA_HAVE_EIGEN2
 SOFA_LINK_CLASS(NonUniformHexahedralFEMForceFieldAndMassCorrected)
+#endif
 #endif
 
 } // namespace component
