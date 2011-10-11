@@ -1,0 +1,11 @@
+<!-- This is the simplest example possible: 
+   + the first line defines global parameters for the scene which are attached to the root node of the scene
+   + then we load the OBJ model of the tooth and display it (using a white color) 
+-->
+
+<Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
+	<Node name="Tooth">
+		<Object type="OglModel" name="ToothVisualModel" fileMesh="data/mesh/tooth_closed.obj" color="white" />
+	</Node>
+</Node>
+

@@ -38,4 +38,20 @@
       <Tutorial name="Simple Shader" 				scene="Tutorials/StepByStep/Visual/5_Visual.scn"/>
       <Tutorial name="Advanced Shader"				scene="Tutorials/StepByStep/Visual/6_Visual.scn"/>      
     </Group>
+    <Group name="Dentistry Haptic">
+      <Tutorial name="Objective" scene="Tutorials/StepByStep/Dentistry_Haptics/dentalSurgery_01.scn"/>  
+      <Tutorial name="Add instrument" scene="Tutorials/StepByStep/Dentistry_Haptics/dentalSurgery_02.scn"/>
+      <Tutorial name="Mechanical state" scene="Tutorials/StepByStep/Dentistry_Haptics/dentalSurgery_03.scn"/>
+      <Group name="Proximity">
+	<Tutorial name="Collision" scene="Tutorials/StepByStep/Dentistry_Haptics/dentalSurgery_04.scn"/>
+	<Tutorial name="Constraint" scene="Tutorials/StepByStep/Dentistry_Haptics/dentalSurgery_05b.scn"/>
+	<Tutorial name="LCP contact with Omni phantom device"	scene="Tutorials/StepByStep/Dentistry_Haptics/dentalSurgery_06b.scn"/>
+      </Group>
+      
+      <Group name="Distance Grid">
+	<Tutorial name="Second version of collision : Distance grid" scene="Tutorials/StepByStep/Dentistry_Haptics/dentalSurgery_05a.scn"/>       
+	<Tutorial name="Distance grid with Omni phantom device"	scene="Tutorials/StepByStep/Dentistry_Haptics/dentalSurgery_06a.scn"/>  
+      </Group>
+      
+    </Group>
 </Category>

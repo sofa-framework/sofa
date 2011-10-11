@@ -1,0 +1,28 @@
+<!-- 
+ + Added gravity in root node 
+ + Added a solver and a MechanicalObject of type Rigid to simulate the motion of the instrument
+ + Added a mapping (RigidMapping) to "connect" the Mechanical Model and the Visual Model
+-->
+
+<Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
+
+	<Object type="Gravity" name="G" gravity="0.0 -9.81 0" />
+	
+	<Node name="Teeth" >
+		<Node name="VisualModel" >
+			<Object type="OglModel" name="ToothVisualModel" fileMesh="data/mesh/tooth_closed.obj" color="white" />
+		</Node>
+	</Node>
+
+	<Node name="Instrument" >
+		<Object type="EulerImplicitSolver" name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
+		<Object type="CGLinearSolver" name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
+		<Object type="MechanicalObject" name="instrumentState" template="Rigid" />
+		<Object type="UniformMass" name="mass" totalmass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
+		<Node name="VisualModel" >
+			<Object type="OglModel" name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="1.0 0.2 0.2 1.0" />
+			<Object type="RigidMapping" name="MM->VM mapping" object1="instrumentState" object2="InstrumentVisualModel" />
+		</Node>
+	</Node>  	
+
+</Node>
