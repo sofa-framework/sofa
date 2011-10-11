@@ -59,30 +59,35 @@ enum TopologyChangeType
     POINTSMOVED,               ///< For PointsMoved class.
     POINTSRENUMBERING,         ///< For PointsRenumbering class.
 
+    EDGESINDICESSWAP,          ///< For EdgesIndicesSwap class.
     EDGESADDED,                ///< For EdgesAdded class.
     EDGESREMOVED,              ///< For EdgesRemoved class.
     EDGESMOVED_REMOVING,       ///< For EdgesMoved class (event before changing state).
     EDGESMOVED_ADDING,         ///< For EdgesMoved class.
     EDGESRENUMBERING,          ///< For EdgesRenumbering class.
 
+    TRIANGLESINDICESSWAP,      ///< For TrianglesIndicesSwap class.
     TRIANGLESADDED,            ///< For TrianglesAdded class.
     TRIANGLESREMOVED,          ///< For TrianglesRemoved class.
     TRIANGLESMOVED_REMOVING,   ///< For TrianglesMoved class (event before changing state).
     TRIANGLESMOVED_ADDING,     ///< For TrianglesMoved class.
     TRIANGLESRENUMBERING,      ///< For TrianglesRenumbering class.
 
+    TETRAHEDRAINDICESSWAP,     ///< For TetrahedraIndicesSwap class.
     TETRAHEDRAADDED,           ///< For TetrahedraAdded class.
     TETRAHEDRAREMOVED,         ///< For TetrahedraRemoved class.
     TETRAHEDRAMOVED_REMOVING,  ///< For TetrahedraMoved class (event before changing state).
     TETRAHEDRAMOVED_ADDING,    ///< For TetrahedraMoved class.
     TETRAHEDRARENUMBERING,     ///< For TetrahedraRenumbering class.
 
+    QUADSINDICESSWAP,          ///< For QuadsIndicesSwap class.
     QUADSADDED,                ///< For QuadsAdded class.
     QUADSREMOVED,              ///< For QuadsRemoved class.
     QUADSMOVED_REMOVING,       ///< For QuadsMoved class (event before changing state).
     QUADSMOVED_ADDING,         ///< For QuadsMoved class.
     QUADSRENUMBERING,          ///< For QuadsRenumbering class.
 
+    HEXAHEDRAINDICESSWAP,      ///< For HexahedraIndicesSwap class.
     HEXAHEDRAADDED,            ///< For HexahedraAdded class.
     HEXAHEDRAREMOVED,          ///< For HexahedraRemoved class.
     HEXAHEDRAMOVED_REMOVING,   ///< For HexahedraMoved class (event before changing state).
