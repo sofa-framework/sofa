@@ -284,7 +284,6 @@ protected:
     InformationOnPickCallBack informationOnPickCallBack;
 
     QWidget* currentTab;
-    QWidget *tabInstrument;
 #ifndef SOFA_GUI_QT_NO_RECORDER
     QSofaRecorder* recorder;
 #else
