@@ -681,6 +681,7 @@ void QtViewer::DisplayOBJs()
 
     vparams->sceneBBox() = groot->f_bbox.getValue();
 
+
     glShadeModel(GL_SMOOTH);
     //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glColor4f(1, 1, 1, 1);
@@ -914,6 +915,7 @@ void QtViewer::calcProjection()
         vparams->sceneBBox() = groot->f_bbox.getValue();
         currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());
     }
+    currentCamera->computeZ();
 
     vparams->zNear() = currentCamera->getZNear();
     vparams->zFar() = currentCamera->getZFar();
