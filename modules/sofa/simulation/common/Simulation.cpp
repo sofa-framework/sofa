@@ -85,7 +85,6 @@ namespace simulation
 using namespace sofa::defaulttype;
 Simulation::Simulation()
     : gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved"))
-    , instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used"))
     , paused(false)
 {
     m_RootAmimateLoop = NULL;
@@ -350,44 +349,6 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* /*root*
         serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
         return;
     }
-
-    /*
-    if ( !root ) return;
-    if (root->visualManager.empty())
-    {
-    vparams->pass() = sofa::core::visual::VisualParams::Std;
-    VisualDrawVisitor act ( vparams );
-    root->execute ( &act );
-    vparams->pass() = sofa::core::visual::VisualParams::Transparent;
-    VisualDrawVisitor act2 ( vparams );
-    root->execute ( &act2 );
-    }
-    else
-    {
-    Node::Sequence<core::visual::VisualManager>::iterator begin = root->visualManager.begin(), end = root->visualManager.end(), it;
-    for (it = begin; it != end; ++it)
-    (*it)->preDrawScene(vparams);
-    bool rendered = false; // true if a manager did the rendering
-    for (it = begin; it != end; ++it)
-    if ((*it)->drawScene(vparams))
-    {
-      rendered = true;
-      break;
-    }
-    if (!rendered) // do the rendering
-    {
-    vparams->pass() = sofa::core::visual::VisualParams::Std;
-
-    VisualDrawVisitor act ( vparams );
-    root->execute ( &act );
-    vparams->pass() = sofa::core::visual::VisualParams::Transparent;
-    VisualDrawVisitor act2 ( vparams );
-    root->execute ( &act2 );
-    }
-    Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = root->visualManager.rbegin(), rend = root->visualManager.rend(), rit;
-    for (rit = rbegin; rit != rend; ++rit)
-    (*rit)->postDrawScene(vparams);
-    }*/
 }
 
 /// Export a scene to an OBJ 3D Scene
@@ -585,8 +546,6 @@ void Simulation::unload(Node * root)
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     if (dynamic_cast<Node*>(this->getContext()) == root)
     {
-        instruments.clear();
-        instrumentInUse.setValue(-1);
         this->setContext(0);
     }
     root->detachFromGraph();

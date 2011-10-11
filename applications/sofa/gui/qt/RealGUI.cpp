@@ -956,57 +956,6 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
 
 void RealGUI::Clear()
 {
-    simulation::Simulation *s = simulation::getSimulation();
-
-    //In case instruments are present in the scene, we create a new tab, and display the listr
-    if (s->instruments.size() != 0)
-    {
-        tabInstrument = new QWidget();
-        tabs->addTab(tabInstrument, QString("Instrument"));
-
-        QVBoxLayout *layout = new QVBoxLayout( tabInstrument, 0, 1, "tabInstrument");
-
-        QButtonGroup *list_instrument = new QButtonGroup(tabInstrument);
-        list_instrument->setExclusive(true);
-
-#ifdef SOFA_QT4
-        connect ( list_instrument, SIGNAL ( buttonClicked(int) ), this, SLOT ( changeInstrument(int) ) );
-#else
-        connect ( list_instrument, SIGNAL ( clicked(int) ), this, SLOT ( changeInstrument(int) ) );
-#endif
-
-        QRadioButton *button = new QRadioButton(tabInstrument); button->setText("None");
-#ifdef SOFA_QT4
-        list_instrument->addButton(button, 0);
-#else
-        list_instrument->insert(button);
-#endif
-        layout->addWidget(button);
-
-        for (unsigned int i=0; i<s->instruments.size(); i++)
-        {
-            QRadioButton *button = new QRadioButton(tabInstrument);  button->setText(QString( s->instruments[i]->getName().c_str() ) );
-#ifdef SOFA_QT4
-            list_instrument->addButton(button, i+1);
-#else
-            list_instrument->insert(button);
-#endif
-            layout->addWidget(button);
-            if (i==0)
-            {
-                button->setChecked(true); changeInstrument(1);
-            }
-            else
-                s->instruments[i]->setActive(false);
-
-        }
-#ifdef SOFA_QT4
-        layout->addStretch(1);
-#endif
-#ifndef SOFA_QT4
-        layout->addWidget(list_instrument);
-#endif
-    }
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
@@ -1133,19 +1082,6 @@ void RealGUI::setMouseButtonConfiguration(sofa::component::configurationsetting:
     //        SofaMouseManager::getInstance()->updateContent();
 }
 
-//--------------------------------------
-void RealGUI::changeInstrument(int id)
-{
-    std::cout << "Activation instrument "<<id<<std::endl;
-    simulation::Simulation *s = simulation::getSimulation();
-    if (s->instrumentInUse.getValue() >= 0 && s->instrumentInUse.getValue() < (int)s->instruments.size())
-        s->instruments[s->instrumentInUse.getValue()]->setActive(false);
-
-    simulation::getSimulation()->instrumentInUse.setValue(id-1);
-    if (s->instrumentInUse.getValue() >= 0 && s->instrumentInUse.getValue() < (int)s->instruments.size())
-        s->instruments[s->instrumentInUse.getValue()]->setActive(true);
-    viewer->getQWidget()->update();
-}
 
 
 void RealGUI::screenshot()

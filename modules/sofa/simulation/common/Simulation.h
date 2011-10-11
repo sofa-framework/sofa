@@ -118,9 +118,6 @@ public:
 
     sofa::core::objectmodel::DataFileName gnuplotDirectory;
 
-    helper::vector< Node* > instruments;
-    Data< int > instrumentInUse;
-
     bool paused;
 
     ///load a scene from memory (typically : an xml into a string)
