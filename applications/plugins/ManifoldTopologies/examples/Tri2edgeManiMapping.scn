@@ -1,0 +1,33 @@
+<Node 	name="root" gravity="0 -9 1" dt="0.05" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0"  >
+	<DefaultPipeline name="default141" verbose="0"/>
+	<BruteForceDetection name="N2"/>
+	<DefaultContactManager name="default142" response="default"/>
+	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5"/>
+	<DefaultCollisionGroupManager name="default143"/>
+	<Node 	name="SquareGravity" gravity="0 -9.81 0"  >
+		<CGImplicitSolver name="default144" iterations="40" tolerance="1e-06" threshold="1e-10"/>
+		<MeshGmshLoader name="loader" filename="mesh/square3.msh"/>
+		<MechanicalObject src="@loader" template="Vec3d" name="mechanical" scale="10" restScale="1"/>
+		<ManifoldTriangleSetTopologyContainer src="@loader" name="Container"/>
+		<ManifoldTriangleSetTopologyModifier name="Modifier"/>
+		<ManifoldTriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
+		<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
+		<DiagonalMass template="Vec3d" name="default146" massDensity="0.15"/>
+		<FixedConstraint template="Vec3d" name="default147" indices="0 1"/>
+		<TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60"/>
+		<TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1"/>
+		<TriangleModel name="default148"/>
+		<Node 	name="Edge Mesh" gravity="0 -9.81 0"  >
+			<ManifoldEdgeSetTopologyContainer name="Container"/>
+			<ManifoldEdgeSetTopologyModifier name="Modifier"/>
+			<ManifoldEdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
+			<ManifoldEdgeSetGeometryAlgorithms template="Vec3d" name="TopoGeo"/>
+			<Triangle2EdgeTopologicalMapping name="Mapping" object1="../../Container" object2="Container"/>
+			<Node 	name="Visu" gravity="0 -9.81 0"  >
+				<OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 0 0 1 1 Ambient 1 0 0 0.2 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45"/>
+				<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default17" object1="../../../mechanical" object2="Visual"/>
+			</Node>
+			<MeshSpringForceField template="Vec3d" name="default0" stiffness="100" damping="1" linesStiffness="100" linesDamping="1" trianglesStiffness="100" trianglesDamping="1" quadsStiffness="100" quadsDamping="1" tetrasStiffness="100" tetrasDamping="1" cubesStiffness="100" cubesDamping="1"/>
+		</Node>
+	</Node>
+</Node>

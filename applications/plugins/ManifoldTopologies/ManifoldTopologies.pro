@@ -7,8 +7,7 @@ TEMPLATE = lib
 
 DEFINES += SOFA_BUILD_MANIFOLDTOPOLOGIES
 
-SOURCES = initManifoldTopologies.cpp \
-          ManifoldEdgeSetGeometryAlgorithms.h \
+HEADERS = ManifoldEdgeSetGeometryAlgorithms.h \
           ManifoldEdgeSetGeometryAlgorithms.inl \
           ManifoldEdgeSetTopologyAlgorithms.h \
           ManifoldEdgeSetTopologyAlgorithms.inl \
@@ -23,7 +22,8 @@ SOURCES = initManifoldTopologies.cpp \
           ManifoldTopologyObject_float.h
 
 
-HEADERS = ManifoldEdgeSetGeometryAlgorithms.cpp \
+SOURCES = initManifoldTopologies.cpp \
+          ManifoldEdgeSetGeometryAlgorithms.cpp \
           ManifoldEdgeSetTopologyAlgorithms.cpp \
           ManifoldEdgeSetTopologyContainer.cpp \
           ManifoldEdgeSetTopologyModifier.cpp \
