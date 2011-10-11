@@ -92,6 +92,7 @@ public:
     virtual void setForcesMapped(bool b);
     virtual void setConstraintsMapped(bool b);
     virtual void setMassesMapped(bool b);
+    virtual void setMatricesMapped(bool b);
 
     virtual void setNonMechanical();
 
@@ -119,6 +120,18 @@ public:
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
+    typedef sofa::defaulttype::BaseMatrix* (*func_createMappedMatrix)(behavior::BaseMechanicalState*);
+    typedef sofa::defaulttype::BaseMatrix* (*func_createMappedInterationMatrix)(behavior::BaseMechanicalState* , behavior::BaseMechanicalState* );
+
+    //setting the callback function creating a matrix for and mapped mechanical object
+    void setCreateMappedMatrixFunc(func_createMappedMatrix);
+
+    //setting the callback function creating a interaction matrix where one of mechanical objects in interaction is mapped
+    void setCreateMappedInteractionMatrixFunc(func_createMappedInterationMatrix);
+
+    //Create a matrix for mapped mechanical objects
+    //If the two mechanical objects is identical, create a new stiffness matrix for this mapped objects
+    //If the two mechanical objects is different, create a new interaction matrix
     virtual sofa::defaulttype::BaseMatrix* createMappedMatrix(behavior::BaseMechanicalState* state1, behavior::BaseMechanicalState* state2);
 
     ///<TO REMOVE>
@@ -134,6 +147,11 @@ public:
 
 protected:
     bool testMechanicalState(BaseState* state);
+
+    //The callback function creating a matrix for and mapped mechanical object
+    func_createMappedMatrix           m_createMappedMatrix;
+    //The callback function creating a interaction matrix where one of mechanical objects in interaction is mapped
+    func_createMappedInterationMatrix m_createMappedInterationMatrix;
 };
 
 } // namespace core

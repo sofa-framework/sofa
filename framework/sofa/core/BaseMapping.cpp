@@ -37,6 +37,8 @@ BaseMapping::BaseMapping()
     , f_mapConstraints(initData(&f_mapConstraints, true, "mapConstraints", "Are constraints mapped ?"))
     , f_mapMasses(initData(&f_mapMasses, true, "mapMasses", "Are masses mapped ?"))
     , f_mapMatrices(initData(&f_mapMatrices, false, "mapMatrices", "Are matrix explicit mapped?"))
+    , m_createMappedMatrix(NULL)
+    , m_createMappedInterationMatrix(NULL)
 {
     this->addAlias(&f_mapForces, "isMechanical");
     this->addAlias(&f_mapMasses, "isMechanical");
@@ -80,6 +82,11 @@ void BaseMapping::setMassesMapped(bool b)
 {
     f_mapMasses.setValue(b);
 }
+void BaseMapping::setMatricesMapped(bool b)
+{
+    f_mapMatrices.setValue(b);
+}
+
 
 void BaseMapping::setNonMechanical()
 {
@@ -117,15 +124,20 @@ const sofa::defaulttype::BaseMatrix* BaseMapping::getJ()
     return NULL;
 }
 
+void BaseMapping::setCreateMappedMatrixFunc(func_createMappedMatrix _func)
+{
+    m_createMappedMatrix = _func;
+}
+void BaseMapping::setCreateMappedInteractionMatrixFunc(func_createMappedInterationMatrix _func)
+{
+    m_createMappedInterationMatrix = _func;
+}
 
 sofa::defaulttype::BaseMatrix* BaseMapping::createMappedMatrix(behavior::BaseMechanicalState* /*state1*/, behavior::BaseMechanicalState* /*state2*/)
 {
-    serr << "BaseMapping::createMappedMatrix(BaseMechanicalState* , BaseMechanicalState* ) NOT IMPLEMENTED BY " << getClassName() << sendl;
+    serr << "BaseMapping::createMappedMatrix() NOT IMPLEMENTED BY " << getClassName() << sendl;
     return NULL;
 }
-
-
-
 
 
 bool BaseMapping::testMechanicalState(BaseState* state)
