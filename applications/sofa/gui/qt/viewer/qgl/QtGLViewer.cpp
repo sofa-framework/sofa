@@ -1083,21 +1083,13 @@ bool QtGLViewer::mouseEvent(QMouseEvent * e)
         SofaViewer::mouseEvent(e);
         return true;
     }
-    else if (e->state()&Qt::ControlButton)
-    {
-        moveLaparoscopic(e);
-        return true;
-    }
 
     return false;
 }
 
 void QtGLViewer::wheelEvent(QWheelEvent* e)
 {
-    if (e->state()&Qt::ControlButton)
-        moveLaparoscopic(e);
-    else
-        QGLViewer::wheelEvent(e);
+    QGLViewer::wheelEvent(e);
 }
 
 void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)

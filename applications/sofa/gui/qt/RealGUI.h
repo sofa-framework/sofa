@@ -231,7 +231,6 @@ public slots:
 #else
     void changeHtmlPage( const QString&);
 #endif
-    void changeInstrument(int);
     void Clear();
     //Used in Context Menu
     //refresh the visualization window

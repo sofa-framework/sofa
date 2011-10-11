@@ -1189,11 +1189,6 @@ void QtViewer::keyReleaseEvent(QKeyEvent * e)
 
 void QtViewer::wheelEvent(QWheelEvent* e)
 {
-    if (e->state() & Qt::ControlButton)
-    {
-        moveLaparoscopic(e);
-    }
-
     SofaViewer::wheelEvent(e);
 }
 
@@ -1334,7 +1329,6 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
     else if (e->state() & Qt::ControlButton)
     {
         isInteractive = true;
-        moveLaparoscopic(e);
     }
     else if (e->state() & Qt::AltButton)
     {

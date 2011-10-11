@@ -184,10 +184,6 @@ protected:
     void mouseReleaseEvent ( QMouseEvent * e);
     void mouseEvent(QMouseEvent *e);
 
-    // ---------------------- Here are the controls for instruments  ----------------------
-    void moveLaparoscopic( QMouseEvent *e);
-    void moveLaparoscopic(QWheelEvent *e);
-
     // ---------------------- RayCasting PickHandler  ----------------------
     virtual void moveRayPickInteractor(int, int)
     {
