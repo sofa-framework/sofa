@@ -48,10 +48,6 @@ CopyAspectVisitor::Result CopyAspectVisitor::processNodeTopDown(Node* node)
         fprintf(stderr, "Copy node: %s, object: %s\n", node->getName().c_str(), (*iObj)->getName().c_str());
         (*iObj)->copyAspect(destAspect, srcAspect);
     }
-    for(Node::ChildIterator iVNode = node->childInVisualGraph.begin(), endVNode = node->childInVisualGraph.end(); iVNode != endVNode; ++iVNode)
-    {
-        processNodeTopDown(*iVNode);
-    }
     return RESULT_CONTINUE;
 }
 

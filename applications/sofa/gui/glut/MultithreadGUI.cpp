@@ -411,49 +411,6 @@ void MultithreadGUI::glut_idle()
 
 
 
-
-
-
-#ifdef SOFA_HAVE_GLEW
-
-// Shadow Mapping parameters
-
-// These store our width and height for the shadow texture
-enum { SHADOW_WIDTH = 512 };
-enum { SHADOW_HEIGHT = 512 };
-enum { SHADOW_MASK_SIZE = 2048 };
-
-// This is used to set the mode with glTexParameteri() for comparing depth values.
-// We use GL_COMPARE_R_TO_TEXTURE_ARB as our mode.  R is used to represent the depth value.
-#define GL_TEXTURE_COMPARE_MODE_ARB       0x884C
-
-// This is used to set the function with glTexParameteri() to tell OpenGL how we
-// will compare the depth values (we use GL_LEQUAL (less than or equal)).
-#define GL_TEXTURE_COMPARE_FUNC_ARB       0x884D
-
-// This mode is what will compare our depth values for shadow mapping
-#define GL_COMPARE_R_TO_TEXTURE_ARB       0x884E
-
-// The texture array where we store our image data
-static GLuint g_DepthTexture;
-
-// This is our global shader object that will load the shader files
-static GLSLShader g_Shader;
-
-//float g_DepthOffset[2] = { 3.0f, 0.0f };
-static float g_DepthOffset[2] = { 10.0f, 0.0f };
-static float g_DepthBias[2] = { 0.0f, 0.0f };
-
-// These are the light's matrices that need to be stored
-static float g_mProjection[16] = {0};
-static float g_mModelView[16] = {0};
-//float g_mCameraInverse[16] = {0};
-
-static GLuint ShadowTextureMask;
-
-// End of Shadow Mapping Parameters
-#endif // SOFA_HAVE_GLEW
-
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
@@ -476,7 +433,6 @@ MultithreadGUI::MultithreadGUI()
     _animationOBJ = false;
     _axis = false;
     _background = 0;
-    _shadow = false;
     _numOBJmodels = 0;
     _materialMode = 0;
     _facetNormal = GL_FALSE;
@@ -670,23 +626,6 @@ void MultithreadGUI::initializeGL(void)
         glEnable(GL_LIGHT0);
         //glEnable(GL_COLOR_MATERIAL);
 
-#ifdef SOFA_HAVE_GLEW
-        // Here we allocate memory for our depth texture that will store our light's view
-        CreateRenderTexture(g_DepthTexture, SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT);
-        CreateRenderTexture(ShadowTextureMask, SHADOW_MASK_SIZE, SHADOW_MASK_SIZE, GL_LUMINANCE, GL_LUMINANCE);
-
-        if (_glshadow == GLSLShader::InitGLSL())
-        {
-            // Here we pass in our new vertex and fragment shader files to our shader object.
-            g_Shader.InitShaders(sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.vert"), sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.frag"));
-        }
-        else
-#endif
-        {
-            printf("WARNING MultithreadGUI : shadows are not supported !\n");
-            _shadow = false;
-        }
-
         // change status so we only do this stuff once
         initialized = true;
 
@@ -702,201 +641,6 @@ void MultithreadGUI::initializeGL(void)
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
-
-///////////////////////////////// STORE LIGHT MATRICES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////    This function positions our view from the light for shadow mapping
-/////
-///////////////////////////////// STORE LIGHT MATRICES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
-void MultithreadGUI::StoreLightMatrices()
-{
-    //    _lightPosition[0] =  _sceneTransform.translation[0] + 10;//*cosf(TT);
-    //    _lightPosition[1] =  _sceneTransform.translation[1] + 10;//*sinf(2*TT);
-    //    _lightPosition[2] =  _sceneTransform.translation[2] + 35;//
-
-    //_lightPosition[0] =  1;
-    //_lightPosition[1] =  -10;
-    //_lightPosition[2] =  0;
-
-    // Reset our current light matrices
-    memset(g_mModelView, 0, sizeof(float)*16);
-    memset(g_mProjection, 0, sizeof(float)*16);
-
-    g_mModelView[0] = 1; // identity
-    g_mModelView[5] = 1;
-    g_mModelView[10] = 1;
-    g_mModelView[15] = 1;
-
-    // Using perpective shadow map for the "miner lamp" case ( i.e. light.z == 0 )
-    // which is just a "rotation" in sceen space
-
-    float lx = -_lightPosition[0] * lastProjectionMatrix[0] - _lightPosition[1] * lastProjectionMatrix[4] + lastProjectionMatrix[12];
-    float ly = -_lightPosition[0] * lastProjectionMatrix[1] - _lightPosition[1] * lastProjectionMatrix[5] + lastProjectionMatrix[13];
-    float lz = -_lightPosition[0] * lastProjectionMatrix[2] - _lightPosition[1] * lastProjectionMatrix[6] + lastProjectionMatrix[14];
-    //float lw = -_lightPosition[0] * lastProjectionMatrix[3] - _lightPosition[1] * lastProjectionMatrix[7] + lastProjectionMatrix[15];
-    //std::cout << "lx = "<<lx<<" ly = "<<ly<<" lz = "<<lz<<" lw = "<<lw<<std::endl;
-
-    Vector3 l(-lx,-ly,-lz);
-    Vector3 y;
-    y = l.cross(Vector3(1,0,0));
-    Vector3 x;
-    x = y.cross(l);
-    l.normalize();
-    y.normalize();
-    x.normalize();
-
-    g_mProjection[ 0] = x[0]; g_mProjection[ 4] = x[1]; g_mProjection[ 8] = x[2]; g_mProjection[12] =    0;
-    g_mProjection[ 1] = y[0]; g_mProjection[ 5] = y[1]; g_mProjection[ 9] = y[2]; g_mProjection[13] =    0;
-    g_mProjection[ 2] = l[0]; g_mProjection[ 6] = l[1]; g_mProjection[10] = l[2]; g_mProjection[14] =    0;
-    g_mProjection[ 3] =    0; g_mProjection[ 7] =    0; g_mProjection[11] =    0; g_mProjection[15] =    1;
-
-    g_mProjection[ 0] = x[0]; g_mProjection[ 4] = y[0]; g_mProjection[ 8] = l[0]; g_mProjection[12] =    0;
-    g_mProjection[ 1] = x[1]; g_mProjection[ 5] = y[1]; g_mProjection[ 9] = l[1]; g_mProjection[13] =    0;
-    g_mProjection[ 2] = x[2]; g_mProjection[ 6] = y[2]; g_mProjection[10] = l[2]; g_mProjection[14] =    0;
-    g_mProjection[ 3] =    0; g_mProjection[ 7] =    0; g_mProjection[11] =    0; g_mProjection[15] =    1;
-
-    glPushMatrix();
-    {
-
-        glLoadIdentity();
-        glScaled(1.0/(fabs(g_mProjection[0])+fabs(g_mProjection[4])+fabs(g_mProjection[8])),
-                1.0/(fabs(g_mProjection[1])+fabs(g_mProjection[5])+fabs(g_mProjection[9])),
-                1.0/(fabs(g_mProjection[2])+fabs(g_mProjection[6])+fabs(g_mProjection[10])));
-        glMultMatrixf(g_mProjection);
-        glMultMatrixd(lastProjectionMatrix);
-
-        // Grab the current matrix that will be used for the light's projection matrix
-        glGetFloatv(GL_MODELVIEW_MATRIX, g_mProjection);
-
-        // Go back to the original matrix
-    } glPopMatrix();
-
-    /*
-    // Let's push on a new matrix so we don't change the rest of the world
-    glPushMatrix();{
-
-        // Reset the current modelview matrix
-        glLoadIdentity();
-
-        // This is where we set the light's position and view.
-        gluLookAt(_lightPosition[0],  _lightPosition[1],  _lightPosition[2],
-        _sceneTransform.translation[0],       _sceneTransform.translation[1],        _sceneTransform.translation[2],        0, 1, 0);
-
-        // Now that we have the light's view, let's save the current modelview matrix.
-        glGetFloatv(GL_MODELVIEW_MATRIX, g_mModelView);
-
-        // Reset the current matrix
-        glLoadIdentity();
-
-        // Set our FOV, aspect ratio, then near and far planes for the light's view
-        gluPerspective(90.0f, 1.0f, 4.0f, 250.0f);
-
-        // Grab the current matrix that will be used for the light's projection matrix
-        glGetFloatv(GL_MODELVIEW_MATRIX, g_mProjection);
-
-        // Go back to the original matrix
-    }glPopMatrix();
-    */
-}
-
-/////////////////////////////// CREATE RENDER TEXTURE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////    This function creates a blank texture to render to
-/////
-/////////////////////////////// CREATE RENDER TEXTURE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
-void MultithreadGUI::CreateRenderTexture(GLuint& textureID, int sizeX, int sizeY, int channels, int type)
-{
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-
-    // Create the texture and store it on the video card
-    glTexImage2D(GL_TEXTURE_2D, 0, channels, sizeX, sizeY, 0, type, GL_UNSIGNED_INT, NULL);
-
-    // Set the texture quality
-    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-}
-
-//////////////////////////////// APPLY SHADOW MAP \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////    This function applies the shadow map to our world data
-/////
-//////////////////////////////// APPLY SHADOW MAP \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
-void MultithreadGUI::ApplyShadowMap()
-{
-#ifdef SOFA_HAVE_GLEW
-    // Let's turn our shaders on for doing shadow mapping on our world
-    g_Shader.TurnOn();
-
-    // Turn on our texture unit for shadow mapping and bind our depth texture
-    glActiveTextureARB(GL_TEXTURE1_ARB);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, g_DepthTexture);
-
-    // Give GLSL our texture unit that holds the shadow map
-    g_Shader.SetInt(g_Shader.GetVariable("shadowMap"), 1);
-    //g_Shader.SetInt(g_Shader.GetVariable("tex"), 0);
-
-    // Here is where we set the mode and function for shadow mapping with shadow2DProj().
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB,
-            GL_COMPARE_R_TO_TEXTURE_ARB);
-
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL);
-
-    // Create our bias matrix to have a 0 to 1 ratio after clip space
-    const float mBias[] = {0.5, 0.0, 0.0, 0.0,
-            0.0, 0.5, 0.0, 0.0,
-            0.0, 0.0, 0.5+g_DepthBias[0], 0.0,
-            0.5, 0.5, 0.5+g_DepthBias[1], 1.0
-                          };
-
-    glMatrixMode(GL_TEXTURE);
-
-    glLoadMatrixf(mBias);            // The bias matrix to convert to a 0 to 1 ratio
-    glMultMatrixf(g_mProjection);    // The light's projection matrix
-    glMultMatrixf(g_mModelView);    // The light's modelview matrix
-    //glMultMatrixf(g_mCameraInverse);// The inverse modelview matrix
-
-    glMatrixMode(GL_MODELVIEW);            // Switch back to normal modelview mode
-
-    glActiveTextureARB(GL_TEXTURE0_ARB);
-
-    // Render the world that needs to be shadowed
-
-    glPushMatrix();
-    {
-        glLoadIdentity();
-        _sceneTransform.Apply();
-        glGetDoublev(GL_MODELVIEW_MATRIX,lastModelviewMatrix);
-        DisplayOBJs();
-    }
-    glPopMatrix();
-
-    // Reset the texture matrix
-    glMatrixMode(GL_TEXTURE);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-
-    // Turn the first multi-texture pass off
-
-    glActiveTextureARB(GL_TEXTURE1_ARB);
-    glDisable(GL_TEXTURE_2D);
-    glActiveTextureARB(GL_TEXTURE0_ARB);
-
-    // Light expected, we need to turn our shader off since we are done
-    g_Shader.TurnOff();
-#endif
-}
 
 // ---------------------------------------------------------
 // ---
@@ -1253,7 +997,7 @@ void MultithreadGUI::DrawLogo()
 // -------------------------------------------------------------------
 // ---
 // -------------------------------------------------------------------
-void MultithreadGUI::DisplayOBJs(bool shadowPass)
+void MultithreadGUI::DisplayOBJs()
 {
 
     Enable<GL_LIGHTING> light;
@@ -1266,17 +1010,7 @@ void MultithreadGUI::DisplayOBJs(bool shadowPass)
 
     if (initTexturesDone)
     {
-        Node *visualRoot = simulation::getSimulation()->getVisualRoot();
-        if (shadowPass)
-        {
-            getSimulation()->drawShadows(groot);
-            getSimulation()->drawShadows(visualRoot);
-        }
-        else
-        {
-            getSimulation()->draw(&vparams,groot);
-            getSimulation()->draw(&vparams,visualRoot);
-        }
+        getSimulation()->draw(&vparams,groot);
         if (_axis)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);
@@ -1388,7 +1122,6 @@ void MultithreadGUI::calcProjection()
     //if (!sceneBBoxIsValid)
     {
         getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        getSimulation()->computeBBox(getSimulation()->getVisualRoot(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         sceneBBoxIsValid = true;
     }
     //std::cout << "Scene BBox = "<<sceneMinBBox<<" - "<<sceneMaxBBox<<"\n";
@@ -1623,7 +1356,7 @@ void MultithreadGUI::animate(void)
     if (processMessages())
     {
         fprintf(stderr, "Update Visual\n");
-        getSimulation()->updateVisual(getSimulation()->getVisualRoot());
+        getSimulation()->updateVisual(groot);
         needRedraw = true;
     }
 
@@ -1851,22 +1584,6 @@ void MultithreadGUI::keyPressEvent ( int k )
         {
             _background = (_background+1)%3;
             redraw();
-            break;
-        }
-
-        case 'l':
-            // --- draw shadows
-        {
-            if (_glshadow)
-            {
-                _shadow = !_shadow;
-                redraw();
-            }
-            else
-            {
-                printf("WARNING MultithreadGUI : shadows are not supported !\n");
-                _shadow=false;
-            }
             break;
         }
 
@@ -2210,8 +1927,8 @@ void MultithreadGUI::mouseEvent ( int type, int eventX, int eventY, int button )
             if (dx || dy)
             {
                 //g_DepthBias[0] += dx*0.01;
-                g_DepthBias[1] += dy*0.01;
-                std::cout << "Depth bias = "<< g_DepthBias[0] << " " << g_DepthBias[1] << std::endl;
+                //g_DepthBias[1] += dy*0.01;
+                //std::cout << "Depth bias = "<< g_DepthBias[0] << " " << g_DepthBias[1] << std::endl;
                 redraw();
                 _mouseInteractorSavedPosX = eventX;
                 _mouseInteractorSavedPosY = eventY;
@@ -2223,9 +1940,9 @@ void MultithreadGUI::mouseEvent ( int type, int eventX, int eventY, int button )
             int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
             {
-                g_DepthOffset[0] += dx*0.01;
-                g_DepthOffset[1] += dy*0.01;
-                std::cout << "Depth offset = "<< g_DepthOffset[0] << " " << g_DepthOffset[1] << std::endl;
+                //g_DepthOffset[0] += dx*0.01;
+                //g_DepthOffset[1] += dy*0.01;
+                //std::cout << "Depth offset = "<< g_DepthOffset[0] << " " << g_DepthOffset[1] << std::endl;
                 redraw();
                 _mouseInteractorSavedPosX = eventX;
                 _mouseInteractorSavedPosY = eventY;
@@ -2557,7 +2274,6 @@ void MultithreadGUI::resetScene()
     if (groot)
     {
         getSimulation()->reset(groot);
-        getSimulation()->reset(getSimulation()->getVisualRoot());
         redraw();
     }
 }
@@ -2583,7 +2299,7 @@ void MultithreadGUI::saveView()
         std::cout << "View parameters saved in "<<viewFileName<<std::endl;
     }
 }
-
+/*
 void MultithreadGUI::showVisual(bool value)
 {
     if (groot)
@@ -2683,7 +2399,7 @@ void MultithreadGUI::showNormals(bool value)
     }
     redraw();
 }
-
+*/
 void MultithreadGUI::screenshot(int compression_level)
 {
     capture.saveScreen(compression_level);
@@ -2714,7 +2430,7 @@ void MultithreadGUI::exportOBJ(bool exportMTL)
     ofilename << ".obj";
     std::string filename = ofilename.str();
     std::cout << "Exporting OBJ Scene "<<filename<<std::endl;
-    getSimulation()->exportOBJ(simulation::getSimulation()->getVisualRoot(), filename.c_str(),exportMTL);
+    getSimulation()->exportOBJ(groot, filename.c_str(),exportMTL);
 }
 
 void MultithreadGUI::setScene(sofa::simulation::Node* scene, const char* filename, bool)
