@@ -16,43 +16,40 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/objectmodel/Base.h>
+
+#ifndef SOFA_SIMULATION_COPYASPECTVISITOR_H
+#define SOFA_SIMULATION_COPYASPECTVISITOR_H
+
+#include <sofa/simulation/common/Visitor.h>
+#include <sofa/core/ExecParams.h>
 
 namespace sofa
 {
 
-namespace core
+namespace simulation
 {
 
-namespace objectmodel
+class SOFA_SIMULATION_COMMON_API CopyAspectVisitor : public Visitor
 {
+public:
+    CopyAspectVisitor(const core::ExecParams* params, int destAspect, int srcAspect);
+    ~CopyAspectVisitor();
 
-void DataFileName::updatePath()
-{
-    fullpath = m_values[currentAspect()].getValue();
-    if (!fullpath.empty())
-        helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
-}
+    Result processNodeTopDown(Node* node);
 
-void DataFileNameVector::updatePath()
-{
-    fullpath = m_values[currentAspect()].getValue();
-    if (!fullpath.empty())
-        for (unsigned int i=0 ; i<fullpath.size() ; i++)
-            helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
-}
-
-} // namespace objectmodel
-
-} // namespace core
+private:
+    int destAspect;
+    int srcAspect;
+};
 
 } // namespace sofa
+
+} // namespace simulation
+
+#endif /* SOFA_SIMULATION_COPYASPECTVISITOR_H */

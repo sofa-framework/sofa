@@ -51,12 +51,16 @@ Base::Base()
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
 {
     name.setParentClass("Base");
+    name.setAutoLink(false);
     f_printLog.setParentClass("Base");
+    f_printLog.setAutoLink(false);
     f_tags.setParentClass("Base");
+    f_tags.setAutoLink(false);
     f_bbox.setParentClass("Base");
     f_bbox.setReadOnly(true);
     f_bbox.setPersistent(false);
     f_bbox.setDisplayed(false);
+    f_bbox.setAutoLink(false);
     sendl.setParent(this);
 }
 
@@ -66,6 +70,16 @@ Base::~Base()
 
 /// Helper method used by initData()
 void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed, bool isReadOnly )
+{
+    BaseData::DataFlags flags = BaseData::FLAG_DEFAULT;
+    if(isDisplayed) flags |= (BaseData::DataFlags)BaseData::FLAG_DISPLAYED; else flags &= ~(BaseData::DataFlags)BaseData::FLAG_DISPLAYED;
+    if(isReadOnly)  flags |= (BaseData::DataFlags)BaseData::FLAG_READONLY; else flags &= ~(BaseData::DataFlags)BaseData::FLAG_READONLY;
+
+    initData0(field, res, name, help, flags);
+}
+
+/// Helper method used by initData()
+void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags )
 {
     std::string ln(name);
     if( ln.size()>0 && findField(ln) )
@@ -79,8 +93,8 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
     res.data = field;
     res.name = name;
     res.helpMsg = help;
-    res.isDisplayed = isDisplayed;
-    res.isReadOnly = isReadOnly;
+    res.dataFlags = dataFlags;
+
 
     std::string nameStr(name);
     if (nameStr.size() >= 4)
@@ -113,6 +127,27 @@ void Base::addAlias( BaseData* field, const char* alias)
     m_aliasData.insert(std::make_pair(std::string(alias),field));
 }
 
+/// Copy the source aspect to the destination aspect for each Data in the component.
+void Base::copyAspect(int destAspect, int srcAspect)
+{
+    typedef std::vector< std::pair<std::string, BaseData*> >::const_iterator DataListIterator;
+    for(DataListIterator iData = m_fieldVec.begin(); iData != m_fieldVec.end(); ++iData)
+    {
+        std::cout << "  " << iData->first;
+        iData->second->copyAspect(destAspect, srcAspect);
+    }
+    std::cout << std::endl;
+}
+
+/// Release memory allocated for the specified aspect.
+void Base::releaseAspect(int aspect)
+{
+    typedef std::vector< std::pair<std::string, BaseData*> >::const_iterator DataListIterator;
+    for(DataListIterator iData = m_fieldVec.begin(); iData != m_fieldVec.end(); ++iData)
+    {
+        iData->second->releaseAspect(aspect);
+    }
+}
 
 /// Get the type name of this object (i.e. class and template types)
 std::string Base::getTypeName() const

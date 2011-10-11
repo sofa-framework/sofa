@@ -377,6 +377,80 @@ void AdvancedTimer::valAdd(IdVal id, double val)
     curRecords->push_back(r);
 }
 
+// API using strings instead of Id, to remove the need for Id creation when no timing is recorded
+
+void AdvancedTimer::stepBegin(const char* idStr)
+{
+    if (!curRecords) return;
+    stepBegin(IdStep(idStr));
+}
+
+void AdvancedTimer::stepBegin(const char* idStr, const char* objStr)
+{
+    if (!curRecords) return;
+    stepBegin(IdStep(idStr), IdObj(objStr));
+}
+
+void AdvancedTimer::stepBegin(const char* idStr, const std::string& objStr)
+{
+    if (!curRecords) return;
+    stepBegin(IdStep(idStr), IdObj(objStr));
+}
+
+void AdvancedTimer::stepEnd  (const char* idStr)
+{
+    if (!curRecords) return;
+    stepEnd  (IdStep(idStr));
+}
+
+void AdvancedTimer::stepEnd  (const char* idStr, const char* objStr)
+{
+    if (!curRecords) return;
+    stepEnd  (IdStep(idStr), IdObj(objStr));
+}
+
+void AdvancedTimer::stepEnd  (const char* idStr, const std::string& objStr)
+{
+    if (!curRecords) return;
+    stepEnd  (IdStep(idStr), IdObj(objStr));
+}
+
+void AdvancedTimer::stepNext (const char* prevIdStr, const char* nextIdStr)
+{
+    if (!curRecords) return;
+    stepNext (IdStep(prevIdStr), IdStep(nextIdStr));
+}
+
+void AdvancedTimer::step     (const char* idStr)
+{
+    if (!curRecords) return;
+    step     (IdStep(idStr));
+}
+
+void AdvancedTimer::step     (const char* idStr, const char* objStr)
+{
+    if (!curRecords) return;
+    step     (IdStep(idStr), IdObj(objStr));
+}
+
+void AdvancedTimer::step     (const char* idStr, const std::string& objStr)
+{
+    if (!curRecords) return;
+    step     (IdStep(idStr), IdObj(objStr));
+}
+
+void AdvancedTimer::valSet(const char* idStr, double val)
+{
+    if (!curRecords) return;
+    valSet(IdVal(idStr),val);
+}
+
+void AdvancedTimer::valAdd(const char* idStr, double val)
+{
+    if (!curRecords) return;
+    valAdd(IdVal(idStr),val);
+}
+
 void TimerData::clear()
 {
     nbIter = 0;

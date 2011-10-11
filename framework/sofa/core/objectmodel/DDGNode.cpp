@@ -39,8 +39,6 @@ namespace objectmodel
 
 /// Constructor
 DDGNode::DDGNode()
-    : dirtyValue(false)
-    , dirtyOutputs(false)
 {
 }
 
@@ -52,8 +50,9 @@ DDGNode::~DDGNode()
         (*it)->doDelInput(this);
 }
 
-void DDGNode::setDirtyValue()
+void DDGNode::setDirtyValue(const core::ExecParams* params)
 {
+    bool& dirtyValue = dirtyFlags[currentAspect(params)].dirtyValue;
     if (!dirtyValue)
     {
         dirtyValue = true;
@@ -63,24 +62,26 @@ void DDGNode::setDirtyValue()
         if (d && d->getOwner())
             d->getOwner()->sout << "Data " << d->getName() << " is now dirty." << d->getOwner()->sendl;
 
-        setDirtyOutputs();
+        setDirtyOutputs(params);
     }
 }
 
-void DDGNode::setDirtyOutputs()
+void DDGNode::setDirtyOutputs(const core::ExecParams* params)
 {
+    bool& dirtyOutputs = dirtyFlags[currentAspect(params)].dirtyOutputs;
     if (!dirtyOutputs)
     {
         dirtyOutputs = true;
         for(std::list<DDGNode*>::iterator it=outputs.begin(); it!=outputs.end(); ++it)
         {
-            (*it)->setDirtyValue();
+            (*it)->setDirtyValue(params);
         }
     }
 }
 
-void DDGNode::cleanDirty()
+void DDGNode::cleanDirty(const core::ExecParams* params)
 {
+    bool& dirtyValue = dirtyFlags[currentAspect(params)].dirtyValue;
     if (dirtyValue)
     {
         dirtyValue = false;
@@ -90,8 +91,13 @@ void DDGNode::cleanDirty()
             d->getOwner()->sout << "Data " << d->getName() << " has been updated." << d->getOwner()->sendl;
 
         for(std::list< DDGNode* >::iterator it=inputs.begin(); it!=inputs.end(); ++it)
-            (*it)->dirtyOutputs = false;
+            (*it)->dirtyFlags[currentAspect(params)].dirtyOutputs = false;
     }
+}
+
+void DDGNode::copyAspect(int destAspect, int srcAspect)
+{
+    dirtyFlags[destAspect] = dirtyFlags[srcAspect];
 }
 
 void DDGNode::addInput(DDGNode* n)

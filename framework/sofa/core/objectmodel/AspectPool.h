@@ -25,75 +25,94 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "TimeoutWatchdog.h"
-#include <iostream>
+#ifndef SOFA_CORE_OBJECTMODEL_ASPECTPOOL_H
+#define SOFA_CORE_OBJECTMODEL_ASPECTPOOL_H
+
+#include <sofa/core/ExecParams.h>
+#include <sofa/helper/system/thread/CircularQueue.h>
+#include <boost/smart_ptr/intrusive_ptr.hpp>
+#include <boost/function.hpp>
 
 namespace sofa
 {
-namespace helper
+
+namespace core
 {
-namespace system
+
+namespace objectmodel
 {
-namespace thread
-{
-/**
- * Default constructor.
- */
-TimeoutWatchdog::TimeoutWatchdog()
-    : timeout_sec(0)
-{
-}
+
+class Aspect;
+class AspectPool;
+typedef boost::intrusive_ptr<Aspect> AspectRef;
 
 /**
- * Destructor: interrupts the watchdog and cleans-up.
+ * This class represents an allocated aspect.
+ * AspectPool returns a smart pointer to an object of this class to give the
+ * aspect ownership to the caller.
+ * It is safe to use this class from several threads.
  */
-TimeoutWatchdog::~TimeoutWatchdog()
+class SOFA_CORE_API Aspect
 {
-    if(timeout_sec > 0)
-    {
-        //std::cout << "Waiting for watchdog thread" << std::endl;
-        watchdogThread.interrupt();
-        watchdogThread.join();
-        //std::cout << "Watchdog thread closed" << std::endl;
-    }
-}
+public:
+    ~Aspect();
+
+    int aspectID() { return id; }
+
+    friend class AspectPool;
+private:
+    static AspectRef create(AspectPool* pool, int id);
+
+    Aspect(AspectPool& pool, int id);
+    void releaseFromPool();
+
+    AspectPool& pool;
+    int id;
+    helper::system::atomic<int> counter;
+
+    friend SOFA_CORE_API void intrusive_ptr_add_ref(Aspect* b);
+    friend SOFA_CORE_API void intrusive_ptr_release(Aspect* b);
+};
+
+
 
 /**
- * Starts a thread that will terminate the program after the specified duration elapses.
+ * This class is responsible for managing the pool of available aspects numbers.
+ * It is safe to use this class from several thread.
  */
-void TimeoutWatchdog::start(unsigned timeout_sec)
+class SOFA_CORE_API AspectPool
 {
-    this->timeout_sec = timeout_sec;
-    if(timeout_sec > 0)
-    {
-        boost::thread newThread(boost::bind(&TimeoutWatchdog::threadProc, this));
-        watchdogThread.swap(newThread);
-    }
-}
+public:
+    AspectPool();
+    ~AspectPool();
 
-/**
- * The thread "main" procedure: waits until the program lifespan has elapsed.
- */
-void TimeoutWatchdog::threadProc()
-{
-    //std::cout << "Entering watchdog thread" << std::endl;
+    void setReleaseCallback(const boost::function<void (int)>& callback);
 
-    // sleep method is interruptible, when calling interrupt() from another thread
-    // this thread should end inside the sleep method.
-    boost::thread::sleep(boost::get_system_time() + boost::posix_time::seconds(timeout_sec));
+    AspectRef allocate();
 
-    if(!boost::this_thread::interruption_requested())
-    {
-        std::cerr << "The program has been running for more than "
-                << timeout_sec <<
-                " seconds. It is going to shut down now." << std::endl;
-        exit(-1);
-    }
-}
+    friend class Aspect;
+protected:
+    void release(int id);
 
-}
-}
-}
-}
+private:
+    AspectPool(const AspectPool& r);
+    AspectPool& operator=(const AspectPool& r);
 
+    typedef helper::system::atomic<int> AtomicInt;
+    typedef helper::system::thread::CircularQueue<
+    AtomicInt,
+    helper::system::thread::FixedPower2Size<SOFA_DATA_MAX_ASPECTS>::type,
+    helper::system::thread::ManyThreadsPerEnd>
+    AspectQueue;
 
+    AspectQueue freeAspects;
+    boost::function<void (int)> releaseCallback;
+};
+
+} // namespace objectmodel
+
+} // namespace core
+
+} // namespace sofa
+
+#endif /* SOFA_CORE_OBJECTMODEL_ASPECTPOOL_H */

@@ -37,15 +37,34 @@ namespace core
 namespace objectmodel
 {
 
+BaseData::BaseData(const char* h, DataFlags dataflags, Base* owner, const char* name)
+    : help(h), parentClass(""), group(""), widget("")
+    , m_counters(), m_isSets(), m_dataFlags(dataflags)
+    , m_owner(owner), m_name(name), m_linkPath(std::string("")), parentBaseData(NULL)
+{
+    m_counters.assign(0);
+    m_isSets.assign(false);
+    //setAutoLink(true);
+}
+
 BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly, Base* owner, const char* name)
     : help(h), parentClass(""), group(""), widget("")
-    , m_counter(0), m_isSet(false), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly), m_isPersistent(true), m_owner(owner), m_name(name), m_linkPath(std::string("")), parentBaseData(NULL)
-{}
+    , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(owner), m_name(name), m_linkPath(std::string("")), parentBaseData(NULL)
+{
+    m_counters.assign(0);
+    m_isSets.assign(false);
+    setFlag(FLAG_DISPLAYED,isDisplayed);
+    setFlag(FLAG_READONLY,isReadOnly);
+    //setAutoLink(true);
+}
 
 BaseData::BaseData( const BaseInitData& init)
     : help(init.helpMsg), parentClass(init.parentClass), group(init.group), widget(init.widget)
-    , m_counter(0), m_isSet(false), m_isDisplayed(init.isDisplayed), m_isReadOnly(init.isReadOnly), m_isPersistent(init.isPersistent), m_owner(init.owner), m_name(init.name), m_linkPath(std::string("")), parentBaseData(NULL)
+    , m_counters(), m_isSets(), m_dataFlags(init.dataFlags)
+    , m_owner(init.owner), m_name(init.name), m_linkPath(std::string("")), parentBaseData(NULL)
 {
+    m_counters.assign(0);
+    m_isSets.assign(false);
     if (init.data && init.data != this)
     {
         std::cerr << "CODE ERROR: initData POINTER MISMATCH: field name \"" << init.name << "\"";
@@ -55,6 +74,7 @@ BaseData::BaseData( const BaseInitData& init)
         sofa::helper::BackTrace::dump();
         exit( 1 );
     }
+    //setAutoLink(true);
 }
 
 BaseData::~BaseData()
@@ -91,8 +111,8 @@ bool BaseData::setParent(BaseData* parent)
         if (!isCounterValid())
             update();
 
-        m_counter++;
-        m_isSet = true;
+        m_counters[currentAspect()]++;
+        m_isSets[currentAspect()] = true;
     }
     return true;
 }
@@ -233,6 +253,12 @@ bool BaseData::copyValue(const BaseData* parent)
     return false;
 }
 
+void BaseData::copyAspect(int destAspect, int srcAspect)
+{
+    m_counters[destAspect] = m_counters[srcAspect];
+    m_isSets[destAspect] = m_isSets[srcAspect];
+    DDGNode::copyAspect(destAspect, srcAspect);
+}
 
 std::string BaseData::decodeTypeName(const std::type_info& t)
 {

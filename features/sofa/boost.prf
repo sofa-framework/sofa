@@ -1,5 +1,12 @@
 contains(DEFINES, SOFA_HAVE_BOOST){
-  LIBS *= -lboost_thread$$BOOST_SUFFIX -lboost_system$$BOOST_SUFFIX
+  !isEmpty(BOOST_ROOT) {
+    INCLUDEPATH *= $$BOOST_ROOT
+    LIBS *= -L$$BOOST_ROOT\stage\lib
+  }
+  win32 {
+    BOOST_PREFIX = lib
+  }
+  LIBS *= -l$${BOOST_PREFIX}boost_thread$$BOOST_SUFFIX -l$${BOOST_PREFIX}boost_system$$BOOST_SUFFIX
 } else {
   # use miniBoost headers included in extlibs
   INCLUDEPATH *= $$SOFA_INSTALL_INC_DIR/extlibs/miniBoost

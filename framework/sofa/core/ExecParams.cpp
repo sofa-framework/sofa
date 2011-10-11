@@ -24,76 +24,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "TimeoutWatchdog.h"
+#include <sofa/core/ExecParams.h>
+#include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <iostream>
 
 namespace sofa
 {
-namespace helper
+
+namespace core
 {
-namespace system
-{
-namespace thread
-{
-/**
- * Default constructor.
- */
-TimeoutWatchdog::TimeoutWatchdog()
-    : timeout_sec(0)
+
+sofa::helper::system::atomic<int> ExecParams::g_nbThreads = 0;
+
+ExecParams::ExecParamsThreadStorage::ExecParamsThreadStorage(int tid)
+    : execMode(EXEC_DEFAULT)
+    , threadID(tid)
+    , aspectID(0)
 {
 }
 
-/**
- * Destructor: interrupts the watchdog and cleans-up.
- */
-TimeoutWatchdog::~TimeoutWatchdog()
+/// Get the default ExecParams, to be used to provide a default values for method parameters
+ExecParams* ExecParams::defaultInstance()
 {
-    if(timeout_sec > 0)
+    SOFA_THREAD_SPECIFIC_PTR(ExecParams, threadParams);
+    ExecParams* ptr = threadParams;
+    if (!ptr)
     {
-        //std::cout << "Waiting for watchdog thread" << std::endl;
-        watchdogThread.interrupt();
-        watchdogThread.join();
-        //std::cout << "Watchdog thread closed" << std::endl;
+        ptr = new ExecParams(new ExecParamsThreadStorage(g_nbThreads.exchange_and_add(1)));
+        threadParams = ptr;
+        std::cout << "[THREAD " << ptr->threadID() << "]: local ExecParams storage created." << std::endl;
     }
+    return ptr;
 }
 
-/**
- * Starts a thread that will terminate the program after the specified duration elapses.
- */
-void TimeoutWatchdog::start(unsigned timeout_sec)
+ExecParams::ExecParamsThreadStorage* ExecParams::threadStorage()
 {
-    this->timeout_sec = timeout_sec;
-    if(timeout_sec > 0)
-    {
-        boost::thread newThread(boost::bind(&TimeoutWatchdog::threadProc, this));
-        watchdogThread.swap(newThread);
-    }
+    return defaultInstance()->storage;
 }
 
-/**
- * The thread "main" procedure: waits until the program lifespan has elapsed.
- */
-void TimeoutWatchdog::threadProc()
-{
-    //std::cout << "Entering watchdog thread" << std::endl;
+} // namespace core
 
-    // sleep method is interruptible, when calling interrupt() from another thread
-    // this thread should end inside the sleep method.
-    boost::thread::sleep(boost::get_system_time() + boost::posix_time::seconds(timeout_sec));
-
-    if(!boost::this_thread::interruption_requested())
-    {
-        std::cerr << "The program has been running for more than "
-                << timeout_sec <<
-                " seconds. It is going to shut down now." << std::endl;
-        exit(-1);
-    }
-}
-
-}
-}
-}
-}
-
-
+} // namespace sofa

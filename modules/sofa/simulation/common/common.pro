@@ -28,6 +28,7 @@ HEADERS += common.h \
            CollisionEndEvent.h \
            CollisionVisitor.h \  
            Colors.h \
+           CopyAspectVisitor.h \
            DeactivatedNodeVisitor.h \
            DefaultAnimationLoop.h \
            DefaultVisualManagerLoop.h \
@@ -49,6 +50,7 @@ HEADERS += common.h \
            PositionEvent.h\
            PrintVisitor.h \
            PropagateEventVisitor.h \
+           ReleaseAspectVisitor.h \
            ResetVisitor.h \
            Simulation.h \
            SolveVisitor.h \
@@ -88,6 +90,7 @@ SOURCES += Node.cpp \
            CleanupVisitor.cpp \
            CollisionAnimationLoop.cpp \
            CollisionVisitor.cpp \
+           CopyAspectVisitor.cpp \
            DeactivatedNodeVisitor.cpp \
            DefaultAnimationLoop.cpp \
            DefaultVisualManagerLoop.cpp \
@@ -107,6 +110,7 @@ SOURCES += Node.cpp \
            PositionEvent.cpp\
            PrintVisitor.cpp \
            PropagateEventVisitor.cpp \
+           ReleaseAspectVisitor.cpp \
            ResetVisitor.cpp \
            Simulation.cpp \  
            SolveVisitor.cpp \

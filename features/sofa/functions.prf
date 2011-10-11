@@ -304,11 +304,11 @@ defineTest(requireSofaLib) {
 		#message(Using shipped version of Sofa library: $$name)
 		INCLUDEPATH *= $$ROOT_SRC_DIR/$$sourcedir
 		DEPENDPATH *= $$ROOT_SRC_DIR/$$sourcedir
-		#message($$INCLUDEPATH)
 		LIBS *= -L$$LIB_DESTDIR
 	} else {
 		#message(Using installed version of Sofa library: $$name)
 		INCLUDEPATH *= $$SOFA_INSTALL_INC_DIR/$$sourcedir
+		DEPENDPATH *= $$SOFA_INSTALL_INC_DIR/$$sourcedir
 		LIBS *= -L$$SOFA_INSTALL_LIB_DIR
 	}
 	LIBS *= -l$$name$$LIBSUFFIX

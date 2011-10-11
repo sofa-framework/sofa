@@ -528,7 +528,7 @@ template<class T>
 struct DataTypeInfo< sofa::defaulttype::ExtVector<T> > : public VectorTypeInfo<sofa::defaulttype::ExtVector<T> >
 {
     // Remove copy-on-write behavior which is normally activated for vectors
-    enum { CopyOnWrite     = 0 };
+//    enum { CopyOnWrite     = 0 };
 
     static std::string name() { std::ostringstream o; o << "ExtVector<" << DataTypeName<T>::name() << ">"; return o.str(); }
 };
@@ -537,7 +537,7 @@ template<class T>
 struct DataTypeInfo< sofa::defaulttype::ResizableExtVector<T> > : public VectorTypeInfo<sofa::defaulttype::ResizableExtVector<T> >
 {
     // Remove copy-on-write behavior which is normally activated for vectors
-    enum { CopyOnWrite     = 0 };
+//    enum { CopyOnWrite     = 0 };
 
     static std::string name() { std::ostringstream o; o << "ResizableExtVector<" << DataTypeName<T>::name() << ">"; return o.str(); }
 };

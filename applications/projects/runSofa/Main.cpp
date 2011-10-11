@@ -88,6 +88,7 @@ int main(int argc, char** argv)
 
     sofa::helper::BackTrace::autodump();
 
+    sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 
     std::string fileName ;
     bool        startAnim = false;

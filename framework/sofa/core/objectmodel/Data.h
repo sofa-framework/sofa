@@ -217,7 +217,9 @@ public:
     {
         data = value;
     }
-
+    void release()
+    {
+    }
 //    T& value() { return data; }
 };
 
@@ -309,7 +311,7 @@ template < class T = void* >
 class Data : public TData<T>
 {
 public:
-
+    using DDGNode::currentAspect;
     /// @name Construction / destruction
     /// @{
 
@@ -338,9 +340,10 @@ public:
      */
     explicit Data(const InitData& init)
         : TData<T>(init)
-        , m_value(init.value)
+        , m_values()
         , shared(NULL)
     {
+        m_values[currentAspect()] = ValueType(init.value);
     }
 
     /** Constructor
@@ -348,10 +351,11 @@ public:
      */
     Data( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
         : TData<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
-        , m_value(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
+        , m_values()
         , shared(NULL)
     {
-
+        ValueType val;
+        m_values.assign(val);
     }
 
     /** Constructor
@@ -360,9 +364,10 @@ public:
      */
     Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
         : TData<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
-        , m_value(value)
+        , m_values()
         , shared(NULL)
     {
+        m_values[currentAspect()] = ValueType(value);
     }
 
     virtual ~Data()
@@ -373,57 +378,49 @@ public:
     /// @name Simple edition and retrieval API
     /// @{
 
-    inline T* beginEdit()
+    inline T* beginEdit(const core::ExecParams* params = 0)
     {
+        size_t aspect = currentAspect(params);
         this->updateIfDirty();
-        ++this->m_counter;
-        this->m_isSet = true;
-        BaseData::setDirtyOutputs();
-        return m_value.beginEdit();
+        ++this->m_counters[aspect];
+        this->m_isSets[aspect] = true;
+        BaseData::setDirtyOutputs(params);
+        return m_values[aspect].beginEdit();
     }
 
-    inline void endEdit()
+    inline void endEdit(const core::ExecParams* params = 0)
     {
-        m_value.endEdit();
+        m_values[currentAspect(params)].endEdit();
     }
 
-    inline void setValue(const T& value )
+    inline void setValue(const T& value)
     {
-        *beginEdit()=value;
+        *beginEdit() = value;
         endEdit();
     }
 
-    inline const T& getValue() const
+    inline void setValue(const core::ExecParams* params, const T& value)
+    {
+        *beginEdit(params) = value;
+        endEdit(params);
+    }
+
+    inline const T& getValue(const core::ExecParams* params = 0) const
     {
         this->updateIfDirty();
-        return m_value.getValue();
+        return m_values[currentAspect(params)].getValue();
     }
 
-    /// @}
-
-    /// @name Optimized edition and retrieval API (for multi-threading performances)
-    /// @{
-
-    inline T* beginEdit(const core::ExecParams* /*params*/)
+    void copyAspect(int destAspect, int srcAspect)
     {
-        return beginEdit();
+        m_values[destAspect] = m_values[srcAspect];
+        BaseData::copyAspect(destAspect, srcAspect);
     }
 
-    inline void endEdit(const core::ExecParams* /*params*/)
+    void releaseAspect(int aspect)
     {
-        endEdit();
+        m_values[aspect].release();
     }
-
-    inline void setValue(const core::ExecParams* /*params*/, const T& value)
-    {
-        setValue(value);
-    }
-
-    inline const T& getValue(const core::ExecParams* /*params*/) const
-    {
-        return getValue();
-    }
-
     /// @}
 
     /// @name Virtual edition and retrieval API (for generic TData parent API, deprecated)
@@ -436,7 +433,7 @@ public:
     {
         const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
         if (d)
-            this->m_value = d->m_value;
+            this->m_values[currentAspect()] = d->m_values[currentAspect()]; // is this ok for multi-values ?
     }
 
     virtual T* virtualBeginEdit() { return beginEdit(); }
@@ -468,11 +465,11 @@ public:
 
 protected:
 
+    typedef DataValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
+
     /// Value
-    //T m_value;
-    DataValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> m_value;
-    //DataValue<T, false> m_value;
-    //DataValue<T, true> m_value;
+    helper::fixed_array<ValueType, SOFA_DATA_MAX_ASPECTS> m_values;
+
 public:
     mutable void* shared;
 

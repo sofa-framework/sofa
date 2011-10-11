@@ -7,8 +7,6 @@ TARGET = sofahelper
 # INCLUDEPATH += /usr/include/libxml2
 DEFINES += SOFA_BUILD_HELPER
 
-# Cross-dependecy to defaulttype is forbidden as defaulttype depends on helper...
-# LIBS += -lsofadefaulttype$$LIBSUFFIX
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$ROOT_SRC_DIR/modules
 INCLUDEPATH -= $$ROOT_SRC_DIR/applications
@@ -72,9 +70,12 @@ HEADERS += helper.h \
     system/glut.h \
     system/SetDirectory.h \
     system/FileRepository.h \
+    system/atomic.h \
+	system/thread/CircularQueue.h \
+	system/thread/CircularQueue.inl \
     system/thread/CTime.h \
     system/thread/debug.h \
-    system/thread/TimeoutWatchdog.h \
+    system/thread/thread_specific_ptr.h \
     system/PipeProcess.h \
     system/SofaOStream.h \
     system/DynamicLibrary.h \
@@ -128,7 +129,6 @@ SOURCES += ArgumentParser.cpp \
     system/FileRepository.cpp \
     system/thread/CTime.cpp \
     system/thread/debug.cpp \
-    system/thread/TimeoutWatchdog.cpp \
     system/PipeProcess.cpp \
     system/SofaOStream.cpp \
     system/DynamicLibrary.cpp \
@@ -164,6 +164,13 @@ contains(DEFINES,SOFA_HAVE_FFMPEG) { # SOFA_HAVE_FFMPEG
 
     SOURCES += \
     	gl/VideoRecorder.cpp 
+}
+contains(DEFINES, SOFA_HAVE_BOOST) {
+	HEADERS += \
+		system/thread/TimeoutWatchdog.h
+
+	SOURCES += \ 
+		system/thread/TimeoutWatchdog.cpp
 }
 
 load(sofa/post)

@@ -60,6 +60,14 @@ MeshLoader::MeshLoader() : BaseLoader()
 {
     addAlias(&tetrahedra,"tetras");
     addAlias(&hexahedra,"hexas");
+
+    flipNormals.setAutoLink(false);
+    triangulate.setAutoLink(false);
+    onlyAttachedPoints.setAutoLink(false);
+    translation.setAutoLink(false);
+    rotation.setAutoLink(false);
+    scale.setAutoLink(false);
+
     //TODO: check if necessary!
     positions.setPersistent(false);
     edges.setPersistent(false);
