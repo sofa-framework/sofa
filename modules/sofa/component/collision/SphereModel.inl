@@ -62,22 +62,16 @@ template<class DataTypes>
 TSphereModel<DataTypes>::TSphereModel()
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
-    , translation(initData(&translation,Vector3(),"translation","Translation of the spheres"))
-    , filename(initData(&filename, "fileSphere", "File .sph describing the spheres"))
     , mstate(NULL)
 {
-    addAlias(&filename,"filename");
 }
 
 template<class DataTypes>
 TSphereModel<DataTypes>::TSphereModel(core::behavior::MechanicalState<DataTypes>* _mstate )
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
-    , translation(initData(&translation,Vector3(),"translation","Translation of the spheres"))
-    , filename(initData(&filename, "fileSphere", "File .sph describing the spheres"))
     , mstate(_mstate)
 {
-    addAlias(&filename,"filename");
 }
 
 
@@ -114,29 +108,11 @@ void TSphereModel<DataTypes>::init()
         return;
     }
 
-    if (radius.getValue().empty() && !filename.getValue().empty())
-    {
-        load(filename.getFullPath().c_str());
-    }
-    else
-    {
-        const int npoints = mstate->getX()->size();
-        resize(npoints);
-    }
+    const int npoints = mstate->getX()->size();
+    resize(npoints);
 
-    applyTranslation(translation.getValue().x(),translation.getValue().y(),translation.getValue().z());
 }
 
-template<class DataTypes>
-void TSphereModel<DataTypes>::applyTranslation(const double dx, const double dy, const double dz)
-{
-    for( int index = 0; index< mstate->getSize(); ++index)
-    {
-        // Collision element iterator
-        TSphere<DataTypes> s(this, index);
-        s.translate(dx,dy,dz);
-    }
-}
 
 template<class DataTypes>
 void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
@@ -149,6 +125,8 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
     glutSolidSphere(t.r(), 32, 16);
     glPopMatrix();
 }
+
+
 template<class DataTypes>
 void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
@@ -271,77 +249,6 @@ typename TSphereModel<DataTypes>::Real TSphereModel<DataTypes>::getRadius(const 
         return defaultRadius.getValue();
 }
 
-template <class DataTypes>
-void TSphereModel<DataTypes>::setRadius(const int i, const typename TSphereModel<DataTypes>::Real _r)
-{
-    VecReal &r = *radius.beginEdit();
-
-    if ((int)r.size() <= i)
-    {
-        r.reserve(i+1);
-        while ((int)r.size() <= i)
-            r.push_back(defaultRadius.getValue());
-    }
-
-    r[i] = _r;
-    radius.endEdit();
-}
-
-template <class DataTypes>
-void TSphereModel<DataTypes>::setRadius(const typename TSphereModel<DataTypes>::Real r)
-{
-    *defaultRadius.beginEdit() = r;
-    defaultRadius.endEdit();
-
-    radius.beginEdit()->clear();
-    radius.endEdit();
-}
-
-template <class DataTypes>
-class TSphereModel<DataTypes>::Loader : public helper::io::SphereLoader
-{
-public:
-    TSphereModel<DataTypes>* dest;
-    Loader(TSphereModel<DataTypes>* dest)
-        : dest(dest) {}
-
-    void addSphere(SReal x, SReal y, SReal z, SReal r)
-    {
-        dest->addSphere(Vector3(x,y,z),r);
-    }
-};
-
-template <class DataTypes>
-bool TSphereModel<DataTypes>::load(const char* filename)
-{
-    this->resize(0);
-    std::string sphereFilename(filename);
-    if (!sofa::helper::system::DataRepository.findFile (sphereFilename))
-        serr<<"TSphere File \""<< filename <<"\" not found"<< sendl;
-
-    Loader loader(this);
-    return loader.load(filename);
-}
-
-template <class DataTypes>
-int TSphereModel<DataTypes>::addSphere(const Vector3& pos, Real r)
-{
-    int i = size;
-    resize(i+1);
-    if((int) mstate->getX()->size() != i+1)
-        mstate->resize(i+1);
-
-    setSphere(i, pos, r);
-    return i;
-}
-
-template <class DataTypes>
-void TSphereModel<DataTypes>::setSphere(int i, const Vector3& pos, Real r)
-{
-    helper::WriteAccessor<Data<VecCoord> > xData = *mstate->write(core::VecCoordId::position());
-    xData.wref()[i] = pos;
-    setRadius(i,r);
-}
 
 } // namespace collision
 

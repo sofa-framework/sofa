@@ -1,5 +1,5 @@
 <Node name="root" dt="0.02">
-    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showCollision" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse name="Response" response="default" />
@@ -16,12 +16,17 @@
             <SurfaceIdentityMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
-            <MechanicalObject />
-            <Sphere filename="mesh/smCube27b.sph" />
+	    <VisualStyle displayFlags="hideCollision" />
+	    <SphereLoader filename="mesh/smCube27b.sph" />
+            <MechanicalObject position="@[-1].position" />
+            <Sphere listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
-    <MechanicalObject translation="0 -12.5 0" />
-    <Object type="Sphere" name="Floor" filename="mesh/floor.sph" translation="@[-1].translation" simulated="0" moving="0" contactStiffness="1000" />
-    <Object type="OglModel" name="FloorV" fileMesh="mesh/floor2.obj" texturename="textures/floor2.bmp" translation="@[-1].translation" />
+    <SphereLoader filename="mesh/floor.sph" />
+    <MechanicalObject position="@[-1].position" translation="0 -12.5 0" />
+    <Object type="Sphere" name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" contactStiffness="1000" />
+    <Node>
+	<Object type="OglModel" name="FloorV" fileMesh="mesh/floor2.obj" texturename="textures/floor2.bmp" translation="0 -12.5 0" />
+    </Node>
 </Node>

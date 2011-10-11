@@ -26,8 +26,9 @@
 		</Node>
 
 		<Node name="Surf">
-			<MechanicalObject  />
-			<Sphere name="CollisionModel" filename="mesh/liver.sph" />
+			<SphereLoader filename="mesh/liver.sph" />
+			<MechanicalObject position="@[-1].position"   />
+			<Sphere name="CollisionModel" listRadius="@[-2].listRadius" />
 			<BarycentricMapping name="sphere mapping"  />
 		</Node>
 	</Node>

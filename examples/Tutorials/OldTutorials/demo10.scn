@@ -20,8 +20,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<MechanicalObject dx="0" dy="-10.5" dz="0"/>
-			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
+		        <SphereLoader filename="mesh/smCube27b.sph" />
+			<MechanicalObject translation="0 -10.5 0" position="@[-1].position" />
+			<Object type="Sphere" listRadius="@[-2].listRadius"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -42,8 +43,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<MechanicalObject dx="0" dy="0" dz="0"/>
-			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
+			<SphereLoader filename="mesh/smCube27b.sph" />
+			<MechanicalObject position="@[-1].position" />
+			<Object type="Sphere" listRadius="@[-2].listRadius" />
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -64,8 +66,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<MechanicalObject dx="0" dy="10.5" dz="-4"/>
-			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
+			<SphereLoader filename="mesh/smCube27b.sph" />
+			<MechanicalObject position="@[-1].position" dx="0" dy="10.5" dz="-4"/>
+			<Object type="Sphere" listRadius="@[-2].listRadius"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -86,8 +89,9 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<MechanicalObject dx="0" dy="21" dz="0"/>
-			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
+		        <SphereLoader filename="mesh/smCube27b.sph" />
+			<MechanicalObject position="@[-1].position" translation="0 21 0"/>
+			<Object type="Sphere" listRadius="@[-2].listRadius" />
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -109,13 +113,17 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<MechanicalObject/>
-			<Object type="Sphere" filename="mesh/smCube27b.sph" />
+			<SphereLoader filename="mesh/smCube27b.sph" />
+			<MechanicalObject position="@[-1].position" />
+			<Object type="Sphere" listRadius="@[-2].position" />
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
 	-->
-	<MechanicalObject  dy="-20"/>
-	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" />
-	<Object type="OglModel" name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" dy="-20" />
+	<SphereLoader filename="mesh/floor.sph" />
+	<MechanicalObject  position="@[-1].position" dy="-20"/>
+	<Object type="Sphere" name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" />
+	<Node>
+	  <Object type="OglModel" name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" dy="-20" />
+	</Node>
 </Node>

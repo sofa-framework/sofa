@@ -32,9 +32,10 @@
             <BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
-            <MechanicalObject template="Vec3d" name="default3" useMask="1" position="0 0 0" velocity="0 0 0" force="0 0 0" externalForce="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" />
-            <TSphereModel template="Vec3d" name="CollisionModel" fileSphere="mesh/liver.sph" />
-            <BarycentricMapping template="Mapping&lt;Vec3d,Vec3d&gt;" name="sphere mapping" input="@.." output="@." />
+	    <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject  position="@[-1].position" />
+            <TSphereModel  listRadius="@[-2].listRadius" />
+            <BarycentricMapping  input="@.." output="@." />
         </Node>
     </Node>
 </Node>

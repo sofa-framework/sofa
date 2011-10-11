@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
+    <VisualStyle displayFlags="showBehavior" />
     <Node name="Liver" gravity="0 -9.81 0" depend="topo dofs">
         <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
@@ -14,8 +15,9 @@
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
             <VisualStyle displayFlags="hideBehavior showCollision showWireframe" />
-            <MechanicalObject name="spheres" />
-            <TSphereModel name="CollisionModel" fileSphere="mesh/liver.sph" />
+	    <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject position="@[-1].position" />
+            <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
         </Node>
     </Node>

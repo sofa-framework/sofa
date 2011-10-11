@@ -6,7 +6,7 @@
 		<Object type="EulerImplicit" />
 		<Object type="CGLinearSolver" iterations="10"/>
 		<Node name="M1">
-			<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dz="-21.0"/>
+			<Object type="MechanicalyesObject" filename="BehaviorModels/smCube27.xs3" dz="-21.0"/>
 			<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="FixedConstraint" indices="0 3 6 9 12 15 18 21 24"/>
@@ -17,8 +17,9 @@
 			<Object type="MeshLoader" filename="mesh/smCube27.mesh" name="loader"/>
 			<Object type="Mesh" src="@loader"  />
 			<Node name="Surf">
-				<MechanicalObject dz="-21.0"/>
-				<Object type="Sphere" filename="mesh/smCube27b.sph"/>
+				<SphereLoader filename="mesh/smCube27b.sph" />
+				<MechanicalObject position="@[-1].position" translation="0 0 -21.0"/>
+				<Object type="Sphere" listRadius="@[-2].listRadius"/>
 				<Object type="BarycentricMapping" />
 			</Node>
 		</Node>

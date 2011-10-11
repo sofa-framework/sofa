@@ -30,9 +30,10 @@
 		<Node 	name="Surf" 
 			gravity="0 -9.81 0" 
 			 >
-			<MechanicalObject template="Vec3d" name="default0"/>
-			<SphereModel name="CollisionModel" fileSphere="mesh/liver.sph"/>
-			<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="sphere mapping"/>
+		        <SphereLoader filename="mesh/liver.sph" />
+			<MechanicalObject position="@[-1].position" />
+			<SphereModel listRadius="@[-1].listRadius" />
+			<BarycentricMapping  name="sphere mapping"/>
 		</Node>
 	</Node>
 </Node>

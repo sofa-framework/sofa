@@ -74,7 +74,7 @@ MeshLoader::MeshLoader() : BaseLoader()
 
 void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-    BaseLoader::parse(arg);
+    objectmodel::BaseObject::parse(arg);
 
     if (arg->getAttribute("scale"))
     {
@@ -112,46 +112,7 @@ void MeshLoader::reinit()
 
 bool MeshLoader::canLoad()
 {
-    std::string cmd;
-
-    // -- Check filename field:
-    if(m_filename.getValue() == "")
-    {
-        serr << "Error: MeshLoader: No file name given." << sendl;
-        return false;
-    }
-
-
-    // -- Check if file exist:
-    const char* filename = m_filename.getFullPath().c_str();
-    std::string sfilename (filename);
-
-    if (!sofa::helper::system::DataRepository.findFile(sfilename))
-    {
-        serr << "Error: MeshLoader: File '" << m_filename << "' not found. " << sendl;
-        return false;
-    }
-
-    std::ifstream file(filename);
-
-    // -- Check if file is readable:
-    if (!file.good())
-    {
-        serr << "Error: MeshLoader: Cannot read file '" << m_filename << "'." << sendl;
-        return false;
-    }
-
-    // -- Step 2.2: Check first line.
-    file >> cmd;
-    if (cmd.empty())
-    {
-        serr << "Error: MeshLoader: Cannot read first line in file '" << m_filename << "'." << sendl;
-        file.close();
-        return false;
-    }
-
-    file.close();
-    return true;
+    return BaseLoader::canLoad();
 }
 
 void MeshLoader::updateMesh()
