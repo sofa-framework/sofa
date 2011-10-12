@@ -29,7 +29,7 @@
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS3" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" drawing="1" />
-                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping13" input="@../MS1" output="@MS3" />
+                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping13"  mapMatrices="true"  input="@../MS1" output="@MS3" />
             </Node>
             <Node name="VisuA">
                 <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
@@ -52,7 +52,7 @@
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS4" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" drawing="1" />
-                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping24" input="@../MS2" output="@MS4" />
+                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping24"  mapMatrices="true" input="@../MS2" output="@MS4" />
             </Node>
             <Node name="VisuA">
                 <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
@@ -61,7 +61,7 @@
         </Node>
         <StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="HexahedraA/MappedTetrahedronA" object2="HexahedraB/MappedTetrahedronB" />
     </Node>
-    <!-- uncomment to see the comparison between direct solver (contribution of interaction & mapping to the global matrix) and the iterative solver-->
+    <!-- uncomment to see the comparison between direct solver (contribution of interaction & mapping to the global matrix) and the iterative solver
     <Node name="IterativeSolverNode">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver name="cg_solver" iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -114,4 +114,5 @@
         <StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="HexahedraA/MappedTetrahedronA" object2="HexahedraB/MappedTetrahedronB" />
     </Node>
     <EvalPointsDistance name="comparator" object1="@DirectSolverNode/HexahedraA/MS1" object2="@IterativeSolverNode/HexahedraA/MS1" printLog="1" draw="1" />
+-->
 </Node>

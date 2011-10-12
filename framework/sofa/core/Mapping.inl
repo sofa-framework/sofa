@@ -122,6 +122,31 @@ void Mapping<In,Out>::init()
         apply(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecCoordId::restPosition(), ConstVecCoordId::restPosition());
 }
 
+template <class In, class Out>
+sofa::defaulttype::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2)
+{
+    sofa::defaulttype::BaseMatrix* result;
+    if( !this->areMatricesMapped() )
+    {
+        sout << "Mapping::createMappedMatrix() this mapping do not support matrices building. Set mapMatrices to true" << getClassName() << sendl;
+        return NULL;
+    }
+    else if (state1 != state2)
+    {
+        result = (*m_createMappedInterationMatrix)(state1,state2);
+    }
+    else
+    {
+        result = (*m_createMappedMatrix)(state1);
+    }
+
+    return result;
+
+}
+
+
+
+
 #ifdef SOFA_SMP
 template<class T>
 struct ParallelMappingApply

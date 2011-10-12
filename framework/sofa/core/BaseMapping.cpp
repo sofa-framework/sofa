@@ -133,7 +133,7 @@ void BaseMapping::setCreateMappedInteractionMatrixFunc(func_createMappedInterati
     m_createMappedInterationMatrix = _func;
 }
 
-sofa::defaulttype::BaseMatrix* BaseMapping::createMappedMatrix(behavior::BaseMechanicalState* /*state1*/, behavior::BaseMechanicalState* /*state2*/)
+sofa::defaulttype::BaseMatrix* BaseMapping::createMappedMatrix(const behavior::BaseMechanicalState* /*state1*/, const behavior::BaseMechanicalState* /*state2*/)
 {
     serr << "BaseMapping::createMappedMatrix() NOT IMPLEMENTED BY " << getClassName() << sendl;
     return NULL;
