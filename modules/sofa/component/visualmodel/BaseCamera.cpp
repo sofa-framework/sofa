@@ -21,7 +21,7 @@ BaseCamera::BaseCamera()
     ,p_orientation(initData(&p_orientation, "orientation", "Camera's orientation"))
     ,p_lookAt(initData(&p_lookAt, "lookAt", "Camera's look at"))
     ,p_distance(initData(&p_distance, "distance", "Distance between camera and look at"))
-    ,p_fieldOfView(initData(&p_fieldOfView, (double) 45.0 , "fieldOfView", "Camera's FOV"))
+    ,p_fieldOfView(initData(&p_fieldOfView, (double) (45.0) , "fieldOfView", "Camera's FOV"))
     ,p_zNear(initData(&p_zNear, (double) 0.0 , "zNear", "Camera's zNear (value <= 0.0 == computed from bounding box)"))
     ,p_zFar(initData(&p_zFar, (double) 0.0 , "zFar", "Camera's zFar (value <= 0.0 == computed from bounding box)"))
     ,p_minBBox(initData(&p_minBBox, Vec3(0.0,0.0,0.0) , "minBBox", "minBBox"))
@@ -361,8 +361,10 @@ void BaseCamera::fitSphere(const Vec3 &center, SReal radius)
 {
 
     SReal distance = 0.0;
-    const SReal yview = radius / sin(getFieldOfView()/2.0);
-    const SReal xview = radius / sin(getHorizontalFieldOfView()/2.0);
+    SReal fov_radian = getFieldOfView() * (M_PI/180);
+    SReal hor_fov_radian = getHorizontalFieldOfView() * (M_PI/180);
+    const SReal yview = radius / sin(fov_radian/2.0);
+    const SReal xview = radius / sin(hor_fov_radian/2.0);
     distance = std::max(xview,yview);
     const Quat& orientation = p_orientation.getValue();
     Vec3 viewDirection = orientation.rotate(Vec3(0.0, 0.0, -1.0));
