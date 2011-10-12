@@ -25,6 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_H
 
+#include <sofa/component/component.h>
+
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <iostream>
@@ -39,7 +41,7 @@ namespace constraintset
 {
 
 template<class DataTypes>
-class SlidingConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
+class SOFA_ADVANCED_CONSTRAINT_API SlidingConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(SlidingConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionConstraint,DataTypes));

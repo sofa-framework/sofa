@@ -274,12 +274,12 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(std::
 SOFA_DECL_CLASS(BilateralInteractionConstraint)
 
 int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralInteractionConstraint")
-#ifndef SOFA_FLOAT
-        .add< BilateralInteractionConstraint<Vec3dTypes> >()
+#ifdef SOFA_DOUBLE
+        .add< BilateralInteractionConstraint<Vec3dTypes> >(true)
         .add< BilateralInteractionConstraint<Rigid3dTypes> >()
 #endif
-#ifndef SOFA_DOUBLE
-        .add< BilateralInteractionConstraint<Vec3fTypes> >()
+#ifdef SOFA_FLOAT
+        .add< BilateralInteractionConstraint<Vec3fTypes> >(true)
         .add< BilateralInteractionConstraint<Rigid3fTypes> >()
 #endif
         ;
