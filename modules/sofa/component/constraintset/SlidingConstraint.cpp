@@ -43,11 +43,10 @@ using namespace sofa::helper;
 SOFA_DECL_CLASS(SlidingConstraint)
 
 int SlidingConstraintClass = core::RegisterObject("TODO-SlidingConstraint")
-#ifndef SOFA_FLOAT
-        .add< SlidingConstraint<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SlidingConstraint<Vec3fTypes> >()
+#ifdef SOFA_FLOAT
+        .add< SlidingConstraint<Vec3fTypes> >(true)
+#else
+        .add< SlidingConstraint<Vec3dTypes> >(true)
 #endif
         ;
 
