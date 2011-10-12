@@ -5,7 +5,7 @@
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
     <Node name="frog with several stiffnesses">
-        <SparseGridMultiple n="9 9 7" fileTopologies="mesh/frog_body.obj mesh/frog_eyes.obj mesh/frog_eyebrows.obj mesh/frog_lips.obj" stiffnessCoefs="10 100 100 .2" massCoefs="1 1 1 1" nbVirtualFinerLevels="1" />
+        <SparseGridMultiple n="9 9 7" fileTopology="mesh/frog_body.obj" fileTopologies="mesh/frog_body.obj mesh/frog_eyes.obj mesh/frog_eyebrows.obj mesh/frog_lips.obj" stiffnessCoefs="10 100 100 .2" massCoefs="1 1 1 1" nbVirtualFinerLevels="1" />
         <!-- body=soft, lips=very soft, eyes=very stiff-->
         <!-- the order is important: included elements must appear after (lips is included in boby so it appears after)-->
         <EulerImplicit />
