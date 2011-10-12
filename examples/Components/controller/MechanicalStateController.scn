@@ -1,20 +1,21 @@
+<!-- MechanicalStateController example -->
 <Node name="root" dt="0.005" gravity="0 -10 0">
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
-    <Object type="CollisionPipeline" depth="6" verbose="0" draw="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="LocalMinDistance" name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
-    <Object type="CollisionResponse" name="Response" response="default" />
-    <Object type="CollisionGroup" name="Group" />
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <LocalMinDistance name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
+    <CollisionResponse name="Response" response="default" />
+    <CollisionGroup name="Group" />
     <Node name="InstrumentEdgeSet">
-        <Object type="EulerImplicit" rayleighStiffness="0" printLog="false" />
-        <Object type="BTDLinearSolver" template="NewMatBand" bandWidth="11" printLog="false" verbose="false" />
-        <Object type="MeshLoader" name="loader" filename="mesh/edgeSet.msh" />
-        <Object type="MechanicalObject" src="@loader" name="MechanicalDOFs" template="Rigid" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1" />
+        <EulerImplicit rayleighStiffness="0" printLog="false" />
+        <BTDLinearSolver template="NewMatBand" bandWidth="11" printLog="false" verbose="false" />
+        <MeshGmshLoader name="loader" filename="mesh/edgeSet.msh" />
+        <MechanicalObject src="@loader" name="MechanicalDOFs" template="Rigid" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1" />
         <include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid" />
-        <Object type="MechanicalStateController" template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true" />
-        <Object type="EdgeSetController" template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" />
-        <Object type="FixedConstraint" name="FixedConstraint" indices="0" />
-        <Object type="UniformMass" mass="1 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 0.01 0   0 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 0    0.1 0 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 0    0   0.1" printLog="false" />
-        <Object type="BeamFEMForceField" name="FEM" radius="0.1" youngModulus="50000000" />
+        <MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true" />
+        <EdgeSetController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" />
+        <FixedConstraint name="FixedConstraint" indices="0" />
+        <UniformMass mass="1 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 0.01 0   0 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 0    0.1 0 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 0    0   0.1" printLog="false" />
+        <BeamFEMForceField name="FEM" radius="0.1" youngModulus="50000000" />
     </Node>
 </Node>
