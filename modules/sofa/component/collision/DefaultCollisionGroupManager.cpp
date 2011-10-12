@@ -250,16 +250,16 @@ simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::Collisi
         if (*it == node)
         {
             //std::cout << "Group of CM " << model->getName() << " is " << (*it)->getName() << " child of " << solvernode->getName() << std::endl;
-            return *it;
+            return it->get();
         }
     // Then check if it is a child of one of the child nodes of the solver node
     for (simulation::Node::ChildIterator it = solvernode->child.begin(), itend = solvernode->child.end(); it != itend; ++it)
-        if (node->hasParent(*it))
-            return *it;
+        if (node->hasParent(it->get()))
+            return it->get();
     // Then check if it is a grand-childs of one of the child nodes of the solver node
     for (simulation::Node::ChildIterator it = solvernode->child.begin(), itend = solvernode->child.end(); it != itend; ++it)
-        if (node->getContext()->hasAncestor(*it))
-            return *it;
+        if (node->getContext()->hasAncestor(it->get()))
+            return it->get();
     // group not found, simply return the solver node
     return solvernode;
 }

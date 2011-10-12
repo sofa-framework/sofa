@@ -43,7 +43,7 @@ Visitor::Result ResetVisitor::processNodeTopDown(simulation::Node* node)
 {
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        this->processObject(*it);
+        this->processObject(it->get());
     }
 
     node->clearWarnings(); node->clearOutputs();
@@ -63,7 +63,7 @@ Visitor::Result StoreResetStateVisitor::processNodeTopDown(simulation::Node* nod
 {
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        this->processObject(*it);
+        this->processObject(it->get());
     }
     return RESULT_CONTINUE;
 }

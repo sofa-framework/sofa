@@ -39,13 +39,13 @@ void DeleteVisitor::processNodeBottomUp(Node* node)
 {
     while (!node->child.empty())
     {
-        Node* child = *node->child.begin();
+        Node* child = node->child.begin()->get();
         node->removeChild((Node*)child);
         delete child;
     }
     while (!node->object.empty())
     {
-        core::objectmodel::BaseObject* object = *node->object.begin();
+        core::objectmodel::BaseObject* object = node->object.begin()->get();
         node->removeObject(object);
         if (object != (core::objectmodel::BaseObject*)getSimulation())
         {

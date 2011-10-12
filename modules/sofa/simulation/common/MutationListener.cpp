@@ -41,17 +41,17 @@ void MutationListener::addChild(Node* /*parent*/, Node* child)
 {
     child->addListener(this);
     for(Node::ObjectIterator it = child->object.begin(); it != child->object.end(); ++it)
-        addObject(child, *it);
+        addObject(child, it->get());
     for(Node::ChildIterator it = child->child.begin(); it != child->child.end(); ++it)
-        addChild(child, *it);
+        addChild(child, it->get());
 }
 
 void MutationListener::removeChild(Node* /*parent*/, Node* child)
 {
     for(Node::ObjectIterator it = child->object.begin(); it != child->object.end(); ++it)
-        removeObject(child, *it);
+        removeObject(child, it->get());
     for(Node::ChildIterator it = child->child.begin(); it != child->child.end(); ++it)
-        removeChild(child, *it);
+        removeChild(child, it->get());
     child->removeListener(this);
 }
 

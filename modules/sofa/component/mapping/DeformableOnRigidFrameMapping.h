@@ -319,7 +319,7 @@ public:
 
         //If one of the parsing failed
         if(!createResult)
-            return;
+            return typename T::SPtr();
 
         sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<InRoot> >("input2", arg, stin2);
 
