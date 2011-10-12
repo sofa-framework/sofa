@@ -48,7 +48,7 @@ inline tristate merge_tristate(const tristate& previous, const tristate& current
 inline tristate difference_tristate(const tristate& previous, const tristate& current)
 {
     if( current.state == tristate::neutral_value || current.state == previous.state )
-        return tristate::neutral_value;
+        return tristate(tristate::neutral_value);
     else return current;
 }
 

@@ -67,9 +67,6 @@ void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::accFromF(const core::Mechan
 template<>
 void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
-template<>
-bool DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox);
-
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
