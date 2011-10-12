@@ -1140,7 +1140,6 @@ void MechanicalObject<DataTypes>::storeResetState()
 //
 // Integration related methods
 //
-
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reset()
 {
@@ -1162,123 +1161,6 @@ void MechanicalObject<DataTypes>::reset()
     vOp(core::ExecParams::defaultInstance(), VecId::freeVelocity(), VecId::velocity());
 }
 
-template <class DataTypes>
-void MechanicalObject<DataTypes>::writeX(std::ostream &out)
-{
-    out << *getX();
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::readX(std::istream &in)
-{
-    //in >> *getX(); //Modified to handle a modification of the number of Dofs. Problem to resolve: how to modify the containers to handle this...
-    Coord pos;
-    int i = 0;
-
-    VecCoord *xEdit = x.beginEdit();
-
-    while (in >> pos)
-    {
-        if (i >= getSize())
-            resize(i+1);
-
-        (*xEdit)[i++] = pos;
-    }
-
-    x.endEdit();
-
-    if (i < getSize())
-        resize(i);
-}
-
-template <class DataTypes>
-double MechanicalObject<DataTypes>::compareX(std::istream &in)
-{
-    std::string ref,cur;
-    getline(in, ref);
-
-    std::ostringstream out;
-    out << *getX();
-    cur = out.str();
-
-    double error=0;
-    std::istringstream compareX_ref(ref);
-    std::istringstream compareX_cur(cur);
-
-    Real value_ref, value_cur;
-    unsigned int count=0;
-    while (compareX_ref >> value_ref && compareX_cur >> value_cur )
-    {
-        // /* if ( fabs(value_ref-value_cur) != 0) */std::cout << " Eroor ! " << fabs(value_ref-value_cur) << " for " << this->getName() << "at time: " << this->getContext()->getTime() << " between " << value_ref << " && " << value_cur << "\n";
-        error += fabs(value_ref-value_cur);
-        count ++;
-    }
-    return error/count;
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::writeV(std::ostream &out)
-{
-    out << *getV();
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::readV(std::istream &in)
-{
-    Deriv vel;
-    int i = 0;
-
-    VecDeriv *vEdit = v.beginEdit();
-
-    while (in >> vel)
-    {
-        if (i >= getSize())
-            resize(i+1);
-
-        (*vEdit)[i++] = vel;
-    }
-
-    v.endEdit();
-
-    if (i < getSize())
-        resize(i);
-}
-
-template <class DataTypes>
-double MechanicalObject<DataTypes>::compareV(std::istream &in)
-{
-    std::string ref,cur;
-    getline(in, ref);
-
-    std::ostringstream out;
-    out << *getV();
-    cur = out.str();
-
-    double error=0;
-    std::istringstream compareV_ref(ref);
-    std::istringstream compareV_cur(cur);
-
-    Real value_ref, value_cur;
-    unsigned int count=0;
-    while (compareV_ref >> value_ref && compareV_cur >> value_cur )
-    {
-        error += fabs(value_ref-value_cur);
-        count ++;
-    }
-    return error/count;
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::writeF(std::ostream &out)
-{
-    out << *getF();
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::writeDx(std::ostream &out)
-{
-    out << *getDx();
-}
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::writeVec(ConstVecId v, std::ostream &out)
@@ -1389,7 +1271,9 @@ double MechanicalObject<DataTypes>::compareVec(ConstVecId v, std::istream &in)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::writeState(std::ostream& out)
 {
-    writeX(out); out << " "; writeV(out);
+    writeVec(core::VecId::position(),out);
+    out << " ";
+    writeVec(core::VecId::velocity(),out);
 }
 
 template <class DataTypes>
