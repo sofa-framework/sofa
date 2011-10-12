@@ -90,11 +90,11 @@ public:
     typedef Hexa		Hexahedron;
     typedef EdgesInHexahedron	EdgesInHexahedron;
     typedef QuadsInHexahedron	QuadsInHexahedron;
-
+protected:
     HexahedronSetTopologyContainer();
 
     virtual ~HexahedronSetTopologyContainer() {}
-
+public:
     virtual void init();
 
 

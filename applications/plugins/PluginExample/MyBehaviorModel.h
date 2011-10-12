@@ -48,9 +48,10 @@ class SOFA_MyPluginExample_API MyBehaviorModel : public sofa::core::BehaviorMode
 {
 public:
     SOFA_CLASS(MyBehaviorModel,sofa::core::BehaviorModel);
+protected:
     MyBehaviorModel();
     ~MyBehaviorModel();
-
+public:
     virtual void init();
 
     virtual void reinit();

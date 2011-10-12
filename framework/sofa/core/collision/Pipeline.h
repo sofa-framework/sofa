@@ -76,11 +76,11 @@ protected:
 
 public:
     typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
-
+protected:
     Pipeline();
 
     virtual ~Pipeline();
-
+public:
     virtual void reset()=0;
 
     /// Remove collision response from last step

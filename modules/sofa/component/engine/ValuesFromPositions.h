@@ -71,12 +71,12 @@ public:
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
 
-public:
+protected:
 
     ValuesFromPositions();
 
     ~ValuesFromPositions() {}
-
+public:
     void init();
 
     void reinit();

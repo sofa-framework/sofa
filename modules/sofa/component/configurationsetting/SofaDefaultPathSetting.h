@@ -42,8 +42,9 @@ class SOFA_GRAPH_COMPONENT_API SofaDefaultPathSetting: public core::objectmodel:
 {
 public:
     SOFA_CLASS(SofaDefaultPathSetting,core::objectmodel::ConfigurationSetting);
+protected:
     SofaDefaultPathSetting();
-
+public:
     sofa::core::objectmodel::Data<std::string> recordPath;
     sofa::core::objectmodel::Data<std::string> gnuplotPath;
 };

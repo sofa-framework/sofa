@@ -43,7 +43,9 @@ class MouseButtonSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
     SOFA_CLASS(MouseButtonSetting,core::objectmodel::ConfigurationSetting);
+protected:
     MouseButtonSetting();
+public:
     virtual std::string getOperationType()=0;
 
 

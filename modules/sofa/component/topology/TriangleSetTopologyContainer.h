@@ -59,11 +59,11 @@ class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyContainer : public EdgeSetTopolo
 
 public:
     SOFA_CLASS(TriangleSetTopologyContainer,EdgeSetTopologyContainer);
-
+protected:
     TriangleSetTopologyContainer();
 
     virtual ~TriangleSetTopologyContainer() {}
-
+public:
     virtual void init();
 
     virtual void reinit();

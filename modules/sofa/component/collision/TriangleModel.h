@@ -162,10 +162,10 @@ protected:
 
     TriangleLocalMinDistanceFilter *m_lmdFilter;
 
-public:
+protected:
 
     TTriangleModel();
-
+public:
     virtual void init();
 
     // -- CollisionModel interface

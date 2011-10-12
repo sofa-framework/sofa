@@ -85,14 +85,14 @@ public:
     typedef typename HexahedronFEMForceFieldAndMassT::MassT MassT;
     typedef typename HexahedronFEMForceFieldAndMassT::ElementMass ElementMass;
 
-public:
+protected:
 
     NonUniformHexahedronFEMForceFieldDensity():NonUniformHexahedronFEMForceFieldAndMass<DataTypes>()
         ,densityFile(core::objectmodel::Base::initData(&densityFile,"densityFile","RAW File containing gray scale density"))
         ,dimensionDensityFile(core::objectmodel::Base::initData(&dimensionDensityFile, "dimensionDensityFile", "dimension of the RAW file"))
     {
     }
-
+public:
     void init();
     void draw(const core::visual::VisualParams* vparams);
     // 	virtual void rein

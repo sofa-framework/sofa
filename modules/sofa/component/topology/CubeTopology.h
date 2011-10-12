@@ -43,10 +43,10 @@ class SOFA_BASE_TOPOLOGY_API CubeTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(CubeTopology,MeshTopology);
-
+protected:
     CubeTopology(int nx, int ny, int nz);
     CubeTopology();
-
+public:
     void setSize(int nx, int ny, int nz);
 
     void parse(core::objectmodel::BaseObjectDescription* arg);

@@ -51,9 +51,10 @@ public:
     typedef typename  DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename  DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef typename  DataTypes::VecCoord VecCoord;
+protected:
     MyProjectiveConstraintSet();
     ~MyProjectiveConstraintSet();
-
+public:
     void init();
 
     void reinit();

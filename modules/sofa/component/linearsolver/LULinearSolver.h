@@ -51,7 +51,7 @@ public:
     typename Matrix::LUSolver* solver;
     typename Matrix::InvMatrixType Minv;
     bool computedMinv;
-
+protected:
     LULinearSolver()
         : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
         , solver(NULL), computedMinv(false)
@@ -63,7 +63,7 @@ public:
         if (solver != NULL)
             delete solver;
     }
-
+public:
     /// Invert M
     void invert (Matrix& M)
     {

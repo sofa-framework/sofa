@@ -59,13 +59,13 @@ public:
     typedef BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
     typedef typename DataTypes::Coord Coord;
-
+protected:
     TetrahedronSetTopologyAlgorithms()
         : TriangleSetTopologyAlgorithms<DataTypes>()
     {}
 
     virtual ~TetrahedronSetTopologyAlgorithms() {}
-
+public:
     virtual void init();
 
     void removeTetra(sofa::helper::vector<TetraID>& ind_ta);

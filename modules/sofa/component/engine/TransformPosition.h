@@ -74,12 +74,12 @@ public:
         SCALE_TRANSLATION,
         SCALE_ROTATION_TRANSLATION
     } TransformationMethod;
-public:
 
+protected:
     TransformPosition();
 
     ~TransformPosition() {}
-
+public:
     void init();
 
     void reinit();

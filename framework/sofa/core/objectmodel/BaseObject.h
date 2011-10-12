@@ -81,11 +81,11 @@ class SOFA_CORE_API BaseObject : public virtual Base
 {
 public:
     SOFA_CLASS(BaseObject, Base);
-
+protected:
     BaseObject();
 
     virtual ~BaseObject();
-
+public:
     /// @name Context accessors
     /// @{
 

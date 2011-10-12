@@ -43,10 +43,10 @@ class SOFA_BASE_TOPOLOGY_API CylinderGridTopology : public GridTopology
 {
 public:
     SOFA_CLASS(CylinderGridTopology,GridTopology);
-
+protected:
     CylinderGridTopology(int nx, int ny, int nz);
     CylinderGridTopology();
-
+public:
     unsigned getIndex( int i, int j, int k ) const; ///< one-dimensional index of a grid point
     Vector3 getPoint(int i) const;
     Vector3 getPoint(int x, int y, int z) const;

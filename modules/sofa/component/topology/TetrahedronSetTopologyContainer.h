@@ -69,11 +69,11 @@ public:
     typedef Tetra			Tetrahedron;
     typedef EdgesInTetrahedron		EdgesInTetrahedron;
     typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
-
+protected:
     TetrahedronSetTopologyContainer();
 
     virtual ~TetrahedronSetTopologyContainer() {}
-
+public:
     virtual void init();
 
     //add removed tetrahedron index

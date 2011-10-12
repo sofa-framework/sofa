@@ -74,7 +74,7 @@ public:
     typedef CollisionElementIterator Iterator;
     typedef topology::BaseMeshTopology Topology;
     typedef sofa::defaulttype::Vector3::value_type Real;
-
+protected:
     /// Constructor
     CollisionModel()
         : bActive(initData(&bActive, true, "active", "flag indicating if this collision model is active and should be included in default collision detections"))
@@ -90,7 +90,7 @@ public:
         , size(0), previous(NULL), next(NULL), numberOfContacts(0)
     {
     }
-
+public:
     virtual void bwdInit()
     {
         getColor4f(); //init the color to default value

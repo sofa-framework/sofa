@@ -101,9 +101,9 @@ public:
     Data<double> f_velocityDamping;
     Data<bool> f_firstOrder;
     Data<bool> f_verbose;
-
+protected:
     EulerImplicitSolver();
-
+public:
     void init();
 
     void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);

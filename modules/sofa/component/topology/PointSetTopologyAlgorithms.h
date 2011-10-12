@@ -54,13 +54,13 @@ class PointSetTopologyAlgorithms : public core::topology::TopologyAlgorithms
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PointSetTopologyAlgorithms,DataTypes), core::topology::TopologyAlgorithms);
-
+protected:
     PointSetTopologyAlgorithms()
         : TopologyAlgorithms()
     {}
 
     virtual ~PointSetTopologyAlgorithms() {}
-
+public:
     virtual void init();
 
     template<class T>

@@ -81,11 +81,11 @@ protected:
 
     Data<Real> dmin; // coordinates min of the plane for the vertex selection
     Data<Real> dmax;// coordinates max of the plane for the vertex selection
-public:
+
     FixedPlaneConstraint();
 
     ~FixedPlaneConstraint();
-
+public:
     FixedPlaneConstraint<DataTypes>* addConstraint(int index);
 
     FixedPlaneConstraint<DataTypes>* removeConstraint(int index);

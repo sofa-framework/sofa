@@ -51,13 +51,13 @@ public:
 protected:
     /// Current collision 'pipeline' instance, allowing to store multiple internal states
     Instance instance;
-public:
+
 
     CollisionAlgorithm()
         : instance(NULL)
     {
     }
-
+public:
     /// Allow to store multiple internal states by specifying a different collision pipeline 'instance'
     virtual void setInstance(Instance inst)
     {

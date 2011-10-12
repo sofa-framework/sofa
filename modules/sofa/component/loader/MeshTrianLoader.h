@@ -50,9 +50,9 @@ class SOFA_LOADER_API MeshTrianLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(MeshTrianLoader,sofa::core::loader::MeshLoader);
-
+protected:
     MeshTrianLoader();
-
+public:
     virtual bool load();
 
     template <class T>

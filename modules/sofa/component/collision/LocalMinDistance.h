@@ -61,9 +61,9 @@ public:
     Data<bool> useLMDFilters;
 
 
-
+protected:
     LocalMinDistance();
-
+public:
     virtual void init();
 
     /// returns true if algorithm uses proximity

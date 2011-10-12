@@ -82,13 +82,13 @@ public:
     typedef typename HexahedronCompositeFEMForceFieldAndMassT::Transformation Transformation;
     typedef helper::fixed_array< InCoord, 8 > Nodes;
 
-
+protected:
     HexahedronCompositeFEMMapping ( ptrStateIn from, ptrStateOut to ): Inherit ( from, to )
     {
 // 		_method = initData(&this->_method,0,"method","0: auto, 1: coarseNodes->surface, 2: coarseNodes->finestNodes->surface");
         _alreadyInit=false;
     }
-
+public:
     virtual ~HexahedronCompositeFEMMapping() {}
 
     virtual void init();

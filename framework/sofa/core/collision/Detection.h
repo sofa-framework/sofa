@@ -53,13 +53,13 @@ protected:
     Intersection* intersectionMethod;
     /// All intersection methods
     std::map<Instance,Intersection*> storedIntersectionMethod;
-public:
+
 
     Detection()
         : intersectionMethod(NULL)
     {
     }
-
+public:
     /// virtual because subclasses might do precomputations based on intersection algorithms
     virtual void setIntersectionMethod(Intersection* v) { intersectionMethod = v;    }
     Intersection* getIntersectionMethod() const         { return intersectionMethod; }

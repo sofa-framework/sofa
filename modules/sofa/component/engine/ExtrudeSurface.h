@@ -63,12 +63,12 @@ public:
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<3,Real> Vec3;
 
-public:
+protected:
 
     ExtrudeSurface();
 
     ~ExtrudeSurface() {}
-
+public:
     void init();
 
     void reinit();

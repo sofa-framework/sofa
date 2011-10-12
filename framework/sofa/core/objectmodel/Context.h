@@ -83,11 +83,11 @@ public:
     Iterative::IterativePartition *partition_;
 #endif
 
-public:
+protected:
     Context();
     virtual ~Context()
     {}
-
+public:
 
     /// @name Parameters
     /// @{

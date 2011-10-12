@@ -70,10 +70,10 @@ public:
     helper::vector<std::string> cellsDataObject;
     helper::vector<std::string> cellsDataField;
     helper::vector<std::string> cellsDataName;
-
+protected:
     VTKExporter();
     virtual ~VTKExporter();
-
+public:
     void init();
     void cleanup();
     void bwdInit();

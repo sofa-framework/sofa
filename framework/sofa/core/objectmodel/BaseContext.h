@@ -88,10 +88,10 @@ public:
     typedef SolidTypes::Mat Mat33;
     typedef SolidTypes::SpatialVector SpatialVector;
     /// @}
-
+protected:
     BaseContext();
     virtual ~BaseContext();
-
+public:
     /// Get the default Context object, that contains the default values for
     /// all parameters and can be used when no local context is defined.
     static BaseContext* getDefault();

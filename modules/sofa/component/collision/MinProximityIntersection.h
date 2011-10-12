@@ -51,9 +51,9 @@ public:
     Data<bool> usePointPoint;
     Data<double> alarmDistance;
     Data<double> contactDistance;
-
+protected:
     MinProximityIntersection();
-
+public:
     virtual void init();
 
     /// returns true if algorithm uses proximity

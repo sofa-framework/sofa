@@ -69,10 +69,10 @@ public:
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::VecDeriv VecOutDeriv;
     typedef typename Out::MatrixDeriv MatrixOutDeriv;
-
+protected:
     MyMappingPendulumInPlane(core::State<In>* from, core::State<Out>* to );
     ~MyMappingPendulumInPlane();
-
+public:
     Data<vector<OutReal> > f_length;
 
     virtual void init();

@@ -75,7 +75,7 @@ protected:
     Data< Real > cubesStiffness;
     Data< Real > cubesDamping;
 
-public:
+
     RegularGridSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2)
         : StiffSpringForceField<DataTypes>(object1, object2),
           linesStiffness  (initData(&linesStiffness,Real(100),"linesStiffness","Lines Stiffness"))
@@ -105,7 +105,7 @@ public:
         addAlias(&quadsStiffness,    "stiffness"); addAlias(&quadsDamping,    "damping");
         addAlias(&cubesStiffness,    "stiffness"); addAlias(&cubesDamping,    "damping");
     }
-
+public:
     Real getStiffness() const { return linesStiffness.getValue(); }
     Real getLinesStiffness() const { return linesStiffness.getValue(); }
     Real getQuadsStiffness() const { return quadsStiffness.getValue(); }

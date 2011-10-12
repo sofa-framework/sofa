@@ -235,9 +235,10 @@ public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
 
     SOFA_CLASS(ConstraintAnimationLoop, sofa::simulation::CollisionAnimationLoop);
-
+protected:
     ConstraintAnimationLoop(simulation::Node* gnode);
     virtual ~ConstraintAnimationLoop();
+public:
     // virtual const char* getTypeName() const { return "AnimationLoop"; }
 
     virtual void step(const core::ExecParams* params /* PARAMS FIRST */, double dt);

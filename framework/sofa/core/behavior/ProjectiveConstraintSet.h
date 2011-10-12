@@ -75,11 +75,11 @@ public:
     typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename MatrixDeriv::RowType MatrixDerivRowType;
 #endif
-
+protected:
     ProjectiveConstraintSet(MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~ProjectiveConstraintSet();
-
+public:
     Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 

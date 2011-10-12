@@ -54,11 +54,11 @@ public:
     friend class PointSetTopologyModifier;
     typedef defaulttype::Vec3Types InitTypes;
 
-
+protected:
     PointSetTopologyContainer(int nPoints = 0);
 
     virtual ~PointSetTopologyContainer() {}
-
+public:
 
     virtual void init();
 

@@ -93,7 +93,7 @@ public:
 
     core::behavior::BaseMechanicalState *stateFrom;
     core::behavior::BaseMechanicalState *stateTo;
-
+protected:
     IdentityMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to),
           matrixJ(),
@@ -110,7 +110,7 @@ public:
     virtual ~IdentityMapping()
     {
     }
-
+public:
     /// Return true if the destination model has the same topology as the source model.
     ///
     /// This is the case for mapping keeping a one-to-one correspondance between

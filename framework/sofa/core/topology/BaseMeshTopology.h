@@ -122,8 +122,9 @@ public:
     typedef vector<TetraID>		        TetrahedraAroundTriangle;
     typedef vector<HexaID>			HexahedraAroundQuad;
     /// @}
-
+protected:
     BaseMeshTopology()	;
+public:
     virtual void init();
 
     /// Load the topology from a file.

@@ -60,12 +60,12 @@ private:
 
     CubeModel* boxModel;
 
-public:
 
+protected:
     BruteForceDetection();
 
     ~BruteForceDetection();
-
+public:
     void setDraw(bool val) { bDraw.setValue(val); }
 
     void init();

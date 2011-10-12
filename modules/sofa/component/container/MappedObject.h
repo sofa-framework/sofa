@@ -66,12 +66,12 @@ protected:
 
     MappedObjectInternalData<DataTypes> data;
 
-public:
+
 
     MappedObject();
 
     virtual ~MappedObject();
-
+public:
     virtual void init();
 
     Data<VecCoord> f_X;

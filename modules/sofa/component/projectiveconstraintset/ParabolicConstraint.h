@@ -92,13 +92,13 @@ protected:
 
 
 
-public:
+
     ParabolicConstraint();
 
     ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
 
     ~ParabolicConstraint();
-
+public:
     void addConstraint(unsigned index );
 
     void setP1(const Vec3R &p) {m_P1.setValue(p);}

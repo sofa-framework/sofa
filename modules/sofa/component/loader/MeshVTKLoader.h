@@ -404,9 +404,9 @@ public:
 
     enum VTKFileType { NONE, LEGACY, XML };
     enum VTKDatasetFormat { IMAGE_DATA, STRUCTURED_POINTS, STRUCTURED_GRID, RECTILINEAR_GRID, POLYDATA, UNSTRUCTURED_GRID };
-
+protected:
     MeshVTKLoader();
-
+public:
     virtual bool load();
 
     template <class T>

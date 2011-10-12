@@ -63,7 +63,7 @@ public:
     enum Angle {ACUTE, RIGHT, OBTUSE};
 
     Angle computeAngle(PointID ind_p0, PointID ind_p1, PointID ind_p2) const;
-
+protected:
     PointSetGeometryAlgorithms()
         : GeometryAlgorithms()
         ,showIndicesScale (core::objectmodel::Base::initData(&showIndicesScale, (float) 0.0001, "showIndicesScale", "Debug : scale for view topology indices"))
@@ -72,7 +72,7 @@ public:
     }
 
     virtual ~PointSetGeometryAlgorithms() {}
-
+public:
     virtual void init();
 
     virtual void reinit();

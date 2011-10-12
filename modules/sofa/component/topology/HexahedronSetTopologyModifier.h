@@ -56,13 +56,13 @@ class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyModifier : public QuadSetTopol
 {
 public:
     SOFA_CLASS(HexahedronSetTopologyModifier,QuadSetTopologyModifier);
-
+protected:
     HexahedronSetTopologyModifier()
         : QuadSetTopologyModifier()
     { }
 
     virtual ~HexahedronSetTopologyModifier() {}
-
+public:
     virtual void init();
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES

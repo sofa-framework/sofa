@@ -128,11 +128,11 @@ public:
     sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
     sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
-
+protected:
     VectorSpringForceField(MechanicalState* _object=NULL);
 
     VectorSpringForceField(MechanicalState* _object1, MechanicalState* _object2);
-
+public:
     bool load(const char *filename);
 
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }

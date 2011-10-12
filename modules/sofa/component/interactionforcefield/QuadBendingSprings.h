@@ -53,11 +53,11 @@ public:
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
-
+protected:
     QuadBendingSprings();
 
     ~QuadBendingSprings();
-
+public:
     /// Searches triangle topology and creates the bending springs
     virtual void init();
 

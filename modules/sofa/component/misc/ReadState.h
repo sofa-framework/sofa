@@ -72,11 +72,11 @@ protected:
     double nextTime;
     double lastTime;
     double loopTime;
-public:
+
     ReadState();
 
     virtual ~ReadState();
-
+public:
     virtual void init();
 
     virtual void reset();

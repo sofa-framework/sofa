@@ -41,9 +41,9 @@ class SOFA_LOADER_API MeshXspLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(MeshXspLoader,sofa::core::loader::MeshLoader);
-
+protected:
     MeshXspLoader();
-
+public:
     virtual bool load();
 
     template <class T>

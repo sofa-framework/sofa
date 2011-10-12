@@ -48,8 +48,9 @@ class SOFA_CONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
 
 public:
     SOFA_CLASS(LMConstraintDirectSolver, LMConstraintSolver);
+protected:
     LMConstraintDirectSolver();
-
+public:
     virtual bool buildSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
     virtual bool solveSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
 

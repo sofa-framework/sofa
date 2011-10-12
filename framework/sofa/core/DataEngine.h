@@ -50,12 +50,13 @@ class SOFA_CORE_API DataEngine : public core::objectmodel::DDGNode, public virtu
 {
 public:
     SOFA_ABSTRACT_CLASS(DataEngine, core::objectmodel::BaseObject);
+protected:
     /// Constructor
     DataEngine();
 
     /// Destructor. Do nothing
     virtual ~DataEngine();
-
+public:
     /// Add a new input to this engine
     void addInput(objectmodel::BaseData* n);
 

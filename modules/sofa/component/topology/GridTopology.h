@@ -45,11 +45,11 @@ class SOFA_BASE_TOPOLOGY_API GridTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(GridTopology,MeshTopology);
-
+protected:
     GridTopology();
     GridTopology(int nx, int ny, int nz);
     GridTopology(Vec3i nXnYnZ );
-
+public:
     /// Set grid resolution, given the number of vertices
     void setSize(int nx, int ny, int nz);
     /// set grid resolution, given the number of vertices

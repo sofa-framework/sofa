@@ -43,8 +43,9 @@ class SOFA_GRAPH_COMPONENT_API BackgroundSetting: public core::objectmodel::Conf
 {
 public:
     SOFA_CLASS(BackgroundSetting,core::objectmodel::ConfigurationSetting);
+protected:
     BackgroundSetting();
-
+public:
     Data<defaulttype::Vector3> color;
     sofa::core::objectmodel::DataFileName image;
 

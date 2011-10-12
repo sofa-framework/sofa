@@ -77,11 +77,11 @@ public:
     Data<std::string> filePrefix;
     Data<double> debugViewFrameScale;
     sofa::core::objectmodel::DataFileName f_fileCompliance;
-
+protected:
     PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~PrecomputedConstraintCorrection();
-
+public:
     virtual void bwdInit();
 
     virtual void addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W);

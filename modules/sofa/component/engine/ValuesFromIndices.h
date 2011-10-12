@@ -57,12 +57,12 @@ public:
     typedef unsigned int Index;
     typedef sofa::helper::vector<Index> VecIndex;
 
-public:
+protected:
 
     ValuesFromIndices();
 
     virtual ~ValuesFromIndices();
-
+public:
     void init();
 
     void reinit();

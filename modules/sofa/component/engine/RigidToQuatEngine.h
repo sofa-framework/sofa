@@ -33,10 +33,10 @@ public:
     typedef sofa::defaulttype::Vec<3,Real> Vec3;
     typedef sofa::helper::Quater<Real> Quat;
     typedef typename sofa::defaulttype::StdRigidTypes<3,Real>::Coord RigidVec3;
-
+protected:
     RigidToQuatEngine();
     virtual ~RigidToQuatEngine();
-
+public:
     void update();
     void init();
     void reinit();

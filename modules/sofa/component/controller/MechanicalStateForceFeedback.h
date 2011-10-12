@@ -34,9 +34,9 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
 
     simulation::Node *context;
-
+protected:
     MechanicalStateForceFeedback(void) {};
-
+public:
     virtual void init() {context = dynamic_cast<simulation::Node *>(this->getContext());};
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
     virtual void computeForce(const  VecCoord& state,  VecDeriv& forces) = 0;

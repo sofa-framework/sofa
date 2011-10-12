@@ -51,9 +51,9 @@ public:
     Data<double> alarmDistance;
     Data<double> contactDistance;
     Data<bool> useLineLine;
-
+protected:
     NewProximityIntersection();
-
+public:
     virtual void init();
 
     /// Returns true if algorithm uses proximity

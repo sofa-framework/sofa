@@ -119,12 +119,12 @@ protected:
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
-public:
+
 
     TriangularTensorMassForceField();
 
     virtual ~TriangularTensorMassForceField();
-
+public:
     virtual void init();
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);

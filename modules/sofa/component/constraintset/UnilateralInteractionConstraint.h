@@ -191,7 +191,7 @@ protected:
 public:
 
     unsigned int constraintId;
-
+protected:
     UnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherit(object1, object2)
         , epsilon(Real(0.001))
@@ -228,7 +228,7 @@ public:
             delete[] contactsStatus;
 #endif
     }
-
+public:
     void clear(int reserve = 0)
     {
         contacts.clear();

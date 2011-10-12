@@ -49,13 +49,13 @@ class SOFA_BASE_TOPOLOGY_API PointSetTopologyModifier : public core::topology::T
 {
 public:
     SOFA_CLASS(PointSetTopologyModifier,core::topology::TopologyModifier);
-
+protected:
     PointSetTopologyModifier()
         : TopologyModifier()
     {}
 
     virtual ~PointSetTopologyModifier() {}
-
+public:
     virtual void init();
 
     /** \brief Swap points i1 and i2.

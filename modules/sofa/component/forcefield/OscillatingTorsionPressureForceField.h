@@ -115,7 +115,7 @@ protected:
 
 
 
-public:
+
 
     OscillatingTorsionPressureForceField():
         moment(initData(&moment, "moment", "Moment force applied on the entire surface"))
@@ -132,7 +132,7 @@ public:
     }
 
     virtual ~OscillatingTorsionPressureForceField();
-
+public:
     virtual void init();
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);

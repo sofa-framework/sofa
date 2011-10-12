@@ -66,12 +66,12 @@ public:
     typedef sofa::helper::vector <Coord3D>    VecCoord3D;
 
 
-public:
+protected:
 
     TextureInterpolation();
 
     ~TextureInterpolation() {}
-
+public:
     void init();
 
     void reinit();

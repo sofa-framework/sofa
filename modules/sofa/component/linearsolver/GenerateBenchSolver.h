@@ -60,8 +60,9 @@ public:
 
     bool newStep;
     unsigned int max_size;
-
+protected:
     GenerateBenchSolver();
+public:
     void solve (Matrix& M, Vector& x, Vector& b);
 
     void setSystemMBKMatrix(const core::MechanicalParams* mparams);

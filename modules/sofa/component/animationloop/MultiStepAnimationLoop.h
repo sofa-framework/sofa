@@ -43,11 +43,11 @@ class SOFA_BASE_ANIMATION_LOOP_API MultiStepAnimationLoop : public sofa::simulat
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
     SOFA_CLASS(MultiStepAnimationLoop, sofa::simulation::CollisionAnimationLoop);
-
+protected:
     MultiStepAnimationLoop(simulation::Node* gnode);
 
     virtual ~MultiStepAnimationLoop();
-
+public:
     virtual void step (const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt);
 
     /// Construction method called by ObjectFactory.

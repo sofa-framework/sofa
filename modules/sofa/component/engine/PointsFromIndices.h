@@ -61,12 +61,12 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
 
-public:
+protected:
 
     PointsFromIndices();
 
     ~PointsFromIndices() {}
-
+public:
     void init();
 
     void reinit();

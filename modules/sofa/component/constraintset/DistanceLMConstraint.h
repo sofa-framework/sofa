@@ -78,7 +78,7 @@ protected:
     DistanceLMConstraintInternalData<DataTypes> data;
     friend class DistanceLMConstraintInternalData<DataTypes>;
 
-public:
+
     DistanceLMConstraint( MechanicalState *dof)
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
         , vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
@@ -94,7 +94,7 @@ public:
     {}
 
     ~DistanceLMConstraint() {};
-
+public:
     void init();
     void reinit();
 

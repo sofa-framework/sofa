@@ -50,13 +50,13 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(QuadSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(EdgeSetTopologyAlgorithms,DataTypes));
 
     typedef typename DataTypes::Real Real;
-
+protected:
     QuadSetTopologyAlgorithms()
         : EdgeSetTopologyAlgorithms<DataTypes>()
     { };
 
     virtual ~QuadSetTopologyAlgorithms() {}
-
+public:
     virtual void init();
 
 private:

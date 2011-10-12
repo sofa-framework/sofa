@@ -76,7 +76,7 @@ protected:
     FixedLMConstraintInternalData<DataTypes> data;
     friend class FixedLMConstraintInternalData<DataTypes>;
 
-public:
+
     FixedLMConstraint( MechanicalState *dof)
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
@@ -89,7 +89,7 @@ public:
     {};
 
     ~FixedLMConstraint() {};
-
+public:
     void clearConstraints();
     void addConstraint(unsigned int index);
     void removeConstraint(unsigned int index);

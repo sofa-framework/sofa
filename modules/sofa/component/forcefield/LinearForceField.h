@@ -81,9 +81,9 @@ public:
 
     /// for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data< double > arrowSizeCoef;
-
+protected:
     LinearForceField();
-
+public:
     void draw(const core::visual::VisualParams* vparams);
 
     /// methods to add/remove some indices, keyTimes, keyForces

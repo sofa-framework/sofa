@@ -55,14 +55,14 @@ class SOFA_CORE_API BaseProjectiveConstraintSet : public virtual objectmodel::Ba
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseProjectiveConstraintSet, objectmodel::BaseObject);
-
+protected:
     BaseProjectiveConstraintSet()
         : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))
     {
     }
 
     virtual ~BaseProjectiveConstraintSet() {}
-
+public:
     /// Get the ID of the group containing this constraint.
     /// This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
     int getGroup() const { return group.getValue(); }

@@ -80,9 +80,9 @@ public:
     typedef Vec3Types DataTypes;
     typedef Cube Element;
     friend class Cube;
-
+protected:
     CubeModel();
-
+public:
     virtual void resize(int size);
 
     void setParentOf(int childIndex, const Vector3& min, const Vector3& max);

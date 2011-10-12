@@ -100,10 +100,10 @@ public:
     typedef typename defaulttype::Mat<8, 8, Real> Mat88;
     typedef typename defaulttype::Vec<3, int> Vec3i;
 
-public:
 
+protected:
     NonUniformHexahedralFEMForceFieldAndMass();
-
+public:
     virtual void init();
     virtual void reinit();
 

@@ -42,8 +42,9 @@ class SOFA_GRAPH_COMPONENT_API AddFrameButtonSetting: public MouseButtonSetting
 {
 public:
     SOFA_CLASS(AddFrameButtonSetting,MouseButtonSetting);
+protected:
     AddFrameButtonSetting();
-
+public:
     std::string getOperationType() {return "AddFrame";}
 };
 

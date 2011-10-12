@@ -47,9 +47,9 @@ public:
     enum FaceType { EDGE, TRIANGLE, QUAD };
 
     SOFA_CLASS(MeshObjLoader,sofa::core::loader::MeshLoader);
-
+protected:
     MeshObjLoader();
-
+public:
     virtual bool load();
 
     template <class T>

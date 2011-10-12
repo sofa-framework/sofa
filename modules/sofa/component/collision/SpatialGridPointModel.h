@@ -50,9 +50,9 @@ public:
     typedef GridContainer::Grid Grid;
 
     Data<int> d_leafScale;
-
+protected:
     SpatialGridPointModel();
-
+public:
     virtual void init();
 
     // -- CollisionModel interface

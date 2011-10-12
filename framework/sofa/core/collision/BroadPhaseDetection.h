@@ -46,10 +46,10 @@ class BroadPhaseDetection : virtual public Detection
 {
 public:
     SOFA_ABSTRACT_CLASS(BroadPhaseDetection, Detection);
-
+protected:
     /// Destructor
     virtual ~BroadPhaseDetection() { }
-
+public:
     /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginBroadPhase()
     {

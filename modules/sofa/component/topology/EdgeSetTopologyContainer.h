@@ -51,11 +51,11 @@ class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyContainer : public PointSetTopologyC
 
 public:
     SOFA_CLASS(EdgeSetTopologyContainer,PointSetTopologyContainer);
-
+protected:
     EdgeSetTopologyContainer();
 
     virtual ~EdgeSetTopologyContainer() {}
-
+public:
 
     virtual void init();
 

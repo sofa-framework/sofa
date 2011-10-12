@@ -110,9 +110,9 @@ public:
     typedef Line Element;
 
     friend class Line;
-
+protected:
     LineModel();
-
+    public;
     virtual void init();
 
     // -- CollisionModel interface

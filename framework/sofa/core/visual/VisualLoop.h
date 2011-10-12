@@ -48,10 +48,10 @@ class VisualLoop : public virtual VisualModel
 {
 public:
     SOFA_CLASS(VisualLoop, VisualModel);
-
+protected:
     /// Destructor
     virtual ~VisualLoop() { }
-
+public:
     /// Initialize the textures
     virtual void initStep(sofa::core::ExecParams* /*params*/) {}
 

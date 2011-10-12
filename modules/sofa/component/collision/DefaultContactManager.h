@@ -53,10 +53,10 @@ protected:
     void cleanup();
 public:
     Data<sofa::helper::OptionsGroup> response;
-
+protected:
     DefaultContactManager();
     ~DefaultContactManager();
-
+public:
     void createContacts(DetectionOutputMap& outputs);
 
     void init();

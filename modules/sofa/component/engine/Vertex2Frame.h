@@ -55,12 +55,12 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
 
-public:
+protected:
 
     Vertex2Frame();
 
     ~Vertex2Frame() {}
-
+public:
     void init();
 
     void reinit();

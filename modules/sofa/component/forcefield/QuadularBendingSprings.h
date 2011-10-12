@@ -125,12 +125,12 @@ protected:
     Data<double> f_ks;
     Data<double> f_kd;
 
-public:
+
 
     QuadularBendingSprings();
 
     ~QuadularBendingSprings();
-
+public:
     /// Searches quad topology and creates the bending springs
     virtual void init();
 

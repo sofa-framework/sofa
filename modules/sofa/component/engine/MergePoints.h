@@ -53,12 +53,12 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
 
-public:
+protected:
 
     MergePoints();
 
     ~MergePoints() {}
-
+public:
     void init();
 
     void reinit();

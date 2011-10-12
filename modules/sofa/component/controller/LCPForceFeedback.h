@@ -88,12 +88,13 @@ public:
     virtual void computeForce(const  VecCoord& state,  VecDeriv& forces);
 
     //void computeForce(double pitch0, double yaw0, double roll0, double z0, double pitch1, double yaw1, double roll1, double z1, double& fpitch0, double& fyaw0, double& froll0, double& fz0, double& fpitch1, double& fyaw1, double& froll1, double& fz1);
-
+protected:
     LCPForceFeedback();
     ~LCPForceFeedback()
     {
         delete(_timer);
     }
+public:
     void handleEvent(sofa::core::objectmodel::Event *event);
 
 

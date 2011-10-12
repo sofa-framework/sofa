@@ -109,13 +109,13 @@ protected:
     void activateMappers();
 
 
-public:
+
 
     FrictionContact() {}
 
     FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     virtual ~FrictionContact();
-
+public:
     void cleanup();
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }

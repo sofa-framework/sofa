@@ -78,11 +78,11 @@ public:
 
     typedef std::list<int> ListIndex;
     typedef behavior::ConstraintCorrection< TDataTypes > Inherit;
-
+protected:
     LinearSolverConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~LinearSolverConstraintCorrection();
-
+public:
     virtual void init();
 
     virtual void addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W);

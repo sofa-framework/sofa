@@ -68,11 +68,11 @@ protected:
     core::collision::ContactManager* contactManager;
     bool wasActive;
 
-public:
+
     GraspingManager();
 
     virtual ~GraspingManager();
-
+public:
     virtual void init();
 
     virtual void reset();

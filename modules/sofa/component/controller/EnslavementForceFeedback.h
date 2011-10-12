@@ -49,9 +49,10 @@ class SOFA_HAPTICS_API EnslavementForceFeedback : public sofa::component::contro
 
 public:
     SOFA_CLASS(EnslavementForceFeedback,sofa::component::controller::ForceFeedback);
+protected:
     EnslavementForceFeedback();
     virtual ~EnslavementForceFeedback();
-
+public:
     virtual void init();
 
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz);

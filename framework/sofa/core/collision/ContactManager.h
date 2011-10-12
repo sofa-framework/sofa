@@ -52,7 +52,7 @@ public:
 
     typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
     typedef sofa::helper::vector<Contact*> ContactVector;
-
+protected:
     /// Constructor
     ContactManager()
         : intersectionMethod(NULL)
@@ -61,7 +61,7 @@ public:
 
     /// Destructor
     virtual ~ContactManager() { }
-
+public:
     virtual void createContacts(DetectionOutputMap& outputs) = 0;
 
     virtual const ContactVector& getContacts() { return contacts; }

@@ -45,10 +45,10 @@ class GenerateRigidMass : public core::DataEngine
 {
 public:
     SOFA_CLASS(GenerateRigidMass,core::DataEngine);
-
+protected:
     GenerateRigidMass();
     ~GenerateRigidMass();
-
+public:
     /// Initialization method called at graph modification, during bottom-up traversal.
     virtual void init();
     /// Update method called when variables used in precomputation are modified.

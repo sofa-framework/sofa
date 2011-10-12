@@ -88,7 +88,7 @@ public:
 
     Data<bool> f_applyRestPosition;
     Data<bool> f_checkJacobian;
-
+protected:
     /// Constructor, taking input and output models as parameters.
     ///
     /// Note that if you do not specify these models here, you must called
@@ -97,7 +97,7 @@ public:
     Mapping(State< In >* from=NULL, State< Out >* to=NULL);
     /// Destructor
     virtual ~Mapping();
-
+public:
     /// Specify the input and output models.
     virtual void setModels(State< In > * from, State< Out >* to);
 

@@ -71,9 +71,9 @@ public:
     typedef Vec3Types DataTypes;
     typedef Ray Element;
     friend class Ray;
-
+protected:
     RayModel(SReal defaultLength=1);
-
+public:
     void init();
 
     // -- CollisionModel interface

@@ -86,10 +86,10 @@ protected:
     /// Mapping of contactids to force element (+1, so that 0 means not active).
     /// This allows to ignore duplicate contacts, and preserve information associated with each contact point over time
     ContactIndexMap contactIndex;
-public:
+
     BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     ~BarycentricPenalityContact();
-
+public:
     void cleanup();
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }

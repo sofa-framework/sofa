@@ -58,7 +58,7 @@ class InputEventReader : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(InputEventReader,core::objectmodel::BaseObject);
-
+protected:
     /**
      * @brief Default Constructor.
      */
@@ -68,7 +68,7 @@ public:
      * @brief Default Destructor.
      */
     ~InputEventReader();
-
+public:
     /**
      * @brief SceneGraph callback initialization method.
      */

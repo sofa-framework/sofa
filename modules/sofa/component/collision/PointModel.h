@@ -89,9 +89,9 @@ public:
     typedef helper::vector<unsigned int> VecIndex;
 
     friend class Point;
-
+protected:
     PointModel();
-
+public:
     virtual void init();
 
     // -- CollisionModel interface

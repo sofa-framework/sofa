@@ -58,9 +58,10 @@ public:
     Data< sofa::helper::vector<BaseMeshTopology::HexaID> > idxInRegularGrid;
     Data< std::map< unsigned int, BaseMeshTopology::HexaID> > idInRegularGrid2IndexInTopo;
     Data< defaulttype::Vector3 > voxelSize;
-
+protected:
     DynamicSparseGridTopologyContainer();
     virtual ~DynamicSparseGridTopologyContainer() {}
+public:
     void init();
 
 };

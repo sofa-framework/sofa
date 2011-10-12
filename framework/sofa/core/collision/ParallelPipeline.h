@@ -45,11 +45,11 @@ class SOFA_CORE_API ParallelPipeline : public virtual Pipeline
 {
 protected:
 
-public:
-
     ParallelPipeline();
 
     virtual ~ParallelPipeline();
+
+public:
 
     virtual void parallelComputeCollisions() = 0;
 };

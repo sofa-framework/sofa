@@ -70,11 +70,11 @@ protected:
     double nextTime;
     double lastTime;
     double loopTime;
-public:
+
     ReadTopology();
 
     virtual ~ReadTopology();
-
+public:
     virtual void init();
 
     virtual void reset();

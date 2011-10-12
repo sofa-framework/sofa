@@ -59,8 +59,9 @@ public:
 
     Data<bool> f_verbose;
     Data<Real> f_minSingularValue;
+protected:
     SVDLinearSolver();
-
+public:
     /// Solve Mx=b
     void solve (Matrix& M, Vector& x, Vector& b);
     Data<Real> f_conditionNumber; ///< Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.

@@ -380,11 +380,11 @@ class Topology : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(Topology, core::objectmodel::BaseObject);
-
+protected:
     Topology():BaseObject() {}
     virtual ~Topology()
     {}
-
+public:
     // Access to embedded position information (in case the topology is a regular grid for instance)
     // This is not very clean and is quit slow but it should only be used during initialization
 

@@ -49,11 +49,11 @@ class SOFA_CORE_API ConstraintSolver : public virtual objectmodel::BaseObject
 public:
 
     SOFA_ABSTRACT_CLASS(ConstraintSolver, objectmodel::BaseObject);
-
+protected:
     ConstraintSolver();
 
     virtual ~ConstraintSolver();
-
+public:
     /**
      * Launch the sequence of operations in order to solve the constraints
      */

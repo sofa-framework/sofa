@@ -55,12 +55,12 @@ public:
     Data<bool> f_activate;
 
     simulation::Node *context;
-
+protected:
     ForceFeedback():
         f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
     {
     }
-
+public:
     virtual void init() {context = dynamic_cast<simulation::Node *>(this->getContext());};
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
     virtual void computeWrench(const SolidTypes<SReal>::Transform &, const SolidTypes<SReal>::SpatialVector &, SolidTypes<SReal>::SpatialVector & )=0;

@@ -132,12 +132,12 @@ protected:
 
     void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring);
     void updateMaskStatus();
-public:
+
 
     SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
     SpringForceField(SReal _ks=100.0, SReal _kd=5.0);
 
-
+public:
     bool load(const char *filename);
 
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }

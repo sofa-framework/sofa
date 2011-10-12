@@ -55,11 +55,11 @@ public:
 
     typedef typename DataTypes::Real Real;
 
-public:
+protected:
 
     GroupFilterYoungModulus();
     ~GroupFilterYoungModulus() {}
-
+public:
     void init();
     void reinit();
     void update();

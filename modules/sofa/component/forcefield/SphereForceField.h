@@ -104,7 +104,7 @@ public:
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
-
+protected:
     SphereForceField()
         : contacts(initData(&contacts,"contacts", "Contacts"))
         , sphereCenter(initData(&sphereCenter, "center", "sphere center"))
@@ -116,7 +116,7 @@ public:
         , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     {
     }
-
+public:
     void setSphere(const Coord& center, Real radius)
     {
         sphereCenter.setValue( center );

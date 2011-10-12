@@ -44,7 +44,7 @@ public:
 
     typedef CollisionElementIterator Iterator;
     typedef topology::BaseMeshTopology Topology;
-
+protected:
     /// Constructor
     ParallelCollisionModel()
     {
@@ -52,7 +52,7 @@ public:
 
     /// Destructor
     virtual ~ParallelCollisionModel() { }
-
+public:
     /// Create or update the bounding volume hierarchy.
     /// The created task must write to the provided Shared<bool> and cummulative Shared<int> variables
 #ifdef SOFA_SMP

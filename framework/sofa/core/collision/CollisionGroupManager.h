@@ -68,10 +68,10 @@ protected:
     /// integration groups
     sofa::helper::vector<core::objectmodel::BaseContext*> groups;
 
-public:
+
     /// Destructor
     virtual ~CollisionGroupManager() { }
-
+public:
     /// Create the integration groups
     virtual void createGroups(objectmodel::BaseContext* scene, const sofa::helper::vector<Contact*>& contacts) = 0;
 

@@ -52,12 +52,12 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(MergeMeshes,DataTypes),core::DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef helper::vector<unsigned int> VecIndex;
-public:
 
+protected:
     MergeMeshes();
 
     ~MergeMeshes();
-
+public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
 

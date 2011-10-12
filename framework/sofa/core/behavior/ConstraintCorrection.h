@@ -64,6 +64,7 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
 
+protected:
     /// Default Constructor
     ConstraintCorrection(MechanicalState< DataTypes > *ms = NULL)
         : mstate(ms)
@@ -74,7 +75,7 @@ public:
     virtual ~ConstraintCorrection()
     {
     };
-
+public:
     void init();
 
     /// Compute motion correction from the constraint resolution (LCP) calculated force

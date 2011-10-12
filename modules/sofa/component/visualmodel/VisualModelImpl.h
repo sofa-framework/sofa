@@ -306,13 +306,13 @@ public:
 
     Data< helper::vector<Material> > materials;
     Data< helper::vector<FaceGroup> > groups;
-
+protected:
     /// Default constructor.
     VisualModelImpl();
 
     /// Default destructor.
     ~VisualModelImpl();
-
+public:
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
     bool hasTransparent();

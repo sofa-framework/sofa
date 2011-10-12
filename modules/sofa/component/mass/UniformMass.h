@@ -78,11 +78,11 @@ public:
 
     Data< bool > m_handleTopoChange;
 
-public:
+protected:
     UniformMass();
 
     ~UniformMass();
-
+public:
     void setMass(const MassType& mass);
     const MassType& getMass() const { return mass.getValue(); }
 
