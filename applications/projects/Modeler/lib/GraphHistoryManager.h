@@ -63,9 +63,9 @@ public:
         Operation(Base* sofaComponent_,  op ID_): sofaComponent(sofaComponent_), above(NULL), ID(ID_)
         {}
 
-        Base* sofaComponent;
-        GNode* parent;
-        Base* above;
+        Base::SPtr sofaComponent;
+        GNode::SPtr parent;
+        Base::SPtr above;
         op ID;
         std::string info;
     };

@@ -95,34 +95,34 @@ void GraphHistoryManager::undoOperation(Operation &o)
     switch(o.ID)
     {
     case Operation::DELETE_OBJECT:
-        o.parent->addObject(dynamic_cast<BaseObject*>(o.sofaComponent));
-        graph->moveItem(graph->graphListener->items[o.sofaComponent],graph->graphListener->items[o.above]);
+        o.parent->addObject(sofa::core::objectmodel::SPtr_dynamic_cast<BaseObject>(o.sofaComponent));
+        graph->moveItem(graph->graphListener->items[o.sofaComponent.get()],graph->graphListener->items[o.above.get()]);
         o.ID = Operation::ADD_OBJECT;
         message=std::string("Undo Delete NODE ") + " (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName();
         emit displayMessage(message);
         break;
     case Operation::DELETE_GNODE:
-        o.parent->addChild(dynamic_cast<Node*>(o.sofaComponent));
+        o.parent->addChild(sofa::core::objectmodel::SPtr_dynamic_cast<Node>(o.sofaComponent));
         //If the node is not alone below another parent node
-        graph->moveItem(graph->graphListener->items[o.sofaComponent],graph->graphListener->items[o.above]);
+        graph->moveItem(graph->graphListener->items[o.sofaComponent.get()],graph->graphListener->items[o.above.get()]);
         o.ID = Operation::ADD_GNODE;
 
         message=std::string("Undo Add NODE ") +" (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName();
         emit displayMessage(message);
         break;
     case Operation::ADD_OBJECT:
-        o.parent=graph->getGNode(graph->graphListener->items[o.sofaComponent]);
-        o.above=graph->getComponentAbove(graph->graphListener->items[o.sofaComponent]);
-        o.parent->removeObject(dynamic_cast<BaseObject*>(o.sofaComponent));
+        o.parent=graph->getGNode(graph->graphListener->items[o.sofaComponent.get()]);
+        o.above=graph->getComponentAbove(graph->graphListener->items[o.sofaComponent.get()]);
+        o.parent->removeObject(sofa::core::objectmodel::SPtr_dynamic_cast<BaseObject>(o.sofaComponent));
         o.ID = Operation::DELETE_OBJECT;
 
         message=std::string("Undo Delete OBJECT ") +" (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName();
         emit displayMessage(message);
         break;
     case Operation::ADD_GNODE:
-        o.parent=graph->getGNode(graph->graphListener->items[o.sofaComponent]->parent());
-        o.above=graph->getComponentAbove(graph->graphListener->items[o.sofaComponent]);
-        o.parent->removeChild(dynamic_cast<Node*>(o.sofaComponent));
+        o.parent=graph->getGNode(graph->graphListener->items[o.sofaComponent.get()]->parent());
+        o.above=graph->getComponentAbove(graph->graphListener->items[o.sofaComponent.get()]);
+        o.parent->removeChild(sofa::core::objectmodel::SPtr_dynamic_cast<Node>(o.sofaComponent));
         o.ID = Operation::DELETE_GNODE;
 
         message=std::string("Undo Add OBJECT ") + " (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName();
@@ -130,11 +130,11 @@ void GraphHistoryManager::undoOperation(Operation &o)
         break;
     case Operation::COMPONENT_MODIFICATION:
     {
-        std::string previousState=componentState(o.sofaComponent);
-        const std::string &modifDone=setComponentState(o.sofaComponent, o.info);
+        std::string previousState=componentState(o.sofaComponent.get());
+        const std::string &modifDone=setComponentState(o.sofaComponent.get(), o.info);
         QString name=QString(o.sofaComponent->getClassName().c_str()) + QString(" ") + QString(o.sofaComponent->getName().c_str());
-        graph->graphListener->items[o.sofaComponent]->setText(0, name);
-        graph->setSelected(graph->graphListener->items[o.sofaComponent],true);
+        graph->graphListener->items[o.sofaComponent.get()]->setText(0, name);
+        graph->setSelected(graph->graphListener->items[o.sofaComponent.get()],true);
         message=std::string("Undo Modifications on OBJECT ") + " (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName() + " | " + modifDone;
         emit displayMessage(message);
         o.info=previousState;
@@ -142,11 +142,11 @@ void GraphHistoryManager::undoOperation(Operation &o)
     }
     case Operation::NODE_MODIFICATION:
     {
-        std::string previousState=componentState(o.sofaComponent);
-        const std::string &modifDone=setComponentState(o.sofaComponent, o.info);
+        std::string previousState=componentState(o.sofaComponent.get());
+        const std::string &modifDone=setComponentState(o.sofaComponent.get(), o.info);
         QString name=QString(o.sofaComponent->getName().c_str());
-        graph->graphListener->items[o.sofaComponent]->setText(0, name);
-        graph->setSelected(graph->graphListener->items[o.sofaComponent],true);
+        graph->graphListener->items[o.sofaComponent.get()]->setText(0, name);
+        graph->setSelected(graph->graphListener->items[o.sofaComponent.get()],true);
         message=std::string("Undo Modifications on NODE ") + o.sofaComponent->getName() + " | " + modifDone;
         emit displayMessage(message);
         o.info=previousState;
@@ -246,12 +246,12 @@ void GraphHistoryManager::clearHistory()
     for ( int i=historyOperation.size()-1; i>=0; --i)
     {
         if (historyOperation[i].ID == Operation::DELETE_OBJECT)
-            delete historyOperation[i].sofaComponent;
+            historyOperation[i].sofaComponent.reset();
         else if (historyOperation[i].ID == Operation::DELETE_GNODE)
         {
-            GNode *n=dynamic_cast<GNode*>(historyOperation[i].sofaComponent);
+            GNode *n=dynamic_cast<GNode*>(historyOperation[i].sofaComponent.get());
             simulation::getSimulation()->unload(n);
-            delete n;
+            historyOperation[i].sofaComponent.reset();
         }
     }
     historyOperation.clear();
@@ -263,12 +263,12 @@ void GraphHistoryManager::clearHistoryUndo()
     for ( int i=historyUndoOperation.size()-1; i>=0; --i)
     {
         if (historyUndoOperation[i].ID == Operation::DELETE_OBJECT)
-            delete historyUndoOperation[i].sofaComponent;
+            historyUndoOperation[i].sofaComponent.reset();
         else if (historyUndoOperation[i].ID == Operation::DELETE_GNODE)
         {
-            GNode *n=dynamic_cast<GNode*>(historyUndoOperation[i].sofaComponent);
+            GNode *n=dynamic_cast<GNode*>(historyUndoOperation[i].sofaComponent.get());
             simulation::getSimulation()->unload(n);
-            delete n;
+            historyUndoOperation[i].sofaComponent.reset();
         }
     }
     historyUndoOperation.clear();
