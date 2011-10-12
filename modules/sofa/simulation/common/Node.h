@@ -213,9 +213,9 @@ public:
         /// Swap two values in the list. Uses a const_cast to violate the read-only iterators.
         void swap( iterator a, iterator b )
         {
-            T*& wa = const_cast<T*&>(*a);
-            T*& wb = const_cast<T*&>(*b);
-            T* tmp = *a;
+            TPtr& wa = const_cast<TPtr&>(*a);
+            TPtr& wb = const_cast<TPtr&>(*b);
+            TPtr tmp = *a;
             wa = *b;
             wb = tmp;
         }

@@ -159,9 +159,9 @@ GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
     return child;
 }
 
-BaseObject *GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, const std::string &templateName, bool saveHistory, bool displayWarning)
+BaseObject* GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, const std::string &templateName, bool saveHistory, bool displayWarning)
 {
-    BaseObject *object=NULL;
+    BaseObject* object=NULL;
     if (!parent || !entry) return object;
 
     std::string templateUsed = templateName;
@@ -193,7 +193,8 @@ BaseObject *GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, c
         std::ostringstream oss;
         oss << c->shortName(&description) << numComponent++;
         arg.setName(oss.str());
-        object = c->createInstance(parent->getContext(), &arg);
+
+        object = c->createInstance(parent->getContext(), &arg).get();
 
         if (saveHistory)
         {
@@ -232,7 +233,7 @@ BaseObject *GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, c
                 }
             }
         }
-        object = c->createInstance(parent->getContext(), NULL);
+        object = c->createInstance(parent->getContext(), NULL).get();
         GraphHistoryManager::Operation adding(object, GraphHistoryManager::Operation::ADD_OBJECT);
         adding.info=std::string("Adding Object ") + object->getClassName();
         emit operationPerformed(adding);
@@ -275,7 +276,7 @@ void GraphModeler::dropEvent(QDropEvent* event)
     }
     if (text == QString("ComponentCreation"))
     {
-        BaseObject *newComponent = addComponent(getGNode(event->pos()), lastSelectedComponent.second, lastSelectedComponent.first );
+        BaseObject* newComponent = addComponent(getGNode(event->pos()), lastSelectedComponent.second, lastSelectedComponent.first );
         if (newComponent)
         {
             Q3ListViewItem *after = graphListener->items[newComponent];
@@ -622,7 +623,7 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
 
 
             const ClassEntry *info = component->getEntry();
-            BaseObject *newComponent=addComponent(newNode, info, templatename, saveHistory,displayWarning);
+            BaseObject* newComponent=addComponent(newNode, info, templatename, saveHistory,displayWarning);
             if (!newComponent) continue;
             configureElement(newComponent, it);
             Q3ListViewItem* itemGraph = graphListener->items[newComponent];
@@ -1022,13 +1023,13 @@ void GraphModeler::moveItem(Q3ListViewItem *item, Q3ListViewItem *above)
             if (above && getObject(item))
             {
                 GNode *n=getGNode(item);
-                GNode::Sequence<BaseObject>::iterator A=n->object.end();
-                GNode::Sequence<BaseObject>::iterator B=n->object.end();
+                GNode::ObjectIterator A=n->object.end();
+                GNode::ObjectIterator B=n->object.end();
                 BaseObject* objectA=getObject(above);
                 BaseObject* objectB=getObject(item);
                 bool inversion=false;
                 //Find the two objects in the Sequence of the GNode
-                for (GNode::Sequence<BaseObject>::iterator it=n->object.begin(); it!=n->object.end(); ++it)
+                for (GNode::ObjectIterator it=n->object.begin(); it!=n->object.end(); ++it)
                 {
                     if( *it == objectA)
                     {
@@ -1041,7 +1042,7 @@ void GraphModeler::moveItem(Q3ListViewItem *item, Q3ListViewItem *above)
                 if (A==n->object.end() || B==n->object.end()) return;
 
                 //Invert the elements
-                GNode::Sequence<BaseObject>::iterator it;
+                GNode::ObjectIterator it;
                 if (inversion) n->object.swap(A,B);
                 else
                 {

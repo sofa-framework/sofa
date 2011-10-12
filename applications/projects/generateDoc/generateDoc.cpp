@@ -306,7 +306,7 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
                 sofa::core::ObjectFactory::Creator* creator = entry->creatorList.begin()->second;
                 //DummyObjectDescription arg;
                 //sofa::core::objectmodel::Context ctx;
-                sofa::core::objectmodel::BaseObject* object = creator->createInstance(NULL, NULL); //&ctx, &arg);
+                sofa::core::objectmodel::BaseObject::SPtr object = creator->createInstance(NULL, NULL); //&ctx, &arg);
                 if (object == NULL)
                 {
                     std::cerr << "ERROR: Failed to instantiate "<<entry->className<<std::endl;
@@ -339,7 +339,8 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
                             out << "</tr>\n";
                         }
                     }
-                    delete object;
+                    // object is now automatically deleted when the smart pointer is destructed
+                    //delete object;
                 }
             }
             catch(...)

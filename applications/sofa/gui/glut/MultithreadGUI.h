@@ -244,7 +244,6 @@ public:
     void exportOBJ(bool exportMTL=true);
     void dumpState(bool);
     void displayComputationTime(bool);
-    void setExportGnuplot(bool);
     void initTextures();
 
     void initializeGL();
@@ -343,7 +342,6 @@ protected:
     void updateModifiers();
     bool m_dumpState;
     bool m_displayComputationTime;
-    bool m_exportGnuplot;
     std::ofstream* m_dumpStateStream;
     VisualParams vparams;
     DrawToolGL   drawTool;
