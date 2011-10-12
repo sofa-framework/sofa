@@ -58,7 +58,6 @@ class BaseMeshTopology;
 
 namespace objectmodel
 {
-
 class BaseObject;
 class Event;
 
@@ -384,13 +383,13 @@ public:
     /// @{
 
     /// Add an object, or return false if not supported
-    virtual bool addObject( BaseObject* /*obj*/ )
+    virtual bool addObject( boost::intrusive_ptr<BaseObject> /*obj*/ )
     {
         return false;
     }
 
     /// Remove an object, or return false if not supported
-    virtual bool removeObject( BaseObject* /*obj*/ )
+    virtual bool removeObject( boost::intrusive_ptr<BaseObject> /*obj*/ )
     {
         return false;
     }

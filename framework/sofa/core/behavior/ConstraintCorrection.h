@@ -50,7 +50,7 @@ template<class TDataTypes>
 class ConstraintCorrection : public BaseConstraintCorrection
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ConstraintCorrection, TDataTypes), BaseConstraintCorrection);
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(ConstraintCorrection, TDataTypes), BaseConstraintCorrection);
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;

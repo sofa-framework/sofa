@@ -77,7 +77,7 @@ namespace behavior
 class SOFA_CORE_API BaseMechanicalState : public virtual BaseState
 {
 public:
-    SOFA_CLASS(BaseMechanicalState, BaseState);
+    SOFA_ABSTRACT_CLASS(BaseMechanicalState, BaseState);
 
     BaseMechanicalState();
 

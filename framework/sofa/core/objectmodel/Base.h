@@ -36,6 +36,9 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
+
+#include <boost/intrusive_ptr.hpp>
+
 #include <string>
 #include <map>
 
@@ -61,16 +64,46 @@ namespace objectmodel
 class SOFA_CORE_API Base
 {
 public:
+    typedef Base* Ptr;
+    typedef boost::intrusive_ptr<Base> SPtr;
+    // typedef weak_intrusive_ptr<Base> WPtr;
+    typedef Base* WPtr;
+
     typedef TClass< Base, void > MyClass;
     static const MyClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
 
+    static inline SPtr New()
+    {
+        return SPtr(new Base);
+    }
+
+protected:
+    /// Constructor cannot be called directly
+    /// Use the New() method instead
     Base();
+
+    /// Direct calls to destructor are forbidden.
+    /// Smart pointers must be used to manage creation/destruction of objects
     virtual ~Base();
 
 private:
     /// Copy constructor is not allowed
     Base(const Base& b);
+
+    int ref_counter;
+    void addRef();
+    void release();
+
+    friend inline void intrusive_ptr_add_ref(Base* p)
+    {
+        p->addRef();
+    }
+
+    friend inline void intrusive_ptr_release(Base* p)
+    {
+        p->release();
+    }
 
 public:
 

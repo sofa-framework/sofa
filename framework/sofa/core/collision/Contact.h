@@ -60,7 +60,7 @@ namespace collision
 class SOFA_CORE_API Contact : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(Contact, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(Contact, objectmodel::BaseObject);
 
     ///Destructor
     virtual ~Contact() { }

@@ -55,7 +55,7 @@ template<class DataTypes1,class DataTypes2>
 class LMConstraint : public BaseLMConstraint
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(LMConstraint,DataTypes1,DataTypes2), BaseLMConstraint);
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(LMConstraint,DataTypes1,DataTypes2), BaseLMConstraint);
 
     typedef typename DataTypes1::Real Real1;
     typedef typename DataTypes1::VecCoord VecCoord1;

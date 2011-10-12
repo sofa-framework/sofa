@@ -63,7 +63,7 @@ namespace behavior
 class SOFA_CORE_API BaseForceField : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(BaseForceField, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseForceField, objectmodel::BaseObject);
 
     virtual ~BaseForceField() {}
 

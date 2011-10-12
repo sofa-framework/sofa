@@ -47,7 +47,7 @@ namespace core
 class SOFA_CORE_API BaseState : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(BaseState, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseState, objectmodel::BaseObject);
 
     virtual ~BaseState() { }
 

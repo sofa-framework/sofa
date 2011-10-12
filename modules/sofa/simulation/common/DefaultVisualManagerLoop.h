@@ -52,9 +52,11 @@ public:
     typedef core::visual::VisualLoop Inherit;
     SOFA_CLASS(DefaultVisualManagerLoop,core::visual::VisualLoop);
 
-    DefaultVisualManagerLoop(simulation::Node* gnode);
+    DefaultVisualManagerLoop(simulation::Node* gnode = NULL);
 
     virtual ~DefaultVisualManagerLoop();
+
+    virtual void init();
 
     /// Initialize the textures
     virtual void initStep(sofa::core::ExecParams* params);
@@ -74,12 +76,13 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static void create(T*& obj, BaseContext* context, BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
         simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        obj = new T(gnode);
+        typename T::SPtr obj = new T(gnode);
         if (context) context->addObject(obj);
         if (arg) obj->parse(arg);
+        return obj;
     }
 
 private:

@@ -100,7 +100,7 @@ public:
 class SOFA_CORE_API BaseConstraint : public BaseConstraintSet
 {
 public:
-    SOFA_CLASS(BaseConstraint, BaseConstraintSet);
+    SOFA_ABSTRACT_CLASS(BaseConstraint, BaseConstraintSet);
 
     virtual ~BaseConstraint() { }
 

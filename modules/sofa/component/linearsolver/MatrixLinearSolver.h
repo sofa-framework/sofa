@@ -71,7 +71,7 @@ template<class Matrix, class Vector>
 class SOFA_EXPORT_DYNAMIC_LIBRARY MatrixLinearSolver : public BaseMatrixLinearSolver<Matrix, Vector>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MatrixLinearSolver,Matrix,Vector), SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector));
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(MatrixLinearSolver,Matrix,Vector), SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector));
 
     typedef  std::list<int> ListIndex;
 

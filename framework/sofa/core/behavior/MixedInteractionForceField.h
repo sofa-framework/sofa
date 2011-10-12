@@ -54,7 +54,7 @@ template<class TDataTypes1, class TDataTypes2>
 class MixedInteractionForceField : public BaseInteractionForceField
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MixedInteractionForceField,TDataTypes1,TDataTypes2), BaseInteractionForceField);
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(MixedInteractionForceField,TDataTypes1,TDataTypes2), BaseInteractionForceField);
 
     typedef TDataTypes1 DataTypes1;
     typedef typename DataTypes1::VecCoord VecCoord1;

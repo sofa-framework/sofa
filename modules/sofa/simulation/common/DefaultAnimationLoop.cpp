@@ -79,12 +79,18 @@ DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _gnode)
     : Inherit()
     , gnode(_gnode)
 {
-    assert(gnode);
+    //assert(gnode);
 }
 
 DefaultAnimationLoop::~DefaultAnimationLoop()
 {
 
+}
+
+void DefaultAnimationLoop::init()
+{
+    if (!gnode)
+        gnode = dynamic_cast<simulation::Node*>(this->getContext());
 }
 
 void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)

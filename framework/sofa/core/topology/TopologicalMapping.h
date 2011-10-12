@@ -59,7 +59,7 @@ namespace topology
 class TopologicalMapping : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(TopologicalMapping, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(TopologicalMapping, objectmodel::BaseObject);
 
     /// Name of the Input Topology
     objectmodel::DataObjectRef m_inputTopology;

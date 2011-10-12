@@ -44,7 +44,7 @@ namespace collision
 class CollisionAlgorithm : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(CollisionAlgorithm, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(CollisionAlgorithm, objectmodel::BaseObject);
 
     /// Collision 'pipeline' instance, allowing to store multiple internal states
     typedef void* Instance;

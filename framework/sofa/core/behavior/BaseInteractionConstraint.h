@@ -49,7 +49,7 @@ namespace behavior
 class SOFA_CORE_API BaseInteractionConstraint : public BaseConstraint
 {
 public:
-    SOFA_CLASS(BaseInteractionConstraint, BaseConstraint);
+    SOFA_ABSTRACT_CLASS(BaseInteractionConstraint, BaseConstraint);
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()

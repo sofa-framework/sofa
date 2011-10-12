@@ -94,27 +94,55 @@ public:
 
 // This macro should now be used at the beginning of all declarations of classes with 1 base class
 #define SOFA_CLASS(T,Parent) \
+    typedef T MyType;                                               \
     typedef ::sofa::core::objectmodel::TClass< T, Parent > MyClass; \
     typedef Parent Inherit1; \
     SOFA_CLASS_DECL
 
+// This macro should now be used at the beginning of all declarations of classes with 1 base class
+#define SOFA_ABSTRACT_CLASS(T,Parent) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, Parent > MyClass; \
+    typedef Parent Inherit1; \
+    SOFA_ABSTRACT_CLASS_DECL
+
 // This macro should now be used at the beginning of all declarations of classes with 2 base classes
 #define SOFA_CLASS2(T,Parent1,Parent2) \
+    typedef T MyType;                                               \
     typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,Parent2> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     SOFA_CLASS_DECL
 
+// This macro should now be used at the beginning of all declarations of classes with 2 base classes
+#define SOFA_ABSTRACT_CLASS2(T,Parent1,Parent2) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,Parent2> > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    SOFA_ABSTRACT_CLASS_DECL
+
 // This macro should now be used at the beginning of all declarations of classes with 3 base classes
 #define SOFA_CLASS3(T,Parent1,Parent2,Parent3) \
+    typedef T MyType;                                               \
     typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,std::pair<Parent2,Parent3> > > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
     SOFA_CLASS_DECL
 
+// This macro should now be used at the beginning of all declarations of classes with 3 base classes
+#define SOFA_ABSTRACT_CLASS3(T,Parent1,Parent2,Parent3) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,std::pair<Parent2,Parent3> > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
+    SOFA_ABSTRACT_CLASS_DECL
+
 // This macro should now be used at the beginning of all declarations of classes with 4 base classes
 #define SOFA_CLASS4(T,Parent1,Parent2,Parent3,Parent4) \
+    typedef T MyType;                                               \
     typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,Parent4> > > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
@@ -122,8 +150,19 @@ public:
     typedef Parent4 Inherit4; \
     SOFA_CLASS_DECL
 
+// This macro should now be used at the beginning of all declarations of classes with 4 base classes
+#define SOFA_ABSTRACT_CLASS4(T,Parent1,Parent2,Parent3,Parent4) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,Parent4> > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
+    typedef Parent4 Inherit4; \
+    SOFA_ABSTRACT_CLASS_DECL
+
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
 #define SOFA_CLASS5(T,Parent1,Parent2,Parent3,Parent4,Parent5) \
+    typedef T MyType;                                               \
     typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,std::pair<Parent4,Parent5> > > > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
@@ -133,7 +172,19 @@ public:
     SOFA_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
+#define SOFA_ABSTRACT_CLASS5(T,Parent1,Parent2,Parent3,Parent4,Parent5) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,std::pair<Parent4,Parent5> > > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
+    typedef Parent4 Inherit4; \
+    typedef Parent5 Inherit5; \
+    SOFA_ABSTRACT_CLASS_DECL
+
+// This macro should now be used at the beginning of all declarations of classes with 5 base classes
 #define SOFA_CLASS6(T,Parent1,Parent2,Parent3,Parent4,Parent5,Parent6) \
+    typedef T MyType;                                               \
     typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<std::pair<Parent3,Parent4>,std::pair<Parent5,Parent6> > > > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
@@ -143,8 +194,24 @@ public:
     typedef Parent6 Inherit6; \
     SOFA_CLASS_DECL
 
-// Do not use this macro directly, use SOFA_CLASS instead
-#define SOFA_CLASS_DECL                                                 \
+// This macro should now be used at the beginning of all declarations of classes with 5 base classes
+#define SOFA_ABSTRACT_CLASS6(T,Parent1,Parent2,Parent3,Parent4,Parent5,Parent6) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<std::pair<Parent3,Parent4>,std::pair<Parent5,Parent6> > > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
+    typedef Parent4 Inherit4; \
+    typedef Parent5 Inherit5; \
+    typedef Parent6 Inherit6; \
+    SOFA_ABSTRACT_CLASS_DECL
+
+// Do not use this macro directly, use SOFA_ABSTRACT_CLASS instead
+#define SOFA_ABSTRACT_CLASS_DECL                                        \
+    typedef MyType* Ptr;                                                \
+    typedef boost::intrusive_ptr<MyType> SPtr;                          \
+    typedef MyType* WPtr;                                               \
+                                                                        \
     static const MyClass* GetClass() { return MyClass::get(); }         \
     virtual const ::sofa::core::objectmodel::BaseClass* getClass() const \
     { return GetClass(); }                                              \
@@ -180,6 +247,35 @@ public:
     using Inherit1::sout;                                               \
     using Inherit1::serr;                                               \
     using Inherit1::sendl
+
+template<class T>
+class New : public T::SPtr
+{
+    typedef typename T::SPtr SPtr;
+public:
+    New() : SPtr(new T) {}
+    template <class A1>
+    New(A1 a1) : SPtr(new T(a1)) {}
+    template <class A1, class A2>
+    New(A1 a1, A2 a2) : SPtr(new T(a1,a2)) {}
+    template <class A1, class A2, class A3>
+    New(A1 a1, A2 a2, A3 a3) : SPtr(new T(a1,a2,a3)) {}
+    template <class A1, class A2, class A3, class A4>
+    New(A1 a1, A2 a2, A3 a3, A4 a4) : SPtr(new T(a1,a2,a3,a4)) {}
+};
+
+// Do not use this macro directly, use SOFA_CLASS instead
+#define SOFA_CLASS_DECL                                        \
+    SOFA_ABSTRACT_CLASS_DECL;                                  \
+                                                               \
+    friend class sofa::core::objectmodel::New<MyType>
+
+/*
+MyFF::New(val1)
+
+New<MyFF>()
+MyFF::SPtr = SPtrNew<MyFF>(val1)
+*/
 
 template <class Parents>
 class TClassParents

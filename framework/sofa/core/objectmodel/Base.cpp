@@ -45,7 +45,8 @@ namespace objectmodel
 using std::string;
 
 Base::Base()
-    : name(initData(&name,std::string("unnamed"),"name","object name"))
+    : ref_counter(0)
+    , name(initData(&name,std::string("unnamed"),"name","object name"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
@@ -66,6 +67,19 @@ Base::Base()
 
 Base::~Base()
 {
+}
+
+void Base::addRef()
+{
+    ++ref_counter;
+}
+
+void Base::release()
+{
+    if ((--ref_counter) == 0)
+    {
+        delete this;
+    }
 }
 
 /// Helper method used by initData()

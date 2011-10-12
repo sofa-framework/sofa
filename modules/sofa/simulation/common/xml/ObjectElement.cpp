@@ -77,7 +77,7 @@ bool ObjectElement::initNode()
         }
     }
 
-    core::objectmodel::BaseObject *obj = core::ObjectFactory::CreateObject(ctx, this);
+    core::objectmodel::BaseObject::SPtr obj = core::ObjectFactory::CreateObject(ctx, this);
 
     if (obj == NULL)
         obj = Factory::CreateObject(this->getType(), this);

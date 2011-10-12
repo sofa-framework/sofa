@@ -50,7 +50,7 @@ namespace behavior
 class SOFA_CORE_API LinearSolver : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(LinearSolver, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(LinearSolver, objectmodel::BaseObject);
 
     LinearSolver();
 
