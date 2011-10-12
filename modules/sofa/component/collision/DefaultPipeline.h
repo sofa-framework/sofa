@@ -46,9 +46,9 @@ public:
     Data<bool> bVerbose;
     Data<bool> bDraw;
     Data<int> depth;
-
+protected:
     DefaultPipeline();
-
+public:
     void draw(const core::visual::VisualParams* vparams);
 
     /// get the set of response available with the current collision pipeline

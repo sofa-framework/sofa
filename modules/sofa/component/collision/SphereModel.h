@@ -89,11 +89,11 @@ public:
     typedef typename DataTypes::VecReal VecReal;
     typedef TSphere<DataTypes> Element;
     friend class TSphere<DataTypes>;
-
+protected:
     TSphereModel();
 
     TSphereModel(core::behavior::MechanicalState<TDataTypes>* _mstate );
-
+public:
     virtual void init();
 
     // -- CollisionModel interface

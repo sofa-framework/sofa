@@ -31,11 +31,11 @@ public:
     typedef sofa::defaulttype::Vec<3,Real> Vec3;
     typedef unsigned int Index;
 
-public:
+protected:
 
     IndexValueMapper();
     ~IndexValueMapper() {}
-
+public:
     void init();
     void reinit();
     void update();

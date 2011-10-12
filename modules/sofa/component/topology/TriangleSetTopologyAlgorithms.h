@@ -61,7 +61,7 @@ public:
     typedef typename DataTypes::VecCoord VecDeriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-
+protected:
     TriangleSetTopologyAlgorithms()
         : EdgeSetTopologyAlgorithms<DataTypes>()
         , m_listTriRemove( initData(&m_listTriRemove,  "RemoveTrianglesByIndex", "Debug : Remove a triangle or a list of triangles by using their indices (only while animate)."))
@@ -70,7 +70,7 @@ public:
     }
 
     virtual ~TriangleSetTopologyAlgorithms() {}
-
+public:
     virtual void init();
 
     virtual void reinit();

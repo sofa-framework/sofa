@@ -129,11 +129,11 @@ public:
     sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
     sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
     sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
-
+protected:
     DiagonalMass();
 
     ~DiagonalMass();
-
+public:
     //virtual const char* getTypeName() const { return "DiagonalMass"; }
 
     bool load(const char *filename);

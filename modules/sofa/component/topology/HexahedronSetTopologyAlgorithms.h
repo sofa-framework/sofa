@@ -52,13 +52,13 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(HexahedronSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(QuadSetTopologyAlgorithms,DataTypes));
 
     typedef typename DataTypes::Real Real;
-
+protected:
     HexahedronSetTopologyAlgorithms()
         : QuadSetTopologyAlgorithms<DataTypes>()
     { }
 
     virtual ~HexahedronSetTopologyAlgorithms() {}
-
+public:
     virtual void init();
 
 private:

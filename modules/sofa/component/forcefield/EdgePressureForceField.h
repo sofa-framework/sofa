@@ -101,7 +101,7 @@ protected:
     Data<Coord> p_binormal; // binormal of the 2D plane
     Data<bool> p_showForces;
 
-public:
+
 
     EdgePressureForceField():
         pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
@@ -118,7 +118,7 @@ public:
     }
 
     virtual ~EdgePressureForceField();
-
+public:
     virtual void init();
 
     virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) ;

@@ -98,13 +98,13 @@ public:
     using Inherited::getX0;
     using Inherited::getN;
     using Inherited::getDx;
-
+protected:
     MechanicalObject();
-
+public:
     MechanicalObject& operator = ( const MechanicalObject& );
-
+protected:
     virtual ~MechanicalObject();
-
+public:
     virtual void parse ( BaseObjectDescription* arg );
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES

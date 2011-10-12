@@ -60,14 +60,14 @@ public:
     SOFA_CLASS(TetrahedronSetTopologyModifier,TriangleSetTopologyModifier);
 
     Data< bool > removeIsolated; ///< Controlled DOF index.
-
+protected:
     TetrahedronSetTopologyModifier()
         : TriangleSetTopologyModifier()
         , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "remove Isolated dof") )
     {}
 
     virtual ~TetrahedronSetTopologyModifier() {}
-
+public:
     virtual void init();
 
     virtual void reinit();

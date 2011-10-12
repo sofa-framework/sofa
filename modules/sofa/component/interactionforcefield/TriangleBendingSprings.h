@@ -63,11 +63,11 @@ public:
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
-
+protected:
     TriangleBendingSprings();
 
     ~TriangleBendingSprings();
-
+public:
     /// Searches triangle topology and creates the bending springs
     virtual void init();
 

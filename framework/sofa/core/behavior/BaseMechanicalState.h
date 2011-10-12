@@ -78,11 +78,11 @@ class SOFA_CORE_API BaseMechanicalState : public virtual BaseState
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMechanicalState, BaseState);
-
+protected:
     BaseMechanicalState();
 
     virtual ~BaseMechanicalState();
-
+public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
     /// @{
     virtual double getPX(int /*i*/) const { return 0.0; }

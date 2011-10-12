@@ -70,7 +70,7 @@ public:
     typedef BaseMeshTopology In;
     /// Output Topology
     typedef BaseMeshTopology Out;
-
+protected:
     TopologicalMapping(In* from, Out* to)
         : m_inputTopology(initData(&m_inputTopology, "input", "Input topology to map"))
         , m_outputTopology(initData(&m_outputTopology, "output", "Output topology to map"))
@@ -79,7 +79,7 @@ public:
     {}
 
     virtual ~TopologicalMapping() { }
-
+public:
     /// Specify the input and output topologies.
     //	void setModels(In* from, Out* to)
     //{

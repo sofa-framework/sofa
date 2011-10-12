@@ -52,11 +52,11 @@ class SOFA_SIMULATION_COMMON_API DefaultAnimationLoop : public sofa::core::behav
 public:
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     SOFA_CLASS(DefaultAnimationLoop,sofa::core::behavior::BaseAnimationLoop);
-
+protected:
     DefaultAnimationLoop(simulation::Node* gnode = NULL);
 
     virtual ~DefaultAnimationLoop();
-
+public:
     virtual void init();
 
     virtual void step(const core::ExecParams* params, double dt);

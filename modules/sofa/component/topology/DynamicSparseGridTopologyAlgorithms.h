@@ -52,12 +52,13 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(DynamicSparseGridTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(HexahedronSetTopologyAlgorithms,DataTypes));
 
     typedef typename DataTypes::Real Real;
-
+protected:
     DynamicSparseGridTopologyAlgorithms()
         : HexahedronSetTopologyAlgorithms<DataTypes>()
     { }
 
     virtual ~DynamicSparseGridTopologyAlgorithms() {}
+public:
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_CPP)

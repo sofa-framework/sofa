@@ -57,10 +57,11 @@ class SOFA_CORE_API BaseAnimationLoop : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(BaseAnimationLoop, objectmodel::BaseObject);
 
+protected:
     BaseAnimationLoop();
 
     virtual ~BaseAnimationLoop();
-
+public:
     /// Main computation method.
     ///
     /// Specify and execute all computations for computing a timestep, such

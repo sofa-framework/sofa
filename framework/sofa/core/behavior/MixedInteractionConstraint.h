@@ -76,11 +76,11 @@ public:
     typedef core::objectmodel::Data< VecCoord2 >		DataVecCoord2;
     typedef core::objectmodel::Data< VecDeriv2 >		DataVecDeriv2;
     typedef core::objectmodel::Data< MatrixDeriv2 >		DataMatrixDeriv2;
-
+protected:
     MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1 = NULL, MechanicalState<DataTypes2> *mm2 = NULL);
 
     virtual ~MixedInteractionConstraint();
-
+public:
     Data<double> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 

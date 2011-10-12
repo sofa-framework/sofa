@@ -46,8 +46,9 @@ class SOFA_EXPLICIT_ODE_SOLVER_API EulerSolver : public sofa::core::behavior::Od
 {
 public:
     SOFA_CLASS(EulerSolver, sofa::core::behavior::OdeSolver);
-
+protected:
     EulerSolver();
+public:
     void solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
     Data<bool> symplectic;

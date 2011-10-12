@@ -48,13 +48,13 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef sofa::component::container::MechanicalObject<DataTypes> MObject;
-
+protected:
     DynamicSparseGridGeometryAlgorithms()
         : HexahedronSetGeometryAlgorithms<DataTypes>()
     {}
 
     virtual ~DynamicSparseGridGeometryAlgorithms() {}
-
+public:
     /// finds a hexahedron, in its rest position, which is nearest to a given point. Computes barycentric coordinates and a distance measure.
     virtual int findNearestElementInRestPos(const Coord& pos, defaulttype::Vector3& baryC, Real& distance) const;
 

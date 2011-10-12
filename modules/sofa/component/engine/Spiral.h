@@ -62,12 +62,12 @@ public:
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<6,Real> Vec6;
 
-public:
+protected:
 
     Spiral();
 
     ~Spiral() {}
-
+public:
     void init();
 
     void reinit();

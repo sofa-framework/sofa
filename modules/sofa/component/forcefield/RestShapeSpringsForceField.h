@@ -86,9 +86,9 @@ public:
     sofa::core::behavior::MechanicalState< DataTypes > *restMState;
 
     VecDeriv Springs_dir;
-
+protected:
     RestShapeSpringsForceField();
-
+public:
     /// BaseObject initialization method.
     void bwdInit();
 

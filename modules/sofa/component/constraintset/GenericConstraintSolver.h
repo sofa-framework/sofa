@@ -88,10 +88,10 @@ class SOFA_ADVANCED_CONSTRAINT_API GenericConstraintSolver : public ConstraintSo
 
 public:
     SOFA_CLASS(GenericConstraintSolver, sofa::core::behavior::ConstraintSolver);
-
+protected:
     GenericConstraintSolver();
     virtual ~GenericConstraintSolver();
-
+public:
     void init();
 
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());

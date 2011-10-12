@@ -65,10 +65,10 @@ public:
     sofa::core::objectmodel::Data<vec3> f_dir;
     sofa::core::objectmodel::Data<real> f_tstart;
     sofa::core::objectmodel::Data<real> f_tstop;
-
+protected:
     Fluid3D();
     virtual ~Fluid3D();
-
+public:
     int getNx() const { return f_nx.getValue(); }
     void setNx(int v) { f_nx.setValue(v);       }
 

@@ -64,9 +64,9 @@ public:
     Data< double > f_ray; // for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data<RigidCoord > f_positionRigid;
     Data< double > f_opposite_pressure;
-
+protected:
     AspirationForceField();
-
+public:
     /// Add the forces
     virtual void addForce (const core::MechanicalParams* params /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 

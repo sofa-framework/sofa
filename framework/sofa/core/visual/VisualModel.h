@@ -58,10 +58,10 @@ class SOFA_CORE_API VisualModel : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(VisualModel, objectmodel::BaseObject);
-
+protected:
     /// Destructor
     virtual ~VisualModel() { }
-
+public:
     /**
      *  \brief Initialize the textures, or other graphical resources.
      *

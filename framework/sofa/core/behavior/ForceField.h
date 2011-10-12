@@ -70,11 +70,11 @@ public:
     typedef typename DataTypes::VecDeriv         VecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
-
+protected:
     ForceField(MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~ForceField();
-
+public:
     virtual void init();
 
     /// Retrieve the associated MechanicalState

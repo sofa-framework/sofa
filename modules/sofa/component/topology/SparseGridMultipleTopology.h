@@ -48,9 +48,9 @@ class SOFA_NON_UNIFORM_FEM_API SparseGridMultipleTopology : public SparseGridRam
 {
 public :
     SOFA_CLASS(SparseGridMultipleTopology,SparseGridRamificationTopology);
-
+protected:
     SparseGridMultipleTopology( bool _isVirtual=false );
-
+public:
     virtual void init()
     {
         if(_computeRamifications.getValue())

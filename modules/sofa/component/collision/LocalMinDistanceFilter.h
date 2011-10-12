@@ -126,7 +126,7 @@ class SOFA_BASE_COLLISION_API LocalMinDistanceFilter : public virtual core::obje
 {
 public:
     SOFA_CLASS(LocalMinDistanceFilter,sofa::core::objectmodel::BaseObject);
-
+protected:
     /**
      * @brief Default constructor.
          * @param m_rigid Cone information is called on a rigid CollisionModel.
@@ -137,7 +137,7 @@ public:
      * @brief Default destructor.
      */
     virtual ~LocalMinDistanceFilter();
-
+public:
     //virtual void init(){}
 
     void reinit() { init(); bwdInit();}

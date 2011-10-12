@@ -65,11 +65,11 @@ public:
     typedef objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef typename DataTypes::Real Real;
     typedef helper::ParticleMask ParticleMask;
-
+protected:
     PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
 
     virtual ~PairInteractionProjectiveConstraintSet();
-
+public:
     Data<double> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 

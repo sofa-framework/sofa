@@ -96,7 +96,7 @@ protected:
     Data<int> index;
     Data<double> min, max;
 
-public:
+
 
     StopperConstraint(MechanicalState* object)
         : Inherit(object)
@@ -115,7 +115,7 @@ public:
     }
 
     virtual ~StopperConstraint() {}
-
+public:
     virtual void init();
     virtual void buildConstraintMatrix(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x);
     virtual void getConstraintViolation(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v);

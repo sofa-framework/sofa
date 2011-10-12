@@ -51,10 +51,10 @@ class BehaviorModel : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BehaviorModel, objectmodel::BaseObject);
-
+protected:
     /// Destructor
     virtual ~BehaviorModel() {}
-
+public:
     /// Computation of a new simulation step.
     virtual void updatePosition(double dt) = 0;
 

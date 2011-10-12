@@ -74,11 +74,11 @@ public:
     typedef core::objectmodel::Data<VecDeriv1>    DataVecDeriv1;
     typedef core::objectmodel::Data<VecCoord2>    DataVecCoord2;
     typedef core::objectmodel::Data<VecDeriv2>    DataVecDeriv2;
-
+protected:
     MixedInteractionForceField(MechanicalState<DataTypes1> *mm1 = NULL, MechanicalState<DataTypes2> *mm2 = NULL);
 
     virtual ~MixedInteractionForceField();
-
+public:
     virtual void init();
 
     /// Retrieve the associated MechanicalState

@@ -45,8 +45,10 @@ public:
     Data<bool> exportAtBegin;
     Data<bool> exportAtEnd;
     bool  activateExport;
+protected:
     OBJExporter();
     virtual ~OBJExporter();
+public:
     void init();
     void cleanup();
     void bwdInit();

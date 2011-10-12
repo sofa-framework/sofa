@@ -49,6 +49,7 @@ class SOFA_CORE_API BaseConstraintSet : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(BaseConstraintSet, objectmodel::BaseObject);
 
+protected:
     BaseConstraintSet()
         : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))
         , m_constraintIndex(initData(&m_constraintIndex, (unsigned int)0, "constraintIndex", "Constraint index (first index in the right hand term resolution vector)"))
@@ -56,7 +57,7 @@ public:
     }
 
     virtual ~BaseConstraintSet() { }
-
+public:
     virtual void resetConstraint() {};
 
     /// Construct the Jacobian Matrix

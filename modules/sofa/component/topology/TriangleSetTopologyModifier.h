@@ -50,13 +50,13 @@ class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyModifier : public EdgeSetTopolog
 {
 public:
     SOFA_CLASS(TriangleSetTopologyModifier,EdgeSetTopologyModifier);
-
+protected:
     TriangleSetTopologyModifier()
         : list_Out(initData(&list_Out,"list_Out","triangles with at least one null values."))
     {}
 
     virtual ~TriangleSetTopologyModifier() {}
-
+public:
     virtual void init();
 
     virtual void reinit();

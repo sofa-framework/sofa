@@ -815,7 +815,7 @@ public:
     Vector Y;
 
     Data<int> f_blockSize;
-
+protected:
     BTDLinearSolver()
         : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
         , problem(initData(&problem, false,"showProblem", "display debug informations about subpartSolve computation") )
@@ -832,7 +832,7 @@ public:
             f_blockSize.setReadOnly(true);
         }
     }
-
+public:
     void my_identity(SubMatrix& Id, const int size_id);
 
     void invert(SubMatrix& Inv, const BlocType& m);

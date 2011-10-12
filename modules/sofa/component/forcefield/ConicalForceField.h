@@ -113,7 +113,7 @@ public:
     Data<Real> damping;
     Data<defaulttype::Vec3f> color;
     Data<bool> bDraw;
-
+protected:
     ConicalForceField()
         : coneCenter(initData(&coneCenter, "coneCenter", "cone center"))
         , coneHeight(initData(&coneHeight, "coneHeight", "cone height"))
@@ -125,7 +125,7 @@ public:
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the cone"))
     {
     }
-
+public:
     void setCone(const Coord& center, Coord height, Real angle)
     {
         coneCenter.setValue( center );

@@ -199,7 +199,7 @@ protected:
 
 
     bool activated;
-public:
+
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherit(object1, object2)
@@ -233,7 +233,7 @@ public:
     virtual ~BilateralInteractionConstraint()
     {
     }
-
+public:
     virtual void init();
 
     virtual void reinit()

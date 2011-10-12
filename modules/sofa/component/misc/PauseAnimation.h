@@ -46,10 +46,10 @@ class PauseAnimation: public virtual core::objectmodel::BaseObject
 public:
     SOFA_CLASS(PauseAnimation, core::objectmodel::BaseObject);
 
-
+protected:
     PauseAnimation () {};
     ~PauseAnimation () {};
-
+public:
     virtual void init();
 
     virtual bool isPaused() = 0;

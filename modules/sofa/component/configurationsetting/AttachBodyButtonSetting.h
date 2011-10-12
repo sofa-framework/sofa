@@ -42,7 +42,9 @@ class SOFA_GRAPH_COMPONENT_API AttachBodyButtonSetting: public MouseButtonSettin
 {
 public:
     SOFA_CLASS(AttachBodyButtonSetting,MouseButtonSetting);
+protected:
     AttachBodyButtonSetting();
+public:
     std::string getOperationType() {return "Attach";}
     Data<SReal> stiffness;
     Data<SReal> arrowSize;

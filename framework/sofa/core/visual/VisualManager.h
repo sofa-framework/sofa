@@ -43,10 +43,10 @@ class VisualManager : public virtual VisualModel
 {
 public:
     SOFA_CLASS(VisualManager, VisualModel);
-
+protected:
     /// Destructor
     virtual ~VisualManager() { }
-
+public:
     /**
      *  \brief Called before rendering the scene
      */

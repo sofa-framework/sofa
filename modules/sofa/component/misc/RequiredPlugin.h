@@ -53,8 +53,10 @@ class SOFA_GRAPH_COMPONENT_API RequiredPlugin : public core::objectmodel::BaseOb
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
     sofa::core::objectmodel::DataFileName pluginName;
+protected:
     RequiredPlugin();
     virtual ~RequiredPlugin() {}
+public:
     void loadPlugin();
 
     /// Pre-construction check method called by ObjectFactory.

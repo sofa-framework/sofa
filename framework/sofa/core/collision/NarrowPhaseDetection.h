@@ -51,10 +51,10 @@ public:
     SOFA_ABSTRACT_CLASS(NarrowPhaseDetection, Detection);
 
     typedef std::map< std::pair<core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
-
+protected:
     /// Destructor
     virtual ~NarrowPhaseDetection() { }
-
+public:
     /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginNarrowPhase()
     {

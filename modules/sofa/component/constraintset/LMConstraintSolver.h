@@ -67,8 +67,9 @@ protected:
 
 public:
     SOFA_CLASS(LMConstraintSolver, sofa::core::behavior::ConstraintSolver);
+protected:
     LMConstraintSolver();
-
+public:
     virtual void init();
     virtual void reinit() {graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());};
 

@@ -48,9 +48,9 @@ class SOFA_BASE_COLLISION_API TriangleOctreeModel : public  TriangleModel, publi
 {
 public:
     SOFA_CLASS(TriangleOctreeModel, TriangleModel);
-
+protected:
     TriangleOctreeModel();
-
+public:
 #if 0
     /// the triangles associated to a point
     vector<vector<int> > pTri;

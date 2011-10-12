@@ -81,7 +81,7 @@ public:
     typedef typename DataTypes2::MatrixDeriv::ColIterator MatrixDeriv2ColIterator;
     typedef typename DataTypes2::MatrixDeriv::RowType MatrixDerivRowType2;
 
-
+protected:
     LMConstraint( MechanicalState<DataTypes1> *dof1, MechanicalState<DataTypes2> *dof2)
         : constrainedObject1(dof1)
         , constrainedObject2(dof2)
@@ -101,7 +101,7 @@ public:
     }
 
     virtual ~LMConstraint();
-
+public:
     virtual void init();
 
     /// get Mechanical State 1 where the constraint will be expressed (can be a Mapped mechanical state)

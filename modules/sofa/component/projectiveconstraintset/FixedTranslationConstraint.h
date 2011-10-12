@@ -74,11 +74,11 @@ public:
     Data<bool> f_fixAll;
     Data<double> _drawSize;
     Data<SetIndex> f_coordinates;
-
+protected:
     FixedTranslationConstraint();
 
     virtual ~FixedTranslationConstraint();
-
+public:
     // methods to add/remove some indices
     void clearIndices();
     void addIndex(unsigned int index);

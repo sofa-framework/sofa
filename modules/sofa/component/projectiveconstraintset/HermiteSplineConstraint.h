@@ -52,7 +52,7 @@ using namespace sofa::defaulttype;
 	  - acceleration curve on the trajectory
 	*/
 template <class DataTypes>
-class HermiteSplineConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class HpermiteSplineConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(HermiteSplineConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
@@ -98,13 +98,13 @@ public:
 
 
 
-public:
+protected:
     HermiteSplineConstraint();
 
     HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
 
     ~HermiteSplineConstraint();
-
+public:
     void clearConstraints();
     void addConstraint(unsigned index );
 

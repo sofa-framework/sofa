@@ -86,11 +86,11 @@ public :
     VecCoord x0;
     ///position at the previous step for constrained DOFs position
     VecCoord xP;
-
+protected:
     LinearVelocityConstraint();
 
     virtual ~LinearVelocityConstraint();
-
+public:
     ///methods to add/remove some indices, keyTimes, keyVelocity
     void clearIndices();
     void addIndex(unsigned int index);

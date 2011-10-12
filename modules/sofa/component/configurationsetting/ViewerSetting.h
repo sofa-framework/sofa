@@ -43,8 +43,9 @@ class SOFA_GRAPH_COMPONENT_API ViewerSetting: public core::objectmodel::Configur
 {
 public:
     SOFA_CLASS(ViewerSetting,core::objectmodel::ConfigurationSetting);
+protected:
     ViewerSetting();
-
+public:
     Data<defaulttype::Vec<2,int> > resolution;
     Data<bool> fullscreen;
     Data<sofa::helper::OptionsGroup> cameraMode;

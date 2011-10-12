@@ -43,9 +43,9 @@ class OffSequenceLoader : public sofa::component::loader::MeshOffLoader
 {
 public:
     SOFA_CLASS(OffSequenceLoader,sofa::component::loader::MeshOffLoader);
-
+protected:
     OffSequenceLoader();
-
+public:
     virtual void init();
 
     virtual void reset();

@@ -32,11 +32,11 @@ public:
     typedef typename DataTypes::Real Real;
     typedef sofa::defaulttype::Vec<3,Real> Vec3;
 
-public:
+protected:
 
     JoinPoints();
     ~JoinPoints() {}
-
+public:
     void init();
     void reinit();
     void update();

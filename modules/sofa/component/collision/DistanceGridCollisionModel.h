@@ -135,11 +135,11 @@ public:
 
     Data< bool > usePoints;
     Data< bool > flipNormals;
-
+protected:
     RigidDistanceGridCollisionModel();
 
     ~RigidDistanceGridCollisionModel();
-
+public:
     core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
 
@@ -436,11 +436,11 @@ public:
 
     Data< bool > usePoints;
     Data< bool > singleContact;
-
+protected:
     FFDDistanceGridCollisionModel();
 
     ~FFDDistanceGridCollisionModel();
-
+public:
     core::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
     core::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }
 

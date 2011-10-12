@@ -77,11 +77,11 @@ protected:
     TopologyAlgorithms()
     {}
 
-public:
+
     /// Destructor
     virtual ~TopologyAlgorithms()
     {}
-
+public:
     virtual void init();
 
 protected:
@@ -107,11 +107,11 @@ protected:
     GeometryAlgorithms()
     {}
 
-public:
+
     /// Destructor
     virtual ~GeometryAlgorithms()
     {}
-
+public:
     virtual void init();
 };
 
@@ -129,11 +129,11 @@ protected:
         : m_topologyContainer(NULL)
     { }
 
-public:
+
     /// Destructor
     virtual ~TopologyModifier()
     { }
-
+public:
     virtual void init();
 
     /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
@@ -197,10 +197,10 @@ protected:
     TopologyContainer()
     {}
 
-public:
+
     /// Destructor
     virtual ~TopologyContainer();
-
+public:
     virtual void init();
 
     /// BaseMeshTopology API

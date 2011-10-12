@@ -86,11 +86,11 @@ public:
     Data<SetIndex> f_indices;
     Data<bool> f_fixAll;
     Data<double> _drawSize;
-
+protected:
     FixedConstraint();
 
     virtual ~FixedConstraint();
-
+public:
     void clearConstraints();
     void addConstraint(unsigned int index);
     void removeConstraint(unsigned int index);

@@ -53,9 +53,9 @@ class BaseNode : public virtual Base
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseNode, Base);
-
+protected:
     virtual ~BaseNode() {}
-
+public:
     /// @name Scene hierarchy
     /// @{
 

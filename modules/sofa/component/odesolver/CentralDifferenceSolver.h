@@ -49,9 +49,9 @@ class SOFA_EXPLICIT_ODE_SOLVER_API CentralDifferenceSolver : public sofa::core::
 {
 public:
     SOFA_CLASS(CentralDifferenceSolver, sofa::core::behavior::OdeSolver);
-
+protected:
     CentralDifferenceSolver();
-
+public:
     void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
     Data<double> f_rayleighMass;

@@ -51,11 +51,11 @@ class SOFA_SIMULATION_COMMON_API DefaultVisualManagerLoop : public core::visual:
 public:
     typedef core::visual::VisualLoop Inherit;
     SOFA_CLASS(DefaultVisualManagerLoop,core::visual::VisualLoop);
-
+protected:
     DefaultVisualManagerLoop(simulation::Node* gnode = NULL);
 
     virtual ~DefaultVisualManagerLoop();
-
+public:
     virtual void init();
 
     /// Initialize the textures

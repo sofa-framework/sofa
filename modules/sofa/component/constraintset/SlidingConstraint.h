@@ -73,7 +73,7 @@ protected:
     Real m_dist;	// constraint violation
     Real thirdConstraint; // 0 if A<proj<B, -1 if proj<A, 1 if B<proj
 
-public:
+
 
     SlidingConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherit(object1, object2)
@@ -104,7 +104,7 @@ public:
     virtual ~SlidingConstraint()
     {
     }
-
+public:
     virtual void init();
 
     virtual void buildConstraintMatrix(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex

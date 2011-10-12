@@ -70,11 +70,11 @@ public:
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
 
-
+protected:
     PairInteractionForceField(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
 
     virtual ~PairInteractionForceField();
-
+public:
     virtual void init();
 
     /// Retrieve the associated MechanicalState

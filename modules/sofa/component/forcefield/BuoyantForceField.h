@@ -123,11 +123,11 @@ protected:
     Coord       m_minBoxPrev;
     Coord       m_maxBoxPrev;
 
-public:
+
 
     BuoyantForceField();
     virtual ~BuoyantForceField();
-
+public:
     virtual void init();
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);

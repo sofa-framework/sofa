@@ -47,8 +47,9 @@ class SOFA_IMPLICIT_ODE_SOLVER_API StaticSolver : public sofa::core::behavior::O
 
 public:
     SOFA_CLASS(StaticSolver, sofa::core::behavior::OdeSolver);
+protected:
     StaticSolver();
-
+public:
     void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),

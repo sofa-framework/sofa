@@ -56,10 +56,10 @@ public:
     helper::vector<std::string> cellsDataObject;
     helper::vector<std::string> cellsDataField;
     helper::vector<std::string> cellsDataName;
-
+protected:
     MeshExporter();
     virtual ~MeshExporter();
-
+public:
     void writeMesh();
     void writeMeshVTKXML();
     void writeMeshVTK();

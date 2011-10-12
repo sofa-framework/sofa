@@ -85,11 +85,11 @@ protected:
     double timeToTestEnergyIncrease;
     double savedKineticEnergy;
 
-public:
+
     WriteState();
 
     virtual ~WriteState();
-
+public:
     virtual void init();
 
     virtual void reset();

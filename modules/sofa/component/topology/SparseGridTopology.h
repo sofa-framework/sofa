@@ -62,12 +62,12 @@ public:
 
     typedef fixed_array<Vector3,8> CubeCorners;
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio
-
+protected:
     SparseGridTopology(bool _isVirtual=false);
 
     /// Define using the resolution and the spatial size. The resolution corresponds to the number of points if all the cells were filled.
     SparseGridTopology(Vec3i numVertices, BoundingBox box, bool _isVirtual=false);
-
+public:
     static const float WEIGHT27[8][27];
     static const int cornerIndicesFromFineToCoarse[8][8];
 

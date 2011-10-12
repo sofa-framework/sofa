@@ -57,12 +57,12 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
-public:
+protected:
 
     NormalsFromPoints();
 
     virtual ~NormalsFromPoints() {}
-
+public:
     void init();
 
     void reinit();

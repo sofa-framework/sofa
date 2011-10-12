@@ -1111,7 +1111,7 @@ public:
     //--- partial mapping test
     Data< bool > sleeping;
 #endif
-
+protected:
     BarycentricMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to), mapper(NULL)
         , f_grid(new RegularGridMapper(NULL, NULL, NULL, NULL))
@@ -1149,7 +1149,7 @@ public:
         if (mapper != NULL)
             delete mapper;
     }
-
+public:
     void init();
 
     void reinit();

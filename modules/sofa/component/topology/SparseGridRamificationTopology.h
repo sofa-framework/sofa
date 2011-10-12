@@ -43,10 +43,10 @@ class SOFA_NON_UNIFORM_FEM_API SparseGridRamificationTopology : public SparseGri
 {
 public:
     SOFA_CLASS(SparseGridRamificationTopology,SparseGridTopology);
-
+protected:
     SparseGridRamificationTopology(bool _isVirtual=false);
     virtual ~SparseGridRamificationTopology();
-
+public:
     virtual void init();
 
     /// return the cube containing the given point (or -1 if not found),

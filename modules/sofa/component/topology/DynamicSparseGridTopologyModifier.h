@@ -42,13 +42,13 @@ class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridTopologyModifier : public Hexahe
 {
 public:
     SOFA_CLASS(DynamicSparseGridTopologyModifier,HexahedronSetTopologyModifier);
-
+protected:
     DynamicSparseGridTopologyModifier()
         : HexahedronSetTopologyModifier()
     { }
 
     virtual ~DynamicSparseGridTopologyModifier() {}
-
+public:
     virtual void init();
 
     /** \brief Actually Add some hexahedra to this topology. Wrong way to add some hexahedra for the moment !

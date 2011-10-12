@@ -54,9 +54,9 @@ class SOFA_BASE_TOPOLOGY_API MeshTopology : public core::topology::BaseMeshTopol
 {
 public:
     SOFA_CLASS(MeshTopology,core::topology::BaseMeshTopology);
-
+protected:
     MeshTopology();
-
+public:
     virtual void init();
 
     virtual int getNbPoints() const;

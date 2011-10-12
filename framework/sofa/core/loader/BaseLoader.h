@@ -50,13 +50,13 @@ class BaseLoader : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseLoader, objectmodel::BaseObject);
-
+protected:
     ///Constructor
     BaseLoader(): m_filename(initData(&m_filename,"filename","Filename of the object")) {}
 
     ///Destructor
     virtual ~BaseLoader() { }
-
+public:
     // virtual bool load(const char *filename) = 0;
 
     virtual bool load() = 0;

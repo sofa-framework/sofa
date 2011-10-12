@@ -66,11 +66,11 @@ public:
     typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
-
+protected:
     PairInteractionConstraint(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
 
     virtual ~PairInteractionConstraint();
-
+public:
     Data<double> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 

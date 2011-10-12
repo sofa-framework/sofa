@@ -107,7 +107,7 @@ public:
     Data < bool > active;
     Data < char > keyEvent;
     Data < Real > filter;
-
+protected:
     VaccumSphereForceField()
         : contacts(initData(&contacts,"contacts", "Contacts"))
         , centerDOF(NULL)
@@ -123,7 +123,7 @@ public:
         , filter(initData(&filter, (Real)0, "filter", "filter"))
     {
     }
-
+protected:
     void setSphere(const Coord& center, Real radius)
     {
         sphereCenter.setValue( center );

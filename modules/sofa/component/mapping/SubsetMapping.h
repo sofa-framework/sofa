@@ -99,9 +99,9 @@ public:
     Data < Real > f_radius;
     SubsetMappingInternalData<In, Out> data;
     void postInit();
-
+protected:
     SubsetMapping(core::State<In>* from, core::State<Out>* to);
-
+public:
     void clear(int reserve);
 
     int addPoint(int index);

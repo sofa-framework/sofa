@@ -77,7 +77,7 @@ protected:
     DOFBlockerLMConstraintInternalData<DataTypes> data;
     friend class DOFBlockerLMConstraintInternalData<DataTypes>;
 
-public:
+
     DOFBlockerLMConstraint( MechanicalState *dof)
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
         , BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain"))
@@ -96,7 +96,7 @@ public:
     };
 
     ~DOFBlockerLMConstraint() {};
-
+public:
     void clearConstraints();
     void addConstraint(unsigned int index);
     void removeConstraint(unsigned int index);

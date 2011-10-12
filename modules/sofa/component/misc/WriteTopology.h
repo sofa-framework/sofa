@@ -88,11 +88,11 @@ protected:
     //    double timeToTestEnergyIncrease;
     //    double savedKineticEnergy;
 
-public:
+
     WriteTopology();
 
     virtual ~WriteTopology();
-
+public:
     virtual void init();
 
     virtual void reset();

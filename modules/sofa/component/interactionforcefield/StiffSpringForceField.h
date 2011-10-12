@@ -83,7 +83,7 @@ protected:
     /// Apply the stiffness, i.e. accumulate df given dx
     virtual void addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, int i, const Spring& spring, double kFactor, double bFactor);
 
-public:
+
     StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0)
         : SpringForceField<DataTypes>(object1, object2, ks, kd)
     {
@@ -93,7 +93,7 @@ public:
         : SpringForceField<DataTypes>(ks, kd)
     {
     }
-
+public:
     virtual void init();
 
     /// Accumulate f corresponding to x,v

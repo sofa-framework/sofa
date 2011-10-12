@@ -59,12 +59,12 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
 
-public:
+protected:
 
     TransformEngine();
 
     ~TransformEngine() {}
-
+public:
     void init();
 
     void reinit();

@@ -59,7 +59,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-
+protected:
     HexahedronSetGeometryAlgorithms()
         : QuadSetGeometryAlgorithms<DataTypes>()
         , showHexaIndices(core::objectmodel::Base::initData(&showHexaIndices, (bool) false, "showHexaIndices", "Debug : view Hexa indices"))
@@ -68,7 +68,7 @@ public:
     {}
 
     virtual ~HexahedronSetGeometryAlgorithms() {}
-
+public:
     void computeHexahedronAABB(const HexaID h, Coord& minCoord, Coord& maxCoord) const;
 
     void computeHexahedronRestAABB(const HexaID h, Coord& minCoord, Coord& maxCoord) const;

@@ -78,7 +78,7 @@ public:
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
-
+protected:
     PlaneForceField()
         : planeNormal(initData(&planeNormal, "normal", "plane normal"))
         , planeD(initData(&planeD, (Real)0, "d", "plane d coef"))
@@ -93,7 +93,7 @@ public:
         DataTypes::set(n, 0, 1, 0);
         planeNormal.setValue(n);
     }
-
+public:
     void setPlane(const Deriv& normal, Real d)
     {
         Real n = normal.norm();

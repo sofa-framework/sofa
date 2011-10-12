@@ -143,10 +143,11 @@ class SOFA_CORE_API BaseLMConstraint: public BaseConstraintSet
 public:
     SOFA_ABSTRACT_CLASS(BaseLMConstraint, BaseConstraintSet);
 
+protected:
     BaseLMConstraint();
 
     ~BaseLMConstraint() {};
-
+public:
 
     /// Called by MechanicalWriteLMConstaint: The Object will compute the constraints present in the current state, and create the ConstraintGroup related.
     virtual void writeConstraintEquations(unsigned int& lineNumber, MultiVecId id, ConstraintParams::ConstOrder order)=0;

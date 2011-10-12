@@ -51,9 +51,10 @@ class SOFA_SIMULATION_COMMON_API Simulation: public virtual sofa::core::objectmo
 public:
 
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
+protected:
     Simulation();
     virtual ~Simulation();
-
+public:
     /// Print all object in the graph
     virtual void print(Node* root);
 

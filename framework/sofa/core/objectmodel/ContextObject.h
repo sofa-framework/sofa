@@ -46,14 +46,14 @@ class ContextObject : public virtual BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(ContextObject, BaseObject);
-
+protected:
     ContextObject()
         : BaseObject()
     {}
 
     virtual ~ContextObject()
     {}
-
+public:
     /// modify the Context
     virtual void apply()=0;
 

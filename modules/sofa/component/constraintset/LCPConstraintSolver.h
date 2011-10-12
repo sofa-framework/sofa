@@ -127,7 +127,7 @@ class SOFA_CONSTRAINT_API LCPConstraintSolver : public ConstraintSolverImpl
 public:
     SOFA_CLASS(LCPConstraintSolver, sofa::core::behavior::ConstraintSolver);
 
-
+protected:
     /**
     * @brief Default Constructor
     */
@@ -137,7 +137,7 @@ public:
     * @brief Default Destructor
     */
     virtual ~LCPConstraintSolver();
-
+public:
     void init();
 
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());

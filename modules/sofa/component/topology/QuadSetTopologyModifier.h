@@ -52,13 +52,13 @@ class SOFA_BASE_TOPOLOGY_API QuadSetTopologyModifier : public EdgeSetTopologyMod
 {
 public:
     SOFA_CLASS(QuadSetTopologyModifier,EdgeSetTopologyModifier);
-
+protected:
     QuadSetTopologyModifier()
         : EdgeSetTopologyModifier()
     { }
 
     virtual ~QuadSetTopologyModifier() {}
-
+public:
     virtual void init();
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES

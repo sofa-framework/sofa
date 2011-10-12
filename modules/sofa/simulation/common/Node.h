@@ -105,11 +105,11 @@ public:
     SOFA_ABSTRACT_CLASS2(Node, BaseNode, Context);
 
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
-
+protected:
     Node(const std::string& name="");
 
     virtual ~Node();
-
+public:
     /// Create, add, then return the new child of this Node
     virtual Node* createChild(const std::string& nodeName)=0;
 

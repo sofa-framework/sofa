@@ -51,11 +51,11 @@ class SOFA_CORE_API LinearSolver : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(LinearSolver, objectmodel::BaseObject);
-
+protected:
     LinearSolver();
 
     virtual ~LinearSolver();
-
+public:
     /// Reset the current linear system.
     virtual void resetSystem() = 0;
 

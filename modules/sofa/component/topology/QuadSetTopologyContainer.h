@@ -56,11 +56,11 @@ class SOFA_BASE_TOPOLOGY_API QuadSetTopologyContainer : public EdgeSetTopologyCo
 
 public:
     SOFA_CLASS(QuadSetTopologyContainer,EdgeSetTopologyContainer);
-
+protected:
     QuadSetTopologyContainer();
 
     virtual ~QuadSetTopologyContainer() {}
-
+public:
     virtual void init();
 
 

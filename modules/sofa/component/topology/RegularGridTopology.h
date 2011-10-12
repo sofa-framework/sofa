@@ -49,13 +49,13 @@ class SOFA_BASE_TOPOLOGY_API RegularGridTopology : public GridTopology
 public:
     typedef Vec<3, int> Vec3i;
     SOFA_CLASS(RegularGridTopology,GridTopology);
-
+protected:
     RegularGridTopology();
     /// Define using number of vertices
     RegularGridTopology(int nx, int ny, int nz);
     /// Define using number of vertices and size
     RegularGridTopology( Vec3i numVertices, BoundingBox box );
-
+public:
     /// set the spatial extent
     void setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax);
     /// set the spatial extent

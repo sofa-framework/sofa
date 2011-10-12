@@ -72,12 +72,13 @@ class SOFA_SIMULATION_COMMON_API CollisionAnimationLoop : public sofa::core::beh
 public:
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
 
+protected:
     CollisionAnimationLoop(simulation::Node* gnode);
 
     virtual ~CollisionAnimationLoop();
 
 
-
+public:
     /// Construction method called by ObjectFactory.
     template<class T>
     static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)

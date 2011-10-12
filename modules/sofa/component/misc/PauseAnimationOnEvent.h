@@ -44,11 +44,11 @@ class PauseAnimationOnEvent : public virtual PauseAnimation
 {
 public:
     SOFA_CLASS(PauseAnimationOnEvent,PauseAnimation);
-
+protected:
     PauseAnimationOnEvent();
 
     virtual ~PauseAnimationOnEvent();
-
+public:
     virtual void init();
 
     bool paused;

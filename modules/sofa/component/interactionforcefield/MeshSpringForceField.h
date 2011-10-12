@@ -66,7 +66,7 @@ protected:
 
     void addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping);
 
-public:
+
     MeshSpringForceField()
         : linesStiffness(initData(&linesStiffness,Real(0),"linesStiffness","Stiffness for the Lines",true))
         , linesDamping(initData(&linesDamping,Real(0),"linesDamping","Damping for the Lines",true))
@@ -92,7 +92,7 @@ public:
     }
 
     virtual ~MeshSpringForceField();
-
+public:
     virtual double getPotentialEnergy() const;
 
 

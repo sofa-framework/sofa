@@ -63,10 +63,10 @@ public:
     double time2;
     double timeStamp;
 #endif
+protected:
 
     CGLinearSolver();
 
-protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: p = p*beta + r
     inline void cgstep_beta(const core::ExecParams* params /* PARAMS FIRST */, Vector& p, Vector& r, double beta);

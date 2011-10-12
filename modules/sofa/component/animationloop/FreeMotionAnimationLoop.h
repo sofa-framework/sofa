@@ -58,10 +58,10 @@ public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
 
     SOFA_CLASS(FreeMotionAnimationLoop, sofa::simulation::CollisionAnimationLoop);
-
+protected:
     FreeMotionAnimationLoop(simulation::Node* gnode);
     virtual ~FreeMotionAnimationLoop();
-
+public:
     virtual void step (const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt);
 
     virtual void init();

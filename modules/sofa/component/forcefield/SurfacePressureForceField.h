@@ -84,11 +84,11 @@ protected:
     State state;								///< In pulse mode, says wether pressure is increasing or decreasing.
     Real m_pulseModePressure;					///< Current pressure computed in pulse mode.
 
-public:
+
 
     SurfacePressureForceField();
     virtual ~SurfacePressureForceField();
-
+public:
     virtual void init();
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);

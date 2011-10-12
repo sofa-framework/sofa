@@ -64,12 +64,12 @@ public:
     typedef defaulttype::Vec<3,Real> Vec3;
     typedef typename sofa::helper::vector<unsigned int>  VecIndices;
 
-public:
+protected:
 
     MeshBarycentricMapperEngine();
 
     ~MeshBarycentricMapperEngine() {}
-
+public:
     void init();
 
     void reinit();

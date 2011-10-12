@@ -65,11 +65,11 @@ public:
     typedef helper::vector<Real> VecReal;
 
     typedef behavior::ConstraintCorrection< TDataTypes > Inherit;
-
+protected:
     UncoupledConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~UncoupledConstraintCorrection();
-
+public:
     virtual void init();
 
     /// Handle Topological Changes.

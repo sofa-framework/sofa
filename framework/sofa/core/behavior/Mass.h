@@ -69,11 +69,11 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-
+protected:
     Mass(MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~Mass();
-
+public:
     virtual void init();
 
     /// Retrieve the associated MechanicalState

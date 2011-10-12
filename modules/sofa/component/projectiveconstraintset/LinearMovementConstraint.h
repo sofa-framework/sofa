@@ -104,11 +104,11 @@ public :
     Deriv prevM, nextM;
     ///initial constrained DOFs position
     VecCoord x0;
-
+protected:
     LinearMovementConstraint();
 
     virtual ~LinearMovementConstraint();
-
+public:
     ///methods to add/remove some indices, keyTimes, keyMovement
     void clearIndices();
     void addIndex(unsigned int index);

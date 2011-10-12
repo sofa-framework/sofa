@@ -56,13 +56,13 @@ class SOFA_CORE_API BaseMapping : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMapping, objectmodel::BaseObject);
-
+protected:
     /// Constructor
     BaseMapping();
 
     /// Destructor
     virtual ~BaseMapping();
-
+public:
     Data<bool> f_mapForces;
     Data<bool> f_mapConstraints;
     Data<bool> f_mapMasses;

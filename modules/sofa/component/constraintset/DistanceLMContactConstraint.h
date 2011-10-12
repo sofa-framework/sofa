@@ -78,7 +78,7 @@ public:
     typedef core::behavior::ConstraintGroup ConstraintGroup;
 
 
-public:
+protected:
     DistanceLMContactConstraint( MechanicalState *dof)
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
         , pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
@@ -106,7 +106,7 @@ public:
     }
 
     ~DistanceLMContactConstraint() {};
-
+public:
     // -- LMConstraint interface
     void buildConstraintMatrix(const core::ConstraintParams* cParams /* PARAMS FIRST */, core::MultiMatrixDerivId cId, unsigned int &cIndex);
 

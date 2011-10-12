@@ -82,14 +82,14 @@ protected:
     helper::vector< State<In2>* > fromModels2;
     /// Output Model container. New outputs are added through addOutputModel( Ou* )
     helper::vector< State<Out>* > toModels;
-public:
+
     /// Default Constructor for cpp examples
     Multi2Mapping();
     /// Constructor
     Multi2Mapping(helper::vector< State<In1>* > in1, helper::vector< State<In2>* > in2, helper::vector< State<Out>* > out);
     /// Destructor
     virtual ~Multi2Mapping() {};
-
+public:
     objectmodel::DataVectorObjectRef m_inputObjects1;
     objectmodel::DataVectorObjectRef m_inputObjects2;
     objectmodel::DataVectorObjectRef m_outputObjects;

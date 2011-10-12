@@ -70,9 +70,9 @@ public:
     Data< double > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
     Data< bool > indexFromEnd;
-
+protected:
     ConstantForceField();
-
+public:
     /// Set a force to a given particle
     void setForce( unsigned i, const Deriv& f );
 

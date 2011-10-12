@@ -54,7 +54,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-
+protected:
     QuadSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
         , showQuadIndices(core::objectmodel::Base::initData(&showQuadIndices, (bool) false, "showQuadIndices", "Debug : view Quad indices"))
@@ -63,7 +63,7 @@ public:
     { }
 
     virtual ~QuadSetGeometryAlgorithms() {}
-
+public:
     void computeQuadAABB(const QuadID i, Coord& minCoord, Coord& maxCoord) const;
 
     Coord computeQuadCenter(const QuadID i) const;

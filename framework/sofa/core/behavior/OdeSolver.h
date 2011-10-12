@@ -66,11 +66,11 @@ class SOFA_CORE_API OdeSolver : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(OdeSolver, objectmodel::BaseObject);
-
+protected:
     OdeSolver();
 
     virtual ~OdeSolver();
-
+public:
     /// Main computation method.
     ///
     /// Specify and execute all computation for timestep integration, i.e.

@@ -82,8 +82,8 @@ public:
 
 
 
-public:
 
+protected:
 
     HexahedronCompositeFEMForceFieldAndMass()
         : HexahedronFEMForceFieldAndMassT()
@@ -97,7 +97,7 @@ public:
     {
     }
 
-
+public:
 
     virtual void init();
     virtual void reinit()

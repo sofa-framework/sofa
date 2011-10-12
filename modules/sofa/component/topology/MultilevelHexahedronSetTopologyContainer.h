@@ -59,13 +59,13 @@ public:
     SOFA_CLASS(MultilevelHexahedronSetTopologyContainer,HexahedronSetTopologyContainer);
 
     typedef Vec<3,int>			Vec3i;
-
+protected:
     MultilevelHexahedronSetTopologyContainer();
 
     MultilevelHexahedronSetTopologyContainer(const helper::vector< Hexahedron > &hexahedra);
 
     virtual ~MultilevelHexahedronSetTopologyContainer();
-
+public:
     virtual void init();
 
     virtual void clear();

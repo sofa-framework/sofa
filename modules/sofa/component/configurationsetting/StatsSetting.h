@@ -42,8 +42,9 @@ class SOFA_GRAPH_COMPONENT_API StatsSetting: public core::objectmodel::Configura
 {
 public:
     SOFA_CLASS(StatsSetting,core::objectmodel::ConfigurationSetting);
+protected:
     StatsSetting();
-
+public:
     Data<bool> dumpState;
     Data<bool> logTime;
     Data<bool> exportState;

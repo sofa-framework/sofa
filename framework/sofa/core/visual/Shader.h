@@ -58,9 +58,10 @@ class Shader : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(Shader, objectmodel::BaseObject);
-
+protected:
     /// Destructor
     virtual ~Shader() { };
+public:
     /// Start the shader
     virtual void start() = 0;
     /// Stop the shader

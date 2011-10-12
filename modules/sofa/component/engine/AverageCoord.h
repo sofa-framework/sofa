@@ -60,12 +60,12 @@ public:
     typedef unsigned int Index;
     typedef sofa::helper::vector<Index> VecIndex;
 
-public:
+protected:
 
     AverageCoord();
 
     virtual ~AverageCoord() {}
-
+public:
     void init();
 
     void reinit();

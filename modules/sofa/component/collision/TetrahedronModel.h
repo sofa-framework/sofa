@@ -109,10 +109,10 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-public:
+protected:
 
     TetrahedronModel();
-
+public:
     virtual void init();
 
     // -- CollisionModel interface

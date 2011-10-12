@@ -76,9 +76,9 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     /// Vector of Jacobians (sparse constraint matrices).
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-
+protected:
     virtual ~State() { }
-
+public:
     /// @name New vectors access API based on VecId
     /// @{
 

@@ -56,13 +56,13 @@ class EdgeSetTopologyAlgorithms : public PointSetTopologyAlgorithms<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(EdgeSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(PointSetTopologyAlgorithms,DataTypes));
-
+protected:
     EdgeSetTopologyAlgorithms()
         : PointSetTopologyAlgorithms<DataTypes>()
     {}
 
     virtual ~EdgeSetTopologyAlgorithms() {}
-
+public:
     virtual void init();
 
 private:

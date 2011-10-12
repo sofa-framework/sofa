@@ -61,10 +61,10 @@ class SOFA_CORE_API Contact : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(Contact, objectmodel::BaseObject);
-
+protected:
     ///Destructor
     virtual ~Contact() { }
-
+public:
     /// Get the pair of collision models which are in contact
     virtual std::pair< core::CollisionModel*, core::CollisionModel* > getCollisionModels() = 0;
 

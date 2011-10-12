@@ -48,9 +48,9 @@ class SOFA_CORE_API BaseState : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseState, objectmodel::BaseObject);
-
+protected:
     virtual ~BaseState() { }
-
+public:
     /// Current size of all stored vectors
     virtual int getSize() const = 0;
 

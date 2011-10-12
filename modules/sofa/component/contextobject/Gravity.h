@@ -50,8 +50,9 @@ class SOFA_GRAPH_COMPONENT_API Gravity : public core::objectmodel::ContextObject
 {
 public:
     SOFA_CLASS(Gravity, core::objectmodel::ContextObject);
+protected:
     Gravity();
-
+public:
     Data<Vector3> f_gravity; ///< Gravity in the world coordinate system
 
     /// Modify the context of the Node

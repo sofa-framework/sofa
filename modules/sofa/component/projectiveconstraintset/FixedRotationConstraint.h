@@ -63,11 +63,11 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef Vec<3,Real> Vec3;
 
-public:
 
+protected:
     FixedRotationConstraint();
     virtual ~FixedRotationConstraint();
-
+public:
     void init();
 
     void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx);

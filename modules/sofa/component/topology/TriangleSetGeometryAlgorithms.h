@@ -58,7 +58,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-
+protected:
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
         ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
@@ -72,7 +72,7 @@ public:
     }
 
     virtual ~TriangleSetGeometryAlgorithms() {}
-
+public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
     virtual void init();

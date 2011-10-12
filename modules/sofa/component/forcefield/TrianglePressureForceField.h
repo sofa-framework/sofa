@@ -99,7 +99,7 @@ protected:
     Data<Real> dmax;// coordinates max of the plane for the vertex selection
     Data<bool> p_showForces;
 
-public:
+
 
     TrianglePressureForceField()
         : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
@@ -112,7 +112,7 @@ public:
     }
 
     virtual ~TrianglePressureForceField();
-
+public:
     virtual void init();
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);

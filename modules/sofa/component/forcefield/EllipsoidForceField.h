@@ -103,7 +103,7 @@ public:
     Data<Real> damping;
     Data<defaulttype::Vec3f> color;
     Data<bool> bDraw;
-
+protected:
     EllipsoidForceField()
         : contacts(initData(&contacts,"contacts", "Contacts"))
         , center(initData(&center, "center", "ellipsoid center"))
@@ -114,7 +114,7 @@ public:
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the ellipsoid"))
     {
     }
-
+public:
     void setStiffness(Real stiff)
     {
         stiffness.setValue( stiff );

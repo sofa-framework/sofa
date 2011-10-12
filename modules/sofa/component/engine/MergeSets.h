@@ -51,12 +51,12 @@ public:
     typedef T Index;
     typedef sofa::helper::vector<T> VecIndex;
     typedef std::set<T> SetIndex;
-public:
 
+protected:
     MergeSets();
 
     virtual ~MergeSets();
-
+public:
     void init();
 
     void reinit();

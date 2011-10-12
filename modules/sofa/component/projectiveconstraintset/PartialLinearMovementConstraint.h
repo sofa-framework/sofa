@@ -119,10 +119,11 @@ public :
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
     core::objectmodel::Data<VecBool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
+protected:
     PartialLinearMovementConstraint();
 
     virtual ~PartialLinearMovementConstraint();
-
+public:
     ///methods to add/remove some indices, keyTimes, keyMovement
     void clearIndices();
     void addIndex(unsigned int index);

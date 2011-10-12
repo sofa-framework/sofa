@@ -138,13 +138,13 @@ protected:
     Data<double> f_ks;
     Data<double> f_kd;
 
-public:
+
 
     TriangularBendingSprings(/*double _ks, double _kd*/);
     //TriangularBendingSprings(); //MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
 
     virtual ~TriangularBendingSprings();
-
+public:
     /// Searches triangle topology and creates the bending springs
     virtual void init();
 

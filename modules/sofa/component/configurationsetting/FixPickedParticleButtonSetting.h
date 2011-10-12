@@ -42,8 +42,9 @@ class SOFA_GRAPH_COMPONENT_API FixPickedParticleButtonSetting: public MouseButto
 {
 public:
     SOFA_CLASS(FixPickedParticleButtonSetting,MouseButtonSetting);
+protected:
     FixPickedParticleButtonSetting();
-
+public:
     std::string getOperationType() {return "Fix";}
     Data<SReal> stiffness;
 

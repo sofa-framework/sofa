@@ -61,10 +61,10 @@ class ParallelNarrowPhaseDetection : virtual public NarrowPhaseDetection
 public:
     typedef std::map< std::pair<core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
     typedef std::set< std::pair<core::CollisionModel*, core::CollisionModel* > > PairSet;
-
+protected:
     /// Destructor
     virtual ~ParallelNarrowPhaseDetection() { }
-
+public:
     /// Compute the final output pair at which the result of the collision between the two given model
     /// @return false if no collisions will be computed
     virtual bool getOutputPair(std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) = 0;

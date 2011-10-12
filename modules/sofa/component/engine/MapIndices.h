@@ -55,11 +55,11 @@ public:
     typedef unsigned int Index;
     typedef sofa::helper::vector<Index> VecIndex;
     typedef std::map<Index, Index> MapIndex;
-
+protected:
     MapIndices();
 
     virtual ~MapIndices();
-
+public:
     void init();
 
     void reinit();

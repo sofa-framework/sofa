@@ -50,13 +50,14 @@ class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyModifier : public PointSetTopologyMo
 {
 public:
     SOFA_CLASS(EdgeSetTopologyModifier,PointSetTopologyModifier);
+protected:
 
     EdgeSetTopologyModifier()
         : PointSetTopologyModifier()
     {}
 
     virtual ~EdgeSetTopologyModifier() {}
-
+public:
     virtual void init();
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES

@@ -70,7 +70,7 @@ public:
     typedef typename DataTypes::CPos CPos;
     enum { NC = CPos::static_size };
 
-
+protected:
     EdgeSetGeometryAlgorithms()
         : PointSetGeometryAlgorithms<DataTypes>()
         , showEdgeIndices(core::objectmodel::Base::initData(&showEdgeIndices, (bool) false, "showEdgeIndices", "Debug : view Edge indices."))
@@ -78,12 +78,12 @@ public:
         , _drawColor(initData(&_drawColor, sofa::defaulttype::Vector3(0.4,1.0,0.3), "drawColorEdges", "RGB code color used to draw edges."))
     {
     }
+    virtual ~EdgeSetGeometryAlgorithms() {}
 
+public:
     //virtual void reinit();
 
     virtual void draw(const core::visual::VisualParams* vparams);
-
-    virtual ~EdgeSetGeometryAlgorithms() {}
 
     /// computes the length of edge no i and returns it
     Real computeEdgeLength(const EdgeID i) const;
