@@ -288,7 +288,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             g.quad0 = facet2tq[g0.p0].second;
             g.nbq = facet2tq[g0.p0+g0.nbp].second - g.quad0;
             if (g.materialId == -1 && !g0.materialName.empty())
-                serr << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << sendl;
+                sout << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << sendl;
         }
     }
 

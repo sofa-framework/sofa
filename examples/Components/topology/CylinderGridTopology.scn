@@ -18,7 +18,6 @@
         <MechanicalObject />
         <UniformMass totalmass="15" />
         <CylinderGridTopology nx="5" ny="5" nz="20" length="35.56" radius="3.75" axis="0 1 0" />
-        <NORegularGridTopology nx="2" ny="10" nz="2" min="-1 0 -1" max="1 9 1" />
         <BoxConstraint box="-4 -0.1 -4 4 0.1 4" fixAll="0" />
         <HexahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="large" />
     </Node>
