@@ -1,0 +1,35 @@
+\section{Data, Engines and Tags}
+
+Component parameters are stored in member objects using \textit{Data} containers, templated on the type of attribute they represent.
+For instance, the list of particle indices constrained by a FixedConstraint is stored in a \lstinline!Data< vector<unsigned> >!.
+These containers provides a reflective API, used for serialization in XML files and the automatic creation of input/output widgets in the user interface, as discussed in Section~\ref{sec:interface}.
+% When the same data is needed by different components, each component contains a corresponding Data object, and these Data are synchronized using connections.
+%This eases thread-safe programming \SC{true ?} and allows the automatic computation and the update of Data dependencies using operator objects called \textit{Engines}.
+We can create connection between Data instances to keep their value synchronized. This is used for instance when a \textit{Loader} component loads several attributes from a file (such as topology, positions, stiffnesses, boundary conditions) which are then connected to one or more components using it as input.
+In some cases we need to not simply copy an existing value but compute it from one or several Data. This feature is provided by \textit{Engine} components.
+%We can also create connections through an \textit{Engine}, which is used when 
+Engines contain input and output Data, and their update method computes the output based on the input.
+%When a Data value is changed, the connected Data are flagged as \textit{dirty}, and so on recursively through connections and engine input-outputs.
+A mechanism of lazy evaluation is used to recursively flag Data values that are not up-to-date, but they are recomputed only when necessary.
+For instance, based on a bounding box and a vector of coordinates, a BoxROI engine computes the list of indices of the coordinates inside the box. These indices can then be used as input of a FixedConstraint to define a fixed boundary condition. With this design, the simulation can transparently be setup either from data stored in static files, or generated automatically with engines.
+
+The network of interconnected Data objects defines a data dependency graph, superimposed on the scene graph.
+This two-graph framework is used in other graphics software such as OpenInventor and Maya, where engines are used to generate the animation, by periodically updating the state vectors using time as input. 
+However, while this approach works well for straightforward computation pipelines, such as keyframe interpolation, it does not easily allow the branching and loops control structures used in sophisticated physical simulation algorithms.
+It is also a rather low-level representation, essentially encoding every computation steps required to compute a given Data.
+Consequently, we only use Engines to implement straightforward relations between the parameters of the model, which may remain unchanged during the simulation.
+% \SC{ True? Could we really not use this mechanism instead of mappings? It  would be nice to explain the difference with the mappings ;-)}
+In \sofa{}, the state update algorithms are instead determined by combining several components, communicating through scenegraph visitors, as explained in Section~\ref{sec:solvers}.
+
+\subsection*{Objects and node tagging (\textcode{Tag} and \textcode{TagSet}).}
+
+The goal of the introduction of tags is to provide one of the pieces necessary to support non-mechanical states (electrical potentials, constrast agent concentrations) as well as cleaner non-geometrical mechanical states (fluid dynamics, reduced-coordinate articulations).
+For example, in a simulation involving blood in deformable vessels, we would use two tags to distinguish the different states : mechanical, fluid.
+These tags will be used to easily work with only a subset of the components, so that the mechanical solver works on positions and forcefields but don't interferes with blood flow and pressure, and inversely for the fluid solver (see \footnote{http://wiki.sofa-framework.org/tdev/wiki/Notes/ProposalGenericStates} ).
+We decided on using there tags instead of extending the class hierarchy as was done before with the \textcode{State} and \textcode{MechanicalState} classes.
+A hierarchy is fine when we have only one feature that we want to differentiate on (such as base vs mechanical vs electrical), but when we add other criteria (lagrangian geometry vs eulerian vs reduced generalized coordinates, velocity vs vorticity, independent vs mapped DOFs) it is no longer manageable as specialized classes.
+A secondary use of these tags is to replace existing subsets mechanisms within CollisionModels (r2441) and Constraints (r3121).
+The design is based on the following elements.
+Tags are added to BaseObject, as a list of string (internally converted to a list of unique ids for faster processing).
+All visitors now filter the objects they process based on their list of tags.
+All solvers by default copy their own list of tags to the visitors they execute, so that they only affect the objects with the same tags as they have (TODO: this is currently broken). 
