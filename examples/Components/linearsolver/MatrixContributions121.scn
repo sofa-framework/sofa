@@ -28,7 +28,7 @@
                 <TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS2" />
-                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping12" input="@../MS1" output="@MS2" />
+                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping12" mapMatrices="true" input="@../MS1" output="@MS2" />
             </Node>
             <Node name="VisuA">
                 <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
@@ -36,7 +36,7 @@
             </Node>
         </Node>
     </Node>
-    <!-- uncomment to see the comparison between direct solver (contribution of interaction & mapping to the global matrix) and the iterative solver -->
+    <!-- uncomment to see the comparison between direct solver (contribution of interaction & mapping to the global matrix) and the iterative solver 
     <Node name="IterativeSolverNode">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver name="cg_solver" iterations="100" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -65,4 +65,5 @@
         </Node>
     </Node>
     <EvalPointsDistance name="comparator" object1="@DirectSolverNode/HexahedraA/MS1" object2="@IterativeSolverNode/HexahedraA/MS1" printLog="1" draw="1" />
+-->
 </Node>

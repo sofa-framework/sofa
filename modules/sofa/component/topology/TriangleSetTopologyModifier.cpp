@@ -482,9 +482,11 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
         removePointsProcess(vertexToBeRemoved);
     }
 
-#ifndef NDEBUG // TO BE REMOVED WHEN SURE.
-    Debug();
-#endif
+    /*
+    #ifndef NDEBUG // TO BE REMOVED WHEN SURE.
+    	Debug();
+    #endif
+    */
 }
 
 

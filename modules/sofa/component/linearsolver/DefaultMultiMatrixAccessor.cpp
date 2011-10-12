@@ -36,15 +36,11 @@ namespace component
 namespace linearsolver
 {
 
+#define MULTIMATRIX_VERBOSE 0
 
 DefaultMultiMatrixAccessor::DefaultMultiMatrixAccessor()
     : globalMatrix(NULL)
     , globalDim(0)
-#ifdef SOFA_SUPPORT_CRS_MATRIX
-    , MULTIMATRIX_VERBOSE(false)
-#else
-    , MULTIMATRIX_VERBOSE(false)
-#endif
 {
 }
 
@@ -100,6 +96,14 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* m
 
     if ((jmatrix != NULL) && (mapping->isMechanical()) && (mapping->areMatricesMapped()))
     {
+        mapping->setCreateMappedMatrixFunc(&DefaultMultiMatrixAccessor::createMatrix);
+        mapping->setCreateMappedInteractionMatrixFunc(&DefaultMultiMatrixAccessor::createInteractionMatrix);
+
+        const BaseMechanicalState* mappedState  = const_cast<const BaseMechanicalState*>(mapping->getMechTo()[0]);
+        defaulttype::BaseMatrix* mappedstiffness;
+        mappedstiffness = mapping->createMappedMatrix(mappedState,mappedState);
+        mappedMatrices[mappedState]=mappedstiffness;
+
         mappingList.push_back(mapping);
 
         if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
@@ -110,7 +114,7 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* m
     }
     else
     {
-        std::cout << "	-- Warning DefaultMultiMatrixAccessor : mapping " << mapping->getName()<<" is not mechanical or dont have J matrix " << std::endl;
+        std::cout << "	-- Warning DefaultMultiMatrixAccessor : mapping " << mapping->getName()<<" do not build matrices " << std::endl;
     }
 }
 
@@ -200,7 +204,7 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
         }
         else // this mapped state and its matrix hasnt been created we creat it and its matrix by "createMatrix"
         {
-            defaulttype::BaseMatrix* m = this->createMatrix(mstate);
+            defaulttype::BaseMatrix* m = createMatrix(mstate);
             r.matrix = m;
             r.offset = 0;
             //when creating an matrix, it dont have to be added before
@@ -632,10 +636,10 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
     }//end of mapping loop
 }
 
-defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* mappedState) const
+defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* mappedState)
 {
     // A diagonal stiffness matrix is added if and only if it doenst exist
-    assert(mappedMatrices.find(mappedState) == mappedMatrices.end() );
+    //assert(mappedMatrices.find(mappedState) == mappedMatrices.end() );
 
     component::linearsolver::FullMatrix<SReal>* m = new component::linearsolver::FullMatrix<SReal>;
     m->resize( mappedState->getMatrixSize(),mappedState->getMatrixSize());
@@ -648,10 +652,10 @@ defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::co
     return m;
 }
 
-defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createInteractionMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2) const
+defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createInteractionMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2)
 {
     // The auxiliar interaction matrix is added if and only if at least one of two state is not real state
-    assert(! (realStateOffsets.find(mstate1) != realStateOffsets.end() && realStateOffsets.find(mstate2) != realStateOffsets.end()) );
+    //assert(! (realStateOffsets.find(mstate1) != realStateOffsets.end() && realStateOffsets.find(mstate2) != realStateOffsets.end()) );
     component::linearsolver::FullMatrix<SReal>* m = new component::linearsolver::FullMatrix<SReal>;
     m->resize( mstate1->getMatrixSize(),mstate2->getMatrixSize() );
 
@@ -672,14 +676,44 @@ defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createInteractionMatrix(con
 //TODO separating in other file
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-defaulttype::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* mappedState) const
+void CRSMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mapping)
+{
+    const sofa::defaulttype::BaseMatrix* jmatrix = mapping->getJ();
+
+    if ((jmatrix != NULL) && (mapping->isMechanical()) && (mapping->areMatricesMapped()))
+    {
+        mapping->setCreateMappedMatrixFunc(&CRSMultiMatrixAccessor::createMatrix);
+        mapping->setCreateMappedInteractionMatrixFunc(&CRSMultiMatrixAccessor::createInteractionMatrix);
+
+        const BaseMechanicalState* mappedState  = const_cast<const BaseMechanicalState*>(mapping->getMechTo()[0]);
+        defaulttype::BaseMatrix* mappedstiffness;
+        mappedstiffness = mapping->createMappedMatrix(mappedState,mappedState);
+        mappedMatrices[mappedState]=mappedstiffness;
+
+        mappingList.push_back(mapping);
+
+        if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
+        {
+            std::cout << "Mapping Visitor : adding validated MechanicalMapping " << mapping->getName()
+                    << " with J["<< jmatrix->rowSize()<<"."<<jmatrix->colSize()<<"]" <<std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "	-- Warning DefaultMultiMatrixAccessor : mapping " << mapping->getName()<<" do not build matrices " << std::endl;
+    }
+}
+
+
+
+defaulttype::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* mappedState)
 {
     // A diagonal stiffness matrix is added if and only if it doenst exist
-    assert(mappedMatrices.find(mappedState) == mappedMatrices.end() );
+    //assert(mappedMatrices.find(mappedState) == mappedMatrices.end() );
 
     int nbDOFs  = mappedState->getSize();
     int dofSize = mappedState->getDerivDimension();//getMatrixBlockSize();
-    int elementsize = globalMatrix->getElementSize();
+    //int elementsize = globalMatrix->getElementSize();
 
     if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
     {
@@ -690,20 +724,20 @@ defaulttype::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core::
                 <<std::endl;
     }
 
-    return createBlocSparseMatrix(dofSize,dofSize,elementsize,nbDOFs,nbDOFs,this->MULTIMATRIX_VERBOSE);
+    return createBlocSparseMatrix(dofSize,dofSize,sizeof(SReal) /*elementsize*/,nbDOFs,nbDOFs,MULTIMATRIX_VERBOSE);
 }
 
 
-defaulttype::BaseMatrix* CRSMultiMatrixAccessor::createInteractionMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2) const
+defaulttype::BaseMatrix* CRSMultiMatrixAccessor::createInteractionMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2)
 {
     // The auxiliar interaction matrix is added if and only if at least one of two state is not real state
-    assert(! (realStateOffsets.find(mstate1) != realStateOffsets.end() && realStateOffsets.find(mstate2) != realStateOffsets.end()) );
+    //assert(! (realStateOffsets.find(mstate1) != realStateOffsets.end() && realStateOffsets.find(mstate2) != realStateOffsets.end()) );
 
     int nbDOFs1  = mstate1->getSize();
     int dofSize1 = mstate1->getDerivDimension();//getMatrixBlockSize();
     int nbDOFs2  = mstate2->getSize();
     int dofSize2 = mstate2->getDerivDimension();//getMatrixBlockSize();
-    int elementsize = globalMatrix->getElementSize();
+    //int elementsize = globalMatrix->getElementSize();
 
     if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
     {
@@ -715,7 +749,7 @@ defaulttype::BaseMatrix* CRSMultiMatrixAccessor::createInteractionMatrix(const s
                 <<std::endl;
     }
 
-    return createBlocSparseMatrix(dofSize1,dofSize2,elementsize,nbDOFs1,nbDOFs2,this->MULTIMATRIX_VERBOSE);
+    return createBlocSparseMatrix(dofSize1,dofSize2,sizeof(SReal) /*elementsize*/,nbDOFs1,nbDOFs2,MULTIMATRIX_VERBOSE);
 }
 
 void CRSMultiMatrixAccessor::computeGlobalMatrix()
@@ -832,11 +866,11 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
             int MelementSize   = K2.matrix->getElementSize();
 
             // creating a tempo matrix  tempoMatrix
-            defaulttype::BaseMatrix* tempoMatrix = createBlocSparseMatrix(JblocCsize, K2blocCsize, MelementSize, JnbBlocCol, K2nbBlocCol,this->MULTIMATRIX_VERBOSE);
+            defaulttype::BaseMatrix* tempoMatrix = createBlocSparseMatrix(JblocCsize, K2blocCsize, MelementSize, JnbBlocCol, K2nbBlocCol,MULTIMATRIX_VERBOSE);
             // Matrix multiplication  tempoMatrix += Jt * K22
-            opAddMulJTM(tempoMatrix,   matrixJJ, K2.matrix,       0,0      , JblocRsize, JblocCsize , K2blocCsize, JelementSize,MelementSize,this->MULTIMATRIX_VERBOSE);
+            opAddMulJTM(tempoMatrix,   matrixJJ, K2.matrix,       0,0      , JblocRsize, JblocCsize , K2blocCsize, JelementSize,MelementSize,MULTIMATRIX_VERBOSE);
             // Matrix multiplication  K11         += tempoMatrix * J
-            opAddMulMJ( K1.matrix  ,tempoMatrix,  matrixJJ, offset1,offset1, JblocCsize, K2blocCsize, JblocCsize , JelementSize,MelementSize,this->MULTIMATRIX_VERBOSE);
+            opAddMulMJ( K1.matrix  ,tempoMatrix,  matrixJJ, offset1,offset1, JblocCsize, K2blocCsize, JblocCsize , JelementSize,MelementSize,MULTIMATRIX_VERBOSE);
 
             delete tempoMatrix;
 
@@ -926,7 +960,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
                 int JelementSize   = matrixJJ->getElementSize();
                 int MelementSize   = I_32.matrix->getElementSize();
 
-                opAddMulJTM(I_12.matrix,matrixJJ,I_32.matrix,offR_I_12,offC_I_12, JblocRsize, JblocCsize,I_32_blocCsize,JelementSize,MelementSize,this->MULTIMATRIX_VERBOSE);
+                opAddMulJTM(I_12.matrix,matrixJJ,I_32.matrix,offR_I_12,offC_I_12, JblocRsize, JblocCsize,I_32_blocCsize,JelementSize,MelementSize,MULTIMATRIX_VERBOSE);
             }
 
             if(interactionList[i].second == outstate)
@@ -967,7 +1001,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
                 int JelementSize   = matrixJJ->getElementSize();
                 int MelementSize   = I_23.matrix->getElementSize();
 
-                opAddMulMJ(I_21.matrix,I_23.matrix,matrixJJ,offR_I_21,offC_I_21, I_23_blocRsize,I_23_blocCsize,JblocCsize,JelementSize,MelementSize,this->MULTIMATRIX_VERBOSE);
+                opAddMulMJ(I_21.matrix,I_23.matrix,matrixJJ,offR_I_21,offC_I_21, I_23_blocRsize,I_23_blocCsize,JblocCsize,JelementSize,MelementSize,MULTIMATRIX_VERBOSE);
 
             }
 
