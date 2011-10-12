@@ -30,6 +30,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 /*
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/VisualModel.h>
@@ -100,7 +101,7 @@ public:
         /// Construction method called by the factory.
         ///
         /// \pre canCreate(context, arg) == true.
-        virtual objectmodel::BaseObject* createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
+        virtual objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
 
         /// type_info structure associated with the type of intanciated objects.
         virtual const std::type_info& type() = 0;
@@ -178,13 +179,13 @@ public:
     void resetAlias(std::string name, ClassEntry* previous);
 
     /// Create an object given a context and a description.
-    objectmodel::BaseObject* createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
+    objectmodel::BaseObject::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
 
     /// Get the ObjectFactory singleton instance
     static ObjectFactory* getInstance();
 
     /// \copydoc createObject
-    static objectmodel::BaseObject* CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    static objectmodel::BaseObject::SPtr CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
         return getInstance()->createObject(context, arg);
     }
@@ -234,11 +235,10 @@ public:
         RealObject* instance = NULL;
         return RealObject::canCreate(instance, context, arg);
     }
-    objectmodel::BaseObject *createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
         RealObject* instance = NULL;
-        RealObject::create(instance, context, arg);
-        return instance;
+        return RealObject::create(instance, context, arg);
     }
     const std::type_info& type()
     {

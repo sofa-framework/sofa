@@ -57,7 +57,7 @@ namespace behavior
 class BaseConstraintCorrection : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(BaseConstraintCorrection, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseConstraintCorrection, objectmodel::BaseObject);
 
     virtual ~BaseConstraintCorrection() {}
 

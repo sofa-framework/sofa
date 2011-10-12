@@ -57,7 +57,7 @@ namespace visual
 class Shader : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(Shader, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(Shader, objectmodel::BaseObject);
 
     /// Destructor
     virtual ~Shader() { };

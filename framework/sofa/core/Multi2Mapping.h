@@ -48,7 +48,7 @@ template <class TIn1, class TIn2, class TOut>
 class Multi2Mapping : public BaseMapping
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE3(Multi2Mapping,TIn1, TIn2,TOut), BaseMapping);
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE3(Multi2Mapping,TIn1, TIn2,TOut), BaseMapping);
 
     /// Input Model Type
     typedef TIn1 In1;

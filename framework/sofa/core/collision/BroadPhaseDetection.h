@@ -45,7 +45,7 @@ namespace collision
 class BroadPhaseDetection : virtual public Detection
 {
 public:
-    SOFA_CLASS(BroadPhaseDetection, Detection);
+    SOFA_ABSTRACT_CLASS(BroadPhaseDetection, Detection);
 
     /// Destructor
     virtual ~BroadPhaseDetection() { }

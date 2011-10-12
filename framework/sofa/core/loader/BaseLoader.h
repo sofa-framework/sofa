@@ -49,7 +49,7 @@ bool SOFA_CORE_API canLoad(const char* filename);
 class BaseLoader : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(BaseLoader, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseLoader, objectmodel::BaseObject);
 
     ///Constructor
     BaseLoader(): m_filename(initData(&m_filename,"filename","Filename of the object")) {}

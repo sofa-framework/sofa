@@ -44,7 +44,7 @@ template<class Object>
 class SOFA_SIMULATION_COMMON_API Element : public BaseElement
 {
 private:
-    Object* object;
+    typename Object::SPtr object;
 public:
     Element(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
 
@@ -52,7 +52,7 @@ public:
 
     Object* getTypedObject();
 
-    virtual void setObject(Object* newObject);
+    virtual void setObject(typename Object::SPtr newObject);
 
     /// Get the associated object
     virtual core::objectmodel::Base* getObject();

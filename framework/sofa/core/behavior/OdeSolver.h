@@ -65,7 +65,7 @@ namespace behavior
 class SOFA_CORE_API OdeSolver : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(OdeSolver, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(OdeSolver, objectmodel::BaseObject);
 
     OdeSolver();
 

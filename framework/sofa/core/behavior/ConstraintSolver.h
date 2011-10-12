@@ -48,7 +48,7 @@ class SOFA_CORE_API ConstraintSolver : public virtual objectmodel::BaseObject
 {
 public:
 
-    SOFA_CLASS(ConstraintSolver, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(ConstraintSolver, objectmodel::BaseObject);
 
     ConstraintSolver();
 

@@ -55,7 +55,7 @@ namespace core
 class SOFA_CORE_API BaseMapping : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(BaseMapping, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseMapping, objectmodel::BaseObject);
 
     /// Constructor
     BaseMapping();

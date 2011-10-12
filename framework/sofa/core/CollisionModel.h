@@ -69,7 +69,7 @@ class VisualParams;
 class SOFA_CORE_API CollisionModel : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(CollisionModel, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(CollisionModel, objectmodel::BaseObject);
 
     typedef CollisionElementIterator Iterator;
     typedef topology::BaseMeshTopology Topology;

@@ -58,7 +58,7 @@ template<class TDataTypes>
 class PairInteractionForceField : public BaseInteractionForceField
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PairInteractionForceField,TDataTypes), BaseInteractionForceField);
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(PairInteractionForceField,TDataTypes), BaseInteractionForceField);
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;

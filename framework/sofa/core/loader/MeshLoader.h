@@ -44,7 +44,7 @@ using sofa::defaulttype::Vector3;
 class SOFA_CORE_API MeshLoader : public virtual BaseLoader
 {
 public:
-    SOFA_CLASS(MeshLoader, BaseLoader);
+    SOFA_ABSTRACT_CLASS(MeshLoader, BaseLoader);
 
     MeshLoader();
 

@@ -50,7 +50,7 @@ DefaultVisualManagerLoop::DefaultVisualManagerLoop(simulation::Node* _gnode)
     : Inherit()
     , gRoot(_gnode)
 {
-    assert(gRoot);
+    //assert(gRoot);
 }
 
 DefaultVisualManagerLoop::~DefaultVisualManagerLoop()
@@ -58,6 +58,11 @@ DefaultVisualManagerLoop::~DefaultVisualManagerLoop()
 
 }
 
+void DefaultVisualManagerLoop::init()
+{
+    if (!gRoot)
+        gRoot = dynamic_cast<simulation::Node*>(this->getContext());
+}
 
 
 void DefaultVisualManagerLoop::initStep(sofa::core::ExecParams* params)

@@ -300,7 +300,7 @@ public:
 class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
 {
 public:
-    SOFA_CLASS(TopologyEngine, DataEngine);
+    SOFA_ABSTRACT_CLASS(TopologyEngine, DataEngine);
     typedef sofa::core::objectmodel::Data< sofa::helper::vector <void*> > t_topologicalData;
 
     TopologyEngine(): m_topologicalData(NULL)  {}

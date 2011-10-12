@@ -103,18 +103,19 @@ public:
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
-    static bool canCreate(T*& /*obj*/, BaseContext* /*context*/, BaseObjectDescription* /*arg*/)
+    static bool canCreate(T* /*obj*/, BaseContext* /*context*/, BaseObjectDescription* /*arg*/)
     {
         return true;
     }
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static void create(T*& obj, BaseContext* context, BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
-        obj = new T;
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
         if (context) context->addObject(obj);
         if (arg) obj->parse(arg);
+        return obj;
     }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters

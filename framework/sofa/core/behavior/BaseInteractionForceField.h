@@ -51,7 +51,7 @@ namespace behavior
 class SOFA_CORE_API BaseInteractionForceField : public BaseForceField
 {
 public:
-    SOFA_CLASS(BaseInteractionForceField, BaseForceField);
+    SOFA_ABSTRACT_CLASS(BaseInteractionForceField, BaseForceField);
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()

@@ -145,9 +145,9 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry* previous)
     p = previous;
 }
 
-objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
-    objectmodel::BaseObject* object = NULL;
+    objectmodel::BaseObject::SPtr object = NULL;
     std::vector< std::pair<std::string, Creator*> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string templatename = arg->getAttribute( "template", "");

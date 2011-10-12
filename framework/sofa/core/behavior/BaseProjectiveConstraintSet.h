@@ -54,7 +54,7 @@ namespace behavior
 class SOFA_CORE_API BaseProjectiveConstraintSet : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(BaseProjectiveConstraintSet, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseProjectiveConstraintSet, objectmodel::BaseObject);
 
     BaseProjectiveConstraintSet()
         : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))

@@ -52,11 +52,11 @@ Element<Object>::~Element()
 template<class Object>
 Object* Element<Object>::getTypedObject()
 {
-    return object;
+    return object.get();
 }
 
 template<class Object>
-void Element<Object>::setObject(Object* newObject)
+void Element<Object>::setObject(typename Object::SPtr newObject)
 {
     object = newObject;
 }
@@ -65,7 +65,7 @@ void Element<Object>::setObject(Object* newObject)
 template<class Object>
 core::objectmodel::Base* Element<Object>::getObject()
 {
-    return object;
+    return object.get();
 }
 
 

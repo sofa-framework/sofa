@@ -53,7 +53,7 @@ class BaseObject;
 class BaseNode : public virtual Base
 {
 public:
-    SOFA_CLASS(BaseNode, Base);
+    SOFA_ABSTRACT_CLASS(BaseNode, Base);
 
     virtual ~BaseNode() {}
 

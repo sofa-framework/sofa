@@ -141,7 +141,7 @@ protected:
 class SOFA_CORE_API BaseLMConstraint: public BaseConstraintSet
 {
 public:
-    SOFA_CLASS(BaseLMConstraint, BaseConstraintSet);
+    SOFA_ABSTRACT_CLASS(BaseLMConstraint, BaseConstraintSet);
 
     BaseLMConstraint();
 
