@@ -135,9 +135,10 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        sofa::core::objectmodel::BaseObject::create(obj, context, arg);
+        typename T::SPtr obj = sofa::core::objectmodel::BaseObject::create(0, context, arg);
+
         if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
             obj->constrainedObject1 = dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1","..")));
@@ -149,6 +150,8 @@ public:
                 obj->constrainedObject2 =
                         dynamic_cast<MechanicalState<DataTypes1>*>(context->getMechanicalState());
         }
+
+        return obj;
     }
 
     virtual std::string getTemplateName() const

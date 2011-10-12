@@ -208,7 +208,7 @@ public:
     /// This implementation read the object1 and object2 attributes to
     /// find the input and output topologies of this mapping.
     template<class T>
-    static void create ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    static typename T::SPtr create (T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
         BaseMeshTopology* topoIn=NULL;
         BaseMeshTopology* topoOut=NULL;
@@ -293,7 +293,8 @@ public:
                 }
             }
 
-            obj = new T( (arg?topoIn:NULL), (arg?topoOut:NULL));
+            typename T::SPtr obj = sofa::core::objectmodel::New<T>((arg?topoIn:NULL), (arg?topoOut:NULL));
+
 #ifndef SOFA_DEPRECATE_OLD_API
             if (!object1Path.empty())
                 obj->m_inputTopology.setValue( object1Path );
@@ -307,6 +308,8 @@ public:
 
         if (arg)
             obj->parse(arg);
+
+        return obj;
     }
 
 protected:

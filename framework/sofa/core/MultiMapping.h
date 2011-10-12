@@ -362,7 +362,7 @@ public:
     /// This implementation read the input and output attributes to
     /// find the input and output models of this mapping.
     template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         bool createResult = true;
         helper::vector< State<In>* > stin;
@@ -375,13 +375,15 @@ public:
         if(!createResult)
             return;
 
-        obj = new T( stin, stout);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(stin, stout);
 
         if (context)
             context->addObject(obj);
 
         if (arg)
             obj->parse(arg);
+
+        return obj;
     }
 
 protected:

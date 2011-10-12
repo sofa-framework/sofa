@@ -203,9 +203,10 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        core::behavior::BaseInteractionProjectiveConstraintSet::create(obj, context, arg);
+        typename T::SPtr obj = core::behavior::BaseInteractionProjectiveConstraintSet::create(0, context, arg);
+
         if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
             obj->mstate1 = dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));
@@ -217,6 +218,8 @@ public:
                 obj->mstate2 =
                         dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState());
         }
+
+        return obj;
     }
 
     virtual std::string getTemplateName() const
