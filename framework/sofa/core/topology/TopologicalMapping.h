@@ -210,6 +210,8 @@ public:
     template<class T>
     static typename T::SPtr create (T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
+        typename T::SPtr obj;
+
         BaseMeshTopology* topoIn=NULL;
         BaseMeshTopology* topoOut=NULL;
 
@@ -293,7 +295,7 @@ public:
                 }
             }
 
-            typename T::SPtr obj = sofa::core::objectmodel::New<T>((arg?topoIn:NULL), (arg?topoOut:NULL));
+            obj = sofa::core::objectmodel::New<T>((arg?topoIn:NULL), (arg?topoOut:NULL));
 
 #ifndef SOFA_DEPRECATE_OLD_API
             if (!object1Path.empty())

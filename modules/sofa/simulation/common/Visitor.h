@@ -117,12 +117,13 @@ public:
             ctime_t t0 = node->startTime();
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                if(testTags(*it))
+                typename Container::pointed_type* ptr = &*(*it);
+                if(testTags(ptr))
                 {
-                    debug_write_state_before(*it);
-                    (visitor->*fn)(node, *it);
-                    debug_write_state_after(*it);
-                    t0 = node->endTime(t0, category, *it);
+                    debug_write_state_before(ptr);
+                    (visitor->*fn)(node, ptr);
+                    debug_write_state_after(ptr);
+                    t0 = node->endTime(t0, category, ptr);
                 }
             }
         }
@@ -131,13 +132,14 @@ public:
         {
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                if(testTags(*it))
+                typename Container::pointed_type* ptr = &*(*it);
+                if(testTags(ptr))
                 {
-                    debug_write_state_before(*it);
-                    ctime_t t=begin(ctx, *it);
-                    (visitor->*fn)(ctx, *it);
-                    end(ctx, *it, t);
-                    debug_write_state_after(*it);
+                    debug_write_state_before(ptr);
+                    ctime_t t=begin(ctx, ptr);
+                    (visitor->*fn)(ctx, ptr);
+                    end(ctx, ptr, t);
+                    debug_write_state_after(ptr);
                 }
             }
         }
@@ -156,12 +158,13 @@ public:
 
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                if(testTags(*it))
+                typename Container::pointed_type* ptr = &*(*it);
+                if(testTags(ptr))
                 {
-                    debug_write_state_before(*it);
-                    res = (visitor->*fn)(node, *it);
-                    debug_write_state_after(*it);
-                    t0 = node->endTime(t0, category, *it);
+                    debug_write_state_before(ptr);
+                    res = (visitor->*fn)(node, ptr);
+                    debug_write_state_after(ptr);
+                    t0 = node->endTime(t0, category, ptr);
                 }
             }
         }
@@ -170,13 +173,14 @@ public:
         {
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                if(testTags(*it))
+                typename Container::pointed_type* ptr = &*(*it);
+                if(testTags(ptr))
                 {
-                    debug_write_state_before(*it);
-                    ctime_t t=begin(ctx, *it);
-                    res = (visitor->*fn)(ctx, *it);
-                    end(ctx, *it, t);
-                    debug_write_state_after(*it);
+                    debug_write_state_before(ptr);
+                    ctime_t t=begin(ctx, ptr);
+                    res = (visitor->*fn)(ctx, ptr);
+                    end(ctx, ptr, t);
+                    debug_write_state_after(ptr);
                 }
             }
         }

@@ -419,7 +419,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
         groups.clear();
         for (unsigned int g=0; g<root->child.size(); ++g)
         {
-            simulation::Node* n = root->child[g];
+            simulation::Node* n = root->child[g].get();
             double gdim = 0;
             simulation::MechanicalGetDimensionVisitor(mparams /* PARAMS FIRST */, &gdim).execute(n);
             if (gdim <= 0) continue;

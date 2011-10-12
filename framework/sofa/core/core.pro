@@ -99,6 +99,7 @@ HEADERS += \
 	MultiMapping.inl \
 	Multi2Mapping.h \
 	Multi2Mapping.inl \
+	objectmodel/SPtr.h \
 	objectmodel/Base.h \
 	objectmodel/BaseClass.h \
 	objectmodel/BaseContext.h \

@@ -55,19 +55,19 @@ public:
 
     //Pure Virtual method from BaseNode
     /// Add a child node
-    virtual void addChild(BaseNode* node);
+    virtual void addChild(BaseNode::SPtr node);
 
     /// Remove a child node
-    virtual void removeChild(BaseNode* node);
+    virtual void removeChild(BaseNode::SPtr node);
 
     /// Move a node from another node
-    virtual void moveChild(BaseNode* obj);
+    virtual void moveChild(BaseNode::SPtr obj);
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(core::objectmodel::BaseObject* obj) { return simulation::Node::addObject(obj); }
+    virtual bool addObject(core::objectmodel::BaseObject::SPtr obj) { return simulation::Node::addObject(obj); }
 
     /// Remove an object
-    virtual bool removeObject(core::objectmodel::BaseObject* obj) { return simulation::Node::removeObject(obj); }
+    virtual bool removeObject(core::objectmodel::BaseObject::SPtr obj) { return simulation::Node::removeObject(obj); }
 
     /// Remove the current node from the graph: consists in removing the link to its parent
     virtual void detachFromGraph() ;
@@ -160,8 +160,8 @@ public:
 protected:
 
 
-    virtual void doAddChild(GNode* node);
-    void doRemoveChild(GNode* node);
+    virtual void doAddChild(GNode::SPtr node);
+    void doRemoveChild(GNode::SPtr node);
 
 
     /// Execute a recursive action starting from this node.

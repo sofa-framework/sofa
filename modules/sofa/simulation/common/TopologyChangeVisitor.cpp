@@ -70,7 +70,7 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 #endif
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        sofa::core::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::topology::TopologicalMapping*>(*it);
+        sofa::core::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::topology::TopologicalMapping*>(it->get());
         if (obj != NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
         {
 
@@ -101,7 +101,7 @@ void TopologyChangeVisitor::processNodeBottomUp(simulation::Node* node)
 {
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        sofa::core::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::topology::TopologicalMapping*>(*it);
+        sofa::core::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::topology::TopologicalMapping*>(it->get());
         if (obj != NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
         {
 
@@ -118,7 +118,7 @@ Visitor::Result HandleTopologyChangeVisitor::processNodeTopDown(simulation::Node
 {
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        core::objectmodel::BaseObject* obj=*it;
+        core::objectmodel::BaseObject* obj=it->get();
         ctime_t t0=begin(node,obj);
         obj->handleTopologyChange();
         end(node,obj,t0);

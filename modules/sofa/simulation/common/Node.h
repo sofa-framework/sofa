@@ -172,15 +172,15 @@ public:
     // methods moved from GNode (27/04/08)
 
     /// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
-    template < class T >
+    template < class T, class TPtr = T* >
     class Sequence
     {
-    protected:
-        std::vector< T* > elems;
     public:
-        typedef T* value_type;
-        typedef typename std::vector< T* >::const_iterator iterator;
-        typedef typename std::vector< T* >::const_reverse_iterator reverse_iterator;
+        typedef T pointed_type;
+        //typedef typename T::SPtr value_type;
+        typedef TPtr value_type;
+        typedef typename std::vector< value_type >::const_iterator iterator;
+        typedef typename std::vector< value_type >::const_reverse_iterator reverse_iterator;
 
         iterator begin() const
         {
@@ -206,7 +206,7 @@ public:
         {
             return elems.empty();
         }
-        T* operator[](unsigned int i) const
+        const TPtr& operator[](unsigned int i) const
         {
             return elems[i];
         }
@@ -221,7 +221,7 @@ public:
         }
         //friend class Node;
         bool add
-        (T* elem)
+        (value_type elem)
         {
             if (elem == NULL)
                 return false;
@@ -229,11 +229,11 @@ public:
             return true;
         }
         bool remove
-        (T* elem)
+        (value_type elem)
         {
             if (elem == NULL)
                 return false;
-            typename std::vector< T* >::iterator it = elems.begin();
+            typename std::vector< value_type >::iterator it = elems.begin();
             while (it != elems.end() && (*it)!=elem)
                 ++it;
             if (it != elems.end())
@@ -245,6 +245,8 @@ public:
                 return false;
         }
         void clear() { elems.clear(); }
+    protected:
+        std::vector< value_type > elems;
     };
 
     /// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
@@ -254,6 +256,7 @@ public:
     protected:
         T* elems[2];
     public:
+        typedef T pointed_type;
         typedef T* value_type;
         typedef T* const * iterator;
 
@@ -314,11 +317,11 @@ public:
         }
     };
 
-    Sequence<Node> child;
-    typedef Sequence<Node>::iterator ChildIterator;
+    Sequence<Node,Node::SPtr> child;
+    typedef Sequence<Node,Node::SPtr>::iterator ChildIterator;
 
-    Sequence<core::objectmodel::BaseObject> object;
-    typedef Sequence<core::objectmodel::BaseObject>::iterator ObjectIterator;
+    Sequence<core::objectmodel::BaseObject,core::objectmodel::BaseObject::SPtr> object;
+    typedef Sequence<core::objectmodel::BaseObject,core::objectmodel::BaseObject::SPtr>::iterator ObjectIterator;
 
     Single<core::behavior::BaseAnimationLoop> animationManager;
     Sequence<core::behavior::OdeSolver> solver;
@@ -358,13 +361,13 @@ public:
     /// @{
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(core::objectmodel::BaseObject* obj);
+    virtual bool addObject(core::objectmodel::BaseObject::SPtr obj);
 
     /// Remove an object
-    virtual bool removeObject(core::objectmodel::BaseObject* obj);
+    virtual bool removeObject(core::objectmodel::BaseObject::SPtr obj);
 
     /// Move an object from another node
-    virtual void moveObject(core::objectmodel::BaseObject* obj);
+    virtual void moveObject(core::objectmodel::BaseObject::SPtr obj);
 
     /// Find an object given its name
     core::objectmodel::BaseObject* getObject(const std::string& name) const;
@@ -593,18 +596,18 @@ protected:
 
     /// @}
 
-    virtual void doAddObject(core::objectmodel::BaseObject* obj);
-    virtual void doRemoveObject(core::objectmodel::BaseObject* obj);
+    virtual void doAddObject(core::objectmodel::BaseObject::SPtr obj);
+    virtual void doRemoveObject(core::objectmodel::BaseObject::SPtr obj);
 
 
     std::stack<Visitor*> actionStack;
 
-    virtual void notifyAddChild(Node* node);
-    virtual void notifyRemoveChild(Node* node);
-    virtual void notifyMoveChild(Node* node, Node* prev);
-    virtual void notifyAddObject(core::objectmodel::BaseObject* obj);
-    virtual void notifyRemoveObject(core::objectmodel::BaseObject* obj);
-    virtual void notifyMoveObject(core::objectmodel::BaseObject* obj, Node* prev);
+    virtual void notifyAddChild(Node::SPtr node);
+    virtual void notifyRemoveChild(Node::SPtr node);
+    virtual void notifyMoveChild(Node::SPtr node, Node* prev);
+    virtual void notifyAddObject(core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyRemoveObject(core::objectmodel::BaseObject::SPtr obj);
+    virtual void notifyMoveObject(core::objectmodel::BaseObject::SPtr obj, Node* prev);
 
 
     BaseContext* _context;

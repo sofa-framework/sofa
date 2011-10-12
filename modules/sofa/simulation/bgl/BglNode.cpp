@@ -93,9 +93,10 @@ unsigned int BglNode::getUniqueId()
 }
 
 
-bool BglNode::addObject(core::objectmodel::BaseObject* obj)
+bool BglNode::addObject(core::objectmodel::BaseObject::SPtr sobj)
 {
     using sofa::core::objectmodel::Tag;
+    core::objectmodel::BaseObject* obj = sobj.get();
     sofa::core::BaseMapping* mm = dynamic_cast<sofa::core::BaseMapping*>(obj);
     if (mm && mm->isMechanical() )
     {
@@ -149,11 +150,12 @@ bool BglNode::addObject(core::objectmodel::BaseObject* obj)
             if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, ic);
         }
     }
-    return Node::addObject(obj);
+    return Node::addObject(sobj);
 }
 
-bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
+bool BglNode::removeObject(core::objectmodel::BaseObject::SPtr sobj)
 {
+    core::objectmodel::BaseObject* obj = sobj.get();
     if (sofa::core::BaseMapping* mm = dynamic_cast<sofa::core::BaseMapping*>(obj))
     {
         if(mm->isMechanical())
@@ -167,7 +169,7 @@ bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
     {
         BglGraphManager::getInstance()->removeInteraction(ic);
     }
-    return Node::removeObject(obj);
+    return Node::removeObject(sobj);
 }
 
 void BglNode::addParent(BglNode *node)
@@ -187,41 +189,41 @@ Node* BglNode::createChild(const std::string& nodeName)
     return newchild;
 }
 
-void BglNode::addChild(core::objectmodel::BaseNode* c)
+void BglNode::addChild(core::objectmodel::BaseNode::SPtr c)
 {
-    BglNode *childNode = static_cast< BglNode *>(c);
+    BglNode::SPtr childNode = sofa::core::objectmodel::SPtr_static_cast< BglNode >(c);
 
     notifyAddChild(childNode);
     doAddChild(childNode);
 }
 /// Add a child node
-void BglNode::doAddChild(BglNode* node)
+void BglNode::doAddChild(BglNode::SPtr node)
 {
     child.add(node);
     node->addParent(this);
-    BglGraphManager::getInstance()->addEdge(this,node);
+    BglGraphManager::getInstance()->addEdge(this,node.get());
 }
 
 
 /// Remove a child
-void BglNode::removeChild(core::objectmodel::BaseNode* c)
+void BglNode::removeChild(core::objectmodel::BaseNode::SPtr c)
 {
-    BglNode *childNode = static_cast< BglNode *>(c);
+    BglNode::SPtr childNode = sofa::core::objectmodel::SPtr_static_cast< BglNode >(c);
     notifyRemoveChild(childNode);
     doRemoveChild(childNode);
 }
 
-void BglNode::doRemoveChild(BglNode* node)
+void BglNode::doRemoveChild(BglNode::SPtr node)
 {
     child.remove(node);
     node->removeParent(this);
-    BglGraphManager::getInstance()->removeEdge(this, node);
+    BglGraphManager::getInstance()->removeEdge(this, node.get());
 }
 
 
-void BglNode::moveChild(core::objectmodel::BaseNode* node)
+void BglNode::moveChild(core::objectmodel::BaseNode::SPtr node)
 {
-    BglNode* childNode=dynamic_cast<BglNode*>(node);
+    BglNode::SPtr childNode = sofa::core::objectmodel::SPtr_static_cast< BglNode >(node);
     if (!childNode) return;
 
     typedef std::vector< BglNode*> ParentsContainer;
@@ -314,8 +316,9 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     {
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
-            void* result = class_info.dynamicCast(*it);
-            if (result != NULL && (tags.empty() || (*it)->getTags().includes(tags)))
+            core::objectmodel::BaseObject* obj = it->get();
+            void* result = class_info.dynamicCast(obj);
+            if (result != NULL && (tags.empty() || (obj)->getTags().includes(tags)))
             {
                 return result;
             }
@@ -345,8 +348,9 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
     {
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
-            void* result = class_info.dynamicCast(*it);
-            if (result != NULL && (tags.empty() || (*it)->getTags().includes(tags)))
+            core::objectmodel::BaseObject* obj = it->get();
+            void* result = class_info.dynamicCast(obj);
+            if (result != NULL && (tags.empty() || (obj)->getTags().includes(tags)))
                 container(result);
         }
     }
