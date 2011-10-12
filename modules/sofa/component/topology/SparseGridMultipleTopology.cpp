@@ -107,7 +107,7 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 
         std::string filename = _fileTopologies.getValue()[i];
 
-        serr<<"SparseGridMultipleTopology open "<<filename<<sendl;
+        sout<<"SparseGridMultipleTopology open "<<filename<<sendl;
 
         if (! sofa::helper::system::DataRepository.findFile ( filename ))
             continue;
@@ -265,8 +265,8 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     sgmt->_finestConnectivity.setValue( _finestConnectivity.getValue() );
     _virtualFinerLevels[0]->init();
 
-    serr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
-    serr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , ";
+    sout<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
+    sout<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , ";
 
     for(int i=1; i<nb; ++i)
     {
@@ -281,10 +281,10 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
         _virtualFinerLevels[i]->init();
 
 
-        serr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
+        sout<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
     }
 
-    serr<<sendl;
+    sout<<sendl;
 
     this->setFinerSparseGrid(_virtualFinerLevels[nb-1]);
 
