@@ -1,5 +1,4 @@
 <Node name="root" dt="0.02">
-    <Object type="Simulation" name="Simulation" />
     <Object type="CollisionPipeline" verbose="0" />
     <Object type="BruteForceDetection" name="N2" />
     <Object type="CollisionResponse" response="default" />
