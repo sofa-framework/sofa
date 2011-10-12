@@ -34,7 +34,6 @@ InteractiveCamera::~InteractiveCamera()
 
 void InteractiveCamera::internalUpdate()
 {
-    //TODO: update pan and zoom speeds
 }
 
 void InteractiveCamera::moveCamera(int x, int y)
@@ -80,7 +79,7 @@ void InteractiveCamera::moveCamera(int x, int y)
         }
         else if (currentMode == ZOOM_MODE)
         {
-            Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() * (y - lastMousePosY) / heightViewport);
+            Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() *( 0.01*sceneRadius ) * (y - lastMousePosY) / heightViewport);
             trans = cameraToWorldTransform(trans);
             translate(trans);
             translateLookAt(trans);
@@ -88,7 +87,7 @@ void InteractiveCamera::moveCamera(int x, int y)
         else if (currentMode == PAN_MODE)
         {
             Vec3 trans(lastMousePosX - x,  y-lastMousePosY, 0.0);
-            trans = cameraToWorldTransform(trans)*p_panSpeed.getValue();
+            trans = cameraToWorldTransform(trans)*p_panSpeed.getValue()*( 0.01*sceneRadius ) ;
             translate(trans);
             translateLookAt(trans);
         }
@@ -99,7 +98,7 @@ void InteractiveCamera::moveCamera(int x, int y)
     }
     else if (currentMode == WHEEL_ZOOM_MODE)
     {
-        Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() * (y*0.5) / heightViewport);
+        Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() *( 0.01*sceneRadius )* (y*0.5) / heightViewport);
         trans = cameraToWorldTransform(trans);
         translate((trans));
         translateLookAt(trans);
