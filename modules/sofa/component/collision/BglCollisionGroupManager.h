@@ -39,20 +39,16 @@ namespace collision
 
 class SOFA_MISC_COLLISION_DEV_API BglCollisionGroupManager : public DefaultCollisionGroupManager
 {
-    ;
 public:
     SOFA_CLASS(BglCollisionGroupManager,DefaultCollisionGroupManager);
-
-    BglCollisionGroupManager() {};
-
     void clearGroups(core::objectmodel::BaseContext* scene);
+
 protected:
+    BglCollisionGroupManager() {};
     virtual simulation::Node* findCommonParent(simulation::Node *group1, simulation::Node* group2);
 
     template <typename ContainerParent>
     typename ContainerParent::value_type compatibleSetOfNode( ContainerParent &set1,ContainerParent &set2);
-
-
 };
 
 

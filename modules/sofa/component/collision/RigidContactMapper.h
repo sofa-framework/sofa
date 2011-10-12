@@ -81,10 +81,13 @@ public:
     MMechanicalState* outmodel;
     int nbp;
 
+protected:
     RigidContactMapper()
         : model(NULL), child(NULL), mapping(NULL), outmodel(NULL), nbp(0)
     {
     }
+
+public:
 
     void setCollisionModel(MCollisionModel* model)
     {

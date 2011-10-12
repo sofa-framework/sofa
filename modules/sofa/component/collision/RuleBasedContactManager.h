@@ -113,10 +113,11 @@ public:
 
     Data< helper::vector<Rule> > rules;
 
+    virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);
+
+protected:
     RuleBasedContactManager();
     ~RuleBasedContactManager();
-
-    virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);
 };
 
 } // namespace collision
