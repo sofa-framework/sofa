@@ -230,7 +230,7 @@ void ArticulatedHierarchyContainer::init ()
         component::container::MechanicalObject<Vec1dTypes>* mm1 = dynamic_cast<component::container::MechanicalObject<Vec1dTypes>*>(context->getMechanicalState());
         mm1->resize(id);
 
-        context = *(context->child.begin());
+        context = (context->child.begin())->get();
         component::container::MechanicalObject<RigidTypes>* mm2 = dynamic_cast<component::container::MechanicalObject<RigidTypes>*>(context->getMechanicalState());
         mm2->resize(joint->getNumJoints()+1);
     }
@@ -244,7 +244,7 @@ void ArticulatedHierarchyContainer::init ()
             context = dynamic_cast<simulation::Node *>((*ac)->getContext());
             for (simulation::Node::ChildIterator it = context->child.begin(); it != context->child.end(); ++it)
             {
-                simulation::Node* n =  *it;
+                simulation::Node* n =  it->get();
                 n->getTreeObjects<ArticulationCenter::Articulation>(&(*ac)->articulations);
             }
 
