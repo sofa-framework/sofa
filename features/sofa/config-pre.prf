@@ -6,6 +6,8 @@
 CONFIG += warn_on exceptions rtti stl thread
 
 win32 {
+	CONFIG -= flat # preserve directory structure in files lists
+	
 	QMAKE_CXXFLAGS_DEBUG = -MP -MDd -Od -Zi
 	QMAKE_CXXFLAGS_RELEASE = -MP -MD -O2
 }
