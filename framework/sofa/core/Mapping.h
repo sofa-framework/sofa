@@ -363,7 +363,7 @@ public:
     /// This implementation read the input and output attributes to
     /// find the input and output models of this mapping.
     template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         State<In>* stin = NULL;
         State<Out>* stout = NULL;
@@ -447,17 +447,8 @@ public:
             }
         }
 
-#ifdef SOFA_SMP_NUMA
-        if(context&&context->getProcessor()!=-1)
-        {
-            obj = new(numa_alloc_onnode(sizeof(T),context->getProcessor()/2)) T(
-                (arg?stin:NULL), (arg?stout:NULL));
-        }
-        else
-#endif
-        {
-            obj = new T( (arg?stin:NULL), (arg?stout:NULL));
-        }
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>((arg?stin:NULL), (arg?stout:NULL));
+
 #ifndef SOFA_DEPRECATE_OLD_API
         if (!object1Path.empty())
             obj->m_inputObject.setValue( object1Path );
@@ -470,6 +461,8 @@ public:
 
         if (arg)
             obj->parse(arg);
+
+        return obj;
     }
 
     virtual std::string getTemplateName() const
