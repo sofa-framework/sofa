@@ -51,7 +51,7 @@ SOFA_DECL_CLASS(TriangularFEMForceField)
 using namespace sofa::defaulttype;
 
 // Register in the Factory
-int TriangularFEMForceFieldClass = core::RegisterObject("Triangular finite elements")
+int TriangularFEMForceFieldClass = core::RegisterObject("Corotational Triangular finite elements")
 #ifndef SOFA_FLOAT
         .add< TriangularFEMForceField<Vec3dTypes> >()
 #endif

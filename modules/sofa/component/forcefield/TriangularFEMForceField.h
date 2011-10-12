@@ -29,6 +29,7 @@
 #pragma once
 #endif
 
+#include <sofa/component/component.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -70,7 +71,7 @@ using namespace sofa::component::topology;
 * }
 */
 template<class DataTypes>
-class TriangularFEMForceField : public core::behavior::ForceField<DataTypes>
+class SOFA_SIMPLE_FEM_API TriangularFEMForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
@@ -94,20 +95,41 @@ public:
 
     typedef sofa::helper::Quater<Real> Quat;
 
-    static const int SMALL = 1;										    ///< Symbol of small displacements triangle solver
-    static const int LARGE = 0;									    	///< Symbol of large displacements triangle solver
-
 protected:
 
-    bool _anisotropicMaterial;						// used to turn on / off optimizations
-    typedef Vec<6, Real> Displacement;								///< the displacement vector
-    typedef Mat<3, 3, Real> MaterialStiffness;						///< the matrix of material stiffness
-    typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;    ///< a vector of material stiffness matrices
-    typedef Mat<6, 3, Real> StrainDisplacement;						///< the strain-displacement matrix
-    typedef Mat<6, 6, Real> Stiffness;								///< the stiffness matrix
-    typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement;	///< a vector of strain-displacement matrices
-    typedef Mat<3, 3, Real > Transformation;						///< matrix for rigid transformations like rotations
+    bool _anisotropicMaterial;			                 	    /// used to turn on / off optimizations
+    typedef Vec<6, Real> Displacement;					    ///< the displacement vector
+    typedef Mat<3, 3, Real> MaterialStiffness;				    ///< the matrix of material stiffness
+    typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;   ///< a vector of material stiffness matrices
+    typedef Mat<6, 3, Real> StrainDisplacement;				    ///< the strain-displacement matrix
+    typedef Mat<6, 6, Real> Stiffness;					    ///< the stiffness matrix
+    typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement; ///< a vector of strain-displacement matrices
+    typedef Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
 
+
+public:
+    static const int SMALL = 1;						    ///< Symbol of small displacements triangle solver
+    static const int LARGE = 0;                                             ///< Symbol of large displacements triangle solver
+
+    /// ForceField API
+    //{
+    TriangularFEMForceField();
+
+    //virtual const char* getTypeName() const { return "TriangularFEMForceField"; }
+    virtual ~TriangularFEMForceField() {}
+    virtual void init();
+    virtual void reinit();
+    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
+    virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
+    virtual void handleTopologyChange();
+
+    void draw(const core::visual::VisualParams* vparams);
+    Vec3d getVertexColor(Index vertexIndex, double maxStress, double minStress);
+    //}
+
+
+    /// Class to store FEM information on each triangle, for topology modification handling
     class TriangleInformation
     {
     public:
@@ -150,6 +172,7 @@ protected:
         Real differenceToCriteria;
     };
 
+    /// Class to store FEM information on each edge, for topology modification handling
     class EdgeInformation
     {
     public:
@@ -171,6 +194,7 @@ protected:
         }
     };
 
+    /// Class to store FEM information on each vertex, for topology modification handling
     class VertexInformation
     {
     public:
@@ -195,69 +219,20 @@ protected:
         }
     };
 
+    /// Topology Data
     TriangleData<sofa::helper::vector<TriangleInformation> > triangleInfo;
     PointData<sofa::helper::vector<VertexInformation> > vertexInfo;
     EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
 
     sofa::core::topology::BaseMeshTopology* _topology;
+
     //const VecElement *_indexedElements;
     //Data< VecCoord > _initialPoints; ///< the intial positions of the points
     //const VecCoord* _initialPoints; //previously stored the mechanical state initial points but use it directly now
     //     int _method; ///< the computation method of the displacements
 
 
-    bool updateMatrix;
-    int lastFracturedEdgeIndex;
-
-public:
-
-    TriangularFEMForceField();
-
-    //virtual const char* getTypeName() const { return "TriangularFEMForceField"; }
-
-    virtual ~TriangularFEMForceField();
-    virtual void init();
-    virtual void reinit();
-    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
-    virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
-    virtual void handleTopologyChange();
-
-    void draw(const core::visual::VisualParams* vparams);
-    Vec3d getVertexColor(Index vertexIndex, double maxStress, double minStress);
-
-    int method;
-    Data<std::string> f_method;
-    //Data<Real> f_poisson;
-    //Data<Real> f_young;
-    Data<helper::vector<Real> > f_poisson;
-    Data<helper::vector<Real> > f_young;
-    Data<Real> f_damping;
-    Data<bool> f_fracturable;
-    Data<bool> showStressValue;
-    Data<bool> showStressVector;
-    Data<bool> showFracturableTriangles;
-    Data< sofa::helper::vector <helper::fixed_array<Coord,3> > > m_rotatedInitialElements;
-    Data< sofa::helper::vector <Transformation> > m_initialTransformation;
-    Data< Real > hosfordExponant;
-    Data<Real>      criteriaValue;
-
-#ifdef PLOT_CURVE
-    //structures to save values for each element along time
-    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphStress;
-    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphCriteria;
-    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphOrientation;
-
-    //the index of element we want to display the graphs
-    Data<Real>  elementID;
-
-    //data storing the values along time for the element with index elementID
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphStress;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphCriteria;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphOrientation;
-#endif
-
-
+    /// Get/Set methods
     Real getPoisson() { return (f_poisson.getValue())[0]; }
     void setPoisson(Real val)
     {
@@ -274,6 +249,11 @@ public:
     void setDamping(Real val) { f_damping.setValue(val); }
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
+
+
+
+public:
+
     int  getFracturedEdge();
     void getFractureCriteria(int element, Deriv& direction, Real& value);
     /// Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
@@ -292,7 +272,7 @@ public:
     void getRotations();
 
 protected :
-
+    /// Forcefield computations
     void computeDisplacementSmall(Displacement &D, Index elementIndex, const VecCoord &p);
     void computeDisplacementLarge(Displacement &D, Index elementIndex, const Transformation &R_2_0, const VecCoord &p);
     void computeStrainDisplacement(StrainDisplacement &J, Index elementIndex, Coord a, Coord b, Coord c );
@@ -323,6 +303,49 @@ protected :
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);
     void accumulateDampingLarge( VecCoord& f, Index elementIndex );
     void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
+
+
+    bool updateMatrix;
+    int lastFracturedEdgeIndex;
+
+public:
+
+    /// Forcefield intern paramaters
+    int method;
+    Data<std::string> f_method;
+    Data<helper::vector<Real> > f_poisson;
+    Data<helper::vector<Real> > f_young;
+    Data<Real> f_damping;
+
+    /// Initial strain parameters (if FEM is initialised with predefine values)
+    Data< sofa::helper::vector <helper::fixed_array<Coord,3> > > m_rotatedInitialElements;
+    Data< sofa::helper::vector <Transformation> > m_initialTransformation;
+
+    /// Fracture parameters
+    Data<bool> f_fracturable;
+    Data<Real> hosfordExponant;
+    Data<Real> criteriaValue;
+
+    /// Display parameters
+    Data<bool> showStressValue;
+    Data<bool> showStressVector;
+    Data<bool> showFracturableTriangles;
+
+#ifdef PLOT_CURVE
+    //structures to save values for each element along time
+    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphStress;
+    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphCriteria;
+    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphOrientation;
+
+    //the index of element we want to display the graphs
+    Data<Real>  elementID;
+
+    //data storing the values along time for the element with index elementID
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphStress;
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphCriteria;
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphOrientation;
+#endif
+
 };
 
 
