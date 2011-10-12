@@ -30,6 +30,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/core.h>
+#include <sofa/core/objectmodel/SPtr.h>
 #include <string>
 #include <map>
 
@@ -247,22 +248,6 @@ public:
     using Inherit1::sout;                                               \
     using Inherit1::serr;                                               \
     using Inherit1::sendl
-
-template<class T>
-class New : public T::SPtr
-{
-    typedef typename T::SPtr SPtr;
-public:
-    New() : SPtr(new T) {}
-    template <class A1>
-    New(A1 a1) : SPtr(new T(a1)) {}
-    template <class A1, class A2>
-    New(A1 a1, A2 a2) : SPtr(new T(a1,a2)) {}
-    template <class A1, class A2, class A3>
-    New(A1 a1, A2 a2, A3 a3) : SPtr(new T(a1,a2,a3)) {}
-    template <class A1, class A2, class A3, class A4>
-    New(A1 a1, A2 a2, A3 a3, A4 a4) : SPtr(new T(a1,a2,a3,a4)) {}
-};
 
 // Do not use this macro directly, use SOFA_CLASS instead
 #define SOFA_CLASS_DECL                                        \

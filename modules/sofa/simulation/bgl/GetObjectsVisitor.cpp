@@ -38,8 +38,9 @@ Visitor::Result GetObjectsVisitor::processNodeTopDown( simulation::Node* node )
 {
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        void* result = class_info.dynamicCast(*it);
-        if (result != NULL &&  (tags.empty() || (*it)->getTags().includes(tags)))
+        core::objectmodel::BaseObject* obj = it->get();
+        void* result = class_info.dynamicCast(obj);
+        if (result != NULL &&  (tags.empty() || (obj)->getTags().includes(tags)))
             container(result);
     }
     return Visitor::RESULT_CONTINUE;
@@ -49,8 +50,9 @@ Visitor::Result GetObjectVisitor::processNodeTopDown( simulation::Node* node )
 {
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        void* r = class_info.dynamicCast(*it);
-        if (r != NULL &&  (tags.empty() || (*it)->getTags().includes(tags)))
+        core::objectmodel::BaseObject* obj = it->get();
+        void* r = class_info.dynamicCast(obj);
+        if (r != NULL &&  (tags.empty() || (obj)->getTags().includes(tags)))
         {
             result=r; return Visitor::RESULT_PRUNE;
         }

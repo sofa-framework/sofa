@@ -56,9 +56,9 @@ public:
     /// For each component, if it is of the given type, then put it in the list
     virtual Result processNodeTopDown(simulation::Node* node)
     {
-        for( simulation::Node::Sequence<core::objectmodel::BaseObject>::iterator i=node->object.begin(), iend=node->object.end(); i!=iend; i++ )
+        for( simulation::Node::ObjectIterator i=node->object.begin(), iend=node->object.end(); i!=iend; i++ )
         {
-            if( T* obj= dynamic_cast<T*>(*i) )
+            if( T* obj= dynamic_cast<T*>(i->get()) )
                 found.push_back(obj);
         }
         return RESULT_CONTINUE;

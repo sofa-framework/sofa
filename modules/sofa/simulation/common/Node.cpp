@@ -115,7 +115,7 @@ void Node::glDraw(core::visual::VisualParams* vparams)
 
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool Node::addObject(BaseObject* obj)
+bool Node::addObject(BaseObject::SPtr obj)
 {
     notifyAddObject(obj);
     doAddObject(obj);
@@ -123,7 +123,7 @@ bool Node::addObject(BaseObject* obj)
 }
 
 /// Remove an object
-bool Node::removeObject(BaseObject* obj)
+bool Node::removeObject(BaseObject::SPtr obj)
 {
     notifyRemoveObject(obj);
     doRemoveObject(obj);
@@ -131,7 +131,7 @@ bool Node::removeObject(BaseObject* obj)
 }
 
 /// Move an object from another node
-void Node::moveObject(BaseObject* obj)
+void Node::moveObject(BaseObject::SPtr obj)
 {
     Node* prev = dynamic_cast<Node*>(obj->getContext());
     if (prev==NULL)
@@ -149,43 +149,43 @@ void Node::moveObject(BaseObject* obj)
 
 
 
-void Node::notifyAddChild(Node* node)
+void Node::notifyAddChild(Node::SPtr node)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->addChild(this, node);
+        (*it)->addChild(this, node.get());
 }
 
 
-void Node::notifyRemoveChild(Node* node)
+void Node::notifyRemoveChild(Node::SPtr node)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->removeChild(this, node);
+        (*it)->removeChild(this, node.get());
 }
 
 
-void Node::notifyMoveChild(Node* node, Node* prev)
+void Node::notifyMoveChild(Node::SPtr node, Node* prev)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->moveChild(prev, this, node);
+        (*it)->moveChild(prev, this, node.get());
 }
 
 
-void Node::notifyAddObject(core::objectmodel::BaseObject* obj)
+void Node::notifyAddObject(core::objectmodel::BaseObject::SPtr obj)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->addObject(this, obj);
+        (*it)->addObject(this, obj.get());
 }
 
-void Node::notifyRemoveObject(core::objectmodel::BaseObject* obj)
+void Node::notifyRemoveObject(core::objectmodel::BaseObject::SPtr obj)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->removeObject(this, obj);
+        (*it)->removeObject(this, obj.get());
 }
 
-void Node::notifyMoveObject(core::objectmodel::BaseObject* obj, Node* prev)
+void Node::notifyMoveObject(core::objectmodel::BaseObject::SPtr obj, Node* prev)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->moveObject(prev, this, obj);
+        (*it)->moveObject(prev, this, obj.get());
 }
 
 
@@ -210,18 +210,19 @@ core::objectmodel::BaseObject* Node::getObject(const std::string& name) const
 {
     for (ObjectIterator it = object.begin(), itend = object.end(); it != itend; ++it)
         if ((*it)->getName() == name)
-            return *it;
+            return it->get();
     return NULL;
 }
 
 
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-void Node::doAddObject(BaseObject* obj)
+void Node::doAddObject(BaseObject::SPtr sobj)
 {
-    notifyAddObject(obj);
-    obj->setContext(this);
-    object.add(obj);
+    notifyAddObject(sobj);
+    sobj->setContext(this);
+    object.add(sobj);
+    BaseObject* obj = sobj.get();
     int inserted=0;
     inserted+= animationManager.add(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
     inserted+= solver.add(dynamic_cast< core::behavior::OdeSolver* >(obj));
@@ -269,13 +270,14 @@ void Node::doAddObject(BaseObject* obj)
 }
 
 /// Remove an object
-void Node::doRemoveObject(BaseObject* obj)
+void Node::doRemoveObject(BaseObject::SPtr sobj)
 {
-    if (obj->getContext()==this)
+    if (sobj->getContext()==this)
     {
-        obj->setContext(NULL);
+        sobj->setContext(NULL);
     }
-    object.remove(obj);
+    object.remove(sobj);
+    BaseObject* obj = sobj.get();
     animationManager.remove(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
     solver.remove(dynamic_cast< core::behavior::OdeSolver* >(obj));
     linearSolver.remove(dynamic_cast< core::behavior::LinearSolver* >(obj));
@@ -370,7 +372,7 @@ Node* Node::getChild(const std::string& name) const
 {
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
         if ((*it)->getName() == name)
-            return (*it);
+            return it->get();
     return NULL;
 }
 
@@ -388,7 +390,9 @@ Node* Node::getTreeNode(const std::string& name) const
 const sofa::core::objectmodel::BaseNode::Children Node::getChildren() const
 {
     Children list_children;
-    std::copy(child.begin(), child.end(), std::back_inserter(list_children));
+    list_children.reserve(child.size());
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+        list_children.push_back(it->get());
     return list_children;
 }
 
@@ -475,7 +479,7 @@ bool Node::getDebug() const
 
 void Node::removeControllers()
 {
-    removeObject(animationManager);
+    removeObject(animationManager[0]);
     typedef Sequence<core::behavior::OdeSolver> Solvers;
     Solvers solverRemove = solver;
     for ( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; i++ )
@@ -740,8 +744,8 @@ void Node::sortComponents()
     for ( int i=object.size()-1; i>=0; i-- ) // in the reverse order for a final order more similar to the current one
     {
         Vertex v = add_vertex( dependencyGraph );
-        component_from_vertex[v] = object[i];
-        vertex_from_component[object[i]] = v;
+        component_from_vertex[v] = object[i].get();
+        vertex_from_component[object[i].get()] = v;
     }
     assert( depend.getValue().size()%2 == 0 ); // must contain only pairs
     for ( unsigned i=0; i<depend.getValue().size(); i+=2 )

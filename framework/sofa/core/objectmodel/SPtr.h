@@ -24,83 +24,77 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASENODE_H
-#define SOFA_CORE_OBJECTMODEL_BASENODE_H
+#ifndef SOFA_CORE_OBJECTMODEL_SPTR_H
+#define SOFA_CORE_OBJECTMODEL_SPTR_H
 
-#include "BaseContext.h"
-#include "BaseObject.h"
+#include <sofa/helper/system/config.h>
+#include <sofa/helper/vector.h>
+#include <sofa/core/core.h>
 
 namespace sofa
 {
 
 namespace core
-
 {
+
 namespace objectmodel
 {
 
 /**
- *  \brief Base class for simulation nodes.
+ *  \brief new operator for classes with smart pointers (such as all components deriving from Base)
  *
- *  A Node is a class defining the main scene data structure of a simulation.
- *  It defined hierarchical relations between elements.
- *  Each node can have parent and child nodes (potentially defining a tree),
- *  as well as attached objects (the leaves of the tree).
+ *  This class should be used as :
+ *     MyT::SPtr p = sofa::core::objectmodel::New<MyT>(myargs);
+ *  instead of :
+ *     MyT* p = new MyT(myargs);
  *
- * \author Jeremie Allard
+ *  The use of this New operator and SPtr pointers insures that all created objects are :
+ *    - destroyed (no leak),
+ *    - only once (no double desctructions),
+ *    - and only after the last reference to them are erased (no invalid pointers).
+ *
  */
-class BaseNode : public virtual Base
+template<class T>
+class New : public T::SPtr
+{
+    typedef typename T::SPtr SPtr;
+public:
+    New() : SPtr(new T) {}
+    template <class A1>
+    New(A1 a1) : SPtr(new T(a1)) {}
+    template <class A1, class A2>
+    New(A1 a1, A2 a2) : SPtr(new T(a1,a2)) {}
+    template <class A1, class A2, class A3>
+    New(A1 a1, A2 a2, A3 a3) : SPtr(new T(a1,a2,a3)) {}
+    template <class A1, class A2, class A3, class A4>
+    New(A1 a1, A2 a2, A3 a3, A4 a4) : SPtr(new T(a1,a2,a3,a4)) {}
+};
+
+/// dynamic_cast operator for SPtr
+template<class T>
+class SPtr_dynamic_cast : public T::SPtr
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseNode, Base);
+    template<class UPtr>
+    SPtr_dynamic_cast(UPtr p) : T::SPtr(dynamic_cast<T*>(p.get())) {}
+};
 
-    virtual ~BaseNode() {}
+/// static_cast operator for SPtr
+template<class T>
+class SPtr_static_cast : public T::SPtr
+{
+public:
+    template<class UPtr>
+    SPtr_static_cast(UPtr p) : T::SPtr(static_cast<T*>(p.get())) {}
+};
 
-    /// @name Scene hierarchy
-    /// @{
-
-    typedef sofa::helper::vector< BaseNode* > Children;
-    /// Get a list of child node
-    virtual const Children getChildren() const = 0;
-
-    /// Add a child node
-    virtual void addChild(BaseNode::SPtr node) = 0;
-
-    /// Remove a child node
-    virtual void removeChild(BaseNode::SPtr node) = 0;
-
-    /// Move a node from another node
-    virtual void moveChild(BaseNode::SPtr node) = 0;
-
-    /// Add a generic object
-    virtual bool addObject(BaseObject::SPtr obj) = 0;
-
-    /// Remove a generic object
-    virtual bool removeObject(BaseObject::SPtr obj) = 0;
-
-    /// Move an object from a node to another node
-    virtual void moveObject(BaseObject::SPtr obj) = 0;
-
-    /// Test if the given node is a parent of this node.
-    virtual bool hasParent(const BaseNode* node) const = 0;
-
-    /// Test if the given node is an ancestor of this node.
-    /// An ancestor is a parent or (recursively) the parent of an ancestor.
-    virtual bool hasAncestor(const BaseNode* node) const = 0;
-
-    /// Remove the current node from the graph: depending on the type of Node, it can have one or several parents.
-    virtual void detachFromGraph() = 0;
-
-    /// Get this node context
-    virtual BaseContext* getContext() = 0;
-
-    /// Get this node context
-    virtual const BaseContext* getContext() const = 0;
-
-    /// Return the full path name of this node
-    virtual std::string getPathName() const=0;
-
-    /// @}
+/// const_cast operator for SPtr
+template<class T>
+class SPtr_const_cast : public T::SPtr
+{
+public:
+    template<class UPtr>
+    SPtr_const_cast(UPtr p) : T::SPtr(const_cast<T*>(p.get())) {}
 };
 
 } // namespace objectmodel
@@ -109,4 +103,7 @@ public:
 
 } // namespace sofa
 
+
+
 #endif
+

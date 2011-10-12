@@ -80,20 +80,20 @@ public:
     virtual Node* createChild(const std::string& nodeName);
 
     /// Add a child node
-    void addChild(core::objectmodel::BaseNode* node);
+    void addChild(core::objectmodel::BaseNode::SPtr node);
 
     /// Remove a child node
-    void removeChild(core::objectmodel::BaseNode* node);
+    void removeChild(core::objectmodel::BaseNode::SPtr node);
 
     /// Move a node from another node
-    void moveChild(core::objectmodel::BaseNode* obj);
+    void moveChild(core::objectmodel::BaseNode::SPtr obj);
 
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    bool addObject(core::objectmodel::BaseObject* obj);
+    bool addObject(core::objectmodel::BaseObject::SPtr obj);
 
     /// Remove an object
-    bool removeObject(core::objectmodel::BaseObject* obj);
+    bool removeObject(core::objectmodel::BaseObject::SPtr obj);
 
 
     /// Remove the current node from the graph: consists in removing the link to all the parents
@@ -198,8 +198,8 @@ protected:
 
 
 
-    virtual void doAddChild(BglNode* node);
-    void doRemoveChild(BglNode* node);
+    virtual void doAddChild(BglNode::SPtr node);
+    void doRemoveChild(BglNode::SPtr node);
     // VisitorScheduler can use doExecuteVisitor() method
     friend class simulation::VisitorScheduler;
 };

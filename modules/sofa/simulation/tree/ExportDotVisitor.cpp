@@ -346,7 +346,7 @@ simulation::Visitor::Result ExportDotVisitor::processNodeTopDown(GNode* node)
 
     for (GNode::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        this->processObject(node, *it);
+        this->processObject(node, it->get());
     }
 
     return RESULT_CONTINUE;

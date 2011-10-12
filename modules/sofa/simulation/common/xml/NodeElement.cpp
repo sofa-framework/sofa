@@ -58,7 +58,7 @@ bool NodeElement::setParent(BaseElement* newParent)
 
 bool NodeElement::initNode()
 {
-    core::objectmodel::BaseNode *obj = Factory::CreateObject(this->getType(), this);
+    core::objectmodel::BaseNode::SPtr obj = Factory::CreateObject(this->getType(), this);
     if (obj != NULL)
     {
         setObject(obj);

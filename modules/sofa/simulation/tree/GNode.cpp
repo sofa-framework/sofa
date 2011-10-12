@@ -58,14 +58,14 @@ Node* GNode::createChild(const std::string& nodeName)
 }
 
 /// Add a child node
-void GNode::doAddChild(GNode* node)
+void GNode::doAddChild(GNode::SPtr node)
 {
     child.add(node);
     node->parent.add(this);
 }
 
 /// Remove a child
-void GNode::doRemoveChild(GNode* node)
+void GNode::doRemoveChild(GNode::SPtr node)
 {
     child.remove(node);
     node->parent.remove(this);
@@ -73,26 +73,26 @@ void GNode::doRemoveChild(GNode* node)
 
 
 /// Add a child node
-void GNode::addChild(core::objectmodel::BaseNode* node)
+void GNode::addChild(core::objectmodel::BaseNode::SPtr node)
 {
-    GNode *gnode = static_cast<GNode*>(node);
+    GNode::SPtr gnode = sofa::core::objectmodel::SPtr_dynamic_cast<GNode>(node);
     notifyAddChild(gnode);
     doAddChild(gnode);
 }
 
 /// Remove a child
-void GNode::removeChild(core::objectmodel::BaseNode* node)
+void GNode::removeChild(core::objectmodel::BaseNode::SPtr node)
 {
-    GNode *gnode = dynamic_cast<GNode*>(node);
+    GNode::SPtr gnode = sofa::core::objectmodel::SPtr_dynamic_cast<GNode>(node);
     notifyRemoveChild(gnode);
     doRemoveChild(gnode);
 }
 
 
 /// Move a node from another node
-void GNode::moveChild(BaseNode* node)
+void GNode::moveChild(BaseNode::SPtr node)
 {
-    GNode* gnode=dynamic_cast<GNode*>(node);
+    GNode::SPtr gnode = sofa::core::objectmodel::SPtr_dynamic_cast<GNode>(node);
     if (!gnode) return;
     GNode* prev = gnode->parent;
     if (prev==NULL)
@@ -135,17 +135,18 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
 #endif
     for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
     {
-        if (tags.empty() || (*it)->getTags().includes(tags))
+        core::objectmodel::BaseObject* obj = it->get();
+        if (tags.empty() || (obj)->getTags().includes(tags))
         {
 #ifdef DEBUG_GETOBJECT
             if (isg)
-                std::cout << "GNODE: testing object " << (*it)->getName() << " of type " << (*it)->getClassName() << std::endl;
+                std::cout << "GNODE: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
 #endif
-            result = class_info.dynamicCast(*it);
+            result = class_info.dynamicCast(obj);
             if (result != NULL)
             {
 #ifdef DEBUG_GETOBJECT
-                std::cout << "GNODE: found object " << (*it)->getName() << " of type " << (*it)->getClassName() << std::endl;
+                std::cout << "GNODE: found object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
 #endif
                 break;
             }
@@ -269,8 +270,9 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
     }
     for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
     {
-        void* result = class_info.dynamicCast(*it);
-        if (result != NULL && (tags.empty() || (*it)->getTags().includes(tags)))
+        core::objectmodel::BaseObject* obj = it->get();
+        void* result = class_info.dynamicCast(obj);
+        if (result != NULL && (tags.empty() || (obj)->getTags().includes(tags)))
             container(result);
     }
 
