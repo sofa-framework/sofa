@@ -63,17 +63,22 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 
     template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        obj = new T;
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+
         if (context)
         {
             context->addObject(obj);
-            core::collision::Pipeline *pipeline=static_cast<simulation::Node*>(context)->collisionPipeline;
-            sofa::helper::OptionsGroup options=initializeResponseOptions(pipeline);
+            core::collision::Pipeline *pipeline = static_cast<simulation::Node*>(context)->collisionPipeline;
+            sofa::helper::OptionsGroup options = initializeResponseOptions(pipeline);
             obj->response.setValue(options);
         }
-        if (arg) obj->parse(arg);
+
+        if (arg)
+            obj->parse(arg);
+
+        return obj;
     }
 
     virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);

@@ -230,7 +230,7 @@ public:
     }
 
     template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         bool createResult = true;
         helper::vector< core::State<In>* > stin1;
@@ -246,13 +246,15 @@ public:
 
         sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<InRoot> >("input2", arg, stin2);
 
-        obj = new T( stin1, stin2, stout);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(stin1, stin2, stout);
 
         if (context)
             context->addObject(obj);
 
         if (arg)
             obj->parse(arg);
+
+        return obj;
     }
 
     /**
