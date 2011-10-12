@@ -133,7 +133,7 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         core::behavior::MechanicalState<DataTypes>* _ms0=NULL;
         core::behavior::MechanicalState<DataTypes>* _ms1=NULL;
@@ -173,7 +173,7 @@ public:
             _msPath2 = "@" + _ms0->getName();
         }
 
-        obj = new T(_ms1,_ms2);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(_ms1,_ms2);
         obj->setPathToMS1(_msPath1);
         obj->setPathToMS2(_msPath2);
         if (context)
@@ -182,6 +182,8 @@ public:
             context->addObject(obj);
         }
         if (arg) obj->parse(arg);
+
+        return obj;
     }
 
     virtual std::string getTemplateName() const

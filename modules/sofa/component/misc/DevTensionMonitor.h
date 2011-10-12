@@ -77,13 +77,16 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T* tObj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        core::objectmodel::BaseObject::create(obj, context, arg);
+        typename T::SPtr obj = core::objectmodel::BaseObject::create(tObj, context, arg);
+
         if (arg && (arg->getAttribute("object")))
         {
             obj->mstate = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object","..")));
         }
+
+        return obj;
     }
 
     virtual std::string getTemplateName() const

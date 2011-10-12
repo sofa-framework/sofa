@@ -127,17 +127,25 @@ public:
     }
 
     template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
+        typename T::SPtr obj;
         core::behavior::MechanicalState<TDataTypes>* _mstate = NULL;
+
         if( context)
         {
             _mstate = dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState());
-            if (_mstate) obj = new T(_mstate);
-            else obj = new T();
+            if (_mstate)
+                obj = sofa::core::objectmodel::New<T>(_mstate);
+            else
+                obj = sofa::core::objectmodel::New<T>();
+
             context->addObject(obj);
         }
+
         if (arg) obj->parse(arg);
+
+        return obj;
     }
 
 

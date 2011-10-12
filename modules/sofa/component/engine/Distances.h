@@ -174,11 +174,12 @@ public:
     /// This implementation read the object1 and object2 attributes to
     /// find the input and output models of this mapping.
     template<class T>
-    static void create ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        obj = new T (
-            ( arg?dynamic_cast<DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :NULL ),
-            ( arg?dynamic_cast<MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) :NULL ) );
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(
+                ( arg?dynamic_cast<DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :NULL ),
+                ( arg?dynamic_cast<MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) :NULL ) );
+
         if ( context ) context->addObject ( obj );
 
         if ( arg )
@@ -195,6 +196,8 @@ public:
             }
             obj->parse ( arg );
         }
+
+        return obj;
     }
     std::string getTemplateName() const
     {
