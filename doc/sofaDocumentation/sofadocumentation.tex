@@ -31,6 +31,8 @@ As a result of this flexible and efficient architecture, \sofa{} can be used as 
 
 \tableofcontents
 
+\part{Foundation of SOFA}
+
 % This chapter is borrowed from a stand-alone document defined in directory introduction/
 \chapter{Introduction to \sofa}
 
@@ -56,20 +58,19 @@ Finally, the geometrical models and the topological changes deserve a special at
 %%%%%%%%%%%%%%%%%%%% COMPONENTS%%%%%%%%%
 %1 STATES
 \chapter{States}
-\section{Mechanical states}
-\section{Degrees of Freedom using template}
-\section{Other physical states}
+\graphicspath{{../states/}}  % to include images
+\input{../states/states}
 
 
 %2 MECA FORCES
 \chapter{Mechanical forces}
+\emph{to be completed}
 \section{ForceField components}
 
 \section{Interaction ForceField}
 \label{sec:interactionforcefield}
 
 \section{Mass and inertial forces}
-
 
 %3 MAPPING
 \chapter{Mappings}
@@ -79,20 +80,36 @@ Finally, the geometrical models and the topological changes deserve a special at
 \section{Identity Mapping}
 \section{Skinning Mapping}
 
-\section{How to implement a new mapping ?}
 
-%4 COLLISION
+%4 SOLVERS
+\chapter{Solvers}
+\label{chap:solvers}
+\graphicspath{{../solvers/}} 
+\input{../solvers/solvers}
+
+
+
+%5 COLLISION
 \chapter{Collision detection}
+\graphicspath{{../collision/}} 
+\input{../collision/collision}
+\vspace{1cm}
+\emph{to be completed}
 
 
-%5 VISUAL
+%6 VISUAL
 \chapter{Visual Rendering}
 
 
-%6 HAPTIC
+%7 HAPTIC
 \chapter{Haptic Rendering}
+\label{chap:haptic}
+\graphicspath{{../haptic/}} 
+\input{../haptic/hapticRendering}
 
-
+\pagebreak
+\part{Design and Development}
+\pagebreak
 
 %%%%%%%%%%%%%%% OLD CHAPTERS %%%%%%%%%%%
 % This chapter is borrowed from a stand-alone document defined in directory design/
@@ -105,6 +122,8 @@ Finally, the geometrical models and the topological changes deserve a special at
 \graphicspath{{../modules/}}  % to include images
 In this document we explain the usage and the functionalities of the modules developped using the Core Sofa Framework.
 \input{../modules/modules_body}
+
+\part{Practical guide}
 
 \chapter{How To}
 \graphicspath{{../HowTo/}}  % to include images

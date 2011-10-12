@@ -33,6 +33,7 @@ It is based on the \textcode{BaseClass} and \textcode{TClass} classes, and requi
 The benefits are that it is now possible to follow the full hierarchy of classes from the final components, instead of having just a fixed set of categories.
 This macro is also necessary in classes with a templated parent class to be able to use methods and member variables defined in \textcode{Base} such as \textcode{initData} or \textcode{sout}. This removed all the previously redundant direct heritage to \textcode{BaseObject} that was previously required.
 
+%%%%%%%%%%%%%% Alreaday included in datastructure/engine.tex %%%%%%%%
 \paragraph{Objects and node tagging (\textcode{Tag} and \textcode{TagSet}).}
 The goal of the introduction of tags is to provide one of the pieces necessary to support non-mechanical states (electrical potentials, constrast agent concentrations) as well as cleaner non-geometrical mechanical states (fluid dynamics, reduced-coordinate articulations).
 For example, in a simulation involving blood in deformable vessels, we would use two tags to distinguish the different states : mechanical, fluid.
@@ -44,6 +45,8 @@ The design is based on the following elements.
 Tags are added to BaseObject, as a list of string (internally converted to a list of unique ids for faster processing).
 All visitors now filter the objects they process based on their list of tags.
 All solvers by default copy their own list of tags to the visitors they execute, so that they only affect the objects with the same tags as they have (TODO: this is currently broken). 
+%%%%%%%%%%%%%%%
+
 
 \paragraph{Dependencies between Data (\textcode{DDGNode} and \textcode{DataEngine}).}
 The goal is to be able to specify simple links between datas or through computation engines.
