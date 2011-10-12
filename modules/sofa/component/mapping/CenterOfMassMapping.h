@@ -64,13 +64,6 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename OutCoord::value_type Real;
 
-    CenterOfMassMapping ( core::State<In>* from, core::State<Out>* to )
-        : Inherit (from, to)
-    {}
-
-    virtual ~CenterOfMassMapping()
-    {}
-
     void init();
 
     virtual void apply ( typename Out::VecCoord& childPositions, const typename In::VecCoord& parentPositions );
@@ -83,6 +76,13 @@ public:
 
 
 protected :
+    CenterOfMassMapping ( core::State<In>* from, core::State<Out>* to )
+        : Inherit (from, to)
+    {}
+
+    virtual ~CenterOfMassMapping()
+    {}
+
     ///pointer on the input DOFs mass
     BaseMass * masses;
 

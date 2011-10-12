@@ -64,22 +64,17 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
 
+    /// Searches Line topology and creates the bending springs
+    virtual void init();
+
+protected:
     LineBendingSprings();
 
     ~LineBendingSprings();
 
-    /// Searches Line topology and creates the bending springs
-    virtual void init();
-
-    //virtual void draw(const core::visual::VisualParams* vparams)
-    //{
-    //}
-
-protected:
     typedef unsigned Index;
     void addSpring( unsigned, unsigned );
     void registerLine( unsigned, unsigned, std::map<Index, unsigned>& );
-
 };
 
 } // namespace interactionforcefield

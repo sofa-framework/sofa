@@ -75,8 +75,6 @@ public:
     Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices;
     Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues;
 
-    ExternalInterpolationMapping(core::State<In>* from, core::State<Out>* to);
-
     void clear(int /*reserve*/) {}
 
     int addPoint(int /*index*/) {return 0;}
@@ -86,8 +84,6 @@ public:
     // handle topology changes depending on the topology
     void handleTopologyChange(core::topology::Topology* t);
 
-    virtual ~ExternalInterpolationMapping();
-
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
@@ -95,6 +91,12 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+
+protected:
+    ExternalInterpolationMapping(core::State<In>* from, core::State<Out>* to);
+
+    virtual ~ExternalInterpolationMapping();
+
 private:
     bool doNotMap;
 };

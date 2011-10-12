@@ -47,19 +47,6 @@ public:
     typedef sofa::core::behavior::BaseMechanicalState In;
     typedef sofa::core::behavior::BaseMechanicalState Out;
 
-
-
-    VoidMapping():Inherit(),fromModel(NULL),toModel(NULL)
-    {
-        this->f_mapForces.setValue(false);
-        this->f_mapConstraints.setValue(false);
-        this->f_mapMasses.setValue(false);
-    }
-
-    virtual ~VoidMapping()
-    {
-    }
-
     void init()
     {
         fromModel = dynamic_cast<In*>(this->getContext()->getMechanicalState());
@@ -124,6 +111,17 @@ public:
 protected:
     In* fromModel;
     Out* toModel;
+
+    VoidMapping():Inherit(),fromModel(NULL),toModel(NULL)
+    {
+        this->f_mapForces.setValue(false);
+        this->f_mapConstraints.setValue(false);
+        this->f_mapMasses.setValue(false);
+    }
+
+    virtual ~VoidMapping()
+    {
+    }
 };
 
 } // namespace mapping

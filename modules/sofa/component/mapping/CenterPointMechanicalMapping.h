@@ -71,11 +71,7 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type Real;
 
-    CenterPointMechanicalMapping(core::State<In>* from, core::State<Out>* to);
-
     void init();
-
-    virtual ~CenterPointMechanicalMapping();
 
     void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in);
 
@@ -86,6 +82,10 @@ public:
     void applyJT(const core::ConstraintParams *cparams /* PARAMS FIRST */, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in);
 
 protected:
+    CenterPointMechanicalMapping(core::State<In>* from, core::State<Out>* to);
+
+    virtual ~CenterPointMechanicalMapping();
+
     core::topology::BaseMeshTopology* inputTopo;
     core::topology::BaseMeshTopology* outputTopo;
 };

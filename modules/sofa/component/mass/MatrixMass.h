@@ -76,8 +76,7 @@ public:
 
     const VecMass* _usedMassMatrices; ///< what VecMass is used to represent matrices ? f_mass.getValue() or _lumpedMasses ?
 
-
-
+protected:
     MatrixMass()
         :  f_mass( initData(&f_mass, "massMatrices", "values of the particles masses") )
         , _lumped(initData( &_lumped, false, "lumped", ""))
@@ -88,6 +87,7 @@ public:
 
     ~MatrixMass();
 
+public:
 
     void clear();
     //void addMass(const MassType& mass);

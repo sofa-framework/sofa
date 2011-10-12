@@ -154,11 +154,12 @@ protected:
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
-public:
 
     FastTetrahedralCorotationalForceField();
 
     virtual ~FastTetrahedralCorotationalForceField();
+
+public:
 
     virtual void init();
 
