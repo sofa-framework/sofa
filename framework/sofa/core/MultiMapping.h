@@ -373,7 +373,7 @@ public:
 
         //If one of the parsing failed
         if(!createResult)
-            return;
+            return typename T::SPtr();
 
         typename T::SPtr obj = sofa::core::objectmodel::New<T>(stin, stout);
 

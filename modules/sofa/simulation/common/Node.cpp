@@ -479,7 +479,7 @@ bool Node::getDebug() const
 
 void Node::removeControllers()
 {
-    removeObject(animationManager[0]);
+    removeObject(*animationManager.begin());
     typedef Sequence<core::behavior::OdeSolver> Solvers;
     Solvers solverRemove = solver;
     for ( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; i++ )

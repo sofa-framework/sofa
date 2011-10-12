@@ -36,7 +36,7 @@ Visitor::Result DeactivationVisitor::processNodeTopDown(simulation::Node* node)
     {
         for (simulation::Node::ChildIterator itChild = node->child.begin(); itChild != node->child.end(); ++itChild)
         {
-            simulation::Node *child=*itChild;
+            simulation::Node *child = itChild->get();
             child->setActive(active);
         }
 

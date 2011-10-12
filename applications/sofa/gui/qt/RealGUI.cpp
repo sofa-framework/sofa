@@ -2009,7 +2009,7 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
         nodeToChange.push_front(n);
 
         //We add to the list of node to process all its children
-        std::copy(n->child.begin(), n->child.end(), std::back_inserter(nodeToProcess));
+        for(Node::ChildIterator it = n->child.begin(), itend = n->child.end(); it != itend; ++it) nodeToProcess.push_back(it->get());
 
     }
     {
