@@ -154,15 +154,6 @@ public:
 
     virtual void reset();
 
-    virtual void writeX(std::ostream& out);
-    virtual void readX(std::istream& in);
-    virtual double compareX(std::istream& in);
-    virtual void writeV(std::ostream& out);
-    virtual void readV(std::istream& in);
-    virtual double compareV(std::istream& in);
-    virtual void writeF(std::ostream& out);
-    virtual void writeDx(std::ostream& out);
-
     virtual void writeVec(core::ConstVecId v, std::ostream &out);
     virtual void readVec(core::VecId v, std::istream &in);
     virtual double compareVec(core::ConstVecId v, std::istream &in);
