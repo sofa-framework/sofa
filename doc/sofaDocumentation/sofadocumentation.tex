@@ -43,13 +43,16 @@ As a result of this flexible and efficient architecture, \sofa{} can be used as 
 \input{../multimodel/mappingsIntro_body}
 
 
-% This chapter is borrowed from a stand-alone document defined in directory design/
-\chapter{Design}
-\graphicspath{{../design/}}  % to include images
-\input{../design/design_body}
-
-
-
+\chapter{Data Structure}
+The organization of simulation data is a complex issue. We have identified three relevant levels, and proposed different solutions for each of them.
+The coarsest structure is the scenegraph, used to hierarchically organize the groups of objects and their multi-models.
+At a finer scale, the attributes of the components can be linked by relations.
+Finally, the geometrical models and the topological changes deserve a special attention.
+\graphicspath{{../datastructure/}}  % to include images
+\input{../datastructure/scenegraph}
+\input{../datastructure/visitors}
+\input{../datastructure/engines}
+\input{../datastructure/meshTopologies}
 %%%%%%%%%%%%%%%%%%%% COMPONENTS%%%%%%%%%
 %1 STATES
 \chapter{States}
@@ -90,6 +93,12 @@ As a result of this flexible and efficient architecture, \sofa{} can be used as 
 \chapter{Haptic Rendering}
 
 
+
+%%%%%%%%%%%%%%% OLD CHAPTERS %%%%%%%%%%%
+% This chapter is borrowed from a stand-alone document defined in directory design/
+\chapter{Design}
+\graphicspath{{../design/}}  % to include images
+\input{../design/design_body}
 
 
 \chapter{Modules}
