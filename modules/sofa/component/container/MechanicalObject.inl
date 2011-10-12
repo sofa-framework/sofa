@@ -1381,6 +1381,8 @@ double MechanicalObject<DataTypes>::compareVec(ConstVecId v, std::istream &in)
         error += fabs(value_ref-value_cur);
         count ++;
     }
+    if( count == 0 ) return 0; //both vector are empy, so we return 0;
+
     return error/count;
 }
 
