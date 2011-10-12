@@ -115,38 +115,6 @@ void DiagonalMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams*
     d_f.endEdit();
 }
 
-template<>
-bool DiagonalMass<CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox)
-{
-    const VecCoord& x = *this->mstate->getX();
-    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
-    for (unsigned int i=0; i<x.size(); i++)
-    {
-        //const Coord& p = x[i];
-        const Coord& p = x.getCached(i);
-        for (int c=0; c<3; c++)
-        {
-            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-            if (p[c] < minBBox[c]) minBBox[c] = p[c];
-        }
-    }
-    return true;
-
-//     const VecCoord& x = *this->mstate->getX();
-//     for (unsigned int i=0; i<x.size(); i++)
-//     {
-//         //const Coord& p = x[i];
-//         Real p[3] = {0.0, 0.0, 0.0};
-//         DataTypes::get(p[0],p[1],p[2],x[i]);
-//         for (int c=0;c<3;c++)
-//         {
-//             if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-//             if (p[c] < minBBox[c]) minBBox[c] = p[c];
-//         }
-//     }
-//     return true;
-}
-
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 

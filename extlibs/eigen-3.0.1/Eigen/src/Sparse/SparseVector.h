@@ -133,12 +133,12 @@ class SparseVector
     inline Index nonZeros() const  { return static_cast<Index>(m_data.size()); }
 
     inline void startVec(Index outer)
-    {
+    { EIGEN_ONLY_USED_FOR_DEBUG(outer);
       eigen_assert(outer==0);
     }
 
     inline Scalar& insertBackByOuterInner(Index outer, Index inner)
-    {
+    { EIGEN_ONLY_USED_FOR_DEBUG(outer);
       eigen_assert(outer==0);
       return insertBack(inner);
     }
@@ -220,7 +220,7 @@ class SparseVector
     }
 
     inline SparseVector(const SparseVector& other)
-      : m_size(0)
+    : SparseBase(), m_size(0)
     {
       *this = other.derived();
     }
@@ -396,9 +396,9 @@ template<typename Scalar, int _Options, typename _Index>
 class SparseVector<Scalar,_Options,_Index>::InnerIterator
 {
   public:
-    InnerIterator(const SparseVector& vec, Index outer=0)
+    InnerIterator(const SparseVector& vec, Index outer = 0)
       : m_data(vec.m_data), m_id(0), m_end(static_cast<Index>(m_data.size()))
-    {
+    { EIGEN_ONLY_USED_FOR_DEBUG(outer);
       eigen_assert(outer==0);
     }
 
