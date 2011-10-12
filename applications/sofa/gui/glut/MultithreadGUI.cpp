@@ -489,7 +489,6 @@ MultithreadGUI::MultithreadGUI()
     m_dumpState = false;
     m_dumpStateStream = 0;
     m_displayComputationTime = false;
-    m_exportGnuplot = false;
 
     //Register the different Operations possible
     RegisterOperation("Attach").add< AttachOperation >();
@@ -2219,8 +2218,6 @@ void MultithreadGUI::step()
 
         if( m_dumpState )
             getSimulation()->dumpState( groot, *m_dumpStateStream );
-        if( m_exportGnuplot )
-            getSimulation()->exportGnuplot( groot, groot->getTime() );
 
         eventNewStep();
     }
@@ -2456,16 +2453,6 @@ void MultithreadGUI::setScene(sofa::simulation::Node* scene, const char* filenam
     initTextures();
     redraw();
     pick.reset();
-}
-
-void MultithreadGUI::setExportGnuplot( bool exp )
-{
-    m_exportGnuplot = exp;
-    if( m_exportGnuplot )
-    {
-        getSimulation()->initGnuplot( groot );
-        getSimulation()->exportGnuplot( groot, groot->getTime() );
-    }
 }
 
 } // namespace glut
