@@ -47,10 +47,13 @@ public:
 
     typedef std::set<simulation::Node*> GroupSet;
     GroupSet groupSet;
-public:
+
+protected:
     DefaultCollisionGroupManager();
 
     virtual ~DefaultCollisionGroupManager();
+
+public:
 
     virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact*>& contacts);
 

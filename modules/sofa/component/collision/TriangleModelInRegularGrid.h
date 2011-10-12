@@ -45,15 +45,16 @@ class TriangleModelInRegularGrid : public TriangleModel
 public:
     SOFA_CLASS(TriangleModelInRegularGrid, TriangleModel);
 
-    TriangleModelInRegularGrid();
-    ~TriangleModelInRegularGrid();
-
     virtual void init();
     virtual void computeBoundingTree ( int maxDepth=0 );
 
     sofa::core::topology::BaseMeshTopology* _topology;
     BaseMeshTopology* _higher_topo;
     core::behavior::MechanicalState<Vec3Types>* _higher_mstate;
+
+protected:
+    TriangleModelInRegularGrid();
+    ~TriangleModelInRegularGrid();
 };
 
 }

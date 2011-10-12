@@ -42,10 +42,10 @@ class SOFA_MISC_COLLISION_API TreeCollisionGroupManager : public DefaultCollisio
 public:
     SOFA_CLASS(TreeCollisionGroupManager, DefaultCollisionGroupManager);
 
-    TreeCollisionGroupManager() {};
-
     void clearGroups(core::objectmodel::BaseContext* scene);
+
 protected:
+    TreeCollisionGroupManager() {};
     virtual simulation::Node* findCommonParent(simulation::Node *group1, simulation::Node* group2);
 };
 
