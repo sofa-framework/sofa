@@ -1,0 +1,16 @@
+Collision detection is split in several phases, each implemented in a different component, and organized using a collision pipeline component.
+Each potentially colliding object is associated with a collision geometry based on or mapped from the independent DOFs.
+The broad phase component returns pairs of colliding bounding boxes (currently, axis-aligned bounding boxes).
+Based on this, the narrow phase component returns pairs of geometric primitives with the corresponding collision points.
+%\ff{Several collision detection approaches have been implemented: distances between pairs of geometric primitives (triangles and spheres), points in distance fields, distances between colliding meshes using ray-tracing~\cite{HerFauRaf08}, and intersection volume using images as sketched in Section~\ref{sec:LDI}.}
+This is passed to the contact manager, which creates contact interactions of various types based on customizable rules.
+Repulsion has been implemented based on penalties or on constraints using Lagrange multipliers, and is processed by the solvers together with the other forces at the next time step.
+%If topological changes such as cutting operations are triggered, they are handled by the topology algorithms discussed in Section~\ref{sec:topologicalChanges}.
+This framework has allowed us to efficiently implement popular proximity-based repulsion methods as well as novel approaches based on ray-casting~\cite{HerFauRaf08} or surface rasterization~\cite{FauBarAllFal08,AFCFDK10}.
+Its main limitation is that the contacts can be mechanically processed only after they all have modeled by the collision pipeline.
+This does not allow to mechanically react to a collision as soon as it is detected, possibly avoiding further collisions between primitives of the same objects.
+
+When stiff contact penalties or contact constraints are created by the contact manager, an additional \textit{GroupManager} component is used to create interaction groups handled by a common solver, as discussed in Section~\ref{sec:scenes}. 
+When contacts disappear, interaction groups can be split to keep them as small as possible.
+The scenegraph structure thus changes along with the interaction groups.
+
