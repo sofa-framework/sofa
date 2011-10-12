@@ -101,6 +101,10 @@ protected:
     DistancesInternalData<DataTypes> data;
     friend class DistancesInternalData<DataTypes>;
 
+    Distances ( DynamicSparseGridTopologyContainer* hexaTopoContainer, MechanicalState<DataTypes>* targetPointSet );
+
+    virtual ~Distances() {}
+
 public:
     Data<unsigned int> showMapIndex;
     Data<bool> showDistanceMap;
@@ -114,10 +118,6 @@ public:
     Data<int> initTargetStep;
     Data<map<unsigned int, unsigned int> > zonesFramePair;
     Data<double> harmonicMaxValue;
-
-    Distances ( DynamicSparseGridTopologyContainer* hexaTopoContainer, MechanicalState<DataTypes>* targetPointSet );
-
-    virtual ~Distances() {}
 
     void init();
 

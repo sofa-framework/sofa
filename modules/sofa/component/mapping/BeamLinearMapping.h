@@ -85,10 +85,6 @@ protected:
     std::auto_ptr<MatrixType> matrixJ;
     bool updateJ;
 
-public:
-    //Data<unsigned> index;
-    Data<bool> localCoord;
-
     BeamLinearMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to)
         //, index(initData(&index,(unsigned)0,"index","input DOF index"))
@@ -101,6 +97,10 @@ public:
     virtual ~BeamLinearMapping()
     {
     }
+
+public:
+    //Data<unsigned> index;
+    Data<bool> localCoord;
 
     void init();
 
@@ -115,9 +115,6 @@ public:
     const sofa::defaulttype::BaseMatrix* getJ();
 
     void draw(const core::visual::VisualParams* vparams);
-
-
-
 };
 
 

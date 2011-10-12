@@ -108,23 +108,6 @@ public:
 
     helper::vector<Real> reset_abscissa;
 
-    CurveMapping(core::State<In>* from, core::State<Out>* to)
-        : Inherit(from, to),
-          abscissa( initData(&abscissa, "abscissa", "")),
-          angle( initData(&angle, "angle", "")),
-          step( initData(&step, (Real) 10.0, "step", "")),
-          angularStep( initData(&angularStep, (Real) 0.0, "angularStep", "")),
-          numNodes( initData(&numNodes,  (int)5, "numNodes", "")),
-          stepNode( initData(&stepNode, (Real) 0.0, "stepNode", "")),
-          distNode( initData(&distNode, (Real) 0.0, "distNode", "")),
-          velocity( initData(&velocity, (Real) 0.0, "velocity", ""))
-    {
-    }
-
-    virtual ~CurveMapping()
-    {
-    }
-
     void init();
     void reinit();
     void storeResetState();
@@ -144,6 +127,25 @@ public:
 
     Real advanceAbscissa(Real ab, Real dist);
     void rotateElements();
+
+protected:
+
+    CurveMapping(core::State<In>* from, core::State<Out>* to)
+        : Inherit(from, to),
+          abscissa( initData(&abscissa, "abscissa", "")),
+          angle( initData(&angle, "angle", "")),
+          step( initData(&step, (Real) 10.0, "step", "")),
+          angularStep( initData(&angularStep, (Real) 0.0, "angularStep", "")),
+          numNodes( initData(&numNodes,  (int)5, "numNodes", "")),
+          stepNode( initData(&stepNode, (Real) 0.0, "stepNode", "")),
+          distNode( initData(&distNode, (Real) 0.0, "distNode", "")),
+          velocity( initData(&velocity, (Real) 0.0, "velocity", ""))
+    {
+    }
+
+    virtual ~CurveMapping()
+    {
+    }
 };
 
 using sofa::defaulttype::Vec3dTypes;

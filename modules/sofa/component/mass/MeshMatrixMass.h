@@ -119,6 +119,8 @@ protected:
     Real massLumpingCoeff;
     Real savedMass;
 
+    MeshMatrixMass();
+    ~MeshMatrixMass() {}
 
 public:
 
@@ -129,10 +131,6 @@ public:
     sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
     sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
     sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
-
-    MeshMatrixMass();
-
-    ~MeshMatrixMass() {}
 
     void clear();
 

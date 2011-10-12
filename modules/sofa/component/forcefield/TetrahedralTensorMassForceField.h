@@ -119,11 +119,12 @@ protected:
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
-public:
 
     TetrahedralTensorMassForceField();
 
     virtual ~TetrahedralTensorMassForceField();
+
+public:
 
     virtual void init();
 

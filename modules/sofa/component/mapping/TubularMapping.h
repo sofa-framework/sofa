@@ -86,18 +86,6 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef defaulttype::Vec<N,Real> Vec;
 
-    TubularMapping ( core::State<In>* from, core::State<Out>* to )
-        : Inherit ( from, to )
-        , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
-        , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
-        , m_peak (initData(&m_peak, 0, "peak", "=0 no peak, =1 peak on the first segment =2 peak on the two first segment, =-1 peak on the last segment"))
-        ,radiusContainer(NULL)
-    {
-    }
-
-    virtual ~TubularMapping()
-    {}
-
     void init();
 
     virtual void apply ( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
@@ -114,6 +102,18 @@ public:
 
     container::RadiusContainer* radiusContainer;
 protected:
+
+    TubularMapping ( core::State<In>* from, core::State<Out>* to )
+        : Inherit ( from, to )
+        , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
+        , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
+        , m_peak (initData(&m_peak, 0, "peak", "=0 no peak, =1 peak on the first segment =2 peak on the two first segment, =-1 peak on the last segment"))
+        ,radiusContainer(NULL)
+    {
+    }
+
+    virtual ~TubularMapping()
+    {}
 
     OutVecCoord rotatedPoints;
 

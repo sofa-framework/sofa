@@ -70,7 +70,6 @@ protected:
 
     sofa::helper::vector<DForce> dforces;
 
-public:
     LennardJonesForceField()
         : a(1)
         , b(1)
@@ -83,6 +82,8 @@ public:
         , damping(initData(&damping,Real(0), "damping","Damping"))
     {
     }
+
+public:
 
     void setAlpha(Real v) { alpha.setValue(v); }
     void setBeta(Real v) { beta.setValue(v); }

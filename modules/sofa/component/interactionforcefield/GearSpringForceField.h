@@ -227,12 +227,12 @@ protected:
     /// Apply the stiffness, i.e. accumulate df given dx
     void addSpringDForce(VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, /*const*/ Spring& spring, Real kFactor);
 
-
-public:
     GearSpringForceField(MechanicalState* object1, MechanicalState* object2);
     GearSpringForceField();
 
     virtual ~GearSpringForceField();
+
+public:
 
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }

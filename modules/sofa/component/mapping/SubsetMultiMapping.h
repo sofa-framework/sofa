@@ -80,6 +80,15 @@ public:
 
     virtual void init();
 
+    void addPoint(const core::State<In>* fromModel, int index);
+
+    virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
+    virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
+    virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
+
+protected :
+
     SubsetMultiMapping()
         : Inherit()
     {
@@ -92,14 +101,6 @@ public:
 
     virtual ~SubsetMultiMapping() {};
 
-    void addPoint(const core::State<In>* fromModel, int index);
-
-    virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
-    virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
-    virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
-
-protected :
     typedef topology::PointSubset IndexArray;
     std::map<const core::State<In>*,IndexArray>  m_indices;
 };

@@ -78,7 +78,6 @@ protected:
 
     defaulttype::Vec<6,PlaneForceFieldT*> _planes;
 
-public:
     WashingMachineForceField(core::behavior::MechanicalState<DataTypes>* object=NULL, const std::string& /*name*/="")
         : core::behavior::ForceField<DataTypes>(object)
         , _center(initData(&_center, Coord(0,0,0), "center", "box center"))
@@ -98,6 +97,7 @@ public:
             delete _planes[i];
     }
 
+public:
 
     virtual void init()
     {
