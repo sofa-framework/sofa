@@ -1,3 +1,4 @@
+<!-- BilateralInteractionConstraint example using rigid-->
 <Node name="root" dt="0.01" gravity="0 -0.981 0">
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <FreeMotionAnimationLoop />
