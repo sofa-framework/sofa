@@ -58,7 +58,7 @@ namespace simulation
 namespace bgl
 {
 
-BglGraphManager::BglGraphManager():visualNode(NULL)
+BglGraphManager::BglGraphManager()//:visualNode(NULL)
 {};
 
 

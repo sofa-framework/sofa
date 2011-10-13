@@ -50,7 +50,7 @@ Simulation* getSimulation()
     return simulation::getSimulation();
 }
 
-TreeSimulation::TreeSimulation(): visualNode(NULL)
+TreeSimulation::TreeSimulation()//: visualNode(NULL)
 {
     //-------------------------------------------------------------------------------------------------------
     sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",

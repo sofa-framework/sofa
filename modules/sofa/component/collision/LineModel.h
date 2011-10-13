@@ -87,6 +87,7 @@ class SOFA_BASE_COLLISION_API LineModel : public core::CollisionModel
 {
 public :
     SOFA_CLASS(LineModel,sofa::core::CollisionModel);
+
 protected:
     struct LineData
     {
@@ -99,6 +100,7 @@ protected:
     bool needsUpdate;
     virtual void updateFromTopology();
 
+    LineModel();
 
 public:
     typedef Vec3Types InDataTypes;
@@ -110,9 +112,7 @@ public:
     typedef Line Element;
 
     friend class Line;
-protected:
-    LineModel();
-    public;
+
     virtual void init();
 
     // -- CollisionModel interface

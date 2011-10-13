@@ -286,7 +286,7 @@ protected:
 
     HvertexVector hroots;           ///< the roots of the forest
     Hvertex visualRoot;
-    BglNode*   visualNode;
+//        BglNode*   visualNode;
 
     Interactions interactions;            ///< interactions between nodes at at any hierarchical levels
     Interactions previousInteractions;    ///< interactions between nodes at at any hierarchical levels at the previous time step
