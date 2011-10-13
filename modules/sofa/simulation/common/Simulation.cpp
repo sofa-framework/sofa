@@ -153,9 +153,10 @@ void Simulation::init ( Node* root )
                 <<"Default Animation Manager Loop will be used. Add DefaultAnimationLoop to the root node of scene file to remove this warning"
                         <<root->getContext()->sendl;
 
-        m_RootAmimateLoop = new DefaultAnimationLoop(root);
-        m_RootAmimateLoop->setName(core::objectmodel::BaseObject::shortName(m_RootAmimateLoop));
-        root->addObject(m_RootAmimateLoop);
+        DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
+        aloop->setName(core::objectmodel::BaseObject::shortName(aloop.get()));
+        root->addObject(aloop);
+        m_RootAmimateLoop = aloop.get();
     }
 
 
@@ -166,9 +167,10 @@ void Simulation::init ( Node* root )
                 <<"Default Visual Manager Loop will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning"
                         <<root->getContext()->sendl;
 
-        m_RootVisualLoop = new DefaultVisualManagerLoop(root);
-        m_RootVisualLoop->setName(core::objectmodel::BaseObject::shortName(m_RootVisualLoop));
-        root->addObject(m_RootVisualLoop);
+        DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
+        vloop->setName(core::objectmodel::BaseObject::shortName(vloop.get()));
+        root->addObject(vloop);
+        m_RootVisualLoop = vloop.get();
     }
 
 
