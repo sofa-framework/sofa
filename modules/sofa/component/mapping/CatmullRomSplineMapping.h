@@ -85,6 +85,9 @@ public:
 
 protected:
 
+    CatmullRomSplineMapping (core::State<In>* from, core::State<Out>* to );
+    virtual ~CatmullRomSplineMapping();
+
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
@@ -99,9 +102,6 @@ protected:
     vector<Vec<4,InReal> > m_weight;
 
 public:
-    CatmullRomSplineMapping (core::State<In>* from, core::State<Out>* to );
-    virtual ~CatmullRomSplineMapping();
-
     void init();
 
     void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);

@@ -44,7 +44,7 @@ class SOFA_MISC_SOLVER_API DampVelocitySolver : public sofa::core::behavior::Ode
 {
 public:
     SOFA_CLASS(DampVelocitySolver, sofa::core::behavior::OdeSolver);
-    DampVelocitySolver();
+
     void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
     Data<double> rate;
     Data<double> threshold;
@@ -73,6 +73,9 @@ public:
     {
         return 0;
     }
+
+protected:
+    DampVelocitySolver();
 };
 
 } // namespace odesolver
