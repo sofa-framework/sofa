@@ -178,39 +178,38 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord& 
     // rotatedpoints = R.deformedpoints
     // out = rotatedpoints + t
     rotatedPoints.resize(nbpoints);
+
     if (m_fromRootModel)
     {
-        unsigned int cptOut;
-        unsigned int val;
-        Coord translation;
-        Quat rot;
-
         unsigned int nbrigids = (*inRigid).size();
         rootX.resize(nbrigids); for(unsigned int i=0; i<nbrigids; i++) rootX[i]=(*inRigid)[i];
 
         switch (repartition.getValue().size())
         {
-        case 0 :
-            if (indexFromEnd.getValue())	val=rootX.size() - 1 - index.getValue();
-            else val=index.getValue();
 
-            translation = rootX[val].getCenter();
-            rot = rootX[val].getOrientation();
+        case 0 :
+        {
+            unsigned int val = (indexFromEnd.getValue()) ? rootX.size() - 1 - index.getValue() : index.getValue();
+
+            Coord translation = rootX[val].getCenter();
+            Quat rot = rootX[val].getOrientation();
 
             for(unsigned int i=0; i<nbpoints; i++)
             {
                 rotatedPoints[i] = rot.rotate(deformedPoints[i]);
                 out[i] = rotatedPoints[i] + translation;
             }
-            break;
+        }
+        break;
 
         case 1 ://one value specified : uniform repartition mapping on the input dofs
-            val = repartition.getValue()[0];
-            cptOut=0;
+        {
+            unsigned int val = repartition.getValue()[0];
+            unsigned int cptOut = 0;
             for (unsigned int ifrom=0 ; ifrom<rootX.size() ; ifrom++)
             {
-                translation = rootX[ifrom].getCenter();
-                rot = rootX[ifrom].getOrientation();
+                Coord translation = rootX[ifrom].getCenter();
+                Quat rot = rootX[ifrom].getOrientation();
 
                 for(unsigned int ito=0; ito<val; ito++)
                 {
@@ -219,20 +218,22 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord& 
                     cptOut++;
                 }
             }
-            break;
+        }
+        break;
 
         default :
+        {
             if (repartition.getValue().size() != rootX.size())
             {
                 serr<<"Error : mapping dofs repartition is not correct"<<sendl;
                 return;
             }
-            cptOut=0;
+            unsigned int cptOut=0;
 
             for (unsigned int ifrom=0 ; ifrom<rootX.size() ; ifrom++)
             {
-                translation = rootX[ifrom].getCenter();
-                rot = rootX[ifrom].getOrientation();
+                Coord translation = rootX[ifrom].getCenter();
+                Quat rot = rootX[ifrom].getOrientation();
 
                 for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
                 {
@@ -241,13 +242,15 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord& 
                     cptOut++;
                 }
             }
-            break;
+        }
+
         }
     }
     else  // no m_fromRootModel found => mapping is identity !
     {
         for(unsigned int i=0; i<nbpoints; i++) out[i] = rotatedPoints[i] = deformedPoints[i];
     }
+
 }
 
 template <class TIn, class TInRoot, class TOut>
