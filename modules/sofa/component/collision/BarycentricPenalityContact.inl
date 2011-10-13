@@ -42,9 +42,13 @@ using namespace sofa::defaulttype;
 using namespace core::collision;
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
-BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
-    : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(NULL), parent(NULL)
+BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricPenalityContact(CollisionModel1* _model1, CollisionModel2* _model2, Intersection* _intersectionMethod)
+    : model1(_model1), model2(_model2), intersectionMethod(_intersectionMethod), ff(NULL), parent(NULL)
 {
+    /*	model1 = sofa::core::objectmodel::New<CollisionModel1>(_model1).get();
+    	model2 = sofa::core::objectmodel::New<CollisionModel2>(_model2).get();
+    	intersectionMethod = sofa::core::objectmodel::New<Intersection>(_intersectionMethod).get();*/
+
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
 }

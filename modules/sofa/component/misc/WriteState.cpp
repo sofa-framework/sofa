@@ -102,7 +102,8 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
         context->get(ws, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if ( ws == NULL )
         {
-            ws = new sofa::component::misc::WriteState(); gnode->addObject(ws);
+            ws = sofa::core::objectmodel::New<WriteState>().get();
+            gnode->addObject(ws);
             ws->f_writeX.setValue(recordX);
             ws->f_writeV.setValue(recordV);
             for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); it++)

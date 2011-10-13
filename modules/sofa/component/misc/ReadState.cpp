@@ -89,11 +89,12 @@ void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *m
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== NULL)
     {
-        sofa::component::misc::ReadState *rs;
+        sofa::component::misc::ReadState* rs;
         context->get(rs, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if (  rs == NULL )
         {
-            rs = new sofa::component::misc::ReadState(); gnode->addObject(rs);
+            rs = sofa::core::objectmodel::New<ReadState>().get();
+            gnode->addObject(rs);
             for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); it++)
                 rs->addTag(*it);
         }

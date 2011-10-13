@@ -85,7 +85,7 @@ void BruteForceDetection::reinit()
     }
     else
     {
-        if (!boxModel) boxModel = new CubeModel;
+        if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeModel>().get();
         boxModel->resize(1);
         boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
     }

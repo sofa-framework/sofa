@@ -118,7 +118,7 @@ public:
         }
         */
         if (model1==NULL || model2==NULL || inter==NULL) return;
-        obj = new RealContact(model1, model2, inter);
+        obj = sofa::core::objectmodel::New<RealContact>(model1, model2, inter).get();
     }
 
 };

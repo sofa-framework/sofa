@@ -90,7 +90,8 @@ void DefaultContactManager::cleanup()
     {
         (*it)->removeResponse();
         (*it)->cleanup();
-        delete *it;
+        //delete *it;
+        intrusive_ptr_release(*it);
     }
     contacts.clear();
     contactMap.clear();
@@ -150,7 +151,8 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
                 ++contactIt2;
                 contactIt->second->removeResponse();
                 contactIt->second->cleanup();
-                delete contactIt->second;
+                //delete contactIt->second;
+                intrusive_ptr_release(contactIt->second);
                 contactMap.erase(contactIt);
                 contactIt = contactIt2;
             }

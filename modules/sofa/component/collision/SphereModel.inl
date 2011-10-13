@@ -168,21 +168,20 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 template <class DataTypes>
 void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
-    CubeModel::SPtr cubeModelptr = sofa::core::objectmodel::New<CubeModel>( createPrevious<CubeModel>() );
-
+    CubeModel* cubeModel = createPrevious<CubeModel>();
     const int npoints = mstate->getX()->size();
     bool updated = false;
     if (npoints != size)
     {
         resize(npoints);
         updated = true;
-        cubeModelptr->resize(0);
+        cubeModel->resize(0);
     }
 
-    if (!isMoving() && !cubeModelptr->empty() && !updated)
+    if (!isMoving() && !cubeModel->empty() && !updated)
         return; // No need to recompute BBox if immobile
 
-    cubeModelptr->resize(size);
+    cubeModel->resize(size);
     if (!empty())
     {
         for (int i=0; i<size; i++)
@@ -192,32 +191,32 @@ void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
             const Coord minElem = p.center() - Coord(r,r,r);
             const Coord maxElem = p.center() + Coord(r,r,r);
 
-            cubeModelptr->setParentOf(i, minElem, maxElem);
+            cubeModel->setParentOf(i, minElem, maxElem);
 
         }
-        cubeModelptr->computeBoundingTree(maxDepth);
+        cubeModel->computeBoundingTree(maxDepth);
     }
 }
 
 template <class DataTypes>
 void TSphereModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
-    CubeModel::SPtr cubeModelptr = sofa::core::objectmodel::New<CubeModel>( createPrevious<CubeModel>() );
+    CubeModel* cubeModel = createPrevious<CubeModel>();
     const int npoints = mstate->getX()->size();
     bool updated = false;
     if (npoints != size)
     {
         resize(npoints);
         updated = true;
-        cubeModelptr->resize(0);
+        cubeModel->resize(0);
     }
 
-    if (!isMoving() && !cubeModelptr->empty() && !updated)
+    if (!isMoving() && !cubeModel->empty() && !updated)
         return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
 
-    cubeModelptr->resize(size);
+    cubeModel->resize(size);
     if (!empty())
     {
         for (int i=0; i<size; i++)
@@ -235,9 +234,9 @@ void TSphereModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDe
             }
 
             typename TSphere<DataTypes>::Real r = p.r();
-            cubeModelptr->setParentOf(i, minElem - Vector3(r,r,r), maxElem + Vector3(r,r,r));
+            cubeModel->setParentOf(i, minElem - Vector3(r,r,r), maxElem + Vector3(r,r,r));
         }
-        cubeModelptr->computeBoundingTree(maxDepth);
+        cubeModel->computeBoundingTree(maxDepth);
     }
 }
 

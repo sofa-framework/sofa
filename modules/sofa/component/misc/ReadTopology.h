@@ -99,15 +99,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
+
 
     // Tab of 2D elements composition
     Data< helper::vector< helper::fixed_array <unsigned int,2> > > edges;

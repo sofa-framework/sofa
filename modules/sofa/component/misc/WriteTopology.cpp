@@ -98,7 +98,8 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
         context->get(wt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if ( wt == NULL )
         {
-            wt = new sofa::component::misc::WriteTopology(); gnode->addObject(wt);
+            wt = sofa::core::objectmodel::New<WriteTopology>().get();
+            gnode->addObject(wt);
             wt->f_writeContainers.setValue(recordContainers);
             wt->f_writeShellContainers.setValue(recordShellContainers);
             for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); it++)
