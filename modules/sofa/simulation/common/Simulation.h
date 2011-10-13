@@ -51,7 +51,7 @@ class SOFA_SIMULATION_COMMON_API Simulation: public virtual sofa::core::objectmo
 public:
 
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
-protected:
+// protected:
     Simulation();
     virtual ~Simulation();
 public:
