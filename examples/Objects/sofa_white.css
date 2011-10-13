@@ -84,6 +84,7 @@ div#contenu
 	border-left: 2px solid #DDD;
 	border-right: 2px solid #DDD;
 	border-bottom: 2px solid #DDD;
+	text-align: justify;
 }
 
 img {
@@ -127,6 +128,10 @@ ul li.square {
 div#orangeText {
 	color: #FF5F09;
 }
+
+div#tutorialAction {
+	font-style: italic;
+}	
 
 .news {
 	clear: both;

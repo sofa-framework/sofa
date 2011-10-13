@@ -6,15 +6,25 @@
 	<div id="contenu">
 		
 		<center><h3>Creation of a Pendulum (7/8)</h3></center>
-		<div id="orangeText">Description</div><br>
-                To link the two different mechanical objects, we will create a spring between them.
+		<div id="orangeText">Description</div>
+         
+         <p>To link the two different mechanical objects, we will create a spring between them.</p>
+                
+         <div id="tutorialAction"><p>Find the <strong>StiffSpringForceField</strong> component. Drag and drop it on the <strong>root</strong> node. The Modeler will warn you  "No MechanicalState found in your Node root". Press <strong>Ignore</strong>. We will define what the ForceField should act on manually.</p>
+         
+         <p>Double click the new <strong>StiffSpringForceField</strong> to edit its properties. Towards the bottom of the window, in the <strong>First object in interaction</strong> textbox, type "FirstObject". In the <strong>Second object in interaction</strong> textbox, type "SecondObject". </p>
+         
+         <p>Go to the <strong>Property 2/2</strong> tab, increase the <strong>spring's pairs of indices, stiffness, damping, and rest length</strong> to 1, and press <strong>Display the values</strong>, then <strong>Update</strong>. Fill in "1", "0", "10", "0.1", and "1" in the columns <strong>Index1, Index2, Ks, Kd,</strong> and <strong>L</strong> respectively.</p>
+         
+         <p>Run the scene in SOFA. Click the <strong>Graph</strong> tab.</p></div>
 
-		<br><div id="orangeText">Key points</div><br>
-                We use the same component (<b>StiffSpringForceField</b>)as in <a href="4_Pendulum.scn">this part</a> of the tutorial. But you may notice that the colour used in the scene graph is not the same. Internal Springs use a blue color, Interaction Springs use a red colour. The difference with the previous use of the <b>StiffSpringForceField</b>, resides in the fact that we need to specify the two mechanical objects in interaction: if you edit the component "Interaction Spring", you will find two parameters "object1" and "object2". They contain the path to the node containing the Mechanical Objects "FirstObject" and "SecondObject". The creation of the springs is exactly the same: two indices, Ks, Kd and rest length.
+		<div id="orangeText">Key points</div>
 
-		<br><div id="orangeText">Results</div><br>
-                A second spring is displayed in green, representing the interaction between the two objects. You may want to reduce the integration time step to have a better view of the simulation. <br>
-                To end this tutorial, and to show the genericity of Sofa, the last tutorial will simulate the same scene but using a different ODE solver, and integration scheme.
+        <p>We use the same component as in the previous part of the tutorial (StiffSpringForceField). But you may notice the the colour used in the SOFA scene graph is not the same. <strong>Internal Springs</strong> use a blue color, while <strong>Interaction Springs</strong> use a red colour. The difference with the previous use of the StiffSpringForceField resides in the fact that we need to specify the two mechanical objects in interaction: we specified the MechanicalObjects <strong>FirstObject</strong> and <strong>SecondObject</strong>. The creation of the springs is exactly the same: two indices, Ks, Kd and rest length. The second spring is displayed in green, representing the interaction between the two objects. </p>
+
+		<div id="orangeText">Results</div>
+               
+        <p><div id="tutorialAction">To get a better view of the simulation, reduce the integration time step by finding the <strong>DT</strong> textbox on the top left of the SOFA window, and changing it from <strong>0.01</strong>  to "0.001". Press <strong>Animate</strong>.</div></p>
 
                 <br><center><h3><a href="5_Pendulum.scn">Previous</a> ____________  <a href="7_Pendulum.scn">Next</a></center></h3>
 	</div>
