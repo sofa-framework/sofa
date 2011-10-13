@@ -43,6 +43,7 @@ namespace component
 
 namespace mapping
 {
+
 using namespace sofa::defaulttype;
 
 
@@ -114,13 +115,6 @@ public:
 
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
-
-    PCAOnRigidFrameMapping(helper::vector< core::State<In>* > from,
-            helper::vector< core::State<InRoot>* > fromRoot,
-            helper::vector< core::State<Out>* > to);
-
-    virtual ~PCAOnRigidFrameMapping()
-    {}
 
     void init();
 
@@ -336,6 +330,13 @@ public:
     }
 
 protected:
+    PCAOnRigidFrameMapping(helper::vector< core::State<In>* > from,
+            helper::vector< core::State<InRoot>* > fromRoot,
+            helper::vector< core::State<Out>* > to);
+
+    virtual ~PCAOnRigidFrameMapping()
+    {}
+
     core::State<In>* m_fromModel;
     core::State<Out>* m_toModel;
     core::State<InRoot>* m_fromRootModel;

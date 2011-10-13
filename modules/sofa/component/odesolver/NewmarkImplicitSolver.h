@@ -62,6 +62,8 @@ class SOFA_MISC_SOLVER_API NewmarkImplicitSolver : public sofa::core::behavior::
 protected:
     unsigned int cpt;
 
+    NewmarkImplicitSolver();
+
 public:
     SOFA_CLASS(NewmarkImplicitSolver, sofa::core::behavior::OdeSolver);
     Data<double> f_rayleighStiffness;
@@ -71,8 +73,6 @@ public:
 
     Data<double> f_gamma;
     Data<double> f_beta;
-
-    NewmarkImplicitSolver();
 
     void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 

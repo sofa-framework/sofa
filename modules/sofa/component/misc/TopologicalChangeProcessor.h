@@ -101,6 +101,10 @@ public:
 
 
 protected:
+    TopologicalChangeProcessor();
+
+    virtual ~TopologicalChangeProcessor();
+
     core::topology::BaseMeshTopology* m_topology;
 
     std::ifstream* infile;
@@ -118,10 +122,6 @@ protected:
     std::vector<unsigned int>    errorTrianglesIndices;
 
 public:
-    TopologicalChangeProcessor();
-
-    virtual ~TopologicalChangeProcessor();
-
     virtual void init();
 
     virtual void reinit();

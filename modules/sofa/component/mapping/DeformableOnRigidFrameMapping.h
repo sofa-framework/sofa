@@ -111,13 +111,6 @@ public:
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
-    DeformableOnRigidFrameMapping(helper::vector< core::State<In>* > from,
-            helper::vector< core::State<InRoot>* > fromRoot,
-            helper::vector< core::State<Out>* > to);
-
-    virtual ~DeformableOnRigidFrameMapping()
-    {}
-
     int addPoint ( const OutCoord& c );
     int addPoint ( const OutCoord& c, int indexFrom );
 
@@ -335,6 +328,13 @@ public:
     }
 
 protected:
+    DeformableOnRigidFrameMapping(helper::vector< core::State<In>* > from,
+            helper::vector< core::State<InRoot>* > fromRoot,
+            helper::vector< core::State<Out>* > to);
+
+    virtual ~DeformableOnRigidFrameMapping()
+    {}
+
     core::State<In>* m_fromModel;
     core::State<Out>* m_toModel;
     core::State<InRoot>* m_fromRootModel;
