@@ -10,8 +10,8 @@ HEADERS += initNonUniformFEM.h \
            forcefield/NonUniformHexahedralFEMForceFieldAndMass.inl \
            forcefield/NonUniformHexahedronFEMForceFieldAndMass.h \
            forcefield/NonUniformHexahedronFEMForceFieldAndMass.inl \
-           forcefield/NonUniformHexahedronFEMForceFieldDensity.h \
-           forcefield/NonUniformHexahedronFEMForceFieldDensity.inl \
+##           forcefield/NonUniformHexahedronFEMForceFieldDensity.h \
+##           forcefield/NonUniformHexahedronFEMForceFieldDensity.inl \
            topology/DynamicSparseGridGeometryAlgorithms.h \
            topology/DynamicSparseGridGeometryAlgorithms.inl \
            topology/DynamicSparseGridTopologyAlgorithms.h \
@@ -29,7 +29,7 @@ HEADERS += initNonUniformFEM.h \
 SOURCES += initNonUniformFEM.cpp \
            forcefield/NonUniformHexahedralFEMForceFieldAndMass.cpp \
            forcefield/NonUniformHexahedronFEMForceFieldAndMass.cpp \
-           forcefield/NonUniformHexahedronFEMForceFieldDensity.cpp \
+##           forcefield/NonUniformHexahedronFEMForceFieldDensity.cpp \
            topology/MultilevelHexahedronSetTopologyContainer.cpp \
            topology/DynamicSparseGridGeometryAlgorithms.cpp \
            topology/DynamicSparseGridTopologyAlgorithms.cpp \

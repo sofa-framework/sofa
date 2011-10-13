@@ -81,7 +81,7 @@ void SparseGridMultipleTopology::buildAsFinest(  )
     {
         for (unsigned int i=0; i<_fileTopologies.getValue().size()-regularGridsSize; ++i)
         {
-            _regularGrids.push_back(new RegularGridTopology());
+            _regularGrids.push_back(sofa::core::objectmodel::New<RegularGridTopology>().get());
         }
     }
     else
@@ -190,7 +190,7 @@ void SparseGridMultipleTopology::buildFromTriangleMesh(helper::io::Mesh* mesh, u
     _regularGrids[fileIdx]->setSize(this->getNx(),this->getNy(),this->getNz());
     _regularGrids[fileIdx]->setPos(this->getXmin(),this->getXmax(),this->getYmin(),this->getYmax(),this->getZmin(),this->getZmax());
 
-    voxelizeTriangleMesh(mesh, *_regularGrids[fileIdx], _regularGridTypes[fileIdx]);
+    voxelizeTriangleMesh(mesh, _regularGrids[fileIdx], _regularGridTypes[fileIdx]);
 
     delete mesh;
 }
@@ -199,8 +199,8 @@ void SparseGridMultipleTopology::buildFromTriangleMesh(helper::io::Mesh* mesh, u
 
 void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regularGridTypes,helper::vector< float >& regularStiffnessCoefs,helper::vector< float >& regularMassCoefs)
 {
-    _regularGrid.setSize(getNx(),getNy(),getNz());
-    _regularGrid.setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
+    _regularGrid->setSize(getNx(),getNy(),getNz());
+    _regularGrid->setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
 
     regularGridTypes.resize( _regularGridTypes[0].size() );
     regularGridTypes.fill(OUTSIDE);

@@ -106,7 +106,8 @@ void AttachBodyPerformer<DataTypes>::clear()
     {
         forcefield->cleanup();
         forcefield->getContext()->removeObject(forcefield);
-        delete forcefield; forcefield=NULL;
+        intrusive_ptr_release( forcefield );
+        forcefield=NULL;
     }
     if (mapper)
     {

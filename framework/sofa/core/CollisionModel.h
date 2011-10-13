@@ -87,7 +87,7 @@ protected:
         , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
         , group(initData(&group, 0, "group", "If not zero, ID of a group containing this model. No collision can occur between collision models of the same group (allowing the same object to have multiple collision models)"))
         , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
-        , size(0), previous(NULL), next(NULL), numberOfContacts(0)
+        , size(0), numberOfContacts(0)
     {
     }
 public:
@@ -98,7 +98,7 @@ public:
     /// Destructor
     virtual ~CollisionModel()
     {
-        delete previous;
+
     }
 
     /// Return true if there are no elements
@@ -158,25 +158,25 @@ public:
     /// Return the next (finer / lower / child level) CollisionModel in the hierarchy.
     CollisionModel* getNext()
     {
-        return next;
+        return next.get();
     }
 
     /// Return the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
     CollisionModel* getPrevious()
     {
-        return previous;
+        return previous.get();
     }
 
     /// Set the next (finer / lower / child level) CollisionModel in the hierarchy.
     void setNext(CollisionModel* val)
     {
-        next = val;
+        next=val;
     }
 
     /// Set the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
     void setPrevious(CollisionModel* val)
     {
-        previous = val;
+        previous=val;
     }
 
     /// \brief Return true if this CollisionModel should be used for collisions.
@@ -326,9 +326,20 @@ public:
     template<class DerivedModel>
     DerivedModel* createPrevious()
     {
-        DerivedModel* pmodel = dynamic_cast<DerivedModel*>(previous);
-        if (pmodel == NULL)
+
+        typename DerivedModel::SPtr pmodel = boost::dynamic_pointer_cast<DerivedModel,CollisionModel>(previous);
+        if (pmodel.get() == NULL)
         {
+            pmodel = sofa::core::objectmodel::New<DerivedModel>();
+            pmodel->setContext(getContext());
+            pmodel->setMoving(isMoving());
+            pmodel->setSimulated(isSimulated());
+            pmodel->proximity.setValue(proximity.getValue());
+            pmodel->group.setValue(group.getValue());
+            previous=pmodel;
+            pmodel->setNext(this);
+
+            /*
             delete previous;
             pmodel = new DerivedModel();
             pmodel->setContext(getContext());
@@ -338,8 +349,9 @@ public:
             pmodel->group.setValue(group.getValue());
             previous = pmodel;
             pmodel->setNext(this);
+            */
         }
-        return pmodel;
+        return pmodel.get();
     }
 
     /// @name Experimental methods
@@ -417,10 +429,10 @@ protected:
     int size;
 
     /// Pointer to the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
-    CollisionModel* previous;
+    CollisionModel::SPtr previous;
 
     /// Pointer to the next (finer / lower / child level) CollisionModel in the hierarchy.
-    CollisionModel* next;
+    CollisionModel::SPtr next;
 
     /// number of contacts attached to the collision model
     int numberOfContacts;
