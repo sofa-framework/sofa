@@ -92,11 +92,21 @@ public:
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T* obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         if (dynamic_cast<core::topology::BaseMeshTopology*>(context->getMeshTopology()) == NULL)
             return false;
         return BaseObject::canCreate(obj, context, arg);
+    }
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, BaseObjectDescription* arg)
+    {
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+        return obj;
     }
 
     // Tab of 2D elements composition

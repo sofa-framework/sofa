@@ -173,7 +173,7 @@ public:
 
     void updateMesh();
 
-    RegularGridTopology _regularGrid; ///< based on a corresponding RegularGrid
+    RegularGridTopology::SPtr _regularGrid; ///< based on a corresponding RegularGrid
     vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
     vector< int > _indicesOfCubeinRegularGrid; ///< to redirect an indice of a cube in the sparse grid to its indice in the regular grid
 
@@ -240,13 +240,13 @@ protected:
 
     /// start from a seed cell (i,j,k) the OUTSIDE filling is propagated to neighboor cells until meet a BOUNDARY cell (this function is called from all border cells of the RegularGrid)
     void launchPropagationFromSeed(const Vec3i& point,
-            RegularGridTopology& regularGrid,
+            RegularGridTopology::SPtr regularGrid,
             vector<Type>& regularGrdidTypes,
             vector<bool>& alreadyTested,
             std::stack<Vec3i>& seed) const;
 
     void propagateFrom(  const Vec3i& point,
-            RegularGridTopology& regularGrid,
+            RegularGridTopology::SPtr regularGrid,
             vector<Type>& regularGridTypes,
             vector<bool>& alreadyTested,
             std::stack< Vec<3,int> > &seed) const;
@@ -257,12 +257,12 @@ protected:
             SReal& zmin, SReal& zmax) const;
 
     void voxelizeTriangleMesh(helper::io::Mesh* mesh,
-            RegularGridTopology& regularGrid,
+            RegularGridTopology::SPtr regularGrid,
             vector<Type>& regularGridTypes) const;
 
     void buildFromTriangleMesh(const std::string& filename);
 
-    void buildFromRegularGridTypes(RegularGridTopology& regularGrid, const vector<Type>& regularGridTypes);
+    void buildFromRegularGridTypes(RegularGridTopology::SPtr regularGrid, const vector<Type>& regularGridTypes);
 
 
 

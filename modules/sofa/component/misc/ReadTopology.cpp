@@ -86,11 +86,12 @@ void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topo
     context->get(mapping);
     if (createInMapping || mapping== NULL)
     {
-        sofa::component::misc::ReadTopology *rt;
-        context->get(rt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
+        sofa::component::misc::ReadTopology::SPtr rt;
+        context->get(rt.get(), this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if (  rt == NULL )
         {
-            rt = new sofa::component::misc::ReadTopology(); gnode->addObject(rt);
+            rt = sofa::core::objectmodel::New<ReadTopology>();
+            gnode->addObject(rt);
             for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); it++)
                 rt->addTag(*it);
         }
