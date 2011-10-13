@@ -26,8 +26,8 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 
-#ifndef SOFA_COMPONENT_LINEARSOLVER_PrecomputedWarpPreconditioner_INL
-#define SOFA_COMPONENT_LINEARSOLVER_PrecomputedWarpPreconditioner_INL
+#ifndef SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_INL
+#define SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_INL
 
 #include "PrecomputedWarpPreconditioner.h"
 #include <sofa/component/linearsolver/NewMatMatrix.h>

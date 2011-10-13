@@ -49,7 +49,7 @@ void BilateralInteractionConstraint<DataTypes>::init()
     assert(this->mstate1);
     assert(this->mstate2);
     prevForces.clear();
-    activated = false;
+    activated = true;
 }
 
 template<class DataTypes>
@@ -223,49 +223,48 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
         , const DataVecDeriv & v1, const DataVecDeriv & v2)
 {
-    if (activated)
+//     if (activated) {
+    unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+
+    if(cParams->constOrder() == core::ConstraintParams::VEL)
     {
-        unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+        getVelocityViolation(v,x1,x2,v1,v2);
+        return;
+    }
 
-        if(cParams->constOrder() == core::ConstraintParams::VEL)
+    if (!merge.getValue())
+    {
+        dfree.resize(minp);
+        for (unsigned pid=0; pid<minp; pid++)
         {
-            getVelocityViolation(v,x1,x2,v1,v2);
-            return;
-        }
+            dfree[pid] = x2.getValue()[m2.getValue()[pid]] - x1.getValue()[m1.getValue()[pid]];
 
-        if (!merge.getValue())
-        {
-            dfree.resize(minp);
-            for (unsigned pid=0; pid<minp; pid++)
-            {
-                dfree[pid] = x2.getValue()[m2.getValue()[pid]] - x1.getValue()[m1.getValue()[pid]];
-
-                v->set(cid[pid]  , dfree[pid][0]);
-                v->set(cid[pid]+1, dfree[pid][1]);
-                v->set(cid[pid]+2, dfree[pid][2]);
-            }
-        }
-        else
-        {
-            for (unsigned pid=0; pid<minp; pid++)
-            {
-                dfree[pid] = x2.getValue()[m2.getValue()[pid]] - x1.getValue()[m1.getValue()[pid]];
-
-
-                for (unsigned int i=0; i<3; i++)
-                {
-                    if(squareXYZ[i])
-                        v->add(cid[pid]+i  , dfree[pid][i]*dfree[pid][i]);
-                    else
-                    {
-
-                        v->add(cid[pid]+i  , dfree[pid][i]*sign(dfree[pid][i] ) );
-                    }
-                }
-
-            }
+            v->set(cid[pid]  , dfree[pid][0]);
+            v->set(cid[pid]+1, dfree[pid][1]);
+            v->set(cid[pid]+2, dfree[pid][2]);
         }
     }
+    else
+    {
+        for (unsigned pid=0; pid<minp; pid++)
+        {
+            dfree[pid] = x2.getValue()[m2.getValue()[pid]] - x1.getValue()[m1.getValue()[pid]];
+
+
+            for (unsigned int i=0; i<3; i++)
+            {
+                if(squareXYZ[i])
+                    v->add(cid[pid]+i  , dfree[pid][i]*dfree[pid][i]);
+                else
+                {
+
+                    v->add(cid[pid]+i  , dfree[pid][i]*sign(dfree[pid][i] ) );
+                }
+            }
+
+        }
+    }
+//     }
 }
 
 

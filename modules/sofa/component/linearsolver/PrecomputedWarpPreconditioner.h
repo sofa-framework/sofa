@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_PrecomputedWarpPreconditioner_H
-#define SOFA_COMPONENT_LINEARSOLVER_PrecomputedWarpPreconditioner_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_H
+#define SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_H
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -174,9 +174,9 @@ protected :
     std::vector<bool> isActiveDofs;
     PrecomputedWarpPreconditionerInternalData<TDataTypes> internalData;
 
-    virtual void rotateConstraints();
-    virtual void loadMatrixWithCSparse(TMatrix& M);
-    virtual void loadMatrixWithSolver();
+    void rotateConstraints();
+    void loadMatrixWithCSparse(TMatrix& M);
+    void loadMatrixWithSolver();
 
     template<class JMatrix>
     void ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact);

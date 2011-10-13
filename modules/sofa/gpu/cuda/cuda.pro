@@ -176,6 +176,7 @@ HEADERS += \
 		CudaLDIPenalityContactForceField.h \
 		CudaLDISimpleContactConstraint.h \
 		CudaComplianceMatrixUpdateManager.h \
+		CudaComplianceMatrixUpdateManager.inl \
 		CudaDiagonalMass.h \
 		CudaDiagonalMass.inl \
            PairwiseCudaRasterizer.h \
