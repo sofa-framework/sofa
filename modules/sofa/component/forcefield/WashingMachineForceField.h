@@ -76,7 +76,7 @@ protected:
     core::objectmodel::Data<Real> _stiffness;
     core::objectmodel::Data<Real> _damping;
 
-    defaulttype::Vec<6,PlaneForceFieldT*> _planes;
+    defaulttype::Vec<6, typename PlaneForceFieldT::SPtr> _planes;
 
     WashingMachineForceField(core::behavior::MechanicalState<DataTypes>* object=NULL, const std::string& /*name*/="")
         : core::behavior::ForceField<DataTypes>(object)
@@ -93,8 +93,6 @@ protected:
 
     ~WashingMachineForceField()
     {
-        for(int i=0; i<6; ++i)
-            delete _planes[i];
     }
 
 public:
@@ -107,7 +105,7 @@ public:
 
         for(int i=0; i<6; ++i)
         {
-            _planes[i] = new PlaneForceFieldT;
+            _planes[i] = sofa::core::objectmodel::New< PlaneForceFieldT >();
             _planes[i]->setContext(this->getContext());
             _planes[i]->setStiffness(_stiffness.getValue());
             _planes[i]->setDamping(_damping.getValue());
