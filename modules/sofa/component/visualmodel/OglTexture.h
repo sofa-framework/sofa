@@ -82,10 +82,10 @@ protected:
 
 public:
     static unsigned short MAX_NUMBER_OF_TEXTURE_UNIT;
-
+protected:
     OglTexture();
     virtual ~OglTexture();
-
+public:
     virtual void init();
     void initVisual();
     void reinit();

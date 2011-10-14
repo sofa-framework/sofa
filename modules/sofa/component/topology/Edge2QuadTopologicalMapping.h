@@ -76,7 +76,7 @@ public:
     typedef helper::vector<unsigned int> VecIndex;
 
 
-public:
+protected:
 
     /** \brief Constructor.
     *
@@ -98,7 +98,7 @@ public:
     */
     virtual ~Edge2QuadTopologicalMapping()
     {}
-
+public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
     */
     virtual void init();

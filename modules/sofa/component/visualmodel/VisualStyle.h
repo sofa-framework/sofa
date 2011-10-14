@@ -44,8 +44,9 @@ public:
 
     typedef sofa::core::visual::VisualParams VisualParams;
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
+protected:
     VisualStyle();
-
+public:
     void fwdDraw(VisualParams* );
     void bwdDraw(VisualParams* );
 

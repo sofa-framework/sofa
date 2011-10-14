@@ -46,9 +46,10 @@ class OglAttribute: public core::visual::VisualModel, public OglShaderElement
 {
 public:
     SOFA_CLASS2(SOFA_TEMPLATE3(OglAttribute, size, type, DataTypes), core::visual::VisualModel, OglShaderElement);
+protected:
     OglAttribute();
     virtual ~OglAttribute();
-
+public:
     virtual void init();
 
     virtual void initVisual();

@@ -103,7 +103,7 @@ protected:
 
     // contacts from previous frame
     sofa::helper::vector<Contact> prevContacts;
-public:
+
 
     PenalityContactForceField(MechanicalState* object1, MechanicalState* object2)
         : Inherit(object1, object2), contacts(initData(&contacts,"contacts", "Contacts"))
@@ -113,7 +113,7 @@ public:
     PenalityContactForceField()
     {
     }
-
+public:
     void clear(int reserve = 0);
 
     void addContact(int m1, int m2, int index1, int index2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f, int oldIndex = 0);

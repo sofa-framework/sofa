@@ -50,9 +50,10 @@ class SOFA_VOLUMETRIC_DATA_API ImplicitSurface : public virtual core::objectmode
 
 public:
     SOFA_CLASS(ImplicitSurface,core::objectmodel::BaseObject);
-
+protected:
     ImplicitSurface( ) { }
     virtual ~ImplicitSurface() { }
+public:
     virtual double getValue(defaulttype::Vec3d& pos) = 0;
     virtual double getValue(defaulttype::Vec3d& pos, int& domain) = 0;  ///< the second parameter is used to identify a domain
     virtual defaulttype::Vec3d getGradient(defaulttype::Vec3d& pos, int i=0);

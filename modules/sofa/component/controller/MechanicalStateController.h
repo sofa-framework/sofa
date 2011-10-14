@@ -70,7 +70,7 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
-
+protected:
     /**
      * @brief Default Constructor.
      */
@@ -80,7 +80,7 @@ public:
      * @brief Default Destructor.
      */
     virtual ~MechanicalStateController() {};
-
+public:
     /**
      * @brief SceneGraph callback initialization method.
      */

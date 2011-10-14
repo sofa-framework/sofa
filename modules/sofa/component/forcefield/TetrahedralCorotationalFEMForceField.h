@@ -164,7 +164,7 @@ public:
     Data<bool> f_drawing;
     Data<bool> _displayWholeVolume;
     Data<std::map < std::string, sofa::helper::vector<double> > > _volumeGraph;
-
+protected:
     TetrahedralCorotationalFEMForceField()
         : f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
         , _poissonRatio(core::objectmodel::BaseObject::initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
@@ -177,7 +177,7 @@ public:
         this->addAlias(&_assembling, "assembling");
         _poissonRatio.setWidget("poissonRatio");
     }
-
+public:
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
 
     void setYoungModulus(Real val) { this->_youngModulus.setValue(val); }

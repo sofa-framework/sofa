@@ -102,7 +102,6 @@ protected:
     const VecElement *_indexedElements;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
-public:
 
     TriangleFEMForceField();
 
@@ -110,6 +109,7 @@ public:
 
     virtual ~TriangleFEMForceField();
 
+public:
 
     virtual void init();
     virtual void reinit();

@@ -69,12 +69,12 @@ public:
 
     /// Alarm distance for proximity detection
     Data < SReal > maxDist;
-
+protected:
     /** Default constructor
     */
     EvalSurfaceDistance(MechanicalState<DataTypes>* , MechanicalState<DataTypes>*);
     virtual ~EvalSurfaceDistance();
-
+public:
     /// Compute the error metric between two surfaces
     virtual SReal  eval();
     /// Init the computation

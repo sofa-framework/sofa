@@ -50,10 +50,10 @@ public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
-
+protected:
     DevTensionMonitor() { };
     virtual ~DevTensionMonitor() { };
-
+public:
     void init();
     void eval();
 

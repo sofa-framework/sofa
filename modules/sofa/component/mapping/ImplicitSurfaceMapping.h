@@ -56,7 +56,7 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type InReal;
-
+protected:
     ImplicitSurfaceMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to),
           mStep(initData(&mStep,0.5,"step","Step")),
@@ -70,7 +70,7 @@ public:
     virtual ~ImplicitSurfaceMapping()
     {
     }
-
+public:
     virtual void init();
 
     virtual void parse(core::objectmodel::BaseObjectDescription* arg);

@@ -51,10 +51,10 @@ class SOFA_OPENGL_VISUAL_API OglShadowShader : public sofa::component::visualmod
 {
 public:
     SOFA_CLASS(OglShadowShader, sofa::component::visualmodel::OglShader);
-
+protected:
     OglShadowShader();
     virtual ~OglShadowShader();
-
+public:
     void init();
 
     void initShaders(unsigned int numberOfLights, bool softShadow);

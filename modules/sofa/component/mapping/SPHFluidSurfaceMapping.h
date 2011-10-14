@@ -118,7 +118,7 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type InReal;
-
+protected:
     SPHFluidSurfaceMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to),
           mStep(initData(&mStep,0.5,"step","Step")),
@@ -130,7 +130,7 @@ public:
 
     virtual ~SPHFluidSurfaceMapping()
     {}
-
+public:
     double getStep() const
     {
         return mStep.getValue();

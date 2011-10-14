@@ -74,7 +74,7 @@ public:
     typedef typename Coord::value_type   Real    ;
 
     typedef MechanicalStateController<DataTypes> Inherit;
-
+protected:
     /**
      * @brief Default Constructor.
      */
@@ -84,7 +84,7 @@ public:
      * @brief Default Destructor.
      */
     virtual ~EdgeSetController() {};
-
+public:
     /**
      * @brief SceneGraph callback initialization method.
      */

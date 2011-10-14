@@ -63,9 +63,9 @@ public:
     Data< helper::vector< std::string > > f_preconditioners;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
     std::vector<sofa::core::behavior::LinearSolver*> preconditioners;
-
+protected:
     ShewchukPCGLinearSolver();
-
+public:
     void solve (Matrix& M, Vector& x, Vector& b);
     void init();
     void setSystemMBKMatrix(const core::MechanicalParams* mparams);

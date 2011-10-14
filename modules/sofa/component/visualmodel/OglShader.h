@@ -101,10 +101,10 @@ protected:
     std::vector<std::string> fragmentFilenames;
     std::vector<std::string> geometryFilenames;
 
-public:
+
     OglShader();
     virtual ~OglShader();
-
+public:
     void initVisual();
     void init();
     void reinit();

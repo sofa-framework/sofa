@@ -64,7 +64,7 @@ class SOFA_TOPOLOGY_MAPPING_API Hexa2TetraTopologicalMapping : public Topologica
 {
 public:
     SOFA_CLASS(Hexa2TetraTopologicalMapping,TopologicalMapping);
-
+protected:
     /** \brief Constructor.
     *
     * @param from the topology issuing TopologyChange objects (the "source").
@@ -77,7 +77,7 @@ public:
     * Does nothing.
     */
     virtual ~Hexa2TetraTopologicalMapping();
-
+public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
     */
     virtual void init();

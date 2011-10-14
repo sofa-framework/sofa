@@ -65,10 +65,10 @@ private:
     Data<bool> depthTest;
     Data<bool> blending;
 
-public:
+protected:
     OglTetrahedralModel();
     virtual ~OglTetrahedralModel();
-
+public:
     void init();
     void drawTransparent(const core::visual::VisualParams* vparams);
     void computeBBox(const core::ExecParams *);

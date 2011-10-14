@@ -89,7 +89,7 @@ public:
 
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
-
+protected:
     RigidRigidMapping(core::State< In >* from, core::State< Out >* to)
         : Inherit(from, to),
           points(initData(&points, "initialPoints", "Initial position of the points")),
@@ -112,7 +112,7 @@ public:
     virtual ~RigidRigidMapping()
     {
     }
-
+public:
     virtual void init();
 
     virtual void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecCoord>& out, const Data<InVecCoord>& in);

@@ -305,9 +305,9 @@ protected:
 
     sofa::helper::vector<DForce> dforces;
 
-public:
-    SPHFluidForceField();
 
+    SPHFluidForceField();
+public:
     Real getParticleRadius() const { return particleRadius.getValue(); }
     void setParticleRadius(Real v) { particleRadius.setValue(v);    }
     Real getParticleMass() const { return particleMass.getValue(); }

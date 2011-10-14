@@ -72,7 +72,7 @@ public:
     typedef ArtCenterVec::iterator ArtCenterVecIt;
     typedef std::vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation * > ArtVec;
     typedef ArtVec::iterator ArtVecIt;
-
+protected:
     /**
      * @brief Default Constructor.
      */
@@ -82,7 +82,7 @@ public:
      * @brief Default Destructor.
      */
     virtual ~ArticulatedHierarchyController() {};
-
+public:
     /**
      * @brief Init method called during the scene graph initialization.
      */

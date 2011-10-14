@@ -62,8 +62,9 @@ private:
 
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput>    OutputVector;
+protected:
     RayTraceDetection ();
-
+public:
     void setDraw (bool val)
     {
         bDraw.setValue (val);

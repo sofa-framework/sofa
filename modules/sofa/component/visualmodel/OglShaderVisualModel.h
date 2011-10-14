@@ -67,10 +67,10 @@ public:
     OglFloat3Attribute* vrestnormals;
 
     OglMatrix4Variable* modelMatrixUniform;
-
+protected:
     OglShaderVisualModel();
     virtual ~OglShaderVisualModel();
-
+public:
     void init();
     void initVisual();
 

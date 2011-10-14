@@ -50,10 +50,10 @@ public:
     Data<Vector3> normal;
     Data<int> id;
     Data<bool> active;
-
+protected:
     ClipPlane();
     virtual ~ClipPlane();
-
+public:
     virtual void init();
     virtual void reinit();
     virtual void fwdDraw(core::visual::VisualParams*);

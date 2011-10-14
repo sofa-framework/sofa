@@ -71,9 +71,9 @@ public:
     typedef typename HexahedronFEMForceFieldT::ElementStiffness ElementMass;
     typedef helper::vector<Real> MassVector;
 
-
+protected:
     HexahedronFEMForceFieldAndMass();
-
+public:
 
     virtual void init( );
     virtual void reinit( );

@@ -107,9 +107,9 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
 
     simulation::Node* nodeOfArticulationCenters =node->createChild(str);
 
-    ArticulationCenter* ac = new ArticulationCenter();
+    ArticulationCenter::SPtr ac = sofa::core::objectmodel::New<ArticulationCenter>();
     nodeOfArticulationCenters->addObject(ac);
-    articulationCenters.push_back(ac);
+    articulationCenters.push_back(ac.get());
 
     ac->posOnParent.setValue(Vector3(bvhjoint->getOffset()->x,bvhjoint->getOffset()->y,bvhjoint->getOffset()->z)); //
     ac->posOnChild.setValue(Vector3(0,0,0));
@@ -123,7 +123,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
 
     serr<<"num Frames found in BVH ="<<motion->frameCount<<sendl;
 
-    ArticulationCenter::Articulation* a;
+    ArticulationCenter::Articulation::SPtr a;
 
     for (unsigned int j=0; j<channels->channels.size(); j++)
     {
@@ -132,9 +132,9 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
         case sofa::helper::io::bvh::BVHChannels::NOP:
             break;
         case sofa::helper::io::bvh::BVHChannels::Xposition:
-            a = new ArticulationCenter::Articulation();
+            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
             nodeOfArticulations->addObject(a);
-            ac->articulations.push_back(a);
+            ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(1,0,0));
             a->translation.setValue(true);
             a->articulationIndex.setValue(id);
@@ -143,9 +143,9 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             id++;
             break;
         case sofa::helper::io::bvh::BVHChannels::Yposition:
-            a = new ArticulationCenter::Articulation();
+            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
             nodeOfArticulations->addObject(a);
-            ac->articulations.push_back(a);
+            ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(0,1,0));
             a->translation.setValue(true);
             a->articulationIndex.setValue(id);
@@ -154,9 +154,9 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             id++;
             break;
         case sofa::helper::io::bvh::BVHChannels::Zposition:
-            a = new ArticulationCenter::Articulation();
+            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
             nodeOfArticulations->addObject(a);
-            ac->articulations.push_back(a);
+            ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(0,0,1));
             a->translation.setValue(true);
             a->articulationIndex.setValue(id);
@@ -165,9 +165,9 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             id++;
             break;
         case sofa::helper::io::bvh::BVHChannels::Xrotation:
-            a = new ArticulationCenter::Articulation();
+            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
             nodeOfArticulations->addObject(a);
-            ac->articulations.push_back(a);
+            ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(1,0,0));
             a->rotation.setValue(true);
             a->articulationIndex.setValue(id);
@@ -176,9 +176,9 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             id++;
             break;
         case sofa::helper::io::bvh::BVHChannels::Yrotation:
-            a = new ArticulationCenter::Articulation();
+            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
             nodeOfArticulations->addObject(a);
-            ac->articulations.push_back(a);
+            ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(0,1,0));
             a->rotation.setValue(true);
             a->articulationIndex.setValue(id);
@@ -187,9 +187,9 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
             id++;
             break;
         case sofa::helper::io::bvh::BVHChannels::Zrotation:
-            a = new ArticulationCenter::Articulation();
+            a = sofa::core::objectmodel::New<ArticulationCenter::Articulation>();
             nodeOfArticulations->addObject(a);
-            ac->articulations.push_back(a);
+            ac->articulations.push_back(a.get());
             a->axis.setValue(Vector3(0,0,1));
             a->rotation.setValue(true);
             a->articulationIndex.setValue(id);

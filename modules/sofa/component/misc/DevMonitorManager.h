@@ -49,10 +49,10 @@ class DevMonitorManager : public DevMonitor<sofa::defaulttype::Vec3dTypes>
 {
 public:
     SOFA_CLASS(DevMonitorManager, SOFA_TEMPLATE(DevMonitor,sofa::defaulttype::Vec3dTypes));
-
+protected:
     DevMonitorManager();
     virtual ~DevMonitorManager();
-
+public:
     void init();
     void eval();
 

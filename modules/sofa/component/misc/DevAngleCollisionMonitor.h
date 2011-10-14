@@ -57,10 +57,10 @@ public:
     typedef typename DataTypes::Real Real;
 
     Data < Real > maxDist;
-
+protected:
     DevAngleCollisionMonitor();
     virtual ~DevAngleCollisionMonitor() { };
-
+public:
     void init();
     void eval();
 

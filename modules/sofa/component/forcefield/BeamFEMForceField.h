@@ -176,7 +176,7 @@ protected:
     }
     sofa::core::topology::BaseMeshTopology* _topology;
 
-public:
+
     BeamFEMForceField()
         : _indexedElements(NULL)
         , _method(0)
@@ -207,7 +207,7 @@ public:
         , _assembling(false)
     {
     }
-
+public:
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix = val; }
 
     void setComputeGlobalMatrix(bool val) { this->_assembling= val; }

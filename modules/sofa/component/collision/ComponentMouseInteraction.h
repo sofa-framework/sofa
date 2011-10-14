@@ -49,11 +49,11 @@ namespace collision
 
 class SOFA_USER_INTERACTION_API ComponentMouseInteraction
 {
-public:
+protected:
     ComponentMouseInteraction();
 
     virtual ~ComponentMouseInteraction();
-
+public:
     virtual void createInteractionComponents(sofa::simulation::Node* parent,
             sofa::simulation::Node* current) = 0;
 

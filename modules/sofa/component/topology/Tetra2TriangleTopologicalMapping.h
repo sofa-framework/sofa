@@ -63,7 +63,7 @@ class SOFA_TOPOLOGY_MAPPING_API Tetra2TriangleTopologicalMapping : public Topolo
 {
 public:
     SOFA_CLASS(Tetra2TriangleTopologicalMapping,TopologicalMapping);
-
+protected:
     /** \brief Constructor.
      *
      * @param from the topology issuing TopologyChange objects (the "source").
@@ -76,7 +76,7 @@ public:
      * Does nothing.
      */
     virtual ~Tetra2TriangleTopologicalMapping();
-
+public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
     virtual void init();

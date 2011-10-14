@@ -56,10 +56,10 @@ class SOFA_OPENGL_VISUAL_API SlicedVolumetricModel : public core::visual::Visual
 {
 public:
     SOFA_CLASS(SlicedVolumetricModel, core::visual::VisualModel);
-
+protected:
     SlicedVolumetricModel();
     virtual ~SlicedVolumetricModel();
-
+public:
     virtual void init();
 
     virtual void reinit();

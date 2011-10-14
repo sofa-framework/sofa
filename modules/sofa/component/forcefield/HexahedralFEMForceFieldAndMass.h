@@ -76,9 +76,9 @@ public:
     typedef typename HexahedralFEMForceFieldT::Element Element;
 
 
-
+protected:
     HexahedralFEMForceFieldAndMass();
-
+public:
     virtual void init( );
     virtual void reinit( );
 

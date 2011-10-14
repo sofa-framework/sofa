@@ -110,13 +110,14 @@ protected:
 public:
     static const int SMALL = 1;						    ///< Symbol of small displacements triangle solver
     static const int LARGE = 0;                                             ///< Symbol of large displacements triangle solver
-
+protected:
     /// ForceField API
     //{
     TriangularFEMForceField();
 
     //virtual const char* getTypeName() const { return "TriangularFEMForceField"; }
     virtual ~TriangularFEMForceField() {}
+public:
     virtual void init();
     virtual void reinit();
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);

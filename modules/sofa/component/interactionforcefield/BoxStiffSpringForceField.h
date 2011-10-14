@@ -64,11 +64,11 @@ protected:
 
     //float Xmin,Xmax,Ymin,Ymax,Zmin,Zmax;
 
-public:
+
 
     BoxStiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
     BoxStiffSpringForceField(double ks=100.0, double kd=5.0);
-
+public:
     void bwdInit();
 
     //virtual const char* getTypeName() const { return "Boxstiffspringforcefield"; }

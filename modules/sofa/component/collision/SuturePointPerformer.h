@@ -62,10 +62,10 @@ class SOFA_USER_INTERACTION_API SuturePointPerformer: public TInteractionPerform
     typedef sofa::component::projectiveconstraintset::FixedConstraint<DataTypes> FixObjectType;
 
 
-public:
+protected:
     SuturePointPerformer(BaseMouseInteractor *i);
     ~SuturePointPerformer();
-
+public:
 
     void start();
     void execute() {};

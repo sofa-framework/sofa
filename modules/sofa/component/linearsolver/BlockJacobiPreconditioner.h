@@ -62,8 +62,9 @@ public:
     typedef typename TMatrix::Bloc SubMatrix;
 
     Data<bool> f_verbose;
-
+protected:
     BlockJacobiPreconditioner();
+public:
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 

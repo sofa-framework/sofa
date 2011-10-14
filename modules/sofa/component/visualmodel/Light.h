@@ -90,10 +90,10 @@ public:
     Data<double> p_zNear, p_zFar;
     Data<bool> shadowsEnabled;
     Data<bool> softShadows;
-
+protected:
     Light();
     virtual ~Light();
-
+public:
     void setID(const GLint& id);
 
     //VisualModel
