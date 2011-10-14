@@ -1,4 +1,6 @@
+<!-- Mechanical EllipsoidForceField Example -->
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+    <VisualStyle displayFlags="showForceFields showVisual" />
     <Object type="CollisionPipeline" verbose="0" />
     <Object type="BruteForceDetection" name="N2" />
     <Object type="CollisionResponse" name="Response" />
@@ -21,10 +23,10 @@
             <Object type="IdentityMapping" object1="../.." object2="Visual" />
         </Node>
         <Node>
-            <Object type="RegularGrid" nx="4" ny="1" nz="4" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />/&gt;
+            <Object type="RegularGrid" nx="4" ny="1" nz="4" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
             <MechanicalObject />
             <Object type="SphereModel" radius="1.0" contactStiffness="1" />
-            <Object type="SubsetMapping" />
+            <Object type="SubsetMapping" radius="0.8"/>
         </Node>
         <!--
 		<Node name="Surf">
