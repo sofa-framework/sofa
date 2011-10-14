@@ -71,9 +71,9 @@ TreeSimulation::~TreeSimulation()
 
 
 /// Create a new graph
-Node* TreeSimulation::createNewGraph(const std::string& name)
+Node::SPtr TreeSimulation::createNewGraph(const std::string& name)
 {
-    return new GNode(name);
+    return sofa::core::objectmodel::New<GNode>(name);
 }
 
 

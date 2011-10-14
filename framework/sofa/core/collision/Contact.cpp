@@ -46,7 +46,7 @@ Contact::Factory* Contact::Factory::getInstance()
     return &instance;
 }
 
-Contact* Contact::Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod)
+Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod)
 {
     std::string::size_type args = type.find('?');
     if (args == std::string::npos)
@@ -57,7 +57,7 @@ Contact* Contact::Create(const std::string& type, core::CollisionModel* model1, 
     {
         std::string otype(type, 0, args);
         std::cout << otype << " :";
-        Contact * c = Factory::CreateObject(otype,std::make_pair(std::make_pair(model1,model2),intersectionMethod));
+        Contact::SPtr c = Factory::CreateObject(otype,std::make_pair(std::make_pair(model1,model2),intersectionMethod));
         while (args != std::string::npos)
         {
             std::string::size_type next = type.find_first_of("&?",args+1);

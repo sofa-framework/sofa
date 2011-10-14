@@ -91,8 +91,8 @@ protected:
     /// Surface model of second object
     sofa::component::collision::TriangleModel *surfaceCM;
 
-    sofa::component::collision::NewProximityIntersection * intersection;
-    sofa::component::collision::BruteForceDetection* detection;
+    sofa::component::collision::NewProximityIntersection::SPtr intersection;
+    sofa::component::collision::BruteForceDetection::SPtr detection;
     typedef core::collision::TDetectionOutputVector< sofa::component::collision::TriangleModel, sofa::component::collision::PointModel> ContactVector;
 
 };

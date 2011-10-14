@@ -399,7 +399,7 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 
 
 /// Load a scene from a file
-Node* Simulation::processXML(xml::BaseElement* xml, const char *filename)
+Node::SPtr Simulation::processXML(xml::BaseElement* xml, const char *filename)
 {
     if ( xml==NULL )
     {
@@ -423,7 +423,7 @@ Node* Simulation::processXML(xml::BaseElement* xml, const char *filename)
         std::cerr << "Objects initialization failed."<<std::endl;
     }
 
-    Node* root = dynamic_cast<Node*> ( xml->getObject() );
+    Node::SPtr root = dynamic_cast<Node*> ( xml->getObject() );
     if ( root == NULL )
     {
         std::cerr << "Objects initialization failed."<<std::endl;
@@ -435,7 +435,7 @@ Node* Simulation::processXML(xml::BaseElement* xml, const char *filename)
 
     // Find the Simulation component in the scene
     FindByTypeVisitor<Simulation> findSimu(params);
-    findSimu.execute(root);
+    findSimu.execute(root.get());
     if( !findSimu.found.empty() )
         setSimulation( findSimu.found[0] );
 
@@ -443,13 +443,13 @@ Node* Simulation::processXML(xml::BaseElement* xml, const char *filename)
 }
 
 /// Load from a string in memory
-Node* Simulation::loadFromMemory ( const char *filename, const char *data, unsigned int size )
+Node::SPtr Simulation::loadFromMemory ( const char *filename, const char *data, unsigned int size )
 {
     //::sofa::simulation::init();
     // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
     xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
 
-    Node* root = processXML(xml, filename);
+    Node::SPtr root = processXML(xml, filename);
 
     // 				std::cout << "load done."<<std::endl;
     delete xml;
@@ -459,13 +459,13 @@ Node* Simulation::loadFromMemory ( const char *filename, const char *data, unsig
 
 
 /// Load a scene from a file
-Node* Simulation::loadFromFile ( const char *filename )
+Node::SPtr Simulation::loadFromFile ( const char *filename )
 {
     //::sofa::simulation::init();
     // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
     xml::BaseElement* xml = xml::loadFromFile ( filename );
 
-    Node* root = processXML(xml, filename);
+    Node::SPtr root = processXML(xml, filename);
 
     // 				std::cout << "load done."<<std::endl;
     delete xml;
@@ -474,7 +474,7 @@ Node* Simulation::loadFromFile ( const char *filename )
 }
 
 /// Load a scene
-Node* Simulation::load ( const char *filename )
+Node::SPtr Simulation::load ( const char *filename )
 {
     std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
     if (ext == "php" || ext == "pscn")
@@ -525,25 +525,19 @@ Node* Simulation::load ( const char *filename )
 }
 
 /// Delete a scene from memory. After this call the pointer is invalid
-void Simulation::unload(Node * root)
+void Simulation::unload(Node::SPtr root)
 {
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     if (dynamic_cast<Node*>(this->getContext()) == root)
     {
-        this->setContext(0);
+        this->setContext(NULL);
     }
     root->detachFromGraph();
     root->execute<CleanupVisitor>(params);
     root->execute<DeleteVisitor>(params);
-    //delete root; //We unload only, and don't destrory the Node
 }
-//      void Simulation::addStep ( )
-//      {
-//        nbSteps++;
-//      }
 
 } // namespace simulation
 
 } // namespace sofa
-

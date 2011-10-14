@@ -57,7 +57,7 @@ public:
     /// Get the associated object
     virtual core::objectmodel::Base* getObject();
 
-    typedef helper::Factory< std::string, Object, Element<Object>* > Factory;
+    typedef helper::Factory< std::string, Object, Element<Object>*, typename Object::SPtr > Factory;
 
 };
 

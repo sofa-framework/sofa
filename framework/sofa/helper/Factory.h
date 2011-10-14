@@ -48,12 +48,12 @@ void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string class
 /// Print factory log
 void SOFA_HELPER_API printFactoryLog(std::ostream& out = std::cout);
 
-template <class Object, class Argument>
+template <class Object, class Argument, class ObjectPtr = Object*>
 class BaseCreator
 {
 public:
     virtual ~BaseCreator() { }
-    virtual Object *createInstance(Argument arg) = 0;
+    virtual ObjectPtr createInstance(Argument arg) = 0;
     virtual const std::type_info& type() = 0;
 };
 
@@ -65,7 +65,7 @@ public:
     typedef TObject   Object;
     typedef TPtr      ObjectPtr;
     typedef TArgument Argument;
-    typedef BaseCreator<Object, Argument> Creator;
+    typedef BaseCreator<Object, Argument, ObjectPtr> Creator;
     typedef std::multimap<Key, Creator> Registry;
 
 protected:
@@ -146,8 +146,7 @@ public:
     {
         RealObject* instance = NULL;
         //create(instance, arg);
-        RealObject::create(instance, arg);
-        return instance;
+        return RealObject::create(instance, arg);
     }
     const std::type_info& type()
     {
@@ -157,9 +156,9 @@ public:
 /*
 /// Generic object creator. Can be specialized for custom objects creation
 template<class Object, class Argument>
-void create(Object*& obj, Argument arg)
+Object create(Object* obj, Argument arg)
 {
-	obj = new Object(arg);
+	return new Object(arg);
 }
 */
 template <class Factory, class RealObject>
@@ -170,7 +169,7 @@ public:
     typedef typename Factory::ObjectPtr ObjectPtr;
     typedef typename Factory::Argument  Argument;
     typedef typename Factory::Key       Key;
-    typedef void Fn(RealObject*& obj, Argument arg);
+    typedef ObjectPtr Fn(RealObject* obj, Argument arg);
     Fn* constructor;
 
     CreatorFn(Key key, Fn* constructor, bool multi=false)
@@ -181,9 +180,8 @@ public:
 
     ObjectPtr createInstance(Argument arg)
     {
-        RealObject* instance = NULL;
-        (*constructor)(instance, arg);
-        return instance;
+        const RealObject* instance = NULL;
+        return (*constructor)(instance, arg);
     }
     const std::type_info& type()
     {

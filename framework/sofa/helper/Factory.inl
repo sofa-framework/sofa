@@ -46,8 +46,7 @@ namespace helper
 template <typename TKey, class TObject, typename TArgument, typename TPtr>
 TPtr Factory<TKey, TObject, TArgument, TPtr>::createObject(Key key, Argument arg)
 {
-
-    Object* object;
+    ObjectPtr object;
     Creator* creator;
     typename std::multimap<Key, Creator*>::iterator it = registry.lower_bound(key);
     typename std::multimap<Key, Creator*>::iterator end = registry.upper_bound(key);
@@ -70,7 +69,7 @@ TPtr Factory<TKey, TObject, TArgument, TPtr>::createObject(Key key, Argument arg
 template <typename TKey, class TObject, typename TArgument, typename TPtr>
 TPtr Factory<TKey, TObject, TArgument, TPtr>::createAnyObject(Argument arg)
 {
-    Object* object;
+    ObjectPtr object;
     Creator* creator;
     typename std::multimap<Key, Creator*>::iterator it = registry.begin();
     typename std::multimap<Key, Creator*>::iterator end = registry.end();

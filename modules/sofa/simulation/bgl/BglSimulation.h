@@ -59,11 +59,11 @@ public:
     BglSimulation();
 
     /// Load a file, and update the graph
-    Node* load(const char* filename);
-    void unload(Node* root);
+    Node::SPtr load(const char* filename);
+    void unload(Node::SPtr root);
 
     ///create a new graph(or tree) and return its root node
-    Node* createNewGraph(const std::string& name="");
+    Node::SPtr createNewGraph(const std::string& name="");
 
 
 

@@ -68,11 +68,11 @@ void DevAngleCollisionMonitor<DataTypes>::init()
         return;
     }
 
-    intersection = new sofa::component::collision::NewProximityIntersection;
+    intersection = sofa::core::objectmodel::New<sofa::component::collision::NewProximityIntersection>();
     intersection->setContext(getContext());
     intersection->init();
 
-    detection = new sofa::component::collision::BruteForceDetection;
+    detection = sofa::core::objectmodel::New<sofa::component::collision::BruteForceDetection>();
     detection->setContext(getContext());
     detection->init();
 }
@@ -88,7 +88,7 @@ void DevAngleCollisionMonitor<DataTypes>::eval()
     intersection->setAlarmDistance(maxDist.getValue());
     intersection->setContactDistance(0.0);
     detection->setInstance(this);
-    detection->setIntersectionMethod(intersection);
+    detection->setIntersectionMethod(intersection.get());
     sofa::helper::vector<std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> > vectCMPair;
     vectCMPair.push_back(std::make_pair(surfaceCM->getFirst(), pointsCM->getFirst()));
 

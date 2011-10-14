@@ -804,10 +804,11 @@ Iterative::IterativePartition* Node::getFirstPartition()
 
 
 template <class RealObject>
-void Node::create( RealObject*& obj, sofa::simulation::xml::Element<sofa::core::objectmodel::BaseNode>*& arg)
+Node::SPtr Node::create( RealObject*, sofa::simulation::xml::Element<sofa::core::objectmodel::BaseNode>*& arg)
 {
-    obj=(RealObject*)getSimulation()->createNewGraph(arg->getName());
+    Node::SPtr obj=getSimulation()->createNewGraph(arg->getName());
     obj->parse(arg);
+    return obj;
 }
 
 SOFA_DECL_CLASS(Node)

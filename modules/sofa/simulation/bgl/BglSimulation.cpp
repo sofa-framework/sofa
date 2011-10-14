@@ -70,9 +70,9 @@ BglSimulation::BglSimulation()
 
 
 /// Create a graph node and attach a new Node to it, then return the Node
-Node* BglSimulation::createNewGraph(const std::string& name)
+Node::SPtr BglSimulation::createNewGraph(const std::string& name)
 {
-    return new BglNode(name);
+    return sofa::core::objectmodel::New<BglNode>(name);
 }
 
 /**
@@ -87,9 +87,9 @@ void BglSimulation::init(Node* root )
 
 
 /// Create a GNode tree structure using available file loaders, then convert it to a BglSimulation
-Node* BglSimulation::load(const char* f)
+Node::SPtr BglSimulation::load(const char* f)
 {
-    Node *root=Simulation::load(f);
+    Node::SPtr root=Simulation::load(f);
     BglGraphManager::getInstance()->update();
     return root;
 
@@ -109,14 +109,15 @@ void BglSimulation::reset(Node* root)
     BglGraphManager::getInstance()->reset();
 }
 
-void BglSimulation::unload(Node* root)
+void BglSimulation::unload(Node::SPtr root)
 {
-    BglNode *n=dynamic_cast<BglNode*>(root);
+    BglNode::SPtr n=sofa::core::objectmodel::SPtr_dynamic_cast<BglNode>(root);
     if (!n) return;
     helper::vector< Node* > parents;
     n->getParents(parents);
     if (parents.empty()) //Root
     {
+        /// TODO: BglSimulation graphs are never deleted ?
         //Simulation::unload(root);
     }
 }

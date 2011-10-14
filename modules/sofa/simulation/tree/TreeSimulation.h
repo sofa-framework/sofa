@@ -53,7 +53,7 @@ public:
     ~TreeSimulation(); // this is a terminal class
 
     ///create a new graph(or tree) and return its root node
-    Node* createNewGraph(const std::string& name="");
+    Node::SPtr createNewGraph(const std::string& name="");
 
 //protected:
 //	std::auto_ptr<Node> visualNode;

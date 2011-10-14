@@ -582,7 +582,7 @@ public:
     virtual void setDefaultVisualContextValue();
 
     template <class RealObject>
-    static void create( RealObject*& obj, sofa::simulation::xml::Element<sofa::core::objectmodel::BaseNode>*& arg);
+    static Node::SPtr create( RealObject* obj, sofa::simulation::xml::Element<sofa::core::objectmodel::BaseNode>*& arg);
 protected:
     bool debug_;
     bool logTime_;

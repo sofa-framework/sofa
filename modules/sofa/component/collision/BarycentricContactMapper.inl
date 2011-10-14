@@ -49,11 +49,11 @@ void BarycentricContactMapper<TCollisionModel,DataTypes>::cleanup()
         simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
         if (parent!=NULL)
         {
-            simulation::Node* child = dynamic_cast<simulation::Node*>(mapping->getContext());
+            simulation::Node::SPtr child = dynamic_cast<simulation::Node*>(mapping->getContext());
             child->detachFromGraph();
             child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-            delete child;
-            mapping = NULL;
+            child.reset();
+            mapping.reset();
         }
     }
 }
@@ -69,15 +69,15 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
         return NULL;
     }
     simulation::Node* child = parent->createChild(name);
-    BaseMechanicalState::SPtr mstate = sofa::core::objectmodel::New<MMechanicalObject>();
+    typename MMechanicalObject::SPtr mstate = sofa::core::objectmodel::New<MMechanicalObject>();
     child->addObject(mstate);
     mstate->useMask.setValue(true);
     //mapping = new MMapping(model->getMechanicalState(), mstate, model->getMeshTopology());
     //mapper = mapping->getMapper();
     mapper = new mapping::BarycentricMapperMeshTopology<InDataTypes, typename BarycentricContactMapper::DataTypes>(model->getMeshTopology(), NULL, &model->getMechanicalState()->forceMask, &mstate->forceMask);
-    mapping =  sofa::core::objectmodel::New<MMapping>(model->getMechanicalState(), mstate, mapper);
+    mapping =  sofa::core::objectmodel::New<MMapping>(model->getMechanicalState(), mstate.get(), mapper);
     child->addObject(mapping);
-    return mstate;
+    return mstate.get();
 }
 
 
