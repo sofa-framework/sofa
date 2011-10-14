@@ -75,9 +75,9 @@ public:
 
     //Components
     simulation::Node* nodeRayPick;
-    sofa::core::behavior::BaseMechanicalState* mouseInSofa;
-    sofa::core::BaseMapping* mouseMapping;
-    sofa::component::collision::BaseMouseInteractor* mouseInteractor;
+    sofa::core::behavior::BaseMechanicalState::SPtr mouseInSofa;
+    sofa::core::BaseMapping::SPtr mouseMapping;
+    sofa::component::collision::BaseMouseInteractor::SPtr mouseInteractor;
 };
 
 

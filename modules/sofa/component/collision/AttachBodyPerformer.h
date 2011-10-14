@@ -94,8 +94,9 @@ protected:
     JointSpringForceField for Rigid3
     */
 
-    MouseContactMapper   *mapper;
-    MouseForceField      *forcefield;
+    MouseContactMapper  *mapper;
+    MouseForceField::SPtr m_forcefield;
+
     core::visual::DisplayFlags flags;
 };
 
