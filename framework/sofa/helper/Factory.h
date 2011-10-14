@@ -57,12 +57,13 @@ public:
     virtual const std::type_info& type() = 0;
 };
 
-template <typename TKey, class TObject, typename TArgument>
+template <typename TKey, class TObject, typename TArgument, typename TPtr = TObject* >
 class Factory
 {
 public:
-    typedef TKey Key;
-    typedef TObject Object;
+    typedef TKey      Key;
+    typedef TObject   Object;
+    typedef TPtr      ObjectPtr;
     typedef TArgument Argument;
     typedef BaseCreator<Object, Argument> Creator;
     typedef std::multimap<Key, Creator> Registry;
@@ -82,8 +83,8 @@ public:
         return true;
     }
 
-    Object* createObject(Key key, Argument arg);
-    Object* createAnyObject(Argument arg);
+    ObjectPtr createObject(Key key, Argument arg);
+    ObjectPtr createAnyObject(Argument arg);
 
     template< typename OutIterator >
     void uniqueKeys(OutIterator out);
@@ -92,14 +93,14 @@ public:
     bool duplicateEntry( Key existing, Key duplicate);
     bool resetEntry( Key existingKey);
 
-    static Factory<Key, Object, Argument>* getInstance();
+    static Factory<Key, Object, Argument, ObjectPtr>* getInstance();
 
-    static Object* CreateObject(Key key, Argument arg)
+    static ObjectPtr CreateObject(Key key, Argument arg)
     {
         return getInstance()->createObject(key, arg);
     }
 
-    static Object* CreateAnyObject(Argument arg)
+    static ObjectPtr CreateAnyObject(Argument arg)
     {
         return getInstance()->createAnyObject(arg);
     }
@@ -132,15 +133,16 @@ template <class Factory, class RealObject>
 class Creator : public Factory::Creator, public Factory::Key
 {
 public:
-    typedef typename Factory::Object Object;
-    typedef typename Factory::Argument Argument;
-    typedef typename Factory::Key Key;
+    typedef typename Factory::Object    Object;
+    typedef typename Factory::ObjectPtr ObjectPtr;
+    typedef typename Factory::Argument  Argument;
+    typedef typename Factory::Key       Key;
     Creator(Key key, bool multi=false)
         : Key(key)
     {
         Factory::getInstance()->registerCreator(key, this, multi);
     }
-    Object *createInstance(Argument arg)
+    ObjectPtr createInstance(Argument arg)
     {
         RealObject* instance = NULL;
         //create(instance, arg);
@@ -164,9 +166,10 @@ template <class Factory, class RealObject>
 class CreatorFn : public Factory::Creator, public Factory::Key
 {
 public:
-    typedef typename Factory::Object Object;
-    typedef typename Factory::Argument Argument;
-    typedef typename Factory::Key Key;
+    typedef typename Factory::Object    Object;
+    typedef typename Factory::ObjectPtr ObjectPtr;
+    typedef typename Factory::Argument  Argument;
+    typedef typename Factory::Key       Key;
     typedef void Fn(RealObject*& obj, Argument arg);
     Fn* constructor;
 
@@ -176,7 +179,7 @@ public:
         Factory::getInstance()->registerCreator(key, this, multi);
     }
 
-    Object *createInstance(Argument arg)
+    ObjectPtr createInstance(Argument arg)
     {
         RealObject* instance = NULL;
         (*constructor)(instance, arg);
