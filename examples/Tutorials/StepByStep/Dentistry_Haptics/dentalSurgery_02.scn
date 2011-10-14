@@ -3,10 +3,16 @@
 -->
 
 <Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
-	<Node name="Tooth">
-		<Object type="OglModel" name="ToothVisualModel" fileMesh="data/mesh/tooth_closed.obj" color="white" />
+	<Node name="Head">
+		<OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png"/>
+		<Node name="Tongue">
+			<OglModel name="TongueVisualModel" fileMesh="data/mesh/tongue.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png"/>
+		</Node>
+		<Node name="Teeth">
+			<OglModel name="TeethVisualModel" fileMesh="data/mesh/teeth.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png"/>
+		</Node>
 	</Node>
 	<Node name="Instrument">
-		<Object type="OglModel" name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="1.0 0.2 0.2 1.0" />
+		<OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" dz="-10"/>
 	</Node>
 </Node>
