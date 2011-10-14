@@ -228,10 +228,10 @@ void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalSt
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== NULL)
     {
-        sofa::component::misc::CompareState *rs; context->get(rs, core::objectmodel::BaseContext::Local);
+        sofa::component::misc::CompareState::SPtr rs; context->get(rs, core::objectmodel::BaseContext::Local);
         if (  rs == NULL )
         {
-            rs = new sofa::component::misc::CompareState(); gnode->addObject(rs);
+            rs = sofa::core::objectmodel::New<sofa::component::misc::CompareState>(); gnode->addObject(rs);
         }
 
         // compatibility:

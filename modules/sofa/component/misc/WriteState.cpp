@@ -98,11 +98,11 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
     context->get(mapping);
     if ( createInMapping || mapping == NULL)
     {
-        sofa::component::misc::WriteState *ws;
+        sofa::component::misc::WriteState::SPtr ws;
         context->get(ws, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if ( ws == NULL )
         {
-            ws = sofa::core::objectmodel::New<WriteState>().get();
+            ws = sofa::core::objectmodel::New<WriteState>();
             gnode->addObject(ws);
             ws->f_writeX.setValue(recordX);
             ws->f_writeV.setValue(recordV);

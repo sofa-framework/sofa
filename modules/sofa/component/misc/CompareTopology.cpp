@@ -354,10 +354,10 @@ void CompareTopologyCreator::addCompareTopology(sofa::core::topology::BaseMeshTo
     context->get(mapping);
     if (createInMapping || mapping== NULL)
     {
-        sofa::component::misc::CompareTopology *ct; context->get(ct, core::objectmodel::BaseContext::Local);
+        sofa::component::misc::CompareTopology::SPtr ct; context->get(ct, core::objectmodel::BaseContext::Local);
         if (  ct == NULL )
         {
-            ct = new sofa::component::misc::CompareTopology(); gnode->addObject(ct);
+            ct = sofa::core::objectmodel::New<sofa::component::misc::CompareTopology>(); gnode->addObject(ct);
         }
 
         std::ostringstream ofilename;

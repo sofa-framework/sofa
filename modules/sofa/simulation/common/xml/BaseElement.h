@@ -230,9 +230,9 @@ public:
     static BaseElement* Create(const std::string& nodeClass, const std::string& name, const std::string& type);
 
     template<class Node>
-    static void create(Node*& obj, std::pair<std::string,std::string> arg)
+    static Node* create(Node*, std::pair<std::string,std::string> arg)
     {
-        obj = new Node(arg.first,arg.second);
+        return new Node(arg.first,arg.second);
     }
 
 };

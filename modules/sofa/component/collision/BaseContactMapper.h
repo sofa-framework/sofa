@@ -98,12 +98,13 @@ public:
     }
 
     template < class TCollisionModel>
-    static void create( ContactMapper<TCollisionModel, DataTypes>*& obj, core::CollisionModel* arg)
+    static ContactMapper<TCollisionModel, DataTypes>* create( ContactMapper<TCollisionModel, DataTypes>*, core::CollisionModel* arg)
     {
         TCollisionModel* model = dynamic_cast<TCollisionModel*>(arg);
-        if (model == NULL) return;
-        obj = new ContactMapper<TCollisionModel, DataTypes>;
+        if (model == NULL) return NULL;
+        ContactMapper<TCollisionModel, DataTypes>* obj = new ContactMapper<TCollisionModel, DataTypes>;
         obj->setCollisionModel(model);
+        return obj;
     }
 
 };

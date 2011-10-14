@@ -80,8 +80,8 @@ void DefaultPipeline::doCollisionReset()
     // clear all contacts
     if (contactManager!=NULL)
     {
-        const sofa::helper::vector<Contact*>& contacts = contactManager->getContacts();
-        for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
+        const sofa::helper::vector<Contact::SPtr>& contacts = contactManager->getContacts();
+        for (sofa::helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
         {
             (*it)->removeResponse();
         }
@@ -204,15 +204,15 @@ void DefaultPipeline::doCollisionResponse()
 
     // finally we start the creation of collisionGroup
 
-    const sofa::helper::vector<Contact*>& contacts = contactManager->getContacts();
+    const sofa::helper::vector<Contact::SPtr>& contacts = contactManager->getContacts();
 
     // First we remove all contacts with non-simulated objects and directly add them
     sofa::helper::vector<Contact*> notStaticContacts;
 
 
-    for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
+    for (sofa::helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
     {
-        Contact* c = *it;
+        Contact* c = it->get();
         if (!c->getCollisionModels().first->isSimulated())
         {
             c->createResponse(c->getCollisionModels().second->getContext());

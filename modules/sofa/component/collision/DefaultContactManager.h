@@ -47,7 +47,7 @@ public :
     SOFA_CLASS(DefaultContactManager,sofa::core::collision::ContactManager);
 
 protected:
-    typedef std::map<std::pair<core::CollisionModel*,core::CollisionModel*>,core::collision::Contact*> ContactMap;
+    typedef std::map<std::pair<core::CollisionModel*,core::CollisionModel*>,core::collision::Contact::SPtr> ContactMap;
     ContactMap contactMap;
 
     void cleanup();

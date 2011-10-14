@@ -81,6 +81,8 @@ const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "shaders/softSha
 Light::Light()
     : lightID(0), shadowTexWidth(0),shadowTexHeight(0)
     , shadowFBO(true, true, true), blurHFBO(false,false,true), blurVFBO(false,false,true)
+    , depthShader(sofa::core::objectmodel::New<OglShader>())
+    , blurShader(sofa::core::objectmodel::New<OglShader>())
     , color(initData(&color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
     , shadowTextureSize (initData(&shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
     , drawSource(initData(&drawSource, (bool) false, "drawSource", "Draw Light Source"))
@@ -129,14 +131,14 @@ void Light::initVisual()
     shadowFBO.init(shadowTexWidth, shadowTexHeight);
     blurHFBO.init(shadowTexWidth, shadowTexHeight);
     blurVFBO.init(shadowTexWidth, shadowTexHeight);
-    depthShader.vertFilename.setValue(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER);
-    depthShader.fragFilename.setValue(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
-    depthShader.init();
-    depthShader.initVisual();
-    blurShader.vertFilename.setValue(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER);
-    blurShader.fragFilename.setValue(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
-    blurShader.init();
-    blurShader.initVisual();
+    depthShader->vertFilename.setValue(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER);
+    depthShader->fragFilename.setValue(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
+    depthShader->init();
+    depthShader->initVisual();
+    blurShader->vertFilename.setValue(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER);
+    blurShader->fragFilename.setValue(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
+    blurShader->init();
+    blurShader->initVisual();
 #endif
 }
 
@@ -176,10 +178,10 @@ void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
     glPushMatrix();
 
 #ifdef SOFA_HAVE_GLEW
-    depthShader.setFloat(0, "zFar", (GLfloat) p_zFar.getValue());
-    depthShader.setFloat(0, "zNear", (GLfloat) p_zNear.getValue());
-    depthShader.setFloat4(0, "lightPosition", (GLfloat) pos[0], (GLfloat)pos[1], (GLfloat)pos[2], 1.0);
-    depthShader.start();
+    depthShader->setFloat(0, "zFar", (GLfloat) p_zFar.getValue());
+    depthShader->setFloat(0, "zNear", (GLfloat) p_zNear.getValue());
+    depthShader->setFloat4(0, "lightPosition", (GLfloat) pos[0], (GLfloat)pos[1], (GLfloat)pos[2], 1.0);
+    depthShader->start();
     shadowFBO.start();
 #endif
 }
@@ -189,7 +191,7 @@ void Light::postDrawShadow()
 #ifdef SOFA_HAVE_GLEW
     //Unbind fbo
     shadowFBO.stop();
-    depthShader.stop();
+    depthShader->stop();
 #endif
 
     glMatrixMode(GL_PROJECTION);
@@ -224,9 +226,9 @@ void Light::blurDepthTexture()
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, shadowFBO.getColorTexture());
 
-    blurShader.setFloat(0, "mapDimX", (GLfloat) shadowTexWidth);
-    blurShader.setInt(0, "orientation", 0);
-    blurShader.start();
+    blurShader->setFloat(0, "mapDimX", (GLfloat) shadowTexWidth);
+    blurShader->setInt(0, "orientation", 0);
+    blurShader->start();
 
     glBegin(GL_QUADS);
     {
@@ -236,7 +238,7 @@ void Light::blurDepthTexture()
         glTexCoord3f(txmin,tymin,0.0); glVertex3f(vxmin,vymin,0.0);
     }
     glEnd();
-    blurShader.stop();
+    blurShader->stop();
     glBindTexture(GL_TEXTURE_2D, 0);
 
     blurHFBO.stop();
@@ -245,9 +247,9 @@ void Light::blurDepthTexture()
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, blurHFBO.getColorTexture());
 
-    blurShader.setFloat(0, "mapDimX", (GLfloat) shadowTexWidth);
-    blurShader.setInt(0, "orientation", 1);
-    blurShader.start();
+    blurShader->setFloat(0, "mapDimX", (GLfloat) shadowTexWidth);
+    blurShader->setInt(0, "orientation", 1);
+    blurShader->start();
 
     glBegin(GL_QUADS);
     {
@@ -257,7 +259,7 @@ void Light::blurDepthTexture()
         glTexCoord3f(txmin,tymin,0.0); glVertex3f(vxmin,vymin,0.0);
     }
     glEnd();
-    blurShader.stop();
+    blurShader->stop();
     glBindTexture(GL_TEXTURE_2D, 0);
 
     blurVFBO.stop();

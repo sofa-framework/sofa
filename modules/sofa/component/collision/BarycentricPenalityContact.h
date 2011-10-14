@@ -55,6 +55,8 @@ template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTyp
 class BarycentricPenalityContact : public core::collision::Contact
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE3(BarycentricPenalityContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes), core::collision::Contact);
+
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
     typedef core::collision::Intersection Intersection;
@@ -79,7 +81,7 @@ protected:
     ContactMapper<CollisionModel1,DataTypes1> mapper1;
     ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
-    ResponseForceField* ff;
+    typename ResponseForceField::SPtr ff;
     core::objectmodel::BaseContext* parent;
 
     typedef std::map<core::collision::DetectionOutput::ContactId,int> ContactIndexMap;

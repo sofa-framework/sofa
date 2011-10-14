@@ -82,7 +82,7 @@ public:
     virtual void setKeepAlive(bool /* val */) {}
 
     //Todo adding TPtr parameter
-    class Factory : public helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> >
+    class Factory : public helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*>, Contact::SPtr >
     {
     public:
         static Factory SOFA_CORE_API *getInstance();
@@ -99,10 +99,10 @@ public:
     };
 
     /// Create a new contact given 2 collision elements and an intersection method
-    static Contact *Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod);
+    static Contact::SPtr Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod);
 
     template<class RealContact>
-    static void create(RealContact*& obj, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> arg)
+    static typename RealContact::SPtr create(RealContact*, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> arg)
     {
         typedef typename RealContact::CollisionModel1 RealCollisionModel1;
         typedef typename RealContact::CollisionModel2 RealCollisionModel2;
@@ -118,8 +118,8 @@ public:
             model2 = dynamic_cast<RealCollisionModel2*>(arg.first.first);
         }
         */
-        if (model1==NULL || model2==NULL || inter==NULL) return;
-        obj = sofa::core::objectmodel::New<RealContact>(model1, model2, inter).get();
+        if (model1==NULL || model2==NULL || inter==NULL) return typename RealContact::SPtr();
+        return sofa::core::objectmodel::New<RealContact>(model1, model2, inter);
     }
 
 };

@@ -99,12 +99,12 @@ public:
     virtual void dumpState( Node* root, std::ofstream& out );
 
     /// Load a scene from a file.
-    virtual Node* load(const char* /* filename */);
+    virtual Node::SPtr load(const char* /* filename */);
     /// Unload a scene from a Node.
-    virtual void unload(Node * /* root */);
+    virtual void unload(Node::SPtr root);
 
     ///create a new graph(or tree) and return its root node
-    virtual Node* createNewGraph(const std::string& name)=0;//Todo replace newNode method
+    virtual Node::SPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
 
     /// Pause the simulation
     virtual void setPaused(bool paused);
@@ -117,11 +117,11 @@ public:
     bool paused;
 
     ///load a scene from memory (typically : an xml into a string)
-    static Node* loadFromMemory ( const char *filename, const char *data, unsigned int size );
+    static Node::SPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
     ///load a scene from a file
-    static Node* loadFromFile ( const char *filename );
+    static Node::SPtr loadFromFile ( const char *filename );
     ///generic function to process xml tree (after loading the xml structure from the 2 previous functions)
-    static Node* processXML(xml::BaseElement* xml, const char *filename);
+    static Node::SPtr processXML(xml::BaseElement* xml, const char *filename);
 
     static std::auto_ptr<Simulation> theSimulation;
 

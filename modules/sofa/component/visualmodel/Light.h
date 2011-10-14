@@ -75,8 +75,8 @@ protected:
     static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER;
     static const std::string PATH_TO_BLUR_TEXTURE_VERTEX_SHADER;
     static const std::string PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER;
-    OglShader depthShader;
-    OglShader blurShader;
+    OglShader::SPtr depthShader;
+    OglShader::SPtr blurShader;
 #endif
     GLfloat lightMatProj[16];
     GLfloat lightMatModelview[16];

@@ -151,10 +151,11 @@ public:
 
 
 
-    static void create(GNode*& obj, xml::Element<core::objectmodel::BaseNode>* arg)
+    static GNode::SPtr create(GNode*, xml::Element<core::objectmodel::BaseNode>* arg)
     {
-        obj = new GNode();
+        GNode::SPtr obj = GNode::SPtr();
         obj->parse(arg);
+        return obj;
     }
 
 protected:

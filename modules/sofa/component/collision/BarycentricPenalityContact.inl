@@ -66,7 +66,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     {
         ff->cleanup();
         if (parent!=NULL) parent->removeObject(ff);
-        delete ff;
+        //delete ff;
         parent = NULL;
         ff = NULL;
         mapper1.cleanup();
@@ -83,7 +83,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     {
         MechanicalState1* mstate1 = mapper1.createMapping();
         MechanicalState2* mstate2 = mapper2.createMapping();
-        ff = new ResponseForceField(mstate1,mstate2);
+        ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
         ff->setName( getName() );
         ff->init();
 #ifdef SOFA_SMP

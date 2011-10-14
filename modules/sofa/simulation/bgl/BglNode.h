@@ -175,10 +175,11 @@ public:
 
 
 
-    static void create(BglNode*& obj, simulation::xml::Element<core::objectmodel::BaseNode>* arg)
+    static BglNode::SPtr create(BglNode*, simulation::xml::Element<core::objectmodel::BaseNode>* arg)
     {
-        obj = new BglNode();
+        BglNode::SPtr obj = new BglNode();
         obj->parse(arg);
+        return obj;
     }
 
 
