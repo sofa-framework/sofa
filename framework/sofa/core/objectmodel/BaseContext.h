@@ -245,6 +245,13 @@ public:
         ptr = this->get<T>(dir);
     }
 
+    /// Generic object access template wrapper, possibly searching up or down from the current context
+    template<class T>
+    void get(boost::intrusive_ptr<T>& ptr, SearchDirection dir = SearchUp) const
+    {
+        ptr = this->get<T>(dir);
+    }
+
     /// Generic object access template wrapper, given a required tag, possibly searching up or down from the current context
     template<class T>
     T* get(const Tag& tag, SearchDirection dir = SearchUp) const
@@ -255,6 +262,13 @@ public:
     /// Generic object access template wrapper, given a required tag, possibly searching up or down from the current context
     template<class T>
     void get(T*& ptr, const Tag& tag, SearchDirection dir = SearchUp) const
+    {
+        ptr = this->get<T>(tag, dir);
+    }
+
+    /// Generic object access template wrapper, given a required tag, possibly searching up or down from the current context
+    template<class T>
+    void get(boost::intrusive_ptr<T>& ptr, const Tag& tag, SearchDirection dir = SearchUp) const
     {
         ptr = this->get<T>(tag, dir);
     }
@@ -273,6 +287,13 @@ public:
         ptr = this->get<T>(tags, dir);
     }
 
+    /// Generic object access template wrapper, given a set of required tags, possibly searching up or down from the current context
+    template<class T>
+    void get(boost::intrusive_ptr<T>& ptr, const TagSet& tags, SearchDirection dir = SearchUp) const
+    {
+        ptr = this->get<T>(tags, dir);
+    }
+
     /// Generic object access template wrapper, given a path from the current context
     template<class T>
     T* get(const std::string& path) const
@@ -283,6 +304,13 @@ public:
     /// Generic object access template wrapper, given a path from the current context
     template<class T>
     void get(T*& ptr, const std::string& path) const
+    {
+        ptr = this->get<T>(path);
+    }
+
+    /// Generic object access template wrapper, given a path from the current context
+    template<class T>
+    void get(boost::intrusive_ptr<T>& ptr, const std::string& path) const
     {
         ptr = this->get<T>(path);
     }
