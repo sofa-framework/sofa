@@ -94,18 +94,19 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
     context->get(mapping);
     if ( createInMapping || mapping == NULL)
     {
-        sofa::component::misc::WriteTopology *wt;
+        sofa::component::misc::WriteTopology::SPtr wt;
         context->get(wt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
-        if ( wt == NULL )
+
+        if (wt.get() == NULL)
         {
-            wt = sofa::core::objectmodel::New<WriteTopology>().get();
+            wt = sofa::core::objectmodel::New<WriteTopology>();
             gnode->addObject(wt);
             wt->f_writeContainers.setValue(recordContainers);
             wt->f_writeShellContainers.setValue(recordShellContainers);
             for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); it++)
                 wt->addTag(*it);
-
         }
+
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterWriteTopology << "_" << topology->getName()  << "_topology" << extension ;
 
