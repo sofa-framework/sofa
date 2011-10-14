@@ -1,6 +1,6 @@
 <!-- Mechanical TriangularFEMForceField Example -->
 <Node name="root" dt="0.05" gravity="0 -9.8 10" showBoundingTree="0">
-    <VisualStyle displayFlags="showBehaviorModels" />
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" />

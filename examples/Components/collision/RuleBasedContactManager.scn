@@ -1,5 +1,6 @@
+<!-- Mechanical RuleBasedContactManager Example -->
 <Node name="root" dt="0.01">
-    <VisualStyle displayFlags="showBehaviorModels" />
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <FreeMotionAnimationLoop />
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />

@@ -1,6 +1,5 @@
 <!-- Mechanical SubsetMapping Group Basic Example -->
 <Node name="root" dt="0.01" gravity="0 -9.6 0" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showForceFields="0" showWireFrame="0" showInteractionForceFields="1">
-	<MasterConstraintSolver maxIterations="10000" tolerance="1e-4" displayTime="true" />
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="Proximity"  alarmDistance="0.006" contactDistance="0.001" coneFactor="0.3" angleCone="0.01" filterIntersection="true"/>

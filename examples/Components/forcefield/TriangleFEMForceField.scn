@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" gravity="0 0 1" dt="0.05">
-    <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings showVisual" />
     <Object type="CollisionPipeline" verbose="0" name="CollisionPipeline" />
     <Object type="BruteForceDetection" name="N2" />
     <Object type="CollisionResponse" response="default" name="collision response" />

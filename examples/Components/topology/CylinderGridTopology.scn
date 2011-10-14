@@ -1,7 +1,7 @@
 <Node name="root" dt="0.02" gravity="0 0 100">
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <Node name="Reference">
-        <OglModel fileMesh="mesh/truthcylinder1-bent.obj" scale="0.95" dx="0" dy="-1" dz="0" color="green" />
+        <OglModel fileMesh="mesh/truthcylinder1-bent.obj" scale="0.95" dx="20" dy="17" dz="0" color="green" />
     </Node>
     <Node name="CylinderFEMTetra">
         <EulerImplicit />

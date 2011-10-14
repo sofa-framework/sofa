@@ -1,5 +1,6 @@
+<!-- Mechanical BoxConstantForceField Example -->
 <Node name="root" dt="0.05" gravity="0 0 0">
-    <VisualStyle displayFlags="showBehaviorModels" />
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <Node name="M0">
         <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
         <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
