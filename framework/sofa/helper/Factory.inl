@@ -43,8 +43,8 @@ namespace helper
 {
 
 
-template <typename TKey, class TObject, typename TArgument>
-TObject* Factory<TKey, TObject, TArgument>::createObject(Key key, Argument arg)
+template <typename TKey, class TObject, typename TArgument, typename TPtr>
+TPtr Factory<TKey, TObject, TArgument, TPtr>::createObject(Key key, Argument arg)
 {
 
     Object* object;
@@ -67,8 +67,8 @@ TObject* Factory<TKey, TObject, TArgument>::createObject(Key key, Argument arg)
     return NULL;
 }
 
-template <typename TKey, class TObject, typename TArgument>
-TObject* Factory<TKey, TObject, TArgument>::createAnyObject(Argument arg)
+template <typename TKey, class TObject, typename TArgument, typename TPtr>
+TPtr Factory<TKey, TObject, TArgument, TPtr>::createAnyObject(Argument arg)
 {
     Object* object;
     Creator* creator;
@@ -89,9 +89,9 @@ TObject* Factory<TKey, TObject, TArgument>::createAnyObject(Argument arg)
 }
 
 
-template <typename TKey, class TObject, typename TArgument>
+template <typename TKey, class TObject, typename TArgument, typename TPtr>
 template< typename OutIterator >
-void Factory<TKey, TObject, TArgument>::uniqueKeys(OutIterator out)
+void Factory<TKey, TObject, TArgument, TPtr>::uniqueKeys(OutIterator out)
 {
 
     typename std::multimap<Key, Creator*>::iterator it;
@@ -108,22 +108,22 @@ void Factory<TKey, TObject, TArgument>::uniqueKeys(OutIterator out)
     }
 }
 
-template <typename TKey, class TObject, typename TArgument>
-bool Factory<TKey, TObject, TArgument>::hasKey(Key key)
+template <typename TKey, class TObject, typename TArgument, typename TPtr>
+bool Factory<TKey, TObject, TArgument, TPtr>::hasKey(Key key)
 {
     return (this->registry.find(key) != this->registry.end());
 }
 
-template <typename TKey, class TObject, typename TArgument>
-Factory<TKey, TObject, TArgument>* Factory<TKey, TObject, TArgument>::getInstance()
+template <typename TKey, class TObject, typename TArgument, typename TPtr>
+Factory<TKey, TObject, TArgument, TPtr>* Factory<TKey, TObject, TArgument, TPtr>::getInstance()
 {
-    static Factory<Key, Object, Argument> instance;
+    static Factory<Key, Object, Argument, ObjectPtr> instance;
     return &instance;
 }
 
 
-template <typename TKey, class TObject, typename TArgument>
-bool Factory<TKey, TObject, TArgument>::duplicateEntry( Key existing, Key duplicate)
+template <typename TKey, class TObject, typename TArgument, typename TPtr>
+bool Factory<TKey, TObject, TArgument, TPtr>::duplicateEntry( Key existing, Key duplicate)
 {
     if( !hasKey(existing) )
     {
@@ -155,8 +155,8 @@ bool Factory<TKey, TObject, TArgument>::duplicateEntry( Key existing, Key duplic
     return true;
 }
 
-template <typename TKey, class TObject, typename TArgument>
-bool Factory<TKey, TObject, TArgument>::resetEntry( Key existingKey)
+template <typename TKey, class TObject, typename TArgument, typename TPtr>
+bool Factory<TKey, TObject, TArgument, TPtr>::resetEntry( Key existingKey)
 {
     if( !hasKey(existingKey) )
     {
