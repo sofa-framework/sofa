@@ -64,16 +64,16 @@ void TComponentMouseInteraction<DataTypes>::createInteractionComponents(Node* pa
     {
         current->setName( current->getName() + "_" + DataTypes::Name() );
 
-        mouseInSofa = new MouseContainer; mouseInSofa->resize(1);
+        mouseInSofa = sofa::core::objectmodel::New< MouseContainer >(); mouseInSofa->resize(1);
         mouseInSofa->setName("MousePosition");
         current->addObject(mouseInSofa);
 
-        mouseInteractor = new Interactor;
+        mouseInteractor = sofa::core::objectmodel::New< Interactor >();
         mouseInteractor->setName("MouseInteractor");
         current->addObject(mouseInteractor);
 
-        MousePosition *mecha = dynamic_cast<MousePosition*>(parent->getMechanicalState());
-        mouseMapping = new IdentityMechanicalMapping(mecha, static_cast<MouseContainer*>(mouseInSofa));
+        MousePosition *mecha = dynamic_cast< MousePosition* >(parent->getMechanicalState());
+        mouseMapping = sofa::core::objectmodel::New< IdentityMechanicalMapping >(mecha, static_cast< MouseContainer* >(mouseInSofa.get()));
         current->addObject(mouseMapping);
 
         mouseMapping->setNonMechanical();

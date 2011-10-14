@@ -41,7 +41,7 @@ namespace collision
 template <class DataTypes>
 void AttachBodyPerformer<DataTypes>::start()
 {
-    if (forcefield)
+    if (m_forcefield)
     {
         clear();
         return;
@@ -59,7 +59,7 @@ void AttachBodyPerformer<DataTypes>::start()
     this->interactor->getContext()->get(mapping); assert(mapping);
     mapping->apply(core::MechanicalParams::defaultInstance());
     mapping->applyJ(core::MechanicalParams::defaultInstance());
-    forcefield->init();
+    m_forcefield->init();
     this->interactor->setMouseAttached(true);
 }
 
@@ -78,13 +78,12 @@ void AttachBodyPerformer<DataTypes>::execute()
 template <class DataTypes>
 void AttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (forcefield)
+    if (m_forcefield)
     {
-
         core::visual::VisualParams* vp = const_cast<core::visual::VisualParams*>(vparams);
         core::visual::DisplayFlags backup = vp->displayFlags();
         vp->displayFlags() = flags;
-        forcefield->draw(vp);
+        m_forcefield->draw(vp);
         vp->displayFlags() = backup;
     }
 }
@@ -92,8 +91,7 @@ void AttachBodyPerformer<DataTypes>::draw(const core::visual::VisualParams* vpar
 template <class DataTypes>
 AttachBodyPerformer<DataTypes>::AttachBodyPerformer(BaseMouseInteractor *i):
     TInteractionPerformer<DataTypes>(i),
-    mapper(NULL),
-    forcefield(NULL)
+    mapper(NULL)
 {
     flags.setShowVisualModels(false);
     flags.setShowInteractionForceFields(true);
@@ -102,13 +100,13 @@ AttachBodyPerformer<DataTypes>::AttachBodyPerformer(BaseMouseInteractor *i):
 template <class DataTypes>
 void AttachBodyPerformer<DataTypes>::clear()
 {
-    if (forcefield)
+    if (m_forcefield)
     {
-        forcefield->cleanup();
-        forcefield->getContext()->removeObject(forcefield);
-        intrusive_ptr_release( forcefield );
-        forcefield=NULL;
+        m_forcefield->cleanup();
+        m_forcefield->getContext()->removeObject(m_forcefield);
+        m_forcefield.reset();
     }
+
     if (mapper)
     {
         mapper->cleanup();
@@ -178,8 +176,10 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         }
     }
 
-    forcefield = new sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
-    sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>* stiffspringforcefield = static_cast<sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>*>(forcefield);
+    using sofa::component::interactionforcefield::StiffSpringForceField;
+
+    m_forcefield = sofa::core::objectmodel::New< StiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
+    StiffSpringForceField< DataTypes >* stiffspringforcefield = static_cast< StiffSpringForceField< DataTypes >* >(m_forcefield.get());
     stiffspringforcefield->setName("Spring-Mouse-Contact");
     stiffspringforcefield->setArrowSize((float)this->size);
     stiffspringforcefield->setDrawMode(2); //Arrow mode if size > 0
