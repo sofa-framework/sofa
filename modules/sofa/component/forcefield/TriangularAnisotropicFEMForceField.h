@@ -83,8 +83,9 @@ public:
     void init();
     void reinit();
     void draw(const core::visual::VisualParams* vparams);
-
+protected:
     TriangularAnisotropicFEMForceField();
+public:
     void computeMaterialStiffness(int i, Index& a, Index& b, Index& c);
     void getFiberDir(int element, Deriv& dir);
 

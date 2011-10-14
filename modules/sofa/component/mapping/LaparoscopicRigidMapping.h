@@ -65,7 +65,7 @@ public:
 public:
     Data< Vector3 > pivot;
     Data< Quat > rotation;
-
+protected:
     LaparoscopicRigidMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to)
         , pivot(initData(&pivot, Vector3(0,0,0), "pivot","Pivot point position"))
@@ -76,7 +76,7 @@ public:
     virtual ~LaparoscopicRigidMapping()
     {
     }
-
+public:
 
     //void setPivot(const defaulttype::Vector3& val) { this->pivot = val; }
     //void setRotation(const defaulttype::Quat& val) { this->rotation = val; this->rotation.normalize(); }

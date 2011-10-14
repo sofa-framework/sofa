@@ -75,10 +75,10 @@ class AttachBodyPerformer: public TInteractionPerformer<DataTypes>, public Attac
     typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
     typedef sofa::core::behavior::BaseForceField              MouseForceField;
 
-public:
+protected:
     AttachBodyPerformer(BaseMouseInteractor *i);
     ~AttachBodyPerformer();
-
+public:
     void start();
     void execute();
     void draw(const core::visual::VisualParams* vparams);

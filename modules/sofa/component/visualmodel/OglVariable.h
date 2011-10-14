@@ -60,14 +60,14 @@ public:
     SOFA_CLASS2(OglVariable, core::visual::VisualModel, OglShaderElement);
 protected:
     Data< DataTypes > value;
-public:
+
     OglVariable(): value(initData(&value, DataTypes(), "value", "Set Uniform Value"))
     {
         addAlias(&value, "values"); // some variable types hold multiple values, so we authorize both names for this attribute
     }
 
     virtual ~OglVariable() {}
-
+public:
     virtual void setValue( const DataTypes& v ) { value.setValue(v); }
     void init() { OglShaderElement::init(); }
     void initVisual() { core::visual::VisualModel::initVisual(); }

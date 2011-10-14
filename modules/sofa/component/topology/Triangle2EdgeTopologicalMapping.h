@@ -63,7 +63,7 @@ class SOFA_TOPOLOGY_MAPPING_API Triangle2EdgeTopologicalMapping : public Topolog
 {
 public:
     SOFA_CLASS(Triangle2EdgeTopologicalMapping,TopologicalMapping);
-
+protected:
     /** \brief Constructor.
     *
     * @param from the topology issuing TopologyChange objects (the "source").
@@ -76,7 +76,7 @@ public:
     * Does nothing.
     */
     virtual ~Triangle2EdgeTopologicalMapping();
-
+public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
     */
     virtual void init();

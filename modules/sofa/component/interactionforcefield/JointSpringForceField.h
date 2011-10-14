@@ -324,12 +324,12 @@ protected:
     void projectTorsion(Spring& spring);
 
 
-public:
+
     JointSpringForceField(MechanicalState* object1, MechanicalState* object2);
     JointSpringForceField();
 
     virtual ~JointSpringForceField();
-
+public:
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 

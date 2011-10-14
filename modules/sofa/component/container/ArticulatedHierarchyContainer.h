@@ -91,9 +91,10 @@ public:
             *	@param articulationIndex is an integer. This index identifies, in an univocal way, one articulation
             *	from the set of articulations of a rigid object.
             */
+        protected:
             Articulation();
             ~Articulation() {};
-
+        public:
             /**
             *	this variable defines the motion axis
             */
@@ -132,9 +133,10 @@ public:
         *	@param posOnChild. It stores the local position of the center articulation in relation
         *	to the global position of the childDOF
         */
+    protected:
         ArticulationCenter();
         ~ArticulationCenter() {};
-
+    public:
         /**
         *	All DOF's can be identified, in an univocal way, by an index
         *	this variable will store the index of the parentDOF of the articulation center
@@ -223,11 +225,11 @@ public:
 
 
     }; // end ArticulationCenter
-
+protected:
     ArticulatedHierarchyContainer();
 
     ~ArticulatedHierarchyContainer() {}
-
+public:
 
 
     void init();

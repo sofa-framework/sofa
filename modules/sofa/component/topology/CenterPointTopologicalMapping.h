@@ -56,9 +56,10 @@ class SOFA_TOPOLOGY_MAPPING_API CenterPointTopologicalMapping : public Topologic
 {
 public:
     SOFA_CLASS(CenterPointTopologicalMapping,TopologicalMapping);
+protected:
     /** \brief Constructor.
-         *
-     * @param from the topology issuing TopologyChange objects (the "source").
+     *
+    * @param from the topology issuing TopologyChange objects (the "source").
      * @param to   the topology for which the TopologyChange objects must be translated (the "target").
      */
     CenterPointTopologicalMapping ( In* from=NULL, Out* to=NULL );
@@ -68,7 +69,7 @@ public:
          * Does nothing.
          */
     virtual ~CenterPointTopologicalMapping() {};
-
+public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
     virtual void init();

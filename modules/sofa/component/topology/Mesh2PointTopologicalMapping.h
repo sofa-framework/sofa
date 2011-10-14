@@ -67,7 +67,7 @@ class Mesh2PointTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(Mesh2PointTopologicalMapping,TopologicalMapping);
-
+protected:
     /** \brief Constructor.
          *
      * @param from the topology issuing TopologyChange objects (the "source").
@@ -80,7 +80,7 @@ public:
          * Does nothing.
          */
     virtual ~Mesh2PointTopologicalMapping() {};
-
+public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
     virtual void init();

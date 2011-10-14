@@ -147,7 +147,7 @@ protected:
         }
     };
 
-public:
+
     HexahedralFEMForceField()
         : f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
         , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
@@ -164,7 +164,7 @@ public:
         _coef[6][0]=  1;		_coef[6][1]=  1;		_coef[6][2]=  1;
         _coef[7][0]= -1;		_coef[7][1]=  1;		_coef[7][2]=  1;
     }
-
+public:
     void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
 
     void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }

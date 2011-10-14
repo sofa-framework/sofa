@@ -75,8 +75,9 @@ public:
     Data<bool> f_verbose;
     Data <std::string> solverName;
     Data<unsigned> f_useRotationFinder;
-
+protected:
     WarpPreconditioner();
+public:
     //void solve (TMatrix& M, TVector& x, TVector& b);
     //void invert(TMatrix& M);
     //void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);

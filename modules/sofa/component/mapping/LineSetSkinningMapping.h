@@ -69,7 +69,7 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename In::Real Real;
 
-
+protected:
     LineSetSkinningMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to)
         , nvNeighborhood(initData(&nvNeighborhood,(unsigned int)3,"neighborhoodLevel","Set the neighborhood line level"))
@@ -81,7 +81,7 @@ public:
     virtual ~LineSetSkinningMapping()
     {
     }
-
+public:
     void init();
 
     void reinit();

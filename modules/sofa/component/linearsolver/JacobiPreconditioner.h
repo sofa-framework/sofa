@@ -52,9 +52,9 @@ public:
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     Data<bool> f_verbose;
-
+protected:
     JacobiPreconditioner();
-
+public:
     void setSystemMBKMatrix(const core::MechanicalParams* mparams);
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);

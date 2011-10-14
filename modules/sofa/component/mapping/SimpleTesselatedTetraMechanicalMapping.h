@@ -70,11 +70,15 @@ public:
     typedef typename Out::Coord       OutCoord;
     typedef typename Out::Deriv       OutDeriv;
 
+protected:
+
     SimpleTesselatedTetraMechanicalMapping(core::State<In>* from, core::State<Out>* to);
 
-    void init();
-
     virtual ~SimpleTesselatedTetraMechanicalMapping();
+
+public:
+
+    void init();
 
     virtual void apply(const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn);
 

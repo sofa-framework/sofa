@@ -54,9 +54,9 @@ class FixParticlePerformer: public TInteractionPerformer<DataTypes>, public FixP
     typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-public:
+protected:
     FixParticlePerformer(BaseMouseInteractor *i);
-
+public:
     void start();
     void execute();
     void draw(const core::visual::VisualParams* vparams);

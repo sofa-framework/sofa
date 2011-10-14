@@ -88,7 +88,7 @@ public:
     typedef Data<InRootMatrixDeriv> InRootDataMatrixDeriv;
 
     typedef typename OutCoord::value_type Real;
-
+protected:
     ArticulatedSystemMapping(helper::vector< core::State<In>* > from,
             helper::vector< core::State<InRoot>* > fromRoot,
             helper::vector< core::State<Out>* > to);
@@ -96,7 +96,7 @@ public:
     virtual ~ArticulatedSystemMapping()
     {
     }
-
+public:
     void init();
     void reset();
 

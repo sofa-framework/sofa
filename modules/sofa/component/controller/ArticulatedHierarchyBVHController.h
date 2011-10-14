@@ -59,8 +59,9 @@ class SOFA_USER_INTERACTION_API ArticulatedHierarchyBVHController : public Artic
 {
 public:
     SOFA_CLASS(ArticulatedHierarchyBVHController,ArticulatedHierarchyController);
+protected:
     /**
-     * @brief Default Constructor.
+    * @brief Default Constructor.
      */
     ArticulatedHierarchyBVHController()
         : useExternalTime( initData(&useExternalTime, false, "useExternalTime", "use the external time line"))
@@ -73,7 +74,7 @@ public:
      * @brief Default Destructor.
      */
     virtual ~ArticulatedHierarchyBVHController() {};
-
+public:
     /**
      * @brief Init method called during the scene graph initialization.
      */

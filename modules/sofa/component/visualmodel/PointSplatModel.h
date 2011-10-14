@@ -54,10 +54,10 @@ class SOFA_OPENGL_VISUAL_API PointSplatModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(PointSplatModel,core::visual::VisualModel);
-
+protected:
     PointSplatModel();
     virtual ~PointSplatModel();
-
+public:
     virtual void init();
 
     virtual void reinit();

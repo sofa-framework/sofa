@@ -47,11 +47,11 @@ class SOFA_VALIDATION_API CompareState: public ReadState
 {
 public:
     SOFA_CLASS(CompareState,ReadState);
-
+protected:
     /** Default constructor
     */
     CompareState();
-
+public:
     void handleEvent(sofa::core::objectmodel::Event* event);
 
     /// Compute the total errors (positions and velocities)

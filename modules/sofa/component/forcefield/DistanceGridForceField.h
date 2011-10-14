@@ -169,7 +169,7 @@ public:
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
-
+protected:
     DistanceGridForceField()
         : grid(NULL)
         , fileDistanceGrid( initData( &fileDistanceGrid, "fileDistanceGrid", "load distance grid from specified file"))
@@ -195,7 +195,7 @@ public:
         this->addAlias(&stiffnessOut,"stiffness");
         this->addAlias(&fileDistanceGrid,"filename");
     }
-
+public:
     virtual void init();
 
     void setMState(  core::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }

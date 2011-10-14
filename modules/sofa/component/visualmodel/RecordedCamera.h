@@ -20,10 +20,10 @@ public:
 
     typedef BaseCamera::Vec3 Vec3;
     typedef BaseCamera::Quat Quat;
-
+protected:
     RecordedCamera();
     virtual ~RecordedCamera() {}
-
+public:
     virtual void init();
 
     virtual void reinit();

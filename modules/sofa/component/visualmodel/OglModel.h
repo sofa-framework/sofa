@@ -82,11 +82,11 @@ protected:
 
     std::map<int, int> materialTextureIdMap; //link between a material and a texture
 
-public:
 
     OglModel();
 
     ~OglModel();
+public:
 
     bool loadTexture(const std::string& filename);
     bool loadTextures() ;

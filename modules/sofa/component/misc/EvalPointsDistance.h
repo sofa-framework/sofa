@@ -72,12 +72,12 @@ public:
     Data < double > distMean, distMin, distMax, distDev;
     /// Relative computed distances (mean, min, max, standard deviation)
     Data < double > rdistMean, rdistMin, rdistMax, rdistDev;
-
+protected:
     /** Default constructor
     */
     EvalPointsDistance(MechanicalState<DataTypes>* , MechanicalState<DataTypes>*);
     virtual ~EvalPointsDistance();
-
+public:
     /// Init the computation of the distances
     virtual void init();
     /// Reset the computation of the distances

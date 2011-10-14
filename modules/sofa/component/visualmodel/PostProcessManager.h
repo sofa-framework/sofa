@@ -65,10 +65,10 @@ public:
     sofa::core::objectmodel::DataFileName vertFilename;
     ///Files where fragment shader is defined
     sofa::core::objectmodel::DataFileName fragFilename;
-
+protected:
     PostProcessManager();
     virtual ~PostProcessManager();
-
+public:
     void init() ;
     void reinit() { };
     void initVisual();

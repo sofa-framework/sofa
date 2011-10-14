@@ -78,6 +78,7 @@ class SOFA_USER_INTERACTION_API Controller : public virtual core::behavior::Base
 
 public:
     SOFA_CLASS(Controller,core::behavior::BaseController);
+protected:
     /**
     * @brief Default constructor.
     */
@@ -87,7 +88,7 @@ public:
     * @brief Destructor.
     */
     virtual ~Controller();
-
+public:
     /**
     * @brief Mouse event callback.
     */

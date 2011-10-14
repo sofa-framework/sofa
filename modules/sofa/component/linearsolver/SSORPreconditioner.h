@@ -65,8 +65,9 @@ public:
 
     Data<bool> f_verbose;
     Data<double> f_omega;
-
+protected:
     SSORPreconditioner();
+public:
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 

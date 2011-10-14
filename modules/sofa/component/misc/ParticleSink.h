@@ -87,7 +87,7 @@ public:
     Data<bool> showPlane;
 
     topology::PointSubset fixed;
-
+protected:
     ParticleSink()
         : planeNormal(initData(&planeNormal, "normal", "plane normal"))
         , planeD0(initData(&planeD0, (Real)0, "d0", "plane d coef at which particles acceleration is constrained to 0"))
@@ -104,7 +104,7 @@ public:
     virtual ~ParticleSink()
     {
     }
-
+public:
     virtual void init()
     {
         this->core::behavior::ProjectiveConstraintSet<TDataTypes>::init();

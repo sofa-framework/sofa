@@ -90,10 +90,10 @@ public:
     Data<bool> shadowsEnabled;
     Data<bool> softShadowsEnabled;
     Data<defaulttype::Vec4f> ambient;
-
+protected:
     LightManager();
     virtual ~LightManager();
-
+public:
     void init();
     void reinit();
     void initVisual();

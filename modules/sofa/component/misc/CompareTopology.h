@@ -47,11 +47,11 @@ class SOFA_VALIDATION_API CompareTopology: public ReadTopology
 {
 public:
     SOFA_CLASS(CompareTopology,ReadTopology);
-
+protected:
     /** Default constructor
     */
     CompareTopology();
-
+public:
     void handleEvent(sofa::core::objectmodel::Event* event);
 
     /// Compute the total number of errors

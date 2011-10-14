@@ -63,12 +63,14 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename InCoord::value_type Real;
-
+protected:
     Mesh2PointMechanicalMapping(core::State<In>* from, core::State<Out>* to);
 
-    void init();
-
     virtual ~Mesh2PointMechanicalMapping();
+
+public:
+
+    void init();
 
     void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
 

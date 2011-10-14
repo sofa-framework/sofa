@@ -49,9 +49,9 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-
+protected:
     ExtraMonitor();
-
+public:
     virtual void init();
 
 //	virtual void reset();

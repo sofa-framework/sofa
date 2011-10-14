@@ -62,10 +62,10 @@ public:
 
     helper::gl::FrameBufferObject fbo;
 
-
+protected:
     OglViewport();
     virtual ~OglViewport();
-
+public:
     void init();
     void initVisual();
     void preDrawScene(core::visual::VisualParams* vp);

@@ -50,9 +50,10 @@ class SOFA_OPENGL_VISUAL_API OglShaderMacro : public OglShaderElement
 {
 public:
     SOFA_CLASS(OglShaderMacro, OglShaderElement);
-
+protected:
     OglShaderMacro();
     virtual ~OglShaderMacro();
+public:
     virtual void init();
 
 };

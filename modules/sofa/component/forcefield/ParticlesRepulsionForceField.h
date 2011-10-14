@@ -91,9 +91,9 @@ public:
         else
             particles[i2].neighbors.push_back(i1);
     }
-
+protected:
     ParticlesRepulsionForceField();
-
+public:
     virtual void init();
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);

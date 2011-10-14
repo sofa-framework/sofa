@@ -132,9 +132,9 @@ public:
     Data<double> draw_rotations_scale;
 
     MState * mstate;
-
+protected:
     PrecomputedWarpPreconditioner();
-
+public:
     void solve (TMatrix& M, TVector& x, TVector& b);
     void invert(TMatrix& M);
     void setSystemMBKMatrix(const core::MechanicalParams* mparams);

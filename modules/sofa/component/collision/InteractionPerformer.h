@@ -50,10 +50,10 @@ class SOFA_USER_INTERACTION_API InteractionPerformer
 {
 public:
     typedef helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*> InteractionPerformerFactory;
-
+protected:
     InteractionPerformer(BaseMouseInteractor *i):interactor(i),freezePerformer(0) {}
     virtual ~InteractionPerformer() {}
-
+public:
 
     virtual void start()=0;
     virtual void execute()=0;

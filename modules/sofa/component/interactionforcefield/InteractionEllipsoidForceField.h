@@ -124,7 +124,7 @@ public:
     Data<defaulttype::Vec3f> color;
     Data<bool> bDraw;
     Data<int> object2_dof_index;
-
+protected:
     InteractionEllipsoidForceField()
         : contacts(initData(&contacts,"contacts", "Contacts"))
         , center(initData(&center, "center", "ellipsoid center"))
@@ -140,7 +140,7 @@ public:
 // 		printf("\n vars.center : %f %f %f",vars.center.x(),vars.center.y(),vars.center.z());
         _orientation.clear();
     }
-
+public:
     void setStiffness(Real1 stiff)
     {
         stiffness.setValue( stiff );

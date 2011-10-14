@@ -56,9 +56,10 @@ class SOFA_VOLUMETRIC_DATA_API InterpolatedImplicitSurface : public virtual Impl
 public:
 
     SOFA_CLASS(InterpolatedImplicitSurface,ImplicitSurface);
-
+protected:
     InterpolatedImplicitSurface();
     ~InterpolatedImplicitSurface();
+public:
     virtual void init();
     virtual double getValue( defaulttype::Vec3d &transformedPos );
     virtual double getValue( defaulttype::Vec3d &transformedPos, int &domain );

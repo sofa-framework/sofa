@@ -62,7 +62,7 @@ class SimpleTesselatedHexaTopologicalMapping : public TopologicalMapping
 {
 public:
     SOFA_CLASS(SimpleTesselatedHexaTopologicalMapping,TopologicalMapping);
-
+protected:
     /** \brief Constructor.
          *
      * @param from the topology issuing TopologyChange objects (the "source").
@@ -75,7 +75,7 @@ public:
          * Does nothing.
          */
     virtual ~SimpleTesselatedHexaTopologicalMapping() {};
-
+public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
     virtual void init();

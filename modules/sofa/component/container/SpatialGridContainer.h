@@ -326,10 +326,10 @@ public:
             return false;
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
-
+protected:
     SpatialGridContainer();
     virtual ~SpatialGridContainer();
-
+public:
     virtual void init();
     virtual void reinit();
     virtual void draw(const core::visual::VisualParams* vparams);

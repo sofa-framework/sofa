@@ -99,11 +99,11 @@ public:
     helper::vector<bool> constraintReleased;
     helper::vector<Real> lastDist;
     helper::vector<defaulttype::Quat> restRotations;
-
+protected:
     AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2);
     AttachConstraint();
     virtual ~AttachConstraint();
-
+public:
     void clearConstraints();
     void addConstraint(unsigned int index1, unsigned int index2);
 

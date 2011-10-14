@@ -155,7 +155,7 @@ public:
     Data<bool> f_assembling;
     Data<bool> f_drawing;
 
-
+protected:
     HexahedronFEMForceField()
         : _elementStiffnesses(initData(&_elementStiffnesses,"stiffnessMatrices", "Stiffness matrices per element (K_i)"))
         , _mesh(NULL)
@@ -197,7 +197,7 @@ public:
         _alreadyInit=false;
 
     }
-
+public:
     void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
 
     void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }

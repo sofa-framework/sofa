@@ -226,7 +226,7 @@ public:
 
     Real minYoung;
     Real maxYoung;
-
+protected:
     TetrahedronFEMForceField()
         : parallelDataSimu(NULL)
         ,parallelDataThrd(NULL)
@@ -268,7 +268,7 @@ public:
 // 	    _gatherPt = NULL;
 // 	    _gatherBsize = NULL
     }
-
+public:
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
 
     void setYoungModulus(Real val)
