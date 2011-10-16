@@ -153,7 +153,9 @@ JoystickEvent::~JoystickEvent()
         delete hatEvents[i];
 }
 
-
+#ifndef NULL
+#define NULL 0
+#endif
 
 const JoystickEvent::AxisEvent *JoystickEvent::getAxisEvent(const int index) const
 {

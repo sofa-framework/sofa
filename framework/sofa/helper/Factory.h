@@ -146,7 +146,10 @@ public:
     {
         RealObject* instance = NULL;
         //create(instance, arg);
-        return RealObject::create(instance, arg);
+//            return RealObject::create(instance, arg);
+        RealObject::create(instance, arg);
+        return instance;
+//            return RealObject::Create(arg);
     }
     const std::type_info& type()
     {
