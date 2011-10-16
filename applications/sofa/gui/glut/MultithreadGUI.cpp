@@ -101,7 +101,7 @@ struct doCollideTask
         // TODO AnimateBeginEvent ev ( 0.0 );
         // TODO PropagateEventVisitor act ( &ev );
         // TODO MultithreadGUI::instance->getScene()->execute ( act );
-        //	sofa::simulation::tree::getSimulation()->animate(groot);
+        //	sofa::simulation::tree::getSimulation()->animate(groot.get());
 
     }
 };
@@ -123,7 +123,7 @@ struct collideTask
         //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
 
         //   a1::Fork<doCollideTask>()();
-        //	sofa::simulation::tree::getSimulation()->animate(groot);
+        //	sofa::simulation::tree::getSimulation()->animate(groot.get());
 
     }
 };
@@ -282,7 +282,7 @@ int MultithreadGUI::InitGUI(const char* /*name*/, const std::vector<std::string>
     return 0;
 }
 
-SofaGUI* MultithreadGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node* groot, const char* filename)
+SofaGUI* MultithreadGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename)
 {
 
     glutInitDisplayMode ( GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE );
@@ -520,7 +520,7 @@ void MultithreadGUI::initTextures()
     {
         //         std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        simulation::getSimulation()->initTextures(groot);
+        simulation::getSimulation()->initTextures(groot.get());
         //---------------------------------------------------
         initTexturesDone = true;
     }
@@ -1009,7 +1009,7 @@ void MultithreadGUI::DisplayOBJs()
 
     if (initTexturesDone)
     {
-        getSimulation()->draw(&vparams,groot);
+        getSimulation()->draw(&vparams,groot.get());
         if (_axis)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);
@@ -1120,7 +1120,7 @@ void MultithreadGUI::calcProjection()
 
     //if (!sceneBBoxIsValid)
     {
-        getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        getSimulation()->computeBBox(groot.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         sceneBBoxIsValid = true;
     }
     //std::cout << "Scene BBox = "<<sceneMinBBox<<" - "<<sceneMaxBBox<<"\n";
@@ -1355,7 +1355,7 @@ void MultithreadGUI::animate(void)
     if (processMessages())
     {
         fprintf(stderr, "Update Visual\n");
-        getSimulation()->updateVisual(groot);
+        getSimulation()->updateVisual(groot.get());
         needRedraw = true;
     }
 
@@ -1632,8 +1632,8 @@ void MultithreadGUI::keyPressEvent ( int k )
                 std::string filename = sceneFileName;
                 Quaternion q = _newQuat;
                 Transformation t = _sceneTransform;
-                simulation::Node* newroot = getSimulation()->load(filename.c_str());
-                getSimulation()->init(newroot);
+                simulation::Node::SPtr newroot = getSimulation()->load(filename.c_str());
+                getSimulation()->init(newroot.get());
                 if (newroot == NULL)
                 {
                     std::cerr << "Failed to load "<<filename<<std::endl;
@@ -2213,11 +2213,11 @@ void MultithreadGUI::step()
 #ifdef SOFA_SMP
         mg->step();
 #else
-        getSimulation()->animate(groot);
+        getSimulation()->animate(groot.get());
 #endif
 
         if( m_dumpState )
-            getSimulation()->dumpState( groot, *m_dumpStateStream );
+            getSimulation()->dumpState( groot.get(), *m_dumpStateStream );
 
         eventNewStep();
     }
@@ -2270,7 +2270,7 @@ void MultithreadGUI::resetScene()
 {
     if (groot)
     {
-        getSimulation()->reset(groot);
+        getSimulation()->reset(groot.get());
         redraw();
     }
 }
@@ -2302,7 +2302,7 @@ void MultithreadGUI::showVisual(bool value)
     if (groot)
     {
         groot->getContext()->setShowVisualModels(value);
-        getSimulation()->updateVisualContext(groot);
+        getSimulation()->updateVisualContext(groot.get());
     }
     redraw();
 }
@@ -2312,7 +2312,7 @@ void MultithreadGUI::showBehavior(bool value)
     if (groot)
     {
         groot->getContext()->setShowBehaviorModels(value);
-        getSimulation()->updateVisualContext(groot);
+        getSimulation()->updateVisualContext(groot.get());
     }
     redraw();
 }
@@ -2322,7 +2322,7 @@ void MultithreadGUI::showCollision(bool value)
     if (groot)
     {
         groot->getContext()->setShowCollisionModels(value);
-        getSimulation()->updateVisualContext(groot);
+        getSimulation()->updateVisualContext(groot.get());
     }
     redraw();
 }
@@ -2332,7 +2332,7 @@ void MultithreadGUI::showBoundingCollision(bool value)
     if (groot)
     {
         groot->getContext()->setShowBoundingCollisionModels(value);
-        getSimulation()->updateVisualContext(groot);
+        getSimulation()->updateVisualContext(groot.get());
     }
     redraw();
 }
@@ -2342,7 +2342,7 @@ void MultithreadGUI::showMapping(bool value)
     if (groot)
     {
         groot->getContext()->setShowMappings(value);
-        getSimulation()->updateVisualContext(groot);
+        getSimulation()->updateVisualContext(groot.get());
     }
     redraw();
 }
@@ -2352,7 +2352,7 @@ void MultithreadGUI::showMechanicalMapping(bool value)
     if (groot)
     {
         groot->getContext()->setShowMechanicalMappings(value);
-        getSimulation()->updateVisualContext(groot);
+        getSimulation()->updateVisualContext(groot.get());
     }
     redraw();
 }
@@ -2362,7 +2362,7 @@ void MultithreadGUI::showForceField(bool value)
     if (groot)
     {
         groot->getContext()->setShowForceFields(value);
-        getSimulation()->updateVisualContext(groot);
+        getSimulation()->updateVisualContext(groot.get());
     }
     redraw();
 }
@@ -2372,7 +2372,7 @@ void MultithreadGUI::showInteractionForceField(bool value)
     if (groot)
     {
         groot->getContext()->setShowInteractionForceFields(value);
-        getSimulation()->updateVisualContext(groot);
+        getSimulation()->updateVisualContext(groot.get());
     }
     redraw();
 }
@@ -2382,7 +2382,7 @@ void MultithreadGUI::showWireFrame(bool value)
     if (groot)
     {
         groot->getContext()->setShowWireFrame(value);
-        getSimulation()->updateVisualContext(groot);
+        getSimulation()->updateVisualContext(groot.get());
     }
     redraw();
 }
@@ -2392,7 +2392,7 @@ void MultithreadGUI::showNormals(bool value)
     if (groot)
     {
         groot->getContext()->setShowNormals(value);
-        getSimulation()->updateVisualContext(groot);
+        getSimulation()->updateVisualContext(groot.get());
     }
     redraw();
 }
@@ -2427,10 +2427,10 @@ void MultithreadGUI::exportOBJ(bool exportMTL)
     ofilename << ".obj";
     std::string filename = ofilename.str();
     std::cout << "Exporting OBJ Scene "<<filename<<std::endl;
-    getSimulation()->exportOBJ(groot, filename.c_str(),exportMTL);
+    getSimulation()->exportOBJ(groot.get(), filename.c_str(),exportMTL);
 }
 
-void MultithreadGUI::setScene(sofa::simulation::Node* scene, const char* filename, bool)
+void MultithreadGUI::setScene(sofa::simulation::Node::SPtr scene, const char* filename, bool)
 {
     std::ostringstream ofilename;
 
