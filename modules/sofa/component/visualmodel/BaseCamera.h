@@ -28,6 +28,8 @@ namespace visualmodel
 class SOFA_BASE_VISUAL_API BaseCamera : public core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
+
     typedef sofa::core::visual::VisualParams::CameraType CameraType;
     typedef defaulttype::Vector3 Vec3;
     typedef defaulttype::Quat Quat;

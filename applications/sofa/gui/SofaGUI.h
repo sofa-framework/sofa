@@ -60,11 +60,11 @@ public:
     virtual int mainLoop()=0;
     virtual void redraw()=0;
     virtual int closeGUI()=0;
-    virtual void setScene(sofa::simulation::Node* groot, const char* filename=NULL, bool temporaryFile=false)=0;
+    virtual void setScene(sofa::simulation::Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false)=0;
     virtual sofa::simulation::Node* currentSimulation()=0;
     /// @}
 
-    virtual void configureGUI(sofa::simulation::Node* groot);
+    virtual void configureGUI(sofa::simulation::Node::SPtr groot);
 
     /// @name methods to configure the GUI
     virtual void setViewerResolution(int /* width */, int /* height */) {};

@@ -56,16 +56,14 @@ protected:
 template <class DataTypes>
 class SOFA_USER_INTERACTION_API SuturePointPerformer: public TInteractionPerformer<DataTypes>, public SuturePointPerformerConfiguration
 {
+public:
     typedef typename DataTypes::Real Real;
     typedef sofa::component::interactionforcefield::LinearSpring<Real> Spring;
     typedef sofa::component::interactionforcefield::StiffSpringForceField<DataTypes> SpringObjectType;
     typedef sofa::component::projectiveconstraintset::FixedConstraint<DataTypes> FixObjectType;
 
-
-protected:
     SuturePointPerformer(BaseMouseInteractor *i);
     ~SuturePointPerformer();
-public:
 
     void start();
     void execute() {};

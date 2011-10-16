@@ -46,7 +46,7 @@ public:
 
     BatchGUI();
 
-    void setScene(sofa::simulation::Node* groot, const char* filename="", bool temporaryFile=false);
+    void setScene(sofa::simulation::Node::SPtr groot, const char* filename="", bool temporaryFile=false);
 
     int mainLoop();
     void redraw();
@@ -61,7 +61,7 @@ public:
     /// @{
 
     static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node* groot = NULL, const char* filename = NULL);
+    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
     static const unsigned int DEFAULT_NUMBER_OF_ITERATIONS;
     /// @}
@@ -70,7 +70,7 @@ protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
     ~BatchGUI();
 
-    sofa::simulation::Node* groot;
+    sofa::simulation::Node::SPtr groot;
     std::string filename;
     static unsigned int nbIter;
 };

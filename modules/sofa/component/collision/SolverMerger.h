@@ -43,13 +43,13 @@ namespace collision
 {
 struct SolverSet
 {
-    SolverSet(core::behavior::OdeSolver* o=NULL,core::behavior::LinearSolver* l=NULL,core::behavior::ConstraintSolver* c=NULL):
+    SolverSet(core::behavior::OdeSolver::SPtr o=NULL,core::behavior::LinearSolver::SPtr l=NULL,core::behavior::ConstraintSolver::SPtr c=NULL):
         odeSolver(o),linearSolver(l),constraintSolver(c)
     {}
 
-    core::behavior::OdeSolver* odeSolver;
-    core::behavior::LinearSolver* linearSolver;
-    core::behavior::ConstraintSolver* constraintSolver;
+    core::behavior::OdeSolver::SPtr odeSolver;
+    core::behavior::LinearSolver::SPtr linearSolver;
+    core::behavior::ConstraintSolver::SPtr constraintSolver;
 };
 
 class SolverMerger

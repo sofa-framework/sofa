@@ -110,7 +110,7 @@ ${items}
   cpp_default_operation_definition "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
-  java_default_src_content "${comment}
+  cpp_indent_visibility "  "java_default_src_content "${comment}
 ${package}
 ${imports}
 ${definition}"

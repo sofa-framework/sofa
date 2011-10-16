@@ -64,7 +64,7 @@ void FixParticlePerformer<DataTypes>::start()
     fixations.push_back( nodeFixation );
 
     //Create the Container of points
-    MouseContainer::SPtr mstateFixation = sofa::core::objectmodel::New< MouseContainer >();
+    typename MouseContainer::SPtr mstateFixation = sofa::core::objectmodel::New< MouseContainer >();
     mstateFixation->setIgnoreLoader(true);
 
     mstateFixation->resize(1);
@@ -76,12 +76,12 @@ void FixParticlePerformer<DataTypes>::start()
 
 
     //Fix all the points
-    projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fixFixation = sofa::core::objectmodel::New< projectiveconstraintset::FixedConstraint<DataTypes> >();
+    typename projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fixFixation = sofa::core::objectmodel::New< projectiveconstraintset::FixedConstraint<DataTypes> >();
     fixFixation->f_fixAll.setValue(true);
     nodeFixation->addObject(fixFixation);
 
     //Add Interaction ForceField
-    MouseForceField::SPtr distanceForceField = sofa::core::objectmodel::New< MouseForceField >(mstateFixation.get(), mstateCollision);
+    typename MouseForceField::SPtr distanceForceField = sofa::core::objectmodel::New< MouseForceField >(mstateFixation.get(), mstateCollision);
     const double friction=0.0;
     const double coeffStiffness=1/(double)points.size();
     for (unsigned int i=0; i<points.size(); ++i)

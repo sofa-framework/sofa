@@ -50,13 +50,14 @@ protected:
 template <class DataTypes>
 class FixParticlePerformer: public TInteractionPerformer<DataTypes>, public FixParticlePerformerConfiguration
 {
+public:
     typedef sofa::component::interactionforcefield::StiffSpringForceField< DataTypes >   MouseForceField;
     typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-protected:
+
     FixParticlePerformer(BaseMouseInteractor *i);
-public:
+
     void start();
     void execute();
     void draw(const core::visual::VisualParams* vparams);

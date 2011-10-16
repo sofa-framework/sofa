@@ -98,17 +98,18 @@ public:
     };
 
     template<class T>
-    static void create(T*& instance, const CreatorArgument& arg)
+    static T* create(T*, const CreatorArgument& arg)
     {
         typename T::MyData* data = dynamic_cast<typename T::MyData*>(arg.data);
-        if(!data) return;
-        instance = new T(arg.parent, arg.name.c_str(), data);
+        if(!data) return NULL;
+        T* instance = new T(arg.parent, arg.name.c_str(), data);
         instance->setEnabled(arg.readOnly);
         if ( !instance->createWidgets() )
         {
             delete instance;
             instance = NULL;
         }
+        return instance;
     }
 
     typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
@@ -246,19 +247,20 @@ public:
     typedef sofa::core::objectmodel::Data<T> MyTData;
 
     template <class RealObject>
-    static void create( RealObject*& obj, CreatorArgument& arg)
+    static RealObject* create( RealObject*, CreatorArgument& arg)
     {
         typename RealObject::MyTData* realData = dynamic_cast< typename RealObject::MyTData* >(arg.data);
-        if (!realData) obj = NULL;
+        if (!realData) return NULL;
         else
         {
-            obj = new RealObject(arg.parent,arg.name.c_str(), realData);
+            RealObject* obj = new RealObject(arg.parent,arg.name.c_str(), realData);
             obj->setEnabled(!arg.readOnly);
             if( !obj->createWidgets() )
             {
                 delete obj;
                 obj = NULL;
             }
+            return obj;
         }
 
     }

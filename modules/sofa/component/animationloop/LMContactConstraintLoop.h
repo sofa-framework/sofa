@@ -56,12 +56,13 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static void create(T*& obj, BaseContext* context, BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
         simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        obj = new T(gnode);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
         if (context) context->addObject(obj);
         if (arg) obj->parse(arg);
+        return obj;
     }
 
 

@@ -28,6 +28,7 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/Factory.inl>
 
 #ifdef SOFA_QT4
 #include <QImage>

@@ -45,7 +45,7 @@ class SOFA_MISC_COLLISION_API DefaultCollisionGroupManager : public core::collis
 public:
     SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::collision::CollisionGroupManager);
 
-    typedef std::set<simulation::Node*> GroupSet;
+    typedef std::set<simulation::Node::SPtr> GroupSet;
     GroupSet groupSet;
 
 protected:
@@ -55,7 +55,7 @@ protected:
 
 public:
 
-    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact*>& contacts);
+    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts);
 
     virtual void clearGroups(core::objectmodel::BaseContext* scene)=0;
 

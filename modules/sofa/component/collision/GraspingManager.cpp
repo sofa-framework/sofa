@@ -115,7 +115,7 @@ void GraspingManager::doGrasp()
             const core::collision::ContactManager::ContactVector& cv = contactManager->getContacts();
             for (core::collision::ContactManager::ContactVector::const_iterator it = cv.begin(), itend = cv.end(); it != itend; ++it)
             {
-                core::collision::Contact* c = *it;
+                core::collision::Contact* c = it->get();
                 if (modelTools.count(c->getCollisionModels().first) || modelTools.count(c->getCollisionModels().second))
                     c->setKeepAlive(false);
             }

@@ -79,8 +79,8 @@ PickHandler::~PickHandler()
     if(mouseNode)
     {
         mouseNode->execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-        delete mouseNode;
-        mouseNode = NULL;
+        //delete mouseNode;
+        mouseNode.reset();
     }
     std::vector< ComponentMouseInteraction *>::iterator it;
     for( it = instanceComponents.begin(); it != instanceComponents.end(); ++it)
@@ -138,12 +138,12 @@ void PickHandler::init()
     Node *root = dynamic_cast<Node*>(simulation::getSimulation()->getContext());
     mouseNode = root->createChild("Mouse");
 
-    mouseContainer = new MouseContainer; mouseContainer->resize(1);
+    mouseContainer = sofa::core::objectmodel::New<MouseContainer>(); mouseContainer->resize(1);
     mouseContainer->setName("MousePosition");
     mouseNode->addObject(mouseContainer);
 
 
-    mouseCollision = new MouseCollisionModel;
+    mouseCollision = sofa::core::objectmodel::New<MouseCollisionModel>();
     mouseCollision->setNbRay(1);
     mouseCollision->getRay(0).setL(1000000);
     mouseCollision->setName("MouseCollisionModel");
@@ -183,8 +183,7 @@ void PickHandler::unload()
     if(mouseNode)
     {
         mouseNode->execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-        delete mouseNode;
-        mouseNode = NULL;
+        mouseNode.reset();
     }
     std::vector< ComponentMouseInteraction *>::iterator it;
     for( it = instanceComponents.begin(); it != instanceComponents.end(); ++it)
@@ -220,7 +219,7 @@ void PickHandler::activateRay(int width, int height)
     {
         Node *root = static_cast<Node*>(simulation::getSimulation()->getContext());
         root->addChild(mouseNode);
-        interaction->attach(mouseNode);
+        interaction->attach(mouseNode.get());
         if( pickingMethod == SELECTION_BUFFER)
         {
             allocateSelectionBuffer(width,height);
@@ -272,7 +271,7 @@ void PickHandler::setCompatibleInteractor()
             {
                 interaction->detach();
                 interaction = instanceComponents[i];
-                interaction->attach(mouseNode);
+                interaction->attach(mouseNode.get());
             }
         }
     }
@@ -286,7 +285,7 @@ void PickHandler::setCompatibleInteractor()
             {
                 interaction->detach();
                 interaction = instanceComponents[i];
-                interaction->attach(mouseNode);
+                interaction->attach(mouseNode.get());
             }
         }
     }
@@ -306,7 +305,7 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
     {
         lastPicked=findCollision();
         setCompatibleInteractor();
-        interaction->mouseInteractor->setMouseRayModel(mouseCollision);
+        interaction->mouseInteractor->setMouseRayModel(mouseCollision.get());
         interaction->mouseInteractor->setBodyPicked(lastPicked);
         for (unsigned int i=0; i<callbacks.size(); ++i)
         {

@@ -97,7 +97,7 @@ struct doCollideTask
         // TODO AnimateBeginEvent ev ( 0.0 );
         // TODO PropagateEventVisitor act ( &ev );
         // TODO SimpleGUI::instance->getScene()->execute ( act );
-        //	sofa::simulation::tree::getSimulation()->animate(groot);
+        //	sofa::simulation::tree::getSimulation()->animate(groot.get());
 
     }
 };
@@ -119,7 +119,7 @@ struct collideTask
         //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
 
         //   a1::Fork<doCollideTask>()();
-        //	sofa::simulation::tree::getSimulation()->animate(groot);
+        //	sofa::simulation::tree::getSimulation()->animate(groot.get());
 
     }
 };
@@ -187,7 +187,7 @@ int SimpleGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*o
     return 0;
 }
 
-SofaGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node* groot, const char* filename)
+SofaGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename)
 {
 
     glutInitDisplayMode ( GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE );
@@ -1157,7 +1157,7 @@ void SimpleGUI::DisplayOBJs(bool shadowPass)
     {
 //         std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        simulation::getSimulation()->initTextures(groot);
+        simulation::getSimulation()->initTextures(groot.get());
         //---------------------------------------------------
         initTexturesDone = true;
     }
@@ -1166,7 +1166,7 @@ void SimpleGUI::DisplayOBJs(bool shadowPass)
 
         if (!shadowPass)
         {
-            getSimulation()->draw(&vparams,groot);
+            getSimulation()->draw(&vparams,groot.get());
         }
 
         if (_axis)
@@ -1468,7 +1468,7 @@ void SimpleGUI::calcProjection()
 
     //if (!sceneBBoxIsValid)
     {
-        getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        getSimulation()->computeBBox(groot.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         sceneBBoxIsValid = true;
     }
     //std::cout << "Scene BBox = "<<sceneMinBBox<<" - "<<sceneMaxBBox<<"\n";
@@ -1990,8 +1990,8 @@ void SimpleGUI::keyPressEvent ( int k )
                 std::string filename = sceneFileName;
                 Quaternion q = _newQuat;
                 Transformation t = _sceneTransform;
-                simulation::Node* newroot = getSimulation()->load(filename.c_str());
-                getSimulation()->init(newroot);
+                simulation::Node::SPtr newroot = getSimulation()->load(filename.c_str());
+                getSimulation()->init(newroot.get());
                 if (newroot == NULL)
                 {
                     std::cerr << "Failed to load "<<filename<<std::endl;
@@ -2572,12 +2572,12 @@ void SimpleGUI::step()
 #ifdef SOFA_SMP
         mg->step();
 #else
-        getSimulation()->animate(groot);
+        getSimulation()->animate(groot.get());
 #endif
-        getSimulation()->updateVisual(groot);
+        getSimulation()->updateVisual(groot.get());
 
         if( m_dumpState )
-            getSimulation()->dumpState( groot, *m_dumpStateStream );
+            getSimulation()->dumpState( groot.get(), *m_dumpStateStream );
         if( m_exportGnuplot )
 
 
@@ -2635,7 +2635,7 @@ void SimpleGUI::resetScene()
 {
     if (groot)
     {
-        getSimulation()->reset(groot);
+        getSimulation()->reset(groot.get());
         redraw();
     }
 }
@@ -2692,10 +2692,10 @@ void SimpleGUI::exportOBJ(bool exportMTL)
     ofilename << ".obj";
     std::string filename = ofilename.str();
     std::cout << "Exporting OBJ Scene "<<filename<<std::endl;
-    getSimulation()->exportOBJ(groot, filename.c_str(),exportMTL);
+    getSimulation()->exportOBJ(groot.get(), filename.c_str(),exportMTL);
 }
 
-void SimpleGUI::setScene(sofa::simulation::Node* scene, const char* filename, bool)
+void SimpleGUI::setScene(sofa::simulation::Node::SPtr scene, const char* filename, bool)
 {
     std::ostringstream ofilename;
 
@@ -2724,7 +2724,7 @@ void SimpleGUI::setExportGnuplot( bool exp )
     m_exportGnuplot = exp;
     if( m_exportGnuplot )
     {
-        exportGnuplot(groot);
+        exportGnuplot(groot.get());
     }
 }
 

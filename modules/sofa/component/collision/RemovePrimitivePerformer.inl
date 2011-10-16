@@ -122,10 +122,10 @@ void RemovePrimitivePerformer<DataTypes>::execute()
                 ElemList_int[i] = selectedElem[i];
 
             // Creating model of collision
-            core::CollisionModel* model;
-            if (surfaceOnVolume) // In the cas of deleting a volume from a surface an volumique collision model is needed (only tetra available for the moment)
+            core::CollisionModel::SPtr model;
+            if (surfaceOnVolume) // In the case of deleting a volume from a surface an volumique collision model is needed (only tetra available for the moment)
             {
-                model = new TetrahedronModel();
+                model = sofa::core::objectmodel::New<TetrahedronModel>();
                 model->setContext(topo_curr->getContext());
             }
             else // other cases, collision model from pick is taken
@@ -134,7 +134,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             }
 
             // Handle Removing of topological element (from any type of topology)
-            if(topologyModifier) topologyChangeManager.removeItemsFromCollisionModel(model,ElemList_int );
+            if(topologyModifier) topologyChangeManager.removeItemsFromCollisionModel(model.get(),ElemList_int );
             picked.body=NULL;
             this->interactor->setBodyPicked(picked);
 

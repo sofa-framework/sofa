@@ -54,10 +54,10 @@ namespace solvermergers
 {
 
 template<class T>
-T* copySolver(const T& s)
+typename T::SPtr copySolver(const T& s)
 {
     const T* src = &s;
-    T* res = new T;
+    typename T::SPtr res = sofa::core::objectmodel::New<T>();
     for (unsigned int i=0; i<src->getFields().size(); ++i)
     {
         core::objectmodel::BaseData* s = src->getFields()[i].second;
@@ -69,7 +69,7 @@ T* copySolver(const T& s)
 }
 
 
-ConstraintSolver* createConstraintSolver(OdeSolver* solver1, OdeSolver* solver2)
+ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* solver2)
 {
     ConstraintSolver* csolver1 = NULL; if (solver1!=NULL) solver1->getContext()->get(csolver1, core::objectmodel::BaseContext::SearchDown);
     ConstraintSolver* csolver2 = NULL; if (solver2!=NULL) solver2->getContext()->get(csolver2, core::objectmodel::BaseContext::SearchDown);
@@ -99,7 +99,7 @@ ConstraintSolver* createConstraintSolver(OdeSolver* solver1, OdeSolver* solver2)
         {
             constraintset::LCPConstraintSolver* lcp1=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver1);
             constraintset::LCPConstraintSolver* lcp2=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver2);
-            constraintset::LCPConstraintSolver* newSolver = new constraintset::LCPConstraintSolver();
+            constraintset::LCPConstraintSolver::SPtr newSolver = sofa::core::objectmodel::New<constraintset::LCPConstraintSolver>();
             newSolver->displayTime.setValue(lcp1->displayTime.getValue() | lcp2->displayTime.getValue());
             newSolver->initial_guess.setValue(lcp1->initial_guess.getValue() | lcp2->initial_guess.getValue());
             newSolver->build_lcp.setValue(lcp1->build_lcp.getValue() | lcp2->build_lcp.getValue());
@@ -113,7 +113,7 @@ ConstraintSolver* createConstraintSolver(OdeSolver* solver1, OdeSolver* solver2)
         {
             constraintset::LMConstraintSolver* lm1=dynamic_cast<constraintset::LMConstraintSolver*>(csolver1);
             constraintset::LMConstraintSolver* lm2=dynamic_cast<constraintset::LMConstraintSolver*>(csolver2);
-            constraintset::LMConstraintSolver* newSolver = new constraintset::LMConstraintSolver();
+            constraintset::LMConstraintSolver::SPtr newSolver = sofa::core::objectmodel::New<constraintset::LMConstraintSolver>();
             newSolver->numIterations.setValue(lm1->numIterations.getValue() > lm2->numIterations.getValue() ? lm1->numIterations.getValue() : lm2->numIterations.getValue() );
             newSolver->maxError.setValue(lm1->maxError.getValue() < lm2->maxError.getValue() ? lm1->maxError.getValue() : lm2->maxError.getValue() );
 
@@ -143,9 +143,9 @@ SolverSet createSolverRungeKutta4RungeKutta4(odesolver::RungeKutta4Solver& solve
 
 typedef linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> DefaultCGLinearSolver;
 
-LinearSolver* createLinearSolver(OdeSolver* solver1, OdeSolver* solver2)
+LinearSolver::SPtr createLinearSolver(OdeSolver* solver1, OdeSolver* solver2)
 {
-    DefaultCGLinearSolver* lsolver = new DefaultCGLinearSolver;
+    DefaultCGLinearSolver::SPtr lsolver = sofa::core::objectmodel::New<DefaultCGLinearSolver>();
     DefaultCGLinearSolver* lsolver1 = NULL; if (solver1!=NULL) solver1->getContext()->get(lsolver1, core::objectmodel::BaseContext::SearchDown);
     DefaultCGLinearSolver* lsolver2 = NULL; if (solver2!=NULL) solver2->getContext()->get(lsolver2, core::objectmodel::BaseContext::SearchDown);
     unsigned int maxIter = 0;
@@ -171,7 +171,7 @@ LinearSolver* createLinearSolver(OdeSolver* solver1, OdeSolver* solver2)
 
 SolverSet createSolverEulerImplicitEulerImplicit(odesolver::EulerImplicitSolver& solver1, odesolver::EulerImplicitSolver& solver2)
 {
-    odesolver::EulerImplicitSolver* solver = new odesolver::EulerImplicitSolver;
+    odesolver::EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::EulerImplicitSolver>();
     solver->f_rayleighStiffness.setValue( solver1.f_rayleighStiffness.getValue() < solver2.f_rayleighStiffness.getValue() ? solver1.f_rayleighStiffness.getValue() : solver2.f_rayleighStiffness.getValue() );
 
     solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() < solver2.f_rayleighMass.getValue() ? solver1.f_rayleighMass.getValue() : solver2.f_rayleighMass.getValue() );

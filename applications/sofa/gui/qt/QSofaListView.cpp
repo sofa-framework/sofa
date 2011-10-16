@@ -405,10 +405,10 @@ void QSofaListView::RemoveNode()
         if ( node == simulation::getSimulation()->getContext() )
         {
             //Attempt to destroy the Root node : create an empty node to handle new graph interaction
-            Node *root = simulation::getSimulation()->createNewGraph( "Root" );
+            Node::SPtr root = simulation::getSimulation()->createNewGraph( "Root" );
             graphListener_->removeChild ( NULL, node);
-            graphListener_->addChild ( NULL, root );
-            emit RootNodeChanged(root,NULL);
+            graphListener_->addChild ( NULL, root.get() );
+            emit RootNodeChanged(root.get(),NULL);
         }
         else
         {

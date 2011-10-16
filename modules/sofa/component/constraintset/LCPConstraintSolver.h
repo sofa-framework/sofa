@@ -120,12 +120,12 @@ private:
 
 class SOFA_CONSTRAINT_API LCPConstraintSolver : public ConstraintSolverImpl
 {
+public:
+    SOFA_CLASS(LCPConstraintSolver, ConstraintSolverImpl);
+
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef std::vector<list_cc> VecListcc;
     typedef sofa::core::MultiVecId MultiVecId;
-
-public:
-    SOFA_CLASS(LCPConstraintSolver, sofa::core::behavior::ConstraintSolver);
 
 protected:
     /**

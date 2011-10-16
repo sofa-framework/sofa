@@ -38,7 +38,7 @@ SofaViewer::~SofaViewer()
 
 sofa::simulation::Node* SofaViewer::getScene()
 {
-    return groot;
+    return groot.get();
 }
 const std::string& SofaViewer::getSceneFileName()
 {
@@ -49,7 +49,7 @@ void SofaViewer::setSceneFileName(const std::string &f)
     sceneFileName = f;
 }
 
-void SofaViewer::setScene(sofa::simulation::Node* scene, const char* filename /* = NULL */, bool /* = false */)
+void SofaViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filename /* = NULL */, bool /* = false */)
 {
     std::string file =
         filename ? sofa::helper::system::SetDirectory::GetFileName(
@@ -76,20 +76,20 @@ void SofaViewer::setScene(sofa::simulation::Node* scene, const char* filename /*
         groot->get(currentCamera);
         if (!currentCamera)
         {
-            currentCamera = new component::visualmodel::InteractiveCamera();
-            currentCamera->setName(core::objectmodel::Base::shortName(currentCamera));
+            currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
+            currentCamera->setName(core::objectmodel::Base::shortName(currentCamera.get()));
             groot->addObject(currentCamera);
             currentCamera->p_position.forceSet();
             currentCamera->p_orientation.forceSet();
             currentCamera->bwdInit();
 
         }
-        component::visualmodel::VisualStyle* visualStyle = NULL;
+        component::visualmodel::VisualStyle::SPtr visualStyle = NULL;
         groot->get(visualStyle);
         if (!visualStyle)
         {
-            visualStyle = new component::visualmodel::VisualStyle();
-            visualStyle->setName(core::objectmodel::Base::shortName(visualStyle));
+            visualStyle = sofa::core::objectmodel::New<component::visualmodel::VisualStyle>();
+            visualStyle->setName(core::objectmodel::Base::shortName(visualStyle.get()));
 
             core::visual::DisplayFlags* displayFlags = visualStyle->displayFlags.beginEdit();
             displayFlags->setShowVisualModels(sofa::core::visual::tristate::true_value);

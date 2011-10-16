@@ -66,24 +66,24 @@ public:
 
 protected:
     /// integration groups
-    sofa::helper::vector<core::objectmodel::BaseContext*> groups;
+    sofa::helper::vector<core::objectmodel::BaseContext::SPtr> groups;
 
 
     /// Destructor
     virtual ~CollisionGroupManager() { }
 public:
     /// Create the integration groups
-    virtual void createGroups(objectmodel::BaseContext* scene, const sofa::helper::vector<Contact*>& contacts) = 0;
+    virtual void createGroups(objectmodel::BaseContext* scene, const sofa::helper::vector<Contact::SPtr>& contacts) = 0;
 
-    /// Clear de integration groups
+    /// Clear the integration groups
     virtual void clearGroups(objectmodel::BaseContext* scene) = 0;
 
     /// Get de integration groups
-    virtual const sofa::helper::vector<objectmodel::BaseContext*>& getGroups() { return groups; };
+    virtual const sofa::helper::vector<objectmodel::BaseContext::SPtr>& getGroups() { return groups; };
 
 protected:
 
-    std::map<Instance,sofa::helper::vector<core::objectmodel::BaseContext*> > storedGroups;
+    std::map<Instance,sofa::helper::vector<core::objectmodel::BaseContext::SPtr> > storedGroups;
 
     virtual void changeInstance(Instance inst)
     {

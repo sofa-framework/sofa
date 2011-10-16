@@ -145,11 +145,11 @@ protected:
     MOUSE_BUTTON mouseButton;
 
 
-    Node                *mouseNode;
-    MouseContainer      *mouseContainer;
-    MouseCollisionModel *mouseCollision;
+    Node::SPtr                mouseNode;
+    MouseContainer::SPtr      mouseContainer;
+    MouseCollisionModel::SPtr mouseCollision;
 
-    MousePosition       mousePosition;
+    MousePosition             mousePosition;
 
     sofa::helper::gl::FrameBufferObject _fbo;
     sofa::helper::gl::fboParameters     _fboParams;

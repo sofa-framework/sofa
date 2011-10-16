@@ -74,7 +74,7 @@ void ComponentMouseInteraction::attach(Node* parentNode)
         if (!nodeRayPick)
         {
             nodeRayPick = parentNode->createChild("MouseInteraction");
-            createInteractionComponents(parentNode,nodeRayPick);
+            createInteractionComponents(parentNode,nodeRayPick.get());
             nodeRayPick->detachFromGraph();
         }
         parentNode->addChild(nodeRayPick);

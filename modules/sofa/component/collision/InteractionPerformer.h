@@ -50,10 +50,9 @@ class SOFA_USER_INTERACTION_API InteractionPerformer
 {
 public:
     typedef helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*> InteractionPerformerFactory;
-protected:
+
     InteractionPerformer(BaseMouseInteractor *i):interactor(i),freezePerformer(0) {}
     virtual ~InteractionPerformer() {}
-public:
 
     virtual void start()=0;
     virtual void execute()=0;
@@ -64,9 +63,9 @@ public:
     virtual void setPerformerFreeze() {freezePerformer = true;}
 
     template <class RealObject>
-    static void create( RealObject*& obj, BaseMouseInteractor* interactor)
+    static RealObject* create( RealObject*, BaseMouseInteractor* interactor)
     {
-        obj = new RealObject(interactor);
+        return new RealObject(interactor);
     }
     BaseMouseInteractor *interactor;
     bool freezePerformer;
@@ -81,10 +80,10 @@ public:
     TInteractionPerformer(BaseMouseInteractor *i):InteractionPerformer(i) {};
 
     template <class RealObject>
-    static void create( RealObject*& obj, BaseMouseInteractor* interactor)
+    static RealObject* create( RealObject*, BaseMouseInteractor* interactor)
     {
-        if (!dynamic_cast< MouseInteractor<DataTypes>* >(interactor)) obj=NULL;
-        else obj = new RealObject(interactor);
+        if (!dynamic_cast< MouseInteractor<DataTypes>* >(interactor)) return NULL;
+        else return new RealObject(interactor);
     }
 
 };
