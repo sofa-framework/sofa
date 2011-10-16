@@ -113,7 +113,7 @@ public:
     /// @{
 
     static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node* groot = NULL, const char* filename = NULL);
+    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
     /// @}
 
@@ -176,7 +176,7 @@ private:
     enum { MINMOVE = 10 };
 
 
-    sofa::simulation::Node* groot;
+    sofa::simulation::Node::SPtr groot;
     std::string sceneFileName;
 
     int				_W, _H;
@@ -265,7 +265,7 @@ protected:
     void calcProjection();
 
 public:
-    void setScene(sofa::simulation::Node* scene, const char* filename=NULL, bool temporaryFile=false);
+    void setScene(sofa::simulation::Node::SPtr scene, const char* filename=NULL, bool temporaryFile=false);
     sofa::simulation::Node* getScene()
     {
         return groot;

@@ -664,7 +664,7 @@ void QtGLViewer::DisplayOBJs()
     {
         //		std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        simulation::getSimulation()->initTextures(groot);
+        simulation::getSimulation()->initTextures(groot.get());
         //---------------------------------------------------
         initTexturesDone = true;
     }
@@ -672,7 +672,7 @@ void QtGLViewer::DisplayOBJs()
 
     {
         //Draw Debug information of the components
-        simulation::getSimulation()->draw(vparams,groot);
+        simulation::getSimulation()->draw(vparams,groot.get());
         if (_axis)
         {
             this->setSceneBoundingBox(qglviewer::Vec(vparams->sceneBBox().minBBoxPtr()),
