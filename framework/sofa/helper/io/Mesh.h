@@ -95,9 +95,9 @@ public:
     static Mesh* Create(std::string loader, std::string filename);
 
     template<class Object>
-    static void create(Object*& obj, std::string arg)
+    static Object* create(Object*, std::string arg)
     {
-        obj = new Object(arg);
+        return new Object(arg);
     }
 
 };

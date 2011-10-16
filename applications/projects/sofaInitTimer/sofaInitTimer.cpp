@@ -95,7 +95,7 @@ void apply(const std::string& /*directory*/, std::vector<std::string>& files, bo
     {
 
         const std::string& currentFile = files[i];
-        GNode* groot = dynamic_cast<GNode*> (simulation->load(currentFile.c_str()));
+        GNode::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<GNode> (simulation->load(currentFile.c_str()));
         if (groot == NULL)
         {
             std::cerr << "CANNOT open " << currentFile << " !" << std::endl;
@@ -105,13 +105,13 @@ void apply(const std::string& /*directory*/, std::vector<std::string>& files, bo
 
         //Save the initial time
         clock_t curtime = clock();
-        simulation->init(groot);
+        simulation->init(groot.get());
         double t = static_cast<double>(clock() - curtime) / (float)CLOCKS_PER_SEC;
         std::cout << "Init time " << t << " sec." << std::endl;
 
         //Clear and prepare for next scene
         simulation->unload(groot);
-        delete groot;
+        groot.reset();
     }
 }
 

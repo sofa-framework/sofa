@@ -97,38 +97,43 @@ private:
 class SOFA_SOFAGUI_API AttachOperation : public Operation
 {
 public:
-    virtual ~AttachOperation() {};
+    AttachOperation() : setting(sofa::core::objectmodel::New<sofa::component::configurationsetting::AttachBodyButtonSetting>())
+    {}
+    virtual ~AttachOperation() {}
     virtual void start() ;
     virtual void execution() ;
     virtual void end() ;
     virtual void endOperation() ;
 
-    void setStiffness(double s) {setting.stiffness.setValue(s);}
-    double getStiffness() const { return setting.stiffness.getValue();}
-    void setArrowSize(double s) {setting.arrowSize.setValue(s);}
-    double getArrowSize() const { return setting.arrowSize.getValue();}
-    void setShowFactorSize(double s) { setting.showFactorSize.setValue(s); }
-    double getShowFactorSize() const { return setting.showFactorSize.getValue(); }
+    void setStiffness(double s) {setting->stiffness.setValue(s);}
+    double getStiffness() const { return setting->stiffness.getValue();}
+    void setArrowSize(double s) {setting->arrowSize.setValue(s);}
+    double getArrowSize() const { return setting->arrowSize.getValue();}
+    void setShowFactorSize(double s) { setting->showFactorSize.setValue(s); }
+    double getShowFactorSize() const { return setting->showFactorSize.getValue(); }
 
     static std::string getDescription() {return "Attach an object to the Mouse";}
 protected:
-    sofa::component::configurationsetting::AttachBodyButtonSetting setting;
+    sofa::component::configurationsetting::AttachBodyButtonSetting::SPtr setting;
 };
 
 class SOFA_SOFAGUI_API FixOperation : public Operation
 {
 public:
+    FixOperation() : setting(sofa::core::objectmodel::New<sofa::component::configurationsetting::FixPickedParticleButtonSetting>())
+    {}
+
     virtual ~FixOperation() {};
     virtual void start() ;
     virtual void execution() ;
     virtual void end() ;
 
-    void setStiffness(double s) {setting.stiffness.setValue(s); }
-    virtual double getStiffness() const { return setting.stiffness.getValue();}
+    void setStiffness(double s) {setting->stiffness.setValue(s); }
+    virtual double getStiffness() const { return setting->stiffness.getValue();}
 
     static std::string getDescription() {return "Fix Picked particle";}
 protected:
-    sofa::component::configurationsetting::FixPickedParticleButtonSetting setting;
+    sofa::component::configurationsetting::FixPickedParticleButtonSetting::SPtr setting;
 };
 
 class SOFA_SOFAGUI_API AddFrameOperation : public Operation

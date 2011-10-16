@@ -123,7 +123,7 @@ public:
     virtual sofa::simulation::Node* getScene();
     virtual const std::string& getSceneFileName();
     virtual void setSceneFileName(const std::string &f);
-    virtual void setScene(sofa::simulation::Node* scene, const char* filename =
+    virtual void setScene(sofa::simulation::Node::SPtr scene, const char* filename =
             NULL, bool /*keepParams*/= false);
     virtual void setCameraMode(core::visual::VisualParams::CameraType);
 
@@ -190,8 +190,8 @@ protected:
     }
     ;
 
-    sofa::simulation::Node* groot;
-    sofa::component::visualmodel::BaseCamera* currentCamera;
+    sofa::simulation::Node::SPtr groot;
+    sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
     std::string sceneFileName;
     sofa::helper::gl::Capture capture;
 

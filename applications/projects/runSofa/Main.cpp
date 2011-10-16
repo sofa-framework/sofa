@@ -211,7 +211,7 @@ int main(int argc, char** argv)
     //To set a specific resolution for the viewer, use the component ViewerDimensionSetting in you scene graph
     sofa::gui::GUIManager::SetDimension(800,600);
 
-    sofa::simulation::Node* groot = dynamic_cast<sofa::simulation::Node*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+    sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
     if (groot==NULL)
     {
         groot = sofa::simulation::getSimulation()->createNewGraph("");
@@ -219,10 +219,10 @@ int main(int argc, char** argv)
 
     if (!verif.empty())
     {
-        loadVerificationData(verif, fileName, groot);
+        loadVerificationData(verif, fileName, groot.get());
     }
 
-    sofa::simulation::getSimulation()->init(groot);
+    sofa::simulation::getSimulation()->init(groot.get());
     sofa::gui::GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
 
 

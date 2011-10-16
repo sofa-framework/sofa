@@ -71,6 +71,8 @@ protected:
 class SOFA_CONSTRAINT_API ConstraintSolverImpl : public sofa::core::behavior::ConstraintSolver
 {
 public:
+    SOFA_CLASS(ConstraintSolverImpl, sofa::core::behavior::ConstraintSolver);
+
     virtual ConstraintProblem* getConstraintProblem() = 0;
 
     /// Do not use the following LCPs until the next call to this function.

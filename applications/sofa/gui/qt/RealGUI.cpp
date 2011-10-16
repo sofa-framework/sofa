@@ -180,7 +180,7 @@ int RealGUI::InitGUI ( const char* /*name*/, const std::vector<std::string>& /* 
 }
 
 
-SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node* root, const char* filename )
+SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr root, const char* filename )
 {
     {
         int  *argc = new int;
@@ -656,7 +656,7 @@ void RealGUI::changeViewer()
             {
                 viewer->getPickHandler()->unload();
                 simulation::getSimulation()->unload ( viewer->getScene() );
-                delete viewer->getScene() ;
+                //delete viewer->getScene() ;
                 viewer->setScene(NULL);
             }
             viewer->removeViewerTab(tabs);
@@ -714,7 +714,7 @@ void RealGUI::updateViewerList()
                 {
                     viewer->getPickHandler()->unload();
                     simulation::getSimulation()->unload ( viewer->getScene() );
-                    delete viewer->getScene() ;
+                    //delete viewer->getScene() ;
                     viewer->setScene(NULL);
                 }
                 viewer->removeViewerTab(tabs);
@@ -784,12 +784,12 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
         viewer->getPickHandler()->reset();//activateRay(false);
         viewer->getPickHandler()->unload();
 
-        simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
+        simulation::getSimulation()->unload ( viewer->getScene() ); //delete viewer->getScene() ;
     }
     //Clear the list of modified dialog opened
 
-    simulation::Node* root = simulation::getSimulation()->load ( filename.c_str() );
-    simulation::getSimulation()->init ( root );
+    simulation::Node::SPtr root = simulation::getSimulation()->load ( filename.c_str() );
+    simulation::getSimulation()->init ( root.get() );
 
     if ( root == NULL )
     {
@@ -800,7 +800,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     this->setWindowFilePath(filename.c_str());
     setScene ( root, filename.c_str(), temporaryFile );
 
-    configureGUI(root);
+    configureGUI(root.get());
 
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
     displayComputationTime(m_displayComputationTime);
@@ -852,7 +852,7 @@ void RealGUI::lmlOpen ( const char* filename )
 
 
 
-void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
+void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFile )
 {
     if (filename)
     {
@@ -919,7 +919,7 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         startButton->setOn ( root->getContext()->getAnimate() );
         dtEdit->setText ( QString::number ( root->getDt() ) );
 
-        simulationGraph->Clear(root);
+        simulationGraph->Clear(root.get());
 
         statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()) );
 

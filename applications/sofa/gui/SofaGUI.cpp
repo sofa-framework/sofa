@@ -58,7 +58,7 @@ SofaGUI::~SofaGUI()
 
 }
 
-void SofaGUI::configureGUI(sofa::simulation::Node *groot)
+void SofaGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 {
 
     sofa::component::configurationsetting::SofaDefaultPathSetting *defaultPath;

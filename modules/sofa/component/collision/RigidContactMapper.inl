@@ -49,8 +49,7 @@ void RigidContactMapper<TCollisionModel,DataTypes>::cleanup()
     {
         child->detachFromGraph();
         child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-        delete child;
-        child = NULL;
+        child.reset();
     }
 }
 
@@ -68,9 +67,9 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
             return NULL;
         }
         child = parent->createChild(name);
-        outmodel = new MMechanicalObject; child->addObject(outmodel);
+        outmodel = sofa::core::objectmodel::New<MMechanicalObject>(); child->addObject(outmodel);
         outmodel->useMask.setValue(true);
-        mapping = new MMapping(instate, outmodel); child->addObject(mapping);
+        mapping = sofa::core::objectmodel::New<MMapping>(instate, outmodel.get()); child->addObject(mapping);
     }
     else
     {
@@ -81,11 +80,11 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
             return NULL;
         }
         child = parent->createChild(name);
-        outmodel = new MMechanicalObject; child->addObject(outmodel);
+        outmodel = sofa::core::objectmodel::New<MMechanicalObject>(); child->addObject(outmodel);
         outmodel->useMask.setValue(true);
         mapping = NULL;
     }
-    return outmodel;
+    return outmodel.get();
 }
 
 template <class DataTypes>

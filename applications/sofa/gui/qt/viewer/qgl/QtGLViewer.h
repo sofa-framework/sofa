@@ -110,9 +110,9 @@ private:
 
 public:
 
-    static void create(QtGLViewer*& instance, const SofaViewerArgument& arg)
+    static QtGLViewer* create(QtGLViewer*, const SofaViewerArgument& arg)
     {
-        instance = new QtGLViewer(arg.parent, arg.name.c_str() );
+        return new QtGLViewer(arg.parent, arg.name.c_str() );
     }
 
     static const char* viewerName()  { return "QGLViewer"; }

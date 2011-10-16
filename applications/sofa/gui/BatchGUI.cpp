@@ -56,9 +56,9 @@ int BatchGUI::mainLoop()
     if (groot)
     {
 
-        sofa::simulation::getSimulation()->animate(groot);
+        sofa::simulation::getSimulation()->animate(groot.get());
         //As no visualization is done by the Batch GUI, these two lines are not necessary.
-        sofa::simulation::getSimulation()->updateVisual(groot);
+        sofa::simulation::getSimulation()->updateVisual(groot.get());
         std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
         sofa::simulation::Node::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
         sofa::simulation::Node::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
@@ -66,9 +66,9 @@ int BatchGUI::mainLoop()
         sofa::simulation::Node::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
         for (unsigned int i=0; i<nbIter; i++)
         {
-            sofa::simulation::getSimulation()->animate(groot);
+            sofa::simulation::getSimulation()->animate(groot.get());
             //As no visualization is done by the Batch GUI, these two lines are not necessary.
-            sofa::simulation::getSimulation()->updateVisual(groot);
+            sofa::simulation::getSimulation()->updateVisual(groot.get());
         }
         t = sofa::helper::system::thread::CTime::getFastTime()-t;
         rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
@@ -89,7 +89,7 @@ int BatchGUI::closeGUI()
     return 0;
 }
 
-void BatchGUI::setScene(sofa::simulation::Node* groot, const char* filename, bool )
+void BatchGUI::setScene(sofa::simulation::Node::SPtr groot, const char* filename, bool )
 {
     this->groot = groot;
     this->filename = (filename?filename:"");
@@ -97,7 +97,7 @@ void BatchGUI::setScene(sofa::simulation::Node* groot, const char* filename, boo
 
 sofa::simulation::Node* BatchGUI::currentSimulation()
 {
-    return groot;
+    return groot.get();
 }
 
 
@@ -124,7 +124,7 @@ int BatchGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& opti
     return 0;
 }
 
-SofaGUI* BatchGUI::CreateGUI(const char* name, const std::vector<std::string>& /*options*/, sofa::simulation::Node* groot, const char* filename)
+SofaGUI* BatchGUI::CreateGUI(const char* name, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename)
 {
     BatchGUI::guiName = name;
     BatchGUI* gui = new BatchGUI();

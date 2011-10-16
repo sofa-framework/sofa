@@ -96,14 +96,14 @@ void apply(const std::string& directory, std::vector<std::string>& files,
     {
 
         const std::string& currentFile = files[i];
-        GNode* groot = dynamic_cast<GNode*> (simulation->load(currentFile.c_str()));
+        GNode::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<GNode> (simulation->load(currentFile.c_str()));
         if (groot == NULL)
         {
             std::cerr << "CANNOT open " << currentFile << " !" << std::endl;
             continue;
         }
 
-        simulation->init(groot);
+        simulation->init(groot.get());
 
         //Filename where the simulation of the current scene will be saved (in Sofa/applications/projects/sofaVerification/simulation/)
         std::string refFile;
@@ -129,10 +129,10 @@ void apply(const std::string& directory, std::vector<std::string>& files,
 
                 writeVisitor.setCreateInMapping(true);
                 writeVisitor.setSceneName(refFile);
-                writeVisitor.execute(groot);
+                writeVisitor.execute(groot.get());
 
                 sofa::component::misc::WriteTopologyActivator v_write(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
-                v_write.execute(groot);
+                v_write.execute(groot.get());
             }
             else
             {
@@ -140,10 +140,10 @@ void apply(const std::string& directory, std::vector<std::string>& files,
 
                 writeVisitor.setCreateInMapping(true);
                 writeVisitor.setSceneName(refFile);
-                writeVisitor.execute(groot);
+                writeVisitor.execute(groot.get());
 
                 sofa::component::misc::WriteStateActivator v_write(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
-                v_write.execute(groot);
+                v_write.execute(groot.get());
             }
 
         }
@@ -155,10 +155,10 @@ void apply(const std::string& directory, std::vector<std::string>& files,
                 sofa::component::misc::CompareTopologyCreator compareVisitor(sofa::core::ExecParams::defaultInstance());
                 compareVisitor.setCreateInMapping(true);
                 compareVisitor.setSceneName(refFile);
-                compareVisitor.execute(groot);
+                compareVisitor.execute(groot.get());
 
                 sofa::component::misc::ReadTopologyActivator v_read(sofa::core::ExecParams::defaultInstance(),true);
-                v_read.execute(groot);
+                v_read.execute(groot.get());
             }
             else
             {
@@ -166,10 +166,10 @@ void apply(const std::string& directory, std::vector<std::string>& files,
                 sofa::component::misc::CompareStateCreator compareVisitor(sofa::core::ExecParams::defaultInstance());
                 compareVisitor.setCreateInMapping(true);
                 compareVisitor.setSceneName(refFile);
-                compareVisitor.execute(groot);
+                compareVisitor.execute(groot.get());
 
                 sofa::component::misc::ReadStateActivator v_read(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
-                v_read.execute(groot);
+                v_read.execute(groot.get());
             }
         }
 
@@ -180,7 +180,7 @@ void apply(const std::string& directory, std::vector<std::string>& files,
         clock_t curtime = clock();
         for (unsigned int i = 0; i < iterations; i++)
         {
-            simulation->animate(groot);
+            simulation->animate(groot.get());
         }
         double t = static_cast<double>(clock() - curtime) / CLOCKS_PER_SEC;
 
@@ -192,7 +192,7 @@ void apply(const std::string& directory, std::vector<std::string>& files,
             if (useTopology)
             {
                 sofa::component::misc::CompareTopologyResult result(sofa::core::ExecParams::defaultInstance());
-                result.execute(groot);
+                result.execute(groot.get());
                 std::cout << "ERROR " << result.getTotalError() << ' ';
 
                 const std::vector<unsigned int>& listResult = result.getErrors();
@@ -220,7 +220,7 @@ void apply(const std::string& directory, std::vector<std::string>& files,
             else
             {
                 sofa::component::misc::CompareStateResult result(sofa::core::ExecParams::defaultInstance());
-                result.execute(groot);
+                result.execute(groot.get());
                 std::cout
                         << "ERROR " << result.getTotalError() << " ERRORBYDOF "
                                 << static_cast<double>(result.getErrorByDof())
@@ -230,8 +230,8 @@ void apply(const std::string& directory, std::vector<std::string>& files,
         std::cout << std::endl;
 
         //Clear and prepare for next scene
-        simulation->unload(groot);
-        delete groot;
+        simulation->unload(groot.get());
+        groot.reset();
     }
 }
 

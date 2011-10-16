@@ -54,6 +54,7 @@ struct BodyPicked
 class SOFA_USER_INTERACTION_API BaseMouseInteractor : public core::BehaviorModel
 {
 public:
+    SOFA_ABSTRACT_CLASS(BaseMouseInteractor, core::BehaviorModel);
     typedef sofa::component::collision::RayModel MouseCollisionModel;
     typedef helper::vector< InteractionPerformer* > VecPerformer;
 protected:
@@ -106,7 +107,7 @@ template <class DataTypes>
 class MouseInteractor : public BaseMouseInteractor
 {
 public:
-    SOFA_CLASS(MouseInteractor,BaseMouseInteractor);
+    SOFA_CLASS(SOFA_TEMPLATE(MouseInteractor,DataTypes),BaseMouseInteractor);
 
     typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
     typedef typename DataTypes::Coord Coord;

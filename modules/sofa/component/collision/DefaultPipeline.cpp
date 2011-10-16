@@ -207,12 +207,12 @@ void DefaultPipeline::doCollisionResponse()
     const sofa::helper::vector<Contact::SPtr>& contacts = contactManager->getContacts();
 
     // First we remove all contacts with non-simulated objects and directly add them
-    sofa::helper::vector<Contact*> notStaticContacts;
+    sofa::helper::vector<Contact::SPtr> notStaticContacts;
 
 
     for (sofa::helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
     {
-        Contact* c = it->get();
+        Contact::SPtr c = *it;
         if (!c->getCollisionModels().first->isSimulated())
         {
             c->createResponse(c->getCollisionModels().second->getContext());
@@ -229,7 +229,7 @@ void DefaultPipeline::doCollisionResponse()
     if (groupManager==NULL)
     {
         VERBOSE(sout << "Linking all contacts to Scene"<<sendl);
-        for (sofa::helper::vector<Contact*>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); it++)
+        for (sofa::helper::vector<Contact::SPtr>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); it++)
         {
             (*it)->createResponse(scene);
         }

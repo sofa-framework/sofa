@@ -62,9 +62,8 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     {
         ff->cleanup();
         if (parent!=NULL) parent->removeObject(ff);
-        delete ff;
         parent = NULL;
-        ff = NULL;
+        ff.reset();
         mapper1.cleanup();
         mapper2.cleanup();
     }
@@ -81,7 +80,8 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         sout << "Creating BarycentricStickContact springs"<<sendl;
         MechanicalState1* mstate1 = mapper1.createMapping();
         MechanicalState2* mstate2 = mapper2.createMapping();
-        ff = new ResponseForceField(mstate1,mstate2); ff->setName( getName());
+        ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
+        ff->setName( getName());
     }
 
     int insize = outputs.size();

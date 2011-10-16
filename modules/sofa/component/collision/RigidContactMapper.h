@@ -76,9 +76,9 @@ public:
     typedef mapping::RigidMapping< InDataTypes, typename RigidContactMapper::DataTypes > MMapping;
 
     MCollisionModel* model;
-    simulation::Node* child;
-    MMapping* mapping;
-    MMechanicalState* outmodel;
+    simulation::Node::SPtr child;
+    typename MMapping::SPtr mapping;
+    typename MMechanicalState::SPtr outmodel;
     int nbp;
 
 protected:
@@ -128,8 +128,9 @@ public:
     {
         if (mapping!=NULL)
         {
-            ((core::BaseMapping*)mapping)->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-            ((core::BaseMapping*)mapping)->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+            core::BaseMapping* map = mapping.get();
+            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+            map->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         }
     }
 
@@ -137,7 +138,8 @@ public:
     {
         if (mapping!=NULL)
         {
-            ((core::BaseMapping*)mapping)->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+            core::BaseMapping* map = mapping.get();
+            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
         }
     }
 };
@@ -164,7 +166,7 @@ public:
         if (!this->mapping)
         {
             MCollisionModel* model = this->model;
-            MMechanicalState* outmodel = this->outmodel;
+            MMechanicalState* outmodel = this->outmodel.get();
             {
                 helper::WriteAccessor<Data<VecCoord> > xData = *outmodel->write(core::VecCoordId::position());
                 Coord& x = xData.wref()[i];

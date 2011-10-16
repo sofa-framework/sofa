@@ -99,9 +99,9 @@ public:
 
     std::string sceneName;
 
-    static void create(QtOgreViewer*& instance, const SofaViewerArgument& arg)
+    static QtOgreViewer* create(QtOgreViewer*, const SofaViewerArgument& arg)
     {
-        instance = new QtOgreViewer(arg.parent, arg.name.c_str() );
+        return new QtOgreViewer(arg.parent, arg.name.c_str() );
     }
     static const char* viewerName()  { return "OgreViewer"; }
 

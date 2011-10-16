@@ -44,13 +44,6 @@ public:
     void init();
     void reinit();
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        core::objectmodel::BaseObject::create(obj, context, arg);
-    }
-
     virtual std::string getTemplateName() const
     {
         return templateName(this);

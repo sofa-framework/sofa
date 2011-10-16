@@ -60,14 +60,14 @@ FreeMotionAnimationLoop::FreeMotionAnimationLoop(simulation::Node* gnode)
 FreeMotionAnimationLoop::~FreeMotionAnimationLoop()
 {
     if (defaultSolver != NULL)
-        delete defaultSolver;
+        defaultSolver.reset();
 }
 
 void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
     this->simulation::CollisionAnimationLoop::parse(arg);
 
-    defaultSolver = new constraintset::LCPConstraintSolver;
+    defaultSolver = sofa::core::objectmodel::New<constraintset::LCPConstraintSolver>();
     defaultSolver->parse(arg);
 }
 
@@ -79,13 +79,12 @@ void FreeMotionAnimationLoop::init()
     {
         serr << "No ConstraintSolver found, using default LCPConstraintSolver" << sendl;
         this->getContext()->addObject(defaultSolver);
-        constraintSolver = defaultSolver;
+        constraintSolver = defaultSolver.get();
         defaultSolver = NULL;
     }
     else
     {
-        delete defaultSolver;
-        defaultSolver = NULL;
+        defaultSolver.reset();
     }
 }
 

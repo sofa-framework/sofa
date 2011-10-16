@@ -70,15 +70,14 @@ protected:
 template <class DataTypes>
 class AttachBodyPerformer: public TInteractionPerformer<DataTypes>, public AttachBodyPerformerConfiguration
 {
-
+public:
     typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
     typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
     typedef sofa::core::behavior::BaseForceField              MouseForceField;
 
-protected:
     AttachBodyPerformer(BaseMouseInteractor *i);
     ~AttachBodyPerformer();
-public:
+
     void start();
     void execute();
     void draw(const core::visual::VisualParams* vparams);

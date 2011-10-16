@@ -547,12 +547,12 @@ void SofaModeler::fileOpen(std::string filename)
     {
         filename =  sofa::helper::system::DataRepository.getFile ( filename );
         openPath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
-        GNode *root = NULL;
-        root = dynamic_cast<GNode*> ( sofa::simulation::getSimulation()->load(filename.c_str()) );
+        GNode::SPtr root = NULL;
+        root = sofa::core::objectmodel::SPtr_dynamic_cast<GNode> ( sofa::simulation::getSimulation()->load(filename.c_str()) );
         if (root)
         {
             createTab();
-            fileNew(root);
+            fileNew(root.get());
             sceneTab->setCurrentPage( sceneTab->count()-1);
 
             graph->setFilename(filename);

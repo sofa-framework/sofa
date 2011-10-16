@@ -37,6 +37,7 @@
 //
 #include <sofa/core/objectmodel/JoystickEvent.h>
 #include <assert.h>
+#include <cstring> // for NULL
 
 namespace sofa
 {
@@ -152,10 +153,6 @@ JoystickEvent::~JoystickEvent()
     for (unsigned int i=0; i < hatEvents.size(); i++)
         delete hatEvents[i];
 }
-
-#ifndef NULL
-#define NULL 0
-#endif
 
 const JoystickEvent::AxisEvent *JoystickEvent::getAxisEvent(const int index) const
 {

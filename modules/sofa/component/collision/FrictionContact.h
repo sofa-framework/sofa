@@ -79,6 +79,7 @@ template <class TCollisionModel1, class TCollisionModel2>
 class FrictionContact : public core::collision::Contact, public Identifier
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(FrictionContact, TCollisionModel1, TCollisionModel2), core::collision::Contact);
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
     typedef core::collision::Intersection Intersection;
@@ -99,7 +100,7 @@ protected:
     ContactMapper<CollisionModel1,DataTypes1> mapper1;
     ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
-    constraintset::UnilateralInteractionConstraint<Vec3Types>* m_constraint;
+    constraintset::UnilateralInteractionConstraint<Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
 
     Data<double> mu;

@@ -136,9 +136,9 @@ public:
     static const std::string VIEW_FILE_EXTENSION;
 
 
-    static void create(QtViewer*& instance, const SofaViewerArgument& arg)
+    static QtViewer* create(QtViewer*, const SofaViewerArgument& arg)
     {
-        instance = new QtViewer(arg.parent, arg.name.c_str() );
+        return new QtViewer(arg.parent, arg.name.c_str() );
     }
 
     static const char* viewerName()
@@ -205,7 +205,7 @@ public:
 
     sofa::simulation::Node* getScene()
     {
-        return groot;
+        return groot.get();
     }
 
     //void			reshape(int width, int height);

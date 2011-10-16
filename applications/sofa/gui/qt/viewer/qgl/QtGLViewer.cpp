@@ -327,7 +327,8 @@ void QtGLViewer::init(void)
     // save x3d file in the MainController. So we need to change it:
     setShortcut(QGLViewer::SAVE_SCREENSHOT, Qt::Key_S);
     setShortcut(QGLViewer::HELP, Qt::Key_H);
-
+    // Disable ESC shortcut
+    setShortcut(QGLViewer::EXIT_VIEWER, 0);
 }
 
 // ---------------------------------------------------------

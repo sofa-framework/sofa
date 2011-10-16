@@ -73,7 +73,7 @@ void AttachOperation::start()
     if (!performer)
     {
         //Creation
-        performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AttachBody", pickHandle->getInteraction()->mouseInteractor);
+        performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AttachBody", pickHandle->getInteraction()->mouseInteractor.get());
         pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
         //Configuration
         component::collision::AttachBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::AttachBodyPerformerConfiguration*>(performer);
@@ -106,7 +106,7 @@ void AttachOperation::endOperation()
 void FixOperation::start()
 {
     //Creation
-    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("FixParticle", pickHandle->getInteraction()->mouseInteractor);
+    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("FixParticle", pickHandle->getInteraction()->mouseInteractor.get());
     if (!performer) {std::cerr << "FixParticule performer is not able to run with the model picked" << std::endl; return;}
     pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
 
@@ -134,7 +134,7 @@ void TopologyOperation::start()
 
     if (getTopologicalOperation() == 0)  // Remove one element
     {
-        performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor);
+        performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor.get());
         pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
 
         performer->start();
@@ -143,7 +143,7 @@ void TopologyOperation::start()
     {
         if (firstClick)
         {
-            performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor);
+            performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor.get());
             pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
 
             component::collision::RemovePrimitivePerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::RemovePrimitivePerformerConfiguration*>(performer);
@@ -197,7 +197,7 @@ void InciseOperation::start()
 
     if (!startPerformer)
     {
-        startPerformer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
+        startPerformer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor.get());
         component::collision::InciseAlongPathPerformerConfiguration *performerConfigurationStart=dynamic_cast<component::collision::InciseAlongPathPerformerConfiguration*>(startPerformer);
         performerConfigurationStart->setIncisionMethod(getIncisionMethod());
         performerConfigurationStart->setSnapingBorderValue(getSnapingBorderValue());
@@ -212,7 +212,7 @@ void InciseOperation::start()
     {
         if (cpt == 0) // First clic => initialisation
         {
-            performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
+            performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor.get());
 
             component::collision::InciseAlongPathPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerConfiguration*>(performer);
             performerConfiguration->setIncisionMethod(getIncisionMethod());
@@ -238,7 +238,7 @@ void InciseOperation::start()
             pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
             delete performer; performer=0;
         }
-        performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
+        performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor.get());
 
         component::collision::InciseAlongPathPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerConfiguration*>(performer);
         performerConfiguration->setIncisionMethod(getIncisionMethod());
@@ -294,7 +294,7 @@ InciseOperation::~InciseOperation()
 void AddFrameOperation::start()
 {
     //Creation
-    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AddFrame", pickHandle->getInteraction()->mouseInteractor);
+    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AddFrame", pickHandle->getInteraction()->mouseInteractor.get());
     pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
     //Start
     performer->start();
@@ -308,7 +308,7 @@ void AddSutureOperation::start()
     //Creation
     if (!performer) //first clic
     {
-        performer = component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("SuturePoints", pickHandle->getInteraction()->mouseInteractor);
+        performer = component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("SuturePoints", pickHandle->getInteraction()->mouseInteractor.get());
         pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
 
         //configuration

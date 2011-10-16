@@ -26,22 +26,8 @@
 #define SOFA_COMPONENT_ANIMATIONLOOP_FREEMOTIONANIMATIONLOOP_H
 
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
-
+#include <sofa/component/constraintset/LCPConstraintSolver.h>
 #include <sofa/component/component.h>
-
-namespace sofa
-{
-namespace component
-{
-namespace constraintset
-{
-class LCPConstraintSolver;
-} // namespace constraintset
-} // namespace component
-} // namespace sofa
-
-
-
 
 namespace sofa
 {
@@ -87,7 +73,7 @@ public:
 private :
 
     sofa::core::behavior::ConstraintSolver *constraintSolver;
-    component::constraintset::LCPConstraintSolver* defaultSolver;
+    component::constraintset::LCPConstraintSolver::SPtr defaultSolver;
 };
 
 } // namespace animationloop

@@ -84,13 +84,13 @@ QAttachOperation::QAttachOperation()
 
     QHBoxLayout *layout=new QHBoxLayout(this);
     QLabel *label=new QLabel(QString("Stiffness"), this);
-    stiffnessWidget = createWidgetFromData(&(setting.stiffness));
+    stiffnessWidget = createWidgetFromData(&(setting->stiffness));
 
     QLabel *labelSize=new QLabel(QString("Arrow Size"), this);
-    arrowSizeWidget = createWidgetFromData(&(setting.arrowSize));
+    arrowSizeWidget = createWidgetFromData(&(setting->arrowSize));
 
     QLabel *labelShowFactor=new QLabel(QString("Show Factor Size"), this);
-    showSizeFactorWidget = createWidgetFromData(&(setting.showFactorSize));
+    showSizeFactorWidget = createWidgetFromData(&(setting->showFactorSize));
 
     layout->addWidget(label);
     layout->addWidget(stiffnessWidget);
@@ -108,9 +108,9 @@ void QAttachOperation::configure(PickHandler *picker, sofa::component::configura
     if (sofa::component::configurationsetting::AttachBodyButtonSetting* attachSetting=dynamic_cast<sofa::component::configurationsetting::AttachBodyButtonSetting*>(button))
     {
         AttachOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
-        setting.stiffness.copyValue(&(attachSetting->stiffness));
-        setting.arrowSize.copyValue(&(attachSetting->arrowSize) );
-        setting.showFactorSize.copyValue(&( attachSetting->showFactorSize) ) ;
+        setting->stiffness.copyValue(&(attachSetting->stiffness));
+        setting->arrowSize.copyValue(&(attachSetting->arrowSize) );
+        setting->showFactorSize.copyValue(&( attachSetting->showFactorSize) ) ;
 
         stiffnessWidget->updateWidgetValue();
         arrowSizeWidget->updateWidgetValue();
@@ -126,7 +126,7 @@ QFixOperation::QFixOperation()
     //Building the GUI for the Fix Operation
     QHBoxLayout *layout=new QHBoxLayout(this);
     QLabel *label=new QLabel(QString("Fixation"), this);
-    stiffnessWidget = createWidgetFromData(&setting.stiffness);
+    stiffnessWidget = createWidgetFromData(&setting->stiffness);
 
     layout->addWidget(label);
     layout->addWidget(stiffnessWidget);
@@ -137,7 +137,7 @@ void QFixOperation::configure(PickHandler *picker, sofa::component::configuratio
     if (sofa::component::configurationsetting::FixPickedParticleButtonSetting* fixSetting=dynamic_cast<sofa::component::configurationsetting::FixPickedParticleButtonSetting*>(button))
     {
         FixOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId() )) ;
-        setting.stiffness.setValue(fixSetting->stiffness.getValue());
+        setting->stiffness.setValue(fixSetting->stiffness.getValue());
 
         stiffnessWidget->updateWidgetValue();
     }

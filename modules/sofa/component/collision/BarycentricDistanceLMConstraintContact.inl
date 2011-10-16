@@ -64,9 +64,8 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     {
         ff->cleanup();
         if (parent!=NULL) parent->removeObject(ff);
-        delete ff;
         parent = NULL;
-        ff = NULL;
+        ff.reset();
         mapper1.cleanup();
         mapper2.cleanup();
     }
@@ -81,7 +80,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     {
         MechanicalState1* mstate1 = mapper1.createMapping();
         MechanicalState2* mstate2 = mapper2.createMapping();
-        ff = new ResponseType(mstate1,mstate2);
+        ff = sofa::core::objectmodel::New<ResponseType>(mstate1,mstate2);
         ff->setName( getName() );
         ff->init();
 #ifdef SOFA_SMP

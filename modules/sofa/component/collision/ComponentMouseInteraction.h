@@ -49,11 +49,11 @@ namespace collision
 
 class SOFA_USER_INTERACTION_API ComponentMouseInteraction
 {
-protected:
+public:
     ComponentMouseInteraction();
 
     virtual ~ComponentMouseInteraction();
-public:
+
     virtual void createInteractionComponents(sofa::simulation::Node* parent,
             sofa::simulation::Node* current) = 0;
 
@@ -68,13 +68,13 @@ public:
     typedef helper::Factory<std::string, ComponentMouseInteraction, core::objectmodel::BaseContext*> ComponentMouseInteractionFactory;
 
     template <class RealObject>
-    static void create( RealObject*& obj, core::objectmodel::BaseContext* /* context */)
+    static RealObject* create( RealObject*, core::objectmodel::BaseContext* /* context */)
     {
-        obj = new RealObject;
+        return new RealObject;
     }
 
     //Components
-    simulation::Node* nodeRayPick;
+    simulation::Node::SPtr nodeRayPick;
     sofa::core::behavior::BaseMechanicalState::SPtr mouseInSofa;
     sofa::core::BaseMapping::SPtr mouseMapping;
     sofa::component::collision::BaseMouseInteractor::SPtr mouseInteractor;

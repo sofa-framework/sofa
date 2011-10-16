@@ -141,13 +141,14 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T* p0, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        sofa::core::objectmodel::BaseObject::create(obj, context, arg);
+        typename T::SPtr obj = Inherit1::create(p0, context, arg);
         if (context)
         {
             obj->mstate = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
         }
+        return obj;
     }
 
 protected:

@@ -691,14 +691,14 @@ void QtViewer::DisplayOBJs()
     {
         // 		std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        getSimulation()->initTextures(groot);
+        getSimulation()->initTextures(groot.get());
         //---------------------------------------------------
         initTexturesDone = true;
     }
 
     {
 
-        getSimulation()->draw(vparams,groot);
+        getSimulation()->draw(vparams,groot.get());
 
         if (_axis)
         {
