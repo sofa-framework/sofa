@@ -110,24 +110,24 @@ void UniformMass<OpenCLVec3fTypes, float>::addForce(const core::MechanicalParams
 
     d_f.endEdit();
 }
-
+/*
 template <>
 bool UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox)
 {
-    const VecCoord& x = *this->mstate->getX();
-    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
-    for (unsigned int i=0; i<x.size(); i++)
-    {
-        //const Coord& p = x[i];
-        const Coord& p = x.getCached(i);
-        for (int c=0; c<3; c++)
-        {
-            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-            if (p[c] < minBBox[c]) minBBox[c] = p[c];
-        }
-    }
-    return true;
-}
+	const VecCoord& x = *this->mstate->getX();
+	//if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
+	for (unsigned int i=0; i<x.size(); i++)
+	{
+		//const Coord& p = x[i];
+		const Coord& p = x.getCached(i);
+		for (int c=0;c<3;c++)
+		{
+			if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+			if (p[c] < minBBox[c]) minBBox[c] = p[c];
+		}
+	}
+	return true;
+}*/
 
 template <>
 void UniformMass<OpenCLVec3f1Types, float>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
@@ -167,24 +167,24 @@ void UniformMass<OpenCLVec3f1Types, float>::addForce(const core::MechanicalParam
 
     d_f.endEdit();
 }
-
+/*
 template <>
 bool UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addBBox(double* minBBox, double* maxBBox)
 {
-    const VecCoord& x = *this->mstate->getX();
-    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
-    for (unsigned int i=0; i<x.size(); i++)
-    {
-        //const Coord& p = x[i];
-        const Coord& p = x.getCached(i);
-        for (int c=0; c<3; c++)
-        {
-            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-            if (p[c] < minBBox[c]) minBBox[c] = p[c];
-        }
-    }
-    return true;
-}
+	const VecCoord& x = *this->mstate->getX();
+	//if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
+	for (unsigned int i=0; i<x.size(); i++)
+	{
+		//const Coord& p = x[i];
+		const Coord& p = x.getCached(i);
+		for (int c=0;c<3;c++)
+		{
+			if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+			if (p[c] < minBBox[c]) minBBox[c] = p[c];
+		}
+	}
+	return true;
+}*/
 
 template <>
 double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
@@ -208,10 +208,10 @@ double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMas
 }
 
 template <>
-void UniformMass<gpu::opencl::OpenCLRigid3fTypes, Rigid3fMass>::draw(const sofa::core::visual::VisualParams* /*vparams*/)
+void UniformMass<gpu::opencl::OpenCLRigid3fTypes, Rigid3fMass>::draw(const sofa::core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowBehaviorModels())
-        return;
+    if(!vparams->displayFlags().getShowBehaviorModels())return;
+//	if (!getContext()->getShowBehaviorModels())return;
     const VecCoord& x = *mstate->getX();
     defaulttype::Vec3d len;
 
@@ -276,24 +276,24 @@ void UniformMass<OpenCLVec3dTypes, double>::addForce(const core::MechanicalParam
 
     d_f.endEdit();
 }
-
+/*
 template <>
 bool UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox)
 {
-    const VecCoord& x = *this->mstate->getX();
-    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
-    for (unsigned int i=0; i<x.size(); i++)
-    {
-        //const Coord& p = x[i];
-        const Coord& p = x.getCached(i);
-        for (int c=0; c<3; c++)
-        {
-            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-            if (p[c] < minBBox[c]) minBBox[c] = p[c];
-        }
-    }
-    return true;
-}
+	const VecCoord& x = *this->mstate->getX();
+	//if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
+	for (unsigned int i=0; i<x.size(); i++)
+	{
+		//const Coord& p = x[i];
+		const Coord& p = x.getCached(i);
+		for (int c=0;c<3;c++)
+		{
+			if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+			if (p[c] < minBBox[c]) minBBox[c] = p[c];
+		}
+	}
+	return true;
+}*/
 
 template <>
 void UniformMass<OpenCLVec3d1Types, double>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
@@ -333,24 +333,24 @@ void UniformMass<OpenCLVec3d1Types, double>::addForce(const core::MechanicalPara
 
     d_f.endEdit();
 }
-
+/*
 template <>
 bool UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addBBox(double* minBBox, double* maxBBox)
 {
-    const VecCoord& x = *this->mstate->getX();
-    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
-    for (unsigned int i=0; i<x.size(); i++)
-    {
-        //const Coord& p = x[i];
-        const Coord& p = x.getCached(i);
-        for (int c=0; c<3; c++)
-        {
-            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-            if (p[c] < minBBox[c]) minBBox[c] = p[c];
-        }
-    }
-    return true;
-}
+	const VecCoord& x = *this->mstate->getX();
+	//if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
+	for (unsigned int i=0; i<x.size(); i++)
+	{
+		//const Coord& p = x[i];
+		const Coord& p = x.getCached(i);
+		for (int c=0;c<3;c++)
+		{
+			if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+			if (p[c] < minBBox[c]) minBBox[c] = p[c];
+		}
+	}
+	return true;
+}*/
 
 template <>
 double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
@@ -374,10 +374,11 @@ double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMas
 }
 
 template <>
-void UniformMass<gpu::opencl::OpenCLRigid3dTypes, Rigid3dMass>::draw(const sofa::core::visual::VisualParams* /*vparams*/)
+void UniformMass<gpu::opencl::OpenCLRigid3dTypes, Rigid3dMass>::draw(const sofa::core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowBehaviorModels())
-        return;
+    if(!vparams->displayFlags().getShowBehaviorModels())return;
+
+    //if (!getContext()->getShowBehaviorModels())return;
     const VecCoord& x = *mstate->getX();
     defaulttype::Vec3d len;
 
