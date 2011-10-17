@@ -57,44 +57,44 @@ SparseGridMultipleTopology::SparseGridMultipleTopology( bool _isVirtual ) : Spar
 
 
 
-void SparseGridMultipleTopology::buildAsFinest(  )
+void SparseGridMultipleTopology::buildAsFinest()
 {
-// 		  serr<<"SparseGridMultipleTopology::buildAsFinest"<<sendl;
-
     if( _dataStiffnessCoefs.getValue().size() < _fileTopologies.getValue().size() )
     {
         serr<<"WARNING: SparseGridMultipleTopology: not enough stiffnessCoefs"<<sendl;
         for(unsigned i=_dataStiffnessCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
             _dataStiffnessCoefs.beginEdit()->push_back( 1.0 );
-//           return;
+        //           return;
     }
+
     if( _dataMassCoefs.getValue().size() < _fileTopologies.getValue().size() )
     {
         serr<<"WARNING: SparseGridMultipleTopology: not enough massCoefs\n";
         for(unsigned i=_dataMassCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
             _dataMassCoefs.beginEdit()->push_back( 1.0 );
-// 			return;
+        // 			return;
     }
 
     unsigned regularGridsSize = _regularGrids.size();
+
     if (regularGridsSize < _fileTopologies.getValue().size())
     {
-        for (unsigned int i=0; i<_fileTopologies.getValue().size()-regularGridsSize; ++i)
+        for (unsigned int i = 0; i < _fileTopologies.getValue().size() - regularGridsSize; ++i)
         {
-            _regularGrids.push_back(sofa::core::objectmodel::New<RegularGridTopology>().get());
+            _regularGrids.push_back(sofa::core::objectmodel::New< RegularGridTopology >());
         }
     }
     else
     {
-        for (unsigned int i=0; i<regularGridsSize-_fileTopologies.getValue().size(); ++i)
+        for (unsigned int i = 0; i < regularGridsSize - _fileTopologies.getValue().size(); ++i)
         {
-            delete _regularGrids[i+_regularGrids.size()];
+            _regularGrids[i + _regularGrids.size()].reset();
         }
+
         _regularGrids.resize(_fileTopologies.getValue().size());
     }
-    _regularGridTypes.resize(  _fileTopologies.getValue().size() );
 
-
+    _regularGridTypes.resize(_fileTopologies.getValue().size());
 
     helper::vector< helper::io::Mesh*> meshes(_fileTopologies.getValue().size());
 
@@ -161,6 +161,7 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 
     _stiffnessCoefs.resize( this->getNbHexahedra());
     _massCoefs.resize( this->getNbHexahedra());
+
     for(int i=0; i<this->getNbHexahedra(); ++i)
     {
         _stiffnessCoefs[i] = regularStiffnessCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
@@ -245,7 +246,7 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
         newnz = (newnz-1)*2+1;
     }
 
-    SparseGridMultipleTopology* sgmt = new SparseGridMultipleTopology(true);;
+    SparseGridMultipleTopology::SPtr sgmt = sofa::core::objectmodel::New< SparseGridMultipleTopology >(true);;
 
     _virtualFinerLevels[0] = sgmt;
     _virtualFinerLevels[0]->setNx( newnx );
@@ -270,29 +271,24 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
 
     for(int i=1; i<nb; ++i)
     {
-        _virtualFinerLevels[i] = new SparseGridMultipleTopology(true);
+        _virtualFinerLevels[i] = sofa::core::objectmodel::New< SparseGridMultipleTopology >(true);
 
         std::stringstream nameg; nameg << "virtual grid "<< i;
+
         _virtualFinerLevels[i]->setName( nameg.str().c_str() );
-
-
-        _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1]);
-
+        _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1].get());
         _virtualFinerLevels[i]->init();
-
 
         sout<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
     }
 
     sout<<sendl;
 
-    this->setFinerSparseGrid(_virtualFinerLevels[nb-1]);
-
-
+    this->setFinerSparseGrid(_virtualFinerLevels[nb-1].get());
 }
 
+} // namespace topology
 
+} // namespace component
 
-}
-}
-}
+} // namespace sofa

@@ -1382,7 +1382,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
         newnz = (newnz-1)*2+1;
     }
 
-    _virtualFinerLevels[0] = new SparseGridTopology(true);
+    _virtualFinerLevels[0] = sofa::core::objectmodel::New< SparseGridTopology >(true);
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
@@ -1398,9 +1398,9 @@ void SparseGridTopology::buildVirtualFinerLevels()
 
     for(int i=1; i<nb; ++i)
     {
-        _virtualFinerLevels[i] = new SparseGridTopology(true);
+        _virtualFinerLevels[i] = sofa::core::objectmodel::New< SparseGridTopology >(true);
 
-        _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1]);
+        _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1].get());
 
         _virtualFinerLevels[i]->init();
 
@@ -1409,7 +1409,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
 
     serr<<sendl;
 
-    this->setFinerSparseGrid(_virtualFinerLevels[nb-1]);
+    this->setFinerSparseGrid(_virtualFinerLevels[nb-1].get());
 }
 
 

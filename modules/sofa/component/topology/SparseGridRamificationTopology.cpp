@@ -951,7 +951,7 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     }
 
 
-    SparseGridRamificationTopology* sgrt = new SparseGridRamificationTopology(true);
+    SparseGridRamificationTopology::SPtr sgrt = sofa::core::objectmodel::New< SparseGridRamificationTopology >(true);
 
     _virtualFinerLevels[0] = sgrt;
     _virtualFinerLevels[0]->setNx( newnx );
@@ -970,10 +970,10 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
 
     for(int i=1; i<nb; ++i)
     {
-        _virtualFinerLevels[i] = new SparseGridRamificationTopology(true);
+        _virtualFinerLevels[i] = sofa::core::objectmodel::New< SparseGridRamificationTopology >(true);
 
 
-        _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1]);
+        _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1].get());
 
         _virtualFinerLevels[i]->init();
 
@@ -983,9 +983,7 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
 
     serr<<sendl;
 
-    this->setFinerSparseGrid(_virtualFinerLevels[nb-1]);
-
-
+    this->setFinerSparseGrid(_virtualFinerLevels[nb-1].get());
 }
 
 
@@ -999,7 +997,7 @@ int SparseGridRamificationTopology::findCube(const Vector3 &pos, SReal &fx, SRea
         return SparseGridTopology::findCube(pos, fx, fy, fz);
 
 
-    SparseGridRamificationTopology* finestSparseGridTopology = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[0]);
+    SparseGridRamificationTopology* finestSparseGridTopology = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[0].get());
 
     int finestSparseCube = finestSparseGridTopology->SparseGridTopology::findCube(pos,fx,fy,fz);
 
@@ -1024,7 +1022,7 @@ int SparseGridRamificationTopology::findNearestCube(const Vector3 &pos, SReal &f
         return SparseGridTopology::findNearestCube(pos, fx, fy, fz);
 
 
-    SparseGridRamificationTopology* finestSparseGridTopology = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[0]);
+    SparseGridRamificationTopology* finestSparseGridTopology = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[0].get());
 
     int finestSparseCube = finestSparseGridTopology->SparseGridTopology::findNearestCube(pos,fx,fy,fz);
 
@@ -1046,7 +1044,7 @@ void SparseGridRamificationTopology::findCoarsestParents()
 {
     for( unsigned i=0; i<_virtualFinerLevels.size(); ++i)
     {
-        SparseGridRamificationTopology* finestSGRT = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[i]);
+        SparseGridRamificationTopology* finestSGRT = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[i].get());
 
 
         for(int z=0; z<finestSGRT->getNz()-1; ++z)
@@ -1255,7 +1253,7 @@ void SparseGridRamificationTopology::printParents()
     {
         serr<<"level "<<i<<" :"<<sendl;
 
-        SparseGridRamificationTopology* finestSGRT = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[i]);
+        SparseGridRamificationTopology* finestSGRT = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[i].get());
 
         for(int z=0; z<finestSGRT->getNz()-1; ++z)
         {

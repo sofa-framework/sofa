@@ -614,7 +614,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     findFinestChildren( finestChildren, elementIndice );
 
 
-    SparseGridTopology*finestSparseGrid = this->_sparseGrid->_virtualFinerLevels[ this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue() ];
+    SparseGridTopology::SPtr finestSparseGrid = this->_sparseGrid->_virtualFinerLevels[ this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue() ];
 
     serr<<"finestChildren.size() : "<<finestChildren.size()<<sendl;
     serr<<"finestSparseGrid->getNbHexahedra() : "<<finestSparseGrid->getNbHexahedra()<<sendl;
@@ -1218,7 +1218,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
     {
         helper::fixed_array<int,8> finerChildren;
 
-        topology::SparseGridTopology* sparseGrid,*finerSparseGrid;
+        topology::SparseGridTopology::SPtr sparseGrid, finerSparseGrid;
 
         if (level == 0)
         {
@@ -1644,12 +1644,12 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         if (level == 0)
         {
             sparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid);
-            finerSparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-1]);
+            finerSparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-1].get());
         }
         else
         {
-            sparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level]);
-            finerSparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level-1]);
+            sparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level].get());
+            finerSparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level-1].get());
         }
 
         // trouver les finer elements par ramification
@@ -2393,7 +2393,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weig
     }
     else
     {
-        topology::SparseGridTopology* sparseGrid;
+        topology::SparseGridTopology::SPtr sparseGrid;
 
         sparseGrid = this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level];
 
@@ -2433,7 +2433,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeightsRamification
     {
         topology::SparseGridRamificationTopology* sparseGrid;
 
-        sparseGrid = dynamic_cast< topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level]);
+        sparseGrid = dynamic_cast< topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level].get());
 
         helper::fixed_array<helper::vector<int>,8 >& finerChildrenRamification = sparseGrid->_hierarchicalCubeMapRamification[ elementIndice ];
 

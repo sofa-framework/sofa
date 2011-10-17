@@ -131,7 +131,7 @@ protected :
 
     // necessary objects
     SparseGridTopologyT* _sparseGrid;
-    SparseGridTopologyT* _finestSparseGrid;
+    SparseGridTopologyT::SPtr _finestSparseGrid;
     HexahedronCompositeFEMForceFieldAndMassT* _forcefield;
 
 };

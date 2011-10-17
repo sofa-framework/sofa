@@ -109,7 +109,7 @@ public:
     NodeCornersAdjacency _nodeCornersAdjacency;
 
 
-    helper::vector<SparseGridTopology*> _virtualFinerLevels; ///< saving the virtual levels (cf _nbVirtualFinerLevels)
+    helper::vector< SparseGridTopology::SPtr > _virtualFinerLevels; ///< saving the virtual levels (cf _nbVirtualFinerLevels)
     int getNbVirtualFinerLevels() const { return _nbVirtualFinerLevels.getValue();}
     void setNbVirtualFinerLevels(int n) {_nbVirtualFinerLevels.setValue(n);}
 
@@ -166,10 +166,10 @@ public:
     /// return the mass coefficient of the i-th cube
     virtual float getMassCoef(int elementIdx);
 
-    SparseGridTopology* getFinerSparseGrid() const {return _finerSparseGrid;}
-    void setFinerSparseGrid( SparseGridTopology* fsp ) {_finerSparseGrid=fsp;}
-    SparseGridTopology* getCoarserSparseGrid() const {return _coarserSparseGrid;}
-    void setCoarserSparseGrid( SparseGridTopology* csp ) {_coarserSparseGrid=csp;}
+    SparseGridTopology *getFinerSparseGrid() const {return _finerSparseGrid;}
+    void setFinerSparseGrid( SparseGridTopology *fsp ) {_finerSparseGrid=fsp;}
+    SparseGridTopology *getCoarserSparseGrid() const {return _coarserSparseGrid;}
+    void setCoarserSparseGrid( SparseGridTopology *csp ) {_coarserSparseGrid=csp;}
 
     void updateMesh();
 

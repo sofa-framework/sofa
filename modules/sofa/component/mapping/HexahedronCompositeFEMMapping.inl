@@ -77,9 +77,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
     }
 
 
-    _finestSparseGrid = _sparseGrid->_virtualFinerLevels[_sparseGrid->getNbVirtualFinerLevels()-_forcefield->_nbVirtualFinerLevels.getValue()];
-
-
+    _finestSparseGrid = _sparseGrid->_virtualFinerLevels[_sparseGrid->getNbVirtualFinerLevels() -_forcefield->_nbVirtualFinerLevels.getValue()];
 
 
     for(unsigned i=0; i<this->toModel->getX()->size(); ++i)
