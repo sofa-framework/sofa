@@ -56,29 +56,9 @@ typedef BaseMeshTopology::Tetrahedron Tetrahedron;
 typedef BaseMeshTopology::Hexahedron Hexahedron;
 
 
-/** \brief Basic creation function for element of type T : simply calls default constructor.
-*
-*/
-template < typename TopologyElementType, typename VecT >
-inline void topo_basicCreateFunc(unsigned int ,
-        void* , VecT& t,
-        const TopologyElementType& ,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
-{
-    t = VecT();
-    //return;
-}
-
-/** \brief Basic destruction function for element of type T : does nothing.
-*
-*/
-template < typename TopologyElementType, typename VecT >
-inline void topo_basicDestroyFunc(unsigned int , void* , VecT& )
-{
-    return;
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /** \brief A class for storing Edge related data. Automatically manages topology changes.
 *
@@ -86,7 +66,7 @@ inline void topo_basicDestroyFunc(unsigned int , void* , VecT& )
 * happen (non exhaustive list: Edges added, removed, fused, renumbered).
 */
 template< class TopologyElementType, class VecT>
-class TopologyData : public sofa::core::topology::BaseTopologyData<VecT>
+class TopologyDataImpl : public sofa::core::topology::BaseTopologyData<VecT>
 {
 
 public:
@@ -103,92 +83,36 @@ public:
     typedef typename container_type::const_iterator const_iterator;
 
 
-
-    /// Creation function, called when adding elements.
-    typedef void (*t_createFunc)(unsigned int, void*, value_type&, const TopologyElementType&, const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >& );
-    /// Destruction function, called when deleting elements.
-    typedef void (*t_destroyFunc)(unsigned int, void*, value_type&);
-
-    /// Creation function, called when adding points elements.
-    typedef void (*t_createPointFunc)(const sofa::helper::vector<unsigned int> &, void*,  container_type &);
-    /// Destruction function, called when removing points elements.
-    typedef void (*t_destroyPointFunc)(const sofa::helper::vector<unsigned int> &, void*,  container_type &);
-
-    /// Creation function, called when adding edges elements.
-    typedef void (*t_createEdgeFunc)(const sofa::helper::vector<unsigned int> &, void*,  container_type &);
-    /// Destruction function, called when removing edges elements.
-    typedef void (*t_destroyEdgeFunc)(const sofa::helper::vector<unsigned int> &, void*,  container_type &);
-
-    /// Creation function, called when adding triangles elements.
-    typedef void (*t_createTriangleFunc)(const sofa::helper::vector<unsigned int> &, void*,  container_type &);
-    /// Destruction function, called when removing triangles elements.
-    typedef void (*t_destroyTriangleFunc)(const sofa::helper::vector<unsigned int> &, void*,  container_type &);
-
-    /// Creation function, called when adding quads elements.
-    typedef void (*t_createQuadFunc)(const sofa::helper::vector<unsigned int> &, void*, container_type &);
-    /// Destruction function, called when removing quads elements.
-    typedef void (*t_destroyQuadFunc)(const sofa::helper::vector<unsigned int> &, void*, container_type &);
-
-    /// Creation function, called when adding tetrahedra elements.
-    typedef void (*t_createTetrahedronFunc)(const sofa::helper::vector<unsigned int> &, void*, container_type &);
-    /// Destruction function, called when removing tetrahedra elements.
-    typedef void (*t_destroyTetrahedronFunc)(const sofa::helper::vector<unsigned int> &, void*, container_type &);
-
-    /// Creation function, called when adding hexahedra elements.
-    typedef void (*t_createHexahedronFunc)(const sofa::helper::vector<unsigned int> &, void*, container_type &);
-    /// Destruction function, called when removing hexahedra elements.
-    typedef void (*t_destroyHexahedronFunc)(const sofa::helper::vector<unsigned int> &, void*, container_type &);
-
     /// Constructors
 public:
-    /// Constructor
-    TopologyData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data,
-            void (*createFunc) (unsigned int, void*, value_type&, const TopologyElementType &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topo_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topo_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : sofa::core::topology::BaseTopologyData< VecT >(data),
-          m_createFunc(createFunc), m_destroyFunc(destroyFunc),
-          m_createPointFunc(0), m_destroyPointFunc(0),
-          m_createEdgeFunc(0), m_destroyEdgeFunc(0),
-          m_createTriangleFunc(0), m_destroyTriangleFunc(0),
-          m_createQuadFunc(0), m_destroyQuadFunc(0),
-          m_createTetrahedronFunc(0), m_destroyTetrahedronFunc(0),
-          m_createHexahedronFunc(0), m_destroyHexahedronFunc(0),
-          m_createParam(createParam), m_destroyParam(destroyParam),
+    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
+    TopologyDataImpl( )
+        : sofa::core::topology::BaseTopologyData< VecT >(0, false, false),
           m_topologicalEngine(NULL)
     {}
 
     /// Constructor
-    TopologyData(size_type n, const value_type& value) : sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
+    TopologyDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
+        : sofa::core::topology::BaseTopologyData< VecT >(data),
+          m_topologicalEngine(NULL)
+    {}
+
+    /// Constructor
+    TopologyDataImpl(size_type n, const value_type& value) : sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
     {
         container_type* data = this->beginEdit();
         data->resize(n, value);
         this->endEdit();
     }
     /// Constructor
-    TopologyData(int n, const value_type& value) : sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
-    {
-        container_type* data = this->beginEdit();
-        data->resize(n, value);
-        this->endEdit();
-    }
-    /// Constructor
-    TopologyData(long n, const value_type& value): sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
-    {
-        container_type* data = this->beginEdit();
-        data->resize(n, value);
-        this->endEdit();
-    }
-    /// Constructor
-    explicit TopologyData(size_type n): sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
+    explicit TopologyDataImpl(size_type n): sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
     {
         container_type* data = this->beginEdit();
         data->resize(n);
         this->endEdit();
     }
     /// Constructor
-    TopologyData(const container_type& x): sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
+    TopologyDataImpl(const container_type& x): sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
     {
         container_type* data = this->beginEdit();
         (*data) = x;
@@ -198,7 +122,7 @@ public:
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    TopologyData(InputIterator first, InputIterator last): sofa::core::topology::BaseTopologyData< container_type >(0, false, false)
+    TopologyDataImpl(InputIterator first, InputIterator last): sofa::core::topology::BaseTopologyData< container_type >(0, false, false)
     {
         container_type* data = this->beginEdit();
         data->assign(first, last);
@@ -206,7 +130,7 @@ public:
     }
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    TopologyData(const_iterator first, const_iterator last): sofa::core::topology::BaseTopologyData< container_type >(0, false, false)
+    TopologyDataImpl(const_iterator first, const_iterator last): sofa::core::topology::BaseTopologyData< container_type >(0, false, false)
     {
         container_type* data = this->beginEdit();
         data->assign(first, last);
@@ -215,122 +139,146 @@ public:
 #endif /* __STL_MEMBER_TEMPLATES */
 
 
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    TopologyData( void (*createFunc) (unsigned int, void*, value_type&, const TopologyElementType &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topo_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topo_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : sofa::core::topology::BaseTopologyData< VecT >(0, false, false),
-          m_createFunc(createFunc), m_destroyFunc(destroyFunc),
-          m_createPointFunc(0), m_destroyPointFunc(0),
-          m_createEdgeFunc(0), m_destroyEdgeFunc(0),
-          m_createTriangleFunc(0), m_destroyTriangleFunc(0),
-          m_createQuadFunc(0), m_destroyQuadFunc(0),
-          m_createTetrahedronFunc(0), m_destroyTetrahedronFunc(0),
-          m_createHexahedronFunc(0), m_destroyHexahedronFunc(0),
-          m_createParam(createParam), m_destroyParam(destroyParam),
-          m_topologicalEngine(NULL)
-    {}
+    /** Public fonction to apply creation and destruction functions */
+public:
+    /// Apply removing current elementType elements
+    virtual void applyDestroyFunction(unsigned int, value_type& /*t*/) {/*t = VecT();*/}
+    /// Apply adding current elementType elements
+    virtual void applyCreateFunction(unsigned int, value_type&,
+            const sofa::helper::vector< unsigned int > &,
+            const sofa::helper::vector< double > &) {}
+
+
+    ///////////////////////// Functions on Points //////////////////////////////////////
+    /// Apply adding points elements.
+    virtual void applyPointCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+            const sofa::helper::vector< TopologyElementType >& /*elems*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+    /// Apply removing points elements.
+    virtual void applyPointDestruction(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    /// Apply swap between point indices elements.
+    virtual void applyPointIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
+    /// Apply renumbering on points elements.
+    virtual void applyPointRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    /// Apply moving points elements.
+    virtual void applyPointMove(const sofa::helper::vector<unsigned int>& /*indexList*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+
+
+
+    ///////////////////////// Functions on Edges //////////////////////////////////////
+    /// Apply adding edges elements.
+    virtual void applyEdgeCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+            const sofa::helper::vector< TopologyElementType >& /*elems*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+    /// Apply removing edges elements.
+    virtual void applyEdgeDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
+    /// Apply swap between edges indices elements.
+    virtual void applyEdgeIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
+    /// Apply renumbering on edges elements.
+    virtual void applyeEdgeRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    /// Apply adding function on moved edges elements.
+    virtual void applyEdgeMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+    /// Apply removing function on moved edges elements.
+    virtual void applyEdgeMovedDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
+
+
+
+    ///////////////////////// Functions on Triangles //////////////////////////////////////
+    /// Apply adding triangles elements.
+    virtual void applyTriangleCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+            const sofa::helper::vector< TopologyElementType >& /*elems*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+    /// Apply removing triangles elements.
+    virtual void applyTriangleDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
+    /// Apply swap between triangles indices elements.
+    virtual void applyTriangleIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
+    /// Apply renumbering on triangles elements.
+    virtual void applyeTriangleRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    /// Apply adding function on moved triangles elements.
+    virtual void applyTriangleMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+    /// Apply removing function on moved triangles elements.
+    virtual void applyTriangleMovedDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
+
+
+
+    ///////////////////////// Functions on Quads //////////////////////////////////////
+    /// Apply adding quads elements.
+    virtual void applyQuadCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+            const sofa::helper::vector< TopologyElementType >& /*elems*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+    /// Apply removing quads elements.
+    virtual void applyQuadDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
+    /// Apply swap between quads indices elements.
+    virtual void applyQuadIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
+    /// Apply renumbering on quads elements.
+    virtual void applyeQuadRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    /// Apply adding function on moved quads elements.
+    virtual void applyQuadMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+    /// Apply removing function on moved quads elements.
+    virtual void applyQuadMovedDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
+
+
+
+    ///////////////////////// Functions on Tetrahedron //////////////////////////////////////
+    /// Apply adding tetrahedron elements.
+    virtual void applyTetrahedronCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+            const sofa::helper::vector< TopologyElementType >& /*elems*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+    /// Apply removing tetrahedron elements.
+    virtual void applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
+    /// Apply swap between tetrahedron indices elements.
+    virtual void applyTetrahedronIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
+    /// Apply renumbering on tetrahedron elements.
+    virtual void applyeTetrahedronRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    /// Apply adding function on moved tetrahedron elements.
+    virtual void applyTetrahedronMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+    /// Apply removing function on moved tetrahedron elements.
+    virtual void applyTetrahedronMovedDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
+
+
+
+    ///////////////////////// Functions on Hexahedron //////////////////////////////////////
+    /// Apply adding hexahedron elements.
+    virtual void applyHexahedronCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+            const sofa::helper::vector< TopologyElementType >& /*elems*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+    /// Apply removing hexahedron elements.
+    virtual void applyHexahedronDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
+    /// Apply swap between hexahedron indices elements.
+    virtual void applyHexahedronIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
+    /// Apply renumbering on hexahedron elements.
+    virtual void applyeHexahedronRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    /// Apply adding function on moved hexahedron elements.
+    virtual void applyHexahedronMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+            const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
+    /// Apply removing function on moved hexahedron elements.
+    virtual void applyHexahedronMovedDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
+
 
 
     /// Handle EdgeSetTopology related events, ignore others. DEPRECATED
     void handleTopologyEvents( std::list< const core::topology::TopologyChange *>::const_iterator changeIt,
             std::list< const core::topology::TopologyChange *>::const_iterator &end );
 
-
-
-    /// Creation function, called when adding elements.
-    void setCreateFunction(t_createFunc createFunc);
-    /// Destruction function, called when deleting elements.
-    void setDestroyFunction(t_destroyFunc destroyFunc);
-
-    /// Creation function, called when adding parameter to those elements.
-    void setDestroyParameter( void* destroyParam );
-    /// Destruction function, called when removing parameter to those elements.
-    void setCreateParameter( void* createParam );
-
-
-    /// Creation function, called when adding points elements.
-    void setCreatePointFunction(t_createPointFunc createPointFunc);
-    /// Destruction function, called when removing points elements.
-    void setDestroyPointFunction(t_destroyPointFunc destroyPointFunc);
-
-    /// Creation function, called when adding edges elements.
-    void setCreateEdgeFunction(t_createEdgeFunc createEdgeFunc);
-    /// Destruction function, called when removing edges elements.
-    void setDestroyEdgeFunction(t_destroyEdgeFunc destroyEdgeFunc);
-
-    /// Creation function, called when adding triangles elements.
-    void setCreateTriangleFunction(t_createTriangleFunc createTriangleFunc);
-    /// Destruction function, called when removing triangles elements.
-    void setDestroyTriangleFunction(t_destroyTriangleFunc destroyTriangleFunc);
-
-    /// Creation function, called when adding quads elements.
-    void setCreateQuadFunction(t_createQuadFunc createQuadFunc);
-    /// Destruction function, called when removing quads elements.
-    void setDestroyQuadFunction(t_destroyQuadFunc destroyQuadFunc);
-
-    /// Creation function, called when adding tetrahedra elements.
-    void setCreateTetrahedronFunction(t_createTetrahedronFunc createTetrahedronFunc);
-    /// Destruction function, called when removing tetrahedra elements.
-    void setDestroyTetrahedronFunction(t_destroyTetrahedronFunc destroyTetrahedronFunc);
-
-    /// Creation function, called when adding hexahedra elements.
-    void setCreateHexahedronFunction(t_createHexahedronFunc createHexahedronFunc);
-    /// Destruction function, called when removing hexahedra elements.
-    void setDestroyHexahedronFunction(t_destroyHexahedronFunc destroyHexahedronFunc);
-
-
-
-
-    /** Public fonction to apply creation and destruction functions */
-    /// Apply adding points elements.
-    virtual void applyCreatePointFunction(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-    /// Apply removing points elements.
-    virtual void applyDestroyPointFunction(const sofa::helper::vector<unsigned int> & indices);
-
-    /// Apply adding edges elements.
-    virtual void applyCreateEdgeFunction(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< TopologyElementType >& elems,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-    /// Apply removing edges elements.
-    virtual void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int> & indices);
-
-    /// Apply adding triangles elements.
-    virtual void applyCreateTriangleFunction(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< TopologyElementType >& elems,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-    /// Apply removing triangles elements.
-    virtual void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int> & indices);
-
-    /// Apply adding quads elements.
-    virtual void applyCreateQuadFunction(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< TopologyElementType >& elems,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-    /// Apply removing quads elements.
-    virtual void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int> & indices);
-
-    /// Apply adding tetrahedra elements.
-    virtual void applyCreateTetrahedronFunction(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< TopologyElementType >& elems,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-    /// Apply removing tetrahedra elements.
-    virtual void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int> & indices);
-
-    /// Apply adding hexahedra elements.
-    virtual void applyCreateHexahedronFunction(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< TopologyElementType >& elems,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-    /// Apply removing hexahedra elements.
-    virtual void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int> & indices);
-
+    /// Handle other event on topology changes
+    virtual void applyTopologyChangesFunction();
 
 
     /** Public functions to handle topological engine creation */
@@ -353,6 +301,15 @@ public:
         return result;
     }
 
+
+    /// Link Data to topology arrays
+    void linkToPointDataArray();
+    void linkToEdgeDataArray();
+    void linkToTriangleDataArray();
+    void linkToQuadDataArray();
+    void linkToTetrahedronDataArray();
+    void linkToHexahedronDataArray();
+
 protected:
     /// Swaps values at indices i1 and i2.
     void swap( unsigned int i1, unsigned int i2 );
@@ -374,116 +331,70 @@ protected:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
-
-    t_createFunc m_createFunc;
-    t_destroyFunc m_destroyFunc;
-    t_createPointFunc m_createPointFunc;
-    t_destroyPointFunc m_destroyPointFunc;
-    t_createEdgeFunc m_createEdgeFunc;
-    t_destroyEdgeFunc m_destroyEdgeFunc;
-    t_createTriangleFunc m_createTriangleFunc;
-    t_destroyTriangleFunc m_destroyTriangleFunc;
-    t_createQuadFunc m_createQuadFunc;
-    t_destroyQuadFunc m_destroyQuadFunc;
-    t_createTetrahedronFunc m_createTetrahedronFunc;
-    t_destroyTetrahedronFunc m_destroyTetrahedronFunc;
-    t_createHexahedronFunc m_createHexahedronFunc;
-    t_destroyHexahedronFunc m_destroyHexahedronFunc;
-
-
-    /** Parameter to be passed to creation function.
-    *
-    * Warning : construction and destruction of this object is not of the responsibility of EdgeData.
-    */
-    void* m_createParam;
-
-    /** Parameter to be passed to destruction function.
-    *
-    * Warning : construction and destruction of this object is not of the responsibility of EdgeData.
-    */
-    void* m_destroyParam;
-
+protected:
     sofa::core::topology::TopologyEngine* m_topologicalEngine;
 };
 
 
 
 
-// Topology specialization
-template < typename VecT >
-inline void topoPoint_basicCreateFunc(unsigned int ,
-        void* , VecT& t,
-        const Point& ,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
-{
-    t = VecT();
-    //return;
-}
-
-template < typename VecT >
-inline void topoPoint_basicDestroyFunc(unsigned int , void* , VecT& )
-{
-    return;
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////   Point Topology Data Implementation   /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class PointDataNew : public TopologyData<Point, VecT>
+class PointDataImpl : public TopologyDataImpl<Point, VecT>
 {
 public:
-    typedef typename TopologyData<Point, VecT>::container_type container_type;
-    typedef typename TopologyData<Point, VecT>::value_type value_type;
+    typedef typename TopologyDataImpl<Point, VecT>::container_type container_type;
+    typedef typename TopologyDataImpl<Point, VecT>::value_type value_type;
 
-    PointDataNew( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data,
-            void (*createFunc) (unsigned int, void*, value_type&, const Point &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoPoint_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoPoint_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Point, VecT>(data, createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
+    PointDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
+        : TopologyDataImpl<Point, VecT>(data)
+        , m_topologicalEngine(NULL)
+    {}
+
+    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
+    PointDataImpl() : TopologyDataImpl<Point, VecT>()
+        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
-    PointDataNew(typename TopologyData<Point, VecT>::size_type n, const value_type& value): TopologyData<Point, VecT>(n,value) {}
+    PointDataImpl(typename TopologyDataImpl<Point, VecT>::size_type n, const value_type& value): TopologyDataImpl<Point, VecT>(n,value) {}
+
     /// Constructor
-    PointDataNew(int n, const value_type& value): TopologyData<Point, VecT>(n,value) {}
+    explicit PointDataImpl(typename TopologyDataImpl<Point, VecT>::size_type n): TopologyDataImpl<Point, VecT>(n) {}
     /// Constructor
-    PointDataNew(long n, const value_type& value): TopologyData<Point, VecT>(n,value) {}
-    /// Constructor
-    explicit PointDataNew(typename TopologyData<Point, VecT>::size_type n): TopologyData<Point, VecT>(n) {}
-    /// Constructor
-    PointDataNew(const container_type& x): TopologyData<Point, VecT>(x) {}
+    PointDataImpl(const container_type& x): TopologyDataImpl<Point, VecT>(x) {}
 
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    PointDataNew(InputIterator first, InputIterator last): TopologyData<Point, VecT>(first,last) {}
+    PointDataImpl(InputIterator first, InputIterator last): TopologyData<Point, VecT>(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    PointDataNew(typename PointDataNew<VecT>::const_iterator first, typename PointDataNew<VecT>::const_iterator last): TopologyData<Point, VecT>(first,last) {}
+    PointDataImpl(typename PointDataImpl<VecT>::const_iterator first, typename PointDataImpl<VecT>::const_iterator last): TopologyData<Point, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
-
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    PointDataNew( void (*createFunc) (unsigned int, void*, value_type&, const Point &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoPoint_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoPoint_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Point, VecT>(createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
-    {}
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
 
-    void applyCreatePointFunction(unsigned int nbPoints,
+public:
+    /// Apply adding point elements.
+    void applyPointCreation(unsigned int nbPoints,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing point elements.
+    void applyPointDestruction(const sofa::helper::vector<unsigned int> & indices);
     /// Apply removing points elements.
-    void applyDestroyPointFunction(const sofa::helper::vector<unsigned int> & indices);
-
+    void applyPointIndicesSwap(unsigned int i1, unsigned int i2 );
+    /// Apply removing points elements.
+    void applyPointRenumbering(const sofa::helper::vector<unsigned int>& indices);
+    /// Apply removing points elements.
+    void applyPointMove(const sofa::helper::vector<unsigned int>& indexList,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
 
 protected:
@@ -493,81 +404,66 @@ protected:
 
 
 
-template < typename VecT >
-inline void topoEdge_basicCreateFunc(unsigned int ,
-        void* , VecT& t,
-        const Edge& ,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
-{
-    t = VecT();
-    //return;
-}
 
-template < typename VecT >
-inline void topoEdge_basicDestroyFunc(unsigned int , void* , VecT& )
-{
-    return;
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////   Edge Topology Data Implementation   /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class EdgeDataNew : public TopologyData<Edge, VecT>
+class EdgeDataImpl : public TopologyDataImpl<Edge, VecT>
 {
 public:
-    typedef typename TopologyData<Edge, VecT>::container_type container_type;
-    typedef typename TopologyData<Edge, VecT>::value_type value_type;
+    typedef typename TopologyDataImpl<Edge, VecT>::container_type container_type;
+    typedef typename TopologyDataImpl<Edge, VecT>::value_type value_type;
 
-    EdgeDataNew( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data,
-            void (*createFunc) (unsigned int, void*, value_type&, const Edge &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoEdge_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoEdge_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Edge, VecT>(data, createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
+    EdgeDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
+        : TopologyDataImpl<Edge, VecT>(data)
+        , m_topologicalEngine(NULL)
+    {}
+
+    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
+    EdgeDataImpl() : TopologyDataImpl<Edge, VecT>()
+        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
-    EdgeDataNew(typename TopologyData<Edge, VecT>::size_type n, const value_type& value): TopologyData<Edge, VecT>(n,value) {}
+    EdgeDataImpl(typename TopologyDataImpl<Edge, VecT>::size_type n, const value_type& value): TopologyDataImpl<Edge, VecT>(n,value) {}
+
     /// Constructor
-    EdgeDataNew(int n, const value_type& value): TopologyData<Edge, VecT>(n,value) {}
+    explicit EdgeDataImpl(typename TopologyDataImpl<Edge, VecT>::size_type n): TopologyDataImpl<Edge, VecT>(n) {}
     /// Constructor
-    EdgeDataNew(long n, const value_type& value): TopologyData<Edge, VecT>(n,value) {}
-    /// Constructor
-    explicit EdgeDataNew(typename TopologyData<Edge, VecT>::size_type n): TopologyData<Edge, VecT>(n) {}
-    /// Constructor
-    EdgeDataNew(const container_type& x): TopologyData<Edge, VecT>(x) {}
+    EdgeDataImpl(const container_type& x): TopologyDataImpl<Edge, VecT>(x) {}
 
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    EdgeDataNew(InputIterator first, InputIterator last): TopologyData<Edge, VecT>(first,last) {}
-#else // __STL_MEMBER_TEMPLATES
+    EdgeDataImpl(InputIterator first, InputIterator last): TopologyData<Edge, VecT>(first,last) {}
+#else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    EdgeDataNew(typename EdgeDataNew<VecT>::const_iterator first, typename EdgeDataNew<VecT>::const_iterator last): TopologyData<Edge, VecT>(first,last) {}
-#endif // __STL_MEMBER_TEMPLATES
+    EdgeDataImpl(typename EdgeDataImpl<VecT>::const_iterator first, typename EdgeDataImpl<VecT>::const_iterator last): TopologyData<Edge, VecT>(first,last) {}
+#endif /* __STL_MEMBER_TEMPLATES */
 
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    EdgeDataNew( void (*createFunc) (unsigned int, void*, value_type&, const Edge &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoEdge_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoEdge_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Edge, VecT>(createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
-    {}
-
-    // Public functions to handle topological engine creation
-    /// To create topological engine link to this Data. Edgeer to current topology is needed.
+    /** Public functions to handle topological engine creation */
+    /// To create topological engine link to this Data. Pointer to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
 
-    /// Apply adding edges elements.
-    void applyCreateEdgeFunction(unsigned int nbEdges,
-            const sofa::helper::vector< Edge >& elems,
+    /// Apply adding Edge elements.
+    void applyEdgeCreation(unsigned int nbEdges,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-    /// Apply removing edges elements.
-    void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int> & indices);
+    /// Apply removing Edge elements.
+    void applyEdgeDestruction(const sofa::helper::vector<unsigned int> & indices);
+    /// Apply swap between Edge indices elements.
+    virtual void applyEdgeIndicesSwap(unsigned int i1, unsigned int i2 );
+    /// Apply renumbering on Edge elements.
+    virtual void applyeEdgeRenumbering(const sofa::helper::vector<unsigned int>& indices);
+    /// Apply adding function on moved Edge elements.
+    virtual void applyEdgeMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing function on moved Edge elements.
+    virtual void applyEdgeMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
+
 
 protected:
     EdgeSetTopologyEngine<VecT>* m_topologicalEngine;
@@ -575,82 +471,65 @@ protected:
 };
 
 
-
-template < typename VecT >
-inline void topoTriangle_basicCreateFunc(unsigned int ,
-        void* , VecT& t,
-        const Triangle& ,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
-{
-    t = VecT();
-    //return;
-}
-
-template < typename VecT >
-inline void topoTriangle_basicDestroyFunc(unsigned int , void* , VecT& )
-{
-    return;
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////   Triangle Topology Data Implementation   ///////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class TriangleDataNew : public TopologyData<Triangle, VecT>
+class TriangleDataImpl : public TopologyDataImpl<Triangle, VecT>
 {
 public:
-    typedef typename TopologyData<Triangle, VecT>::container_type container_type;
-    typedef typename TopologyData<Triangle, VecT>::value_type value_type;
+    typedef typename TopologyDataImpl<Triangle, VecT>::container_type container_type;
+    typedef typename TopologyDataImpl<Triangle, VecT>::value_type value_type;
 
-    TriangleDataNew( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data,
-            void (*createFunc) (unsigned int, void*, value_type&, const Triangle &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoTriangle_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoTriangle_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Triangle, VecT>(data, createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
+    TriangleDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
+        : TopologyDataImpl<Triangle, VecT>(data)
+        , m_topologicalEngine(NULL)
+    {}
+
+    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
+    TriangleDataImpl() : TopologyDataImpl<Triangle, VecT>()
+        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
-    TriangleDataNew(typename TopologyData<Triangle, VecT>::size_type n, const value_type& value): TopologyData<Triangle, VecT>(n,value) {}
+    TriangleDataImpl(typename TopologyDataImpl<Triangle, VecT>::size_type n, const value_type& value): TopologyDataImpl<Triangle, VecT>(n,value) {}
+
     /// Constructor
-    TriangleDataNew(int n, const value_type& value): TopologyData<Triangle, VecT>(n,value) {}
+    explicit TriangleDataImpl(typename TopologyDataImpl<Triangle, VecT>::size_type n): TopologyDataImpl<Triangle, VecT>(n) {}
     /// Constructor
-    TriangleDataNew(long n, const value_type& value): TopologyData<Triangle, VecT>(n,value) {}
-    /// Constructor
-    explicit TriangleDataNew(typename TopologyData<Triangle, VecT>::size_type n): TopologyData<Triangle, VecT>(n) {}
-    /// Constructor
-    TriangleDataNew(const container_type& x): TopologyData<Triangle, VecT>(x) {}
+    TriangleDataImpl(const container_type& x): TopologyDataImpl<Triangle, VecT>(x) {}
 
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    TriangleDataNew(InputIterator first, InputIterator last): TopologyData<Triangle, VecT>(first,last) {}
-#else // __STL_MEMBER_TEMPLATES
+    TriangleDataImpl(InputIterator first, InputIterator last): TopologyData<Triangle, VecT>(first,last) {}
+#else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    TriangleDataNew(typename TriangleDataNew<VecT>::const_iterator first, typename TriangleDataNew<VecT>::const_iterator last): TopologyData<Triangle, VecT>(first,last) {}
-#endif // __STL_MEMBER_TEMPLATES
+    TriangleDataImpl(typename TriangleDataImpl<VecT>::const_iterator first, typename TriangleDataImpl<VecT>::const_iterator last): TopologyData<Triangle, VecT>(first,last) {}
+#endif /* __STL_MEMBER_TEMPLATES */
 
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    TriangleDataNew( void (*createFunc) (unsigned int, void*, value_type&, const Triangle &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoTriangle_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoTriangle_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Triangle, VecT>(createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
-    {}
-
-    // Public functions to handle topological engine creation
-    /// To create topological engine link to this Data. Triangleer to current topology is needed.
+    /** Public functions to handle topological engine creation */
+    /// To create topological engine link to this Data. Pointer to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
 
-    /// Apply adding triangles elements.
-    void applyCreateTriangleFunction(unsigned int nbTriangles,
-            const sofa::helper::vector< Triangle >& elems,
+    /// Apply adding Triangle elements.
+    void applyTriangleCreation(unsigned int nbTriangles,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-    /// Apply removing triangles elements.
-    void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int> & indices);
+    /// Apply removing Triangle elements.
+    void applyTriangleDestruction(const sofa::helper::vector<unsigned int> & indices);
+    /// Apply swap between Triangle indices elements.
+    virtual void applyTriangleIndicesSwap(unsigned int i1, unsigned int i2 );
+    /// Apply renumbering on Triangle elements.
+    virtual void applyeTriangleRenumbering(const sofa::helper::vector<unsigned int>& indices);
+    /// Apply adding function on moved Triangle elements.
+    virtual void applyTriangleMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing function on moved Triangle elements.
+    virtual void applyTriangleMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
+
 
 protected:
     TriangleSetTopologyEngine<VecT>* m_topologicalEngine;
@@ -659,81 +538,65 @@ protected:
 
 
 
-template < typename VecT >
-inline void topoQuad_basicCreateFunc(unsigned int ,
-        void* , VecT& t,
-        const Quad& ,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
-{
-    t = VecT();
-    //return;
-}
-
-template < typename VecT >
-inline void topoQuad_basicDestroyFunc(unsigned int , void* , VecT& )
-{
-    return;
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////   Quad Topology Data Implementation   /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class QuadDataNew : public TopologyData<Quad, VecT>
+class QuadDataImpl : public TopologyDataImpl<Quad, VecT>
 {
 public:
-    typedef typename TopologyData<Quad, VecT>::container_type container_type;
-    typedef typename TopologyData<Quad, VecT>::value_type value_type;
+    typedef typename TopologyDataImpl<Quad, VecT>::container_type container_type;
+    typedef typename TopologyDataImpl<Quad, VecT>::value_type value_type;
 
-    QuadDataNew( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data,
-            void (*createFunc) (unsigned int, void*, value_type&, const Quad &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoQuad_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoQuad_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Quad, VecT>(data, createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
+    QuadDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
+        : TopologyDataImpl<Quad, VecT>(data)
+        , m_topologicalEngine(NULL)
+    {}
+
+    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
+    QuadDataImpl() : TopologyDataImpl<Quad, VecT>()
+        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
-    QuadDataNew(typename TopologyData<Quad, VecT>::size_type n, const value_type& value): TopologyData<Quad, VecT>(n,value) {}
+    QuadDataImpl(typename TopologyDataImpl<Quad, VecT>::size_type n, const value_type& value): TopologyDataImpl<Quad, VecT>(n,value) {}
+
     /// Constructor
-    QuadDataNew(int n, const value_type& value): TopologyData<Quad, VecT>(n,value) {}
+    explicit QuadDataImpl(typename TopologyDataImpl<Quad, VecT>::size_type n): TopologyDataImpl<Quad, VecT>(n) {}
     /// Constructor
-    QuadDataNew(long n, const value_type& value): TopologyData<Quad, VecT>(n,value) {}
-    /// Constructor
-    explicit QuadDataNew(typename TopologyData<Quad, VecT>::size_type n): TopologyData<Quad, VecT>(n) {}
-    /// Constructor
-    QuadDataNew(const container_type& x): TopologyData<Quad, VecT>(x) {}
+    QuadDataImpl(const container_type& x): TopologyDataImpl<Quad, VecT>(x) {}
 
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    QuadDataNew(InputIterator first, InputIterator last): TopologyData<Quad, VecT>(first,last) {}
-#else // __STL_MEMBER_TEMPLATES
+    QuadDataImpl(InputIterator first, InputIterator last): TopologyData<Quad, VecT>(first,last) {}
+#else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    QuadDataNew(typename QuadDataNew<VecT>::const_iterator first, typename QuadDataNew<VecT>::const_iterator last): TopologyData<Quad, VecT>(first,last) {}
-#endif // __STL_MEMBER_TEMPLATES
+    QuadDataImpl(typename QuadDataImpl<VecT>::const_iterator first, typename QuadDataImpl<VecT>::const_iterator last): TopologyData<Quad, VecT>(first,last) {}
+#endif /* __STL_MEMBER_TEMPLATES */
 
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    QuadDataNew( void (*createFunc) (unsigned int, void*, value_type&, const Quad &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoQuad_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoQuad_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Quad, VecT>(createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
-    {}
-
-    // Public functions to handle topological engine creation
-    /// To create topological engine link to this Data. Quader to current topology is needed.
+    /** Public functions to handle topological engine creation */
+    /// To create topological engine link to this Data. Pointer to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
 
-    /// Apply adding quads elements.
-    void applyCreateQuadFunction(unsigned int nbQuads,
-            const sofa::helper::vector< Quad >& elems,
+    /// Apply adding Quad elements.
+    void applyQuadCreation(unsigned int nbQuads,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-    /// Apply removing quads elements.
-    void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int> & indices);
+    /// Apply removing Quad elements.
+    void applyQuadDestruction(const sofa::helper::vector<unsigned int> & indices);
+    /// Apply swap between Quad indices elements.
+    virtual void applyQuadIndicesSwap(unsigned int i1, unsigned int i2 );
+    /// Apply renumbering on Quad elements.
+    virtual void applyeQuadRenumbering(const sofa::helper::vector<unsigned int>& indices);
+    /// Apply adding function on moved Quad elements.
+    virtual void applyQuadMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing function on moved Quad elements.
+    virtual void applyQuadMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
+
 
 protected:
     QuadSetTopologyEngine<VecT>* m_topologicalEngine;
@@ -742,81 +605,64 @@ protected:
 
 
 
-template < typename VecT >
-inline void topoTetrahedron_basicCreateFunc(unsigned int ,
-        void* , VecT& t,
-        const Tetrahedron& ,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
-{
-    t = VecT();
-    //return;
-}
-
-template < typename VecT >
-inline void topoTetrahedron_basicDestroyFunc(unsigned int , void* , VecT& )
-{
-    return;
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////   Tetrahedron Topology Data Implementation   /////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class TetrahedronDataNew : public TopologyData<Tetrahedron, VecT>
+class TetrahedronDataImpl : public TopologyDataImpl<Tetrahedron, VecT>
 {
 public:
-    typedef typename TopologyData<Tetrahedron, VecT>::container_type container_type;
-    typedef typename TopologyData<Tetrahedron, VecT>::value_type value_type;
+    typedef typename TopologyDataImpl<Tetrahedron, VecT>::container_type container_type;
+    typedef typename TopologyDataImpl<Tetrahedron, VecT>::value_type value_type;
 
-    TetrahedronDataNew( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data,
-            void (*createFunc) (unsigned int, void*, value_type&, const Tetrahedron &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoTetrahedron_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoTetrahedron_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Tetrahedron, VecT>(data, createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
+    TetrahedronDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
+        : TopologyDataImpl<Tetrahedron, VecT>(data)
+        , m_topologicalEngine(NULL)
+    {}
+
+    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
+    TetrahedronDataImpl() : TopologyDataImpl<Tetrahedron, VecT>()
+        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
-    TetrahedronDataNew(typename TopologyData<Tetrahedron, VecT>::size_type n, const value_type& value): TopologyData<Tetrahedron, VecT>(n,value) {}
+    TetrahedronDataImpl(typename TopologyDataImpl<Tetrahedron, VecT>::size_type n, const value_type& value): TopologyDataImpl<Tetrahedron, VecT>(n,value) {}
+
     /// Constructor
-    TetrahedronDataNew(int n, const value_type& value): TopologyData<Tetrahedron, VecT>(n,value) {}
+    explicit TetrahedronDataImpl(typename TopologyDataImpl<Tetrahedron, VecT>::size_type n): TopologyDataImpl<Tetrahedron, VecT>(n) {}
     /// Constructor
-    TetrahedronDataNew(long n, const value_type& value): TopologyData<Tetrahedron, VecT>(n,value) {}
-    /// Constructor
-    explicit TetrahedronDataNew(typename TopologyData<Tetrahedron, VecT>::size_type n): TopologyData<Tetrahedron, VecT>(n) {}
-    /// Constructor
-    TetrahedronDataNew(const container_type& x): TopologyData<Tetrahedron, VecT>(x) {}
+    TetrahedronDataImpl(const container_type& x): TopologyDataImpl<Tetrahedron, VecT>(x) {}
 
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    TetrahedronDataNew(InputIterator first, InputIterator last): TopologyData<Tetrahedron, VecT>(first,last) {}
-#else // __STL_MEMBER_TEMPLATES
+    TetrahedronDataImpl(InputIterator first, InputIterator last): TopologyData<Tetrahedron, VecT>(first,last) {}
+#else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    TetrahedronDataNew(typename TetrahedronDataNew<VecT>::const_iterator first, typename TetrahedronDataNew<VecT>::const_iterator last): TopologyData<Tetrahedron, VecT>(first,last) {}
-#endif // __STL_MEMBER_TEMPLATES
+    TetrahedronDataImpl(typename TetrahedronDataImpl<VecT>::const_iterator first, typename TetrahedronDataImpl<VecT>::const_iterator last): TopologyData<Tetrahedron, VecT>(first,last) {}
+#endif /* __STL_MEMBER_TEMPLATES */
 
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    TetrahedronDataNew( void (*createFunc) (unsigned int, void*, value_type&, const Tetrahedron &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoTetrahedron_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoTetrahedron_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Tetrahedron, VecT>(createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
-    {}
-
-    // Public functions to handle topological engine creation
-    /// To create topological engine link to this Data. Tetrahedroner to current topology is needed.
+    /** Public functions to handle topological engine creation */
+    /// To create topological engine link to this Data. Pointer to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
 
-    /// Apply adding tetrahedra elements.
-    void applyCreateTetrahedronFunction(unsigned int nbTetrahedra,
-            const sofa::helper::vector< Tetrahedron >& elems,
+    /// Apply adding Tetrahedron elements.
+    void applyTetrahedronCreation(unsigned int nbTetrahedra,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-    /// Apply removing tetrahedra elements.
-    void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int> & indices);
+    /// Apply removing Tetrahedron elements.
+    void applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> & indices);
+    /// Apply swap between Tetrahedron indices elements.
+    virtual void applyTetrahedronIndicesSwap(unsigned int i1, unsigned int i2 );
+    /// Apply renumbering on Tetrahedron elements.
+    virtual void applyeTetrahedronRenumbering(const sofa::helper::vector<unsigned int>& indices);
+    /// Apply adding function on moved Tetrahedron elements.
+    virtual void applyTetrahedronMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing function on moved Tetrahedron elements.
+    virtual void applyTetrahedronMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
 
 
 protected:
@@ -826,81 +672,65 @@ protected:
 
 
 
-template < typename VecT >
-inline void topoHexahedron_basicCreateFunc(unsigned int ,
-        void* , VecT& t,
-        const Hexahedron& ,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
-{
-    t = VecT();
-    //return;
-}
 
-template < typename VecT >
-inline void topoHexahedron_basicDestroyFunc(unsigned int , void* , VecT& )
-{
-    return;
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////   Hexahedron Topology Data Implementation   /////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class HexahedronDataNew : public TopologyData<Hexahedron, VecT>
+class HexahedronDataImpl : public TopologyDataImpl<Hexahedron, VecT>
 {
 public:
-    typedef typename TopologyData<Hexahedron, VecT>::container_type container_type;
-    typedef typename TopologyData<Hexahedron, VecT>::value_type value_type;
+    typedef typename TopologyDataImpl<Hexahedron, VecT>::container_type container_type;
+    typedef typename TopologyDataImpl<Hexahedron, VecT>::value_type value_type;
 
-    HexahedronDataNew( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data,
-            void (*createFunc) (unsigned int, void*, value_type&, const Hexahedron &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoHexahedron_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoHexahedron_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Hexahedron, VecT>(data, createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
+    HexahedronDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
+        : TopologyDataImpl<Hexahedron, VecT>(data)
+        , m_topologicalEngine(NULL)
+    {}
+
+    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
+    HexahedronDataImpl() : TopologyDataImpl<Hexahedron, VecT>()
+        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
-    HexahedronDataNew(typename TopologyData<Hexahedron, VecT>::size_type n, const value_type& value): TopologyData<Hexahedron, VecT>(n,value) {}
+    HexahedronDataImpl(typename TopologyDataImpl<Hexahedron, VecT>::size_type n, const value_type& value): TopologyDataImpl<Hexahedron, VecT>(n,value) {}
+
     /// Constructor
-    HexahedronDataNew(int n, const value_type& value): TopologyData<Hexahedron, VecT>(n,value) {}
+    explicit HexahedronDataImpl(typename TopologyDataImpl<Hexahedron, VecT>::size_type n): TopologyDataImpl<Hexahedron, VecT>(n) {}
     /// Constructor
-    HexahedronDataNew(long n, const value_type& value): TopologyData<Hexahedron, VecT>(n,value) {}
-    /// Constructor
-    explicit HexahedronDataNew(typename TopologyData<Hexahedron, VecT>::size_type n): TopologyData<Hexahedron, VecT>(n) {}
-    /// Constructor
-    HexahedronDataNew(const container_type& x): TopologyData<Hexahedron, VecT>(x) {}
+    HexahedronDataImpl(const container_type& x): TopologyDataImpl<Hexahedron, VecT>(x) {}
 
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    HexahedronDataNew(InputIterator first, InputIterator last): TopologyData<Hexahedron, VecT>(first,last) {}
-#else // __STL_MEMBER_TEMPLATES
+    HexahedronDataImpl(InputIterator first, InputIterator last): TopologyData<Hexahedron, VecT>(first,last) {}
+#else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    HexahedronDataNew(typename HexahedronDataNew<VecT>::const_iterator first, typename HexahedronDataNew<VecT>::const_iterator last): TopologyData<Hexahedron, VecT>(first,last) {}
-#endif // __STL_MEMBER_TEMPLATES
+    HexahedronDataImpl(typename HexahedronDataImpl<VecT>::const_iterator first, typename HexahedronDataImpl<VecT>::const_iterator last): TopologyData<Hexahedron, VecT>(first,last) {}
+#endif /* __STL_MEMBER_TEMPLATES */
 
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    HexahedronDataNew( void (*createFunc) (unsigned int, void*, value_type&, const Hexahedron &,const sofa::helper::vector< unsigned int >&, const sofa::helper::vector< double >&) = topoHexahedron_basicCreateFunc,
-            void* createParam  = (void*)NULL,
-            void (*destroyFunc)(unsigned int, void*, value_type&) = topoHexahedron_basicDestroyFunc,
-            void* destroyParam = (void*)NULL )
-        : TopologyData<Hexahedron, VecT>(createFunc, createParam, destroyFunc, destroyParam),
-          m_topologicalEngine(NULL)
-    {}
-
-    // Public functions to handle topological engine creation
-    /// To create topological engine link to this Data. Hexahedroner to current topology is needed.
+    /** Public functions to handle topological engine creation */
+    /// To create topological engine link to this Data. Pointer to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
 
-    /// Apply adding hexahedra elements.
-    void applyCreateHexahedronFunction(unsigned int nbHexahedra,
-            const sofa::helper::vector< Hexahedron >& elems,
+    /// Apply adding Hexahedron elements.
+    void applyHexahedronCreation(unsigned int nbHexahedra,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-    /// Apply removing hexahedra elements.
-    void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int> & indices);
+    /// Apply removing Hexahedron elements.
+    void applyHexahedronDestruction(const sofa::helper::vector<unsigned int> & indices);
+    /// Apply swap between Hexahedron indices elements.
+    virtual void applyHexahedronIndicesSwap(unsigned int i1, unsigned int i2 );
+    /// Apply renumbering on Hexahedron elements.
+    virtual void applyeHexahedronRenumbering(const sofa::helper::vector<unsigned int>& indices);
+    /// Apply adding function on moved Hexahedron elements.
+    virtual void applyHexahedronMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+    /// Apply removing function on moved Hexahedron elements.
+    virtual void applyHexahedronMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
 
 
 protected:
