@@ -9,15 +9,16 @@
 		<center><img src="ExplicitEulerSolver_stable.png" align="middle" width="300"></center>
 
 		<div id="orangeText">Description</div><br>
-        Alike EulerSolver in Sofa, RungeKuttaSolver denotes the ODE solver using the explicit integration scheme for computing of 
-		the dynamic system. This integration scheme explicitely resolves the system in relation to time : given the mechanical state
+	<div align="justify">	
+		Alike EulerSolver in Sofa, RungeKuttaSolver denote the ODE solver using the explicite integration scheme for computing of 
+		the dynamic system. This integration scheme explicitely resolve the system in relation to time : given the mechanical state
 		at time T<sub>n</sub>, compute the state at time T<sub>n+1</sub>=T<sub>n</sub> + dt. The difference in RungeKuttaSolver is this 
 		integration use a more sophisticated algorithm for the computation of the state at time T<sub>n+1</sub>. Therefore there are more stability
-		and can use the time step higher than the EulerSolver one. Otherwise, RungeKuttaSolver use a more general explicit method than EulerSolver.
-        <br><br>
+		and can use the time step higher than the EulerSolver one. Otherwise, RungeKuttaSolver use a more general explicite method than EulerSolver.
+        <br>
 
 		<div id="orangeText">Key points</div><br>
-		As every Explicit Integration method, RungeKutta accumulates errors for each time step. Therefore two criteria must be 
+		As every Explicite Integration method, RungeKutta accumulate errors for each time step. Therefore two criteria must be 
 		controled when using it : 
 		<ul>
                   <li>The time step dt.</li>
@@ -30,6 +31,7 @@
 		Users can try several solvers with different parameters dt to have the idea of the solver's difference (also test the dependence of the solver 
 		according to the dynamic of the system by using [Shift + leftmouse]).
 		<p>
+	</div>
 		<center>
 			<img src="ExplicitEulerSolver_unstabledynamically.png" align="middle" width="300">
                 </center>

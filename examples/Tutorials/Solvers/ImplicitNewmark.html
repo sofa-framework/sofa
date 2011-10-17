@@ -9,16 +9,23 @@
 	<center><img src="ImplicitNewmark_001.png" width="300" name="TutorialSolverImplicitNewmark" align="middle"></center>
 
 	<div id="orangeText">Description</div><br>
+<div align="justify">
 	The NewmarkImplicitSolver can be used to solve ODE system, using the Newmark implicit integration scheme. Step size of the discratisation correspond to the timeStep of SOFA.
 	<br>
 	At each step of the scheme, the linear equation systems obtained have to be solved by an auxiliary component, the CGLinearSolver, which can be of different kind (conjugated gradient, ...).
 	 <br>
 	<div id="orangeText">Key points</div><br>
+	Different simulations are proposed:
+	<ul>
+		<li>Green: reference deformation.</li>
+		<li>Yellow: Mechanical system using springs along edges.</li>
+	</ul>
 	<br>
 	<div id="orangeText">Results</div><br>
-	It doesn't work! (I'll change it)
+	
 	<br>
-	<center><img src="ImplicitNewmark_002.png" width="300" name="TutorialSolverImplicitEuler" align="middle">
+</div>
+	<center><img src="NewmarkImplicitSolver1.png" width="300" name="TutorialSolverImplicitEuler" align="middle">
 	</center>
 </div>
 </body>

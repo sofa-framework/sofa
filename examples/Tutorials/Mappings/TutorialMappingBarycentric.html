@@ -11,7 +11,9 @@
 
                 
 		<div id="orangeText">Description:</div>
-			<p>
+			
+<div align="justify">
+		<p>
                Unlike <b>RigidMapping</b>, <b>Barycentric Mapping</b> can be used to attach points to a deformable body.  The attached body coordinates are defined 
                using the barycentric coordinates with respect to the parent cells. The parent cells are defined by the topology associated with the body points. 
 			   Many topologies components exist in SOFA to describe the organisation of point sets, like <b>TetrahedronSetTopologyContainer</b>, <b>HexahedronSetTopologyContainer</b>,  
@@ -23,7 +25,7 @@
 				<ul>
 				<li>A node "Liver" containing the behavior model of a liver loaded through a <b>MeshLoader</b> component with a <b>TetrahedronSetTopology</b> and a <b>TetrahedralCorotationalFEMForceField</b> to handle the deformations.</li>
 				<li>A node "Visual" which is mapped to the "Liver" node by a barycentric mapping, which contains the visual representation of our liver.</li>
-				<li>A node "Surf" mapped to the "Liver" node by a barycentric mapping, containing the collision model of the liver.
+				<li>A node "Surf" mapped to the "Liver" node by a barycentric mapping, containing the collision model of the liver.</li>
 				</ul>
 			</p>
 		
@@ -77,6 +79,7 @@
 		</li>
 		</ul>
 
-	</div>
+</div>
+</div>
 </body>
 </html>

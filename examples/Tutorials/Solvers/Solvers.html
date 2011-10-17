@@ -4,7 +4,7 @@
 </head>
 <body>
   <div id="contenu">		
-    <center><h3>Solver Tutorials</h3></center>
+    <center><h3>Solver Tutorial</h3></center>
 
 		<center>
 		<table border="0">
@@ -14,24 +14,62 @@
 <!--			<td><img src="AdvancedResponseConstraintBased.png" align="middle" width="200"></td>-->
 		  </tr>
 		  <tr>
-			<td align="center">Truth cylinders</td>
-			<td align="center">Simulation</td>
+			<td align="center">Truth and initial cylinders</td>
+			<td align="center">Simulation results</td>
 <!--			<td align="center">Advanced Response</td>-->
 		  </tr>
 		</table> 
                 </center>
 		<br>
 		<div id="orangeText">Description</div><br>
-		In this tutorials, we show the different integration schemes, and algorithms to solve one step of a physical simulation in SOFA.
 
-        We provide a:
+    <div align="justify">
+	In this tutorials, we show the different integration schemes, and algorithms to solve one step of a physical simulation in SOFA.
+
+        We provide :
         <ul>
-          <li> Static integration scheme</li>
-          <li> Explicit integration scheme</li>
-          <li> Implicit integration scheme</li>
+          <li> Static integration scheme,</li>
+          <li> Explicit integration schemes,</li>
+          <li> Implicit integration schemes.</li>
         </ul>
-    <p>
-      TO COMPLETE
+          
+      <p>First, the <b>static</b> integration is an integration which does not take the time into account. Such a static integration can be usefull for checking the convergence of algorithms.</p>
+      
+      <p>Secondly, different <b>dynamic</b> solvers have been implement in SOFA. Unlike static solvers, these solvers does take the dynamics of the system into account. However, depending on the aim of the computation, the solver has to be carefully chosen. </p>
+
+      <p>Let remind the basic differences between explicit and implicit solvers.</p>
+<center>
+		<table border="0">
+		  <tr>
+			<td><img src="ExplicitFormula.png" align="middle" width="300"></td>
+		  </tr>
+		</table> 
+</center>
+
+      <p>Concerning the <b>explicit</b> solvers, they compute the new state variables from the state variables at the previous step.
+      The advantages are that explicit solvers can be fast, but the stability of the solver is not always granted. Very small time steps can be required to get a satisfactory accuracy.
+      Moreover, such solvers are not suitable for every simulation. For example, explicit solvers does not compute cyclic loadings correctly but could be advised in case of soft or high-mass objects.</p>
+
+      <p>Concerning implicit solvers, they compute the new state variables by solving an equation involving the previous state variables and the new ones.</p>
+<center>
+		<table border="0">
+		  <tr>
+			<td><img src="ImplicitFormula.png" align="middle" width="300"></td>
+		  </tr>
+		</table> 
+</center>
+
+      <p>The advantages of <b>implicit</b> solvers are very stable (without conditions on the time step) and therefore work with larger time steps. The drawback of such a method is that it is more time consuming.
+      For example, implicit solvers would be advised for stiff or low-mass objects.</p>
+
+      <p>Finally, it must be pointed out that explicit and implicit solvers are not the only way to solve OD- or PD-Equations.
+      Some coupled solvers do exist such as semi-implicit (or explicit-implicit) solvers. Such solvers solve a part of the equation explicitly and the other part implicitly.</p>
+
+      <p>In some cases (as semi-implicit solvers), the user can face the need to save some state vectors during several time steps. State vectors in SOFA are saved in structure called MultiVectors.
+      To enable the saving of data from a time step to another, the user has to allocate a new MultiVector as buffer. To do so, you just have to dedicate one new MultiVecID as follow:</p>
+      <center>vop.v_alloc(ID)</center> 
+      <p>This ID has only to be defined once at the first call of the solver. Then, the user can recover the MultiVector associated with the ID by doing: MultiVecDeriv diffPrevious(&vop, ID).</p>
+    </div>
   </div>
 </body>
 </html>
