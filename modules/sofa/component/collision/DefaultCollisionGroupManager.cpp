@@ -65,9 +65,9 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     if (node) t0 = node->startTime();
 
     // Map storing group merging history
-    std::map<simulation::Node*, simulation::Node*> mergedGroups;
-    sofa::helper::vector<simulation::Node*> contactGroup;
-    sofa::helper::vector<simulation::Node*> removedGroup;
+    std::map<simulation::Node*, simulation::Node::SPtr > mergedGroups;
+    sofa::helper::vector< simulation::Node::SPtr > contactGroup;
+    sofa::helper::vector< simulation::Node::SPtr > removedGroup;
     contactGroup.reserve(contacts.size());
     for(sofa::helper::vector<Contact::SPtr>::const_iterator cit = contacts.begin(); cit != contacts.end(); cit++)
     {
@@ -195,11 +195,11 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     for(unsigned int i=0; i<contacts.size(); i++)
     {
         Contact* contact = contacts[i].get();
-        simulation::Node* group = contactGroup[i];
-        while (group!=NULL && mergedGroups.find(group)!=mergedGroups.end())
-            group = mergedGroups[group];
+        simulation::Node::SPtr group = contactGroup[i];
+        while (group!=NULL && mergedGroups.find(group.get())!=mergedGroups.end())
+            group = mergedGroups[group.get()];
         if (group!=NULL)
-            contact->createResponse(group);
+            contact->createResponse(group.get());
         else
             contact->createResponse(scene);
     }
@@ -207,12 +207,12 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     if (node) t0 = node->endTime(t0, "collision/contacts", this);
 
     // delete removed groups
-    for (sofa::helper::vector<simulation::Node*>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)
+    for (sofa::helper::vector<simulation::Node::SPtr>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)
     {
-        simulation::Node *node=*it;
+        simulation::Node::SPtr node = *it;
         node->detachFromGraph();
         node->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-        *it = NULL;
+        it->reset();
     }
     removedGroup.clear();
 
