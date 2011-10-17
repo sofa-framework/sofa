@@ -1058,7 +1058,7 @@ void RealGUI::setRecordPath(const std::string &
 
 void RealGUI::setGnuplotPath(const std::string &path)
 {
-    simulation::getSimulation()->gnuplotDirectory.setValue(path);
+    gnuplot_directory = path;
 }
 void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf)
 {
@@ -1456,7 +1456,7 @@ void RealGUI::step()
 
     stopDumpVisitor();
     emit newStep();
-    if ( simulation::getSimulation()->getPaused() )
+    if ( !getScene()->getContext()->getAnimate() )
         startButton->setOn ( false );
 }
 

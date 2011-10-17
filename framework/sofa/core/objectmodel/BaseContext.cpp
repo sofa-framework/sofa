@@ -218,19 +218,19 @@ void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack
 }
 
 /// Degrees-of-Freedom
-BaseObject* BaseContext::getState() const
+core::BaseState* BaseContext::getState() const
 {
     return this->get<sofa::core::BaseState>();
 }
 
 /// Mechanical Degrees-of-Freedom
-BaseObject* BaseContext::getMechanicalState() const
+core::behavior::BaseMechanicalState* BaseContext::getMechanicalState() const
 {
     return this->get<sofa::core::behavior::BaseMechanicalState>();
 }
 
 /// Mass
-BaseObject* BaseContext::getMass() const
+behavior::BaseMass* BaseContext::getMass() const
 {
     return this->get<sofa::core::behavior::BaseMass>();
 }
@@ -248,7 +248,7 @@ core::topology::BaseMeshTopology* BaseContext::getMeshTopology() const
 }
 
 /// Shader
-BaseObject* BaseContext::getShader() const
+core::visual::Shader* BaseContext::getShader() const
 {
     return this->get<sofa::core::visual::Shader>();
     return NULL;

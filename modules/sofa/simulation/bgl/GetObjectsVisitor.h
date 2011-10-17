@@ -45,8 +45,8 @@ public:
     typedef sofa::core::objectmodel::ClassInfo ClassInfo;
     typedef sofa::core::objectmodel::BaseContext::GetObjectsCallBack GetObjectsCallBack;
 
-    GetObjectsVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, const ClassInfo& class_inf, GetObjectsCallBack& cont)
-        : Visitor(params), class_info(class_inf), container(cont)
+    GetObjectsVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, const ClassInfo& class_inf, GetObjectsCallBack& cont, simulation::Node* ignoreNode = NULL)
+        : Visitor(params), class_info(class_inf), container(cont), ignoreNode(ignoreNode)
     {}
 
     void setTags(const sofa::core::objectmodel::TagSet& t) {tags=t;}
@@ -62,6 +62,7 @@ protected:
     const ClassInfo& class_info;
     GetObjectsCallBack& container;
     sofa::core::objectmodel::TagSet tags;
+    simulation::Node* ignoreNode;
 };
 
 
@@ -71,8 +72,8 @@ public:
     typedef sofa::core::objectmodel::ClassInfo ClassInfo;
     typedef sofa::core::objectmodel::BaseContext::GetObjectsCallBack GetObjectsCallBack;
     typedef sofa::core::objectmodel::BaseContext::SearchDirection SearchDirection;
-    GetObjectVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, const ClassInfo& class_inf)
-        : Visitor(params), class_info(class_inf), result(NULL)
+    GetObjectVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, const ClassInfo& class_inf, simulation::Node* ignoreNode = NULL)
+        : Visitor(params), class_info(class_inf), result(NULL), ignoreNode(ignoreNode)
     {}
 
     void setTags(const sofa::core::objectmodel::TagSet& t) {tags=t;}
@@ -86,6 +87,7 @@ protected:
     const ClassInfo& class_info;
     sofa::core::objectmodel::TagSet tags;
     void *result;
+    simulation::Node* ignoreNode;
 };
 
 } // namespace bgl

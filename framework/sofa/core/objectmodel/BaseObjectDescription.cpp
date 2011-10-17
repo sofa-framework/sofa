@@ -27,6 +27,7 @@
 #include "BaseObjectDescription.h"
 #include "BaseContext.h"
 #include "BaseObject.h"
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
 
 namespace sofa

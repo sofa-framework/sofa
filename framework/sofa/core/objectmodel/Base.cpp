@@ -76,8 +76,10 @@ void Base::addRef()
 
 void Base::release()
 {
-    if ((--ref_counter) == 0)
+    //if ((--ref_counter) == 0)
+    if (ref_counter.dec_and_test_null())
     {
+        serr << "DELETE" << sendl;
         // WARNING: deletion of objects is temporarily disabled, until smart-pointers usage is corrected
         delete this;
     }

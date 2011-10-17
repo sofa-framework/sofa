@@ -49,6 +49,7 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API Simulation: public virtual sofa::core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(Simulation, sofa::core::objectmodel::BaseObject);
 
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
 // protected:
@@ -106,16 +107,6 @@ public:
     ///create a new graph(or tree) and return its root node
     virtual Node::SPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
 
-    /// Pause the simulation
-    virtual void setPaused(bool paused);
-
-    /// Return the current pause state
-    virtual bool getPaused();
-
-    sofa::core::objectmodel::DataFileName gnuplotDirectory;
-
-    bool paused;
-
     ///load a scene from memory (typically : an xml into a string)
     static Node::SPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
     ///load a scene from a file
@@ -123,11 +114,7 @@ public:
     ///generic function to process xml tree (after loading the xml structure from the 2 previous functions)
     static Node::SPtr processXML(xml::BaseElement* xml, const char *filename);
 
-    static std::auto_ptr<Simulation> theSimulation;
-
-private :
-    sofa::core::behavior::BaseAnimationLoop* m_RootAmimateLoop;
-    core::visual::VisualLoop*                m_RootVisualLoop;
+    static Simulation::SPtr theSimulation;
 };
 
 /// Set the (unique) simulation which controls the scene

@@ -141,6 +141,7 @@ SOURCES += \
 	objectmodel/BaseClass.cpp \
 	objectmodel/BaseData.cpp \
 	objectmodel/BaseContext.cpp \
+	objectmodel/BaseNode.cpp \
 	objectmodel/BaseObject.cpp \
 	objectmodel/BaseObjectDescription.cpp \
 	objectmodel/ClassInfo.cpp \

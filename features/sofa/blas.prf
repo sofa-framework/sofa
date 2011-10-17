@@ -1,0 +1,11 @@
+contains(DEFINES, SOFA_HAVE_BLAS){
+  DEFINES *= $$BLAS_DEFINES
+  !isEmpty(BLAS_LIBS) {
+    LIBS *= $$BLAS_LIBS
+  } else {
+    LIBS *= -lblas -llapack
+  }
+  !isEmpty(BLAS_DEFINES) {
+    DEFINES *= $$BLAS_DEFINES
+  }
+}
