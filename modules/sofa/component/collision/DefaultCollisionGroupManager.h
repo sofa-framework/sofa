@@ -73,10 +73,10 @@ protected:
         groupSet.swap(storedGroupSet[inst]);
     }
 
-    template <typename Container, typename NodeType>
-    void clearGroup(Container &inNodes, typename NodeType::SPtr group)
+    template <typename Container>
+    void clearGroup(Container &inNodes, simulation::Node::SPtr group)
     {
-        NodeType* parent = *inNodes.begin();
+        simulation::Node::SPtr parent = *inNodes.begin();
         while(!group->child.empty()) parent->moveChild(*group->child.begin());
 
         simulation::DeleteVisitor vis(sofa::core::ExecParams::defaultInstance());
