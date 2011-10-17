@@ -12,17 +12,30 @@ HEADERS += initMiscCollision.h \
            collision/TreeCollisionGroupManager.h \
            collision/RuleBasedContactManager.h \
            collision/DefaultCollisionGroupManager.h \
-           collision/SolverMerger.h
+           collision/SolverMerger.h \
+           collision/TetrahedronDiscreteIntersection.h \
+           collision/RayDiscreteIntersection.h \
+           collision/RayDiscreteIntersection.inl \
+           collision/RigidDistanceGridDiscreteIntersection.h \
+           collision/RigidDistanceGridDiscreteIntersection.inl \
+           collision/FFDDistanceGridDiscreteIntersection.h \
+           collision/FFDDistanceGridDiscreteIntersection.inl \
+
 
 SOURCES += initMiscCollision.cpp \
-		   collision/BarycentricPenalityContact_DistanceGrid.cpp \
-		   collision/FrictionContact_DistanceGrid.cpp \
+	   collision/BarycentricPenalityContact_DistanceGrid.cpp \
+	   collision/FrictionContact_DistanceGrid.cpp \
            collision/TriangleModelInRegularGrid.cpp \
            collision/RigidContactMapper.cpp \
            collision/TreeCollisionGroupManager.cpp \
            collision/RuleBasedContactManager.cpp \
            collision/DefaultCollisionGroupManager.cpp \
-           collision/SolverMerger.cpp
+           collision/SolverMerger.cpp \
+	   collision/TetrahedronDiscreteIntersection.cpp \
+	   collision/RayDiscreteIntersection.cpp \
+	   collision/RigidDistanceGridDiscreteIntersection.cpp \
+	   collision/FFDDistanceGridDiscreteIntersection.cpp \
+
 
 contains(DEFINES,SOFA_SMP){
 HEADERS += collision/ParallelCollisionPipeline.h

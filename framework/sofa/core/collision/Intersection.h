@@ -40,6 +40,40 @@ namespace core
 namespace collision
 {
 
+class BaseIntersector
+{
+public:
+
+    BaseIntersector() {}
+
+    ~BaseIntersector() {}
+
+    template<class Model1, class Model2>
+    sofa::core::collision::TDetectionOutputVector<Model1,Model2>* createOutputVector(Model1*, Model2*)
+    {
+        return new sofa::core::collision::TDetectionOutputVector<Model1,Model2>;
+    }
+
+    template<class Model1, class Model2>
+    sofa::core::collision::TDetectionOutputVector<Model1,Model2>* getOutputVector(Model1*, Model2*, sofa::core::collision::DetectionOutputVector* contacts)
+    {
+        return static_cast<sofa::core::collision::TDetectionOutputVector<Model1,Model2>*>(contacts);
+    }
+
+    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
+
+    int beginIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
+    {
+        return 0;
+    }
+
+    int endIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
+    {
+        return 0;
+    }
+
+};
+
 class ElementIntersector
 {
 public:

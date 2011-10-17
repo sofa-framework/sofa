@@ -16,6 +16,8 @@ HEADERS += initBaseCollision.h \
            collision/CubeModel.inl \
            collision/DiscreteIntersection.h \
            collision/DiscreteIntersection.inl \
+           collision/MeshDiscreteIntersection.h \
+           collision/MeshDiscreteIntersection.inl \
            collision/BruteForceDetection.h \
            collision/DefaultContactManager.h \
            collision/Point.h \
@@ -46,6 +48,7 @@ SOURCES += initBaseCollision.cpp \
            collision/SphereModel.cpp \
            collision/CubeModel.cpp \
            collision/DiscreteIntersection.cpp \
+	   collision/MeshDiscreteIntersection.cpp \
            collision/BruteForceDetection.cpp \
            collision/DefaultContactManager.cpp \
            collision/PointModel.cpp \
