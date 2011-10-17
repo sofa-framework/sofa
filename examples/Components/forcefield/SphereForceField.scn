@@ -36,7 +36,7 @@
             <Object type="RegularGrid" nx="4" ny="1" nz="4" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />/&gt;
             <MechanicalObject />
             <Object type="SphereModel" radius="1.0" contactStiffness="1" />
-            <Object type="SubsetMapping" radius="0.6"/>
+            <Object type="SubsetMapping"/>
         </Node>
         <Node name="Surf">
             <Object type="MechanicalObject" />
