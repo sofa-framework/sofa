@@ -205,7 +205,8 @@ void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax,
     else
     {
         setDz(Vector3(0,0,zmax-zmin));
-        p0z = (zmax+zmin)/2;
+        //p0z = (zmax+zmin)/2;
+        p0z = zmin;
     }
 
     min.setValue(Vector3(xmin,ymin,zmin));
