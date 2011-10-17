@@ -46,10 +46,13 @@ class SOFA_SIMULATION_TREE_API GNode : public simulation::Node
 public:
     typedef Node::DisplayFlags DisplayFlags;
     SOFA_CLASS(GNode, simulation::Node);
+
+protected:
     GNode( const std::string& name="", GNode* parent=NULL  );
 
     virtual ~GNode();
 
+public:
     //Pure Virtual method from Node
     virtual Node* createChild(const std::string& nodeName);
 
