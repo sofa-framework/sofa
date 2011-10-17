@@ -79,7 +79,7 @@ void Base::release()
     if ((--ref_counter) == 0)
     {
         // WARNING: deletion of objects is temporarily disabled, until smart-pointers usage is corrected
-        //delete this;
+        delete this;
     }
 }
 
