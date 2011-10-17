@@ -123,8 +123,8 @@ public:
         float screenwidth = (float)viewport[2];
         float screenheight = (float)viewport[3];
         float aspectRatio = screenwidth / screenheight;
-        float fov_radian = getFieldOfView()*(M_PI/180);
-        float hor_fov_radian = 2.0 * atan ( tan(fov_radian/2.0) * aspectRatio );
+        float fov_radian = (float)getFieldOfView()* (float)(M_PI/180);
+        float hor_fov_radian = 2.0f * atan ( tan(fov_radian/2.0f) * aspectRatio );
         return hor_fov_radian*(180/M_PI);
     }
 
