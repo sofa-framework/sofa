@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_H
 
 #include <sofa/core/collision/Intersection.h>
+#include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/PointModel.h>
@@ -45,7 +46,7 @@ namespace component
 
 namespace collision
 {
-class SOFA_BASE_COLLISION_API DiscreteIntersection : public core::collision::Intersection
+class SOFA_BASE_COLLISION_API DiscreteIntersection : public core::collision::Intersection, public core::collision::BaseIntersector
 {
 public:
     SOFA_CLASS(DiscreteIntersection,sofa::core::collision::Intersection);
@@ -56,33 +57,8 @@ public:
     /// @param swapModel output value set to true if the collision models must be swapped before calling the intersector.
     virtual core::collision::ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels);
 
-protected:
     core::collision::IntersectorMap intersectors;
-
-public:
-    template<class Model1, class Model2>
-    sofa::core::collision::TDetectionOutputVector<Model1,Model2>* createOutputVector(Model1*, Model2*)
-    {
-        return new sofa::core::collision::TDetectionOutputVector<Model1,Model2>;
-    }
-
-    template<class Model1, class Model2>
-    sofa::core::collision::TDetectionOutputVector<Model1,Model2>* getOutputVector(Model1*, Model2*, sofa::core::collision::DetectionOutputVector* contacts)
-    {
-        return static_cast<sofa::core::collision::TDetectionOutputVector<Model1,Model2>*>(contacts);
-    }
-
-    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
-
-    int beginIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
-    {
-        return 0;
-    }
-
-    int endIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
-    {
-        return 0;
-    }
+    typedef core::collision::IntersectorFactory<DiscreteIntersection> IntersectorFactory;
 
     bool testIntersection(Cube&, Cube&);
 
@@ -90,59 +66,17 @@ public:
     bool testIntersection(Sphere&, Sphere&);
     template<class Sphere>
     bool testIntersection(Sphere&, Cube&);
-    template<class Sphere>
-    bool testIntersection(Ray&, Sphere&);
-    template<class Sphere>
-    bool testIntersection(Sphere&, Triangle&);
-    //bool testIntersection(Triangle&, Triangle&);
-    bool testIntersection(Triangle&, Line&);
-    bool testIntersection(Ray&, Triangle&);
-    bool testIntersection(Ray&, Tetrahedron&);
-    bool testIntersection(Tetrahedron&, Point&);
-    bool testIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
-    bool testIntersection(RigidDistanceGridCollisionElement&, Point&);
-    template<class Sphere>
-    bool testIntersection(RigidDistanceGridCollisionElement&, Sphere&);
-    bool testIntersection(RigidDistanceGridCollisionElement&, Triangle&);
-    bool testIntersection(Ray&, RigidDistanceGridCollisionElement&);
-    bool testIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
-    bool testIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&);
-    bool testIntersection(FFDDistanceGridCollisionElement&, Point&);
-    template<class Sphere>
-    bool testIntersection(FFDDistanceGridCollisionElement&, Sphere&);
-    bool testIntersection(FFDDistanceGridCollisionElement&, Triangle&);
-    bool testIntersection(Ray&, FFDDistanceGridCollisionElement&);
 
     int computeIntersection(Cube&, Cube&, OutputVector*);
     template<class Sphere>
     int computeIntersection(Sphere&, Sphere&, OutputVector*);
     template<class Sphere>
     int computeIntersection(Sphere&, Cube&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(Ray&, Sphere&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(Sphere&, Triangle&, OutputVector*);
-    //int computeIntersection(Triangle&, Triangle&, OutputVector*);
-    int computeIntersection(Triangle&, Line&, OutputVector*);
-    int computeIntersection(Ray&, Triangle&, OutputVector*);
-    int computeIntersection(Ray&, Tetrahedron&, OutputVector*);
-    int computeIntersection(Tetrahedron&, Point&, OutputVector*);
-    int computeIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
-    int computeIntersection(RigidDistanceGridCollisionElement&, Point&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(RigidDistanceGridCollisionElement&, Sphere&, OutputVector*);
-    int computeIntersection(RigidDistanceGridCollisionElement&, Triangle&, OutputVector*);
-    int computeIntersection(Ray&, RigidDistanceGridCollisionElement&, OutputVector*);
-    int computeIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
-    int computeIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&, OutputVector*);
-    int computeIntersection(FFDDistanceGridCollisionElement&, Point&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(FFDDistanceGridCollisionElement&, Sphere&, OutputVector*);
-    int computeIntersection(FFDDistanceGridCollisionElement&, Triangle&, OutputVector*);
-    int computeIntersection(Ray&, FFDDistanceGridCollisionElement&, OutputVector*);
-
-
 };
+
+#if defined(WIN32) && !defined(SOFA_BUILD_BASE_COLLISION)
+extern template class SOFA_BASE_COLLISION_API core::collision::IntersectorFactory<DiscreteIntersection>;
+#endif
 
 } // namespace collision
 

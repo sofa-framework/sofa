@@ -15,7 +15,10 @@ HEADERS += initMeshCollision.h \
            collision/IdentityContactMapper.h \
            collision/IdentityContactMapper.inl \
            collision/SubsetContactMapper.h \
-           collision/SubsetContactMapper.inl
+           collision/SubsetContactMapper.inl \
+           collision/MeshDiscreteIntersection.h \
+           collision/MeshDiscreteIntersection.inl \
+
 
 SOURCES += initMeshCollision.cpp \
            collision/MinProximityIntersection.cpp \
@@ -23,7 +26,8 @@ SOURCES += initMeshCollision.cpp \
            collision/BarycentricPenalityContact.cpp \
            collision/BarycentricContactMapper.cpp \
            collision/IdentityContactMapper.cpp \
-           collision/SubsetContactMapper.cpp
+           collision/SubsetContactMapper.cpp \
+	   collision/MeshDiscreteIntersection.cpp \
 
 
 # Make sure there are no cross-dependencies
