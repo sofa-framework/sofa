@@ -74,7 +74,7 @@ void BglCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*sce
     for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
     {
         sofa::simulation::bgl::BglNode::SPtr group = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::bgl::BglNode>(*it);
-        if (group) clearGroup(group->parents, group.get());
+        if (group) clearGroup(group->parents, group);
     }
     groupSet.clear();
     groups.clear();
