@@ -134,7 +134,7 @@ void SubsetMapping<TIn, TOut>::init()
             }
             if (!found)
             {
-                serr<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<sendl;
+                sout<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<sendl;
                 indices[i] = 0;
             }
         }
