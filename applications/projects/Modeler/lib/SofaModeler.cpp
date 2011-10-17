@@ -384,9 +384,8 @@ void SofaModeler::fileNew( GNode* root)
 {
     if (!root) graph->setFilename("");
     changeNameWindow("");
-
     //no parent, adding root: if root is NULL, then an empty GNode will be created
-    root = graph->setRoot( root, false);
+    graph->setRoot( root, false);
     sceneTab->setCurrentPage( sceneTab->count()-1);
 }
 
