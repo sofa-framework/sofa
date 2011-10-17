@@ -293,10 +293,6 @@ contains(DEFINES, SOFA_GUI_QTVIEWER) | contains(DEFINES, SOFA_GUI_QGLVIEWER) | c
 #	enable(runLem)
 }
 
-contains(DEFINES, SOFA_GPU_OPENCL) {
-	# enable(sofaOPENCL) # not yet converted
-}
-
 contains(DEFINES, SOFA_GUI_GLUT) {
 	enable(sofaguiglut)
 }
@@ -325,8 +321,7 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 # This project should be enable in sofa_dependencies-local.prf
 #		enable(sofaCUDA_Bench)
 	}
-	contains(DEFINES, SOFA_GPU_OPENCL)
-	{
+	contains(DEFINES, SOFA_GPU_OPENCL) {
 	    enable(sofagpuopencl)
 	    enable(sofaOPENCL)
 	}
