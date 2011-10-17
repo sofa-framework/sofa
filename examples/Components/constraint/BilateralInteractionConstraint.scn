@@ -74,7 +74,7 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint object1="CUBE_1/Constraints/points" object2="CUBE_2/Constraints/points" first_point="1" second_point="0" />
+    <BilateralInteractionConstraint template="Vec3d" object1="CUBE_1/Constraints/points" object2="CUBE_2/Constraints/points" first_point="1" second_point="0" />
     <Node name="CUBE_3">
         <EulerImplicit printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -99,7 +99,7 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint object1="CUBE_2/Constraints/points" object2="CUBE_3/Constraints/points" first_point="1" second_point="0" />
+    <BilateralInteractionConstraint template="Vec3d" object1="CUBE_2/Constraints/points" object2="CUBE_3/Constraints/points" first_point="1" second_point="0" />
     <Node name="CUBE_4">
         <EulerImplicit printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -124,5 +124,5 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint object1="CUBE_2/Constraints/points" object2="CUBE_4/Constraints/points" first_point="1" second_point="0" />
+    <BilateralInteractionConstraint template="Vec3d" object1="CUBE_2/Constraints/points" object2="CUBE_4/Constraints/points" first_point="1" second_point="0" />
 </Node>

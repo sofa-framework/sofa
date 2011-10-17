@@ -2,24 +2,26 @@
 <Node name="root" dt="0.01">
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <FreeMotionAnimationLoop />
+	<GenericConstraintSolver />
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="1.5" contactDistance="1.0" angleCone="0.0" />
     <RuleBasedContactManager name="Response" response="FrictionContact" rules="4 * default" />
     <CollisionGroup name="Group" />
-    <EulerImplicit />
-    <CGLinearSolver />
+    
     <Node name="Torus1">
         <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader" />
-        <Mesh />
+        <Mesh src="@loader"/>
         <MechanicalObject src="@loader" scale="5.0" />
         <Triangle simulated="0" moving="0" name="Torus1Triangle" group="1" />
         <Line simulated="0" moving="0" name="Torus1Triangle" group="1" />
         <Point simulated="0" moving="0" name="Torus1Triangle" group="1" />
         <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="0.5 0.5 0.5 1.0" scale="5.0" />
     </Node>
+	
     <Node name="Torus2">
-        <EulerSolver />
+		<EulerImplicit />
+		<CGLinearSolver />
         <MechanicalObject template="Rigid" scale="5.0" dx="-12" dy="0" />
         <UniformMass filename="BehaviorModels/torus.rigid" mass="5000.0" />
         <UncoupledConstraintCorrection />
@@ -29,7 +31,7 @@
         </Node>
         <Node name="Surf2">
             <MeshObjLoader filename="mesh/torus_for_collision.obj" name="loader" />
-            <Mesh />
+            <Mesh src="@loader"/>
             <MechanicalObject src="@loader" scale="5.0" />
             <Triangle name="Torus2Triangle" group="2" />
             <Line name="Torus2Triangle" group="2" />
@@ -37,8 +39,10 @@
             <RigidMapping />
         </Node>
     </Node>
+	
     <Node name="Torus3">
-        <EulerSolver />
+		<EulerImplicit />
+		<CGLinearSolver />
         <MechanicalObject template="Rigid" scale="5.0" dx="-25" dy="0" />
         <UniformMass filename="BehaviorModels/torus2.rigid" mass="5000.0" />
         <UncoupledConstraintCorrection />
@@ -56,8 +60,10 @@
             <RigidMapping />
         </Node>
     </Node>
+	
     <Node name="Torus4">
-        <EulerSolver />
+		<EulerImplicit />
+		<CGLinearSolver />
         <MechanicalObject template="Rigid" scale="5.0" dx="-38" dy="0" />
         <UniformMass filename="BehaviorModels/torus.rigid" mass="5000.0" />
         <UncoupledConstraintCorrection />
@@ -67,7 +73,7 @@
         </Node>
         <Node name="Surf2">
             <MeshObjLoader filename="mesh/torus_for_collision.obj" name="loader" />
-            <Mesh />
+            <Mesh src="@loader"/>
             <MechanicalObject src="@loader" scale="5.0" />
             <Triangle name="Torus4Triangle" group="4" />
             <Line name="Torus4Line" group="4" />
