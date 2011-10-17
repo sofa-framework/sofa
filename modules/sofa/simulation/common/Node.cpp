@@ -726,7 +726,7 @@ struct component_t
 {
     typedef boost::vertex_property_tag kind;
 };
-typedef boost::property<component_t, BaseObject*> VertexProperty;
+typedef boost::property<component_t, BaseObject::SPtr> VertexProperty;
 
 // Graph
 typedef ::boost::adjacency_list < ::boost::vecS, ::boost::vecS, ::boost::bidirectionalS, VertexProperty > DependencyGraph;
@@ -736,16 +736,16 @@ void Node::sortComponents()
     typedef DependencyGraph::vertex_descriptor Vertex;
     DependencyGraph dependencyGraph;
     // map vertex->component
-    boost::property_map<DependencyGraph, component_t>::type  component_from_vertex = boost::get( component_t(), dependencyGraph );
+    boost::property_map< DependencyGraph, component_t >::type  component_from_vertex = boost::get( component_t(), dependencyGraph );
     // map component->vertex
-    std::map<BaseObject*,Vertex> vertex_from_component;
+    std::map< BaseObject::SPtr, Vertex > vertex_from_component;
 
     // build the graph
-    for ( int i=object.size()-1; i>=0; i-- ) // in the reverse order for a final order more similar to the current one
+    for (int i = object.size() - 1; i >= 0; i--) // in the reverse order for a final order more similar to the current one
     {
         Vertex v = add_vertex( dependencyGraph );
-        component_from_vertex[v] = object[i].get();
-        vertex_from_component[object[i].get()] = v;
+        component_from_vertex[v] = object[i];
+        vertex_from_component[object[i]] = v;
     }
     assert( depend.getValue().size()%2 == 0 ); // must contain only pairs
     for ( unsigned i=0; i<depend.getValue().size(); i+=2 )
