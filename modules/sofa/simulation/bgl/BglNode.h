@@ -68,7 +68,7 @@ public:
     typedef Parents::iterator ParentIterator;
     Parents parents;
 
-
+protected:
     BglNode(const std::string& name="");
     /**
        \param sg the SOFA scene containing a bgl graph
@@ -76,6 +76,7 @@ public:
     */
     ~BglNode();
 
+public:
     //Pure Virtual method from Node
     virtual Node* createChild(const std::string& nodeName);
 
