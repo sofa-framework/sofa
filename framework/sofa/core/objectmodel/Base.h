@@ -28,6 +28,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/system/atomic.h>
 #include <sofa/helper/system/SofaOStream.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/StringUtils.h>
@@ -92,7 +93,7 @@ private:
     /// Copy constructor is not allowed
     Base(const Base& b);
 
-    int ref_counter;
+    sofa::helper::system::atomic<int> ref_counter;
     void addRef();
     void release();
 

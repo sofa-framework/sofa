@@ -38,11 +38,12 @@
             <PointSetTopologyModifier />
             <Mesh2PointTopologicalMapping object1="volume" object2="Container2" tetraBaryCoords="0.25 0.25 0.25" />
             <MechanicalObject />
-            <BarycentricMapping />
+            <!--<BarycentricMapping />-->
             <!--<CircumcenterMapping/>-->
             <!--<Sphere radius="0.1" />-->
         </Node>
     </Node>
+<!--
     <Node activated="0" name="output-gpu">
         <EulerImplicit name="odesolver" />
         <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -51,18 +52,10 @@
         <UniformMass totalmass="5" name="mass" />
         <TetrahedronFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" method="large" />
         <BoxConstraint box="-6 0 -2 -2 1.5 3" />
-        <!--
-        <Node name="Surface">
-	  <include href="Objects/TriangleSetTopology.xml" />
-	  <Tetra2TriangleTopologicalMapping object1="../../volume" object2="Container"/>
-          <MechanicalObject/>
-          <IdentityMapping/>
-          <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" /> 
-        </Node>
--->
         <Node name="VM">
             <OglModel name="visual" filename="mesh/liver-smooth.obj" />
             <BarycentricMapping object2="visual" />
         </Node>
     </Node>
+-->
 </Node>

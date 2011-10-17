@@ -36,27 +36,29 @@ namespace bgl
 {
 Visitor::Result GetObjectsVisitor::processNodeTopDown( simulation::Node* node )
 {
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
-    {
-        core::objectmodel::BaseObject* obj = it->get();
-        void* result = class_info.dynamicCast(obj);
-        if (result != NULL &&  (tags.empty() || (obj)->getTags().includes(tags)))
-            container(result);
-    }
+    if (node != ignoreNode)
+        for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+        {
+            core::objectmodel::BaseObject* obj = it->get();
+            void* result = class_info.dynamicCast(obj);
+            if (result != NULL &&  (tags.empty() || (obj)->getTags().includes(tags)))
+                container(result);
+        }
     return Visitor::RESULT_CONTINUE;
 }
 
 Visitor::Result GetObjectVisitor::processNodeTopDown( simulation::Node* node )
 {
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
-    {
-        core::objectmodel::BaseObject* obj = it->get();
-        void* r = class_info.dynamicCast(obj);
-        if (r != NULL &&  (tags.empty() || (obj)->getTags().includes(tags)))
+    if (node != ignoreNode)
+        for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
         {
-            result=r; return Visitor::RESULT_PRUNE;
+            core::objectmodel::BaseObject* obj = it->get();
+            void* r = class_info.dynamicCast(obj);
+            if (r != NULL &&  (tags.empty() || (obj)->getTags().includes(tags)))
+            {
+                result=r; return Visitor::RESULT_PRUNE;
+            }
         }
-    }
     return Visitor::RESULT_CONTINUE;
 }
 

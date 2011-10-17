@@ -228,6 +228,7 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     inserted+= solver.add(dynamic_cast< core::behavior::OdeSolver* >(obj));
     inserted+= linearSolver.add(dynamic_cast< core::behavior::LinearSolver* >(obj));
     inserted+= constraintSolver.add(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
+    inserted+= visualLoop.add(dynamic_cast< core::visual::VisualLoop* >(obj));
     inserted+= state.add(dynamic_cast< core::BaseState* >(obj));
     inserted+= mechanicalState.add(dynamic_cast< core::behavior::BaseMechanicalState* >(obj));
     core::BaseMapping* bmap = dynamic_cast< core::BaseMapping* >(obj);
@@ -282,6 +283,7 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
     solver.remove(dynamic_cast< core::behavior::OdeSolver* >(obj));
     linearSolver.remove(dynamic_cast< core::behavior::LinearSolver* >(obj));
     constraintSolver.remove(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
+    visualLoop.remove(dynamic_cast< core::visual::VisualLoop* >(obj));
     state.remove(dynamic_cast< core::BaseState* >(obj));
     mechanicalState.remove(dynamic_cast< core::behavior::BaseMechanicalState* >(obj));
     mechanicalMapping.remove(dynamic_cast< core::BaseMapping* >(obj));
@@ -324,7 +326,7 @@ core::topology::Topology* Node::getTopology() const
     if (this->topology)
         return this->topology;
     else
-        return get<core::topology::Topology>();
+        return get<core::topology::Topology>(SearchParents);
 }
 
 /// Mesh Topology (unified interface for both static and dynamic topologies)
@@ -333,39 +335,69 @@ core::topology::BaseMeshTopology* Node::getMeshTopology() const
     if (this->meshTopology)
         return this->meshTopology;
     else
-        return get<core::topology::BaseMeshTopology>();
-}
-
-/// Shader
-core::objectmodel::BaseObject* Node::getShader() const
-{
-    if (shader)
-        return shader;
-    else
-        return get<core::visual::Shader>();
+        return get<core::topology::BaseMeshTopology>(SearchParents);
 }
 
 /// Degrees-of-Freedom
-core::objectmodel::BaseObject* Node::getState() const
+core::BaseState* Node::getState() const
 {
     // return this->state;
     if (this->state)
         return this->state;
     else
-        return get<core::BaseState>();
+        return get<core::BaseState>(SearchParents);
 }
 
 /// Mechanical Degrees-of-Freedom
-core::objectmodel::BaseObject* Node::getMechanicalState() const
+core::behavior::BaseMechanicalState* Node::getMechanicalState() const
 {
     // return this->mechanicalModel;
     if (this->mechanicalState)
         return this->mechanicalState;
     else
-        return get<core::behavior::BaseMechanicalState>();
+        return get<core::behavior::BaseMechanicalState>(SearchParents);
 }
 
+/// Shader
+core::visual::Shader* Node::getShader() const
+{
+    if (shader)
+        return shader;
+    else
+        return get<core::visual::Shader>(SearchParents);
+}
 
+core::behavior::BaseAnimationLoop* Node::getAnimationLoop() const
+{
+    if (animationManager)
+        return animationManager;
+    else
+        return get<core::behavior::BaseAnimationLoop>(SearchParents);
+}
+
+core::behavior::OdeSolver* Node::getOdeSolver() const
+{
+    if (!solver.empty())
+        return solver[0];
+    else
+        return get<core::behavior::OdeSolver>(SearchParents);
+}
+
+core::collision::Pipeline* Node::getCollisionPipeline() const
+{
+    if (collisionPipeline)
+        return collisionPipeline;
+    else
+        return get<core::collision::Pipeline>(SearchParents);
+}
+
+core::visual::VisualLoop* Node::getVisualLoop() const
+{
+    if (visualLoop)
+        return visualLoop;
+    else
+        return get<core::visual::VisualLoop>(SearchParents);
+}
 
 /// Find a child node given its name
 Node* Node::getChild(const std::string& name) const
@@ -647,6 +679,7 @@ void Node::printComponents()
     using core::visual::Shader;
     using core::BehaviorModel;
     using core::visual::VisualModel;
+    using core::visual::VisualLoop;
     using core::CollisionModel;
     using core::objectmodel::ContextObject;
     using core::collision::Pipeline;
@@ -662,6 +695,9 @@ void Node::printComponents()
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"ConstraintSolver: ";
     for ( Sequence<ConstraintSolver>::iterator i=constraintSolver.begin(), iend=constraintSolver.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<"VisualLoop: ";
+    for ( Single<VisualLoop>::iterator i=visualLoop.begin(), iend=visualLoop.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"InteractionForceField: ";
     for ( Sequence<BaseInteractionForceField>::iterator i=interactionForceField.begin(), iend=interactionForceField.end(); i!=iend; i++ )

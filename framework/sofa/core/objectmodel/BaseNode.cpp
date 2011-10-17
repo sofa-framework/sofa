@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,54 +16,61 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_PAUSEANIMATION_H
-#define SOFA_COMPONENT_MISC_PAUSEANIMATION_H
+#include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/visual/VisualLoop.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-namespace misc
+namespace objectmodel
 {
 
-/**
- * Abstract class defining how to pause the animation.
- */
-class PauseAnimation: public virtual core::objectmodel::BaseObject
+BaseNode::BaseNode()
+{}
+
+BaseNode::~BaseNode()
+{}
+
+core::behavior::BaseAnimationLoop* BaseNode::getAnimationLoop() const
 {
-public:
-    SOFA_CLASS(PauseAnimation, core::objectmodel::BaseObject);
+    return this->getContext()->get<core::behavior::BaseAnimationLoop>();
+}
 
-protected:
-    PauseAnimation ();
-    virtual ~PauseAnimation ();
-public:
-    virtual void init();
+core::behavior::OdeSolver* BaseNode::getOdeSolver() const
+{
+    return this->getContext()->get<core::behavior::OdeSolver>();
+}
 
-    virtual bool isPaused() = 0;
+core::collision::Pipeline* BaseNode::getCollisionPipeline() const
+{
+    return this->getContext()->get<core::collision::Pipeline>();
+}
 
-    virtual void pause();
+core::visual::VisualLoop* BaseNode::getVisualLoop() const
+{
+    return this->getContext()->get<core::visual::VisualLoop>();
+}
 
-protected:
-    sofa::core::objectmodel::BaseNode* root;
-};
+} // namespace objectmodel
 
-} // namespace misc
-
-} // namespace component
+} // namespace core
 
 } // namespace sofa
-
-#endif

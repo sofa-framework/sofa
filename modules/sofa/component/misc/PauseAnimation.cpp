@@ -34,16 +34,27 @@ namespace component
 namespace misc
 {
 
+PauseAnimation::PauseAnimation()
+    : root(NULL)
+{
+}
+
+PauseAnimation::~PauseAnimation()
+{
+}
+
 void PauseAnimation::init()
 {
     BaseObject::init();
-    simu = sofa::simulation::getSimulation();
+    //simu = sofa::simulation::getSimulation();
+    root = dynamic_cast<sofa::core::objectmodel::BaseNode*>(this->getContext());
+    // TODO: add methods in BaseNode to get parent nodes and/or root node
 }
 
 void PauseAnimation::pause()
 {
-    if (simu)
-        simu->setPaused(true);
+    if (root)
+        root->getContext()->setAnimate(false);
 }
 
 } // namespace misc

@@ -34,8 +34,23 @@ namespace sofa
 {
 
 namespace core
-
 {
+
+// forward declaration of classes accessible from the node
+namespace behavior
+{
+class BaseAnimationLoop;
+class OdeSolver;
+}
+namespace collision
+{
+class Pipeline;
+}
+namespace visual
+{
+class VisualLoop;
+}
+
 namespace objectmodel
 {
 
@@ -49,12 +64,14 @@ namespace objectmodel
  *
  * \author Jeremie Allard
  */
-class BaseNode : public virtual Base
+class SOFA_CORE_API BaseNode : public virtual Base
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseNode, Base);
+
 protected:
-    virtual ~BaseNode() {}
+    BaseNode();
+    virtual ~BaseNode();
 public:
     /// @name Scene hierarchy
     /// @{
@@ -101,6 +118,17 @@ public:
     virtual std::string getPathName() const=0;
 
     /// @}
+
+    /// @name Solvers and main algorithms
+    /// @{
+
+    virtual core::behavior::BaseAnimationLoop* getAnimationLoop() const;
+    virtual core::behavior::OdeSolver* getOdeSolver() const;
+    virtual core::collision::Pipeline* getCollisionPipeline() const;
+    virtual core::visual::VisualLoop* getVisualLoop() const;
+
+    /// @}
+
 };
 
 } // namespace objectmodel

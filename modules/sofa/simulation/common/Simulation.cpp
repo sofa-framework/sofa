@@ -84,11 +84,7 @@ namespace simulation
 
 using namespace sofa::defaulttype;
 Simulation::Simulation()
-    : gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved"))
-    , paused(false)
 {
-    m_RootAmimateLoop = NULL;
-    m_RootVisualLoop  = NULL;
 }
 
 
@@ -96,7 +92,7 @@ Simulation::~Simulation()
 {
 }
 /// The (unique) simulation which controls the scene
-std::auto_ptr<Simulation> Simulation::theSimulation;
+Simulation::SPtr Simulation::theSimulation;
 
 void setSimulation ( Simulation* s )
 {
@@ -146,8 +142,7 @@ void Simulation::init ( Node* root )
 
     setContext( root->getContext());
 
-    root->get(m_RootAmimateLoop);
-    if(!m_RootAmimateLoop)
+    if (!root->getAnimationLoop())
     {
         root->getContext()->sout
                 <<"Default Animation Manager Loop will be used. Add DefaultAnimationLoop to the root node of scene file to remove this warning"
@@ -156,12 +151,9 @@ void Simulation::init ( Node* root )
         DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
         aloop->setName(core::objectmodel::BaseObject::shortName(aloop.get()));
         root->addObject(aloop);
-        m_RootAmimateLoop = aloop.get();
     }
 
-
-    root->get(m_RootVisualLoop);
-    if(!m_RootVisualLoop)
+    if(!root->getVisualLoop())
     {
         root->getContext()->sout
                 <<"Default Visual Manager Loop will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning"
@@ -170,7 +162,6 @@ void Simulation::init ( Node* root )
         DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
         vloop->setName(core::objectmodel::BaseObject::shortName(vloop.get()));
         root->addObject(vloop);
-        m_RootVisualLoop = vloop.get();
     }
 
 
@@ -227,9 +218,11 @@ void Simulation::animate ( Node* root, double dt )
     simulation::Visitor::printNode(std::string("Step"));
 #endif
 
-    if(m_RootAmimateLoop)
+
+    sofa::core::behavior::BaseAnimationLoop* aloop = root->getAnimationLoop();
+    if(aloop)
     {
-        m_RootAmimateLoop->step(params,dt);
+        aloop->step(params,dt);
     }
     else
     {
@@ -239,12 +232,14 @@ void Simulation::animate ( Node* root, double dt )
 
 }
 
-void Simulation::updateVisual ( Node* /*root*/)
+void Simulation::updateVisual ( Node* root)
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    if(m_RootVisualLoop)
+    core::visual::VisualLoop* vloop = root->getVisualLoop();
+
+    if(vloop)
     {
-        m_RootVisualLoop->updateStep(params);
+        vloop->updateStep(params);
     }
     else
     {
@@ -273,10 +268,11 @@ void Simulation::initTextures ( Node* root )
 
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    core::visual::VisualLoop* vloop = root->getVisualLoop();
 
-    if(m_RootVisualLoop)
+    if(vloop)
     {
-        m_RootVisualLoop->initStep(params);
+        vloop->initStep(params);
     }
     else
     {
@@ -287,28 +283,19 @@ void Simulation::initTextures ( Node* root )
 
 
 /// Compute the bounding box of the scene.
-void Simulation::computeBBox ( Node* /*root*/, SReal* minBBox, SReal* maxBBox, bool init )
+void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
 {
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
-    if(m_RootVisualLoop)
+    core::visual::VisualLoop* vloop = root->getVisualLoop();
+    if(vloop)
     {
-        m_RootVisualLoop->computeBBoxStep(vparams, minBBox, maxBBox, init);
+        vloop->computeBBoxStep(vparams, minBBox, maxBBox, init);
     }
     else
     {
         serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
         return;
     }
-}
-
-void Simulation::setPaused(bool paused)
-{
-    this->paused = paused;
-}
-
-bool Simulation::getPaused()
-{
-    return paused;
 }
 
 /// Update contexts. Required before drawing the scene if root flags are modified.
@@ -324,10 +311,11 @@ void Simulation::updateVisualContext (Node* root)
 {
     if ( !root ) return;
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
+    core::visual::VisualLoop* vloop = root->getVisualLoop();
 
-    if(m_RootVisualLoop)
+    if(vloop)
     {
-        m_RootVisualLoop->updateContextStep(vparams);
+        vloop->updateContextStep(vparams);
     }
     else
     {
@@ -340,11 +328,12 @@ void Simulation::updateVisualContext (Node* root)
     vis.execute(root);*/
 }
 /// Render the scene
-void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* /*root*/  )
+void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
-    if(m_RootVisualLoop)
+    core::visual::VisualLoop* vloop = root->getVisualLoop();
+    if(vloop)
     {
-        m_RootVisualLoop->drawStep(vparams);
+        vloop->drawStep(vparams);
     }
     else
     {

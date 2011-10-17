@@ -70,7 +70,7 @@ GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *
     fileGNUPLOTLineEdit = new QLineEdit(gnuplotExport);
     findGNUPLOTFile = new QPushButton(QString("..."), gnuplotExport);
 
-    std::string gnuplotDirectory=simulation::getSimulation()->gnuplotDirectory.getValue();
+    std::string gnuplotDirectory; //=simulation::getSimulation()->gnuplotDirectory.getValue();
     if (gnuplotDirectory.empty())
         gnuplotDirectory=sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + "/";
     gnuplotDirectory += dataName;
@@ -93,7 +93,7 @@ GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *
     fileImageLineEdit = new QLineEdit(imageExport);
     findImageFile = new QPushButton(QString("..."), imageExport);
 
-    std::string imageDirectory=simulation::getSimulation()->gnuplotDirectory.getValue();
+    std::string imageDirectory; //=simulation::getSimulation()->gnuplotDirectory.getValue();
     if (imageDirectory.empty())
         imageDirectory=sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + "/";
     imageDirectory += dataName;

@@ -324,6 +324,7 @@ public:
     typedef Sequence<core::objectmodel::BaseObject,core::objectmodel::BaseObject::SPtr>::iterator ObjectIterator;
 
     Single<core::behavior::BaseAnimationLoop> animationManager;
+    Single<core::visual::VisualLoop> visualLoop;
     Sequence<core::behavior::OdeSolver> solver;
     Sequence<core::behavior::ConstraintSolver> constraintSolver;
     Sequence<core::behavior::LinearSolver> linearSolver;
@@ -460,13 +461,26 @@ public:
     virtual core::topology::BaseMeshTopology* getMeshTopology() const;
 
     /// Degrees-of-Freedom
-    virtual core::objectmodel::BaseObject* getState() const;
+    virtual core::BaseState* getState() const;
 
     /// Mechanical Degrees-of-Freedom
-    virtual core::objectmodel::BaseObject* getMechanicalState() const;
+    virtual core::behavior::BaseMechanicalState* getMechanicalState() const;
 
     /// Shader
-    virtual core::objectmodel::BaseObject* getShader() const;
+    virtual core::visual::Shader* getShader() const;
+
+    /// @name Solvers and main algorithms
+    /// @{
+
+    virtual core::behavior::BaseAnimationLoop* getAnimationLoop() const;
+    virtual core::behavior::OdeSolver* getOdeSolver() const;
+    virtual core::collision::Pipeline* getCollisionPipeline() const;
+    virtual core::visual::VisualLoop* getVisualLoop() const;
+
+    /// @}
+
+
+
 
     /// Remove odesolvers and mastercontroler
     virtual void removeControllers();

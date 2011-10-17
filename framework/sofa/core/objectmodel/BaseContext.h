@@ -49,12 +49,26 @@ namespace core
 {
 
 // forward declaration of classes accessible from the context
+
+class BaseState;
+
 namespace topology
 {
 class Topology;
 class BaseTopology;
 class BaseMeshTopology;
 } // namespace topology
+
+namespace behavior
+{
+class BaseMechanicalState;
+class BaseMass;
+} // namespace behavior
+
+namespace visual
+{
+class Shader;
+} // namespace visual
 
 namespace objectmodel
 {
@@ -97,7 +111,7 @@ public:
     static BaseContext* getDefault();
 
     /// Specification of where to search for queried objects
-    enum SearchDirection { SearchUp = -1, Local = 0, SearchDown = 1, SearchRoot = 2 };
+    enum SearchDirection { SearchUp = -1, Local = 0, SearchDown = 1, SearchRoot = 2, SearchParents = 3 };
 
     /// @name Parameters
     /// @{
@@ -181,10 +195,10 @@ public:
     /// @{
 
     /// Mechanical Degrees-of-Freedom
-    virtual BaseObject* getState() const;
+    virtual core::BaseState* getState() const;
 
     /// Mechanical Degrees-of-Freedom
-    virtual BaseObject* getMechanicalState() const;
+    virtual behavior::BaseMechanicalState* getMechanicalState() const;
 
     /// Topology
     virtual core::topology::Topology* getTopology() const;
@@ -193,10 +207,10 @@ public:
     virtual core::topology::BaseMeshTopology* getMeshTopology() const;
 
     /// Mass
-    virtual BaseObject* getMass() const;
+    virtual core::behavior::BaseMass* getMass() const;
 
     /// Global Shader
-    virtual BaseObject* getShader() const;
+    virtual core::visual::Shader* getShader() const;
 
     /// Generic object access, possibly searching up or down from the current context
     ///

@@ -1,5 +1,6 @@
 includeOnce($$_FILE_) {
 
+declare(blas,  blas.prf)
 declare(boost,  boost.prf)
 declare(cgal,   cgal.prf)
 declare(cilk,   cilk.prf)
@@ -31,8 +32,8 @@ declare(csparse,    extlibs/csparse)
 declare(cudpp,      extlibs/cudpp, cuda)
 #declare(cudpp,     extlibs/cudpp-svn/cudpp.pro, cuda)
 declare(metis,      extlibs/metis)
-declare(taucs,      extlibs/taucs, cilk metis system-metis)
-declare(taucs_mt,   extlibs/taucs_mt, metis system-metis)
+declare(taucs,      extlibs/taucs, cilk metis system-metis blas)
+declare(taucs_mt,   extlibs/taucs_mt, metis system-metis blas)
 declare(colladadom, extlibs/colladadom, tinyxml)
 
 ######################################################################

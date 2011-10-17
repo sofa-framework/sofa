@@ -285,6 +285,7 @@ void BglGraphManager::breadthFirstVisit( const Node *constNode, Visitor& visit, 
         launchBreadthFirstVisit<Visitor, Hgraph>(visit, hgraph)(h_node_vertex_map[n]);
         break;
     }
+    case BaseContext::SearchParents:
     case BaseContext::SearchUp:
     {
         launchBreadthFirstVisit<Visitor, Rgraph>(visit, rgraph)(r_node_vertex_map[n]);;
@@ -298,7 +299,8 @@ void BglGraphManager::breadthFirstVisit( const Node *constNode, Visitor& visit, 
     }
     case BaseContext::Local:
     {
-        std::cerr << "depthFirstVisit cannot be used with a Local Direction" << std::endl;
+        std::cerr << "breadthFirstVisit cannot be used with a Local Direction" << std::endl;
+        break;
     }
     }
 }
@@ -320,6 +322,7 @@ void BglGraphManager::depthFirstSearch( Visitor& visit, core::objectmodel::BaseC
         boost::depth_first_search( hgraph, boost::visitor(vis) );
         break;
     }
+    case BaseContext::SearchParents:
     case BaseContext::SearchUp:
     {
         dfs_adapter<Rgraph> vis(&visit);
@@ -399,6 +402,7 @@ void BglGraphManager::depthFirstVisit( const Node *constNode, Visitor& visit, co
         launchDepthFirstVisit<Visitor, Hgraph>(visit, hgraph)(h_node_vertex_map[n]);
         break;
     }
+    case BaseContext::SearchParents:
     case BaseContext::SearchUp:
     {
         launchDepthFirstVisit<Visitor, Rgraph>(visit, rgraph)(r_node_vertex_map[n]);

@@ -133,25 +133,26 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
     std::string gname = "N4sofa9component8topology32TetrahedronSetGeometryAlgorithms";
     bool isg = cname.length() >= gname.length() && std::string(cname, 0, gname.length()) == gname;
 #endif
-    for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
-    {
-        core::objectmodel::BaseObject* obj = it->get();
-        if (tags.empty() || (obj)->getTags().includes(tags))
+    if (dir != SearchParents)
+        for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
-#ifdef DEBUG_GETOBJECT
-            if (isg)
-                std::cout << "GNODE: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
-#endif
-            result = class_info.dynamicCast(obj);
-            if (result != NULL)
+            core::objectmodel::BaseObject* obj = it->get();
+            if (tags.empty() || (obj)->getTags().includes(tags))
             {
 #ifdef DEBUG_GETOBJECT
-                std::cout << "GNODE: found object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
+                if (isg)
+                    std::cout << "GNODE: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
 #endif
-                break;
+                result = class_info.dynamicCast(obj);
+                if (result != NULL)
+                {
+#ifdef DEBUG_GETOBJECT
+                    std::cout << "GNODE: found object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
+#endif
+                    break;
+                }
             }
         }
-    }
 
     if (result == NULL)
     {
@@ -159,6 +160,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         {
         case Local:
             break;
+        case SearchParents:
         case SearchUp:
             if (parent) result = parent->getObject(class_info, tags, dir);
             break;
@@ -268,19 +270,21 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
         }
         else dir = SearchDown; // we are the root, search down from here.
     }
-    for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
-    {
-        core::objectmodel::BaseObject* obj = it->get();
-        void* result = class_info.dynamicCast(obj);
-        if (result != NULL && (tags.empty() || (obj)->getTags().includes(tags)))
-            container(result);
-    }
+    if (dir != SearchParents)
+        for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
+        {
+            core::objectmodel::BaseObject* obj = it->get();
+            void* result = class_info.dynamicCast(obj);
+            if (result != NULL && (tags.empty() || (obj)->getTags().includes(tags)))
+                container(result);
+        }
 
     {
         switch(dir)
         {
         case Local:
             break;
+        case SearchParents:
         case SearchUp:
             if (parent) parent->getObjects(class_info, container, tags, dir);
             break;
