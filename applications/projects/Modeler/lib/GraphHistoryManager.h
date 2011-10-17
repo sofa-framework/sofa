@@ -60,7 +60,7 @@ public:
     public:
         Operation() {};
         enum op {DELETE_OBJECT,DELETE_GNODE, ADD_OBJECT,ADD_GNODE, NODE_MODIFICATION, COMPONENT_MODIFICATION};
-        Operation(Base* sofaComponent_,  op ID_): sofaComponent(sofaComponent_), above(NULL), ID(ID_)
+        Operation(Base::SPtr sofaComponent_,  op ID_): sofaComponent(sofaComponent_), above(NULL), ID(ID_)
         {}
 
         Base::SPtr sofaComponent;

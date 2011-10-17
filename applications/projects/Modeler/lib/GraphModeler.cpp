@@ -111,29 +111,28 @@ GraphModeler::~GraphModeler()
 {
     delete historyManager;
     simulation::getSimulation()->unload(getRoot());
-    delete getRoot();
+    //delete getRoot();
+    graphRoot.reset();
     delete graphListener;
     if (DialogAdd) delete DialogAdd;
 }
 
 
-GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
+GNode::SPtr GraphModeler::addGNode(GNode::SPtr parent, GNode::SPtr child, bool saveHistory)
 {
-    GNode *lastRoot = getRoot();
+    GNode::SPtr lastRoot = getRoot();
     if (!child)
     {
         std::ostringstream oss;
-        oss << GNode::shortName(child) << numNode++;
-        child = new GNode(oss.str() );
+        oss << GNode::shortName(child.get()) << numNode++;
+        child = sofa::core::objectmodel::New<GNode> (oss.str() );
         if (!parent)
             child->setName("Root");
     }
 
-
-
     if (parent != NULL)
     {
-        parent->addChild((Node*)child);
+        parent->addChild(child);
 
         if (saveHistory)
         {
@@ -144,24 +143,25 @@ GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
     }
     else
     {
-        graphListener->addChild(NULL, child);
+        graphListener->addChild(NULL, child.get());
         //Set up the root
         firstChild()->setExpandable(true);
         firstChild()->setOpen(true);
 
         if (saveHistory) historyManager->graphClean();
+        graphRoot = child;
     }
 
     if (!parent && childCount()>1)
     {
-        deleteComponent(graphListener->items[lastRoot], saveHistory);
+        deleteComponent(graphListener->items[lastRoot.get()], saveHistory);
     }
     return child;
 }
 
-BaseObject* GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, const std::string &templateName, bool saveHistory, bool displayWarning)
+BaseObject::SPtr GraphModeler::addComponent(GNode::SPtr parent, const ClassEntry* entry, const std::string &templateName, bool saveHistory, bool displayWarning)
 {
-    BaseObject* object=NULL;
+    BaseObject::SPtr object=NULL;
     if (!parent || !entry) return object;
 
     std::string templateUsed = templateName;
@@ -194,7 +194,7 @@ BaseObject* GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, c
         oss << c->shortName(&description) << numComponent++;
         arg.setName(oss.str());
 
-        object = c->createInstance(parent->getContext(), &arg).get();
+        object = c->createInstance(parent->getContext(), &arg);
 
         if (saveHistory)
         {
@@ -233,7 +233,7 @@ BaseObject* GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, c
                 }
             }
         }
-        object = c->createInstance(parent->getContext(), NULL).get();
+        object = c->createInstance(parent->getContext(), NULL);
         GraphHistoryManager::Operation adding(object, GraphHistoryManager::Operation::ADD_OBJECT);
         adding.info=std::string("Adding Object ") + object->getClassName();
         emit operationPerformed(adding);
@@ -276,10 +276,10 @@ void GraphModeler::dropEvent(QDropEvent* event)
     }
     if (text == QString("ComponentCreation"))
     {
-        BaseObject* newComponent = addComponent(getGNode(event->pos()), lastSelectedComponent.second, lastSelectedComponent.first );
+        BaseObject::SPtr newComponent = addComponent(getGNode(event->pos()), lastSelectedComponent.second, lastSelectedComponent.first );
         if (newComponent)
         {
-            Q3ListViewItem *after = graphListener->items[newComponent];
+            Q3ListViewItem *after = graphListener->items[newComponent.get()];
             std::ostringstream oss;
             oss << newComponent->getClassName() << " " << newComponent->getName();
             after->setText(0, QString(oss.str().c_str()));
@@ -295,10 +295,10 @@ void GraphModeler::dropEvent(QDropEvent* event)
 
             if (node)
             {
-                GNode *newNode=addGNode(node);
+                GNode::SPtr newNode=addGNode(node);
                 if (newNode)
                 {
-                    Q3ListViewItem *after = graphListener->items[newNode];
+                    Q3ListViewItem *after = graphListener->items[newNode.get()];
                     Q3ListViewItem *item = itemAt(event->pos());
                     if (getObject(item)) initItem(after,item);
                 }
@@ -537,14 +537,14 @@ void GraphModeler::expandNode(Q3ListViewItem* item)
     }
 }
 
-GNode *GraphModeler::loadNode()
+GNode::SPtr GraphModeler::loadNode()
 {
     return loadNode(currentItem());
 }
 
-GNode *GraphModeler::loadNode(Q3ListViewItem* item, std::string filename, bool saveHistory)
+GNode::SPtr GraphModeler::loadNode(Q3ListViewItem* item, std::string filename, bool saveHistory)
 {
-    GNode *node;
+    GNode::SPtr node;
     if (!item) node=NULL;
     else node=getGNode(item);
 
@@ -581,20 +581,19 @@ void GraphModeler::globalModification()
 }
 
 
-GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem, bool saveHistory)
+GNode::SPtr GraphModeler::buildNodeFromBaseElement(GNode::SPtr node,xml::BaseElement *elem, bool saveHistory)
 {
     const bool displayWarning=true;
-    GNode *newNode = new GNode();
+    GNode::SPtr newNode = sofa::core::objectmodel::New<GNode>();
     //Configure the new Node
-    configureElement(newNode, elem);
+    configureElement(newNode.get(), elem);
 
     if (newNode->getName() == "Group")
     {
         //We can't use the parent node, as it is null
         if (!node) return NULL;
-        delete newNode;
+        //delete newNode;
         newNode = node;
-
     }
     else
     {
@@ -623,10 +622,10 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
 
 
             const ClassEntry *info = component->getEntry();
-            BaseObject* newComponent=addComponent(newNode, info, templatename, saveHistory,displayWarning);
+            BaseObject::SPtr newComponent=addComponent(newNode, info, templatename, saveHistory,displayWarning);
             if (!newComponent) continue;
-            configureElement(newComponent, it);
-            Q3ListViewItem* itemGraph = graphListener->items[newComponent];
+            configureElement(newComponent.get(), it);
+            Q3ListViewItem* itemGraph = graphListener->items[newComponent.get()];
 
             std::string name=itemGraph->text(0).ascii();
             std::string::size_type pos = name.find(' ');
@@ -671,7 +670,7 @@ void GraphModeler::configureElement(Base* b, xml::BaseElement *elem)
     }
 }
 
-GNode* GraphModeler::loadNode(GNode *node, std::string path, bool saveHistory)
+GNode::SPtr GraphModeler::loadNode(GNode::SPtr node, std::string path, bool saveHistory)
 {
     xml::BaseElement* newXML=NULL;
 
@@ -680,7 +679,7 @@ GNode* GraphModeler::loadNode(GNode *node, std::string path, bool saveHistory)
 
     //-----------------------------------------------------------------
     //Add the content of a xml file
-    GNode *newNode = buildNodeFromBaseElement(node, newXML, saveHistory);
+    GNode::SPtr newNode = buildNodeFromBaseElement(node, newXML, saveHistory);
     //-----------------------------------------------------------------
 
     return newNode;

@@ -64,141 +64,142 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
             {
                 object = entries[i]->creatorList.begin()->second->createInstance(NULL, NULL);
             }
-            std::cerr << "Deleting " << entries[i]->className << std::endl;;
+            std::cerr << "Deleting " << entries[i]->className << std::endl;
             object.reset();
-            std::cerr << "Ok for " << entries[i]->className << std::endl;;
+            std::cerr << "Ok for " << entries[i]->className << std::endl;
+        }
 #endif
 
-            //Insert Template specification
-            std::set< std::string >::iterator it;
-            for (it = entries[i]->baseClasses.begin(); it != entries[i]->baseClasses.end(); ++it)
-            {
-                mainCategories.insert((*it));
-                inventory.insert(std::make_pair((*it), entries[i]));
-            }
-            //If no inheritance was found for the given component, we store it in a default category
-            if (entries[i]->baseClasses.empty())
-            {
-                mainCategories.insert("_Miscellaneous");
-                inventory.insert(std::make_pair("_Miscellaneous", entries[i]));
-            }
-        }
-
-        //-----------------------------------------------------------------------
-        //Using the inventory, Add each component to the Sofa Library
-        //-----------------------------------------------------------------------
-        std::set< std::string >::iterator itCategory;
-        typedef std::multimap< std::string, ClassEntry* >::iterator IteratorInventory;
-
-
-        //We add the components category by category
-        for (itCategory = mainCategories.begin(); itCategory != mainCategories.end(); ++itCategory)
+        //Insert Template specification
+        std::set< std::string >::iterator it;
+        for (it = entries[i]->baseClasses.begin(); it != entries[i]->baseClasses.end(); ++it)
         {
-            const std::string& categoryName = *itCategory;
-            IteratorInventory itComponent;
+            mainCategories.insert((*it));
+            inventory.insert(std::make_pair((*it), entries[i]));
+        }
+        //If no inheritance was found for the given component, we store it in a default category
+        if (entries[i]->baseClasses.empty())
+        {
+            mainCategories.insert("_Miscellaneous");
+            inventory.insert(std::make_pair("_Miscellaneous", entries[i]));
+        }
+    }
 
-            std::pair< IteratorInventory,IteratorInventory > rangeCategory;
-            rangeCategory = inventory.equal_range(categoryName);
-            const unsigned int numComponentInCategory = inventory.count(categoryName);
+    //-----------------------------------------------------------------------
+    //Using the inventory, Add each component to the Sofa Library
+    //-----------------------------------------------------------------------
+    std::set< std::string >::iterator itCategory;
+    typedef std::multimap< std::string, ClassEntry* >::iterator IteratorInventory;
+
+
+    //We add the components category by category
+    for (itCategory = mainCategories.begin(); itCategory != mainCategories.end(); ++itCategory)
+    {
+        const std::string& categoryName = *itCategory;
+        IteratorInventory itComponent;
+
+        std::pair< IteratorInventory,IteratorInventory > rangeCategory;
+        rangeCategory = inventory.equal_range(categoryName);
+        const unsigned int numComponentInCategory = inventory.count(categoryName);
 
 
 
-            CategoryLibrary *category = createCategory(categoryName,numComponentInCategory);
+        CategoryLibrary *category = createCategory(categoryName,numComponentInCategory);
 
-            //Process all the component of the current category, and add them to the group
-            for (itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
+        //Process all the component of the current category, and add them to the group
+        for (itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
+        {
+            ClassEntry *entry = itComponent->second;
+            const std::string &componentName=entry->className;
+
+            //Special Case of Mass Component: they are also considered as forcefield. We remove their occurence of the force field category group
+            if (categoryName == "ForceField")
             {
-                ClassEntry *entry = itComponent->second;
-                const std::string &componentName=entry->className;
-
-                //Special Case of Mass Component: they are also considered as forcefield. We remove their occurence of the force field category group
-                if (categoryName == "ForceField")
+                std::set< std::string >::iterator inheritanceClass;
+                bool needToRemove=false;
+                for (inheritanceClass = entry->baseClasses.begin(); inheritanceClass != entry->baseClasses.end(); ++inheritanceClass)
                 {
-                    std::set< std::string >::iterator inheritanceClass;
-                    bool needToRemove=false;
-                    for (inheritanceClass = entry->baseClasses.begin(); inheritanceClass != entry->baseClasses.end(); ++inheritanceClass)
-                    {
-                        if (*inheritanceClass == "Mass") { needToRemove=true; break;};
-                    }
-                    if (needToRemove) continue;
+                    if (*inheritanceClass == "Mass") { needToRemove=true; break;};
                 }
-                //Special Case of TopologyObject: they are also considered as Topology. We remove their occurence of the topology category group
-                else if (categoryName == "Topology")
-                {
-                    std::set< std::string >::iterator inheritanceClass;
-                    bool needToRemove=false;
-                    for (inheritanceClass = entry->baseClasses.begin(); inheritanceClass != entry->baseClasses.end(); ++inheritanceClass)
-                    {
-                        if (*inheritanceClass == "TopologyObject") { needToRemove=true; break;};
-                    }
-                    if (needToRemove) continue;
-                }
-
-                //Add the component to the category
-                category->addComponent(componentName, entry, exampleFiles);
+                if (needToRemove) continue;
             }
-            category->endConstruction();
-            addCategory(category);
-        }
-        computeNumComponents();
-    }
-
-    void SofaLibrary::computeNumComponents()
-    {
-        numComponents=0;
-        for (unsigned int cat=0; cat<categories.size(); ++cat)
-        {
-            numComponents += categories[cat]->getNumComponents();
-        }
-
-    }
-
-    void SofaLibrary::addCategory(CategoryLibrary *category)
-    {
-        categories.push_back(category);
-    }
-
-
-    std::string SofaLibrary::getComponentDescription( const std::string &componentName ) const
-    {
-        const ComponentLibrary *component = getComponent(componentName);
-        if (component) return component->getDescription();
-        else return "";
-    }
-
-    const CategoryLibrary *SofaLibrary::getCategory( const std::string &categoryName) const
-    {
-        for (VecCategoryIterator it=categories.begin(); it != categories.end(); ++it)
-        {
-            if ((*it)->getName().find(categoryName) != std::string::npos)
-                return *it;
-        }
-        return NULL;
-    }
-
-    const ComponentLibrary *SofaLibrary::getComponent( const std::string &componentName ) const
-    {
-        //Look into all the categories
-        for (unsigned int cat=0; cat<categories.size(); ++cat)
-        {
-            //For each category, look at all the components if one has the name wanted
-            const std::vector< ComponentLibrary* > &components = categories[cat]->getComponents();
-            for (unsigned int comp=0; comp<components.size(); ++comp)
+            //Special Case of TopologyObject: they are also considered as Topology. We remove their occurence of the topology category group
+            else if (categoryName == "Topology")
             {
-                if (componentName == components[comp]->getName()) return components[comp];
+                std::set< std::string >::iterator inheritanceClass;
+                bool needToRemove=false;
+                for (inheritanceClass = entry->baseClasses.begin(); inheritanceClass != entry->baseClasses.end(); ++inheritanceClass)
+                {
+                    if (*inheritanceClass == "TopologyObject") { needToRemove=true; break;};
+                }
+                if (needToRemove) continue;
             }
+
+            //Add the component to the category
+            category->addComponent(componentName, entry, exampleFiles);
         }
-        return NULL;
+        category->endConstruction();
+        addCategory(category);
+    }
+    computeNumComponents();
+}
+
+void SofaLibrary::computeNumComponents()
+{
+    numComponents=0;
+    for (unsigned int cat=0; cat<categories.size(); ++cat)
+    {
+        numComponents += categories[cat]->getNumComponents();
     }
 
-    void SofaLibrary::clear()
+}
+
+void SofaLibrary::addCategory(CategoryLibrary *category)
+{
+    categories.push_back(category);
+}
+
+
+std::string SofaLibrary::getComponentDescription( const std::string &componentName ) const
+{
+    const ComponentLibrary *component = getComponent(componentName);
+    if (component) return component->getDescription();
+    else return "";
+}
+
+const CategoryLibrary *SofaLibrary::getCategory( const std::string &categoryName) const
+{
+    for (VecCategoryIterator it=categories.begin(); it != categories.end(); ++it)
     {
-        for (unsigned int i=0; i<categories.size(); ++i)
-        {
-            delete categories[i];
-        }
-        categories.clear();
+        if ((*it)->getName().find(categoryName) != std::string::npos)
+            return *it;
     }
+    return NULL;
+}
+
+const ComponentLibrary *SofaLibrary::getComponent( const std::string &componentName ) const
+{
+    //Look into all the categories
+    for (unsigned int cat=0; cat<categories.size(); ++cat)
+    {
+        //For each category, look at all the components if one has the name wanted
+        const std::vector< ComponentLibrary* > &components = categories[cat]->getComponents();
+        for (unsigned int comp=0; comp<components.size(); ++comp)
+        {
+            if (componentName == components[comp]->getName()) return components[comp];
+        }
+    }
+    return NULL;
+}
+
+void SofaLibrary::clear()
+{
+    for (unsigned int i=0; i<categories.size(); ++i)
+    {
+        delete categories[i];
+    }
+    categories.clear();
+}
 
 }
 }

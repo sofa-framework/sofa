@@ -99,10 +99,10 @@ public:
     void setPreset(Q3PopupMenu *_preset) {preset=_preset;}
 
     /// Return the Root of the simulation
-    GNode *getRoot() {return getGNode(firstChild());}
+    GNode *getRoot() {return graphRoot.get(); } //getGNode(firstChild());}
 
     /// Set the Root of the simulation
-    GNode *setRoot(GNode *node=NULL, bool saveHistory=true) {clearGraph(saveHistory); return addGNode(NULL, node, saveHistory);}
+    GNode::SPtr setRoot(GNode::SPtr node=NULL, bool saveHistory=true) {clearGraph(saveHistory); return addGNode(NULL, node, saveHistory);}
 
     /// Clear the contents of the current Graph
     void clearGraph(bool saveHistory=true);
@@ -171,7 +171,7 @@ public:
     /// expande all the nodes below the current one
     void expandNode(Q3ListViewItem* item);
     /// load a node as a child of the current one
-    GNode *loadNode(Q3ListViewItem* item, std::string filename="", bool saveHistory=true);
+    GNode::SPtr loadNode(Q3ListViewItem* item, std::string filename="", bool saveHistory=true);
     /// Save the whole graphe
     void save(const std::string &fileName);
     /// Save components
@@ -181,7 +181,7 @@ public:
     /// Delete a componnent
     void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
     /// Construct a node from a BaseElement, by passing the factory
-    GNode *buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem, bool saveHistory=false);
+    GNode::SPtr buildNodeFromBaseElement(GNode::SPtr node,xml::BaseElement *elem, bool saveHistory=false);
     void configureElement(Base* b, xml::BaseElement *elem);
 
     /// Used to know what component is about to be created by a drag&drop
@@ -222,12 +222,12 @@ public slots:
     /// Context Menu Operation: expanding all the nodes below the current one
     void expandNode();
     /// Context Menu Operation: loading a node as a child of the current one
-    GNode *loadNode();
+    GNode::SPtr loadNode();
     /// Context Menu Operation: process to a global modification of a Data
     void globalModification();
 
     /// Load a file given the node in which it will be added
-    GNode *loadNode(GNode*, std::string, bool saveHistory=true);
+    GNode::SPtr loadNode(GNode::SPtr, std::string, bool saveHistory=true);
     /// Context Menu Operation: loading a preset: open the window of configuration
     void loadPreset(std::string presetName);
     /// Context Menu Operation: loading a preset: actually creating the node, given its parameters (path to files, and initial position)
@@ -258,9 +258,9 @@ protected:
     BaseObject *getObject(Q3ListViewItem *item) const;
 
     /// Insert a GNode in the scene
-    GNode      *addGNode(GNode *parent, GNode *node=NULL, bool saveHistory=true);
+    GNode::SPtr addGNode(GNode::SPtr parent, GNode::SPtr node=NULL, bool saveHistory=true);
     /// Insert a Component in the scene
-    BaseObject *addComponent(GNode *parent, const ClassEntry* entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
+    BaseObject::SPtr addComponent(GNode::SPtr parent, const ClassEntry* entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
 
     void changeComponentDataValue(const std::string &name, const std::string &value, Base* component) const ;
 
@@ -279,6 +279,7 @@ protected:
     void updatePresetNode(xml::BaseElement &elem, std::string meshFile, std::string translation, std::string rotation, std::string scale);
 
     GraphListenerQListView *graphListener; // Management of the list: Listener of the sofa tree
+    GNode::SPtr graphRoot; ///< root node of the graph (it is now necessary to hold a smart pointer to it in order to keep it from being deleted)
     SofaLibrary *sofaLibrary;
     Q3PopupMenu *preset;  //Preset menu selection appearing when right click on a node
     AddPreset *DialogAdd; //Single Window appearing when adding a preset

@@ -7,7 +7,7 @@
 contains(TEMPLATE, subdirs) | contains(TEMPLATE, vcsubdirs) {
 } else {
 	#!isEmpty(TARGET): message("TARGET: $$TARGET")
-	DEFINES *= SOFA_TARGET=$$TARGET
+	DEFINES *= SOFA_TARGET=$$TARGET_BASE
 }
 
 ########################################################################
@@ -32,6 +32,21 @@ win32-msvc20* {
 win32 {
 	#LIBS *= -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32
 	LIBS *= -lGdi32 -lShell32
+}
+
+unix {
+	!macx {
+        # The following is a workaround to get KDevelop to detect the name of the program to start
+        contains(TEMPLATE, app) {
+            QMAKE_POST_LINK = ln -sf $$TARGET $$APP_DESTDIR/$${TARGET_BASE}-latest
+        }
+    }
+    macx {
+        # The following enables to start the program from the command line as well as graphically
+        contains(TEMPLATE, app):contains (CONFIG, app_bundle) {
+            QMAKE_POST_LINK = ln -sf $${TARGET}.$$TEMPLATE/Contents/MacOS/$$TARGET $$APP_DESTDIR/$$TARGET
+        }
+    }
 }
 
 ########################################################################

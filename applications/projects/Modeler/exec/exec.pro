@@ -15,16 +15,6 @@ macx : {
 #	QMAKE_POST_LINK = cp -r ../../../../share/* ../../../../bin/Modeler$$SUFFIX.app/Contents/Resources/.
 }
 
-# The following is a workaround to get KDevelop to detect the name of the program to start
-unix {
-	!macx: QMAKE_POST_LINK = ln -sf Modeler$$SUFFIX $$APP_DESTDIR/Modeler-latest
-}
-
-# The following create enables to start Modeler from the command line as well as graphically
-macx {
-	QMAKE_POST_LINK = ln -sf Modeler$$SUFFIX.app/Contents/MacOS/Modeler$$SUFFIX $$APP_DESTDIR/Modeler$$SUFFIX
-}
-
 !macx : RC_FILE = sofa.rc
 
 SOURCES = Main.cpp
