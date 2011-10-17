@@ -62,13 +62,11 @@ using namespace core::objectmodel;
 BruteForceDetection::BruteForceDetection()
     : bDraw(initData(&bDraw, false, "draw", "enable/disable display of results"))
     , box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
-    , boxModel(NULL)
 {
 }
 
 BruteForceDetection::~BruteForceDetection()
 {
-    if (boxModel) delete boxModel;
 }
 
 void BruteForceDetection::init()
@@ -80,12 +78,11 @@ void BruteForceDetection::reinit()
 {
     if (box.getValue()[0][0] >= box.getValue()[1][0])
     {
-        if (boxModel) delete boxModel;
-        boxModel = NULL;
+        boxModel.reset();
     }
     else
     {
-        if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeModel>().get();
+        if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeModel>();
         boxModel->resize(1);
         boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
     }
@@ -100,11 +97,11 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
     if (boxModel)
     {
         bool swapModels = false;
-        core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, boxModel, swapModels);
+        core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, boxModel.get(), swapModels);
         if (intersector)
         {
-            core::CollisionModel* cm1 = (swapModels?boxModel:cm);
-            core::CollisionModel* cm2 = (swapModels?cm:boxModel);
+            core::CollisionModel* cm1 = (swapModels?boxModel.get():cm);
+            core::CollisionModel* cm2 = (swapModels?cm:boxModel.get());
 
             // Here we assume a single root element is present in both models
             if (!intersector->canIntersect(cm1->begin(), cm2->begin()))

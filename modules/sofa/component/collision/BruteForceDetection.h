@@ -58,7 +58,7 @@ private:
 
     Data< helper::fixed_array<Vector3,2> > box;
 
-    CubeModel* boxModel;
+    CubeModel::SPtr boxModel;
 
 
 protected:
