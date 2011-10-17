@@ -4,6 +4,7 @@ declare(boost,  boost.prf)
 declare(cgal,   cgal.prf)
 declare(cilk,   cilk.prf)
 declare(cuda,   cuda.prf)
+declare(opencl,  opencl.prf)
 declare(flowvr, flowvr.prf)
 declare(fltk,   fltk.prf)
 declare(glut,   glut.prf)
@@ -113,6 +114,7 @@ declare(sofa_component_misc, modules/sofa/component/sofa_component_misc.pro, sof
 declare(sofa_component, modules/sofa/component/sofa_component.pro, sofa_component_base sofa_component_common sofa_component_general sofa_component_advanced sofa_component_misc)
 
 declare(sofagpucuda, modules/sofa/gpu/cuda, sofahelper sofa_engine sofa_advanced_interaction sofa_sph_fluid sofa_misc_dev eigen csparse cudpp taucs taucs_mt system-taucs cuda)
+declare(sofagpuopencl, modules/sofa/gpu/opencl, sofahelper sofa_engine sofa_advanced_interaction sofa_sph_fluid sofa_misc_dev eigen csparse cudpp taucs taucs_mt system-taucs)
 
 ######################################################################
 # Applications
@@ -120,7 +122,7 @@ declare(sofagpucuda, modules/sofa/gpu/cuda, sofahelper sofa_engine sofa_advanced
 #----- Sofa -----#
 declare(sofagui,     applications/sofa/gui/libgui.pro,     sofa_graph_component sofa_base_collision sofa_user_interaction sofa_advanced_interaction)
 declare(sofaguiqt,   applications/sofa/gui/qt,             sofagui qwt QGLViewer sofa_base_visual sofa_exporter sofa_loader sofa_opengl_visual sofa_misc_forcefield)
-declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut sofa_component sofagpucuda)
+declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut sofa_component sofagpucuda sofagpuopencl)
 declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
 declare(sofaguifltk, applications/sofa/gui/fltk,           sofaguiqt fltk)
 #--- Projects ---#
@@ -133,6 +135,7 @@ declare(sofamodeler,      applications/projects/Modeler/lib,      sofaguimain)
 declare(Modeler,          applications/projects/Modeler/exec,     sofamodeler)
 declare(sofaCUDA,         applications/projects/sofaCUDA,         sofaguimain sofagpucuda)
 declare(sofaCUDA_Bench,   applications/projects/sofaCUDA_Bench,         sofaguimain sofagpucuda)
+declare(sofaOPENCL,       applications/projects/sofaOPENCL,         sofaguimain sofagpuopencl)		#opencl
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofa_component sofagpucuda)
 declare(sofaVerification, applications/projects/sofaVerification, sofa_component sofagpucuda)
@@ -318,9 +321,16 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 		}
 		enable(sofagpucuda)
 		enable(sofaCUDA)
+		
 # This project should be enable in sofa_dependencies-local.prf
 #		enable(sofaCUDA_Bench)
 	}
+	contains(DEFINES, SOFA_GPU_OPENCL)
+	{
+	    enable(sofagpuopencl)
+	    enable(sofaOPENCL)
+	}
+
 } # END SOFA_DEV
 
 contains (DEFINES, SOFA_PML) {

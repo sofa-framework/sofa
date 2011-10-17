@@ -197,9 +197,10 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce(const core::Me
 }
 
 template <>
-void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::draw(const sofa::core::visual::VisualParams* /*vparams*/)
+void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::draw(const sofa::core::visual::VisualParams* vparams)
 {
-    if (!getContext()->getShowForceFields()) return;
+    if(!vparams->displayFlags().getShowForceFields())return;
+//if (!getContext()->getShowForceFields()) return;
     //if (grid != NULL)
     //	grid->draw(vparams);
     const VecCoord& x = *this->mstate->getX();

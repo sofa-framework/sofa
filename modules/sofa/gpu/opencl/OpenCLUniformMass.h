@@ -45,8 +45,8 @@ void UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::accFromF(const core::Mec
 template <>
 void UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-template <>
-bool UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox);
+//template <>
+//bool UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox);
 
 template <>
 double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
@@ -66,8 +66,8 @@ void UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::accFromF(const core::Me
 template <>
 void UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-template <>
-bool UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addBBox(double* minBBox, double* maxBBox);
+//template <>
+//bool UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addBBox(double* minBBox, double* maxBBox);
 
 
 // -- Mass interface
@@ -80,8 +80,8 @@ void UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::accFromF(const core::Me
 template <>
 void UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-template <>
-bool UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox);
+//template <>
+//bool UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox);
 
 template <>
 double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
@@ -101,8 +101,8 @@ void UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::accFromF(const core::M
 template <>
 void UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-template <>
-bool UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addBBox(double* minBBox, double* maxBBox);
+//template <>
+//bool UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addBBox(double* minBBox, double* maxBBox);
 
 } // namespace mass
 
