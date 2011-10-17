@@ -156,8 +156,12 @@ void CompareState::processCompareState()
             //currentError = mmodel->compareX(str);
             currentError = mmodel->compareVec(core::VecId::position(), str);
 
+
             totalError_X +=currentError;
-            dofError_X +=currentError/(double)this->mmodel->getSize();
+
+            double dsize = (double)this->mmodel->getSize();
+            if (dsize != 0.0)
+                dofError_X +=currentError/dsize;
         }
         else if (cmd.compare("V=") == 0)
         {
@@ -165,7 +169,10 @@ void CompareState::processCompareState()
             //currentError = mmodel->compareV(str);
             currentError = mmodel->compareVec(core::VecId::velocity(), str);
             totalError_V +=currentError;
-            dofError_V += currentError/(double)this->mmodel->getSize();
+
+            double dsize = (double)this->mmodel->getSize();
+            if (dsize != 0.0)
+                dofError_V += currentError/dsize;
         }
     }
 
