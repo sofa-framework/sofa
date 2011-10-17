@@ -74,15 +74,16 @@ protected:
     }
 
     template <typename Container, typename NodeType>
-    void clearGroup(Container &inNodes, NodeType* group)
+    void clearGroup(Container &inNodes, typename NodeType::SPtr group)
     {
         NodeType* parent = *inNodes.begin();
         while(!group->child.empty()) parent->moveChild(*group->child.begin());
 
         simulation::DeleteVisitor vis(sofa::core::ExecParams::defaultInstance());
-        vis.execute(group);
+        vis.execute(group.get());
         group->detachFromGraph();
-        delete group;
+        //delete group;
+        group.reset();
     }
 
 
