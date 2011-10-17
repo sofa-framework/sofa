@@ -109,7 +109,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::handleTopologyEvents( std::li
         }
         case core::topology::POINTSADDED:
         {
-            const sofa::helper::vector< unsigned int >& indexList = ( static_cast< const PointsAdded * >( *changeIt ) )->indicesList;
+            const sofa::helper::vector< unsigned int >& indexList = ( static_cast< const PointsAdded * >( *changeIt ) )->pointIndexArray;
             sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = ( static_cast< const PointsAdded * >( *changeIt ) )->ancestorsList;
             sofa::helper::vector< sofa::helper::vector< double       > >& coefs     = ( static_cast< const PointsAdded * >( *changeIt ) )->coefs;
 
@@ -264,10 +264,10 @@ void TopologyDataImpl <TopologyElementType, VecT>::handleTopologyEvents( std::li
         }
         case core::topology::QUADSMOVED_ADDING:
         {
-            const sofa::helper::vector< unsigned int >& triangleList = ( static_cast< const QuadsMoved_Adding *>( *changeIt ) )->trianglesAroundVertexMoved;
-            const sofa::helper::vector< Triangle >& triangleArray = ( static_cast< const QuadsMoved_Adding *>( *changeIt ) )->triangleArray2Moved;
+            const sofa::helper::vector< unsigned int >& quadList = ( static_cast< const QuadsMoved_Adding *>( *changeIt ) )->quadsAroundVertexMoved;
+            const sofa::helper::vector< Triangle >& quadArray = ( static_cast< const QuadsMoved_Adding *>( *changeIt ) )->quadArray2Moved;
 
-            this->applyQuadMovedCreation(triangleList, triangleArray);
+            this->applyQuadMovedCreation(quadList, quadArray);
             break;
         }
         case core::topology::QUADSRENUMBERING:
@@ -303,14 +303,14 @@ void TopologyDataImpl <TopologyElementType, VecT>::handleTopologyEvents( std::li
         }
         case core::topology::TETRAHEDRAMOVED_REMOVING:
         {
-            const sofa::helper::vector< unsigned int >& tetrahedronList = ( static_cast< const TetrahedraMoved_Removing *>( *changeIt ) )->tetrahedronsAroundVertexMoved;
+            const sofa::helper::vector< unsigned int >& tetrahedronList = ( static_cast< const TetrahedraMoved_Removing *>( *changeIt ) )->tetrahedraAroundVertexMoved;
 
             this->applyTetrahedronMovedDestruction(tetrahedronList);
             break;
         }
         case core::topology::TETRAHEDRAMOVED_ADDING:
         {
-            const sofa::helper::vector< unsigned int >& tetrahedronList = ( static_cast< const TetrahedraMoved_Adding *>( *changeIt ) )->tetrahedronsAroundVertexMoved;
+            const sofa::helper::vector< unsigned int >& tetrahedronList = ( static_cast< const TetrahedraMoved_Adding *>( *changeIt ) )->tetrahedraAroundVertexMoved;
             const sofa::helper::vector< Triangle >& tetrahedronArray = ( static_cast< const TetrahedraMoved_Adding *>( *changeIt ) )->tetrahedronArray2Moved;
 
             this->applyTetrahedronMovedCreation(tetrahedronList, tetrahedronArray);
@@ -349,14 +349,14 @@ void TopologyDataImpl <TopologyElementType, VecT>::handleTopologyEvents( std::li
         }
         case core::topology::HEXAHEDRAMOVED_REMOVING:
         {
-            const sofa::helper::vector< unsigned int >& hexahedronList = ( static_cast< const HexahedraMoved_Removing *>( *changeIt ) )->hexahedronsAroundVertexMoved;
+            const sofa::helper::vector< unsigned int >& hexahedronList = ( static_cast< const HexahedraMoved_Removing *>( *changeIt ) )->hexahedraAroundVertexMoved;
 
             this->applyHexahedronMovedDestruction(hexahedronList);
             break;
         }
         case core::topology::HEXAHEDRAMOVED_ADDING:
         {
-            const sofa::helper::vector< unsigned int >& hexahedronList = ( static_cast< const HexahedraMoved_Adding *>( *changeIt ) )->hexahedronsAroundVertexMoved;
+            const sofa::helper::vector< unsigned int >& hexahedronList = ( static_cast< const HexahedraMoved_Adding *>( *changeIt ) )->hexahedraAroundVertexMoved;
             const sofa::helper::vector< Triangle >& hexahedronArray = ( static_cast< const HexahedraMoved_Adding *>( *changeIt ) )->hexahedronArray2Moved;
 
             this->applyHexahedronMovedCreation(hexahedronList, hexahedronArray);
@@ -477,19 +477,19 @@ void TopologyDataImpl <TopologyElementType, VecT>::add(unsigned int nbElements,
     // Using default values
     container_type& data = *(this->beginEdit());
     unsigned int i0 = data.size();
-    data.resize(i0+nbEdges);
+    data.resize(i0+nbElements);
 
-    for (unsigned int i = 0; i < nbEdges; ++i)
+    for (unsigned int i = 0; i < nbElements; ++i)
     {
         value_type& t = data[i0+i];
         if (ancestors.empty() || coefs.empty())
         {
             const sofa::helper::vector< unsigned int > empty_vecint;
             const sofa::helper::vector< double > empty_vecdouble;
-            m_createFunc( i0+i, m_createParam, t, edge[i], empty_vecint, empty_vecdouble);
+            m_createFunc( i0+i, t, elems[i], empty_vecint, empty_vecdouble);
         }
         else
-            m_createFunc( i0+i, m_createParam, t, edge[i], ancestors[i], coefs[i] );
+            m_createFunc( i0+i, t, elems[i], ancestors[i], coefs[i] );
     }
     this->endEdit();
 }
@@ -586,12 +586,12 @@ void PointDataImpl<VecT>::applyPointIndicesSwap(unsigned int i1, unsigned int i2
 template< typename VecT >
 void PointDataImpl<VecT>::applyPointRenumbering(const sofa::helper::vector<unsigned int> &indices)
 {
-    this->renumber( tab );
+    this->renumber( indices );
 }
 
 template< typename VecT >
 void PointDataImpl<VecT>::applyPointMove(const sofa::helper::vector<unsigned int> &indexList,
-        const sofa::helper::vector< TopologyElementType >& /*elems*/,
+        const sofa::helper::vector< Point >& /*elems*/,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
@@ -616,7 +616,7 @@ void EdgeDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshT
 
 template< typename VecT >
 void EdgeDataImpl<VecT>::applyEdgeCreation(const sofa::helper::vector<unsigned int> &indices,
-        const sofa::helper::vector< TopologyElementType >& elems,
+        const sofa::helper::vector< Edge >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
@@ -643,7 +643,7 @@ void EdgeDataImpl<VecT>::applyeEdgeRenumbering(const sofa::helper::vector<unsign
 
 template< typename VecT >
 void EdgeDataImpl<VecT>::applyEdgeMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
-        const sofa::helper::vector<TopologyElementType> & edgeArray)
+        const sofa::helper::vector<Edge> & edgeArray)
 {
     container_type& data = *(this->beginEdit());
 
@@ -653,10 +653,10 @@ void EdgeDataImpl<VecT>::applyEdgeMovedCreation(const sofa::helper::vector<unsig
     coefs.push_back (1.0);
     ancestors.resize(1);
 
-    for (unsigned int i = 0; i <edgeList.size(); i++)
+    for (unsigned int i = 0; i <indexList.size(); i++)
     {
-        ancestors[0] = edgeList[i];
-        this->applyCreateFunction( indexList[i], data[edgeList[i]], edgeArray[i], ancestors, coefs );
+        ancestors[0] = indexList[i];
+        this->applyCreateFunction( indexList[i], data[indexList[i]], edgeArray[i], ancestors, coefs );
     }
 
     this->endEdit();
@@ -696,7 +696,7 @@ void TriangleDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseM
 
 template< typename VecT >
 void TriangleDataImpl<VecT>::applyTriangleCreation(const sofa::helper::vector<unsigned int> &indices,
-        const sofa::helper::vector< TopologyElementType >& elems,
+        const sofa::helper::vector< Triangle >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
@@ -723,7 +723,7 @@ void TriangleDataImpl<VecT>::applyeTriangleRenumbering(const sofa::helper::vecto
 
 template< typename VecT >
 void TriangleDataImpl<VecT>::applyTriangleMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
-        const sofa::helper::vector<TopologyElementType> & edgeArray)
+        const sofa::helper::vector<Triangle> & triangleArray)
 {
     container_type& data = *(this->beginEdit());
 
@@ -733,10 +733,10 @@ void TriangleDataImpl<VecT>::applyTriangleMovedCreation(const sofa::helper::vect
     coefs.push_back (1.0);
     ancestors.resize(1);
 
-    for (unsigned int i = 0; i <edgeList.size(); i++)
+    for (unsigned int i = 0; i <indexList.size(); i++)
     {
-        ancestors[0] = edgeList[i];
-        this->applyCreateFunction( indexList[i], data[edgeList[i]], edgeArray[i], ancestors, coefs );
+        ancestors[0] = triangleArray[i];
+        this->applyCreateFunction( indexList[i], data[indexList[i]], triangleArray[i], ancestors, coefs );
     }
 
     this->endEdit();
@@ -777,7 +777,7 @@ void QuadDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshT
 
 template< typename VecT >
 void QuadDataImpl<VecT>::applyQuadCreation(const sofa::helper::vector<unsigned int> &indices,
-        const sofa::helper::vector< TopologyElementType >& elems,
+        const sofa::helper::vector< Quad >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
@@ -804,7 +804,7 @@ void QuadDataImpl<VecT>::applyeQuadRenumbering(const sofa::helper::vector<unsign
 
 template< typename VecT >
 void QuadDataImpl<VecT>::applyQuadMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
-        const sofa::helper::vector<TopologyElementType> & edgeArray)
+        const sofa::helper::vector<Quad> & quadArray)
 {
     container_type& data = *(this->beginEdit());
 
@@ -814,10 +814,10 @@ void QuadDataImpl<VecT>::applyQuadMovedCreation(const sofa::helper::vector<unsig
     coefs.push_back (1.0);
     ancestors.resize(1);
 
-    for (unsigned int i = 0; i <edgeList.size(); i++)
+    for (unsigned int i = 0; i <indexList.size(); i++)
     {
-        ancestors[0] = edgeList[i];
-        this->applyCreateFunction( indexList[i], data[edgeList[i]], edgeArray[i], ancestors, coefs );
+        ancestors[0] = indexList[i];
+        this->applyCreateFunction( indexList[i], data[indexList[i]], quadArray[i], ancestors, coefs );
     }
 
     this->endEdit();
@@ -858,7 +858,7 @@ void TetrahedronDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::Ba
 
 template< typename VecT >
 void TetrahedronDataImpl<VecT>::applyTetrahedronCreation(const sofa::helper::vector<unsigned int> &indices,
-        const sofa::helper::vector< TopologyElementType >& elems,
+        const sofa::helper::vector< Tetrahedron >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
@@ -885,7 +885,7 @@ void TetrahedronDataImpl<VecT>::applyeTetrahedronRenumbering(const sofa::helper:
 
 template< typename VecT >
 void TetrahedronDataImpl<VecT>::applyTetrahedronMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
-        const sofa::helper::vector<TopologyElementType> & edgeArray)
+        const sofa::helper::vector<Tetrahedron> & tetrahedronArray)
 {
     container_type& data = *(this->beginEdit());
 
@@ -895,10 +895,10 @@ void TetrahedronDataImpl<VecT>::applyTetrahedronMovedCreation(const sofa::helper
     coefs.push_back (1.0);
     ancestors.resize(1);
 
-    for (unsigned int i = 0; i <edgeList.size(); i++)
+    for (unsigned int i = 0; i <indexList.size(); i++)
     {
-        ancestors[0] = edgeList[i];
-        this->applyCreateFunction( indexList[i], data[edgeList[i]], edgeArray[i], ancestors, coefs );
+        ancestors[0] = indexList[i];
+        this->applyCreateFunction( indexList[i], data[indexList[i]], tetrahedronArray[i], ancestors, coefs );
     }
 
     this->endEdit();
@@ -939,7 +939,7 @@ void HexahedronDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::Bas
 
 template< typename VecT >
 void HexahedronDataImpl<VecT>::applyHexahedronCreation(const sofa::helper::vector<unsigned int> &indices,
-        const sofa::helper::vector< TopologyElementType >& elems,
+        const sofa::helper::vector< Hexahedron >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
@@ -966,7 +966,7 @@ void HexahedronDataImpl<VecT>::applyeHexahedronRenumbering(const sofa::helper::v
 
 template< typename VecT >
 void HexahedronDataImpl<VecT>::applyHexahedronMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
-        const sofa::helper::vector<TopologyElementType> & edgeArray)
+        const sofa::helper::vector<Hexahedron> & hexahedronArray)
 {
     container_type& data = *(this->beginEdit());
 
@@ -976,10 +976,10 @@ void HexahedronDataImpl<VecT>::applyHexahedronMovedCreation(const sofa::helper::
     coefs.push_back (1.0);
     ancestors.resize(1);
 
-    for (unsigned int i = 0; i <edgeList.size(); i++)
+    for (unsigned int i = 0; i <indexList.size(); i++)
     {
-        ancestors[0] = edgeList[i];
-        this->applyCreateFunction( indexList[i], data[edgeList[i]], edgeArray[i], ancestors, coefs );
+        ancestors[0] = indexList[i];
+        this->applyCreateFunction( indexList[i], data[indexList[i]], hexahedronArray[i], ancestors, coefs );
     }
 
     this->endEdit();

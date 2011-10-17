@@ -149,10 +149,8 @@ public:
             const sofa::helper::vector< double > &) {}
 
     /// WARNING NEEED TO UNIFY THIS
-    /// Apply removing current elementType elements
-    virtual void applyDestroyFunction(unsigned int, value_type& /*t*/) {/*t = VecT();*/}
     /// Apply adding current elementType elements
-    virtual void applyCreateFunction(unsigned int, value_type&,
+    virtual void applyCreateFunction(unsigned int, value_type&, const TopologyElementType& ,
             const sofa::helper::vector< unsigned int > &,
             const sofa::helper::vector< double > &) {}
 
@@ -375,10 +373,10 @@ public:
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    PointDataImpl(InputIterator first, InputIterator last): TopologyData<Point, VecT>(first,last) {}
+    PointDataImpl(InputIterator first, InputIterator last): TopologyDataImpl<Point, VecT>(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    PointDataImpl(typename PointDataImpl<VecT>::const_iterator first, typename PointDataImpl<VecT>::const_iterator last): TopologyData<Point, VecT>(first,last) {}
+    PointDataImpl(typename PointDataImpl<VecT>::const_iterator first, typename PointDataImpl<VecT>::const_iterator last): TopologyDataImpl<Point, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
     /** Public functions to handle topological engine creation */
@@ -388,7 +386,6 @@ public:
 public:
     /// Apply adding point elements.
     void applyPointCreation(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< TopologyElementType >& /*elems*/,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing point elements.
@@ -399,7 +396,7 @@ public:
     void applyPointRenumbering(const sofa::helper::vector<unsigned int>& indices);
     /// Apply removing points elements.
     void applyPointMove(const sofa::helper::vector<unsigned int>& indexList,
-            const sofa::helper::vector< TopologyElementType >& /*elems*/,
+            const sofa::helper::vector< Point >& /*elems*/,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
@@ -444,10 +441,10 @@ public:
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    EdgeDataImpl(InputIterator first, InputIterator last): TopologyData<Edge, VecT>(first,last) {}
+    EdgeDataImpl(InputIterator first, InputIterator last): TopologyDataImpl<Edge, VecT>(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    EdgeDataImpl(typename EdgeDataImpl<VecT>::const_iterator first, typename EdgeDataImpl<VecT>::const_iterator last): TopologyData<Edge, VecT>(first,last) {}
+    EdgeDataImpl(typename EdgeDataImpl<VecT>::const_iterator first, typename EdgeDataImpl<VecT>::const_iterator last): TopologyDataImpl<Edge, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
     /** Public functions to handle topological engine creation */
@@ -456,7 +453,7 @@ public:
 
     /// Apply adding Edge elements.
     void applyEdgeCreation(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< TopologyElementType >& elems,
+            const sofa::helper::vector< Edge >& elems,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing Edge elements.
@@ -467,7 +464,7 @@ public:
     virtual void applyeEdgeRenumbering(const sofa::helper::vector<unsigned int>& indices);
     /// Apply adding function on moved Edge elements.
     virtual void applyEdgeMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
-            const sofa::helper::vector< TopologyElementType >& elems);
+            const sofa::helper::vector< Edge >& elems);
     /// Apply removing function on moved Edge elements.
     virtual void applyEdgeMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
 
@@ -510,10 +507,10 @@ public:
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    TriangleDataImpl(InputIterator first, InputIterator last): TopologyData<Triangle, VecT>(first,last) {}
+    TriangleDataImpl(InputIterator first, InputIterator last): TopologyDataImpl<Triangle, VecT>(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    TriangleDataImpl(typename TriangleDataImpl<VecT>::const_iterator first, typename TriangleDataImpl<VecT>::const_iterator last): TopologyData<Triangle, VecT>(first,last) {}
+    TriangleDataImpl(typename TriangleDataImpl<VecT>::const_iterator first, typename TriangleDataImpl<VecT>::const_iterator last): TopologyDataImpl<Triangle, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
     /** Public functions to handle topological engine creation */
@@ -522,7 +519,7 @@ public:
 
     /// Apply adding Triangle elements.
     void applyTriangleCreation(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< TopologyElementType >& /*elems*/,
+            const sofa::helper::vector< Triangle >& /*elems*/,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing Triangle elements.
@@ -533,7 +530,7 @@ public:
     virtual void applyeTriangleRenumbering(const sofa::helper::vector<unsigned int>& indices);
     /// Apply adding function on moved Triangle elements.
     virtual void applyTriangleMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
-            const sofa::helper::vector< TopologyElementType >& /*elems*/);
+            const sofa::helper::vector< Triangle >& /*elems*/);
     /// Apply removing function on moved Triangle elements.
     virtual void applyTriangleMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
 
@@ -577,10 +574,10 @@ public:
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    QuadDataImpl(InputIterator first, InputIterator last): TopologyData<Quad, VecT>(first,last) {}
+    QuadDataImpl(InputIterator first, InputIterator last): TopologyDataImpl<Quad, VecT>(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    QuadDataImpl(typename QuadDataImpl<VecT>::const_iterator first, typename QuadDataImpl<VecT>::const_iterator last): TopologyData<Quad, VecT>(first,last) {}
+    QuadDataImpl(typename QuadDataImpl<VecT>::const_iterator first, typename QuadDataImpl<VecT>::const_iterator last): TopologyDataImpl<Quad, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
     /** Public functions to handle topological engine creation */
@@ -589,7 +586,7 @@ public:
 
     /// Apply adding Quad elements.
     void applyQuadCreation(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< TopologyElementType >& /*elems*/,
+            const sofa::helper::vector< Quad >& /*elems*/,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing Quad elements.
@@ -600,7 +597,7 @@ public:
     virtual void applyeQuadRenumbering(const sofa::helper::vector<unsigned int>& indices);
     /// Apply adding function on moved Quad elements.
     virtual void applyQuadMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
-            const sofa::helper::vector< TopologyElementType >& /*elems*/);
+            const sofa::helper::vector< Quad >& /*elems*/);
     /// Apply removing function on moved Quad elements.
     virtual void applyQuadMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
 
@@ -644,10 +641,10 @@ public:
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    TetrahedronDataImpl(InputIterator first, InputIterator last): TopologyData<Tetrahedron, VecT>(first,last) {}
+    TetrahedronDataImpl(InputIterator first, InputIterator last): TopologyDataImpl<Tetrahedron, VecT>(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    TetrahedronDataImpl(typename TetrahedronDataImpl<VecT>::const_iterator first, typename TetrahedronDataImpl<VecT>::const_iterator last): TopologyData<Tetrahedron, VecT>(first,last) {}
+    TetrahedronDataImpl(typename TetrahedronDataImpl<VecT>::const_iterator first, typename TetrahedronDataImpl<VecT>::const_iterator last): TopologyDataImpl<Tetrahedron, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
     /** Public functions to handle topological engine creation */
@@ -656,7 +653,7 @@ public:
 
     /// Apply adding Tetrahedron elements.
     void applyTetrahedronCreation(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< TopologyElementType >& /*elems*/,
+            const sofa::helper::vector< Tetrahedron >& /*elems*/,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing Tetrahedron elements.
@@ -667,7 +664,7 @@ public:
     virtual void applyeTetrahedronRenumbering(const sofa::helper::vector<unsigned int>& indices);
     /// Apply adding function on moved Tetrahedron elements.
     virtual void applyTetrahedronMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
-            const sofa::helper::vector< TopologyElementType >& /*elems*/);
+            const sofa::helper::vector< Tetrahedron >& /*elems*/);
     /// Apply removing function on moved Tetrahedron elements.
     virtual void applyTetrahedronMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
 
@@ -712,10 +709,10 @@ public:
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    HexahedronDataImpl(InputIterator first, InputIterator last): TopologyData<Hexahedron, VecT>(first,last) {}
+    HexahedronDataImpl(InputIterator first, InputIterator last): TopologyDataImpl<Hexahedron, VecT>(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    HexahedronDataImpl(typename HexahedronDataImpl<VecT>::const_iterator first, typename HexahedronDataImpl<VecT>::const_iterator last): TopologyData<Hexahedron, VecT>(first,last) {}
+    HexahedronDataImpl(typename HexahedronDataImpl<VecT>::const_iterator first, typename HexahedronDataImpl<VecT>::const_iterator last): TopologyDataImpl<Hexahedron, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
     /** Public functions to handle topological engine creation */
@@ -724,7 +721,7 @@ public:
 
     /// Apply adding Hexahedron elements.
     void applyHexahedronCreation(const sofa::helper::vector< unsigned int >& indices,
-            const sofa::helper::vector< TopologyElementType >& /*elems*/,
+            const sofa::helper::vector< Hexahedron >& /*elems*/,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
     /// Apply removing Hexahedron elements.
@@ -735,7 +732,7 @@ public:
     virtual void applyeHexahedronRenumbering(const sofa::helper::vector<unsigned int>& indices);
     /// Apply adding function on moved Hexahedron elements.
     virtual void applyHexahedronMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
-            const sofa::helper::vector< TopologyElementType >& /*elems*/);
+            const sofa::helper::vector< Hexahedron >& /*elems*/);
     /// Apply removing function on moved Hexahedron elements.
     virtual void applyHexahedronMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
 
