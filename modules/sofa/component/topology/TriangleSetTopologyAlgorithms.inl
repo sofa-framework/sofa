@@ -1944,7 +1944,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                             {
                                 if (shell[k] == indices_list[1])
                                 {
-                                    std::cout << indices_list[1] << std::endl;
+                                    //std::cout << indices_list[1] << std::endl;
                                     topoPath_list.erase (topoPath_list.begin()+1);
                                     indices_list.erase (indices_list.begin()+1);
                                     coords_list.erase (coords_list.begin()+1);

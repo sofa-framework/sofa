@@ -1335,7 +1335,7 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 
             if ( j >= triangleIncisionInformation[i].coordinates.size() || triangleIncisionInformation[i].coordinates.empty())
             {
-                std::cout << "ERROR(TopologicalChangeProcessor::updateTriangleIncisionInformation): error accessing coordinates" << std::endl;
+                std::cout << "WARNING(TopologicalChangeProcessor::updateTriangleIncisionInformation): error accessing coordinates" << std::endl;
                 break;
             }
 
@@ -1343,7 +1343,7 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 
             if ( newTriangleIndexb == -1)
             {
-                std::cout << "ERROR(TopologicalChangeProcessor::updateTriangleIncisionInformation): error while finding the point " << triangleIncisionInformation[i].coordinates[j] << " in a new triangle. Current triangle index = " << currentTriangleIndex << std::endl;
+                std::cout << "WARNING(TopologicalChangeProcessor::updateTriangleIncisionInformation): error while finding the point " << triangleIncisionInformation[i].coordinates[j] << " in a new triangle. Current triangle index = " << currentTriangleIndex << std::endl;
                 break;
             }
 
