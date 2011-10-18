@@ -43,6 +43,12 @@ void initMiscCollision()
 }
 
 SOFA_LINK_CLASS(TreeCollisionGroupManager)
+SOFA_LINK_CLASS(FFDDistanceGridDiscreteIntersection)
+SOFA_LINK_CLASS(RayDiscreteIntersection)
+SOFA_LINK_CLASS(RayNewProximityIntersection)
+SOFA_LINK_CLASS(RigidDistanceGridDiscreteIntersection)
+SOFA_LINK_CLASS(TetrahedronDiscreteIntersection)
+
 
 } // namespace component
 

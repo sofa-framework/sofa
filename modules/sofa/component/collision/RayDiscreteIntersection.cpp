@@ -46,6 +46,8 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
+SOFA_DECL_CLASS(RayDiscreteIntersection)
+
 IntersectorCreator<DiscreteIntersection, RayDiscreteIntersection> RayDiscreteIntersectors("Ray");
 
 RayDiscreteIntersection::RayDiscreteIntersection(DiscreteIntersection* object)

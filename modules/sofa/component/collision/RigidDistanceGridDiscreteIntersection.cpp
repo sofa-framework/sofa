@@ -46,6 +46,8 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
+SOFA_DECL_CLASS(RigidDistanceGridDiscreteIntersection)
+
 IntersectorCreator<DiscreteIntersection, RigidDistanceGridDiscreteIntersection> RigidDistanceGridDiscreteIntersectors("RigidDistanceGrid");
 
 RigidDistanceGridDiscreteIntersection::RigidDistanceGridDiscreteIntersection(DiscreteIntersection* object)

@@ -20,6 +20,7 @@ HEADERS += initMiscCollision.h \
            collision/RigidDistanceGridDiscreteIntersection.inl \
            collision/FFDDistanceGridDiscreteIntersection.h \
            collision/FFDDistanceGridDiscreteIntersection.inl \
+           collision/RayNewProximityIntersection.h \
 
 
 SOURCES += initMiscCollision.cpp \
@@ -35,6 +36,7 @@ SOURCES += initMiscCollision.cpp \
 	   collision/RayDiscreteIntersection.cpp \
 	   collision/RigidDistanceGridDiscreteIntersection.cpp \
 	   collision/FFDDistanceGridDiscreteIntersection.cpp \
+           collision/RayNewProximityIntersection.cpp \
 
 
 contains(DEFINES,SOFA_SMP){

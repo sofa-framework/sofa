@@ -82,6 +82,7 @@ HEADERS += \
 	collision/Intersection.inl \
 	collision/NarrowPhaseDetection.h \
 	collision/Pipeline.h \
+        collision/IntersectorFactory.h \
 	topology/BaseMeshTopology.h \
 	topology/BaseTopology.h \
 	topology/BaseTopologyObject.h \

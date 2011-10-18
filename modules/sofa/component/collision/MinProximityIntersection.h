@@ -43,7 +43,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_MESH_COLLISION_API MinProximityIntersection : public DiscreteIntersection
+class SOFA_BASE_COLLISION_API MinProximityIntersection : public DiscreteIntersection
 {
 public:
     SOFA_CLASS(MinProximityIntersection,DiscreteIntersection);
@@ -54,6 +54,9 @@ public:
 protected:
     MinProximityIntersection();
 public:
+
+    typedef core::collision::IntersectorFactory<MinProximityIntersection> IntersectorFactory;
+
     virtual void init();
 
     /// returns true if algorithm uses proximity
@@ -70,26 +73,11 @@ public:
     void setContactDistance(double v) { contactDistance.setValue(v); }
 
     bool testIntersection(Cube& ,Cube&);
-
-    bool testIntersection(Point&, Point&);
-    bool testIntersection(Sphere&, Point&);
     bool testIntersection(Sphere&, Sphere&);
-    bool testIntersection(Line&, Point&);
-    bool testIntersection(Line&, Sphere&);
-    bool testIntersection(Line&, Line&);
-    bool testIntersection(Triangle&, Point&);
-    bool testIntersection(Triangle&, Sphere&);
     //bool testIntersection(Ray&, Triangle&);
 
     int computeIntersection(Cube&, Cube&, OutputVector*);
-    int computeIntersection(Point&, Point&, OutputVector*);
-    int computeIntersection(Sphere&, Point&, OutputVector*);
     int computeIntersection(Sphere&, Sphere&, OutputVector*);
-    int computeIntersection(Line&, Point&, OutputVector*);
-    int computeIntersection(Line&, Sphere&, OutputVector*);
-    int computeIntersection(Line&, Line&, OutputVector*);
-    int computeIntersection(Triangle&, Point&, OutputVector*);
-    int computeIntersection(Triangle&, Sphere&, OutputVector*);
     //int computeIntersection(Ray&, Triangle&, OutputVector*);
 
     void draw(const core::visual::VisualParams* vparams);
@@ -98,6 +86,11 @@ private:
     double mainAlarmDistance;
     double mainContactDistance;
 };
+
+#if defined(WIN32) && !defined(SOFA_BUILD_BASE_COLLISION)
+extern template class SOFA_BASE_COLLISION_API core::collision::IntersectorFactory<MinProximityIntersection>;
+#endif
+
 
 } // namespace collision
 

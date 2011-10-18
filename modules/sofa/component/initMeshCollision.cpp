@@ -48,6 +48,9 @@ SOFA_LINK_CLASS(BarycentricPenalityContact)
 SOFA_LINK_CLASS(BarycentricContactMapper)
 SOFA_LINK_CLASS(IdentityContactMapper)
 SOFA_LINK_CLASS(SubsetContactMapper)
+SOFA_LINK_CLASS(MeshDiscreteIntersection)
+SOFA_LINK_CLASS(MeshMinProximityIntersection)
+SOFA_LINK_CLASS(MeshNewProximityIntersection)
 
 } // namespace component
 
