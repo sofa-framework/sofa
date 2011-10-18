@@ -34,11 +34,7 @@
 #include "sofa/gui/qt/QSofaListView.h"
 #include <algorithm>
 
-#ifdef SOFA_HAVE_CHAI3D
 #include <sofa/simulation/common/PropagateEventVisitor.h>
-#include <sofa/core/objectmodel/GLInitializedEvent.h>
-#endif // SOFA_HAVE_CHAI3D
-
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/xml/XML.h>
@@ -209,14 +205,6 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
 
     // show the gui
     gui->show();
-
-#ifdef SOFA_HAVE_CHAI3D
-    // Tell nodes that openGl is initialized
-    // especially the GL_MODELVIEW_MATRIX
-    sofa::core::objectmodel::GLInitializedEvent ev;
-    sofa::simulation::PropagateEventVisitor act(&ev);
-    root->execute(act);
-#endif // SOFA_HAVE_CHAI3D
 
     return gui;
 }
@@ -928,14 +916,6 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
             recorder->Clear();
 #endif
     }
-
-#ifdef SOFA_HAVE_CHAI3D
-    // Tell nodes that openGl is initialized
-    // especialy the GL_MODELVIEW_MATRIX
-    sofa::core::objectmodel::GLInitializedEvent ev;
-    sofa::simulation::PropagateEventVisitor act(&ev);
-    root->execute(act);
-#endif // SOFA_HAVE_CHAI3D
 
     viewer->getQWidget()->setFocus();
     viewer->getQWidget()->show();

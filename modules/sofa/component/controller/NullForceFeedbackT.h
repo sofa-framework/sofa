@@ -38,7 +38,7 @@ namespace controller
 using namespace std;
 
 /**
-* Omni driver force field
+* Device driver force field
 */
 template<class TDataTypes>
 class SOFA_HAPTICS_API NullForceFeedbackT : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>

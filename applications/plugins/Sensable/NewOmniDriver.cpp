@@ -1036,7 +1036,8 @@ void NewOmniDriver::handleEvent(core::objectmodel::Event *event)
 }
 
 int NewOmniDriverClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
-        .add< NewOmniDriver >();
+        .add< NewOmniDriver >()
+        .addAlias("OmniDriver");
 
 SOFA_DECL_CLASS(NewOmniDriver)
 

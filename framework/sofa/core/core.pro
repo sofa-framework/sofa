@@ -116,12 +116,12 @@ HEADERS += \
 	objectmodel/DetachNodeEvent.h \
 	objectmodel/Event.h \
 	objectmodel/BaseData.h \
+	objectmodel/HapticDeviceEvent.h \
 	objectmodel/JoystickEvent.h \
 	objectmodel/KeypressedEvent.h \
 	objectmodel/KeyreleasedEvent.h \
 	objectmodel/MouseEvent.h \
 	objectmodel/ObjectRef.h \
-	objectmodel/GLInitializedEvent.h \
 	objectmodel/Tag.h \
 	visual/DisplayFlags.h \
 	visual/VisualParams.h \

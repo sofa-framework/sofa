@@ -36,7 +36,7 @@ namespace component
 {
 namespace controller
 {
-int lCPForceFeedbackClass = sofa::core::RegisterObject("LCP force feedback for the omni")
+int lCPForceFeedbackClass = sofa::core::RegisterObject("LCP force feedback for the device")
 #ifndef SOFA_FLOAT
         .add< LCPForceFeedback<sofa::defaulttype::Vec1dTypes> >()
         .add< LCPForceFeedback<sofa::defaulttype::Rigid3dTypes> >()

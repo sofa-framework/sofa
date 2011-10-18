@@ -24,7 +24,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/OmniEvent.h>
+#include <sofa/core/objectmodel/HapticDeviceEvent.h>
 
 namespace sofa
 {
@@ -35,7 +35,7 @@ namespace core
 namespace objectmodel
 {
 
-OmniEvent::OmniEvent(const unsigned int id, const Vector3& position, const Quat& orientation, const unsigned char button)
+HapticDeviceEvent::HapticDeviceEvent(const unsigned int id, const Vector3& position, const Quat& orientation, const unsigned char button)
     : sofa::core::objectmodel::Event()
     , m_deviceId(id)
     , m_position(position)
@@ -43,7 +43,7 @@ OmniEvent::OmniEvent(const unsigned int id, const Vector3& position, const Quat&
     , m_buttonState(button)
 {}
 
-OmniEvent::~OmniEvent()
+HapticDeviceEvent::~HapticDeviceEvent()
 {
 
 }

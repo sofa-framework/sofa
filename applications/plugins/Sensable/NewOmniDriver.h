@@ -47,7 +47,7 @@
 
 //truc du .cpp
 #include <sofa/core/ObjectFactory.h>
-//#include <sofa/core/objectmodel/OmniEvent.h>
+//#include <sofa/core/objectmodel/HapticDeviceEvent.h>
 
 //force feedback
 //#include <sofa/component/controller/ForceFeedback.h>
