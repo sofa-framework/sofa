@@ -74,39 +74,32 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS 
         this->gnode->execute ( act );
     }
 
-
     double startTime = this->gnode->getTime();
-    double mechanicalDt = dt/numMechSteps.getValue();
-    AnimateVisitor act(params);
-    act.setDt ( mechanicalDt );
-    BehaviorUpdatePositionVisitor beh(params , this->gnode->getDt());
-    for( unsigned i=0; i<numMechSteps.getValue(); i++ )
+
+    BehaviorUpdatePositionVisitor beh(params , dt);
+    this->gnode->execute ( beh );
+
+    sofa::core::objectmodel::TagSet::iterator it;
+
+    for (it = tagList.begin(); it != tagList.end(); ++it)
     {
-        this->gnode->execute ( beh );
+        this->addTag (*it);
 
-        sofa::core::objectmodel::TagSet::iterator it;
+        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin constraints reset" << sendl;
+        sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
+        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end constraints reset" << sendl;
+        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin collision for tag: "<< *it << sendl;
+        computeCollision(params);
+        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end collision" << sendl;
+        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin integration  for tag: "<< *it << sendl;
+        integrate(params /* PARAMS FIRST */, dt);
+        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end integration" << sendl;
 
-        for (it = tagList.begin(); it != tagList.end(); ++it)
-        {
-            this->addTag (*it);
-
-            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin constraints reset" << sendl;
-            sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
-            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end constraints reset" << sendl;
-            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin collision for tag: "<< *it << sendl;
-            computeCollision(params);
-            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end collision" << sendl;
-            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin integration  for tag: "<< *it << sendl;
-            integrate(params /* PARAMS FIRST */, dt);
-            if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end integration" << sendl;
-
-            this->removeTag (*it);
-        }
-
-        this->gnode->setTime ( startTime + (i+1)* act.getDt() );
-        this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
-        nbMechSteps.setValue(nbMechSteps.getValue() + 1);
+        this->removeTag (*it);
     }
+
+    this->gnode->setTime ( startTime + dt );
+    this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
         AnimateEndEvent ev ( dt );
@@ -133,7 +126,6 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
-    nbSteps.setValue(nbSteps.getValue() + 1);
 
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }

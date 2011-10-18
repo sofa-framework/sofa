@@ -67,18 +67,6 @@ public:
     /// Specify and execute all computations for computing a timestep, such
     /// as one or more collisions and integrations stages.
     virtual void step(const core::ExecParams* params /* PARAMS FIRST =ExecParams::defaultInstance()*/, double dt) = 0;
-
-
-protected:
-
-    /// Number of mechanical steps within an animation step
-    Data<unsigned> numMechSteps;
-
-    /// Number of animation steps completed
-    Data<unsigned> nbSteps;
-
-    /// Number of mechanical steps completed
-    Data<unsigned> nbMechSteps;
 };
 
 } // namespace behavior
