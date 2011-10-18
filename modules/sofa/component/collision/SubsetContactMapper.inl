@@ -48,8 +48,7 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::cleanup()
     {
         child->detachFromGraph();
         child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-        delete child;
-        child = NULL;
+        child.reset();
     }
 }
 
@@ -67,9 +66,9 @@ typename SubsetContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Subse
             return NULL;
         }
         child = parent->createChild(name);
-        outmodel = new MMechanicalObject; child->addObject(outmodel);
+        outmodel = sofa::core::objectmodel::New<MMechanicalObject>(); child->addObject(outmodel);
         outmodel->useMask.setValue(true);
-        mapping = new MMapping(instate, outmodel); child->addObject(mapping);
+        mapping = sofa::core::objectmodel::New<MMapping>(instate, outmodel.get()); child->addObject(mapping);
     }
     else
     {
@@ -80,11 +79,11 @@ typename SubsetContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Subse
             return NULL;
         }
         child = parent->createChild(name);
-        outmodel = new MMechanicalObject; child->addObject(outmodel);
+        outmodel = sofa::core::objectmodel::New<MMechanicalObject>(); child->addObject(outmodel);
         outmodel->useMask.setValue(true);
         mapping = NULL;
     }
-    return outmodel;
+    return outmodel.get();
 }
 } // namespace collision
 

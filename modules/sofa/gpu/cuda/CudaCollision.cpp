@@ -81,7 +81,9 @@ void BarycentricPenalityContact<CudaPointModel,CudaRigidDistanceGridCollisionMod
     {
         MechanicalState1* mstate1 = mapper1.createMapping("contactPointsCUDA");
         MechanicalState2* mstate2 = mapper2.createMapping("contactPointsCUDA");
-        ff = new ResponseForceField(mstate1,mstate2); ff->setName( getName());
+        ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
+        ff->setName( getName() );
+        ff->init();
     }
 
     mapper1.setPoints1(&outputs);
@@ -132,7 +134,9 @@ void BarycentricPenalityContact<CudaSphereModel,CudaRigidDistanceGridCollisionMo
     {
         MechanicalState1* mstate1 = mapper1.createMapping("contactPointsCUDA");
         MechanicalState2* mstate2 = mapper2.createMapping("contactPointsCUDA");
-        ff = new ResponseForceField(mstate1,mstate2); ff->setName( getName());
+        ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
+        ff->setName( getName() );
+        ff->init();
     }
 
     mapper1.setPoints1(&outputs);
@@ -222,11 +226,10 @@ public:
     virtual void init()
     {
         sofa::component::collision::NewProximityIntersection::init();
-        intersectors.add<RayModel,        CudaSphereModel,   DiscreteIntersection>(this);
-        //intersectors.add<CudaSphereModel, PointModel,        DiscreteIntersection>(this);
         intersectors.add<CudaSphereModel, CudaSphereModel,   DiscreteIntersection>(this);
-        //intersectors.add<LineModel,       CudaSphereModel,   CudaProximityIntersection>(this);
-        intersectors.add<TriangleModel,   CudaSphereModel,   CudaProximityIntersection>(this);
+        // TODO: re-enamble Ray-CudaSphere and Triangle-CudaSphere once intersectors split is completed
+        //intersectors.add<RayModel,        CudaSphereModel,   DiscreteIntersection>(this);
+        //intersectors.add<TriangleModel,   CudaSphereModel,   CudaProximityIntersection>(this);
     }
 
 };
