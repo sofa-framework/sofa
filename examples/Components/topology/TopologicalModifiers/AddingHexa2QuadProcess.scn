@@ -1,3 +1,4 @@
+<!-- Automatic Hexahedron adding example with Hexa2Quad mapping: Element added are define in: ./AddingHexahedraProcess.txt -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 0 0">
     <VisualStyle displayFlags="showBehaviorModels" />
     <CollisionPipeline verbose="0" />

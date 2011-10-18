@@ -1,3 +1,4 @@
+<!-- Automatic Tetrahedron adding example with Tetra2Triangle mapping: Element added are define in: ./AddingTetrahedraProcess.txt -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 0 0">
     <VisualStyle displayFlags="showBehaviorModels" />
     <CollisionPipeline verbose="0" />

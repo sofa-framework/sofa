@@ -1,22 +1,22 @@
-<!-- Mechanical MassSpring Group Basic Example -->
+<!-- TriangularTensorMassForceField Group Basic Example -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9 1">
-    <VisualStyle displayFlags="showBehaviorModels" />
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="CollisionResponse" response="default" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <Object type="CollisionGroup" />
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionGroup />
     <Node name="SquareGravity">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MeshGmshLoader" name="loader" filename="mesh/square3.msh" />
-        <Object type="MechanicalObject" src="@loader" scale="10" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" />
+        <MechanicalObject src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
-        <Object type="DiagonalMass" massDensity="0.015" />
-        <Object type="FixedConstraint" indices="0 1" />
-        <Object type="TriangularTensorMassForceField" name="TM" youngModulus="15" poissonRatio="0.9" />
-        <Object type="TriangleSet" />
-        <Object type="OglModel" name="Visual" color="yellow" />
-        <Object type="IdentityMapping" object1=".." object2="Visual" />
+        <DiagonalMass massDensity="0.015" />
+        <FixedConstraint indices="0 1" />
+        <TriangularTensorMassForceField name="TM" youngModulus="15" poissonRatio="0.9" />
+        <TriangleSet />
+        <OglModel name="Visual" color="yellow" />
+        <IdentityMapping object1=".." object2="Visual" />
     </Node>
 </Node>

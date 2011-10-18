@@ -1,28 +1,29 @@
+<!-- TrianglePressureForceField example scene -->
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
-    <VisualStyle displayFlags="showBehaviorModels" />
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="CollisionResponse" response="default" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <Object type="CollisionGroup" />
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionGroup />
     <Node name="TT">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MeshGmshLoader" name="loader" filename="mesh/cylinder.msh" />
-        <Object type="MechanicalObject" src="@loader" name="Volume" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
+        <MechanicalObject src="@loader" name="Volume" />
         <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
-        <Object type="DiagonalMass" massDensity="0.5" />
-        <Object type="FixedPlaneConstraint" direction="0 0 1" dmin="-0.1" dmax="0.1" />
-        <Object type="FixedConstraint" indices="0" />
-        <Object type="TetrahedronFEMForceField" name="FEM" youngModulus="60" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
+        <DiagonalMass massDensity="0.5" />
+        <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
+        <FixedConstraint indices="0" />
+        <TetrahedronFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" />
-            <Object type="Tetra2TriangleTopologicalMapping" object1="../../Container" object2="Container" />
-            <Object type="TrianglePressureForceField" name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="1 0 0" />
-            <Object type="TriangleSet" />
+            <Tetra2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+            <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="1 0 0" />
+            <TriangleSet />
             <Node name="Visu">
-                <Object type="OglModel" name="Visual" color="yellow" />
-                <Object type="IdentityMapping" object1="../../../Volume" object2="Visual" />
+                <VisualModel name="Visual" color="yellow" />
+                <IdentityMapping object1="../../../Volume" object2="Visual" />
             </Node>
         </Node>
     </Node>
