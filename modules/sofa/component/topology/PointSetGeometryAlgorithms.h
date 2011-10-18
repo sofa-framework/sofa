@@ -79,8 +79,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    void computeIndicesScale();
-
     /** return the centroid of the set of points */
     Coord getPointSetCenter() const;
 
@@ -101,7 +99,8 @@ public:
     /** \brief Returns the object where the mechanical DOFs are stored */
     sofa::core::behavior::MechanicalState<DataTypes> *getDOF() const { return object;	}
 
-    float PointIndicesScale;
+    //float PointIndicesScale;
+    float getIndicesScale() const;
 
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
