@@ -268,7 +268,7 @@ public:
     void setScene(sofa::simulation::Node::SPtr scene, const char* filename=NULL, bool temporaryFile=false);
     sofa::simulation::Node* getScene()
     {
-        return groot;
+        return groot.get();
     }
     const std::string& getSceneFileName()
     {

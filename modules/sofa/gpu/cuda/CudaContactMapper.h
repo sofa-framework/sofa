@@ -84,7 +84,7 @@ public:
         if (!this->mapping)
         {
             MCollisionModel* model = this->model;
-            MMechanicalState* outmodel = this->outmodel;
+            MMechanicalState* outmodel = this->outmodel.get();
             Data<VecCoord>* d_x = outmodel->write(core::VecCoordId::position());
             VecDeriv& vx = *d_x->beginEdit();
             Data<VecDeriv>* d_v = outmodel->write(core::VecDerivId::velocity());

@@ -179,7 +179,7 @@ public:
 
     ObjectPtr createInstance(Argument arg)
     {
-        const RealObject* instance = NULL;
+        RealObject* instance = NULL;
         return (*constructor)(instance, arg);
     }
     const std::type_info& type()

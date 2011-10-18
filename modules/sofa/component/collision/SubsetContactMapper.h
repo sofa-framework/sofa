@@ -73,9 +73,9 @@ public:
     typedef component::container::MechanicalObject<typename SubsetContactMapper::DataTypes> MMechanicalObject;
     typedef mapping::SubsetMapping< InDataTypes, typename SubsetContactMapper::DataTypes > MMapping;
     MCollisionModel* model;
-    simulation::Node* child;
-    MMapping* mapping;
-    MMechanicalState* outmodel;
+    simulation::Node::SPtr child;
+    typename MMapping::SPtr mapping;
+    typename MMechanicalState::SPtr outmodel;
     int nbp;
     bool needInit;
 
@@ -130,9 +130,9 @@ public:
                 mapping->init();
                 needInit = false;
             }
-
-            ((core::BaseMapping*)mapping)->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-            ((core::BaseMapping*)mapping)->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+            core::BaseMapping* map = mapping.get();
+            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+            map->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         }
     }
 
@@ -146,7 +146,8 @@ public:
                 needInit = false;
             }
 
-            ((core::BaseMapping*)mapping)->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+            core::BaseMapping* map = mapping.get();
+            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
         }
     }
 
