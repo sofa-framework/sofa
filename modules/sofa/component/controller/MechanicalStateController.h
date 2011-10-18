@@ -97,9 +97,9 @@ public:
     void onMouseEvent(core::objectmodel::MouseEvent *mev);
 
     /**
-     * @brief Omni event callback.
+     * @brief HapticDevice event callback.
      */
-    //void onOmniEvent(core::objectmodel::OmniEvent *mev);
+    //void onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *mev);
 
     /**
      * @brief Begin Animation event callback.
@@ -170,15 +170,15 @@ protected:
     Data< sofa::defaulttype::Vec<3,Real> > mainDirection; ///< Direction corresponding to the Mouse vertical axis. Default value is (0.0,0.0,-1.0), Z axis.
 
     enum MouseMode {	None=0, BtLeft, BtRight, BtMiddle, Wheel }; ///< Mouse current mode.
-    bool omni;
+    bool device;
     MouseMode mouseMode;
 
     int eventX, eventY; ///< Mouse current position in pixel
-    double omniX, omniY, omniZ;
+    double deviceX, deviceY, deviceZ;
     int mouseSavedPosX, mouseSavedPosY; ///< Last recorded mouse position
     Vector3 position;
     Quat orientation;
-    bool buttonOmni;
+    bool buttonDevice;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP)

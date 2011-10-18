@@ -26,7 +26,7 @@
 #include "NewOmniDriverEmu.h"
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/objectmodel/OmniEvent.h>
+#include <sofa/core/objectmodel/HapticDeviceEvent.h>
 #include <sofa/helper/Quater.h>
 //
 ////force feedback
@@ -472,7 +472,7 @@ void NewOmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             data.forceFeedback->setReferencePosition(world_H_virtualTool);
 
             /// TODO : SHOULD INCLUDE VELOCITY !!
-            sofa::core::objectmodel::OmniEvent omniEvent(data.deviceData.id, world_H_virtualTool.getOrigin(), world_H_virtualTool.getOrientation() , data.deviceData.m_buttonState);
+            sofa::core::objectmodel::HapticDeviceEvent omniEvent(data.deviceData.id, world_H_virtualTool.getOrigin(), world_H_virtualTool.getOrientation() , data.deviceData.m_buttonState);
 
             this->getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &omniEvent);
 

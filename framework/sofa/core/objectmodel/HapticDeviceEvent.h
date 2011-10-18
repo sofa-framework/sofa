@@ -24,8 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_OMNIEVENT_H
-#define SOFA_CORE_OBJECTMODEL_OMNIEVENT_H
+#ifndef SOFA_CORE_OBJECTMODEL_HAPTICDEVICEEVENT_H
+#define SOFA_CORE_OBJECTMODEL_HAPTICDEVICEEVENT_H
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -43,69 +43,80 @@ namespace objectmodel
 using namespace sofa::defaulttype;
 
 /**
- * @brief This event notifies about SensAble PHANTOM® device interaction.
+ * @brief This event notifies about haptic device interaction.
  */
-class SOFA_CORE_API OmniEvent : public sofa::core::objectmodel::Event
+class SOFA_CORE_API HapticDeviceEvent : public sofa::core::objectmodel::Event
 {
 public:
 
     /**
-     * @brief Define the SensAble PHANTOM® state (which button is pressed).
+     * @brief Define the device state (which button is pressed).
      */
     typedef enum
     {
         Button1=1,
-        Button2=2
+        Button2=2,
+        Button3=3,
+        Button4=4,
+        Button5=5,
+        Button6=6,
+        Button7=7,
+        Button8=8,
     } State;
 
     /**
      * @brief Constructor.
      */
-    OmniEvent(const unsigned int id, const Vector3& position, const Quat& orientation, const unsigned char button);
+    HapticDeviceEvent(const unsigned int id, const Vector3& position, const Quat& orientation, const unsigned char button);
 
     /**
      * @brief Destructor.
      */
-    virtual ~OmniEvent();
+    virtual ~HapticDeviceEvent();
 
     /**
-     * @brief Get the PHANTOM® X coordinate
+     * @brief Get the device X coordinate
      */
     double getPosX(void) const {return m_position[0];};
 
     /**
-     * @brief Get the PHANTOM® Y coordinate
+     * @brief Get the device Y coordinate
      */
     double getPosY(void) const {return m_position[1];};
 
     /**
-     * @brief Get the PHANTOM® Z coordinate
+     * @brief Get the device Z coordinate
      */
     double getPosZ(void) const {return m_position[2];};
 
     /**
-     * @brief Get the PHANTOM® coordinates.
+     * @brief Get the device coordinates.
      */
     Vector3 getPosition(void) const {return m_position;}
 
     /**
-     * @brief Get the PHANTOM® orientation.
+     * @brief Get the device orientation.
      */
     Quat getOrientation(void) const {return m_orientation;}
 
     /**
-     * @brief Get the PHANTOM® button state.
+     * @brief Get the device button state.
      */
     unsigned char getButtonState() const {return m_buttonState;}
 
     bool getButton(const int id = 0) const {return (bool) ((m_buttonState >> id) & 1);}
 
-    virtual const char* getClassName() const { return "OmniEvent"; }
+    /**
+     * @brief Get the device Id.
+     */
+    unsigned int getDeviceId() const {return m_deviceId;}
+
+    virtual const char* getClassName() const { return "HapticDeviceEvent"; }
 private:
 
-    unsigned char	m_deviceId;
-    Vector3 m_position; ///< SensAble PHANTOM® coordinates in a Vec3d type.
-    Quat m_orientation; ///< SensAble PHANTOM® orientation.
+    unsigned int	m_deviceId;
+    Vector3 m_position; ///< Haptic device coordinates in a Vec3d type.
+    Quat m_orientation; ///< Haptic device orientation.
     unsigned char m_buttonState;
 };
 

@@ -41,7 +41,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
-//#include <sofa/core/objectmodel/OmniEvent.h>
+//#include <sofa/core/objectmodel/HapticDeviceEvent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Quat.h>
@@ -77,7 +77,7 @@ void MechanicalStateController<DataTypes>::init()
     mState = dynamic_cast<MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
         serr << "MechanicalStateController has no binding MechanicalState" << sendl;
-    omni = false;
+    device = false;
 }
 
 
@@ -87,7 +87,7 @@ void MechanicalStateController<DataTypes>::applyController()
     using sofa::defaulttype::Quat;
     using sofa::defaulttype::Vec;
 
-    if(omni)
+    if(device)
     {
         if(mState)
         {
@@ -102,7 +102,7 @@ void MechanicalStateController<DataTypes>::applyController()
                 x[0].getOrientation() = orientation;
             }
         }
-        omni = false;
+        device = false;
     }
 
     if ( !onlyTranslation.getValue()  && ((mouseMode==BtLeft) || (mouseMode==BtRight)))
@@ -193,27 +193,27 @@ void MechanicalStateController<DataTypes>::applyController()
 
 
 //template <class DataTypes>
-//void MechanicalStateController<DataTypes>::onOmniEvent(core::objectmodel::OmniEvent *oev)
+//void MechanicalStateController<DataTypes>::onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *oev)
 //{
-//	//sout << "void MechanicalStateController<DataTypes>::onOmniEvent()"<<sendl;
+//	//sout << "void MechanicalStateController<DataTypes>::onHapticDeviceEvent()"<<sendl;
 //	//if (oev->getButton())
 //	//{
 //	//		sout<<" Button1 pressed"<<sendl;
 //
 //	//}
 //
-//	omni = true;
-//	buttonOmni = oev->getButton();
+//	device = true;
+//	buttonDevice = oev->getButton();
 //	position = oev->getPosition();
 //	orientation = oev->getOrientation();
 //	applyController();
-//	omni = false;
+//	device = false;
 //}
 
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::onBeginAnimationStep(const double /*dt*/)
 {
-    buttonOmni=buttonDeviceState.getValue();
+    buttonDevice=buttonDeviceState.getValue();
     applyController();
 }
 

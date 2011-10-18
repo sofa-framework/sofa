@@ -45,7 +45,7 @@ namespace controller
 
 
 /**
-* Omni driver force field
+* Device driver force field
 */
 class SOFA_HAPTICS_API ForceFeedback : public core::behavior::BaseController
 {

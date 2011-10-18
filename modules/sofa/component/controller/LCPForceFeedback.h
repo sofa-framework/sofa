@@ -120,7 +120,7 @@ public:
 
 protected:
     //component::constraintset::LCP* lcp, *next_lcp;
-    core::behavior::MechanicalState<DataTypes> *mState; ///< The omni try to follow this mechanical state.
+    core::behavior::MechanicalState<DataTypes> *mState; ///< The device try to follow this mechanical state.
     VecCoord mVal[3];
     MatrixDeriv mConstraints[3];
     std::vector<int> mId_buf[3];
@@ -131,7 +131,7 @@ protected:
     unsigned char mCurBufferId; // Current buffer id in use
     bool mIsCuBufferInUse; // Is current buffer currently in use right now
 
-    //core::behavior::MechanicalState<defaulttype::Vec1dTypes> *mState1d; ///< The omni try to follow this mechanical state.
+    //core::behavior::MechanicalState<defaulttype::Vec1dTypes> *mState1d; ///< The device try to follow this mechanical state.
     sofa::component::constraintset::ConstraintSolverImpl* constraintSolver;
     // timer: verifies the time rates of the haptic loop
     CTime *_timer;

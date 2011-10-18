@@ -150,7 +150,6 @@ declare(subsetMultimapping,             applications/projects/BoostKernel/applic
 declare(sofatests,        tests,                                  sofacore)
 # SofaVRPN
 # SofaDevices
-# Haptic
 #--- Tutorials ---#
 declare(sofaobjectcreator,   applications/tutorials/objectCreator,    sofa_component)
 declare(chainHybrid,         applications/tutorials/chainHybrid,      sofa_component sofaguimain sofaobjectcreator)
@@ -296,10 +295,6 @@ contains(DEFINES, SOFA_GUI_QTVIEWER) | contains(DEFINES, SOFA_GUI_QGLVIEWER) | c
 
 contains(DEFINES, SOFA_GUI_GLUT) {
 	enable(sofaguiglut)
-}
-
-contains(DEFINES, SOFA_HAVE_CHAI3D) {
-	#enable(Haptic)
 }
 
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV

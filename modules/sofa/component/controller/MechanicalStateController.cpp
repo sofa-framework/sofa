@@ -95,14 +95,14 @@ void MechanicalStateController<Vec1dTypes>::applyController()
     using sofa::defaulttype::Vec;
 
 
-    //std::cout<<" applyController() : omni "<< omni << "  buttonOmni " <<buttonOmni<<std::endl;
+    //std::cout<<" applyController() : device "<< device << "  buttonDevice " <<buttonDevice<<std::endl;
 
-//	if(omni)
+//	if(device)
 //	{
     if(mState)
     {
         helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
-        if(buttonOmni)
+        if(buttonDevice)
         {
             if (x0[0].x() < -0.1) //angle de fermeture max
                 x0[0].x() += 0.01; //vitesse de fermeture
@@ -172,15 +172,15 @@ void MechanicalStateController<Vec1fTypes>::applyController()
     using sofa::defaulttype::Vec;
 
 
-    //sout<<" applyController() : omni "<< omni << "  buttonOmni " <<buttonOmni<<sendl;
+    //sout<<" applyController() : device "<< device << "  buttonDevice " <<buttonDevice<<sendl;
 
-    if(omni)
+    if(device)
     {
         if(mState)
         {
             helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
 
-            if(buttonOmni)
+            if(buttonDevice)
             {
                 if (x0[0].x() < -0.001f)
                     x0[0].x() += 0.05f;

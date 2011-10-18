@@ -300,3 +300,6 @@ equals(ROOT_PATH, .) {
 }
 
 } # !equals(IS_SLN, true)
+
+message( "INCLUDEPATH: " $${INCLUDEPATH})
+message( "DEPENDPATH: " $${DEPENDPATH})

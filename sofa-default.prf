@@ -189,10 +189,11 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # FISHPACK_FLAGS = intel
 
 # If you want to use BLAS/LAPACK (required by TAUCS), uncomment the correct libraries and macros depending on your system
-# SOFA_EXT_LIBS *= -lblas -llapack -lf2c
-# SOFA_EXT_LIBS *= -llibgoto2 -llapack -llibf2c
-# DEFINES *= TAUCS_BLAS_UNDERSCORE
-# DEFINES *= TAUCS_BLAS_NOUNDERSCORE
+# DEFINES += SOFA_HAVE_BLAS
+# BLAS_LIBS *= -lblas -llapack -lf2c
+# BLAS_LIBS *= -llibgoto2 -llapack -llibf2c
+# BLAS_DEFINES *= TAUCS_BLAS_UNDERSCORE
+# BLAS_DEFINES *= TAUCS_BLAS_NOUNDERSCORE
 
 # Uncomment if you want to use muparser support
 # DEFINES += MUPARSER
@@ -270,9 +271,6 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 # Uncomment if you want to use Sensable Phantom
 # DEFINES += SOFA_HAVE_SENSABLE
-
-# Uncomment if you want to use Sensable Phantom with CHAI3D
-# DEFINES += SOFA_HAVE_CHAI3D
 
 # Uncomment if you want to use Haption Phantom
 #DEFINES += SOFA_HAVE_HAPTION

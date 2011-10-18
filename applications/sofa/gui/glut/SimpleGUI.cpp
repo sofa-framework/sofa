@@ -53,10 +53,7 @@
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
 
-#ifdef SOFA_HAVE_CHAI3D
 #include <sofa/simulation/common/PropagateEventVisitor.h>
-#include <sofa/core/objectmodel/GLInitializedEvent.h>
-#endif // SOFA_HAVE_CHAI3D
 #ifdef SOFA_SMP
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
@@ -227,14 +224,6 @@ SofaGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::strin
     gui->setScene(groot, filename);
 
     gui->initializeGL();
-
-#ifdef SOFA_HAVE_CHAI3D
-    // Tell nodes that openGl is initialized
-    // especialy the GL_MODELVIEW_MATRIX
-    sofa::core::objectmodel::GLInitializedEvent ev;
-    sofa::simulation::PropagateEventVisitor act(&ev);
-    groot->execute(act);
-#endif // SOFA_HAVE_CHAI3D
 
     return gui;
 }

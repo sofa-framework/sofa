@@ -49,7 +49,7 @@ namespace objectmodel
 
 class Event;
 class MouseEvent;
-//class OmniEvent;
+//class HapticDeviceEvent;
 class KeypressedEvent;
 class KeyreleasedEvent;
 class JoystickEvent;
@@ -95,14 +95,14 @@ public:
     virtual void onMouseEvent(core::objectmodel::MouseEvent *) {};
 
     /**
-    * @brief Omni event callback.
+    * @brief HapticDevice event callback.
     */
-    //virtual void onOmniEvent(core::objectmodel::OmniEvent *){};
+    //virtual void onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *){};
 
     /**
     * @brief Xitact event callback.
     */
-    //virtual void onXitactEvent(core::objectmodel::OmniEvent *){};
+    //virtual void onXitactEvent(core::objectmodel::HapticDeviceEvent *){};
 
 
     /**
