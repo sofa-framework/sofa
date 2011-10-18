@@ -93,7 +93,7 @@ HEADERS += \
 	loader/Material.h \
 	loader/MeshLoader.h \
 	loader/PrimitiveGroup.h \
-        loader/VoxelGridLoader.h \
+  loader/VoxelLoader.h \
 	Mapping.h \
 	Mapping.inl \
 	MultiMapping.h \
@@ -197,7 +197,7 @@ SOURCES += \
 	behavior/MixedInteractionConstraint.cpp \
 	behavior/ProjectiveConstraintSet.cpp \
 	loader/MeshLoader.cpp \
-        loader/VoxelGridLoader.cpp \
+  loader/VoxelLoader.cpp \
 	visual/DisplayFlags.cpp \
 	visual/DrawToolGL.cpp
 

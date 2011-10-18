@@ -34,7 +34,7 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/core/loader/VoxelGridLoader.h>
+#include <sofa/core/loader/VoxelLoader.h>
 #include <stack>
 
 namespace sofa
@@ -48,7 +48,7 @@ namespace topology
 
 using namespace sofa::defaulttype;
 using sofa::helper::MarchingCubeUtility;
-using sofa::core::loader::VoxelGridLoader;
+using sofa::core::loader::VoxelLoader;
 
 
 /** A sparse grid topology. Like a sparse FFD building from the bounding box of the object. Starting from a RegularGrid, only valid cells containing matter (ie intersecting the original surface mesh or totally inside the object) are considered.
@@ -278,7 +278,7 @@ protected:
     */
     void buildFromVoxelFile(const std::string& filename);
     void buildFromRawVoxelFile(const std::string& filename);
-    void buildFromVoxelGridLoader(VoxelGridLoader * loader);
+    void buildFromVoxelLoader(VoxelLoader * loader);
 
     template< class T>
     void constructCollisionModels(const sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > &list_mesh,

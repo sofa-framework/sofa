@@ -32,7 +32,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
 
-#include <sofa/core/loader/VoxelGridLoader.h>
+#include <sofa/core/loader/VoxelLoader.h>
 
 #include <sofa/component/visualmodel/PointSplatModel.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -85,13 +85,13 @@ void PointSplatModel::init()
 
     VisualModel::init();
 
-    core::loader::VoxelGridLoader *loader;
+    core::loader::VoxelLoader *loader;
     getContext()->get(loader);
     if(loader && _mstate)
     {
         unsigned int nbPoints = _mstate->getSize();
 
-        const helper::vector<unsigned int>& idxInRegularGrid = loader->idxInRegularGrid.getValue();
+        const helper::vector<unsigned int> idxInRegularGrid = loader->getHexaIndicesInGrid();
 
 
         if(idxInRegularGrid.size() == nbPoints)
