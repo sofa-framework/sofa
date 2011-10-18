@@ -1,4 +1,6 @@
 <?xml version="1.0" ?>
+<!------ NEW DEFAULT SCENE (Thanks Manimoul for the caduceus model !!) ------->
+
 <Node name="root" gravity="0 -9.81 0" dt="0.03">
     <VisualStyle displayFlags="showVisual " /> <!--showBehaviorModels showCollisionModels-->
 	<LCPConstraintSolver tolerance="1e-3" initial_guess="false" build_lcp="false"  printLog="0" mu="0.1"/>
@@ -53,7 +55,7 @@
 
     <Node name="Base" >
 		
-		<RegularGrid nx="1" ny="10" nz="1" xmin="0" xmax="0" ymin="14" ymax="66" zmin="0" zmax="0" />
+		<RegularGrid nx="1" ny="2" nz="1" xmin="0" xmax="0" ymin="14" ymax="66" zmin="0" zmax="0" />
 		<MechanicalObject />
 	
 		<Line />
