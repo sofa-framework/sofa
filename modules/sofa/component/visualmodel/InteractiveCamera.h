@@ -18,7 +18,7 @@ public:
     SOFA_CLASS(InteractiveCamera, BaseCamera);
 
     enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
-    enum  { SCENE_CENTER_PIVOT = 0, WORLD_CENTER_PIVOT = 1};
+    enum  { CAMERA_LOOKAT_PIVOT = 0, CAMERA_POSITION_PIVOT = 1, SCENE_CENTER_PIVOT = 2, WORLD_CENTER_PIVOT = 3};
 
     Data<double> p_zoomSpeed;
     Data<double> p_panSpeed;
