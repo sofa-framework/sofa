@@ -93,6 +93,35 @@ public:
 
     /// @}
 
+    /// @name BaseData vectors access API based on VecId
+    /// @{
+
+    virtual objectmodel::BaseData* baseWrite(VecId v)
+    {
+        switch (v.getType())
+        {
+        case V_ALL: return NULL;
+        case V_COORD: return write(VecCoordId(v));
+        case V_DERIV: return write(VecDerivId(v));
+        case V_MATDERIV: return write(MatrixDerivId(v));
+        }
+        return NULL;
+    }
+
+    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const
+    {
+        switch (v.getType())
+        {
+        case V_ALL: return NULL;
+        case V_COORD: return read(ConstVecCoordId(v));
+        case V_DERIV: return read(ConstVecDerivId(v));
+        case V_MATDERIV: return read(ConstMatrixDerivId(v));
+        }
+        return NULL;
+    }
+
+    /// @}
+
     /// @name Old specific vectors access API (now limited to read-only accesses)
     /// @{
 

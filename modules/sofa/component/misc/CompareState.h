@@ -72,14 +72,17 @@ public:
     /// Return the total errors (position and velocity)
     double getErrorByDof() {return dofError_X + dofError_V;}
 
-protected :
+    virtual void draw(const core::visual::VisualParams* vparams);
 
+protected :
     /// total error for positions
     double totalError_X;
     double dofError_X;
     /// total error for velocities
     double totalError_V;
     double dofError_V;
+    /// last position and velocity (for draw)
+    std::string last_X, last_V;
 };
 
 /// Create CompareState component in the graph each time needed

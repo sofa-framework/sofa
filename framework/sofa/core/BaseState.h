@@ -57,6 +57,14 @@ public:
     /// Resize all stored vector
     virtual void resize(int vsize) = 0;
 
+    /// @name BaseData vectors access API based on VecId
+    /// @{
+
+    virtual objectmodel::BaseData* baseWrite(VecId v) = 0;
+    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const = 0;
+
+    /// @}
+
 };
 
 } // namespace core
