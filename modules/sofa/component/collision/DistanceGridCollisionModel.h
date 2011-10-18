@@ -267,7 +267,7 @@ public:
 
     typedef SReal GSReal;
     typedef DistanceGrid::Coord GCoord;
-    class DeformedCube
+    class SOFA_BASE_COLLISION_API DeformedCube
     {
     public:
         DistanceGrid* grid;

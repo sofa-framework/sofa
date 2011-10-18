@@ -100,6 +100,11 @@ int DiscreteIntersection::computeIntersection(Cube&, Cube&, OutputVector*)
 //}
 
 
+#if defined(WIN32)
+template class SOFA_BASE_COLLISION_API core::collision::IntersectorFactory<DiscreteIntersection>;
+#endif
+
+
 } // namespace collision
 
 } // namespace component
