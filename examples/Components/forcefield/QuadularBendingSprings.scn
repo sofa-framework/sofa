@@ -13,7 +13,6 @@
         <Object type="MeshGmshLoader" filename="mesh/nine_quads.msh" name="loader" />
         <Object type="MechanicalObject" src="@loader" name="Quads" />
         <include href="Objects/QuadSetTopology.xml" src="@loader" />
-        <Object type="QuadSetTopology" name="topo_Quads" />
         <Object type="QuadularBendingSprings" name="FEM-Bend" stiffness="3000" damping="1.0" />
         <Object type="DiagonalMass" massDensity="0.5" />
         <Object type="FixedConstraint" indices="12 15" />

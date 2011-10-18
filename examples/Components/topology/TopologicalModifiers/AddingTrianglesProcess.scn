@@ -1,3 +1,4 @@
+<!-- Automatic Triangle adding example: Element added are define in: ./AddingTrianglesProcess.txt -->
 <Node name="root" gravity="0 0 0" dt="0.005">
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline name="default0" verbose="0" />

@@ -1,3 +1,4 @@
+<!-- BeamFEMForceField example -->
 <Node name="root" dt="0.01">
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <Object type="CollisionPipeline" depth="6" verbose="0" draw="0" />

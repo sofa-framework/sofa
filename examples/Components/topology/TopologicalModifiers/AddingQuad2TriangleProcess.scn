@@ -1,3 +1,4 @@
+<!-- Automatic Quad adding example with Quad2Triangle mapping: Element added are define in: ./AddingQuadsProcess.txt -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9.81 0">
     <VisualStyle displayFlags="showBehaviorModels" />
     <CollisionPipeline verbose="0" />

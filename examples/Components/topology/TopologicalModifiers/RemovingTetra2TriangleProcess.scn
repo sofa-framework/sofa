@@ -1,3 +1,4 @@
+<!-- Automatic Tetrahedron removing with Tetra2Triangle mapping example: Element removed are define in: ./RemovingTetra2TriangleProcess.txt -->
 <Node name="root" dt="0.01" showBoundingTree="0" gravity="0 0 0">
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <CollisionPipeline verbose="0" />
