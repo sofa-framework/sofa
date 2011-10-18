@@ -145,9 +145,12 @@ protected:
         switch (event->type())
         {
         case QEvent::FileOpen:
-            static_cast<RealGUI*>(mainWidget())->fileOpen(static_cast<QFileOpenEvent *>(event)->file().ascii());
-
+        {
+            std::string filename = static_cast<QFileOpenEvent *>(event)->file().ascii();
+            if (filename != std::string(static_cast<RealGUI*>(mainWidget())->windowFilePath().ascii()))
+                static_cast<RealGUI*>(mainWidget())->fileOpen(static_cast<QFileOpenEvent *>(event)->file().ascii());
             return true;
+        }
         default:
             return QApplication::event(event);
         }
@@ -744,6 +747,7 @@ void RealGUI::updateViewerList()
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 {
+    //std::cout << "GUI: fileOpen " << filename << " ( was " <<   std::string(this->windowFilePath().ascii()) << " )" << std::endl;
     const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
     if (extension == "simu")
     {
