@@ -30,14 +30,14 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
-
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/common/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
 #include <sstream>
-#include <sofa/core/ObjectFactory.h>
+#include <algorithm>
 
-#include <sofa/simulation/common/xml/XML.h>
 
 namespace sofa
 {
@@ -152,8 +152,7 @@ void CompareState::processCompareState()
         double currentError=0;
         if (cmd.compare("X=") == 0)
         {
-            //<TO REMOVE>
-            //currentError = mmodel->compareX(str);
+            last_X = *it;
             currentError = mmodel->compareVec(core::VecId::position(), str);
 
 
@@ -165,8 +164,7 @@ void CompareState::processCompareState()
         }
         else if (cmd.compare("V=") == 0)
         {
-            //<TO REMOVE>
-            //currentError = mmodel->compareV(str);
+            last_V = *it;
             currentError = mmodel->compareVec(core::VecId::velocity(), str);
             totalError_V +=currentError;
 
@@ -177,6 +175,58 @@ void CompareState::processCompareState()
     }
 
     sout << "totalError_X = " << totalError_X << ", totalError_V = " << totalError_V << sendl;
+}
+
+//-------------------------------- processCompareState------------------------------------
+void CompareState::draw(const core::visual::VisualParams* vparams)
+{
+    if (mmodel && !last_X.empty())
+    {
+        core::VecCoordId refX(core::VecCoordId::V_FIRST_DYNAMIC_INDEX);
+        mmodel->vAvail(vparams, refX);
+        mmodel->vAlloc(vparams, refX);
+        std::istringstream str(last_X);
+        std::string cmd;
+        str >> cmd;
+        mmodel->readVec(refX, str);
+
+        const core::objectmodel::BaseData* dataX = mmodel->baseRead(core::VecCoordId::position());
+        const core::objectmodel::BaseData* dataRefX = mmodel->baseRead(refX);
+        if (dataX && dataRefX)
+        {
+            const sofa::defaulttype::AbstractTypeInfo* infoX = dataX->getValueTypeInfo();
+            const sofa::defaulttype::AbstractTypeInfo* infoRefX = dataRefX->getValueTypeInfo();
+            const void* valueX = dataX->getValueVoidPtr();
+            const void* valueRefX = dataRefX->getValueVoidPtr();
+            if (valueX && infoX && infoX->ValidInfo() && valueRefX && infoRefX && infoRefX->ValidInfo())
+            {
+                int ncX = infoX->size();
+                int ncRefX = infoRefX->size();
+                int sizeX = infoX->size(valueX);
+                int sizeRefX = infoRefX->size(valueRefX);
+                if (ncX > 1 && ncRefX > 1)
+                {
+                    int nc = std::min(3,std::min(ncX,ncRefX));
+                    int nbp = std::min(sizeX/ncX, sizeRefX/ncRefX);
+
+                    std::vector< Vector3 > points;
+                    points.resize(nbp*2);
+                    for(int p=0; p<nbp; ++p)
+                    {
+                        Vector3& pX = points[2*p+0];
+                        Vector3& pRefX = points[2*p+1];
+                        for (int c=0; c<nc; ++c)
+                            pX[c] = infoX->getScalarValue(valueX, p*ncX+c);
+                        for (int c=0; c<nc; ++c)
+                            pRefX[c] = infoRefX->getScalarValue(valueRefX, p*ncRefX+c);
+                    }
+                    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1.0f,0.0f,0.5f,1.0f));
+                }
+            }
+        }
+
+        mmodel->vFree(vparams, refX);
+    }
 }
 
 
