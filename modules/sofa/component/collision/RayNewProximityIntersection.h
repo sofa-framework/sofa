@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_H
+#ifndef SOFA_COMPONENT_COLLISION_RAYNEWPROXIMITYINTERSECTION_H
+#define SOFA_COMPONENT_COLLISION_RAYNEWPROXIMITYINTERSECTION_H
 
-#include <sofa/component/collision/DiscreteIntersection.h>
+#include <sofa/component/collision/NewProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/TriangleModel.h>
@@ -43,53 +43,21 @@ namespace component
 namespace collision
 {
 
-class SOFA_BASE_COLLISION_API NewProximityIntersection : public DiscreteIntersection
+class SOFA_MISC_COLLISION_API RayNewProximityIntersection : public core::collision::BaseIntersector
 {
-public:
-    SOFA_CLASS(NewProximityIntersection,DiscreteIntersection);
+    typedef NewProximityIntersection::OutputVector OutputVector;
 
-    Data<double> alarmDistance;
-    Data<double> contactDistance;
-    Data<bool> useLineLine;
+public:
+    RayNewProximityIntersection(NewProximityIntersection* object);
+
+    bool testIntersection(Ray&, Triangle&);
+
+    int computeIntersection(Ray&, Triangle&, OutputVector*);
+
 protected:
-    NewProximityIntersection();
-public:
 
-    typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
-
-    virtual void init();
-
-    /// Returns true if algorithm uses proximity
-    virtual bool useProximity() const { return true; }
-
-    /// Returns the alarm distance (must returns 0 if useProximity() is false)
-    double getAlarmDistance() const { return alarmDistance.getValue(); }
-
-    /// Returns the contact distance (must returns 0 if useProximity() is false)
-    double getContactDistance() const { return contactDistance.getValue(); }
-
-    /// Sets the alarm distance (if useProximity() is false, the alarm distance is equal to 0)
-    void setAlarmDistance(double v) { alarmDistance.setValue(v); }
-
-    /// Sets the contact distance (if useProximity() is false, the contact distance is equal to 0)
-    void setContactDistance(double v) { contactDistance.setValue(v); }
-
-    bool testIntersection(Cube& ,Cube&);
-    template<class Sphere>
-    bool testIntersection(Sphere&, Sphere&);
-
-    int computeIntersection(Cube&, Cube&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(Sphere&, Sphere&, OutputVector*);
-
-    static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id);
-
+    NewProximityIntersection* intersection;
 };
-
-#if defined(WIN32) && !defined(SOFA_BUILD_BASE_COLLISION)
-extern template class SOFA_BASE_COLLISION_API core::collision::IntersectorFactory<NewProximityIntersection>;
-#endif
-
 
 } // namespace collision
 

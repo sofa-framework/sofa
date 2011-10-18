@@ -39,6 +39,9 @@ HEADERS += initBaseCollision.h \
            collision/Ray.h \
            collision/DistanceGridCollisionModel.h \
            collision/RayTriangleIntersection.h \
+           collision/MinProximityIntersection.h \
+           collision/NewProximityIntersection.h \
+           collision/NewProximityIntersection.inl \
 
 SOURCES += initBaseCollision.cpp \
            collision/BaseContactMapper.cpp \
@@ -63,7 +66,9 @@ SOURCES += initBaseCollision.cpp \
            collision/TriangleLocalMinDistanceFilter.cpp \
            container/DistanceGrid.cpp \
            collision/DistanceGridCollisionModel.cpp \
-           collision/RayTriangleIntersection.cpp
+           collision/RayTriangleIntersection.cpp \
+           collision/MinProximityIntersection.cpp \
+           collision/NewProximityIntersection.cpp \
 
 
 # Make sure there are no cross-dependencies

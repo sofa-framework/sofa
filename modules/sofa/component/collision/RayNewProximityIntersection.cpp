@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/MeshDiscreteIntersection.inl>
+#include <sofa/component/collision/RayNewProximityIntersection.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.inl>
 #include <sofa/component/collision/DiscreteIntersection.inl>
@@ -46,57 +46,76 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-SOFA_DECL_CLASS(MeshDiscreteIntersection)
+SOFA_DECL_CLASS(RayNewProximityIntersection)
 
-IntersectorCreator<DiscreteIntersection, MeshDiscreteIntersection> MeshDiscreteIntersectors("Mesh");
+IntersectorCreator<NewProximityIntersection, RayNewProximityIntersection> RayNewProximityIntersectors("Ray");
 
-MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* object)
+RayNewProximityIntersection::RayNewProximityIntersection(NewProximityIntersection* object)
     : intersection(object)
 {
-    intersection->intersectors.add<TriangleModel,     LineModel,       MeshDiscreteIntersection>  (this);
+    intersection->intersectors.ignore<RayModel, PointModel>();
+    intersection->intersectors.ignore<RayModel, LineModel>();
+    intersection->intersectors.add<RayModel, TriangleModel, RayNewProximityIntersection>(this);
 }
 
-bool MeshDiscreteIntersection::testIntersection(Triangle&, Line&)
+bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 {
-    return true;
-}
+    Vector3 P,Q,PQ;
+    static DistanceSegTri proximitySolver;
+    const double alarmDist = intersection->getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
-int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
-{
-    Vector3 A = e1.p1();
-    Vector3 AB = e1.p2()-A;
-    Vector3 AC = e1.p3()-A;
-    Vector3 P = e2.p1();
-    Vector3 PQ = e2.p2()-P;
-    Matrix3 M, Minv;
-    Vector3 right;
-    for (int i=0; i<3; i++)
+    if (fabs(t2.n() * t1.direction()) < 0.000001)
+        return false; // no intersection for edges parallel to the triangle
+
+    Vector3 A = t1.origin();
+    Vector3 B = A + t1.direction() * t1.l();
+
+    proximitySolver.NewComputation( t2.p1(), t2.p2(), t2.p3(), A, B,P,Q);
+    PQ = Q-P;
+
+    if (PQ.norm2() < alarmDist*alarmDist)
     {
-        M[i][0] = AB[i];
-        M[i][1] = AC[i];
-        M[i][2] = -PQ[i];
-        right[i] = P[i]-A[i];
+        //sout<<"Collision between Line - Triangle"<<sendl;
+        return true;
     }
-    //sout << "M="<<M<<sendl;
-    if (!Minv.invert(M))
+    else
+        return false;
+}
+
+
+int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts)
+{
+    const double alarmDist = intersection->getAlarmDistance() + t1.getProximity() + t2.getProximity();
+
+    if (fabs(t2.n() * t1.direction()) < 0.000001)
+        return false; // no intersection for edges parallel to the triangle
+
+    Vector3 A = t1.origin();
+    Vector3 B = A + t1.direction() * t1.l();
+
+    Vector3 P,Q,PQ;
+    static DistanceSegTri proximitySolver;
+
+    proximitySolver.NewComputation( t2.p1(), t2.p2(), t2.p3(), A,B,P,Q);
+    PQ = Q-P;
+
+    if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
-    Vector3 baryCoords = Minv * right;
-    if (baryCoords[0] < 0 || baryCoords[1] < 0 || baryCoords[0]+baryCoords[1] > 1)
-        return 0; // out of the triangle
-    if (baryCoords[2] < 0 || baryCoords[2] > 1)
-        return 0; // out of the line
 
-    Vector3 X = P+PQ*baryCoords[2];
-
+    const double contactDist = alarmDist;
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
-    detection->point[0] = X;
-    detection->point[1] = X;
-    detection->normal = e1.n();
-    detection->value = 0;
-    detection->elem.first = e1;
-    detection->elem.second = e2;
-    detection->id = e2.getIndex();
+
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
+    detection->point[1]=P;
+    detection->point[0]=Q;
+#ifdef DETECTIONOUTPUT_FREEMOTION
+    detection->freePoint[1] = P;
+    detection->freePoint[0] = Q;
+#endif
+    detection->normal=-t2.n();
+    detection->value = PQ.norm();
+    detection->value -= contactDist;
     return 1;
 }
 

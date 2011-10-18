@@ -46,6 +46,8 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
+SOFA_DECL_CLASS(TetrahedronDiscreteIntersection)
+
 IntersectorCreator<DiscreteIntersection, TetrahedronDiscreteIntersection> TetrahedronDiscreteIntersectors("Ray");
 
 TetrahedronDiscreteIntersection::TetrahedronDiscreteIntersection(DiscreteIntersection* object)

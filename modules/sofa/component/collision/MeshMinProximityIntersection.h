@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_H
+#ifndef SOFA_COMPONENT_COLLISION_MESHMINPROXIMITYINTERSECTION_H
+#define SOFA_COMPONENT_COLLISION_MESHMINPROXIMITYINTERSECTION_H
 
-#include <sofa/component/collision/DiscreteIntersection.h>
+#include <sofa/component/collision/MinProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/TriangleModel.h>
@@ -43,53 +43,33 @@ namespace component
 namespace collision
 {
 
-class SOFA_BASE_COLLISION_API NewProximityIntersection : public DiscreteIntersection
+class SOFA_MESH_COLLISION_API MeshMinProximityIntersection : public core::collision::BaseIntersector
 {
-public:
-    SOFA_CLASS(NewProximityIntersection,DiscreteIntersection);
+    typedef MinProximityIntersection::OutputVector OutputVector;
 
-    Data<double> alarmDistance;
-    Data<double> contactDistance;
-    Data<bool> useLineLine;
+public:
+    MeshMinProximityIntersection(MinProximityIntersection* object);
+
+    bool testIntersection(Point&, Point&);
+    bool testIntersection(Sphere&, Point&);
+    bool testIntersection(Line&, Point&);
+    bool testIntersection(Line&, Sphere&);
+    bool testIntersection(Line&, Line&);
+    bool testIntersection(Triangle&, Point&);
+    bool testIntersection(Triangle&, Sphere&);
+
+    int computeIntersection(Point&, Point&, OutputVector*);
+    int computeIntersection(Sphere&, Point&, OutputVector*);
+    int computeIntersection(Line&, Point&, OutputVector*);
+    int computeIntersection(Line&, Sphere&, OutputVector*);
+    int computeIntersection(Line&, Line&, OutputVector*);
+    int computeIntersection(Triangle&, Point&, OutputVector*);
+    int computeIntersection(Triangle&, Sphere&, OutputVector*);
+
 protected:
-    NewProximityIntersection();
-public:
 
-    typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
-
-    virtual void init();
-
-    /// Returns true if algorithm uses proximity
-    virtual bool useProximity() const { return true; }
-
-    /// Returns the alarm distance (must returns 0 if useProximity() is false)
-    double getAlarmDistance() const { return alarmDistance.getValue(); }
-
-    /// Returns the contact distance (must returns 0 if useProximity() is false)
-    double getContactDistance() const { return contactDistance.getValue(); }
-
-    /// Sets the alarm distance (if useProximity() is false, the alarm distance is equal to 0)
-    void setAlarmDistance(double v) { alarmDistance.setValue(v); }
-
-    /// Sets the contact distance (if useProximity() is false, the contact distance is equal to 0)
-    void setContactDistance(double v) { contactDistance.setValue(v); }
-
-    bool testIntersection(Cube& ,Cube&);
-    template<class Sphere>
-    bool testIntersection(Sphere&, Sphere&);
-
-    int computeIntersection(Cube&, Cube&, OutputVector*);
-    template<class Sphere>
-    int computeIntersection(Sphere&, Sphere&, OutputVector*);
-
-    static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id);
-
+    MinProximityIntersection* intersection;
 };
-
-#if defined(WIN32) && !defined(SOFA_BUILD_BASE_COLLISION)
-extern template class SOFA_BASE_COLLISION_API core::collision::IntersectorFactory<NewProximityIntersection>;
-#endif
-
 
 } // namespace collision
 
