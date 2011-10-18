@@ -33,7 +33,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.inl>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
-#include <sofa/core/loader/VoxelGridLoader.h>
+#include <sofa/core/loader/VoxelLoader.h>
 #include <sofa/helper/gl/glText.inl>
 #include <algorithm>
 #include <functional>
@@ -52,7 +52,7 @@ using namespace sofa::core::behavior;
 using namespace sofa::component::topology;
 using std::queue;
 using sofa::helper::gl::GlText;
-using sofa::core::loader::VoxelGridLoader;
+using sofa::core::loader::VoxelLoader;
 
 
 
@@ -98,7 +98,7 @@ void Distances< DataTypes >::init()
         return;
     }
 
-    VoxelGridLoader* voxelGridLoader;
+    VoxelLoader* voxelGridLoader;
     this->getContext()->get( voxelGridLoader);
     if ( !voxelGridLoader )
     {

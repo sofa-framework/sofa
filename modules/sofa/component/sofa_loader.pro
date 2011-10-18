@@ -15,11 +15,12 @@ HEADERS += initLoader.h \
            loader/MeshXspLoader.h \
            loader/OffSequenceLoader.h \
            loader/SphereLoader.h \
+           loader/VoxelGridLoader.h \
            misc/InputEventReader.h \
            misc/ReadState.h \
            misc/ReadState.inl \
            misc/ReadTopology.h \
-           misc/ReadTopology.inl
+           misc/ReadTopology.inl 
 
 SOURCES += initLoader.cpp \
            loader/MeshGmshLoader.cpp \
@@ -31,6 +32,7 @@ SOURCES += initLoader.cpp \
            loader/MeshXspLoader.cpp \
            loader/OffSequenceLoader.cpp \
            loader/SphereLoader.cpp \
+           loader/VoxelGridLoader.cpp \
            misc/InputEventReader.cpp \
            misc/ReadState.cpp \
            misc/ReadTopology.cpp

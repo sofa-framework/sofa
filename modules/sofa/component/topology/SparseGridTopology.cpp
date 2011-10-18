@@ -245,11 +245,11 @@ void SparseGridTopology::buildAsFinest(  )
 {
     //	serr<<"SparseGridTopology::buildAsFinest(  )"<<sendl;
 
-    VoxelGridLoader *loader;
+    VoxelLoader *loader;
     getContext()->get(loader);
     if( loader )
     {
-        buildFromVoxelGridLoader(loader);
+        buildFromVoxelLoader(loader);
     }
     else
     {
@@ -524,9 +524,9 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
 }
 
 
-void SparseGridTopology::buildFromVoxelGridLoader(VoxelGridLoader * loader)
+void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
 {
-    cerr<<"SparseGridTopology::buildFromVoxelGridLoader(VoxelGridLoader * loader)\n";
+    cerr<<"SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)\n";
 
     unsigned char *textureData;
     int width,height,depth;
@@ -534,8 +534,7 @@ void SparseGridTopology::buildFromVoxelGridLoader(VoxelGridLoader * loader)
 
     _regularGrid->setSize(getNx(),getNy(),getNz());
 
-    Vector3 vsize;
-    loader->getVoxelSize( vsize );
+    Vector3 vsize = loader->getVoxelSize(  );
 
     _regularGrid->setPos(0,width*vsize[0],0,height*vsize[1],0,depth*vsize[2]);
 

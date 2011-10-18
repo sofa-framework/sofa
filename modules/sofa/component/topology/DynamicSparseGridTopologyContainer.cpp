@@ -27,7 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/loader/VoxelGridLoader.h>
+#include <sofa/core/loader/VoxelLoader.h>
 #include <sofa/component/topology/HexahedronData.inl>
 
 namespace sofa
@@ -63,11 +63,11 @@ void DynamicSparseGridTopologyContainer::init()
 {
     HexahedronSetTopologyContainer::init();
     // Init regular/topo mapping
-    sofa::core::loader::VoxelGridLoader* voxelGridLoader;
-    this->getContext()->get(voxelGridLoader);
-    if ( !voxelGridLoader )
+    sofa::core::loader::VoxelLoader* VoxelLoader;
+    this->getContext()->get(VoxelLoader);
+    if ( !VoxelLoader )
     {
-        this->serr << "DynamicSparseGridTopologyContainer::init(): No VoxelGridLoader found! Aborting..." << this->sendl;
+        this->serr << "DynamicSparseGridTopologyContainer::init(): No VoxelLoader found! Aborting..." << this->sendl;
         exit(0);
     }
 
@@ -82,8 +82,8 @@ void DynamicSparseGridTopologyContainer::init()
     }
 
     // Init values
-    int dataSize = voxelGridLoader->getDataSize();
-    unsigned char* data = voxelGridLoader->getData();
+    int dataSize = VoxelLoader->getDataSize();
+    const unsigned char* data = VoxelLoader->getData();
 
     // init values in regular grid. (dense).
     viirg.resize( dataSize);
