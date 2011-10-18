@@ -221,6 +221,8 @@ protected:
     MyVecId id;
 };
 
+#define MAP_PTR
+
 template <VecType vtype, VecAccess vaccess>
 class TMultiVecId
 {
@@ -233,7 +235,46 @@ public:
 
 protected:
     MyVecId defaultId;
+
+#ifndef MAP_PTR
     IdMap idMap;
+    IdMap& writeIdMap()
+    {
+        return idMap;
+    }
+public:
+    bool hasIdMap() const { return !idMap.empty(); }
+    const  IdMap& getIdMap() const
+    {
+        return idMap;
+    }
+#else
+
+private:
+    boost::shared_ptr< IdMap > idMap_ptr;
+
+protected:
+    IdMap& writeIdMap()
+    {
+        if (!idMap_ptr)
+            idMap_ptr.reset(new IdMap());
+        else if(!idMap_ptr.unique())
+            idMap_ptr.reset(new IdMap(*idMap_ptr));
+        return *idMap_ptr;
+    }
+public:
+    bool hasIdMap() const { return idMap_ptr != NULL; }
+    const  IdMap& getIdMap() const
+    {
+        if (!idMap_ptr)
+        {
+            static const IdMap empty;
+            return empty;
+        }
+        return *idMap_ptr;
+    }
+
+#endif
 
 public:
 
@@ -245,9 +286,22 @@ public:
     /// constraint that the access must be compatible (i.e. cannot create
     /// a write-access VecId from a read-only VecId.
     template<VecAccess vaccess2>
-    TMultiVecId(const TVecId<vtype, vaccess2>& v) : defaultId(v)
+    TMultiVecId(const TVecId<vtype, vaccess2>& v)
+        :
+        defaultId(v)
     {
         BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+    }
+
+    //// Copy constructor
+    TMultiVecId( const TMultiVecId<vtype,vaccess>& mv)
+        : defaultId( mv.getDefaultId() )
+#ifdef MAP_PTR
+        , idMap_ptr( mv.idMap_ptr )
+#else
+        , idMap( mv.idMap )
+#endif
+    {
     }
 
     //// Only TMultiVecId< V_ALL , vaccess> can declare copy constructors with all
@@ -261,8 +315,12 @@ public:
     {
         BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
         BOOST_STATIC_ASSERT( vtype == V_ALL || vtype2 == vtype );
-
-        std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(idMap, idMap.begin()) );
+        BOOST_STATIC_ASSERT( vtype != vtype2 || vaccess != vaccess2 );
+        if (mv.hasIdMap())
+        {
+            IdMap& map = writeIdMap();
+            std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(map, map.begin()) );
+        }
     }
     //// Provides explicit conversions from MultiVecId to MultiVecCoordId/...
     //// The explicit keyword forbid the compiler to use it automatically, as
@@ -273,9 +331,15 @@ public:
     {
         BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
         BOOST_STATIC_ASSERT( !(vtype == V_ALL) ); // for V_ALL vectors, this constructor is redundant with the previous one
-        for (typename TMultiVecId<V_ALL,vaccess2>::IdMap_const_iterator it = mv.getIdMap().begin(), itend = mv.getIdMap().end();
-                it != itend; ++it)
-            idMap[it->first] = MyVecId(it->second);
+
+        if (mv.hasIdMap())
+        {
+            IdMap& map = writeIdMap();
+
+            for (typename TMultiVecId<V_ALL,vaccess2>::IdMap_const_iterator it = mv.getIdMap().begin(), itend = mv.getIdMap().end();
+                    it != itend; ++it)
+                map[it->first] = MyVecId(it->second);
+        }
     }
 
     void setDefaultId(const MyVecId& id)
@@ -286,31 +350,35 @@ public:
     template<class StateSet>
     void setId(const StateSet& states, const MyVecId& id)
     {
+        IdMap& map = writeIdMap();
         for (typename StateSet::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
-            idMap[*it] = id;
+            map[*it] = id;
     }
 
     void setId(const BaseState* s, const MyVecId& id)
     {
-        idMap[s] = id;
+        IdMap& map = writeIdMap();
+        map[s] = id;
     }
 
     void assign(const MyVecId& id)
     {
         defaultId = id;
+#ifndef MAP_PTR
         idMap.clear();
+#else
+        idMap_ptr.reset();
+#endif
     }
 
     const MyVecId& getId(const BaseState* s) const
     {
-        IdMap_const_iterator it = idMap.find(s);
-        if (it != idMap.end()) return it->second;
-        else                   return defaultId;
-    }
+        if (!hasIdMap()) return defaultId;
+        const IdMap& map = getIdMap();
 
-    const std::map<const BaseState*, MyVecId>& getIdMap() const
-    {
-        return idMap;
+        IdMap_const_iterator it = map.find(s);
+        if (it != map.end()) return it->second;
+        else                 return defaultId;
     }
 
     const MyVecId& getDefaultId() const
@@ -320,15 +388,16 @@ public:
 
     std::string getName() const
     {
-        if (idMap.empty())
+        if (hasIdMap())
             return defaultId.getName();
         else
         {
             std::ostringstream out;
             out << '{';
             out << defaultId.getName() << "[*";
+            const IdMap& map = getIdMap();
             MyVecId prev = defaultId;
-            for (IdMap_const_iterator it = idMap.begin(), itend = idMap.end(); it != itend; ++it)
+            for (IdMap_const_iterator it = map.begin(), itend = map.end(); it != itend; ++it)
             {
                 if (it->second != prev) // new id
                 {
@@ -360,8 +429,9 @@ public:
     bool isNull() const
     {
         if (!this->defaultId.isNull()) return false;
-        for (IdMap_const_iterator it = idMap.begin(), itend = idMap.end(); it != itend; ++it)
-            if (!it->second.isNull()) return false;
+        if (hasIdMap())
+            for (IdMap_const_iterator it = getIdMap().begin(), itend = getIdMap().end(); it != itend; ++it)
+                if (!it->second.isNull()) return false;
         return true;
     }
 
@@ -413,7 +483,45 @@ public:
 protected:
     MyVecId defaultId;
 
+#ifndef MAP_PTR
     IdMap idMap;
+    IdMap& writeIdMap()
+    {
+        return idMap;
+    }
+public:
+    bool hasIdMap() const { return !idMap.empty(); }
+    const  IdMap& getIdMap() const
+    {
+        return idMap;
+    }
+#else
+
+private:
+    boost::shared_ptr< IdMap > idMap_ptr;
+
+protected:
+    IdMap& writeIdMap()
+    {
+        if (!idMap_ptr)
+            idMap_ptr.reset(new IdMap());
+        else if(!idMap_ptr.unique())
+            idMap_ptr.reset(new IdMap(*idMap_ptr));
+        return *idMap_ptr;
+    }
+public:
+    bool hasIdMap() const { return idMap_ptr != NULL; }
+    const  IdMap& getIdMap() const
+    {
+        if (!idMap_ptr)
+        {
+            static const IdMap empty;
+            return empty;
+        }
+        return *idMap_ptr;
+    }
+
+#endif
 
 public:
 
@@ -430,6 +538,17 @@ public:
         BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
     }
 
+    //// Copy constructor
+    TMultiVecId( const TMultiVecId<V_ALL,vaccess>& mv)
+        : defaultId( mv.getDefaultId() )
+#ifdef MAP_PTR
+        , idMap_ptr( mv.idMap_ptr )
+#else
+        , idMap( mv.idMap )
+#endif
+    {
+    }
+
     //// Only TMultiVecId< V_ALL , vaccess> can declare copy constructors with all
     //// other kinds of TMultiVecIds, namely MultiVecCoordId, MultiVecDerivId...
     //// In other cases, the copy constructor takes a TMultiVecId of the same type
@@ -441,7 +560,11 @@ public:
         BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
         //BOOST_STATIC_ASSERT( vtype == V_ALL || vtype2 == vtype );
 
-        std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(idMap, idMap.begin()) );
+        if (mv.hasIdMap())
+        {
+            IdMap& map = writeIdMap();
+            std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(map, map.begin()) );
+        }
     }
 
     void setDefaultId(const MyVecId& id)
@@ -452,31 +575,35 @@ public:
     template<class StateSet>
     void setId(const StateSet& states, const MyVecId& id)
     {
+        IdMap& map = writeIdMap();
         for (typename StateSet::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
-            idMap[*it] = id;
+            map[*it] = id;
     }
 
     void setId(const BaseState* s, const MyVecId& id)
     {
-        idMap[s] = id;
+        IdMap& map = writeIdMap();
+        map[s] = id;
     }
 
     void assign(const MyVecId& id)
     {
         defaultId = id;
+#ifndef MAP_PTR
         idMap.clear();
+#else
+        idMap_ptr.reset();
+#endif
     }
 
     const MyVecId& getId(const BaseState* s) const
     {
-        IdMap_const_iterator it = idMap.find(s);
-        if (it != idMap.end()) return it->second;
-        else                   return defaultId;
-    }
+        if (!hasIdMap()) return defaultId;
+        const IdMap& map = getIdMap();
 
-    const IdMap& getIdMap() const
-    {
-        return idMap;
+        IdMap_const_iterator it = map.find(s);
+        if (it != map.end()) return it->second;
+        else                 return defaultId;
     }
 
     const MyVecId& getDefaultId() const
@@ -486,15 +613,16 @@ public:
 
     std::string getName() const
     {
-        if (idMap.empty())
+        if (hasIdMap())
             return defaultId.getName();
         else
         {
             std::ostringstream out;
             out << '{';
             out << defaultId.getName() << "[*";
+            const IdMap& map = getIdMap();
             MyVecId prev = defaultId;
-            for (IdMap_const_iterator it = idMap.begin(), itend = idMap.end(); it != itend; ++it)
+            for (IdMap_const_iterator it = map.begin(), itend = map.end(); it != itend; ++it)
             {
                 if (it->second != prev) // new id
                 {
@@ -526,8 +654,9 @@ public:
     bool isNull() const
     {
         if (!this->defaultId.isNull()) return false;
-        for (IdMap_const_iterator it = idMap.begin(), itend = idMap.end(); it != itend; ++it)
-            if (!it->second.isNull()) return false;
+        if (hasIdMap())
+            for (IdMap_const_iterator it = getIdMap().begin(), itend = getIdMap().end(); it != itend; ++it)
+                if (!it->second.isNull()) return false;
         return true;
     }
 
