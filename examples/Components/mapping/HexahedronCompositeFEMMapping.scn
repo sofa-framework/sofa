@@ -1,7 +1,7 @@
 <Node name="root" gravity="0 0 0" dt="0.01">
     <!-- A soft grape containing a very stiff seed is deformed by using only one element. By using the HexahedronCompositeFEMMapping, the seed does not deform.  -->
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields" />
-    <OglModel name="plan" fileMesh="mesh/plane_loop_2.obj" rx="90" rz="90" scale="1" dy="-10.2" material="Default Diffuse 1 1 0.4 0.4 1 Ambient 1 0.8 0.8 0.8 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45">
+    <OglModel name="plan" fileMesh="mesh/plane_loop_2.obj" rx="90" rz="90" scale="1" dy="-10.2" material="Default Diffuse 1 1 0.4 0.4 1 Ambient 1 0.8 0.8 0.8 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45"/>
     <Node name="HexahedronCompositeFEMMapping">
         <SparseGridMultiple n="2 2 2" fileTopology="mesh/grape_out.obj" fileTopologies="mesh/grape_out.obj mesh/grape_in.obj" stiffnessCoefs="1 1000000" massCoefs="1 1" nbVirtualFinerLevels="4" finestConnectivity="false" />
         <EulerImplicit rayleighMass="0" rayleighStiffness="0" />
