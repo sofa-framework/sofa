@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 0" dt="0.03">
+    <VisualStyle displayFlags="showVisual " /> <!--showBehaviorModels showCollisionModels-->
+	<LCPConstraintSolver tolerance="1e-3" initial_guess="false" build_lcp="false"  printLog="0" mu="0.1"/>
+    <FreeMotionAnimationLoop />
+    <CollisionPipeline depth="15" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <LocalMinDistance name="Proximity" alarmDistance="1.5" contactDistance="1" useLMDFilters="1" />
+	
+    <CollisionResponse name="Response" response="FrictionContact" />
+    <Node name="Snake" >
+		<SparseGrid n="8 20 7" fileTopology="mesh/caducee_snake.obj" />
+		
+        <EulerImplicitSolver name="cg_odesolver" rayleighMass="1" rayleighStiffness="0.01" />
+        <CGLinearSolver name="linear solver" iterations="10" tolerance="1e-09" threshold="1e-09" />
+		<MechanicalObject name="dofs"/>
+        <UniformMass totalMass="10.0" />
+        <HexahedronFEMForceField youngModulus="10000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
+		<BoxConstraint box="-5 0 -5 5 10 5" />
+		
+		<!--
+		<PrecomputedConstraintCorrection rotations="true"/>
+		<Node name="Collis">
+            <MeshObjLoader name="loader" filename="mesh/caducee_curve.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" name="CollisModel" />
+            <Line />
+            <Point />
+            <BarycentricMapping input="@.." output="@." />
+        </Node>
+		-->
+		
+		<UncoupledConstraintCorrection />
+		<Node name="Collis">
+            <MeshObjLoader name="loader" filename="mesh/caducee_snake.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" name="CollisModel" />
+            <Triangle />
+            <Line />
+            <Point />
+            <BarycentricMapping input="@.." output="@." />
+        </Node>
+		
+
+     				
+        <Node name="Visu" tags="Visual" >
+            <OglModel  name="VisualModel" fileMesh="mesh/caducee_snake.obj" />
+			<BarycentricMapping object1="../.." object2="VisualModel" />
+        </Node>
+    </Node>
+	
+	
+
+    <Node name="Base" >
+		
+		<RegularGrid nx="1" ny="10" nz="1" xmin="0" xmax="0" ymin="14" ymax="66" zmin="0" zmax="0" />
+		<MechanicalObject />
+	
+		<Line />
+		<Point />
+		
+        <Node name="Visu" tags="Visual" >
+            <OglModel  name="VisualModel" fileMesh="mesh/caducee_base.obj" />
+        </Node>
+    </Node>	
+	
+</Node>
