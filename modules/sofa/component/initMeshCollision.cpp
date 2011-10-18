@@ -42,8 +42,6 @@ void initMeshCollision()
     }
 }
 
-SOFA_LINK_CLASS(MinProximityIntersection)
-SOFA_LINK_CLASS(NewProximityIntersection)
 SOFA_LINK_CLASS(BarycentricPenalityContact)
 SOFA_LINK_CLASS(BarycentricContactMapper)
 SOFA_LINK_CLASS(IdentityContactMapper)
