@@ -226,7 +226,7 @@ void Simulation::animate ( Node* root, double dt )
     }
     else
     {
-        serr<<"ERROR : AnimationLoop expected at the root node"<<sendl;
+        serr<<"ERROR in animate(): AnimationLoop expected at the root node"<<sendl;
         return;
     }
 
@@ -243,7 +243,7 @@ void Simulation::updateVisual ( Node* root)
     }
     else
     {
-        serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
+        serr<<"ERROR in updateVisual(): VisualLoop expected at the root node"<<sendl;
         return;
     }
 }
@@ -276,7 +276,7 @@ void Simulation::initTextures ( Node* root )
     }
     else
     {
-        serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
+        serr<<"ERROR in initTextures() : VisualLoop expected at the root node"<<sendl;
         return;
     }
 }
@@ -293,7 +293,7 @@ void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool 
     }
     else
     {
-        serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
+        serr<<"ERROR in computeBBox() : VisualLoop expected at the root node"<<sendl;
         return;
     }
 }
@@ -319,7 +319,7 @@ void Simulation::updateVisualContext (Node* root)
     }
     else
     {
-        serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
+        serr<<"ERROR in updateVisualContext() : VisualLoop expected at the root node"<<sendl;
         return;
     }
 
@@ -337,7 +337,7 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
     }
     else
     {
-        serr<<"ERROR : VisualLoop expected at the root node"<<sendl;
+        serr<<"ERROR in draw() : VisualLoop expected at the root node"<<sendl;
         return;
     }
 }
