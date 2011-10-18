@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 0" dt="0.03">
+    <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <CollisionPipeline depth="15" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <MinProximityIntersection name="Proximity" alarmDistance="1" contactDistance="1" />
+    <CollisionResponse name="Response" response="default" />
+	 <CollisionGroup name="Group" />
+	 
+	<Node name="Snake" >
+		<EulerImplicitSolver name="cg_odesolver"  />
+		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+
+		<SparseGrid n="8 20 7" fileTopology="mesh/caducee_snake.obj" />
+		<MechanicalObject name="dofs"/>
+        <UniformMass totalMass="1.5" />
+        <HexahedronFEMForceField youngModulus="1000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
+		<BoxConstraint box="-5 0 -5 5 10 5" />
+	
+
+		
+		<Node name="Collis">
+            <MeshObjLoader name="loader" filename="mesh/caducee_snake.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" name="CollisModel" />
+            <Triangle />
+            <Line />
+            <Point />
+            <BarycentricMapping input="@.." output="@." />
+        </Node>
+     				
+        <Node name="Visu" tags="Visual" >
+            <OglModel  name="VisualModel" fileMesh="mesh/caducee_snake.obj" />
+			<BarycentricMapping object1="../.." object2="VisualModel" />
+        </Node>
+    </Node>
+	
+	
+
+    <Node name="Base" >
+		
+		<RegularGrid nx="1" ny="10" nz="1" xmin="0" xmax="0" ymin="10" ymax="60" zmin="0" zmax="0" />
+		<MechanicalObject />
+	
+		<Line moving="0" simulated="0" />
+		<Point moving="0" simulated="0" />
+		
+        <Node name="Visu" tags="Visual" >
+            <OglModel  name="VisualModel" fileMesh="mesh/caducee_base.obj" />
+        </Node>
+    </Node>	
+	
+</Node>
