@@ -199,7 +199,7 @@ int main(int argc, char** argv)
             mrulist.close();
         }
         else
-            fileName = "Demos/10000.scn";
+            fileName = "Demos/caducee.scn";
 
         fileName = sofa::helper::system::DataRepository.getFile(fileName);
     }
