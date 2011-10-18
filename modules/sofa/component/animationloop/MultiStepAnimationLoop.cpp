@@ -69,37 +69,30 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS
     }
 
     double startTime = this->gnode->getTime();
-    double mechanicalDt = dt/numMechSteps.getValue();
-    AnimateVisitor act(params);
-    act.setDt ( mechanicalDt );
-    BehaviorUpdatePositionVisitor beh(params , this->gnode->getDt());
-    for( unsigned i=0; i<numMechSteps.getValue(); i++ )
+
+    BehaviorUpdatePositionVisitor beh(params , dt);
+    this->gnode->execute ( beh );
+
+    const int ncollis = collisionSteps.getValue();
+    const int ninteg = integrationSteps.getValue();
+    double stepDt = dt / (ncollis * ninteg);
+    for (int c = 0; c < ncollis; ++c)
     {
-        this->gnode->execute ( beh );
-
-        const int ncollis = collisionSteps.getValue();
-        const int ninteg = integrationSteps.getValue();
-        dt /= (ncollis*ninteg);
-        for (int c=0; c<ncollis; ++c)
+        // First we reset the constraints
+        sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
+        // Then do collision detection and response creation
+        sout << "collision" << sendl;
+        computeCollision(params);
+        for (int i = 0; i < ninteg; ++i)
         {
-            // First we reset the constraints
-            sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
-            // Then do collision detection and response creation
-            sout << "collision" << sendl;
-            computeCollision(params);
-            for (int i=0; i<ninteg; ++i)
-            {
-                // Then integrate the time step
-                sout << "integration" << sendl;
-                integrate(params, dt);
-            }
+            // Then integrate the time step
+            sout << "integration" << sendl;
+            integrate(params, stepDt);
         }
-
-        this->gnode->setTime ( startTime + (i+1)* act.getDt() );
-        this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
-
-        nbMechSteps.setValue(nbMechSteps.getValue() + 1);
     }
+
+    this->gnode->setTime ( startTime + dt );
+    this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
         AnimateEndEvent ev ( dt );
@@ -126,7 +119,6 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
-    nbSteps.setValue(nbSteps.getValue() + 1);
 
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }

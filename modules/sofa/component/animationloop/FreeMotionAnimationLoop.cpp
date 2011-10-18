@@ -102,7 +102,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     }
 
     double startTime = this->gnode->getTime();
-//	double mechanicalDt = dt / numMechSteps.getValue();
 
     simulation::common::VectorOperations vop(params, this->getContext());
     simulation::common::MechanicalOperations mop(params, this->getContext());
@@ -117,136 +116,132 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     simulation::MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
     simulation::MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(this->gnode);
 
-    BehaviorUpdatePositionVisitor beh(params , this->gnode->getDt());
+    BehaviorUpdatePositionVisitor beh(params , dt);
 
-    for (unsigned i = 0; i < numMechSteps.getValue(); i++ )
+    using helper::system::thread::CTime;
+    using sofa::helper::AdvancedTimer;
+
+    double time = 0.0;
+    double timeTotal = 0.0;
+    double timeScale = 1000.0 / (double)CTime::getTicksPerSec();
+
+    if (displayTime.getValue())
     {
-        using helper::system::thread::CTime;
-        using sofa::helper::AdvancedTimer;
-
-        double time = 0.0;
-        double timeTotal = 0.0;
-        double timeScale = 1000.0 / (double)CTime::getTicksPerSec();
-
-        if (displayTime.getValue())
-        {
-            time = (double) CTime::getTime();
-            timeTotal = (double) CTime::getTime();
-        }
-
-        // Update the BehaviorModels
-        // Required to allow the RayPickInteractor interaction
-        if (f_printLog.getValue())
-            serr << "updatePos called" << sendl;
-
-        AdvancedTimer::stepBegin("UpdatePosition");
-        this->gnode->execute(&beh);
-        AdvancedTimer::stepEnd("UpdatePosition");
-
-        if (f_printLog.getValue())
-            serr << "updatePos performed - beginVisitor called" << sendl;
-
-        simulation::MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
-        this->gnode->execute(&beginVisitor);
-
-        if (f_printLog.getValue())
-            serr << "beginVisitor performed - SolveVisitor for freeMotion is called" << sendl;
-
-        // Free Motion
-        AdvancedTimer::stepBegin("FreeMotion");
-        simulation::SolveVisitor freeMotion(params, dt, true);
-        this->gnode->execute(&freeMotion);
-        AdvancedTimer::stepEnd("FreeMotion");
-
-        mop.propagateXAndV(freePos, freeVel);
-
-        if (f_printLog.getValue())
-            serr << " SolveVisitor for freeMotion performed" << sendl;
-
-        if (displayTime.getValue())
-        {
-            sout << " >>>>> Begin display FreeMotionAnimationLoop time" << sendl;
-            sout <<" Free Motion " << ((double)CTime::getTime() - time) * timeScale << " ms" << sendl;
-
-            time = (double)CTime::getTime();
-        }
-
-        // Collision detection and response creation
-        AdvancedTimer::stepBegin("Collision");
-        computeCollision(params);
-        AdvancedTimer::stepEnd  ("Collision");
-
-        mop.propagateX(pos);
-
-        if (displayTime.getValue())
-        {
-            sout << " computeCollision " << ((double) CTime::getTime() - time) * timeScale << " ms" << sendl;
-            time = (double)CTime::getTime();
-        }
-
-        // Solve constraints
-        if (constraintSolver)
-        {
-            AdvancedTimer::stepBegin("ConstraintSolver");
-
-            if (m_solveVelocityConstraintFirst.getValue())
-            {
-                core::ConstraintParams cparams(*params);
-                cparams.setX(freePos);
-                cparams.setV(freeVel);
-
-                cparams.setOrder(core::ConstraintParams::VEL);
-                constraintSolver->solveConstraint(&cparams, vel);
-
-                MultiVecDeriv dv(&vop, constraintSolver->getDx());
-                mop.propagateDx(dv);
-
-                // xfree += dv * dt
-                freePos.eq(freePos, dv, this->getContext()->getDt());
-                mop.propagateX(freePos);
-
-                cparams.setOrder(core::ConstraintParams::POS);
-                constraintSolver->solveConstraint(&cparams, pos);
-
-                MultiVecDeriv dx(&vop, constraintSolver->getDx());
-
-                mop.propagateV(vel);
-                mop.propagateDx(dx);
-
-                // "mapped" x = xfree + dx
-                simulation::MechanicalVOpVisitor(params, pos, freePos, dx, 1.0 ).setOnlyMapped(true).execute(this->gnode);
-            }
-            else
-            {
-                core::ConstraintParams cparams(*params);
-                cparams.setX(freePos);
-                cparams.setV(freeVel);
-
-                constraintSolver->solveConstraint(&cparams, pos, vel);
-
-                mop.propagateV(vel);
-
-                MultiVecDeriv dx(&vop, constraintSolver->getDx());
-                mop.propagateDx(dx);
-
-                // "mapped" x = xfree + dx
-                simulation::MechanicalVOpVisitor(params, pos, freePos, dx, 1.0 ).setOnlyMapped(true).execute(this->gnode);
-            }
-        }
-
-        if ( displayTime.getValue() )
-        {
-            sout << " contactCorrections " << ((double)CTime::getTime() - time) * timeScale << " ms" <<sendl;
-            sout << "<<<<<< End display FreeMotionAnimationLoop time." << sendl;
-        }
-
-        simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
-        this->gnode->execute(&endVisitor);
-
-        this->gnode->setTime ( startTime + (i+1) * dt );
-        this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
-        nbMechSteps.setValue(nbMechSteps.getValue() + 1);
+        time = (double) CTime::getTime();
+        timeTotal = (double) CTime::getTime();
     }
+
+    // Update the BehaviorModels
+    // Required to allow the RayPickInteractor interaction
+    if (f_printLog.getValue())
+        serr << "updatePos called" << sendl;
+
+    AdvancedTimer::stepBegin("UpdatePosition");
+    this->gnode->execute(&beh);
+    AdvancedTimer::stepEnd("UpdatePosition");
+
+    if (f_printLog.getValue())
+        serr << "updatePos performed - beginVisitor called" << sendl;
+
+    simulation::MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
+    this->gnode->execute(&beginVisitor);
+
+    if (f_printLog.getValue())
+        serr << "beginVisitor performed - SolveVisitor for freeMotion is called" << sendl;
+
+    // Free Motion
+    AdvancedTimer::stepBegin("FreeMotion");
+    simulation::SolveVisitor freeMotion(params, dt, true);
+    this->gnode->execute(&freeMotion);
+    AdvancedTimer::stepEnd("FreeMotion");
+
+    mop.propagateXAndV(freePos, freeVel);
+
+    if (f_printLog.getValue())
+        serr << " SolveVisitor for freeMotion performed" << sendl;
+
+    if (displayTime.getValue())
+    {
+        sout << " >>>>> Begin display FreeMotionAnimationLoop time" << sendl;
+        sout <<" Free Motion " << ((double)CTime::getTime() - time) * timeScale << " ms" << sendl;
+
+        time = (double)CTime::getTime();
+    }
+
+    // Collision detection and response creation
+    AdvancedTimer::stepBegin("Collision");
+    computeCollision(params);
+    AdvancedTimer::stepEnd  ("Collision");
+
+    mop.propagateX(pos);
+
+    if (displayTime.getValue())
+    {
+        sout << " computeCollision " << ((double) CTime::getTime() - time) * timeScale << " ms" << sendl;
+        time = (double)CTime::getTime();
+    }
+
+    // Solve constraints
+    if (constraintSolver)
+    {
+        AdvancedTimer::stepBegin("ConstraintSolver");
+
+        if (m_solveVelocityConstraintFirst.getValue())
+        {
+            core::ConstraintParams cparams(*params);
+            cparams.setX(freePos);
+            cparams.setV(freeVel);
+
+            cparams.setOrder(core::ConstraintParams::VEL);
+            constraintSolver->solveConstraint(&cparams, vel);
+
+            MultiVecDeriv dv(&vop, constraintSolver->getDx());
+            mop.propagateDx(dv);
+
+            // xfree += dv * dt
+            freePos.eq(freePos, dv, dt);
+            mop.propagateX(freePos);
+
+            cparams.setOrder(core::ConstraintParams::POS);
+            constraintSolver->solveConstraint(&cparams, pos);
+
+            MultiVecDeriv dx(&vop, constraintSolver->getDx());
+
+            mop.propagateV(vel);
+            mop.propagateDx(dx);
+
+            // "mapped" x = xfree + dx
+            simulation::MechanicalVOpVisitor(params, pos, freePos, dx, 1.0 ).setOnlyMapped(true).execute(this->gnode);
+        }
+        else
+        {
+            core::ConstraintParams cparams(*params);
+            cparams.setX(freePos);
+            cparams.setV(freeVel);
+
+            constraintSolver->solveConstraint(&cparams, pos, vel);
+
+            mop.propagateV(vel);
+
+            MultiVecDeriv dx(&vop, constraintSolver->getDx());
+            mop.propagateDx(dx);
+
+            // "mapped" x = xfree + dx
+            simulation::MechanicalVOpVisitor(params, pos, freePos, dx, 1.0 ).setOnlyMapped(true).execute(this->gnode);
+        }
+    }
+
+    if ( displayTime.getValue() )
+    {
+        sout << " contactCorrections " << ((double)CTime::getTime() - time) * timeScale << " ms" <<sendl;
+        sout << "<<<<<< End display FreeMotionAnimationLoop time." << sendl;
+    }
+
+    simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
+    this->gnode->execute(&endVisitor);
+
+    this->gnode->setTime ( startTime + dt );
+    this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
         AnimateEndEvent ev ( dt );
@@ -274,7 +269,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
-    nbSteps.setValue(nbSteps.getValue() + 1);
 
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }

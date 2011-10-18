@@ -560,234 +560,228 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
 
 
     double startTime = this->gnode->getTime();
-    double mechanicalDt = dt/numMechSteps.getValue();
-    AnimateVisitor act(params);
-    act.setDt ( mechanicalDt );
+
     BehaviorUpdatePositionVisitor beh(params , this->gnode->getDt());
-    for( unsigned i=0; i<numMechSteps.getValue(); i++ )
+    this->gnode->execute ( beh );
+
+
+    if (simulationTime>0.1)
+        activateSubGraph.setValue(true);
+    else
+        activateSubGraph.setValue(false);
+
+    time = 0.0;
+    double totaltime = 0.0;
+    timeScale = 1.0 / (double)CTime::getTicksPerSec() * 1000;
+    if ( displayTime.getValue() )
     {
-        this->gnode->execute ( beh );
+        if (timer == 0)
+            timer = new CTime();
 
-
-        if (simulationTime>0.1)
-            activateSubGraph.setValue(true);
-        else
-            activateSubGraph.setValue(false);
-
-        time = 0.0;
-        double totaltime = 0.0;
-        timeScale = 1.0 / (double)CTime::getTicksPerSec() * 1000;
-        if ( displayTime.getValue() )
-        {
-            if (timer == 0)
-                timer = new CTime();
-
-            time = (double) timer->getTime();
-            totaltime = time;
-            sout<<sendl;
-        }
-        if (doubleBuffer.getValue())
-        {
-            // SWAP BUFFER:
-            bufCP1 = !bufCP1;
-        }
+        time = (double) timer->getTime();
+        totaltime = time;
+        sout<<sendl;
+    }
+    if (doubleBuffer.getValue())
+    {
+        // SWAP BUFFER:
+        bufCP1 = !bufCP1;
+    }
 
 #ifndef WIN32
-        if (_realTimeCompensation.getValue())
+    if (_realTimeCompensation.getValue())
+    {
+        if (timer == 0)
         {
-            if (timer == 0)
-            {
-                timer = new CTime();
-                compTime = iterationTime = (double)timer->getTime();
-            }
-            else
-            {
-                double actTime = double(timer->getTime());
-                double compTimeDiff = actTime - compTime;
-                double iterationTimeDiff = actTime - iterationTime;
-                iterationTime = actTime;
-                std::cout << "Total time = " << iterationTimeDiff << std::endl;
-                int toSleep = (int)floor(dt*1000000-compTimeDiff);
-                //std::cout << "To sleep: " << toSleep << std::endl;
-                if (toSleep > 0)
-                    usleep(toSleep);
-                else
-                    serr << "Cannot achieve frequency for dt = " << dt << sendl;
-                compTime = (double)timer->getTime();
-            }
-        }
-#endif
-
-        debug = this->f_printLog.getValue();
-
-        if (debug)
-            sout << "ConstraintAnimationLoop::step is called" << sendl;
-
-
-        // This solver will work in freePosition and freeVelocity vectors.
-        // We need to initialize them if it's not already done.
-        simulation::MechanicalVInitVisitor<core::V_COORD>(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
-        simulation::MechanicalVInitVisitor<core::V_DERIV>(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity()).execute(this->gnode);
-
-        if (doCollisionsFirst.getValue())
-        {
-            /// COLLISION
-            launchCollisionDetection(params);
-        }
-
-        // Update the BehaviorModels => to be removed ?
-        // Required to allow the RayPickInteractor interaction
-        sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdate");
-        simulation::BehaviorUpdatePositionVisitor(params /* PARAMS FIRST */, dt).execute(this->gnode);
-        sofa::helper::AdvancedTimer::stepEnd  ("BehaviorUpdate");
-
-
-        if(schemeCorrection.getValue())
-        {
-            // Compute the predictive force:
-            numConstraints = 0;
-
-            //1. Find the new constraint direction
-            writeAndAccumulateAndCountConstraintDirections(params /* PARAMS FIRST */, this->gnode, numConstraints);
-
-            //2. Get the constraint solving process:
-            getIndividualConstraintSolvingProcess(params /* PARAMS FIRST */, this->gnode);
-
-            //3. Use the stored forces to compute
-            if (debug)
-            {
-                if (doubleBuffer.getValue() && bufCP1)
-                {
-                    computePredictiveForce(CP2.getSize(), CP2.getF()->ptr(), CP2.getConstraintResolutions());
-                    std::cout << "getF() after computePredictiveForce:" << std::endl;
-                    helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
-                }
-                else
-                {
-                    computePredictiveForce(CP1.getSize(), CP1.getF()->ptr(), CP1.getConstraintResolutions());
-                    std::cout << "getF() after computePredictiveForce:" << std::endl;
-                    helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
-                }
-            }
-        }
-
-        if (debug)
-        {
-            if (doubleBuffer.getValue() && bufCP1)
-            {
-                (*CP2.getF())*=0.0;
-                computePredictiveForce(CP2.getSize(), CP2.getF()->ptr(), CP2.getConstraintResolutions());
-                std::cout << "getF() after re-computePredictiveForce:" << std::endl;
-                helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
-            }
-            else
-            {
-                (*CP1.getF())*=0.0;
-                computePredictiveForce(CP1.getSize(), CP1.getF()->ptr(), CP1.getConstraintResolutions());
-                std::cout << "getF() after re-computePredictiveForce:" << std::endl;
-                helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
-            }
-        }
-
-
-
-
-        /// FREE MOTION
-        freeMotion(params /* PARAMS FIRST */, this->gnode, dt);
-
-
-
-        if (!doCollisionsFirst.getValue())
-        {
-            /// COLLISION
-            launchCollisionDetection(params);
-        }
-
-        //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
-        core::MechanicalParams mparams(*params);
-        simulation::MechanicalPropagatePositionVisitor(&mparams /* PARAMS FIRST */, 0, core::VecCoordId::position(), true).execute(this->gnode);
-
-
-        /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION
-        setConstraintEquations(params /* PARAMS FIRST */, this->gnode);
-
-        if (debug)
-        {
-            if (doubleBuffer.getValue() && bufCP1)
-            {
-                std::cout << "getF() after setConstraintEquations:" << std::endl;
-                helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
-            }
-            else
-            {
-                std::cout << "getF() after setConstraintEquations:" << std::endl;
-                helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
-            }
-        }
-
-        sofa::helper::AdvancedTimer::stepBegin("GaussSeidel");
-
-        if (doubleBuffer.getValue() && bufCP1)
-        {
-            if (debug)
-                sout << "Gauss-Seidel solver is called on problem of size " << CP2.getSize() << sendl;
-            if(schemeCorrection.getValue())
-                (*CP2.getF())*=0.0;
-
-            gaussSeidelConstraint(CP2.getSize(), CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(), CP2.getD()->ptr(), CP2.getConstraintResolutions(), CP2.getdF()->ptr());
+            timer = new CTime();
+            compTime = iterationTime = (double)timer->getTime();
         }
         else
         {
-            if (debug)
-                sout << "Gauss-Seidel solver is called on problem of size " << CP1.getSize() << sendl;
-            if(schemeCorrection.getValue())
-                (*CP1.getF())*=0.0;
-
-            gaussSeidelConstraint(CP1.getSize(), CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), CP1.getD()->ptr(), CP1.getConstraintResolutions(), CP1.getdF()->ptr());
+            double actTime = double(timer->getTime());
+            double compTimeDiff = actTime - compTime;
+            double iterationTimeDiff = actTime - iterationTime;
+            iterationTime = actTime;
+            std::cout << "Total time = " << iterationTimeDiff << std::endl;
+            int toSleep = (int)floor(dt*1000000-compTimeDiff);
+            //std::cout << "To sleep: " << toSleep << std::endl;
+            if (toSleep > 0)
+                usleep(toSleep);
+            else
+                serr << "Cannot achieve frequency for dt = " << dt << sendl;
+            compTime = (double)timer->getTime();
         }
+    }
+#endif
 
-        sofa::helper::AdvancedTimer::stepEnd  ("GaussSeidel");
+    debug = this->f_printLog.getValue();
 
+    if (debug)
+        sout << "ConstraintAnimationLoop::step is called" << sendl;
+
+
+    // This solver will work in freePosition and freeVelocity vectors.
+    // We need to initialize them if it's not already done.
+    simulation::MechanicalVInitVisitor<core::V_COORD>(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
+    simulation::MechanicalVInitVisitor<core::V_DERIV>(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity()).execute(this->gnode);
+
+    if (doCollisionsFirst.getValue())
+    {
+        /// COLLISION
+        launchCollisionDetection(params);
+    }
+
+    // Update the BehaviorModels => to be removed ?
+    // Required to allow the RayPickInteractor interaction
+    sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdate");
+    simulation::BehaviorUpdatePositionVisitor(params /* PARAMS FIRST */, dt).execute(this->gnode);
+    sofa::helper::AdvancedTimer::stepEnd  ("BehaviorUpdate");
+
+
+    if(schemeCorrection.getValue())
+    {
+        // Compute the predictive force:
+        numConstraints = 0;
+
+        //1. Find the new constraint direction
+        writeAndAccumulateAndCountConstraintDirections(params /* PARAMS FIRST */, this->gnode, numConstraints);
+
+        //2. Get the constraint solving process:
+        getIndividualConstraintSolvingProcess(params /* PARAMS FIRST */, this->gnode);
+
+        //3. Use the stored forces to compute
         if (debug)
         {
             if (doubleBuffer.getValue() && bufCP1)
-                helper::afficheLCP(CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(),  CP2.getSize());
+            {
+                computePredictiveForce(CP2.getSize(), CP2.getF()->ptr(), CP2.getConstraintResolutions());
+                std::cout << "getF() after computePredictiveForce:" << std::endl;
+                helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
+            }
             else
-                helper::afficheLCP(CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(),  CP1.getSize());
+            {
+                computePredictiveForce(CP1.getSize(), CP1.getF()->ptr(), CP1.getConstraintResolutions());
+                std::cout << "getF() after computePredictiveForce:" << std::endl;
+                helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
+            }
         }
-
-        if ( displayTime.getValue() )
-        {
-            sout << " Solve with GaussSeidel                " << ( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
-            time = (double) timer->getTime();
-        }
-
-        /// CORRECTIVE MOTION
-        correctiveMotion(params /* PARAMS FIRST */, this->gnode);
-        //       if (doubleBuffer.getValue() && bufCP1)
-        //           std::cout << " #C: " << CP2.getSize() << " constraints" << std::endl;
-        //       else
-        //           std::cout << " #C: " << CP1.getSize() << " constraints" << std::endl;
-
-
-        if ( displayTime.getValue() )
-        {
-            sout << " ContactCorrections                    " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
-            sout << "  = Total                              " << ( (double) timer->getTime() - totaltime)*timeScale <<" ms" <<sendl;
-            if (doubleBuffer.getValue() && bufCP1)
-                sout << " With : " << CP2.getSize() << " constraints" << sendl;
-            else
-                sout << " With : " << CP1.getSize() << " constraints" << sendl;
-
-            sout << "<<<<< End display ConstraintAnimationLoop time." << sendl;
-        }
-
-        simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
-        this->gnode->execute(&endVisitor);
-        this->gnode->setTime ( startTime + (i+1)* act.getDt() );
-        this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
-        nbMechSteps.setValue(nbMechSteps.getValue() + 1);
     }
+
+    if (debug)
+    {
+        if (doubleBuffer.getValue() && bufCP1)
+        {
+            (*CP2.getF())*=0.0;
+            computePredictiveForce(CP2.getSize(), CP2.getF()->ptr(), CP2.getConstraintResolutions());
+            std::cout << "getF() after re-computePredictiveForce:" << std::endl;
+            helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
+        }
+        else
+        {
+            (*CP1.getF())*=0.0;
+            computePredictiveForce(CP1.getSize(), CP1.getF()->ptr(), CP1.getConstraintResolutions());
+            std::cout << "getF() after re-computePredictiveForce:" << std::endl;
+            helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
+        }
+    }
+
+
+
+
+    /// FREE MOTION
+    freeMotion(params /* PARAMS FIRST */, this->gnode, dt);
+
+
+
+    if (!doCollisionsFirst.getValue())
+    {
+        /// COLLISION
+        launchCollisionDetection(params);
+    }
+
+    //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
+    core::MechanicalParams mparams(*params);
+    simulation::MechanicalPropagatePositionVisitor(&mparams /* PARAMS FIRST */, 0, core::VecCoordId::position(), true).execute(this->gnode);
+
+
+    /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION
+    setConstraintEquations(params /* PARAMS FIRST */, this->gnode);
+
+    if (debug)
+    {
+        if (doubleBuffer.getValue() && bufCP1)
+        {
+            std::cout << "getF() after setConstraintEquations:" << std::endl;
+            helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
+        }
+        else
+        {
+            std::cout << "getF() after setConstraintEquations:" << std::endl;
+            helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
+        }
+    }
+
+    sofa::helper::AdvancedTimer::stepBegin("GaussSeidel");
+
+    if (doubleBuffer.getValue() && bufCP1)
+    {
+        if (debug)
+            sout << "Gauss-Seidel solver is called on problem of size " << CP2.getSize() << sendl;
+        if(schemeCorrection.getValue())
+            (*CP2.getF())*=0.0;
+
+        gaussSeidelConstraint(CP2.getSize(), CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(), CP2.getD()->ptr(), CP2.getConstraintResolutions(), CP2.getdF()->ptr());
+    }
+    else
+    {
+        if (debug)
+            sout << "Gauss-Seidel solver is called on problem of size " << CP1.getSize() << sendl;
+        if(schemeCorrection.getValue())
+            (*CP1.getF())*=0.0;
+
+        gaussSeidelConstraint(CP1.getSize(), CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), CP1.getD()->ptr(), CP1.getConstraintResolutions(), CP1.getdF()->ptr());
+    }
+
+    sofa::helper::AdvancedTimer::stepEnd  ("GaussSeidel");
+
+    if (debug)
+    {
+        if (doubleBuffer.getValue() && bufCP1)
+            helper::afficheLCP(CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(),  CP2.getSize());
+        else
+            helper::afficheLCP(CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(),  CP1.getSize());
+    }
+
+    if ( displayTime.getValue() )
+    {
+        sout << " Solve with GaussSeidel                " << ( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
+        time = (double) timer->getTime();
+    }
+
+    /// CORRECTIVE MOTION
+    correctiveMotion(params /* PARAMS FIRST */, this->gnode);
+    //       if (doubleBuffer.getValue() && bufCP1)
+    //           std::cout << " #C: " << CP2.getSize() << " constraints" << std::endl;
+    //       else
+    //           std::cout << " #C: " << CP1.getSize() << " constraints" << std::endl;
+
+
+    if ( displayTime.getValue() )
+    {
+        sout << " ContactCorrections                    " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
+        sout << "  = Total                              " << ( (double) timer->getTime() - totaltime)*timeScale <<" ms" <<sendl;
+        if (doubleBuffer.getValue() && bufCP1)
+            sout << " With : " << CP2.getSize() << " constraints" << sendl;
+        else
+            sout << " With : " << CP1.getSize() << " constraints" << sendl;
+
+        sout << "<<<<< End display ConstraintAnimationLoop time." << sendl;
+    }
+
+    simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
+    this->gnode->execute(&endVisitor);
+    this->gnode->setTime ( startTime + dt );
+    this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
         AnimateEndEvent ev ( dt );
@@ -814,7 +808,6 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
-    nbSteps.setValue(nbSteps.getValue() + 1);
 
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }

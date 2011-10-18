@@ -144,7 +144,6 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
-    nbSteps.setValue( nbSteps.getValue() + 1 );
 
     ///////////////////////////////////////////////////////////////////////
 
