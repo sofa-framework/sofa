@@ -9,21 +9,36 @@
 		<center><img src="volumeModel_01.png"  width="300" name="TopologyTetra2TriangleTopologicalMapping" align="middle">
 		</center>
 		
-		<br><div id="orangeText">Description</div><br>
-		In this step we add a mechanical behavior to the tetrahedral mesh using ODE solver, finite element and mass. Thus, the cylinder can be deformed by the gravity or the user.
+		<br><div id="orangeText">Description</div>
+		<p>In this step we will add a mechanical behavior to the tetrahedral mesh using an ODE solver, finite element and mass. Thus, the cylinder can be deformed by gravity or the user.</p>
 
-		<br><div id="orangeText">Key points</div>
+		<div id="orangeText">Key points</div>
+        <p>
         <ul>
 		  <li><b>EulerImplicitSolver</b> component is used to solve the mechanical ODE system.</li>
-		  <li><b>CGLinearSolver</b> component is used to solve the linare system at each step of the ODE system.</li>
+		  <li><b>CGLinearSolver</b> component is used to solve the linear system at each step of the ODE system.</li>
 		  <li><b>TetrahedralCorotationalFEM</b> is used to create tetrahedral finite element on this mechanical system.</li>
-		  <li><b>DiagonalMass</b> discribe a global mass of the mesh elemets.</li>
+		  <li><b>DiagonalMass</b> describe a global mass of the mesh elements.</li>
 		  <li><b>Constraint</b> components are used here to fix on extremity face of the cylinder.</li>		  
-		  </ul>
+		</ul>
+        </p>
+        
+        <div id="tutorialAction"><p>Add an <strong>EulerImplicitSolver</strong> component to the <strong>Tetrahedrons Mesh</strong> node.</p>
+        
+        <p>Repeat with a <strong>CGLinearSolver</strong> component. Change the <strong>tolerance</strong> property to 1e-09, and in the <strong>Property 2/2</strong> tab, change the <strong>threshold</strong> property to 1e-09.</p>
+        
+        <p>Add a <strong>TetrahedralCorotationalFEMForceField</strong> component. Change the <strong>FEM Poisson Ratio</strong> to "0.3", and the <strong>FEM Young Modulus</strong> to 360.</p>
+        
+        <p>Add a <strong>DiagonalMass</strong> component. In the <strong>Property 2/2</strong> tab, change the <strong>mass density</strong> to "2".</p>
+        
+        <p>Add a <strong>FixedPlaneConstraint</strong> component. In the <strong>Property 2/2</strong> tab, change the <strong>normal direction of the plane</strong> to (0 0 1), the <strong>minimum plane distance from the origin</strong> to "-0.1" and the <strong>maximum plane distance from the origin</strong> to "0.1".</p>
+        
+        <p>Add a <strong>FixedConstraint</strong> component.</p></div>
 
-		<br><div id="orangeText">Results</div><br>
-		Adding these components create a mechanical behavior for this cylinder. Thus, adding some gravity on the scene, we can see that the cylinder start to bend.
-		On this step, as there is no surface for visual model, we can see the finite elements.
+		<div id="orangeText">Results</div>
+        
+		<p>Adding these components create a mechanical behavior for this cylinder. Adding some gravity on the scene, we can see that the cylinder starts to bend.</p>
+		<p>In this step, as there is no surface for visual model. We can see the finite elements.</p>
 		<br><center><img src="volumeModel_02.png" width="300" name="TopologyTetra2TriangleTopologicalMapping" align="middle">
 
 

@@ -10,19 +10,27 @@
 		
 
 		
-		<br><div id="orangeText">Description</div><br>
-		This step shows that it is possible to define mechanical behavior directly on child topology. this can be usefull as often the surfacique mesh is only a small part of the entire topology.
+		<br><div id="orangeText">Description</div>
+		<p>This step shows that it is possible to define mechanical behavior directly on a child topology. This can be useful, as often the surface mesh is only a small part of the entire topology.</p>
 
-		<br><div id="orangeText">Key points</div>
+		<div id="orangeText">Key points</div>
+        <p>
         <ul>
 		  <li>Springs are added to the edges on surface of the mesh using <b>TriangularBendingSprings</b>.</li>
-		  <li><b>TriangleModel</b> component can be added to interact with the model (use shift + left mouse button).</li>
+		  <li><b>TriangleModel</b> components can be added to interact with the model (using <strong>Shift</strong> and the mouse).</li>
 		</ul>
+        </p>
+        
+        <div id="tutorialAction"><p>Add a <strong>TriangularBendingSprings</strong> component to the <strong>Triangles Mesh</strong> node. Change the <strong>uniform stiffness for all the springs</strong> property to 10.</p></div>
+        
+      
+		<div id="orangeText">Results</div>
+        
+        <div id="tutorialAction"><p>Run in SOFA and Animate. Deform the cylinder by holding down the <strong>Shift</strong> key and dragging the triangles with the mouse.</p></div>
 
-		<br><div id="orangeText">Results</div><br>
-		In this step, edges on the surface of the mesh have springs, thus the cylinder doesn't bend as mush as in previous steps.
-		The interest is that elements in the rest of the cylinder are not taken into account, leading to faster computation.
-		<br>
+		<p>In this step, edges on the surface of the mesh have springs, so the cylinder doesn't bend as much as in the previous steps.
+		The advantage is that elements in the rest of the cylinder are not taken into account, resulting in faster computation.</p>
+		
 		<center><img src="triangleModel.png" width="300" name="TopologyTetra2TriangleTopologicalMapping" align="middle">
 
                 <br><center><h3><a href="3_TopoMapping.scn">Previous</a> ____________ <a href="5_TopoMapping.scn">Next</a></center></h3>
