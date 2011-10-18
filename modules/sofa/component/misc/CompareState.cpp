@@ -142,7 +142,13 @@ void CompareState::processCompareState()
     time += getContext()->getDt() * 0.001;
     //lastTime = time+0.00001;
     std::vector<std::string> validLines;
-    if (!this->readNext(time, validLines)) return;
+    if (!nextValidLines.empty() && last_time == getContext()->getTime())
+        validLines.swap(nextValidLines);
+    else
+    {
+        last_time = getContext()->getTime();
+        if (!this->readNext(time, validLines)) return;
+    }
     for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
     {
         std::istringstream str(*it);
@@ -180,6 +186,33 @@ void CompareState::processCompareState()
 //-------------------------------- processCompareState------------------------------------
 void CompareState::draw(const core::visual::VisualParams* vparams)
 {
+    double time = getContext()->getTime() + f_shift.getValue();
+    time += getContext()->getDt() * 0.001;
+    //lastTime = time+0.00001;
+    if (nextValidLines.empty() && last_time != getContext()->getTime())
+    {
+        last_time = getContext()->getTime();
+        if (!this->readNext(time, nextValidLines))
+            nextValidLines.clear();
+        else
+        {
+            for (std::vector<std::string>::iterator it=nextValidLines.begin(); it!=nextValidLines.end(); ++it)
+            {
+                std::istringstream str(*it);
+                std::string cmd;
+                str >> cmd;
+                if (cmd.compare("X=") == 0)
+                {
+                    last_X = *it;
+                }
+                else if (cmd.compare("V=") == 0)
+                {
+                    last_V = *it;
+                }
+            }
+        }
+    }
+
     if (mmodel && !last_X.empty())
     {
         core::VecCoordId refX(core::VecCoordId::V_FIRST_DYNAMIC_INDEX);

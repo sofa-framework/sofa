@@ -81,8 +81,10 @@ protected :
     /// total error for velocities
     double totalError_V;
     double dofError_V;
-    /// last position and velocity (for draw)
+    /// last time, position and velocity (for draw)
+    double last_time;
     std::string last_X, last_V;
+    std::vector<std::string> nextValidLines;
 };
 
 /// Create CompareState component in the graph each time needed
