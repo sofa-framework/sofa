@@ -52,7 +52,8 @@ ExecParams* ExecParams::defaultInstance()
     {
         ptr = new ExecParams(new ExecParamsThreadStorage(g_nbThreads.exchange_and_add(1)));
         threadParams = ptr;
-        std::cout << "[THREAD " << ptr->threadID() << "]: local ExecParams storage created." << std::endl;
+        if (ptr->threadID())
+            std::cout << "[THREAD " << ptr->threadID() << "]: local ExecParams storage created." << std::endl;
     }
     return ptr;
 }

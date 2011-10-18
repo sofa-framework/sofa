@@ -310,8 +310,6 @@ void BglNode::doExecuteVisitor( Visitor* visit )
 void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    GetObjectVisitor getobj(params /* PARAMS FIRST */, class_info);
-    getobj.setTags(tags);
     if (dir == Local)
     {
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
@@ -323,16 +321,19 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
                 return result;
             }
         }
+        return NULL;
     }
     else
     {
+        GetObjectVisitor getobj(params /* PARAMS FIRST */, class_info, (dir == SearchParents ? this : NULL));
+        getobj.setTags(tags);
 #ifdef BREADTH_FIRST_VISIT
         BglGraphManager::getInstance()->breadthFirstVisit(this, getobj, dir);
 #else
         BglGraphManager::getInstance()->depthFirstVisit(this, getobj, dir);
 #endif
+        return getobj.getObject();
     }
-    return getobj.getObject();
 }
 
 
@@ -342,8 +343,6 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    GetObjectsVisitor getobjs(params /* PARAMS FIRST */, class_info, container);
-    getobjs.setTags(tags);
     if (dir == Local)
     {
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
@@ -356,6 +355,8 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
     }
     else
     {
+        GetObjectsVisitor getobjs(params /* PARAMS FIRST */, class_info, container, (dir == SearchParents ? this : NULL));
+        getobjs.setTags(tags);
 #ifdef BREADTH_FIRST_VISIT
         BglGraphManager::getInstance()->breadthFirstVisit(this, getobjs, dir);
 #else
