@@ -507,7 +507,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         const sofa::defaulttype::Vector3& color = _drawColor.getValue();
         glColor3f(color[0], color[1], color[2]);
         glDisable(GL_LIGHTING);
-        float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
+        float scale = this->getIndicesScale();
 
         //for edges:
         scale = scale/2;

@@ -50,24 +50,18 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
     object = this->getContext()->core::objectmodel::BaseContext::get< core::behavior::MechanicalState< DataTypes > >();
     core::topology::GeometryAlgorithms::init();
     this->m_topology = this->getContext()->getMeshTopology();
-
-    // Initialization PointIndicesScale
-    this->reinit();
 }
 
 template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::reinit()
 {
-    this->computeIndicesScale();
 }
 
 template <class DataTypes>
-void PointSetGeometryAlgorithms< DataTypes >::computeIndicesScale()
+float PointSetGeometryAlgorithms< DataTypes >::getIndicesScale() const
 {
-    sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-    sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-    PointIndicesScale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+    const sofa::defaulttype::BoundingBox& bbox = this->getContext()->f_bbox.getValue();
+    return (float)((bbox.maxBBox() - bbox.minBBox()).norm() * showIndicesScale.getValue());
 }
 
 
@@ -198,8 +192,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
         glDisable(GL_LIGHTING);
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
-        // Recompute, in case Box has moved.
-        PointIndicesScale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+        float PointIndicesScale = getIndicesScale();
         //float scale = showIndicesScale.getValue();
 
         for (unsigned int i =0; i<coords.size(); i++)

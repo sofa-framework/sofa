@@ -361,7 +361,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         const sofa::defaulttype::Vector3& color = _drawColor.getValue();
         glColor3f(color[0]-0.2, color[1]-0.2, color[2]-0.2);
         glDisable(GL_LIGHTING);
-        float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
+        float scale = this->getIndicesScale();
 
         //for quads:
         scale = scale/2;
