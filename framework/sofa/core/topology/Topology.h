@@ -124,8 +124,8 @@ class TopologyChange
 public:
     /** \ brief Destructor.
     *
-    * Must be virtual for TopologyChange to be a Polymorphic type.
-    */
+    	* Must be virtual for TopologyChange to be a Polymorphic type.
+    	*/
     virtual ~TopologyChange() {}
 
     /** \brief Returns the code of this TopologyChange. */
@@ -160,6 +160,8 @@ public:
         : core::topology::TopologyChange(core::topology::ENDING_EVENT)
     {}
 };
+
+
 
 
 /** A class that define topological Data general methods*/
@@ -214,87 +216,19 @@ public:
     {
     }
 
-
-    // Generic methods to apply changes on the Data
-    //{
-    /// Apply adding points elements.
-    virtual void applyCreatePointFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing points elements.
-    virtual void applyDestroyPointFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding edges elements.
-    virtual void applyCreateEdgeFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing edges elements.
-    virtual void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding triangles elements.
-    virtual void applyCreateTriangleFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing triangles elements.
-    virtual void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding quads elements.
-    virtual void applyCreateQuadFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing quads elements.
-    virtual void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding tetrahedra elements.
-    virtual void applyCreateTetrahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing tetrahedra elements.
-    virtual void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding hexahedra elements.
-    virtual void applyCreateHexahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing hexahedra elements.
-    virtual void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-    //}
-
-    /// Add some values. Values are added at the end of the vector.
-    virtual void add(unsigned int ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
-
-    /// Temporary Hack: find a way to have a generic description of topological element:
-    /// add Edge
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< fixed_array<unsigned int,2> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
-
-    /// add Triangle
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< fixed_array<unsigned int,3> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
-
-    /// add Quad & Tetrahedron
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< fixed_array<unsigned int,4> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
-
-    /// add Hexahedron
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< fixed_array<unsigned int,8> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
-
-    /// Remove the values corresponding to the points removed.
-    virtual void remove( const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Swaps values at indices i1 and i2.
-    virtual void swap( unsigned int , unsigned int ) {}
-
-    /// Reorder the values.
-    virtual void renumber( const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Move a list of points
-    virtual void move( const sofa::helper::vector<unsigned int>& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
-
 };
 
 
+class TopologyHandler
+{
+public:
+    virtual ~TopologyHandler() {}
+
+
+    /// Handle EdgeSetTopology related events, ignore others. DEPRECATED
+    virtual void handleTopologyEvents( std::list< const core::topology::TopologyChange *>::const_iterator changeIt,
+            std::list< const core::topology::TopologyChange *>::const_iterator &end );
+};
 
 /** A class that will interact on a topological Data */
 class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
@@ -365,6 +299,8 @@ public:
 protected:
     /// Data handle by the topological engine
     t_topologicalData* m_topologicalData;
+
+    TopologyHandler* m_topologyHandler;
 
     /// Engine name base on Data handled: m_name = m_prefix+Data_name
     std::string m_name;
