@@ -41,25 +41,25 @@
 <center>
 		<table border="0">
 		  <tr>
-			<td><img src="ExplicitFormula.png" align="middle" width="300"></td>
+			<td><img src="ExplicitFormula.bmp" align="middle" width="200"></td>
 		  </tr>
 		</table> 
 </center>
 
-      <p>Concerning the <b>explicit</b> solvers, they compute the new state variables from the state variables at the previous step.
+      <p>Concerning the <b>explicit solvers</b>, they compute the new state variables from the state variables at the previous step.
       The advantages are that explicit solvers can be fast, but the stability of the solver is not always granted. Very small time steps can be required to get a satisfactory accuracy.
       Moreover, such solvers are not suitable for every simulation. For example, explicit solvers does not compute cyclic loadings correctly but could be advised in case of soft or high-mass objects.</p>
 
-      <p>Concerning implicit solvers, they compute the new state variables by solving an equation involving the previous state variables and the new ones.</p>
+      <p>Concerning <b>implicit solvers</b>, they compute the new state variables by solving an equation involving the previous state variables and the new ones.</p>
 <center>
 		<table border="0">
 		  <tr>
-			<td><img src="ImplicitFormula.png" align="middle" width="300"></td>
+			<td><img src="ImplicitFormula.bmp" align="middle" width="400"></td>
 		  </tr>
 		</table> 
 </center>
 
-      <p>The advantages of <b>implicit</b> solvers are very stable (without conditions on the time step) and therefore work with larger time steps. The drawback of such a method is that it is more time consuming.
+      <p>The advantages of implicit solvers are very stable (without conditions on the time step) and therefore work with larger time steps. The drawback of such a method is that it is more time consuming.
       For example, implicit solvers would be advised for stiff or low-mass objects.</p>
 
       <p>Finally, it must be pointed out that explicit and implicit solvers are not the only way to solve OD- or PD-Equations.
