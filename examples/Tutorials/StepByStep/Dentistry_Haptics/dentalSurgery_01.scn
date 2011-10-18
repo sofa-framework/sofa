@@ -5,8 +5,11 @@
 
 <Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
 
+	<BackgroundSetting color="0.901960784 0.925490196 0.964705882"/>
+
 	<Node name="Head">
 		<OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png"/>
+		
 		<Node name="Tongue">
 			<OglModel name="TongueVisualModel" fileMesh="data/mesh/tongue.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png"/>
 		</Node>

@@ -1,0 +1,27 @@
+<html>
+<head>
+<link href="../../../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div id="contenu">		
+	        <center><img src="data/pics/instrument.png"  name="Tooth" align="middle">
+
+		<h3>Constraint resolution</h3></center>
+
+		<div id="orangeText">Description:</div>
+		<p align="justify">
+			The aim of this tutorial is to add the constraint response in our scene. 
+			When a contact between two objects occurs, a constraint is created to generate a force to avoid the contact at the next time step.
+		</p>
+
+		<div id="orangeText">Key points:</div>
+		<ul>
+			<li><p align="justify">In the root node, we add a <b>FreeMotionAnimationLoop</bi> solver which gets the constraints from the objects, computes the LCP and propagates the contact correction.</p></li>
+			<li><p align="justify">In the instrument node, we add <b>UncoupledConstraintCorrection</b> to compute the constraints of the related object</p></li>
+		</ul>
+
+		<br><center><h3><a href="dentalSurgery_06.scn">Next</a></center></h3>
+
+	</div>
+</body>
+</html>

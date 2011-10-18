@@ -1,0 +1,45 @@
+<html>
+<head>
+<link href="../../../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div id="contenu">		
+	        <center><img src="data/pics/tongue.png"  name="Tongue" align="middle">
+
+		<h3>Mesh generation</h3></center>
+
+		<div id="orangeText">Preliminary note:</div>
+
+		<p align="justify">
+			Note that this scene requires CGAL plugin. You must compile it to use it. If you don't know how to compile it, visit <b>http://wiki.sofa-framework.org/wiki/Using_CGAL</b>.
+		</p>
+
+		<div id="orangeText">Description:</div>
+
+		<p align="justify">
+			This scene is not a simulation, it only generates a volumetric mesh from a surfacic mesh. 
+			Unlike surfacic meshes, volumetric meshes represent the interior volume of an object. 
+			The goal is to create this mesh and export it as a VTK file to use it later in another simulation.
+		</p>
+
+		<div id="orangeText">Key points:</div>
+
+		<ul>
+			<li>Loading of the surfacic mesh with the <b>Mesh</b> component.</li>
+			<li>The <b>MeshGenerationFromPolyhedron</b> component (only available with CGAL plugin) generates the interior volume geometry from the surfacic mesh.</li>
+			<li>We build a mesh from the generated geometry in a second <b>Mesh</b> component.</li>
+			<li>We export the mesh as a VTK file with the <b>VTKExporter</b> component.</li>
+		</ul>
+
+		<div id="orangeText">Note:</div>
+
+		<p align="justify">
+			The <b>MeshGenerationFromPolyhedron</b> component needs some crucial parameters to generate good quality meshes. See CGAL documentation for more information about this parameters (<b>http://www.cgal.org/Manual/3.6/doc_html/cgal_manual/Mesh_3/Chapter_main.html</b>).
+		</p>
+
+		<center><h3><a href="dentalSurgery_07.scn">Back</a></center></h3>
+
+	</div>
+
+</body>
+</html>

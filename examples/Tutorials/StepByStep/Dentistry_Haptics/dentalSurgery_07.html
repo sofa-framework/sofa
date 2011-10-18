@@ -1,0 +1,58 @@
+<html>
+<head>
+<link href="../../../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div id="contenu">		
+	        <center><img src="data/pics/tongueForceField.png"  name="Tooth" align="middle">
+
+		<h3>Deformable model of the Tongue</h3></center>
+
+		<div id="orangeText">Description:</div>
+		<p align="justify">
+		We add a deformable model to the tongue. It means the tongue will move and deform depending on the forces applied on it.
+		To do this, we use the component <b>TetrahedralCorotanionalFEMForceField</b>. It uses finite element methods to compute the internal forces.
+		</p>
+
+		<div id="orangeText">Key points:</div>
+
+		<p align="justify">
+			To add a deformable model in the scene, we need to create a <b>MechanicalObject</b>. All the forces and displacement are computed using an Euler implicit solver (<b>EulerImplicitSolver</b>) for time integration and a Conjugate Gradient linear solver (<b>CGLinearSolver</b>) to solve a linear system. 
+			We also need a container to store the tetrahedra (<b>TetrahedronSetTopologyContainer</b>). With all these components, we can add a force field to compute internal forces (<b>TetrahedralCorotanionalFEMForceField</b>).
+		</p>
+
+		<p align="justify">
+			The visual model of the tongue is updated because of a mapping (<b>BarycentricMapping</b>) between the deformable model and the visual.
+		</p>
+
+		<div id="orangeText">Note:</div>
+
+		<ul>
+		
+		<li>
+		<p align="justify">
+			In the current scene, the visual model of the tongue is not displayed, but the deformable model is displayed with the blue tetrahedra.
+		</p>
+		</li>
+
+		<li>
+		<p align="justify">
+			The tetrahedric mesh of the tongue has been generated using the CGAL plugin in SOFA. Read <a href="dentalSurgery_Annex.scn">this annex</a> to learn more about mesh generation using CGAL plugin.
+		</p>
+		</li>
+
+		<li>
+		<p align="justify">
+			The mass choosen for the deformable model of the tongue is a DiagonalMass. It has been choosen to show the diversity of masses available in SOFA. This kind of mass computes the mass matrix with non uniform diagonal values, depending on the tetrahedra size.
+		</p>
+		</li>
+		</ul>
+
+
+		<br/>
+		<center><h3><a href="dentalSurgery_08.scn">Next</a></center></h3>
+	</div>
+
+
+</body>
+</html>
