@@ -22,7 +22,7 @@ int InteractiveCameraClass = core::RegisterObject("InteractiveCamera")
 InteractiveCamera::InteractiveCamera()
     :p_zoomSpeed(initData(&p_zoomSpeed, (double) 250.0 , "zoomSpeed", "Zoom Speed"))
     ,p_panSpeed(initData(&p_panSpeed, (double) 0.1 , "panSpeed", "Pan Speed"))
-    ,p_pivot(initData(&p_pivot, 0 , "pivot", "Pivot (0 => Scene center, 1 => World Center"))
+    ,p_pivot(initData(&p_pivot, 0 , "pivot", "Pivot (0 => Camera lookAt, 1 => Camera position, 2 => Scene center, 3 => World center"))
     ,currentMode(InteractiveCamera::NONE_MODE)
     ,isMoving(false)
 {
@@ -63,10 +63,16 @@ void InteractiveCamera::moveCamera(int x, int y)
             Vec3 pivot;
             switch (p_pivot.getValue())
             {
+            case CAMERA_LOOKAT_PIVOT:
+                pivot = getLookAt();
+                break;
+            case CAMERA_POSITION_PIVOT:
+                pivot = getPosition();
+                break;
             case WORLD_CENTER_PIVOT:
                 pivot = Vec3(0.0, 0.0, 0.0);
                 break;
-            case SCENE_CENTER_PIVOT :
+            case SCENE_CENTER_PIVOT:
             default:
                 pivot = sceneCenter;
                 break;
@@ -79,10 +85,17 @@ void InteractiveCamera::moveCamera(int x, int y)
         }
         else if (currentMode == ZOOM_MODE)
         {
-            Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() *( 0.01*sceneRadius ) * (y - lastMousePosY) / heightViewport);
+            double zoomStep = p_zoomSpeed.getValue() *( 0.01*sceneRadius )/heightViewport;
+            double zoomDistance = zoomStep * -(y - lastMousePosY);
+
+            Vec3 trans(0.0, 0.0, zoomDistance);
             trans = cameraToWorldTransform(trans);
             translate(trans);
-            translateLookAt(trans);
+            //translateLookAt(trans);
+            Vec3 newLookAt = cameraToWorldCoordinates(Vec3(0,0,-zoomStep));
+            if (dot(getLookAt() - getPosition(), newLookAt - getPosition()) < 0)
+                translateLookAt(newLookAt - getLookAt());
+            getDistance(); // update distance between camera position and lookat
         }
         else if (currentMode == PAN_MODE)
         {
@@ -98,10 +111,25 @@ void InteractiveCamera::moveCamera(int x, int y)
     }
     else if (currentMode == WHEEL_ZOOM_MODE)
     {
-        Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() *( 0.01*sceneRadius )* (y*0.5) / heightViewport);
+        double zoomStep = p_zoomSpeed.getValue() *( 0.01*sceneRadius )/heightViewport;
+        double zoomDistance = zoomStep * -(y*0.5);
+
+        Vec3 trans(0.0, 0.0, zoomDistance);
         trans = cameraToWorldTransform(trans);
-        translate((trans));
-        translateLookAt(trans);
+        //serr << "old position = " << getPosition() << sendl;
+        //serr << "old lookat   = " << getLookAt() << sendl;
+        translate(trans);
+        //serr << "new position = " << getPosition() << sendl;
+        Vec3 newLookAt = cameraToWorldCoordinates(Vec3(0,0,-zoomStep));
+        //serr << "new lookat   = " << newLookAt << sendl;
+        //translateLookAt(trans);
+        if (dot(getLookAt() - getPosition(), newLookAt - getPosition()) < 0)
+        {
+            //serr << "Moving target point" << sendl;
+            translateLookAt(newLookAt - getLookAt());
+        }
+        getDistance(); // update distance between camera position and lookat
+
         currentMode = NONE_MODE;
     }
 
