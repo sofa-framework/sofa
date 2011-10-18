@@ -1,13 +1,14 @@
-<Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
-
+<Node name="root" dt="0.005" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
+	
 	<BackgroundSetting color="0.901960784 0.925490196 0.964705882"/>
 	
-	<Gravity name="G" gravity="0.0 -9.81 0" />
+	<Gravity name="G" gravity="0 -9.81 0" />
 	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
-	<CollisionResponse name="response" response="default" />
-	<MinProximityIntersection name="proximity" alarmDistance="0.05" contactDistance="0.05" />
-	
+	<CollisionResponse name="response" response="FrictionContact" />
+	<LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
+	<FreeMotionAnimationLoop mu="0.01"/>
+
 	<Node name="Head">
 		<OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png"/>
 		<Node name="Tongue">
@@ -27,23 +28,24 @@
 			</Node>
 		</Node>
 	</Node>
-		
+
 	<Node name="Instrument" >
-		<EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
+		<EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
 		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
 		<MechanicalObject name="instrumentState" template="Rigid" />
 		<UniformMass name="mass" totalmass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
+		<UncoupledConstraintCorrection/>
 		<Node name="VisualModel" >
 			<OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" dz="-10"/>
 			<RigidMapping name="MM->VM mapping" object1="instrumentState" object2="InstrumentVisualModel" />
 		</Node>
 		<Node name="CollisionModel" >
-		 	<MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj"  name="loader" />
+			<MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj"  name="loader"/>
 			<Mesh src="@loader" name="InstrumentCollisionModel" />
-			<MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 -10"/> 
-			<Line name="instrument" contactStiffness="5"/>
-			<Point name="instrument" contactStiffness="5" /> 
+			<MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 -10"/>
+			<Line name="instrument" contactStiffness="10" />
+			<Point name="instrument" contactStiffness="10" /> 
 			<RigidMapping name="MM->CM mapping" object1="instrumentState" object2="instrumentCollisionState" />
 		</Node>
-	</Node>  	
+	</Node>  
 </Node>
