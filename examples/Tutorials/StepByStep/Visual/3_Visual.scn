@@ -1,10 +1,13 @@
-<Node name="root"  >
-	<LightManager name="lightManager"/>
-	<SpotLight name="redLight" position="-5 -2.5 20" direction="0 0 -1" color="1.0 0.0 0.0"/>
-	<SpotLight name="greenLight" position="0 2.5 20" direction="0 0 -1" color="0.0 1.0 0.0" />
-	<SpotLight name="blueLight" position="5 -2.5 20" direction="0 0 -1" color="0.0 0.0 1.0" />
-	
-	<Node name="Dragon">
-		<OglModel name="dragon" filename="mesh/dragon.obj" color="white" />
+<?xml version="1.0"?>
+<Node 	name="root"  >
+	<LightManager name="lightManager"  listening="1"  shadows="1" />
+	<SpotLight name="redLight"  color="1 0 0"  position="-5 -2.5 20"  direction="0 0 -1" />
+	<SpotLight name="greenLight"  color="0 1 0"  position="0 2.5 20"  direction="0 0 -1" />
+	<SpotLight name="blueLight"  color="0 0 1"  position="5 -2.5 20"  direction="0 0 -1" />
+	<SpotLight name="spotLight2"  position="0 60 0"  direction="0 -1 0.01" />
+	<OglShadowShader name="oglShadowShader5" />
+	<Node 	name="Dragon"  >
+		<OglModel template="ExtVec3f" name="dragon"  fileMesh="mesh/dragon.obj"  material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+		<OglModel template="ExtVec3f" name="floor"  fileMesh="mesh/floor.obj"  translation="0 -7 0"  material="Default Diffuse 1 0.498039 0.498039 0.498039 1 Ambient 1 0.0980392 0.0980392 0.0980392 1 Specular 0 0.498039 0.498039 0.498039 1 Emissive 0 0.498039 0.498039 0.498039 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
 	</Node>
 </Node>
