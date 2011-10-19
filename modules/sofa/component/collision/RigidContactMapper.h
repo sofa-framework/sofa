@@ -40,7 +40,6 @@
 #include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/core/VecId.h>
 #include <iostream>
