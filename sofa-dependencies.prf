@@ -115,7 +115,7 @@ declare(sofa_component_misc, modules/sofa/component/sofa_component_misc.pro, sof
 declare(sofa_component, modules/sofa/component/sofa_component.pro, sofa_component_base sofa_component_common sofa_component_general sofa_component_advanced sofa_component_misc)
 
 declare(sofagpucuda, modules/sofa/gpu/cuda, sofahelper sofa_engine sofa_advanced_interaction sofa_sph_fluid sofa_misc_dev eigen csparse cudpp taucs taucs_mt system-taucs cuda)
-declare(sofagpuopencl, modules/sofa/gpu/opencl, sofahelper sofa_engine sofa_advanced_interaction sofa_sph_fluid sofa_misc_dev eigen csparse cudpp taucs taucs_mt system-taucs)
+declare(sofagpuopencl, modules/sofa/gpu/opencl, sofahelper sofa_engine sofa_advanced_interaction sofa_sph_fluid sofa_misc_dev opencl eigen csparse cudpp taucs taucs_mt system-taucs)
 
 ######################################################################
 # Applications

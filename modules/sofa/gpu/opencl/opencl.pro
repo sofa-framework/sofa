@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = sofagpuopencl
 DEFINES += SOFA_BUILD_GPU_OPENCL
 
-LIBS += -lOpenCL
+#LIBS += -lOpenCL
 #include($${SOFA_DIR}/sofa.cfg)
 #CONFIG += $$CONFIGLIBRARIES
 #!contains(CONFIGSTATIC, static) {
