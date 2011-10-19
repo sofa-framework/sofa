@@ -28,7 +28,7 @@
 
 #include <sofa/component/topology/PointSetTopologyModifier.h>
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
-#include <sofa/component/topology/HexahedronSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>

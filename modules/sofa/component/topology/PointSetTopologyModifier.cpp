@@ -27,7 +27,7 @@
 #include <sofa/simulation/common/StateChangeVisitor.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/TopologyChangeVisitor.h>
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -47,7 +47,7 @@ int PointSetTopologyModifierClass = core::RegisterObject("Point set topology mod
 using namespace std;
 using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
-
+using namespace sofa::core::topology;
 
 void PointSetTopologyModifier::init()
 {

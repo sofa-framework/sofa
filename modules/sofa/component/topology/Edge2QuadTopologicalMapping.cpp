@@ -30,9 +30,7 @@
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 
-#include <sofa/component/topology/EdgeSetTopologyChange.h>
-
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>

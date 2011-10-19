@@ -29,7 +29,7 @@
 
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <sofa/component/topology/HexahedronSetTopologyModifier.h>
-#include <sofa/component/topology/HexahedronSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 
 #include <sofa/defaulttype/Vec.h>

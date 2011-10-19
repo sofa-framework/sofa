@@ -32,8 +32,7 @@
 #include <vector>
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/topology/PointSetTopologyChange.h>
-#include <sofa/component/topology/EdgeSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/simulation/common/Simulation.h>
 
@@ -58,6 +57,7 @@ int LineModelClass = core::RegisterObject("collision model using a linear mesh, 
         ;
 
 using core::topology::BaseMeshTopology;
+using namespace sofa::core::topology;
 
 //int LineSetModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
 //.add< LineSetModel >()
@@ -190,7 +190,7 @@ void LineModel::handleTopologyChange()
             case core::topology::EDGESADDED :
             {
                 //	sout << "INFO_print : Col - EDGESADDED" << sendl;
-                const sofa::component::topology::EdgesAdded *ta = static_cast< const sofa::component::topology::EdgesAdded * >( *itBegin );
+                const EdgesAdded *ta = static_cast< const EdgesAdded * >( *itBegin );
 
                 for (unsigned int i = 0; i < ta->getNbAddedEdges(); ++i)
                 {
@@ -219,7 +219,7 @@ void LineModel::handleTopologyChange()
                     last = elems.size() -1;
                 }
 
-                const sofa::helper::vector< unsigned int > &tab = ( static_cast< const sofa::component::topology::EdgesRemoved *>( *itBegin ) )->getArray();
+                const sofa::helper::vector< unsigned int > &tab = ( static_cast< const EdgesRemoved *>( *itBegin ) )->getArray();
 
                 LineData tmp;
                 //topology::Edge tmp2;
@@ -272,7 +272,7 @@ void LineModel::handleTopologyChange()
                     unsigned int last = bmt->getNbPoints() - 1;
 
                     unsigned int i,j;
-                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const PointsRemoved * >( *itBegin ) )->getArray();
 
                     sofa::helper::vector<unsigned int> lastIndexVec;
                     for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
@@ -327,7 +327,7 @@ void LineModel::handleTopologyChange()
                 {
                     unsigned int i;
 
-                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
                     for ( i = 0; i < elems.size(); ++i)
                     {

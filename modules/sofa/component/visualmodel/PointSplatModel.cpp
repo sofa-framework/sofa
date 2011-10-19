@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/core/loader/VoxelLoader.h>
 
