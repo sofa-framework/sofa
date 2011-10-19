@@ -7,8 +7,6 @@ DEFINES += SOFA_BUILD_MISC_COLLISION
 
 HEADERS += initMiscCollision.h \
            collision/TriangleModelInRegularGrid.h \
-           collision/RigidContactMapper.h \
-           collision/RigidContactMapper.inl \
            collision/TreeCollisionGroupManager.h \
            collision/RuleBasedContactManager.h \
            collision/DefaultCollisionGroupManager.h \
@@ -16,17 +14,15 @@ HEADERS += initMiscCollision.h \
            collision/TetrahedronDiscreteIntersection.h \
            collision/SpatialGridPointModel.h \
            collision/TetrahedronModel.h \
-           collision/TetrahedronFrictionContact.h \
 
 SOURCES += initMiscCollision.cpp \
 	   collision/FrictionContact_DistanceGrid.cpp \
            collision/TriangleModelInRegularGrid.cpp \
-           collision/RigidContactMapper.cpp \
            collision/TreeCollisionGroupManager.cpp \
            collision/RuleBasedContactManager.cpp \
            collision/DefaultCollisionGroupManager.cpp \
            collision/SolverMerger.cpp \
-	   collision/TetrahedronDiscreteIntersection.cpp \
+		   collision/TetrahedronDiscreteIntersection.cpp \
            collision/SpatialGridPointModel.cpp \
            collision/TetrahedronModel.cpp \
            collision/TetrahedronBarycentricPenalityContact.cpp \

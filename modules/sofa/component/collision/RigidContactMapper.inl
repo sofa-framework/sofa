@@ -87,28 +87,6 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
     return outmodel.get();
 }
 
-template <class DataTypes>
-typename ContactMapper<RigidDistanceGridCollisionModel,DataTypes>::MMechanicalState* ContactMapper<RigidDistanceGridCollisionModel,DataTypes>::createMapping(const char* name)
-{
-    using sofa::component::mapping::IdentityMapping;
-
-    MMechanicalState* outmodel = Inherit::createMapping(name);
-    if (this->child!=NULL && this->mapping==NULL)
-    {
-        // add velocity visualization
-        /*        sofa::component::visualmodel::DrawV* visu = new sofa::component::visualmodel::DrawV;
-                this->child->addObject(visu);
-                visu->useAlpha.setValue(true);
-                visu->vscale.setValue(this->model->getContext()->getDt());
-                IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
-                this->child->addObject(map);
-                visu->init();
-                map->init(); */
-    }
-    return outmodel;
-}
-
-
 } // namespace collision
 
 } // namespace component

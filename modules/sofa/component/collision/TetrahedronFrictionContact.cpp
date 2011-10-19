@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/FrictionContact.inl>
-#include <sofa/component/collision/BarycentricContactMapper.h>
 
 namespace sofa
 {
@@ -33,13 +32,6 @@ namespace component
 
 namespace collision
 {
-
-using namespace defaulttype;
-using namespace sofa::helper;
-using simulation::Node;
-
-sofa::core::collision::DetectionOutput::ContactId Identifier::cpt=0;
-std::list<sofa::core::collision::DetectionOutput::ContactId> Identifier::availableId;
 
 SOFA_DECL_CLASS(TetrahedronFrictionContact)
 
