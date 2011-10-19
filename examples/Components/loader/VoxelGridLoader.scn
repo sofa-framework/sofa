@@ -1,0 +1,10 @@
+<Node>
+  <EulerImplicit />
+  <CGLinearSolver />
+  <Node>
+    <VoxelGridLoader name="gridloader" filename="textures/Test_64_64_4.raw" voxelSize="0.1 0.1 0.1" resolution="64 64 4" bgValue="0" />
+    <HexahedronSetTopologyContainer src="@gridloader" />
+    <HexahedronSetGeometryAlgorithms drawHexa="1"/>
+    <MechanicalObject />
+  </Node>
+</Node>
