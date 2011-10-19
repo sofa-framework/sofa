@@ -28,6 +28,8 @@ HEADERS += initSimpleFEM.h \
            forcefield/TriangularFEMForceField.inl \
            container/PoissonContainer.h \
            container/StiffnessContainer.h \
+           container/RadiusContainer.h \
+           container/LengthContainer.h \
 
 SOURCES += initSimpleFEM.cpp \
            forcefield/BeamFEMForceField.cpp \
