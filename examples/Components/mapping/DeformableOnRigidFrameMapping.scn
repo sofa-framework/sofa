@@ -16,32 +16,34 @@
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
         </Node>
         <!-- 		<Node name="TorusRigid"> -->
-        <EulerImplicit />
-        <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
-        <MechanicalObject name="rigidframe" template="Rigid" position="1 2 0 0 0 0.7 0.7" />
-        <UniformMass filename="BehaviorModels/torus.rigid" />
-        <!--<FixedConstraint /> -->
-        <!-- 	</Node> -->
-        <Node name="TorusDeformLocal">
-            <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
-            <MechanicalObject />
-            <TetrahedronFEMForceField youngModulus="125" />
-            <BoxConstraint box="-1 -1 -1 1 1 1" />
-            <Node name="DeformableMappedModel">
+        <Node name="Torus">
+            <EulerImplicit />
+            <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
+            <MechanicalObject name="rigidframe" template="Rigid" position="1 2 0 0 0 0.7 0.7" />
+            <UniformMass filename="BehaviorModels/torus.rigid" />
+            <!--<FixedConstraint /> -->
+            <!-- 	</Node> -->
+            <Node name="TorusDeformLocal">
                 <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
-                <MechanicalObject name="deformedMO" />
-                <DeformableOnRigidFrameMapping input1="@.." input2="@../../rigidframe" output="@deformedMO" printLog="0" />
-                <Node name="TorusCollisLocal">
-                    <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
-                    <Mesh src="@loader" />
-                    <MechanicalObject src="@loader" />
-                    <Triangle group="2" />
-                    <BarycentricMapping />
-                    <PlaneForceField name="Floor" normal="0 1 0" d="-4" stiffness="100" damping="1" draw="1" />
-                </Node>
-                <Node name="Visu">
-                    <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
-                    <BarycentricMapping object1="../.." object2="Visual" />
+                <MechanicalObject />
+                <TetrahedronFEMForceField youngModulus="125" />
+                <BoxConstraint box="-1 -1 -1 1 1 1" />
+                <Node name="DeformableMappedModel">
+                    <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
+                    <MechanicalObject name="deformedMO" />
+                    <DeformableOnRigidFrameMapping input1="@.." input2="@../../rigidframe" output="@deformedMO" printLog="0" />
+                    <Node name="TorusCollisLocal">
+                        <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
+                        <Mesh src="@loader" />
+                        <MechanicalObject src="@loader" />
+                        <Triangle group="2" />
+                        <BarycentricMapping />
+                        <PlaneForceField name="Floor" normal="0 1 0" d="-4" stiffness="100" damping="1" draw="1" />
+                    </Node>
+                    <Node name="Visu">
+                        <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
+                        <BarycentricMapping object1="../.." object2="Visual" />
+                    </Node>
                 </Node>
             </Node>
         </Node>
