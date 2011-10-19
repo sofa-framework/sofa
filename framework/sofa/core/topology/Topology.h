@@ -16,11 +16,9 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -215,6 +213,86 @@ public:
         : Data<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
     {
     }
+
+
+    // Generic methods to apply changes on the Data
+    //{
+    /// Apply adding points elements.
+    virtual void applyCreatePointFunction(const sofa::helper::vector<unsigned int>& ) {}
+    /// Apply removing points elements.
+    virtual void applyDestroyPointFunction(const sofa::helper::vector<unsigned int>& ) {}
+
+    /// Apply adding edges elements.
+    virtual void applyCreateEdgeFunction(const sofa::helper::vector<unsigned int>& ) {}
+    /// Apply removing edges elements.
+    virtual void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int>& ) {}
+
+    /// Apply adding triangles elements.
+    virtual void applyCreateTriangleFunction(const sofa::helper::vector<unsigned int>& ) {}
+    /// Apply removing triangles elements.
+    virtual void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int>& ) {}
+
+    /// Apply adding quads elements.
+    virtual void applyCreateQuadFunction(const sofa::helper::vector<unsigned int>& ) {}
+    /// Apply removing quads elements.
+    virtual void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int>& ) {}
+
+    /// Apply adding tetrahedra elements.
+    virtual void applyCreateTetrahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
+    /// Apply removing tetrahedra elements.
+    virtual void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
+
+    /// Apply adding hexahedra elements.
+    virtual void applyCreateHexahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
+    /// Apply removing hexahedra elements.
+    virtual void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
+    //}
+
+    /// Add some values. Values are added at the end of the vector.
+    virtual void add(unsigned int ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+
+    /// Temporary Hack: find a way to have a generic description of topological element:
+    /// add Edge
+    virtual void add( unsigned int ,
+            const sofa::helper::vector< fixed_array<unsigned int,2> >& ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+
+    /// add Triangle
+    virtual void add( unsigned int ,
+            const sofa::helper::vector< fixed_array<unsigned int,3> >& ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+
+    /// add Quad & Tetrahedron
+    virtual void add( unsigned int ,
+            const sofa::helper::vector< fixed_array<unsigned int,4> >& ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+
+    /// add Hexahedron
+    virtual void add( unsigned int ,
+            const sofa::helper::vector< fixed_array<unsigned int,8> >& ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+
+    /// Remove the values corresponding to the points removed.
+    virtual void remove( const sofa::helper::vector<unsigned int>& ) {}
+
+    /// Swaps values at indices i1 and i2.
+    virtual void swap( unsigned int , unsigned int ) {}
+
+    /// Reorder the values.
+    virtual void renumber( const sofa::helper::vector<unsigned int>& ) {}
+
+    /// Move a list of points
+    virtual void move( const sofa::helper::vector<unsigned int>& ,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
+            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+
+
 
 };
 
