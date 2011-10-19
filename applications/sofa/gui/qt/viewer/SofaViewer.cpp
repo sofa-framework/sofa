@@ -22,6 +22,7 @@ SofaViewer::SofaViewer()
     , _axis(false)
     , backgroundColour(Vector3())
     , texLogo(NULL)
+    , backgroundImageFile("textures/SOFA_logo.bmp")
     , ambientColour(Vector3())
 {
     colourPickingRenderCallBack = ColourPickingRenderCallBack(this);
@@ -34,6 +35,24 @@ SofaViewer::~SofaViewer()
         delete texLogo;
         texLogo = NULL;
     }
+}
+
+bool SofaViewer::isThreaded(void) {return false;}
+bool SofaViewer::startViewerThread(void) {return true;}
+bool SofaViewer::stopViewerThread(void) {return true;}
+
+bool SofaViewer::loadSceneView(void)
+{
+    if(isThreaded())
+        startViewerThread();
+    return true;
+}
+
+bool SofaViewer::unloadSceneView(void)
+{
+    if(isThreaded())
+        stopViewerThread();
+    return true;
 }
 
 sofa::simulation::Node* SofaViewer::getScene()
@@ -104,10 +123,7 @@ void SofaViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filena
         // init pickHandler
         pick.init();
         pick.setColourRenderCallback(&colourPickingRenderCallBack);
-
     }
-
-
 
 }
 

@@ -181,15 +181,8 @@ int RealGUI::InitGUI ( const char* /*name*/, const std::vector<std::string>& /* 
 
 SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr root, const char* filename )
 {
-    {
-        int  *argc = new int;
-        char **argv=new char*[2];
-        *argc = 1;
-        argv[0] = strdup ( SofaGUI::GetProgramName() );
-        argv[1]=NULL;
-        application = new QSOFAApplication ( *argc,argv );
+    CreateApplication();
 
-    }
     // create interface
     gui = new RealGUI ( name, options );
     if ( root )
@@ -197,7 +190,25 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
         gui->setScene ( root, filename );
         gui->setWindowFilePath(QString(filename));
     }
-    application->setMainWidget ( gui );
+
+    InitApplication(gui);
+
+    return gui;
+}
+
+void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
+{
+    int  *argc = new int;
+    char **argv=new char*[2];
+    *argc = 1;
+    argv[0] = strdup ( SofaGUI::GetProgramName() );
+    argv[1]=NULL;
+    application = new QSOFAApplication ( *argc,argv );
+}
+
+void RealGUI::InitApplication( RealGUI* _gui)
+{
+    application->setMainWidget ( _gui );
 
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
 #ifdef SOFA_QT4
@@ -207,9 +218,8 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
 #endif
 
     // show the gui
-    gui->show();
+    _gui->show();
 
-    return gui;
 }
 
 int RealGUI::mainLoop()
@@ -238,7 +248,7 @@ Node* RealGUI::currentSimulation()
     return viewer->getScene();
 }
 
-RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*options*/ )
+RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& options )
     : viewerName ( viewername ),
       viewer ( NULL ),
       simulationGraph(NULL),
@@ -258,12 +268,19 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
       displayFlag(NULL)
 {
 
+    // parse the options
+    bool createViewersOpt = true;
+    for (unsigned int i=0; i<options.size(); ++i)
+    {
+        if (options[i] == "noViewers") createViewersOpt = false;
+        std::cerr<<"=========================== No Viewers ====================="<<std::endl;
+    }
+
 #ifdef SOFA_GUI_INTERACTION
     interactionButton = new QPushButton(optionTabs);
     interactionButton->setObjectName(QString::fromUtf8("interactionButton"));
     interactionButton->setCheckable(true);
     interactionButton->setStyleSheet("background-color: cyan;");
-
 
     gridLayout->addWidget(interactionButton, 3, 0, 1, 1);
     gridLayout->removeWidget(screenshotButton);
@@ -338,8 +355,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     TabStats->layout()->add(statWidget);
 
     simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
-    createViewers(viewername);
-
+    if (createViewersOpt) createViewers(viewername);
 
     currentTabChanged ( tabs->currentPage() );
 
@@ -349,8 +365,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     QWidget *colour = new QWidget(TabPage);
     QHBoxLayout *colourLayout = new QHBoxLayout(colour);
     colourLayout->addWidget(new QLabel(QString("Colour "),colour));
-
-
 
     for (unsigned int i=0; i<3; ++i)
     {
@@ -370,9 +384,13 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     imageLayout->addWidget(new QLabel(QString("Image "),image));
 
     backgroundImage = new QLineEdit(image,"backgroundImage");
-    backgroundImage->setText( QString(viewer->getBackgroundImage().c_str()) );
+    if (createViewersOpt)
+        backgroundImage->setText( QString(viewer->getBackgroundImage().c_str()) );
+    else
+        backgroundImage->setText( QString() ); //by default if we havn't yet a viewer
     imageLayout->addWidget(backgroundImage);
     connect( backgroundImage, SIGNAL( returnPressed() ), this, SLOT( updateBackgroundImage() ) );
+
 
     ((QVBoxLayout*)(TabPage->layout()))->insertWidget(1,colour);
     ((QVBoxLayout*)(TabPage->layout()))->insertWidget(2,image);
@@ -418,14 +436,12 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     pluginManager_dialog = new SofaPluginManager();
     pluginManager_dialog->hide();
 
-
     this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
     this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
 
 
     SofaMouseManager::getInstance()->hide();
     SofaVideoRecorderManager::getInstance()->hide();
-
 
     //Center the application
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
@@ -445,7 +461,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
         connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setOn(bool) ) );
-    if (recorder)
+    if (recorder && createViewersOpt)
         connect( recorder, SIGNAL( NewTime() ), viewer->getQWidget(), SLOT( update() ) );
 #endif
     timerStep = new QTimer(this);
@@ -455,16 +471,15 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
 #ifdef SOFA_GUI_INTERACTION
     m_interactionActived = false;
-    viewer->getQWidget()->installEventFilter(this);
+    if(createViewersOpt)
+        viewer->getQWidget()->installEventFilter(this);
 #endif
-
 }
 
 void RealGUI::fileRecentlyOpened(int id)
 {
     fileOpen(recentlyOpenedFilesManager.getFilename((unsigned int)id));
 }
-
 
 void RealGUI::setPixmap(std::string pixmap_filename, QPushButton* b)
 {
@@ -500,12 +515,11 @@ RealGUI::~RealGUI()
     delete windowTraceVisitor;
     delete handleTraceVisitor;
 #endif
-    delete viewer;
+    removeViewer();
 }
 
 void RealGUI::init()
 {
-
     frameCounter = 0;
     _animationOBJ = false;
     _animationOBJcounter = 0;
@@ -516,22 +530,31 @@ void RealGUI::init()
     gnuplot_directory = "";
 }
 
+void RealGUI::removeViewer()
+{
+    if(viewer->isThreaded())
+        viewer->stopViewerThread();
+    delete viewer;
+    viewer = NULL;
+}
+
+//createViewers
 void RealGUI::createViewers(const char* viewerName)
 {
     viewer::SofaViewerArgument arg;
     arg.name = "viewer";
     arg.parent = left_stack;
+
     if( viewer != NULL )
-    {
-        delete viewer;
-        viewer = NULL;
-    }
+        removeViewer();
+
     viewerMap.clear();
     if ( viewerName[0] )
     {
         helper::vector< helper::SofaViewerFactory::Key > keys;
         helper::SofaViewerFactory::getInstance()->uniqueKeys(std::back_inserter(keys));
         helper::vector< helper::SofaViewerFactory::Key >::const_iterator iter;
+
         for ( iter = keys.begin(); iter != keys.end(); ++iter )
         {
             QAction* action = new QAction(this);
@@ -542,6 +565,7 @@ void RealGUI::createViewers(const char* viewerName)
             viewerMap[*iter] = action;
             action->setEnabled(true);
             connect(action, SIGNAL( activated() ), this, SLOT( changeViewer() ) );
+
             if( strcmp(iter->c_str(), viewerName )== 0 )
             {
                 viewer = helper::SofaViewerFactory::CreateObject(*iter, arg);
@@ -559,13 +583,19 @@ void RealGUI::createViewers(const char* viewerName)
         std::cerr << "ERROR(QtGUI): unknown or disabled viewer name "<<viewerName<<std::endl;
         application->exit();
     }
-    left_stack->addWidget ( viewer->getQWidget() );
+    if(viewer->isEmbedded())
+        left_stack->addWidget ( viewer->getQWidget() );
     initViewer();
 }
 
+//initViewer
 void RealGUI::initViewer()
 {
-    assert( viewer != NULL );
+    if(viewer == NULL)
+    {
+        std::cerr<<"ERROR when initViewer, the viewer is NULL"<<std::endl;
+        return;
+    }
     frameCounter = 0;
     _animationOBJ = false;
     _animationOBJcounter = 0;
@@ -575,58 +605,92 @@ void RealGUI::initViewer()
     m_exportGnuplot = false;
     gnuplot_directory = "";
 
-
+    if(viewer->isEmbedded())
+    {
 #ifdef SOFA_QT4
-    left_stack->setCurrentWidget ( viewer->getQWidget() );
-    viewer->getQWidget()->setFocusPolicy ( Qt::StrongFocus );
+        left_stack->setCurrentWidget ( viewer->getQWidget() );
+        viewer->getQWidget()->setFocusPolicy ( Qt::StrongFocus );
 #else
-    int id_viewer = left_stack->addWidget ( viewer->getQWidget() );
-    left_stack->raiseWidget ( id_viewer );
-    viewer->getQWidget()->setFocusPolicy ( QWidget::StrongFocus );
-    viewer->getQWidget()->setCursor ( QCursor ( 2 ) );
+        int id_viewer = left_stack->addWidget ( viewer->getQWidget() );
+        left_stack->raiseWidget ( id_viewer );
+        viewer->getQWidget()->setFocusPolicy ( QWidget::StrongFocus );
+        viewer->getQWidget()->setCursor ( QCursor ( 2 ) );
 #endif
-    viewer->getQWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::SizeType ) 7, ( QSizePolicy::SizeType ) 7, 100, 1, viewer->getQWidget()->sizePolicy().hasHeightForWidth() ) );
-    viewer->getQWidget()->setMinimumSize ( QSize ( 0, 0 ) );
-    viewer->getQWidget()->setMouseTracking ( TRUE );
+        viewer->getQWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::SizeType ) 7, ( QSizePolicy::SizeType ) 7, 100, 1, viewer->getQWidget()->sizePolicy().hasHeightForWidth() ) );
+        viewer->getQWidget()->setMinimumSize ( QSize ( 0, 0 ) );
+        viewer->getQWidget()->setMouseTracking ( TRUE );
+    }
     viewer->configureViewerTab(tabs);
 
-    connect ( ResetViewButton, SIGNAL ( clicked() ), viewer->getQWidget(), SLOT ( resetView() ) );
-    connect ( SaveViewButton, SIGNAL ( clicked() ), viewer->getQWidget(), SLOT ( saveView() ) );
+    connect ( ResetViewButton, SIGNAL ( clicked() ), this, SLOT ( resetView() ) );
+    connect ( SaveViewButton, SIGNAL ( clicked() ), this, SLOT ( saveView() ) );
     connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( screenshot() ) );
-    connect ( sizeW, SIGNAL ( valueChanged ( int ) ), viewer->getQWidget(), SLOT ( setSizeW ( int ) ) );
-    connect ( sizeH, SIGNAL ( valueChanged ( int ) ), viewer->getQWidget(), SLOT ( setSizeH ( int ) ) );
-    connect ( viewer->getQWidget(), SIGNAL ( resizeW ( int ) ), sizeW, SLOT ( setValue ( int ) ) );
-    connect ( viewer->getQWidget(), SIGNAL ( resizeH ( int ) ), sizeH, SLOT ( setValue ( int ) ) );
-    connect ( viewer->getQWidget(), SIGNAL ( quit (  ) ), this, SLOT ( fileExit (  ) ) );
-    connect(simulationGraph, SIGNAL(focusChanged(sofa::core::objectmodel::BaseObject*)),
-            viewer->getQWidget(), SLOT(fitObjectBBox(sofa::core::objectmodel::BaseObject*)) );
-    connect(simulationGraph, SIGNAL( focusChanged(sofa::core::objectmodel::BaseNode*) ),
-            viewer->getQWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) ) );
+    connect ( sizeW, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeW ( int ) ) );
+    connect ( sizeH, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeH ( int ) ) );
+    if(viewer->isEmbedded())
+    {
+        connect ( viewer->getQWidget(), SIGNAL ( resizeW ( int ) ), sizeW, SLOT ( setValue ( int ) ) );
+        connect ( viewer->getQWidget(), SIGNAL ( resizeH ( int ) ), sizeH, SLOT ( setValue ( int ) ) );
+        connect ( viewer->getQWidget(), SIGNAL ( quit (  ) ), this, SLOT ( fileExit (  ) ) );
+        connect(simulationGraph, SIGNAL(focusChanged(sofa::core::objectmodel::BaseObject*)),
+                viewer->getQWidget(), SLOT(fitObjectBBox(sofa::core::objectmodel::BaseObject*)) );
+        connect(simulationGraph, SIGNAL( focusChanged(sofa::core::objectmodel::BaseNode*) ),
+                viewer->getQWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) ) );
+    }
 
+    // splitter2 separates horizontally the OptionTab widget and the viewer widget
     QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
-    splitter_ptr->moveToLast ( left_stack );
-    splitter_ptr->setOpaqueResize ( false );
+    if(viewer->isEmbedded())
+    {
+        splitter_ptr->moveToLast ( left_stack ); // Use addWidget(widget) instead.
+        splitter_ptr->setOpaqueResize ( false );
 #ifdef SOFA_QT4
-    splitter_ptr->setStretchFactor( 0, 0);
-    splitter_ptr->setStretchFactor( 1, 10);
-    QList<int> list;
+        // rescale factor for the space occuped by the widget index
+        splitter_ptr->setStretchFactor( 0, 0); // OptionTab
+        splitter_ptr->setStretchFactor( 1, 10); // Viewer
+        QList<int> list;
 #else
-    QValueList<int> list;
+        QValueList<int> list;
 #endif
-    list.push_back ( 250 );
-    list.push_back ( 640 );
-    splitter_ptr->setSizes ( list );
-    setGUI();
+        list.push_back ( 250 ); // OptionTab
+        list.push_back ( 640 ); // Viewer
+        splitter_ptr->setSizes ( list );
+    }
+    else
+    {
+        splitter_ptr->setOpaqueResize ( false );
+#ifdef SOFA_QT4
+        // rescale factor for the space occuped by the widget index
+        splitter_ptr->setStretchFactor( 0, 0); // OptionTab
+        splitter_ptr->setStretchFactor( 1, 0); // Viewer
+        QList<int> list;
+#else
+        QValueList<int> list;
+#endif
+        list.push_back ( 250 ); // OptionTab
+        list.push_back ( 0 );  // Viewer
+        splitter_ptr->setSizes ( list );
+    }
 
-    viewer->getQWidget()->setFocus();
-    viewer->getQWidget()->show();
-    viewer->getQWidget()->update();
+    // setGUI
+    textEdit1->setText ( viewer->helpString() );
+    if(viewer->isEmbedded())
+        connect ( this, SIGNAL( newStep()), viewer->getQWidget(), SLOT( update()));
+
+    if(viewer->isEmbedded())
+    {
+        viewer->getQWidget()->setFocus();
+        viewer->getQWidget()->show();
+        updateViewerParameters();
+    }
+
     SofaMouseManager::getInstance()->setPickHandler(viewer->getPickHandler());
     viewer->getPickHandler()->addCallBack(&informationOnPickCallBack );
 
     guiName=viewerName;
 }
 
+//changeViewer
 void RealGUI::changeViewer()
 {
     QObject* obj = const_cast<QObject*>( QObject::sender() );
@@ -638,29 +702,35 @@ void RealGUI::changeViewer()
     std::map< helper::SofaViewerFactory::Key, QAction*  >::const_iterator iter_map;
     for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end() ; ++iter_map )
     {
-
         if ( (*iter_map).second == action )
         {
-
-            /* cleanup previous viewer */
+            // Cleanup previous viewer
             if ( viewer->getScene() !=NULL )
             {
                 viewer->getPickHandler()->unload();
+                // Unload viewer components before delete the whole scene
+                viewer->unloadSceneView();
                 simulation::getSimulation()->unload ( viewer->getScene() );
                 //delete viewer->getScene() ;
                 viewer->setScene(NULL);
             }
             viewer->removeViewerTab(tabs);
-            left_stack->removeWidget(viewer->getQWidget() );
-            delete viewer;
-            viewer = NULL;
+            if(viewer->isEmbedded())
+                left_stack->removeWidget(viewer->getQWidget() );
 
+            removeViewer();
+
+            // Need for the next creation
             viewer::SofaViewerArgument arg;
             arg.name = "viewer";
-            arg.parent = left_stack;
-            /* change viewer */
+            arg.parent = left_stack; // Set it by default but in case of standalone viewer, we don't use it in tis constructor
+
+            // Create new viewer
             viewer =  helper::SofaViewerFactory::CreateObject( (*iter_map).first, arg);
-            left_stack->addWidget( viewer->getQWidget() );
+
+            if(viewer->isEmbedded())
+                left_stack->addWidget( viewer->getQWidget() );
+
             initViewer();
         }
         else
@@ -668,11 +738,13 @@ void RealGUI::changeViewer()
             (*iter_map).second->setOn(false);
         }
     }
-    /* reload the scene */
+
+    // Reload the scene
     std::string filename(this->windowFilePath().ascii());
     fileOpen ( filename.c_str() ); // keep the current display flags
 }
 
+//updateViewerList
 void RealGUI::updateViewerList()
 {
     helper::vector< helper::SofaViewerFactory::Key > currentKeys;
@@ -704,15 +776,20 @@ void RealGUI::updateViewerList()
                 if ( viewer->getScene() !=NULL )
                 {
                     viewer->getPickHandler()->unload();
+                    viewer->unloadSceneView();
                     simulation::getSimulation()->unload ( viewer->getScene() );
                     //delete viewer->getScene() ;
                     viewer->setScene(NULL);
                 }
+
                 viewer->removeViewerTab(tabs);
-                left_stack->removeWidget(viewer->getQWidget() );
-                delete viewer;
-                viewer = NULL;
+
+                if(viewer->isEmbedded())
+                    left_stack->removeWidget(viewer->getQWidget() );
+
+                removeViewer();
             }
+
             (*itViewerMap).second->removeFrom(View);
             viewerMap.erase(itViewerMap);
         }
@@ -738,13 +815,16 @@ void RealGUI::updateViewerList()
             arg.parent = left_stack;
             /* change viewer */
             viewer =  helper::SofaViewerFactory::CreateObject( viewerMap.begin()->first, arg);
-            left_stack->addWidget( viewer->getQWidget() );
+
+            if(viewer->isEmbedded())
+                left_stack->addWidget( viewer->getQWidget() );
+
             initViewer();
         }
     }
 }
 
-
+//fileOpen
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 {
     //std::cout << "GUI: fileOpen " << filename << " ( was " <<   std::string(this->windowFilePath().ascii()) << " )" << std::endl;
@@ -776,10 +856,13 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
         viewer->getPickHandler()->reset();//activateRay(false);
         viewer->getPickHandler()->unload();
 
-        simulation::getSimulation()->unload ( viewer->getScene() ); //delete viewer->getScene() ;
+        // Unload viewer components before delete the whole scene
+        viewer->unloadSceneView();
+        simulation::getSimulation()->unload ( viewer->getScene() );
     }
     //Clear the list of modified dialog opened
 
+    // Load the scene
     simulation::Node::SPtr root = simulation::getSimulation()->load ( filename.c_str() );
     simulation::getSimulation()->init ( root.get() );
 
@@ -810,8 +893,10 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     }
     if ( viewer->getScene() !=NULL )
     {
-        simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
-
+        // Unload viewer components before delete the whole scene
+        viewer->unloadSceneView();
+        simulation::getSimulation()->unload ( viewer->getScene() );
+        viewer->removeScene();
     }
     GNode *simuNode = dynamic_cast< GNode *> (simulation::getSimulation()->load ( scene.c_str() ));
     getSimulation()->init(simuNode);
@@ -824,6 +909,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     }
 }
 
+//lmlOpen
 void RealGUI::lmlOpen ( const char* filename )
 {
     if ( pmlreader )
@@ -897,7 +983,6 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
         }
     }
 
-
     this->setWindowFilePath(filename);
     viewer->resetView();
 
@@ -905,8 +990,6 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
 
     if (root)
     {
-
-
         //simulation::getSimulation()->updateVisualContext ( root );
         startButton->setOn ( root->getContext()->getAnimate() );
         dtEdit->setText ( QString::number ( root->getDt() ) );
@@ -921,12 +1004,15 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
 #endif
     }
 
-    viewer->getQWidget()->setFocus();
-    viewer->getQWidget()->show();
-    viewer->getQWidget()->update();
+    if( viewer->isEmbedded() )
+    {
+        viewer->getQWidget()->setFocus();
+        viewer->getQWidget()->show();
+        updateViewerParameters();
+    }
     resetScene();
 
-
+    viewer->loadSceneView();
 
 }
 
@@ -941,34 +1027,39 @@ void RealGUI::Clear()
     simulationGraph->Clear(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
 
     statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
-
-
 }
 
 //----------------------------------
 //Configuration
 void RealGUI::setViewerResolution ( int w, int h )
 {
-    QSize winSize = size();
-    QSize viewSize = viewer->getQWidget()->size();
-    //viewer->getQWidget()->setMinimumSize ( QSize ( w, h ) );
-    //viewer->getQWidget()->setMaximumSize ( QSize ( w, h ) );
-    //viewer->getQWidget()->resize(w,h);
+    if(viewer == NULL) return;
+    if(viewer->isEmbedded())
+    {
+        QSize winSize = size();
+        QSize viewSize = ( viewer != NULL ) ? viewer->getQWidget()->size() : QSize(0,0);
+        //viewer->getQWidget()->setMinimumSize ( QSize ( w, h ) );
+        //viewer->getQWidget()->setMaximumSize ( QSize ( w, h ) );
+        //viewer->getQWidget()->resize(w,h);
 #ifdef SOFA_QT4
-    QList<int> list;
+        QList<int> list;
 #else
-    QValueList<int> list;
+        QValueList<int> list;
 #endif
-    list.push_back ( 250 );
-    list.push_back ( w );
-    QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
-    splitter_ptr->setSizes ( list );
+        list.push_back ( 250 );
+        list.push_back ( w );
+        QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
+        splitter_ptr->setSizes ( list );
 #ifdef SOFA_QT4
-    layout()->update();
+        layout()->update();
 #endif
-    resize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
-    //std::cout << "Setting windows dimension to " << size().width() << " x " << size().height() << std::endl;
+        resize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
+        //std::cout<<"winSize.width() - viewSize.width() + w = "<< winSize.width()<<"-"<< viewSize.width()<<"+"<<w<<std::endl;
+        //std::cout<<"winSize.height() - viewSize.height() + h = "<< winSize.height()<<"-"<< viewSize.height()<<"+"<<h<<std::endl;
+        //std::cout << "Setting windows dimension to " << size().width() << " x " << size().height() << std::endl;
+    }
 }
+
 void RealGUI::setFullScreen ()
 {
 
@@ -1363,11 +1454,6 @@ void RealGUI::interactionGUI ( bool )
 #endif
 
 
-void RealGUI::setGUI ( void )
-{
-    textEdit1->setText ( viewer->helpString() );
-    connect ( this, SIGNAL( newStep()), viewer->getQWidget(), SLOT( update()));
-}
 //###################################################################################################################
 
 void RealGUI::startDumpVisitor()
@@ -1423,7 +1509,6 @@ void RealGUI::step()
         eventNewStep();
         eventNewTime();
     }
-
 
     if ( _animationOBJ )
     {
@@ -1914,7 +1999,8 @@ void RealGUI::changeHtmlPage( const QString& u)
 
 void RealGUI::updateViewerParameters()
 {
-    gui->viewer->getQWidget()->update();
+    if(viewer->isEmbedded())
+        viewer->getQWidget()->update();
 }
 
 void RealGUI::updateBackgroundColour()
@@ -1932,12 +2018,12 @@ void RealGUI::updateBackgroundImage()
 void RealGUI::showhideElements()
 {
     displayFlag->updateDataValue();
-    viewer->getQWidget()->update();
+    updateViewerParameters();
 }
 
 void RealGUI::Update()
 {
-    viewer->getQWidget()->update();
+    updateViewerParameters();
     statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
 }
 
@@ -1952,7 +2038,7 @@ void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
         viewer->setScene(root , path);
     }
     viewer->resetView();
-    viewer->getQWidget()->update();
+    updateViewerParameters();
     statWidget->CreateStats(root);
 }
 
@@ -1980,7 +2066,6 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
     using core::objectmodel::BaseNode;
     std::list< BaseNode* > nodeToProcess;
     nodeToProcess.push_front((BaseNode*)node);
-
 
     std::list< BaseNode* > nodeToChange;
     //Breadth First approach to activate all the nodes
@@ -2010,7 +2095,6 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
         if ( node == simulation::getSimulation()->getContext() )
         {
             simulation::getSimulation()->init(node);
-
         }
         else
         {

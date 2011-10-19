@@ -27,6 +27,9 @@
 #ifndef SOFA_HELPER_SYSTEM_CONFIG_H
 #define SOFA_HELPER_SYSTEM_CONFIG_H
 
+// to define NULL
+#include <cstring>
+
 #ifdef WIN32
 #ifdef _MSC_VER
 #ifndef NOMINMAX

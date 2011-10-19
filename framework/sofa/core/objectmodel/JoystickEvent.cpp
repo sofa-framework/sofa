@@ -224,7 +224,7 @@ const JoystickEvent::HatEvent *JoystickEvent::getHatEvent(const int index) const
             return hatEvents[i];
     }
 
-    return NULL;
+    return 0l;
 }
 
 

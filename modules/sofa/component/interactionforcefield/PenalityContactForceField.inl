@@ -165,7 +165,7 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
-    glDisable(GL_LIGHTING);
+    //glDisable(GL_LIGHTING); // do not use gl under draw component, it cause crash when using other render !
 
     std::vector< defaulttype::Vector3 > points[4];
 

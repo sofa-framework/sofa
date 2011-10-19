@@ -169,6 +169,7 @@ template<class DataTypes>
 void PlaneForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
+    //if (!vparams->isSupported(core::visual::API_OpenGL)) return;
     drawPlane(vparams);
 }
 
@@ -200,11 +201,6 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     corners[2] = center+v1*size+v2*size;
     corners[3] = center-v1*size+v2*size;
 
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-
-
     std::vector< defaulttype::Vector3 > points;
 
     points.push_back(corners[0]);
@@ -219,7 +215,6 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 
     vparams->drawTool()->drawTriangles(points, defaulttype::Vec<4,float>(color.getValue()[0],color.getValue()[1],color.getValue()[2],0.5));
     vparams->drawTool()->setPolygonMode(0,false); //No Culling
-    glDisable(GL_CULL_FACE);
 
     std::vector< defaulttype::Vector3 > pointsLine;
     // lines for points penetrating the plane

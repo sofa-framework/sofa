@@ -132,6 +132,13 @@ public:
     static int InitGUI(const char* name, const std::vector<std::string>& options);
     static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
+protected:
+
+    static void CreateApplication(int _argc=0, char** _argv=0l);
+    static void InitApplication( RealGUI* _gui);
+
+public:
+
     int mainLoop();
 
     int closeGUI();
@@ -155,8 +162,14 @@ public:
     sofa::gui::qt::viewer::SofaViewer* viewer;
     QSofaListView* simulationGraph;
 
+
     RealGUI( const char* viewername, const std::vector<std::string>& options = std::vector<std::string>() );
     ~RealGUI();
+
+    virtual void createViewers(const char* viewerName);
+    virtual void registerViewer(sofa::gui::qt::viewer::SofaViewer* /*_viewer*/) {}
+    virtual void initViewer();
+    virtual void removeViewer();
 
     static void setPixmap(std::string pixmap_filename, QPushButton* b);
 
@@ -203,7 +216,6 @@ public:
     void dropEvent(QDropEvent* event);
 
 
-
 public slots:
     void NewRootNode(sofa::simulation::Node* root, const char* path);
     void ActivateNode(sofa::simulation::Node* , bool );
@@ -225,6 +237,12 @@ public slots:
     void updateBackgroundColour();
     void updateBackgroundImage();
 
+// Propagate signal to call viewer method in case of it is not a widget
+// Maybe, have to create a SofaGuiViewerMediator class to provide this
+    virtual void resetView()            {viewer->resetView();       }
+    virtual void saveView()             {viewer->saveView();        }
+    virtual void setSizeW ( int _valW ) {viewer->setSizeW(_valW);   }
+    virtual void setSizeH ( int _valH ) {viewer->setSizeH(_valH);   }
 
 #ifdef SOFA_QT4
     void changeHtmlPage( const QUrl&);
@@ -242,7 +260,10 @@ public slots:
     void setExportVisitor(bool);
     void currentTabChanged(QWidget*);
 protected slots:
-    void changeViewer();
+    /// Allow to dynamicly change viewer. Called when click on another viewer in GUI Qt viewer list.
+    /// Note: When the app start, we registred GUI and static create/init it with a guiName;
+    /// during the app, if you change viewer you keep the same GUI.
+    virtual void changeViewer();
     void updateViewerList();
 
 signals:
@@ -252,9 +273,6 @@ signals:
     void quit();
 
 protected:
-    void createViewers(const char* viewerName);
-
-    void initViewer();
     void eventNewStep();
     void eventNewTime();
     void init();
@@ -294,6 +312,7 @@ protected:
     QTimer* timerStep;
     WDoubleLineEdit *background[3];
     QLineEdit *backgroundImage;
+    /// Stack viewer widget
     QWidgetStack* left_stack;
     SofaPluginManager* pluginManager_dialog;
     QMenuFilesRecentlyOpened recentlyOpenedFilesManager;
@@ -323,7 +342,6 @@ private:
     int frameCounter;
 
     void addViewer();
-    void setGUI(void);
 #ifdef SOFA_GUI_INTERACTION
     bool m_interactionActived;
 #endif

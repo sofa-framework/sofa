@@ -206,8 +206,9 @@ void Base::processStream(std::ostream& out)
     }
     else if (&out == &sout)
     {
-        sout << "\n";
-        if (f_printLog.getValue()) std::cout<< "[" << getName() << "(" << getClassName() << ")]: "<< sout.str();
+        //sout << "\n";
+        if (f_printLog.getValue())
+            std::cout<< "[" << getName() << "(" << getClassName() << ")]: "<< sout.str() << std::flush;
         outputs += sout.str();
         sout.str("");
     }

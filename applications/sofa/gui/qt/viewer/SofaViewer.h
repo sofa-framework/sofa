@@ -113,12 +113,21 @@ public:
     virtual ~SofaViewer();
 
     virtual void drawColourPicking (ColourPickingVisitor::ColourCode /*code*/) {}
+
+    /// Optional QTabWidget GUI for a concreate viewer.
     virtual void removeViewerTab(QTabWidget *) {}
+    /// Optional QTabWidget GUI for a concreate viewer.
     virtual void configureViewerTab(QTabWidget *) {}
 
-
+    /// Overload this method in instanciated viewer to notify if the viewer is embeded (like a Qt widget) or not (standalone)
+    virtual bool isEmbedded() {return true;}
     virtual QWidget* getQWidget()=0;
     virtual QString helpString()=0;
+
+    /// Overload this method in instanciated viewer to notify if the viewer is managed in another render thread or not
+    virtual bool isThreaded(void);
+    virtual bool startViewerThread(void);
+    virtual bool stopViewerThread(void);
 
     virtual sofa::simulation::Node* getScene();
     virtual const std::string& getSceneFileName();
@@ -127,11 +136,16 @@ public:
             NULL, bool /*keepParams*/= false);
     virtual void setCameraMode(core::visual::VisualParams::CameraType);
 
-
     virtual bool ready();
-    virtual void wait()
-    {
-    }
+    virtual void wait() {}
+
+    /// Call when set a new scene
+    virtual bool loadSceneView(void);
+    /// Call before delete a scene
+    virtual bool unloadSceneView(void);
+
+    /// Recompute viewer's home position so it encompass the whole scene and apply it
+    virtual void viewAll(void) = 0;
 
     //Allow to configure your viewer using the Sofa Component, ViewerSetting
     virtual void configure(sofa::component::configurationsetting::ViewerSetting* viewerConf);

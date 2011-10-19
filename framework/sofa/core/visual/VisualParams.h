@@ -45,6 +45,15 @@ namespace core
 namespace visual
 {
 
+/// The enumeration used to describe each step of the rendering.
+enum
+{
+    API_OpenGL = 0,
+    API_OGRE = 1,
+    API_OpenSceneGraph = 2,
+    API_OpenSG = 3
+};
+
 /// Class gathering parameters used by visual components and by the draw method of each component. Transmitted by visitors
 class VisualParams : public ExecParams
 {
@@ -114,6 +123,7 @@ public:
         ,m_drawTool(NULL)
         ,m_x (ConstVecCoordId::position())
         ,m_v (ConstVecDerivId::velocity())
+        ,m_supportedAPIs(0)
     {
     }
 
@@ -150,6 +160,19 @@ public:
     sofa::helper::gl::Transformation& sceneTransform() { return m_sceneTransform; }
     const sofa::helper::gl::Transformation& sceneTransform() const { return m_sceneTransform; }
 
+    bool isSupported(unsigned int api) const
+    {
+        return (m_supportedAPIs & (1<<api)) != 0;
+    }
+
+    void setSupported(unsigned int api, bool val=true)
+    {
+        if (val)
+            m_supportedAPIs |= (1<<api);
+        else
+            m_supportedAPIs &= ~(1<<api);
+    }
+
 protected:
     sofa::defaulttype::BoundingBox      m_sceneBoundingBox;
     helper::gl::Transformation          m_sceneTransform;
@@ -164,6 +187,8 @@ protected:
     ConstMultiVecCoordId m_x;
     /// Ids of velocity vector
     ConstMultiVecDerivId m_v;
+    /// Mask of supported graphics API
+    unsigned int m_supportedAPIs;
 
 };
 

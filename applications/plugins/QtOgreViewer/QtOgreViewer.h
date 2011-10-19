@@ -240,6 +240,9 @@ protected:
 
     void resize();
 
+    /// Overloaded from SofaViewer
+    virtual void viewAll() {}
+
     bool updateInteractor( QMouseEvent * e );
 
     void updateIntern();

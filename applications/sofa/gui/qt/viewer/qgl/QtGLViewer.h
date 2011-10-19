@@ -130,8 +130,10 @@ protected:
 
     //     void calcProjection();
     void init();
+    /// Overloaded from QGLViewer to render the scene
     virtual void draw();
-    void viewAll();
+    /// Overloaded from SofaViewer
+    virtual void viewAll();
     void resizeGL( int w, int h );
 
 public:
