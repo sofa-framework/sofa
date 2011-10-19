@@ -258,7 +258,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
         BaseData* data = obj->findField( (*it_map).first );
         if (data != NULL)
         {
-            if (!data->isAutoLink())
+            if (!(*it_map).second->isAutoLink())
             {
                 sout << "Disabling autolink for Data " << data->getName() << sendl;
             }
