@@ -9,16 +9,22 @@
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="1.5" contactDistance="1" useLMDFilters="1" />
 	
+    <Object type="LightManager" />
+    <Object type="SpotLight" name="light1" color="1 1 1" position="0 80 25" direction="0 -1 -0.8" cutoff="30" exponent="1" />
+    <Object type="SpotLight" name="light1" color="1 1 1" position="0 80 -25" direction="0 -1 0.8" cutoff="30" exponent="1" />
+    
     <CollisionResponse name="Response" response="FrictionContact" />
     <Node name="Snake" >
-		<SparseGrid n="8 20 7" fileTopology="mesh/caducee_snake.obj" />
+<!-- 		<SparseGrid n="8 20 7" fileTopology="mesh/caducee_snake.obj" /> -->
+		
+		<SparseGridRamification n="4 12 3" fileTopology="mesh/caducee_snake.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
 		
         <EulerImplicitSolver name="cg_odesolver" rayleighMass="1" rayleighStiffness="0.01" />
         <CGLinearSolver name="linear solver" iterations="10" tolerance="1e-09" threshold="1e-09" />
 		<MechanicalObject name="dofs"/>
-        <UniformMass totalMass="10.0" />
-        <HexahedronFEMForceField youngModulus="10000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
-		<BoxConstraint box="-5 0 -5 5 10 5" />
+        <UniformMass totalMass="100.0" />
+        <HexahedronFEMForceField youngModulus="3000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
+		<BoxConstraint box="-10 0 -10 10 10 10" />
 		
 		<!--
 		<PrecomputedConstraintCorrection rotations="true"/>
@@ -46,7 +52,9 @@
 
      				
         <Node name="Visu" tags="Visual" >
-            <OglModel  name="VisualModel" fileMesh="mesh/caducee_snake.obj" />
+	    <VisualModel  name="VisualModel" fileMesh="mesh/caducee_snake.obj" 
+	      
+	    />
 			<BarycentricMapping object1="../.." object2="VisualModel" />
         </Node>
     </Node>
@@ -62,7 +70,7 @@
 		<Point />
 		
         <Node name="Visu" tags="Visual" >
-            <OglModel  name="VisualModel" fileMesh="mesh/caducee_base.obj" />
+            <VisualModel  name="VisualModel" fileMesh="mesh/caducee_base.obj" />
         </Node>
     </Node>	
 	
