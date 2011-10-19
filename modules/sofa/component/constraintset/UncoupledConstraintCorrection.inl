@@ -34,7 +34,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 
 
@@ -46,6 +46,7 @@ namespace component
 
 namespace constraintset
 {
+using namespace sofa::core::topology;
 
 template<class DataTypes>
 UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
@@ -121,8 +122,6 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
         {
         case core::topology::POINTSADDED :
         {
-            using sofa::component::topology::PointsAdded;
-
             unsigned int nbPoints = (static_cast< const PointsAdded *> (*changeIt))->getNbAddedVertices();
 
             VecReal addedCompliance;
@@ -153,7 +152,6 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
         }
         case core::topology::POINTSREMOVED :
         {
-            using sofa::component::topology::PointsRemoved;
             using sofa::helper::vector;
 
             const vector< unsigned int > &pts = (static_cast< const PointsRemoved * >(*changeIt))->getArray();

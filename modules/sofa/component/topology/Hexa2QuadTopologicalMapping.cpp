@@ -29,13 +29,11 @@
 
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
-#include <sofa/component/topology/QuadSetTopologyChange.h>
 
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <sofa/component/topology/HexahedronSetTopologyModifier.h>
-#include <sofa/component/topology/HexahedronSetTopologyChange.h>
 
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>

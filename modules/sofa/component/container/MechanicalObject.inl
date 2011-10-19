@@ -31,7 +31,7 @@
 #include <sofa/component/container/MechanicalObjectTasks.inl>
 #endif
 #include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>

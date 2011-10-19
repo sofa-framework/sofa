@@ -40,7 +40,7 @@
 #include <sofa/component/container/SpatialGridContainer.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/topology/PointSetTopologyModifier.h>
 
 #include <sofa/simulation/common/AnimateBeginEvent.h>

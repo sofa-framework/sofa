@@ -29,14 +29,11 @@
 
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/TriangleSetTopologyChange.h>
 
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
-#include <sofa/component/topology/QuadSetTopologyChange.h>
 
-#include <sofa/component/topology/PointSetTopologyChange.h>
-
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/topology/GridTopology.h>
 
 #include <sofa/defaulttype/Vec.h>

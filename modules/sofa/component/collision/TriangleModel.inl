@@ -38,8 +38,7 @@
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 
-#include <sofa/component/topology/PointSetTopologyChange.h>
-#include <sofa/component/topology/TriangleSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/simulation/common/Simulation.h>
 

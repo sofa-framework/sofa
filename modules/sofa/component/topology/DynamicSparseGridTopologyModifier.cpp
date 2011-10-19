@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/topology/DynamicSparseGridTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/HexahedronSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
 #include <algorithm>
 #include <functional>

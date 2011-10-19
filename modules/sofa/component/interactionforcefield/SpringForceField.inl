@@ -32,7 +32,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
@@ -49,7 +49,7 @@ namespace component
 namespace interactionforcefield
 {
 
-
+using namespace sofa::core::topology;
 
 
 template<class DataTypes>
@@ -336,7 +336,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
                 case core::topology::POINTSREMOVED:
                 {
                     int nbPoints = _topology->getNbPoints();
-                    const sofa::helper::vector<unsigned int>& tab = (static_cast<const component::topology::PointsRemoved *>(*changeIt))->getArray();
+                    const sofa::helper::vector<unsigned int>& tab = (static_cast<const PointsRemoved *>(*changeIt))->getArray();
 
                     helper::vector<Spring>& springs = *this->springs.beginEdit();
                     // springs.push_back(Spring(m1,m2,ks,kd,initpos));

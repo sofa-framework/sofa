@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_H
 
 #include <sofa/component/forcefield/HexahedralFEMForceFieldAndMass.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 namespace sofa
 {
@@ -36,8 +37,6 @@ namespace component
 namespace topology
 {
 class MultilevelHexahedronSetTopologyContainer;
-class HexahedraAdded;
-class HexahedraRemoved;
 class MultilevelModification;
 }
 
@@ -45,6 +44,7 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::core::topology;
 using sofa::helper::vector;
 
 /**

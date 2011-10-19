@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/topology/EdgeSetTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/EdgeSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <algorithm>
 #include <functional>
@@ -60,6 +60,7 @@ int EdgeSetTopologyModifierClass = core::RegisterObject("Edge set topology modif
 
 using namespace std;
 using namespace sofa::defaulttype;
+using namespace sofa::core::topology;
 
 void EdgeSetTopologyModifier::init()
 {

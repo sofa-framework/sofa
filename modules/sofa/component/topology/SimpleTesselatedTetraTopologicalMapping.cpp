@@ -29,9 +29,7 @@
 
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
-#include <sofa/component/topology/TetrahedronSetTopologyChange.h>
-#include <sofa/component/topology/EdgeSetTopologyChange.h>
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/component/topology/TetrahedronData.inl>
 

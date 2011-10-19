@@ -33,11 +33,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/PointSetTopologyChange.h>
-#include <sofa/component/topology/TriangleSetTopologyChange.h>
-#include <sofa/component/topology/QuadSetTopologyChange.h>
-#include <sofa/component/topology/TetrahedronSetTopologyChange.h>
-#include <sofa/component/topology/HexahedronSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
