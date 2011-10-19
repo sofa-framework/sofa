@@ -14,17 +14,11 @@ HEADERS += initMiscCollision.h \
            collision/DefaultCollisionGroupManager.h \
            collision/SolverMerger.h \
            collision/TetrahedronDiscreteIntersection.h \
-           collision/RayDiscreteIntersection.h \
-           collision/RayDiscreteIntersection.inl \
-           collision/RigidDistanceGridDiscreteIntersection.h \
-           collision/RigidDistanceGridDiscreteIntersection.inl \
-           collision/FFDDistanceGridDiscreteIntersection.h \
-           collision/FFDDistanceGridDiscreteIntersection.inl \
-           collision/RayNewProximityIntersection.h \
-
+           collision/SpatialGridPointModel.h \
+           collision/TetrahedronModel.h \
+           collision/TetrahedronFrictionContact.h \
 
 SOURCES += initMiscCollision.cpp \
-	   collision/BarycentricPenalityContact_DistanceGrid.cpp \
 	   collision/FrictionContact_DistanceGrid.cpp \
            collision/TriangleModelInRegularGrid.cpp \
            collision/RigidContactMapper.cpp \
@@ -33,10 +27,12 @@ SOURCES += initMiscCollision.cpp \
            collision/DefaultCollisionGroupManager.cpp \
            collision/SolverMerger.cpp \
 	   collision/TetrahedronDiscreteIntersection.cpp \
-	   collision/RayDiscreteIntersection.cpp \
-	   collision/RigidDistanceGridDiscreteIntersection.cpp \
-	   collision/FFDDistanceGridDiscreteIntersection.cpp \
-           collision/RayNewProximityIntersection.cpp \
+           collision/SpatialGridPointModel.cpp \
+           collision/TetrahedronModel.cpp \
+           collision/TetrahedronBarycentricPenalityContact.cpp \
+           collision/TetrahedronRayContact.cpp \
+           collision/TetrahedronBarycentricDistanceLMConstraintContact.cpp \
+           collision/TetrahedronFrictionContact.cpp \
 
 
 contains(DEFINES,SOFA_SMP){

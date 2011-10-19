@@ -33,8 +33,8 @@
 #include <vector>
 #include <sofa/helper/system/gl.h>
 #include <iostream>
-
-
+#include <sofa/component/collision/BarycentricContactMapper.inl>
+#include <sofa/helper/Factory.inl>
 
 namespace sofa
 {
@@ -262,6 +262,10 @@ void TetrahedronModel::computeBoundingTree(int maxDepth)
         }
     }
 }
+
+ContactMapperCreator< ContactMapper<TetrahedronModel> > TetrahedronContactMapperClass("default",true);
+
+template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronModel>;
 
 } // namespace collision
 

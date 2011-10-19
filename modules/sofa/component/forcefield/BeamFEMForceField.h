@@ -32,8 +32,8 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/container/StiffnessContainer.h>
 #include <sofa/component/container/PoissonContainer.h>
-#include <sofa/component/container/LengthContainer.h>
-#include <sofa/component/container/RadiusContainer.h>
+//#include <sofa/component/container/LengthContainer.h>
+//#include <sofa/component/container/RadiusContainer.h>
 #include <sofa/core/objectmodel/Data.h>
 
 
@@ -165,9 +165,9 @@ protected:
     bool _assembling;
 
     container::StiffnessContainer* stiffnessContainer;
-    container::LengthContainer* lengthContainer;
+//	container::LengthContainer* lengthContainer;
     container::PoissonContainer* poissonContainer;
-    container::RadiusContainer* radiusContainer;
+//	container::RadiusContainer* radiusContainer;
 
     Quat& beamQuat(int i)
     {

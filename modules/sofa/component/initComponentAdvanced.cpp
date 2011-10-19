@@ -30,7 +30,6 @@
 #include <sofa/component/initNonUniformFEM.h>
 #include <sofa/component/initAdvancedFEM.h>
 #include <sofa/component/initMJEDFEM.h>
-#include <sofa/component/initAdvancedInteraction.h>
 #include <sofa/component/initAdvancedConstraint.h>
 #include <sofa/component/initEigen2Solver.h>
 //#include <sofa/component/initTaucsSolver.h>
@@ -60,7 +59,6 @@ void initComponentAdvanced()
 #ifdef SOFA_DEV
     initAdvancedFEM();
     initMJEDFEM();
-    initAdvancedInteraction();
     initAdvancedConstraint();
 #endif
 //    initTaucsSolver();

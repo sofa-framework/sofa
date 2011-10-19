@@ -33,7 +33,6 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/DiscreteIntersection.h>
@@ -46,7 +45,7 @@ namespace component
 
 namespace collision
 {
-class SOFA_MISC_COLLISION_API RayDiscreteIntersection : public core::collision::BaseIntersector
+class SOFA_USER_INTERACTION_API RayDiscreteIntersection : public core::collision::BaseIntersector
 {
 
     typedef DiscreteIntersection::OutputVector OutputVector;
@@ -57,14 +56,12 @@ public:
     template<class Sphere>
     bool testIntersection(Ray&, Sphere&);
     bool testIntersection(Ray&, Triangle&);
-    bool testIntersection(Ray&, Tetrahedron&);
     bool testIntersection(Ray&, RigidDistanceGridCollisionElement&);
     bool testIntersection(Ray&, FFDDistanceGridCollisionElement&);
 
     template<class Sphere>
     int computeIntersection(Ray&, Sphere&, OutputVector*);
     int computeIntersection(Ray&, Triangle&, OutputVector*);
-    int computeIntersection(Ray&, Tetrahedron&, OutputVector*);
     int computeIntersection(Ray&, RigidDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(Ray&, FFDDistanceGridCollisionElement&, OutputVector*);
 

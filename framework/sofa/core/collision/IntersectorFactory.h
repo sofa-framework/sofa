@@ -67,7 +67,7 @@ public:
         return true;
     }
 
-    virtual void addIntersectors(TIntersectionClass* object)
+    void addIntersectors(TIntersectionClass* object)
     {
         typename CreatorVector::iterator it = creatorVector.begin();
         typename CreatorVector::iterator end = creatorVector.end();

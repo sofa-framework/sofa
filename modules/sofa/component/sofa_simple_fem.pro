@@ -25,7 +25,9 @@ HEADERS += initSimpleFEM.h \
            forcefield/TriangleFEMForceField.h \
            forcefield/TriangleFEMForceField.inl \
            forcefield/TriangularFEMForceField.h \
-           forcefield/TriangularFEMForceField.inl
+           forcefield/TriangularFEMForceField.inl \
+           container/PoissonContainer.h \
+           container/StiffnessContainer.h \
 
 SOURCES += initSimpleFEM.cpp \
            forcefield/BeamFEMForceField.cpp \

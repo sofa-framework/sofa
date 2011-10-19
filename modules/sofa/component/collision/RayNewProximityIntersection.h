@@ -43,7 +43,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_MISC_COLLISION_API RayNewProximityIntersection : public core::collision::BaseIntersector
+class SOFA_USER_INTERACTION_API RayNewProximityIntersection : public core::collision::BaseIntersector
 {
     typedef NewProximityIntersection::OutputVector OutputVector;
 

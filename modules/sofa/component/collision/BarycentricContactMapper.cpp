@@ -41,15 +41,11 @@ SOFA_DECL_CLASS(BarycentricContactMapper)
 
 ContactMapperCreator< ContactMapper<LineModel> > LineContactMapperClass("default",true);
 ContactMapperCreator< ContactMapper<TriangleModel> > TriangleContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<TetrahedronModel> > TetrahedronContactMapperClass("default",true);
 //ContactMapperCreator< ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("default", true);
-ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("default", true);
 
 template class SOFA_MESH_COLLISION_API ContactMapper<LineModel>;
 template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel>;
-template class SOFA_MESH_COLLISION_API ContactMapper<TetrahedronModel>;
 //template class SOFA_MESH_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
-template class SOFA_MESH_COLLISION_API ContactMapper<FFDDistanceGridCollisionModel>;
 
 } // namespace collision
 

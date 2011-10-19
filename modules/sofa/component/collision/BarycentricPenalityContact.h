@@ -28,11 +28,11 @@
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
-#ifdef SOFA_TEST_FRICTION
-#include <sofa/component/forcefield/PenalityContactFrictionForceField.h>
-#else
+//#ifdef SOFA_TEST_FRICTION
+//#include <sofa/component/forcefield/PenalityContactFrictionForceField.h>
+//#else
 #include <sofa/component/interactionforcefield/PenalityContactForceField.h>
-#endif
+//#endif
 #include <sofa/helper/Factory.h>
 
 #include <sofa/component/collision/BarycentricContactMapper.h>
@@ -68,11 +68,11 @@ public:
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
-#ifdef SOFA_TEST_FRICTION
-    typedef forcefield::PenalityContactFrictionForceField<ResponseDataTypes> ResponseForceField;
-#else
+//#ifdef SOFA_TEST_FRICTION
+//	typedef forcefield::PenalityContactFrictionForceField<ResponseDataTypes> ResponseForceField;
+//#else
     typedef interactionforcefield::PenalityContactForceField<ResponseDataTypes> ResponseForceField;
-#endif
+//#endif
 protected:
     CollisionModel1* model1;
     CollisionModel2* model2;

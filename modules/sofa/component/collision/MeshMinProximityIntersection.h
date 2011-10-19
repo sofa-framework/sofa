@@ -32,7 +32,6 @@
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/RayModel.h>
 
 namespace sofa
 {

@@ -1236,6 +1236,7 @@ std::map<DistanceGrid::DistanceGridParams, DistanceGrid*>& DistanceGrid::getShar
     return instance;
 }
 
+
 } // namespace container
 
 } // namespace component

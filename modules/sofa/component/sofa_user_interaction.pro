@@ -25,8 +25,12 @@ HEADERS += initUserInteraction.h \
            controller/EdgeSetController.h \
            controller/EdgeSetController.inl \
            controller/MechanicalStateController.h \
-           controller/MechanicalStateController.inl
-
+           controller/MechanicalStateController.inl \
+           collision/Ray.h \
+           collision/RayModel.h \
+           collision/RayDiscreteIntersection.h \
+           collision/RayDiscreteIntersection.inl \
+           collision/RayNewProximityIntersection.h \
 
 SOURCES += initUserInteraction.cpp \
            collision/RayTraceDetection.cpp \
@@ -41,7 +45,11 @@ SOURCES += initUserInteraction.cpp \
            controller/ArticulatedHierarchyBVHController.cpp \
            controller/Controller.cpp \
            controller/EdgeSetController.cpp \
-           controller/MechanicalStateController.cpp
+           controller/MechanicalStateController.cpp \
+           collision/RayModel.cpp \
+           collision/RayDiscreteIntersection.cpp \
+           collision/RayNewProximityIntersection.cpp \
+           collision/RayDistanceGridContact.cpp \
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

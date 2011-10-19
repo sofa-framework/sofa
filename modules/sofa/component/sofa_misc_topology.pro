@@ -7,10 +7,11 @@ DEFINES += SOFA_BUILD_MISC_TOPOLOGY
 DEFINES += POINT_DATA_VECTOR_ACCESS
 
 HEADERS += initMiscTopology.h \
-           misc/TopologicalChangeProcessor.h
+           misc/TopologicalChangeProcessor.h \
 
 SOURCES += initMiscTopology.cpp \
-           misc/TopologicalChangeProcessor.cpp
+           misc/TopologicalChangeProcessor.cpp \
+
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

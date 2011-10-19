@@ -49,6 +49,10 @@ SOFA_LINK_CLASS(ArticulatedHierarchyController)
 SOFA_LINK_CLASS(ArticulatedHierarchyBVHController)
 SOFA_LINK_CLASS(EdgeSetController)
 SOFA_LINK_CLASS(MechanicalStateController)
+SOFA_LINK_CLASS(Ray)
+SOFA_LINK_CLASS(RayDiscreteIntersection)
+SOFA_LINK_CLASS(RayNewProximityIntersection)
+SOFA_LINK_CLASS(RayDistanceGridContact)
 
 
 } // namespace component

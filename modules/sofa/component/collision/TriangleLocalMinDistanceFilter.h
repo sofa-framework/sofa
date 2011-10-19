@@ -113,7 +113,7 @@ protected:
 /**
  * @brief
  */
-class SOFA_BASE_COLLISION_API TriangleLocalMinDistanceFilter : public LocalMinDistanceFilter
+class SOFA_MESH_COLLISION_API TriangleLocalMinDistanceFilter : public LocalMinDistanceFilter
 {
 public:
     SOFA_CLASS(TriangleLocalMinDistanceFilter, LocalMinDistanceFilter);

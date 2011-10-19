@@ -36,12 +36,11 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/collision/BaseContactMapper.h>
 #include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/TetrahedronModel.h>
+//#include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/DistanceGridCollisionModel.h>
+//#include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <iostream>
 
@@ -162,52 +161,12 @@ public:
     }
 };
 
-/// Mapper for TetrahedronModel
-template<class DataTypes>
-class ContactMapper<TetrahedronModel, DataTypes> : public BarycentricContactMapper<TetrahedronModel, DataTypes>
-{
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    int addPoint(const Coord& P, int index, Real&)
-    {
-        Tetrahedron t(this->model, index);
-        Vector3 b = t.getBary(P);
-        return this->mapper->addPointInTetra(index, b.ptr());
-    }
-};
-
-/// Mapper for FFDDistanceGridCollisionModel
-template <class DataTypes>
-class ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public BarycentricContactMapper<FFDDistanceGridCollisionModel,DataTypes>
-{
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    int addPoint(const Coord& P, int index, Real&)
-    {
-        Vector3 bary;
-        int elem = this->model->getDeformCube(index).elem; //getDeformGrid()->findCube(P,bary[0],bary[1],bary[2]);
-        bary = this->model->getDeformCube(index).baryCoords(P);
-        //if (elem == -1)
-        //{
-        //    std::cerr<<"WARNING: BarycentricContactMapper from FFDDistanceGridCollisionModel on point no within any the FFD grid."<<std::endl;
-        //    elem = model->getDeformGrid()->findNearestCube(P,bary[0],bary[1],bary[2]);
-        //}
-        return this->mapper->addPointInCube(elem,bary.ptr());
-    }
-};
-
-
 #if defined(WIN32) && !defined(SOFA_BUILD_MESH_COLLISION)
 //extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel>;
-//extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereTreeModel>;
 //extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<TetrahedronModel>;
 //extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<FFDDistanceGridCollisionModel>;
 #endif
 
 } // namespace collision

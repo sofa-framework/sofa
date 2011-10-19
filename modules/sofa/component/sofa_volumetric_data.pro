@@ -12,13 +12,24 @@ HEADERS += initVolumetricData.h \
            forcefield/DistanceGridForceField.h \
            forcefield/DistanceGridForceField.inl \
            mapping/ImplicitSurfaceMapping.h \
-           mapping/ImplicitSurfaceMapping.inl
+           mapping/ImplicitSurfaceMapping.inl \
+           container/DistanceGrid.h \
+           collision/DistanceGridCollisionModel.h \
+           collision/RigidDistanceGridDiscreteIntersection.h \
+           collision/RigidDistanceGridDiscreteIntersection.inl \
+           collision/FFDDistanceGridDiscreteIntersection.h \
+           collision/FFDDistanceGridDiscreteIntersection.inl \
 
 SOURCES += initVolumetricData.cpp \
            container/ImplicitSurfaceContainer.cpp \
            container/InterpolatedImplicitSurface.cpp \
            forcefield/DistanceGridForceField.cpp \
-           mapping/ImplicitSurfaceMapping.cpp
+           mapping/ImplicitSurfaceMapping.cpp \
+           container/DistanceGrid.cpp \
+           collision/DistanceGridCollisionModel.cpp \
+           collision/RigidDistanceGridDiscreteIntersection.cpp \
+           collision/FFDDistanceGridDiscreteIntersection.cpp \
+           collision/BarycentricPenalityContact_DistanceGrid.cpp \
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

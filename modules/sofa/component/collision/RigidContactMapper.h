@@ -36,7 +36,6 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/collision/BaseContactMapper.h>
 #include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/LineModel.h>

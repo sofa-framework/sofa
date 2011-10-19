@@ -36,7 +36,6 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/collision/BaseContactMapper.h>
 #include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/LineModel.h>
@@ -187,22 +186,6 @@ public:
         return index;
     }
 };
-
-/// Mapper for SphereTreeModel
-template<class DataTypes>
-class ContactMapper<SphereTreeModel, DataTypes> : public IdentityContactMapper<SphereTreeModel, DataTypes>
-{
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    int addPoint(const Coord& /*P*/, int index, Real& r)
-    {
-        SingleSphere e(this->model, index);
-        r = e.r();
-        return index;
-    }
-};
-
 
 } // namespace collision
 
