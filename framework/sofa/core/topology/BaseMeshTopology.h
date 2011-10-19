@@ -16,11 +16,9 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -30,7 +28,12 @@
 #include <cstdlib>
 #include <string>
 #include <iostream>
+
 #include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
+
+
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/vector.h>
 
@@ -55,29 +58,6 @@ class SOFA_CORE_API BaseMeshTopology : public core::topology::Topology
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMeshTopology, core::topology::Topology);
-    //typedef int index_type;
-    typedef unsigned int index_type;
-    enum { InvalidID = (unsigned)-1 };
-    typedef index_type	        	        PointID;
-    typedef index_type          		EdgeID;
-    typedef index_type           		TriangleID;
-    typedef index_type                 		QuadID;
-    typedef index_type	                	TetraID;
-    typedef index_type	                	TetrahedronID;
-    typedef index_type	                	HexaID;
-    typedef index_type	                	HexahedronID;
-
-    typedef vector<index_type>                  SetIndex;
-    typedef vector<index_type>                  SetIndices;
-
-    typedef fixed_array<PointID,1>              Point;
-    typedef fixed_array<PointID,2>              Edge;
-    typedef fixed_array<PointID,3>              Triangle;
-    typedef fixed_array<PointID,4>              Quad;
-    typedef fixed_array<PointID,4>              Tetra;
-    typedef fixed_array<PointID,4>              Tetrahedron;
-    typedef fixed_array<PointID,8>              Hexa;
-    typedef fixed_array<PointID,8>              Hexahedron;
 
     typedef vector<Edge> 		        SeqEdges;
     typedef vector<Triangle>		        SeqTriangles;

@@ -16,11 +16,9 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -212,7 +210,7 @@ const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAround
 
 
 /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElement(index_type)
+const vector<index_type> BaseMeshTopology::getElementAroundElement(index_type)
 {
     static vector<index_type> empty;
     return empty;
@@ -220,14 +218,14 @@ const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundEle
 
 
 /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElements(vector<index_type>)
+const vector<index_type> BaseMeshTopology::getElementAroundElements(vector<index_type>)
 {
     static vector<index_type> empty;
     return empty;
 }
 
 /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-const vector<BaseMeshTopology::index_type> BaseMeshTopology::getConnectedElement(index_type)
+const vector<index_type> BaseMeshTopology::getConnectedElement(index_type)
 {
     static vector<index_type> empty;
     return empty;
@@ -235,26 +233,26 @@ const vector<BaseMeshTopology::index_type> BaseMeshTopology::getConnectedElement
 
 
 /// Returns the set of triangles on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
+const sofa::helper::vector <TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
 {
     serr<<"getTrianglesOnBorder unsupported."<<sendl;
-    static sofa::helper::vector <BaseMeshTopology::TriangleID> empty;
+    static sofa::helper::vector <TriangleID> empty;
     return empty;
 }
 
 /// Returns the set of edges on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::EdgeID>& BaseMeshTopology::getEdgesOnBorder()
+const sofa::helper::vector <EdgeID>& BaseMeshTopology::getEdgesOnBorder()
 {
     serr<<"getEdgesOnBorder unsupported."<<sendl;
-    static sofa::helper::vector <BaseMeshTopology::EdgeID> empty;
+    static sofa::helper::vector <EdgeID> empty;
     return empty;
 }
 
 /// Returns the set of points on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::PointID>& BaseMeshTopology::getPointsOnBorder()
+const sofa::helper::vector <PointID>& BaseMeshTopology::getPointsOnBorder()
 {
     serr<<"getPointsOnBorder unsupported."<<sendl;
-    static sofa::helper::vector <BaseMeshTopology::PointID> empty;
+    static sofa::helper::vector <PointID> empty;
     return empty;
 }
 
@@ -498,30 +496,30 @@ int BaseMeshTopology::getQuadIndexInHexahedron(const QuadsInHexahedron &, QuadID
     return 0;
 }
 
-BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInTetrahedron (const PointID) const
+Edge BaseMeshTopology::getLocalEdgesInTetrahedron (const PointID) const
 {
-    static BaseMeshTopology::Edge empty;
+    static Edge empty;
     serr<<"getLocalEdgesInTetrahedron() not supported." << sendl;
     return empty;
 }
 
-BaseMeshTopology::Triangle BaseMeshTopology::getLocalTrianglesInTetrahedron (const PointID) const
+Triangle BaseMeshTopology::getLocalTrianglesInTetrahedron (const PointID) const
 {
-    static BaseMeshTopology::Triangle empty;
+    static Triangle empty;
     serr<<"getLocalTrianglesInTetrahedron() not supported." << sendl;
     return empty;
 }
 
-BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInHexahedron (const PointID) const
+Edge BaseMeshTopology::getLocalEdgesInHexahedron (const PointID) const
 {
-    static BaseMeshTopology::Edge empty;
+    static Edge empty;
     serr<<"getLocalEdgesInHexahedron() not supported." << sendl;
     return empty;
 }
 
-BaseMeshTopology::Quad BaseMeshTopology::getLocalQuadsInHexahedron (const PointID)  const
+Quad BaseMeshTopology::getLocalQuadsInHexahedron (const PointID)  const
 {
-    static BaseMeshTopology::Quad empty;
+    static Quad empty;
     serr<<"getLocalQuadsInHexahedron() not supported." << sendl;
     return empty;
 }

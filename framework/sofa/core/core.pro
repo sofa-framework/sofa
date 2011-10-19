@@ -87,13 +87,17 @@ HEADERS += \
 	topology/BaseTopology.h \
 	topology/BaseTopologyObject.h \
 	topology/TopologicalMapping.h \
+	topology/TopologyChange.h \
+	topology/BaseTopologyData.h \
+	topology/BaseTopologyEngine.h \
+	topology/TopologyHandler.h \
 	topology/Topology.h \
 	loader/BaseLoader.h \
 	loader/ImageLoader.h \
 	loader/Material.h \
 	loader/MeshLoader.h \
 	loader/PrimitiveGroup.h \
-  loader/VoxelLoader.h \
+	loader/VoxelLoader.h \
 	Mapping.h \
 	Mapping.inl \
 	MultiMapping.h \
@@ -181,6 +185,7 @@ SOURCES += \
 	collision/Pipeline.cpp \
 	topology/BaseMeshTopology.cpp \
 	topology/BaseTopology.cpp \
+	topology/TopologyHandler.cpp \
 	behavior/BaseConstraint.cpp \
 	behavior/BaseForceField.cpp \
 	behavior/BaseLMConstraint.cpp \
