@@ -1,0 +1,11 @@
+contains(DEFINES, SOFA_GPU_OPENCL) {
+  !isEmpty(SOFA_GPU_OPENCL_DIR) {
+    LIBS *= -L$$SOFA_GPU_OPENCL_DIR/lib
+    INCLUDEPATH *= $$SOFA_GPU_OPENCL_DIR/include
+  }
+  macx {
+    LIBS += -framework OpenCL
+  } else {
+    LIBS *= -lOpenCL
+  }
+}
