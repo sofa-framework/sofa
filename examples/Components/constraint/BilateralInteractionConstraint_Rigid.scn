@@ -1,5 +1,6 @@
+<?xml version="1.0"?>
 <!-- BilateralInteractionConstraint example using rigid-->
-<Node name="root" dt="0.01" gravity="0 -0.981 0">
+<Node name="root" dt="0.1" gravity="0 -0.981 0">
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver />
@@ -26,5 +27,5 @@
         <BeamFEMForceField name="FEM" radius="0.1" youngModulus="20000000" />
         <LinearSolverConstraintCorrection />
     </Node>
-    <BilateralInteractionConstraint object1="Beam1/ConstraintPoint/dof1" object2="Beam2/DOFs2" first_point="0" second_point="0" />
+    <BilateralInteractionConstraint template="Rigid" object1="Beam1/ConstraintPoint/dof1" object2="Beam2/DOFs2" first_point="0" second_point="0" />
 </Node>
