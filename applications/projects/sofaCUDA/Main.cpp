@@ -198,20 +198,20 @@ int main(int argc, char** argv)
 
     sofa::helper::system::DataRepository.findFile(fileName);
 
-    GNode* groot = NULL;
+    GNode::SPtr groot = NULL;
     ctime_t t0, t1,t2;
     CTime::getRefTime();
 
     if (!fileName.empty())
     {
-        groot = dynamic_cast< GNode* >(getSimulation()->load(fileName.c_str()));
+        groot = sofa::core::objectmodel::SPtr_dynamic_cast< GNode >(getSimulation()->load(fileName.c_str()));
     }
 
     if (groot==NULL)
     {
-        groot = new GNode;
+        groot = sofa::core::objectmodel::New<GNode>();
     }
-    sofa::simulation::tree::getSimulation()->init(groot);
+    sofa::simulation::tree::getSimulation()->init(groot.get());
     if (!nbIter)
         sofa::gui::GUIManager::SetScene(groot,fileName.c_str());
 #ifdef SOFA_SMP
@@ -225,7 +225,7 @@ int main(int argc, char** argv)
 
         std::cout << "Computing first iteration." << std::endl;
 
-        getSimulation()->animate(groot);
+        getSimulation()->animate(groot.get());
 
         //=======================================
         // Run the main loop
@@ -246,7 +246,7 @@ int main(int argc, char** argv)
                 ++n;
             }
             t2 = CTime::getRefTime();
-            getSimulation()->animate(groot);
+            getSimulation()->animate(groot.get());
 #ifdef SOFA_SMP
             if(i%20==0)
                 mycudaPrintMem();
@@ -259,7 +259,7 @@ int main(int argc, char** argv)
                     std::ostringstream objname;
                     objname<< fileName.substr(0,fileName.length()-4)<<"-"<<i<<"-scene.obj";
                     std::cout << "Exporting to OBJ " << objname.str() << std::endl;
-                    getSimulation()->exportOBJ(groot, objname.str().c_str());
+                    getSimulation()->exportOBJ(groot.get(), objname.str().c_str());
                 }
             }
         }
@@ -276,10 +276,10 @@ int main(int argc, char** argv)
         {
             std::string objname = fileName.substr(0,fileName.length()-4)+"-scene.obj";
             std::cout << "Exporting to OBJ " << objname << std::endl;
-            getSimulation()->exportOBJ(groot, objname.c_str());
+            getSimulation()->exportOBJ(groot.get(), objname.c_str());
             std::string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
             std::cout << "Exporting to XML " << xmlname << std::endl;
-            getSimulation()->exportXML(groot, xmlname.c_str());
+            getSimulation()->exportXML(groot.get(), xmlname.c_str());
         }
 
     }
