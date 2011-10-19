@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/TetrahedronSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <algorithm>
 #include <functional>
@@ -46,7 +46,7 @@ int TetrahedronSetTopologyModifierClass = core::RegisterObject("Tetrahedron set 
 
 using namespace std;
 using namespace sofa::defaulttype;
-
+using namespace sofa::core::topology;
 
 const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 

@@ -125,11 +125,11 @@ void TopologyDataImpl <TopologyElementType, VecT>::linkToHexahedronDataArray()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< typename VecT >
-void PointDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
+void PointDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topoHandler)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     if (_topology)
-        this->m_topologicalEngine = new PointSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology);
+        this->m_topologicalEngine = new PointSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology, _topoHandler);
 #else
     (void)_topology;
 #endif
@@ -141,11 +141,11 @@ void PointDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMesh
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< typename VecT >
-void EdgeDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
+void EdgeDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topoHandler)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     if (_topology)
-        this->m_topologicalEngine = new EdgeSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology);
+        this->m_topologicalEngine = new EdgeSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology, _topoHandler);
 #else
     (void)_topology;
 #endif
@@ -159,11 +159,11 @@ void EdgeDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshT
 
 
 template< typename VecT >
-void TriangleDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
+void TriangleDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topoHandler)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     if (_topology)
-        this->m_topologicalEngine = new TriangleSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology);
+        this->m_topologicalEngine = new TriangleSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology, _topoHandler);
 #else
     (void)_topology;
 #endif
@@ -176,11 +176,11 @@ void TriangleDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseM
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< typename VecT >
-void QuadDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
+void QuadDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topoHandler)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     if (_topology)
-        this->m_topologicalEngine = new QuadSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology);
+        this->m_topologicalEngine = new QuadSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology, _topoHandler);
 #else
     (void)_topology;
 #endif
@@ -193,11 +193,11 @@ void QuadDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshT
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< typename VecT >
-void TetrahedronDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
+void TetrahedronDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topoHandler)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     if (_topology)
-        this->m_topologicalEngine = new TetrahedronSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology);
+        this->m_topologicalEngine = new TetrahedronSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology, _topoHandler);
 #else
     (void)_topology;
 #endif
@@ -211,11 +211,11 @@ void TetrahedronDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::Ba
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< typename VecT >
-void HexahedronDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
+void HexahedronDataImpl<VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topoHandler)
 {
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     if (_topology)
-        this->m_topologicalEngine = new HexahedronSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology);
+        this->m_topologicalEngine = new HexahedronSetTopologyEngine<VecT>((sofa::core::topology::BaseTopologyData<VecT>*)this, _topology, _topoHandler);
 #else
     (void)_topology;
 #endif

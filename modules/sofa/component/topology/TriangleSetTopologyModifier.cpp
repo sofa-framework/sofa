@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/TriangleSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <algorithm>
 #include <functional>
@@ -47,7 +47,7 @@ int TriangleSetTopologyModifierClass = core::RegisterObject("Triangle set topolo
 
 using namespace std;
 using namespace sofa::defaulttype;
-
+using namespace sofa::core::topology;
 
 void TriangleSetTopologyModifier::init()
 {
