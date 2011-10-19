@@ -10,15 +10,15 @@
 	<div id="orangeText">Description</div>
 	<br>
 <div align="justify">
-	The aim of this tutorial is to show the interest of using a topological mapping between two 2D surface mesh. In this tutorial, a soft cube is represented, implying:
-	<ul>
+	The aim of this tutorial is to show the interest of using a topological mapping between two 2D surface meshes. In this tutorial, a soft cube is represented, implying:
+	  <ul>
 		<li>A mesh loader to read mesh file.</li>
 		<li>A mechanicalObject with geometry point positions.</li>
 		<li>A mass for gravity and fixed points.</li>
-		<li>A FEM forcefield to create interaction between points</li>
+		<li>A FEM forcefield to create interactions between points</li>
 		<li>An ODE scheme and a linear solver to solve the system at each time step.</li>
 		<li>Dynamic topological components.</li>
-		<li>A visual model which reproduce the current model geometry thanks to the identity mapping.</li>
+		<li>A visual model which reproduces the current model geometry thanks to the identity mapping.</li>
 	</ul>
         <br>
 	<div id="orangeText">Key points</div>
@@ -30,14 +30,14 @@
 	Triangle edges are represented in yellow in the simulation. Display the scene in wire frame to see the quads.
 	<br>
 	<br>
-	To create this mapping, the component <b>Quad2TriangleTopologicalMapping</b> is used. This component take an input topology (Data Object1) which is the container of the "upper" topology (quad here) and has an output topology (Data Object2) which is the container of the above topology (triangle here).
+	To create this mapping, the component <b>Quad2TriangleTopologicalMapping</b> is used. This component takes an input topology (Data Object1) which is the container of the "upper" topology (quad here) and has an output topology (Data Object2) which is the container of the above topology (triangle here).
 	<br>	
 	<br>
 	<div id="orangeText">Results</div>
 	<br>
-	In this simulation, no forcefield is link to the quads, showing that the "above" topology can be used as based for the simulation. (useful when a more procise topology is wanted)
+	In this simulation, no forcefield is linked to the quads, showing that the "above" topology can be used as a base for the simulation. (useful when a more precise topology is wanted)
 	<br>
-	Try to remove the either <b>TriangularBendingSprings</b> or <b>TriangularFEMForceField</b>component. The result will be a tissue completely stretched.
+	Try to remove either the <b>TriangularBendingSprings</b> or <b>TriangularFEMForceField </b>component. The result will be a completely stretched tissue.
 	<br>
 	<center><img src="TopologyQuad2TriangleTopologicalMapping_02.png" width="300" name="TopologyQuad2TriangleTopologicalMapping" align="middle">
 	</center>
@@ -45,7 +45,7 @@
 	<ul>
 	  <li><div id="orangeText">Additional results</div></li>	
 	<br>
-	When deleting triangles, the topological mapping is updated and so is the list of quads.
+	When deleting triangles, the topological mapping is updated, and so is the list of quads.
 	</ul>
 </div>
 </div>

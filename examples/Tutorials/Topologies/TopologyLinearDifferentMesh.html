@@ -10,8 +10,8 @@
 	<div id="orangeText">Description</div>
 	<br>
 <div align="justify">
-	The aim of this tutorial is to show the different way to create linear mesh topology. In this tutorial, three linear pendulums are represented, implying:
-	<ul>
+	The aim of this tutorial is to show the different ways to create linear mesh topologies. In this tutorial, three linear pendulums are represented, implying:
+	  <ul>
 		<li>A mechanicalObject with geometry point positions.</li>
 		<li>A mass for gravity and fixed points.</li>
 		<li>A mesh spring forcefield to create springs between points</li>
@@ -21,11 +21,11 @@
         <br>
 	<div id="orangeText">Key points</div>
 	<br>
-	There is three posibilities to build a linear mesh using the components:
+	There are three possible ways to build a linear mesh using the components:
 	<ul>
-		<li><b>MeshTopology</b>, to create a static mesh. I.e a component able to handle different topologies (2D/3D), either triangles, tetrahedra or quads, hexahedra. But this component is only a container. This means, the structure can be acces as well as further informations. But no modifications are possible.</li>
+    <li><b>MeshTopology</b>, to create a static mesh. I.e a component able to handle different topologies (2D/3D), either triangles, tetrahedra, quads, or hexahedra. But this component is only a container. This means, the structure can be accessed, as well as further information. But no modifications are possible.</li>
 		<li><b>RegularGridTopology</b>, to create a regular mesh. I.e a component able to create a mesh (no mesh file needed) with a regular grid, by giving the boundaries and the scaling.</li>
-		<li><b>EdgeSetTopologyContainer</b>, to create a dynamic mesh. I.e a component able to handle only edge topology, but, other classes can be added to perform topological operations. Classes are EdgeSetTopologyModifier (for unitary operation), EdgeSetTopologyAlgorithms (for more complexe topological operations) and EdgeSetGeometryAlgorithms (to couple topology algorithms and geometry positions). </li>
+		<li><b>EdgeSetTopologyContainer</b>, to create a dynamic mesh. I.e a component able to handle only edge topology, but, other classes can be added to perform topological operations. Classes are EdgeSetTopologyModifier (for unitary operation), EdgeSetTopologyAlgorithms (for more complex topological operations) and EdgeSetGeometryAlgorithms (to couple topology algorithms and geometry positions). </li>
 	</ul>	
 	<br>
 	<div id="orangeText">Results</div>
