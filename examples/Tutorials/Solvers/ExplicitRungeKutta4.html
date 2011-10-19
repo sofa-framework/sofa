@@ -10,26 +10,28 @@
 
 		<div id="orangeText">Description</div><br>
 	<div align="justify">	
-		Alike EulerSolver in Sofa, RungeKuttaSolver denote the ODE solver using the explicite integration scheme for computing of 
-		the dynamic system. This integration scheme explicitely resolve the system in relation to time : given the mechanical state
-		at time T<sub>n</sub>, compute the state at time T<sub>n+1</sub>=T<sub>n</sub> + dt. The difference in RungeKuttaSolver is this 
-		integration use a more sophisticated algorithm for the computation of the state at time T<sub>n+1</sub>. Therefore there are more stability
-		and can use the time step higher than the EulerSolver one. Otherwise, RungeKuttaSolver use a more general explicite method than EulerSolver.
+		Like EulerSolver in Sofa, RungeKuttaSolver denotes the ODE solver using the explicit integration scheme for computing of 
+		the dynamic system. This integration scheme explicitely resolves the system in relation to time: given the mechanical state
+		at time T<sub>n</sub>, compute the state at time T<sub>n+1</sub>=T<sub>n</sub> + dt. The difference with RungeKuttaSolver is that this 
+		integration use a more sophisticated algorithm for the computation of the state at time T<sub>n+1</sub>. Therefore there is more stability
+		and can use a higher time step than the EulerSolver one. Otherwise, RungeKuttaSolver uses a more general explicit method than EulerSolver.
         <br>
 
-		<div id="orangeText">Key points</div><br>
-		As every Explicite Integration method, RungeKutta accumulate errors for each time step. Therefore two criteria must be 
+		<div id="orangeText">Key points</div>
+		<br>
+		As with every Explicit Integration method, RungeKutta accumulates errors for each time step. Therefore, two criteria must be 
 		controled when using it : 
 		<ul>
                   <li>The time step dt.</li>
                   <li>The dynamic of the system.</li>
                 </ul>
 		<p>
-		However, RungeKutta4 is certainly more stable than ExpliciteEuler : The convergence error in RungeKutta4 is in relation to o(dt<sup>4</sup>), 
-		but in ExpliciteEuler it's only o(dt). For this example, RungeKutta can resolve the system with dt=0.001, but not the ExplicitEuler (0.0001). 
-        <br><br>
-		Users can try several solvers with different parameters dt to have the idea of the solver's difference (also test the dependence of the solver 
-		according to the dynamic of the system by using [Shift + leftmouse]).
+		However, RungeKutta4 is certainly more stable than Explicit Euler: The convergence error in RungeKutta4 is in relation to o(dt<sup>4</sup>), 
+		but in Explicit Euler it's only o(dt). For this example, RungeKutta can resolve the system with dt=0.001, but not the ExplicitEuler (0.0001). 
+        <br>
+        <br>
+		Users can try several solvers with different values of the dt parameter to gain an idea of the solver's differences (also test the dependence of the solver 
+		according to the dynamics of the system by using [Shift + left mouse]).
 		<p>
 	</div>
 		<center>

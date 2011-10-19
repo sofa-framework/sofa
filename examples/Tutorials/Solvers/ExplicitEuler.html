@@ -11,22 +11,22 @@
 
 		<div id="orangeText">Description</div><br>
 	<div align="justify">
-		In Sofa, EulerSolver denote the ODE solver using the explicit integration scheme for computing of 
-		the dynamic system. This integration scheme resolve the system in relation to time : given the mechanical state
+		In Sofa, EulerSolver denotes the ODE solver using the explicit integration scheme for the computing of 
+		the dynamic system. This integration scheme resolves the system in relation to time: given the mechanical state
 		at time T<sub>n</sub>, compute the state at time T<sub>n+1</sub>=T<sub>n</sub> + dt.  
 		<br>
 
 		<div id="orangeText">Key points</div><br>		
-		According to Taylor expansion, the error for first derivative approximation of a function 
+		According to Taylor expansion, the error for the first derivative approximation of a function 
 		f(t) is in relation to dt and f"(t). The term f"(t) can represent the dynamic (forces, acceleraion) of the system. Thus, there are two 
-		important criteria for the stabilization when using the explicit EulerSolver :
+		important criteria for stabilization when using the explicit EulerSolver:
 		<ul>
                   <li>The time step dt.</li>
                   <li>The dynamic of the system.</li>
                 </ul>
 		<p>
-		In this example, if the time step is setted higher (dt=0.001), or by using [Shift + leftmouse] to tug the object in order to 
-		dynamically unstabilize the system, the system become unstable as showm below :
+		In this example, if the time step is set higher (dt=0.001), or by using [Shift + leftmouse] to tug the object in order to 
+		dynamically unstabilize the system, the system becomes unstable as showm below :
 		</p>
 	</div>
 		<center>
