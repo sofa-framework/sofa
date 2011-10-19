@@ -130,14 +130,11 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
 template<class DataTypes>
 void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    //if (!vparams->isSupported(core::visual::API_OpenGL)) return;
     if (vparams->displayFlags().getShowCollisionModels())
     {
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
 
-        glEnable(GL_LIGHTING);
-        glEnable(GL_COLOR_MATERIAL);
-
-        glColor4fv(getColor4f());
         // Check topological modifications
         const int npoints = mstate->getX()->size();
 
@@ -156,8 +153,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
 
     }
-    glDisable(GL_LIGHTING);
-    glDisable(GL_COLOR_MATERIAL);
+
     if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 

@@ -200,6 +200,8 @@ protected:
     void initializeGL();
     void paintGL();
     void resizeGL( int w, int h );
+    /// Overloaded from SofaViewer
+    virtual void viewAll() {}
 
 public:
 

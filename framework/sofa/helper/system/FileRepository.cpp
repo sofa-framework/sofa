@@ -127,10 +127,36 @@ void FileRepository::addLastPath(const std::string& path)
 //     std::cout << path << std::endl;
 }
 
+void FileRepository::removePath(const std::string& path)
+{
+    std::vector<std::string> entries;
+    size_t p0 = 0;
+    size_t p1;
+    while ( p0 < path.size() )
+    {
+        p1 = path.find(entrySeparator(),p0);
+        if (p1 == std::string::npos) p1 = path.size();
+        if (p1>p0+1)
+        {
+            entries.push_back(path.substr(p0,p1-p0));
+        }
+        p0 = p1+1;
+    }
+
+    for(std::vector<std::string>::iterator it=entries.begin();
+        it!=entries.end(); it++)
+    {
+        vpath.erase( find(vpath.begin(), vpath.end(), *it) );
+    }
+
+    // Display
+    // std::cout<<(*this)<<std::endl;
+}
+
 std::string FileRepository::getFirstPath()
 {
     if (vpath.size() > 0)
-        return vpath[0];
+        return vpath.front();
     else return "";
 }
 

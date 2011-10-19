@@ -70,7 +70,10 @@ int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, &qt::R
 #endif
 
 
-
+SofaGUI* GUIManager::getGUI()
+{
+    return currentGUI;
+}
 
 
 

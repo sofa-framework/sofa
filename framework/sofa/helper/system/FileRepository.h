@@ -72,6 +72,9 @@ public:
     /// Adds a path to the back of the set of paths.
     void addLastPath(const std::string& path);
 
+    /// Remove a path of the set of paths.
+    void removePath(const std::string& path);
+
     /// Get the first path into the set of paths
     std::string getFirstPath();
 
@@ -115,6 +118,18 @@ public:
         return ':';
 #endif
     }
+
+    /// Display all current sofa search paths
+    friend std::ostream& operator << (std::ostream& _flux, FileRepository _fr)
+    {
+        _flux<< "FileRepository vpath :"<<std::endl;
+        for(std::vector<std::string>::iterator it = _fr.vpath.begin(); it!=_fr.vpath.end(); it++)
+            _flux<<(*it)<<std::endl;
+
+        return _flux;
+    }
+
+    void displayPaths() {std::cout<<(*this)<<std::endl;}
 
 protected:
 
