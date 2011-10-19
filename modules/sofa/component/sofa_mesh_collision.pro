@@ -14,6 +14,8 @@ HEADERS += initMeshCollision.h \
            collision/BarycentricContactMapper.inl \
            collision/IdentityContactMapper.h \
            collision/IdentityContactMapper.inl \
+		   collision/RigidContactMapper.h \
+           collision/RigidContactMapper.inl \
            collision/SubsetContactMapper.h \
            collision/SubsetContactMapper.inl \
            collision/MeshDiscreteIntersection.h \

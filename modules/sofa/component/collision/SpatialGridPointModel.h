@@ -41,7 +41,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class SOFA_BASE_COLLISION_API SpatialGridPointModel : public PointModel
+class SOFA_MISC_COLLISION_API SpatialGridPointModel : public PointModel
 {
 public:
     SOFA_CLASS(SpatialGridPointModel, PointModel);

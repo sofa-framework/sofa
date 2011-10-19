@@ -35,6 +35,7 @@
 //#endif
 
 #include <sofa/component/collision/BarycentricContactMapper.inl>
+#include <sofa/component/collision/RigidContactMapper.inl>
 #include <sofa/helper/Factory.inl>
 
 #include <fstream>
@@ -824,9 +825,36 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
     glPointSize(1);
 }
 
+//template <class DataTypes>
+//typename ContactMapper<RigidDistanceGridCollisionModel,DataTypes>::MMechanicalState* ContactMapper<RigidDistanceGridCollisionModel,DataTypes>::createMapping(const char* name)
+//{
+//	using sofa::component::mapping::IdentityMapping;
+//
+//    MMechanicalState* outmodel = Inherit::createMapping(name);
+//    if (this->child!=NULL && this->mapping==NULL)
+//    {
+//        // add velocity visualization
+///*        sofa::component::visualmodel::DrawV* visu = new sofa::component::visualmodel::DrawV;
+//        this->child->addObject(visu);
+//        visu->useAlpha.setValue(true);
+//        visu->vscale.setValue(this->model->getContext()->getDt());
+//        IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
+//        this->child->addObject(map);
+//        visu->init();
+//        map->init(); */
+//    }
+//    return outmodel;
+//}
+
+
 ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("default", true);
 
 template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel>;
+
+
+ContactMapperCreator< ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("default", true);
+
+template class SOFA_VOLUMETRIC_DATA_API ContactMapper<RigidDistanceGridCollisionModel>;
 
 } // namespace collision
 

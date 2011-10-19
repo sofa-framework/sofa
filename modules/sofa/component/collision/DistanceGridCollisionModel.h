@@ -28,6 +28,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/container/DistanceGrid.h>
 #include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/collision/RigidContactMapper.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/topology/RegularGridTopology.h>
@@ -53,9 +54,9 @@ typedef container::DistanceGrid DistanceGrid;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-class SOFA_BASE_COLLISION_API RigidDistanceGridCollisionModel;
+class SOFA_VOLUMETRIC_DATA_API RigidDistanceGridCollisionModel;
 
-class SOFA_BASE_COLLISION_API RigidDistanceGridCollisionElement : public core::TCollisionElementIterator<RigidDistanceGridCollisionModel>
+class SOFA_VOLUMETRIC_DATA_API RigidDistanceGridCollisionElement : public core::TCollisionElementIterator<RigidDistanceGridCollisionModel>
 {
 public:
 
@@ -85,7 +86,7 @@ public:
     void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 };
 
-class SOFA_BASE_COLLISION_API RigidDistanceGridCollisionModel : public core::CollisionModel
+class SOFA_VOLUMETRIC_DATA_API RigidDistanceGridCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(RigidDistanceGridCollisionModel,sofa::core::CollisionModel);
@@ -261,14 +262,14 @@ public:
     void setGrid(DistanceGrid* surf);
 };
 
-class SOFA_BASE_COLLISION_API FFDDistanceGridCollisionModel : public core::CollisionModel
+class SOFA_VOLUMETRIC_DATA_API FFDDistanceGridCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(FFDDistanceGridCollisionModel,sofa::core::CollisionModel);
 
     typedef SReal GSReal;
     typedef DistanceGrid::Coord GCoord;
-    class SOFA_BASE_COLLISION_API DeformedCube
+    class SOFA_VOLUMETRIC_DATA_API DeformedCube
     {
     public:
         DistanceGrid* grid;
@@ -511,11 +512,112 @@ public:
     }
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_VOLUMETRIC_DATA_COLLISION)
+#if defined(WIN32) && !defined(SOFA_BUILD_VOLUMETRIC_DATA)
 
 extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel>;
 
 #endif
+
+
+/// Mapper for RigidDistanceGridCollisionModel
+template <class DataTypes>
+class ContactMapper<RigidDistanceGridCollisionModel,DataTypes> : public RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes>
+{
+public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes> Inherit;
+    typedef typename Inherit::MMechanicalState MMechanicalState;
+    typedef typename Inherit::MCollisionModel MCollisionModel;
+
+    MMechanicalState* createMapping(const char* name="contactPoints")
+    {
+        using sofa::component::mapping::IdentityMapping;
+
+        MMechanicalState* outmodel = Inherit::createMapping(name);
+        if (this->child!=NULL && this->mapping==NULL)
+        {
+            // add velocity visualization
+            /*        sofa::component::visualmodel::DrawV* visu = new sofa::component::visualmodel::DrawV;
+            		this->child->addObject(visu);
+            		visu->useAlpha.setValue(true);
+            		visu->vscale.setValue(this->model->getContext()->getDt());
+            		IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
+            		this->child->addObject(map);
+            		visu->init();
+            		map->init(); */
+        }
+        return outmodel;
+    }
+
+    int addPoint(const Coord& P, int index, Real& r)
+    {
+        Coord trans = this->model->getInitTranslation();
+        int i = Inherit::addPoint(P+trans, index, r);
+        if (!this->mapping)
+        {
+            MCollisionModel* model = this->model;
+            MMechanicalState* outmodel = this->outmodel.get();
+            {
+                helper::WriteAccessor<Data<VecCoord> > xData = *outmodel->write(core::VecCoordId::position());
+                Coord& x = xData.wref()[i];
+
+                if (model->isTransformed(index))
+                    x = model->getTranslation(index) + model->getRotation(index) * P;
+                else
+                    x = P;
+            }
+            helper::ReadAccessor<Data<VecCoord> >  xData = *outmodel->read(core::ConstVecCoordId::position());
+            helper::WriteAccessor<Data<VecDeriv> > vData = *outmodel->write(core::VecDerivId::velocity());
+            const Coord& x = xData.ref()[i];
+            Deriv& v       = vData.wref()[i];
+            v.clear();
+
+            // estimating velocity
+            double gdt = model->getPrevDt(index);
+            if (gdt > 0.000001)
+            {
+                if (model->isTransformed(index))
+                {
+                    v = (x - (model->getPrevTranslation(index) + model->    getPrevRotation(index) * P)) * (1.0/gdt);
+                }
+                DistanceGrid* prevGrid = model->getPrevGrid(index);
+                //DistanceGrid* grid = model->getGrid(index);
+                //if (prevGrid != NULL && prevGrid != grid && prevGrid->inGrid(P))
+                {
+                    DistanceGrid::Coord coefs;
+                    int i = prevGrid->index(P, coefs);
+                    SReal d = prevGrid->interp(i,coefs);
+                    if (rabs(d) < 0.3) // todo : control threshold
+                    {
+                        DistanceGrid::Coord n = prevGrid->grad(i,coefs);
+                        v += n * (d  / ( n.norm() * gdt));
+                        //std::cout << "Estimated v at "<<P<<" = "<<v<<" using distance from previous model "<<d<<std::endl;
+                    }
+                }
+            }
+        }
+        return i;
+    }
+};
+
+
+#if defined(WIN32) && !defined(SOFA_BUILD_VOLUMETRIC_DATA)
+
+//#ifndef SOFA_DOUBLE
+//extern template class SOFA_VOLUMETRIC_DATA_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3fTypes>;
+//#endif
+//#ifndef SOFA_FLOAT
+//extern template class SOFA_VOLUMETRIC_DATA_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3dTypes>;
+//#endif
+
+extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<RigidDistanceGridCollisionModel>;
+
+#endif
+
 
 
 } // namespace collision

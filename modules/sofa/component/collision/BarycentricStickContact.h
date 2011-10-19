@@ -27,12 +27,8 @@
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
+#include <sofa/component/collision/BaseContactMapper.h>
 #include <sofa/component/interactionforcefield/VectorSpringForceField.h>
-#include <sofa/helper/Factory.h>
-#include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/component/collision/RigidContactMapper.inl>
-#include <sofa/component/collision/IdentityContactMapper.h>
 
 
 namespace sofa
