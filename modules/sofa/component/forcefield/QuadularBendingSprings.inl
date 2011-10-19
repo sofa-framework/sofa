@@ -34,7 +34,7 @@
 #include <sofa/component/topology/QuadData.inl>
 #include <sofa/component/topology/EdgeData.inl>
 
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 namespace sofa
 {

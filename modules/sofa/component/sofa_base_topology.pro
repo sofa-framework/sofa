@@ -15,7 +15,6 @@ HEADERS += initBaseTopology.h \
            topology/EdgeSetGeometryAlgorithms.inl \
            topology/EdgeSetTopologyAlgorithms.h \
            topology/EdgeSetTopologyAlgorithms.inl \
-           topology/EdgeSetTopologyChange.h \
            topology/EdgeSetTopologyContainer.h \
            topology/EdgeSetTopologyModifier.h \
            topology/EdgeSetTopologyEngine.h \
@@ -29,7 +28,6 @@ HEADERS += initBaseTopology.h \
            topology/HexahedronSetGeometryAlgorithms.inl \
            topology/HexahedronSetTopologyAlgorithms.h \
            topology/HexahedronSetTopologyAlgorithms.inl \
-           topology/HexahedronSetTopologyChange.h \
            topology/HexahedronSetTopologyContainer.h \
            topology/HexahedronSetTopologyModifier.h \
            topology/HexahedronSetTopologyEngine.h \
@@ -43,7 +41,6 @@ HEADERS += initBaseTopology.h \
            topology/PointSetGeometryAlgorithms.inl \
            topology/PointSetTopologyAlgorithms.h \
            topology/PointSetTopologyAlgorithms.inl \
-           topology/PointSetTopologyChange.h \
            topology/PointSetTopologyContainer.h \
            topology/PointSetTopologyModifier.h \
            topology/PointSubsetData.h \
@@ -54,7 +51,6 @@ HEADERS += initBaseTopology.h \
            topology/QuadSetGeometryAlgorithms.inl \
            topology/QuadSetTopologyAlgorithms.h \
            topology/QuadSetTopologyAlgorithms.inl \
-           topology/QuadSetTopologyChange.h \
            topology/QuadSetTopologyContainer.h \
            topology/QuadSetTopologyModifier.h \
            topology/QuadSetTopologyEngine.h \
@@ -67,7 +63,6 @@ HEADERS += initBaseTopology.h \
            topology/TetrahedronSetGeometryAlgorithms.inl \
            topology/TetrahedronSetTopologyAlgorithms.h \
            topology/TetrahedronSetTopologyAlgorithms.inl \
-           topology/TetrahedronSetTopologyChange.h \
            topology/TetrahedronSetTopologyContainer.h \
            topology/TetrahedronSetTopologyModifier.h \
            topology/TetrahedronSetTopologyEngine.h \
@@ -79,7 +74,6 @@ HEADERS += initBaseTopology.h \
            topology/TriangleSetGeometryAlgorithms.inl \
            topology/TriangleSetTopologyAlgorithms.h \
            topology/TriangleSetTopologyAlgorithms.inl \
-           topology/TriangleSetTopologyChange.h \
            topology/TriangleSetTopologyContainer.h \
            topology/TriangleSetTopologyModifier.h \
            topology/TriangleSetTopologyEngine.h \
@@ -91,13 +85,19 @@ HEADERS += initBaseTopology.h \
            topology/TetrahedronSubsetData.h \
            topology/TetrahedronSubsetData.inl \
            topology/HexahedronSubsetData.h \
-           topology/HexahedronSubsetData.inl \
-           topology/TopologyData.h \
-           topology/TopologyData.inl \
-           topology/TopologySparseData.h \
-           topology/TopologySparseData.inl \
-           topology/TopologySubsetData.h \
-           topology/TopologySubsetData.inl
+           topology/HexahedronSubsetData.inl 
+#           topology/TopologyData.h \
+#           topology/TopologyData.inl \
+#           topology/TopologySparseDataHandler.h \
+#           topology/TopologySparseDataHandler.inl \
+#           topology/TopologySparseData.h \
+#           topology/TopologySparseData.inl \
+#           topology/TopologySubsetData.h \
+#           topology/TopologySubsetData.inl \
+#           topology/TopologyDataHandler.h \
+#           topology/TopologyDataHandler.inl \
+#	   topology/TopologyEngine.h \
+#	   topology/TopologyEngine.inl
 
 SOURCES += initBaseTopology.cpp \
            topology/CubeTopology.cpp \

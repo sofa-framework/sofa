@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_INL
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_INL
 
-#include <sofa/component/topology/TopologyData.h>
+#include <sofa/component/topology/TopologyDataHandler.h>
 
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/component/topology/EdgeSetTopologyChange.h>
@@ -49,7 +49,7 @@ namespace topology
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataImpl <TopologyElementType, VecT>::handleTopologyEvents( std::list< const core::topology::TopologyChange *>::const_iterator changeIt,
+void TopologyDataHandlerImpl <TopologyElementType, VecT>::handleTopologyEvents( std::list< const core::topology::TopologyChange *>::const_iterator changeIt,
         std::list< const core::topology::TopologyChange *>::const_iterator &end )
 {
     if (!m_topologyData)
@@ -342,10 +342,10 @@ void TopologyDataImpl <TopologyElementType, VecT>::handleTopologyEvents( std::li
 
 
 
-///////////////////// Private functions on TopologyDataImpl changes /////////////////////////////
+///////////////////// Private functions on TopologyDataHandlerImpl changes /////////////////////////////
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataImpl <TopologyElementType, VecT>::swap( unsigned int i1, unsigned int i2 )
+void TopologyDataHandlerImpl <TopologyElementType, VecT>::swap( unsigned int i1, unsigned int i2 )
 {
     container_type& data = *(m_topologyData->beginEdit());
     value_type tmp = data[i1];
@@ -355,7 +355,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::swap( unsigned int i1, unsign
 }
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataImpl <TopologyElementType, VecT>::add(unsigned int nbElements,
+void TopologyDataHandlerImpl <TopologyElementType, VecT>::add(unsigned int nbElements,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
@@ -381,7 +381,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::add(unsigned int nbElements,
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataImpl <TopologyElementType, VecT>::add(unsigned int nbElements,
+void TopologyDataHandlerImpl <TopologyElementType, VecT>::add(unsigned int nbElements,
         const sofa::helper::vector< TopologyElementType >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
@@ -408,7 +408,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::add(unsigned int nbElements,
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataImpl <TopologyElementType, VecT>::move( const sofa::helper::vector<unsigned int> &indexList,
+void TopologyDataHandlerImpl <TopologyElementType, VecT>::move( const sofa::helper::vector<unsigned int> &indexList,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& coefs)
 {
@@ -425,7 +425,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::move( const sofa::helper::vec
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataImpl <TopologyElementType, VecT>::remove( const sofa::helper::vector<unsigned int> &index )
+void TopologyDataHandlerImpl <TopologyElementType, VecT>::remove( const sofa::helper::vector<unsigned int> &index )
 {
 
     container_type& data = *(m_topologyData->beginEdit());
@@ -444,7 +444,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::remove( const sofa::helper::v
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataImpl <TopologyElementType, VecT>::renumber( const sofa::helper::vector<unsigned int> &index )
+void TopologyDataHandlerImpl <TopologyElementType, VecT>::renumber( const sofa::helper::vector<unsigned int> &index )
 {
     container_type& data = *(m_topologyData->beginEdit());
 
@@ -463,7 +463,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::renumber( const sofa::helper:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< typename VecT >
-void PointDataImpl<VecT>::applyPointCreation(const sofa::helper::vector< unsigned int >& indices,
+void PointDataHandlerImpl<VecT>::applyPointCreation(const sofa::helper::vector< unsigned int >& indices,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
@@ -472,25 +472,25 @@ void PointDataImpl<VecT>::applyPointCreation(const sofa::helper::vector< unsigne
 }
 
 template< typename VecT >
-void PointDataImpl<VecT>::applyPointDestruction(const sofa::helper::vector<unsigned int> &indices)
+void PointDataHandlerImpl<VecT>::applyPointDestruction(const sofa::helper::vector<unsigned int> &indices)
 {
     this->remove( indices );
 }
 
 template< typename VecT >
-void PointDataImpl<VecT>::applyPointIndicesSwap(unsigned int i1, unsigned int i2)
+void PointDataHandlerImpl<VecT>::applyPointIndicesSwap(unsigned int i1, unsigned int i2)
 {
     this->swap( i1, i2 );
 }
 
 template< typename VecT >
-void PointDataImpl<VecT>::applyPointRenumbering(const sofa::helper::vector<unsigned int> &indices)
+void PointDataHandlerImpl<VecT>::applyPointRenumbering(const sofa::helper::vector<unsigned int> &indices)
 {
     this->renumber( indices );
 }
 
 template< typename VecT >
-void PointDataImpl<VecT>::applyPointMove(const sofa::helper::vector<unsigned int> &indexList,
+void PointDataHandlerImpl<VecT>::applyPointMove(const sofa::helper::vector<unsigned int> &indexList,
         const sofa::helper::vector< Point >& /*elems*/,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
@@ -504,7 +504,7 @@ void PointDataImpl<VecT>::applyPointMove(const sofa::helper::vector<unsigned int
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< typename VecT >
-void EdgeDataImpl<VecT>::applyEdgeCreation(const sofa::helper::vector<unsigned int> &indices,
+void EdgeDataHandlerImpl<VecT>::applyEdgeCreation(const sofa::helper::vector<unsigned int> &indices,
         const sofa::helper::vector< Edge >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
@@ -513,25 +513,25 @@ void EdgeDataImpl<VecT>::applyEdgeCreation(const sofa::helper::vector<unsigned i
 }
 
 template< typename VecT >
-void EdgeDataImpl<VecT>::applyEdgeDestruction(const sofa::helper::vector<unsigned int> &indices)
+void EdgeDataHandlerImpl<VecT>::applyEdgeDestruction(const sofa::helper::vector<unsigned int> &indices)
 {
     this->remove( indices );
 }
 
 template< typename VecT >
-void EdgeDataImpl<VecT>::applyEdgeIndicesSwap(unsigned int i1, unsigned int i2)
+void EdgeDataHandlerImpl<VecT>::applyEdgeIndicesSwap(unsigned int i1, unsigned int i2)
 {
     this->swap( i1, i2 );
 }
 
 template< typename VecT >
-void EdgeDataImpl<VecT>::applyeEdgeRenumbering(const sofa::helper::vector<unsigned int> &indices)
+void EdgeDataHandlerImpl<VecT>::applyeEdgeRenumbering(const sofa::helper::vector<unsigned int> &indices)
 {
     this->remove( indices );
 }
 
 template< typename VecT >
-void EdgeDataImpl<VecT>::applyEdgeMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
+void EdgeDataHandlerImpl<VecT>::applyEdgeMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
         const sofa::helper::vector<Edge> & edgeArray)
 {
     container_type& data = *(this->beginEdit());
@@ -552,7 +552,7 @@ void EdgeDataImpl<VecT>::applyEdgeMovedCreation(const sofa::helper::vector<unsig
 }
 
 template< typename VecT >
-void EdgeDataImpl<VecT>::applyEdgeMovedDestruction(const sofa::helper::vector<unsigned int> &indices)
+void EdgeDataHandlerImpl<VecT>::applyEdgeMovedDestruction(const sofa::helper::vector<unsigned int> &indices)
 {
 
     container_type& data = *(this->beginEdit());
@@ -571,7 +571,7 @@ void EdgeDataImpl<VecT>::applyEdgeMovedDestruction(const sofa::helper::vector<un
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< typename VecT >
-void TriangleDataImpl<VecT>::applyTriangleCreation(const sofa::helper::vector<unsigned int> &indices,
+void TriangleDataHandlerImpl<VecT>::applyTriangleCreation(const sofa::helper::vector<unsigned int> &indices,
         const sofa::helper::vector< Triangle >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
@@ -580,25 +580,25 @@ void TriangleDataImpl<VecT>::applyTriangleCreation(const sofa::helper::vector<un
 }
 
 template< typename VecT >
-void TriangleDataImpl<VecT>::applyTriangleDestruction(const sofa::helper::vector<unsigned int> &indices)
+void TriangleDataHandlerImpl<VecT>::applyTriangleDestruction(const sofa::helper::vector<unsigned int> &indices)
 {
     this->remove( indices );
 }
 
 template< typename VecT >
-void TriangleDataImpl<VecT>::applyTriangleIndicesSwap(unsigned int i1, unsigned int i2)
+void TriangleDataHandlerImpl<VecT>::applyTriangleIndicesSwap(unsigned int i1, unsigned int i2)
 {
     this->swap( i1, i2 );
 }
 
 template< typename VecT >
-void TriangleDataImpl<VecT>::applyeTriangleRenumbering(const sofa::helper::vector<unsigned int> &indices)
+void TriangleDataHandlerImpl<VecT>::applyeTriangleRenumbering(const sofa::helper::vector<unsigned int> &indices)
 {
     this->remove( indices );
 }
 
 template< typename VecT >
-void TriangleDataImpl<VecT>::applyTriangleMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
+void TriangleDataHandlerImpl<VecT>::applyTriangleMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
         const sofa::helper::vector<Triangle> & triangleArray)
 {
     container_type& data = *(m_topologyData->beginEdit());
@@ -619,7 +619,7 @@ void TriangleDataImpl<VecT>::applyTriangleMovedCreation(const sofa::helper::vect
 }
 
 template< typename VecT >
-void TriangleDataImpl<VecT>::applyTriangleMovedDestruction(const sofa::helper::vector<unsigned int> &indices)
+void TriangleDataHandlerImpl<VecT>::applyTriangleMovedDestruction(const sofa::helper::vector<unsigned int> &indices)
 {
 
     container_type& data = *(m_topologyData->beginEdit());
@@ -640,7 +640,7 @@ void TriangleDataImpl<VecT>::applyTriangleMovedDestruction(const sofa::helper::v
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< typename VecT >
-void QuadDataImpl<VecT>::applyQuadCreation(const sofa::helper::vector<unsigned int> &indices,
+void QuadDataHandlerImpl<VecT>::applyQuadCreation(const sofa::helper::vector<unsigned int> &indices,
         const sofa::helper::vector< Quad >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
@@ -649,25 +649,25 @@ void QuadDataImpl<VecT>::applyQuadCreation(const sofa::helper::vector<unsigned i
 }
 
 template< typename VecT >
-void QuadDataImpl<VecT>::applyQuadDestruction(const sofa::helper::vector<unsigned int> &indices)
+void QuadDataHandlerImpl<VecT>::applyQuadDestruction(const sofa::helper::vector<unsigned int> &indices)
 {
     this->remove( indices );
 }
 
 template< typename VecT >
-void QuadDataImpl<VecT>::applyQuadIndicesSwap(unsigned int i1, unsigned int i2)
+void QuadDataHandlerImpl<VecT>::applyQuadIndicesSwap(unsigned int i1, unsigned int i2)
 {
     this->swap( i1, i2 );
 }
 
 template< typename VecT >
-void QuadDataImpl<VecT>::applyeQuadRenumbering(const sofa::helper::vector<unsigned int> &indices)
+void QuadDataHandlerImpl<VecT>::applyeQuadRenumbering(const sofa::helper::vector<unsigned int> &indices)
 {
     this->remove( indices );
 }
 
 template< typename VecT >
-void QuadDataImpl<VecT>::applyQuadMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
+void QuadDataHandlerImpl<VecT>::applyQuadMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
         const sofa::helper::vector<Quad> & quadArray)
 {
     container_type& data = *(m_topologyData->beginEdit());
@@ -688,7 +688,7 @@ void QuadDataImpl<VecT>::applyQuadMovedCreation(const sofa::helper::vector<unsig
 }
 
 template< typename VecT >
-void QuadDataImpl<VecT>::applyQuadMovedDestruction(const sofa::helper::vector<unsigned int> &indices)
+void QuadDataHandlerImpl<VecT>::applyQuadMovedDestruction(const sofa::helper::vector<unsigned int> &indices)
 {
 
     container_type& data = *(m_topologyData->beginEdit());
@@ -709,7 +709,7 @@ void QuadDataImpl<VecT>::applyQuadMovedDestruction(const sofa::helper::vector<un
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< typename VecT >
-void TetrahedronDataImpl<VecT>::applyTetrahedronCreation(const sofa::helper::vector<unsigned int> &indices,
+void TetrahedronDataHandlerImpl<VecT>::applyTetrahedronCreation(const sofa::helper::vector<unsigned int> &indices,
         const sofa::helper::vector< Tetrahedron >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
@@ -718,25 +718,25 @@ void TetrahedronDataImpl<VecT>::applyTetrahedronCreation(const sofa::helper::vec
 }
 
 template< typename VecT >
-void TetrahedronDataImpl<VecT>::applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> &indices)
+void TetrahedronDataHandlerImpl<VecT>::applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> &indices)
 {
     this->remove( indices );
 }
 
 template< typename VecT >
-void TetrahedronDataImpl<VecT>::applyTetrahedronIndicesSwap(unsigned int i1, unsigned int i2)
+void TetrahedronDataHandlerImpl<VecT>::applyTetrahedronIndicesSwap(unsigned int i1, unsigned int i2)
 {
     this->swap( i1, i2 );
 }
 
 template< typename VecT >
-void TetrahedronDataImpl<VecT>::applyeTetrahedronRenumbering(const sofa::helper::vector<unsigned int> &indices)
+void TetrahedronDataHandlerImpl<VecT>::applyeTetrahedronRenumbering(const sofa::helper::vector<unsigned int> &indices)
 {
     this->remove( indices );
 }
 
 template< typename VecT >
-void TetrahedronDataImpl<VecT>::applyTetrahedronMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
+void TetrahedronDataHandlerImpl<VecT>::applyTetrahedronMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
         const sofa::helper::vector<Tetrahedron> & tetrahedronArray)
 {
     container_type& data = *(m_topologyData->beginEdit());
@@ -757,7 +757,7 @@ void TetrahedronDataImpl<VecT>::applyTetrahedronMovedCreation(const sofa::helper
 }
 
 template< typename VecT >
-void TetrahedronDataImpl<VecT>::applyTetrahedronMovedDestruction(const sofa::helper::vector<unsigned int> &indices)
+void TetrahedronDataHandlerImpl<VecT>::applyTetrahedronMovedDestruction(const sofa::helper::vector<unsigned int> &indices)
 {
 
     container_type& data = *(m_topologyData->beginEdit());
@@ -778,7 +778,7 @@ void TetrahedronDataImpl<VecT>::applyTetrahedronMovedDestruction(const sofa::hel
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< typename VecT >
-void HexahedronDataImpl<VecT>::applyHexahedronCreation(const sofa::helper::vector<unsigned int> &indices,
+void HexahedronDataHandlerImpl<VecT>::applyHexahedronCreation(const sofa::helper::vector<unsigned int> &indices,
         const sofa::helper::vector< Hexahedron >& elems,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
@@ -787,25 +787,25 @@ void HexahedronDataImpl<VecT>::applyHexahedronCreation(const sofa::helper::vecto
 }
 
 template< typename VecT >
-void HexahedronDataImpl<VecT>::applyHexahedronDestruction(const sofa::helper::vector<unsigned int> &indices)
+void HexahedronDataHandlerImpl<VecT>::applyHexahedronDestruction(const sofa::helper::vector<unsigned int> &indices)
 {
     this->remove( indices );
 }
 
 template< typename VecT >
-void HexahedronDataImpl<VecT>::applyHexahedronIndicesSwap(unsigned int i1, unsigned int i2)
+void HexahedronDataHandlerImpl<VecT>::applyHexahedronIndicesSwap(unsigned int i1, unsigned int i2)
 {
     this->swap( i1, i2 );
 }
 
 template< typename VecT >
-void HexahedronDataImpl<VecT>::applyeHexahedronRenumbering(const sofa::helper::vector<unsigned int> &indices)
+void HexahedronDataHandlerImpl<VecT>::applyeHexahedronRenumbering(const sofa::helper::vector<unsigned int> &indices)
 {
     this->remove( indices );
 }
 
 template< typename VecT >
-void HexahedronDataImpl<VecT>::applyHexahedronMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
+void HexahedronDataHandlerImpl<VecT>::applyHexahedronMovedCreation(const sofa::helper::vector<unsigned int> &indexList,
         const sofa::helper::vector<Hexahedron> & hexahedronArray)
 {
     container_type& data = *(m_topologyData->beginEdit());
@@ -826,9 +826,8 @@ void HexahedronDataImpl<VecT>::applyHexahedronMovedCreation(const sofa::helper::
 }
 
 template< typename VecT >
-void HexahedronDataImpl<VecT>::applyHexahedronMovedDestruction(const sofa::helper::vector<unsigned int> &indices)
+void HexahedronDataHandlerImpl<VecT>::applyHexahedronMovedDestruction(const sofa::helper::vector<unsigned int> &indices)
 {
-
     container_type& data = *(m_topologyData->beginEdit());
 
     for (unsigned int i = 0; i <indices.size(); i++)

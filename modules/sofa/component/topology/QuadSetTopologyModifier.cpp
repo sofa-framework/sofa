@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/QuadSetTopologyChange.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 #include <algorithm>
 #include <functional>
@@ -44,6 +44,7 @@ int QuadSetTopologyModifierClass = core::RegisterObject("Quad set topology modif
 
 using namespace std;
 using namespace sofa::defaulttype;
+using namespace sofa::core::topology;
 
 
 void QuadSetTopologyModifier::init()

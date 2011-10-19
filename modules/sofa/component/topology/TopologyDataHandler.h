@@ -27,7 +27,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/component/topology/TopologyData.h>
+//#include <sofa/component/topology/TopologyData.h>
 
 
 namespace sofa
@@ -56,7 +56,7 @@ typedef BaseMeshTopology::Hexahedron Hexahedron;
 * This class is a wrapper of class helper::vector that is made to take care transparently of all topology changes that might
 * happen (non exhaustive list: Edges added, removed, fused, renumbered).
 */
-template< class TopologyElementType, class VecT>
+template< class TopologyElementType>
 class TopologyDataHandlerImpl : public sofa::core::topology::TopologyHandler
 {
 public:
@@ -77,7 +77,7 @@ public:
 public:
 
     // constructor
-    TopologyDataHandlerImpl(): sofa::core::topology::TopologyDataImpl(), m_topologyData(NULL) {}
+    TopologyDataHandlerImpl(): sofa::core::topology::TopologyHandler() {}
 
     /// Apply removing current elementType elements
     virtual void applyDestroyFunction(unsigned int, value_type& /*t*/) {/*t = VecT();*/}
@@ -99,7 +99,7 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
     /// Apply removing points elements.
     virtual void applyPointDestruction(const sofa::helper::vector<unsigned int>& /*indices*/) {}
-    /// Apply swap between point indices elements.
+    /// Apply swap between point indicPointes elements.
     virtual void applyPointIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
     /// Apply renumbering on points elements.
     virtual void applyPointRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
@@ -209,6 +209,8 @@ public:
     virtual void applyHexahedronMovedDestruction(const sofa::helper::vector<unsigned int> & /*indices*/) {}
 
 
+    /// Call handleTopology change parsing
+    //void ApplyTopologyChanges() {this->}
 
     /// Handle EdgeSetTopology related events, ignore others. DEPRECATED
     virtual void handleTopologyEvents( std::list< const core::topology::TopologyChange *>::const_iterator changeIt,
@@ -216,37 +218,45 @@ public:
 
 protected:
     /// Swaps values at indices i1 and i2.
-    void swap( unsigned int i1, unsigned int i2 );
+    virtual void swap( unsigned int i1, unsigned int i2 );
 
     /// Add some values. Values are added at the end of the vector.
-    void add( unsigned int nbElements,
+    virtual void add( unsigned int nbElements,
             const sofa::helper::vector< TopologyElementType >& elems,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
-    void add( unsigned int nbElements,
+    virtual void add( unsigned int nbElements,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
     /// Remove the values corresponding to the Edges removed.
-    void remove( const sofa::helper::vector<unsigned int> &index );
+    virtual void remove( const sofa::helper::vector<unsigned int> &index );
 
     /// Reorder the values.
-    void renumber( const sofa::helper::vector<unsigned int> &index );
+    virtual void renumber( const sofa::helper::vector<unsigned int> &index );
 
     /// Move a list of points
-    void move( const sofa::helper::vector<unsigned int> &indexList,
+    virtual void move( const sofa::helper::vector<unsigned int> &indexList,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
 protected:
-    sofa::component::topology::TopologyDataImpl<TopologyElementType, VecT>* m_topologyData;
+    //sofa::component::topology::TopologyDataImpl<TopologyElementType, VecT>* m_topologyData;
 };
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////   Point Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+template<>
+void TopologyDataHandlerImpl<Point>::applyPointCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
+{
+    this->add(...);
+}
 
 template< class VecT >
 class PointDataHandlerImpl : public TopologyDataHandlerImpl<Point, VecT>
@@ -256,7 +266,7 @@ public:
     typedef typename TopologyDataHandlerImpl<Point, VecT>::value_type value_type;
 
 public:
-    PointDataHandlerImpl() : TopologyDataHandlerImpl () {}
+    PointDataHandlerImpl() : TopologyDataHandlerImpl<Point, VecT> () {}
 
     /// Apply adding point elements.
     void applyPointCreation(const sofa::helper::vector< unsigned int >& indices,
@@ -288,7 +298,7 @@ public:
     typedef typename TopologyDataHandlerImpl<Edge, VecT>::value_type value_type;
 
 public:
-    EdgeDataHandlerImpl() : TopologyDataHandlerImpl () {}
+    EdgeDataHandlerImpl() : TopologyDataHandlerImpl<Edge, VecT> () {}
 
     /// Apply adding Edge elements.
     void applyEdgeCreation(const sofa::helper::vector< unsigned int >& indices,
@@ -322,7 +332,7 @@ public:
     typedef typename TopologyDataHandlerImpl<Triangle, VecT>::value_type value_type;
 
 public:
-    TriangleDataHandlerImpl() : TopologyDataHandlerImpl () {}
+    TriangleDataHandlerImpl() : TopologyDataHandlerImpl<Triangle, VecT> () {}
 
     /// Apply adding Triangle elements.
     void applyTriangleCreation(const sofa::helper::vector< unsigned int >& indices,
@@ -356,7 +366,7 @@ public:
     typedef typename TopologyDataHandlerImpl<Quad, VecT>::value_type value_type;
 
 public:
-    QuadDataHandlerImpl() : TopologyDataHandlerImpl () {}
+    QuadDataHandlerImpl() : TopologyDataHandlerImpl<Quad, VecT> () {}
 
     /// Apply adding Quad elements.
     void applyQuadCreation(const sofa::helper::vector< unsigned int >& indices,
@@ -390,7 +400,7 @@ public:
     typedef typename TopologyDataHandlerImpl<Tetrahedron, VecT>::value_type value_type;
 
 public:
-    TetrahedronDataHandlerImpl() : TopologyDataHandlerImpl () {}
+    TetrahedronDataHandlerImpl() : TopologyDataHandlerImpl<Tetrahedron, VecT> () {}
 
     /// Apply adding Tetrahedron elements.
     void applyTetrahedronCreation(const sofa::helper::vector< unsigned int >& indices,
@@ -424,7 +434,7 @@ public:
     typedef typename TopologyDataHandlerImpl<Hexahedron, VecT>::value_type value_type;
 
 public:
-    HexahedronDataHandlerImpl() : TopologyDataHandlerImpl () {}
+    HexahedronDataHandlerImpl() : TopologyDataHandlerImpl<Hexahedron, VecT> () {}
 
     /// Apply adding Hexahedron elements.
     void applyHexahedronCreation(const sofa::helper::vector< unsigned int >& indices,

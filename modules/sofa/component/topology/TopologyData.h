@@ -216,7 +216,7 @@ public:
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
+    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
 
 protected:
     PointSetTopologyEngine<VecT>* m_topologicalEngine;
@@ -266,7 +266,7 @@ public:
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
+    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
 
 protected:
     EdgeSetTopologyEngine<VecT>* m_topologicalEngine;
@@ -314,7 +314,7 @@ public:
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
+    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
 
 protected:
     TriangleSetTopologyEngine<VecT>* m_topologicalEngine;
@@ -363,7 +363,7 @@ public:
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
+    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
 
 protected:
     QuadSetTopologyEngine<VecT>* m_topologicalEngine;
@@ -412,7 +412,7 @@ public:
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
+    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
 
 protected:
     TetrahedronSetTopologyEngine<VecT>* m_topologicalEngine;
@@ -462,7 +462,7 @@ public:
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
+    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
 
 protected:
     HexahedronSetTopologyEngine<VecT>* m_topologicalEngine;

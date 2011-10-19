@@ -46,6 +46,7 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::core::topology;
 using helper::vector;
 using helper::fixed_array;
 
