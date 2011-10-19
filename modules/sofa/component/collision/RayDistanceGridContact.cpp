@@ -22,9 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initMiscCollision.h>
-
+#include <sofa/component/collision/RayContact.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/component/collision/RayModel.h>
+#include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/DistanceGridCollisionModel.h>
 
 namespace sofa
 {
@@ -32,25 +35,17 @@ namespace sofa
 namespace component
 {
 
-
-void initMiscCollision()
+namespace collision
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(TreeCollisionGroupManager)
-SOFA_LINK_CLASS(TetrahedronDiscreteIntersection)
-SOFA_LINK_CLASS(SpatialGridPointModel)
-SOFA_LINK_CLASS(TetrahedronModel)
-SOFA_LINK_CLASS(TetrahedronBarycentricPenalityContact)
-SOFA_LINK_CLASS(TetrahedronRayContact)
-SOFA_LINK_CLASS(TetrahedronBarycentricDistanceLMConstraintContact)
-SOFA_LINK_CLASS(TetrahedronFrictionContact)
+using namespace sofa::defaulttype;
 
+SOFA_DECL_CLASS(RayDistanceGridContact)
+
+Creator<core::collision::Contact::Factory, RayContact<RigidDistanceGridCollisionModel> > RayDistanceGridContactClass("ray",true);
+Creator<core::collision::Contact::Factory, RayContact<FFDDistanceGridCollisionModel> > RayFFDDistanceGridContactClass("ray",true);
+
+} // namespace collision
 
 } // namespace component
 

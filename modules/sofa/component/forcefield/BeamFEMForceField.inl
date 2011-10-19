@@ -70,9 +70,9 @@ void BeamFEMForceField<DataTypes>::init()
 
 
     stiffnessContainer = context->core::objectmodel::BaseContext::get<container::StiffnessContainer>();
-    lengthContainer = context->core::objectmodel::BaseContext::get<container::LengthContainer>();
+//  	lengthContainer = context->core::objectmodel::BaseContext::get<container::LengthContainer>();
     poissonContainer = context->core::objectmodel::BaseContext::get<container::PoissonContainer>();
-    radiusContainer = context->core::objectmodel::BaseContext::get<container::RadiusContainer>();
+//	radiusContainer = context->core::objectmodel::BaseContext::get<container::RadiusContainer>();
 
     if (_topology==NULL)
     {

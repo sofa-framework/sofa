@@ -33,6 +33,7 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/component/topology/SparseGridTopology.h>
+#include <sofa/component/collision/BarycentricContactMapper.h>
 
 namespace sofa
 {
@@ -488,6 +489,34 @@ inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(core::Co
 
 inline DistanceGrid* FFDDistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
 inline void FFDDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
+
+/// Mapper for FFDDistanceGridCollisionModel
+template <class DataTypes>
+class ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public BarycentricContactMapper<FFDDistanceGridCollisionModel,DataTypes>
+{
+public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    int addPoint(const Coord& P, int index, Real&)
+    {
+        Vector3 bary;
+        int elem = this->model->getDeformCube(index).elem; //getDeformGrid()->findCube(P,bary[0],bary[1],bary[2]);
+        bary = this->model->getDeformCube(index).baryCoords(P);
+        //if (elem == -1)
+        //{
+        //    std::cerr<<"WARNING: BarycentricContactMapper from FFDDistanceGridCollisionModel on point no within any the FFD grid."<<std::endl;
+        //    elem = model->getDeformGrid()->findNearestCube(P,bary[0],bary[1],bary[2]);
+        //}
+        return this->mapper->addPointInCube(elem,bary.ptr());
+    }
+};
+
+#if defined(WIN32) && !defined(SOFA_BUILD_VOLUMETRIC_DATA_COLLISION)
+
+extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel>;
+
+#endif
+
 
 } // namespace collision
 

@@ -45,6 +45,9 @@ void initVolumetricData()
 SOFA_LINK_CLASS(InterpolatedImplicitSurface)
 SOFA_LINK_CLASS(DistanceGridForceField)
 SOFA_LINK_CLASS(ImplicitSurfaceMapping)
+SOFA_LINK_CLASS(FFDDistanceGridDiscreteIntersection)
+SOFA_LINK_CLASS(RigidDistanceGridDiscreteIntersection)
+
 
 } // namespace component
 

@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_TETRAHEDRONMODEL_H
 #define SOFA_COMPONENT_COLLISION_TETRAHEDRONMODEL_H
 
+#include <sofa/component/collision/BarycentricContactMapper.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -80,7 +81,7 @@ public:
 
 };
 
-class SOFA_BASE_COLLISION_API TetrahedronModel : public core::CollisionModel
+class SOFA_MISC_COLLISION_API TetrahedronModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(TetrahedronModel, core::CollisionModel);
@@ -165,6 +166,27 @@ inline Vector3 Tetrahedron::getBary(const Vector3& p) const { return model->elem
 inline Vector3 Tetrahedron::getDBary(const Vector3& v) const { return model->elems[index].coord2bary*(v); }
 inline Vector3 Tetrahedron::getCoord(const Vector3& b) const { return model->elems[index].bary2coord*b + model->elems[index].coord0; }
 inline Vector3 Tetrahedron::getDCoord(const Vector3& b) const { return model->elems[index].bary2coord*b; }
+
+/// Mapper for TetrahedronModel
+template<class DataTypes>
+class ContactMapper<TetrahedronModel, DataTypes> : public BarycentricContactMapper<TetrahedronModel, DataTypes>
+{
+public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    int addPoint(const Coord& P, int index, Real&)
+    {
+        Tetrahedron t(this->model, index);
+        Vector3 b = t.getBary(P);
+        return this->mapper->addPointInTetra(index, b.ptr());
+    }
+};
+
+#if defined(WIN32) && !defined(SOFA_BUILD_MISC_COLLISION)
+extern template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronModel>;
+#endif
+
+
 
 } // namespace collision
 

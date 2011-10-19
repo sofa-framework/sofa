@@ -62,7 +62,7 @@ public:
 
 class BaseRayContact;
 
-class SOFA_BASE_COLLISION_API RayModel : public core::CollisionModel
+class SOFA_USER_INTERACTION_API RayModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(RayModel, core::CollisionModel);

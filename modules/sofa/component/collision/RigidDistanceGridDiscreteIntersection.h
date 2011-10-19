@@ -33,7 +33,6 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/DiscreteIntersection.h>
@@ -46,7 +45,7 @@ namespace component
 
 namespace collision
 {
-class SOFA_MISC_COLLISION_API RigidDistanceGridDiscreteIntersection : public core::collision::BaseIntersector
+class SOFA_VOLUMETRIC_DATA_API RigidDistanceGridDiscreteIntersection : public core::collision::BaseIntersector
 {
 
     typedef DiscreteIntersection::OutputVector OutputVector;

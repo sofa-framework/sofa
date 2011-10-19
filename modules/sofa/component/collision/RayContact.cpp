@@ -27,9 +27,6 @@
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/TetrahedronModel.h>
-#include <sofa/component/collision/SphereTreeModel.h>
-#include <sofa/component/collision/DistanceGridCollisionModel.h>
 
 namespace sofa
 {
@@ -46,10 +43,6 @@ SOFA_DECL_CLASS(RayContact)
 
 Creator<core::collision::Contact::Factory, RayContact<SphereModel> > RaySphereContactClass("ray",true);
 Creator<core::collision::Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass("ray",true);
-Creator<core::collision::Contact::Factory, RayContact<TetrahedronModel> > RayTetrahedronContactClass("ray",true);
-Creator<core::collision::Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass("ray",true);
-Creator<core::collision::Contact::Factory, RayContact<RigidDistanceGridCollisionModel> > RayDistanceGridContactClass("ray",true);
-Creator<core::collision::Contact::Factory, RayContact<FFDDistanceGridCollisionModel> > RayFFDDistanceGridContactClass("ray",true);
 
 BaseRayContact::BaseRayContact(CollisionModel1* model1, core::collision::Intersection* /*instersectionMethod*/)
     : model1(model1)

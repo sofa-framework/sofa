@@ -40,6 +40,7 @@
 #include <sofa/component/initMiscCollisionDev.h>
 #include <sofa/component/initMiscSolverDev.h>
 #include <sofa/component/initMiscDev.h>
+#include <sofa/component/initAdvancedInteraction.h>
 #endif
 
 namespace sofa
@@ -73,6 +74,7 @@ void initComponentMisc()
     initMiscCollisionDev();
     initMiscSolverDev();
     initMiscDev();
+    initAdvancedInteraction();
 #endif
 }
 

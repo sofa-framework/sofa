@@ -32,10 +32,7 @@
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
-#include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/DiscreteIntersection.h>
 
 namespace sofa

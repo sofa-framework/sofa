@@ -29,14 +29,7 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/SphereTreeModel.h>
-#include <sofa/component/collision/DistanceGridCollisionModel.h>
-#include <sofa/component/collision/TetrahedronModel.h>
 
 namespace sofa
 {

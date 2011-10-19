@@ -47,15 +47,6 @@ SOFA_LINK_CLASS(Sphere)
 SOFA_LINK_CLASS(Cube)
 SOFA_LINK_CLASS(DiscreteIntersection)
 SOFA_LINK_CLASS(DefaultContactManager)
-SOFA_LINK_CLASS(Point)
-SOFA_LINK_CLASS(Line)
-SOFA_LINK_CLASS(Triangle)
-SOFA_LINK_CLASS(TetrahedronModel)
-SOFA_LINK_CLASS(SpatialGridPointModel)
-SOFA_LINK_CLASS(SphereTreeModel)
-SOFA_LINK_CLASS(LineLocalMinDistanceFilter)
-SOFA_LINK_CLASS(PointLocalMinDistanceFilter)
-SOFA_LINK_CLASS(Ray)
 
 
 } // namespace component

@@ -55,7 +55,6 @@ RayDiscreteIntersection::RayDiscreteIntersection(DiscreteIntersection* object)
 {
     intersection->intersectors.add<RayModel, SphereModel,                     RayDiscreteIntersection>  (this);
     intersection->intersectors.add<RayModel, TriangleModel,                   RayDiscreteIntersection>  (this);
-    intersection->intersectors.add<RayModel, TetrahedronModel,                RayDiscreteIntersection>  (this);
     intersection->intersectors.add<RayModel, RigidDistanceGridCollisionModel, RayDiscreteIntersection>  (this);
     intersection->intersectors.add<RayModel, FFDDistanceGridCollisionModel,   RayDiscreteIntersection>  (this);
 
@@ -106,69 +105,6 @@ int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVe
     return 1;
 }
 
-bool RayDiscreteIntersection::testIntersection(Ray&, Tetrahedron&)
-{
-    return true;
-}
-
-int RayDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e2, OutputVector* contacts)
-{
-    Vector3 P = e1.origin();
-    Vector3 PQ = e1.direction();
-    Vector3 b0 = e2.getBary(P);
-    Vector3 bdir = e2.getDBary(PQ);
-    //sout << "b0 = "<<b0<<" \tbdir = "<<bdir<<sendl;
-    double l0 = 0;
-    double l1 = e1.l();
-    for (int c=0; c<3; ++c)
-    {
-        if (b0[c] < 0 && bdir[c] < 0) return 0; // no intersection
-        //if (b0[c] > 1 && bdir[c] > 0) return 0; // no intersection
-        if (bdir[c] < -1.0e-10)
-        {
-            double l = -b0[c]/bdir[c];
-            if (l < l1) l1 = l;
-        }
-        else if (bdir[c] > 1.0e-10)
-        {
-            double l = -b0[c]/bdir[c];
-            if (l > l0) l0 = l;
-        }
-    }
-    // 4th plane : bx+by+bz = 1
-    {
-        double bd = bdir[0]+bdir[1]+bdir[2];
-        if (bd > 1.0e-10)
-        {
-            double l = (1-(b0[0]+b0[1]+b0[2]))/bd;
-            if (l < l1) l1 = l;
-        }
-        else if (bd < -1.0e-10)
-        {
-            double l = (1-(b0[0]+b0[1]+b0[2]))/bd;
-            if (l > l0) l0 = l;
-        }
-    }
-    if (l0 > l1) return 0; // empty intersection
-    double l = l0; //(l0+l1)/2;
-    Vector3 X = P+PQ*l;
-
-    //sout << "tetra "<<e2.getIndex()<<": b0 = "<<b0<<" \tbdir = "<<bdir<<sendl;
-    //sout << "l0 = "<<l0<<" \tl1 = "<<l1<<" \tX = "<<X<<" \tbX = "<<e2.getBary(X)<<" \t?=? "<<(b0+bdir*l)<<sendl;
-    //sout << "b1 = "<<e2.getBary(e2.p1())<<" \nb2 = "<<e2.getBary(e2.p2())<<" \nb3 = "<<e2.getBary(e2.p3())<<" \nb4 = "<<e2.getBary(e2.p4())<<sendl;
-
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
-    detection->point[0] = X;
-    detection->point[1] = X;
-    PQ.normalize();
-    detection->normal = PQ;
-    detection->value = 0;
-    detection->elem.first = e1;
-    detection->elem.second = e2;
-    detection->id = e1.getIndex();
-    return 1;
-}
 
 bool RayDiscreteIntersection::testIntersection(Ray& /*e2*/, RigidDistanceGridCollisionElement& /*e1*/)
 {

@@ -33,7 +33,6 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/DiscreteIntersection.h>
@@ -55,8 +54,10 @@ public:
     TetrahedronDiscreteIntersection(DiscreteIntersection* object);
 
     bool testIntersection(Tetrahedron&, Point&);
+    bool testIntersection(Ray&, Tetrahedron&);
 
     int computeIntersection(Tetrahedron&, Point&, OutputVector*);
+    int computeIntersection(Ray&, Tetrahedron&, OutputVector*);
 
 protected:
 

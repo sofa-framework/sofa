@@ -49,6 +49,12 @@ SOFA_LINK_CLASS(SubsetContactMapper)
 SOFA_LINK_CLASS(MeshDiscreteIntersection)
 SOFA_LINK_CLASS(MeshMinProximityIntersection)
 SOFA_LINK_CLASS(MeshNewProximityIntersection)
+SOFA_LINK_CLASS(Point)
+SOFA_LINK_CLASS(Line)
+SOFA_LINK_CLASS(Triangle)
+SOFA_LINK_CLASS(LineLocalMinDistanceFilter)
+SOFA_LINK_CLASS(PointLocalMinDistanceFilter)
+
 
 } // namespace component
 

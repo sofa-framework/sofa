@@ -22,9 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initMiscCollision.h>
-
+#include <sofa/component/collision/FrictionContact.inl>
+#include <sofa/component/collision/BarycentricContactMapper.h>
 
 namespace sofa
 {
@@ -32,25 +31,31 @@ namespace sofa
 namespace component
 {
 
-
-void initMiscCollision()
+namespace collision
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(TreeCollisionGroupManager)
-SOFA_LINK_CLASS(TetrahedronDiscreteIntersection)
-SOFA_LINK_CLASS(SpatialGridPointModel)
-SOFA_LINK_CLASS(TetrahedronModel)
-SOFA_LINK_CLASS(TetrahedronBarycentricPenalityContact)
-SOFA_LINK_CLASS(TetrahedronRayContact)
-SOFA_LINK_CLASS(TetrahedronBarycentricDistanceLMConstraintContact)
-SOFA_LINK_CLASS(TetrahedronFrictionContact)
+using namespace defaulttype;
+using namespace sofa::helper;
+using simulation::Node;
 
+sofa::core::collision::DetectionOutput::ContactId Identifier::cpt=0;
+std::list<sofa::core::collision::DetectionOutput::ContactId> Identifier::availableId;
+
+SOFA_DECL_CLASS(TetrahedronFrictionContact)
+
+Creator<Contact::Factory, FrictionContact<TetrahedronModel, SphereModel> > TetrahedronSphereFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<TetrahedronModel, PointModel> > TetrahedronPointFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<TetrahedronModel, LineModel> > TetrahedronLineFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<TetrahedronModel, TriangleModel> > TetrahedronTriangleFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<TetrahedronModel, TetrahedronModel> > TetrahedronTetrahedronFrictionContactClass("FrictionContact",true);
+
+Creator<Contact::Factory, FrictionContact<TetrahedronModel, SphereModel> > TetrahedronSpherePenalityFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<TetrahedronModel, PointModel> > TetrahedronPointPenalityFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<TetrahedronModel, LineModel> > TetrahedronLinePenalityFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<TetrahedronModel, TriangleModel> > TetrahedronTrianglePenalityFrictionContactClass("FrictionContact",true);
+Creator<Contact::Factory, FrictionContact<TetrahedronModel, TetrahedronModel> > TetrahedronTetrahedronPenalityFrictionContactClass("FrictionContact",true);
+
+} // namespace collision
 
 } // namespace component
 

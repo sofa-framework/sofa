@@ -22,9 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initMiscCollision.h>
-
+#include "BarycentricDistanceLMConstraintContact.inl"
+#include <sofa/component/collision/BarycentricContactMapper.h>
 
 namespace sofa
 {
@@ -32,26 +31,23 @@ namespace sofa
 namespace component
 {
 
-
-void initMiscCollision()
+namespace collision
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(TreeCollisionGroupManager)
-SOFA_LINK_CLASS(TetrahedronDiscreteIntersection)
-SOFA_LINK_CLASS(SpatialGridPointModel)
-SOFA_LINK_CLASS(TetrahedronModel)
-SOFA_LINK_CLASS(TetrahedronBarycentricPenalityContact)
-SOFA_LINK_CLASS(TetrahedronRayContact)
-SOFA_LINK_CLASS(TetrahedronBarycentricDistanceLMConstraintContact)
-SOFA_LINK_CLASS(TetrahedronFrictionContact)
+using namespace defaulttype;
+using simulation::Node;
 
+SOFA_DECL_CLASS(TetrahedronBarycentricDistanceLMConstraintContact)
+
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TetrahedronModel, SphereModel> > TetrahedronSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TetrahedronModel, PointModel> > TetrahedronPointDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TetrahedronModel, LineModel> > TetrahedronLineDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TetrahedronModel, TriangleModel> > TetrahedronTriangleDistanceLMConstraintContactClass("distanceLMConstraint",true);
+Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<TetrahedronModel, TetrahedronModel> > TetrahedronTetrahedronDistanceLMConstraintContactClass("distanceLMConstraint",true);
+
+} // namespace collision
 
 } // namespace component
 
 } // namespace sofa
+

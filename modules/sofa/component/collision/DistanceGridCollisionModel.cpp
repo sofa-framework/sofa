@@ -34,6 +34,9 @@
 #include <flowvr/render/mesh.h>
 //#endif
 
+#include <sofa/component/collision/BarycentricContactMapper.inl>
+#include <sofa/helper/Factory.inl>
+
 #include <fstream>
 #include <sstream>
 
@@ -820,6 +823,10 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
     }
     glPointSize(1);
 }
+
+ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("default", true);
+
+template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel>;
 
 } // namespace collision
 

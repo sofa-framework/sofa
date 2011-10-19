@@ -28,11 +28,7 @@
 #include <sofa/component/collision/DiscreteIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/RayModel.h>
 
 namespace sofa
 {

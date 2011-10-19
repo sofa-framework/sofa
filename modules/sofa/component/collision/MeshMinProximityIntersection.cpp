@@ -77,8 +77,8 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
         intersection->intersectors.ignore<TriangleModel, SphereModel>();
     }
 
-    intersection->intersectors.ignore<RayModel, PointModel>();
-    intersection->intersectors.ignore<RayModel, LineModel>();
+//    intersection->intersectors.ignore<RayModel, PointModel>();
+//    intersection->intersectors.ignore<RayModel, LineModel>();
 }
 
 bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2)
