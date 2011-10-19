@@ -47,33 +47,6 @@ namespace topology
 
 using namespace sofa::helper;
 
-/// Topology global typedefs
-//typedef int index_type;
-typedef unsigned int index_type;
-enum { InvalidID = (unsigned)-1 };
-typedef index_type	        	        PointID;
-typedef index_type          		EdgeID;
-typedef index_type           		TriangleID;
-typedef index_type                 		QuadID;
-typedef index_type	                	TetraID;
-typedef index_type	                	TetrahedronID;
-typedef index_type	                	HexaID;
-typedef index_type	                	HexahedronID;
-
-
-typedef vector<index_type>                  SetIndex;
-typedef vector<index_type>                  SetIndices;
-
-typedef PointID                             Point;
-typedef fixed_array<PointID,2>              Edge;
-typedef fixed_array<PointID,3>              Triangle;
-typedef fixed_array<PointID,4>              Quad;
-typedef fixed_array<PointID,4>              Tetra;
-typedef fixed_array<PointID,4>              Tetrahedron;
-typedef fixed_array<PointID,8>              Hexa;
-typedef fixed_array<PointID,8>              Hexahedron;
-
-
 /// The enumeration used to give unique identifiers to Topological objects.
 enum TopologyObjectType
 {
@@ -90,6 +63,34 @@ enum TopologyObjectType
 class Topology : public virtual core::objectmodel::BaseObject
 {
 public:
+    /// Topology global typedefs
+    //typedef int index_type;
+    typedef unsigned int index_type;
+    enum { InvalidID = (unsigned)-1 };
+    typedef index_type	        	    PointID;
+    typedef index_type          		    EdgeID;
+    typedef index_type                          TriangleID;
+    typedef index_type                 	    QuadID;
+    typedef index_type	                    TetraID;
+    typedef index_type	                    TetrahedronID;
+    typedef index_type	                    HexaID;
+    typedef index_type	                    HexahedronID;
+
+
+    typedef vector<index_type>                  SetIndex;
+    typedef vector<index_type>                  SetIndices;
+
+    typedef PointID                             Point;
+    typedef fixed_array<PointID,2>              Edge;
+    typedef fixed_array<PointID,3>              Triangle;
+    typedef fixed_array<PointID,4>              Quad;
+    typedef fixed_array<PointID,4>              Tetrahedron;
+    typedef Tetrahedron                         Tetra;
+    typedef fixed_array<PointID,8>              Hexahedron;
+    typedef Hexahedron                          Hexa;
+
+
+
     SOFA_CLASS(Topology, core::objectmodel::BaseObject);
 protected:
     Topology():BaseObject() {}
