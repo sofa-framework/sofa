@@ -210,7 +210,7 @@ const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAround
 
 
 /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-const vector<index_type> BaseMeshTopology::getElementAroundElement(index_type)
+const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElement(index_type)
 {
     static vector<index_type> empty;
     return empty;
@@ -218,14 +218,14 @@ const vector<index_type> BaseMeshTopology::getElementAroundElement(index_type)
 
 
 /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-const vector<index_type> BaseMeshTopology::getElementAroundElements(vector<index_type>)
+const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElements(vector<index_type>)
 {
     static vector<index_type> empty;
     return empty;
 }
 
 /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-const vector<index_type> BaseMeshTopology::getConnectedElement(index_type)
+const vector<BaseMeshTopology::index_type> BaseMeshTopology::getConnectedElement(index_type)
 {
     static vector<index_type> empty;
     return empty;
@@ -233,26 +233,26 @@ const vector<index_type> BaseMeshTopology::getConnectedElement(index_type)
 
 
 /// Returns the set of triangles on the border of the triangulation
-const sofa::helper::vector <TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
+const sofa::helper::vector <BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
 {
     serr<<"getTrianglesOnBorder unsupported."<<sendl;
-    static sofa::helper::vector <TriangleID> empty;
+    static sofa::helper::vector <BaseMeshTopology::TriangleID> empty;
     return empty;
 }
 
 /// Returns the set of edges on the border of the triangulation
-const sofa::helper::vector <EdgeID>& BaseMeshTopology::getEdgesOnBorder()
+const sofa::helper::vector <BaseMeshTopology::EdgeID>& BaseMeshTopology::getEdgesOnBorder()
 {
     serr<<"getEdgesOnBorder unsupported."<<sendl;
-    static sofa::helper::vector <EdgeID> empty;
+    static sofa::helper::vector <BaseMeshTopology::EdgeID> empty;
     return empty;
 }
 
 /// Returns the set of points on the border of the triangulation
-const sofa::helper::vector <PointID>& BaseMeshTopology::getPointsOnBorder()
+const sofa::helper::vector <BaseMeshTopology::PointID>& BaseMeshTopology::getPointsOnBorder()
 {
     serr<<"getPointsOnBorder unsupported."<<sendl;
-    static sofa::helper::vector <PointID> empty;
+    static sofa::helper::vector <BaseMeshTopology::PointID> empty;
     return empty;
 }
 
@@ -496,30 +496,30 @@ int BaseMeshTopology::getQuadIndexInHexahedron(const QuadsInHexahedron &, QuadID
     return 0;
 }
 
-Edge BaseMeshTopology::getLocalEdgesInTetrahedron (const PointID) const
+BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInTetrahedron (const PointID) const
 {
-    static Edge empty;
+    static BaseMeshTopology::Edge empty;
     serr<<"getLocalEdgesInTetrahedron() not supported." << sendl;
     return empty;
 }
 
-Triangle BaseMeshTopology::getLocalTrianglesInTetrahedron (const PointID) const
+BaseMeshTopology::Triangle BaseMeshTopology::getLocalTrianglesInTetrahedron (const PointID) const
 {
-    static Triangle empty;
+    static BaseMeshTopology::Triangle empty;
     serr<<"getLocalTrianglesInTetrahedron() not supported." << sendl;
     return empty;
 }
 
-Edge BaseMeshTopology::getLocalEdgesInHexahedron (const PointID) const
+BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInHexahedron (const PointID) const
 {
-    static Edge empty;
+    static BaseMeshTopology::Edge empty;
     serr<<"getLocalEdgesInHexahedron() not supported." << sendl;
     return empty;
 }
 
-Quad BaseMeshTopology::getLocalQuadsInHexahedron (const PointID)  const
+BaseMeshTopology::Quad BaseMeshTopology::getLocalQuadsInHexahedron (const PointID)  const
 {
-    static Quad empty;
+    static BaseMeshTopology::Quad empty;
     serr<<"getLocalQuadsInHexahedron() not supported." << sendl;
     return empty;
 }

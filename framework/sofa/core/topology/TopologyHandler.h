@@ -38,6 +38,13 @@ namespace topology
 
 using namespace sofa::helper;
 
+typedef Topology::Point            Point;
+typedef Topology::Edge             Edge;
+typedef Topology::Triangle         Triangle;
+typedef Topology::Quad             Quad;
+typedef Topology::Tetrahedron      Tetrahedron;
+typedef Topology::Hexahedron       Hexahedron;
+
 
 class TopologyHandler
 {
