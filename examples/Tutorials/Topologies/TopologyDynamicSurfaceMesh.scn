@@ -9,7 +9,7 @@
 	<DefaultCollisionGroupManager name="Group"/>
   
 	<Node name="Triangles Mesh">
-		<MeshGmshLoader filename="mesh/square1.msh" name="tloader"/> 
+		<MeshGmshLoader filename="mesh/square3.msh" name="tloader"/> 
 		<MechanicalObject name="DOFs" template="Vec3d" translation="0 10 10" rotation="0 -90 180" scale="10" src="@tloader"/>
 		<FixedConstraint name="Fixed dof" template="Vec3d" indices="0 1"/>
 		<UniformMass name="Mass" template="Vec3d" mass="1" totalmass="1"/>
