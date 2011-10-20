@@ -32,9 +32,6 @@
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/CubeModel.h>
-#ifdef SOFA_DEV
-#include <sofa/component/collision/BSplineModel.h>
-#endif // SOFA_DEV
 #include <sofa/component/collision/RayModel.h>
 
 namespace sofa
@@ -50,6 +47,8 @@ class SOFA_CONSTRAINT_API LocalMinDistance : public DiscreteIntersection
 {
 public:
     SOFA_CLASS(LocalMinDistance,DiscreteIntersection);
+
+    typedef core::collision::IntersectorFactory<LocalMinDistance> IntersectorFactory;
 
     // Data<bool> useSphereTriangle;
     // Data<bool> usePointPoint;
@@ -112,20 +111,6 @@ public:
     bool testValidity(Line&, const Vector3&);
     bool testValidity(Triangle&, const Vector3&);
 
-#ifdef SOFA_DEV
-    //Copy of Line computation. TODO_Spline : finding adaptive and optimized computation for Spline
-    template<int FLAG> bool testValidity(CubicBezierCurve<FLAG>&, const Vector3&);
-
-    template<int FLAG> bool testIntersection(CubicBezierCurve<FLAG>&, Point&);
-    template<int FLAG> int computeIntersection(CubicBezierCurve<FLAG>&, Point&, OutputVector*);
-
-    template<int FLAG> bool testIntersection(CubicBezierCurve<FLAG>&, Sphere&);
-    template<int FLAG> int computeIntersection(CubicBezierCurve<FLAG>&, Sphere&, OutputVector*);
-
-    //bool testIntersection(CubicBezierCurve<FLAG>&, Sphere&);
-    //bool testIntersection(CubicBezierCurve<FLAG>&, CubicBezierCurve<FLAG>&);
-#endif // SOFA_DEV
-
     void draw(const core::visual::VisualParams* vparams);
 
     /// Actions to accomplish when the broadPhase is started. By default do nothing.
@@ -141,6 +126,10 @@ private:
     double mainAlarmDistance;
     double mainContactDistance;
 };
+
+#if defined(WIN32) && !defined(SOFA_BUILD_CONSTRAINT)
+extern template class SOFA_CONSTRAINT_API core::collision::IntersectorFactory<LocalMinDistance>;
+#endif
 
 } // namespace collision
 

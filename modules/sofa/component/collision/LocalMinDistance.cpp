@@ -22,10 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/LocalMinDistance.inl>
+#include <sofa/component/collision/LocalMinDistance.h>
 #include <sofa/core/ObjectFactory.h>
-
-
+#include <sofa/helper/proximity.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/core/collision/Intersection.inl>
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 
@@ -37,6 +38,12 @@ namespace component
 
 namespace collision
 {
+
+using namespace sofa::core::collision;
+using namespace helper;
+
+using core::topology::BaseMeshTopology;
+
 
 SOFA_DECL_CLASS(LocalMinDistance)
 
@@ -74,15 +81,7 @@ void LocalMinDistance::init()
     intersectors.ignore<RayModel, PointModel>();
     intersectors.ignore<RayModel, LineModel>();
     intersectors.add<RayModel, TriangleModel, LocalMinDistance>(this);
-
-#ifdef SOFA_DEV
-    intersectors.add<BSplineModel<0> , PointModel,  LocalMinDistance>(this);
-    intersectors.add<BSplineModel<0> , SphereModel,  LocalMinDistance>(this);
-    intersectors.add<BSplineModel<1> , PointModel,  LocalMinDistance>(this);
-    intersectors.add<BSplineModel<1> , SphereModel,  LocalMinDistance>(this);
-    intersectors.add<BSplineModel<2> , PointModel,  LocalMinDistance>(this);
-    intersectors.add<BSplineModel<2> , SphereModel,  LocalMinDistance>(this);
-#endif // SOFA_DEV
+    IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
 bool LocalMinDistance::testIntersection(Cube &cube1, Cube &cube2)
@@ -1403,6 +1402,10 @@ void LocalMinDistance::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowCollisionModels())
         return;
 }
+
+#if defined(WIN32)
+template class SOFA_CONSTRAINT_API core::collision::IntersectorFactory<LocalMinDistance>;
+#endif
 
 
 } // namespace collision
