@@ -40,6 +40,7 @@ namespace animationloop
 
 int MultiTagAnimationLoopClass = core::RegisterObject("Simple animation loop that given a list of tags, animate the graph one tag after another.")
         .add< MultiTagAnimationLoop >()
+        .addAlias("MultiTagMasterSolver")
         ;
 
 SOFA_DECL_CLASS(MultiTagAnimationLoop);

@@ -43,6 +43,7 @@ namespace animationloop
 
 int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation loop, multi integration steps in a single animation step are managed.")
         .add< MultiStepAnimationLoop >()
+        .addAlias("MultiStepMasterSolver")
         ;
 
 SOFA_DECL_CLASS(MultiStepAnimationLoop);

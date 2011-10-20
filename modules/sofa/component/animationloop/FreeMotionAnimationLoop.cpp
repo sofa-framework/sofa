@@ -278,6 +278,7 @@ SOFA_DECL_CLASS(FreeMotionAnimationLoop)
 
 int FreeMotionAnimationLoopClass = core::RegisterObject("Constraint solver")
         .add< FreeMotionAnimationLoop >()
+        .addAlias("FreeMotionMasterSolver")
         ;
 
 } // namespace animationloop
