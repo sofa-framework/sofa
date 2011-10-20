@@ -53,14 +53,6 @@ SOFA_LINK_CLASS(SparseGridMultipleTopology)
 SOFA_LINK_CLASS(SparseGridRamificationTopology)
 SOFA_LINK_CLASS(HexahedronCompositeFEMForceFieldAndMass)
 SOFA_LINK_CLASS(HexahedronCompositeFEMMapping)
-#ifdef SOFA_DEV
-SOFA_LINK_CLASS(MultilevelHexahedronSetGeometryAlgorithms)
-SOFA_LINK_CLASS(MultilevelHexahedronSetTopologyAlgorithms)
-SOFA_LINK_CLASS(MultilevelHexahedronSetTopologyModifier)
-#ifdef SOFA_HAVE_EIGEN2
-SOFA_LINK_CLASS(NonUniformHexahedralFEMForceFieldAndMassCorrected)
-#endif
-#endif
 
 } // namespace component
 

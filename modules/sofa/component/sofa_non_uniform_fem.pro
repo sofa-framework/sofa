@@ -40,39 +40,6 @@ SOURCES += initNonUniformFEM.cpp \
            forcefield/HexahedronCompositeFEMForceFieldAndMass.cpp \
            mapping/HexahedronCompositeFEMMapping.cpp
 
-contains(DEFINES,SOFA_DEV){
-HEADERS += topology/MultilevelHexahedronSetGeometryAlgorithms.h \
-           topology/MultilevelHexahedronSetGeometryAlgorithms.inl \
-           topology/MultilevelHexahedronSetTopologyAlgorithms.h \
-           topology/MultilevelHexahedronSetTopologyAlgorithms.inl \
-           topology/MultilevelHexahedronSetTopologyModifier.h \
-
-SOURCES += topology/MultilevelHexahedronSetGeometryAlgorithms.cpp \
-           topology/MultilevelHexahedronSetTopologyAlgorithms.cpp \
-           topology/MultilevelHexahedronSetTopologyModifier.cpp \
-
-contains(DEFINES,SOFA_HAVE_EIGEN2){
-HEADERS += forcefield/NonUniformHexahedralFEMForceFieldAndMassCorrected.h \
-           forcefield/NonUniformHexahedralFEMForceFieldAndMassCorrected.inl
-
-SOURCES += forcefield/NonUniformHexahedralFEMForceFieldAndMassCorrected.cpp
-}
-
-contains(DEFINES,SOFA_HAVE_GLEW) {
-HEADERS += topology/Hexa2TriangleTopologicalMapping.h \
-           topology/MultilevelHexaTopologicalMapping.h \
-           topology/MultilevelHexa2TriangleTopologicalMapping.h \
-
-SOURCES += topology/Hexa2TriangleTopologicalMapping.cpp \
-           topology/MultilevelHexaTopologicalMapping.cpp \
-           topology/MultilevelHexa2TriangleTopologicalMapping.cpp
-}
-
-
-}
-
-
-
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
 

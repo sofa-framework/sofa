@@ -28,13 +28,15 @@
 #include <sofa/component/initSPHFluid.h>
 #include <sofa/component/initVolumetricData.h>
 #include <sofa/component/initNonUniformFEM.h>
+#include <sofa/component/initEigen2Solver.h>
+#ifdef SOFA_DEV
+#include <sofa/component/initNonUniformFEMDev.h>
 #include <sofa/component/initAdvancedFEM.h>
 #include <sofa/component/initMJEDFEM.h>
 #include <sofa/component/initAdvancedConstraint.h>
-#include <sofa/component/initEigen2Solver.h>
+#endif
 //#include <sofa/component/initTaucsSolver.h>
 //#include <sofa/component/initPardisoSolver.h>
-
 
 namespace sofa
 {
@@ -57,6 +59,7 @@ void initComponentAdvanced()
     initNonUniformFEM();
     initEigen2Solver();
 #ifdef SOFA_DEV
+    initNonUniformFEMDev();
     initAdvancedFEM();
     initMJEDFEM();
     initAdvancedConstraint();
