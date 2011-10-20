@@ -155,23 +155,20 @@ void DiagonalMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams
     d_f.endEdit();
 }
 
-template <>
-bool DiagonalMass<CudaVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox)
-{
-    const VecCoord& x = *this->mstate->getX();
-    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
-    for (unsigned int i=0; i<x.size(); i++)
-    {
-        //const Coord& p = x[i];
-        const Coord& p = x.getCached(i);
-        for (int c=0; c<3; c++)
-        {
-            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-            if (p[c] < minBBox[c]) minBBox[c] = p[c];
-        }
-    }
-    return true;
-}
+// template <>
+// bool DiagonalMass<CudaVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox) {
+//     const VecCoord& x = *this->mstate->getX();
+//     //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
+//     for (unsigned int i=0; i<x.size(); i++) {
+//         //const Coord& p = x[i];
+//         const Coord& p = x.getCached(i);
+//         for (int c=0;c<3;c++) {
+//             if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+//             if (p[c] < minBBox[c]) minBBox[c] = p[c];
+//         }
+//     }
+//     return true;
+// }
 
 #endif
 

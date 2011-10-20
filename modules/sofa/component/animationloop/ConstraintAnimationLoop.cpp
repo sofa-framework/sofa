@@ -549,6 +549,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
     static double simulationTime=0.0;
 
     simulationTime+=dt;
+    sofa::helper::AdvancedTimer::begin("Animate");
 
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 
@@ -810,6 +811,9 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
 #endif
 
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
+
+    sofa::helper::AdvancedTimer::end("Animate");
+
 }
 
 void ConstraintAnimationLoop::computePredictiveForce(int dim, double* force, std::vector<core::behavior::ConstraintResolution*>& res)
