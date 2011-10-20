@@ -1,5 +1,5 @@
-# Subdir relative project main directory: ./framework/sofa/core
 # Target is a library:  sofacore
+# Subdir relative project main directory: ./framework/sofa/core
 load(sofa/pre)
 
 TEMPLATE = lib
@@ -187,6 +187,7 @@ SOURCES += \
 	topology/BaseMeshTopology.cpp \
 	topology/BaseTopology.cpp \
 	topology/TopologyHandler.cpp \
+        topology/TopologyElementHandler.cpp \
 	behavior/BaseConstraint.cpp \
 	behavior/BaseForceField.cpp \
 	behavior/BaseLMConstraint.cpp \
