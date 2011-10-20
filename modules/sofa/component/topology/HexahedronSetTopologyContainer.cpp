@@ -1174,6 +1174,17 @@ void HexahedronSetTopologyContainer::clear()
     QuadSetTopologyContainer::clear();
 }
 
+
+
+void HexahedronSetTopologyContainer::updateTopologyEngineGraph()
+{
+    // calling real update Data graph function implemented once in PointSetTopologyModifier
+    this->updateDataEngineGraph(this->d_hexahedron, this->m_enginesList);
+
+    // will concatenate with edges one:
+    QuadSetTopologyContainer::updateTopologyEngineGraph();
+}
+
 } // namespace topology
 
 } // namespace component

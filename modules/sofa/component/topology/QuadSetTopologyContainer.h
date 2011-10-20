@@ -292,6 +292,17 @@ protected:
     virtual QuadsAroundEdge& getQuadsAroundEdgeForModification(const EdgeID edgeIndex);
 
 
+
+    /// \brief Function creating the data graph linked to d_quad
+    virtual void updateTopologyEngineGraph();
+
+
+    /// Use a specific boolean @see m_quadTopologyDirty in order to know if topology Data is dirty or not.
+    /// Set/Get function access to this boolean
+    void setQuadTopologyToDirty() {m_quadTopologyDirty = true;}
+    void cleanQuadTopologyFromDirty() {m_quadTopologyDirty = false;}
+    const bool& isQuadTopologyDirty() {return m_quadTopologyDirty;}
+
 protected:
 
     /// provides the set of quads.
@@ -307,6 +318,15 @@ protected:
     sofa::helper::vector< QuadsAroundEdge > m_quadsAroundEdge;
 
 
+    /// Boolean used to know if the topology Data of this container is dirty
+    bool m_quadTopologyDirty;
+
+    /// List of engines related to this specific container
+    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+
+    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 };
 
 } // namespace topology

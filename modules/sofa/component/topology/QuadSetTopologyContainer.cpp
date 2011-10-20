@@ -812,6 +812,15 @@ void QuadSetTopologyContainer::clear()
     EdgeSetTopologyContainer::clear();
 }
 
+void QuadSetTopologyContainer::updateTopologyEngineGraph()
+{
+    // calling real update Data graph function implemented once in PointSetTopologyModifier
+    this->updateDataEngineGraph(this->d_quad, this->m_enginesList);
+
+    // will concatenate with edges one:
+    EdgeSetTopologyContainer::updateTopologyEngineGraph();
+}
+
 } // namespace topology
 
 } // namespace component

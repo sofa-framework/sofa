@@ -327,36 +327,15 @@ protected:
     virtual TrianglesAroundEdge& getTrianglesAroundEdgeForModification(const EdgeID edgeIndex);
 
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    /// \brief Function creating the data graph linked to d_triangle
     virtual void updateTopologyEngineGraph();
 
-    /// graph map
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 
-    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
-
-    // Use a specific boolen to know if topology Data is dirty or not.
-    // TODO: check if we can't use d_topologyData.isDirty()
-    void setTriangleTopologyToDirty()
-    {
-        this->m_triangleTopologyDirty = true;
-    }
-
-    void cleanTriangleTopologyFromDirty()
-    {
-        this->m_triangleTopologyDirty = false;
-    }
-
-    const bool& isTriangleTopologyDirty() {return this->m_triangleTopologyDirty;}
-
-    void addEngineToList(sofa::core::topology::TopologyEngine * _engine)
-    {
-        this->m_enginesList.push_back(_engine);
-    }
-
-    bool m_triangleTopologyDirty;
-#endif
+    /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
+    /// Set/Get function access to this boolean
+    void setTriangleTopologyToDirty() {m_triangleTopologyDirty = true;}
+    void cleanTriangleTopologyFromDirty() {m_triangleTopologyDirty = false;}
+    const bool& isTriangleTopologyDirty() {return m_triangleTopologyDirty;}
 
 protected:
 
@@ -380,6 +359,16 @@ protected:
 
     /// Set of point indices on topology border.
     sofa::helper::vector <PointID> m_pointsOnBorder;
+
+    /// Boolean used to know if the topology Data of this container is dirty
+    bool m_triangleTopologyDirty;
+
+    /// List of engines related to this specific container
+    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+
+    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 
 };
 

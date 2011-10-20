@@ -454,6 +454,16 @@ protected:
     virtual TetrahedraAroundTriangle& getTetrahedraAroundTriangleForModification(const TriangleID triangleIndex);
 
 
+    /// \brief Function creating the data graph linked to d_tetrahedron
+    virtual void updateTopologyEngineGraph();
+
+
+    /// Use a specific boolean @see m_tetrahedronTopologyDirty in order to know if topology Data is dirty or not.
+    /// Set/Get function access to this boolean
+    void setTetrahedronTopologyToDirty() {m_tetrahedronTopologyDirty = true;}
+    void cleanTetrahedronTopologyFromDirty() {m_tetrahedronTopologyDirty = false;}
+    const bool& isTetrahedronTopologyDirty() {return m_tetrahedronTopologyDirty;}
+
 protected:
 
     /// provides the set of tetrahedra.
@@ -477,6 +487,16 @@ protected:
     /// for each triangle provides the set of tetrahedra adjacent to that triangle.
     sofa::helper::vector< TetrahedraAroundTriangle > m_tetrahedraAroundTriangle;
 
+
+    /// Boolean used to know if the topology Data of this container is dirty
+    bool m_tetrahedronTopologyDirty;
+
+    /// List of engines related to this specific container
+    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+
+    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 };
 
 } // namespace topology

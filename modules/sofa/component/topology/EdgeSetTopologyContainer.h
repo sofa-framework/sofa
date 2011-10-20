@@ -211,36 +211,16 @@ protected:
 
     void clearEdgesAroundVertex();
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+
+    /// \brief Function creating the data graph linked to d_triangle
     virtual void updateTopologyEngineGraph();
 
-    /// graph map
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 
-    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
-
-    // Use a specific boolen to know if topology Data is dirty or not.
-    // TODO: check if we can't use d_topologyData.isDirty()
-    void setEdgeTopologyToDirty()
-    {
-        this->m_edgeTopologyDirty = true;
-    }
-
-    void cleanEdgeTopologyFromDirty()
-    {
-        this->m_edgeTopologyDirty = false;
-    }
-
-    const bool& isEdgeTopologyDirty() {return this->m_edgeTopologyDirty;}
-
-    void addEngineToList(sofa::core::topology::TopologyEngine * _engine)
-    {
-        this->m_enginesList.push_back(_engine);
-    }
-
-    bool m_edgeTopologyDirty;
-#endif
+    /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
+    /// Set/Get function access to this boolean
+    void setEdgeTopologyToDirty() {m_edgeTopologyDirty = true;}
+    void cleanEdgeTopologyFromDirty() {m_edgeTopologyDirty = false;}
+    const bool& isEdgeTopologyDirty() {return m_edgeTopologyDirty;}
 
 protected:
 
@@ -258,6 +238,17 @@ protected:
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     sofa::helper::vector< EdgesAroundVertex > m_edgesAroundVertex;
+
+
+    /// Boolean used to know if the topology Data of this container is dirty
+    bool m_edgeTopologyDirty;
+
+    /// List of engines related to this specific container
+    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+
+    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 
 public:
 

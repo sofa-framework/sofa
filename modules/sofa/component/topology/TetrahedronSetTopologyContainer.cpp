@@ -1052,6 +1052,16 @@ sofa::helper::vector< unsigned int >& TetrahedronSetTopologyContainer::getRemove
     return m_removedTetraIndex;
 }
 
+
+void TetrahedronSetTopologyContainer::updateTopologyEngineGraph()
+{
+    // calling real update Data graph function implemented once in PointSetTopologyModifier
+    this->updateDataEngineGraph(this->d_tetrahedron, this->m_enginesList);
+
+    // will concatenate with edges one:
+    TriangleSetTopologyContainer::updateTopologyEngineGraph();
+}
+
 } // namespace topology
 
 } // namespace component

@@ -142,20 +142,22 @@ void PointSetTopologyContainer::removePoint()
     nbPoints.setValue(nbPoints.getValue()-1);
 }
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+
 void PointSetTopologyContainer::updateTopologyEngineGraph()
 {
-    std::cout << "PointSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
     this->updateDataEngineGraph(this->d_initPoints, this->m_enginesList);
-
-    //std::cout << "PointSetTopologyContainer::updateTopologyEngineGraph() end" << std::endl;
 }
 
+
+void PointSetTopologyContainer::addEngineToList(sofa::core::topology::TopologyEngine *_engine)
+{
+    this->m_enginesList.push_back(_engine);
+}
 
 
 void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, sofa::helper::list<sofa::core::topology::TopologyEngine *> &my_enginesList)
 {
-    std::cout << "updateDataEngineGraph()" << std::endl;
+    //std::cout << "updateDataEngineGraph()" << std::endl;
 
     // clear data stored by previous call of this function
     my_enginesList.clear();
@@ -198,7 +200,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
             sofa::core::objectmodel::BaseData* data = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
             if (data)
             {
-                std::cout << "Data alone linked: " << data->getName() << std::endl;
+                sout << "Warning: Data alone linked: " << data->getName() << sendl;
             }
         }
 
@@ -262,16 +264,16 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
     for ( it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
     {
         std::string name = (*it_engines_rev)->getName();
-        //std::cout << "engine name: " << name << std::endl;
+        //std::cout << "DEBUG: engine name: " << name << std::endl;
         bool find = false;
 
         for ( it_engines = my_enginesList.begin(); it_engines!=my_enginesList.end(); ++it_engines)
         {
             std::string nameStored = (*it_engines)->getName();
-            //std::cout << "engine name stored: " << nameStored << std::endl;
+            //std::cout << "DEBUG: engine name stored: " << nameStored << std::endl;
             if (nameStored == name)
             {
-                std::cout << "found!" << std::endl;
+                //std::cout << "DEBUG: found!" << std::endl;
                 find = true;
                 break;
             }
@@ -281,21 +283,21 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
             my_enginesList.push_back((*it_engines_rev));
         //this->addEngineToList((*it_engines_rev));
     }
+    /*
+       for ( it_engines = my_enginesList.begin(); it_engines!=my_enginesList.end(); ++it_engines)
+           std::cout << (*it_engines)->getName() << "   -------- ";
+       std::cout << std::endl;
 
-    for ( it_engines = my_enginesList.begin(); it_engines!=my_enginesList.end(); ++it_engines)
-        std::cout << (*it_engines)->getName() << "   -------- ";
-    std::cout << std::endl;
+       std::cout << "updateDataEngineGraph() end" << std::endl;
 
-    std::cout << "updateDataEngineGraph() end" << std::endl;
-
-    //this->displayDataGraph(my_Data);
+       this->displayDataGraph(my_Data);
+       */
     return;
 }
 
 
 void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseData& my_Data)
 {
-    std::cout << "displayDataGraph()" << std::endl;
     // A cout very lite version
     std::string name;
 
@@ -304,7 +306,6 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
     std::cout << std::endl;
 
     unsigned int cpt_engine = 0;
-
 
 
 
@@ -338,12 +339,8 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
         std::cout << std::endl;
         std::cout << std::endl;
     }
-
-
-    std::cout << "displayDataGraph() end" << std::endl;
 }
 
-#endif
 
 } // namespace topology
 
