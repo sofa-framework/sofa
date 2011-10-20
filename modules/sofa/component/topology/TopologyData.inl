@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_INL
 
 #include <sofa/component/topology/TopologyData.h>
+#include <sofa/component/topology/TopologyEngine.inl>
 #include <sofa/component/topology/TopologyDataHandler.inl>
 
 namespace sofa
@@ -57,7 +58,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa:
 {
     if (_topology)
     {
-        this->m_topologyHandler = new TopologyDataHandler<TopologyElementType, VecT>();
+        this->m_topologyHandler = new TopologyDataHandler<TopologyElementType, VecT>(this);
         this->m_topologicalEngine = new TopologyEngineImpl<VecT>((sofa::component::topology::TopologyDataImpl<TopologyElementType, VecT>*)this, _topology, m_topologyHandler);
         this->linkToElementDataArray();
     }

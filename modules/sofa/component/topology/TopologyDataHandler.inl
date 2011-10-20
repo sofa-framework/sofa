@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_INL
-#define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_INL
+#ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATAHANDLER_INL
+#define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATAHANDLER_INL
 
 #include <sofa/component/topology/TopologyDataHandler.h>
-
+//#include <sofa/core/topology/TopologyHandler.inl>
 
 namespace sofa
 {
@@ -153,7 +153,7 @@ void TopologyDataHandler <TopologyElementType, VecT>::renumber( const sofa::help
 {
     container_type& data = *(m_topologyData->beginEdit());
 
-    container_type copy = this->getValue(); // not very efficient memory-wise, but I can see no better solution...
+    container_type copy = m_topologyData->getValue(); // not very efficient memory-wise, but I can see no better solution...
     for (unsigned int i = 0; i < index.size(); ++i)
         data[i] = copy[ index[i] ];
 
@@ -204,4 +204,4 @@ void TopologyDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(cons
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_INL
+#endif // SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATAHANDLER_INL
