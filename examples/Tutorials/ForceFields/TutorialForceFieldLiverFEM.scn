@@ -18,9 +18,9 @@
 			<BarycentricMapping  name="visual mapping" input="@../dofs" output="@VisualModel"/>
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0">
-		        <SphereLoader filename="mesh/liver.sph" />
-			<MechanicalObject name="mappedMS" position="@[-1].position" />
-			<SphereModel name="CollisionModel" listRadius="@[-1].listRadius" />
+		        <SphereLoader name ="SphereLoader" filename="mesh/liver.sph" />
+			<MechanicalObject name="mappedMS" position="@LiverFEM.position" />
+			<SphereModel name="CollisionModel" listRadius="@LiverFEM.listRadius" />
 			<BarycentricMapping name="sphere mapping"  input="@../dofs" output="@mappedMS"/>
 		</Node>
 	</Node>

@@ -31,8 +31,8 @@
 			gravity="0 -9.81 0" 
 			 >
 		        <SphereLoader filename="mesh/liver.sph"/>
-			<MechanicalObject position="@[-1].position" />
-			<SphereModel name="CollisionModel" listRadius="@[-2].listRadius" />
+			<MechanicalObject position="@LiverTriangles.position" />
+			<SphereModel name="CollisionModel" listRadius="@root.listRadius" />
 			<BarycentricMapping  name="sphere mapping"/>
 		</Node>
 	</Node>
