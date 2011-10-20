@@ -41,6 +41,13 @@
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/component/topology/PointData.inl>
 
+#include <sofa/component/topology/TopologyData.h>
+#include <sofa/component/topology/TopologyData.inl>
+#include <sofa/component/topology/TopologyDataHandler.h>
+#include <sofa/component/topology/TopologyDataHandler.inl>
+#include <sofa/component/topology/TopologyEngine.h>
+#include <sofa/component/topology/TopologyEngine.inl>
+
 #include <sofa/helper/system/thread/debug.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
@@ -49,6 +56,7 @@
 #include <vector>
 #include <algorithm>
 #include <limits>
+
 
 
 namespace sofa
