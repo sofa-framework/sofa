@@ -26,7 +26,10 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYENGINE_H
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYENGINE_H
 
-#include <sofa/core/topology/BaseTopology.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
+#include <sofa/core/topology/TopologyHandler.h>
+#include <sofa/core/topology/BaseTopologyData.h>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/list.h>
 #include <sofa/component/component.h>
@@ -56,7 +59,7 @@ typedef BaseMeshTopology::Hexahedron Hexahedron;
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template< class TopologyElementType, class VecT>
+template< class VecT>
 class TopologyEngineImpl : public sofa::core::topology::TopologyEngine
 {
 public:
@@ -65,8 +68,6 @@ public:
     typedef sofa::core::topology::BaseTopologyData<VecT> t_topologicalData;
 
     //TopologyEngineImpl();
-
-    //TopologyEngineImpl(t_topologicalData* _topologicalData);
 
     TopologyEngineImpl(t_topologicalData* _topologicalData,
             sofa::core::topology::BaseMeshTopology* _topology,
@@ -109,120 +110,6 @@ public:
     bool m_hexahedraLinked;
 
 };
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////   Point Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class PointEngineImpl : public TopologyEngineImpl<Point, VecT>
-{
-public:
-    typedef typename TopologyEngineImpl<Point, VecT>::container_type container_type;
-    typedef typename TopologyEngineImpl<Point, VecT>::value_type value_type;
-
-
-    //protected:
-    //    PointSetTopologyEngine<VecT>* m_topologicalEngine;
-
-};
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////   Edge Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class EdgeEngineImpl : public TopologyEngineImpl<Edge, VecT>
-{
-public:
-    typedef typename TopologyEngineImpl<Edge, VecT>::container_type container_type;
-    typedef typename TopologyEngineImpl<Edge, VecT>::value_type value_type;
-
-    //protected:
-    //    EdgeSetTopologyEngine<VecT>* m_topologicalEngine;
-
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Triangle Topology Data Implementation   ///////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class TriangleEngineImpl : public TopologyEngineImpl<Triangle, VecT>
-{
-public:
-    typedef typename TopologyEngineImpl<Triangle, VecT>::container_type container_type;
-    typedef typename TopologyEngineImpl<Triangle, VecT>::value_type value_type;
-
-    //protected:
-    //    TriangleSetTopologyEngine<VecT>* m_topologicalEngine;
-
-};
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////   Quad Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class QuadEngineImpl : public TopologyEngineImpl<Quad, VecT>
-{
-public:
-    typedef typename TopologyEngineImpl<Quad, VecT>::container_type container_type;
-    typedef typename TopologyEngineImpl<Quad, VecT>::value_type value_type;
-
-    //protected:
-    //    QuadSetTopologyEngine<VecT>* m_topologicalEngine;
-
-};
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////   Tetrahedron Topology Data Implementation   /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class TetrahedronEngineImpl : public TopologyEngineImpl<Tetrahedron, VecT>
-{
-public:
-    typedef typename TopologyEngineImpl<Tetrahedron, VecT>::container_type container_type;
-    typedef typename TopologyEngineImpl<Tetrahedron, VecT>::value_type value_type;
-
-    //protected:
-    //    TetrahedronSetTopologyEngine<VecT>* m_topologicalEngine;
-
-};
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Hexahedron Topology Data Implementation   /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class HexahedronEngineImpl : public TopologyEngineImpl<Hexahedron, VecT>
-{
-public:
-    typedef typename TopologyEngineImpl<Hexahedron, VecT>::container_type container_type;
-    typedef typename TopologyEngineImpl<Hexahedron, VecT>::value_type value_type;
-
-    //protected:
-    //    HexahedronSetTopologyEngine<VecT>* m_topologicalEngine;
-
-};
-
-
-
 
 
 } // namespace topology

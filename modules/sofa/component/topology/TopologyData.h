@@ -25,16 +25,13 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_H
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_H
 
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/component.h>
 
-#include <sofa/component/topology/PointSetTopologyEngine.h>
-#include <sofa/component/topology/EdgeSetTopologyEngine.h>
-#include <sofa/component/topology/TriangleSetTopologyEngine.h>
-#include <sofa/component/topology/QuadSetTopologyEngine.h>
-#include <sofa/component/topology/TetrahedronSetTopologyEngine.h>
-#include <sofa/component/topology/HexahedronSetTopologyEngine.h>
+#include <sofa/core/topology/BaseTopologyData.h>
+#include <sofa/component/topology/TopologyEngine.h>
+#include <sofa/component/topology/TopologyDataHandler.h>
+
 
 
 namespace sofa
@@ -88,13 +85,15 @@ public:
     /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
     TopologyDataImpl( )
         : sofa::core::topology::BaseTopologyData< VecT >(0, false, false),
-          m_topologicalEngine(NULL)
+          m_topologicalEngine(NULL),
+          m_topologyHandler(NULL)
     {}
 
     /// Constructor
     TopologyDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : sofa::core::topology::BaseTopologyData< VecT >(data),
-          m_topologicalEngine(NULL)
+          m_topologicalEngine(NULL),
+          m_topologyHandler(NULL)
     {}
 
     /// Constructor
@@ -141,7 +140,11 @@ public:
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* ) {}
+    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topologyHandler);
+
+    /** Public functions to handle topological engine creation */
+    /// To create topological engine link to this Data. Pointer to current topology is needed.
+    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
 
     /// Allow to add additionnal dependencies to others Data.
     void addInputData(sofa::core::objectmodel::BaseData* _data);
@@ -170,7 +173,12 @@ public:
 
 
 protected:
-    sofa::core::topology::TopologyEngine* m_topologicalEngine;
+    virtual void linkToElementDataArray() {}
+
+    virtual void createTopologyHandler() {}
+
+    sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* m_topologyHandler;
+    sofa::component::topology::TopologyEngineImpl<VecT>* m_topologicalEngine;
 };
 
 
@@ -189,12 +197,10 @@ public:
 
     PointDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologyDataImpl<Point, VecT>(data)
-        , m_topologicalEngine(NULL)
     {}
 
     /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
     PointDataImpl() : TopologyDataImpl<Point, VecT>()
-        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
@@ -214,13 +220,8 @@ public:
     PointDataImpl(typename PointDataImpl<VecT>::const_iterator first, typename PointDataImpl<VecT>::const_iterator last): TopologyDataImpl<Point, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
-
 protected:
-    PointSetTopologyEngine<VecT>* m_topologicalEngine;
-
+    void linkToElementDataArray() {this->linkToPointDataArray();}
 };
 
 
@@ -239,12 +240,10 @@ public:
 
     EdgeDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologyDataImpl<Edge, VecT>(data)
-        , m_topologicalEngine(NULL)
     {}
 
     /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
     EdgeDataImpl() : TopologyDataImpl<Edge, VecT>()
-        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
@@ -264,12 +263,8 @@ public:
     EdgeDataImpl(typename EdgeDataImpl<VecT>::const_iterator first, typename EdgeDataImpl<VecT>::const_iterator last): TopologyDataImpl<Edge, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
-
 protected:
-    EdgeSetTopologyEngine<VecT>* m_topologicalEngine;
+    void linkToElementDataArray() {this->linkToEdgeDataArray();}
 
 };
 
@@ -287,12 +282,10 @@ public:
 
     TriangleDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologyDataImpl<Triangle, VecT>(data)
-        , m_topologicalEngine(NULL)
     {}
 
     /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
     TriangleDataImpl() : TopologyDataImpl<Triangle, VecT>()
-        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
@@ -312,12 +305,8 @@ public:
     TriangleDataImpl(typename TriangleDataImpl<VecT>::const_iterator first, typename TriangleDataImpl<VecT>::const_iterator last): TopologyDataImpl<Triangle, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
-
 protected:
-    TriangleSetTopologyEngine<VecT>* m_topologicalEngine;
+    void linkToElementDataArray() {this->linkToTriangleDataArray();}
 
 };
 
@@ -336,12 +325,10 @@ public:
 
     QuadDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologyDataImpl<Quad, VecT>(data)
-        , m_topologicalEngine(NULL)
     {}
 
     /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
     QuadDataImpl() : TopologyDataImpl<Quad, VecT>()
-        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
@@ -361,12 +348,8 @@ public:
     QuadDataImpl(typename QuadDataImpl<VecT>::const_iterator first, typename QuadDataImpl<VecT>::const_iterator last): TopologyDataImpl<Quad, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
-
 protected:
-    QuadSetTopologyEngine<VecT>* m_topologicalEngine;
+    void linkToElementDataArray() {this->linkToQuadDataArray();}
 
 };
 
@@ -385,12 +368,10 @@ public:
 
     TetrahedronDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologyDataImpl<Tetrahedron, VecT>(data)
-        , m_topologicalEngine(NULL)
     {}
 
     /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
     TetrahedronDataImpl() : TopologyDataImpl<Tetrahedron, VecT>()
-        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
@@ -410,12 +391,8 @@ public:
     TetrahedronDataImpl(typename TetrahedronDataImpl<VecT>::const_iterator first, typename TetrahedronDataImpl<VecT>::const_iterator last): TopologyDataImpl<Tetrahedron, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
-
 protected:
-    TetrahedronSetTopologyEngine<VecT>* m_topologicalEngine;
+    void linkToElementDataArray() {this->linkToTetrahedronDataArray();}
 
 };
 
@@ -435,12 +412,10 @@ public:
 
     HexahedronDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologyDataImpl<Hexahedron, VecT>(data)
-        , m_topologicalEngine(NULL)
     {}
 
     /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
     HexahedronDataImpl() : TopologyDataImpl<Hexahedron, VecT>()
-        , m_topologicalEngine(NULL)
     {}
 
     /// Constructor
@@ -460,12 +435,8 @@ public:
     HexahedronDataImpl(typename HexahedronDataImpl<VecT>::const_iterator first, typename HexahedronDataImpl<VecT>::const_iterator last): TopologyDataImpl<Hexahedron, VecT>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topoHandler);
-
 protected:
-    HexahedronSetTopologyEngine<VecT>* m_topologicalEngine;
+    void linkToElementDataArray() {this->linkToHexahedronDataArray();}
 
 };
 

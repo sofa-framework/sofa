@@ -19,16 +19,16 @@ class TopologyEngine : public sofa::core::DataEngine
 {
 public:
     SOFA_ABSTRACT_CLASS(TopologyEngine, DataEngine);
-    typedef sofa::core::objectmodel::Data< sofa::helper::vector <void*> > t_topologicalData;
+    //typedef sofa::core::objectmodel::Data< sofa::helper::vector <void*> > t_topologicalData;
 
-    TopologyEngine(): m_topologicalData(NULL)  {}
+    TopologyEngine() {}//m_topologicalData(NULL)  {}
 
-    virtual ~TopologyEngine()
-    {
-        if (this->m_topologicalData != NULL)
-            this->removeTopologicalData();
-    }
-
+    /*  virtual ~TopologyEngine()
+      {
+          if (this->m_topologicalData != NULL)
+              this->removeTopologicalData();
+      }
+    */
     virtual void init()
     {
         // TODO: see if necessary or not....
@@ -49,15 +49,15 @@ public:
 
     unsigned int getNumberOfTopologicalChanges() {return (m_changeList.getValue()).size();}
 
-    virtual void registerTopologicalData(t_topologicalData* topologicalData) {m_topologicalData = topologicalData;}
-
-    virtual void removeTopologicalData()
-    {
-        if (this->m_topologicalData)
-            delete this->m_topologicalData;
-    }
-
-    virtual const t_topologicalData* getTopologicalData() {return m_topologicalData;}
+    //virtual void registerTopologicalData(t_topologicalData* topologicalData) {m_topologicalData = topologicalData;}
+    /*
+        virtual void removeTopologicalData()
+        {
+            if (this->m_topologicalData)
+                delete this->m_topologicalData;
+        }
+    */
+    //virtual const t_topologicalData* getTopologicalData() {return m_topologicalData;}
 
     virtual void createEngineName()
     {
@@ -82,7 +82,7 @@ public:
 
 protected:
     /// Data handle by the topological engine
-    t_topologicalData* m_topologicalData;
+    //t_topologicalData* m_topologicalData;
 
     //TopologyHandler* m_topologyHandler;
 
