@@ -70,24 +70,24 @@ public:
 
 public:
     // constructor
-    TopologyDataHandler(): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
-        , m_topologyData(NULL) {}
+    TopologyDataHandler(BaseTopologyData <VecT>* _topologyData): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
+        , m_topologyData(_topologyData) {}
 
     bool isTopologyDataRegistered() {return m_topologyData;}
 
     /** Public fonction to apply creation and destruction functions */
     /// Apply removing current elementType elements
-    virtual void applyDestroyFunction(unsigned int, value_type& t) {t = VecT();}
+    virtual void applyDestroyFunction(unsigned int, value_type& ) {}
     /// Apply adding current elementType elements
-    virtual void applyCreateFunction(unsigned int, value_type&,
+    virtual void applyCreateFunction(unsigned int, value_type& t,
             const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double > &) {}
+            const sofa::helper::vector< double > &) {t = value_type();}
 
     /// WARNING NEEED TO UNIFY THIS
     /// Apply adding current elementType elements
-    virtual void applyCreateFunction(unsigned int, value_type&, const TopologyElementType& ,
+    virtual void applyCreateFunction(unsigned int, value_type&t , const TopologyElementType& ,
             const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double > &) {}
+            const sofa::helper::vector< double > &) {t = value_type();}
 
 
 protected:

@@ -177,8 +177,8 @@ protected:
 
     virtual void createTopologyHandler() {}
 
-    sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* m_topologyHandler;
     sofa::component::topology::TopologyEngineImpl<VecT>* m_topologicalEngine;
+    sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* m_topologyHandler;
 };
 
 

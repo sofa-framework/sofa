@@ -30,6 +30,8 @@
 #include <sofa/core/topology/TopologyHandler.h>
 #include <sofa/core/topology/BaseTopologyData.h>
 
+#include <sofa/core/topology/BaseTopology.h>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/list.h>
 #include <sofa/component/component.h>
