@@ -568,7 +568,8 @@ void EdgeSetTopologyContainer::clear()
     PointSetTopologyContainer::clear();
 }
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+
+
 void EdgeSetTopologyContainer::updateTopologyEngineGraph()
 {
     std::cout << "EdgeSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
@@ -579,7 +580,7 @@ void EdgeSetTopologyContainer::updateTopologyEngineGraph()
     // will concatenate with points one:
     PointSetTopologyContainer::updateTopologyEngineGraph();
 }
-#endif
+
 
 } // namespace topology
 

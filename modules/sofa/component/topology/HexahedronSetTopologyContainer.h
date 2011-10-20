@@ -415,6 +415,16 @@ protected:
     virtual HexahedraAroundQuad& getHexahedraAroundQuadForModification(const QuadID quadIndex);
 
 
+    /// \brief Function creating the data graph linked to d_hexahedron
+    virtual void updateTopologyEngineGraph();
+
+
+    /// Use a specific boolean @see m_hexahedronTopologyDirty in order to know if topology Data is dirty or not.
+    /// Set/Get function access to this boolean
+    void setHexahedronTopologyToDirty() {m_hexahedronTopologyDirty = true;}
+    void cleanHexahedronTopologyFromDirty() {m_hexahedronTopologyDirty = false;}
+    const bool& isHexahedronTopologyDirty() {return m_hexahedronTopologyDirty;}
+
 protected:
 
     /// provides the set of hexahedra.
@@ -435,6 +445,16 @@ protected:
     /// for each quad provides the set of hexahedra adjacent to that quad.
     sofa::helper::vector< HexahedraAroundQuad > m_hexahedraAroundQuad;
 
+
+    /// Boolean used to know if the topology Data of this container is dirty
+    bool m_hexahedronTopologyDirty;
+
+    /// List of engines related to this specific container
+    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+
+    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 };
 
 } // namespace topology

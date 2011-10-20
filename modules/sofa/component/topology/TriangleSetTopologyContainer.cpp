@@ -1069,22 +1069,24 @@ void TriangleSetTopologyContainer::clear()
 }
 
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+
 void TriangleSetTopologyContainer::updateTopologyEngineGraph()
 {
-    std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
-
+    // calling real update Data graph function implemented once in PointSetTopologyModifier
     this->updateDataEngineGraph(this->d_triangle, this->m_enginesList);
-    //std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph() end" << std::endl;
 
     // will concatenate with edges one:
     EdgeSetTopologyContainer::updateTopologyEngineGraph();
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+    std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
     std::cout << "point m_enginesList.size(): " << PointSetTopologyContainer::m_enginesList.size() << std::endl;
     std::cout << "edge m_enginesList.size(): " << EdgeSetTopologyContainer::m_enginesList.size() << std::endl;
     std::cout << "triangle m_enginesList.size(): " << this->m_enginesList.size() << std::endl;
-}
 #endif
+}
+
+
 
 } // namespace topology
 

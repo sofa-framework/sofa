@@ -155,49 +155,40 @@ public:
 
 
 protected:
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-
+    /// \brief Function creating the data graph linked to d_point
     virtual void updateTopologyEngineGraph();
 
+    /// \brief functions to really update the graph of Data/DataEngines linked to the different Data array, using member variable.
     virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, sofa::helper::list <sofa::core::topology::TopologyEngine *>& my_enginesList);
 
+
+    /// Use a specific boolean @see m_pointTopologyDirty in order to know if topology Data is dirty or not.
+    /// Set/Get function access to this boolean
+    void setPointTopologyToDirty() {m_pointTopologyDirty = true;}
+    void cleanPointTopologyFromDirty() {m_pointTopologyDirty = false;}
+    const bool& isPointTopologyDirty() {return m_pointTopologyDirty;}
+
+    /// \brief function to add a topologyEngine to the current list of engines.
+    void addEngineToList(sofa::core::topology::TopologyEngine * _engine);
+
+    /// \brief functions to display the graph of Data/DataEngines linked to the different Data array, using member variable.
     virtual void displayDataGraph(sofa::core::objectmodel::BaseData& my_Data);
 
-    /// List of Topological Data link to this Data. TODO: check if necessary or doublon with engine list
-    //sofa::helper::list<sofa::core::objectmodel::BaseData*> m_topologyDataDependencies;
-
-    /// graph map
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
-
-    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
-
-
-    // Use a specific boolen to know if topology Data is dirty or not.
-    // TODO: check if we can't use d_topologyData.isDirty()
-    void setPointTopologyToDirty()
-    {
-        this->m_pointTopologyDirty = true;
-    }
-
-    void cleanPointTopologyFromDirty()
-    {
-        this->m_pointTopologyDirty = false;
-    }
-
-    const bool& isPointTopologyDirty() {return this->m_pointTopologyDirty;}
-
-    void addEngineToList(sofa::core::topology::TopologyEngine * _engine)
-    {
-        this->m_enginesList.push_back(_engine);
-    }
-
-    bool m_pointTopologyDirty;
-#endif
+protected:
 
     Data<unsigned int> nbPoints;
 
     Data<InitTypes::VecCoord> d_initPoints;
+
+    /// Boolean used to know if the topology Data of this container is dirty
+    bool m_pointTopologyDirty;
+
+    /// List of engines related to this specific container
+    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+
+    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
+    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 };
 
 } // namespace topology
