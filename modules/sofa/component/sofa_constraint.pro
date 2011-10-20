@@ -7,7 +7,7 @@ DEFINES += SOFA_BUILD_CONSTRAINT
 
 HEADERS += initConstraint.h \
            collision/LocalMinDistance.h \
-           collision/LocalMinDistance.inl \
+#           collision/LocalMinDistance.inl \
            collision/LMDNewProximityIntersection.h \
            collision/LMDNewProximityIntersection.inl \
            collision/FrictionContact.h \
@@ -36,12 +36,6 @@ SOURCES += initConstraint.cpp \
            constraintset/LCPConstraintSolver.cpp \
            constraintset/ConstraintSolverImpl.cpp \
            animationloop/FreeMotionAnimationLoop.cpp \
-
-contains(DEFINES,SOFA_DEV){
-HEADERS += collision/BSplineModel.h \
-           collision/BSplineModel.inl
-SOURCES += collision/BSplineModel.cpp
-}
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){
 HEADERS += collision/BarycentricDistanceLMConstraintContact.h \
