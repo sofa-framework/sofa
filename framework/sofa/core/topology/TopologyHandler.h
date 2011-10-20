@@ -92,7 +92,7 @@ public:
     /// Apply swap between edges indices elements.
     virtual void applyEdgeIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
     /// Apply renumbering on edges elements.
-    virtual void applyeEdgeRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    virtual void applyEdgeRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
     /// Apply adding function on moved edges elements.
     virtual void applyEdgeMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
             const sofa::helper::vector< Edge >& /*elems*/) {}
@@ -112,7 +112,7 @@ public:
     /// Apply swap between triangles indices elements.
     virtual void applyTriangleIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
     /// Apply renumbering on triangles elements.
-    virtual void applyeTriangleRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    virtual void applyTriangleRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
     /// Apply adding function on moved triangles elements.
     virtual void applyTriangleMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
             const sofa::helper::vector< Triangle >& /*elems*/) {}
@@ -132,7 +132,7 @@ public:
     /// Apply swap between quads indices elements.
     virtual void applyQuadIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
     /// Apply renumbering on quads elements.
-    virtual void applyeQuadRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    virtual void applyQuadRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
     /// Apply adding function on moved quads elements.
     virtual void applyQuadMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
             const sofa::helper::vector< Quad >& /*elems*/) {}
@@ -152,7 +152,7 @@ public:
     /// Apply swap between tetrahedron indices elements.
     virtual void applyTetrahedronIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
     /// Apply renumbering on tetrahedron elements.
-    virtual void applyeTetrahedronRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    virtual void applyTetrahedronRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
     /// Apply adding function on moved tetrahedron elements.
     virtual void applyTetrahedronMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
             const sofa::helper::vector< Tetrahedron >& /*elems*/) {}
@@ -172,7 +172,7 @@ public:
     /// Apply swap between hexahedron indices elements.
     virtual void applyHexahedronIndicesSwap(unsigned int /*i1*/, unsigned int /*i2*/ ) {}
     /// Apply renumbering on hexahedron elements.
-    virtual void applyeHexahedronRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
+    virtual void applyHexahedronRenumbering(const sofa::helper::vector<unsigned int>& /*indices*/) {}
     /// Apply adding function on moved hexahedron elements.
     virtual void applyHexahedronMovedCreation(const sofa::helper::vector<unsigned int>& /*indexList*/,
             const sofa::helper::vector< Hexahedron >& /*elems*/) {}
