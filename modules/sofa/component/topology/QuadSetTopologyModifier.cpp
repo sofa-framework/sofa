@@ -193,6 +193,7 @@ void QuadSetTopologyModifier::addQuadsWarning(const unsigned int nQuads,
         const sofa::helper::vector< Quad >& quadsList,
         const sofa::helper::vector< unsigned int >& quadsIndexList)
 {
+    m_container->setQuadTopologyToDirty();
     // Warning that quads just got created
     QuadsAdded *e = new QuadsAdded(nQuads, quadsList, quadsIndexList);
     addTopologyChange(e);
@@ -205,6 +206,7 @@ void QuadSetTopologyModifier::addQuadsWarning(const unsigned int nQuads,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
+    m_container->setQuadTopologyToDirty();
     // Warning that quads just got created
     QuadsAdded *e=new QuadsAdded(nQuads, quadsList,quadsIndexList,ancestors,baryCoefs);
     addTopologyChange(e);
@@ -213,6 +215,7 @@ void QuadSetTopologyModifier::addQuadsWarning(const unsigned int nQuads,
 
 void QuadSetTopologyModifier::removeQuadsWarning( sofa::helper::vector<unsigned int> &quads)
 {
+    m_container->setQuadTopologyToDirty();
     /// sort vertices to remove in a descendent order
     std::sort( quads.begin(), quads.end(), std::greater<unsigned int>() );
 
@@ -492,25 +495,30 @@ void QuadSetTopologyModifier::renumberPoints( const sofa::helper::vector<unsigne
     m_container->checkTopology();
 }
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+
 void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_quad).getOutputs();
-    std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+    if (!m_container->isQuadTopologyDirty()) // quad Data has not been touched
+        return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    std::cout << "Number of outputs for quads array: " << _outs.size() << std::endl;
-    for ( it = _outs.begin(); it!=_outs.end(); ++it)
+    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+
+    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast <sofa::core::topology::TopologyEngine*> ( (*it));
-        if (topoEngine)
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        if (topoEngine->isDirty())
+        {
+            //std::cout << "performing: " << topoEngine->getName() << std::endl;
             topoEngine->update();
+        }
     }
 
+    m_container->cleanQuadTopologyFromDirty();
     EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 }
-#endif
+
 
 } // namespace topology
 
