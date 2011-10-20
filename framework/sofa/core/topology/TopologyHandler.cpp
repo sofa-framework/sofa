@@ -34,6 +34,10 @@ namespace core
 namespace topology
 {
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////   Generic Handling of Topology Event    /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology::TopologyChange *> &_topologyChangeEvents)
 {
     sofa::helper::list<const core::topology::TopologyChange *>::iterator changeIt;
@@ -63,7 +67,7 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = ( static_cast< const PointsAdded * >( *changeIt ) )->ancestorsList;
             const sofa::helper::vector< sofa::helper::vector< double       > >& coefs     = ( static_cast< const PointsAdded * >( *changeIt ) )->coefs;
 
-            this->applyPointCreation(indexList, ancestors, coefs);
+            this->applyPointCreation(indexList, indexList, ancestors, coefs);
             break;
         }
         case core::topology::POINTSREMOVED:
@@ -326,7 +330,6 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
         ++changeIt;
     }
 }
-
 
 } // namespace topology
 

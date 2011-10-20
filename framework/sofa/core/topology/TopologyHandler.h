@@ -46,10 +46,14 @@ typedef Topology::Tetrahedron      Tetrahedron;
 typedef Topology::Hexahedron       Hexahedron;
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////   Generic Handling of Topology Event    /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 class TopologyHandler
 {
 public:
-    TopologyHandler() : topologyDataRegistered(false) {}
+    TopologyHandler() {}
 
     virtual ~TopologyHandler() {}
 
@@ -61,6 +65,7 @@ public:
     */
     /// Apply adding points elements.
     virtual void applyPointCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+            const sofa::helper::vector< Point >& /*elems*/,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
             const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/) {}
     /// Apply removing points elements.
@@ -176,16 +181,13 @@ public:
 
 
 
-    bool isTopologyDataRegistered() {return topologyDataRegistered;}
+    virtual bool isTopologyDataRegistered() {return false;}
 
     /// Swaps values at indices i1 and i2.
     virtual void swap( unsigned int /*i1*/, unsigned int /*i2*/ ) {}
 
     /// Reorder the values.
     virtual void renumber( const sofa::helper::vector<unsigned int> &/*index*/ ) {}
-
-protected:
-    bool topologyDataRegistered;
 };
 
 

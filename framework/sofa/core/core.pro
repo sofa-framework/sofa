@@ -91,6 +91,7 @@ HEADERS += \
 	topology/BaseTopologyData.h \
 	topology/BaseTopologyEngine.h \
 	topology/TopologyHandler.h \
+	topology/TopologyElementHandler.h \
 	topology/Topology.h \
 	loader/BaseLoader.h \
 	loader/ImageLoader.h \

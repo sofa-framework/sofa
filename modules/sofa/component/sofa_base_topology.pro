@@ -85,7 +85,7 @@ HEADERS += initBaseTopology.h \
            topology/TetrahedronSubsetData.h \
            topology/TetrahedronSubsetData.inl \
            topology/HexahedronSubsetData.h \
-           topology/HexahedronSubsetData.inl 
+           topology/HexahedronSubsetData.inl \
 #           topology/TopologyData.h \
 #           topology/TopologyData.inl \
 #           topology/TopologySparseDataHandler.h \
@@ -94,8 +94,8 @@ HEADERS += initBaseTopology.h \
 #           topology/TopologySparseData.inl \
 #           topology/TopologySubsetData.h \
 #           topology/TopologySubsetData.inl \
-#           topology/TopologyDataHandler.h \
-#           topology/TopologyDataHandler.inl \
+           topology/TopologyDataHandler.h \
+	   topology/TopologyDataHandler.inl 
 #	   topology/TopologyEngine.h \
 #	   topology/TopologyEngine.inl
 
