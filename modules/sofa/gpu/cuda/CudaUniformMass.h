@@ -83,8 +83,8 @@ void UniformMass<gpu::cuda::CudaVec3dTypes, double>::accFromF(const core::Mechan
 template <>
 void UniformMass<gpu::cuda::CudaVec3dTypes, double>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-template <>
-bool UniformMass<gpu::cuda::CudaVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox);
+// template <>
+// bool UniformMass<gpu::cuda::CudaVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox);
 
 // CudaRigid3d
 template <>
@@ -106,8 +106,8 @@ void UniformMass<gpu::cuda::CudaVec3d1Types, double>::accFromF(const core::Mecha
 template <>
 void UniformMass<gpu::cuda::CudaVec3d1Types, double>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-template <>
-bool UniformMass<gpu::cuda::CudaVec3d1Types, double>::addBBox(double* minBBox, double* maxBBox);
+// template <>
+// bool UniformMass<gpu::cuda::CudaVec3d1Types, double>::addBBox(double* minBBox, double* maxBBox);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
