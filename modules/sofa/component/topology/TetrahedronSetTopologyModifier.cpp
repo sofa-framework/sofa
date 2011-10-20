@@ -211,6 +211,7 @@ void TetrahedronSetTopologyModifier::addTetrahedraWarning(const unsigned int nTe
         const sofa::helper::vector< Tetrahedron >& tetrahedraList,
         const sofa::helper::vector< unsigned int >& tetrahedraIndexList)
 {
+    m_container->setTetrahedronTopologyToDirty();
     // Warning that tetrahedra just got created
     TetrahedraAdded *e = new TetrahedraAdded(nTetrahedra, tetrahedraList, tetrahedraIndexList);
     addTopologyChange(e);
@@ -223,6 +224,7 @@ void TetrahedronSetTopologyModifier::addTetrahedraWarning(const unsigned int nTe
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
+    m_container->setTetrahedronTopologyToDirty();
     // Warning that tetrahedra just got created
     TetrahedraAdded *e = new TetrahedraAdded(nTetrahedra, tetrahedraList, tetrahedraIndexList, ancestors, baryCoefs);
     addTopologyChange(e);
@@ -231,6 +233,7 @@ void TetrahedronSetTopologyModifier::addTetrahedraWarning(const unsigned int nTe
 
 void TetrahedronSetTopologyModifier::removeTetrahedraWarning( sofa::helper::vector<unsigned int> &tetrahedra )
 {
+    m_container->setTetrahedronTopologyToDirty();
     /// sort vertices to remove in a descendent order
     std::sort( tetrahedra.begin(), tetrahedra.end(), std::greater<unsigned int>() );
 
@@ -594,25 +597,29 @@ void TetrahedronSetTopologyModifier::renumberPoints( const sofa::helper::vector<
     m_container->checkTopology();
 }
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+
 void TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_tetrahedron).getOutputs();
-    std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+    if (!m_container->isTetrahedronTopologyDirty()) // tetrahedron Data has not been touched
+        return TriangleSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    std::cout << "Number of outputs for tetrahedra array: " << _outs.size() << std::endl;
-    for ( it = _outs.begin(); it!=_outs.end(); ++it)
+    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+
+    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
-        if (topoEngine)
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        if (topoEngine->isDirty())
+        {
+            //std::cout << "performing: " << topoEngine->getName() << std::endl;
             topoEngine->update();
+        }
     }
 
+    m_container->cleanTetrahedronTopologyFromDirty();
     TriangleSetTopologyModifier::propagateTopologicalEngineChanges();
 }
-#endif
 
 } // namespace topology
 

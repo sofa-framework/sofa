@@ -61,10 +61,8 @@ public:
 
     virtual void reinit();
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    /// TODO: temporary duplication of topological events (commented by default)
+    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
     virtual void propagateTopologicalEngineChanges();
-#endif
 
     /** \brief add a set of triangles
     @param triangles an array of vertex indices describing the triangles to be created

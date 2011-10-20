@@ -245,9 +245,8 @@ void TriangleSetTopologyModifier::addTrianglesWarning(const unsigned int nTriang
         const sofa::helper::vector< Triangle >& trianglesList,
         const sofa::helper::vector< unsigned int >& trianglesIndexList)
 {
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     m_container->setTriangleTopologyToDirty();
-#endif
+
     // Warning that triangles just got created
     TrianglesAdded *e = new TrianglesAdded(nTriangles, trianglesList, trianglesIndexList);
     addTopologyChange(e);
@@ -260,9 +259,8 @@ void TriangleSetTopologyModifier::addTrianglesWarning(const unsigned int nTriang
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     m_container->setTriangleTopologyToDirty();
-#endif
+
     // Warning that triangles just got created
     TrianglesAdded *e=new TrianglesAdded(nTriangles, trianglesList,trianglesIndexList,ancestors,baryCoefs);
     addTopologyChange(e);
@@ -339,14 +337,8 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
 
 void TriangleSetTopologyModifier::removeTrianglesWarning(sofa::helper::vector<unsigned int> &triangles)
 {
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    // other way
     m_container->setTriangleTopologyToDirty();
 
-    // TODO: understand why this bug:
-    //m_container->d_triangle.setDirtyValue();
-    //m_container->d_triangle.cleanDirty();
-#endif
 
     /// sort vertices to remove in a descendent order
     std::sort( triangles.begin(), triangles.end(), std::greater<unsigned int>() );
@@ -726,41 +718,29 @@ void TriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa::helper:
 }
 
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
 {
-    std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges"  << std::endl;
     if (m_container->beginChange() == m_container->endChange()) // nothing to do if no event is stored
         return;
 
     if (!m_container->isTriangleTopologyDirty()) // triangle Data has not been touched
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
-
-    // get directly the list of engines created at init: case of removing.... for the moment
+    //std::cout << "triangles is dirty" << std::endl;
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
-
-    std::cout << "triangles is dirty" << std::endl;
-    //std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
-        // no need to dynamic cast this time? TO BE CHECKED!
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-            std::cout << "performing: " << topoEngine->getName() << std::endl;
+            //std::cout << "performing: " << topoEngine->getName() << std::endl;
             topoEngine->update();
         }
     }
 
-    // other way
     m_container->cleanTriangleTopologyFromDirty();
-
-    std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges end"  << std::endl << std::endl ;
-
     EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 }
-#endif
 
 } // namespace topology
 

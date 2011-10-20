@@ -74,9 +74,8 @@ void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
 
 void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints, const bool addDOF)
 {
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     m_container->setPointTopologyToDirty();
-#endif
+
     if(addDOF)
     {
         PointsAdded *e2 = new PointsAdded(nPoints);
@@ -95,9 +94,8 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< double       > >& coefs,
         const bool addDOF)
 {
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     m_container->setPointTopologyToDirty();
-#endif
+
     if(addDOF)
     {
         PointsAdded *e2 = new PointsAdded(nPoints, ancestors, coefs);
@@ -134,9 +132,8 @@ void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <un
 void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     m_container->setPointTopologyToDirty();
-#endif
+
     // sort points so that they are removed in a descending order
     std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
 
@@ -247,10 +244,8 @@ void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
 }
 
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 {
-    sout << "PointSetTopologyModifier::propagateTopologicalEngineChanges"  << sendl;
     if (m_container->beginChange() == m_container->endChange()) // nothing to do if no event is stored
         return;
 
@@ -259,7 +254,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 
     // get directly the list of engines created at init: case of removing.... for the moment
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
-    sout << "points is dirty" << sendl;
+    //sout << "points is dirty" << sendl;
     //sout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << sendl;
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
@@ -267,17 +262,14 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-            sout << "performing: " << topoEngine->getName() << sendl;
+            //sout << "performing: " << topoEngine->getName() << sendl;
             topoEngine->update();
         }
     }
 
-    // other way
     m_container->cleanPointTopologyFromDirty();
-
-    sout << "PointSetTopologyModifier::propagateTopologicalEngineChanges end"  << sendl << sendl ;
 }
-#endif
+
 void PointSetTopologyModifier::propagateStateChanges()
 {
     if (m_container->beginStateChange() == m_container->endStateChange()) return; // nothing to do if no event is stored

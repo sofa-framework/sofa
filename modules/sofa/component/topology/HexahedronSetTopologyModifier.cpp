@@ -299,6 +299,7 @@ void HexahedronSetTopologyModifier::addHexahedraWarning(const unsigned int nHexa
         const sofa::helper::vector< Hexahedron >& hexahedraList,
         const sofa::helper::vector< unsigned int >& hexahedraIndexList)
 {
+    m_container->setHexahedronTopologyToDirty();
     // Warning that hexahedra just got created
     HexahedraAdded *e = new HexahedraAdded(nHexahedra, hexahedraList, hexahedraIndexList);
     addTopologyChange(e);
@@ -311,6 +312,7 @@ void HexahedronSetTopologyModifier::addHexahedraWarning(const unsigned int nHexa
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
+    m_container->setHexahedronTopologyToDirty();
     // Warning that hexahedra just got created
     HexahedraAdded *e = new HexahedraAdded(nHexahedra, hexahedraList, hexahedraIndexList, ancestors, baryCoefs);
     addTopologyChange(e);
@@ -319,6 +321,7 @@ void HexahedronSetTopologyModifier::addHexahedraWarning(const unsigned int nHexa
 
 void HexahedronSetTopologyModifier::removeHexahedraWarning( sofa::helper::vector<unsigned int> &hexahedra )
 {
+    m_container->setHexahedronTopologyToDirty();
     /// sort vertices to remove in a descendent order
     std::sort( hexahedra.begin(), hexahedra.end(), std::greater<unsigned int>() );
 
@@ -678,25 +681,29 @@ void HexahedronSetTopologyModifier::renumberPoints(const sofa::helper::vector<un
     m_container->checkTopology();
 }
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_hexahedron).getOutputs();
-    std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+    if (!m_container->isHexahedronTopologyDirty()) // hexahedron Data has not been touched
+        return QuadSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    std::cout << "Number of outputs for hexahedra array: " << _outs.size() << std::endl;
-    for ( it = _outs.begin(); it!=_outs.end(); ++it)
+    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+
+    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast <sofa::core::topology::TopologyEngine*> ( (*it));
-        if (topoEngine)
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        if (topoEngine->isDirty())
+        {
+            //std::cout << "performing: " << topoEngine->getName() << std::endl;
             topoEngine->update();
+        }
     }
 
+    m_container->cleanHexahedronTopologyFromDirty();
     QuadSetTopologyModifier::propagateTopologicalEngineChanges();
 }
-#endif
+
 
 } // namespace topology
 
