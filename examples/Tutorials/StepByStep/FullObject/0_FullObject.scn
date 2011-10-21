@@ -1,7 +1,8 @@
-<Node 	name="root" gravity="0 0 -9.81" dt="0.001" showBehaviorModels="1" showForceFields="1" showInteractionForceFields="1"  >
-	<OglModel template="ExtVec3f" name="Objective"  fileMesh="mesh/dragon.obj" />
-	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
-	<BruteForceDetection name="Detection" />
-	<MinProximityIntersection name="Proximity"  alarmDistance="3"  contactDistance="2" />
-	<DefaultContactManager name="Response"  response="default" />
+<Node name="root" gravity="0 0 -9.81" dt="0.001">
+    <VisualStyle displayFlags="showBehavior" />
+    <OglModel template="ExtVec3f" name="Objective" fileMesh="mesh/dragon.obj" />
+    <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
+    <BruteForceDetection name="Detection" />
+    <MinProximityIntersection name="Proximity" alarmDistance="3" contactDistance="2" />
+    <DefaultContactManager name="Response" response="default" />
 </Node>

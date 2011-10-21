@@ -1,18 +1,16 @@
-<?xml version="1.0"?>
-<Node 	name="root" gravity="0 -9.81 0" dt="0.01" showBehaviorModels="1" showForceFields="1" showInteractionForceFields="1"  >
-	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
-	<BruteForceDetection name="Detection" />
-	<MinProximityIntersection name="Proximity"  alarmDistance="3"  contactDistance="2" />
-	<DefaultContactManager name="Response"  response="default" />
-
-  <Node name="Tetrahedrons Mesh">
-    <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
-    <MechanicalObject template="Vec3d" name="Volume" src="@loader"/>
-  
-    <TetrahedronSetTopologyContainer name="Container" filename="mesh/cylinder.msh" tetrahedra="@loader.tetrahedra"/>
-    <TetrahedronSetTopologyModifier name="Modifier"/>
-    <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
-    <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1" drawColorTetrahedra="1.0 1.0 0.3"/>
-  </Node>
-
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 0" dt="0.01">
+    <VisualStyle displayFlags="showBehavior" />
+    <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
+    <BruteForceDetection name="Detection" />
+    <MinProximityIntersection name="Proximity" alarmDistance="3" contactDistance="2" />
+    <DefaultContactManager name="Response" response="default" />
+    <Node name="Tetrahedrons Mesh">
+        <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
+        <MechanicalObject template="Vec3d" name="Volume" src="@loader" />
+        <TetrahedronSetTopologyContainer name="Container" filename="mesh/cylinder.msh" tetrahedra="@loader.tetrahedra" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1" drawColorTetrahedra="1.0 1.0 0.3" />
+    </Node>
 </Node>
