@@ -144,7 +144,7 @@ private:
 
     void connectionToNodeAdjacency(const Vec3i& connection, std::map<unsigned int, unsigned int>& nodeMap) const;
 
-    class Component
+    class SOFA_NON_UNIFORM_FEM_API Component
     {
     public:
         Component(const Vec3i& id, const std::set<Vec3i>& voxels);
@@ -208,7 +208,7 @@ private:
 };
 
 /** notifies change in the multilevel structure other than adding or removing coarse hexahedra */
-class MultilevelModification : public core::topology::TopologyChange
+class SOFA_NON_UNIFORM_FEM_API MultilevelModification : public core::topology::TopologyChange
 {
 public:
     static const int MULTILEVEL_MODIFICATION = core::topology::TOPOLOGYCHANGE_LASTID + 1;
