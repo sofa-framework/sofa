@@ -579,7 +579,7 @@ void QtGLViewer::drawColourPicking(ColourPickingVisitor::ColourCode code)
 
 
     ColourPickingVisitor cpv(sofa::core::visual::VisualParams::defaultInstance(), code);
-    cpv.execute(sofa::simulation::getSimulation()->getContext() );
+    cpv.execute(groot.get());
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();

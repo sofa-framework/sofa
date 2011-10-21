@@ -111,7 +111,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     // displayWidget
     if (node)
     {
-        const std::vector< std::pair<std::string, core::objectmodel::BaseData*> >& fields = node->getFields();
+        const sofa::core::objectmodel::Base::VecData& fields = node->getDataFields();
 
         std::map< std::string, std::vector<QTabulationModifyObject* > > groupTabulation;
 
@@ -134,9 +134,9 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             }
         }
 
-        for( std::vector< std::pair<std::string, core::objectmodel::BaseData*> >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
+        for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it!=fields.end(); ++it)
         {
-            core::objectmodel::BaseData* data=it->second;
+            core::objectmodel::BaseData* data=*it;
 
             //For each Data of the current Object
             //We determine where it belongs:

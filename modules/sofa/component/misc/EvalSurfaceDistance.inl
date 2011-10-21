@@ -80,11 +80,11 @@ void EvalSurfaceDistance<DataTypes>::init()
     }
 
     intersection = sofa::core::objectmodel::New<sofa::component::collision::NewProximityIntersection>();
-    intersection->setContext(this->getContext());
+    this->addSlave(intersection);
     intersection->init();
 
     detection = sofa::core::objectmodel::New<sofa::component::collision::BruteForceDetection>();
-    detection->setContext(this->getContext());
+    this->addSlave(detection);
     detection->init();
 }
 

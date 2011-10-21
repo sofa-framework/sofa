@@ -211,18 +211,17 @@ public:
 #define SOFA_ABSTRACT_CLASS_DECL                                        \
     typedef MyType* Ptr;                                                \
     typedef boost::intrusive_ptr<MyType> SPtr;                          \
-    typedef MyType* WPtr;                                               \
                                                                         \
     static const MyClass* GetClass() { return MyClass::get(); }         \
     virtual const ::sofa::core::objectmodel::BaseClass* getClass() const \
     { return GetClass(); }                                              \
     template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
     initData(Data<SOFA_T>* field, const char* name, const char* help,   \
-             ::sofa::core::objectmodel::BaseData::DataFlags dataflags)                             \
+             ::sofa::core::objectmodel::BaseData::DataFlags dataflags)  \
     {                                                                   \
         ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
         this->initData0(field, res, name, help, dataflags);             \
-        res.parentClass = GetClass()->className.c_str();                \
+        res.ownerClass = GetClass()->className.c_str();                 \
         return res;                                                     \
     }                                                                   \
     template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
@@ -232,7 +231,7 @@ public:
         ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
         this->initData0(field, res, name, help,                         \
                         isDisplayed, isReadOnly);                       \
-        res.parentClass = GetClass()->className.c_str();                      \
+        res.ownerClass = GetClass()->className.c_str();                 \
         return res;                                                     \
     }                                                                   \
     template<class SOFA_T> typename Data<SOFA_T>::InitData initData(    \
@@ -242,8 +241,14 @@ public:
         typename Data<SOFA_T>::InitData res;                            \
         this->initData0(field, res, value, name, help,                  \
                         isDisplayed, isReadOnly);                       \
-        res.parentClass = GetClass()->className.c_str();                      \
+        res.ownerClass = GetClass()->className.c_str();                 \
         return res;                                                     \
+    }                                                                   \
+    ::sofa::core::objectmodel::BaseLink::InitLink<MyType>               \
+    initLink(const char* name, const char* help)                        \
+    {                                                                   \
+        return ::sofa::core::objectmodel::BaseLink::InitLink<MyType>    \
+            (this, name, help);                                         \
     }                                                                   \
     using Inherit1::sout;                                               \
     using Inherit1::serr;                                               \
@@ -255,12 +260,6 @@ public:
                                                                \
     friend class sofa::core::objectmodel::New<MyType>
 
-/*
-MyFF::New(val1)
-
-New<MyFF>()
-MyFF::SPtr = SPtrNew<MyFF>(val1)
-*/
 
 template <class Parents>
 class TClassParents
@@ -299,7 +298,7 @@ class TClassParents< std::pair<P1,P2> >
 public:
     static int nb()
     {
-        return TClassParents<P1>::nb() + TClassParents<P1>::nb();
+        return TClassParents<P1>::nb() + TClassParents<P2>::nb();
     }
     static const BaseClass* get(int i)
     {

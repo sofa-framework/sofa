@@ -141,13 +141,7 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
         //std::cout << objects[i] << std::endl;
         if (obj)
         {
-            std::vector< std::pair<std::string, core::objectmodel::BaseData*> > f = obj->getFields();
-
-            for (unsigned int j=0 ; j<f.size() && !field; j++)
-            {
-                if(fields[i].compare(f[j].first) == 0)
-                    field = f[j].second;
-            }
+            field = obj->findData(fields[i]);
         }
 
         if (!obj || !field)
@@ -230,13 +224,7 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
         //std::cout << objects[i] << std::endl;
         if (obj)
         {
-            std::vector< std::pair<std::string, core::objectmodel::BaseData*> > f = obj->getFields();
-
-            for (unsigned int j=0 ; j<f.size() && !field; j++)
-            {
-                if(fields[i].compare(f[j].first) == 0)
-                    field = f[j].second;
-            }
+            field = obj->findData(fields[i]);
         }
 
         if (!obj || !field)
@@ -708,13 +696,7 @@ void VTKExporter::writeParallelFile()
             //std::cout << objects[i] << std::endl;
             if (obj)
             {
-                std::vector< std::pair<std::string, core::objectmodel::BaseData*> > f = obj->getFields();
-
-                for (unsigned int j=0 ; j<f.size() && !field; j++)
-                {
-                    if(pointsDataField[i].compare(f[j].first) == 0)
-                        field = f[j].second;
-                }
+                field = obj->findData(pointsDataField[i]);
             }
 
             if (!obj || !field)
@@ -789,13 +771,7 @@ void VTKExporter::writeParallelFile()
             //std::cout << objects[i] << std::endl;
             if (obj)
             {
-                std::vector< std::pair<std::string, core::objectmodel::BaseData*> > f = obj->getFields();
-
-                for (unsigned int j=0 ; j<f.size() && !field; j++)
-                {
-                    if(cellsDataField[i].compare(f[j].first) == 0)
-                        field = f[j].second;
-                }
+                field = obj->findData(cellsDataField[i]);
             }
 
             if (!obj || !field)

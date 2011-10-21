@@ -24,7 +24,7 @@
         <Mesh src="@loader"/>
         <MechanicalObject src="@loader" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0" scale="5.0"/>
         <UniformMass totalmass="0.2"/>
-        <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.48" computeGlobalMatrix="false" method="polar"/>
+        <TetrahedronFEMForceField name="FEM" youngModulus="60000" poissonRatio="0.48" computeGlobalMatrix="false" method="polar"/>
         <!--<LinearSolverConstraintCorrection />-->
         <PrecomputedConstraintCorrection rotations="true" recompute="0"/>
         <Node name="Visu">

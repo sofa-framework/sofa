@@ -122,6 +122,8 @@ HEADERS += \
 	objectmodel/DetachNodeEvent.h \
 	objectmodel/Event.h \
 	objectmodel/BaseData.h \
+	objectmodel/BaseLink.h \
+	objectmodel/Link.h \
 	objectmodel/HapticDeviceEvent.h \
 	objectmodel/JoystickEvent.h \
 	objectmodel/KeypressedEvent.h \
@@ -146,6 +148,7 @@ SOURCES += \
 	objectmodel/Base.cpp \
 	objectmodel/BaseClass.cpp \
 	objectmodel/BaseData.cpp \
+	objectmodel/BaseLink.cpp \
 	objectmodel/BaseContext.cpp \
 	objectmodel/BaseNode.cpp \
 	objectmodel/BaseObject.cpp \

@@ -57,15 +57,6 @@ public:
     /// modify the Context
     virtual void apply()=0;
 
-protected:
-
-    /// Get a writable pointer to the context.
-    /// Note that this method should only be called inside apply()
-    BaseContext* getContext()
-    {
-        return const_cast<BaseContext*>(this->context_);
-    }
-
 };
 
 

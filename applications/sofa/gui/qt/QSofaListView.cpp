@@ -263,7 +263,7 @@ void QSofaListView::RunSofaRightClicked( Q3ListViewItem *item,
     bool object_hasData = false;
     if(object_.type == typeObject)
     {
-        object_hasData = object_.ptr.Object->getFields().size() > 0 ? true : false;
+        object_hasData = object_.ptr.Object->getDataFields().size() > 0 ? true : false;
     }
     Q3PopupMenu *contextMenu = new Q3PopupMenu ( this, "ContextMenu" );
     if( object_.isNode() )
@@ -402,7 +402,7 @@ void QSofaListView::RemoveNode()
     {
         emit Lock(true);
         Node* node = object_.ptr.Node;
-        if ( node == simulation::getSimulation()->getContext() )
+        if ( node == node->getRoot() )
         {
             //Attempt to destroy the Root node : create an empty node to handle new graph interaction
             Node::SPtr root = simulation::getSimulation()->createNewGraph( "Root" );

@@ -51,10 +51,9 @@ ConfigurationSetting::~ConfigurationSetting()
 void ConfigurationSetting::init()
 {
     //Set all the Data in read only mode:
-    std::vector< std::pair<std::string, BaseData*> >::iterator it;
-    for (it=m_fieldVec.begin(); it!=m_fieldVec.end(); ++it)
+    for (VecData::const_iterator it = m_vecData.begin(); it!=m_vecData.end(); ++it)
     {
-        BaseData* data=it->second;
+        BaseData* data=*it;
         data->setReadOnly(true);
     }
 }

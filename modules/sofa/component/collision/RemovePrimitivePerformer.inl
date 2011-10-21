@@ -126,7 +126,8 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             if (surfaceOnVolume) // In the case of deleting a volume from a surface an volumique collision model is needed (only tetra available for the moment)
             {
                 model = sofa::core::objectmodel::New<TetrahedronModel>();
-                model->setContext(topo_curr->getContext());
+                //model->setContext(topo_curr->getContext());
+                topo_curr->getContext()->addObject(model);
             }
             else // other cases, collision model from pick is taken
             {
@@ -137,6 +138,11 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             if(topologyModifier) topologyChangeManager.removeItemsFromCollisionModel(model.get(),ElemList_int );
             picked.body=NULL;
             this->interactor->setBodyPicked(picked);
+
+            if (surfaceOnVolume) // In the case of deleting a volume from a surface an volumique collision model is needed (only tetra available for the moment)
+            {
+                topo_curr->getContext()->removeObject(model);
+            }
 
             selectedElem.clear();
         }
@@ -559,7 +565,10 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElem
 {
     // - STEP 0: Compute appropriate scale from BB:  selectorScale = 100 => zone = all mesh
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::getSimulation()->computeBBox((simulation::Node*)sofa::simulation::getSimulation()->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+    core::objectmodel::BaseNode* root = dynamic_cast<core::objectmodel::BaseNode*>(mstateCollision->getContext());
+    if (root) root = root->getRoot();
+    if (root) { sceneMinBBox = root->f_bbox.getValue().minBBox(); sceneMaxBBox = root->f_bbox.getValue().maxBBox(); }
+    else      { sceneMinBBox = mstateCollision->getContext()->f_bbox.getValue().minBBox(); sceneMaxBBox = mstateCollision->getContext()->f_bbox.getValue().maxBBox(); }
     Real BB_size = (sceneMaxBBox - sceneMinBBox).norm();
     if (BB_size == 0)
     {

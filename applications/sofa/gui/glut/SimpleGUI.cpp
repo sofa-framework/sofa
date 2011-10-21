@@ -2022,7 +2022,7 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
 
     if( isShiftPressed() )
     {
-        pick.activateRay(viewport[2],viewport[3]);
+        pick.activateRay(viewport[2],viewport[3], groot.get());
     }
     else
     {

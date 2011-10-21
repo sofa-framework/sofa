@@ -130,13 +130,13 @@ void PickHandler::destroySelectionBuffer()
 }
 
 
-void PickHandler::init()
+void PickHandler::init(core::objectmodel::BaseNode* root)
 {
 
 
     //get a node of scene (root), create a new child (mouseNode), config it, then detach it from scene by default
-    Node *root = dynamic_cast<Node*>(simulation::getSimulation()->getContext());
-    mouseNode = root->createChild("Mouse");
+    //Node *root = dynamic_cast<Node*>(simulation::getSimulation()->getContext());
+    mouseNode = dynamic_cast<simulation::Node*>(root)->createChild("Mouse");
 
     mouseContainer = sofa::core::objectmodel::New<MouseContainer>(); mouseContainer->resize(1);
     mouseContainer->setName("MousePosition");
@@ -166,7 +166,7 @@ void PickHandler::init()
 
 
     core::collision::Pipeline *pipeline;
-    root->get(pipeline, core::objectmodel::BaseContext::SearchRoot);
+    root->getContext()->get(pipeline, core::objectmodel::BaseContext::SearchRoot);
 
     useCollisions = (pipeline != NULL);
 }
@@ -213,11 +213,10 @@ Operation *PickHandler::changeOperation(MOUSE_BUTTON button, const std::string &
 }
 
 
-void PickHandler::activateRay(int width, int height)
+void PickHandler::activateRay(int width, int height, core::objectmodel::BaseNode* root)
 {
     if (!interactorInUse)
     {
-        Node *root = static_cast<Node*>(simulation::getSimulation()->getContext());
         root->addChild(mouseNode);
         interaction->attach(mouseNode.get());
         if( pickingMethod == SELECTION_BUFFER)
@@ -446,7 +445,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce()
     const defaulttype::Vector3& direction       = mouseCollision->getRay(0).direction();
     const double& maxLength                     = mouseCollision->getRay(0).l();
 
-    return findCollisionUsingBruteForce(origin, direction, maxLength);
+    return findCollisionUsingBruteForce(origin, direction, maxLength, mouseNode->getRoot());
 }
 
 component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding()
@@ -460,12 +459,12 @@ component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding()
 
 component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const defaulttype::Vector3& origin,
         const defaulttype::Vector3& direction,
-        double maxLength)
+        double maxLength, core::objectmodel::BaseNode* rootNode)
 {
     BodyPicked result;
     // Look for particles hit by this ray
     simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, origin, direction, maxLength, 0 );
-    core::objectmodel::BaseNode* rootNode = dynamic_cast<core::objectmodel::BaseNode*>(sofa::simulation::getSimulation()->getContext());
+    //core::objectmodel::BaseNode* rootNode = mouseNode->getRoot(); //dynamic_cast<core::objectmodel::BaseNode*>(sofa::simulation::getSimulation()->getContext());
 
     if (rootNode) picker.execute(rootNode->getContext());
     else std::cerr << "ERROR: root node not found." << std::endl;

@@ -42,7 +42,7 @@ namespace component
 namespace collision
 {
 
-/** Class to configure primitiv removal. Several parameters:
+/** Class to configure primitive removal. Several parameters:
   * - topologicalOperation: if 0, other parameters arn't use.
   *   0 = "remove on element"
   *   1 = "remove a zone of elements"

@@ -33,7 +33,7 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
 #endif
     std::string final_str;
     formatHelperString(helper,final_str);
-    std::string parentClass=data->getParentClass();
+    std::string ownerClass=data->getOwnerClass();
     if (modifiable)
     {
         QPushButton *helper_button = new QPushButton(QString(final_str.c_str()),this);
@@ -41,7 +41,7 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
         helper_button ->setAutoDefault(false);
         layout->addWidget(helper_button);
         connect(helper_button, SIGNAL( clicked() ), this, SLOT( linkModification()));
-        if (!parentClass.empty()) QToolTip::add(helper_button, ("Data from "+parentClass).c_str());
+        if (!ownerClass.empty()) QToolTip::add(helper_button, ("Data from "+ownerClass).c_str());
     }
     else
     {
@@ -50,14 +50,14 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
         helper_label->setText(QString(final_str.c_str()));
         helper_label->setMinimumWidth(20);
         layout->addWidget(helper_label);
-        if (!parentClass.empty()) QToolTip::add(helper_label, ("Data from "+parentClass).c_str());
+        if (!ownerClass.empty()) QToolTip::add(helper_label, ("Data from "+ownerClass).c_str());
 #else
         numLines_ = 0;
-        if (!final_str.empty() || !parentClass.empty())
+        if (!final_str.empty() || !ownerClass.empty())
         {
             if (!final_str.empty()) final_str += '\n';
             final_str += "Data from ";
-            final_str += parentClass;
+            final_str += ownerClass;
             QToolTip::add(parent, final_str.c_str());
         }
 #endif

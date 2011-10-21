@@ -327,11 +327,11 @@ public:
     DerivedModel* createPrevious()
     {
 
-        typename DerivedModel::SPtr pmodel = boost::dynamic_pointer_cast<DerivedModel,CollisionModel>(previous);
+        typename DerivedModel::SPtr pmodel = sofa::core::objectmodel::SPtr_dynamic_cast<DerivedModel>(previous);
         if (pmodel.get() == NULL)
         {
             pmodel = sofa::core::objectmodel::New<DerivedModel>();
-            pmodel->setContext(getContext());
+            this->addSlave(pmodel); //->setContext(getContext());
             pmodel->setMoving(isMoving());
             pmodel->setSimulated(isSimulated());
             pmodel->proximity.setValue(proximity.getValue());

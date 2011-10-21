@@ -44,12 +44,12 @@ namespace simulation
 
 /** Main controller of the scene.
     Defines how the scene is inited at the beginning, and updated at each time step.
-    Derives from BaseObject in order to model the parameters as Datas, which makes their edition easy in the GUI.
+    Derives from Base in order to use smart pointers and model the parameters as Datas, which makes their edition easy in the GUI.
  */
-class SOFA_SIMULATION_COMMON_API Simulation: public virtual sofa::core::objectmodel::BaseObject
+class SOFA_SIMULATION_COMMON_API Simulation: public virtual sofa::core::objectmodel::Base
 {
 public:
-    SOFA_CLASS(Simulation, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(Simulation, sofa::core::objectmodel::Base);
 
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
 // protected:
@@ -94,7 +94,7 @@ public:
     virtual void exportOBJ(Node* root, const char* filename, bool exportMTL = true);
 
     /// Print all object in the graph in XML format
-    virtual void exportXML(Node* root, const char* fileName=0, bool compact=false);
+    virtual void exportXML(Node* root, const char* fileName=NULL);
 
     /// Dump the current state in the given stream
     virtual void dumpState( Node* root, std::ofstream& out );

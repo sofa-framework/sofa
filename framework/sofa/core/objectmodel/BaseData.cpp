@@ -38,17 +38,18 @@ namespace objectmodel
 {
 
 BaseData::BaseData(const char* h, DataFlags dataflags, Base* owner, const char* name)
-    : help(h), parentClass(""), group(""), widget("")
+    : help(h), ownerClass(""), group(""), widget("")
     , m_counters(), m_isSets(), m_dataFlags(dataflags)
     , m_owner(owner), m_name(name), m_linkPath(std::string("")), parentBaseData(NULL)
 {
     m_counters.assign(0);
     m_isSets.assign(false);
     //setAutoLink(true);
+    if (owner) owner->addData(this);
 }
 
 BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly, Base* owner, const char* name)
-    : help(h), parentClass(""), group(""), widget("")
+    : help(h), ownerClass(""), group(""), widget("")
     , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(owner), m_name(name), m_linkPath(std::string("")), parentBaseData(NULL)
 {
     m_counters.assign(0);
@@ -56,10 +57,11 @@ BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly, Base* owne
     setFlag(FLAG_DISPLAYED,isDisplayed);
     setFlag(FLAG_READONLY,isReadOnly);
     //setAutoLink(true);
+    if (owner) owner->addData(this);
 }
 
 BaseData::BaseData( const BaseInitData& init)
-    : help(init.helpMsg), parentClass(init.parentClass), group(init.group), widget(init.widget)
+    : help(init.helpMsg), ownerClass(init.ownerClass), group(init.group), widget(init.widget)
     , m_counters(), m_isSets(), m_dataFlags(init.dataFlags)
     , m_owner(init.owner), m_name(init.name), m_linkPath(std::string("")), parentBaseData(NULL)
 {
@@ -75,6 +77,7 @@ BaseData::BaseData( const BaseInitData& init)
         exit( 1 );
     }
     //setAutoLink(true);
+    if (m_owner) m_owner->addData(this);
 }
 
 BaseData::~BaseData()

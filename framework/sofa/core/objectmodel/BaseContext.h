@@ -28,6 +28,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASECONTEXT_H
 
 #include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
 #include <sofa/core/ExecParams.h>
@@ -190,6 +191,9 @@ public:
     /// Gravity in local coordinates
     virtual void setGravity( const Vec3& )
     { }
+
+    /// Get the root context of the graph
+    virtual BaseContext* getRootContext() const;
 
     /// @name Containers
     /// @{

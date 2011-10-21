@@ -254,6 +254,13 @@ void BglNode::detachFromGraph()
     }
 }
 
+/// Get a list of parent node
+core::objectmodel::BaseNode::Parents BglNode::getParents() const
+{
+    core::objectmodel::BaseNode::Parents p;
+    getParents(p);
+    return p;
+}
 
 /// Test if the given context is a parent of this context.
 bool BglNode::hasParent(const BaseContext* context) const
