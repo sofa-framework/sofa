@@ -134,6 +134,7 @@ protected:
     class TriangularBSEdgeHandler : public TopologyDataHandler<Edge,vector<EdgeInformation> >
     {
     public:
+        typedef typename TriangularBendingSprings<DataTypes>::EdgeInformation EdgeInformation;
         TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, EdgeData<sofa::helper::vector<EdgeInformation> >* _data)
             : TopologyDataHandler<Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
 

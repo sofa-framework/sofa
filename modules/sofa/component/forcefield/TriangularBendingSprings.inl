@@ -104,7 +104,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
 
         const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
-        helper::vector<TriangularBendingSprings<DataTypes>::EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
+        helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (unsigned int i=0; i<triangleAdded.size(); ++i)
         {
@@ -117,7 +117,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
             for(unsigned int j=0; j<3; ++j)
             {
 
-                TriangularBendingSprings<DataTypes>::EdgeInformation &ei = edgeData[te2[j]]; // ff->edgeInfo
+                EdgeInformation &ei = edgeData[te2[j]]; // ff->edgeInfo
                 if(!(ei.is_initialized))
                 {
 
@@ -206,7 +206,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
         //unsigned int u,v;
 
         const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
-        helper::vector<TriangularBendingSprings<DataTypes>::EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
+        helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (unsigned int i=0; i<triangleRemoved.size(); ++i)
         {
@@ -219,7 +219,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
             for(unsigned int j=0; j<3; ++j)
             {
 
-                TriangularBendingSprings<DataTypes>::EdgeInformation &ei = edgeData[te[j]]; // ff->edgeInfo
+                EdgeInformation &ei = edgeData[te[j]]; // ff->edgeInfo
                 if(ei.is_initialized)
                 {
 
@@ -320,7 +320,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDes
         unsigned int last = ff->_topology->getNbPoints() -1;
         unsigned int i,j;
 
-        helper::vector<TriangularBendingSprings<DataTypes>::EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
+        helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
 
         sofa::helper::vector<unsigned int> lastIndexVec;
         for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
@@ -417,7 +417,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRen
 {
     if(ff)
     {
-        helper::vector<TriangularBendingSprings<DataTypes>::EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
+        helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
         for (int i = 0; i < ff->_topology->getNbEdges(); ++i)
         {
             if(edgeInf[i].is_activated)
