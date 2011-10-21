@@ -1,49 +1,39 @@
 <?xml version="1.0" ?>
 <!-- See https://wiki.sofa-framework.org/wiki/TutorialTopologyVolumeToSurfaceTopologicalMapping -->
-<Node 	name="root" gravity="0 -9.81 1" dt="0.05" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" >
-  <!-- Basic Components to perform the collision detection -->
-  <DefaultPipeline name="DefaultCollisionPipeline" depth="6"/>
-  <BruteForceDetection name="Detection"/>
-  <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5"/>
-  <DefaultContactManager name="Response"/>
-  <DefaultCollisionGroupManager name="Group"/>
-
-  <Node name="Cube">
-    <Object type="MeshGmshLoader" name="loader" filename="mesh/nine_hexa.msh"/>
-
-    <EulerImplicitSolver name="cg_odesolver" printLog="0"/>
-    <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09"/>
-    <MechanicalObject src="@loader" template="Vec3d" name="Hexa"/>
-    <UniformMass template="Vec3d" name="Mass" mass="0.25"/>
-
-    <Object type="HexahedronSetTopologyContainer" src="@loader"  name="Container" />
-    <Object type="HexahedronSetTopologyModifier"   name="Modifier" />
-    <Object type="HexahedronSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
-    <Object type="HexahedronSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" drawHexa="1" drawColorHexahedra="1.0 1.0 0.3"/>/>    
- 
-<!--    <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" 
+<Node name="root" gravity="0 -9.81 1" dt="0.05">
+    <!-- Basic Components to perform the collision detection -->
+    <VisualStyle displayFlags="showBehaviorModels showVisual showWireframe" />
+    <DefaultPipeline name="DefaultCollisionPipeline" depth="6" />
+    <BruteForceDetection name="Detection" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultContactManager name="Response" />
+    <DefaultCollisionGroupManager name="Group" />
+    <Node name="Cube">
+        <Object type="MeshGmshLoader" name="loader" filename="mesh/nine_hexa.msh" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+        <MechanicalObject src="@loader" template="Vec3d" name="Hexa" />
+        <UniformMass template="Vec3d" name="Mass" mass="0.25" />
+        <Object type="HexahedronSetTopologyContainer" src="@loader" name="Container" />
+        <Object type="HexahedronSetTopologyModifier" name="Modifier" />
+        <Object type="HexahedronSetTopologyAlgorithms" name="TopoAlgo" template="Vec3d" />
+        <Object type="HexahedronSetGeometryAlgorithms" name="GeomAlgo" template="Vec3d" drawHexa="1" drawColorHexahedra="1.0 1.0 0.3" />/&gt;
+        <!--    <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" 
       p0="-10 -10 -10"/>-->
-    
-
-
-    <HexahedronFEMForceField name="FEM" template="Vec3d"/>    
-    <FixedConstraint template="Vec3d" name="Fixed Dofs" indices="12 15 28 31" drawSize="0"/>
-    
-    <Node name="Q">
-      <QuadSetTopologyContainer name="Container"/>
-      <QuadSetTopologyModifier name="Modifier"/>
-      <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
-      <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
-	
-      <Hexa2QuadTopologicalMapping name="default6" object1="../../Container" object2="Container"/>
-      <QuadularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1"/>
-      <TriangleModel name="default7"/>
-      
-      <Node name="Visu">
-	<OglModel template="ExtVec3f" name="Visual" color="green"/>
-	<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1="../../../Hexa" object2="Visual"/>
-      </Node>
+        <HexahedronFEMForceField name="FEM" template="Vec3d" />
+        <FixedConstraint template="Vec3d" name="Fixed Dofs" indices="12 15 28 31" drawSize="0" />
+        <Node name="Q">
+            <QuadSetTopologyContainer name="Container" />
+            <QuadSetTopologyModifier name="Modifier" />
+            <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+            <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+            <Hexa2QuadTopologicalMapping name="default6" object1="../../Container" object2="Container" />
+            <QuadularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1" />
+            <TriangleModel name="default7" />
+            <Node name="Visu">
+                <OglModel template="ExtVec3f" name="Visual" color="green" />
+                <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1="../../../Hexa" object2="Visual" />
+            </Node>
+        </Node>
     </Node>
-  </Node>
-
 </Node>

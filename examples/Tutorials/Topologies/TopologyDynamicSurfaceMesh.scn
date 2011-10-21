@@ -1,62 +1,57 @@
 <?xml version="1.0" ?>
 <!-- See https://wiki.sofa-framework.org/wiki/TutorialTopologySurfaceMesh -->
-<Node name="root" gravity="0 -9.81 1" dt="0.05" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" showWireFrame="1">
-	<!-- Basic Components to perform the collision detection -->
-	<DefaultPipeline name="DefaultCollisionPipeline" depth="6"/>
-	<BruteForceDetection name="Detection"/>
-	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5"/>
-	<DefaultContactManager name="Response"/>
-	<DefaultCollisionGroupManager name="Group"/>
-  
-	<Node name="Triangles Mesh">
-		<MeshGmshLoader filename="mesh/square3.msh" name="tloader"/> 
-		<MechanicalObject name="DOFs" template="Vec3d" translation="0 10 10" rotation="0 -90 180" scale="10" src="@tloader"/>
-		<FixedConstraint name="Fixed dof" template="Vec3d" indices="0 1"/>
-		<UniformMass name="Mass" template="Vec3d" mass="1" totalmass="1"/>
-		<EulerImplicitSolver name="cg_odesolver" printLog="0"/>
-		<CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09"/>
-
-		<TriangleSetTopologyContainer name="Topology Container" src="@tloader" />
-		<TriangleSetTopologyModifier name="Topology Modifier"/>
-		<TriangleSetTopologyAlgorithms template="Vec3d" name="Topology Algorithms"/>
-		<TriangleSetGeometryAlgorithms template="Vec3d" name="Geometry Algorithms"/>
-		<TriangularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="300" damping="1"/>
-		<TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="600"/>
-
-		<TriangleModel name="models"/>
-		<Node>
-			<OglModel name="Visual" color="green" src="@../tloader"/>
-			<IdentityMapping name="Mapping" object1="../.." object2="Visual"/>
-		</Node>
-	</Node>
-	<Node name="Quads Mesh">
-		<MeshGmshLoader filename="mesh/nine_quads.msh" name="qloader" /> 
-		<MechanicalObject name="DOFs" template="Vec3d" rotation="0 90 0" scale="4" src="@qloader"/>
-		<FixedConstraint name="Fixed dof" template="Vec3d" indices="12 15"/>
-		<UniformMass name="Mass" template="Vec3d" mass="1" totalmass="1"/>
-		<EulerImplicitSolver name="cg_odesolver" printLog="0"/>
-		<CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09"/>
-
-		<QuadSetTopologyContainer name="Container" src="@qloader"/>
-		<QuadSetTopologyModifier name="Modifier"/>
-		<QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
-		<QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
-		<QuadularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1"/>
-
-		<Node name="Visu">
-			<OglModel template="ExtVec3f" name="Visual" src="@../qloader"/>
-			<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default5" object1="../../DOFs" object2="Visual"/>
-		</Node>
-	 
-		<Node name="Triangles">
-			<TriangleSetTopologyContainer name="Container"/>
-			<TriangleSetTopologyModifier name="Modifier"/>
-			<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
-			<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
-			<Quad2TriangleTopologicalMapping name="default6" object1="../../Container" object2="Container"/>
-			<TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="1000"/>
-			<TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1"/>
-			<TriangleModel name="default7"/>
-		</Node>
-	</Node>
+<Node name="root" gravity="0 -9.81 1" dt="0.05">
+    <!-- Basic Components to perform the collision detection -->
+    <VisualStyle displayFlags="showBehavior showWireframe" />
+    <DefaultPipeline name="DefaultCollisionPipeline" depth="6" />
+    <BruteForceDetection name="Detection" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultContactManager name="Response" />
+    <DefaultCollisionGroupManager name="Group" />
+    <Node name="Triangles Mesh">
+        <MeshGmshLoader filename="mesh/square3.msh" name="tloader" />
+        <MechanicalObject name="DOFs" template="Vec3d" translation="0 10 10" rotation="0 -90 180" scale="10" src="@tloader" />
+        <FixedConstraint name="Fixed dof" template="Vec3d" indices="0 1" />
+        <UniformMass name="Mass" template="Vec3d" mass="1" totalmass="1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
+        <TriangleSetTopologyContainer name="Topology Container" src="@tloader" />
+        <TriangleSetTopologyModifier name="Topology Modifier" />
+        <TriangleSetTopologyAlgorithms template="Vec3d" name="Topology Algorithms" />
+        <TriangleSetGeometryAlgorithms template="Vec3d" name="Geometry Algorithms" />
+        <TriangularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="300" damping="1" />
+        <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="600" />
+        <TriangleModel name="models" />
+        <Node>
+            <OglModel name="Visual" color="green" src="@../tloader" />
+            <IdentityMapping name="Mapping" object1="../.." object2="Visual" />
+        </Node>
+    </Node>
+    <Node name="Quads Mesh">
+        <MeshGmshLoader filename="mesh/nine_quads.msh" name="qloader" />
+        <MechanicalObject name="DOFs" template="Vec3d" rotation="0 90 0" scale="4" src="@qloader" />
+        <FixedConstraint name="Fixed dof" template="Vec3d" indices="12 15" />
+        <UniformMass name="Mass" template="Vec3d" mass="1" totalmass="1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
+        <QuadSetTopologyContainer name="Container" src="@qloader" />
+        <QuadSetTopologyModifier name="Modifier" />
+        <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+        <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+        <QuadularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1" />
+        <Node name="Visu">
+            <OglModel template="ExtVec3f" name="Visual" src="@../qloader" />
+            <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default5" object1="../../DOFs" object2="Visual" />
+        </Node>
+        <Node name="Triangles">
+            <TriangleSetTopologyContainer name="Container" />
+            <TriangleSetTopologyModifier name="Modifier" />
+            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+            <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+            <Quad2TriangleTopologicalMapping name="default6" object1="../../Container" object2="Container" />
+            <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="1000" />
+            <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1" />
+            <TriangleModel name="default7" />
+        </Node>
+    </Node>
 </Node>

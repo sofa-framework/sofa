@@ -1,41 +1,34 @@
 <?xml version="1.0" ?>
 <!-- See https://wiki.sofa-framework.org/wiki/TutorialSurfaceToLinearTopologicalMapping -->
-<Node 	name="root" gravity="0 -9 0" dt="0.05" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0"  >
-  <!-- Basic Components to perform the collision detection -->
-  <DefaultPipeline name="DefaultCollisionPipeline" depth="6"/>
-  <BruteForceDetection name="Detection"/>
-  <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5"/>
-  <DefaultContactManager name="Response"/>
-  <DefaultCollisionGroupManager name="Group"/>	
-  
-  <Node name="Triangles Mesh">
-
-    <CGImplicitSolver name="Solver" iterations="40" tolerance="1e-06" threshold="1e-10"/>
-    <MeshGmshLoader name="loader" filename="mesh/square3.msh"/>
-    <MechanicalObject src="@loader" template="Vec3d" name="mechanical" scale="10" restScale="1"/>
-
-    <TriangleSetTopologyContainer src="@loader" name="Container"/>
-    <TriangleSetTopologyModifier name="Modifier"/>
-    <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
-    <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
-    <Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0"/>
-
-    <DiagonalMass template="Vec3d" name="mass" massDensity="0.15"/>
-    <FixedConstraint template="Vec3d" name="FixedDofs" indices="0 1"/>
-    <OglModel name="Visual" color="red"/>
-    <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default17" object1=".." object2="Visual"/>
-		
-    <Node name="Edge Mesh">
-      <EdgeSetTopologyContainer name="Container"/>
-      <EdgeSetTopologyModifier name="Modifier"/>
-      <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawEdges="1"/>
-      <EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
-      <Triangle2EdgeTopologicalMapping name="Mapping" object1="../../Container" object2="Container"/>
-      <MeshSpringForceField template="Vec3d" stiffness="100" damping="1"/>
-			
-      <Node name="Visu">
-      </Node>
+<Node name="root" gravity="0 -9 0" dt="0.05">
+    <!-- Basic Components to perform the collision detection -->
+    <VisualStyle displayFlags="showBehaviorModels" />
+    <DefaultPipeline name="DefaultCollisionPipeline" depth="6" />
+    <BruteForceDetection name="Detection" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultContactManager name="Response" />
+    <DefaultCollisionGroupManager name="Group" />
+    <Node name="Triangles Mesh">
+        <CGImplicitSolver name="Solver" iterations="40" tolerance="1e-06" threshold="1e-10" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" />
+        <MechanicalObject src="@loader" template="Vec3d" name="mechanical" scale="10" restScale="1" />
+        <TriangleSetTopologyContainer src="@loader" name="Container" />
+        <TriangleSetTopologyModifier name="Modifier" />
+        <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+        <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+        <Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0" />
+        <DiagonalMass template="Vec3d" name="mass" massDensity="0.15" />
+        <FixedConstraint template="Vec3d" name="FixedDofs" indices="0 1" />
+        <OglModel name="Visual" color="red" />
+        <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default17" object1=".." object2="Visual" />
+        <Node name="Edge Mesh">
+            <EdgeSetTopologyContainer name="Container" />
+            <EdgeSetTopologyModifier name="Modifier" />
+            <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawEdges="1" />
+            <EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+            <Triangle2EdgeTopologicalMapping name="Mapping" object1="../../Container" object2="Container" />
+            <MeshSpringForceField template="Vec3d" stiffness="100" damping="1" />
+            <Node name="Visu" />
+        </Node>
     </Node>
-  
-  </Node>
 </Node>
