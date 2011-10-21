@@ -161,8 +161,9 @@ void QSofaRecorder::SetSimulation(simulation::Node* root, const std::string& ini
 
 }
 
-void QSofaRecorder::UpdateTime()
+void QSofaRecorder::UpdateTime(simulation::Node* root)
 {
+    this->root = root;
     assert(root);
     double time = root->getTime();
     char buf[100];
