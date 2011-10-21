@@ -11,7 +11,8 @@
 	
     <Object type="LightManager" />
     <Object type="SpotLight" name="light1" color="1 1 1" position="0 80 25" direction="0 -1 -0.8" cutoff="30" exponent="1" />
-    <Object type="SpotLight" name="light1" color="1 1 1" position="0 80 -25" direction="0 -1 0.8" cutoff="30" exponent="1" />
+   <!-- <Object type="SpotLight" name="light1" color="1 1 1" position="0 80 -25" direction="0 -1 0.8" cutoff="30" exponent="1" />-->
+	<Object type="SpotLight" name="light1" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
     
     <CollisionResponse name="Response" response="FrictionContact" />
     <Node name="Snake" >
@@ -24,7 +25,7 @@
 		<MechanicalObject name="dofs"/>
         <UniformMass totalMass="100.0" />
         <HexahedronFEMForceField youngModulus="3000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
-		<BoxConstraint box="-10 0 -10 10 10 10" />
+		<!--<BoxConstraint box="-10 0 -10 10 10 10" />-->
 		
 		<!--
 		<PrecomputedConstraintCorrection rotations="true"/>
@@ -52,9 +53,7 @@
 
      				
         <Node name="Visu" tags="Visual" >
-	    <VisualModel  name="VisualModel" fileMesh="mesh/caducee_snake.obj" 
-	      
-	    />
+			<VisualModel  name="VisualModel" fileMesh="mesh/caducee_snake.obj"   />
 			<BarycentricMapping object1="../.." object2="VisualModel" />
         </Node>
     </Node>
@@ -62,16 +61,45 @@
 	
 
     <Node name="Base" >
-		
-		<RegularGrid nx="1" ny="2" nz="1" xmin="0" xmax="0" ymin="14" ymax="66" zmin="0" zmax="0" />
-		<MechanicalObject />
 	
-		<Line />
-		<Point />
+		<Node name="Baton">
+			<MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" name="CollisModel" />
+            <Line simulated="false" moving="false" />
+            <Point simulated="false"  moving="false"/>
+		</Node>
+		<Node name="Boules">
+			<MeshObjLoader name="loader" filename="mesh/collision_boules_V2.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" name="CollisModel" />
+			<Triangle simulated="false" moving="false"/>
+            <Line simulated="false" moving="false"/>
+            <Point simulated="false" moving="false"/>
+		</Node>	
+		
+		<!--
+		<Node name="Floor">
+			<MeshObjLoader name="loader" filename="mesh/floor.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" name="CollisModel" />
+			<Triangle simulated="false" moving="false"/>
+            <Line simulated="false" moving="false"/>
+            <Point simulated="false" moving="false"/>
+		</Node>		
+		-->	
+				
 		
         <Node name="Visu" tags="Visual" >
-            <VisualModel  name="VisualModel" fileMesh="mesh/caducee_base.obj" />
+            <VisualModel  name="VisualModel" fileMesh="mesh/SOFA_pod.obj" />
+			<!--<VisualModel  name="VisualModel" fileMesh="mesh/floor.obj" /> -->
         </Node>
+		
     </Node>	
+	
+	
+
+	
+	
 	
 </Node>
