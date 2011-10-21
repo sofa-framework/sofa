@@ -217,15 +217,15 @@ public:
     };
 
     /// Topology Data
-    TriangleDataImpl<sofa::helper::vector<TriangleInformation> > triangleInfo;
-    PointDataImpl<sofa::helper::vector<VertexInformation> > vertexInfo;
-    EdgeDataImpl<sofa::helper::vector<EdgeInformation> > edgeInfo;
+    TriangleData<sofa::helper::vector<TriangleInformation> > triangleInfo;
+    PointData<sofa::helper::vector<VertexInformation> > vertexInfo;
+    EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
 
 
     class TRQSTriangleHandler : public TopologyDataHandler<Triangle,vector<TriangleInformation> >
     {
     public:
-        TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, TriangleDataImpl<sofa::helper::vector<TriangleInformation> >* _data) : TopologyDataHandler<Triangle, sofa::helper::vector<TriangleInformation> >(_data), m_ff(_ff) {}
+        TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : TopologyDataHandler<Triangle, sofa::helper::vector<TriangleInformation> >(_data), m_ff(_ff) {}
 
         void applyCreateFunction(unsigned int triangleIndex, TriangleInformation& ,
                 const Triangle & t,

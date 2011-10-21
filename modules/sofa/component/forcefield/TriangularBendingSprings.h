@@ -129,12 +129,12 @@ protected:
         }
     };
 
-    EdgeDataImpl<helper::vector<EdgeInformation> > edgeInfo;
+    EdgeData<helper::vector<EdgeInformation> > edgeInfo;
 
     class TriangularBSEdgeHandler : public TopologyDataHandler<Edge,vector<EdgeInformation> >
     {
     public:
-        TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, EdgeDataImpl<sofa::helper::vector<EdgeInformation> >* _data)
+        TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, EdgeData<sofa::helper::vector<EdgeInformation> >* _data)
             : TopologyDataHandler<Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex,
@@ -198,7 +198,7 @@ public:
 
 protected:
 
-    EdgeDataImpl<helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
+    EdgeData<helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
     TriangularBSEdgeHandler* edgeHandler;
 
