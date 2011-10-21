@@ -84,7 +84,6 @@ HEADERS += mycuda.h \
 SOURCES += mycuda.cpp \
            CudaBoxROI.cpp  \
 	   CudaSphereROI.cpp  \
-	   CudaSimpleTesselatedTetraMechanicalMapping.cpp \
 	   CudaBeamLinearMapping.cpp \
 	   CudaRestShapeSpringsForceField.cpp  \
 	   CudaIndexValueMapper.cpp \
@@ -109,7 +108,6 @@ SOURCES += mycuda.cpp \
            CudaRigidMapping.cpp \
            CudaSubsetMapping.cpp \
            CudaDistanceGridCollisionModel.cpp \
-           CudaCollision.cpp \
            CudaCollisionDetection.cpp \
 	   CudaSphereModel.cpp \
            CudaPointModel.cpp \
@@ -120,7 +118,6 @@ SOURCES += mycuda.cpp \
            CudaSetTopology.cpp \
            CudaParticleSource.cpp \
     	   CudaMappedBeamToTetraForceField.cpp \
-	   CudaRespirationController.cpp \
            VolumetricContact.cpp 
 
 CUDA_SOURCES += mycuda.cu \
@@ -145,154 +142,5 @@ CUDA_SOURCES += mycuda.cu \
            CudaPenalityContactForceField.cu \
            CudaVisualModel.cu \
            CudaParticleSource.cu
-
-contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
-
-HEADERS += \
-           CudaFixedPlaneConstraint.h \
-           CudaFixedPlaneConstraint.inl \
-	   	CudaLCP.h \
-	   	CudaMatrixUtils.h \
-	   	CudaDiagonalMatrix.h \
-        CudaRotationMatrix.h \
-       	#CudaMasterContactSolver.h \
-	   	CudaBTDLinearSolver.h \
-	   	CudaUnilateralInteractionConstraint.h \
-		CudaBlockJacobiPreconditioner.h \
-	   	CudaPrecomputedWarpPreconditioner.h \
-		CudaPrecomputedWarpPreconditioner.inl \
-	        CudaParallelMatrixLinearSolver.h \
-		CudaWarpPreconditioner.h \
-		CudaConstantForceField.inl \
-		CudaJacobiPreconditioner.h \
-       	CudaHexahedronFEMForceField.h \
-       	CudaHexahedronFEMForceField.inl \
-		#CudaHexahedronGeodesicalDistance.h \
-		#CudaHexahedronGeodesicalDistance.inl \
-               CudaJointSpringForceField.h \
-               CudaJointSpringForceField.inl \
-		CudaRasterizer.h \
-		CudaRasterizer.inl \
-		CudaLDIPenalityContactForceField.h \
-		CudaLDISimpleContactConstraint.h \
-		CudaComplianceMatrixUpdateManager.h \
-		CudaComplianceMatrixUpdateManager.inl \
-		CudaDiagonalMass.h \
-		CudaDiagonalMass.inl \
-           PairwiseCudaRasterizer.h \
-           PairwiseCudaRasterizer.inl \
-           ProximityRasterizer.h \
-           ProximityRasterizer.inl \ 
-                VolumetricFrameContact.h \
-                VolumetricFrameContact.inl
-		
-		
-SOURCES += \
-        CudaBTDLinearSolver.cpp  \
-           CudaFixedPlaneConstraint.cpp \
-	   	CudaLinearSolverConstraintCorrection.cpp \
-	   	CudaRotationFinder.cpp \
-	   	CudaLCP.cpp \
-       	#CudaMasterContactSolver.cpp \
-       	CudaSpatialGridContainer.cpp \
-	   	CudaUnilateralInteractionConstraint.cpp \
-	   	CudaPrecomputedWarpPreconditioner.cpp \
-		CudaWarpPreconditioner.cpp \
-		CudaConstantForceField.cpp \
-		CudaAspirationForceField.cpp \
-		CudaJacobiPreconditioner.cpp \
-		CudaBlockJacobiPreconditioner.cpp \
-		CudaHexahedronFEMForceField.cpp \
-		#CudaHexahedronGeodesicalDistance.cpp \
-               CudaJointSpringForceField.cpp \
-		CudaPairInteractionForceField.cpp \
-		CudaRasterizer.cpp \
-		CudaLDIPenalityContactForceField.cpp \
-		CudaLDISimpleContactConstraint.cpp \
-	CudaComplianceMatrixUpdateManager.cpp \
-	CudaTetrahedronCuttingManager.cpp \
-	CudaDiagonalMass.cpp \
-	CudaBilateralInteractionConstraint.cpp \
-           PairwiseCudaRasterizer.cpp \
-           ProximityRasterizer.cpp \
-           VolumetricFrameContact.cpp
-
-CUDA_SOURCES += \
-           CudaFixedPlaneConstraint.cu \
-	   	CudaLCP.cu \
-	   	CudaMatrixUtils.cu \
-       	CudaSpatialGridContainer.cu \
-        CudaHexahedronFEMForceField.cu \
-	CudaLinearSolverConstraintCorrection.cu \
-		#CudaHexahedronGeodesicalDistance.cu \
-               CudaJointSpringForceField.cu \
-		CudaRasterizer.cu \
-		CudaLDIPenalityContactForceField.cu \
-	CudaComplianceMatrixUpdateManager.cu \
-	CudaDiagonalMass.cu 
-		
-
-contains(DEFINES,SOFA_HAVE_CSPARSE){
-	HEADERS += \
-		  CudaPrecomputedLinearSolver.h	\
-		  CudaPrecomputedLinearSolver.inl \
-		  CudaSparseLDLSolver.h \
-		  CudaSparseLDLSolver.inl \
-		  CudaSparseXXTSolver.h \
-		  CudaSparseXXTSolver.inl \
-
-	SOURCES += \	
-		  CudaPrecomputedLinearSolver.cpp \
-		  CudaSparseLDLSolver.cpp \
-		  CudaSparseXXTSolver.cpp
-
-	CUDA_SOURCES += \
-		CudaSparseLDLSolver.cu \
-		CudaSparseXXTSolver.cu
-}
-
-contains(DEFINES,SOFA_EXTLIBS_TAUCS_MT){ 
-	HEADERS += \
-		CudaSparseTaucsLLtSolver.h \
-		CudaSparseTaucsLLtSolver.inl
-
-	SOURCES += \	
-		CudaSparseTaucsLLtSolver.cpp
-
-	CUDA_SOURCES += \
-		CudaSparseTaucsLLtSolver.cu
-}
-
-contains(DEFINES,SOFA_HAVE_EIGEN2){
-HEADERS += \
-                CudaLDIContactLMConstraint.h
-           
-	   	
-SOURCES += \	
-                CudaLDIContactLMConstraint.cpp
-}
-
-HEADERS += \
-	   	CudaParticlesRepulsionForceField.h \
-	   	CudaParticlesRepulsionForceField.inl
-SOURCES += CudaParticlesRepulsionForceField.cpp
-CUDA_SOURCES += CudaParticlesRepulsionForceField.cu
-
-HEADERS += \
-	   	CudaSPHFluidForceField.h \
-	   	CudaSPHFluidForceField.inl
-SOURCES += CudaSPHFluidForceField.cpp
-CUDA_SOURCES += CudaSPHFluidForceField.cu
-
-HEADERS += scan.h
-CUDA_SOURCES += scan.cu
-
-!contains(DEFINES,SOFA_GPU_CUDPP){
-	HEADERS += radixsort.h
-	CUDA_SOURCES += radixsort.cu
-}
-
-
-} # END SOFA_DEV
 
 load(sofa/post)

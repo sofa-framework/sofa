@@ -32,16 +32,6 @@
 #include <sofa/component/initMiscCollision.h>
 #include <sofa/component/initMiscSolver.h>
 #include <sofa/component/initMisc.h>
-#ifdef SOFA_DEV
-#include <sofa/component/initMiscTopologyDev.h>
-#include <sofa/component/initMiscMappingDev.h>
-#include <sofa/component/initMiscForcefieldDev.h>
-#include <sofa/component/initMiscFEMDev.h>
-#include <sofa/component/initMiscCollisionDev.h>
-#include <sofa/component/initMiscSolverDev.h>
-#include <sofa/component/initMiscDev.h>
-#include <sofa/component/initAdvancedInteraction.h>
-#endif
 
 namespace sofa
 {
@@ -66,16 +56,6 @@ void initComponentMisc()
     initMiscCollision();
     initMiscSolver();
     initMisc();
-#ifdef SOFA_DEV
-    initMiscTopologyDev();
-    initMiscMappingDev();
-    initMiscForcefieldDev();
-    initMiscFEMDev();
-    initMiscCollisionDev();
-    initMiscSolverDev();
-    initMiscDev();
-    initAdvancedInteraction();
-#endif
 }
 
 } // namespace component
