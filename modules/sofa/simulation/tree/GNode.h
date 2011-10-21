@@ -146,13 +146,6 @@ public:
     /// Return the full path name of this node
     std::string getPathName() const;
 
-
-
-    // should this be public ?
-    Single<GNode> parent;
-
-
-
     static GNode::SPtr create(GNode*, xml::Element<core::objectmodel::BaseNode>* arg)
     {
         GNode::SPtr obj = GNode::SPtr();
@@ -160,8 +153,11 @@ public:
         return obj;
     }
 
+    GNode* parent() const { return l_parent.get(); }
+
 protected:
 
+    sofa::core::objectmodel::Link<GNode,GNode,sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK> l_parent;
 
     virtual void doAddChild(GNode::SPtr node);
     void doRemoveChild(GNode::SPtr node);

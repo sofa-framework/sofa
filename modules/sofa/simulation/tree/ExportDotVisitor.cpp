@@ -198,10 +198,10 @@ std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
         return getName(node->solver[0]);
     if (node->animationManager!=obj && display(node->solver[0]))
         return getName(node->animationManager);
-    if ((node->mechanicalState==obj || node->solver[0]==obj) && node->mechanicalMapping==NULL && node->parent!=NULL && display(node->parent->solver[0]))
-        return getName(node->parent->solver[0]);
-    if ((node->mechanicalState==obj || node->solver[0]==obj || node->animationManager==obj) && node->mechanicalMapping==NULL && node->parent!=NULL && display(node->parent->animationManager))
-        return getName(node->parent->animationManager);
+    if ((node->mechanicalState==obj || node->solver[0]==obj) && node->mechanicalMapping==NULL && node->parent()!=NULL && display(node->parent()->solver[0]))
+        return getName(node->parent()->solver[0]);
+    if ((node->mechanicalState==obj || node->solver[0]==obj || node->animationManager==obj) && node->mechanicalMapping==NULL && node->parent()!=NULL && display(node->parent()->animationManager))
+        return getName(node->parent()->animationManager);
     return "";
 }
 
@@ -338,9 +338,9 @@ simulation::Visitor::Result ExportDotVisitor::processNodeTopDown(GNode* node)
                 *out << node->getName();
         }
         *out << "\"];" << std::endl;
-        if (node->parent!=NULL)
+        if (node->parent()!=NULL)
         {
-            *out << getName(node->parent) << " -> " << getName(node)<< " [minlen=2,style=\"bold\"];" << std::endl;
+            *out << getName(node->parent()) << " -> " << getName(node)<< " [minlen=2,style=\"bold\"];" << std::endl;
         }
     }
 

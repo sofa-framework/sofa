@@ -64,11 +64,12 @@ public:
     typedef Node::DisplayFlags DisplayFlags;
 
     SOFA_CLASS(BglNode, simulation::Node);
-    typedef Sequence< BglNode > Parents;
-    typedef Parents::iterator ParentIterator;
-    Parents parents;
+    typedef sofa::core::objectmodel::Link<BglNode,BglNode,sofa::core::objectmodel::BaseLink::FLAG_MULTILINK|sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK> LinkParents;
+    typedef LinkParents::const_iterator ParentIterator;
 
 protected:
+    LinkParents l_parents;
+
     BglNode(const std::string& name="");
     /**
        \param sg the SOFA scene containing a bgl graph
@@ -100,6 +101,7 @@ public:
     /// Remove the current node from the graph: consists in removing the link to all the parents
     void detachFromGraph();
 
+    const LinkParents::Container& parents() const { return l_parents.getValue(); }
 
     /// Get a list of parent node
     virtual core::objectmodel::BaseNode::Parents getParents() const;
@@ -110,7 +112,7 @@ public:
     template <typename Container>
     void getParents(Container &data) const
     {
-        std::copy(parents.begin(),parents.end(), std::back_inserter<Container>(data));
+        std::copy(parents().begin(),parents().end(), std::back_inserter<Container>(data));
     }
 
 

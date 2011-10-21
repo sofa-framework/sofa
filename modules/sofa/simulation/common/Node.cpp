@@ -68,6 +68,42 @@ using helper::system::thread::CTime;
 Node::Node(const std::string& name)
     : core::objectmodel::BaseNode()
     , sofa::core::objectmodel::Context()
+    , child(initLink("child", "Child nodes"))
+    , object(initLink("object","All objects attached to this node"))
+
+    , animationManager(initLink("animationLoop","The AnimationLoop attached to this node (only valid for root node)"))
+    , visualLoop(initLink("visualLoop", "The VisualLoop attached to this node (only valid for root node)"))
+
+    , behaviorModel(initLink("behaviorModel", "The BehaviorModel attached to this node (only valid for root node)"))
+    , mapping(initLink("mapping", "The (non-mechanical) Mapping(s) attached to this node (only valid for root node)"))
+
+    , solver(initLink("odeSolver", "The OdeSolver(s) attached to this node (controlling the mechanical time integration of this branch)"))
+    , constraintSolver(initLink("constraintSolver", "The ConstraintSolver(s) attached to this node"))
+    , linearSolver(initLink("linearSolver", "The LinearSolver(s) attached to this node"))
+    , topology(initLink("topology", "The Topology attached to this node"))
+    , meshTopology(initLink("meshTopology", "The MeshTopology / TopologyContainer attached to this node"))
+    , topologyObject(initLink("topologyObject", "The topology-related objects attached to this node"))
+    , state(initLink("state", "The State attached to this node (storing vectors such as position, velocity)"))
+    , mechanicalState(initLink("mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"))
+    , mechanicalMapping(initLink("mechanicalMapping", "The MechanicalMapping attached to this node"))
+    , mass(initLink("mass", "The Mass attached to this node"))
+    , forceField(initLink("forceField", "The (non-interaction) ForceField(s) attached to this node"))
+    , interactionForceField(initLink("interactionForceField", "The InteractionForceField(s) attached to this node"))
+    , projectiveConstraintSet(initLink("projectiveConstraintSet", "The ProjectiveConstraintSet(s) attached to this node"))
+    , constraintSet(initLink("constraintSet", "The ConstraintSet(s) attached to this node"))
+    , contextObject(initLink("contextObject", "The ContextObject(s) attached to this node"))
+    , configurationSetting(initLink("configurationSetting", "The ConfigurationSetting(s) attached to this node"))
+
+    , shader(initLink("shader", "The shader attached to this node"))
+    , visualModel(initLink("visualModel", "The VisualModel(s) attached to this node"))
+    , visualManager(initLink("visualManager", "The VisualManager(s) attached to this node"))
+
+    , collisionModel(initLink("collisionModel", "The CollisionModel(s) attached to this node"))
+    , collisionPipeline(initLink("collisionPipeline", "The collision Pipeline attached to this node"))
+
+    , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
+
+    , actionScheduler(initLink("visitorScheduler", "The VisitorScheduler attached to this node (deprecated)"))
     , debug_(false), logTime_(false)
     , depend(initData(&depend,"depend","Dependencies between the nodes.\nname 1 name 2 name3 name4 means that name1 must be initialized before name2 and name3 before name4"))
 {
@@ -151,40 +187,40 @@ void Node::moveObject(BaseObject::SPtr obj)
 
 void Node::notifyAddChild(Node::SPtr node)
 {
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->addChild(this, node.get());
 }
 
 
 void Node::notifyRemoveChild(Node::SPtr node)
 {
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->removeChild(this, node.get());
 }
 
 
 void Node::notifyMoveChild(Node::SPtr node, Node* prev)
 {
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->moveChild(prev, this, node.get());
 }
 
 
 void Node::notifyAddObject(core::objectmodel::BaseObject::SPtr obj)
 {
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->addObject(this, obj.get());
 }
 
 void Node::notifyRemoveObject(core::objectmodel::BaseObject::SPtr obj)
 {
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->removeObject(this, obj.get());
 }
 
 void Node::notifyMoveObject(core::objectmodel::BaseObject::SPtr obj, Node* prev)
 {
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->moveObject(prev, this, obj.get());
 }
 
@@ -192,16 +228,20 @@ void Node::notifyMoveObject(core::objectmodel::BaseObject::SPtr obj, Node* prev)
 void Node::addListener(MutationListener* obj)
 {
     // make sure we don't add the same listener twice
-    Sequence< MutationListener >::iterator it = listener.begin();
+    helper::vector< MutationListener* >::iterator it = listener.begin();
     while (it != listener.end() && (*it)!=obj)
         ++it;
     if (it == listener.end())
-        listener.add(obj);
+        listener.push_back(obj);
 }
 
 void Node::removeListener(MutationListener* obj)
 {
-    listener.remove(obj);
+    helper::vector< MutationListener* >::iterator it = listener.begin();
+    while (it != listener.end() && (*it)!=obj)
+        ++it;
+    if (it != listener.end())
+        listener.erase(it);
 }
 
 
@@ -246,6 +286,7 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     inserted+= mass.add(dynamic_cast< core::behavior::BaseMass* >(obj));
     inserted+= topology.add(dynamic_cast< core::topology::Topology* >(obj));
     inserted+= meshTopology.add(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
+    inserted+= topologyObject.add(dynamic_cast< core::topology::BaseTopologyObject* >(obj));
     inserted+= shader.add(dynamic_cast< sofa::core::visual::Shader* >(obj));
 
     bool isInteractionForceField = interactionForceField.add(dynamic_cast< core::behavior::BaseInteractionForceField* >(obj));
@@ -292,6 +333,7 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
     mass.remove(dynamic_cast< core::behavior::BaseMass* >(obj));
     topology.remove(dynamic_cast< core::topology::Topology* >(obj));
     meshTopology.remove(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
+    topologyObject.remove(dynamic_cast< core::topology::BaseTopologyObject* >(obj));
     shader.remove(dynamic_cast<sofa::core::visual::Shader* >(obj));
 
     forceField.remove(dynamic_cast< core::behavior::BaseForceField* >(obj));
@@ -676,7 +718,7 @@ void Node::printComponents()
     using namespace sofa::core::behavior;
     using core::BaseMapping;
     using core::topology::Topology;
-    using core::topology::BaseTopology;
+    using core::topology::BaseTopologyObject;
     using core::topology::BaseMeshTopology;
     using core::visual::Shader;
     using core::BehaviorModel;

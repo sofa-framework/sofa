@@ -79,7 +79,7 @@ void TreeCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*sc
     for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
     {
         simulation::tree::GNode::SPtr group = sofa::core::objectmodel::SPtr_dynamic_cast<simulation::tree::GNode>(*it);
-        if (group) clearGroup(group->parent, group);
+        if (group) clearGroup(group->getParents(), group);
     }
 
     groupSet.clear();

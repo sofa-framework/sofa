@@ -116,6 +116,7 @@ public:
     typedef T pointed_type;
     typedef TPtr value_type;
     typedef value_type const * const_iterator;
+    typedef value_type const * const_reverse_iterator;
 
     SinglePtr()
     {
@@ -129,13 +130,21 @@ public:
     {
         return (!elems[0])?elems:elems+1;
     }
+    const_reverse_iterator rbegin() const
+    {
+        return begin();
+    }
+    const_reverse_iterator rend() const
+    {
+        return end();
+    }
     unsigned int size() const
     {
         return (!elems[0])?0:1;
     }
     bool empty() const
     {
-        return !(!elems[0]);
+        return !elems[0];
     }
     void clear()
     {
@@ -234,6 +243,7 @@ public:
     typedef LinkTraitsContainer<DestType, ValueType, ACTIVEFLAG(FLAG_MULTILINK)> TraitsContainer;
     typedef typename TraitsContainer::T Container;
     typedef typename Container::const_iterator const_iterator;
+    typedef typename Container::const_reverse_iterator const_reverse_iterator;
     //typedef LinkTraitsValidatorFn<OwnerType, DestPtr, ACTIVEFLAG(FLAG_MULTILINK)> TraitsValidatorFn;
     typedef void (OwnerType::*ValidatorFn)(DestPtr, DestPtr&);
     typedef void (OwnerType::*ValidatorIndexFn)(DestPtr, DestPtr&, unsigned int);
@@ -265,6 +275,11 @@ public:
         return (unsigned int)m_value[0].size();
     }
 
+    bool empty() const
+    {
+        return m_value[0].empty();
+    }
+
     DestType* get(unsigned int index=0) const
     {
         if (index < m_value[0].size())
@@ -288,6 +303,16 @@ public:
         return m_value[0].end();
     }
 
+    const_reverse_iterator rbegin() const
+    {
+        return m_value[0].rbegin();
+    }
+
+    const_reverse_iterator rend() const
+    {
+        return m_value[0].rend();
+    }
+
     void reset(unsigned int index=0)
     {
         change(NULL, index);
@@ -298,21 +323,23 @@ public:
         change(v, index);
     }
 
-    void add(DestPtr v)
+    bool add(DestPtr v)
     {
-        if (!v) return;
+        if (!v) return false;
         unsigned int index = TraitsContainer::add(m_value[0],v);
         changed(DestPtr(), m_value[0][index], index);
+        return true;
     }
 
-    void remove(DestPtr v)
+    bool remove(DestPtr v)
     {
-        if (!v) return;
+        if (!v) return false;
         unsigned int index = TraitsContainer::find(m_value[0],v);
-        if (index >= m_value[0].size()) return;
+        if (index >= m_value[0].size()) return false;
         m_value[0][index] = NULL;
         changed(v, m_value[0][index], index);
         TraitsContainer::remove(m_value[0],index);
+        return true;
     }
 
     unsigned int getSize() const

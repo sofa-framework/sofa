@@ -56,7 +56,6 @@ class BaseState;
 namespace topology
 {
 class Topology;
-class BaseTopology;
 class BaseMeshTopology;
 } // namespace topology
 

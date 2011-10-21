@@ -69,6 +69,7 @@ std::deque<unsigned int> BglNode::freeId;
 
 BglNode::BglNode(const std::string& name)
     : sofa::simulation::Node(name)
+    , l_parents(initLink("parents", "Parent nodes in the graph"))
 {
     id=getUniqueId();
     BglGraphManager::getInstance()->addVertex(this);
@@ -174,11 +175,11 @@ bool BglNode::removeObject(core::objectmodel::BaseObject::SPtr sobj)
 
 void BglNode::addParent(BglNode *node)
 {
-    parents.add(node);
+    l_parents.add(node);
 }
 void BglNode::removeParent(BglNode *node)
 {
-    parents.remove(node);
+    l_parents.remove(node);
 }
 
 /// Create, add, then return the new child of this Node
@@ -246,8 +247,10 @@ void BglNode::moveChild(core::objectmodel::BaseNode::SPtr node)
 
 void BglNode::detachFromGraph()
 {
+    BglNode::SPtr me = this; // make sure we don't delete ourself before the end of this method
     //Sequence<BglNode>::iterator it=parents.begin(), it_end=parents.end();
     //for (;it!=it_end;++it) (*it)->removeChild(this);
+    LinkParents::Container parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; i++)
     {
         parents[i]->removeChild(this);
@@ -265,8 +268,8 @@ core::objectmodel::BaseNode::Parents BglNode::getParents() const
 /// Test if the given context is a parent of this context.
 bool BglNode::hasParent(const BaseContext* context) const
 {
-    if (context == NULL) return parents.empty();
-    for (Sequence<BglNode>::iterator it=parents.begin(), it_end=parents.end(); it!=it_end; ++it)
+    if (context == NULL) return l_parents.empty();
+    for (Sequence<BglNode>::iterator it=l_parents.begin(), it_end=l_parents.end(); it!=it_end; ++it)
     {
         BglNode* p = *it;
         if (p==context) return true;
@@ -278,7 +281,7 @@ bool BglNode::hasParent(const BaseContext* context) const
 /// An ancestor is a parent or (recursively) the parent of an ancestor.
 bool BglNode::hasAncestor(const BaseContext* context) const
 {
-    for (Sequence<BglNode>::iterator it=parents.begin(), it_end=parents.end(); it!=it_end; ++it)
+    for (Sequence<BglNode>::iterator it=l_parents.begin(), it_end=l_parents.end(); it!=it_end; ++it)
     {
         BglNode* p = *it;
         if (p==context) return true;
@@ -291,8 +294,8 @@ bool BglNode::hasAncestor(const BaseContext* context) const
 std::string BglNode::getPathName() const
 {
     std::string str;
-    if (!parents.empty())
-        str = (*parents.begin())->getPathName();
+    if (!l_parents.empty())
+        str = (*l_parents.begin())->getPathName();
     str += '/';
     str += getName();
     return str;
@@ -384,9 +387,9 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     }
     else if (path[0] == '/')
     {
-        if (!parents.empty())
+        if (!l_parents.empty())
         {
-            for (Parents::iterator it=parents.begin(); it!=parents.end(); ++it)
+            for (LinkParents::const_iterator it=l_parents.begin(); it!=l_parents.end(); ++it)
             {
                 void *result=(*it)->getObject(class_info, path);
                 if (result) return result;
@@ -408,9 +411,9 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         while (!newpath.empty() && path[0] == '/')
             newpath.erase(0);
 
-        if (!parents.empty())
+        if (!l_parents.empty())
         {
-            for (Parents::iterator it=parents.begin(); it!=parents.end(); ++it)
+            for (LinkParents::const_iterator it=l_parents.begin(); it!=l_parents.end(); ++it)
             {
                 void *result=(*it)->getObject(class_info, newpath);
                 if (result) return result;
@@ -466,18 +469,18 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 
 void BglNode::updateContext()
 {
-    if (!parents.empty())
+    if (!l_parents.empty())
     {
-        copyContext(*(*parents.begin()));
+        copyContext(*l_parents.get(0));
     }
     simulation::Node::updateContext();
 }
 
 void BglNode::updateSimulationContext()
 {
-    if (!parents.empty())
+    if (!l_parents.empty())
     {
-        copySimulationContext(*(*parents.begin()));
+        copySimulationContext(*l_parents.get(0));
     }
     simulation::Node::updateSimulationContext();
 }
@@ -485,7 +488,7 @@ void BglNode::updateSimulationContext()
 
 void BglNode::initVisualContext()
 {
-    if (!parents.empty())
+    if (!l_parents.empty())
     {
         this->setDisplayWorldGravity(false); //only display gravity for the root: it will be propagated at each time step
     }
