@@ -30,7 +30,6 @@
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/component/topology/EdgeData.inl>
-#include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -256,18 +255,6 @@ void VectorSpringForceField<DataTypes>::handleEvent( Event* e )
                     edgeMod->removeEdges(edgeArray);
                 }
                 //            edgeMod->splitEdges(edgeArray);
-            }
-        }
-        else
-        {
-            sofa::component::topology::TopologyChangedEvent *tce=dynamic_cast<sofa::component::topology::TopologyChangedEvent *>(e);
-            /// test that the event is a change of topology and that it
-            if ((tce) && edgeMod /*&& (tce->getMeshTopology()== _topology )*/)
-            {
-                std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-                std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
-                /// Topological events are handled by the EdgeData structure
-                springArray.handleTopologyEvents(itBegin,itEnd);
             }
         }
     }

@@ -29,7 +29,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/component/topology/PointData.inl>
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/component/topology/RegularGridTopology.h>

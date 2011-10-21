@@ -67,7 +67,6 @@ HEADERS += initBaseTopology.h \
            topology/TetrahedronSetTopologyModifier.h \
            topology/TetrahedronSetTopologyEngine.h \
            topology/TetrahedronSetTopologyEngine.inl \
-           topology/TopologyChangedEvent.h \
 #           topology/TriangleData.h \
 #           topology/TriangleData.inl \
            topology/TriangleSetGeometryAlgorithms.h \

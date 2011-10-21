@@ -31,7 +31,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/EdgeData.h>
-#include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
