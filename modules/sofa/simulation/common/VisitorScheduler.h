@@ -42,7 +42,7 @@ class Visitor;
 class SOFA_SIMULATION_COMMON_API VisitorScheduler : public virtual core::objectmodel::BaseObject
 {
 public:
-    virtual ~VisitorScheduler() {}
+    SOFA_ABSTRACT_CLASS(VisitorScheduler, core::objectmodel::BaseObject);
 
     virtual void executeVisitor(simulation::Node* node, Visitor* act) = 0;
 
@@ -50,6 +50,10 @@ public:
     virtual bool isMultiThreaded() const { return false; }
 
 protected:
+
+    VisitorScheduler() {}
+
+    virtual ~VisitorScheduler() {}
 
     /// Execute the given action recursively
     void doExecuteVisitor(simulation::Node* node, Visitor* act);

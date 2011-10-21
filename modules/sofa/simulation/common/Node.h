@@ -55,7 +55,7 @@
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/BaseTopology.h>
+#include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/OdeSolver.h>
@@ -172,173 +172,109 @@ public:
     // methods moved from GNode (27/04/08)
 
     /// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
-    template < class T, class TPtr = T* >
-    class Sequence
+    /// UPDATE: it is now an alias for the Link pointer container
+    template < class T, bool strong = false >
+    class Sequence : public sofa::core::objectmodel::Link<Node, T, sofa::core::objectmodel::BaseLink::FLAG_MULTILINK|sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK|(strong ? sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK : sofa::core::objectmodel::BaseLink::FLAG_DUPLICATE)>
     {
     public:
+        typedef sofa::core::objectmodel::Link<Node, T, sofa::core::objectmodel::BaseLink::FLAG_MULTILINK|sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK|(strong ? sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK : sofa::core::objectmodel::BaseLink::FLAG_DUPLICATE)> Inherit;
         typedef T pointed_type;
-        //typedef typename T::SPtr value_type;
-        typedef TPtr value_type;
-        typedef typename std::vector< value_type >::const_iterator iterator;
-        typedef typename std::vector< value_type >::const_reverse_iterator reverse_iterator;
+        typedef typename Inherit::DestPtr value_type;
+        //typedef TPtr value_type;
+        typedef typename Inherit::const_iterator const_iterator;
+        typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
+        typedef const_iterator iterator;
+        typedef const_reverse_iterator reverse_iterator;
 
-        iterator begin() const
+        Sequence(const sofa::core::objectmodel::BaseLink::InitLink<Node>& init)
+            : Inherit(init)
         {
-            return elems.begin();
         }
-        iterator end() const
+
+        value_type operator[](unsigned int i) const
         {
-            return elems.end();
+            return this->get(i);
         }
-        reverse_iterator rbegin() const
-        {
-            return elems.rbegin();
-        }
-        reverse_iterator rend() const
-        {
-            return elems.rend();
-        }
-        unsigned int size() const
-        {
-            return elems.size();
-        }
-        bool empty() const
-        {
-            return elems.empty();
-        }
-        const TPtr& operator[](unsigned int i) const
-        {
-            return elems[i];
-        }
+
         /// Swap two values in the list. Uses a const_cast to violate the read-only iterators.
         void swap( iterator a, iterator b )
         {
-            TPtr& wa = const_cast<TPtr&>(*a);
-            TPtr& wb = const_cast<TPtr&>(*b);
-            TPtr tmp = *a;
+            value_type& wa = const_cast<value_type&>(*a);
+            value_type& wb = const_cast<value_type&>(*b);
+            value_type tmp = *a;
             wa = *b;
             wb = tmp;
         }
-        //friend class Node;
-        bool add
-        (value_type elem)
-        {
-            if (elem == NULL)
-                return false;
-            elems.push_back(elem);
-            return true;
-        }
-        bool remove
-        (value_type elem)
-        {
-            if (elem == NULL)
-                return false;
-            typename std::vector< value_type >::iterator it = elems.begin();
-            while (it != elems.end() && (*it)!=elem)
-                ++it;
-            if (it != elems.end())
-            {
-                elems.erase(it);
-                return true;
-            }
-            else
-                return false;
-        }
-        void clear() { elems.clear(); }
-    protected:
-        std::vector< value_type > elems;
     };
 
     /// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
-    template < class T >
-    class Single
+    /// UPDATE: it is now an alias for the Link pointer container
+    template < class T, bool duplicate = true >
+    class Single : public sofa::core::objectmodel::Link<Node, T, sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK|(duplicate ? sofa::core::objectmodel::BaseLink::FLAG_DUPLICATE : sofa::core::objectmodel::BaseLink::FLAG_NONE)>
     {
-    protected:
-        T* elems[2];
     public:
+        typedef sofa::core::objectmodel::Link<Node, T, sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK|(duplicate ? sofa::core::objectmodel::BaseLink::FLAG_DUPLICATE : sofa::core::objectmodel::BaseLink::FLAG_NONE)> Inherit;
         typedef T pointed_type;
-        typedef T* value_type;
-        typedef T* const * iterator;
+        typedef typename Inherit::DestPtr value_type;
+        //typedef TPtr value_type;
+        typedef typename Inherit::const_iterator const_iterator;
+        typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
+        typedef const_iterator iterator;
+        typedef const_reverse_iterator reverse_iterator;
 
-        Single()
+        Single(const sofa::core::objectmodel::BaseLink::InitLink<Node>& init)
+            : Inherit(init)
         {
-            elems[0] = NULL;
-            elems[1] = NULL;
         }
-        iterator begin() const
+
+        operator bool() const
         {
-            return elems;
+            return !Inherit::empty();
         }
-        iterator end() const
+
+        bool operator!() const
         {
-            return (elems[0]==NULL)?elems:elems+1;
+            return Inherit::empty();
         }
-        unsigned int size() const
+
+        T* operator->() const
         {
-            return (elems[0]==NULL)?0:1;
+            return this->get();
         }
-        bool empty() const
+        T& operator*() const
         {
-            return (elems[0]==NULL);
-        }
-        T* operator[](unsigned int i) const
-        {
-            return elems[i];
+            return *this->get();
         }
         operator T*() const
         {
-            return elems[0];
-        }
-        T* operator->() const
-        {
-            return elems[0];
-        }
-        //friend class Node;
-        bool add
-        (T* elem)
-        {
-            if (elem == NULL)
-                return false;
-            elems[0] = elem;
-            return true;
-        }
-        bool remove
-        (T* elem)
-        {
-            if (elem == NULL)
-                return false;
-            if (elems[0] == elem)
-            {
-                elems[0] = NULL;
-                return true;
-            }
-            else
-                return false;
+            return this->get();
         }
     };
 
-    Sequence<Node,Node::SPtr> child;
-    typedef Sequence<Node,Node::SPtr>::iterator ChildIterator;
+    Sequence<Node,true> child;
+    typedef Sequence<Node,true>::iterator ChildIterator;
 
-    Sequence<core::objectmodel::BaseObject,core::objectmodel::BaseObject::SPtr> object;
-    typedef Sequence<core::objectmodel::BaseObject,core::objectmodel::BaseObject::SPtr>::iterator ObjectIterator;
+    Sequence<core::objectmodel::BaseObject,true> object;
+    typedef Sequence<core::objectmodel::BaseObject,true>::iterator ObjectIterator;
 
     Single<core::behavior::BaseAnimationLoop> animationManager;
     Single<core::visual::VisualLoop> visualLoop;
+
+    Sequence<core::BehaviorModel> behaviorModel;
+    Sequence<core::BaseMapping> mapping;
+
     Sequence<core::behavior::OdeSolver> solver;
     Sequence<core::behavior::ConstraintSolver> constraintSolver;
     Sequence<core::behavior::LinearSolver> linearSolver;
+
+    Single<core::topology::Topology> topology;
+    Single<core::topology::BaseMeshTopology> meshTopology;
+    Sequence<core::topology::BaseTopologyObject> topologyObject;
+
     Single<core::BaseState> state;
     Single<core::behavior::BaseMechanicalState> mechanicalState;
     Single<core::BaseMapping> mechanicalMapping;
     Single<core::behavior::BaseMass> mass;
-    Single<core::topology::Topology> topology;
-    Single<core::topology::BaseMeshTopology> meshTopology;
-    Single<core::visual::Shader> shader;
-
-    //warning : basic topology are not yet used in the release version
-    Sequence<core::topology::BaseTopology> basicTopology;
-
     Sequence<core::behavior::BaseForceField> forceField;
     Sequence<core::behavior::BaseInteractionForceField> interactionForceField;
     Sequence<core::behavior::BaseProjectiveConstraintSet> projectiveConstraintSet;
@@ -346,13 +282,13 @@ public:
     Sequence<core::objectmodel::ContextObject> contextObject;
     Sequence<core::objectmodel::ConfigurationSetting> configurationSetting;
 
-    Sequence<core::BaseMapping> mapping;
-    Sequence<core::BehaviorModel> behaviorModel;
+    Single<core::visual::Shader> shader;
     Sequence<core::visual::VisualModel> visualModel;
     Sequence<core::visual::VisualManager> visualManager;
-    Sequence<core::CollisionModel> collisionModel;
 
+    Sequence<core::CollisionModel> collisionModel;
     Single<core::collision::Pipeline> collisionPipeline;
+
     Sequence<core::objectmodel::BaseObject> unsorted;
 
     /// @}
@@ -631,14 +567,14 @@ protected:
 
     BaseContext* _context;
 
-    Sequence<MutationListener> listener;
+    helper::vector<MutationListener*> listener;
 
-
-    // Added by FF to model component dependencies
 public:
 
     virtual void addListener(MutationListener* obj);
     virtual void removeListener(MutationListener* obj);
+
+    // Added by FF to model component dependencies
     /// Pairs representing component dependencies. First must be initialized before second.
     Data < sofa::helper::vector < std::string > > depend;
     /// Sort the components according to the dependencies expressed in Data depend.

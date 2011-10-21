@@ -41,6 +41,7 @@ using helper::system::thread::CTime;
 
 GNode::GNode(const std::string& name, GNode* parent)
     : simulation::Node(name)
+    , l_parent(initLink("parent", "Parent node in the graph"))
 {
     if( parent )
         parent->addChild((Node*)this);
@@ -61,14 +62,14 @@ Node* GNode::createChild(const std::string& nodeName)
 void GNode::doAddChild(GNode::SPtr node)
 {
     child.add(node);
-    node->parent.add(this);
+    node->l_parent.add(this);
 }
 
 /// Remove a child
 void GNode::doRemoveChild(GNode::SPtr node)
 {
     child.remove(node);
-    node->parent.remove(this);
+    node->l_parent.remove(this);
 }
 
 
@@ -94,7 +95,7 @@ void GNode::moveChild(BaseNode::SPtr node)
 {
     GNode::SPtr gnode = sofa::core::objectmodel::SPtr_dynamic_cast<GNode>(node);
     if (!gnode) return;
-    GNode* prev = gnode->parent;
+    GNode* prev = gnode->parent();
     if (prev==NULL)
     {
         addChild(node);
@@ -111,8 +112,9 @@ void GNode::moveChild(BaseNode::SPtr node)
 /// Remove a child
 void GNode::detachFromGraph()
 {
-    if (parent)
-        parent->removeChild(this);
+    GNode::SPtr me = this; // make sure we don't delete ourself before the end of this method
+    if (parent())
+        parent()->removeChild(this);
 }
 
 /// Generic object access, possibly searching up or down from the current context
@@ -122,7 +124,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
 {
     if (dir == SearchRoot)
     {
-        if (parent != NULL) return parent->getObject(class_info, tags, dir);
+        if (parent() != NULL) return parent()->getObject(class_info, tags, dir);
         else dir = SearchDown; // we are the root, search down from here.
     }
     void *result = NULL;
@@ -162,7 +164,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
             break;
         case SearchParents:
         case SearchUp:
-            if (parent) result = parent->getObject(class_info, tags, SearchUp);
+            if (parent()) result = parent()->getObject(class_info, tags, SearchUp);
             break;
         case SearchDown:
             for(ChildIterator it = child.begin(); it != child.end(); ++it)
@@ -191,7 +193,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
     }
     else if (path[0] == '/')
     {
-        if (parent) return parent->getObject(class_info, path);
+        if (parent()) return parent()->getObject(class_info, path);
         else return getObject(class_info,std::string(path,1));
     }
     else if (std::string(path,0,2)==std::string("./"))
@@ -206,7 +208,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         std::string newpath = std::string(path, 3);
         while (!newpath.empty() && path[0] == '/')
             newpath.erase(0);
-        if (parent) return parent->getObject(class_info,newpath);
+        if (parent()) return parent()->getObject(class_info,newpath);
         else return getObject(class_info,newpath);
     }
     else
@@ -259,11 +261,11 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
 {
     if (dir == SearchRoot)
     {
-        if (parent != NULL)
+        if (parent() != NULL)
         {
-            if (parent->isActive())
+            if (parent()->isActive())
             {
-                parent->getObjects(class_info, container, tags, dir);
+                parent()->getObjects(class_info, container, tags, dir);
                 return;
             }
             else return;
@@ -286,7 +288,7 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
             break;
         case SearchParents:
         case SearchUp:
-            if (parent) parent->getObjects(class_info, container, tags, SearchUp);
+            if (parent()) parent()->getObjects(class_info, container, tags, SearchUp);
             break;
         case SearchDown:
             for(ChildIterator it = child.begin(); it != child.end(); ++it)
@@ -306,32 +308,32 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
 core::objectmodel::BaseNode::Parents GNode::getParents() const
 {
     Parents p;
-    if (parent)
-        p.push_back(parent);
+    if (parent())
+        p.push_back(parent());
     return p;
 }
 
 /// Get parent node (or NULL if no hierarchy or for root node)
 core::objectmodel::BaseNode* GNode::getParent()
 {
-    return parent;
+    return parent();
 }
 
 /// Get parent node (or NULL if no hierarchy or for root node)
 const core::objectmodel::BaseNode* GNode::getParent() const
 {
-    return parent;
+    return parent();
 }
 
 /// Test if the given context is an ancestor of this context.
 /// An ancestor is a parent or (recursively) the parent of an ancestor.
 bool GNode::hasAncestor(const BaseContext* context) const
 {
-    GNode* p = parent;
+    GNode* p = parent();
     while (p)
     {
         if (p==context) return true;
-        p = p->parent;
+        p = p->parent();
     }
     return false;
 }
@@ -408,7 +410,7 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
 std::string GNode::getPathName() const
 {
     std::string str;
-    if (parent!=NULL) str = parent->getPathName();
+    if (parent()!=NULL) str = parent()->getPathName();
     str += '/';
     str += getName();
     return str;
@@ -432,7 +434,7 @@ void GNode::updateContext()
         {
             std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << std::endl;
         }
-        copyContext(*parent);
+        copyContext(*parent());
     }
     simulation::Node::updateContext();
 }
@@ -445,7 +447,7 @@ void GNode::updateSimulationContext()
         {
             std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << std::endl;
         }
-        copySimulationContext(*parent);
+        copySimulationContext(*parent());
     }
     simulation::Node::updateSimulationContext();
 }

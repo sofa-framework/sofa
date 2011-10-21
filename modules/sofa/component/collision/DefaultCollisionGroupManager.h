@@ -74,9 +74,9 @@ protected:
     }
 
     template <typename Container>
-    void clearGroup(Container &inNodes, simulation::Node::SPtr group)
+    void clearGroup(const Container &inNodes, simulation::Node::SPtr group)
     {
-        simulation::Node::SPtr parent = *inNodes.begin();
+        core::objectmodel::BaseNode::SPtr parent = *inNodes.begin();
         while(!group->child.empty()) parent->moveChild(*group->child.begin());
 
         simulation::DeleteVisitor vis(sofa::core::ExecParams::defaultInstance());
