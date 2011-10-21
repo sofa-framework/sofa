@@ -1,72 +1,60 @@
 <?xml version="1.0" ?>
 <!-- See http://wiki.sofa-framework.org/wiki/TutorialCollisionUncoupledConstraints -->
-<Node name="root" dt="0.01" gravity="0 -9.81 0" showBehavior="1" showCollision="1">
-  <!-- Basic Components to perform the collision detection -->
-  <FreeMotionAnimationLoop name="FreeMotionAnimationLoop"/>
-  <CollisionPipeline name="CollisionPipeline"/>
-  <BruteForceDetection name="BruteForceDetection"/>
-  <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0"/>
-  <CollisionResponse name="Response" response="FrictionContact"/>
-  <CollisionGroup/>
-
-  <!-- Using a rigid cube using collision triangles, lines and points  -->
-  <Node name="Cube">
-    <EulerImplicit name="EulerImplicit" />
-    <CGLinearSolver name="CG Solver" />
-    <MechanicalObject name="Cube RigidDOF" template="Rigid" dy="2"/>
-    <UniformMass name="UniformMass" totalmass="10.0"/>
-    <UncoupledConstraintCorrection/>
-
-    <Node name="Visual Model">
-      <OglModel name="Visual Cube" filename="mesh/cube.obj" color="1 1 0 1.0"/>
-      <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube RigidDOF" object2="Visual Cube" />
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <!-- Basic Components to perform the collision detection -->
+    <VisualStyle displayFlags="showBehavior showCollisionModels" />
+    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" />
+    <CollisionPipeline name="CollisionPipeline" />
+    <BruteForceDetection name="BruteForceDetection" />
+    <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
+    <CollisionResponse name="Response" response="FrictionContact" />
+    <CollisionGroup />
+    <!-- Using a rigid cube using collision triangles, lines and points  -->
+    <Node name="Cube">
+        <EulerImplicit name="EulerImplicit" />
+        <CGLinearSolver name="CG Solver" />
+        <MechanicalObject name="Cube RigidDOF" template="Rigid" dy="2" />
+        <UniformMass name="UniformMass" totalmass="10.0" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visual Model">
+            <OglModel name="Visual Cube" filename="mesh/cube.obj" color="1 1 0 1.0" />
+            <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube RigidDOF" object2="Visual Cube" />
+        </Node>
+        <Node name="Collision Model">
+            <Mesh name="Cube Mesh" filename="mesh/cube.obj" />
+            <MechanicalObject name="Collision Cube" />
+            <!-- Collision Models -->
+            <Triangle name="Cube Triangle For Collision" />
+            <Line name="Cube Edge For Collision" />
+            <Point name="Cube Point For Collision" />
+            <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube RigidDOF" object2="Collision Cube" />
+        </Node>
     </Node>
-
-    <Node name="Collision Model">
-        <Mesh name="Cube Mesh" filename="mesh/cube.obj"/>
-        <MechanicalObject name="Collision Cube"/>
+    <!-- Using a rigid cube using collision triangles, lines and points  -->
+    <Node name="Cube">
+        <EulerImplicit name="EulerImplicit" />
+        <CGLinearSolver name="CG Solver" />
+        <MechanicalObject name="Cube RigidDOF" template="Rigid" dy="5" dx="1" />
+        <UniformMass name="UniformMass" totalmass="10.0" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visual Model">
+            <OglModel name="Visual Cube" filename="mesh/cube.obj" color="1 1 0 1.0" />
+            <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube RigidDOF" object2="Visual Cube" />
+        </Node>
+        <Node name="Collision Model">
+            <Mesh name="Cube Mesh" filename="mesh/cube.obj" />
+            <MechanicalObject name="Collision Cube" />
+            <!-- Collision Models -->
+            <Triangle name="Cube Triangle For Collision" />
+            <Line name="Cube Edge For Collision" />
+            <Point name="Cube Point For Collision" />
+            <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube RigidDOF" object2="Collision Cube" />
+        </Node>
+    </Node>
+    <Node name="Floor">
+        <MeshTopology name="Topology Floor" filename="mesh/floor.obj" />
+        <MechanicalObject name="Floor Particles" />
         <!-- Collision Models -->
-        <Triangle name="Cube Triangle For Collision"/> 
-        <Line name="Cube Edge For Collision"/>
-        <Point name="Cube Point For Collision"/>
-        <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube RigidDOF" object2="Collision Cube" />
+        <Triangle name="Floor Triangle For Collision" moving="0" simulated="0" />
     </Node>
-
-  </Node>
-
-  <!-- Using a rigid cube using collision triangles, lines and points  -->
-  <Node name="Cube">
-    <EulerImplicit name="EulerImplicit" />
-    <CGLinearSolver name="CG Solver" />
-    <MechanicalObject name="Cube RigidDOF" template="Rigid" dy="5" dx="1"/>
-    <UniformMass name="UniformMass" totalmass="10.0"/>
-    <UncoupledConstraintCorrection/>
-
-    <Node name="Visual Model">
-      <OglModel name="Visual Cube" filename="mesh/cube.obj" color="1 1 0 1.0"/>
-      <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube RigidDOF" object2="Visual Cube" />
-    </Node>
-
-    <Node name="Collision Model">
-        <Mesh name="Cube Mesh" filename="mesh/cube.obj"/>
-        <MechanicalObject name="Collision Cube"/>
-        <!-- Collision Models -->
-        <Triangle name="Cube Triangle For Collision"/> 
-        <Line name="Cube Edge For Collision"/>
-        <Point name="Cube Point For Collision"/>
-        <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube RigidDOF" object2="Collision Cube" />
-    </Node>
-
-  </Node>
-
-  <Node name="Floor">
-
-    <MeshTopology name="Topology Floor"  filename="mesh/floor.obj"/>
-
-    <MechanicalObject name="Floor Particles"/>
-   <!-- Collision Models -->
-    <Triangle name="Floor Triangle For Collision" moving="0" simulated="0"/>
-
-  </Node>
-
 </Node>

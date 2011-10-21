@@ -1,33 +1,27 @@
 <?xml version="1.0" ?>
 <!-- See http://wiki.sofa-framework.org/wiki/TutorialCollisionCubeObstacle.scn -->
-<Node name="root" dt="0.01" gravity="0 -9.81 0" showBehavior="1" showCollision="1">
-  <!-- Basic Components to perform the collision detection -->
-  <CollisionPipeline/>
-  <BruteForceDetection/>
-  <DefaultContactManager/>
-  <MinProximityIntersection/>
-
-  <Node name="Cube">
-    <EulerImplicitSolver  name="EulerImplicit" />
-    <CGLinearSolver       name="CG Solver" />
-    
-    <MechanicalObject     name="Particles" template="Vec3d"
-                          position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" />
-    <MeshTopology         name="Topology" hexas="0 4 6 2 1 5 7 3" />
-    
-    <UniformMass          name="Mass" totalmass="1" />
-    <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
-
-    <!-- Collision Models -->
-    <TriangleModel        name="Triangles For Collision"/>
-    <LineModel            name="Lines For Collision"/>
-    <PointModel           name="Points For Collision"/>
-  </Node>
-
-  <Node name="Floor">       
-    <MeshTopology         name="Topology Floor"  filename="mesh/floor.obj"/>
-    <MechanicalObject     name="Floor Particles"/>                
-    <Triangle             name="Floor Triangle For Collision" moving="0" simulated="0"/>            
-  </Node>              
-
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <!-- Basic Components to perform the collision detection -->
+    <VisualStyle displayFlags="showBehavior showCollisionModels" />
+    <CollisionPipeline />
+    <BruteForceDetection />
+    <DefaultContactManager />
+    <MinProximityIntersection />
+    <Node name="Cube">
+        <EulerImplicitSolver name="EulerImplicit" />
+        <CGLinearSolver name="CG Solver" />
+        <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" />
+        <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
+        <UniformMass name="Mass" totalmass="1" />
+        <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
+        <!-- Collision Models -->
+        <TriangleModel name="Triangles For Collision" />
+        <LineModel name="Lines For Collision" />
+        <PointModel name="Points For Collision" />
+    </Node>
+    <Node name="Floor">
+        <MeshTopology name="Topology Floor" filename="mesh/floor.obj" />
+        <MechanicalObject name="Floor Particles" />
+        <Triangle name="Floor Triangle For Collision" moving="0" simulated="0" />
+    </Node>
 </Node>
