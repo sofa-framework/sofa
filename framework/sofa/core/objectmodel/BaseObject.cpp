@@ -47,13 +47,18 @@ namespace objectmodel
 BaseObject::BaseObject()
     : Base()
     , f_listening(initData( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
-    , context_(NULL)
+    , l_context(initLink("context","Graph Node containing this object (or BaseContext::getDefault() if no graph is used"))
+    , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
+    , l_master(initLink("master","NULL for regular objects, or master object for which this object is one sub-objects"))
+    //, context_(NULL)
 #ifdef SOFA_SMP
     ,partition_(NULL)
 #endif
 /*        , m_isListening(false)
 , m_printLog(false)*/
 {
+    l_context.setValidator(&sofa::core::objectmodel::BaseObject::changeContextLink);
+    l_slaves.setValidator(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
     f_listening.setAutoLink(false);
 }
 
@@ -273,10 +278,13 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
     }
 }
 
+/*
 void BaseObject::setContext(BaseContext* n)
 {
-    context_ = n;
+	//context_ = n;
+    l_context.set(n);
 }
+*/
 
 #ifdef SOFA_SMP
 
@@ -297,13 +305,40 @@ Iterative::IterativePartition*  BaseObject::getPartition()
 const BaseContext* BaseObject::getContext() const
 {
     //return (context_==NULL)?BaseContext::getDefault():context_;
-    return context_;
+    //return context_;
+    return l_context.get();
 }
 
 BaseContext* BaseObject::getContext()
 {
-    return (context_==NULL)?BaseContext::getDefault():context_;
+    //return (context_==NULL)?BaseContext::getDefault():context_;
     //return context_;
+    return l_context.get();
+}
+
+const BaseObject* BaseObject::getMaster() const
+{
+    return l_master.get();
+}
+
+BaseObject* BaseObject::getMaster()
+{
+    return l_master.get();
+}
+
+const BaseObject::VecSlaves& BaseObject::getSlaves() const
+{
+    return l_slaves.getValue();
+}
+
+void BaseObject::addSlave(BaseObject::SPtr s)
+{
+    l_slaves.add(s);
+}
+
+void BaseObject::removeSlave(BaseObject::SPtr s)
+{
+    l_slaves.remove(s);
 }
 
 void BaseObject::init()

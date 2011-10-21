@@ -78,7 +78,13 @@ public:
 
     typedef sofa::helper::vector< BaseNode* > Children;
     /// Get a list of child node
-    virtual const Children getChildren() const = 0;
+    virtual Children getChildren() const = 0;
+
+    typedef sofa::helper::vector< BaseNode* > Parents;
+    /// Get a list of parent node
+    virtual Parents getParents() const = 0;
+
+    virtual BaseNode* getRoot() const;
 
     /// Add a child node
     virtual void addChild(BaseNode::SPtr node) = 0;
@@ -128,6 +134,13 @@ public:
     virtual core::visual::VisualLoop* getVisualLoop() const;
 
     /// @}
+
+protected:
+    /// Set the context of an object to this
+    void setObjectContext(BaseObject::SPtr obj);
+
+    /// Reset the context of an object
+    void clearObjectContext(BaseObject::SPtr obj);
 
 };
 

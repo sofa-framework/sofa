@@ -114,7 +114,7 @@ void Simulation::print ( Node* root )
 }
 
 /// Print all object in the graph
-void Simulation::exportXML ( Node* root, const char* fileName, bool compact )
+void Simulation::exportXML ( Node* root, const char* fileName )
 {
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
@@ -123,12 +123,12 @@ void Simulation::exportXML ( Node* root, const char* fileName, bool compact )
         std::ofstream out ( fileName );
         out << "<?xml version=\"1.0\"?>\n";
 
-        XMLPrintVisitor print ( params /* PARAMS FIRST */, out,compact );
+        XMLPrintVisitor print ( params /* PARAMS FIRST */, out );
         root->execute ( print );
     }
     else
     {
-        XMLPrintVisitor print ( params /* PARAMS FIRST */, std::cout,compact );
+        XMLPrintVisitor print ( params /* PARAMS FIRST */, std::cout );
         root->execute ( print );
     }
 }
@@ -140,7 +140,7 @@ void Simulation::init ( Node* root )
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
-    setContext( root->getContext());
+    //setContext( root->getContext());
 
     if (!root->getAnimationLoop())
     {
@@ -518,10 +518,10 @@ void Simulation::unload(Node::SPtr root)
 {
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    if (dynamic_cast<Node*>(this->getContext()) == root)
-    {
-        this->setContext(NULL);
-    }
+    //if (dynamic_cast<Node*>(this->getContext()) == root)
+    //{
+    //    this->setContext(NULL);
+    //}
     root->detachFromGraph();
     root->execute<CleanupVisitor>(params);
     root->execute<DeleteVisitor>(params);

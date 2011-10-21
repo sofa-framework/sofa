@@ -220,7 +220,8 @@ core::objectmodel::BaseObject* Node::getObject(const std::string& name) const
 void Node::doAddObject(BaseObject::SPtr sobj)
 {
     notifyAddObject(sobj);
-    sobj->setContext(this);
+    //sobj->setContext(this);
+    this->setObjectContext(sobj);
     object.add(sobj);
     BaseObject* obj = sobj.get();
     int inserted=0;
@@ -273,10 +274,11 @@ void Node::doAddObject(BaseObject::SPtr sobj)
 /// Remove an object
 void Node::doRemoveObject(BaseObject::SPtr sobj)
 {
-    if (sobj->getContext()==this)
-    {
-        sobj->setContext(NULL);
-    }
+    //if (sobj->getContext()==this)
+    //{
+    //    sobj->setContext(NULL);
+    //}
+    this->clearObjectContext(sobj);
     object.remove(sobj);
     BaseObject* obj = sobj.get();
     animationManager.remove(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
@@ -419,7 +421,7 @@ Node* Node::getTreeNode(const std::string& name) const
 }
 
 /// Get parent node (or NULL if no hierarchy or for root node)
-const sofa::core::objectmodel::BaseNode::Children Node::getChildren() const
+sofa::core::objectmodel::BaseNode::Children Node::getChildren() const
 {
     Children list_children;
     list_children.reserve(child.size());

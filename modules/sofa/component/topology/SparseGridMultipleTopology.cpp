@@ -257,7 +257,7 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     std::stringstream nameg; nameg << "virtual grid "<< 0;
     _virtualFinerLevels[0]->setName( nameg.str().c_str() );
-    _virtualFinerLevels[0]->setContext( this->getContext() );
+    this->addSlave(_virtualFinerLevels[0]); //->setContext( this->getContext() );
     sgmt->_erasePreviousCoef.setValue(_erasePreviousCoef.getValue());
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     sgmt->_fileTopologies.setValue(this->_fileTopologies.getValue());
@@ -274,7 +274,7 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
         _virtualFinerLevels[i] = sofa::core::objectmodel::New< SparseGridMultipleTopology >(true);
 
         std::stringstream nameg; nameg << "virtual grid "<< i;
-
+        this->addSlave(_virtualFinerLevels[i]);
         _virtualFinerLevels[i]->setName( nameg.str().c_str() );
         _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1].get());
         _virtualFinerLevels[i]->init();

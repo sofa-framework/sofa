@@ -98,7 +98,7 @@ public:
     PickHandler();
     ~PickHandler();
 
-    void activateRay(int width, int height);
+    void activateRay(int width, int height, core::objectmodel::BaseNode* root);
     void deactivateRay();
 
     void allocateSelectionBuffer(int width, int height);
@@ -112,7 +112,7 @@ public:
 
     void handleMouseEvent( MOUSE_STATUS status, MOUSE_BUTTON button);
 
-    void init( );
+    void init(core::objectmodel::BaseNode* root);
     void reset();
     void unload();
 
@@ -133,7 +133,7 @@ public:
     helper::vector< CallBackPicker* > getCallBackPicker() {return callbacks;}
     void clearCallBacks() {for (unsigned int i=0; i<callbacks.size(); ++i) callbacks.clear();}
 
-    static BodyPicked findCollisionUsingBruteForce(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction, double maxLength);
+    static BodyPicked findCollisionUsingBruteForce(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction, double maxLength, core::objectmodel::BaseNode* root);
     BodyPicked findCollisionUsingColourCoding(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction);
 
     ComponentMouseInteraction           *getInteraction();

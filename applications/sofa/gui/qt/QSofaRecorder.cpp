@@ -117,6 +117,7 @@ QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)
     connect ( timerStep, SIGNAL( timeout() ), this, SLOT(slot_stepforward() ));
 
     this->setMaximumHeight(timeRecord->height());
+    root = NULL;
 
 }
 
@@ -138,12 +139,11 @@ void QSofaRecorder::TimerStart(bool value)
 }
 
 
-void QSofaRecorder::SetSimulation(const std::string& initT,
+void QSofaRecorder::SetSimulation(simulation::Node* root, const std::string& initT,
         const std::string& endT, const std::string& writeName)
 {
     char buf[100];
-
-    Node* root = dynamic_cast<Node*>(getSimulation()->getContext());
+    this->root = root;
     assert(root);
     double dt = root->getDt();
 
@@ -163,7 +163,6 @@ void QSofaRecorder::SetSimulation(const std::string& initT,
 
 void QSofaRecorder::UpdateTime()
 {
-    Node* root = dynamic_cast<Node*>(getSimulation()->getContext());
     assert(root);
     double time = root->getTime();
     char buf[100];
@@ -187,9 +186,9 @@ void QSofaRecorder::UpdateTime()
         timeSlider->update();
     }
 }
-void QSofaRecorder::Clear()
+void QSofaRecorder::Clear(simulation::Node* root)
 {
-    Node* root = dynamic_cast<Node*>(getSimulation()->getContext());
+    this->root = root;
     assert(root);
     float initial_time = root->getTime();
     timeSlider->setValue(0);
@@ -232,7 +231,6 @@ void QSofaRecorder::setCurrentTime(double time)
 
 void QSofaRecorder::setTimeSimulation(double time)
 {
-    Node* root = dynamic_cast<Node*>(getSimulation()->getContext());
     char buf[100];
     sprintf ( buf, "Time: %g s", time );
     timeLabel->setText ( buf );
@@ -245,13 +243,12 @@ void QSofaRecorder::setTimeSimulation(double time)
 void QSofaRecorder::slot_recordSimulation(bool value)
 {
 
-    Node* root = dynamic_cast<Node*>(getSimulation()->getContext());
     assert(root);
     if (value)
     {
         if (querySimulationName())
         {
-            Clear();
+            Clear(root);
             //Add if needed WriteState
             addWriteState(writeSceneName_);
             addReadState(writeSceneName_,false); //no init done
@@ -300,7 +297,6 @@ void QSofaRecorder::slot_backward()
 }
 void QSofaRecorder::slot_stepbackward()
 {
-    Node* root = dynamic_cast<Node*>(getSimulation()->getContext());
     assert(root);
     playforward->setOn(false);
     double init_time  = getInitialTime();
@@ -334,7 +330,6 @@ void QSofaRecorder::slot_playforward()
 }
 void QSofaRecorder::slot_stepforward()
 {
-    Node* root = dynamic_cast<Node*>(getSimulation()->getContext());
     assert(root);
     if (timeSlider->value() != timeSlider->maxValue())
     {
@@ -380,7 +375,6 @@ void QSofaRecorder::slot_loadrecord_timevalue(bool updateTime)
 }
 void QSofaRecorder::loadSimulation(bool one_step )
 {
-    Node* root = dynamic_cast<Node*>(getSimulation()->getContext());
     assert(root);
     if (timeSlider->maxValue() == 0)
     {
@@ -433,7 +427,6 @@ void QSofaRecorder::slot_sliderValue(int value, bool updateTime)
 void QSofaRecorder::addReadState(const std::string& writeSceneName, bool init)
 {
     assert(! writeSceneName.empty());
-    Node* root = dynamic_cast<Node*>(getSimulation()->getContext());
     assert(root);
 
     ReadStateCreator v(writeSceneName,false, sofa::core::ExecParams::defaultInstance(),init);
@@ -444,7 +437,6 @@ void QSofaRecorder::addReadState(const std::string& writeSceneName, bool init)
 void QSofaRecorder::addWriteState(const std::string& writeSceneName )
 {
     assert(! writeSceneName.empty());
-    Node* root = dynamic_cast<Node*>(getSimulation()->getContext());
     assert(root);
     //record X, V, but won't record in the Mapping
     WriteStateCreator v(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, writeSceneName, true, true, false);

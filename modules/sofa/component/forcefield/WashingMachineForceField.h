@@ -106,7 +106,7 @@ public:
         for(int i=0; i<6; ++i)
         {
             _planes[i] = sofa::core::objectmodel::New< PlaneForceFieldT >();
-            _planes[i]->setContext(this->getContext());
+            this->addSlave(_planes[i]);
             _planes[i]->setStiffness(_stiffness.getValue());
             _planes[i]->setDamping(_damping.getValue());
             _planes[i]->setMState( this->mstate );

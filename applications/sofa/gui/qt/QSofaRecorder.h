@@ -21,6 +21,10 @@
 
 namespace sofa
 {
+namespace simulation
+{
+class Node;
+}
 namespace gui
 {
 namespace qt
@@ -31,9 +35,9 @@ class QSofaRecorder : public QWidget
     Q_OBJECT
 public:
     QSofaRecorder(QWidget* parent);
-    void Clear();
+    void Clear(simulation::Node* root);
     void SetRecordDirectory(const std::string&);
-    void SetSimulation(const std::string& initT,
+    void SetSimulation(simulation::Node* root, const std::string& initT,
             const std::string& endT, const std::string& writeName);
     void setInitialTime(double);
     void setFinalTime(double);
@@ -93,6 +97,7 @@ protected:
     std::string  simulationBaseName_;
     std::string  writeSceneName_;
     std::string  record_directory;
+    simulation::Node* root;
 protected slots:
     void slot_recordSimulation( bool);
     void slot_backward( );

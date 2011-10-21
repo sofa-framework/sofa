@@ -121,7 +121,7 @@ void SofaViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filena
         currentCamera->setBoundingBox(groot->f_bbox.getValue().minBBox(), groot->f_bbox.getValue().maxBBox());
 
         // init pickHandler
-        pick.init();
+        pick.init(groot.get());
         pick.setColourRenderCallback(&colourPickingRenderCallBack);
     }
 
@@ -240,7 +240,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Shift:
         GLint viewport[4];
         glGetIntegerv(GL_VIEWPORT,viewport);
-        pick.activateRay(viewport[2],viewport[3]);
+        pick.activateRay(viewport[2],viewport[3], groot.get());
         break;
     case Qt::Key_B:
         // --- change background
@@ -483,7 +483,7 @@ void SofaViewer::mouseEvent(QMouseEvent *e)
     if (e->state() & Qt::ShiftButton)
     {
 
-        pick.activateRay(viewport[2],viewport[3]);
+        pick.activateRay(viewport[2],viewport[3], groot.get());
         pick.updateMouse2D( mousepos );
 
         //_sceneTransform.ApplyInverse();
@@ -529,7 +529,7 @@ void SofaViewer::mouseEvent(QMouseEvent *e)
     }
     else
     {
-        pick.activateRay(viewport[2],viewport[3]);
+        pick.activateRay(viewport[2],viewport[3], groot.get());
     }
 
 }

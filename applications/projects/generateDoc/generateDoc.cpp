@@ -313,14 +313,14 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
                 }
                 else
                 {
-                    std::vector< std::pair<std::string, sofa::core::objectmodel::BaseData* > > fields = object->getFields();
-                    for (std::vector< std::pair< std::string, sofa::core::objectmodel::BaseData*>  >::iterator itf = fields.begin(), itfend = fields.end(); itf != itfend; ++itf)
+                    const sofa::core::objectmodel::Base::VecData& fields = object->getDataFields();
+                    for (sofa::core::objectmodel::Base::VecData::const_iterator itf = fields.begin(), itfend = fields.end(); itf != itfend; ++itf)
                     {
-                        sofa::core::objectmodel::BaseData* f = itf->second;
+                        sofa::core::objectmodel::BaseData* f = *itf;
                         out << "<tr class=\"sofa-field\">";
                         out << "<td></td>";
                         out << "<td class=\"sofa-field-name\">";
-                        out << "<span class=\"field-name\">"<<xmlencode(itf->first)<<"</span>";
+                        out << "<span class=\"field-name\">"<<xmlencode(f->getName())<<"</span>";
                         out << "</td>";
                         out << "<td class=\"sofa-field-type\" colspan=\""<<templates.size() + 1<<"\">";
                         out << "<span class=\"field-type\">"<<xmlencode(f->getValueTypeString())<<"</span>";

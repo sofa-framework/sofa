@@ -302,8 +302,14 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
     }
 }
 
-
-
+/// Get a list of parent node
+core::objectmodel::BaseNode::Parents GNode::getParents() const
+{
+    Parents p;
+    if (parent)
+        p.push_back(parent);
+    return p;
+}
 
 /// Get parent node (or NULL if no hierarchy or for root node)
 core::objectmodel::BaseNode* GNode::getParent()

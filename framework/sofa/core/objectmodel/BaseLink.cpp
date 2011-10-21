@@ -24,15 +24,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/collision/Pipeline.h>
-#include <sofa/core/visual/VisualLoop.h>
-#include <iostream>
-using std::cerr;
-using std::endl;
+#include <sofa/core/objectmodel/BaseLink.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/helper/BackTrace.h>
 
 namespace sofa
 {
@@ -43,50 +37,25 @@ namespace core
 namespace objectmodel
 {
 
-BaseNode::BaseNode()
-{}
-
-BaseNode::~BaseNode()
-{}
-
-BaseNode* BaseNode::getRoot() const
+BaseLink::BaseLink(const BaseInitLink& init, LinkFlags flags)
+    : m_flags(flags), m_name(init.name), m_help(init.help)
 {
-    Parents p = getParents();
-    if (p.empty()) return const_cast<BaseNode*>(this);
-    else return p[0]->getRoot();
+    //m_counters.assign(0);
+    //m_isSets.assign(false);
 }
 
-core::behavior::BaseAnimationLoop* BaseNode::getAnimationLoop() const
+BaseLink::~BaseLink()
 {
-    return this->getContext()->get<core::behavior::BaseAnimationLoop>();
 }
 
-core::behavior::OdeSolver* BaseNode::getOdeSolver() const
+void BaseLink::copyAspect(int /*destAspect*/, int /*srcAspect*/)
 {
-    return this->getContext()->get<core::behavior::OdeSolver>();
+    //m_counters[destAspect] = m_counters[srcAspect];
+    //m_isSets[destAspect] = m_isSets[srcAspect];
 }
 
-core::collision::Pipeline* BaseNode::getCollisionPipeline() const
+void BaseLink::releaseAspect(int /*aspect*/)
 {
-    return this->getContext()->get<core::collision::Pipeline>();
-}
-
-core::visual::VisualLoop* BaseNode::getVisualLoop() const
-{
-    return this->getContext()->get<core::visual::VisualLoop>();
-}
-
-/// Set the context of an object to this
-void BaseNode::setObjectContext(BaseObject::SPtr obj)
-{
-    obj->l_context.set(this->getContext());
-}
-
-/// Reset the context of an object
-void BaseNode::clearObjectContext(BaseObject::SPtr obj)
-{
-    if (obj->getContext() == this->getContext())
-        obj->l_context.reset();
 }
 
 } // namespace objectmodel

@@ -72,8 +72,8 @@ void PipelineImpl::init()
     {
         serr <<"no intersectionMethod defined. Using DiscreteIntersection" << sendl;
         sofa::core::objectmodel::BaseObjectDescription discreteIntersectionDesc("Default Intersection","DiscreteIntersection");
-        intersectionMethod = dynamic_cast<Intersection*>(sofa::core::ObjectFactory::CreateObject(getContext(), &discreteIntersectionDesc).get());
-        //intersectionMethod = new sofa::component::collision::DiscreteIntersection;
+        sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(getContext(), &discreteIntersectionDesc);
+        intersectionMethod = dynamic_cast<Intersection*>(obj.get());
     }
 }
 

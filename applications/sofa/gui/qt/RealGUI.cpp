@@ -996,11 +996,11 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
 
         simulationGraph->Clear(root.get());
 
-        statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()) );
+        statWidget->CreateStats(root.get());
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
         if (recorder)
-            recorder->Clear();
+            recorder->Clear(root.get());
 #endif
     }
 
@@ -1021,12 +1021,12 @@ void RealGUI::Clear()
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
-        recorder->Clear();
+        recorder->Clear(viewer->getScene());
 #endif
 
-    simulationGraph->Clear(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
+    simulationGraph->Clear(viewer->getScene());
 
-    statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
+    statWidget->CreateStats(viewer->getScene());
 }
 
 //----------------------------------
@@ -1215,7 +1215,7 @@ void RealGUI::fileOpenSimu ( std::string s )
             dtEdit->setText(QString(dT.c_str()));
 #ifndef SOFA_GUI_QT_NO_RECORDER
             if (recorder)
-                recorder->SetSimulation(initT,endT,writeName);
+                recorder->SetSimulation(viewer->getScene(),initT,endT,writeName);
 #endif
 
         }
@@ -1622,7 +1622,7 @@ void RealGUI::currentTabChanged ( QWidget* widget )
     }
 
     else if (widget == TabStats)
-        statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
+        statWidget->CreateStats(viewer->getScene());
 
     currentTab = widget;
 }
@@ -2024,7 +2024,7 @@ void RealGUI::showhideElements()
 void RealGUI::Update()
 {
     updateViewerParameters();
-    statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
+    statWidget->CreateStats(viewer->getScene());
 }
 
 void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
@@ -2092,7 +2092,7 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
 
     if ( sofalistview == simulationGraph && activate )
     {
-        if ( node == simulation::getSimulation()->getContext() )
+        if ( node == viewer->getScene() )
         {
             simulation::getSimulation()->init(node);
         }

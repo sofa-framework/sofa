@@ -540,7 +540,12 @@ public:
     Node* getTreeNode(const std::string& name) const;
 
     /// Get children nodes
-    virtual const Children getChildren() const;
+    virtual Children getChildren() const;
+
+    BaseContext* getRootContext() const
+    {
+        return getRoot()->getContext();
+    }
 
     /// Get timer frequency
     ctime_t getTimeFreq() const;

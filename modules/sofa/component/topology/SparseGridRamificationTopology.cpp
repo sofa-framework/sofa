@@ -957,7 +957,7 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
-    _virtualFinerLevels[0]->setContext( this->getContext() );
+    this->addSlave(_virtualFinerLevels[0]); //->setContext( this->getContext() );
     sgrt->_finestConnectivity.setValue( _finestConnectivity.getValue() );
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->setMin( _min.getValue() );
@@ -971,7 +971,7 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     for(int i=1; i<nb; ++i)
     {
         _virtualFinerLevels[i] = sofa::core::objectmodel::New< SparseGridRamificationTopology >(true);
-
+        this->addSlave(_virtualFinerLevels[i]);
 
         _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1].get());
 

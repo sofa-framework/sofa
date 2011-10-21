@@ -76,13 +76,13 @@ public:
     class BaseInitData
     {
     public:
-        BaseInitData() : data(NULL), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(NULL), name(""), parentClass(""), group(""), widget("") {}
+        BaseInitData() : data(NULL), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(NULL), name(""), ownerClass(""), group(""), widget("") {}
         BaseData* data;
         const char* helpMsg;
         DataFlags dataFlags;
         Base* owner;
         const char* name;
-        const char* parentClass;
+        const char* ownerClass;
         const char* group;
         const char* widget;
     };
@@ -145,11 +145,11 @@ public:
     /// @deprecated Set help message
     void setHelpMsg(const char* val) { help = val; }
 
-    /// Get parentClass
-    const char* getParentClass() const { return parentClass; }
+    /// Get owner class
+    const char* getOwnerClass() const { return ownerClass; }
 
-    /// Set group
-    void setParentClass(const char* val) { parentClass = val; }
+    /// Set owner class
+    void setOwnerClass(const char* val) { ownerClass = val; }
 
     /// Get group
     const char* getGroup() const { return group; }
@@ -268,8 +268,8 @@ protected:
 
     /// Help message
     const char* help;
-    /// parent class
-    const char* parentClass;
+    /// Owner class
+    const char* ownerClass;
     /// group
     const char* group;
     /// widget

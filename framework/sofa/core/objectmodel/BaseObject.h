@@ -30,6 +30,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/Link.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #include <sofa/core/objectmodel/Context.h>
@@ -64,6 +65,7 @@ namespace objectmodel
 {
 
 class Event;
+class BaseNode;
 
 /**
  *  \brief Base class for simulation objects.
@@ -89,11 +91,23 @@ public:
     /// @name Context accessors
     /// @{
 
-    void setContext(BaseContext* n);
+    //void setContext(BaseContext* n);
 
     const BaseContext* getContext() const;
 
     BaseContext* getContext();
+
+    const BaseObject* getMaster() const;
+
+    BaseObject* getMaster();
+
+    typedef helper::vector<BaseObject::SPtr> VecSlaves;
+
+    const VecSlaves& getSlaves() const;
+
+    virtual void addSlave(BaseObject::SPtr s);
+
+    virtual void removeSlave(BaseObject::SPtr s);
 
     /// @}
 
@@ -201,7 +215,34 @@ public:
 #endif
 
 protected:
-    BaseContext* context_;
+    //BaseContext* context_;
+
+    Link<BaseObject, BaseContext, BaseLink::FLAG_DOUBLELINK/*, &changeContextLink*/> l_context;
+    Link<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK|BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK/*, &changeSlavesLink*/> l_slaves;
+    Link<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK> l_master;
+
+    // This method insures that context is never NULL (using BaseContext::getDefault() instead)
+    // and that all slaves of an object share its context
+    void changeContextLink(BaseContext* before, BaseContext*& after)
+    {
+        if (!after) after = BaseContext::getDefault();
+        if (before == after) return;
+        for (unsigned int i = 0; i < l_slaves.size(); ++i) l_slaves.get(i)->l_context.set(after);
+    }
+
+    /// This method insures that slaves objects have master and context links set correctly
+    void changeSlavesLink(BaseObject::SPtr before, BaseObject::SPtr& after, unsigned int)
+    {
+        if (before == after) return;
+        if (before) { before->l_master.reset(); before->l_context.reset(); }
+        if (after) { after->l_master.set(this); after->l_context.set(getContext()); }
+    }
+
+    // BaseNode can set the context of its own objects
+    friend class BaseNode;
+    //friend void BaseNode::setObjectContext(BaseObject::SPtr);
+    //friend void BaseNode::clearObjectContext();
+
 #ifdef SOFA_SMP
     Iterative::IterativePartition *partition_;
 #endif

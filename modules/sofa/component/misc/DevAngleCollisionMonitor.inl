@@ -69,11 +69,11 @@ void DevAngleCollisionMonitor<DataTypes>::init()
     }
 
     intersection = sofa::core::objectmodel::New<sofa::component::collision::NewProximityIntersection>();
-    intersection->setContext(getContext());
+    this->addSlave(intersection);
     intersection->init();
 
     detection = sofa::core::objectmodel::New<sofa::component::collision::BruteForceDetection>();
-    detection->setContext(getContext());
+    this->addSlave(detection);
     detection->init();
 }
 

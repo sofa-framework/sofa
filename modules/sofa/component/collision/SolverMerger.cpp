@@ -58,16 +58,16 @@ typename T::SPtr copySolver(const T& s)
 {
     const T* src = &s;
     typename T::SPtr res = sofa::core::objectmodel::New<T>();
-    for (unsigned int i=0; i<src->getFields().size(); ++i)
+    const sofa::core::objectmodel::BaseObject::VecData& fields = src->getDataFields();
+    for (unsigned int i=0; i<fields.size(); ++i)
     {
-        core::objectmodel::BaseData* s = src->getFields()[i].second;
-        core::objectmodel::BaseData* d = res->findField(src->getFields()[i].first);
+        core::objectmodel::BaseData* s = fields[i];
+        core::objectmodel::BaseData* d = res->findData(s->getName());
         if (d)
             d->copyValue(s);
     }
     return res;
 }
-
 
 ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* solver2)
 {

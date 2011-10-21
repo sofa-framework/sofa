@@ -1387,7 +1387,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNz( newnz );
     _virtualFinerLevels[0]->setMin( _min.getValue() );
     _virtualFinerLevels[0]->setMax( _max.getValue() );
-    _virtualFinerLevels[0]->setContext( this->getContext( ) );
+    this->addSlave(_virtualFinerLevels[0]); //->setContext( this->getContext( ) );
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->init();
@@ -1398,6 +1398,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
     for(int i=1; i<nb; ++i)
     {
         _virtualFinerLevels[i] = sofa::core::objectmodel::New< SparseGridTopology >(true);
+        this->addSlave(_virtualFinerLevels[i]);
 
         _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1].get());
 

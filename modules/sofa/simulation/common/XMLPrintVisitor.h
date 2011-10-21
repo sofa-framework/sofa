@@ -45,11 +45,8 @@ class SOFA_SIMULATION_COMMON_API XMLPrintVisitor : public Visitor
 protected:
     std::ostream& m_out;
     int level;
-    //Print in compact mode or expanded mode
-    bool compact;
 public:
-    XMLPrintVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, std::ostream& out) : Visitor(params), m_out(out),level(0), compact(false) {}
-    XMLPrintVisitor(const sofa::core::ExecParams* /* PARAMS FIRST */, std::ostream& out, bool compact ) : Visitor(params), m_out(out),level(0), compact(compact) {}
+    XMLPrintVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, std::ostream& out) : Visitor(params), m_out(out),level(0) {}
 
     template<class T>
     void processObject(T obj);

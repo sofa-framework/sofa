@@ -469,12 +469,12 @@ void GraphListenerQListView::removeDatas(core::objectmodel::BaseObject* parent)
 
     if( items.count(parent) )
     {
-        const std::vector< std::pair<std::string, core::objectmodel::BaseData*> >& fields = parent->getFields();
-        for( std::vector< std::pair<std::string, core::objectmodel::BaseData*> >::const_iterator it = fields.begin();
+        const sofa::core::objectmodel::Base::VecData& fields = parent->getDataFields();
+        for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin();
                 it != fields.end();
                 ++it)
         {
-            data = (*it).second;
+            data = (*it);
             if(datas.count(data))
             {
                 delete datas[data];
@@ -493,13 +493,12 @@ void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *paren
     BaseData* data = NULL;
     if(items.count(parent))
     {
-
-        const std::vector< std::pair<std::string, core::objectmodel::BaseData*> >& fields = parent->getFields();
-        for( std::vector< std::pair<std::string, core::objectmodel::BaseData*> >::const_iterator it = fields.begin();
+        const sofa::core::objectmodel::Base::VecData& fields = parent->getDataFields();
+        for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin();
                 it!=fields.end();
                 ++it)
         {
-            data = (*it).second;
+            data = (*it);
             if(!datas.count(data))
             {
                 static QPixmap pixData((const char**)icondata_xpm);

@@ -98,9 +98,11 @@ public:
 
 
     /// Remove the current node from the graph: consists in removing the link to all the parents
-    void detachFromGraph() ;
+    void detachFromGraph();
 
 
+    /// Get a list of parent node
+    virtual core::objectmodel::BaseNode::Parents getParents() const;
 
 
 

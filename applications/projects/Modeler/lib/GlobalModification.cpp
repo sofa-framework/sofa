@@ -69,14 +69,14 @@ GlobalModification::GlobalModification(const InternalStorage &c, GraphHistoryMan
     for (InternalStorage::const_iterator it=components.begin(); it!=components.end(); ++it)
     {
         const core::objectmodel::Base *c=(*it);
-        const std::vector< std::pair<std::string, sofa::core::objectmodel::BaseData*> >& datas=c->getFields();
+        const core::objectmodel::Base::VecData& datas=c->getDataFields();
         for (unsigned int d=0; d<datas.size(); ++d)
         {
-            allNames.insert(datas[d].first);
+            allNames.insert(datas[d]->getName());
         }
 
-        const std::multimap< std::string, sofa::core::objectmodel::BaseData* >& aliases=c->getAliases();
-        for (std::multimap< std::string, sofa::core::objectmodel::BaseData* >::const_iterator it=aliases.begin(); it!=aliases.end(); ++it)
+        const core::objectmodel::Base::MapData& aliases=c->getDataAliases();
+        for (core::objectmodel::Base::MapData::const_iterator it=aliases.begin(); it!=aliases.end(); ++it)
         {
             allAliases.insert(it->first);
         }

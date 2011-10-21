@@ -149,6 +149,7 @@ unix {
   QMAKE_CFLAGS_RELEASE -= -g
   QMAKE_CXXFLAGS_RELEASE -= -g
 
+contains(DEFINES, INSTALL_QGLVIEWER) {
   # install header
   include.path = $${INCLUDE_DIR}/QGLViewer
   include.files = $${HEADERS} qglviewer.cw qglviewer_*.qm
@@ -179,6 +180,7 @@ unix {
 
   # "make install" configuration options
   INSTALLS *= target include documentation docImages docRefManual
+}
 }
 
 # Must be done after install target definition

@@ -170,6 +170,11 @@ const BaseContext::Vec3& BaseContext::getVelocityBasedLinearAccelerationInWorld(
 #endif
 #endif // SOFA_DEV
 
+BaseContext* BaseContext::getRootContext() const
+{
+    return const_cast<BaseContext*>(this);
+}
+
 ////////////////
 // Containers //
 ////////////////

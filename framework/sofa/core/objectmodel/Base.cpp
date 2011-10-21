@@ -51,13 +51,13 @@ Base::Base()
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
 {
-    name.setParentClass("Base");
+    name.setOwnerClass("Base");
     name.setAutoLink(false);
-    f_printLog.setParentClass("Base");
+    f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
-    f_tags.setParentClass("Base");
+    f_tags.setOwnerClass("Base");
     f_tags.setAutoLink(false);
-    f_bbox.setParentClass("Base");
+    f_bbox.setOwnerClass("Base");
     f_bbox.setReadOnly(true);
     f_bbox.setPersistent(false);
     f_bbox.setDisplayed(false);
@@ -98,20 +98,21 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
 /// Helper method used by initData()
 void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags )
 {
-    std::string ln(name);
-    if( ln.size()>0 && findField(ln) )
-    {
-        serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
-        exit( 1 );
-    }
-    m_fieldVec.push_back( std::make_pair(ln,field));
-    m_aliasData.insert(std::make_pair(ln,field));
+    /*
+        std::string ln(name);
+        if( ln.size()>0 && findField(ln) )
+        {
+            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
+            exit( 1 );
+        }
+        m_fieldVec.push_back( std::make_pair(ln,field));
+        m_aliasData.insert(std::make_pair(ln,field));
+    */
     res.owner = this;
     res.data = field;
     res.name = name;
     res.helpMsg = help;
     res.dataFlags = dataFlags;
-
 
     std::string nameStr(name);
     if (nameStr.size() >= 4)
@@ -121,21 +122,21 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
     }
 }
 
-/// Add a field. Note that this method should only be called if the field was not initialized with the initData<T> of field<T> methods
-void Base::addField(BaseData* f, const char* name)
+/// Add a data field.
+/// Note that this method should only be called if the field was not initialized with the initData method
+void Base::addData(BaseData* f)
 {
-    std::string ln(name);
-    if (ln.size() > 0 && findField(ln))
+    std::string name = f->getName();
+    if (name.size() > 0 && (findData(name) || findLink(name)))
     {
-        serr << "field name " << ln
-                << " already used in this class or in a parent class !...aborting"
+        serr << "Data field name " << name
+                << " already used in this class or in a parent class !"
                 << sendl;
-        exit(1);
+        //exit(1);
     }
-    m_fieldVec.push_back(std::make_pair(ln, f));
-    m_aliasData.insert(std::make_pair(ln, f));
+    m_vecData.push_back(f);
+    m_aliasData.insert(std::make_pair(name, f));
     f->setOwner(this);
-    f->setName(name);
 }
 
 /// Add an alias to a Data
@@ -144,25 +145,46 @@ void Base::addAlias( BaseData* field, const char* alias)
     m_aliasData.insert(std::make_pair(std::string(alias),field));
 }
 
+/// Add a link.
+/// Note that this method should only be called if the link was not initialized with the initLink method
+void Base::addLink(BaseLink* l)
+{
+    std::string name = l->getName();
+    if (name.size() > 0 && (findData(name) || findLink(name)))
+    {
+        serr << "Link name " << name
+                << " already used in this class or in a parent class !"
+                << sendl;
+        //exit(1);
+    }
+    m_vecLink.push_back(l);
+    m_aliasLink.insert(std::make_pair(name, l));
+    //l->setOwner(this);
+}
+
+/// Add an alias to a Link
+void Base::addAlias( BaseLink* link, const char* alias)
+{
+    m_aliasLink.insert(std::make_pair(std::string(alias),link));
+}
+
 /// Copy the source aspect to the destination aspect for each Data in the component.
 void Base::copyAspect(int destAspect, int srcAspect)
 {
-    typedef std::vector< std::pair<std::string, BaseData*> >::const_iterator DataListIterator;
-    for(DataListIterator iData = m_fieldVec.begin(); iData != m_fieldVec.end(); ++iData)
+    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
-        std::cout << "  " << iData->first;
-        iData->second->copyAspect(destAspect, srcAspect);
+        //std::cout << "  " << iData->first;
+        (*iData)->copyAspect(destAspect, srcAspect);
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
 }
 
 /// Release memory allocated for the specified aspect.
 void Base::releaseAspect(int aspect)
 {
-    typedef std::vector< std::pair<std::string, BaseData*> >::const_iterator DataListIterator;
-    for(DataListIterator iData = m_fieldVec.begin(); iData != m_fieldVec.end(); ++iData)
+    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
-        iData->second->releaseAspect(aspect);
+        (*iData)->releaseAspect(aspect);
     }
 }
 
@@ -494,13 +516,13 @@ std::string Base::decodeTemplateName(const std::type_info& t)
     */
 }
 
-/// Find a field given its name. Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
-BaseData* Base::findField( const std::string &name ) const
+/// Find a data field given its name.
+/// Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
+BaseData* Base::findData( const std::string &name ) const
 {
-    std::string ln(name);
     //Search in the aliases
-    typedef std::multimap< std::string, BaseData* >::const_iterator multimapIterator;
-    std::pair< multimapIterator, multimapIterator> range = m_aliasData.equal_range(name);
+    typedef MapData::const_iterator mapIterator;
+    std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
     if (range.first != range.second)
         return range.first->second;
     else
@@ -510,46 +532,70 @@ BaseData* Base::findField( const std::string &name ) const
 /// Find fields given a name: several can be found as we look into the alias map
 std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 {
-    std::string ln(name);
     std::vector<BaseData*> result;
     //Search in the aliases
-    typedef std::multimap< std::string, BaseData* >::const_iterator multimapIterator;
-    std::pair< multimapIterator, multimapIterator> range = m_aliasData.equal_range(name);
-    for (multimapIterator itAlias=range.first; itAlias!=range.second; itAlias++)
+    typedef MapData::const_iterator mapIterator;
+    std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
+    for (mapIterator itAlias=range.first; itAlias!=range.second; itAlias++)
         result.push_back(itAlias->second);
     return result;
 }
 
-void  Base::parseFields ( std::list<std::string> str )
+
+/// Find a link given its name.
+/// Return NULL if not found. If more than one link is found (due to aliases), only the first is returned.
+BaseLink* Base::findLink( const std::string &name ) const
 {
-    string name;
-    while( !str.empty() )
+    //Search in the aliases
+    typedef MapLink::const_iterator mapIterator;
+    std::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
+    if (range.first != range.second)
+        return range.first->second;
+    else
+        return NULL;
+}
+
+/// Find links given a name: several can be found as we look into the alias map
+std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
+{
+    std::vector<BaseLink*> result;
+    //Search in the aliases
+    typedef MapLink::const_iterator mapIterator;
+    std::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
+    for (mapIterator itAlias=range.first; itAlias!=range.second; itAlias++)
+        result.push_back(itAlias->second);
+    return result;
+}
+
+void  Base::parseFields ( const std::list<std::string>& str )
+{
+    string name,value;
+    std::list<std::string>::const_iterator it = str.begin(), itend = str.end();
+    while(it != itend)
     {
-        name = str.front();
-        str.pop_front();
-        // field name
+        name = *it;
+        ++it;
+        if (it == itend) break;
+        value = *it;
+        ++it;
         std::vector< BaseData* > fields=findGlobalField(name);
-        if( fields.size() != 0 )
+        if( fields.size() > 0 )
         {
-            std::string s = str.front();
             for (unsigned int i=0; i<fields.size(); ++i)
             {
-                if( !(fields[i]->read( s ))) serr<<"could not read value for option " << name <<": "<< s << sendl;
+                if( !(fields[i]->read( value ))) serr<<"Could not read value for data field " << name <<": "<< value << sendl;
             }
         }
         else
         {
-            str.pop_front();
-            serr<<"Unknown option: "<< name << sendl;
+            serr<<"Unknown data field: "<< name << sendl;
         }
     }
 }
 
 void  Base::parseFields ( const std::map<std::string,std::string*>& args )
 {
-    // build  std::list<std::string> str
-    using std::string;
-    string key,val;
+    std::string key,val;
     for( std::map<string,string*>::const_iterator i=args.begin(), iend=args.end(); i!=iend; i++ )
     {
         if( (*i).second!=NULL )
@@ -557,16 +603,16 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
             key=(*i).first;
             val=*(*i).second;
             std::vector< BaseData* > fields=findGlobalField(key);
-            if( fields.size() != 0 )
+            if( fields.size() > 0 )
             {
                 for (unsigned int i=0; i<fields.size(); ++i)
                 {
-                    if( !(fields[i]->read( val ))) serr<<"could not read value for option "<<key<<": "<<val << sendl;
+                    if( !(fields[i]->read( val ))) serr<<"Could not read value for data field "<<key<<": "<<val << sendl;
                 }
             }
             else
             {
-                if ((key!="name") && (key!="type")) serr<<"Unknown option: " << key << sendl;
+                if ((key!="name") && (key!="type")) serr<<"Unknown data field: " << key << sendl;
             }
         }
     }
@@ -575,7 +621,6 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
 /// Parse the given description to assign values to this object's fields and potentially other parameters
 void  Base::parse ( BaseObjectDescription* arg )
 {
-    //this->parseFields ( arg->getAttributeMap() );
     std::vector< std::string > attributeList;
     arg->getAttributeList(attributeList);
     for (unsigned int i=0; i<attributeList.size(); ++i)
@@ -587,7 +632,7 @@ void  Base::parse ( BaseObjectDescription* arg )
             if (val)
             {
                 std::string valueString(val);
-                if( !(dataModif[d]->read( valueString ))) serr<<"could not read value for option "<< attributeList[i] <<": " << val << sendl;
+                if( !(dataModif[d]->read( valueString ))) serr<<"Could not read value for data field "<< attributeList[i] <<": " << val << sendl;
             }
         }
     }
@@ -595,80 +640,33 @@ void  Base::parse ( BaseObjectDescription* arg )
 
 void  Base::writeDatas ( std::map<std::string,std::string*>& args )
 {
-//     for( std::map<string,BaseData*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
-    for (unsigned int i=0; i<m_fieldVec.size(); i++)
+    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
-        string valueString;
-        BaseData* field = m_fieldVec[i].second;
-
-        if( args[m_fieldVec[i].first] != NULL )
-            *args[ m_fieldVec[i].first] = field->getValueString();
+        BaseData* field = *iData;
+        std::string name = field->getName();
+        if( args[name] != NULL )
+            *args[name] = field->getValueString();
         else
-            args[ m_fieldVec[i].first] =  new string(field->getValueString());
+            args[name] =  new string(field->getValueString());
     }
 }
 
-
-void Base::xmlWriteNodeDatas (std::ostream& out, unsigned /*level*/ )
+void  Base::xmlWriteDatas (std::ostream& out, int)
 {
-    for (unsigned int i=0; i<m_fieldVec.size(); i++)
+    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
-        BaseData* field = m_fieldVec[ i ].second;
-        if(  field->isPersistent() && field->isSet() )
+        BaseData* field = *iData;
+        if (!field->getLinkPath().empty() )
         {
-            if (field->getLinkPath().empty() )
-            {
-                if (!field->getValueString().empty())
-                    out << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" ";
-            }
-            else
-            {
-                out << m_fieldVec[ i ].first << "=\""<< field->getLinkPath() << "\" ";
-            }
+            out << " " << field->getName() << "=\""<< field->getLinkPath() << "\" ";
         }
-    }
-}
-void  Base::xmlWriteDatas ( std::ostream& out, unsigned level, bool compact )
-{
-//     for( std::map<string,BaseData*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
-    if (compact)
-    {
-        for (unsigned int i=0; i<m_fieldVec.size(); i++)
+        else
         {
-            BaseData* field = m_fieldVec[ i ].second;
-
-            if (!field->getLinkPath().empty() )
+            if(  field->isPersistent() && field->isSet())
             {
-                out << " " << m_fieldVec[ i ].first << "=\""<< field->getLinkPath() << "\" ";
-            }
-            else
-            {
-                if(  field->isPersistent() && field->isSet())
-                {
-                    if (!field->getValueString().empty() )
-                        out << " " <<m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" ";
-                }
-            }
-        }
-    }
-    else
-    {
-        for (unsigned int i=0; i<m_fieldVec.size(); i++)
-        {
-            BaseData* field = m_fieldVec[ i ].second;
-            if( field->isPersistent() && field->isSet() && (!field->getValueString().empty() || !field->getLinkPath().empty() ) )
-            {
-                for (unsigned l=0; l<level; l++) out << "\t";
-                out << "<Attribute type=\"" << m_fieldVec[ i ].first << "\">\n" ;
-
-                for (unsigned l=0; l<=level; l++) out << "\t";
-                if (field->getLinkPath().empty())
-                    out  << "<Data value=\"" << field->getValueString() << "\"/>\n";
-                else
-                    out  << "<Data value=\"" << field->getLinkPath() << "\"/>\n";
-
-                for (unsigned l=0; l<level; l++) out << "\t";
-                out << "</Attribute>\n";
+                std::string val = field->getValueString();
+                if (!val.empty())
+                    out << " " << field->getName() << "=\""<< val << "\" ";
             }
         }
     }
@@ -679,4 +677,3 @@ void  Base::xmlWriteDatas ( std::ostream& out, unsigned level, bool compact )
 } // namespace core
 
 } // namespace sofa
-

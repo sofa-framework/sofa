@@ -655,17 +655,17 @@ void GraphModeler::configureElement(Base* b, xml::BaseElement *elem)
     }
 
 
-    std::vector< std::pair<std::string, BaseData*> > vecDatas=b->getFields();
+    const sofa::core::objectmodel::Base::VecData& vecDatas=b->getDataFields();
     for (unsigned int i=0; i<vecDatas.size(); ++i)
     {
-        std::string result = elem->getAttribute(vecDatas[i].first, "");
+        std::string result = elem->getAttribute(vecDatas[i]->getName(), "");
 
         if (!result.empty())
         {
             if (result[0] == '@')
-                vecDatas[i].second->setLinkPath(result);
+                vecDatas[i]->setLinkPath(result);
             else
-                vecDatas[i].second->read(result);
+                vecDatas[i]->read(result);
         }
     }
 }
@@ -818,7 +818,7 @@ bool GraphModeler::getSaveFilename(std::string &filename)
 void GraphModeler::save(const std::string &filename)
 {
     GNode *node = getGNode(this->firstChild());
-    simulation::getSimulation()->exportXML(node, filename.c_str(),true);
+    simulation::getSimulation()->exportXML(node, filename.c_str());
     emit graphClean();
 }
 
@@ -835,7 +835,7 @@ void GraphModeler::saveComponents()
 void GraphModeler::saveComponents(helper::vector<Q3ListViewItem*> items, const std::string &file)
 {
     std::ofstream out(file.c_str());
-    simulation::XMLPrintVisitor print(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, out,true);
+    simulation::XMLPrintVisitor print(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, out);
     print.setLevel(1);
     out << "<Node name=\"Group\">\n";
     for (unsigned int i=0; i<items.size(); ++i)

@@ -36,6 +36,7 @@
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/SPtr.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 
@@ -68,17 +69,10 @@ class SOFA_CORE_API Base
 public:
     typedef Base* Ptr;
     typedef boost::intrusive_ptr<Base> SPtr;
-    // typedef weak_intrusive_ptr<Base> WPtr;
-    typedef Base* WPtr;
 
     typedef TClass< Base, void > MyClass;
     static const MyClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
-
-    static inline SPtr New()
-    {
-        return SPtr(new Base);
-    }
 
 protected:
     /// Constructor cannot be called directly
@@ -127,14 +121,14 @@ public:
     virtual std::string getTemplateName() const;
 
     /// @name fields
-    ///   Data fields managment
+    ///   Data fields management
     /// @{
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     virtual void parse ( BaseObjectDescription* arg );
 
     /// Assign the field values stored in the given list of name + value pairs of strings
-    void parseFields ( std::list<std::string> str );
+    void parseFields ( const std::list<std::string>& str );
 
     /// Assign the field values stored in the given map of name -> value pairs
     virtual void parseFields ( const std::map<std::string,std::string*>& str );
@@ -142,19 +136,27 @@ public:
     /// Write the current field values to the given map of name -> value pairs
     void writeDatas (std::map<std::string,std::string*>& str);
 
-    /// Write the current Node values to the given XML output stream
-    void xmlWriteNodeDatas (std::ostream& out, unsigned level);
-
     /// Write the current field values to the given XML output stream
-    void xmlWriteDatas (std::ostream& out, unsigned level, bool compact);
+    void xmlWriteDatas (std::ostream& out, int level = 0);
 
-    /// Find a field given its name. Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
-    BaseData* findField( const std::string &name ) const;
+    /// Find a data field given its name. Return NULL if not found.
+    /// If more than one field is found (due to aliases), only the first is returned.
+    BaseData* findData( const std::string &name ) const;
 
-    /// Find fields given a name: several can be found as we look into the alias map
+    /// @deprecated
+    BaseData* findField( const std::string &name ) const { return findData(name); }
+
+    /// Find data fields given a name: several can be found as we look into the alias map
     std::vector< BaseData* > findGlobalField( const std::string &name ) const;
 
-    /// Helper method used to initialize a field containing a value of type T
+    /// Find a link given its name. Return NULL if not found.
+    /// If more than one link is found (due to aliases), only the first is returned.
+    BaseLink* findLink( const std::string &name ) const;
+
+    /// Find link fields given a name: several can be found as we look into the alias map
+    std::vector< BaseLink* > findLinks( const std::string &name ) const;
+
+    /// Helper method used to initialize a data field containing a value of type T
     template<class T>
     BaseData::BaseInitData initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
     {
@@ -163,7 +165,7 @@ public:
         return res;
     }
 
-    /// Helper method used to initialize a field containing a value of type T
+    /// Helper method used to initialize a data field containing a value of type T
     template<class T>
     typename Data<T>::InitData initData( Data<T>* field, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
     {
@@ -172,13 +174,46 @@ public:
         return res;
     }
 
+    /// Add a data field.
+    /// Note that this method should only be called if the Data was not initialized with the initData method
+    void addData(BaseData* f);
+
+    /// Remove a data field.
+    void removeData(BaseData* f);
+
+    /// @deprecated
+    void addField(BaseData* f, const char* name)
+    {
+        if (name && *name) f->setName(name);
+        addData(f);
+    }
+
     /// Add an alias to a Data
     void addAlias( BaseData* field, const char* alias);
 
+    /// Add a link.
+    void addLink(BaseLink* l);
+
+    /// Remove a link.
+    void removeLink(BaseLink* l);
+
+    /// Add an alias to a Link
+    void addAlias( BaseLink* link, const char* alias);
+
+    typedef std::vector<BaseData*> VecData;
+    typedef std::multimap<std::string, BaseData*> MapData;
+    typedef std::vector<BaseLink*> VecLink;
+    typedef std::multimap<std::string, BaseLink*> MapLink;
+
     /// Accessor to the vector containing all the fields of this object
-    const std::vector< std::pair<std::string, BaseData*> >& getFields() const { return m_fieldVec; }
+    const VecData& getDataFields() const { return m_vecData; }
     /// Accessor to the map containing all the aliases of this object
-    const std::multimap< std::string, BaseData* >& getAliases() const { return m_aliasData; }
+    const MapData& getDataAliases() const { return m_aliasData; }
+
+    /// Accessor to the vector containing all the fields of this object
+    const VecLink& getLinks() const { return m_vecLink; }
+    /// Accessor to the map containing all the aliases of this object
+    const MapLink& getLinkAliases() const { return m_aliasLink; }
 
     void copyAspect(int destAspect, int srcAspect);
 
@@ -232,9 +267,6 @@ protected:
         initData0( field, res, name, help, isDisplayed, isReadOnly );
         res.value = value;
     }
-
-    /// Add a field. Note that this method should only be called if the field was not initialized with the initData<T> of field<T> methods
-    void addField(BaseData* f, const char* name);
 
 public:
     /// Helper method to decode the type name
@@ -319,9 +351,14 @@ protected:
     std::string outputs;
 
     /// List of fields (Data instances)
-    std::vector< std::pair<std::string, BaseData*> > m_fieldVec;
+    VecData m_vecData;
     /// name -> Data multi-map (includes names and aliases)
-    std::multimap< std::string, BaseData* > m_aliasData;
+    MapData m_aliasData;
+
+    /// List of links
+    VecLink m_vecLink;
+    /// name -> Link multi-map (includes names and aliases)
+    MapLink m_aliasLink;
 
 public:
     /// Name of the object.
@@ -341,7 +378,4 @@ public:
 
 } // namespace sofa
 
-
-
 #endif
-
