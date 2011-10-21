@@ -191,7 +191,6 @@ void Simulation::initNode( Node* node)
         return;
     }
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    assert( getSimulation()->getContext() != NULL );
     node->execute<InitVisitor>(params);
 
     //node->execute<MechanicalPropagatePositionAndVelocityVisitor>(params);
