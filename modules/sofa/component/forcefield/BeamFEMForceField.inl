@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_INL
 
 #include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/component/forcefield/BeamFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -108,11 +109,8 @@ void BeamFEMForceField<DataTypes>::init()
             }
         }
     }
-
-    beamsData.createTopologicalEngine(_topology);
-    beamsData.setCreateFunction(BeamFEMEdgeCreationFunction);
-    beamsData.setCreateParameter( (void *) this );
-    beamsData.setDestroyParameter( (void *) this );
+    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
+    beamsData.createTopologicalEngine(_topology,edgeHandler);
     beamsData.registerTopologicalData();
 
     reinit();
@@ -172,28 +170,17 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     initLarge(i,a,b);
 }
 
-template<class DataTypes>
-void BeamFEMForceField<DataTypes>::BeamFEMEdgeCreationFunction(unsigned int edgeIndex, void* param, BeamInfo &ei,
-        const topology::Edge& /*e*/,  const sofa::helper::vector< unsigned int > & /*a*/,
-        const sofa::helper::vector< double >&)
+template< class DataTypes>
+void BeamFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(unsigned int edgeIndex, BeamInfo &ei,
+        const Edge &,
+        const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<double> &)
 {
-//    sout << "Create beam "<<edgeIndex<<" ("<<e<<") from "<<a<<sendl;
-    BeamFEMForceField<DataTypes>* p = static_cast<BeamFEMForceField<DataTypes>*>(param);
-    // p->beamsData.resize(edgeIndex+1);
-    static_cast<BeamFEMForceField<DataTypes>*>(param)->reinitBeam(edgeIndex);
-    ei = p->beamsData.getValue()[edgeIndex];
-    // p->beamsData.resize(edgeIndex);
-}
-
-template <class DataTypes>
-void BeamFEMForceField<DataTypes>::handleTopologyChange()
-{
-    //_beamQuat.resize( _indexedElements->size() );
-
-    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-    beamsData.handleTopologyEvents(itBegin,itEnd);
+    if(ff)
+    {
+        ff->reinitBeam(edgeIndex);
+        ei = ff->beamsData.getValue()[edgeIndex];
+    }
 }
 
 template<class DataTypes>
