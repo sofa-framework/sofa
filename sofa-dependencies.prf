@@ -272,7 +272,6 @@ contains(DEFINES, SOFA_DEV) {
 	enable(sofa_misc_collision_dev)
 	enable(sofa_misc_solver_dev)
 	enable(sofa_misc_dev)
-        enable(sofagpucuda_dev)
 }
 contains(DEFINES, SOFA_HAVE_EIGEN2) {
 	enable(sofa_eigen2_solver)
@@ -315,6 +314,10 @@ contains(DEFINES, SOFA_GUI_GLUT) {
 	enable(sofaguiglut)
 }
 
+contains(DEFINES, SOFA_GPU_CUDA) {
+	enable(sofagpucuda)
+}
+
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 	contains (DEFINES, SOFA_GUI_FLTK) {
 		enable(sofaguifltk)
@@ -329,9 +332,8 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 		contains(DEFINES, SOFA_GPU_CUDPP) {
 			enable(cudpp)
 		}
-		enable(sofagpucuda)
+      		enable(sofagpucuda_dev)
 		enable(sofaCUDA)
-		
 # This project should be enable in sofa_dependencies-local.prf
 #		enable(sofaCUDA_Bench)
 	}
