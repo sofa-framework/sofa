@@ -37,16 +37,11 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/gl.h>
 
-#include <sofa/component/topology/TriangleData.inl>
-#include <sofa/component/topology/EdgeData.inl>
-#include <sofa/component/topology/PointData.inl>
+//#include <sofa/component/topology/TriangleData.inl>
+//#include <sofa/component/topology/EdgeData.inl>
+//#include <sofa/component/topology/PointData.inl>
 
-#include <sofa/component/topology/TopologyData.h>
 #include <sofa/component/topology/TopologyData.inl>
-#include <sofa/component/topology/TopologyDataHandler.h>
-#include <sofa/component/topology/TopologyDataHandler.inl>
-#include <sofa/component/topology/TopologyEngine.h>
-#include <sofa/component/topology/TopologyEngine.inl>
 
 #include <sofa/helper/system/thread/debug.h>
 #include <newmat/newmat.h>
@@ -144,33 +139,27 @@ static Vec3d ColorMap[64] =
 // --------------------------------------------------------------------------------------
 // ---  Topology Creation/Destruction functions
 // --------------------------------------------------------------------------------------
-template< class DataTypes>
-void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction(unsigned int triangleIndex, void* param, TriangleInformation &/*tinfo*/,
-        const Triangle& t, const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
-{
-    //        std::cout << "TriangularFEMForceField::TRQSTriangleCreationFunction" << std::endl;
-    //        std::cout << "(TriangularFEMForceField::TRQSTriangleCreationFunction):Triangle index: " << triangleIndex << std::endl;
-    //        std::cout << "(TriangularFEMForceField::TRQSTriangleCreationFunction):t=" << t << std::endl;
 
-    TriangularFEMForceField<DataTypes> *ff= (TriangularFEMForceField<DataTypes> *)param;
-    if (ff)
+template< class DataTypes>
+void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, TriangleInformation &, const Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+{
+    if (m_ff)
     {
 
         Index a = t[0];
         Index b = t[1];
         Index c = t[2];
 
-        switch(ff->method)
+        switch(m_ff->method)
         {
         case SMALL :
-            ff->initSmall(triangleIndex,a,b,c);
-            ff->computeMaterialStiffness(triangleIndex,a,b,c);
+            m_ff->initSmall(triangleIndex,a,b,c);
+            m_ff->computeMaterialStiffness(triangleIndex,a,b,c);
             break;
 
         case LARGE :
-            ff->initLarge(triangleIndex,a,b,c);
-            ff->computeMaterialStiffness(triangleIndex,a,b,c);
+            m_ff->initLarge(triangleIndex,a,b,c);
+            m_ff->computeMaterialStiffness(triangleIndex,a,b,c);
             break;
         }
     }
@@ -210,21 +199,6 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     f_graphCriteria.setWidget("graph");
     f_graphOrientation.setWidget("graph");
 #endif
-}
-
-
-// --------------------------------------------------------------------------------------
-// --- Topology handle
-// --------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-    triangleInfo.handleTopologyEvents(itBegin,itEnd);
-    edgeInfo.handleTopologyEvents(itBegin,itEnd);
-    vertexInfo.handleTopologyEvents(itBegin,itEnd);
 }
 
 
@@ -353,6 +327,7 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
                     " b=" << b << " and c=" << c << " and size=" << (*initialPoints).size()<< std::endl;
         }
 
+
         tinfo->rotatedInitialElements[0] = R_0_1 * ((*initialPoints)[a] - (*initialPoints)[a]); // always (0,0,0)
         tinfo->rotatedInitialElements[1] = R_0_1 * ((*initialPoints)[b] - (*initialPoints)[a]);
         tinfo->rotatedInitialElements[2] = R_0_1 * ((*initialPoints)[c] - (*initialPoints)[a]);
@@ -372,6 +347,18 @@ void TriangularFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
+    // Create specific handler for TriangleData
+    triangleHandler = new TRQSTriangleHandler(this, &triangleInfo);
+    triangleInfo.createTopologicalEngine(_topology, triangleHandler);
+    triangleInfo.registerTopologicalData();
+
+    edgeInfo.createTopologicalEngine(_topology);
+    edgeInfo.registerTopologicalData();
+
+    vertexInfo.createTopologicalEngine(_topology);
+    vertexInfo.registerTopologicalData();
+
+
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
@@ -381,30 +368,17 @@ void TriangularFEMForceField<DataTypes>::reinit()
     /// prepare to store info in the edge array
     edgeInf.resize(_topology->getNbEdges());
 
+
     unsigned int nbPoints = _topology->getNbPoints();
     helper::vector<VertexInformation>& vi = *(vertexInfo.beginEdit());
     vi.resize(nbPoints);
-
-    edgeInfo.createTopologicalEngine(_topology);
-    edgeInfo.setCreateParameter( (void *) this );
-    edgeInfo.setDestroyParameter( (void *) this );
-    edgeInfo.registerTopologicalData();
-
-    vertexInfo.createTopologicalEngine(_topology);
-    vertexInfo.setCreateParameter( (void *) this );
-    vertexInfo.setDestroyParameter( (void *) this );
-    vertexInfo.registerTopologicalData();
     vertexInfo.endEdit();
+
 
     for (int i=0; i<_topology->getNbTriangles(); ++i)
     {
-        TRQSTriangleCreationFunction(i, (void*) this, triangleInf[i],  _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0, (const sofa::helper::vector< double >)0);
+        triangleHandler->applyCreateFunction(i, triangleInf[i],  _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0, (const sofa::helper::vector< double >)0);
     }
-    triangleInfo.createTopologicalEngine(_topology);
-    triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
-    triangleInfo.setCreateParameter( (void *) this );
-    triangleInfo.setDestroyParameter( (void *) this );
-    triangleInfo.registerTopologicalData();
 
     edgeInfo.endEdit();
     triangleInfo.endEdit();

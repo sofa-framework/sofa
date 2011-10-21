@@ -41,6 +41,8 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <assert.h>
 
+#include <sofa/component/topology/TopologyData.inl>
+
 #ifdef _WIN32
 #include <windows.h>
 #endif

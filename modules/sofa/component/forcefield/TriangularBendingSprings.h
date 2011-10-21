@@ -49,7 +49,7 @@
 #include <sofa/defaulttype/Mat.h>
 
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/topology/EdgeData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 namespace sofa
 {
@@ -129,7 +129,35 @@ protected:
         }
     };
 
-    EdgeData<helper::vector<EdgeInformation> > edgeInfo;
+    EdgeDataImpl<helper::vector<EdgeInformation> > edgeInfo;
+
+    class TriangularBSEdgeHandler : public TopologyDataHandler<Edge,vector<EdgeInformation> >
+    {
+    public:
+        TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, EdgeDataImpl<sofa::helper::vector<EdgeInformation> >* _data)
+            : TopologyDataHandler<Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
+
+        void applyCreateFunction(unsigned int edgeIndex,
+                EdgeInformation &ei,
+                const Edge& ,  const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double >&);
+
+        void applyCreateFunction(unsigned int edgeIndex, void *param, const EdgeInformation &ei, const Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+
+        void applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
+                const sofa::helper::vector<Triangle> & ,
+                const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ,
+                const sofa::helper::vector<sofa::helper::vector<double> > &);
+
+        void applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved);
+
+        void applyPointDestruction(const sofa::helper::vector<unsigned int> &pointIndices);
+
+        void applyPointRenumbering(const sofa::helper::vector<unsigned int> &pointToRenumber);
+
+    protected:
+        TriangularBendingSprings<DataTypes>* ff;
+    };
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
@@ -166,25 +194,13 @@ public:
         f_kd.setValue((double)kd);
     }
 
-    // handle topological changes
-    virtual void handleTopologyChange();
-
     void draw(const core::visual::VisualParams* vparams);
 
 protected:
 
-    EdgeData<helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
+    EdgeDataImpl<helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
-    static void TriangularBSEdgeCreationFunction(unsigned int edgeIndex, void* param,
-            EdgeInformation &ei,
-            const Edge& ,  const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double >&);
-
-    static void TriangularBSTriangleCreationFunction(const sofa::helper::vector<unsigned int> &triangleAdded,
-            void* param, vector<EdgeInformation> &edgeData);
-
-    static void TriangularBSTriangleDestructionFunction ( const sofa::helper::vector<unsigned int> &triangleRemoved,
-            void* param, vector<EdgeInformation> &edgeData);
+    TriangularBSEdgeHandler* edgeHandler;
 
     double m_potentialEnergy;
 
