@@ -134,6 +134,7 @@ void TopologyEngineImpl< VecT>::registerTopology()
 template <typename VecT>
 void TopologyEngineImpl< VecT>::ApplyTopologyChanges()
 {
+    // Rentre ici la premiere fois aussi....
     if(m_topoHandler)
     {
         m_topoHandler->ApplyTopologyChanges(m_changeList.getValue());

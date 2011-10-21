@@ -34,14 +34,10 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/topology/TriangleData.h>
-#include <sofa/component/topology/EdgeData.h>
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/TopologyData.h>
+
 #include <map>
 #include <sofa/helper/map.h>
-
-
-
 
 namespace sofa
 {
@@ -52,13 +48,13 @@ namespace component
 namespace forcefield
 {
 
+
 //#define PLOT_CURVE //lose some FPS
 
 
 using namespace sofa::defaulttype;
 using sofa::helper::vector;
 using namespace sofa::component::topology;
-
 
 /** corotational triangle from
 * @InProceedings{NPF05,
@@ -125,12 +121,10 @@ public:
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
     virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
-    virtual void handleTopologyChange();
 
     void draw(const core::visual::VisualParams* vparams);
     Vec3d getVertexColor(Index vertexIndex, double maxStress, double minStress);
     //}
-
 
     /// Class to store FEM information on each triangle, for topology modification handling
     class TriangleInformation
@@ -223,9 +217,25 @@ public:
     };
 
     /// Topology Data
-    TriangleData<sofa::helper::vector<TriangleInformation> > triangleInfo;
-    PointData<sofa::helper::vector<VertexInformation> > vertexInfo;
-    EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
+    TriangleDataImpl<sofa::helper::vector<TriangleInformation> > triangleInfo;
+    PointDataImpl<sofa::helper::vector<VertexInformation> > vertexInfo;
+    EdgeDataImpl<sofa::helper::vector<EdgeInformation> > edgeInfo;
+
+
+    class TRQSTriangleHandler : public TopologyDataHandler<Triangle,vector<TriangleInformation> >
+    {
+    public:
+        TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, TriangleDataImpl<sofa::helper::vector<TriangleInformation> >* _data) : TopologyDataHandler<Triangle, sofa::helper::vector<TriangleInformation> >(_data), m_ff(_ff) {}
+
+        void applyCreateFunction(unsigned int triangleIndex, TriangleInformation& ,
+                const Triangle & t,
+                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+
+    protected:
+        TriangularFEMForceField<DataTypes>* m_ff;
+    };
+
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
@@ -333,6 +343,8 @@ public:
     Data<bool> showStressValue;
     Data<bool> showStressVector;
     Data<bool> showFracturableTriangles;
+
+    TRQSTriangleHandler* triangleHandler;
 
 #ifdef PLOT_CURVE
     //structures to save values for each element along time
