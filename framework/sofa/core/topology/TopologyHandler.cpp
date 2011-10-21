@@ -327,7 +327,7 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
             break;
         }; // switch( changeType )
 
-        ++changeIt;
+        //++changeIt;
     }
 }
 
