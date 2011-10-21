@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
 
-#include <sofa/component/topology/EdgeData.inl>
+
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
@@ -35,6 +35,7 @@
 //#include <sofa/component/container/LengthContainer.h>
 //#include <sofa/component/container/RadiusContainer.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/component/topology/TopologyData.h>
 
 
 namespace sofa
@@ -48,6 +49,9 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 using sofa::helper::vector;
+using topology::EdgeData;
+using topology::Edge;
+using topology::TopologyDataHandler;
 
 /** Compute Finite Element forces based on 6D beam elements.
 */
@@ -148,7 +152,26 @@ protected:
     //just for draw forces
     VecDeriv _forces;
 
-    topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
+    EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
+
+    class BeamFFEdgeHandler : public TopologyDataHandler<Edge,sofa::helper::vector<BeamInfo> >
+    {
+    public:
+        typedef typename BeamFEMForceField<DataTypes>::BeamInfo BeamInfo;
+        BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, EdgeData<sofa::helper::vector<BeamInfo> >* data)
+            :TopologyDataHandler<Edge,sofa::helper::vector<BeamInfo> >(data),ff(ff) {}
+
+        void applyCreateFunction(unsigned int edgeIndex, BeamInfo&,
+                const Edge& e,
+                const sofa::helper::vector<unsigned int> &,
+                const sofa::helper::vector< double > &);
+
+    protected:
+        BeamFEMForceField<DataTypes>* ff;
+
+    };
+
+    BeamFFEdgeHandler* edgeHandler;
 
     const VecElement *_indexedElements;
     unsigned int maxPoints;
@@ -215,7 +238,6 @@ public:
     virtual void init();
     virtual void reinit();
     virtual void reinitBeam(unsigned int i);
-    virtual void handleTopologyChange();
 
     virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV );
     virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv&   datadF , const DataVecDeriv&   datadX );
@@ -252,11 +274,6 @@ protected:
     void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact=1.0);
 
     //sofa::helper::vector< sofa::helper::vector <Real> > subMatrix(unsigned int fr, unsigned int lr, unsigned int fc, unsigned int lc);
-
-    static void BeamFEMEdgeCreationFunction(unsigned int edgeIndex, void* param, BeamInfo &ei,
-            const topology::Edge& ,  const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double >&);
-
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP)
