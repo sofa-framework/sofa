@@ -143,23 +143,23 @@ static Vec3d ColorMap[64] =
 template< class DataTypes>
 void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, TriangleInformation &, const Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    if (m_ff)
+    if (ff)
     {
 
         Index a = t[0];
         Index b = t[1];
         Index c = t[2];
 
-        switch(m_ff->method)
+        switch(ff->method)
         {
         case SMALL :
-            m_ff->initSmall(triangleIndex,a,b,c);
-            m_ff->computeMaterialStiffness(triangleIndex,a,b,c);
+            ff->initSmall(triangleIndex,a,b,c);
+            ff->computeMaterialStiffness(triangleIndex,a,b,c);
             break;
 
         case LARGE :
-            m_ff->initLarge(triangleIndex,a,b,c);
-            m_ff->computeMaterialStiffness(triangleIndex,a,b,c);
+            ff->initLarge(triangleIndex,a,b,c);
+            ff->computeMaterialStiffness(triangleIndex,a,b,c);
             break;
         }
     }

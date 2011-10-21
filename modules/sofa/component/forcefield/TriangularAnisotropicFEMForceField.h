@@ -34,8 +34,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/forcefield/TriangularFEMForceField.h>
-#include <sofa/component/topology/TriangleData.h>
-#include <sofa/component/topology/EdgeData.h>
+#include <sofa/component/topology/TopologyData.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
 
@@ -97,14 +96,27 @@ public:
     Data<VecCoord> f_fiberCenter;
     Data<bool> showFiber;
 
-    TriangleData<helper::vector<Deriv> > localFiberDirection;
+    TriangleData <helper::vector< Deriv> > localFiberDirection;
 
-    virtual void handleTopologyChange();
+    class TRQSTriangleHandler : public TopologyDataHandler<Triangle,vector<Deriv> >
+    {
+    public:
+        typedef typename TriangularAnisotropicFEMForceField::Deriv triangleInfo;
+
+        TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, TriangleData<helper::vector<triangleInfo> >*  _data) : TopologyDataHandler<Triangle, helper::vector<triangleInfo> >(_data), ff(_ff) {}
+
+        void applyCreateFunction(unsigned int triangleIndex, helper::vector<triangleInfo> & ,
+                const Triangle & t,
+                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+
+    protected:
+        TriangularAnisotropicFEMForceField<DataTypes>* ff;
+    };
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    static void TRQSTriangleCreationFunction (unsigned int , void* , Deriv &, const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
-
+    TRQSTriangleHandler* triangleHandler;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)
