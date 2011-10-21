@@ -55,23 +55,13 @@ SOFA_LINK_CLASS(CudaRigidMapping)
 SOFA_LINK_CLASS(CudaSubsetMapping)
 SOFA_LINK_CLASS(CudaDistanceGridCollisionModel)
 SOFA_LINK_CLASS(CudaTetrahedronFEMForceField)
-SOFA_LINK_CLASS(CudaCollision)
+//SOFA_LINK_CLASS(CudaCollision)
 SOFA_LINK_CLASS(CudaCollisionDetection)
 SOFA_LINK_CLASS(CudaPointModel)
 SOFA_LINK_CLASS(CudaSphereModel)
 SOFA_LINK_CLASS(CudaSetTopology)
 SOFA_LINK_CLASS(CudaVisualModel)
 SOFA_LINK_CLASS(CudaOglTetrahedralModel)
-
-#ifdef SOFA_DEV
-
-SOFA_LINK_CLASS(CudaTetrahedronTLEDForceField)
-SOFA_LINK_CLASS(CudaHexahedronTLEDForceField)
-//SOFA_LINK_CLASS(CudaTetrahedronSuperTLEDForceField)
-//SOFA_LINK_CLASS(CudaMasterContactSolver)
-SOFA_LINK_CLASS(CudaSpatialGridContainer)
-
-#endif // SOFA_DEV
 
 extern "C"
 {

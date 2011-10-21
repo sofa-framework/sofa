@@ -109,14 +109,27 @@ declare(sofa_misc, modules/sofa/component/sofa_misc.pro, sofa_mesh_collision)
 declare(sofa_misc_dev, modules/sofa/component/sofa_misc_dev.pro, sofa_base_collision sofa_misc_topology sofa_boundary_condition sofa_deformable)
 
 declare(sofa_component_base, modules/sofa/component/sofa_component_base.pro, sofa_base_topology sofa_base_linear_solver sofa_base_mechanics sofa_rigid sofa_base_collision sofa_base_visual sofa_base_animation_loop)
+
 declare(sofa_component_common, modules/sofa/component/sofa_component_common.pro, sofa_loader sofa_deformable sofa_simple_fem sofa_object_interaction sofa_explicit_ode_solver sofa_implicit_ode_solver sofa_eigen2_solver sofa_mesh_collision)
+
 declare(sofa_component_general, modules/sofa/component/sofa_component_general.pro, sofa_validation sofa_exporter sofa_engine sofa_graph_component sofa_topology_mapping sofa_boundary_condition sofa_user_interaction sofa_constraint sofa_haptics sofa_dense_solver sofa_sparse_solver sofa_preconditioner sofa_opengl_visual)
-declare(sofa_component_advanced, modules/sofa/component/sofa_component_advanced.pro, sofa_eulerian_fluid sofa_sph_fluid sofa_volumetric_data sofa_non_uniform_fem sofa_non_uniform_fem_dev sofa_advanced_fem sofa_mjed_fem sofa_advanced_constraint sofa_taucs_solver)
-declare(sofa_component_misc, modules/sofa/component/sofa_component_misc.pro, sofa_advanced_interaction sofa_misc_topology sofa_misc_topology_dev sofa_misc_mapping sofa_misc_mapping_dev sofa_misc_forcefield sofa_misc_forcefield_dev sofa_misc_fem sofa_misc_fem_dev sofa_misc_engine sofa_misc_collision sofa_misc_collision_dev sofa_misc_solver sofa_misc_solver_dev sofa_misc sofa_misc_dev)
+
+declare(sofa_component_advanced, modules/sofa/component/sofa_component_advanced.pro, sofa_eulerian_fluid sofa_sph_fluid sofa_volumetric_data sofa_non_uniform_fem sofa_eigen2_solver)
+
+declare(sofa_component_advanced_dev, modules/sofa/component/sofa_component_advanced_dev.pro, sofa_non_uniform_fem_dev sofa_advanced_fem sofa_mjed_fem sofa_advanced_constraint sofa_taucs_solver)
+
+declare(sofa_component_misc, modules/sofa/component/sofa_component_misc.pro, sofa_misc_topology sofa_misc_mapping sofa_misc_forcefield sofa_misc_fem sofa_misc_engine sofa_misc_collision sofa_misc_solver sofa_misc)
+
+declare(sofa_component_misc_dev, modules/sofa/component/sofa_component_misc_dev.pro, sofa_advanced_interaction sofa_misc_topology_dev sofa_misc_mapping_dev sofa_misc_forcefield_dev sofa_misc_fem_dev sofa_misc_collision_dev sofa_misc_solver_dev sofa_misc_dev)
+
 declare(sofa_component, modules/sofa/component/sofa_component.pro, sofa_component_base sofa_component_common sofa_component_general sofa_component_advanced sofa_component_misc)
 
-declare(sofagpucuda, modules/sofa/gpu/cuda, sofahelper sofa_engine sofa_advanced_interaction sofa_sph_fluid sofa_misc_dev eigen csparse cudpp taucs taucs_mt system-taucs cuda)
-declare(sofagpuopencl, modules/sofa/gpu/opencl, sofahelper sofa_engine sofa_advanced_interaction sofa_sph_fluid sofa_misc_dev opencl eigen csparse cudpp taucs taucs_mt system-taucs)
+
+declare(sofagpucuda, modules/sofa/gpu/cuda/cuda.pro, sofahelper sofa_engine sofa_sph_fluid cuda)
+
+declare(sofagpucuda_dev, modules/sofa/gpu/cuda/cuda_dev.pro, sofagpucuda sofa_advanced_interaction sofa_misc_dev eigen csparse cudpp taucs taucs_mt system-taucs)
+
+declare(sofagpuopencl, modules/sofa/gpu/opencl, sofahelper sofa_engine sofa_sph_fluid opencl eigen csparse cudpp taucs taucs_mt system-taucs)
 
 ######################################################################
 # Applications
@@ -245,6 +258,8 @@ contains(DEFINES, SOFA_DEV) {
 	contains(DEFINES, SOFA_HAVE_CSPARSE) {
 		enable(sofa_sparse_solver)
 	}
+	enable(sofa_component_advanced_dev)
+	enable(sofa_component_misc_dev)
 	enable(sofa_advanced_interaction)
 	enable(sofa_advanced_constraint)
 	enable(sofa_advanced_fem)
@@ -257,6 +272,7 @@ contains(DEFINES, SOFA_DEV) {
 	enable(sofa_misc_collision_dev)
 	enable(sofa_misc_solver_dev)
 	enable(sofa_misc_dev)
+        enable(sofagpucuda_dev)
 }
 contains(DEFINES, SOFA_HAVE_EIGEN2) {
 	enable(sofa_eigen2_solver)
