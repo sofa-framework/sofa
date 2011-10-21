@@ -31,8 +31,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TriangleData.inl>
-#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/helper/system/gl.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -40,8 +39,6 @@
 #include <algorithm>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <assert.h>
-
-#include <sofa/component/topology/TopologyData.inl>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -74,17 +71,11 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
 }
 
 template< class DataTypes>
-void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleCreationFunction (unsigned int triangleIndex, void* param,
-        Deriv &/*tinfo*/,
-        const Triangle& /*t*/,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
+void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, helper::vector<triangleInfo> &, const Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    TriangularAnisotropicFEMForceField<DataTypes> *ff= (TriangularAnisotropicFEMForceField<DataTypes> *)param;
     if (ff)
     {
-
-        const Triangle &t = ff->_topology->getTriangle(triangleIndex);
+        //const Triangle &t = ff->_topology->getTriangle(triangleIndex);
         Index a = t[0];
         Index b = t[1];
         Index c = t[2];
@@ -134,24 +125,12 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
     localFiberDirection.endEdit();
     Inherited::reinit();
 
+    // Create specific handler for TriangleData
+    triangleHandler = new TRQSTriangleHandler(this, &localFiberDirection);
     localFiberDirection.createTopologicalEngine(_topology);
-    localFiberDirection.setCreateFunction(TRQSTriangleCreationFunction);
-    localFiberDirection.setCreateParameter( (void *) this );
-    localFiberDirection.setDestroyParameter( (void *) this );
     localFiberDirection.registerTopologicalData();
 }
 
-template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-    //std::cout << "Local Fiber Direction size = " <<  localFiberDirection.getValue().size() << std::endl;
-
-    Inherited::handleTopologyChange();
-    localFiberDirection.handleTopologyEvents(itBegin,itEnd);
-    //std::cout << "Fibre direction size (handleTopologyChange): " << localFiberDirection.getValue().size() << std::endl;
-}
 
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Deriv& dir)

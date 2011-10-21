@@ -225,7 +225,7 @@ public:
     class TRQSTriangleHandler : public TopologyDataHandler<Triangle,vector<TriangleInformation> >
     {
     public:
-        TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : TopologyDataHandler<Triangle, sofa::helper::vector<TriangleInformation> >(_data), m_ff(_ff) {}
+        TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : TopologyDataHandler<Triangle, sofa::helper::vector<TriangleInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int triangleIndex, TriangleInformation& ,
                 const Triangle & t,
@@ -233,7 +233,7 @@ public:
                 const sofa::helper::vector< double > &);
 
     protected:
-        TriangularFEMForceField<DataTypes>* m_ff;
+        TriangularFEMForceField<DataTypes>* ff;
     };
 
 
