@@ -1,61 +1,64 @@
 <?xml version="1.0" ?>
 <!------ NEW DEFAULT SCENE (Thanks Manimoul for the caduceus model !!) ------->
 
-<Node name="root" gravity="0 -9.81 0" dt="0.03">
-    <VisualStyle displayFlags="showVisual " /> <!--showBehaviorModels showCollisionModels-->
-	<LCPConstraintSolver tolerance="1e-3" initial_guess="false" build_lcp="false"  printLog="0" mu="0.1"/>
+<Node name="root" gravity="0 -1000 0" dt="0.04">
+    <VisualStyle displayFlags="showVisual  " /> <!--showBehaviorModels showCollisionModels-->
+	<LCPConstraintSolver tolerance="1e-3" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/>
     <FreeMotionAnimationLoop />
     <CollisionPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
-    <LocalMinDistance name="Proximity" alarmDistance="1.5" contactDistance="1" useLMDFilters="1" />
+	<MinProximityIntersection name="Proximity" alarmDistance="1.5" contactDistance="1" />
+
+	
 	
     <Object type="LightManager" />
     <Object type="SpotLight" name="light1" color="1 1 1" position="0 80 25" direction="0 -1 -0.8" cutoff="30" exponent="1" />
-   <!-- <Object type="SpotLight" name="light1" color="1 1 1" position="0 80 -25" direction="0 -1 0.8" cutoff="30" exponent="1" />-->
 	<Object type="SpotLight" name="light1" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
     
     <CollisionResponse name="Response" response="FrictionContact" />
     <Node name="Snake" >
-<!-- 		<SparseGrid n="8 20 7" fileTopology="mesh/caducee_snake.obj" /> -->
 		
-		<SparseGridRamification n="4 12 3" fileTopology="mesh/caducee_snake.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
+		<SparseGridRamification n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
 		
-        <EulerImplicitSolver name="cg_odesolver" rayleighMass="1" rayleighStiffness="0.01" />
-        <CGLinearSolver name="linear solver" iterations="10" tolerance="1e-09" threshold="1e-09" />
-		<MechanicalObject name="dofs"/>
-        <UniformMass totalMass="100.0" />
-        <HexahedronFEMForceField youngModulus="3000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
-		<!--<BoxConstraint box="-10 0 -10 10 10 10" />-->
+        <EulerImplicitSolver name="cg_odesolver" rayleighMass="1" rayleighStiffness="0.03" />
+        <CGLinearSolver name="linear solver" iterations="20" tolerance="1e-12" threshold="1e-18" />
+		<MechanicalObject name="dofs"  scale="1" dy="2"/>
+        <UniformMass totalMass="1.0" />
+        <HexahedronFEMForceField youngModulus="30000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
+
 		
-		<!--
-		<PrecomputedConstraintCorrection rotations="true"/>
-		<Node name="Collis">
-            <MeshObjLoader name="loader" filename="mesh/caducee_curve.obj" />
-            <Mesh src="@loader" />
-            <MechanicalObject src="@loader" name="CollisModel" />
-            <Line />
-            <Point />
-            <BarycentricMapping input="@.." output="@." />
-        </Node>
-		-->
-		
+
 		<UncoupledConstraintCorrection />
+		
+		
 		<Node name="Collis">
-            <MeshObjLoader name="loader" filename="mesh/caducee_snake.obj" />
+            <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle />
-            <Line />
-            <Point />
+            <Triangle  selfCollision="0" />
+            <Line    selfCollision="0" />
+            <Point  selfCollision="0" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
+		
 		
 
      				
         <Node name="Visu" tags="Visual" >
-			<VisualModel  name="VisualModel" fileMesh="mesh/caducee_snake.obj"   />
-			<BarycentricMapping object1="../.." object2="VisualModel" />
+			<VisualModel  name="VisualBody" fileMesh="mesh/snake_body.obj"   />
+			<BarycentricMapping object1="../.." object2="VisualBody" />
         </Node>
+		
+		
+        <Node name="Visu" tags="Visual" >
+			<VisualModel  name="VisualCornea" fileMesh="mesh/snake_cornea.obj"   />
+			<BarycentricMapping object1="../.." object2="VisualCornea" />
+        </Node>	
+		
+        <Node name="Visu" tags="Visual" >
+			<VisualModel  name="VisualEye" fileMesh="mesh/snake_yellowEye.obj"   />
+			<BarycentricMapping object1="../.." object2="VisualEye" />
+        </Node>				
     </Node>
 	
 	
@@ -70,7 +73,7 @@
             <Point simulated="false"  moving="false"/>
 		</Node>
 		<Node name="Boules">
-			<MeshObjLoader name="loader" filename="mesh/collision_boules_V2.obj" />
+			<MeshObjLoader name="loader" filename="mesh/collision_boules_V3.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
 			<Triangle simulated="false" moving="false"/>
@@ -78,21 +81,20 @@
             <Point simulated="false" moving="false"/>
 		</Node>	
 		
-		<!--
-		<Node name="Floor">
-			<MeshObjLoader name="loader" filename="mesh/floor.obj" />
+		<Node name="Boules">
+			<MeshObjLoader name="loader" filename="mesh/collision_pied.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
 			<Triangle simulated="false" moving="false"/>
             <Line simulated="false" moving="false"/>
             <Point simulated="false" moving="false"/>
 		</Node>		
-		-->	
+		
+
 				
 		
         <Node name="Visu" tags="Visual" >
             <VisualModel  name="VisualModel" fileMesh="mesh/SOFA_pod.obj" />
-			<!--<VisualModel  name="VisualModel" fileMesh="mesh/floor.obj" /> -->
         </Node>
 		
     </Node>	
