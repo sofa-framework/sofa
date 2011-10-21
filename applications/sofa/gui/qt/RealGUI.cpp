@@ -1633,7 +1633,7 @@ void RealGUI::eventNewTime()
 {
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
-        recorder->UpdateTime();
+        recorder->UpdateTime(getScene());
 #else
     Node* root = getScene();
     if (root && timeLabel)

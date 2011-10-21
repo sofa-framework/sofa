@@ -66,8 +66,8 @@ public:
 
     QLabel *getTimeLabel() {return timeLabel;};
     QLabel *getFPSLabel() {return fpsLabel;};
+    void UpdateTime(simulation::Node* root);
 public slots:
-    void UpdateTime();
     void TimerStart(bool);
 
 signals:
