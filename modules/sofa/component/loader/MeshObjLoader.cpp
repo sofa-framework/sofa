@@ -248,7 +248,18 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                     }
 
                     if (!tmp.empty())
-                        vtn[j] = atoi(tmp.c_str()) - 1; // -1 because the numerotation begins at 1 and a vector begins at 0
+                    {
+                        vtn[j] = atoi(tmp.c_str());
+                        if (vtn[j] >= 1)
+                            vtn[j] -=1; // -1 because the numerotation begins at 1 and a vector begins at 0
+                        else if (vtn[j] < 0)
+                            vtn[j] += (j==0) ? my_positions.size() : (j==1) ? my_texCoords.size() : my_normals.size();
+                        else
+                        {
+                            serr << "Invalid index " << tmp << sendl;
+                            vtn[j] = -1;
+                        }
+                    }
                 }
 
                 nodes.push_back(vtn[0]);
@@ -349,9 +360,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 itTextureNormalIndex != setTextureNormalIndex.end();
                 ++itTextureNormalIndex)
         {
-            if( vertexIndex > (int)my_positions.size() )
+            if( vertexIndex >= (int)my_positions.size() )
             {
-                this->serr << "Invalid index for vertex: " << vertexIndex << " > " <<
+                this->serr << "Invalid index for vertex: " << vertexIndex << " >= " <<
                         my_positions.size() << this->sendl;
                 vVertices[vertexIndex] = sofa::defaulttype::Vector3();
             }
@@ -365,15 +376,15 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             const std::pair < int, int >& textureNormalIndex = *itTextureNormalIndex;
             if( vTexCoords.size() > 0 )
             {
-                if( (int)my_texCoords.size() < textureNormalIndex.first )
+                if( textureNormalIndex.first >= (int)my_texCoords.size() )
                 {
-                    this->serr << "Invalid index for texture: " << textureNormalIndex.first << " > "
+                    this->serr << "Invalid index for texture: " << textureNormalIndex.first << " >= "
                             << my_texCoords.size() << this->sendl;
                     vTexCoords[vertexIndex] = sofa::defaulttype::Vector2();
                 }
                 else
                 {
-                    vTexCoords[vertexIndex] = my_texCoords[textureNormalIndex.first == -1 ? 0 : textureNormalIndex.first];
+                    vTexCoords[vertexIndex] = my_texCoords[textureNormalIndex.first < 0 ? 0 : textureNormalIndex.first];
                 }
             }
             /*        if( vNormals.size() > 0 ){
