@@ -137,7 +137,7 @@ void TopologyEngineImpl< VecT>::ApplyTopologyChanges()
     // Rentre ici la premiere fois aussi....
     if(m_topoHandler)
     {
-        m_topoHandler->ApplyTopologyChanges(m_changeList.getValue());
+        m_topoHandler->ApplyTopologyChanges(m_changeList.getValue(), m_topology->getNbPoints());
 
         m_changeList.endEdit();
     }

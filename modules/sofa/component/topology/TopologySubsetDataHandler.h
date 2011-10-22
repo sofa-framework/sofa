@@ -51,8 +51,8 @@ using namespace sofa::core::topology;
 * happen (non exhaustive list: Edges added, removed, fused, renumbered).
 */
 
-template< class TopologyElementType, class VecT>
-class TopologyDataHandler : public sofa::core::topology::TopologyElementHandler< TopologyElementType >
+template< class TopologyElementType, class VecT = helper::vector<unsigned int> >
+class TopologySubsetDataHandler : public sofa::core::topology::TopologyElementHandler< TopologyElementType >
 {
 public:
     typedef VecT container_type;
@@ -66,29 +66,25 @@ public:
     typedef typename container_type::const_reference const_reference;
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
+    /// iterator
+    typedef typename container_type::iterator iterator;
 
 
 
 public:
     // constructor
-    TopologyDataHandler(): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
+    TopologySubsetDataHandler(): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
         , m_topologyData(NULL) {}
 
     bool isTopologyDataRegistered() {return m_topologyData;}
 
     /** Public fonction to apply creation and destruction functions */
     /// Apply removing current elementType elements
-    virtual void applyDestroyFunction(unsigned int, value_type& t) {t = VecT();}
-    /// Apply adding current elementType elements
-    virtual void applyCreateFunction(unsigned int, value_type&,
+    virtual void applyDestroyFunction(unsigned int, value_type& ) {}
+    /// test function, called when new points are created.
+    virtual bool applyTestCreateFunction(unsigned int,
             const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double > &) {}
-
-    /// WARNING NEEED TO UNIFY THIS
-    /// Apply adding current elementType elements
-    virtual void applyCreateFunction(unsigned int, value_type&, const TopologyElementType& ,
-            const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double > &) {}
+            const sofa::helper::vector< double > &) {t = VecT();}
 
 
 protected:
@@ -97,7 +93,7 @@ protected:
 
     /// Add some values. Values are added at the end of the vector.
     virtual void add( unsigned int nbElements,
-            const sofa::helper::vector< TopologyElementType >& elems,
+            const sofa::helper::vector< TopologyElementType >& ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
@@ -123,8 +119,14 @@ protected:
     /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
     virtual void removeOnMovedPosition(const sofa::helper::vector<unsigned int> &indices);
 
+
+    void setTotalPointSetArraySize(const unsigned int s) { lastPointIndex=s-1; }
+
 protected:
     BaseTopologyData <VecT>* m_topologyData;
+
+    /// to handle properly the removal of items, the container must know the index of the last element
+    unsigned int lastPointIndex;
 };
 
 
