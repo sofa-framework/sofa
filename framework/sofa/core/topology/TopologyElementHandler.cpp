@@ -339,8 +339,12 @@ void TopologyElementHandler<Hexahedron>::applyHexahedronMovedDestruction(const s
     this->removeOnMovedPosition(indices);
 }
 
-
-
+template class SOFA_CORE_API TopologyElementHandler<Point>;
+template class SOFA_CORE_API TopologyElementHandler<Edge>;
+template class SOFA_CORE_API TopologyElementHandler<Triangle>;
+template class SOFA_CORE_API TopologyElementHandler<Quad>;
+template class SOFA_CORE_API TopologyElementHandler<Tetrahedron>;
+template class SOFA_CORE_API TopologyElementHandler<Hexahedron>;
 
 } // namespace topology
 
