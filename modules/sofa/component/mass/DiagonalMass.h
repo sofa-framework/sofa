@@ -33,7 +33,7 @@
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/TopologyData.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -65,8 +65,8 @@ class DiagonalMassInternalData
 {
 public :
 
-    typedef sofa::component::topology::PointData<sofa::helper::vector<TMassType> > VecMass;
     typedef helper::vector<TMassType> MassVector;
+    typedef sofa::component::topology::PointData<MassVector> VecMass;
 
 };
 
@@ -87,8 +87,8 @@ public:
     typedef TMassType MassType;
 
     // In case of non 3D template
-    typedef Vec<3,MassType>                            Vec3;
-    typedef StdVectorTypes< Vec3, Vec3, MassType >     GeometricalTypes ; /// assumes the geometry object type is 3D
+    typedef Vec<3,Real> Vec3;
+    typedef StdVectorTypes< Vec3, Vec3, Real >     GeometricalTypes ; /// assumes the geometry object type is 3D
 
     typedef enum
     {
@@ -105,6 +105,43 @@ public:
 
     VecMass f_mass;
 
+    class DMassPointHandler : public topology::TopologyDataHandler<Point,MassVector>
+    {
+    public:
+        typedef typename DiagonalMass<DataTypes,TMassType>::MassVector MassVector;
+        DMassPointHandler(DiagonalMass<DataTypes,TMassType>* _dm, PointData<MassVector>* _data) : topology::TopologyDataHandler<Point,MassVector>(_data), dm(_dm) {}
+
+        void applyCreateFunction(unsigned int pointIndex, TMassType& m, const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+
+        /// Apply adding edges elements.
+        void applyEdgeCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+                const sofa::helper::vector< Edge >& /*elems*/,
+                const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        /// Apply removing edges elements.
+        void applyEdgeDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
+
+        /// Apply adding triangles elements.
+        void applyTriangleCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+                const sofa::helper::vector< Triangle >& /*elems*/,
+                const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        /// Apply removing triangles elements.
+        void applyTriangleDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
+
+        /// Apply adding tetrahedron elements.
+        void applyTetrahedronCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+                const sofa::helper::vector< Tetrahedron >& /*elems*/,
+                const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        /// Apply removing tetrahedron elements.
+        void applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
+
+    protected:
+        DiagonalMass<DataTypes,TMassType>* dm;
+    };
+    DMassPointHandler* pointHandler;
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > m_massDensity;
 
@@ -153,9 +190,10 @@ public:
         return m_massDensity.getValue();
     }
 
+protected:
+    void initTopologyHandlers();
 
-    // handle topological changes
-    virtual void handleTopologyChange();
+public:
 
     void setMassDensity(Real m)
     {

@@ -421,7 +421,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     continue;
                 }
 
-                helper::vector<helper::fixed_array <unsigned int,3> > vitems;
+                helper::vector<core::topology::Topology::Triangle > vitems;
                 vitems.resize (nbElements);
 
                 for (unsigned int i = 0; i<nbElements; ++i)
@@ -441,7 +441,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     continue;
                 }
 
-                helper::vector<helper::fixed_array <unsigned int,4> > vitems;
+                helper::vector<core::topology::Topology::Quad > vitems;
                 vitems.resize (nbElements);
 
                 for (unsigned int i = 0; i<nbElements; ++i)
@@ -462,7 +462,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     continue;
                 }
 
-                helper::vector<helper::fixed_array <unsigned int,4> > vitems;
+                helper::vector<core::topology::Topology::Tetrahedron > vitems;
                 vitems.resize (nbElements);
 
                 for (unsigned int i = 0; i<nbElements; ++i)
@@ -483,7 +483,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     continue;
                 }
 
-                helper::vector<helper::fixed_array <unsigned int,8> > vitems;
+                helper::vector<core::topology::Topology::Hexahedron > vitems;
                 vitems.resize (nbElements);
 
                 for (unsigned int i = 0; i<nbElements; ++i)

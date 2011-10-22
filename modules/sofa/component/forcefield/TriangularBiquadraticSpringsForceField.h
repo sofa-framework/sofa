@@ -33,8 +33,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/topology/TriangleData.h>
-#include <sofa/component/topology/EdgeData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 
 namespace sofa
@@ -175,9 +174,6 @@ public:
 
     virtual Real getLambda() const { return lambda;}
     virtual Real getMu() const { return mu;}
-
-    // handle topological changes
-    virtual void handleTopologyChange();
 
     void setYoungModulus(const double modulus)
     {

@@ -310,15 +310,15 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
             unsigned int ind_a =  acc_nb_points; // last point registered to be created
 
             sofa::helper::vector< Triangle > a_triangles;
-            Triangle t_a01 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_a,
+            Triangle t_a01 = Triangle((unsigned int)ind_a,
                     (unsigned int)ta[0],
-                    (unsigned int) ta[1]));
-            Triangle t_a12 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_a,
+                    (unsigned int) ta[1]);
+            Triangle t_a12 = Triangle((unsigned int)ind_a,
                     (unsigned int)ta[1],
-                    (unsigned int) ta[2]));
-            Triangle t_a20 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_a,
+                    (unsigned int) ta[2]);
+            Triangle t_a20 = Triangle((unsigned int)ind_a,
                     (unsigned int)ta[2],
-                    (unsigned int) ta[0]));
+                    (unsigned int) ta[0]);
             triangles_to_create.push_back(t_a01);
             triangles_to_create.push_back(t_a12);
             triangles_to_create.push_back(t_a20);
@@ -347,12 +347,12 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
             }
             triangles_to_remove.push_back(ta_to_remove);
 
-            Triangle t_pa1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points + 1,
+            Triangle t_pa1 = Triangle((unsigned int) acc_nb_points + 1,
                     (unsigned int) ind_a,
-                    (unsigned int) p1_a));
-            Triangle t_pa2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points + 2,
+                    (unsigned int) p1_a);
+            Triangle t_pa2 = Triangle((unsigned int) acc_nb_points + 2,
                     (unsigned int) p2_a,
-                    (unsigned int)ind_a));
+                    (unsigned int)ind_a);
             triangles_to_create.push_back(t_pa1);
             triangles_to_create.push_back(t_pa2);
 
@@ -405,12 +405,12 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
 
             if(ind_a==p1_a)
             {
-                Triangle t_pa1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points + 2,
+                Triangle t_pa1 = Triangle((unsigned int) acc_nb_points + 2,
                         (unsigned int) p0_a,
-                        (unsigned int) p1_a));
-                Triangle t_pa2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points + 2,
+                        (unsigned int) p1_a);
+                Triangle t_pa2 = Triangle((unsigned int) acc_nb_points + 2,
                         (unsigned int) p2_a,
-                        (unsigned int) p0_a));
+                        (unsigned int) p0_a);
                 triangles_to_create.push_back(t_pa1);
                 triangles_to_create.push_back(t_pa2);
             }
@@ -418,23 +418,23 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
             {
                 if(ind_a==p2_a)
                 {
-                    Triangle t_pa1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points + 1,
+                    Triangle t_pa1 = Triangle((unsigned int) acc_nb_points + 1,
                             (unsigned int) p0_a,
-                            (unsigned int) p1_a));
-                    Triangle t_pa2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points + 1,
+                            (unsigned int) p1_a);
+                    Triangle t_pa2 = Triangle((unsigned int) acc_nb_points + 1,
                             (unsigned int) p2_a,
-                            (unsigned int) p0_a));
+                            (unsigned int) p0_a);
                     triangles_to_create.push_back(t_pa1);
                     triangles_to_create.push_back(t_pa2);
                 }
                 else
                 {
-                    Triangle t_pa1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points + 1,
+                    Triangle t_pa1 = Triangle((unsigned int) acc_nb_points + 1,
                             (unsigned int) ind_a,
-                            (unsigned int) p1_a));
-                    Triangle t_pa2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points + 2,
+                            (unsigned int) p1_a);
+                    Triangle t_pa2 = Triangle((unsigned int) acc_nb_points + 2,
                             (unsigned int) p2_a,
-                            (unsigned int)ind_a));
+                            (unsigned int)ind_a);
                     triangles_to_create.push_back(t_pa1);
                     triangles_to_create.push_back(t_pa2);
                 }
@@ -530,8 +530,8 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
                 unsigned int p1_t = m_container->getTriangle(triangles_list[i])[1];
                 unsigned int p2_t = m_container->getTriangle(triangles_list[i])[2];
 
-                Triangle t_p1 = Triangle(helper::make_array<unsigned int>((unsigned int) p1_created,(unsigned int) p1_prev,(unsigned int) p1_to_create));
-                Triangle t_p2 = Triangle(helper::make_array<unsigned int>((unsigned int) p2_created,(unsigned int) p2_to_create,(unsigned int) p2_prev));
+                Triangle t_p1 = Triangle((unsigned int) p1_created,(unsigned int) p1_prev,(unsigned int) p1_to_create);
+                Triangle t_p2 = Triangle((unsigned int) p2_created,(unsigned int) p2_to_create,(unsigned int) p2_prev);
 
                 Triangle t_p3;
 
@@ -539,12 +539,12 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
                 {
                     if(p0_t==p1)
                     {
-                        t_p3=Triangle(helper::make_array<unsigned int>((unsigned int) p0_t,(unsigned int) p1_to_create,(unsigned int) p1_prev));
+                        t_p3=Triangle((unsigned int) p0_t,(unsigned int) p1_to_create,(unsigned int) p1_prev);
 
                     }
                     else // p0_t==p2
                     {
-                        t_p3=Triangle(helper::make_array<unsigned int>((unsigned int) p0_t,(unsigned int) p2_prev,(unsigned int) p2_to_create));
+                        t_p3=Triangle((unsigned int) p0_t,(unsigned int) p2_prev,(unsigned int) p2_to_create);
                     }
                 }
                 else
@@ -553,22 +553,22 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
                     {
                         if(p1_t==p1)
                         {
-                            t_p3=Triangle(helper::make_array<unsigned int>((unsigned int) p1_t,(unsigned int) p1_to_create,(unsigned int) p1_prev));
+                            t_p3=Triangle((unsigned int) p1_t,(unsigned int) p1_to_create,(unsigned int) p1_prev);
                         }
                         else // p1_t==p2
                         {
-                            t_p3=Triangle(helper::make_array<unsigned int>((unsigned int) p1_t,(unsigned int) p2_prev,(unsigned int) p2_to_create));
+                            t_p3=Triangle((unsigned int) p1_t,(unsigned int) p2_prev,(unsigned int) p2_to_create);
                         }
                     }
                     else // (p2_t!=p1_prev && p2_t!=p2_prev)
                     {
                         if(p2_t==p1)
                         {
-                            t_p3=Triangle(helper::make_array<unsigned int>((unsigned int) p2_t,(unsigned int) p1_to_create,(unsigned int) p1_prev));
+                            t_p3=Triangle((unsigned int) p2_t,(unsigned int) p1_to_create,(unsigned int) p1_prev);
                         }
                         else // p2_t==p2
                         {
-                            t_p3=Triangle(helper::make_array<unsigned int>((unsigned int) p2_t,(unsigned int) p2_prev,(unsigned int) p2_to_create));
+                            t_p3=Triangle((unsigned int) p2_t,(unsigned int) p2_prev,(unsigned int) p2_to_create);
                         }
                     }
                 }
@@ -609,15 +609,15 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
             unsigned int ind_b =  acc_nb_points; // last point registered to be created
 
             sofa::helper::vector< Triangle > b_triangles;
-            Triangle t_b01 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_b,
+            Triangle t_b01 = Triangle((unsigned int)ind_b,
                     (unsigned int)tb[0],
-                    (unsigned int) tb[1]));
-            Triangle t_b12 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_b,
+                    (unsigned int) tb[1]);
+            Triangle t_b12 = Triangle((unsigned int)ind_b,
                     (unsigned int)tb[1],
-                    (unsigned int) tb[2]));
-            Triangle t_b20 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_b,
+                    (unsigned int) tb[2]);
+            Triangle t_b20 = Triangle((unsigned int)ind_b,
                     (unsigned int)tb[2],
-                    (unsigned int) tb[0]));
+                    (unsigned int) tb[0]);
             triangles_to_create.push_back(t_b01);
             triangles_to_create.push_back(t_b12);
             triangles_to_create.push_back(t_b20);
@@ -646,12 +646,12 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
             }
             triangles_to_remove.push_back(tb_to_remove);
 
-            Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 2,
+            Triangle t_pb1 = Triangle((unsigned int) acc_nb_points - 2,
                     (unsigned int) p1_b,
-                    (unsigned int)ind_b));
-            Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,
+                    (unsigned int)ind_b);
+            Triangle t_pb2 = Triangle((unsigned int) acc_nb_points - 1,
                     (unsigned int)ind_b,
-                    (unsigned int) p2_b));
+                    (unsigned int) p2_b);
             triangles_to_create.push_back(t_pb1);
             triangles_to_create.push_back(t_pb2);
 
@@ -705,8 +705,8 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
 
             if(ind_b==p1_b)
             {
-                Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points,(unsigned int) p1_b,(unsigned int) p0_b));
-                Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points,(unsigned int) p0_b, (unsigned int) p2_b));
+                Triangle t_pb1 = Triangle((unsigned int) acc_nb_points,(unsigned int) p1_b,(unsigned int) p0_b);
+                Triangle t_pb2 = Triangle((unsigned int) acc_nb_points,(unsigned int) p0_b, (unsigned int) p2_b);
                 triangles_to_create.push_back(t_pb1);
                 triangles_to_create.push_back(t_pb2);
 
@@ -715,15 +715,15 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
             {
                 if(ind_b==p2_b)
                 {
-                    Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int) p1_b,(unsigned int) p0_b));
-                    Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int) p0_b, (unsigned int) p2_b));
+                    Triangle t_pb1 = Triangle((unsigned int) acc_nb_points - 1,(unsigned int) p1_b,(unsigned int) p0_b);
+                    Triangle t_pb2 = Triangle((unsigned int) acc_nb_points - 1,(unsigned int) p0_b, (unsigned int) p2_b);
                     triangles_to_create.push_back(t_pb1);
                     triangles_to_create.push_back(t_pb2);
                 }
                 else
                 {
-                    Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int) p1_b,(unsigned int) ind_b));
-                    Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points,(unsigned int) ind_b, (unsigned int)p2_b));
+                    Triangle t_pb1 = Triangle((unsigned int) acc_nb_points - 1,(unsigned int) p1_b,(unsigned int) ind_b);
+                    Triangle t_pb2 = Triangle((unsigned int) acc_nb_points,(unsigned int) ind_b, (unsigned int)p2_b);
                     triangles_to_create.push_back(t_pb1);
                     triangles_to_create.push_back(t_pb2);
                 }

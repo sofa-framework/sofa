@@ -30,8 +30,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TetrahedronData.inl>
-#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/PolarDecompose.h>
 
@@ -147,11 +146,13 @@ template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::Fas
 
 template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>::handleTopologyChange()
 {
+#ifdef TODOTOPO
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
     edgeInfo.handleTopologyEvents(itBegin,itEnd);
     tetrahedronInfo.handleTopologyEvents(itBegin,itEnd);
+#endif
     updateTopologyInfo=true;
 }
 
@@ -213,9 +214,11 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     }
     /// set the call back function upon creation of a tetrahedron
     tetrahedronInfo.createTopologicalEngine(_topology);
+#ifdef TODOTOPO
     tetrahedronInfo.setCreateFunction(CorotationalTetrahedronCreationFunction);
     tetrahedronInfo.setCreateParameter( (void *) this );
     tetrahedronInfo.setDestroyParameter( (void *) this );
+#endif
     tetrahedronInfo.registerTopologicalData();
     tetrahedronInfo.endEdit();
 

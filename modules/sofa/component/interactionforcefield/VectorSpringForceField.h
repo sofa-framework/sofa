@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/topology/EdgeData.h>
+#include <sofa/component/topology/TopologyData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>

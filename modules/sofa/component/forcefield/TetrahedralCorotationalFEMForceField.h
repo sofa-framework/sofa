@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/topology/TetrahedronData.h>
+#include <sofa/component/topology/TopologyData.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -196,9 +196,6 @@ public:
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
 
-    // handle topological changes
-    virtual void handleTopologyChange();
-
     // Getting the rotation of the vertex by averaing the rotation of neighboring elements
     void getRotation(Transformation& R, unsigned int nodeIdx);
     void getRotations() {};
@@ -206,7 +203,7 @@ public:
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
-    void getElementStiffnessMatrix(Real* stiffness, Tetra& te);
+    void getElementStiffnessMatrix(Real* stiffness, Tetrahedron& te);
 
     void draw(const core::visual::VisualParams* vparams);
 

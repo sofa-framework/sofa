@@ -55,7 +55,9 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<std::string> > 
 //Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<float>, TABLE_HORIZONTAL > > DWClass_Pointf("default",true);
 //Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<double>, TABLE_HORIZONTAL > > DWClass_Pointd("default",true);
 
+#ifdef TODOTOPO
 Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointSubset, TABLE_HORIZONTAL > > DWClass_PointSubset("default",true);
+#endif
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<Vec<1,int> > > > DWClass_vectorVec1i("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<Vec<1,unsigned int> > > > DWClass_vectorVec1u("default",true);

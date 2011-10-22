@@ -30,8 +30,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TriangleData.inl>
-#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/core/behavior/ForceField.inl>
 
@@ -178,15 +177,6 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::Tr
 {
 }
 
-template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-    edgeInfo.handleTopologyEvents(itBegin,itEnd);
-    triangleInfo.handleTopologyEvents(itBegin,itEnd);
-}
-
 template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::~TriangularBiquadraticSpringsForceField()
 {
 
@@ -236,21 +226,24 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
 
     // Edge info
     edgeInfo.createTopologicalEngine(_topology);
+#ifdef TODOTOPO
     edgeInfo.setCreateFunction(TRBSEdgeCreationFunction);
     edgeInfo.setCreateParameter( (void *) this );
     edgeInfo.setDestroyParameter( (void *) this );
+#endif
     edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 
     // Triangle info
     triangleInfo.createTopologicalEngine(_topology);
+#ifdef TODOTOPO
     triangleInfo.setCreateFunction(TRBSTriangleCreationFunction);
     triangleInfo.setDestroyFunction(TRBSTriangleDestroyFunction);
     triangleInfo.setCreateParameter( (void *) this );
     triangleInfo.setDestroyParameter( (void *) this );
+#endif
     triangleInfo.registerTopologicalData();
     triangleInfo.endEdit();
-
 }
 
 template <class DataTypes>

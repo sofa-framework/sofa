@@ -44,9 +44,7 @@
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/PointData.inl>
-#include <sofa/component/topology/TriangleData.inl>
-#include <sofa/component/topology/HexahedronData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 #include <sofa/helper/vector.h>
 #include <sofa/helper/gl/template.h>
@@ -4576,35 +4574,45 @@ template <class In, class Out>
 void BarycentricMapperEdgeSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator itBegin,
         std::list< const core::topology::TopologyChange *>::const_iterator itEnd )
 {
+#ifdef TODOTOPO
     map.handleTopologyEvents ( itBegin, itEnd );
+#endif
 }
 
 template <class In, class Out>
 void BarycentricMapperTriangleSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator itBegin,
         std::list< const core::topology::TopologyChange *>::const_iterator itEnd )
 {
+#ifdef TODOTOPO
     map.handleTopologyEvents ( itBegin, itEnd );
+#endif
 }
 
 template <class In, class Out>
 void BarycentricMapperQuadSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator itBegin,
         std::list< const core::topology::TopologyChange *>::const_iterator itEnd )
 {
+#ifdef TODOTOPO
     map.handleTopologyEvents ( itBegin, itEnd );
+#endif
 }
 
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator itBegin,
         std::list< const core::topology::TopologyChange *>::const_iterator itEnd )
 {
+#ifdef TODOTOPO
     map.handleTopologyEvents ( itBegin, itEnd );
+#endif
 }
 
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator itBegin,
         std::list< const core::topology::TopologyChange *>::const_iterator itEnd )
 {
+#ifdef TODOTOPO
     map.handleTopologyEvents ( itBegin, itEnd );
+#endif
 }
 
 // handle topology changes depending on the topology

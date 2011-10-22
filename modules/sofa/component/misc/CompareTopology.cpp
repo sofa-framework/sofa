@@ -112,7 +112,7 @@ void CompareTopology::processCompareTopology()
 
             if (nbr != 0)
             {
-                const helper::vector <helper::fixed_array <unsigned int,2> >& SeqEdges = topo->getEdges();
+                const helper::vector <core::topology::Topology::Edge>& SeqEdges = topo->getEdges();
 
                 if ((unsigned int)topo->getNbEdges() != nbr)
                 {
@@ -144,7 +144,7 @@ void CompareTopology::processCompareTopology()
 
             if (nbr != 0)
             {
-                const helper::vector <helper::fixed_array <unsigned int,3> >& SeqTriangles = topo->getTriangles();
+                const core::topology::BaseMeshTopology::SeqTriangles& SeqTriangles = topo->getTriangles();
 
                 if ((unsigned int)topo->getNbTriangles() != nbr)
                 {
@@ -180,7 +180,7 @@ void CompareTopology::processCompareTopology()
 
             if (nbr != 0)
             {
-                const helper::vector <helper::fixed_array <unsigned int,4> >& SeqQuads = topo->getQuads();
+                const core::topology::BaseMeshTopology::SeqQuads& SeqQuads = topo->getQuads();
 
                 if ((unsigned int)topo->getNbQuads() != nbr)
                 {
@@ -216,7 +216,7 @@ void CompareTopology::processCompareTopology()
 
             if (nbr != 0)
             {
-                const helper::vector <helper::fixed_array <unsigned int,4> >& SeqTetrahedra = topo->getTetrahedra();
+                const core::topology::BaseMeshTopology::SeqTetrahedra& SeqTetrahedra = topo->getTetrahedra();
 
                 if ((unsigned int)topo->getNbTetrahedra() != nbr)
                 {
@@ -252,7 +252,7 @@ void CompareTopology::processCompareTopology()
 
             if (nbr != 0)
             {
-                const helper::vector <helper::fixed_array <unsigned int,8> >& SeqHexahedra = topo->getHexahedra();
+                const core::topology::BaseMeshTopology::SeqHexahedra& SeqHexahedra = topo->getHexahedra();
 
                 if ((unsigned int)topo->getNbHexahedra() != nbr)
                 {

@@ -30,8 +30,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/forcefield/HexahedralFEMForceField.inl>
 
-#include <sofa/component/topology/PointData.inl>
-#include <sofa/component/topology/HexahedronData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 namespace sofa
 {
@@ -96,7 +95,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::topol
 
     std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
-
+#ifdef TODOTOPO
     // handle point events
     _particleMasses.handleTopologyEvents(itBegin,itEnd);
 
@@ -106,6 +105,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::topol
     // handle hexa events
     _elementMasses.handleTopologyEvents(itBegin,itEnd);
     _elementTotalMass.handleTopologyEvents(itBegin,itEnd);
+#endif
 
     for(std::list<const TopologyChange *>::const_iterator iter = itBegin;
         iter != itEnd; ++iter)

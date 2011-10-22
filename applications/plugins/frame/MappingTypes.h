@@ -29,7 +29,7 @@
 
 #include "FrameMass.h"
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/TopologyData.h>
 #include <limits>
 
 namespace sofa

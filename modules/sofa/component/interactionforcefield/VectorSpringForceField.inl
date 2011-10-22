@@ -29,7 +29,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -148,8 +148,10 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , m_viscosity( initData(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
     , usingMask(false)
 {
+#ifdef TODOTOPO
     springArray.setCreateFunction(springCreationFunction);
     springArray.setCreateParameter( (void *) this );
+#endif
 }
 
 template <class DataTypes>
@@ -161,8 +163,10 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , m_viscosity( initData(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
     , usingMask(false)
 {
+#ifdef TODOTOPO
     springArray.setCreateFunction(springCreationFunction);
     springArray.setCreateParameter( (void *) this );
+#endif
 }
 
 template <class DataTypes>

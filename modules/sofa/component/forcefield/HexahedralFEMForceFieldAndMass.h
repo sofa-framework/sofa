@@ -29,8 +29,7 @@
 #include <sofa/component/forcefield/HexahedralFEMForceField.h>
 #include <sofa/core/behavior/Mass.h>
 
-#include <sofa/component/topology/PointData.h>
-#include <sofa/component/topology/HexahedronData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 namespace sofa
 {

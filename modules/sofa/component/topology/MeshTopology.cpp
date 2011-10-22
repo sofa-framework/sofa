@@ -438,7 +438,7 @@ void MeshTopology::createEdgesInQuadArray ()
 void MeshTopology::createEdgesInTetrahedronArray ()
 {
     //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
-    const SeqQuads& tetrahedra = getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
+    const SeqTetrahedra& tetrahedra = getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
     m_edgesInTetrahedron.clear();
     m_edgesInTetrahedron.resize(tetrahedra.size());
     const unsigned int edgesInTetrahedronArray[6][2]= {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
@@ -655,7 +655,7 @@ void MeshTopology::createTrianglesAroundEdgeArray ()
 void MeshTopology::createTrianglesInTetrahedronArray ()
 {
     //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
-    const SeqQuads& tetrahedra = getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
+    const SeqTetrahedra& tetrahedra = getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
     m_trianglesInTetrahedron.clear();
     m_trianglesInTetrahedron.resize(tetrahedra.size());
 
@@ -1993,14 +1993,14 @@ void MeshTopology::updateQuads()
         //std::sort(v+1,v+2); std::sort(v+1,v+3);
         //std::sort(v+2,v+3);
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        qu=Quad(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=seqQuads.getValue().size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
 
             seqQuads.beginEdit()->push_back(qu);
@@ -2024,14 +2024,14 @@ void MeshTopology::updateQuads()
         //std::sort(v+1,v+2); std::sort(v+1,v+3);
         //std::sort(v+2,v+3);
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        qu=Quad(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=seqQuads.getValue().size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
             seqQuads.beginEdit()->push_back(qu);
             seqQuads.endEdit();
@@ -2053,14 +2053,14 @@ void MeshTopology::updateQuads()
         //std::sort(v+1,v+2); std::sort(v+1,v+3);
         //std::sort(v+2,v+3);
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        qu=Quad(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=seqQuads.getValue().size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
             seqQuads.beginEdit()->push_back(qu);
             seqQuads.endEdit();
@@ -2082,14 +2082,14 @@ void MeshTopology::updateQuads()
         //std::sort(v+1,v+2); std::sort(v+1,v+3);
         //std::sort(v+2,v+3);
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        qu=Quad(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=seqQuads.getValue().size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
             seqQuads.beginEdit()->push_back(qu);
             seqQuads.endEdit();
@@ -2111,14 +2111,14 @@ void MeshTopology::updateQuads()
         //std::sort(v+1,v+2); std::sort(v+1,v+3);
         //std::sort(v+2,v+3);
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        qu=Quad(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=seqQuads.getValue().size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
             seqQuads.beginEdit()->push_back(qu);
             seqQuads.endEdit();
@@ -2140,14 +2140,14 @@ void MeshTopology::updateQuads()
         //std::sort(v+1,v+2); std::sort(v+1,v+3);
         //std::sort(v+2,v+3);
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        qu=Quad(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=seqQuads.getValue().size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
             seqQuads.beginEdit()->push_back(qu);
             seqQuads.endEdit();
@@ -2193,13 +2193,13 @@ void MeshTopology::updateTriangles()
                 val=v[0]; v[0]=v[1]; v[1]=v[2]; v[2]=val;
             }
             // check if a triangle with an opposite orientation already exists
-            tr=helper::make_array<unsigned int>(v[0],v[2],v[1]);
+            tr=Triangle(v[0],v[2],v[1]);
             itt=triangleMap.find(tr);
             if (itt==triangleMap.end())
             {
                 // edge not in edgeMap so create a new one
                 triangleIndex=seqTriangles.getValue().size();
-                tr=helper::make_array<unsigned int>(v[0],v[1],v[2]);
+                tr=Triangle(v[0],v[1],v[2]);
                 triangleMap[tr]=triangleIndex;
                 seqTriangles.beginEdit()->push_back(tr);
                 seqTriangles.endEdit();

@@ -28,8 +28,7 @@
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/LocalMinDistanceFilter.h>
 #include <sofa/component/collision/PointLocalMinDistanceFilter.h>
-#include <sofa/component/topology/EdgeData.h>
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -128,11 +127,6 @@ public:
      * @brief Scene graph initialization method.
      */
     void init();
-
-    /**
-     * @brief Handle topological changes.
-     */
-    void handleTopologyChange();
 
     /**
      * @name These methods check the validity of a found intersection.

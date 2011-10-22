@@ -29,8 +29,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
 #include <sofa/component/topology/MultilevelHexahedronSetTopologyContainer.h>
-#include <sofa/component/topology/PointData.inl>
-#include <sofa/component/topology/HexahedronData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/core/objectmodel/Base.h>
 
 
@@ -206,15 +205,15 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::top
 {
     if(t != this->_topology)
         return;
-
+#ifdef TODOTOPO
     std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
 
     // handle point events
-    this->_particleMasses.handleTopologyEvents(itBegin,itEnd);
+    //this->_particleMasses.handleTopologyEvents(itBegin,itEnd);
 
-    if( this->_useLumpedMass.getValue() )
-        this->_lumpedMasses.handleTopologyEvents(itBegin,itEnd);
+    //if( this->_useLumpedMass.getValue() )
+    //    this->_lumpedMasses.handleTopologyEvents(itBegin,itEnd);
 
     for(std::list<const TopologyChange *>::const_iterator iter = itBegin;
         iter != itEnd; ++iter)
@@ -264,6 +263,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::top
         break;
         }
     }
+#endif
 }
 
 template<class T>

@@ -28,7 +28,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/collision/LocalMinDistanceFilter.h>
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/topology/TriangleData.h>
+#include <sofa/component/topology/TopologyData.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/collision/PointModel.h>

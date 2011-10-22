@@ -27,7 +27,7 @@
 
 #include <sofa/component/collision/LocalMinDistanceFilter.h>
 #include <sofa/component/collision/PointModel.h>
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 

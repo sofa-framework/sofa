@@ -25,9 +25,7 @@
 
 #include <sofa/component/collision/TriangleLocalMinDistanceFilter.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/EdgeData.inl>
-#include <sofa/component/topology/PointData.inl>
-#include <sofa/component/topology/TriangleData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -94,9 +92,11 @@ void TriangleLocalMinDistanceFilter::init()
     {
 
         m_pointInfo.createTopologicalEngine(bmt);
+#ifdef TODOTOPO
         m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
         m_pointInfo.setCreateParameter((void *) this);
         m_pointInfo.setDestroyParameter( (void *) this );
+#endif
         m_pointInfo.registerTopologicalData();
 
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
@@ -113,9 +113,11 @@ void TriangleLocalMinDistanceFilter::init()
 
 
         m_lineInfo.createTopologicalEngine(bmt);
+#ifdef TODOTOPO
         m_lineInfo.setCreateFunction(LMDFilterLineCreationFunction);
         m_lineInfo.setCreateParameter((void *) this);
         m_lineInfo.setDestroyParameter( (void *) this );
+#endif
         m_lineInfo.registerTopologicalData();
 
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
@@ -132,9 +134,11 @@ void TriangleLocalMinDistanceFilter::init()
 
 
         m_triangleInfo.createTopologicalEngine(bmt);
+#ifdef TODOTOPO
         m_triangleInfo.setCreateFunction(LMDFilterTriangleCreationFunction);
         m_triangleInfo.setCreateParameter((void *) this);
         m_triangleInfo.setDestroyParameter( (void *) this );
+#endif
         m_triangleInfo.registerTopologicalData();
 
         helper::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
@@ -194,16 +198,18 @@ void TriangleLocalMinDistanceFilter::handleTopologyChange()
         this->invalidate(); // all the filters will be recomputed, not only those involved in the topological change
     }
 
-    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    /*
+        core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
 
-    assert(bmt != 0);
+        assert(bmt != 0);
 
-    std::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->beginChange();
-    std::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->endChange();
+        std::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->beginChange();
+        std::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->endChange();
 
-    m_pointInfo.handleTopologyEvents(itBegin, itEnd);
-    m_lineInfo.handleTopologyEvents(itBegin, itEnd);
-    m_triangleInfo.handleTopologyEvents(itBegin, itEnd);
+        m_pointInfo.handleTopologyEvents(itBegin, itEnd);
+    	m_lineInfo.handleTopologyEvents(itBegin, itEnd);
+    	m_triangleInfo.handleTopologyEvents(itBegin, itEnd);
+    */
 }
 
 

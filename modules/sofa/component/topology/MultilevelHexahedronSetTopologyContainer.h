@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_MULTILEVELHEXAHEDRONSETTOPOLOGYCONTAINER_H
 
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
-#include <sofa/component/topology/HexahedronData.h>
+#include <sofa/component/topology/TopologyData.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>

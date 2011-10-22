@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP
-
+#ifdef TODOTOPO
 #include <sofa/component/forcefield/EdgePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -62,3 +62,5 @@ template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<Vec3fTypes>;
 } // namespace component
 
 } // namespace sofa
+#endif
+

@@ -27,7 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/component/collision/LineModel.h>
-#include <sofa/component/topology/PointData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/Topology.h>
@@ -216,11 +216,15 @@ void PointLocalMinDistanceFilter::init()
     {
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
+
         m_pointInfo.createTopologicalEngine(bmt);
+#ifdef TODOTOPO
         m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
         m_pointInfo.setCreateParameter( (void *) this );
         m_pointInfo.setDestroyParameter( (void *) this );
+#endif
         m_pointInfo.registerTopologicalData();
+
         m_pointInfo.endEdit();
     }
     if(this->isRigid())
@@ -249,14 +253,14 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
         this->invalidate(); // all the filters will be recomputed, not only those involved in the topological change
     }
 
-    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    //core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
 
-    assert(bmt != 0);
+    //assert(bmt != 0);
 
-    std::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->beginChange();
-    std::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->endChange();
+    //std::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->beginChange();
+    //std::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->endChange();
 
-    m_pointInfo.handleTopologyEvents(itBegin, itEnd);
+    //m_pointInfo.handleTopologyEvents(itBegin, itEnd);
 }
 
 

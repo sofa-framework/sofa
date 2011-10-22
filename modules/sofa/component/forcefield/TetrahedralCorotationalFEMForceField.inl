@@ -33,7 +33,7 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TetrahedronData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 #include <assert.h>
 #include <iostream>
 #include <set>
@@ -92,14 +92,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::CFTetrahedronCreationFunct
     }
 }
 
-template <class DataTypes> void TetrahedralCorotationalFEMForceField<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-    tetrahedronInfo.handleTopologyEvents(itBegin,itEnd);
-}
-
 template <class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 {
@@ -141,9 +133,11 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
     }
 
     tetrahedronInfo.createTopologicalEngine(_topology);
+#ifdef TODOTOPO
     tetrahedronInfo.setCreateFunction(CFTetrahedronCreationFunction);
     tetrahedronInfo.setCreateParameter( (void *) this );
     tetrahedronInfo.setDestroyParameter( (void *) this );
+#endif
     tetrahedronInfo.registerTopologicalData();
 
     tetrahedronInfo.endEdit();

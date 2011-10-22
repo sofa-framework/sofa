@@ -29,8 +29,10 @@
 
 #include "SimpleDataWidget.h"
 #include "StructDataWidget.h"
+#ifdef TODOTOPO
 #include <sofa/component/topology/PointSubsetData.h>
-#include <sofa/component/topology/PointData.h>
+#endif
+#include <sofa/component/topology/TopologyData.h>
 
 #include "QModelViewTableUpdater.h"
 
@@ -727,7 +729,7 @@ public:
 ////////////////////////////////////////////////////////////////
 /// PointSubset support
 ////////////////////////////////////////////////////////////////
-
+#ifdef TODOTOPO
 template<>
 class vector_data_trait < sofa::component::topology::PointSubset >
 {
@@ -754,7 +756,7 @@ public:
         d.resize(s);
     }
 };
-
+#endif
 ////////////////////////////////////////////////////////////////
 /// std::map from strings support
 ////////////////////////////////////////////////////////////////
