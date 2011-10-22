@@ -43,16 +43,6 @@ namespace component
 namespace topology
 {
 
-// Define topology elements
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::Point Point;
-typedef BaseMeshTopology::Edge Edge;
-typedef BaseMeshTopology::Triangle Triangle;
-typedef BaseMeshTopology::Quad Quad;
-typedef BaseMeshTopology::Tetrahedron Tetrahedron;
-typedef BaseMeshTopology::Hexahedron Hexahedron;
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////

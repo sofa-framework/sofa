@@ -57,7 +57,7 @@ public:
 
     virtual ~TopologyHandler() {}
 
-    virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange *>& _topologyChangeEvents);
+    virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange *>& _topologyChangeEvents, const unsigned int _dataSize);
     /// Handle EdgeSetTopology related events, ignore others. DEPRECATED
     /*virtual void handleTopologyEvents( std::list< const core::topology::TopologyChange *>::const_iterator changeIt,
                                        std::list< const core::topology::TopologyChange *>::const_iterator &end,
@@ -188,6 +188,13 @@ public:
 
     /// Reorder the values.
     virtual void renumber( const sofa::helper::vector<unsigned int> &/*index*/ ) {}
+
+protected:
+    /// to handle PointSubsetData
+    void setDataSetArraySize(const unsigned int s) { lastElementIndex = s-1; }
+
+    /// to handle properly the removal of items, the container must know the index of the last element
+    unsigned int lastElementIndex;
 };
 
 
