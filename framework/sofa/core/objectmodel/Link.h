@@ -90,7 +90,6 @@ public:
         operator TDestPtr() const { return ptr; }
         TDestType* operator*() const { return &(*ptr); }
         TDestType* operator->() const { return &(*ptr); }
-        operator bool() const { return (bool)ptr; }
         bool operator == (TDestType* p) { return ptr == p; }
         bool operator != (TDestType* p) { return ptr != p; }
     };

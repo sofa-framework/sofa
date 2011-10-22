@@ -227,16 +227,6 @@ public:
         {
         }
 
-        operator bool() const
-        {
-            return !Inherit::empty();
-        }
-
-        bool operator!() const
-        {
-            return Inherit::empty();
-        }
-
         T* operator->() const
         {
             return this->get();
