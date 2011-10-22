@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/TopologyData.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 

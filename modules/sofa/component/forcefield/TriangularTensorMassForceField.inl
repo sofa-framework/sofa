@@ -30,8 +30,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TriangleData.inl>
-#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa
@@ -264,14 +263,6 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::Triangular
 {
 }
 
-template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-    edgeInfo.handleTopologyEvents(itBegin,itEnd);
-}
-
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::~TriangularTensorMassForceField()
 {
 
@@ -318,13 +309,14 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     TriangularTMTriangleCreationFunction(triangleAdded,(void*) this,
             edgeInf);
 
-
     edgeInfo.createTopologicalEngine(_topology);
+#ifdef TODOTOPO
     edgeInfo.setCreateFunction(TriangularTMEdgeCreationFunction);
     edgeInfo.setCreateTriangleFunction(TriangularTMTriangleCreationFunction);
     edgeInfo.setDestroyTriangleFunction(TriangularTMTriangleDestructionFunction);
     edgeInfo.setCreateParameter( (void *) this );
     edgeInfo.setDestroyParameter( (void *) this );
+#endif
     edgeInfo.registerTopologicalData();
 
     edgeInfo.endEdit();

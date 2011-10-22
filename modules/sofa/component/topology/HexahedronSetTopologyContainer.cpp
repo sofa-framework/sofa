@@ -188,14 +188,14 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
 
         // sort vertices in lexicographics order
         int quadIndex;
-        Quad qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        Quad qu(v[0],v[3],v[2],v[1]);
         std::map<Quad,unsigned int>::iterator itt = quadMap.find(qu);
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=m_quad.size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
             m_quad.push_back(qu);
         }
@@ -215,14 +215,14 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             v[3]=val;
         }
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        qu=Quad(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=m_quad.size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
             m_quad.push_back(qu);
         }
@@ -239,14 +239,14 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             v[3]=val;
         }
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        qu=Quad(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=m_quad.size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
             m_quad.push_back(qu);
         }
@@ -263,14 +263,14 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             v[3]=val;
         }
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        qu=Quad(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=m_quad.size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
             m_quad.push_back(qu);
         }
@@ -290,14 +290,14 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             v[3]=val;
         }
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        qu=Quad(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=m_quad.size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
             m_quad.push_back(qu);
         }
@@ -317,14 +317,14 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             v[3]=val;
         }
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        qu=Quad(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
             quadIndex=m_quad.size();
             quadMap[qu]=quadIndex;
-            qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+            qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
             m_quad.push_back(qu);
         }

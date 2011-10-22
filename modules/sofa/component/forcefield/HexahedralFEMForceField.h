@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Mat.h>
 
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
-#include <sofa/component/topology/HexahedronData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 namespace sofa
 {
@@ -177,9 +177,6 @@ public:
     virtual void addForce (const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
     virtual void addDForce (const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
-
-    // handle topological changes
-    virtual void handleTopologyChange();
 
     void addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 

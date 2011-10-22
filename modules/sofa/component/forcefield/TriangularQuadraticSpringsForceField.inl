@@ -31,8 +31,7 @@
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleData.inl>
-#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa
@@ -161,15 +160,6 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::Tria
 {
 }
 
-template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-    edgeInfo.handleTopologyEvents(itBegin,itEnd);
-    triangleInfo.handleTopologyEvents(itBegin,itEnd);
-}
-
 template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::~TriangularQuadraticSpringsForceField()
 {
 
@@ -217,24 +207,24 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
                 _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
+    /*
+            // Edge info
+            edgeInfo.createTopologicalEngine(_topology);
+            edgeInfo.setCreateFunction(TRQSEdgeCreationFunction);
+            edgeInfo.setCreateParameter( (void *) this );
+            edgeInfo.setDestroyParameter( (void *) this );
+            edgeInfo.registerTopologicalData();
+            edgeInfo.endEdit();
 
-    // Edge info
-    edgeInfo.createTopologicalEngine(_topology);
-    edgeInfo.setCreateFunction(TRQSEdgeCreationFunction);
-    edgeInfo.setCreateParameter( (void *) this );
-    edgeInfo.setDestroyParameter( (void *) this );
-    edgeInfo.registerTopologicalData();
-    edgeInfo.endEdit();
-
-    // Triangle info
-    triangleInfo.createTopologicalEngine(_topology);
-    triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
-    triangleInfo.setDestroyFunction(TRQSTriangleDestroyFunction);
-    triangleInfo.setCreateParameter( (void *) this );
-    triangleInfo.setDestroyParameter( (void *) this );
-    triangleInfo.registerTopologicalData();
-    triangleInfo.endEdit();
-
+            // Triangle info
+            triangleInfo.createTopologicalEngine(_topology);
+            triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
+            triangleInfo.setDestroyFunction(TRQSTriangleDestroyFunction);
+            triangleInfo.setCreateParameter( (void *) this );
+            triangleInfo.setDestroyParameter( (void *) this );
+            triangleInfo.registerTopologicalData();
+            triangleInfo.endEdit();
+    */
 }
 
 template <class DataTypes>

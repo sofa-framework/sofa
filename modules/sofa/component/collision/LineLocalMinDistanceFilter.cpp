@@ -25,8 +25,8 @@
 
 #include <sofa/component/collision/LineLocalMinDistanceFilter.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/EdgeData.inl>
-#include <sofa/component/topology/PointData.inl>
+#include <sofa/component/topology/TopologyData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
@@ -217,42 +217,27 @@ void LineLocalMinDistanceFilter::init()
     {
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
-
+#ifdef TODOTOPO
         m_pointInfo.createTopologicalEngine(bmt);
         m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
         m_pointInfo.setCreateParameter( (void *) this );
         m_pointInfo.setDestroyParameter( (void *) this );
         m_pointInfo.registerTopologicalData();
+#endif
         m_pointInfo.endEdit();
-
 
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
-
+#ifdef TODOTOPO
         m_lineInfo.createTopologicalEngine(bmt);
         m_lineInfo.setCreateFunction(LMDFilterLineCreationFunction);
         m_lineInfo.setCreateParameter((void *) this);
         m_lineInfo.setDestroyParameter( (void *) this );
         m_lineInfo.registerTopologicalData();
+#endif
         m_lineInfo.endEdit();
     }
 }
-
-
-
-void LineLocalMinDistanceFilter::handleTopologyChange()
-{
-    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
-
-    assert(bmt != 0);
-
-    std::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->beginChange();
-    std::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->endChange();
-
-    m_pointInfo.handleTopologyEvents(itBegin, itEnd);
-    m_lineInfo.handleTopologyEvents(itBegin, itEnd);
-}
-
 
 
 void LineLocalMinDistanceFilter::LMDFilterPointCreationFunction(unsigned int, void *param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)

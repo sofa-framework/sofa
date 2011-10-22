@@ -177,14 +177,14 @@ void Edge2QuadTopologicalMapping::init()
 
                         if (flipNormals.getValue())
                         {
-                            Quad q = Quad(helper::make_array<unsigned int>((unsigned int) q3, (unsigned int) q2, (unsigned int) q1, (unsigned int) q0));
+                            Quad q = Quad((unsigned int) q3, (unsigned int) q2, (unsigned int) q1, (unsigned int) q0);
                             quads_to_create.push_back(q);
                             quadsIndexList.push_back(nb_elems);
                         }
 
                         else
                         {
-                            Quad q = Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3));
+                            Quad q = Quad((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3);
                             quads_to_create.push_back(q);
                             quadsIndexList.push_back(nb_elems);
                         }
@@ -219,9 +219,9 @@ void Edge2QuadTopologicalMapping::init()
                         unsigned int q3 = p0*N+((j+1)%N);
 
                         if(flipNormals.getValue())
-                            to_tstm->addQuadProcess(Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q3, (unsigned int) q2, (unsigned int) q1)));
+                            to_tstm->addQuadProcess(Quad((unsigned int) q0, (unsigned int) q3, (unsigned int) q2, (unsigned int) q1));
                         else
-                            to_tstm->addQuadProcess(Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3)));
+                            to_tstm->addQuadProcess(Quad((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3));
                         Loc2GlobVec.push_back(i);
                         out_info.push_back(Loc2GlobVec.size()-1);
                     }
@@ -315,7 +315,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                 unsigned int q2 = p1*N+((j+1)%N);
                                 unsigned int q3 = p0*N+((j+1)%N);
 
-                                Quad t = Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3));
+                                Quad t = Quad((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3);
 
                                 //quads_to_create.clear();
                                 //quadsIndexList.clear();

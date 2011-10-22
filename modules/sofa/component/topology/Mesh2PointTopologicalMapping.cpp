@@ -225,7 +225,7 @@ void Mesh2PointTopologicalMapping::init()
                 {
                     for (unsigned int j=0; j<hexaBaryCoords.getValue().size(); j++)
                     {
-                        Hexa h = fromModel->getHexahedron(i);
+                        Hexahedron h = fromModel->getHexahedron(i);
 
                         Vec3d p0(fromModel->getPX(h[0]), fromModel->getPY(h[0]), fromModel->getPZ(h[0]));
                         Vec3d p1(fromModel->getPX(h[1]), fromModel->getPY(h[1]), fromModel->getPZ(h[1]));

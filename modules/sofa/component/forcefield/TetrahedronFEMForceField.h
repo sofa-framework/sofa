@@ -27,7 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/TetrahedronData.h>
+#include <sofa/component/topology/TopologyData.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
@@ -334,7 +334,7 @@ public:
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
-    void getElementStiffnessMatrix(Real* stiffness, Tetra& te);
+    void getElementStiffnessMatrix(Real* stiffness, Tetrahedron& te);
     virtual void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d);
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event);

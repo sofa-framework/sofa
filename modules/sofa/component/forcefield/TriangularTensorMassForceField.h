@@ -33,8 +33,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/topology/TriangleData.h>
-#include <sofa/component/topology/EdgeData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 
 namespace sofa
@@ -142,13 +141,9 @@ public:
         f_poissonRatio.setValue((Real)ratio);
     }
 
-    // handle topological changes
-    virtual void handleTopologyChange();
-
     void draw(const core::visual::VisualParams* vparams);
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
-
 
 
 protected :

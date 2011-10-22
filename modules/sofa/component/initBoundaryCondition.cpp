@@ -46,14 +46,20 @@ SOFA_LINK_CLASS(AspirationForceField)
 SOFA_LINK_CLASS(BuoyantForceField)
 SOFA_LINK_CLASS(ConicalForceField)
 SOFA_LINK_CLASS(ConstantForceField)
+#ifdef TODOTOPO
 SOFA_LINK_CLASS(EdgePressureForceField)
+#endif
 SOFA_LINK_CLASS(EllipsoidForceField)
 SOFA_LINK_CLASS(LinearForceField)
+#ifdef TODOTOPO
 SOFA_LINK_CLASS(OscillatingTorsionPressureForceField)
+#endif
 SOFA_LINK_CLASS(PlaneForceField)
 SOFA_LINK_CLASS(SphereForceField)
 SOFA_LINK_CLASS(SurfacePressureForceField)
+#ifdef TODOTOPO
 SOFA_LINK_CLASS(TrianglePressureForceField)
+#endif
 SOFA_LINK_CLASS(VaccumSphereForceField)
 SOFA_LINK_CLASS(FixedConstraint)
 SOFA_LINK_CLASS(FixedPlaneConstraint)

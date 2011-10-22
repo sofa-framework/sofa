@@ -33,7 +33,7 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/TopologyData.h>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_legend.h>

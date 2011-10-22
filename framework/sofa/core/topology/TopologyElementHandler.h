@@ -46,7 +46,7 @@ namespace topology
 * happen (non exhaustive list: Edges added, removed, fused, renumbered).
 */
 template< class TopologyElementType>
-class TopologyElementHandler : public sofa::core::topology::TopologyHandler
+class SOFA_CORE_API TopologyElementHandler : public sofa::core::topology::TopologyHandler
 {
 public:
     TopologyElementHandler() : TopologyHandler() {}
@@ -201,6 +201,197 @@ protected:
 
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////   Point Handler function redefinition   /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// Apply adding Point elements.
+template<>
+void TopologyElementHandler<Point>::applyPointCreation(const sofa::helper::vector< unsigned int >& indices,
+        const sofa::helper::vector< Point >& elems,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+/// Apply removing Point elements.
+template<>
+void TopologyElementHandler<Point>::applyPointDestruction(const sofa::helper::vector<unsigned int> & indices);
+
+/// Apply swap between Point indices elements.
+template<>
+void TopologyElementHandler<Point>::applyPointIndicesSwap(unsigned int i1, unsigned int i2 );
+
+/// /// Apply renumbering on Point elements.
+template<>
+void TopologyElementHandler<Point>::applyPointRenumbering(const sofa::helper::vector<unsigned int>& indices);
+
+///Apply moving function on moved Point elements.
+template<>
+void TopologyElementHandler<Point>::applyPointMove(const sofa::helper::vector<unsigned int>& indexList,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////   Edge Handler function redefinition   //////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// Apply adding Edge elements.
+template<>
+void TopologyElementHandler<Edge>::applyEdgeCreation(const sofa::helper::vector< unsigned int >& indices,
+        const sofa::helper::vector< Edge >& elems,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+/// Apply removing Edge elements.
+template<>
+void TopologyElementHandler<Edge>::applyEdgeDestruction(const sofa::helper::vector<unsigned int> & indices);
+
+/// Apply swap between Edge indices elements.
+template<>
+void TopologyElementHandler<Edge>::applyEdgeIndicesSwap(unsigned int i1, unsigned int i2 );
+
+/// Apply renumbering on Edge elements.
+template<>
+void TopologyElementHandler<Edge>::applyEdgeRenumbering(const sofa::helper::vector<unsigned int>& indices);
+
+/// Apply adding function on moved Edge elements.
+template<>
+void TopologyElementHandler<Edge>::applyEdgeMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
+        const sofa::helper::vector< Edge >& elems);
+
+/// Apply removing function on moved Edge elements.
+template<>
+void TopologyElementHandler<Edge>::applyEdgeMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////   Triangle Handler function redefinition   /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// Apply adding Triangle elements.
+template<>
+void TopologyElementHandler<Triangle>::applyTriangleCreation(const sofa::helper::vector< unsigned int >& indices,
+        const sofa::helper::vector< Triangle >& elems,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+/// Apply removing Triangle elements.
+template<>
+void TopologyElementHandler<Triangle>::applyTriangleDestruction(const sofa::helper::vector<unsigned int> & indices);
+
+/// Apply swap between Triangle indices elements.
+template<>
+void TopologyElementHandler<Triangle>::applyTriangleIndicesSwap(unsigned int i1, unsigned int i2 );
+
+/// Apply renumbering on Triangle elements.
+template<>
+void TopologyElementHandler<Triangle>::applyTriangleRenumbering(const sofa::helper::vector<unsigned int>& indices);
+
+/// Apply adding function on moved Triangle elements.
+template<>
+void TopologyElementHandler<Triangle>::applyTriangleMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
+        const sofa::helper::vector< Triangle >& elems);
+
+/// Apply removing function on moved Triangle elements.
+template<>
+void TopologyElementHandler<Triangle>::applyTriangleMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////   Quad Handler function redefinition   //////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// Apply adding Quad elements.
+template<>
+void TopologyElementHandler<Quad>::applyQuadCreation(const sofa::helper::vector< unsigned int >& indices,
+        const sofa::helper::vector< Quad >& elems,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+/// Apply removing Quad elements.
+template<>
+void TopologyElementHandler<Quad>::applyQuadDestruction(const sofa::helper::vector<unsigned int> & indices);
+
+/// Apply swap between Quad indices elements.
+template<>
+void TopologyElementHandler<Quad>:: applyQuadIndicesSwap(unsigned int i1, unsigned int i2 );
+
+/// Apply renumbering on Quad elements.
+template<>
+void TopologyElementHandler<Quad>::applyQuadRenumbering(const sofa::helper::vector<unsigned int>& indices);
+
+/// Apply adding function on moved Quad elements.
+template<>
+void TopologyElementHandler<Quad>::applyQuadMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
+        const sofa::helper::vector< Quad >& elems);
+
+/// Apply removing function on moved Quad elements.
+template<>
+void TopologyElementHandler<Quad>::applyQuadMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////   Tetrahedron Handler function redefinition   //////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// Apply adding Tetrahedron elements.
+template<>
+void TopologyElementHandler<Tetrahedron>::applyTetrahedronCreation(const sofa::helper::vector< unsigned int >& indices,
+        const sofa::helper::vector< Tetrahedron >& elems,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+/// Apply removing Tetrahedron elements.
+template<>
+void TopologyElementHandler<Tetrahedron>:: applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> & indices);
+
+/// Apply swap between Tetrahedron indices elements.
+template<>
+void TopologyElementHandler<Tetrahedron>::applyTetrahedronIndicesSwap(unsigned int i1, unsigned int i2 );
+
+/// Apply renumbering on Tetrahedron elements.
+template<>
+void TopologyElementHandler<Tetrahedron>::applyTetrahedronRenumbering(const sofa::helper::vector<unsigned int>& indices);
+
+/// Apply adding function on moved Tetrahedron elements.
+template<>
+void TopologyElementHandler<Tetrahedron>::applyTetrahedronMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
+        const sofa::helper::vector< Tetrahedron >& elems);
+
+/// Apply removing function on moved Tetrahedron elements.
+template<>
+void TopologyElementHandler<Tetrahedron>::applyTetrahedronMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////   Hexahedron Handler function redefinition   ///////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/// Apply adding Hexahedron elements.
+template<>
+void TopologyElementHandler<Hexahedron>::applyHexahedronCreation(const sofa::helper::vector< unsigned int >& indices,
+        const sofa::helper::vector< Hexahedron >& elems,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+/// Apply removing Hexahedron elements.
+template<>
+void TopologyElementHandler<Hexahedron>::applyHexahedronDestruction(const sofa::helper::vector<unsigned int> & indices);
+
+/// Apply swap between Hexahedron indices elements.
+template<>
+void TopologyElementHandler<Hexahedron>::applyHexahedronIndicesSwap(unsigned int i1, unsigned int i2 );
+
+/// Apply renumbering on Hexahedron elements.
+template<>
+void TopologyElementHandler<Hexahedron>::applyHexahedronRenumbering(const sofa::helper::vector<unsigned int>& indices);
+
+/// Apply adding function on moved Hexahedron elements.
+template<>
+void TopologyElementHandler<Hexahedron>::applyHexahedronMovedCreation(const sofa::helper::vector<unsigned int>& indexList,
+        const sofa::helper::vector< Hexahedron >& elems);
+
+/// Apply removing function on moved Hexahedron elements.
+template<>
+void TopologyElementHandler<Hexahedron>::applyHexahedronMovedDestruction(const sofa::helper::vector<unsigned int> & indices);
 
 } // namespace topology
 

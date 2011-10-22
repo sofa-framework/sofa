@@ -41,7 +41,7 @@
 #include <vector>
 #include <fstream>
 
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 namespace sofa
 {
@@ -119,6 +119,55 @@ public:
     Data< MatrixDeriv > c;
     Data< VecCoord > reset_position;
     Data< VecDeriv > reset_velocity;
+
+
+    class MOPointHandler : public TopologyDataHandler<Point,VecCoord >
+    {
+    public:
+        typedef typename MechanicalObject<DataTypes>::VecCoord VecCoord;
+        typedef typename MechanicalObject<DataTypes>::Coord Coord;
+        TRQSTriangleHandler(MechanicalObject<DataTypes>* _obj, PointData<VecCoord>* _data) : TopologyDataHandler<Point, VecCoord >(_data), obj(_obj) {}
+
+        void applyCreateFunction(unsigned int pointIndex, Coord& dest,
+                const sofa::helper::vector< unsigned int > &ancestors,
+                const sofa::helper::vector< double > &coefs)
+        {
+            if (!obj)
+                return;
+
+            if (!ancestors.empty() )
+            {
+                const unsigned int prevSizeMechObj = obj->getSize();
+                obj->vsize =prevSizeMechObj + 1;
+
+                obj->computeWeightedValue( prevSizeMechObj + 1, ancestors, coefs );
+            }
+            else
+            {
+                // No ancestors specified, resize DOFs vectors and set new values to the reset default value.
+                obj->vsize = obj->getSize() + 1;
+            }
+        }
+
+        void applyDestroyFunction(unsigned int, Coord& )
+        {
+            if (!obj)
+                return;
+
+            unsigned int prevSizeMechObj   = obj->getSize();
+            //unsigned int lastIndexMech = prevSizeMechObj - 1;
+
+            obj->vsize = prevSizeMechObj - 1;
+            //obj->replaceValue(lastIndexMech, index );
+            //obj->resize( prevSizeMechObj - 1 );
+        }
+    protected:
+        MechanicalObject<DataTypes>* obj;
+    };
+
+
+
+
 
     //static void PointCreationFunction (int , void* , Coord &, const sofa::helper::vector< unsigned int > & ,   const sofa::helper::vector< double >&);
 

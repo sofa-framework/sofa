@@ -609,6 +609,16 @@ public:
         mass = m;
         recalc();
     }
+    void operator+=(Real m)
+    {
+        mass += m;
+        recalc();
+    }
+    void operator-=(Real m)
+    {
+        mass -= m;
+        recalc();
+    }
     // operator to cast to const Real
     operator const Real() const
     {
@@ -1307,6 +1317,16 @@ public:
     void operator=(Real m)
     {
         mass = m;
+        recalc();
+    }
+    void operator+=(Real m)
+    {
+        mass += m;
+        recalc();
+    }
+    void operator-=(Real m)
+    {
+        mass -= m;
         recalc();
     }
     // operator to cast to const Real

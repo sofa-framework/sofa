@@ -158,13 +158,13 @@ void Quad2TriangleTopologicalMapping::init()
                 unsigned int p3 = quadArray[i][3];
                 if (((i%scale) ^ (i/scale)) & 1)
                 {
-                    to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p0, (unsigned int) p1, (unsigned int) p3)));
-                    to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p2, (unsigned int) p3, (unsigned int) p1)));
+                    to_tstm->addTriangleProcess(Triangle((unsigned int) p0, (unsigned int) p1, (unsigned int) p3));
+                    to_tstm->addTriangleProcess(Triangle((unsigned int) p2, (unsigned int) p3, (unsigned int) p1));
                 }
                 else
                 {
-                    to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p1, (unsigned int) p2, (unsigned int) p0)));
-                    to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p3, (unsigned int) p0, (unsigned int) p2)));
+                    to_tstm->addTriangleProcess(Triangle((unsigned int) p1, (unsigned int) p2, (unsigned int) p0));
+                    to_tstm->addTriangleProcess(Triangle((unsigned int) p3, (unsigned int) p0, (unsigned int) p2));
                 }
 
                 Loc2GlobVec.push_back(i);
@@ -247,8 +247,8 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                             unsigned int p1 = quadArray[k][1];
                             unsigned int p2 = quadArray[k][2];
                             unsigned int p3 = quadArray[k][3];
-                            Triangle t1 = Triangle(helper::make_array<unsigned int>((unsigned int) p0, (unsigned int) p1, (unsigned int) p2));
-                            Triangle t2 = Triangle(helper::make_array<unsigned int>((unsigned int) p0, (unsigned int) p2, (unsigned int) p3));
+                            Triangle t1 = Triangle((unsigned int) p0, (unsigned int) p1, (unsigned int) p2);
+                            Triangle t2 = Triangle((unsigned int) p0, (unsigned int) p2, (unsigned int) p3);
 
                             triangles_to_create.push_back(t1);
                             trianglesIndexList.push_back(nb_elems);

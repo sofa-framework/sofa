@@ -29,8 +29,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/component/topology/PointData.inl>
-#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -680,17 +679,19 @@ void MeshMatrixMass<DataTypes, MassType>::init()
 
     // add the functions to handle topology changes for Vertex informations
     vertexMassInfo.createTopologicalEngine(_topology);
+#ifdef TODOTOPO
     vertexMassInfo.setCreateFunction(VertexMassCreationFunction);
     vertexMassInfo.setCreateParameter ((void *) this );
     vertexMassInfo.setDestroyParameter( (void *) this );
-
+#endif
 
     // add the functions to handle topology changes for Edge informations
     edgeMassInfo.createTopologicalEngine(_topology);
+#ifdef TODOTOPO
     edgeMassInfo.setCreateFunction(EdgeMassCreationFunction);
     edgeMassInfo.setCreateParameter ((void *) this );
     edgeMassInfo.setDestroyParameter( (void *) this );
-
+#endif
 
     if ((vertexMassInfo.getValue().size()==0 || edgeMassInfo.getValue().size()==0) && (_topology!=0))
         reinit();
@@ -766,11 +767,13 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             massLumpingCoeff = 2.5;
 
             // Tetrahedron
+#ifdef TODOTOPO
             vertexMassInfo.setCreateTetrahedronFunction(VertexMassTetrahedronCreationFunction);
             vertexMassInfo.setDestroyTetrahedronFunction(VertexMassTetrahedronDestroyFunction);
 
             edgeMassInfo.setCreateTetrahedronFunction(EdgeMassTetrahedronCreationFunction);
             edgeMassInfo.setDestroyTetrahedronFunction(EdgeMassTetrahedronDestroyFunction);
+#endif
         }
 
         else if (_topology->getNbQuads()>0 && quadGeo)  // Quad topology
@@ -787,11 +790,13 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             massLumpingCoeff = 2.0;
 
             // Quad
+#ifdef TODOTOPO
             vertexMassInfo.setCreateQuadFunction(VertexMassQuadCreationFunction);
             vertexMassInfo.setDestroyQuadFunction(VertexMassQuadDestroyFunction);
 
             edgeMassInfo.setCreateQuadFunction(EdgeMassQuadCreationFunction);
             edgeMassInfo.setDestroyQuadFunction(EdgeMassQuadDestroyFunction);
+#endif
         }
         else if (_topology->getNbTriangles()>0 && triangleGeo) // Triangle topology
         {
@@ -807,11 +812,13 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             massLumpingCoeff = 2.0;
 
             // Triangle
+#ifdef TODOTOPO
             vertexMassInfo.setCreateTriangleFunction(VertexMassTriangleCreationFunction);
             vertexMassInfo.setDestroyTriangleFunction(VertexMassTriangleDestroyFunction);
 
             edgeMassInfo.setCreateTriangleFunction(EdgeMassTriangleCreationFunction);
             edgeMassInfo.setDestroyTriangleFunction(EdgeMassTriangleDestroyFunction);
+#endif
         }
 
         vertexMassInfo.registerTopologicalData();
@@ -820,17 +827,6 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
         vertexMassInfo.endEdit();
         edgeMassInfo.endEdit();
     }
-}
-
-
-template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-    vertexMassInfo.handleTopologyEvents(itBegin,itEnd);
-    edgeMassInfo.handleTopologyEvents(itBegin,itEnd);
 }
 
 

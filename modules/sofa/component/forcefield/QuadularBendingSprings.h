@@ -29,8 +29,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/topology/QuadData.h>
-#include <sofa/component/topology/EdgeData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/fixed_array.h>

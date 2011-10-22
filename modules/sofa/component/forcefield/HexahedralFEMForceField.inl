@@ -34,10 +34,7 @@
 #include <iostream>
 #include <set>
 
-#include <sofa/component/topology/HexahedronData.inl>
-
-
-
+#include <sofa/component/topology/TopologyData.inl>
 
 
 
@@ -93,14 +90,6 @@ void HexahedralFEMForceField<DataTypes>::FHexahedronCreationFunction (unsigned i
 }
 
 
-template <class DataTypes> void HexahedralFEMForceField<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-    hexahedronInfo.handleTopologyEvents(itBegin,itEnd);
-}
-
 template <class DataTypes>
 void HexahedralFEMForceField<DataTypes>::init()
 {
@@ -137,13 +126,13 @@ void HexahedralFEMForceField<DataTypes>::reinit()
                 _topology->getHexahedron(i),  (const std::vector< unsigned int > )0,
                 (const std::vector< double >)0);
     }
-
     hexahedronInfo.createTopologicalEngine(_topology);
+#ifdef TODOTOPO
     hexahedronInfo.setCreateFunction(FHexahedronCreationFunction);
     hexahedronInfo.setCreateParameter( (void *) this );
     hexahedronInfo.setDestroyParameter( (void *) this );
+#endif
     hexahedronInfo.registerTopologicalData();
-
     hexahedronInfo.endEdit();
 }
 

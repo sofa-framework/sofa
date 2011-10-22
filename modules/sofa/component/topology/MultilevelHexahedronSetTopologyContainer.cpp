@@ -29,7 +29,7 @@
 
 #include <sofa/core/loader/VoxelLoader.h>
 
-#include <sofa/component/topology/HexahedronData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 #include <set>
 

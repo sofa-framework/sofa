@@ -2,7 +2,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/TriangleModel.inl>
-#include <sofa/component/topology/TriangleData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>

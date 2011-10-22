@@ -76,18 +76,6 @@ double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const core::
     return e;
 }
 
-
-/*
-  template <>
-  void MassEdgeDestroyFunction<Rigid3dTypes, Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
-							  void* , vector<Rigid3dMass> &){
-  }
-
-  template <>
-  void MassEdgeCreationFunction<Rigid3dTypes, Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
-							   void* , vector<Rigid3dMass> &){
-  }*/
-
 template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams)
 
@@ -157,12 +145,7 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::init()
     _topology = this->getContext()->getMeshTopology();
     if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
     Inherited::init();
-
-    f_mass.createTopologicalEngine(_topology);
-    f_mass.setCreateFunction(MassPointCreationFunction<MassType>);
-    f_mass.setCreateParameter( (void *) this );
-    f_mass.setDestroyParameter( (void *) this );
-    f_mass.registerTopologicalData();
+    initTopologyHandlers();
 
     if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
     {
@@ -181,12 +164,7 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::init()
     _topology = this->getContext()->getMeshTopology();
     if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
     Inherited::init();
-
-    f_mass.createTopologicalEngine(_topology);
-    f_mass.setCreateFunction(MassPointCreationFunction<MassType>);
-    f_mass.setCreateParameter( (void *) this );
-    f_mass.setDestroyParameter( (void *) this );
-    f_mass.registerTopologicalData();
+    initTopologyHandlers();
 
     if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
     {

@@ -48,7 +48,7 @@
 #include <assert.h>
 #include <iostream>
 
-#include <sofa/component/topology/PointData.inl>
+//#include <sofa/component/topology/PointData.inl>
 
 namespace
 {

@@ -31,7 +31,7 @@
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 
-#include <sofa/component/topology/TetrahedronData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 
 #include <sofa/defaulttype/Vec.h>

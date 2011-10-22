@@ -32,8 +32,7 @@
 #include <set>
 
 #include <sofa/core/BaseMapping.h>
-#include <sofa/component/topology/PointData.h>
-#include <sofa/component/topology/HexahedronData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 namespace sofa
 {

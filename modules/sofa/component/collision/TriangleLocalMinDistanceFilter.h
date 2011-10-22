@@ -29,9 +29,7 @@
 #include <sofa/component/collision/LineLocalMinDistanceFilter.h>
 #include <sofa/component/collision/PointLocalMinDistanceFilter.h>
 #include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/topology/EdgeData.h>
-#include <sofa/component/topology/PointData.h>
-#include <sofa/component/topology/TriangleData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>

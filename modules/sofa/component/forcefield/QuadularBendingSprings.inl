@@ -31,8 +31,7 @@
 
 #include <sofa/helper/gl/template.h>
 
-#include <sofa/component/topology/QuadData.inl>
-#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 #include <sofa/core/topology/TopologyChange.h>
 
@@ -335,7 +334,9 @@ template <class DataTypes> void QuadularBendingSprings<DataTypes>::handleTopolog
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
+#ifdef TODOTOPO
     edgeInfo.handleTopologyEvents(itBegin,itEnd);
+#endif
     //quadInfo.handleTopologyEvents(itBegin,itEnd);
 
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
@@ -535,13 +536,13 @@ void QuadularBendingSprings<DataTypes>::init()
     }
     QuadularBSQuadCreationFunction(quadAdded,(void*) this,
             edgeInf);
-
+#ifdef TODOTOPO
     edgeInfo.setCreateFunction(QuadularBSEdgeCreationFunction);
     edgeInfo.setCreateQuadFunction(QuadularBSQuadCreationFunction);
     edgeInfo.setDestroyQuadFunction(QuadularBSQuadDestructionFunction);
     edgeInfo.setCreateParameter( (void *) this );
     edgeInfo.setDestroyParameter( (void *) this );
-
+#endif
     edgeInfo.endEdit();
     /////
 
