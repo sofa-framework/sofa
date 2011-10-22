@@ -104,7 +104,7 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
 
     m_out << " >\n";
 
-    if (node->mechanicalMapping != NULL)
+    if (node->mechanicalMapping)
         (*(node->mechanicalMapping.begin()))->disable();
 
     //processObjects(node->object);
