@@ -38,11 +38,11 @@ using std::endl;
 
 simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::Node* node)
 {
-    if (node->mechanicalState != NULL )
+    if (node->mechanicalState)
     {
         node->mechanicalState->initGnuplot(gnuplotDirectory);
     }
-    if (node->mass != NULL )
+    if (node->mass)
     {
         node->mass->initGnuplot(gnuplotDirectory);
     }
@@ -57,11 +57,11 @@ ExportGnuplotVisitor::ExportGnuplotVisitor(const core::ExecParams* params /* PAR
 
 simulation::Visitor::Result ExportGnuplotVisitor::processNodeTopDown(simulation::Node* node)
 {
-    if (node->mechanicalState != NULL )
+    if (node->mechanicalState)
     {
         node->mechanicalState->exportGnuplot(m_time);
     }
-    if (node->mass!= NULL )
+    if (node->mass)
     {
         node->mass->exportGnuplot(core::MechanicalParams::defaultInstance(), m_time);
     }

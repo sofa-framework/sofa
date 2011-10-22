@@ -45,7 +45,7 @@ void StateChangeVisitor::processStateChange(core::behavior::BaseMechanicalState*
 
 Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
 {
-    if (!root && node->mechanicalMapping != NULL)
+    if (!root && node->mechanicalMapping)
     {
         if (!node->mechanicalMapping->sameTopology())
         {
@@ -53,7 +53,7 @@ Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
             return RESULT_PRUNE;
         }
     }
-    if (node->mechanicalState != NULL)
+    if (node->mechanicalState)
     {
         this->processStateChange(node->mechanicalState);
     }

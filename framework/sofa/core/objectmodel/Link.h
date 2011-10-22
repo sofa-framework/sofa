@@ -157,6 +157,14 @@ public:
     {
         return elems[i];
     }
+    const TPtr& operator()(unsigned int i) const
+    {
+        return elems[i];
+    }
+    TPtr& operator()(unsigned int i)
+    {
+        return elems[i];
+    }
     operator T*() const
     {
         return elems[0];
@@ -177,18 +185,20 @@ public:
     {
         c.clear();
     }
-    static unsigned int add(T& c, TValueType v)
+    static unsigned int add(T& c, TDestType* v)
     {
-        c[0] = v;
+        c(0) = v;
         return 0;
     }
-    static unsigned int find(const T& c, TValueType v)
+    static unsigned int find(const T& c, TDestType* v)
     {
-        if (c[0] == v) return 0;
+        if (c(0) == v) return 0;
         else return 1;
     }
-    static void remove(T& /*c*/, unsigned /*index*/)
+    static void remove(T& c, unsigned index)
     {
+        if (!index)
+            c.clear();
     }
 };
 
