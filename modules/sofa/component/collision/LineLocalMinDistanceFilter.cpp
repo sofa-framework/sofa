@@ -208,6 +208,20 @@ bool LineInfo::validate(const unsigned int edge_index, const defaulttype::Vector
     }
 }
 
+LineLocalMinDistanceFilter::LineLocalMinDistanceFilter()
+    : m_pointInfo(initData(&m_pointInfo, "pointInfo", "point filter data"))
+    , m_lineInfo(initData(&m_lineInfo, "lineInfo", "line filter data"))
+    , pointInfoHandler(NULL)
+    , lineInfoHandler(NULL)
+    , bmt(NULL)
+{
+}
+
+LineLocalMinDistanceFilter::~LineLocalMinDistanceFilter()
+{
+    if (pointInfoHandler) delete pointInfoHandler;
+    if (lineInfoHandler) delete lineInfoHandler;
+}
 
 void LineLocalMinDistanceFilter::init()
 {
@@ -217,38 +231,33 @@ void LineLocalMinDistanceFilter::init()
     {
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
-#ifdef TODOTOPO
-        m_pointInfo.createTopologicalEngine(bmt);
-        m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
-        m_pointInfo.setCreateParameter( (void *) this );
-        m_pointInfo.setDestroyParameter( (void *) this );
-        m_pointInfo.registerTopologicalData();
-#endif
         m_pointInfo.endEdit();
+
+        pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);
+        m_pointInfo.createTopologicalEngine(bmt, pointInfoHandler);
+        m_pointInfo.registerTopologicalData();
 
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
-#ifdef TODOTOPO
-        m_lineInfo.createTopologicalEngine(bmt);
-        m_lineInfo.setCreateFunction(LMDFilterLineCreationFunction);
-        m_lineInfo.setCreateParameter((void *) this);
-        m_lineInfo.setDestroyParameter( (void *) this );
-        m_lineInfo.registerTopologicalData();
-#endif
         m_lineInfo.endEdit();
+
+        lineInfoHandler = new LineInfoHandler(this,&m_lineInfo);
+        m_lineInfo.createTopologicalEngine(bmt, lineInfoHandler);
+        m_lineInfo.registerTopologicalData();
     }
 }
 
 
-void LineLocalMinDistanceFilter::LMDFilterPointCreationFunction(unsigned int, void *param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
-{
-    const PointLocalMinDistanceFilter *pLMDFilter = static_cast< const PointLocalMinDistanceFilter * >(param);
-    pInfo.setLMDFilters(pLMDFilter);
 
-    sofa::core::topology::BaseMeshTopology * bmt = (sofa::core::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
+void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned int /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+{
+    const LineLocalMinDistanceFilter *lLMDFilter = this->f;
+    pInfo.setLMDFilters(lLMDFilter);
+
+    sofa::core::topology::BaseMeshTopology * bmt = lLMDFilter->bmt; //getContext()->getTopology();
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
-    component::container::MechanicalObject<defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(pLMDFilter->getContext()->getMechanicalState());
+    component::container::MechanicalObject<defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
     if(mstateVec3d != NULL)
     {
         pInfo.setPositionFiltering(mstateVec3d->getX());
@@ -263,12 +272,12 @@ void LineLocalMinDistanceFilter::LMDFilterPointCreationFunction(unsigned int, vo
 
 
 
-void LineLocalMinDistanceFilter::LMDFilterLineCreationFunction(unsigned int, void *param, LineInfo &lInfo, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsigned int /*edgeIndex*/, LineInfo &lInfo, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
-    const LineLocalMinDistanceFilter *lLMDFilter = static_cast< const LineLocalMinDistanceFilter * >(param);
+    const LineLocalMinDistanceFilter *lLMDFilter = this->f;
     lInfo.setLMDFilters(lLMDFilter);
     //
-    sofa::core::topology::BaseMeshTopology * bmt = (sofa::core::topology::BaseMeshTopology *)lLMDFilter->getContext()->getTopology();
+    sofa::core::topology::BaseMeshTopology * bmt = lLMDFilter->bmt; //getContext()->getTopology();
     lInfo.setBaseMeshTopology(bmt);
 
 

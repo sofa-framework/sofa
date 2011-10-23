@@ -116,6 +116,12 @@ class SOFA_MESH_COLLISION_API TriangleLocalMinDistanceFilter : public LocalMinDi
 public:
     SOFA_CLASS(TriangleLocalMinDistanceFilter, LocalMinDistanceFilter);
 
+protected:
+    TriangleLocalMinDistanceFilter();
+    virtual ~TriangleLocalMinDistanceFilter();
+
+public:
+
     /**
      * @brief Scene graph initialization method.
      */
@@ -154,22 +160,55 @@ public:
     /**
      * @brief New Points creations callback.
      */
-    static void LMDFilterPointCreationFunction(unsigned int, void*, PointInfo &, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
+    class PointInfoHandler : public topology::TopologyDataHandler<topology::Point, helper::vector<PointInfo> >
+    {
+    public:
+        PointInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<topology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
+
+        void applyCreateFunction(unsigned int pointIndex, PointInfo& m, const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+    protected:
+        TriangleLocalMinDistanceFilter* f;
+    };
 
     /**
      * @brief New Edges creations callback.
      */
-    static void LMDFilterLineCreationFunction(unsigned int , void*, LineInfo &, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
+    class LineInfoHandler : public topology::TopologyDataHandler<topology::Edge, helper::vector<LineInfo> >
+    {
+    public:
+        LineInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::EdgeData<helper::vector<LineInfo> >* _data) : topology::TopologyDataHandler<topology::Edge, helper::vector<LineInfo> >(_data), f(_f) {}
+
+        void applyCreateFunction(unsigned int edgeIndex, LineInfo& m, const topology::Edge&, const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+    protected:
+        TriangleLocalMinDistanceFilter* f;
+    };
 
     /**
      * @brief New Triangles creations callback.
      */
-    static void LMDFilterTriangleCreationFunction(unsigned int , void*, TriangleInfo &, const topology::Triangle&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
+    class TriangleInfoHandler : public topology::TopologyDataHandler<topology::Triangle, helper::vector<TriangleInfo> >
+    {
+    public:
+        TriangleInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::TriangleData<helper::vector<TriangleInfo> >* _data) : topology::TopologyDataHandler<topology::Triangle, helper::vector<TriangleInfo> >(_data), f(_f) {}
+
+        void applyCreateFunction(unsigned int triangleIndex, TriangleInfo& m, const topology::Triangle&, const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+    protected:
+        TriangleLocalMinDistanceFilter* f;
+    };
 
 private:
     topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
     topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo;
     topology::TriangleData< sofa::helper::vector<TriangleInfo> > m_triangleInfo;
+
+    PointInfoHandler* pointInfoHandler;
+    LineInfoHandler* lineInfoHandler;
+    TriangleInfoHandler* triangleInfoHandler;
+
+    core::topology::BaseMeshTopology *bmt;
 };
 
 

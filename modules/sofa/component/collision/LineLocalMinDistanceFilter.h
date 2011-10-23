@@ -123,6 +123,12 @@ class SOFA_MESH_COLLISION_API LineLocalMinDistanceFilter : public LocalMinDistan
 public:
     SOFA_CLASS(LineLocalMinDistanceFilter,sofa::component::collision::LocalMinDistanceFilter);
 
+protected:
+    LineLocalMinDistanceFilter();
+    virtual ~LineLocalMinDistanceFilter();
+
+public:
+
     /**
      * @brief Scene graph initialization method.
      */
@@ -154,20 +160,39 @@ public:
     /**
      * @brief New Points creations callback.
      */
-    static void LMDFilterPointCreationFunction(unsigned int, void*, PointInfo &, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
+    class PointInfoHandler : public topology::TopologyDataHandler<Point, helper::vector<PointInfo> >
+    {
+    public:
+        PointInfoHandler(LineLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<Point, helper::vector<PointInfo> >(_data), f(_f) {}
+
+        void applyCreateFunction(unsigned int pointIndex, PointInfo& m, const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+    protected:
+        LineLocalMinDistanceFilter* f;
+    };
 
     /**
      * @brief New Edges creations callback.
      */
-    static void LMDFilterLineCreationFunction(unsigned int , void*, LineInfo &, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
+    class LineInfoHandler : public topology::TopologyDataHandler<topology::Edge, helper::vector<LineInfo> >
+    {
+    public:
+        LineInfoHandler(LineLocalMinDistanceFilter* _f, topology::EdgeData<helper::vector<LineInfo> >* _data) : topology::TopologyDataHandler<topology::Edge, helper::vector<LineInfo> >(_data), f(_f) {}
+
+        void applyCreateFunction(unsigned int edgeIndex, LineInfo& m, const topology::Edge&, const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+    protected:
+        LineLocalMinDistanceFilter* f;
+    };
 
 private:
     topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
     topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo;
 
+    PointInfoHandler* pointInfoHandler;
+    LineInfoHandler* lineInfoHandler;
+
     core::topology::BaseMeshTopology *bmt;
-
-
 };
 
 
