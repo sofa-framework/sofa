@@ -436,13 +436,18 @@ TriangularBendingSprings<DataTypes>::TriangularBendingSprings(/*double _ks, doub
     : updateMatrix(true)
     , f_ks(initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs")) //(Real)0.3 ??
     , f_kd(initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs")) // (Real)1000. ??
+
 {
+    // Create specific handler for EdgeData
+    edgeHandler = new TriangularBSEdgeHandler(this, &edgeInfo);
     //serr<<"TriangularBendingSprings<DataTypes>::TriangularBendingSprings"<<sendl;
 }
 
 template<class DataTypes>
 TriangularBendingSprings<DataTypes>::~TriangularBendingSprings()
-{}
+{
+    delete edgeHandler;
+}
 
 
 template<class DataTypes>
@@ -458,6 +463,8 @@ void TriangularBendingSprings<DataTypes>::init()
         serr << "ERROR(TriangularBendingSprings): object must have a Triangular Set Topology."<<sendl;
         return;
     }
+    edgeInfo.createTopologicalEngine(_topology,edgeHandler);
+    edgeInfo.registerTopologicalData();
 
     this->reinit();
 }
@@ -466,16 +473,9 @@ void TriangularBendingSprings<DataTypes>::init()
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::reinit()
 {
-    // Create specific handler for EdgeData
-    edgeHandler = new TriangularBSEdgeHandler(this, &edgeInfo);
-
     /// prepare to store info in the edge array
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     edgeInf.resize(_topology->getNbEdges());
-
-    edgeInfo.createTopologicalEngine(_topology);
-    edgeInfo.registerTopologicalData();
-
     int i;
     // set edge tensor to 0
     for (i=0; i<_topology->getNbEdges(); ++i)
