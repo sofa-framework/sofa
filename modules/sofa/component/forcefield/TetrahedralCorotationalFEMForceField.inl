@@ -57,13 +57,13 @@ using namespace	sofa::component::topology;
 using namespace core::topology;
 
 template< class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::CFTetrahedronCreationFunction (unsigned int tetrahedronIndex, void* param,
+void TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronHandler::applyCreateFunction(unsigned int tetrahedronIndex,
         TetrahedronInformation &,
-        const Tetrahedron& ,
-        const helper::vector< unsigned int > &,
-        const helper::vector< double >&)
+        const Tetrahedron &,
+        const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<double> &)
 {
-    TetrahedralCorotationalFEMForceField<DataTypes> *ff= (TetrahedralCorotationalFEMForceField<DataTypes> *)param;
+
     if (ff)
     {
 
@@ -90,6 +90,23 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::CFTetrahedronCreationFunct
             break;
         }
     }
+
+}
+
+template< class DataTypes>
+TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForceField()
+    : f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
+    , _poissonRatio(core::objectmodel::BaseObject::initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
+    , _youngModulus(core::objectmodel::BaseObject::initData(&_youngModulus,(Real)5000,"youngModulus","FEM Young Modulus"))
+    , _localStiffnessFactor(core::objectmodel::BaseObject::initData(&_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
+    , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
+    , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
+    , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
+    , tetrahedronHandler(NULL)
+{
+    this->addAlias(&_assembling, "assembling");
+    _poissonRatio.setWidget("poissonRatio");
+    tetrahedronHandler = new TetrahedronHandler(this,&tetrahedronInfo);
 }
 
 template <class DataTypes>
@@ -127,17 +144,12 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
 
     for (int i=0; i<_topology->getNbTetrahedra(); ++i)
     {
-        CFTetrahedronCreationFunction(i, (void*) this, tetrahedronInf[i],
+        tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
                 _topology->getTetrahedron(i),  (const std::vector< unsigned int > )0,
                 (const std::vector< double >)0);
     }
 
-    tetrahedronInfo.createTopologicalEngine(_topology);
-#ifdef TODOTOPO
-    tetrahedronInfo.setCreateFunction(CFTetrahedronCreationFunction);
-    tetrahedronInfo.setCreateParameter( (void *) this );
-    tetrahedronInfo.setDestroyParameter( (void *) this );
-#endif
+    tetrahedronInfo.createTopologicalEngine(_topology,tetrahedronHandler);
     tetrahedronInfo.registerTopologicalData();
 
     tetrahedronInfo.endEdit();
