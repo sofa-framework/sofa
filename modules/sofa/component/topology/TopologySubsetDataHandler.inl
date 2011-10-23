@@ -61,20 +61,19 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(unsigned int nbE
     bool test;
     for (unsigned int i = 0; i < nbElements; ++i)
     {
-        value_type& t = data[i0+i];
         if (ancestors.empty() || coefs.empty())
         {
             const sofa::helper::vector< unsigned int > empty_vecint;
             const sofa::helper::vector< double > empty_vecdouble;
-            test = this->applyTestCreateFunction(size + i, t, empty_vecint, empty_vecdouble);
+            test = this->applyTestCreateFunction(size + i, empty_vecint, empty_vecdouble);
         }
         else
-            test = this->applyTestCreateFunction(size + i, t, ancestors[i], coefs[i]);
+            test = this->applyTestCreateFunction(size + i, ancestors[i], coefs[i]);
 
         if (test)
             data.push_back( size+i );
     }
-    lastElementIndex+=nbElements;
+    lastPointIndex+=nbElements;
 }
 
 
@@ -121,7 +120,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::
             it2=0;
             while(it2<data.size())
             {
-                if(data[it2]==lastElementIndex)
+                if(data[it2]==lastPointIndex)
                     break;
                 else
                     it2+=1;
@@ -145,7 +144,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::
             it2=0;
             while(it2<data.size())
             {
-                if(data[it2]==lastElementIndex)
+                if(data[it2]==lastPointIndex)
                     break;
                 else
                     it2+=1;
@@ -156,7 +155,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::
                 data[it2]=index[i];
             }
         }
-        --lastElementIndex;
+        --lastPointIndex;
     }
 
     m_topologyData->endEdit();

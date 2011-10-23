@@ -51,7 +51,7 @@ TopologySubsetDataImpl <TopologyElementType, VecT>::~TopologySubsetDataImpl()
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler)
+void TopologySubsetDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologySubsetDataHandler *_topologyHandler)
 {
     if (_topology)
     {
