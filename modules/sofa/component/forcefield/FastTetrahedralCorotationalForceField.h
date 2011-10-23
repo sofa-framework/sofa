@@ -135,6 +135,28 @@ protected:
         {
         }
     };
+
+    class FTCFTetrahedronHandler : public TopologyDataHandler<Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >
+    {
+    public:
+        typedef typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
+
+        FTCFTetrahedronHandler(FastTetrahedralCorotationalForceField<DataTypes>* ff,
+                TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> >* data )
+            :TopologyDataHandler<Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >(data)
+            ,ff(ff)
+        {
+
+        }
+
+        void applyCreateFunction(unsigned int, TetrahedronRestInformation &t, const Tetrahedron
+                &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+
+    protected:
+        FastTetrahedralCorotationalForceField<DataTypes>* ff;
+
+    };
+
     EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
     TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo;
 
@@ -171,9 +193,6 @@ public:
     virtual Real getLambda() const { return lambda;}
     virtual Real getMu() const { return mu;}
 
-    // handle topological changes
-    virtual void handleTopologyChange();
-
     void setYoungModulus(const double modulus)
     {
         f_youngModulus.setValue((Real)modulus);
@@ -193,14 +212,11 @@ public:
 
 
 protected :
+    FTCFTetrahedronHandler* tetrahedronHandler;
 
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
     EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
-
-    static void CorotationalTetrahedronCreationFunction (unsigned int , void* ,
-            TetrahedronRestInformation &,
-            const Tetrahedron& , const helper::vector< unsigned int > &, const helper::vector< double >&);
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)

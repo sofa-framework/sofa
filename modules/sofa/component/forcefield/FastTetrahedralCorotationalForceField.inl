@@ -57,13 +57,12 @@ typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::CorotationalTetrahedronCreationFunction (unsigned int tetrahedronIndex, void* param,
+void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::applyCreateFunction(unsigned int tetrahedronIndex,
         TetrahedronRestInformation &my_tinfo,
-        const Tetrahedron& ,
-        const helper::vector< unsigned int > &,
-        const helper::vector< double >&)
+        const Tetrahedron &,
+        const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<double> &)
 {
-    FastTetrahedralCorotationalForceField<DataTypes> *ff= (FastTetrahedralCorotationalForceField<DataTypes> *)param;
     if (ff)
     {
         const std::vector< Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
@@ -129,9 +128,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::CorotationalTetrahedronCr
         // compute the rotation matrix of the initial tetrahedron for the QR decomposition
         computeQRRotation(my_tinfo.restRotation,my_tinfo.restEdgeVector);
     }
-
 }
-
 
 template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalForceField()
     : _initialPoints(0)
@@ -141,19 +138,9 @@ template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::Fas
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , lambda(0)
     , mu(0)
+    , tetrahedronHandler(NULL)
 {
-}
-
-template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>::handleTopologyChange()
-{
-#ifdef TODOTOPO
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-    edgeInfo.handleTopologyEvents(itBegin,itEnd);
-    tetrahedronInfo.handleTopologyEvents(itBegin,itEnd);
-#endif
-    updateTopologyInfo=true;
+    tetrahedronHandler = new FTCFTetrahedronHandler(this,&tetrahedronInfo);
 }
 
 template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::~FastTetrahedralCorotationalForceField()
@@ -194,6 +181,8 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
 
     /// prepare to store info in the edge array
     edgeInf.resize(_topology->getNbEdges());
+    edgeInfo.createTopologicalEngine(_topology);
+    edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 
     if (_initialPoints.size() == 0)
@@ -208,17 +197,12 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     /// initialize the data structure associated with each tetrahedron
     for (i=0; i<_topology->getNbTetrahedra(); ++i)
     {
-        CorotationalTetrahedronCreationFunction(i, (void*) this, tetrahedronInf[i],
-                _topology->getTetrahedron(i),  (const helper::vector< unsigned int > )0,
+        tetrahedronHandler->applyCreateFunction(i,tetrahedronInf[i],_topology->getTetrahedron(i),
+                (const helper::vector< unsigned int > )0,
                 (const helper::vector< double >)0);
     }
     /// set the call back function upon creation of a tetrahedron
-    tetrahedronInfo.createTopologicalEngine(_topology);
-#ifdef TODOTOPO
-    tetrahedronInfo.setCreateFunction(CorotationalTetrahedronCreationFunction);
-    tetrahedronInfo.setCreateParameter( (void *) this );
-    tetrahedronInfo.setDestroyParameter( (void *) this );
-#endif
+    tetrahedronInfo.createTopologicalEngine(_topology,tetrahedronHandler);
     tetrahedronInfo.registerTopologicalData();
     tetrahedronInfo.endEdit();
 
