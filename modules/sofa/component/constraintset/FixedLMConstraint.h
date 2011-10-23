@@ -27,7 +27,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LMConstraint.h>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/simulation/common/Node.h>
 
 
@@ -47,7 +47,7 @@ class FixedLMConstraintInternalData
 {
 };
 
-
+using namespace sofa::component::topology;
 
 
 /** Keep two particules at an initial distance
@@ -67,7 +67,7 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef sofa::component::topology::PointSubset SetIndex;
+    typedef sofa::component::topology::PointSubsetData< helper::vector<unsigned int> > SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
@@ -81,21 +81,23 @@ protected:
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
         , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    {};
+    {
+        pointHandler = new FCTPointHandler(this, &f_indices);
+    }
 
     FixedLMConstraint()
         : f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
         , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    {};
+    {
+        pointHandler = new FCTPointHandler(this, &f_indices);
+    }
 
-    ~FixedLMConstraint() {};
+    ~FixedLMConstraint() { delete pointHandler; }
+
 public:
     void clearConstraints();
     void addConstraint(unsigned int index);
     void removeConstraint(unsigned int index);
-
-    // Handle topological changes
-    virtual void handleTopologyChange();
 
     void init();
     void draw(const core::visual::VisualParams* vparams);
@@ -125,8 +127,27 @@ public:
 
     bool useMask() const {return true;}
 
-    Data<SetIndex> f_indices;
+    SetIndex f_indices;
     Data<double> _drawSize;
+
+
+    class FCTPointHandler : public TopologySubsetDataHandler<Point, vector<unsigned int> >
+    {
+    public:
+        FCTPointHandler(FixedLMConstraint<DataTypes>* _fc, PointSubsetData<helper::vector<unsigned int> >* _data)
+            : TopologySubsetDataHandler<Point, sofa::helper::vector<unsigned int> >(_data), fc(_fc) {}
+
+
+
+        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+
+
+        bool applyTestCreateFunction(unsigned int /*index*/,
+                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+                const sofa::helper::vector< double > & /*coefs*/);
+    protected:
+        FixedLMConstraint<DataTypes> *fc;
+    };
 
 protected :
 
@@ -134,17 +155,9 @@ protected :
     SetIndexArray idxX, idxY, idxZ;
     std::map< unsigned int, Coord> restPosition;
 
-
-
-
     sofa::core::topology::BaseMeshTopology* topology;
 
-
-    // Define TestNewPointFunction
-    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
-
-    // Define RemovalFunction
-    static void FCRemovalFunction ( int , void*);
+    FCTPointHandler* pointHandler;
 
 };
 

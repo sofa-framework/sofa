@@ -29,6 +29,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/component/topology/TopologySubsetData.inl>
 
 
 namespace sofa
@@ -45,9 +46,8 @@ using namespace sofa::helper;
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedLMConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool FixedLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(unsigned int /*nbPoints*/, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
 {
-    FixedLMConstraint<DataTypes> *fc = (FixedLMConstraint<DataTypes> *)param;
     if (fc)
     {
         return true;
@@ -60,9 +60,8 @@ bool FixedLMConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void
 
 // Define RemovalFunction
 template< class DataTypes>
-void FixedLMConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
+void FixedLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
-    FixedLMConstraint<DataTypes> *fc = (FixedLMConstraint<DataTypes> *)param;
     if (fc)
     {
         fc->removeConstraint((unsigned int) pointIndex);
@@ -97,7 +96,7 @@ void FixedLMConstraint<DataTypes>::initFixedPosition()
 {
     this->restPosition.clear();
     const VecCoord& x = *this->constrainedObject1->getX();
-    const SetIndexArray & indices = this->f_indices.getValue().getArray();
+    const SetIndexArray & indices = this->f_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         unsigned int index=*it;
@@ -113,13 +112,8 @@ void FixedLMConstraint<DataTypes>::init()
     topology = this->getContext()->getMeshTopology();
 
     // Initialize functions and parameters
-    topology::PointSubset my_subset = f_indices.getValue();
-
-    my_subset.setTestFunction(FCTestNewPointFunction);
-    my_subset.setRemovalFunction(FCRemovalFunction);
-
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
+    f_indices.createTopologicalEngine(topology, pointHandler);
+    f_indices.registerTopologicalData();
 
 
     X[0]=1; X[1]=0; X[2]=0;
@@ -130,14 +124,6 @@ void FixedLMConstraint<DataTypes>::init()
 
 }
 
-// Handle topological changes
-template <class DataTypes> void FixedLMConstraint<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd =topology->endChange();
-
-    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->constrainedObject1->getSize());
-}
 
 
 template<class DataTypes>
@@ -149,7 +135,7 @@ void FixedLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
     idxX.clear();
     idxY.clear();
     idxZ.clear();
-    const SetIndexArray &indices = f_indices.getValue().getArray();
+    const SetIndexArray &indices = f_indices.getValue();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
@@ -176,7 +162,7 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNu
 {
     using namespace core;
     using namespace core::objectmodel;
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
 
     unsigned int counter=0;
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it,++counter)
@@ -232,7 +218,7 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     const VecCoord& x = *this->constrainedObject1->getX();
     //serr<<"FixedLMConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
 
     std::vector< Vector3 > points;
     Vector3 point;
