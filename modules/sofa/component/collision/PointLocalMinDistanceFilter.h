@@ -152,10 +152,10 @@ public:
     /**
      * @brief New Points creations handler.
      */
-    class PointInfoHandler : public topology::TopologyDataHandler<Point, helper::vector<PointInfo> >
+    class PointInfoHandler : public topology::TopologyDataHandler<topology::Point, helper::vector<PointInfo> >
     {
     public:
-        PointInfoHandler(PointLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<Point, helper::vector<PointInfo> >(_data), f(_f) {}
+        PointInfoHandler(PointLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<topology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
 
         void applyCreateFunction(unsigned int pointIndex, PointInfo& m, const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
