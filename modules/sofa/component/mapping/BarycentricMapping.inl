@@ -4571,8 +4571,16 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
 }
 
 template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator itBegin,
-        std::list< const core::topology::TopologyChange *>::const_iterator itEnd )
+void BarycentricMapperEdgeSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator
+#ifdef TODOTOPO
+        itBegin
+#endif
+        ,
+        std::list< const core::topology::TopologyChange *>::const_iterator
+#ifdef TODOTOPO
+        itEnd
+#endif
+                                                                 )
 {
 #ifdef TODOTOPO
     map.handleTopologyEvents ( itBegin, itEnd );
@@ -4580,8 +4588,16 @@ void BarycentricMapperEdgeSetTopology<In,Out>::handlePointEvents ( std::list< co
 }
 
 template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator itBegin,
-        std::list< const core::topology::TopologyChange *>::const_iterator itEnd )
+void BarycentricMapperTriangleSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator
+#ifdef TODOTOPO
+        itBegin
+#endif
+        ,
+        std::list< const core::topology::TopologyChange *>::const_iterator
+#ifdef TODOTOPO
+        itEnd
+#endif
+                                                                     )
 {
 #ifdef TODOTOPO
     map.handleTopologyEvents ( itBegin, itEnd );
@@ -4589,8 +4605,16 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handlePointEvents ( std::list
 }
 
 template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator itBegin,
-        std::list< const core::topology::TopologyChange *>::const_iterator itEnd )
+void BarycentricMapperQuadSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator
+#ifdef TODOTOPO
+        itBegin
+#endif
+        ,
+        std::list< const core::topology::TopologyChange *>::const_iterator
+#ifdef TODOTOPO
+        itEnd
+#endif
+                                                                 )
 {
 #ifdef TODOTOPO
     map.handleTopologyEvents ( itBegin, itEnd );
@@ -4598,8 +4622,16 @@ void BarycentricMapperQuadSetTopology<In,Out>::handlePointEvents ( std::list< co
 }
 
 template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator itBegin,
-        std::list< const core::topology::TopologyChange *>::const_iterator itEnd )
+void BarycentricMapperTetrahedronSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator
+#ifdef TODOTOPO
+        itBegin
+#endif
+        ,
+        std::list< const core::topology::TopologyChange *>::const_iterator
+#ifdef TODOTOPO
+        itEnd
+#endif
+                                                                        )
 {
 #ifdef TODOTOPO
     map.handleTopologyEvents ( itBegin, itEnd );
@@ -4607,8 +4639,16 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::handlePointEvents ( std::l
 }
 
 template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator itBegin,
-        std::list< const core::topology::TopologyChange *>::const_iterator itEnd )
+void BarycentricMapperHexahedronSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator
+#ifdef TODOTOPO
+        itBegin
+#endif
+        ,
+        std::list< const core::topology::TopologyChange *>::const_iterator
+#ifdef TODOTOPO
+        itEnd
+#endif
+                                                                       )
 {
 #ifdef TODOTOPO
     map.handleTopologyEvents ( itBegin, itEnd );
