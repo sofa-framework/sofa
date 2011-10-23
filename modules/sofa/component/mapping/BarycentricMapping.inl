@@ -70,8 +70,6 @@ using namespace sofa::defaulttype;
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology )
     : Inherit ( from, to ), mapper ( NULL )
-    , f_grid(0)
-    , f_hexaMapper(0)
 #ifdef SOFA_DEV
     , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif
@@ -710,6 +708,11 @@ template <class In, class Out>
 void BarycentricMapperEdgeSetTopology<In,Out>::init ( const typename Out::VecCoord& /*out*/, const typename In::VecCoord& /*in*/ )
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
+    if (this->toTopology)
+    {
+        map.createTopologicalEngine(this->toTopology);
+        map.registerTopologicalData();
+    }
     //  int outside = 0;
     //  const sofa::helper::vector<topology::Edge>& edges = this->fromTopology->getEdges();
     //TODO: implementation of BarycentricMapperEdgeSetTopology::init
@@ -758,6 +761,11 @@ template <class In, class Out>
 void BarycentricMapperTriangleSetTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
+    if (this->toTopology)
+    {
+        map.createTopologicalEngine(this->toTopology);
+        map.registerTopologicalData();
+    }
 
     int outside = 0;
 
@@ -849,6 +857,11 @@ template <class In, class Out>
 void BarycentricMapperQuadSetTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
+    if (this->toTopology)
+    {
+        map.createTopologicalEngine(this->toTopology);
+        map.registerTopologicalData();
+    }
 
     int outside = 0;
     const sofa::helper::vector<topology::Quad>& quads = this->fromTopology->getQuads();
@@ -924,6 +937,11 @@ template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
+    if (this->toTopology)
+    {
+        map.createTopologicalEngine(this->toTopology);
+        map.registerTopologicalData();
+    }
 
     int outside = 0;
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
@@ -1065,9 +1083,12 @@ template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::init ( const typename Out::VecCoord& out,
         const typename In::VecCoord& /*in*/ )
 {
-
-
     _fromContainer->getContext()->get ( _fromGeomAlgo );
+    if (this->toTopology)
+    {
+        map.createTopologicalEngine(this->toTopology);
+        map.registerTopologicalData();
+    }
 
     if ( _fromGeomAlgo == NULL )
     {
@@ -1126,8 +1147,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
         if (t1 != NULL)
         {
             typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexahedronSetMapper;
-            f_hexaMapper = new HexahedronSetMapper(t1, toTopoCont, maskFrom, maskTo);
-            mapper =  dynamic_cast< TopologyBarycentricMapper<InDataTypes,OutDataTypes>* > ( f_hexaMapper );
+            mapper = sofa::core::objectmodel::New<HexahedronSetMapper>(t1, toTopoCont, maskFrom, maskTo);
         }
         else
         {
@@ -1135,7 +1155,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
             if (t2 != NULL)
             {
                 typedef BarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes> TetrahedronSetMapper;
-                mapper = new TetrahedronSetMapper(t2, toTopoCont, maskFrom, maskTo);
+                mapper = sofa::core::objectmodel::New<TetrahedronSetMapper>(t2, toTopoCont, maskFrom, maskTo);
             }
             else
             {
@@ -1143,7 +1163,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
                 if (t3 != NULL)
                 {
                     typedef BarycentricMapperQuadSetTopology<InDataTypes, OutDataTypes> QuadSetMapper;
-                    mapper = new QuadSetMapper(t3, toTopoCont, maskFrom, maskTo);
+                    mapper = sofa::core::objectmodel::New<QuadSetMapper>(t3, toTopoCont, maskFrom, maskTo);
                 }
                 else
                 {
@@ -1151,7 +1171,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
                     if (t4 != NULL)
                     {
                         typedef BarycentricMapperTriangleSetTopology<InDataTypes, OutDataTypes> TriangleSetMapper;
-                        mapper = new TriangleSetMapper(t4, toTopoCont, maskFrom, maskTo);
+                        mapper = sofa::core::objectmodel::New<TriangleSetMapper>(t4, toTopoCont, maskFrom, maskTo);
                     }
                     else
                     {
@@ -1159,15 +1179,12 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
                         if ( t5 != NULL )
                         {
                             typedef BarycentricMapperEdgeSetTopology<InDataTypes, OutDataTypes> EdgeSetMapper;
-                            mapper = new EdgeSetMapper(t5, toTopoCont, maskFrom, maskTo);
+                            mapper = sofa::core::objectmodel::New<EdgeSetMapper>(t5, toTopoCont, maskFrom, maskTo);
                         }
                     }
                 }
             }
         }
-
-        if (mapper != NULL)
-            dynamicMapper = dynamic_cast< BarycentricMapperDynamicTopology* > ( mapper );
     }
     else
     {
@@ -1179,21 +1196,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
         {
             typedef BarycentricMapperRegularGridTopology< InDataTypes, OutDataTypes > RegularGridMapper;
 
-            if (f_grid)
-            {
-                if (f_grid->isEmpty())
-                {
-                    *f_grid = RegularGridMapper(rgt, toTopoCont, maskFrom, maskTo);
-                    mapper = f_grid;
-                }
-                else
-                {
-                    f_grid->setTopology(rgt);
-                    f_grid->setMaskFrom(maskFrom);
-                    f_grid->setMaskTo(maskTo);
-                    mapper = f_grid;
-                }
-            }
+            mapper = sofa::core::objectmodel::New<RegularGridMapper>(rgt, toTopoCont, maskFrom, maskTo);
         }
         else
         {
@@ -1203,7 +1206,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
             if (sgt != NULL && sgt->isVolume())
             {
                 typedef BarycentricMapperSparseGridTopology< InDataTypes, OutDataTypes > SparseGridMapper;
-                mapper = new SparseGridMapper(sgt, toTopoCont, maskFrom, maskTo);
+                mapper = sofa::core::objectmodel::New<SparseGridMapper>(sgt, toTopoCont, maskFrom, maskTo);
             }
             else // generic MeshTopology
             {
@@ -1211,10 +1214,12 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
 
                 typedef BarycentricMapperMeshTopology< InDataTypes, OutDataTypes > MeshMapper;
                 BaseMeshTopology* bmt = dynamic_cast< BaseMeshTopology* >(topology);
-                mapper = new MeshMapper(bmt, toTopoCont, maskFrom, maskTo);
+                mapper = sofa::core::objectmodel::New<MeshMapper>(bmt, toTopoCont, maskFrom, maskTo);
             }
         }
     }
+    if (mapper)
+        this->addSlave(mapper);
 }
 
 template <class TIn, class TOut>
@@ -4276,149 +4281,11 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJT ( typename In::Matr
 
 
 template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::handleTopologyChange()
-{
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->fromTopology->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->fromTopology->endChange();
-
-    for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
-            changeIt != itEnd; ++changeIt )
-    {
-        const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
-        switch ( changeType )
-        {
-            //TODO: implementation of BarycentricMapperEdgeSetTopology<In,Out>::handleTopologyChange()
-        case core::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
-            break;
-        case core::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
-            break;
-        case core::topology::POINTSADDED:        ///< For PointsAdded.
-            break;
-        case core::topology::POINTSREMOVED:      ///< For PointsRemoved.
-            break;
-        case core::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
-            break;
-        case core::topology::EDGESADDED:         ///< For EdgesAdded.
-            break;
-        case core::topology::EDGESREMOVED:       ///< For EdgesRemoved.
-            break;
-        case core::topology::EDGESRENUMBERING:    ///< For EdgesRenumbering.
-            break;
-        default:
-            break;
-        }
-    }
-}
-
-template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange()
-{
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->fromTopology->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->fromTopology->endChange();
-
-    for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
-            changeIt != itEnd; ++changeIt )
-    {
-        const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
-        switch ( changeType )
-        {
-            //TODO: implementation of BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange()
-        case core::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
-            break;
-        case core::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
-            break;
-        case core::topology::POINTSADDED:        ///< For PointsAdded.
-            break;
-        case core::topology::POINTSREMOVED:      ///< For PointsRemoved.
-            break;
-        case core::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
-            break;
-        case core::topology::TRIANGLESADDED:     ///< For TrianglesAdded.
-            break;
-        case core::topology::TRIANGLESREMOVED:  ///< For Triangles Removed.
-            break;
-        case core::topology::TRIANGLESRENUMBERING: ///< For TrianglesRenumbering.
-            break;
-        default:
-            break;
-        }
-    }
-}
-
-template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::handleTopologyChange()
-{
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->fromTopology->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->fromTopology->endChange();
-
-    for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
-            changeIt != itEnd; ++changeIt )
-    {
-        const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
-        switch ( changeType )
-        {
-            //TODO: implementation of BarycentricMapperQuadSetTopology<In,Out>::handleTopologyChange()
-        case core::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
-            break;
-        case core::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
-            break;
-        case core::topology::POINTSADDED:        ///< For PointsAdded.
-            break;
-        case core::topology::POINTSREMOVED:      ///< For PointsRemoved.
-            break;
-        case core::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
-            break;
-        case core::topology::QUADSADDED:     ///< For QuadsAdded.
-            break;
-        case core::topology::QUADSREMOVED:   ///< For QuadsRemoved.
-            break;
-        case core::topology::QUADSRENUMBERING: ///< For QuadsRenumbering.
-            break;
-        default:
-            break;
-        }
-    }
-}
-
-template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::handleTopologyChange()
-{
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->fromTopology->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->fromTopology->endChange();
-
-    for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
-            changeIt != itEnd; ++changeIt )
-    {
-        const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
-        switch ( changeType )
-        {
-            //TODO: implementation of BarycentricMapperTetrahedronSetTopology<In,Out>::handleTopologyChange()
-        case core::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
-            break;
-        case core::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
-            break;
-        case core::topology::POINTSADDED:        ///< For PointsAdded.
-            break;
-        case core::topology::POINTSREMOVED:      ///< For PointsRemoved.
-            break;
-        case core::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
-            break;
-        case core::topology::TETRAHEDRAADDED:     ///< For TetrahedraAdded.
-            break;
-        case core::topology::TETRAHEDRAREMOVED:   ///< For TetrahedraRemoved.
-            break;
-        case core::topology::TETRAHEDRARENUMBERING: ///< For TetrahedraRenumbering.
-            break;
-        default:
-            break;
-        }
-    }
-}
-
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
+void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::topology::Topology* t)
 {
     using sofa::core::behavior::MechanicalState;
+
+    if (t != this->fromTopology) return;
 
     if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
         return;
@@ -4570,110 +4437,12 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
     }
 }
 
-template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator
-#ifdef TODOTOPO
-        itBegin
-#endif
-        ,
-        std::list< const core::topology::TopologyChange *>::const_iterator
-#ifdef TODOTOPO
-        itEnd
-#endif
-                                                                 )
-{
-#ifdef TODOTOPO
-    map.handleTopologyEvents ( itBegin, itEnd );
-#endif
-}
-
-template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator
-#ifdef TODOTOPO
-        itBegin
-#endif
-        ,
-        std::list< const core::topology::TopologyChange *>::const_iterator
-#ifdef TODOTOPO
-        itEnd
-#endif
-                                                                     )
-{
-#ifdef TODOTOPO
-    map.handleTopologyEvents ( itBegin, itEnd );
-#endif
-}
-
-template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator
-#ifdef TODOTOPO
-        itBegin
-#endif
-        ,
-        std::list< const core::topology::TopologyChange *>::const_iterator
-#ifdef TODOTOPO
-        itEnd
-#endif
-                                                                 )
-{
-#ifdef TODOTOPO
-    map.handleTopologyEvents ( itBegin, itEnd );
-#endif
-}
-
-template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator
-#ifdef TODOTOPO
-        itBegin
-#endif
-        ,
-        std::list< const core::topology::TopologyChange *>::const_iterator
-#ifdef TODOTOPO
-        itEnd
-#endif
-                                                                        )
-{
-#ifdef TODOTOPO
-    map.handleTopologyEvents ( itBegin, itEnd );
-#endif
-}
-
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::handlePointEvents ( std::list< const core::topology::TopologyChange *>::const_iterator
-#ifdef TODOTOPO
-        itBegin
-#endif
-        ,
-        std::list< const core::topology::TopologyChange *>::const_iterator
-#ifdef TODOTOPO
-        itEnd
-#endif
-                                                                       )
-{
-#ifdef TODOTOPO
-    map.handleTopologyEvents ( itBegin, itEnd );
-#endif
-}
-
 // handle topology changes depending on the topology
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topology* t )
 {
-    if ( dynamicMapper == NULL )
-        return;
-
-    if(t == topology_from )
-    {
-        // handle changes in the From topology
-        dynamicMapper->handleTopologyChange();
-    }
-    else if(t == topology_to)
-    {
-        const std::list<const core::topology::TopologyChange *>::const_iterator itBegin = topology_to->beginChange();
-        const std::list<const core::topology::TopologyChange *>::const_iterator itEnd = topology_to->endChange();
-
-        dynamicMapper->handlePointEvents ( itBegin, itEnd );
-    }
+    if (mapper)
+        mapper->handleTopologyChange(t);
 }
 
 template <class TIn, class TOut>

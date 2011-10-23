@@ -444,9 +444,9 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<def
 
 
 template <>
-void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes>::handleTopologyChange()
+void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes>::handleTopologyChange(core::topology::Topology* t)
 {
-
+    if (t != this->fromTopology) return;
     if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
         return;
 
@@ -578,8 +578,9 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype
 
 #ifndef SOFA_DOUBLE
 template <>
-void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes>::handleTopologyChange()
+void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes>::handleTopologyChange(core::topology::Topology* t)
 {
+    if (t != this->fromTopology) return;
 
     if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
         return;
@@ -714,8 +715,9 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype
 #ifndef SOFA_DOUBLE
 
 template <>
-void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes>::handleTopologyChange()
+void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes>::handleTopologyChange(core::topology::Topology* t)
 {
+    if (t != this->fromTopology) return;
 
     if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
         return;
@@ -848,8 +850,9 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype
 
 
 template <>
-void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes>::handleTopologyChange()
+void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes>::handleTopologyChange(core::topology::Topology* t)
 {
+    if (t != this->fromTopology) return;
 
     if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
         return;

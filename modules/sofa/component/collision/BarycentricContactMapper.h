@@ -73,7 +73,7 @@ public:
     typedef mapping::TopologyBarycentricMapper<InDataTypes, typename BarycentricContactMapper::DataTypes> MMapper;
     MCollisionModel* model;
     typename MMapping::SPtr mapping;
-    MMapper* mapper;
+    typename MMapper::SPtr mapper;
 
     BarycentricContactMapper()
         : model(NULL), mapping(NULL), mapper(NULL)
