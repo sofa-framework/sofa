@@ -152,7 +152,27 @@ protected:
     double m_potentialEnergy;
 
     sofa::core::topology::BaseMeshTopology* _topology;
+public:
+    class TetrahedronHandler : public TopologyDataHandler<Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
+    {
+    public :
+        typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
+        TetrahedronHandler(TetrahedralCorotationalFEMForceField<DataTypes>* ff,
+                TetrahedronData<sofa::helper::vector<TetrahedronInformation> >* data)
+            :TopologyDataHandler<Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
+            ,ff(ff)
+        {
 
+        }
+
+        void applyCreateFunction(unsigned int, TetrahedronInformation &t, const Tetrahedron &,
+                const sofa::helper::vector<unsigned int> &,
+                const sofa::helper::vector<double> &);
+
+    protected:
+        TetrahedralCorotationalFEMForceField<DataTypes>* ff;
+
+    };
 public:
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
@@ -165,19 +185,10 @@ public:
     Data<bool> _displayWholeVolume;
     Data<std::map < std::string, sofa::helper::vector<double> > > _volumeGraph;
 protected:
-    TetrahedralCorotationalFEMForceField()
-        : f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
-        , _poissonRatio(core::objectmodel::BaseObject::initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
-        , _youngModulus(core::objectmodel::BaseObject::initData(&_youngModulus,(Real)5000,"youngModulus","FEM Young Modulus"))
-        , _localStiffnessFactor(core::objectmodel::BaseObject::initData(&_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
-        , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
-        , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
-        , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
-    {
-        this->addAlias(&_assembling, "assembling");
-        _poissonRatio.setWidget("poissonRatio");
-    }
+    TetrahedralCorotationalFEMForceField();
+    TetrahedronHandler* tetrahedronHandler;
 public:
+
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
 
     void setYoungModulus(Real val) { this->_youngModulus.setValue(val); }
