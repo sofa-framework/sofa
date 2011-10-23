@@ -260,11 +260,12 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::Triangular
     , mu(0)
     , edgeHandler(NULL)
 {
+    edgeHandler = new TriangularTMEdgeHandler(this,&edgeInfo);
 }
 
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::~TriangularTensorMassForceField()
 {
-
+    if(edgeHandler) delete edgeHandler;
 }
 
 template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init()
@@ -281,7 +282,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     }
     updateLameCoefficients();
 
-    edgeHandler = new TriangularTMEdgeHandler(this,&edgeInfo);
+
 
     helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
