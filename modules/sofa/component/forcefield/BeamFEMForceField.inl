@@ -61,6 +61,48 @@ using std::set;
 using namespace sofa::core;
 using namespace sofa::defaulttype;
 
+template<class DataTypes>
+BeamFEMForceField<DataTypes>::BeamFEMForceField()
+    : _indexedElements(NULL)
+    , _method(0)
+    , _poissonRatio(initData(&_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
+    , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
+    , _timoshenko(initData(&_timoshenko,true,"timoshenko","use Timoshenko beam (non-null section shear area)"))
+    , _radius(initData(&_radius,(Real)0.1,"radius","radius of the section"))
+    , _radiusInner(initData(&_radiusInner,(Real)0.0,"radiusInner","inner radius of the section for hollow beams"))
+    , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
+    , _partial_list_segment(false)
+    , _updateStiffnessMatrix(true)
+    , _assembling(false)
+    , edgeHandler(NULL)
+{
+    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
+}
+
+template<class DataTypes>
+BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner)
+    : _indexedElements(NULL)
+    , _method(0)
+    , _poissonRatio(initData(&_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
+    , _youngModulus(initData(&_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
+    , _timoshenko(initData(&_timoshenko,true,"timoshenko","use Timoshenko beam (non-null section shear area)"))
+    , _radius(initData(&_radius,(Real)radius,"radius","radius of the section"))
+    , _radiusInner(initData(&_radiusInner,(Real)radiusInner,"radiusInner","inner radius of the section for hollow beams"))
+    , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
+    , _partial_list_segment(false)
+    , _updateStiffnessMatrix(true)
+    , _assembling(false)
+    , edgeHandler(NULL)
+{
+    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
+}
+
+template<class DataTypes>
+BeamFEMForceField<DataTypes>::~BeamFEMForceField()
+{
+    if(edgeHandler) delete edgeHandler;
+}
+
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::init()
 {
@@ -109,7 +151,7 @@ void BeamFEMForceField<DataTypes>::init()
             }
         }
     }
-    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
+
     beamsData.createTopologicalEngine(_topology,edgeHandler);
     beamsData.registerTopologicalData();
 
