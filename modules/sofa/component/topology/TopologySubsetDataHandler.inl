@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATA_INL
-#define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATA_INL
+#ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATAHANDLER_INL
+#define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATAHANDLER_INL
 
 #include <sofa/component/topology/TopologySubsetDataHandler.h>
 
@@ -202,4 +202,4 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::removeOnMovedPositio
 } // namespace sofa
 
 
-#endif // SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATA_INL
+#endif // SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATAHANDLER_INL

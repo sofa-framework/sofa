@@ -125,6 +125,7 @@ public:
     }
 #endif /* __STL_MEMBER_TEMPLATES */
 
+    ~TopologySubsetDataImpl();
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
