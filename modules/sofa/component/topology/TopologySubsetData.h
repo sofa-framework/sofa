@@ -210,7 +210,7 @@ public:
 #endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
-    void linkToElementDataArray() {this->linkToPointSubsetDataArray();}
+    void linkToElementDataArray() {this->linkToPointDataArray();}
 };
 
 
@@ -253,7 +253,7 @@ public:
 #endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
-    void linkToElementDataArray() {this->linkToEdgeSubsetDataArray();}
+    void linkToElementDataArray() {this->linkToEdgeDataArray();}
 
 };
 
@@ -295,7 +295,7 @@ public:
 #endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
-    void linkToElementDataArray() {this->linkToTriangleSubsetDataArray();}
+    void linkToElementDataArray() {this->linkToTriangleDataArray();}
 
 };
 
@@ -338,7 +338,7 @@ public:
 #endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
-    void linkToElementDataArray() {this->linkToQuadSubsetDataArray();}
+    void linkToElementDataArray() {this->linkToQuadDataArray();}
 
 };
 
@@ -381,7 +381,7 @@ public:
 #endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
-    void linkToElementDataArray() {this->linkToTetrahedronSubsetDataArray();}
+    void linkToElementDataArray() {this->linkToTetrahedronDataArray();}
 
 };
 
@@ -425,7 +425,7 @@ public:
 #endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
-    void linkToElementDataArray() {this->linkToHexahedronSubsetDataArray();}
+    void linkToElementDataArray() {this->linkToHexahedronDataArray();}
 
 };
 

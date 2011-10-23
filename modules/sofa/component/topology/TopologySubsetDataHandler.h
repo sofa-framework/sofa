@@ -73,8 +73,8 @@ public:
 
 public:
     // constructor
-    TopologySubsetDataHandler(): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
-        , m_topologyData(NULL) {}
+    TopologySubsetDataHandler(BaseTopologyData <VecT>* _topologyData): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
+        , m_topologyData(_topologyData) {}
 
     bool isTopologyDataRegistered() {return m_topologyData;}
 
