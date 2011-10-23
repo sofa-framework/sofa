@@ -56,35 +56,13 @@ using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::Triangle			Triangle;
 typedef BaseMeshTopology::EdgesInTriangle		EdgesInTriangle;
 
-
-template< class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeCreationFunction(unsigned int edgeIndex, void* param, EdgeRestInformation &ei,
-        const Edge& ,  const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
-{
-    TriangularBiquadraticSpringsForceField<DataTypes> *ff= (TriangularBiquadraticSpringsForceField<DataTypes> *)param;
-    if (ff)
-    {
-
-        sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
-        ff->getContext()->get(triangleGeo);
-
-        // store the rest length of the edge created
-        ei.restSquareLength=triangleGeo->computeRestSquareEdgeLength(edgeIndex);
-        ei.stiffness=0;
-    }
-}
-
-
-
-template< class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunction (unsigned int triangleIndex, void* param,
+template< class DataTypes >
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyCreateFunction(unsigned int triangleIndex,
         TriangleRestInformation &tinfo,
-        const Triangle& ,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
+        const Triangle &,
+        const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<double> &)
 {
-    TriangularBiquadraticSpringsForceField<DataTypes> *ff= (TriangularBiquadraticSpringsForceField<DataTypes> *)param;
     if (ff)
     {
 
@@ -139,11 +117,10 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunc
 
 }
 
-
-template< class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleDestroyFunction(unsigned int triangleIndex, void* param, typename TriangularBiquadraticSpringsForceField<DataTypes> ::TriangleRestInformation &tinfo)
+template< class DataTypes >
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyDestroyFunction(unsigned int triangleIndex,
+        TriangleRestInformation  &tinfo)
 {
-    TriangularBiquadraticSpringsForceField<DataTypes> *ff= (TriangularBiquadraticSpringsForceField<DataTypes> *)param;
     if (ff)
     {
 
@@ -162,7 +139,31 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleDestroyFunct
         }
 
     }
+
 }
+
+template< class DataTypes >
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeHandler::applyCreateFunction(unsigned int edgeIndex,
+        EdgeRestInformation &ei,
+        const Edge &,
+        const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<double> &)
+
+{
+    if (ff)
+    {
+
+        sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
+        ff->getContext()->get(triangleGeo);
+
+        // store the rest length of the edge created
+        ei.restSquareLength=triangleGeo->computeRestSquareEdgeLength(edgeIndex);
+        ei.stiffness=0;
+    }
+}
+
+
+
 template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::TriangularBiquadraticSpringsForceField()
     : _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
     , updateMatrix(true)
@@ -174,11 +175,17 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::Tr
     , f_stiffnessMatrixRegularizationWeight(initData(&f_stiffnessMatrixRegularizationWeight,(Real)0.4,"matrixRegularization","Regularization of the Stiffnes Matrix (between 0 and 1)"))
     , lambda(0)
     , mu(0)
+    , edgeHandler(NULL)
+    , triangleHandler(NULL)
 {
+    edgeHandler = new TRBSEdgeHandler(this,&edgeInfo);
+    triangleHandler = new TRBSTriangleHandler(this,&triangleInfo);
 }
 
 template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::~TriangularBiquadraticSpringsForceField()
 {
+    if(edgeHandler) delete edgeHandler;
+    if(triangleHandler) delete triangleHandler;
 
 }
 
@@ -213,35 +220,23 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     int i;
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
-        TRBSEdgeCreationFunction(i, (void*) this, edgeInf[i],
-                _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
-                (const sofa::helper::vector< double >)0);
+        edgeHandler->applyCreateFunction(i,edgeInf[i], _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
+                (const sofa::helper::vector< double >)0 );
     }
     for (i=0; i<_topology->getNbTriangles(); ++i)
     {
-        TRBSTriangleCreationFunction(i, (void*) this, triangleInf[i],
+        triangleHandler->applyCreateFunction(i, triangleInf[i],
                 _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
 
     // Edge info
-    edgeInfo.createTopologicalEngine(_topology);
-#ifdef TODOTOPO
-    edgeInfo.setCreateFunction(TRBSEdgeCreationFunction);
-    edgeInfo.setCreateParameter( (void *) this );
-    edgeInfo.setDestroyParameter( (void *) this );
-#endif
+    edgeInfo.createTopologicalEngine(_topology,edgeHandler);
     edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 
     // Triangle info
-    triangleInfo.createTopologicalEngine(_topology);
-#ifdef TODOTOPO
-    triangleInfo.setCreateFunction(TRBSTriangleCreationFunction);
-    triangleInfo.setDestroyFunction(TRBSTriangleDestroyFunction);
-    triangleInfo.setCreateParameter( (void *) this );
-    triangleInfo.setDestroyParameter( (void *) this );
-#endif
+    triangleInfo.createTopologicalEngine(_topology,triangleHandler);
     triangleInfo.registerTopologicalData();
     triangleInfo.endEdit();
 }

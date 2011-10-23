@@ -188,21 +188,54 @@ public:
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
+    class TRBSEdgeHandler : public TopologyDataHandler<Edge,sofa::helper::vector<EdgeRestInformation> >
+    {
+    public:
+        typedef typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
+
+        TRBSEdgeHandler(TriangularBiquadraticSpringsForceField<DataTypes>* ff,
+                EdgeData<sofa::helper::vector<EdgeRestInformation> >* data)
+            :TopologyDataHandler<Edge,sofa::helper::vector<EdgeRestInformation> >(data)
+            ,ff(ff)
+        {
+        }
+        void applyCreateFunction(unsigned int, EdgeRestInformation &t, const Edge &,
+                const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+
+    protected:
+        TriangularBiquadraticSpringsForceField<DataTypes>* ff;
+    };
+
+    class TRBSTriangleHandler : public TopologyDataHandler<Triangle,sofa::helper::vector<TriangleRestInformation> >
+    {
+    public:
+        typedef typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
+
+        TRBSTriangleHandler(TriangularBiquadraticSpringsForceField<DataTypes>* ff,
+                TriangleData<sofa::helper::vector<TriangleRestInformation> >* data)
+            :TopologyDataHandler<Triangle,sofa::helper::vector<TriangleRestInformation> >(data)
+            ,ff(ff)
+        {
+        }
+
+        void applyCreateFunction(unsigned int, TriangleRestInformation &t,
+                const Triangle &,
+                const sofa::helper::vector<unsigned int> &,
+                const sofa::helper::vector<double> &);
+        void applyDestroyFunction(unsigned int, TriangleRestInformation &);
+
+
+    protected:
+        TriangularBiquadraticSpringsForceField<DataTypes>* ff;
+    };
+
 
 
 protected :
+    TRBSEdgeHandler* edgeHandler;
+    TRBSTriangleHandler* triangleHandler;
 
     EdgeData<helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
-
-    static void TRBSEdgeCreationFunction(unsigned int edgeIndex, void* param,EdgeRestInformation &ei,
-            const Edge& ,  const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double >&);
-    static void TRBSTriangleCreationFunction (unsigned int , void* ,
-            TriangleRestInformation &,
-            const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
-
-
-    static void TRBSTriangleDestroyFunction (unsigned int , void* , TriangleRestInformation &);
 
 };
 
