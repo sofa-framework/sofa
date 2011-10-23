@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSPARSEDATAHANDLER_H
-#define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSPARSEDATAHANDLER_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATAHANDLER_H
+#define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATAHANDLER_H
 
 #include <sofa/core/topology/TopologyElementHandler.h>
 #include <sofa/core/topology/BaseTopologyData.h>
@@ -51,7 +51,7 @@ using namespace sofa::core::topology;
 * happen (non exhaustive list: Edges added, removed, fused, renumbered).
 */
 
-template< class TopologyElementType, class VecT = helper::vector<unsigned int> >
+template< class TopologyElementType, class VecT >
 class TopologySubsetDataHandler : public sofa::core::topology::TopologyElementHandler< TopologyElementType >
 {
 public:
@@ -80,11 +80,11 @@ public:
 
     /** Public fonction to apply creation and destruction functions */
     /// Apply removing current elementType elements
-    virtual void applyDestroyFunction(unsigned int, value_type& ) {}
+    virtual void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/) {}
     /// test function, called when new points are created.
-    virtual bool applyTestCreateFunction(unsigned int,
-            const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double > &) {t = VecT();}
+    virtual bool applyTestCreateFunction(unsigned int /*index*/,
+            const sofa::helper::vector< unsigned int > & /*ancestors*/,
+            const sofa::helper::vector< double > & /*coefs*/) {return false;}
 
 
 protected:
@@ -137,4 +137,4 @@ protected:
 } // namespace sofa
 
 
-#endif SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSPARSEDATAHANDLER_H
+#endif // SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSPARSEDATAHANDLER_H

@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATA_INL
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATA_INL
 
-#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/component/topology/TopologySubsetData.h>
-
+#include <sofa/component/topology/TopologyEngine.inl>
+#include <sofa/component/topology/TopologySubsetDataHandler.inl>
 
 namespace sofa
 {
@@ -41,6 +41,14 @@ namespace topology
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+template <typename TopologyElementType, typename VecT>
+TopologySubsetDataImpl <TopologyElementType, VecT>::~TopologySubsetDataImpl()
+{
+    if (this->m_topologyHandler)
+        delete m_topologyHandler;
+}
+
 
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler)

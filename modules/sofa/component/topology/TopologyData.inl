@@ -43,6 +43,14 @@ namespace topology
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename TopologyElementType, typename VecT>
+TopologyDataImpl <TopologyElementType, VecT>::~TopologyDataImpl()
+{
+    if (this->m_topologyHandler)
+        delete m_topologyHandler;
+}
+
+
+template <typename TopologyElementType, typename VecT>
 void TopologyDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler)
 {
     if (_topology)
