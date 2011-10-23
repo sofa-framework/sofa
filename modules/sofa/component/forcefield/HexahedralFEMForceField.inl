@@ -67,13 +67,12 @@ using namespace	sofa::component::topology;
 using namespace core::topology;
 
 template< class DataTypes>
-void HexahedralFEMForceField<DataTypes>::FHexahedronCreationFunction (unsigned int hexahedronIndex, void* param,
+void HexahedralFEMForceField<DataTypes>::HFFHexahedronHandler::applyCreateFunction(unsigned int hexahedronIndex,
         HexahedronInformation &,
-        const Hexahedron& ,
-        const helper::vector< unsigned int > &,
-        const helper::vector< double >&)
+        const Hexahedron &,
+        const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<double> &)
 {
-    HexahedralFEMForceField<DataTypes> *ff= (HexahedralFEMForceField<DataTypes> *)param;
     if (ff)
     {
         switch(ff->method)
@@ -87,6 +86,33 @@ void HexahedralFEMForceField<DataTypes>::FHexahedronCreationFunction (unsigned i
             break;
         }
     }
+}
+
+template <class DataTypes>
+HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
+    : f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
+    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
+    , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
+    , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
+    , hexahedronHandler(NULL)
+{
+
+    _coef[0][0]= -1;		_coef[0][1]= -1;		_coef[0][2]= -1;
+    _coef[1][0]=  1;		_coef[1][1]= -1;		_coef[1][2]= -1;
+    _coef[2][0]=  1;		_coef[2][1]=  1;		_coef[2][2]= -1;
+    _coef[3][0]= -1;		_coef[3][1]=  1;		_coef[3][2]= -1;
+    _coef[4][0]= -1;		_coef[4][1]= -1;		_coef[4][2]=  1;
+    _coef[5][0]=  1;		_coef[5][1]= -1;		_coef[5][2]=  1;
+    _coef[6][0]=  1;		_coef[6][1]=  1;		_coef[6][2]=  1;
+    _coef[7][0]= -1;		_coef[7][1]=  1;		_coef[7][2]=  1;
+
+    hexahedronHandler = new HFFHexahedronHandler(this,&hexahedronInfo);
+}
+
+template <class DataTypes>
+HexahedralFEMForceField<DataTypes>::~HexahedralFEMForceField()
+{
+    if(hexahedronHandler) delete hexahedronHandler;
 }
 
 
@@ -122,16 +148,11 @@ void HexahedralFEMForceField<DataTypes>::reinit()
 
     for (int i=0; i<_topology->getNbHexahedra(); ++i)
     {
-        FHexahedronCreationFunction(i, (void*) this, hexahedronInf[i],
+        hexahedronHandler->applyCreateFunction(i,hexahedronInf[i],
                 _topology->getHexahedron(i),  (const std::vector< unsigned int > )0,
                 (const std::vector< double >)0);
     }
-    hexahedronInfo.createTopologicalEngine(_topology);
-#ifdef TODOTOPO
-    hexahedronInfo.setCreateFunction(FHexahedronCreationFunction);
-    hexahedronInfo.setCreateParameter( (void *) this );
-    hexahedronInfo.setDestroyParameter( (void *) this );
-#endif
+    hexahedronInfo.createTopologicalEngine(_topology,hexahedronHandler);
     hexahedronInfo.registerTopologicalData();
     hexahedronInfo.endEdit();
 }

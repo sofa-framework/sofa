@@ -148,22 +148,8 @@ protected:
     };
 
 
-    HexahedralFEMForceField()
-        : f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
-        , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
-        , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
-        , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
-    {
-
-        _coef[0][0]= -1;		_coef[0][1]= -1;		_coef[0][2]= -1;
-        _coef[1][0]=  1;		_coef[1][1]= -1;		_coef[1][2]= -1;
-        _coef[2][0]=  1;		_coef[2][1]=  1;		_coef[2][2]= -1;
-        _coef[3][0]= -1;		_coef[3][1]=  1;		_coef[3][2]= -1;
-        _coef[4][0]= -1;		_coef[4][1]= -1;		_coef[4][2]=  1;
-        _coef[5][0]=  1;		_coef[5][1]= -1;		_coef[5][2]=  1;
-        _coef[6][0]=  1;		_coef[6][1]=  1;		_coef[6][2]=  1;
-        _coef[7][0]= -1;		_coef[7][1]=  1;		_coef[7][2]=  1;
-    }
+    HexahedralFEMForceField();
+    virtual ~HexahedralFEMForceField();
 public:
     void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
 
@@ -216,10 +202,30 @@ public:
     Data<Real> f_poissonRatio;
     Data<Real> f_youngModulus;
     Data<bool> f_drawing;
-
-protected:
     /// container that stotes all requires information for each hexahedron
     HexahedronData<sofa::helper::vector<HexahedronInformation> > hexahedronInfo;
+
+    class HFFHexahedronHandler : public TopologyDataHandler<Hexahedron,sofa::helper::vector<HexahedronInformation> >
+    {
+    public:
+        typedef typename HexahedralFEMForceField<DataTypes>::HexahedronInformation HexahedronInformation;
+
+        HFFHexahedronHandler(HexahedralFEMForceField<DataTypes>* ff, HexahedronData<sofa::helper::vector<HexahedronInformation> >* data )
+            :TopologyDataHandler<Hexahedron,sofa::helper::vector<HexahedronInformation> >(data)
+            ,ff(ff)
+        {
+        }
+
+        void applyCreateFunction(unsigned int, HexahedronInformation &t, const Hexahedron &,
+                const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+    protected:
+        HexahedralFEMForceField<DataTypes>* ff;
+    };
+
+
+
+protected:
+    HFFHexahedronHandler* hexahedronHandler;
 
     HexahedronSetTopologyContainer* _topology;
 
