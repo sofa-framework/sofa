@@ -50,15 +50,15 @@ using namespace core::topology;
 using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
-template< class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction(unsigned int , void* param, EdgeRestInformation &ei,
-        const Edge& ,  const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
+template< class DataTypes >
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyCreateFunction(unsigned int /*edgeIndex*/,
+        EdgeRestInformation & ei,
+        const Edge &/*e*/,
+        const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<double> &)
 {
-    TriangularTensorMassForceField<DataTypes> *ff= (TriangularTensorMassForceField<DataTypes> *)param;
-    if (ff)
+    if(ff)
     {
-
         unsigned int u,v;
         /// set to zero the stiffness matrix
         for (u=0; u<3; ++u)
@@ -68,16 +68,16 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction
                 ei.DfDx[u][v]=0;
             }
         }
-
     }
 }
 
-template< class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleCreationFunction (const sofa::helper::vector<unsigned int> &triangleAdded,
-        void* param, vector<EdgeRestInformation> &edgeData)
+template< class DataTypes >
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
+        const sofa::helper::vector<Triangle> &,
+        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
+        const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
-    TriangularTensorMassForceField<DataTypes> *ff= (TriangularTensorMassForceField<DataTypes> *)param;
-    if (ff)
+    if(ff)
     {
 
         unsigned int i,j,k,l,u,v;
@@ -87,6 +87,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleCreationFunc
         typename DataTypes::Real mu=ff->getMu();
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[3],dpk,dpl;
+        vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
 
         const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
@@ -156,17 +157,14 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleCreationFunc
                     }
                 }
             }
-
         }
-
+        ff->edgeInfo.endEdit();
     }
 }
 
 template< class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionFunction (const sofa::helper::vector<unsigned int> &triangleRemoved,
-        void* param, vector<EdgeRestInformation> &edgeData)
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved)
 {
-    TriangularTensorMassForceField<DataTypes> *ff= (TriangularTensorMassForceField<DataTypes> *)param;
     if (ff)
     {
 
@@ -178,6 +176,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionF
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[3],dpk,dpl;
 
+        vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
         const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
         for (i=0; i<triangleRemoved.size(); ++i)
@@ -248,10 +247,9 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionF
             }
 
         }
-
+        ff->edgeInfo.endEdit();
     }
 }
-
 
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::TriangularTensorMassForceField()
     : _initialPoints(0)
@@ -260,6 +258,7 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::Triangular
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , lambda(0)
     , mu(0)
+    , edgeHandler(NULL)
 {
 }
 
@@ -282,6 +281,8 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     }
     updateLameCoefficients();
 
+    edgeHandler = new TriangularTMEdgeHandler(this,&edgeInfo);
+
     helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     /// prepare to store info in the edge array
@@ -298,27 +299,24 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     // set edge tensor to 0
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
-        TriangularTMEdgeCreationFunction(i, (void*) this, edgeInf[i],
-                _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
-                (const sofa::helper::vector< double >)0);
+        edgeHandler->applyCreateFunction(i,edgeInf[i],_topology->getEdge(i),
+                (const sofa::helper::vector<unsigned int>)0,
+                (const sofa::helper::vector<double>)0
+                                        );
     }
     // create edge tensor by calling the triangle creation function
     sofa::helper::vector<unsigned int> triangleAdded;
     for (i=0; i<_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
-    TriangularTMTriangleCreationFunction(triangleAdded,(void*) this,
-            edgeInf);
 
-    edgeInfo.createTopologicalEngine(_topology);
-#ifdef TODOTOPO
-    edgeInfo.setCreateFunction(TriangularTMEdgeCreationFunction);
-    edgeInfo.setCreateTriangleFunction(TriangularTMTriangleCreationFunction);
-    edgeInfo.setDestroyTriangleFunction(TriangularTMTriangleDestructionFunction);
-    edgeInfo.setCreateParameter( (void *) this );
-    edgeInfo.setDestroyParameter( (void *) this );
-#endif
+    edgeHandler->applyTriangleCreation(triangleAdded,
+            (const sofa::helper::vector<Triangle>)0,
+            (const sofa::helper::vector<sofa::helper::vector<unsigned int> >)0,
+            (const sofa::helper::vector<sofa::helper::vector<double> >)0
+                                      );
+
+    edgeInfo.createTopologicalEngine(_topology,edgeHandler);
     edgeInfo.registerTopologicalData();
-
     edgeInfo.endEdit();
 }
 
