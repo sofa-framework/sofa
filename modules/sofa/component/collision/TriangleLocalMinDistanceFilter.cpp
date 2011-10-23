@@ -75,10 +75,27 @@ bool TriangleInfo::validate(const unsigned int tri_index, const defaulttype::Vec
 }
 
 
+TriangleLocalMinDistanceFilter::TriangleLocalMinDistanceFilter()
+    : m_pointInfo(initData(&m_pointInfo, "pointInfo", "point filter data"))
+    , m_lineInfo(initData(&m_lineInfo, "lineInfo", "line filter data"))
+    , m_triangleInfo(initData(&m_triangleInfo, "triangleInfo", "triangle filter data"))
+    , pointInfoHandler(NULL)
+    , lineInfoHandler(NULL)
+    , triangleInfoHandler(NULL)
+    , bmt(NULL)
+{
+}
+
+TriangleLocalMinDistanceFilter::~TriangleLocalMinDistanceFilter()
+{
+    if (pointInfoHandler) delete pointInfoHandler;
+    if (lineInfoHandler) delete lineInfoHandler;
+    if (triangleInfoHandler) delete triangleInfoHandler;
+}
 
 void TriangleLocalMinDistanceFilter::init()
 {
-    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    bmt = getContext()->getMeshTopology();
     std::cout<<"Mesh Topology found :"<<bmt->getName()<<std::endl;
     component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(getContext()->getMechanicalState());
 
@@ -91,13 +108,10 @@ void TriangleLocalMinDistanceFilter::init()
     if (bmt != 0)
     {
 
-        m_pointInfo.createTopologicalEngine(bmt);
-#ifdef TODOTOPO
-        m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
-        m_pointInfo.setCreateParameter((void *) this);
-        m_pointInfo.setDestroyParameter( (void *) this );
-#endif
+        pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);
+        m_pointInfo.createTopologicalEngine(bmt, pointInfoHandler);
         m_pointInfo.registerTopologicalData();
+        m_pointInfo.createTopologicalEngine(bmt);
 
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
@@ -110,14 +124,8 @@ void TriangleLocalMinDistanceFilter::init()
         }
         m_pointInfo.endEdit();
 
-
-
-        m_lineInfo.createTopologicalEngine(bmt);
-#ifdef TODOTOPO
-        m_lineInfo.setCreateFunction(LMDFilterLineCreationFunction);
-        m_lineInfo.setCreateParameter((void *) this);
-        m_lineInfo.setDestroyParameter( (void *) this );
-#endif
+        lineInfoHandler = new LineInfoHandler(this,&m_lineInfo);
+        m_lineInfo.createTopologicalEngine(bmt, lineInfoHandler);
         m_lineInfo.registerTopologicalData();
 
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
@@ -130,15 +138,8 @@ void TriangleLocalMinDistanceFilter::init()
         }
         m_lineInfo.endEdit();
 
-
-
-
-        m_triangleInfo.createTopologicalEngine(bmt);
-#ifdef TODOTOPO
-        m_triangleInfo.setCreateFunction(LMDFilterTriangleCreationFunction);
-        m_triangleInfo.setCreateParameter((void *) this);
-        m_triangleInfo.setDestroyParameter( (void *) this );
-#endif
+        triangleInfoHandler = new TriangleInfoHandler(this,&m_triangleInfo);
+        m_triangleInfo.createTopologicalEngine(bmt, triangleInfoHandler);
         m_triangleInfo.registerTopologicalData();
 
         helper::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
@@ -214,16 +215,15 @@ void TriangleLocalMinDistanceFilter::handleTopologyChange()
 
 
 
-void TriangleLocalMinDistanceFilter::LMDFilterPointCreationFunction(unsigned int, void *param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void TriangleLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned int /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
-    std::cout<<"LMDFilterPointCreationFunction is called "<<std::endl;
-    const PointLocalMinDistanceFilter *pLMDFilter = static_cast< const PointLocalMinDistanceFilter * >(param);
-    pInfo.setLMDFilters(pLMDFilter);
-    sofa::core::topology::BaseMeshTopology * bmt = (sofa::core::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
+    const TriangleLocalMinDistanceFilter *tLMDFilter = this->f;
+    pInfo.setLMDFilters(tLMDFilter);
+    sofa::core::topology::BaseMeshTopology * bmt = tLMDFilter->bmt; //(sofa::core::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
-    component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(pLMDFilter->getContext()->getMechanicalState());
-    if(pLMDFilter->isRigid())
+    component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(tLMDFilter->getContext()->getMechanicalState());
+    if(tLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
         if(mstateVec3d != NULL)
@@ -245,16 +245,15 @@ void TriangleLocalMinDistanceFilter::LMDFilterPointCreationFunction(unsigned int
 
 
 
-void TriangleLocalMinDistanceFilter::LMDFilterLineCreationFunction(unsigned int, void *param, LineInfo &lInfo, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void TriangleLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsigned int /*edgeIndex*/, LineInfo &lInfo, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
-    std::cout<<"LMDFilterLineCreationFunction is called "<<std::endl;
-    const LineLocalMinDistanceFilter *lLMDFilter = static_cast< const LineLocalMinDistanceFilter * >(param);
-    lInfo.setLMDFilters(lLMDFilter);
-    sofa::core::topology::BaseMeshTopology * bmt = (sofa::core::topology::BaseMeshTopology *)lLMDFilter->getContext()->getTopology();
+    const TriangleLocalMinDistanceFilter *tLMDFilter = this->f;
+    lInfo.setLMDFilters(tLMDFilter);
+    sofa::core::topology::BaseMeshTopology * bmt = tLMDFilter->bmt; // (sofa::core::topology::BaseMeshTopology *)tLMDFilter->getContext()->getTopology();
     lInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
-    component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
-    if(lLMDFilter->isRigid())
+    component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(tLMDFilter->getContext()->getMechanicalState());
+    if(tLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
         if(mstateVec3d != NULL)
@@ -275,13 +274,11 @@ void TriangleLocalMinDistanceFilter::LMDFilterLineCreationFunction(unsigned int,
 
 
 
-void TriangleLocalMinDistanceFilter::LMDFilterTriangleCreationFunction(unsigned int, void *param, TriangleInfo &tInfo, const topology::Triangle&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(unsigned int /*edgeIndex*/, TriangleInfo &tInfo, const topology::Triangle&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
-    std::cout<<"LMDFilterTriangleCreationFunction is called "<<std::endl;
-    const TriangleLocalMinDistanceFilter *tLMDFilter = static_cast< const TriangleLocalMinDistanceFilter * >(param);
+    const TriangleLocalMinDistanceFilter *tLMDFilter = this->f;
     tInfo.setLMDFilters(tLMDFilter);
-
-    sofa::core::topology::BaseMeshTopology * bmt = (sofa::core::topology::BaseMeshTopology *)tLMDFilter->getContext()->getTopology();
+    sofa::core::topology::BaseMeshTopology * bmt = tLMDFilter->bmt; // (sofa::core::topology::BaseMeshTopology *)tLMDFilter->getContext()->getTopology();
     tInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
     component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(tLMDFilter->getContext()->getMechanicalState());

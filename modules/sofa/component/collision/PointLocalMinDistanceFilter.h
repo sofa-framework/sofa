@@ -116,6 +116,11 @@ class SOFA_MESH_COLLISION_API PointLocalMinDistanceFilter : public LocalMinDista
 public:
     SOFA_CLASS(PointLocalMinDistanceFilter,LocalMinDistanceFilter);
 
+protected:
+    PointLocalMinDistanceFilter();
+    virtual ~PointLocalMinDistanceFilter();
+public:
+
     /**
      * @brief Scene graph initialization method.
      */
@@ -145,12 +150,23 @@ public:
     //@}
 
     /**
-     * @brief New Points creations callback.
+     * @brief New Points creations handler.
      */
-    static void LMDFilterPointCreationFunction(unsigned int, void*, PointInfo &, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
+    class PointInfoHandler : public topology::TopologyDataHandler<Point, helper::vector<PointInfo> >
+    {
+    public:
+        PointInfoHandler(PointLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<Point, helper::vector<PointInfo> >(_data), f(_f) {}
+
+        void applyCreateFunction(unsigned int pointIndex, PointInfo& m, const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+    protected:
+        PointLocalMinDistanceFilter* f;
+    };
 
 private:
     topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
+    PointInfoHandler* pointInfoHandler;
+    core::topology::BaseMeshTopology *bmt;
 };
 
 

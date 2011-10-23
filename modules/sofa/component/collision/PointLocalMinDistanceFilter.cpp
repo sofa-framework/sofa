@@ -207,25 +207,31 @@ bool PointInfo::validate(const unsigned int p, const defaulttype::Vector3 &PQ)
 }
 
 
+PointLocalMinDistanceFilter::PointLocalMinDistanceFilter()
+    : m_pointInfo(initData(&m_pointInfo, "pointInfo", "point filter data"))
+    , pointInfoHandler(NULL)
+    , bmt(NULL)
+{
+}
+
+PointLocalMinDistanceFilter::~PointLocalMinDistanceFilter()
+{
+    if (pointInfoHandler) delete pointInfoHandler;
+}
 
 void PointLocalMinDistanceFilter::init()
 {
-    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    bmt = getContext()->getMeshTopology();
 
     if (bmt != 0)
     {
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
-
-        m_pointInfo.createTopologicalEngine(bmt);
-#ifdef TODOTOPO
-        m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
-        m_pointInfo.setCreateParameter( (void *) this );
-        m_pointInfo.setDestroyParameter( (void *) this );
-#endif
-        m_pointInfo.registerTopologicalData();
-
         m_pointInfo.endEdit();
+
+        pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);
+        m_pointInfo.createTopologicalEngine(bmt, pointInfoHandler);
+        m_pointInfo.registerTopologicalData();
     }
     if(this->isRigid())
     {
@@ -265,14 +271,14 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
 
 
 
-void PointLocalMinDistanceFilter::LMDFilterPointCreationFunction(unsigned int /*pointIndex*/, void* param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned int /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
 
     std::cout<<" LMDFilterPointCreationFunction is called"<<std::endl;
-    const PointLocalMinDistanceFilter *pLMDFilter = static_cast< const PointLocalMinDistanceFilter * >(param);
+    const PointLocalMinDistanceFilter *pLMDFilter = this->f;
     pInfo.setLMDFilters(pLMDFilter);
 
-    sofa::core::topology::BaseMeshTopology * bmt = (sofa::core::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
+    sofa::core::topology::BaseMeshTopology * bmt = pLMDFilter->bmt; //getContext()->getMeshTopology();
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
     component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(pLMDFilter->getContext()->getMechanicalState());
