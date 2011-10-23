@@ -34,7 +34,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TopologyData.h>
-
+#include <sofa/core/topology/TopologyHandler.h>
 
 namespace sofa
 {
@@ -108,6 +108,36 @@ protected:
 
     EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
 
+    class TriangularTMEdgeHandler : public TopologyDataHandler<Edge,sofa::helper::vector<EdgeRestInformation> >
+    {
+    public:
+        typedef typename TriangularTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
+
+        TriangularTMEdgeHandler(
+            TriangularTensorMassForceField<DataTypes>* ff,
+            EdgeData<sofa::helper::vector<EdgeRestInformation> >* data
+        )
+            :TopologyDataHandler<Edge,sofa::helper::vector<EdgeRestInformation> >(data),ff(ff)
+        {
+        }
+
+        void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation&,
+                const Edge& e,
+                const sofa::helper::vector<unsigned int> &,
+                const sofa::helper::vector<double> &);
+
+        void applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
+                const sofa::helper::vector<Triangle> & ,
+                const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ,
+                const sofa::helper::vector<sofa::helper::vector<double> > &);
+
+        void applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved);
+    protected:
+        TriangularTensorMassForceField<DataTypes>* ff;
+    };
+
+
+
     sofa::core::topology::BaseMeshTopology* _topology;
     VecCoord  _initialPoints;///< the intial positions of the points
 
@@ -118,6 +148,8 @@ protected:
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
+
+    TriangularTMEdgeHandler* edgeHandler;
 
 
     TriangularTensorMassForceField();
@@ -149,16 +181,6 @@ public:
 protected :
 
     EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
-
-    static void TriangularTMEdgeCreationFunction(unsigned int edgeIndex, void* param,
-            EdgeRestInformation &ei,
-            const Edge& ,  const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double >&);
-
-    static void TriangularTMTriangleCreationFunction(const sofa::helper::vector<unsigned int> &triangleAdded,
-            void* param, vector<EdgeRestInformation> &edgeData);
-    static void TriangularTMTriangleDestructionFunction ( const sofa::helper::vector<unsigned int> &triangleAdded,
-            void* param, vector<EdgeRestInformation> &edgeData);
 
 };
 
