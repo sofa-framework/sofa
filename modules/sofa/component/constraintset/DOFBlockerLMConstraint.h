@@ -27,7 +27,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LMConstraint.h>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/simulation/common/Node.h>
 
 
@@ -47,7 +47,7 @@ class DOFBlockerLMConstraintInternalData
 {
 };
 
-
+using namespace sofa::component::topology;
 
 
 /** Keep two particules at an initial distance
@@ -67,7 +67,7 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef sofa::component::topology::PointSubset SetIndex;
+    typedef sofa::component::topology::PointSubsetData< helper::vector<unsigned int> > SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
@@ -85,7 +85,8 @@ protected:
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
         , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
     {
-    };
+        pointHandler = new FCTPointHandler(this, &f_indices);
+    }
 
     DOFBlockerLMConstraint()
         : BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain"))
@@ -93,16 +94,15 @@ protected:
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
         , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
     {
-    };
+        pointHandler = new FCTPointHandler(this, &f_indices);
+    }
 
-    ~DOFBlockerLMConstraint() {};
+    ~DOFBlockerLMConstraint() { delete pointHandler; }
 public:
     void clearConstraints();
     void addConstraint(unsigned int index);
     void removeConstraint(unsigned int index);
 
-    // Handle topological changes
-    virtual void handleTopologyChange();
 
     void init();
     void draw(const core::visual::VisualParams* vparams);
@@ -133,8 +133,26 @@ public:
 
     Data<helper::vector<Deriv> > BlockedAxis;
     Data<helper::vector<SReal> > factorAxis;
-    Data<SetIndex> f_indices;
+    SetIndex f_indices;
     Data<SReal> showSizeAxis;
+
+    class FCTPointHandler : public TopologySubsetDataHandler<Point, vector<unsigned int> >
+    {
+    public:
+        FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, PointSubsetData<helper::vector<unsigned int> >* _data)
+            : TopologySubsetDataHandler<Point, sofa::helper::vector<unsigned int> >(_data), fc(_fc) {}
+
+
+
+        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+
+
+        bool applyTestCreateFunction(unsigned int /*index*/,
+                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+                const sofa::helper::vector< double > & /*coefs*/);
+    protected:
+        DOFBlockerLMConstraint<DataTypes> *fc;
+    };
 
 protected :
     helper::vector<SetIndexArray> idxEquations;
@@ -142,11 +160,8 @@ protected :
 
     sofa::core::topology::BaseMeshTopology* topology;
 
-    // Define TestNewPointFunction
-    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
+    FCTPointHandler* pointHandler;
 
-    // Define RemovalFunction
-    static void FCRemovalFunction ( int , void*);
 };
 
 } // namespace constraintset

@@ -30,6 +30,7 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/component/topology/TopologySubsetData.inl>
 
 
 namespace sofa
@@ -45,10 +46,8 @@ using namespace sofa::helper;
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool DOFBlockerLMConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(unsigned int /*nbPoints*/, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
 {
-    DOFBlockerLMConstraint<DataTypes> *fc = (DOFBlockerLMConstraint<DataTypes> *)param;
-
     if (fc)
     {
         return true;
@@ -61,10 +60,8 @@ bool DOFBlockerLMConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/,
 
 // Define RemovalFunction
 template< class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
+void DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
-    DOFBlockerLMConstraint<DataTypes> *fc = (DOFBlockerLMConstraint<DataTypes> *)param;
-
     if (fc)
     {
         fc->removeConstraint((unsigned int) pointIndex);
@@ -75,7 +72,8 @@ void DOFBlockerLMConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* 
 template <class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::clearConstraints()
 {
-    f_indices.beginEdit()->clear();
+    SetIndexArray& _indices = *f_indices.beginEdit();
+    _indices.clear();
     f_indices.endEdit();
 }
 
@@ -102,22 +100,8 @@ void DOFBlockerLMConstraint<DataTypes>::init()
     topology = this->getContext()->getMeshTopology();
 
     // Initialize functions and parameters
-    topology::PointSubset my_subset = f_indices.getValue();
-
-    my_subset.setTestFunction(FCTestNewPointFunction);
-    my_subset.setRemovalFunction(FCRemovalFunction);
-
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
-}
-
-// Handle topological changes
-template <class DataTypes> void DOFBlockerLMConstraint<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd =topology->endChange();
-
-    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->constrainedObject1->getSize());
+    f_indices.createTopologicalEngine(topology, pointHandler);
+    f_indices.registerTopologicalData();
 }
 
 
@@ -137,7 +121,7 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(const core::Constr
     Data<MatrixDeriv>* dC = cId[this->constrainedObject1].write();
     helper::WriteAccessor<Data<MatrixDeriv> > c = *dC;
 
-    const SetIndexArray &indices = f_indices.getValue().getArray();
+    const SetIndexArray &indices = f_indices.getValue();
     const helper::vector<Deriv> &axis=BlockedAxis.getValue();
     idxEquations.resize(indices.size());
     unsigned int numParticle=0;
@@ -165,7 +149,7 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& l
     if (idxEquations.empty() ||
         Order==core::ConstraintParams::POS) return;
 
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     const helper::vector<SReal> &factor=factorAxis.getValue();
 
     for (unsigned int numParticle=0; numParticle<indices.size(); ++numParticle)
@@ -201,7 +185,7 @@ void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     if (!vparams->displayFlags().getShowForceFields()) return;
     const VecCoord& x = *this->constrainedObject1->getX();
 
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
 
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();

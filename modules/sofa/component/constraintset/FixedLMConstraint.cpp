@@ -27,6 +27,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+
 namespace sofa
 {
 
@@ -66,7 +67,7 @@ template class SOFA_CONSTRAINT_API FixedLMConstraint<Rigid3fTypes>;
 template <>
 void FixedLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *constrainedObject1->getX();
     glDisable (GL_LIGHTING);
@@ -84,7 +85,7 @@ void FixedLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vpa
 template <>
 void FixedLMConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *constrainedObject1->getX();
 
