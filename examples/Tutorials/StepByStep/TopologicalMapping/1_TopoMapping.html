@@ -30,10 +30,8 @@
         
         <p> Under the <strong>Transformations</strong> tab, press the <strong>Scale of the DOFs in 3 dimensions</strong> button. In the textbox that appears, enter "@loader.scale3d". Similarly, press the <strong>Translation of the DOFs</strong> button and enter "@loader.translation", and press the <strong>Rotation of the DOFs</strong> button and enter "@loader.rotation".</p>
         <p> Under the <strong>Vector 1/4</strong> tab, press the <strong>position coordinates of the degrees of freedom</strong> button. In the textbox that appears, enter "@loader.position". </p>
-        <p>Add a <strong>TetrahedronSetTopologyContainer</strong> component to the <strong>Tetrahedrons Mesh</strong> node. Rename it "Container". Specify <strong>/Sofa/share/mesh/cylinder.msh</strong> as the <strong>Filename of the mesh</strong>.</p>
-        <p>In the <strong>Property 2/2</strong> tab, press the <strong>List of tetrahedron indices</strong> button. Enter "@loader.tetrahedra" in the textbox that appears.</p>
-        <p>Add a <strong>TetrahedronSetTopologyModifier</strong> component to the <strong>Tetrahedrons Mesh</strong> node.</p>
-        <p>Add a <strong>TetrahedronSetTopologyAlgorithms</strong> component to the <strong>Tetrahedrons Mesh</strong> node.</p>
+        <p>Add a <strong>TetrahedronSetTopologyContainer</strong> component to the <strong>Tetrahedrons Mesh</strong> node. Rename it "Container". Specify <strong>/Sofa/share/mesh/cylinder.msh</strong> as the <strong>Filename of the mesh</strong>. <strong>TetrahedronSetTopologyContainer</strong> is a topology container, it is used to store a topology (positions, edges, triangles, tetrahedrons). Usually this topology is not defined manually, but copied from the topology of  a MeshLoader component.</p>
+        <p>In the <strong>Property 2/2</strong> tab, press the <strong>List of tetrahedron indices</strong> button. Enter "@loader.tetrahedra" in the textbox that appears. This syntax means that the Data "tetrahedra" contained in the SOFA Component of this node named "loader" must be copied into this Data. </p>
         <p>Add a <strong>TetrahedronSetGeometryAlgorithms</strong> component to the <strong>Tetrahedrons Mesh</strong> node. In the <strong>Visualization 2/2</strong> tab, check the <strong>if true, draw the tetahedra in the topology</strong> box</p>
         <p>Change the <strong>RGB code color used to draw tetrahedra</strong> property to (1 1 0.3).</p> </div>
         

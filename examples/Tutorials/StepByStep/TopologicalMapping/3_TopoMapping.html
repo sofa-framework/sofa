@@ -33,12 +33,14 @@
         <p>
         <ul>
         	<li><strong>TriangleSetTopologyContainer</strong> named "Container"</li>
-            <li><strong>TriangleSetTopologyModifier</strong> named "Modifier"</li>
-            <li><strong>TriangleSetTopologyAlgorithms</strong> named "TopoAlgo"</li>
-            <li><strong>TriangleSetGeometryAlgorithms</strong> named "GeomAlgo"</li>
-            <li><strong>Tetra2TriangleTopologicalMapping</strong> named "Mapping"</li>
+          <li><strong>TriangleSetTopoologyModifier</strong> named "Modifier"</li>
+          <li><strong>TriangleSetGeometryAlgorithms</strong> named "GeomAlgo"</li>
+          <li><strong>Tetra2TriangleTopologicalMapping</strong> named "Mapping"</li>
       	</ul>
         </p>
+
+        <p> The <strong>TriangleSetTopoologyModifier</strong> is a component which can manipulate an
+associated <strong>TriangleSetTopologyContainer</strong>. There is therefore a clean separation between the container, which allocates and store the memory, and the algorithms which can manipulate this data. </p>  
         
         <p>In the <strong>Mapping</strong> properties, change the <strong>Input topology to map</strong> to "@../Container", and change the <strong>Output topology to map</strong> to @Container.</p></div>
         
