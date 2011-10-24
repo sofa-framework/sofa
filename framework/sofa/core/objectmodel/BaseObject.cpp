@@ -341,6 +341,26 @@ void BaseObject::removeSlave(BaseObject::SPtr s)
     l_slaves.remove(s);
 }
 
+/// Copy the source aspect to the destination aspect for each Data in the component.
+void BaseObject::copyAspect(int destAspect, int srcAspect)
+{
+    Base::copyAspect(destAspect, srcAspect);
+    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+    {
+        (*iSlaves)->copyAspect(destAspect, srcAspect);
+    }
+}
+
+/// Release memory allocated for the specified aspect.
+void BaseObject::releaseAspect(int aspect)
+{
+    Base::releaseAspect(aspect);
+    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+    {
+        (*iSlaves)->releaseAspect(aspect);
+    }
+}
+
 void BaseObject::init()
 {
 #ifdef SOFA_SMP

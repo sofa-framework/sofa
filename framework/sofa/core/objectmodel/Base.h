@@ -215,9 +215,9 @@ public:
     /// Accessor to the map containing all the aliases of this object
     const MapLink& getLinkAliases() const { return m_aliasLink; }
 
-    void copyAspect(int destAspect, int srcAspect);
+    virtual void copyAspect(int destAspect, int srcAspect);
 
-    void releaseAspect(int aspect);
+    virtual void releaseAspect(int aspect);
     /// @}
 
     /// @name tags

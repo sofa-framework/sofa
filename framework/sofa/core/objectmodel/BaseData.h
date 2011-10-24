@@ -37,6 +37,7 @@
 #include <sofa/core/core.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/DDGNode.h>
+#include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
@@ -131,7 +132,7 @@ public:
     virtual bool copyValue(const BaseData* parent);
 
     /// Copy the value of an aspect into another one.
-    virtual void copyAspect(int destAspect, int srcAspect);
+    virtual void copyAspect(int destAspect, int srcAspect) = 0;
 
     /// Release memory allocated for the specified aspect.
     virtual void releaseAspect(int aspect) = 0;
@@ -257,7 +258,21 @@ public:
     /// Update the value of this Data
     void update();
 
+    /// @name Links management
+    /// @{
+
+    typedef std::vector<BaseLink*> VecLink;
+    /// Accessor to the vector containing all the fields of this object
+    const VecLink& getLinks() const { return m_vecLink; }
+
 protected:
+    /// Add a link.
+    void addLink(BaseLink* l);
+
+    /// List of links
+    VecLink m_vecLink;
+
+    /// @}
 
     virtual void doSetParent(BaseData* parent);
 
@@ -301,6 +316,16 @@ protected:
         else
             return decodeTypeName(typeid(T));
     }
+};
+
+template<class Type>
+class LinkTraitsPtrCasts
+{
+public:
+    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
+    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
+    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return NULL; }
+    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
 };
 
 } // namespace objectmodel

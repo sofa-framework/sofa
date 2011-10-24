@@ -69,6 +69,13 @@ public:
     /// Remove an output from this engine
     void delOutput(objectmodel::BaseData* n);
 
+protected:
+    /// Add a link.
+    void addLink(objectmodel::BaseLink* l)
+    {
+        objectmodel::BaseObject::addLink(l);
+    }
+
 };
 
 } // namespace core

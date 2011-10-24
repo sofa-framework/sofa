@@ -143,7 +143,7 @@ void BaseData::doDelInput(DDGNode* n)
 void BaseData::update()
 {
     cleanDirty();
-    for(std::list<DDGNode*>::iterator it=inputs.begin(); it!=inputs.end(); ++it)
+    for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
     {
         if ((*it)->isDirty())
         {
@@ -262,11 +262,32 @@ bool BaseData::copyValue(const BaseData* parent)
     return false;
 }
 
+/// Add a link.
+/// Note that this method should only be called if the link was not initialized with the initLink method
+void BaseData::addLink(BaseLink* l)
+{
+    m_vecLink.push_back(l);
+    //l->setOwner(this);
+}
+
 void BaseData::copyAspect(int destAspect, int srcAspect)
 {
     m_counters[destAspect] = m_counters[srcAspect];
     m_isSets[destAspect] = m_isSets[srcAspect];
     DDGNode::copyAspect(destAspect, srcAspect);
+    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    {
+        //std::cout << "  " << iLink->first;
+        (*iLink)->copyAspect(destAspect, srcAspect);
+    }
+}
+
+void BaseData::releaseAspect(int aspect)
+{
+    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    {
+        (*iLink)->releaseAspect(aspect);
+    }
 }
 
 std::string BaseData::decodeTypeName(const std::type_info& t)

@@ -236,31 +236,7 @@ public:
 };
 
 template<class Type>
-class LinkTraitsPtrCasts
-{
-public:
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return NULL; }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
-};
-
-template<>
-class LinkTraitsPtrCasts<DDGNode>
-{
-public:
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::DDGNode* n)
-    {
-        sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
-        if (d) return d->getOwner();
-        return dynamic_cast<sofa::core::objectmodel::Base*>(n);
-    }
-
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::DDGNode* n)
-    {
-        return dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
-    }
-};
+class LinkTraitsPtrCasts;
 
 /**
  *  \brief Container of all links in the scenegraph, from a given type of object (Owner) to another (Dest)
@@ -310,48 +286,48 @@ public:
         m_validatorIndex = fn;
     }
 
-    unsigned int size() const
+    unsigned int size(const core::ExecParams* params = 0) const
     {
-        return (unsigned int)m_value[core::ExecParams::currentAspect()].size();
+        return (unsigned int)m_value[core::ExecParams::currentAspect(params)].size();
     }
 
-    bool empty() const
+    bool empty(const core::ExecParams* params = 0) const
     {
-        return m_value[core::ExecParams::currentAspect()].empty();
+        return m_value[core::ExecParams::currentAspect(params)].empty();
     }
 
-    DestType* get(unsigned int index=0) const
+    DestType* get(unsigned int index=0, const core::ExecParams* params = 0) const
     {
-        const int aspect = core::ExecParams::currentAspect();
+        const int aspect = core::ExecParams::currentAspect(params);
         if (index < m_value[aspect].size())
             return TraitsDestPtr::get(m_value[aspect][index]);
         else
             return NULL;
     }
 
-    const Container& getValue() const
+    const Container& getValue(const core::ExecParams* params = 0) const
     {
-        return m_value[core::ExecParams::currentAspect()];
+        return m_value[core::ExecParams::currentAspect(params)];
     }
 
-    const_iterator begin() const
+    const_iterator begin(const core::ExecParams* params = 0) const
     {
-        return m_value[core::ExecParams::currentAspect()].begin();
+        return m_value[core::ExecParams::currentAspect(params)].begin();
     }
 
-    const_iterator end() const
+    const_iterator end(const core::ExecParams* params = 0) const
     {
-        return m_value[core::ExecParams::currentAspect()].end();
+        return m_value[core::ExecParams::currentAspect(params)].end();
     }
 
-    const_reverse_iterator rbegin() const
+    const_reverse_iterator rbegin(const core::ExecParams* params = 0) const
     {
-        return m_value[core::ExecParams::currentAspect()].rbegin();
+        return m_value[core::ExecParams::currentAspect(params)].rbegin();
     }
 
-    const_reverse_iterator rend() const
+    const_reverse_iterator rend(const core::ExecParams* params = 0) const
     {
-        return m_value[core::ExecParams::currentAspect()].rend();
+        return m_value[core::ExecParams::currentAspect(params)].rend();
     }
 
     void reset(unsigned int index=0)
@@ -402,12 +378,14 @@ public:
     /// Copy the value of an aspect into another one.
     virtual void copyAspect(int destAspect, int srcAspect)
     {
+        BaseLink::copyAspect(destAspect, srcAspect);
         m_value[destAspect] = m_value[srcAspect];
     }
 
     /// Release memory allocated for the specified aspect.
     virtual void releaseAspect(int aspect)
     {
+        BaseLink::releaseAspect(aspect);
         TraitsContainer::clear(m_value[aspect]);
     }
 

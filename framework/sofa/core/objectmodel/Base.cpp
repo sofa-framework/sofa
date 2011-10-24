@@ -176,6 +176,11 @@ void Base::copyAspect(int destAspect, int srcAspect)
         //std::cout << "  " << iData->first;
         (*iData)->copyAspect(destAspect, srcAspect);
     }
+    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    {
+        //std::cout << "  " << iLink->first;
+        (*iLink)->copyAspect(destAspect, srcAspect);
+    }
     //std::cout << std::endl;
 }
 
@@ -185,6 +190,10 @@ void Base::releaseAspect(int aspect)
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
         (*iData)->releaseAspect(aspect);
+    }
+    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    {
+        (*iLink)->releaseAspect(aspect);
     }
 }
 

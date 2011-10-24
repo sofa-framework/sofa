@@ -165,8 +165,8 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
     this->m_dataGraph.clear();
 
 
-    sofa::helper::list <sofa::core::objectmodel::DDGNode* > _outs = my_Data.getOutputs();
-    sofa::helper::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+    sofa::core::objectmodel::DDGNode::DDGLinkContainer _outs = my_Data.getOutputs();
+    sofa::core::objectmodel::DDGNode::DDGLinkIterator it;
 
     //std::cout << "PointSetTopologyContainer - Number of outputs for points array: " << _outs.size() << std::endl;
 
@@ -213,8 +213,8 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
             // There is a conflict with Base::getOutputs()
             sofa::core::objectmodel::DDGNode* my_topoEngine = (*it_engines);
-            sofa::helper::list <sofa::core::objectmodel::DDGNode* > _outsTmp = my_topoEngine->getOutputs();
-            sofa::helper::list <sofa::core::objectmodel::DDGNode* >::iterator itTmp;
+            const sofa::core::objectmodel::DDGNode::DDGLinkContainer& _outsTmp = my_topoEngine->getOutputs();
+            sofa::core::objectmodel::DDGNode::DDGLinkIterator itTmp;
 
             for ( itTmp = _outsTmp.begin(); itTmp!=_outsTmp.end(); ++itTmp)
             {
@@ -225,7 +225,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
                     next_GraphLevel.push_back((*itTmp));
                     dataNames.push_back(data->getName());
 
-                    sofa::helper::list <sofa::core::objectmodel::DDGNode* > _outsTmp2 = data->getOutputs();
+                    const sofa::core::objectmodel::DDGNode::DDGLinkContainer& _outsTmp2 = data->getOutputs();
                     _outs.insert(_outs.end(), _outsTmp2.begin(), _outsTmp2.end());
                 }
             }

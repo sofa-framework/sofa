@@ -121,7 +121,7 @@ public:
     virtual void copyAspect(int destAspect, int srcAspect) = 0;
 
     /// Release memory allocated for the specified aspect.
-    virtual void releaseAspect(int aspect);
+    virtual void releaseAspect(int aspect) = 0;
 
 
 protected:
