@@ -95,6 +95,58 @@ void TopologySubsetDataImpl <TopologyElementType, VecT>::addInputData(sofa::core
 #endif
 }
 
+
+
+/// Funtion used to link Data to point Data array, using the engine's method
+template <typename TopologyElementType, typename VecT>
+void TopologySubsetDataImpl <TopologyElementType, VecT>::linkToPointDataArray()
+{
+    if(m_topologicalEngine)
+        m_topologicalEngine->linkToPointDataArray();
+}
+
+/// Funtion used to link Data to edge Data array, using the engine's method
+template <typename TopologyElementType, typename VecT>
+void TopologySubsetDataImpl <TopologyElementType, VecT>::linkToEdgeDataArray()
+{
+    if(m_topologicalEngine)
+        m_topologicalEngine->linkToEdgeDataArray();
+}
+
+/// Funtion used to link Data to triangle Data array, using the engine's method
+template <typename TopologyElementType, typename VecT>
+void TopologySubsetDataImpl <TopologyElementType, VecT>::linkToTriangleDataArray()
+{
+    if(m_topologicalEngine)
+        m_topologicalEngine->linkToTriangleDataArray();
+}
+
+/// Funtion used to link Data to quad Data array, using the engine's method
+template <typename TopologyElementType, typename VecT>
+void TopologySubsetDataImpl <TopologyElementType, VecT>::linkToQuadDataArray()
+{
+    if(m_topologicalEngine)
+        m_topologicalEngine->linkToQuadDataArray();
+}
+
+/// Funtion used to link Data to tetrahedron Data array, using the engine's method
+template <typename TopologyElementType, typename VecT>
+void TopologySubsetDataImpl <TopologyElementType, VecT>::linkToTetrahedronDataArray()
+{
+    if(m_topologicalEngine)
+        m_topologicalEngine->linkToTetrahedronDataArray();
+}
+
+/// Funtion used to link Data to hexahedron Data array, using the engine's method
+template <typename TopologyElementType, typename VecT>
+void TopologySubsetDataImpl <TopologyElementType, VecT>::linkToHexahedronDataArray()
+{
+    if(m_topologicalEngine)
+        m_topologicalEngine->linkToHexahedronDataArray();
+}
+
+
+
 } // namespace topology
 
 } // namespace component
