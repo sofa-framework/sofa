@@ -197,7 +197,7 @@ MechanicalObject<DataTypes>::~MechanicalObject()
         if( vectorsMatrixDeriv[i] != NULL )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=NULL; }
 }
 
-
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 template <class DataTypes>
 void MechanicalObject<DataTypes>::MOPointHandler::applyCreateFunction(unsigned int /*pointIndex*/, Coord& /*dest*/,
         const sofa::helper::vector< unsigned int > &ancestors,
@@ -235,7 +235,7 @@ void MechanicalObject<DataTypes>::MOPointHandler::applyDestroyFunction(unsigned 
     //obj->resize( prevSizeMechObj - 1 );
 }
 
-
+#endif
 
 
 template <class DataTypes>
