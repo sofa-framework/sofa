@@ -42,7 +42,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/component/topology/PointSubsetData.inl>
+#include <sofa/component/topology/TopologySubsetData.inl>
 #include <sofa/component/topology/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <vector>
@@ -59,6 +59,8 @@ namespace component
 
 namespace misc
 {
+
+using namespace sofa::component::topology;
 
 template<class TDataTypes>
 class ParticleSource : public core::behavior::ProjectiveConstraintSet<TDataTypes>
@@ -101,10 +103,14 @@ public:
     {
         this->f_listening.setValue(true);
         f_center.beginEdit()->push_back(Coord()); f_center.endEdit();
+
+        pointHandler = new PSPointHandler(this, &lastparticles);
     }
 
     virtual ~ParticleSource()
     {
+        if (pointHandler)
+            delete pointHandler;
     }
 
     int N;
@@ -112,8 +118,62 @@ public:
     Real maxdist;
     //int lastparticle;
     typedef typename VecCoord::template rebind<unsigned int>::other VecIndex;
-    topology::PointSubsetData< VecIndex > lastparticles;
+    sofa::component::topology::PointSubsetData< VecIndex > lastparticles;
     VecCoord lastpos;
+
+    class PSPointHandler : public TopologySubsetDataHandler<Point, VecIndex >
+    {
+    public:
+        typedef typename ParticleSource<DataTypes>::VecIndex VecIndex;
+        typedef VecIndex container_type;
+        typedef typename container_type::value_type value_type;
+
+        PSPointHandler(ParticleSource<DataTypes>* _ps, PointSubsetData<VecIndex >* _data)
+            : TopologySubsetDataHandler<Point, VecIndex >(_data), ps(_ps) {}
+
+        void applyDestroyFunction(unsigned int index, value_type& /*T*/)
+        {
+            std::cout << "PSRemovalFunction\n";
+            if(ps)
+            {
+                /*topology::PointSubset::const_iterator it = std::find(ps->lastparticles.begin(),ps->lastparticles.end(), (unsigned int)index);
+                 if (it != ps->lastparticles.end())
+                 {
+                    ps->lastpos.erase( ps->lastpos.begin()+(it-ps->lastparticles.begin()) );
+                    //ps->lastparticles.getArray().erase(it);
+                     helper::removeValue(ps->lastparticles,(unsigned int)index);
+                 }*/
+                VecIndex& _lastparticles = *ps->lastparticles.beginEdit();
+
+                unsigned int size = _lastparticles.size();
+                for (unsigned int i = 0; i < size; ++i)
+                {
+                    if ((unsigned int)_lastparticles[i] == index)
+                    {
+                        if (i < size-1)
+                        {
+                            _lastparticles[i] = _lastparticles[size-1];
+                            ps->lastpos[i] = ps->lastpos[size-1];
+                        }
+                        _lastparticles.pop_back();
+                        ps->lastpos.pop_back();
+                        return;
+                    }
+                }
+                ps->lastparticles.endEdit();
+            }
+        }
+
+
+        bool applyTestCreateFunction(unsigned int /*index*/,
+                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+                const sofa::helper::vector< double > & /*coefs*/) {return false;}
+
+    protected:
+        ParticleSource<DataTypes> *ps;
+    };
+
+
 
     virtual void init()
     {
@@ -125,11 +185,10 @@ public:
         //lastparticle = -1;
         lastpos.resize(N);
 
-        lastparticles.setTestFunction(PSTestNewPointFunction);
-        lastparticles.setRemovalFunction(PSRemovalFunction);
+        sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
 
-        lastparticles.setTestParameter( (void *) this );
-        lastparticles.setRemovalParameter( (void *) this );
+        lastparticles.createTopologicalEngine(topology, pointHandler);
+        lastparticles.registerTopologicalData();
 
         sout << "ParticleSource: center = " << f_center.getValue()
                 << " radius = " << f_radius.getValue() << " delay = " << f_delay.getValue()
@@ -162,7 +221,9 @@ public:
         this->mstate->resize(1);
         lasttime = f_start.getValue()-f_delay.getValue();
         maxdist = 0;
-        lastparticles.clear();
+
+        helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->lastparticles;
+        _lastparticles.clear();
         lastpos.clear();
     }
 
@@ -199,6 +260,8 @@ public:
 
         if (nbParticlesToCreate > 0)
         {
+            helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->lastparticles;
+
             helper::vector< Coord > newX;
             helper::vector< Deriv > newV;
 
@@ -212,19 +275,19 @@ public:
 
                 //int lastparticle = i0 + i * N;
 
-                int lp0 = lastparticles.empty() ? 0 : lastparticles.size()/2;
+                int lp0 = _lastparticles.empty() ? 0 : _lastparticles.size()/2;
                 if (lp0 > 0)
                 {
-                    int shift = lastparticles.size() - lp0;
+                    int shift = _lastparticles.size() - lp0;
                     Deriv dpos = v0*f_delay.getValue();
                     for (int s = 0; s < lp0; s++)
                     {
-                        lastparticles[s] = lastparticles[s+shift];
+                        _lastparticles[s] = _lastparticles[s+shift];
                         lastpos[s] = lastpos[s+shift] + dpos;
                     }
                 }
 
-                lastparticles.resize(lp0);
+                _lastparticles.resize(lp0);
                 lastpos.resize(lp0);
 
                 for (int s = 0; s < N; s++)
@@ -235,7 +298,7 @@ public:
                     for (unsigned int c = 0; c < p.size(); c++)
                         p[c] += f_radius.getValue()[c] * rrand();
                     lastpos.push_back(p);
-                    lastparticles.push_back(i0 + newX.size());
+                    _lastparticles.push_back(i0 + newX.size());
                     newX.push_back(p + v0 * (time - lasttime)); // account for particle initial motion
                     newV.push_back(v0);
                 }
@@ -272,6 +335,7 @@ public:
         }
     }
 
+    /*
     /// Handle topological changes
     void handleTopologyChange()
     {
@@ -302,23 +366,25 @@ public:
             }
         }
     }
-
+    */
 
     template <class DataDeriv>
     void projectResponseT(DataDeriv& res) ///< project dx to constrained space
     {
         if (!this->mstate) return;
-        if (lastparticles.empty()) return;
+        if (lastparticles.getValue().empty()) return;
         //sout << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<sendl;
         double time = this->getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
+
+        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->lastparticles;
         // constraint the last value
-        for (unsigned int s=0; s<lastparticles.size(); s++)
+        for (unsigned int s=0; s<_lastparticles.size(); s++)
         {
             //HACK: TODO understand why these conditions can be reached
-            if (lastparticles[s] >= (unsigned int) this->mstate->getSize()) continue;
+            if (_lastparticles[s] >= (unsigned int) this->mstate->getSize()) continue;
 
-            res[lastparticles[s]] = Deriv();
+            res[_lastparticles[s]] = Deriv();
         }
     }
 
@@ -336,33 +402,37 @@ public:
     virtual void projectVelocity(VecDeriv& res) ///< project dx to constrained space (dx models a velocity)
     {
         if (!this->mstate) return;
-        if (lastparticles.empty()) return;
+        if (lastparticles.getValue().empty()) return;
         double time = this->getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         // constraint the most recent particles
         Deriv v0 = f_velocity.getValue();
-        for (unsigned int s=0; s<lastparticles.size(); s++)
+
+        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->lastparticles;
+        for (unsigned int s=0; s<_lastparticles.size(); s++)
         {
             //HACK: TODO understand why these conditions can be reached
-            if ( lastparticles[s] >= res.size() ) continue;
-            res[lastparticles[s]] = v0;
+            if ( _lastparticles[s] >= res.size() ) continue;
+            res[_lastparticles[s]] = v0;
         }
     }
 
     virtual void projectPosition(VecCoord& x) ///< project x to constrained space (x models a position)
     {
         if (!this->mstate) return;
-        if (lastparticles.empty()) return;
+        if (lastparticles.getValue().empty()) return;
         double time = this->getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         Deriv dpos = f_velocity.getValue()*(time - lasttime);
+
+        helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->lastparticles;
         // constraint the most recent particles
-        for (unsigned int s = 0; s < lastparticles.size(); s++)
+        for (unsigned int s = 0; s < _lastparticles.size(); s++)
         {
             //HACK: TODO understand why these conditions can be reached
-            if (s >= lastpos.size() || lastparticles[s] >= x.size()) continue;
-            x[lastparticles[s]] = lastpos[s];
-            x[lastparticles[s]] += dpos; // account for particle initial motion
+            if (s >= lastpos.size() || _lastparticles[s] >= x.size()) continue;
+            x[_lastparticles[s]] = lastpos[s];
+            x[_lastparticles[s]] += dpos; // account for particle initial motion
         }
     }
 
@@ -384,7 +454,7 @@ public:
     {
         if (!vparams->displayFlags().getShowBehaviorModels()) return;
         if (!this->mstate) return;
-        if (lastparticles.empty()) return;
+        if (lastparticles.getValue().empty()) return;
         double time = this->getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         Deriv dpos = f_velocity.getValue()*(time - lasttime);
@@ -399,39 +469,8 @@ public:
         vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
     }
 
-protected :
-    static bool PSTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
-    {
-        return false;
-    }
-
-    static void PSRemovalFunction (int index, void* p)
-    {
-        std::cout << "PSRemovalFunction\n";
-        ParticleSource* ps = (ParticleSource*)p;
-        /*topology::PointSubset::const_iterator it = std::find(ps->lastparticles.begin(),ps->lastparticles.end(), (unsigned int)index);
-        if (it != ps->lastparticles.end())
-        {
-            ps->lastpos.erase( ps->lastpos.begin()+(it-ps->lastparticles.begin()) );
-            //ps->lastparticles.getArray().erase(it);
-            helper::removeValue(ps->lastparticles,(unsigned int)index);
-        }*/
-        unsigned int size = ps->lastparticles.size();
-        for (unsigned int i = 0; i < size; ++i)
-        {
-            if ((int)ps->lastparticles[i] == index)
-            {
-                if (i < size-1)
-                {
-                    ps->lastparticles[i] = ps->lastparticles[size-1];
-                    ps->lastpos[i] = ps->lastpos[size-1];
-                }
-                ps->lastparticles.pop_back();
-                ps->lastpos.pop_back();
-                return;
-            }
-        }
-    }
+protected:
+    PSPointHandler* pointHandler;
 
 };
 
