@@ -1,0 +1,24 @@
+<Node>
+<VisualStyle displayFlags="showBehavior" />
+<Node name="Iterative method">
+<EulerImplicit />
+<CGLinearSolver />
+<RegularGridTopology p0="-2 0 0" />
+<MechanicalObject />
+<HexahedronFEMForceField poissonRatio="0" youngModulus="1000" />
+<UniformMass />
+<PlaneForceField normal="0 1 0" d="-5" stiffness="10000" />
+</Node>
+
+<Node name="Direct method"> 
+<EulerImplicit />
+<CholeskySolver />
+<RegularGridTopology p0="2 0 0" />
+<MechanicalObject />
+<HexahedronFEMForceField poissonRatio="0" youngModulus="1000" />
+<UniformMass />
+<PlaneForceField normal="0 1 0" d="-5" stiffness="10000" />
+</Node>
+
+
+</Node>
