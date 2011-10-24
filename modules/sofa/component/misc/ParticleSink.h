@@ -43,7 +43,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.inl>
 #include <sofa/component/topology/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/component/container/MechanicalObject.h>
@@ -62,6 +62,8 @@ namespace component
 namespace misc
 {
 
+using namespace sofa::component::topology;
+
 template<class TDataTypes>
 class ParticleSink : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
@@ -79,6 +81,7 @@ public:
     typedef helper::vector<Real> VecDensity;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
+    typedef helper::vector<unsigned int> SetIndexArray;
 
     Data<Deriv> planeNormal;
     Data<Real> planeD0;
@@ -86,7 +89,7 @@ public:
     Data<defaulttype::Vec3f> color;
     Data<bool> showPlane;
 
-    topology::PointSubset fixed;
+    sofa::component::topology::PointSubsetData< helper::vector<unsigned int> > fixed;
 protected:
     ParticleSink()
         : planeNormal(initData(&planeNormal, "normal", "plane normal"))
@@ -111,6 +114,14 @@ public:
         if (!this->mstate) return;
 
         sout << "ParticleSink: normal="<<planeNormal.getValue()<<" d0="<<planeD0.getValue()<<" d1="<<planeD1.getValue()<<sendl;
+
+        sofa::core::topology::BaseMeshTopology* _topology;
+        _topology = this->getContext()->getMeshTopology();
+
+        // Initialize functions and parameters
+        fixed.createTopologicalEngine(_topology);
+        fixed.registerTopologicalData();
+
     }
 
     virtual void animateBegin(double /*dt*/, double time)
@@ -166,26 +177,17 @@ public:
         }
     }
 
-    /// Handle topological changes
-    void handleTopologyChange()
-    {
-        sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=topology->beginChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=topology->endChange();
-        if (itBegin != itEnd)
-        {
-            fixed.handleTopologyEvents(itBegin, itEnd, this->mstate->getSize());
-        }
-    }
 
     template <class DataDeriv>
     void projectResponseT(DataDeriv& res) ///< project dx to constrained space
     {
         if (!this->mstate) return;
-        if (fixed.empty()) return;
+        if (fixed.getValue().empty()) return;
+
+        const SetIndexArray& _fixed = fixed.getValue();
         // constraint the last value
-        for (unsigned int s=0; s<fixed.size(); s++)
-            res[fixed[s]] = Deriv();
+        for (unsigned int s=0; s<_fixed.size(); s++)
+            res[_fixed[s]] = Deriv();
     }
     virtual void projectResponse(VecDeriv& res) ///< project dx to constrained space
     {
@@ -203,14 +205,17 @@ public:
     virtual void projectPosition(VecCoord& x) ///< project x to constrained space (x models a position)
     {
         if (!this->mstate) return;
-        fixed.clear();
+
+        helper::WriteAccessor< Data< SetIndexArray > > _fixed = fixed;
+
+        _fixed.clear();
         // constraint the last value
         for (unsigned int i=0; i<x.size(); i++)
         {
             Real d = x[i]*planeNormal.getValue()-planeD0.getValue();
             if (d<0)
             {
-                fixed.push_back(i);
+                _fixed.push_back(i);
             }
         }
     }
