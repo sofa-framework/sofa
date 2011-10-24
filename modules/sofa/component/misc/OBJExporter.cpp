@@ -61,14 +61,16 @@ void OBJExporter::init()
 
 void OBJExporter::writeOBJ()
 {
-    if (!maxStep) return;
-
     std::string filename = objFilename.getFullPath();
-    std::ostringstream oss;
-    oss.width(5);
-    oss.fill('0');
-    oss << stepCounter / maxStep;
-    filename += oss.str() + ".obj";
+    if (maxStep)
+    {
+        std::ostringstream oss;
+        oss.width(5);
+        oss.fill('0');
+        oss << stepCounter / maxStep;
+        filename += oss.str();
+    }
+    filename += ".obj";
     outfile = new std::ofstream(filename.c_str());
 
     std::string mtlfilename = objFilename.getFullPath();

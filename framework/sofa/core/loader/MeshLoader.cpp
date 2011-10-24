@@ -152,12 +152,12 @@ void MeshLoader::updateElements()
 {
     if (triangulate.getValue())
     {
-        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,4> > > > waQuads = quads;
-        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,3> > > > waTriangles = triangles;
+        helper::WriteAccessor<Data<helper::vector< Quad > > > waQuads = quads;
+        helper::WriteAccessor<Data<helper::vector< Triangle > > > waTriangles = triangles;
 
         for (unsigned int i = 0; i < waQuads.size() ; i++)
         {
-            const helper::fixed_array <unsigned int,4>& q = waQuads[i];
+            const Quad& q = waQuads[i];
             addTriangle(&waTriangles.wref(), q[0], q[1], q[2]);
             addTriangle(&waTriangles.wref(), q[0], q[2], q[3]);
         }
@@ -166,22 +166,22 @@ void MeshLoader::updateElements()
     // If ND topological elements are presents as well as (N-1)D elements, make sure all neighbors are created
     if (hexahedra.getValue().size() > 0 && quads.getValue().size() > 0)
     {
-        helper::ReadAccessor<Data<helper::vector< helper::fixed_array <unsigned int,8> > > > hexahedra = this->hexahedra;
-        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,4> > > > quads = this->quads;
-        std::set<helper::fixed_array <unsigned int,4> > eSet;
+        helper::ReadAccessor<Data<helper::vector< Hexahedron > > > hexahedra = this->hexahedra;
+        helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->quads;
+        std::set<Quad > eSet;
         for (unsigned int i = 0; i < quads.size(); ++i)
             eSet.insert(uniqueOrder(quads[i]));
         int nbnew = 0;
         for (unsigned int i = 0; i < hexahedra.size(); ++i)
         {
-            helper::fixed_array<unsigned int,8> h = hexahedra[i];
-            helper::fixed_array< helper::fixed_array<unsigned int,4>, 6 > e;
-            e[0] = helper::make_array(h[0],h[3],h[2],h[1]);
-            e[1] = helper::make_array(h[4],h[5],h[6],h[7]);
-            e[2] = helper::make_array(h[0],h[1],h[5],h[4]);
-            e[3] = helper::make_array(h[1],h[2],h[6],h[5]);
-            e[4] = helper::make_array(h[2],h[3],h[7],h[6]);
-            e[5] = helper::make_array(h[3],h[0],h[4],h[7]);
+            Hexahedron h = hexahedra[i];
+            helper::fixed_array< Quad, 6 > e;
+            e[0] = Quad(h[0],h[3],h[2],h[1]);
+            e[1] = Quad(h[4],h[5],h[6],h[7]);
+            e[2] = Quad(h[0],h[1],h[5],h[4]);
+            e[3] = Quad(h[1],h[2],h[6],h[5]);
+            e[4] = Quad(h[2],h[3],h[7],h[6]);
+            e[5] = Quad(h[3],h[0],h[4],h[7]);
             for (unsigned int j = 0; j < e.size(); ++j)
             {
                 if (eSet.insert(uniqueOrder(e[j])).second) // the element was inserted
@@ -196,18 +196,18 @@ void MeshLoader::updateElements()
     }
     if (tetrahedra.getValue().size() > 0 && triangles.getValue().size() > 0)
     {
-        helper::ReadAccessor<Data<helper::vector< helper::fixed_array <unsigned int,4> > > > tetrahedra = this->tetrahedra;
-        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,3> > > > triangles = this->triangles;
-        std::set<helper::fixed_array <unsigned int,3> > eSet;
+        helper::ReadAccessor<Data<helper::vector< Tetrahedron > > > tetrahedra = this->tetrahedra;
+        helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->triangles;
+        std::set<Triangle > eSet;
         for (unsigned int i = 0; i < triangles.size(); ++i)
             eSet.insert(uniqueOrder(triangles[i]));
         int nbnew = 0;
         for (unsigned int i = 0; i < tetrahedra.size(); ++i)
         {
-            helper::fixed_array<unsigned int,4> t = tetrahedra[i];
+            Tetrahedron t = tetrahedra[i];
             for (unsigned int j = 0; j < t.size(); ++j)
             {
-                helper::fixed_array<unsigned int,3> e(t[(j+1)%t.size()],t[(j+2)%t.size()],t[(j+3)%t.size()]);
+                Triangle e(t[(j+1)%t.size()],t[(j+2)%t.size()],t[(j+3)%t.size()]);
                 if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
                 {
                     triangles.push_back(e);
@@ -220,18 +220,18 @@ void MeshLoader::updateElements()
     }
     if (quads.getValue().size() > 0 && edges.getValue().size() > 0)
     {
-        helper::ReadAccessor<Data<helper::vector< helper::fixed_array <unsigned int,4> > > > quads = this->quads;
-        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,2> > > > edges = this->edges;
-        std::set<helper::fixed_array <unsigned int,2> > eSet;
+        helper::ReadAccessor<Data<helper::vector< Quad > > > quads = this->quads;
+        helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->edges;
+        std::set<Edge > eSet;
         for (unsigned int i = 0; i < edges.size(); ++i)
             eSet.insert(uniqueOrder(edges[i]));
         int nbnew = 0;
         for (unsigned int i = 0; i < quads.size(); ++i)
         {
-            helper::fixed_array<unsigned int,4> t = quads[i];
+            Quad t = quads[i];
             for (unsigned int j = 0; j < t.size(); ++j)
             {
-                helper::fixed_array<unsigned int,2> e(t[(j+1)%t.size()],t[(j+2)%t.size()]);
+                Edge e(t[(j+1)%t.size()],t[(j+2)%t.size()]);
                 if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
                 {
                     edges.push_back(e);
@@ -244,18 +244,18 @@ void MeshLoader::updateElements()
     }
     if (triangles.getValue().size() > 0 && edges.getValue().size() > 0)
     {
-        helper::ReadAccessor<Data<helper::vector< helper::fixed_array <unsigned int,3> > > > triangles = this->triangles;
-        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,2> > > > edges = this->edges;
-        std::set<helper::fixed_array <unsigned int,2> > eSet;
+        helper::ReadAccessor<Data<helper::vector< Triangle > > > triangles = this->triangles;
+        helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->edges;
+        std::set<Edge > eSet;
         for (unsigned int i = 0; i < edges.size(); ++i)
             eSet.insert(uniqueOrder(edges[i]));
         int nbnew = 0;
         for (unsigned int i = 0; i < triangles.size(); ++i)
         {
-            helper::fixed_array<unsigned int,3> t = triangles[i];
+            Triangle t = triangles[i];
             for (unsigned int j = 0; j < t.size(); ++j)
             {
-                helper::fixed_array<unsigned int,2> e(t[(j+1)%t.size()],t[(j+2)%t.size()]);
+                Edge e(t[(j+1)%t.size()],t[(j+2)%t.size()]);
                 if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
                 {
                     edges.push_back(e);
@@ -274,31 +274,31 @@ void MeshLoader::updatePoints()
     {
         std::set<unsigned int> attachedPoints;
         {
-            helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,2> > > > elems = edges;
+            helper::ReadAccessor<Data< helper::vector< Edge > > > elems = edges;
             for (unsigned int i=0; i<elems.size(); ++i)
                 for (unsigned int j=0; j<elems[i].size(); ++j)
                     attachedPoints.insert(elems[i][j]);
         }
         {
-            helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,3> > > > elems = triangles;
+            helper::ReadAccessor<Data< helper::vector< Triangle > > > elems = triangles;
             for (unsigned int i=0; i<elems.size(); ++i)
                 for (unsigned int j=0; j<elems[i].size(); ++j)
                     attachedPoints.insert(elems[i][j]);
         }
         {
-            helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > elems = quads;
+            helper::ReadAccessor<Data< helper::vector< Quad > > > elems = quads;
             for (unsigned int i=0; i<elems.size(); ++i)
                 for (unsigned int j=0; j<elems[i].size(); ++j)
                     attachedPoints.insert(elems[i][j]);
         }
         {
-            helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > elems = tetrahedra;
+            helper::ReadAccessor<Data< helper::vector< Tetrahedron > > > elems = tetrahedra;
             for (unsigned int i=0; i<elems.size(); ++i)
                 for (unsigned int j=0; j<elems[i].size(); ++j)
                     attachedPoints.insert(elems[i][j]);
         }
         {
-            helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,8> > > > elems = hexahedra;
+            helper::ReadAccessor<Data< helper::vector< Hexahedron > > > elems = hexahedra;
             for (unsigned int i=0; i<elems.size(); ++i)
                 for (unsigned int j=0; j<elems[i].size(); ++j)
                     attachedPoints.insert(elems[i][j]);
@@ -318,31 +318,31 @@ void MeshLoader::updatePoints()
         }
         waPositions.resize(newsize);
         {
-            helper::WriteAccessor<Data< helper::vector< helper::fixed_array <unsigned int,2> > > > elems = edges;
+            helper::WriteAccessor<Data< helper::vector< Edge > > > elems = edges;
             for (unsigned int i=0; i<elems.size(); ++i)
                 for (unsigned int j=0; j<elems[i].size(); ++j)
                     elems[i][j] = old2new[elems[i][j]];
         }
         {
-            helper::WriteAccessor<Data< helper::vector< helper::fixed_array <unsigned int,3> > > > elems = triangles;
+            helper::WriteAccessor<Data< helper::vector< Triangle > > > elems = triangles;
             for (unsigned int i=0; i<elems.size(); ++i)
                 for (unsigned int j=0; j<elems[i].size(); ++j)
                     elems[i][j] = old2new[elems[i][j]];
         }
         {
-            helper::WriteAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > elems = quads;
+            helper::WriteAccessor<Data< helper::vector< Quad > > > elems = quads;
             for (unsigned int i=0; i<elems.size(); ++i)
                 for (unsigned int j=0; j<elems[i].size(); ++j)
                     elems[i][j] = old2new[elems[i][j]];
         }
         {
-            helper::WriteAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > elems = tetrahedra;
+            helper::WriteAccessor<Data< helper::vector< Tetrahedron > > > elems = tetrahedra;
             for (unsigned int i=0; i<elems.size(); ++i)
                 for (unsigned int j=0; j<elems[i].size(); ++j)
                     elems[i][j] = old2new[elems[i][j]];
         }
         {
-            helper::WriteAccessor<Data< helper::vector< helper::fixed_array <unsigned int,8> > > > elems = hexahedra;
+            helper::WriteAccessor<Data< helper::vector< Hexahedron > > > elems = hexahedra;
             for (unsigned int i=0; i<elems.size(); ++i)
                 for (unsigned int j=0; j<elems[i].size(); ++j)
                     elems[i][j] = old2new[elems[i][j]];
@@ -353,8 +353,8 @@ void MeshLoader::updatePoints()
 void MeshLoader::updateNormals()
 {
     helper::ReadAccessor<Data<helper::vector<sofa::defaulttype::Vec<3,SReal> > > > raPositions = positions;
-    helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,3> > > > raTriangles = triangles;
-    helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > raQuads = quads;
+    helper::ReadAccessor<Data< helper::vector< Triangle > > > raTriangles = triangles;
+    helper::ReadAccessor<Data< helper::vector< Quad > > > raQuads = quads;
 
     //look if we already have loaded normals
     if (normals.getValue().size() == raPositions.size())
@@ -450,21 +450,21 @@ void MeshLoader::addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* p
 }
 
 
-void MeshLoader::addEdge(helper::vector<helper::fixed_array <unsigned int,2> >* pEdges, const helper::fixed_array <unsigned int,2> &p)
+void MeshLoader::addEdge(helper::vector<Edge >* pEdges, const Edge &p)
 {
     pEdges->push_back(p);
 }
 
-void MeshLoader::addEdge(helper::vector<helper::fixed_array <unsigned int,2> >* pEdges, unsigned int p0, unsigned int p1)
+void MeshLoader::addEdge(helper::vector<Edge >* pEdges, unsigned int p0, unsigned int p1)
 {
-    addEdge(pEdges, helper::fixed_array <unsigned int,2>(p0, p1));
+    addEdge(pEdges, Edge(p0, p1));
 }
 
-void MeshLoader::addTriangle(helper::vector<helper::fixed_array <unsigned int,3> >* pTriangles, const helper::fixed_array <unsigned int,3> &p)
+void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, const Triangle &p)
 {
     if (flipNormals.getValue())
     {
-        helper::fixed_array <unsigned int,3> revertP;
+        Triangle revertP;
         std::reverse_copy(p.begin(), p.end(), revertP.begin());
 
         pTriangles->push_back(revertP);
@@ -473,16 +473,16 @@ void MeshLoader::addTriangle(helper::vector<helper::fixed_array <unsigned int,3>
         pTriangles->push_back(p);
 }
 
-void MeshLoader::addTriangle(helper::vector<helper::fixed_array <unsigned int,3> >* pTriangles, unsigned int p0, unsigned int p1, unsigned int p2)
+void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, unsigned int p0, unsigned int p1, unsigned int p2)
 {
-    addTriangle(pTriangles, helper::fixed_array <unsigned int,3>(p0, p1, p2));
+    addTriangle(pTriangles, Triangle(p0, p1, p2));
 }
 
-void MeshLoader::addQuad(helper::vector<helper::fixed_array <unsigned int,4> >* pQuads, const helper::fixed_array <unsigned int,4> &p)
+void MeshLoader::addQuad(helper::vector<Quad >* pQuads, const Quad &p)
 {
     if (flipNormals.getValue())
     {
-        helper::fixed_array <unsigned int,4> revertP;
+        Quad revertP;
         std::reverse_copy(p.begin(), p.end(), revertP.begin());
 
         pQuads->push_back(revertP);
@@ -491,9 +491,9 @@ void MeshLoader::addQuad(helper::vector<helper::fixed_array <unsigned int,4> >* 
         pQuads->push_back(p);
 }
 
-void MeshLoader::addQuad(helper::vector<helper::fixed_array <unsigned int,4> >* pQuads, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
+void MeshLoader::addQuad(helper::vector<Quad >* pQuads, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
 {
-    addQuad(pQuads, helper::fixed_array <unsigned int,4>(p0, p1, p2, p3));
+    addQuad(pQuads, Quad(p0, p1, p2, p3));
 }
 
 void MeshLoader::addPolygon(helper::vector< helper::vector <unsigned int> >* pPolygons, const helper::vector<unsigned int> &p)
@@ -510,24 +510,24 @@ void MeshLoader::addPolygon(helper::vector< helper::vector <unsigned int> >* pPo
 }
 
 
-void MeshLoader::addTetrahedron(helper::vector< helper::fixed_array<unsigned int,4> >* pTetrahedra, const helper::fixed_array<unsigned int,4> &p)
+void MeshLoader::addTetrahedron(helper::vector< Tetrahedron >* pTetrahedra, const Tetrahedron &p)
 {
     pTetrahedra->push_back(p);
 }
 
-void MeshLoader::addTetrahedron(helper::vector< helper::fixed_array<unsigned int,4> >* pTetrahedra, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
+void MeshLoader::addTetrahedron(helper::vector< Tetrahedron >* pTetrahedra, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
 {
-    addTetrahedron(pTetrahedra, helper::fixed_array <unsigned int,4>(p0, p1, p2, p3));
+    addTetrahedron(pTetrahedra, Tetrahedron(p0, p1, p2, p3));
 }
 
-void MeshLoader::addHexahedron(helper::vector< helper::fixed_array<unsigned int,8> >* pHexahedra,
+void MeshLoader::addHexahedron(helper::vector< Hexahedron >* pHexahedra,
         unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
         unsigned int p4, unsigned int p5, unsigned int p6, unsigned int p7)
 {
-    addHexahedron(pHexahedra, helper::fixed_array <unsigned int,8>(p0, p1, p2, p3, p4, p5, p6, p7));
+    addHexahedron(pHexahedra, Hexahedron(p0, p1, p2, p3, p4, p5, p6, p7));
 }
 
-void MeshLoader::addHexahedron(helper::vector< helper::fixed_array<unsigned int,8> >* pHexahedra, const helper::fixed_array<unsigned int,8> &p)
+void MeshLoader::addHexahedron(helper::vector< Hexahedron >* pHexahedra, const Hexahedron &p)
 {
     pHexahedra->push_back(p);
 }

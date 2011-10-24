@@ -113,6 +113,12 @@ void MeshExporter::writeMesh()
 std::string MeshExporter::getMeshFilename(const char* ext)
 {
     int nbp = position.getValue().size();
+    serr << nbp << " points" << sendl;
+    serr << topology->getNbEdges() << " edges" << sendl;
+    serr << topology->getNbTriangles() << " triangles" << sendl;
+    serr << topology->getNbQuads() << " quads" << sendl;
+    serr << topology->getNbTetras() << " tetras" << sendl;
+    serr << topology->getNbHexas() << " hexas" << sendl;
     unsigned int nbce;
     nbce = ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 )
             + ( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )

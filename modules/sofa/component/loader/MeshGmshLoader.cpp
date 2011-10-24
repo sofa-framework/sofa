@@ -175,11 +175,11 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 
     file >> nelems; //Loading number of Element
 
-    helper::vector<helper::fixed_array <unsigned int,2> >& my_edges = *(edges.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,4> >& my_quads = *(quads.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,4> >& my_tetrahedra = *(tetrahedra.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,8> >& my_hexahedra = *(hexahedra.beginEdit());
+    helper::vector<Edge>& my_edges = *(edges.beginEdit());
+    helper::vector<Triangle>& my_triangles = *(triangles.beginEdit());
+    helper::vector<Quad>& my_quads = *(quads.beginEdit());
+    helper::vector<Tetrahedron>& my_tetrahedra = *(tetrahedra.beginEdit());
+    helper::vector<Hexahedron>& my_hexahedra = *(hexahedra.beginEdit());
 
 
     for (unsigned int i=0; i<nelems; ++i) // for each elem
@@ -241,23 +241,23 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
             //sout << "nodes[" << n << "] = " << nodes[n] << sendl;
         }
-        helper::fixed_array <unsigned int,8> hexa;
+        Hexahedron hexa;
         switch (etype)
         {
         case 1: // Line
-            addEdge(&my_edges, helper::fixed_array <unsigned int,2>(nodes[0], nodes[1]));
+            addEdge(&my_edges, Edge(nodes[0], nodes[1]));
             ++nlines;
             break;
         case 2: // Triangle
-            addTriangle(&my_triangles, helper::fixed_array <unsigned int,3>(nodes[0], nodes[1], nodes[2]));
+            addTriangle(&my_triangles, Triangle(nodes[0], nodes[1], nodes[2]));
             ++ntris;
             break;
         case 3: // Quad
-            addQuad(&my_quads, helper::fixed_array <unsigned int,4>(nodes[0], nodes[1], nodes[2], nodes[3]));
+            addQuad(&my_quads, Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
             ++nquads;
             break;
         case 4: // Tetra
-            addTetrahedron(&my_tetrahedra, helper::fixed_array <unsigned int,4>(nodes[0], nodes[1], nodes[2], nodes[3]));
+            addTetrahedron(&my_tetrahedra, Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
             ++ntetrahedra;
             break;
         case 5: // Hexa

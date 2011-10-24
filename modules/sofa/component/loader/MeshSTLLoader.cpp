@@ -94,7 +94,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
     helper::vector<sofa::defaulttype::Vector3>& my_normals = *(normals.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
 
     // get length of file
     dataFile.seekg(0, std::ios::end);
@@ -115,7 +115,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     std::cout << "Reading file...";
     for (unsigned int i = 0; i<nbrFacet; ++i)
     {
-        helper::fixed_array <unsigned int,3> the_tri;
+        Triangle the_tri;
         sofa::defaulttype::Vec3f vertex, normals;
 
         // Normal:
@@ -180,7 +180,7 @@ bool MeshSTLLoader::readSTL(const char *filename)
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
     helper::vector<sofa::defaulttype::Vector3>& my_normals = *(normals.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
 
 
     // get length of file:
@@ -191,7 +191,7 @@ bool MeshSTLLoader::readSTL(const char *filename)
     // Reading header
     dataFile >> buffer >> name;
 
-    helper::fixed_array <unsigned int,3> the_tri;
+    Triangle the_tri;
     unsigned int cpt = 0;
     std::streampos position = 0;
 

@@ -154,11 +154,11 @@ bool MeshVTKLoader::setInputsMesh()
 
     positions.endEdit();
 
-    helper::vector<helper::fixed_array <unsigned int,2> >& my_edges = *(edges.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,4> >& my_quads = *(quads.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,4> >& my_tetrahedra = *(tetrahedra.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,8> >& my_hexahedra = *(hexahedra.beginEdit());
+    helper::vector<Edge >& my_edges = *(edges.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
+    helper::vector<Quad >& my_quads = *(quads.beginEdit());
+    helper::vector<Tetrahedron >& my_tetrahedra = *(tetrahedra.beginEdit());
+    helper::vector<Hexahedron >& my_hexahedra = *(hexahedra.beginEdit());
 
     if (reader->inputPolygons)
     {
