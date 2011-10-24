@@ -79,9 +79,8 @@ namespace component
 namespace container
 {
 
-using namespace topology;
 using namespace sofa::core;
-using namespace sofa::core::topology;
+using namespace sofa::component::topology;
 using namespace sofa::defaulttype;
 
 template <class DataTypes>
@@ -223,7 +222,7 @@ void MechanicalObject<DataTypes>::MOPointHandler::applyCreateFunction(unsigned i
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::MOPointHandler::applyDestroyFunction(unsigned int, Coord& )
+void MechanicalObject<DataTypes>::MOPointHandler::applyDestroyFunction(unsigned int, Coord &)
 {
     if (!obj)
         return;
