@@ -123,7 +123,7 @@ void Mapping<In,Out>::init()
 }
 
 template <class In, class Out>
-sofa::defaulttype::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2)
+sofa::defaulttype::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix m_createMappedMatrix, func_createMappedInterationMatrix m_createMappedInterationMatrix)
 {
     sofa::defaulttype::BaseMatrix* result;
     if( !this->areMatricesMapped() )
