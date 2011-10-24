@@ -48,7 +48,7 @@
 #include <assert.h>
 #include <iostream>
 
-//#include <sofa/component/topology/PointData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 namespace
 {
@@ -197,6 +197,46 @@ MechanicalObject<DataTypes>::~MechanicalObject()
     for(unsigned i=core::MatrixDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsMatrixDeriv.size(); i++)
         if( vectorsMatrixDeriv[i] != NULL )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=NULL; }
 }
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::MOPointHandler::applyCreateFunction(unsigned int /*pointIndex*/, Coord& /*dest*/,
+        const sofa::helper::vector< unsigned int > &ancestors,
+        const sofa::helper::vector< double > &coefs)
+{
+    if (!obj)
+        return;
+
+    if (!ancestors.empty() )
+    {
+        const unsigned int prevSizeMechObj = obj->getSize();
+        obj->vsize =prevSizeMechObj + 1;
+
+        obj->computeWeightedValue( prevSizeMechObj + 1, ancestors, coefs );
+    }
+    else
+    {
+        // No ancestors specified, resize DOFs vectors and set new values to the reset default value.
+        obj->vsize = obj->getSize() + 1;
+    }
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::MOPointHandler::applyDestroyFunction(unsigned int, Coord& )
+{
+    if (!obj)
+        return;
+
+    unsigned int prevSizeMechObj   = obj->getSize();
+    //unsigned int lastIndexMech = prevSizeMechObj - 1;
+
+    obj->vsize = prevSizeMechObj - 1;
+    //obj->replaceValue(lastIndexMech, index );
+    //obj->resize( prevSizeMechObj - 1 );
+}
+
+
 
 
 template <class DataTypes>
