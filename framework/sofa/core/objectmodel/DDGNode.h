@@ -107,8 +107,14 @@ public:
     /// Copy the value of an aspect into another one.
     virtual void copyAspect(int destAspect, int srcAspect);
 
-    static size_t currentAspect();
-    static size_t currentAspect(const core::ExecParams* params);
+    static int currentAspect()
+    {
+        return core::ExecParams::currentAspect();
+    }
+    static int currentAspect(const core::ExecParams* params)
+    {
+        return core::ExecParams::currentAspect(params);
+    }
 
 protected:
 
@@ -146,18 +152,6 @@ private:
     };
     helper::fixed_array<DirtyFlags, SOFA_DATA_MAX_ASPECTS> dirtyFlags;
 };
-
-inline size_t DDGNode::currentAspect()
-{
-    if(SOFA_DATA_MAX_ASPECTS == 1) return 0;
-    else                             return core::ExecParams::defaultInstance()->aspectID();
-}
-
-inline size_t DDGNode::currentAspect(const core::ExecParams* params)
-{
-    if(SOFA_DATA_MAX_ASPECTS == 1) return 0;
-    else                             return params != 0 ? params->aspectID() : core::ExecParams::defaultInstance()->aspectID();
-}
 
 } // namespace objectmodel
 
