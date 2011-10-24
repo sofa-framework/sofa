@@ -93,6 +93,7 @@ equals(IS_SLN, true) {
 
 equals(IS_LIBRARY, true) {
 	DESTDIR = $$LIB_DESTDIR
+    win32: DLLDESTDIR = $$APP_DESTDIR
 }
 equals(IS_APPLICATION, true) {
 	DESTDIR = $$APP_DESTDIR
