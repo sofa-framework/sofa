@@ -45,6 +45,8 @@ namespace core
 namespace objectmodel
 {
 
+class DDGNode;
+
 template<class TDestType, bool strongLink>
 class LinkTraitsDestPtr;
 
@@ -233,6 +235,33 @@ public:
     }
 };
 
+template<class Type>
+class LinkTraitsPtrCasts
+{
+public:
+    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
+    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
+    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return NULL; }
+    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
+};
+
+template<>
+class LinkTraitsPtrCasts<DDGNode>
+{
+public:
+    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::DDGNode* n)
+    {
+        sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
+        if (d) return d->getOwner();
+        return dynamic_cast<sofa::core::objectmodel::Base*>(n);
+    }
+
+    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::DDGNode* n)
+    {
+        return dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
+    }
+};
+
 /**
  *  \brief Container of all links in the scenegraph, from a given type of object (Owner) to another (Dest)
  *
@@ -256,6 +285,8 @@ public:
     //typedef LinkTraitsValidatorFn<OwnerType, DestPtr, ACTIVEFLAG(FLAG_MULTILINK)> TraitsValidatorFn;
     typedef void (OwnerType::*ValidatorFn)(DestPtr, DestPtr&);
     typedef void (OwnerType::*ValidatorIndexFn)(DestPtr, DestPtr&, unsigned int);
+    typedef LinkTraitsPtrCasts<TOwnerType> TraitsOwnerCasts;
+    typedef LinkTraitsPtrCasts<TDestType> TraitsDestCasts;
 #undef ACTIVEFLAG
 
     Link(const InitLink<OwnerType>& init)
@@ -281,45 +312,46 @@ public:
 
     unsigned int size() const
     {
-        return (unsigned int)m_value[0].size();
+        return (unsigned int)m_value[core::ExecParams::currentAspect()].size();
     }
 
     bool empty() const
     {
-        return m_value[0].empty();
+        return m_value[core::ExecParams::currentAspect()].empty();
     }
 
     DestType* get(unsigned int index=0) const
     {
-        if (index < m_value[0].size())
-            return TraitsDestPtr::get(m_value[0][index]); // TODO: aspects
+        const int aspect = core::ExecParams::currentAspect();
+        if (index < m_value[aspect].size())
+            return TraitsDestPtr::get(m_value[aspect][index]);
         else
             return NULL;
     }
 
     const Container& getValue() const
     {
-        return m_value[0];
+        return m_value[core::ExecParams::currentAspect()];
     }
 
     const_iterator begin() const
     {
-        return m_value[0].begin();
+        return m_value[core::ExecParams::currentAspect()].begin();
     }
 
     const_iterator end() const
     {
-        return m_value[0].end();
+        return m_value[core::ExecParams::currentAspect()].end();
     }
 
     const_reverse_iterator rbegin() const
     {
-        return m_value[0].rbegin();
+        return m_value[core::ExecParams::currentAspect()].rbegin();
     }
 
     const_reverse_iterator rend() const
     {
-        return m_value[0].rend();
+        return m_value[core::ExecParams::currentAspect()].rend();
     }
 
     void reset(unsigned int index=0)
@@ -335,19 +367,21 @@ public:
     bool add(DestPtr v)
     {
         if (!v) return false;
-        unsigned int index = TraitsContainer::add(m_value[0],v);
-        changed(DestPtr(), m_value[0][index], index);
+        const int aspect = core::ExecParams::currentAspect();
+        unsigned int index = TraitsContainer::add(m_value[aspect],v);
+        changed(DestPtr(), m_value[aspect][index], index);
         return true;
     }
 
     bool remove(DestPtr v)
     {
         if (!v) return false;
-        unsigned int index = TraitsContainer::find(m_value[0],v);
-        if (index >= m_value[0].size()) return false;
-        m_value[0][index] = NULL;
-        changed(v, m_value[0][index], index);
-        TraitsContainer::remove(m_value[0],index);
+        const int aspect = core::ExecParams::currentAspect();
+        unsigned int index = TraitsContainer::find(m_value[aspect],v);
+        if (index >= m_value[aspect].size()) return false;
+        m_value[aspect][index] = NULL;
+        changed(v, m_value[aspect][index], index);
+        TraitsContainer::remove(m_value[aspect],index);
         return true;
     }
 
@@ -358,11 +392,11 @@ public:
 
     Base* getLinkedBase(unsigned int index=0) const
     {
-        return getBase(get(index));
+        return TraitsDestCasts::getBase(get(index));
     }
     BaseData* getLinkedData(unsigned int index=0) const
     {
-        return getData(get(index));
+        return TraitsDestCasts::getData(get(index));
     }
 
     /// Copy the value of an aspect into another one.
@@ -377,8 +411,14 @@ public:
         TraitsContainer::clear(m_value[aspect]);
     }
 
-    sofa::core::objectmodel::Base* getOwnerBase() const { return getBase(m_owner); }
-    sofa::core::objectmodel::BaseData* getOwnerData() const { return getData(m_owner); }
+    sofa::core::objectmodel::Base* getOwnerBase() const
+    {
+        return TraitsOwnerCasts::getBase(m_owner);
+    }
+    sofa::core::objectmodel::BaseData* getOwnerData() const
+    {
+        return TraitsOwnerCasts::getData(m_owner);
+    }
 
 protected:
     OwnerType* m_owner;
@@ -396,16 +436,11 @@ protected:
 
     void change(DestPtr v, unsigned int index)
     {
-        DestPtr& val = m_value[0][index]; // TODO: aspects
+        DestPtr& val = m_value[core::ExecParams::currentAspect()][index];
         DestPtr before = val;
         val = v;
         changed(before, val, index);
     }
-
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return NULL; }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
 };
 
 } // namespace objectmodel

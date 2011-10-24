@@ -117,6 +117,18 @@ public:
     /// Specify the aspect index of the current thread
     ExecParams& setAspectID(int v) { storage->aspectID = v; return *this; }
 
+    static int currentAspect()
+    {
+        if (SOFA_DATA_MAX_ASPECTS == 1) return 0;
+        else                             return defaultInstance()->aspectID();
+    }
+
+    static inline int currentAspect(const core::ExecParams* params)
+    {
+        if (SOFA_DATA_MAX_ASPECTS == 1) return 0;
+        else                             return params != 0 ? params->aspectID() : defaultInstance()->aspectID();
+    }
+
 };
 
 } // namespace core
