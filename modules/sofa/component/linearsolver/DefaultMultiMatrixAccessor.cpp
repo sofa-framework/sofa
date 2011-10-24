@@ -96,12 +96,10 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* m
 
     if ((jmatrix != NULL) && (mapping->isMechanical()) && (mapping->areMatricesMapped()))
     {
-        mapping->setCreateMappedMatrixFunc(&DefaultMultiMatrixAccessor::createMatrix);
-        mapping->setCreateMappedInteractionMatrixFunc(&DefaultMultiMatrixAccessor::createInteractionMatrix);
 
         const BaseMechanicalState* mappedState  = const_cast<const BaseMechanicalState*>(mapping->getMechTo()[0]);
         defaulttype::BaseMatrix* mappedstiffness;
-        mappedstiffness = mapping->createMappedMatrix(mappedState,mappedState);
+        mappedstiffness = mapping->createMappedMatrix(mappedState,mappedState,&DefaultMultiMatrixAccessor::createMatrix,&DefaultMultiMatrixAccessor::createInteractionMatrix);
         mappedMatrices[mappedState]=mappedstiffness;
 
         mappingList.push_back(mapping);
@@ -682,12 +680,9 @@ void CRSMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mappi
 
     if ((jmatrix != NULL) && (mapping->isMechanical()) && (mapping->areMatricesMapped()))
     {
-        mapping->setCreateMappedMatrixFunc(&CRSMultiMatrixAccessor::createMatrix);
-        mapping->setCreateMappedInteractionMatrixFunc(&CRSMultiMatrixAccessor::createInteractionMatrix);
-
         const BaseMechanicalState* mappedState  = const_cast<const BaseMechanicalState*>(mapping->getMechTo()[0]);
         defaulttype::BaseMatrix* mappedstiffness;
-        mappedstiffness = mapping->createMappedMatrix(mappedState,mappedState);
+        mappedstiffness = mapping->createMappedMatrix(mappedState,mappedState,&CRSMultiMatrixAccessor::createMatrix,&CRSMultiMatrixAccessor::createInteractionMatrix);
         mappedMatrices[mappedState]=mappedstiffness;
 
         mappingList.push_back(mapping);
