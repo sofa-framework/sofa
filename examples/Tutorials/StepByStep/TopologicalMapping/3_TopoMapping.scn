@@ -6,26 +6,23 @@
     <DefaultContactManager name="Response" response="default" />
     <Node name="Tetrahedrons Mesh">
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
-        <MechanicalObject template="Vec3d" name="Volume" src="@loader" />
+        <MechanicalObject  name="Volume" src="@loader" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
-        <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+        <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <TetrahedronSetTopologyContainer name="Container" filename="mesh/cylinder.msh" tetrahedra="@loader.tetrahedra" />
-        <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="0" drawColorTetrahedra="1.0 1.0 0.3" />
-        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="360" assembling="0" />
-        <DiagonalMass template="Vec3d" name="default11" massDensity="2" />
-        <FixedPlaneConstraint template="Vec3d" name="default12" direction="0 0 1" dmin="-0.1" dmax="0.1" />
-        <FixedConstraint template="Vec3d" name="default13" indices="0" />
+        <TetrahedronSetGeometryAlgorithms  name="GeomAlgo" drawTetrahedra="0" drawColorTetrahedra="1.0 1.0 0.3" />
+        <TetrahedralCorotationalFEMForceField  name="FEM" method="large" poissonRatio="0.3" youngModulus="360" assembling="0" />
+        <DiagonalMass  massDensity="2" />
+        <FixedPlaneConstraint  direction="0 0 1" dmin="-0.1" dmax="0.1" />
+        <FixedConstraint   indices="0" />
         <Node name="Triangles Mesh">
             <TriangleSetTopologyContainer name="Container" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-            <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+            <TriangleSetGeometryAlgorithms  name="GeomAlgo" />
             <Tetra2TriangleTopologicalMapping name="Mapping" object1="../../Container" object2="Container" />
             <Node name="Visu">
-                <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 0 0 1 1 Ambient 1 0 0 0.2 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45" />
-                <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default17" object1="../../../Volume" object2="Visual" />
+                <OglModel  name="Visual" material="Default Diffuse 1 0 0 1 1 Ambient 1 0 0 0.2 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45" />
+                <IdentityMapping  input="@../../Volume" output="@Visual" />
             </Node>
         </Node>
     </Node>

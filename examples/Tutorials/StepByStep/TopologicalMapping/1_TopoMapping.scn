@@ -7,10 +7,8 @@
     <DefaultContactManager name="Response" response="default" />
     <Node name="Tetrahedrons Mesh">
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
-        <MechanicalObject template="Vec3d" name="Volume" src="@loader" />
-        <TetrahedronSetTopologyContainer name="Container" filename="mesh/cylinder.msh" tetrahedra="@loader.tetrahedra" />
-        <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1" drawColorTetrahedra="1.0 1.0 0.3" />
+        <TetrahedronSetTopologyContainer name="Container" src="@loader" />
+        <MechanicalObject name="Volume" />
+        <TetrahedronSetGeometryAlgorithms  name="GeomAlgo" drawTetrahedra="1" drawColorTetrahedra="1.0 1.0 0.3" />
     </Node>
 </Node>
