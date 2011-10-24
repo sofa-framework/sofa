@@ -34,6 +34,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/core.h>
+#include <sofa/core/objectmodel/Link.h>
 #include <list>
 
 namespace sofa
@@ -45,6 +46,15 @@ namespace core
 namespace objectmodel
 {
 
+
+template<>
+class LinkTraitsPtrCasts<DDGNode>
+{
+public:
+    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::DDGNode* n);
+    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::DDGNode* n);
+};
+
 /**
  *  \brief Abstract base to manage data dependencies. BaseData and DataEngine inherites from this class
  *
@@ -52,6 +62,9 @@ namespace objectmodel
 class SOFA_CORE_API DDGNode
 {
 public:
+    typedef Link<DDGNode, DDGNode, BaseLink::FLAG_MULTILINK|BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_DATALINK> DDGLink;
+    typedef DDGLink::Container DDGLinkContainer;
+    typedef DDGLink::const_iterator DDGLinkIterator;
 
     /// Constructor
     DDGNode();
@@ -72,10 +85,10 @@ public:
     void delOutput(DDGNode* n);
 
     /// Get the list of inputs for this DDGNode
-    std::list<DDGNode*> getInputs();
+    const DDGLinkContainer& getInputs();
 
     /// Get the list of outputs for this DDGNode
-    std::list<DDGNode*> getOutputs();
+    const DDGLinkContainer& getOutputs();
 
     /// Update this value
     virtual void update() = 0;
@@ -118,12 +131,23 @@ public:
 
 protected:
 
-    std::list<DDGNode*> inputs;
-    std::list<DDGNode*> outputs;
+    BaseLink::InitLink<DDGNode>
+    initLink(const char* name, const char* help)
+    {
+        return BaseLink::InitLink<DDGNode>(this, name, help);
+    }
+
+    /// Add a link.
+    virtual void addLink(BaseLink* l) = 0;
+
+    //std::list<DDGNode*> inputs;
+    //std::list<DDGNode*> outputs;
+    DDGLink inputs;
+    DDGLink outputs;
 
     virtual void doAddInput(DDGNode* n)
     {
-        inputs.push_back(n);
+        inputs.add(n);
     }
 
     virtual void doDelInput(DDGNode* n)
@@ -133,7 +157,7 @@ protected:
 
     virtual void doAddOutput(DDGNode* n)
     {
-        outputs.push_back(n);
+        outputs.add(n);
     }
 
     virtual void doDelOutput(DDGNode* n)

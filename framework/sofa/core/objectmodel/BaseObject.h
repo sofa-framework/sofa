@@ -109,6 +109,10 @@ public:
 
     virtual void removeSlave(BaseObject::SPtr s);
 
+    virtual void copyAspect(int destAspect, int srcAspect);
+
+    virtual void releaseAspect(int aspect);
+
     /// @}
 
     /// @name control

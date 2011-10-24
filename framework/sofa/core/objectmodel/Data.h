@@ -380,7 +380,7 @@ public:
     inline T* beginEdit(const core::ExecParams* params = 0)
     {
         size_t aspect = DDGNode::currentAspect(params);
-        this->updateIfDirty();
+        this->updateIfDirty(params);
         ++this->m_counters[aspect];
         this->m_isSets[aspect] = true;
         BaseData::setDirtyOutputs(params);
@@ -406,7 +406,7 @@ public:
 
     inline const T& getValue(const core::ExecParams* params = 0) const
     {
-        this->updateIfDirty();
+        this->updateIfDirty(params);
         return m_values[DDGNode::currentAspect(params)].getValue();
     }
 

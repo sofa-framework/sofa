@@ -39,14 +39,16 @@ namespace objectmodel
 
 /// Constructor
 DDGNode::DDGNode()
+    : inputs(initLink("inputs", "Links to inputs Data"))
+    , outputs(initLink("outputs", "Links to outputs Data"))
 {
 }
 
 DDGNode::~DDGNode()
 {
-    for(std::list< DDGNode* >::iterator it=inputs.begin(); it!=inputs.end(); ++it)
+    for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
         (*it)->doDelOutput(this);
-    for(std::list< DDGNode* >::iterator it=outputs.begin(); it!=outputs.end(); ++it)
+    for(DDGLinkIterator it=outputs.begin(); it!=outputs.end(); ++it)
         (*it)->doDelInput(this);
 }
 
@@ -72,7 +74,7 @@ void DDGNode::setDirtyOutputs(const core::ExecParams* params)
     if (!dirtyOutputs)
     {
         dirtyOutputs = true;
-        for(std::list<DDGNode*>::iterator it=outputs.begin(); it!=outputs.end(); ++it)
+        for(DDGLinkIterator it=outputs.begin(params), itend=outputs.end(params); it != itend; ++it)
         {
             (*it)->setDirtyValue(params);
         }
@@ -90,7 +92,7 @@ void DDGNode::cleanDirty(const core::ExecParams* params)
         if (d && d->getOwner())
             d->getOwner()->sout << "Data " << d->getName() << " has been updated." << d->getOwner()->sendl;
 
-        for(std::list< DDGNode* >::iterator it=inputs.begin(); it!=inputs.end(); ++it)
+        for(DDGLinkIterator it=inputs.begin(params), itend=inputs.end(params); it != itend; ++it)
             (*it)->dirtyFlags[currentAspect(params)].dirtyOutputs = false;
     }
 }
@@ -126,14 +128,26 @@ void DDGNode::delOutput(DDGNode* n)
     n->doDelInput(this);
 }
 
-std::list<DDGNode*> DDGNode::getInputs()
+const DDGNode::DDGLinkContainer& DDGNode::getInputs()
 {
-    return inputs;
+    return inputs.getValue();
 }
 
-std::list<DDGNode*> DDGNode::getOutputs()
+const DDGNode::DDGLinkContainer& DDGNode::getOutputs()
 {
-    return outputs;
+    return outputs.getValue();
+}
+
+sofa::core::objectmodel::Base* LinkTraitsPtrCasts<DDGNode>::getBase(sofa::core::objectmodel::DDGNode* n)
+{
+    sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
+    if (d) return d->getOwner();
+    return dynamic_cast<sofa::core::objectmodel::Base*>(n);
+}
+
+sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<DDGNode>::getData(sofa::core::objectmodel::DDGNode* n)
+{
+    return dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
 }
 
 } // namespace objectmodel
