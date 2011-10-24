@@ -1,0 +1,42 @@
+<Node name="root" gravity="0 -9.81 0" dt="0.01">
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
+    <DefaultPipeline name="default21" verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="default22" response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultCollisionGroupManager name="default23" />
+    <Node name="Cube" gravity="0 -9.81 0">
+        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+        <MechanicalObject template="Vec3d" name="dofs" />
+        <UniformMass template="Vec3d" name="default25" mass="0.25" />
+        <RegularGridTopology name="grid" n="6 6 6" min="-10 0 -10" max="10 20 10" />
+        <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.4" youngModulus="1000" assembling="0" />
+        <BoxROI template="Vec3d" name="box_roi" box="-11 -11 -11 11 -9 11" indices="0" drawSize="0" />
+        <FixedConstraint template="Vec3d" name="default27" indices="@box_roi.indices" drawSize="0" />
+        <Node name="Tetra" gravity="0 -9.81 0">
+            <TetrahedronSetTopologyContainer name="Container" />
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+            <Hexa2TetraTopologicalMapping name="default28" object1="../../grid" object2="Container" />
+            <MeshExporter filename="cube5x5x5" position="@../dofs.rest_position" edges="0" triangles="0" tetras="1" listening="true" exportAtBegin="true" />
+            <Node name="Triangles" gravity="0 -9.81 0">
+                <TriangleSetTopologyContainer name="Container" />
+                <TriangleSetTopologyModifier name="Modifier" />
+                <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+                <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+                <Tetra2TriangleTopologicalMapping name="default29" object1="../../Container" object2="Container" />
+                <!--<MeshExporter filename="cube5x5x5-surface" position="@../../dofs.rest_position" edges="0" triangles="1" tetras="0" listening="true" exportAtBegin="true" />-->
+                <TriangleModel name="default30" />
+                <LineModel name="default31" />
+                <PointModel name="default32" />
+                <Node name="Visu" gravity="0 -9.81 0">
+                    <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+                    <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default33" object1="../.." object2="Visual" />
+                    <OBJExporter filename="cube5x5x5-surface" exportAtBegin="true" />
+                </Node>
+            </Node>
+        </Node>
+    </Node>
+</Node>

@@ -129,9 +129,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     helper::SVector< helper::SVector <int> >& my_texturesList   = *(texIndexList.beginEdit());
     helper::vector<int> nodes, nIndices, tIndices;
 
-    helper::vector<helper::fixed_array <unsigned int,2> >& my_edges = *(edges.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,4> >& my_quads = *(quads.beginEdit());
+    helper::vector<Edge >& my_edges = *(edges.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
+    helper::vector<Quad >& my_quads = *(quads.beginEdit());
 
     int vtn[3];
     Vec3d result;
@@ -282,22 +282,22 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             if (nodes.size() == 2) // Edge
             {
                 if (nodes[0]<nodes[1])
-                    addEdge(&my_edges, helper::fixed_array <unsigned int,2>(nodes[0], nodes[1]));
+                    addEdge(&my_edges, Edge(nodes[0], nodes[1]));
                 else
-                    addEdge(&my_edges, helper::fixed_array <unsigned int,2>(nodes[1], nodes[0]));
+                    addEdge(&my_edges, Edge(nodes[1], nodes[0]));
 
                 faceType = MeshObjLoader::EDGE;
             }
             else if (nodes.size()==4) // Quad
             {
-                addQuad(&my_quads, helper::fixed_array <unsigned int,4>(nodes[0], nodes[1], nodes[2], nodes[3]));
+                addQuad(&my_quads, Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
 
                 faceType = MeshObjLoader::QUAD;
             }
             else // Triangularize
             {
                 for (unsigned int j=2; j<nodes.size(); j++)
-                    addTriangle(&my_triangles, helper::fixed_array <unsigned int,3>(nodes[0], nodes[j-1], nodes[j]));
+                    addTriangle(&my_triangles, Triangle(nodes[0], nodes[j-1], nodes[j]));
 
                 faceType = MeshObjLoader::TRIANGLE;
             }

@@ -117,14 +117,14 @@ bool MeshTrianLoader::readTrian (const char* filename)
     // --- Loading Triangles array ---
     dataFile >> nbTriangles; //Loading number of Triangle
 
-    helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
     helper::vector<helper::fixed_array <int,3> >& my_neighborTable = *(neighborTable.beginEdit());
     helper::vector<helper::vector <unsigned int> >& my_edgesOnBorder = *(edgesOnBorder.beginEdit());
     helper::vector<unsigned int>& my_trianglesOnBorderList = *(trianglesOnBorderList.beginEdit());
 
     for (unsigned int i=0; i<nbTriangles; ++i)
     {
-        helper::fixed_array <unsigned int,3> nodes;
+        Triangle nodes;
         helper::fixed_array <int,3> ngh;
 
         dataFile >>  nodes[0] >> nodes[1] >> nodes[2] >> ngh[0] >> ngh[1] >> ngh[2];

@@ -84,14 +84,14 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
 
-    helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,4> >& my_quads = *(quads.beginEdit());
+    helper::vector<Triangle>& my_triangles = *(triangles.beginEdit());
+    helper::vector<Quad>& my_quads = *(quads.beginEdit());
 
     unsigned int numberOfVertices = 0, numberOfFaces = 0, numberOfEdges = 0;
     unsigned int currentNumberOfVertices = 0, currentNumberOfFaces = 0;
     Vec3d vertex;
-    helper::fixed_array <unsigned int,3> triangle;
-    helper::fixed_array <unsigned int,4> quad;
+    Triangle triangle;
+    Quad quad;
     std::string line;
 
     while( !file.eof() && (numberOfVertices == 0) )

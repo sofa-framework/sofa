@@ -129,7 +129,7 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
 
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,2> >& my_edges = *(edges.beginEdit());
+    helper::vector<Edge >& my_edges = *(edges.beginEdit());
 
     helper::vector <Vector3>& my_gravity = *(gravity.beginEdit());
     helper::vector <double>& my_viscosity = *(viscosity.beginEdit());
@@ -155,7 +155,7 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
         else if (cmd=="lspg")	// linear springs connector
         {
             int	index;
-            helper::fixed_array <unsigned int,2> m;
+            Edge m;
             double ks=0.0,kd=0.0,initpos=-1;
             double restx=0.0,resty=0.0,restz=0.0;
             if (vector_spring)
