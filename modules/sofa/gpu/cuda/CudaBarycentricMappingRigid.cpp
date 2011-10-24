@@ -409,9 +409,9 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<Cud
 
 
 template <>
-void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3dTypes>::handleTopologyChange()
+void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3dTypes>::handleTopologyChange(core::topology::Topology* t)
 {
-
+    if (t != this->fromTopology) return;
     if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
         return;
 
@@ -544,9 +544,10 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3d
 /*
 #ifndef SOFA_DOUBLE
 template <>
-void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3fTypes>::handleTopologyChange()
+void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3fTypes>::handleTopologyChange(core::topology::Topology* t)
 {
 
+    if (t != this->fromTopology) return;
 	if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
 		return;
 
@@ -680,9 +681,10 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3f
 #ifndef SOFA_DOUBLE
 
 template <>
-void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3fTypes>::handleTopologyChange()
+void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3fTypes>::handleTopologyChange(core::topology::Topology* t)
 {
 
+    if (t != this->fromTopology) return;
 	if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
 		return;
 
@@ -813,9 +815,10 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3f
 
 
 template <>
-void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3dTypes>::handleTopologyChange()
+void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3dTypes>::handleTopologyChange(core::topology::Topology* t)
 {
 
+    if (t != this->fromTopology) return;
 	if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
 		return;
 

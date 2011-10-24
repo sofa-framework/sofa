@@ -49,7 +49,7 @@ void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f colour, con
 
     if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  )
     {
-        Triangle t(const_cast<TriangleModel*>(model),index);
+        component::collision::Triangle t(const_cast<TriangleModel*>(model),index);
         body.point = (t.p1()*colour[0]) + (t.p2()*colour[1]) + (t.p3()*colour[2]) ;
 
     }
@@ -123,7 +123,7 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
         for( int i=0 ; i<size; i++)
         {
             g = (float)i / (float)size;
-            Triangle t(tmodel,i);
+            component::collision::Triangle t(tmodel,i);
             normals.push_back(t.n() );
             points.push_back( t.p1() );
             points.push_back( t.p2() );
@@ -136,7 +136,7 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
     case ENCODE_RELATIVEPOSITION:
         for( int i=0 ; i<size; i++)
         {
-            Triangle t(tmodel,i);
+            component::collision::Triangle t(tmodel,i);
             normals.push_back(t.n() );
             points.push_back( t.p1() );
             points.push_back( t.p2() );

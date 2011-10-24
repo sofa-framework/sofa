@@ -69,19 +69,21 @@ template <>
 void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectResponse(VecDeriv& res)
 {
     if (!this->mstate) return;
+    const VecIndex& lastparticles = this->lastparticles.getValue();
     if (lastparticles.empty()) return;
     //sout << "ParticleSource: projectResponse of last particles ("<<lastparticles<<")."<<sendl;
     double time = getContext()->getTime();
     if (time < f_start.getValue() || time > f_stop.getValue()) return;
     // constraint the last values
     //mycudaMemset(((Deriv*)res.deviceWrite())+lastparticles[0], 0, lastparticles.size()*sizeof(Deriv));
-    ParticleSourceCuda3f_fillValues(res.size(), lastparticles.size(), res.deviceWrite(), lastparticles.getArray().deviceRead(), 0, 0, 0);
+    ParticleSourceCuda3f_fillValues(res.size(), lastparticles.size(), res.deviceWrite(), lastparticles.deviceRead(), 0, 0, 0);
 }
 
 template <>
 void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& res)
 {
     if (!this->mstate) return;
+    const VecIndex& lastparticles = this->lastparticles.getValue();
     if (lastparticles.empty()) return;
     //sout << "ParticleSource: projectVelocity of last particles ("<<lastparticles[0]<<"-"<<lastparticles[lastparticles.size()-1]<<") out of " << res.size() << "."<<sendl;
     double time = getContext()->getTime();
@@ -90,7 +92,7 @@ void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& res)
     Deriv vel = f_velocity.getValue();
 #if 1
     //mycudaMemset(((Deriv*)res.deviceWrite())+lastparticles[0], 0, lastparticles.size()*sizeof(Coord));
-    ParticleSourceCuda3f_fillValues(res.size(), lastparticles.size(), res.deviceWrite(), lastparticles.getArray().deviceRead(), vel[0], vel[1], vel[2]);
+    ParticleSourceCuda3f_fillValues(res.size(), lastparticles.size(), res.deviceWrite(), lastparticles.deviceRead(), vel[0], vel[1], vel[2]);
 #else
     for (unsigned int s=0; s<lastparticles.size(); s++)
         if ( lastparticles[s] < res.size() )
@@ -102,6 +104,7 @@ template <>
 void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectPosition(VecCoord& res)
 {
     if (!this->mstate) return;
+    const VecIndex& lastparticles = this->lastparticles.getValue();
     if (lastparticles.empty()) return;
     //sout << "ParticleSource: projectVelocity of last particles ("<<lastparticles<<")."<<sendl;
     double time = getContext()->getTime();
@@ -110,7 +113,7 @@ void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectPosition(VecCoord& res)
     Deriv vel = f_velocity.getValue();
     vel *= (time-lasttime);
     //mycudaMemset(((Deriv*)res.deviceWrite())+lastparticles[0], 0, lastparticles.size()*sizeof(Coord));
-    ParticleSourceCuda3f_copyValuesWithOffset(res.size(), lastparticles.size(), res.deviceWrite(), lastparticles.getArray().deviceRead(), lastpos.deviceRead(), vel[0], vel[1], vel[2]);
+    ParticleSourceCuda3f_copyValuesWithOffset(res.size(), lastparticles.size(), res.deviceWrite(), lastparticles.deviceRead(), lastpos.deviceRead(), vel[0], vel[1], vel[2]);
 }
 
 
@@ -120,6 +123,7 @@ template <>
 void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectResponse(VecDeriv& res)
 {
     if (!this->mstate) return;
+    const VecIndex& lastparticles = this->lastparticles.getValue();
     if (lastparticles.empty()) return;
     //sout << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<sendl;
     double time = getContext()->getTime();
