@@ -122,7 +122,7 @@ const sofa::defaulttype::BaseMatrix* BaseMapping::getJ()
     return NULL;
 }
 
-sofa::defaulttype::BaseMatrix* BaseMapping::createMappedMatrix(const behavior::BaseMechanicalState* /*state1*/, const behavior::BaseMechanicalState* /*state2*/, func_createMappedMatrix, func_createMappedInterationMatrix)
+sofa::defaulttype::BaseMatrix* BaseMapping::createMappedMatrix(const behavior::BaseMechanicalState* /*state1*/, const behavior::BaseMechanicalState* /*state2*/, func_createMappedMatrix)
 {
     serr << "BaseMapping::createMappedMatrix() NOT IMPLEMENTED BY " << getClassName() << sendl;
     return NULL;

@@ -123,7 +123,7 @@ void Mapping<In,Out>::init()
 }
 
 template <class In, class Out>
-sofa::defaulttype::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix m_createMappedMatrix, func_createMappedInterationMatrix m_createMappedInterationMatrix)
+sofa::defaulttype::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix m_createMappedMatrix)
 {
     sofa::defaulttype::BaseMatrix* result;
     if( !this->areMatricesMapped() )
@@ -131,14 +131,8 @@ sofa::defaulttype::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavio
         sout << "Mapping::createMappedMatrix() this mapping do not support matrices building. Set mapMatrices to true" << getClassName() << sendl;
         return NULL;
     }
-    else if (state1 != state2)
-    {
-        result = (*m_createMappedInterationMatrix)(state1,state2);
-    }
-    else
-    {
-        result = (*m_createMappedMatrix)(state1);
-    }
+
+    result = (*m_createMappedMatrix)(state1,state2);
 
     return result;
 

@@ -111,8 +111,7 @@ public:
     //Matrix creating is only call when there are mapped state,
     //the stiffness and interaction stiffness of this state couldn't directly described on the principal matrix
     //then it demande to create a new matrix
-    static defaulttype::BaseMatrix* createMatrix(const BaseMechanicalState* mstate);
-    static defaulttype::BaseMatrix* createInteractionMatrix(const BaseMechanicalState* mstate1, const BaseMechanicalState* mstate2);
+    static defaulttype::BaseMatrix* createMatrix(const BaseMechanicalState* mstate1, const BaseMechanicalState* mstate2);
 
 protected:
 
@@ -172,11 +171,8 @@ public:
 
     virtual void addMechanicalMapping(sofa::core::BaseMapping* mapping);
 
-    //Creating the stiffness matrix for a mapped Mechanical State
-    static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate);
-
-    //Creating the stiffness interaction matrix for pair of Mechanical State when they are not all real state
-    static defaulttype::BaseMatrix* createInteractionMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
+    //Creating the stiffness matrix for pair of Mechanical State when they are not all real state
+    static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
 
     //Compute the contribution of all new created matrix to the the global system matrix
     virtual void computeGlobalMatrix();
