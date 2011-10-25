@@ -562,6 +562,10 @@ protected:
 
 public:
 
+    virtual void notifyAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void notifyRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void notifyMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+
     virtual void addListener(MutationListener* obj);
     virtual void removeListener(MutationListener* obj);
 

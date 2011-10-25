@@ -58,6 +58,7 @@ BaseObject::BaseObject()
 , m_printLog(false)*/
 {
     l_context.setValidator(&sofa::core::objectmodel::BaseObject::changeContextLink);
+    l_context.set(BaseContext::getDefault());
     l_slaves.setValidator(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
     f_listening.setAutoLink(false);
 }
@@ -333,12 +334,23 @@ const BaseObject::VecSlaves& BaseObject::getSlaves() const
 
 void BaseObject::addSlave(BaseObject::SPtr s)
 {
+    BaseObject::SPtr previous = s->getMaster();
+    if (previous == this) return;
+    if (previous)
+        previous->l_slaves.remove(s);
     l_slaves.add(s);
+    if (previous)
+        this->getContext()->notifyMoveSlave(previous.get(), this, s.get());
+    else
+        this->getContext()->notifyAddSlave(this, s.get());
 }
 
 void BaseObject::removeSlave(BaseObject::SPtr s)
 {
-    l_slaves.remove(s);
+    if (l_slaves.remove(s))
+    {
+        this->getContext()->notifyRemoveSlave(this, s.get());
+    }
 }
 
 /// Copy the source aspect to the destination aspect for each Data in the component.

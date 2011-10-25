@@ -55,12 +55,18 @@ void MutationListener::removeChild(Node* /*parent*/, Node* child)
     child->removeListener(this);
 }
 
-void MutationListener::addObject(Node* /*parent*/, core::objectmodel::BaseObject* /*object*/)
+void MutationListener::addObject(Node* /*parent*/, core::objectmodel::BaseObject* object)
 {
+    const core::objectmodel::BaseObject::VecSlaves& slaves = object->getSlaves();
+    for (unsigned int i=0; i<slaves.size(); ++i)
+        addSlave(object, slaves[i].get());
 }
 
-void MutationListener::removeObject(Node* /*parent*/, core::objectmodel::BaseObject* /*object*/)
+void MutationListener::removeObject(Node* /*parent*/, core::objectmodel::BaseObject* object)
 {
+    const core::objectmodel::BaseObject::VecSlaves& slaves = object->getSlaves();
+    for (unsigned int i=0; i<slaves.size(); ++i)
+        removeSlave(object, slaves[i].get());
 }
 
 void MutationListener::moveChild(Node* previous, Node* parent, Node* child)
@@ -73,6 +79,26 @@ void MutationListener::moveObject(Node* previous, Node* parent, core::objectmode
 {
     removeObject(previous, object);
     addObject(parent, object);
+}
+
+void MutationListener::addSlave(core::objectmodel::BaseObject* /*master*/, core::objectmodel::BaseObject* slave)
+{
+    const core::objectmodel::BaseObject::VecSlaves& slaves = slave->getSlaves();
+    for (unsigned int i=0; i<slaves.size(); ++i)
+        addSlave(slave, slaves[i].get());
+}
+
+void MutationListener::removeSlave(core::objectmodel::BaseObject* /*master*/, core::objectmodel::BaseObject* slave)
+{
+    const core::objectmodel::BaseObject::VecSlaves& slaves = slave->getSlaves();
+    for (unsigned int i=0; i<slaves.size(); ++i)
+        removeSlave(slave, slaves[i].get());
+}
+
+void MutationListener::moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+{
+    removeSlave(previousMaster, slave);
+    addSlave(master, slave);
 }
 
 } // namespace simulation

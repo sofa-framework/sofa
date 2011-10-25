@@ -187,43 +187,61 @@ void Node::moveObject(BaseObject::SPtr obj)
 
 void Node::notifyAddChild(Node::SPtr node)
 {
-    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->addChild(this, node.get());
 }
 
 
 void Node::notifyRemoveChild(Node::SPtr node)
 {
-    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->removeChild(this, node.get());
 }
 
 
 void Node::notifyMoveChild(Node::SPtr node, Node* prev)
 {
-    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->moveChild(prev, this, node.get());
 }
 
 
 void Node::notifyAddObject(core::objectmodel::BaseObject::SPtr obj)
 {
-    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->addObject(this, obj.get());
 }
 
 void Node::notifyRemoveObject(core::objectmodel::BaseObject::SPtr obj)
 {
-    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->removeObject(this, obj.get());
 }
 
 void Node::notifyMoveObject(core::objectmodel::BaseObject::SPtr obj, Node* prev)
 {
-    for (helper::vector<MutationListener*>::iterator it = listener.begin(); it != listener.end(); ++it)
+    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->moveObject(prev, this, obj.get());
 }
 
+
+void Node::notifyAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+{
+    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->addSlave(master, slave);
+}
+
+void Node::notifyRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+{
+    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->removeSlave(master, slave);
+}
+
+void Node::notifyMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+{
+    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->moveSlave(previousMaster, master, slave);
+}
 
 void Node::addListener(MutationListener* obj)
 {
