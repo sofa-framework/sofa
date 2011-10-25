@@ -131,9 +131,9 @@ void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const
     int b = spring.m2;
     Coord u = p2[b]-p1[a];
     Real d = u.norm();
-    Real inverseLength = 1.0f/d;
-    if( d>1.0e-4 ) // null length => no force
+    if( d<1.0e-4 ) // null length => no force
         return;
+    Real inverseLength = 1.0f/d;
     u *= inverseLength;
     Real elongation = (Real)(d - spring.initpos);
     ener += elongation * elongation * spring.ks /2;
