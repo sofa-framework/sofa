@@ -19,8 +19,8 @@ CONFIG += dll
 
 ###### SPECIFIC PLUGIN CONFIGURATION, you should modify it to configure your plugin
 
-DEPENDPATH += .
 INCLUDEPATH += .
+DEPENDPATH += .
 
 LIBS += $$SOFA_GUI_LIBS
 LIBS += $$SOFA_LIBS

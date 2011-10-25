@@ -17,6 +17,7 @@ QT += opengl qt3support xml
 
 SOFA_CGAL_PATH = $$SOFA_DIR/extlibs/CGAL
 INCLUDEPATH += $$SOFA_CGAL_PATH/include
+DEPENDPATH += $$SOFA_CGAL_PATH/include
 
 LIBS += -lpimgui$$LIBSUFFIX
 LIBS += -lsofacomponentcollision$$LIBSUFFIX

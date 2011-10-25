@@ -33,5 +33,6 @@ DEFINES += SOFA_BUILD_SIMULATION_TREE
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$ROOT_SRC_DIR/applications
+DEPENDPATH -= $$ROOT_SRC_DIR/applications
 
 load(sofa/post)

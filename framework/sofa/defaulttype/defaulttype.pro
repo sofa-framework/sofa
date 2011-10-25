@@ -7,8 +7,11 @@ TARGET = sofadefaulttype
 DEFINES += SOFA_BUILD_DEFAULTTYPE
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$ROOT_SRC_DIR/framework/sofa/core
+DEPENDPATH -= $$ROOT_SRC_DIR/framework/sofa/core
 INCLUDEPATH -= $$ROOT_SRC_DIR/modules
+DEPENDPATH -= $$ROOT_SRC_DIR/modules
 INCLUDEPATH -= $$ROOT_SRC_DIR/applications
+DEPENDPATH -= $$ROOT_SRC_DIR/applications
 
 HEADERS += \
         defaulttype.h \

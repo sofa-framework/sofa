@@ -5,7 +5,9 @@ TARGET = sofaguiqt
 
 DEFINES += SOFA_BUILD_SOFAGUIQT
 INCLUDEPATH += $$ROOT_SRC_DIR/applications
+DEPENDPATH += $$ROOT_SRC_DIR/applications
 INCLUDEPATH += $$SRC_DIR
+DEPENDPATH += $$SRC_DIR
 
 contains(DEFINES, SOFA_QT4) {	
 	CONFIG += qt uic uic3

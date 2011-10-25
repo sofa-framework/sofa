@@ -5,6 +5,7 @@ TEMPLATE = lib
 TARGET = sofagui
 
 INCLUDEPATH += $$ROOT_SRC_DIR/applications
+DEPENDPATH += $$ROOT_SRC_DIR/applications
 DEFINES += SOFA_BUILD_SOFAGUI
 
 SOURCES = \

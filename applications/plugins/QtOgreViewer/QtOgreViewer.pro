@@ -39,6 +39,7 @@ LIBS += $$SOFA_EXT_LIBS
 LIBS += $$SOFA_GUI_LIBS
 
 INCLUDEPATH += $$SOFA_DIR/extlibs
+DEPENDPATH += $$SOFA_DIR/extlibs
 
 
 SOURCES += DotSceneLoader.cpp \
@@ -87,6 +88,7 @@ LIBS += -framework Ogre -framework CoreFoundation
 win32 {
 
 INCLUDEPATH += $${OGRE_HOME}/include/OGRE/
+DEPENDPATH += $${OGRE_HOME}/include/OGRE/
 
 contains (CONFIGDEBUG, debug) {
 QMAKE_LIBDIR += $${OGRE_HOME}/lib/debug/

@@ -16,6 +16,7 @@ CONFIG += dll
 
 SOFA_CGAL_PATH = $$SOFA_DIR/extlibs/CGAL
 INCLUDEPATH += $$SOFA_CGAL_PATH/include
+DEPENDPATH += $$SOFA_CGAL_PATH/include
 
 LIBS += -lsofagui$$LIBSUFFIX
 LIBS += -lsofacomponentcollision$$LIBSUFFIX
