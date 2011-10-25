@@ -28,9 +28,6 @@
 #include <sofa/helper/Factory.h>
 #include <map>
 #include <typeinfo>
-#ifdef __GNUC__
-#include <cxxabi.h>
-#endif
 
 #include <string.h>
 #include <sstream>
@@ -202,19 +199,19 @@ void Base::releaseAspect(int aspect)
 /// Get the type name of this object (i.e. class and template types)
 std::string Base::getTypeName() const
 {
-    return decodeTypeName(typeid(*this));
+    return BaseClass::decodeTypeName(typeid(*this));
 }
 
 /// Get the class name of this object
 std::string Base::getClassName() const
 {
-    return decodeClassName(typeid(*this));
+    return BaseClass::decodeClassName(typeid(*this));
 }
 
 /// Get the template type names (if any) used to instantiate this object
 std::string Base::getTemplateName() const
 {
-    return decodeTemplateName(typeid(*this));
+    return BaseClass::decodeTemplateName(typeid(*this));
 }
 
 void Base::setName(const std::string& na)
@@ -290,246 +287,6 @@ void Base::removeTag(Tag t)
 }
 
 
-/// Helper method to decode the type name
-std::string Base::decodeFullName(const std::type_info& t)
-{
-    std::string name;
-#ifdef __GNUC__
-    int status;
-    /* size_t length; */ // although it should, length would not be filled in by the following call
-    char* allocname = abi::__cxa_demangle(t.name(), 0, /*&length*/0, &status);
-    if(allocname == 0)
-    {
-        std::cerr << "Unable to demangle symbol: " << t.name() << std::endl;
-    }
-    else
-    {
-        int length = 0;
-        while(allocname[length] != '\0')
-        {
-            length++;
-        }
-        name.resize(length);
-        for(int i=0; i<(int)length; i++)
-            name[i] = allocname[i];
-        free(allocname);
-    }
-#else
-    name = t.name();
-#endif
-    return name;
-}
-/// Decode the type's name to a more readable form if possible
-std::string Base::decodeTypeName(const std::type_info& t)
-{
-    std::string name;
-    std::string realname = decodeFullName(t);
-    int len = realname.length();
-    name.resize(len+1);
-    int start = 0;
-    int dest = 0;
-    char cprev = '\0';
-    //sout << "name = "<<realname<<sendl;
-    for (int i=0; i<len; i++)
-    {
-        char c = realname[i];
-        if (c == ':') // && cprev == ':')
-        {
-            start = i+1;
-        }
-        else if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
-        {
-            start = i+1;
-        }
-        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
-        {
-            // write result
-            while (start < i)
-            {
-                name[dest++] = realname[start++];
-            }
-        }
-        cprev = c;
-        //sout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" name = "<<name<<sendl;
-    }
-    while (start < len)
-    {
-        name[dest++] = realname[start++];
-    }
-    name.resize(dest);
-    return name;
-    /*
-        // Remove namespaces
-        std::string cname;
-        for(;;)
-        {
-            std::string::size_type pos = name.find("::");
-            if (pos == std::string::npos) break;
-            std::string::size_type first = name.find_last_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_",pos-1);
-            if (first == std::string::npos) first = 0;
-            else first++;
-            name.erase(first,pos-first+2);
-            //sout << "name="<<name<<sendl;
-        }
-        // Remove "class "
-        for(;;)
-        {
-            std::string::size_type pos = name.find("class ");
-            if (pos == std::string::npos) break;
-            name.erase(pos,6);
-        }
-        //sout << "TYPE NAME="<<name<<sendl;
-        return name;
-    */
-}
-
-/// Extract the class name (removing namespaces and templates)
-std::string Base::decodeClassName(const std::type_info& t)
-{
-    std::string name;
-    std::string realname = decodeFullName(t);
-    int len = realname.length();
-    name.resize(len+1);
-    int start = 0;
-    int dest = 0;
-    int i;
-    char cprev = '\0';
-    //sout << "name = "<<realname<<sendl;
-    for (i=0; i<len; i++)
-    {
-        char c = realname[i];
-        if (c == '<') break;
-        if (c == ':') // && cprev == ':')
-        {
-            start = i+1;
-        }
-        else if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
-        {
-            start = i+1;
-        }
-        else if (c == ' ' && i >= 6 && realname[i-6] == 's' && realname[i-5] == 't' && realname[i-4] == 'r' && realname[i-3] == 'u' && realname[i-2] == 'c' && realname[i-1] == 't')
-        {
-            start = i+1;
-        }
-        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
-        {
-            // write result
-            while (start < i)
-            {
-                name[dest++] = realname[start++];
-            }
-        }
-        cprev = c;
-    }
-
-    while (start < i)
-    {
-        name[dest++] = realname[start++];
-    }
-    name.resize(dest);
-    return name;
-    /*
-        std::string name = decodeTypeName(t);
-        // Find template
-        std::string::size_type pos = name.find("<");
-        if (pos != std::string::npos)
-        {
-            name.erase(pos,name.length()-pos);
-        }
-        //sout << "CLASS NAME="<<name<<sendl;
-        return name;
-    */
-}
-
-/// Extract the namespace (removing class name and templates)
-std::string Base::decodeNamespaceName(const std::type_info& t)
-{
-    std::string name;
-    std::string realname = decodeFullName(t);
-    int len = realname.length();
-    int start = 0;
-    int last = len-1;
-    int i;
-    for (i=0; i<len; i++)
-    {
-        char c = realname[i];
-        if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
-        {
-            start = i+1;
-        }
-        else if (c == ':' && (i<1 || realname[i-1]!=':'))
-        {
-            last = i-1;
-        }
-        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
-        {
-            // write result
-            break;
-        }
-    }
-    name = realname.substr(start, last-start+1);
-    return name;
-}
-
-/// Decode the template name (removing namespaces and class name)
-std::string Base::decodeTemplateName(const std::type_info& t)
-{
-    std::string name;
-    std::string realname = decodeFullName(t);
-    int len = realname.length();
-    name.resize(len+1);
-    int start = 0;
-    int dest = 0;
-    int i = 0;
-    char cprev = '\0';
-    while (i < len && realname[i]!='<')
-        ++i;
-    start = i+1; ++i;
-    for (; i<len; i++)
-    {
-        char c = realname[i];
-        //if (c == '<') break;
-        if (c == ':') // && cprev == ':')
-        {
-            start = i+1;
-        }
-        else if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
-        {
-            start = i+1;
-        }
-        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
-        {
-            // write result
-            while (start <= i)
-            {
-                name[dest++] = realname[start++];
-            }
-        }
-        cprev = c;
-    }
-    while (start < i)
-    {
-        name[dest++] = realname[start++];
-    }
-    name.resize(dest);
-    return name;
-    /*
-        std::string name = decodeTypeName(t);
-        // Find template
-        std::string::size_type pos = name.find("<");
-        if (pos != std::string::npos)
-        {
-            name = name.substr(pos+1,name.length()-pos-2);
-        }
-        else
-        {
-            name = "";
-        }
-        //sout << "TEMPLATE NAME="<<name<<sendl;
-        return name;
-    */
-}
-
 /// Find a data field given its name.
 /// Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
 BaseData* Base::findData( const std::string &name ) const
@@ -580,6 +337,18 @@ std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
         result.push_back(itAlias->second);
     return result;
 }
+
+void* Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)
+{
+    return NULL; /// TODO
+}
+
+void* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/)
+{
+    std::cerr << "Base: calling unimplemented findLinkDest method" << std::endl;
+    return NULL;
+}
+
 
 void  Base::parseFields ( const std::list<std::string>& str )
 {

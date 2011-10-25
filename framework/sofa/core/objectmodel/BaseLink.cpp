@@ -28,6 +28,8 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/BackTrace.h>
 
+#include <sstream>
+
 namespace sofa
 {
 
@@ -46,6 +48,44 @@ BaseLink::BaseLink(const BaseInitLink& init, LinkFlags flags)
 
 BaseLink::~BaseLink()
 {
+}
+
+/// Print the value of the associated variable
+void BaseLink::printValue( std::ostream& o ) const
+{
+    unsigned int size = getSize();
+    bool first = true;
+    for (unsigned int i=0; i<size; ++i)
+    {
+        std::string path = getLinkedName(i);
+        if (path.empty()) continue;
+        if (first) first = false;
+        else o << ' ';
+        o << path;
+    }
+}
+
+/// Print the value of the associated variable
+std::string BaseLink::getValueString() const
+{
+    std::ostringstream o;
+    printValue(o);
+    return o.str();
+}
+
+/// Print the value type of the associated variable
+std::string BaseLink::getValueTypeString() const
+{
+    const BaseClass* c = getDestClass();
+    if (!c) return "void";
+    std::string t = c->className;
+    if (!c->templateName.empty())
+    {
+        t += '<';
+        t += c->templateName;
+        t += '>';
+    }
+    return t;
 }
 
 void BaseLink::copyAspect(int /*destAspect*/, int /*srcAspect*/)

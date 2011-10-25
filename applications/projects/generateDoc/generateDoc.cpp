@@ -162,7 +162,7 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
     for (std::vector<sofa::core::ObjectFactory::ClassEntry*>::iterator it = classes.begin(), itend = classes.end(); it != itend; ++it)
     {
         sofa::core::ObjectFactory::ClassEntry* entry = *it;
-        std::string nameSpace = sofa::core::objectmodel::Base::decodeNamespaceName(entry->creatorList.begin()->second->type());
+        std::string nameSpace = sofa::core::objectmodel::BaseClass::decodeNamespaceName(entry->creatorList.begin()->second->type());
         sortedClasses[nameSpace].push_back(entry);
     }
 
@@ -268,7 +268,7 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
             else
                 out << "<span class=\"class-no-template\">&nbsp;<span>";
             out << "</td>";
-            std::string nameSpace = it1->first; //sofa::core::objectmodel::Base::decodeNamespaceName(entry->creatorList.begin()->second->type());
+            std::string nameSpace = it1->first; //sofa::core::objectmodel::BaseClass::decodeNamespaceName(entry->creatorList.begin()->second->type());
             out << "<td class=\"sofa-namespace\" valign=\"top\">";
             out << "<span class=\"class-namespace\">"<< xmlencode(nameSpace) <<"</span>";
             out << "</td>";

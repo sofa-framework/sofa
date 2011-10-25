@@ -272,7 +272,10 @@ core::objectmodel::BaseObject* Node::getObject(const std::string& name) const
     return NULL;
 }
 
-
+void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, const std::string& path, const core::objectmodel::BaseLink* link)
+{
+    return NULL; // TODO
+}
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 void Node::doAddObject(BaseObject::SPtr sobj)

@@ -46,6 +46,7 @@ namespace objectmodel
 
 class Base;
 class BaseData;
+class BaseClass;
 
 /**
  *  \brief Abstract base class for all links in the scene grapn, independently of their type.
@@ -113,17 +114,42 @@ public:
     bool isDuplicate() const { return getFlag(FLAG_DUPLICATE); }
     bool storePath() const { return getFlag(FLAG_STOREPATH); }
 
+    /// Alias to match BaseData API
+    bool isPersistent() const { return storePath(); }
+
+    /// Alias to match BaseData API
+    bool isReadOnly() const   { return !storePath(); }
+
+    virtual const BaseClass* getDestClass() const = 0;
+    virtual const BaseClass* getOwnerClass() const = 0;
+
     virtual unsigned int getSize() const = 0;
     virtual Base* getLinkedBase(unsigned int index=0) const = 0;
     virtual BaseData* getLinkedData(unsigned int index=0) const = 0;
     virtual std::string getLinkedName(unsigned int index=0) const = 0;
+
+    /// @name Serialization API
+    /// @{
+
+    /// Read the command line
+    virtual bool read( const std::string& str ) = 0;
+
+    /// Print the value of the associated variable
+    virtual void printValue( std::ostream& ) const;
+
+    /// Print the value of the associated variable
+    virtual std::string getValueString() const;
+
+    /// Print the value type of the associated variable
+    virtual std::string getValueTypeString() const;
+
+    /// @}
 
     /// Copy the value of an aspect into another one.
     virtual void copyAspect(int destAspect, int srcAspect) = 0;
 
     /// Release memory allocated for the specified aspect.
     virtual void releaseAspect(int aspect) = 0;
-
 
 protected:
     unsigned int m_flags;

@@ -300,6 +300,8 @@ public:
     /// Find an object given its name
     core::objectmodel::BaseObject* getObject(const std::string& name) const;
 
+    void* findLinkDestClass(const core::objectmodel::BaseClass* destType, const std::string& path, const core::objectmodel::BaseLink* link);
+
 #ifdef SOFA_SMP
     /// Get first partition
     Iterative::IterativePartition* getFirstPartition();

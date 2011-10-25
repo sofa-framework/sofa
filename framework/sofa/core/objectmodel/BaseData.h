@@ -50,6 +50,7 @@ namespace objectmodel
 {
 
 class Base;
+class BaseData;
 
 /**
  *  \brief Abstract base class for all fields, independently of their type.
@@ -72,6 +73,14 @@ public:
     typedef unsigned DataFlags;
 
     enum { FLAG_DEFAULT = FLAG_DISPLAYED | FLAG_PERSISTENT | FLAG_AUTOLINK };
+
+    /// @name Class reflection system
+    /// @{
+    typedef TClass<BaseData,DDGNode> MyClass;
+    static const MyClass* GetClass() { return MyClass::get(); }
+    virtual const BaseClass* getClass() const
+    { return GetClass(); }
+    /// @}
 
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
     class BaseInitData
@@ -103,7 +112,7 @@ public:
     virtual ~BaseData();
 
     /// Read the command line
-    virtual bool read( std::string& str ) = 0;
+    virtual bool read( const std::string& str ) = 0;
 
     /// Print the value of the associated variable
     virtual void printValue( std::ostream& ) const =0;
@@ -239,17 +248,17 @@ public:
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)
-    bool isSet(const core::ExecParams* /*params*/) const { return isSet(); }
+    bool isSet(const core::ExecParams* params) const { return m_isSets[currentAspect(params)]; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this Data.
-    void unset(const core::ExecParams* /*params*/) { unset(); }
+    void unset(const core::ExecParams* params) { m_isSets[currentAspect(params)] = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    void forceSet(const core::ExecParams* /*params*/) { forceSet(); }
+    void forceSet(const core::ExecParams* params) { m_isSets[currentAspect(params)] = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    int getCounter(const core::ExecParams* /*params*/) const { return getCounter(); }
+    int getCounter(const core::ExecParams* params) const { return m_counters[currentAspect(params)]; }
 
     /// @}
 
@@ -259,7 +268,7 @@ public:
     /// Check if a given Data can be linked as a parent of this data
     virtual bool validParent(BaseData* parent);
 
-    BaseData* getParent() const { return parentBaseData; }
+    BaseData* getParent() const { return parentBaseData.get(); }
 
     /// Update the value of this Data
     void update();
@@ -271,7 +280,16 @@ public:
     /// Accessor to the vector containing all the fields of this object
     const VecLink& getLinks() const { return m_vecLink; }
 
+    virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
+
 protected:
+
+    BaseLink::InitLink<BaseData>
+    initLink(const char* name, const char* help)
+    {
+        return BaseLink::InitLink<BaseData>(this, name, help);
+    }
+
     /// Add a link.
     void addLink(BaseLink* l);
 
@@ -308,7 +326,7 @@ protected:
     /// Link to another Data, if used as an input from another Data (@ typo).
     std::string m_linkPath;
     /// Parent Data
-    BaseData* parentBaseData;
+    SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK> parentBaseData;
 
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);

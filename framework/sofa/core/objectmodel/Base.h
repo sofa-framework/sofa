@@ -72,6 +72,12 @@ public:
     static const MyClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
 
+    template<class T>
+    static void dynamicCast(T*& ptr, Base* b)
+    {
+        ptr = dynamic_cast<T*>(b);
+    }
+
 protected:
     /// Constructor cannot be called directly
     /// Use the New() method instead
@@ -219,6 +225,16 @@ public:
     /// Accessor to the map containing all the aliases of this object
     const MapLink& getLinkAliases() const { return m_aliasLink; }
 
+    virtual void* findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
+    virtual void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
+    template<class T>
+    bool findLinkDest(T*& ptr, const std::string& path, const BaseLink* link)
+    {
+        void* result = findLinkDestClass(T::GetClass(), path, link);
+        ptr = reinterpret_cast<T*>(result);
+        return (result != NULL);
+    }
+
     virtual void copyAspect(int destAspect, int srcAspect);
 
     virtual void releaseAspect(int aspect);
@@ -273,20 +289,6 @@ protected:
     }
 
 public:
-    /// Helper method to decode the type name
-    static std::string decodeFullName(const std::type_info& t);
-
-    /// Helper method to decode the type name to a more readable form if possible
-    static std::string decodeTypeName(const std::type_info& t);
-
-    /// Helper method to extract the class name (removing namespaces and templates)
-    static std::string decodeClassName(const std::type_info& t);
-
-    /// Helper method to extract the namespace (removing class name and templates)
-    static std::string decodeNamespaceName(const std::type_info& t);
-
-    /// Helper method to extract the template name (removing namespaces and class name)
-    static std::string decodeTemplateName(const std::type_info& t);
 
     /// Helper method to get the type name of a type derived from this class
     ///
@@ -294,9 +296,9 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
-    static std::string typeName(const T* = NULL)
+    static std::string typeName(const T* ptr= NULL)
     {
-        return decodeTypeName(typeid(T));
+        return BaseClass::defaultTypeName(ptr);
     }
 
     /// Helper method to get the class name of a type derived from this class
@@ -305,9 +307,9 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::className(ptr); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
-    static std::string className(const T* = NULL)
+    static std::string className(const T* ptr= NULL)
     {
-        return decodeClassName(typeid(T));
+        return BaseClass::defaultClassName(ptr);
     }
 
     /// Helper method to get the namespace name of a type derived from this class
@@ -316,9 +318,9 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::namespaceName(ptr); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
-    static std::string namespaceName(const T* = NULL)
+    static std::string namespaceName(const T* ptr= NULL)
     {
-        return decodeNamespaceName(typeid(T));
+        return BaseClass::defaultNamespaceName(ptr);
     }
 
     /// Helper method to get the template name of a type derived from this class
@@ -327,11 +329,10 @@ public:
     /// \code  T* ptr = NULL; std::string type = T::templateName(ptr); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
-    static std::string templateName(const T* = NULL)
+    static std::string templateName(const T* ptr= NULL)
     {
-        return decodeTemplateName(typeid(T));
+        return BaseClass::defaultTemplateName(ptr);
     }
-
 
     /// Helper method to get the shortname of a type derived from this class.
     /// The default implementation return the class name.
