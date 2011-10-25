@@ -36,7 +36,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
         new QLabel(QString(object->getName().c_str()), box);
         new QLabel(QString("Class"), box);
         new QLabel(QString(object->getClassName().c_str()), box);
-        std::string namespacename = object->decodeNamespaceName(typeid(*object));
+        std::string namespacename = core::objectmodel::BaseClass::decodeNamespaceName(typeid(*object));
         if (!namespacename.empty())
         {
             new QLabel(QString("Namespace"), box);
