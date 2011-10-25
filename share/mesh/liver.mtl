@@ -1,0 +1,8 @@
+# Generated from SOFA Simulation
+newmtl mat1
+illum 4
+Ka 0.2 0 0
+Kd 1 0 0
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 1 1 1

@@ -1,0 +1,10 @@
+
+
+newmtl sofa_logo
+Ka 0.05 0.02 0
+Kd 0.3 0.18 0.05
+Ks 1 1 1
+Ni 1
+Ns 1000
+Tf 1 1 1
+d 1

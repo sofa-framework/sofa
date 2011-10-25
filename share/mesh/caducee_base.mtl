@@ -1,0 +1,72 @@
+newmtl plancher_mat_AllInOneMap.png
+Ka 0 0 0
+Kd 0.835294 0 0
+Ks 0 0 0
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl Tabouret_mat_AllInOneMap.png
+Ka 0 0 0
+Kd 0.0235294 0.917647 0
+Ks 0 0 0
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl Vase_mat_AllInOneMap.png
+Ka 0 0 0
+Kd 0.219608 0 0.8
+Ks 0 0 0
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl Default
+Ka 0 0 0
+Kd 0.784314 0.784314 0.784314
+Ks 0 0 0
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl ground
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl snake_eyes
+Ka 0 0 0
+Kd 0 0 0
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl snake_skin
+Ka 0 0 0
+Kd 0.482353 0.635294 0.168627
+Ks 0.225 0.225 0.225
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl sofa_logo
+Ka 0 0 0
+Kd 1 0.501961 0
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+

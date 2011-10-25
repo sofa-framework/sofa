@@ -1,0 +1,90 @@
+newmtl Default
+Ka 0 0 0
+Kd 0.784314 0.784314 0.784314
+Ks 0 0 0
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl omni_blanc
+Ka 0 0 0
+Kd 0.921569 0.909804 0.878431
+Ks 0.2 0.2 0.2
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl omni_bleu
+Ka 0 0 0
+Kd 0.109804 0.113725 0.258824
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl omni_chrome
+Ka 0 0 0
+Kd 0.501961 0.501961 0.501961
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl omni_gris
+Ka 0 0 0
+Kd 0.752941 0.752941 0.752941
+Ks 0.2 0.2 0.2
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl Default
+Ka 0 0 0
+Kd 0.784314 0.784314 0.784314
+Ks 0 0 0
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl omni_blanc
+Ka 0 0 0
+Kd 0.921569 0.909804 0.878431
+Ks 0.2 0.2 0.2
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl omni_bleu
+Ka 0 0 0
+Kd 0.109804 0.113725 0.258824
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl omni_chrome
+Ka 0 0 0
+Kd 0.501961 0.501961 0.501961
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl omni_gris
+Ka 0 0 0
+Kd 0.752941 0.752941 0.752941
+Ks 0.2 0.2 0.2
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
