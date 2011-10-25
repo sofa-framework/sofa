@@ -1,0 +1,156 @@
+newmtl eye_transp
+Ka 0 0 0
+Kd 0.784314 0.784314 0.784314
+Ks 0 0 0
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl sofa_logo
+Ka 0 0 0
+Kd 1 0.501961 0
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl sub2:defaultMat
+Ka 0 0 0
+Kd 0.75 0.75 0.75
+Ks 1 1 1
+Ni 1
+Ns 449
+Tf 1 1 1
+d 1
+map_Kd snake_colorMap.PSD
+
+newmtl sub2:eye_gold
+Ka 0 0 0
+Kd 0.847059 0.603922 0.152941
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl sub2:eye_transp
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 0
+
+newmtl tagada
+Ka 0 0 0
+Kd 0.784314 0.784314 0.784314
+Ks 0 0 0
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl defaultMat
+Ka 0 0 0
+Kd 0.75 0.75 0.75
+Ks 1 1 1
+Ni 1
+Ns 449
+Tf 1 1 1
+d 1
+map_Kd snake_colorMap.PSD
+
+newmtl eye_gold
+Ka 0 0 0
+Kd 0.847059 0.603922 0.152941
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl eye_transp
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 0
+
+newmtl snake_eyes
+Ka 0 0 0
+Kd 0 0 0
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl snake_skin
+Ka 0 0 0
+Kd 0.333333 0.439216 0.113725
+Ks 0.8 0.8 0.8
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl sofa_logo
+Ka 0 0 0
+Kd 1 0.501961 0
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl tagada
+Ka 0 0 0
+Kd 0.784314 0.784314 0.784314
+Ks 0 0 0
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl eye_transp
+Ka 0 0 0
+Kd 0.784314 0.784314 0.784314
+Ks 0 0 0
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl sub2:defaultMat
+Ka 0 0 0
+Kd 0.75 0.75 0.75
+Ks 1 1 1
+Ni 1
+Ns 449
+Tf 1 1 1
+d 1
+map_Kd snake_colorMap.PSD
+
+newmtl sub2:eye_gold
+Ka 0 0 0
+Kd 0.847059 0.603922 0.152941
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+
+newmtl sub2:eye_transp
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Ni 1
+Ns 400
+Tf 1 1 1
+d 0
+
