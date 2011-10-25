@@ -212,6 +212,8 @@ public:
     /// Use it before scene graph insertion
     void setSrc(const std::string &v, const BaseObject *loader, std::vector< std::string > *attributeList=0);
 
+    void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
+
 #ifdef SOFA_SMP
     void setPartition(Iterative::IterativePartition* p);
     Iterative::IterativePartition*  getPartition();
@@ -235,11 +237,11 @@ protected:
     }
 
     /// This method insures that slaves objects have master and context links set correctly
-    void changeSlavesLink(BaseObject::SPtr before, BaseObject::SPtr& after, unsigned int)
+    void changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add)
     {
-        if (before == after) return;
-        if (before) { before->l_master.reset(); before->l_context.reset(); }
-        if (after) { after->l_master.set(this); after->l_context.set(getContext()); }
+        if (!ptr) return;
+        if (add) { ptr->l_master.set(this); ptr->l_context.set(getContext()); }
+        else     { ptr->l_master.reset(); ptr->l_context.reset(); }
     }
 
     // BaseNode can set the context of its own objects

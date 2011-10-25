@@ -52,6 +52,16 @@ DDGNode::~DDGNode()
         (*it)->doDelInput(this);
 }
 
+template<>
+TClass<DDGNode,void>::TClass()
+{
+    DDGNode* ptr = NULL;
+    namespaceName = Base::namespaceName(ptr);
+    className = Base::className(ptr);
+    templateName = Base::templateName(ptr);
+    shortName = Base::shortName(ptr);
+}
+
 void DDGNode::setDirtyValue(const core::ExecParams* params)
 {
     bool& dirtyValue = dirtyFlags[currentAspect(params)].dirtyValue;
@@ -152,6 +162,11 @@ sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<DDGNode>::getData(sofa::co
     if (!n) return NULL;
     return n->getData();
     //return dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
+}
+
+bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link)
+{
+    return false; // TODO
 }
 
 } // namespace objectmodel

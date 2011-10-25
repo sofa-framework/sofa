@@ -123,6 +123,8 @@ public:
     /// Return the full path name of this node
     virtual std::string getPathName() const=0;
 
+    virtual void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) = 0;
+
     /// @}
 
     /// @name Solvers and main algorithms

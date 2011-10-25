@@ -35,6 +35,7 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/helper/vector.h>
 #include <string>
+#include <sstream>
 
 namespace sofa
 {
@@ -79,6 +80,8 @@ public:
         if (!ptr) return std::string();
         else return ptr->getName();
     }
+    static void set(T& v, const TDestPtr& ptr) { v = ptr; }
+    static void setName(T& /*ptr*/, const std::string& /*name*/) {}
 };
 
 template<class TDestType, class TDestPtr>
@@ -89,7 +92,8 @@ public:
     {
         TDestPtr ptr;
         std::string path;
-        operator TDestPtr() const { return ptr; }
+        operator  TDestPtr() const { return ptr; }
+        void operator=(TDestPtr v) { if (v != ptr) { ptr = v; path.clear(); } }
         TDestType* operator*() const { return &(*ptr); }
         TDestType* operator->() const { return &(*ptr); }
         bool operator == (TDestType* p) { return ptr == p; }
@@ -97,10 +101,12 @@ public:
     };
     static std::string name(const T& v)
     {
-        if (v.path) return v.path;
+        if (!v.path.empty()) return v.path;
         else if (!v.ptr) return std::string();
         else return v.ptr->getName();
     }
+    static void set(T& v, const TDestPtr& ptr) { if (ptr != v.ptr) v.path.clear(); v.ptr = ptr; }
+    static void setName(T& v, const std::string& name) { v.path = name; }
 };
 
 template<class TDestType, class TValueType, bool multiLink>
@@ -243,6 +249,29 @@ public:
     }
 };
 
+template<class OwnerType, class DestType, bool data>
+class LinkTraitsFindDest;
+
+template<class OwnerType, class DestType>
+class LinkTraitsFindDest<OwnerType, DestType, false>
+{
+public:
+    static bool findLinkDest(OwnerType* owner, DestType*& ptr, const std::string& path, const BaseLink* link)
+    {
+        return owner->findLinkDest(ptr, path, link);
+    }
+};
+
+template<class OwnerType, class DestType>
+class LinkTraitsFindDest<OwnerType, DestType, true>
+{
+public:
+    static bool findLinkDest(OwnerType* owner, DestType*& ptr, const std::string& path, const BaseLink* link)
+    {
+        return owner->findDataLinkDest(ptr, path, link);
+    }
+};
+
 template<class Type>
 class LinkTraitsPtrCasts;
 
@@ -266,6 +295,7 @@ public:
     typedef typename TraitsContainer::T Container;
     typedef typename Container::const_iterator const_iterator;
     typedef typename Container::const_reverse_iterator const_reverse_iterator;
+    typedef LinkTraitsFindDest<OwnerType, DestType, ACTIVEFLAG(FLAG_DATALINK)> TraitsFindDest;
     typedef LinkTraitsPtrCasts<TOwnerType> TraitsOwnerCasts;
     typedef LinkTraitsPtrCasts<TDestType> TraitsDestCasts;
 #undef ACTIVEFLAG
@@ -319,7 +349,16 @@ public:
         if (!v) return false;
         const int aspect = core::ExecParams::currentAspect();
         unsigned int index = TraitsContainer::add(m_value[aspect],&*v);
-        changed(DestPtr(), m_value[aspect][index], index);
+        added(v, index);
+        return true;
+    }
+
+    bool add(DestPtr v, const std::string& path)
+    {
+        const int aspect = core::ExecParams::currentAspect();
+        unsigned int index = TraitsContainer::add(m_value[aspect],&*v);
+        TraitsValueType::setName(m_value[aspect][index],path);
+        added(v, index);
         return true;
     }
 
@@ -329,10 +368,19 @@ public:
         const int aspect = core::ExecParams::currentAspect();
         unsigned int index = TraitsContainer::find(m_value[aspect],v);
         if (index >= m_value[aspect].size()) return false;
-        m_value[aspect][index] = NULL;
-        changed(v, m_value[aspect][index], index);
         TraitsContainer::remove(m_value[aspect],index);
+        removed(v, index);
         return true;
+    }
+
+    const BaseClass* getDestClass() const
+    {
+        return DestType::GetClass();
+    }
+
+    const BaseClass* getOwnerClass() const
+    {
+        return OwnerType::GetClass();
     }
 
     unsigned int getSize() const
@@ -350,8 +398,41 @@ public:
     }
     std::string getLinkedName(unsigned int index=0) const
     {
-        return TraitsValueType::name(getIndex(index));
+        const int aspect = core::ExecParams::currentAspect();
+        if (index < m_value[aspect].size())
+            return TraitsValueType::name(m_value[aspect][index]);
+        else
+            return std::string();
     }
+
+    /// @name Serialization API
+    /// @{
+
+    /// Read the command line
+    virtual bool read( const std::string& str )
+    {
+        if (str.empty())
+            return true;
+        std::istringstream istr( str.c_str() );
+        std::string path;
+        bool ok = true;
+        while (istr >> path)
+        {
+            DestType* ptr = NULL;
+            if (path[0] != '@')
+            {
+                ok = false;
+            }
+            else if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, path, this))
+            {
+                ok = false;
+            }
+            add(ptr, path);
+        }
+        return ok;
+    }
+
+    /// @}
 
     /// Copy the value of an aspect into another one.
     virtual void copyAspect(int destAspect, int srcAspect)
@@ -389,7 +470,8 @@ protected:
             return NULL;
     }
 
-    virtual void changed(DestPtr before, DestPtr& after, unsigned int index) = 0;
+    virtual void added(DestPtr ptr, unsigned int index) = 0;
+    virtual void removed(DestPtr ptr, unsigned int index) = 0;
 };
 
 /**
@@ -412,8 +494,7 @@ public:
     typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
     typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
 
-    //typedef void (OwnerType::*ValidatorFn)(DestPtr, DestPtr&);
-    typedef void (OwnerType::*ValidatorFn)(DestPtr, DestPtr&, unsigned int);
+    typedef void (OwnerType::*ValidatorFn)(DestPtr v, unsigned int index, bool add);
 
     MultiLink(const BaseLink::InitLink<OwnerType>& init)
         : Inherit(init), m_validator(NULL)
@@ -443,35 +524,20 @@ public:
         else
             return NULL;
     }
-    /*
-        void reset(unsigned int index)
-        {
-            const int aspect = core::ExecParams::currentAspect();
-            if (index >= this->m_value[aspect].size()) return;
-            DestPtr v = this->m_value[aspect][index];
-            this->m_value[aspect][index] = NULL;
-            changed(v, this->m_value[aspect][index], index);
-            TraitsContainer::remove(this->m_value[aspect],index);
-        }
 
-        void set(DestPtr v, unsigned int index)
-        {
-            if (!v) { reset(index); return; }
-            const int aspect = core::ExecParams::currentAspect();
-            if (index >= this->m_value[aspect].size()) { add(v); return; }
-            DestPtr& val = this->m_value[aspect][index];
-            DestPtr before = val;
-            val = v;
-            changed(before, val, index);
-        }
-    */
 protected:
     ValidatorFn m_validator;
 
-    void changed(DestPtr before, DestPtr& after, unsigned int index)
+    void added(DestPtr val, unsigned int index)
     {
         if (m_validator)
-            (this->m_owner->*m_validator)(before, after, index);
+            (this->m_owner->*m_validator)(val, index, true);
+    }
+
+    void removed(DestPtr val, unsigned int index)
+    {
+        if (m_validator)
+            (this->m_owner->*m_validator)(val, index, false);
     }
 };
 
@@ -495,7 +561,7 @@ public:
     typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
     typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
 
-    typedef void (OwnerType::*ValidatorFn)(DestPtr, DestPtr&);
+    typedef void (OwnerType::*ValidatorFn)(DestPtr before, DestPtr& after);
 
     SingleLink(const BaseLink::InitLink<OwnerType>& init)
         : Inherit(init), m_validator(NULL)
@@ -526,21 +592,32 @@ public:
     void reset()
     {
         const int aspect = core::ExecParams::currentAspect();
-        DestPtr v = this->m_value[aspect].get();
-        if (!v) return;
-        this->m_value[aspect].get() = NULL;
-        changed(v, this->m_value[aspect].get(), 0);
-        TraitsContainer::remove(this->m_value[aspect],0);
+        ValueType& value = this->m_value[aspect].get();
+        const DestPtr before = value;
+        if (!before) return;
+        TraitsValueType::set(value, NULL);
+        changed(before, NULL);
     }
 
     void set(DestPtr v)
     {
-        if (!v) { reset(); return; }
         const int aspect = core::ExecParams::currentAspect();
-        DestPtr& val = this->m_value[aspect].get();
-        DestPtr before = val;
-        val = v;
-        changed(before, val, 0);
+        ValueType& value = this->m_value[aspect].get();
+        const DestPtr before = value;
+        if (v == before) return;
+        TraitsValueType::set(value, v);
+        changed(before, v);
+    }
+
+    void set(DestPtr v, const std::string& path)
+    {
+        const int aspect = core::ExecParams::currentAspect();
+        ValueType& value = this->m_value[aspect].get();
+        const DestPtr before = value;
+        if (v == before) return;
+        TraitsValueType::set(value, v);
+        TraitsValueType::setName(value, path);
+        changed(before, v);
     }
 
 #ifndef SOFA_DEPRECATE_OLD_API
@@ -567,10 +644,38 @@ public:
 protected:
     ValidatorFn m_validator;
 
-    void changed(DestPtr before, DestPtr& after, unsigned int /*index*/)
+
+    void added(DestPtr val, unsigned int /*index*/)
     {
         if (m_validator)
+        {
+            DestPtr after = val;
+            (this->m_owner->*m_validator)(NULL, after);
+            if (after != val)
+                TraitsValueType::set(this->m_value[core::ExecParams::currentAspect()].get(), after);
+        }
+    }
+
+    void removed(DestPtr val, unsigned int /*index*/)
+    {
+        if (m_validator)
+        {
+            DestPtr after = NULL;
+            (this->m_owner->*m_validator)(val, after);
+            if (after)
+                TraitsValueType::set(this->m_value[core::ExecParams::currentAspect()].get(), after);
+        }
+    }
+
+    void changed(DestPtr before, DestPtr val)
+    {
+        if (m_validator)
+        {
+            DestPtr after = val;
             (this->m_owner->*m_validator)(before, after);
+            if (after != val)
+                TraitsValueType::set(this->m_value[core::ExecParams::currentAspect()].get(), after);
+        }
     }
 };
 

@@ -56,11 +56,25 @@ namespace objectmodel
  *  \brief Abstract templated data, readable and writable from/to a string.
  *
  */
-template < class T = void* >
-class TData : public sofa::core::objectmodel::BaseData
+template < class T >
+class TData : public BaseData
 {
 public:
     typedef T value_type;
+
+    /// @name Class reflection system
+    /// @{
+    typedef TClass<TData<T>,BaseData> MyClass;
+    static const MyClass* GetClass() { return MyClass::get(); }
+    virtual const BaseClass* getClass() const
+    { return GetClass(); }
+
+    static std::string templateName(const TData<T>* = NULL)
+    {
+        T* ptr = NULL;
+        return BaseData::typeName(ptr);
+    }
+    /// @}
 
     explicit TData(const BaseInitData& init)
         : BaseData(init), parentData(NULL)
@@ -112,7 +126,7 @@ public:
     /** Try to read argument value from an input stream.
     Return false if failed
      */
-    virtual bool read( std::string& s )
+    virtual bool read( const std::string& s )
     {
         if (s.empty())
             return false;
@@ -311,6 +325,21 @@ template < class T = void* >
 class Data : public TData<T>
 {
 public:
+
+    /// @name Class reflection system
+    /// @{
+    typedef TClass<Data<T>, TData<T> > MyClass;
+    static const MyClass* GetClass() { return MyClass::get(); }
+    virtual const BaseClass* getClass() const
+    { return GetClass(); }
+
+    static std::string templateName(const Data<T>* = NULL)
+    {
+        T* ptr = NULL;
+        return BaseData::typeName(ptr);
+    }
+    /// @}
+
     /// @name Construction / destruction
     /// @{
 
@@ -488,12 +517,12 @@ extern template class SOFA_CORE_API Data< bool >;
 
 /// Specialization for reading strings
 template<>
-bool TData<std::string>::read( std::string& str );
+bool TData<std::string>::read( const std::string& str );
 
 
 /// Specialization for reading booleans
 template<>
-bool TData<bool>::read( std::string& str );
+bool TData<bool>::read( const std::string& str );
 
 
 /// General case for printing default value

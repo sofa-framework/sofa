@@ -518,7 +518,7 @@ protected:
         DEBUG_OUT_M(SPACEN << "copyToHost" << std::endl);
 
 //#ifndef NDEBUG
-        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
+        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::BaseClass::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
 //#endif
         DEBUG_OUT_M(SPACEN << "copyToHost host : " << ((unsigned long) hostPointer) << " pitchH : " << pitch_host << " | device : " << ((unsigned long)devicePointer) << " pitchD : " << pitch_device << " | (" << sizeX*sizeof(T) << "," << sizeY << ")" << std::endl);
         mycudaMemcpyDeviceToHost2D ( hostPointer, pitch_host, devicePointer, pitch_device, sizeX*sizeof(T), sizeY);
@@ -529,7 +529,7 @@ protected:
         if ( deviceIsValid ) return;
 
 //#ifndef NDEBUG
-        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
+        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::BaseClass::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
 //#endif
         DEBUG_OUT_M(SPACEN << "copyToDevice device : " << ((unsigned long)devicePointer) << " pitchD : " << pitch_device << " | host : " << ((unsigned long) hostPointer) << " pitchH : " << pitch_host << " | (" << sizeX*sizeof(T) << "," << sizeY << ")" << std::endl);
         mycudaMemcpyHostToDevice2D ( devicePointer, pitch_device, hostPointer, pitch_host,  sizeX*sizeof(T), sizeY);

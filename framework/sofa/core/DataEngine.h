@@ -69,6 +69,71 @@ public:
     /// Remove an output from this engine
     void delOutput(objectmodel::BaseData* n);
 
+    // The methods below must be redefined because of the
+    // double inheritance from Base and DDGNode
+
+    /// @name Class reflection system
+    /// @{
+
+    template<class T>
+    static std::string typeName(const T* ptr= NULL)
+    {
+        return core::objectmodel::BaseObject::typeName(ptr);
+    }
+
+    /// Helper method to get the class name of a type derived from this class
+    ///
+    /// This method should be used as follow :
+    /// \code  T* ptr = NULL; std::string type = T::className(ptr); \endcode
+    /// This way derived classes can redefine the className method
+    template<class T>
+    static std::string className(const T* ptr= NULL)
+    {
+        return core::objectmodel::BaseObject::className(ptr);
+    }
+
+    /// Helper method to get the namespace name of a type derived from this class
+    ///
+    /// This method should be used as follow :
+    /// \code  T* ptr = NULL; std::string type = T::namespaceName(ptr); \endcode
+    /// This way derived classes can redefine the namespaceName method
+    template<class T>
+    static std::string namespaceName(const T* ptr= NULL)
+    {
+        return core::objectmodel::BaseObject::namespaceName(ptr);
+    }
+
+    /// Helper method to get the template name of a type derived from this class
+    ///
+    /// This method should be used as follow :
+    /// \code  T* ptr = NULL; std::string type = T::templateName(ptr); \endcode
+    /// This way derived classes can redefine the templateName method
+    template<class T>
+    static std::string templateName(const T* ptr= NULL)
+    {
+        return core::objectmodel::BaseObject::templateName(ptr);
+    }
+
+    /// Helper method to get the shortname of a type derived from this class.
+    /// The default implementation return the class name.
+    ///
+    /// This method should be used as follow :
+    /// \code  T* ptr = NULL; std::string type = T::shortName(ptr); \endcode
+    /// This way derived classes can redefine the shortName method
+    template< class T>
+    static std::string shortName( const T* ptr = NULL, core::objectmodel::BaseObjectDescription* desc = NULL )
+    {
+        return core::objectmodel::BaseObject::shortName(ptr,desc);
+    }
+
+    template<class T>
+    static void dynamicCast(T*& ptr, Base* b)
+    {
+        core::objectmodel::BaseObject::dynamicCast(ptr, b);
+    }
+
+    /// @}
+
     /// This method is needed by DDGNode
     const std::string& getName() const
     {

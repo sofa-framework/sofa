@@ -92,13 +92,13 @@ public :
 
     static void memcpyHostToDevice(int d, device_pointer dDestPointer, const host_pointer hSrcPointer, size_t n)
     {
-        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *hSrcPointer ) ) <<": "<<n*sizeof(T) <<" B"<<std::endl;
+        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::BaseClass::decodeTypeName ( typeid ( *hSrcPointer ) ) <<": "<<n*sizeof(T) <<" B"<<std::endl;
         mycudaMemcpyHostToDevice(dDestPointer,hSrcPointer,n,d);
     }
 
     static void memcpyDeviceToHost(int d, host_pointer hDestPointer, const void * dSrcPointer , size_t n)
     {
-        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *hDestPointer ) ) <<": "<<n*sizeof(T) <<" B"<<std::endl;
+        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::BaseClass::decodeTypeName ( typeid ( *hDestPointer ) ) <<": "<<n*sizeof(T) <<" B"<<std::endl;
         mycudaMemcpyDeviceToHost(hDestPointer,dSrcPointer,n,d);
     }
 

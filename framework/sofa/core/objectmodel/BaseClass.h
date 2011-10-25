@@ -33,6 +33,7 @@
 #include <sofa/core/objectmodel/SPtr.h>
 #include <string>
 #include <map>
+#include <typeinfo>
 
 namespace sofa
 {
@@ -42,6 +43,8 @@ namespace core
 
 namespace objectmodel
 {
+
+class Base;
 
 /**
  *  \brief Class hierarchy reflection base class
@@ -84,6 +87,53 @@ public:
     bool operator!=(const BaseClass& c) const
     {
         return !((*this)==c);
+    }
+
+    virtual void* dynamicCast(Base* obj) const = 0;
+
+    virtual bool isInstance(Base* obj) const = 0;
+
+    /// Helper method to decode the type name
+    static std::string decodeFullName(const std::type_info& t);
+
+    /// Helper method to decode the type name to a more readable form if possible
+    static std::string decodeTypeName(const std::type_info& t);
+
+    /// Helper method to extract the class name (removing namespaces and templates)
+    static std::string decodeClassName(const std::type_info& t);
+
+    /// Helper method to extract the namespace (removing class name and templates)
+    static std::string decodeNamespaceName(const std::type_info& t);
+
+    /// Helper method to extract the template name (removing namespaces and class name)
+    static std::string decodeTemplateName(const std::type_info& t);
+
+    /// Helper method to get the type name
+    template<class T>
+    static std::string defaultTypeName(const T* = NULL)
+    {
+        return decodeTypeName(typeid(T));
+    }
+
+    /// Helper method to get the class name
+    template<class T>
+    static std::string defaultClassName(const T* = NULL)
+    {
+        return decodeClassName(typeid(T));
+    }
+
+    /// Helper method to get the namespace name
+    template<class T>
+    static std::string defaultNamespaceName(const T* = NULL)
+    {
+        return decodeNamespaceName(typeid(T));
+    }
+
+    /// Helper method to get the template name
+    template<class T>
+    static std::string defaultTemplateName(const T* = NULL)
+    {
+        return decodeTemplateName(typeid(T));
     }
 };
 
@@ -328,6 +378,18 @@ protected:
             parents[i] = TClassParents<Parents>::get(i);
     }
     virtual ~TClass() {}
+
+    virtual void* dynamicCast(Base* obj) const
+    {
+        T* ptr = NULL;
+        T::dynamicCast(ptr, obj);
+        return ptr;
+    }
+
+    virtual bool isInstance(Base* obj) const
+    {
+        return dynamicCast(obj) != NULL;
+    }
 
 public:
 

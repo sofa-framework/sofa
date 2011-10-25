@@ -40,7 +40,7 @@ namespace objectmodel
 BaseData::BaseData(const char* h, DataFlags dataflags, Base* owner, const char* name)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counters(), m_isSets(), m_dataFlags(dataflags)
-    , m_owner(owner), m_name(name), m_linkPath(std::string("")), parentBaseData(NULL)
+    , m_owner(owner), m_name(name), m_linkPath(std::string("")), parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     m_counters.assign(0);
     m_isSets.assign(false);
@@ -50,7 +50,7 @@ BaseData::BaseData(const char* h, DataFlags dataflags, Base* owner, const char* 
 
 BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly, Base* owner, const char* name)
     : help(h), ownerClass(""), group(""), widget("")
-    , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(owner), m_name(name), m_linkPath(std::string("")), parentBaseData(NULL)
+    , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(owner), m_name(name), m_linkPath(std::string("")), parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     m_counters.assign(0);
     m_isSets.assign(false);
@@ -63,7 +63,7 @@ BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly, Base* owne
 BaseData::BaseData( const BaseInitData& init)
     : help(init.helpMsg), ownerClass(init.ownerClass), group(init.group), widget(init.widget)
     , m_counters(), m_isSets(), m_dataFlags(init.dataFlags)
-    , m_owner(init.owner), m_name(init.name), m_linkPath(std::string("")), parentBaseData(NULL)
+    , m_owner(init.owner), m_name(init.name), m_linkPath(std::string("")), parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     m_counters.assign(0);
     m_isSets.assign(false);
@@ -128,7 +128,10 @@ bool BaseData::setParent(BaseData* parent)
 
 void BaseData::doSetParent(BaseData* parent)
 {
-    parentBaseData = parent;
+    BaseData* prev = parentBaseData.get();
+    parentBaseData.set(parent);
+    if (prev)
+        delInput(prev);
     if (parent)
         addInput(parent);
 }
@@ -262,6 +265,11 @@ bool BaseData::copyValue(const BaseData* parent)
     return false;
 }
 
+bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)
+{
+    return false; // TODO
+}
+
 /// Add a link.
 /// Note that this method should only be called if the link was not initialized with the initLink method
 void BaseData::addLink(BaseLink* l)
@@ -292,7 +300,7 @@ void BaseData::releaseAspect(int aspect)
 
 std::string BaseData::decodeTypeName(const std::type_info& t)
 {
-    return Base::decodeTypeName(t);
+    return BaseClass::decodeTypeName(t);
 }
 
 } // namespace objectmodel
