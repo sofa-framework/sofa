@@ -97,6 +97,36 @@ public:
 
     /// @}
 
+    /// @name Access to vectors from a given SingleLink to a state container (i.e. State or MechanicalState)
+    /// @{
+
+    /// Read access to current position vector
+    template<class Owner, class S, unsigned int flags>
+    const Data<typename S::VecCoord>* readX(const SingleLink<Owner,S,flags>& state) const
+    {   return m_x[state.get(this)].read();    }
+
+    /// Read access to current velocity vector
+    template<class Owner, class S, unsigned int flags>
+    const Data<typename S::VecDeriv>* readV(const SingleLink<Owner,S,flags>& state) const
+    {   return m_v[state.get(this)].read();    }
+
+    /// Read access to current force vector
+    template<class Owner, class S, unsigned int flags>
+    const Data<typename S::VecDeriv>* readF(const SingleLink<Owner,S,flags>& state) const
+    {   return m_f[state.get(this)].read();    }
+
+    /// Read access to current dx vector (for implicit schemes)
+    template<class Owner, class S, unsigned int flags>
+    const Data<typename S::VecDeriv>* readDx(const SingleLink<Owner,S,flags>& state) const
+    {   return m_dx[state.get(this)].read();    }
+
+    /// Read access to current df vector (for implicit schemes)
+    template<class Owner, class S, unsigned int flags>
+    const Data<typename S::VecDeriv>* readDf(const SingleLink<Owner,S,flags>& state) const
+    {   return m_df[state.get(this)].read();    }
+
+    /// @}
+
     /// @name Setup methods
     /// Called by the OdeSolver from which the mechanical computations originate.
     /// They all return a reference to this MechanicalParam instance, to ease chaining multiple setup calls.

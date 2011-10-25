@@ -175,10 +175,10 @@ public:
     /// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
     /// UPDATE: it is now an alias for the Link pointer container
     template < class T, bool strong = false >
-    class Sequence : public sofa::core::objectmodel::Link<Node, T, sofa::core::objectmodel::BaseLink::FLAG_MULTILINK|sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK|(strong ? sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK : sofa::core::objectmodel::BaseLink::FLAG_DUPLICATE)>
+    class Sequence : public MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)>
     {
     public:
-        typedef sofa::core::objectmodel::Link<Node, T, sofa::core::objectmodel::BaseLink::FLAG_MULTILINK|sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK|(strong ? sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK : sofa::core::objectmodel::BaseLink::FLAG_DUPLICATE)> Inherit;
+        typedef MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)> Inherit;
         typedef T pointed_type;
         typedef typename Inherit::DestPtr value_type;
         //typedef TPtr value_type;
@@ -187,7 +187,7 @@ public:
         typedef const_iterator iterator;
         typedef const_reverse_iterator reverse_iterator;
 
-        Sequence(const sofa::core::objectmodel::BaseLink::InitLink<Node>& init)
+        Sequence(const BaseLink::InitLink<Node>& init)
             : Inherit(init)
         {
         }
@@ -211,10 +211,10 @@ public:
     /// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
     /// UPDATE: it is now an alias for the Link pointer container
     template < class T, bool duplicate = true >
-    class Single : public sofa::core::objectmodel::Link<Node, T, sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK|(duplicate ? sofa::core::objectmodel::BaseLink::FLAG_DUPLICATE : sofa::core::objectmodel::BaseLink::FLAG_NONE)>
+    class Single : public SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)>
     {
     public:
-        typedef sofa::core::objectmodel::Link<Node, T, sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK|(duplicate ? sofa::core::objectmodel::BaseLink::FLAG_DUPLICATE : sofa::core::objectmodel::BaseLink::FLAG_NONE)> Inherit;
+        typedef SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)> Inherit;
         typedef T pointed_type;
         typedef typename Inherit::DestPtr value_type;
         //typedef TPtr value_type;
@@ -223,7 +223,7 @@ public:
         typedef const_iterator iterator;
         typedef const_reverse_iterator reverse_iterator;
 
-        Single(const sofa::core::objectmodel::BaseLink::InitLink<Node>& init)
+        Single(const BaseLink::InitLink<Node>& init)
             : Inherit(init)
         {
         }

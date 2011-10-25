@@ -45,8 +45,6 @@
 #include <string>
 #include <map>
 
-using sofa::core::objectmodel::Data;
-
 namespace sofa
 {
 
@@ -106,10 +104,16 @@ public:
 
 
     /// Accessor to the object name
-    std::string getName() const;
+    const std::string& getName() const
+    {
+        return name.getValue();
+    }
 
     /// Set the name of this object
     void setName(const std::string& n);
+
+    /// Set the name of this object, adding an integer counter
+    void setName(const std::string& n, int counter);
 
     /// Get the type name of this object (i.e. class and template types)
     virtual std::string getTypeName() const;

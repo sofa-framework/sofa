@@ -1073,7 +1073,7 @@ public:
 
 protected:
 
-    typename Mapper::SPtr mapper;
+    SingleLink<BarycentricMapping<In,Out>,Mapper,BaseLink::FLAG_STRONGLINK> mapper;
 
 public:
 
@@ -1084,36 +1084,14 @@ public:
     Data< bool > sleeping;
 #endif
 protected:
-    BarycentricMapping(core::State<In>* from, core::State<Out>* to)
-        : Inherit(from, to), mapper(NULL)
-        , useRestPosition(core::objectmodel::Base::initData(&useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
-#ifdef SOFA_DEV
-        , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
-#endif
-    {
+    BarycentricMapping(core::State<In>* from, core::State<Out>* to);
 
-    }
-
-    BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper)
-        : Inherit(from, to), mapper(mapper)
-#ifdef SOFA_DEV
-        , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
-#endif
-    {
-        if (mapper)
-            this->addSlave(mapper);
-    }
+    BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper);
 
     BarycentricMapping(core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology );
 
-    virtual ~BarycentricMapping()
-    {
-        if (mapper)
-        {
-            this->removeSlave(mapper);
-            mapper.reset();
-        }
-    }
+    virtual ~BarycentricMapping();
+
 public:
     void init();
 

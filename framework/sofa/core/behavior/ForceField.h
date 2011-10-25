@@ -78,7 +78,7 @@ public:
     virtual void init();
 
     /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState() { return mstate; }
+    MechanicalState<DataTypes>* getMState() { return mstate.get(); }
 
 
     /// @name Vector operations
@@ -212,7 +212,7 @@ public:
     }
 
 protected:
-    MechanicalState<DataTypes> *mstate;
+    SingleLink<ForceField<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_CORE)

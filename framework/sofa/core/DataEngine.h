@@ -69,6 +69,24 @@ public:
     /// Remove an output from this engine
     void delOutput(objectmodel::BaseData* n);
 
+    /// This method is needed by DDGNode
+    const std::string& getName() const
+    {
+        return objectmodel::BaseObject::getName();
+    }
+
+    /// This method is needed by DDGNode
+    objectmodel::Base* getOwner() const
+    {
+        return const_cast<DataEngine*>(this);
+    }
+
+    /// This method is needed by DDGNode
+    objectmodel::BaseData* getData() const
+    {
+        return NULL;
+    }
+
 protected:
     /// Add a link.
     void addLink(objectmodel::BaseLink* l)

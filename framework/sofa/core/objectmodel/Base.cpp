@@ -33,6 +33,8 @@
 #endif
 
 #include <string.h>
+#include <sstream>
+
 namespace sofa
 {
 
@@ -215,14 +217,17 @@ std::string Base::getTemplateName() const
     return decodeTemplateName(typeid(*this));
 }
 
-std::string Base::getName() const
-{
-    return name.getValue();
-}
-
 void Base::setName(const std::string& na)
 {
     name.setValue(na);
+}
+
+/// Set the name of this object, adding an integer counter
+void Base::setName(const std::string& n, int counter)
+{
+    std::ostringstream o;
+    o << n << counter;
+    setName(o.str());
 }
 
 void Base::processStream(std::ostream& out)

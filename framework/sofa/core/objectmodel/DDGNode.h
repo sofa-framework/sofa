@@ -46,6 +46,8 @@ namespace core
 namespace objectmodel
 {
 
+class Base;
+class BaseData;
 
 template<>
 class LinkTraitsPtrCasts<DDGNode>
@@ -62,7 +64,7 @@ public:
 class SOFA_CORE_API DDGNode
 {
 public:
-    typedef Link<DDGNode, DDGNode, BaseLink::FLAG_MULTILINK|BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_DATALINK> DDGLink;
+    typedef MultiLink<DDGNode, DDGNode, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_DATALINK> DDGLink;
     typedef DDGLink::Container DDGLinkContainer;
     typedef DDGLink::const_iterator DDGLinkIterator;
 
@@ -128,6 +130,12 @@ public:
     {
         return core::ExecParams::currentAspect(params);
     }
+
+    virtual const std::string& getName() const = 0;
+
+    virtual Base* getOwner() const = 0;
+
+    virtual BaseData* getData() const = 0;
 
 protected:
 

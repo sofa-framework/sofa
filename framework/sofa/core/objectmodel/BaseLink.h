@@ -116,6 +116,7 @@ public:
     virtual unsigned int getSize() const = 0;
     virtual Base* getLinkedBase(unsigned int index=0) const = 0;
     virtual BaseData* getLinkedData(unsigned int index=0) const = 0;
+    virtual std::string getLinkedName(unsigned int index=0) const = 0;
 
     /// Copy the value of an aspect into another one.
     virtual void copyAspect(int destAspect, int srcAspect) = 0;
@@ -133,6 +134,9 @@ protected:
 } // namespace objectmodel
 
 } // namespace core
+
+// the BaseLink class is used everywhere
+using core::objectmodel::BaseLink;
 
 } // namespace sofa
 

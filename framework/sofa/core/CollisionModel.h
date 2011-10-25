@@ -87,18 +87,21 @@ protected:
         , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
         , group(initData(&group, 0, "group", "If not zero, ID of a group containing this model. No collision can occur between collision models of the same group (allowing the same object to have multiple collision models)"))
         , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
-        , size(0), previous(NULL), next(NULL), numberOfContacts(0)
+        , size(0), numberOfContacts(0)
+        , previous(initLink("previous", "Previous (coarser / upper / parent level) CollisionModel in the hierarchy."))
+        , next(initLink("next", "Next (finer / lower / child level) CollisionModel in the hierarchy."))
     {
+    }
+
+    /// Destructor
+    virtual ~CollisionModel()
+    {
+
     }
 public:
     virtual void bwdInit()
     {
         getColor4f(); //init the color to default value
-    }
-    /// Destructor
-    virtual ~CollisionModel()
-    {
-
     }
 
     /// Return true if there are no elements
@@ -158,7 +161,7 @@ public:
     /// Return the next (finer / lower / child level) CollisionModel in the hierarchy.
     CollisionModel* getNext()
     {
-        return next;
+        return next.get();
     }
 
     /// Return the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
@@ -167,16 +170,23 @@ public:
         return previous.get();
     }
 
-    /// Set the next (finer / lower / child level) CollisionModel in the hierarchy.
-    void setNext(CollisionModel* val)
-    {
-        next=val;
-    }
-
     /// Set the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
-    void setPrevious(CollisionModel* val)
+    void setPrevious(CollisionModel::SPtr val)
     {
-        previous=val;
+        CollisionModel::SPtr p = previous.get();
+        if (p == val) return;
+        if (p)
+        {
+            if (p->next.get()) p->next.get()->previous.set(NULL);
+            p->next.set(NULL);
+        }
+        if (val)
+        {
+            if (val->next.get()) val->next.get()->previous.set(NULL);
+        }
+        previous.set(val);
+        if (val)
+            val->next.set(this);
     }
 
     /// \brief Return true if this CollisionModel should be used for collisions.
@@ -326,30 +336,28 @@ public:
     template<class DerivedModel>
     DerivedModel* createPrevious()
     {
-
-        typename DerivedModel::SPtr pmodel = sofa::core::objectmodel::SPtr_dynamic_cast<DerivedModel>(previous);
+        CollisionModel::SPtr prev = previous.get();
+        typename DerivedModel::SPtr pmodel = sofa::core::objectmodel::SPtr_dynamic_cast<DerivedModel>(prev);
         if (pmodel.get() == NULL)
         {
+            int level = 0;
+            CollisionModel *cm = getNext();
+            CollisionModel* root = this;
+            while (cm) { root = cm; cm = cm->getNext(); ++level; }
             pmodel = sofa::core::objectmodel::New<DerivedModel>();
-            this->addSlave(pmodel); //->setContext(getContext());
+            pmodel->setName("BVLevel",level);
+            root->addSlave(pmodel); //->setContext(getContext());
             pmodel->setMoving(isMoving());
             pmodel->setSimulated(isSimulated());
             pmodel->proximity.setValue(proximity.getValue());
             pmodel->group.setValue(group.getValue());
-            previous=pmodel;
-            pmodel->setNext(this);
+            //previous=pmodel;
+            //pmodel->next = this;
+            setPrevious(pmodel);
+            if (prev)
+            {
 
-            /*
-            delete previous;
-            pmodel = new DerivedModel();
-            pmodel->setContext(getContext());
-            pmodel->setMoving(isMoving());
-            pmodel->setSimulated(isSimulated());
-            pmodel->proximity.setValue(proximity.getValue());
-            pmodel->group.setValue(group.getValue());
-            previous = pmodel;
-            pmodel->setNext(this);
-            */
+            }
         }
         return pmodel.get();
     }
@@ -428,14 +436,14 @@ protected:
     /// Number of collision elements
     int size;
 
-    /// Pointer to the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
-    CollisionModel::SPtr previous;
-
-    /// Pointer to the next (finer / lower / child level) CollisionModel in the hierarchy.
-    CollisionModel* next;
-
     /// number of contacts attached to the collision model
     int numberOfContacts;
+
+    /// Pointer to the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
+    SingleLink<CollisionModel,CollisionModel,BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> previous;
+
+    /// Pointer to the next (finer / lower / child level) CollisionModel in the hierarchy.
+    SingleLink<CollisionModel,CollisionModel,BaseLink::FLAG_DOUBLELINK> next;
 
 };
 
