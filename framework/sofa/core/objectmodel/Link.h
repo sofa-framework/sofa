@@ -151,6 +151,14 @@ public:
     {
         elems[0] = TPtr();
     }
+    const TPtr& get() const
+    {
+        return elems[0];
+    }
+    TPtr& get()
+    {
+        return elems[0];
+    }
     const TPtr& operator[](unsigned int i) const
     {
         return elems[i];
@@ -189,12 +197,12 @@ public:
     }
     static unsigned int add(T& c, TDestType* v)
     {
-        c(0) = v;
+        c.get() = v;
         return 0;
     }
     static unsigned int find(const T& c, TDestType* v)
     {
-        if (c(0) == v) return 0;
+        if (c.get() == v) return 0;
         else return 1;
     }
     static void remove(T& c, unsigned index)
@@ -512,16 +520,16 @@ public:
     DestType* get(const core::ExecParams* params = 0) const
     {
         const int aspect = core::ExecParams::currentAspect(params);
-        return TraitsDestPtr::get(this->m_value[aspect][0]);
+        return TraitsDestPtr::get(this->m_value[aspect].get());
     }
 
     void reset()
     {
         const int aspect = core::ExecParams::currentAspect();
-        DestPtr v = this->m_value[aspect][0];
+        DestPtr v = this->m_value[aspect].get();
         if (!v) return;
-        this->m_value[aspect][0] = NULL;
-        changed(v, this->m_value[aspect][0], 0);
+        this->m_value[aspect].get() = NULL;
+        changed(v, this->m_value[aspect].get(), 0);
         TraitsContainer::remove(this->m_value[aspect],0);
     }
 
@@ -529,7 +537,7 @@ public:
     {
         if (!v) { reset(); return; }
         const int aspect = core::ExecParams::currentAspect();
-        DestPtr& val = this->m_value[aspect][0];
+        DestPtr& val = this->m_value[aspect].get();
         DestPtr before = val;
         val = v;
         changed(before, val, 0);
