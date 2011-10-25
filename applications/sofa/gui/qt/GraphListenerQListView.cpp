@@ -356,12 +356,16 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
 
         items[object] = item;
     }
+    // Add all slaves
+    MutationListener::addObject(parent, object);
 }
 
 
 /*****************************************************************************************************************/
-void GraphListenerQListView::removeObject(Node* /*parent*/, core::objectmodel::BaseObject* object)
+void GraphListenerQListView::removeObject(Node* parent, core::objectmodel::BaseObject* object)
 {
+    // Remove all slaves
+    MutationListener::removeObject(parent, object);
     if (items.count(object))
     {
         delete items[object];
@@ -394,6 +398,106 @@ void GraphListenerQListView::moveObject(Node* previous, Node* parent, core::obje
         Q3ListViewItem* itemParent = items[parent];
         itemPrevious->takeItem(itemObject);
         itemParent->insertItem(itemObject);
+    }
+}
+
+/*****************************************************************************************************************/
+void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+{
+    if (frozen) return;
+    if (items.count(slave))
+    {
+        Q3ListViewItem* item = items[slave];
+        if (item->listView() == NULL)
+        {
+            if (items.count(master))
+                items[master]->insertItem(item);
+            else
+            {
+                std::cerr << "Graph -> QT ERROR: Unknown master node "<<master->getName()<<std::endl;
+                return;
+            }
+        }
+    }
+    else
+    {
+        Q3ListViewItem* item;
+        if (items.count(master))
+            item = createItem(items[master]);
+        else
+        {
+            std::cerr << "Graph -> QT ERROR: Unknown master node "<<master->getName()<<std::endl;
+            return;
+        }
+        std::string name = sofa::helper::gettypename(typeid(*slave));
+        std::string::size_type pos = name.find('<');
+        if (pos != std::string::npos)
+            name.erase(pos);
+        if (!dynamic_cast<core::objectmodel::ConfigurationSetting*>(slave))
+        {
+            name += "  ";
+            name += slave->getName();
+        }
+        item->setText(0, name.c_str());
+
+        if (slave->getWarnings().empty())
+        {
+            QPixmap* pix = getPixmap(slave);
+            if (pix)
+                item->setPixmap(0, *pix);
+
+        }
+        else
+        {
+            static QPixmap pixWarning((const char**)iconwarning_xpm);
+            item->setPixmap(0,pixWarning);
+        }
+
+
+        items[slave] = item;
+    }
+    // Add all slaves
+    MutationListener::addSlave(master, slave);
+}
+
+
+/*****************************************************************************************************************/
+void GraphListenerQListView::removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+{
+    // Remove all slaves
+    MutationListener::removeSlave(master, slave);
+    if (items.count(slave))
+    {
+        delete items[slave];
+        items.erase(slave);
+    }
+}
+
+/*****************************************************************************************************************/
+void GraphListenerQListView::moveSlave(core::objectmodel::BaseObject* previous, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
+{
+    if (frozen && items.count(slave))
+    {
+        Q3ListViewItem* itemSlave = items[slave];
+        Q3ListViewItem* itemPrevious = items[previous];
+        itemPrevious->takeItem(itemSlave);
+        return;
+    }
+    if (!items.count(slave) || !items.count(previous))
+    {
+        addSlave(master, slave);
+    }
+    else if (!items.count(master))
+    {
+        removeSlave(previous, slave);
+    }
+    else
+    {
+        Q3ListViewItem* itemSlave = items[slave];
+        Q3ListViewItem* itemPrevious = items[previous];
+        Q3ListViewItem* itemMaster = items[master];
+        itemPrevious->takeItem(itemSlave);
+        itemMaster->insertItem(itemSlave);
     }
 }
 

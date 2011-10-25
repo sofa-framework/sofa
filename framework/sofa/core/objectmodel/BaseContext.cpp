@@ -292,8 +292,17 @@ std::ostream& operator << (std::ostream& out, const BaseContext&
     return out;
 }
 
+void BaseContext::notifyAddSlave(core::objectmodel::BaseObject* /*master*/, core::objectmodel::BaseObject* /*slave*/)
+{
+}
 
+void BaseContext::notifyRemoveSlave(core::objectmodel::BaseObject* /*master*/, core::objectmodel::BaseObject* /*slave*/)
+{
+}
 
+void BaseContext::notifyMoveSlave(core::objectmodel::BaseObject* /*previousMaster*/, core::objectmodel::BaseObject* /*master*/, core::objectmodel::BaseObject* /*slave*/)
+{
+}
 
 } // namespace objectmodel
 

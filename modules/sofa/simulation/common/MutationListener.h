@@ -53,6 +53,12 @@ public:
     virtual void removeObject(Node* parent, core::objectmodel::BaseObject* object);
 
     virtual void moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object);
+
+    virtual void addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+
+    virtual void removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+
+    virtual void moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
 };
 
 } // namespace simulation

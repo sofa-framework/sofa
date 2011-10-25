@@ -452,6 +452,16 @@ public:
 
     /// @}
 
+
+    /// @name Notifications for graph change listeners
+    /// @{
+
+    virtual void notifyAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void notifyRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void notifyMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+
+    /// @}
+
     friend std::ostream SOFA_CORE_API & operator << (std::ostream& out, const BaseContext& c );
 };
 

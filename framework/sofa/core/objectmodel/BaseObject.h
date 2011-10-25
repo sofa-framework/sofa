@@ -221,8 +221,8 @@ public:
 protected:
     //BaseContext* context_;
 
-    Link<BaseObject, BaseContext, BaseLink::FLAG_DOUBLELINK/*, &changeContextLink*/> l_context;
-    Link<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK|BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK/*, &changeSlavesLink*/> l_slaves;
+    Link<BaseObject, BaseContext, BaseLink::FLAG_DOUBLELINK> l_context;
+    Link<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK|BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> l_slaves;
     Link<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK> l_master;
 
     // This method insures that context is never NULL (using BaseContext::getDefault() instead)
