@@ -116,6 +116,7 @@ bool BaseData::setParent(BaseData* parent)
     doSetParent(parent);
     if (parent)
     {
+        addInput(parent);
         BaseData::setDirtyValue();
         if (!isCounterValid())
             update();
@@ -128,12 +129,7 @@ bool BaseData::setParent(BaseData* parent)
 
 void BaseData::doSetParent(BaseData* parent)
 {
-    BaseData* prev = parentBaseData.get();
     parentBaseData.set(parent);
-    if (prev)
-        delInput(prev);
-    if (parent)
-        addInput(parent);
 }
 
 void BaseData::doDelInput(DDGNode* n)
