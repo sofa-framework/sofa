@@ -8,6 +8,7 @@ DEFINES += SOFA_BUILD_FRAME
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
+DEPENDPATH -= $$SOFA_INSTALL_INC_DIR/applications
 
 HEADERS += \
            initFrame.h \

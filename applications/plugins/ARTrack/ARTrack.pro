@@ -25,6 +25,7 @@ LIBS += $$SOFA_LIBS
 SOFA_EXT_LIBS += -lARTracklib$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
 INCLUDEPATH += $$SOFA_DIR/extlibs/ARTrack
+DEPENDPATH += $$SOFA_DIR/extlibs/ARTrack
 
 SOURCES = \
 ARTrackDriver.cpp \

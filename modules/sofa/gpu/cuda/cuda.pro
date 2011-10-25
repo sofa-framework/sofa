@@ -5,6 +5,7 @@ load(sofa/pre)
 TEMPLATE = lib
 TARGET = sofagpucuda
 INCLUDEPATH += /usr/local/cuda/include/
+DEPENDPATH += /usr/local/cuda/include/
 
 DEFINES += SOFA_BUILD_GPU_CUDA
 

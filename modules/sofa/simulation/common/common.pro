@@ -10,9 +10,11 @@ TARGET = sofasimulation
 DEFINES += SOFA_BUILD_SIMULATION_COMMON
 
 INCLUDEPATH += $$ROOT_SRC_DIR/modules
+DEPENDPATH += $$ROOT_SRC_DIR/modules
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$ROOT_SRC_DIR/applications
+DEPENDPATH -= $$ROOT_SRC_DIR/applications
 
 HEADERS += common.h \
            Node.h \
