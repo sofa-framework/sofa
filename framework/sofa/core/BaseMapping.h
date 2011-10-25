@@ -120,14 +120,13 @@ public:
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
-    typedef sofa::defaulttype::BaseMatrix* (*func_createMappedMatrix)(const behavior::BaseMechanicalState*);
-    typedef sofa::defaulttype::BaseMatrix* (*func_createMappedInterationMatrix)(const behavior::BaseMechanicalState* , const behavior::BaseMechanicalState* );
+    typedef sofa::defaulttype::BaseMatrix* (*func_createMappedMatrix)(const behavior::BaseMechanicalState* , const behavior::BaseMechanicalState* );
 
 
     //Create a matrix for mapped mechanical objects
     //If the two mechanical objects is identical, create a new stiffness matrix for this mapped objects
     //If the two mechanical objects is different, create a new interaction matrix
-    virtual sofa::defaulttype::BaseMatrix* createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix, func_createMappedInterationMatrix);
+    virtual sofa::defaulttype::BaseMatrix* createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix);
 
     ///<TO REMOVE>
     ///Necessary ?
