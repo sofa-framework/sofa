@@ -576,6 +576,9 @@ inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<
 
 } // namespace helper
 
+// the Data class is used everywhere
+using core::objectmodel::Data;
+
 } // namespace sofa
 
 #endif

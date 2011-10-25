@@ -45,7 +45,7 @@ namespace behavior
 
 template<class DataTypes>
 ForceField<DataTypes>::ForceField(MechanicalState<DataTypes> *mm)
-    : mstate(mm)
+    : mstate(initLink("mstate", "MechanicalState used by this ForceField"), mm)
 {
 }
 
@@ -59,8 +59,8 @@ void ForceField<DataTypes>::init()
 {
     BaseForceField::init();
 
-    if (!mstate)
-        mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    if (!mstate.get())
+        mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
 }
 
 #ifdef SOFA_SMP
@@ -91,22 +91,22 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams /* PARAMS F
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            // Task<ParallelForceFieldAddForce< DataTypes > >(mparams /* PARAMS FIRST */, this, sofa::defaulttype::getShared(*fId[mstate].write()),
+            // Task<ParallelForceFieldAddForce< DataTypes > >(mparams /* PARAMS FIRST */, this, sofa::defaulttype::getShared(*fId[mstate.get(mparams)].write()),
             // 	defaulttype::getShared(*mparams->readX(mstate)), defaulttype::getShared(*mparams->readV(mstate)));
-            Task<ParallelForceFieldAddForce< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*fId[mstate].write()),
+            Task<ParallelForceFieldAddForce< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*fId[mstate.get(mparams)].write()),
                     **defaulttype::getShared(*mparams->readX(mstate)), **defaulttype::getShared(*mparams->readV(mstate)));
         else
 #endif /* SOFA_SMP */
-            addForce(mparams /* PARAMS FIRST */, *fId[mstate].write() , *mparams->readX(mstate), *mparams->readV(mstate));
+            addForce(mparams /* PARAMS FIRST */, *fId[mstate.get(mparams)].write() , *mparams->readX(mstate), *mparams->readV(mstate));
     }
 }
 #ifndef SOFA_DEPRECATE_OLD_API
 template<class DataTypes>
 void ForceField<DataTypes>::addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv &  f, const DataVecCoord &  x , const DataVecDeriv & v )
 {
-    if (mstate)
+    if (mstate.get(mparams))
     {
-        mstate->forceMask.setInUse(this->useMask());
+        mstate.get(mparams)->forceMask.setInUse(this->useMask());
         addForce( *f.beginEdit(mparams) , x.getValue(mparams), v.getValue(mparams));
         f.endEdit(mparams);
     }
@@ -127,13 +127,13 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS 
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelForceFieldAddDForce< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*dfId[mstate].write()), **defaulttype::getShared(*mparams->readDx(mstate)));
+            Task<ParallelForceFieldAddDForce< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*dfId[mstate.get(mparams)].write()), **defaulttype::getShared(*mparams->readDx(mstate)));
         else
 #endif /* SOFA_SMP */
 
             mparams->setKFactorUsed(false);
 
-        addDForce(mparams /* PARAMS FIRST */, *dfId[mstate].write(), *mparams->readDx(mstate));
+        addDForce(mparams /* PARAMS FIRST */, *dfId[mstate.get(mparams)].write(), *mparams->readDx(mstate.get(mparams)));
 
         if (!mparams->getKFactorUsed())
             serr << "WARNING " << getClassName() << " (in ForceField<DataTypes>::addDForce): please use mparams->kFactor() in addDForce" << sendl;

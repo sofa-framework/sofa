@@ -64,7 +64,13 @@ BaseObject::BaseObject()
 }
 
 BaseObject::~BaseObject()
-{}
+{
+    assert(l_master.get() == NULL); // an object that is still a slave should not be able to be deleted, as at least one smart pointer points to it
+    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+    {
+        (*iSlaves)->l_master.reset();
+    }
+}
 
 void BaseObject::parse( BaseObjectDescription* arg )
 {

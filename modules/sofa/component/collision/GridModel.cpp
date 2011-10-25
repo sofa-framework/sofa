@@ -278,9 +278,10 @@ void GridModel::computeBoundingTree(int maxDepth)
         // First remove extra levels
         while(root->getPrevious()!=NULL)
         {
-            core::CollisionModel* m = root->getPrevious();
-            root->setPrevious(m->getPrevious());
-            delete m;
+            core::CollisionModel::SPtr m = root->getPrevious();
+            if (m->getMaster()) m->getMaster()->removeSlave(m);
+            //delete m;
+            m.reset();
         }
         // Then clear all existing levels
         {

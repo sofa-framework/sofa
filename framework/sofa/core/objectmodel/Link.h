@@ -74,7 +74,7 @@ class LinkTraitsValueType<TDestType,TDestPtr, false>
 {
 public:
     typedef TDestPtr T;
-    std::string name(const T& ptr)
+    static std::string name(const T& ptr)
     {
         if (!ptr) return std::string();
         else return ptr->getName();
@@ -95,7 +95,7 @@ public:
         bool operator == (TDestType* p) { return ptr == p; }
         bool operator != (TDestType* p) { return ptr != p; }
     };
-    std::string name(const T& v)
+    static std::string name(const T& v)
     {
         if (v.path) return v.path;
         else if (!v.ptr) return std::string();
@@ -243,7 +243,7 @@ class LinkTraitsPtrCasts;
  *
  */
 template<class TOwnerType, class TDestType, unsigned TFlags>
-class Link : public BaseLink
+class TLink : public BaseLink
 {
 public:
     typedef TOwnerType OwnerType;
@@ -258,32 +258,17 @@ public:
     typedef typename TraitsContainer::T Container;
     typedef typename Container::const_iterator const_iterator;
     typedef typename Container::const_reverse_iterator const_reverse_iterator;
-    //typedef LinkTraitsValidatorFn<OwnerType, DestPtr, ACTIVEFLAG(FLAG_MULTILINK)> TraitsValidatorFn;
-    typedef void (OwnerType::*ValidatorFn)(DestPtr, DestPtr&);
-    typedef void (OwnerType::*ValidatorIndexFn)(DestPtr, DestPtr&, unsigned int);
     typedef LinkTraitsPtrCasts<TOwnerType> TraitsOwnerCasts;
     typedef LinkTraitsPtrCasts<TDestType> TraitsDestCasts;
 #undef ACTIVEFLAG
 
-    Link(const InitLink<OwnerType>& init)
-        : BaseLink(init, ActiveFlags), m_owner(init.owner), m_validator(NULL), m_validatorIndex(NULL)
+    TLink(const InitLink<OwnerType>& init)
+        : BaseLink(init, ActiveFlags), m_owner(init.owner)
     {
     }
 
-    virtual ~Link()
+    virtual ~TLink()
     {
-    }
-
-    void setValidator(ValidatorFn fn)
-    {
-        m_validator = fn;
-        m_validatorIndex = NULL;
-    }
-
-    void setValidator(ValidatorIndexFn fn)
-    {
-        m_validator = NULL;
-        m_validatorIndex = fn;
     }
 
     unsigned int size(const core::ExecParams* params = 0) const
@@ -294,15 +279,6 @@ public:
     bool empty(const core::ExecParams* params = 0) const
     {
         return m_value[core::ExecParams::currentAspect(params)].empty();
-    }
-
-    DestType* get(unsigned int index=0, const core::ExecParams* params = 0) const
-    {
-        const int aspect = core::ExecParams::currentAspect(params);
-        if (index < m_value[aspect].size())
-            return TraitsDestPtr::get(m_value[aspect][index]);
-        else
-            return NULL;
     }
 
     const Container& getValue(const core::ExecParams* params = 0) const
@@ -330,21 +306,11 @@ public:
         return m_value[core::ExecParams::currentAspect(params)].rend();
     }
 
-    void reset(unsigned int index=0)
-    {
-        change(NULL, index);
-    }
-
-    void set(DestPtr v, unsigned int index=0)
-    {
-        change(v, index);
-    }
-
     bool add(DestPtr v)
     {
         if (!v) return false;
         const int aspect = core::ExecParams::currentAspect();
-        unsigned int index = TraitsContainer::add(m_value[aspect],v);
+        unsigned int index = TraitsContainer::add(m_value[aspect],&*v);
         changed(DestPtr(), m_value[aspect][index], index);
         return true;
     }
@@ -368,11 +334,15 @@ public:
 
     Base* getLinkedBase(unsigned int index=0) const
     {
-        return TraitsDestCasts::getBase(get(index));
+        return TraitsDestCasts::getBase(getIndex(index));
     }
     BaseData* getLinkedData(unsigned int index=0) const
     {
-        return TraitsDestCasts::getData(get(index));
+        return TraitsDestCasts::getData(getIndex(index));
+    }
+    std::string getLinkedName(unsigned int index=0) const
+    {
+        return TraitsValueType::name(getIndex(index));
     }
 
     /// Copy the value of an aspect into another one.
@@ -400,30 +370,211 @@ public:
 
 protected:
     OwnerType* m_owner;
-    ValidatorFn m_validator;
-    ValidatorIndexFn m_validatorIndex;
     helper::fixed_array<Container, SOFA_DATA_MAX_ASPECTS> m_value;
+
+    DestType* getIndex(unsigned int index) const
+    {
+        const int aspect = core::ExecParams::currentAspect();
+        if (index < m_value[aspect].size())
+            return TraitsDestPtr::get(m_value[aspect][index]);
+        else
+            return NULL;
+    }
+
+    virtual void changed(DestPtr before, DestPtr& after, unsigned int index) = 0;
+};
+
+/**
+ *  \brief Container of vectors of links in the scenegraph, from a given type of object (Owner) to another (Dest)
+ *
+ */
+template<class TOwnerType, class TDestType, unsigned TFlags>
+class MultiLink : public TLink<TOwnerType,TDestType,TFlags|BaseLink::FLAG_MULTILINK>
+{
+public:
+    typedef TLink<TOwnerType,TDestType,TFlags|BaseLink::FLAG_MULTILINK> Inherit;
+    typedef TOwnerType OwnerType;
+    typedef TDestType DestType;
+    typedef typename Inherit::TraitsDestPtr TraitsDestPtr;
+    typedef typename Inherit::DestPtr DestPtr;
+    typedef typename Inherit::TraitsValueType TraitsValueType;
+    typedef typename Inherit::ValueType ValueType;
+    typedef typename Inherit::TraitsContainer TraitsContainer;
+    typedef typename Inherit::Container Container;
+    typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
+    typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
+
+    //typedef void (OwnerType::*ValidatorFn)(DestPtr, DestPtr&);
+    typedef void (OwnerType::*ValidatorFn)(DestPtr, DestPtr&, unsigned int);
+
+    MultiLink(const BaseLink::InitLink<OwnerType>& init)
+        : Inherit(init), m_validator(NULL)
+    {
+    }
+
+    MultiLink(const BaseLink::InitLink<OwnerType>& init, DestPtr val)
+        : Inherit(init), m_validator(NULL)
+    {
+        if (val) this->add(val);
+    }
+
+    virtual ~MultiLink()
+    {
+    }
+
+    void setValidator(ValidatorFn fn)
+    {
+        m_validator = fn;
+    }
+
+    DestType* get(unsigned int index, const core::ExecParams* params = 0) const
+    {
+        const int aspect = core::ExecParams::currentAspect(params);
+        if (index < this->m_value[aspect].size())
+            return TraitsDestPtr::get(this->m_value[aspect][index]);
+        else
+            return NULL;
+    }
+    /*
+        void reset(unsigned int index)
+        {
+            const int aspect = core::ExecParams::currentAspect();
+            if (index >= this->m_value[aspect].size()) return;
+            DestPtr v = this->m_value[aspect][index];
+            this->m_value[aspect][index] = NULL;
+            changed(v, this->m_value[aspect][index], index);
+            TraitsContainer::remove(this->m_value[aspect],index);
+        }
+
+        void set(DestPtr v, unsigned int index)
+        {
+            if (!v) { reset(index); return; }
+            const int aspect = core::ExecParams::currentAspect();
+            if (index >= this->m_value[aspect].size()) { add(v); return; }
+            DestPtr& val = this->m_value[aspect][index];
+            DestPtr before = val;
+            val = v;
+            changed(before, val, index);
+        }
+    */
+protected:
+    ValidatorFn m_validator;
 
     void changed(DestPtr before, DestPtr& after, unsigned int index)
     {
         if (m_validator)
-            (m_owner->*m_validator)(before, after);
-        else if (m_validatorIndex)
-            (m_owner->*m_validatorIndex)(before, after, index);
+            (this->m_owner->*m_validator)(before, after, index);
+    }
+};
+
+/**
+ *  \brief Container of single links in the scenegraph, from a given type of object (Owner) to another (Dest)
+ *
+ */
+template<class TOwnerType, class TDestType, unsigned TFlags>
+class SingleLink : public TLink<TOwnerType,TDestType,TFlags&~BaseLink::FLAG_MULTILINK>
+{
+public:
+    typedef TLink<TOwnerType,TDestType,TFlags&~BaseLink::FLAG_MULTILINK> Inherit;
+    typedef TOwnerType OwnerType;
+    typedef TDestType DestType;
+    typedef typename Inherit::TraitsDestPtr TraitsDestPtr;
+    typedef typename Inherit::DestPtr DestPtr;
+    typedef typename Inherit::TraitsValueType TraitsValueType;
+    typedef typename Inherit::ValueType ValueType;
+    typedef typename Inherit::TraitsContainer TraitsContainer;
+    typedef typename Inherit::Container Container;
+    typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
+    typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
+
+    typedef void (OwnerType::*ValidatorFn)(DestPtr, DestPtr&);
+
+    SingleLink(const BaseLink::InitLink<OwnerType>& init)
+        : Inherit(init), m_validator(NULL)
+    {
     }
 
-    void change(DestPtr v, unsigned int index)
+    SingleLink(const BaseLink::InitLink<OwnerType>& init, DestPtr val)
+        : Inherit(init), m_validator(NULL)
     {
-        DestPtr& val = m_value[core::ExecParams::currentAspect()][index];
+        if (val) this->add(val);
+    }
+
+    virtual ~SingleLink()
+    {
+    }
+
+    void setValidator(ValidatorFn fn)
+    {
+        m_validator = fn;
+    }
+
+    DestType* get(const core::ExecParams* params = 0) const
+    {
+        const int aspect = core::ExecParams::currentAspect(params);
+        return TraitsDestPtr::get(this->m_value[aspect][0]);
+    }
+
+    void reset()
+    {
+        const int aspect = core::ExecParams::currentAspect();
+        DestPtr v = this->m_value[aspect][0];
+        if (!v) return;
+        this->m_value[aspect][0] = NULL;
+        changed(v, this->m_value[aspect][0], 0);
+        TraitsContainer::remove(this->m_value[aspect],0);
+    }
+
+    void set(DestPtr v)
+    {
+        if (!v) { reset(); return; }
+        const int aspect = core::ExecParams::currentAspect();
+        DestPtr& val = this->m_value[aspect][0];
         DestPtr before = val;
         val = v;
-        changed(before, val, index);
+        changed(before, val, 0);
+    }
+
+#ifndef SOFA_DEPRECATE_OLD_API
+    // Convenient operators to make a SingleLink appear as a regular pointer
+    operator DestType*() const
+    {
+        return get();
+    }
+    DestType* operator->() const
+    {
+        return get();
+    }
+    DestType& operator*() const
+    {
+        return *get();
+    }
+
+    void operator=(DestPtr v)
+    {
+        set(v);
+    }
+#endif
+
+protected:
+    ValidatorFn m_validator;
+
+    void changed(DestPtr before, DestPtr& after, unsigned int /*index*/)
+    {
+        if (m_validator)
+            (this->m_owner->*m_validator)(before, after);
     }
 };
 
 } // namespace objectmodel
 
 } // namespace core
+
+// the SingleLink class is used everywhere
+using core::objectmodel::SingleLink;
+
+// the MultiLink class is used everywhere
+using core::objectmodel::MultiLink;
 
 } // namespace sofa
 

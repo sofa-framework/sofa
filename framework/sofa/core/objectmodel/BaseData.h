@@ -217,6 +217,12 @@ public:
     Base* getOwner() const { return m_owner; }
     void setOwner(Base* o) { m_owner=o; }
 
+    /// This method is needed by DDGNode
+    BaseData* getData() const
+    {
+        return const_cast<BaseData*>(this);
+    }
+
     /// Return the name of this Data within the Base component
     const std::string& getName() const { return m_name; }
     /// Set the name of this Data. Not that this methods should not be called directly, but the Data registration methods in Base should be used instead

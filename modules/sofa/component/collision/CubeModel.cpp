@@ -312,9 +312,11 @@ void CubeModel::computeBoundingTree(int maxDepth)
         // First remove extra levels
         while(root->getPrevious()!=NULL)
         {
-            core::CollisionModel* m = root->getPrevious();
+            core::CollisionModel::SPtr m = root->getPrevious();
             root->setPrevious(m->getPrevious());
-            delete m;
+            if (m->getMaster()) m->getMaster()->removeSlave(m);
+            //delete m;
+            m.reset();
         }
         // Then clear all existing levels
         {

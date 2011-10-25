@@ -157,7 +157,7 @@ public:
 
 protected:
 
-    sofa::core::objectmodel::Link<GNode,GNode,sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK> l_parent;
+    SingleLink<GNode,GNode,BaseLink::FLAG_DOUBLELINK> l_parent;
 
     virtual void doAddChild(GNode::SPtr node);
     void doRemoveChild(GNode::SPtr node);

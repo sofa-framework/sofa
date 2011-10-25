@@ -99,10 +99,10 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams /* PARAMS FIRST */,
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelMassAddMDx< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*fid[this->mstate].write()), **defaulttype::getShared(*mparams->readDx(this->mstate)), factor);
+            Task<ParallelMassAddMDx< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*fid[this->mstate.get(mparams)].write()), **defaulttype::getShared(*mparams->readDx(this->mstate)), factor);
         else
 #endif /* SOFA_SMP */
-            addMDx(mparams /* PARAMS FIRST */, *fid[this->mstate].write(), *mparams->readDx(this->mstate), factor);
+            addMDx(mparams /* PARAMS FIRST */, *fid[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), factor);
     }
 }
 
@@ -130,10 +130,10 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST *
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelMassAccFromF< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*aid[this->mstate].write()), **defaulttype::getShared(*mparams->readF(this->mstate)));
+            Task<ParallelMassAccFromF< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*aid[this->mstate.get(mparams)].write()), **defaulttype::getShared(*mparams->readF(this->mstate)));
         else
 #endif /* SOFA_SMP */
-            accFromF(mparams /* PARAMS FIRST */, *aid[this->mstate].write(), *mparams->readF(this->mstate));
+            accFromF(mparams /* PARAMS FIRST */, *aid[this->mstate.get(mparams)].write(), *mparams->readF(this->mstate));
     }
 }
 
@@ -168,7 +168,7 @@ void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams /* PARAMS FIRST *
     this->ForceField<DataTypes>::addMBKdx(mparams /* PARAMS FIRST */, dfId);
     if (mparams->mFactor() != 0.0)
     {
-        addMDx(mparams /* PARAMS FIRST */, *dfId[this->mstate].write(), *mparams->readDx(this->mstate), mparams->mFactor());
+        addMDx(mparams /* PARAMS FIRST */, *dfId[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), mparams->mFactor());
     }
 }
 
@@ -253,7 +253,7 @@ void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams /* PARAMS FI
 {
     if(this->mstate)
     {
-        DataVecDeriv& v = *vid[this->mstate].write();
+        DataVecDeriv& v = *vid[this->mstate.get(mparams)].write();
         addGravityToV(mparams /* PARAMS FIRST */, v);
     }
 }
