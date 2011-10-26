@@ -374,30 +374,6 @@ void FixedConstraintInternalData<gpu::opencl::OpenCLRigid3fTypes>::projectRespon
 }
 #endif // SOFA_DEV
 
-// Handle topological changes
-template <>
-void FixedConstraint<gpu::opencl::OpenCLVec3fTypes>::handleTopologyChange()
-{
-// 	std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-// 	std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
-//
-// 	f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-//printf("WARNING handleTopologyChange<gpu::opencl::OpenCLVec3fTypes> not implemented\n");
-}
-
-
-
-// Handle topological changes
-template <>
-void FixedConstraint<gpu::opencl::OpenCLVec3dTypes>::handleTopologyChange()
-{
-// 	std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-// 	std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
-//
-// 	f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-//printf("WARNING handleTopologyChange<gpu::opencl::OpenCLVec3dTypes> not implemented\n");
-}
-
 template <>
 void FixedConstraintInternalData<gpu::opencl::OpenCLVec3dTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
