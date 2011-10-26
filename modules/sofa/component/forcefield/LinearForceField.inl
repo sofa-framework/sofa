@@ -148,7 +148,7 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
             it_t++;
             it_f++;
         }
-        const VecIndex& indices = points.getValue();
+        const SetIndexArray& indices = points.getValue();
         if (finished)
         {
 
@@ -170,7 +170,7 @@ double LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPar
 {
     Real cT = (Real) this->getContext()->getTime();
     const VecCoord& _x = x.getValue();
-    const VecIndex& indices = points.getValue();
+    const SetIndexArray& indices = points.getValue();
     double e=0;
     if (keyTimes.getValue().size() != 0 && cT >= *keyTimes.getValue().begin() && cT <= *keyTimes.getValue().rbegin() && prevT != nextT)
     {
