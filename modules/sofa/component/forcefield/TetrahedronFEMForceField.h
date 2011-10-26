@@ -27,7 +27,6 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/TopologyData.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
@@ -60,7 +59,7 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 using sofa::helper::vector;
-using namespace sofa::component::topology;
+using namespace sofa::core::topology;
 
 template<class DataTypes>
 class TetrahedronFEMForceField;
@@ -104,6 +103,7 @@ public:
     typedef core::topology::BaseMeshTopology::index_type Index;
     typedef core::topology::BaseMeshTopology::Tetra Element;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
+    typedef BaseMeshTopology::Tetrahedron Tetrahedron;
 
     enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
             LARGE = 1,   ///< Symbol of large displacements tetrahedron solver

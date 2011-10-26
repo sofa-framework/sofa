@@ -59,11 +59,9 @@ typedef BaseMeshTopology::Quad				Quad;
 typedef BaseMeshTopology::EdgesInQuad			EdgesInQuad;
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::QuadularBSEdgeCreationFunction(unsigned int , void* param, EdgeInformation &ei,
-        const Edge& ,  const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyCreateFunction(unsigned int edgeIndex, EdgeInformation &ei, const Edge &,
+        const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    QuadularBendingSprings<DataTypes> *ff= (QuadularBendingSprings<DataTypes> *)param;
     if (ff)
     {
 
@@ -83,12 +81,14 @@ void QuadularBendingSprings<DataTypes>::QuadularBSEdgeCreationFunction(unsigned 
     }
 }
 
+
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::QuadularBSQuadCreationFunction (const sofa::helper::vector<unsigned int> &quadAdded,
-        void* param, vector<EdgeInformation> &edgeData)
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const sofa::helper::vector<unsigned int> &quadAdded,
+        const sofa::helper::vector<Edge> &,
+        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
+        const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
 
-    QuadularBendingSprings<DataTypes> *ff= (QuadularBendingSprings<DataTypes> *)param;
     if (ff)
     {
 
@@ -100,6 +100,8 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadCreationFunction (const so
         unsigned int nb_activated = 0;
 
         const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+
+        helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (unsigned int i=0; i<quadAdded.size(); ++i)
         {
@@ -187,16 +189,14 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadCreationFunction (const so
             }
 
         }
-
+        ff->edgeInfo.endEdit();
     }
 
 }
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::QuadularBSQuadDestructionFunction (const sofa::helper::vector<unsigned int> &quadRemoved,
-        void* param, vector<EdgeInformation> &edgeData)
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(const sofa::helper::vector<unsigned int> &quadRemoved)
 {
-    QuadularBendingSprings<DataTypes> *ff= (QuadularBendingSprings<DataTypes> *)param;
     if (ff)
     {
 
@@ -206,6 +206,7 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadDestructionFunction (const
         //unsigned int u,v;
 
         const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (unsigned int i=0; i<quadRemoved.size(); ++i)
         {
@@ -308,9 +309,169 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadDestructionFunction (const
             }
 
         }
-
+        ff->edgeInfo.endEdit();
     }
 }
+
+
+template< class DataTypes>
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(const sofa::helper::vector<unsigned int> &tab)
+{
+    if(ff)
+    {
+        bool debug_mode = false;
+
+        unsigned int last = ff->_topology->getNbPoints() -1;
+        unsigned int i,j;
+
+        helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
+
+        sofa::helper::vector<unsigned int> lastIndexVec;
+        for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
+        {
+
+            lastIndexVec.push_back(last - i_init);
+        }
+
+        for ( i = 0; i < tab.size(); ++i)
+        {
+            unsigned int i_next = i;
+            bool is_reached = false;
+            while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
+            {
+
+                i_next += 1 ;
+                is_reached = is_reached || (lastIndexVec[i_next] == tab[i]);
+            }
+
+            if(is_reached)
+            {
+
+                lastIndexVec[i_next] = lastIndexVec[i];
+
+            }
+
+            const sofa::helper::vector<unsigned int> &shell= ff->_topology->getQuadsAroundVertex(lastIndexVec[i]);
+            for (j=0; j<shell.size(); ++j)
+            {
+
+                Quad tj = ff->_topology->getQuad(shell[j]);
+
+                unsigned int vertexIndex = ff->_topology->getVertexIndexInQuad(tj, lastIndexVec[i]);
+
+                EdgesInQuad tej = ff->_topology->getEdgesInQuad(shell[j]);
+
+                for (unsigned int j_edge=vertexIndex; j_edge%4 !=(vertexIndex+2)%4; ++j_edge)
+                {
+
+                    unsigned int ind_j = tej[j_edge%4];
+
+                    if (edgeInf[ind_j].m1 == (int) last)
+                    {
+                        edgeInf[ind_j].m1=(int) tab[i];
+                        //sout << "INFO_print : OK m1 for ind_j =" << ind_j << sendl;
+                    }
+                    else
+                    {
+                        if (edgeInf[ind_j].m2 == (int) last)
+                        {
+                            edgeInf[ind_j].m2=(int) tab[i];
+                            //sout << "INFO_print : OK m2 for ind_j =" << ind_j << sendl;
+                        }
+                    }
+
+                    if (edgeInf[ind_j].m3 == (int) last)
+                    {
+                        edgeInf[ind_j].m3=(int) tab[i];
+                        //sout << "INFO_print : OK m3 for ind_j =" << ind_j << sendl;
+                    }
+                    else
+                    {
+                        if (edgeInf[ind_j].m4 == (int) last)
+                        {
+                            edgeInf[ind_j].m4=(int) tab[i];
+                            //sout << "INFO_print : OK m4 for ind_j =" << ind_j << sendl;
+                        }
+                    }
+
+                }
+            }
+
+            if(debug_mode)
+            {
+
+                for (unsigned int j_loc=0; j_loc<edgeInf.size(); ++j_loc)
+                {
+
+                    bool is_forgotten = false;
+                    if (edgeInf[j_loc].m1 == (int) last)
+                    {
+                        edgeInf[j_loc].m1 =(int) tab[i];
+                        is_forgotten=true;
+                        //sout << "INFO_print : QuadularBendingSprings - MISS m1 for j_loc =" << j_loc << sendl;
+
+                    }
+                    else
+                    {
+                        if (edgeInf[j_loc].m2 ==(int) last)
+                        {
+                            edgeInf[j_loc].m2 =(int) tab[i];
+                            is_forgotten=true;
+                            //sout << "INFO_print : QuadularBendingSprings - MISS m2 for j_loc =" << j_loc << sendl;
+
+                        }
+
+                    }
+
+                    if (edgeInf[j_loc].m3 == (int) last)
+                    {
+                        edgeInf[j_loc].m3 =(int) tab[i];
+                        is_forgotten=true;
+                        //sout << "INFO_print : QuadularBendingSprings - MISS m3 for j_loc =" << j_loc << sendl;
+
+                    }
+                    else
+                    {
+                        if (edgeInf[j_loc].m4 ==(int) last)
+                        {
+                            edgeInf[j_loc].m4 =(int) tab[i];
+                            is_forgotten=true;
+                            //sout << "INFO_print : QuadularBendingSprings - MISS m4 for j_loc =" << j_loc << sendl;
+
+                        }
+
+                    }
+                }
+            }
+
+            --last;
+        }
+        ff->edgeInfo.endEdit();
+    }
+}
+
+
+
+template< class DataTypes>
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointRenumbering(const sofa::helper::vector<unsigned int> &tab)
+{
+    if(ff)
+    {
+        helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
+        for ( int i = 0; i < ff->_topology->getNbEdges(); ++i)
+        {
+            if(edgeInf[i].is_activated)
+            {
+                edgeInf[i].m1  = tab[edgeInf[i].m1];
+                edgeInf[i].m2  = tab[edgeInf[i].m2];
+                edgeInf[i].m3  = tab[edgeInf[i].m3];
+                edgeInf[i].m4  = tab[edgeInf[i].m4];
+            }
+        }
+        ff->edgeInfo.endEdit();
+    }
+}
+
 
 
 template<class DataTypes>
@@ -319,186 +480,15 @@ QuadularBendingSprings<DataTypes>::QuadularBendingSprings()
     , f_ks ( initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs"))
     , f_kd ( initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs"))
 {
+    edgeHandler = new EdgeBSHandler(this, &edgeInfo);
 }
 
 
 template<class DataTypes>
 QuadularBendingSprings<DataTypes>::~QuadularBendingSprings()
-{}
-
-
-template <class DataTypes> void QuadularBendingSprings<DataTypes>::handleTopologyChange()
 {
-    bool debug_mode = false;
-
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-#ifdef TODOTOPO
-    edgeInfo.handleTopologyEvents(itBegin,itEnd);
-#endif
-    //quadInfo.handleTopologyEvents(itBegin,itEnd);
-
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-
-    while( itBegin != itEnd )
-    {
-        core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-
-        if(changeType == core::topology::POINTSREMOVED)
-        {
-
-            unsigned int last = _topology->getNbPoints() -1;
-            unsigned int i,j;
-
-            const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
-
-            sofa::helper::vector<unsigned int> lastIndexVec;
-            for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
-            {
-
-                lastIndexVec.push_back(last - i_init);
-            }
-
-            for ( i = 0; i < tab.size(); ++i)
-            {
-                unsigned int i_next = i;
-                bool is_reached = false;
-                while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
-                {
-
-                    i_next += 1 ;
-                    is_reached = is_reached || (lastIndexVec[i_next] == tab[i]);
-                }
-
-                if(is_reached)
-                {
-
-                    lastIndexVec[i_next] = lastIndexVec[i];
-
-                }
-
-                const sofa::helper::vector<unsigned int> &shell= _topology->getQuadsAroundVertex(lastIndexVec[i]);
-                for (j=0; j<shell.size(); ++j)
-                {
-
-                    Quad tj =  _topology->getQuad(shell[j]);
-
-                    unsigned int vertexIndex = _topology->getVertexIndexInQuad(tj, lastIndexVec[i]);
-
-                    EdgesInQuad tej = _topology->getEdgesInQuad(shell[j]);
-
-                    for (unsigned int j_edge=vertexIndex; j_edge%4 !=(vertexIndex+2)%4; ++j_edge)
-                    {
-
-                        unsigned int ind_j = tej[j_edge%4];
-
-                        if (edgeInf[ind_j].m1 == (int) last)
-                        {
-                            edgeInf[ind_j].m1=(int) tab[i];
-                            //sout << "INFO_print : OK m1 for ind_j =" << ind_j << sendl;
-                        }
-                        else
-                        {
-                            if (edgeInf[ind_j].m2 == (int) last)
-                            {
-                                edgeInf[ind_j].m2=(int) tab[i];
-                                //sout << "INFO_print : OK m2 for ind_j =" << ind_j << sendl;
-                            }
-                        }
-
-                        if (edgeInf[ind_j].m3 == (int) last)
-                        {
-                            edgeInf[ind_j].m3=(int) tab[i];
-                            //sout << "INFO_print : OK m3 for ind_j =" << ind_j << sendl;
-                        }
-                        else
-                        {
-                            if (edgeInf[ind_j].m4 == (int) last)
-                            {
-                                edgeInf[ind_j].m4=(int) tab[i];
-                                //sout << "INFO_print : OK m4 for ind_j =" << ind_j << sendl;
-                            }
-                        }
-
-                    }
-                }
-
-                if(debug_mode)
-                {
-
-
-
-                    for (unsigned int j_loc=0; j_loc<edgeInf.size(); ++j_loc)
-                    {
-
-                        bool is_forgotten = false;
-                        if (edgeInf[j_loc].m1 == (int) last)
-                        {
-                            edgeInf[j_loc].m1 =(int) tab[i];
-                            is_forgotten=true;
-                            //sout << "INFO_print : QuadularBendingSprings - MISS m1 for j_loc =" << j_loc << sendl;
-
-                        }
-                        else
-                        {
-                            if (edgeInf[j_loc].m2 ==(int) last)
-                            {
-                                edgeInf[j_loc].m2 =(int) tab[i];
-                                is_forgotten=true;
-                                //sout << "INFO_print : QuadularBendingSprings - MISS m2 for j_loc =" << j_loc << sendl;
-
-                            }
-
-                        }
-
-                        if (edgeInf[j_loc].m3 == (int) last)
-                        {
-                            edgeInf[j_loc].m3 =(int) tab[i];
-                            is_forgotten=true;
-                            //sout << "INFO_print : QuadularBendingSprings - MISS m3 for j_loc =" << j_loc << sendl;
-
-                        }
-                        else
-                        {
-                            if (edgeInf[j_loc].m4 ==(int) last)
-                            {
-                                edgeInf[j_loc].m4 =(int) tab[i];
-                                is_forgotten=true;
-                                //sout << "INFO_print : QuadularBendingSprings - MISS m4 for j_loc =" << j_loc << sendl;
-
-                            }
-
-                        }
-                    }
-                }
-
-                --last;
-            }
-
-        }
-        else
-        {
-            if(changeType == core::topology::POINTSRENUMBERING)
-            {
-
-                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
-
-                for ( int i = 0; i < _topology->getNbEdges(); ++i)
-                {
-                    if(edgeInf[i].is_activated)
-                    {
-                        edgeInf[i].m1  = tab[edgeInf[i].m1];
-                        edgeInf[i].m2  = tab[edgeInf[i].m2];
-                        edgeInf[i].m3  = tab[edgeInf[i].m3];
-                        edgeInf[i].m4  = tab[edgeInf[i].m4];
-                    }
-                }
-            }
-        }
-        ++itBegin;
-    }
-    edgeInfo.endEdit();
+    if(edgeHandler)
+        delete edgeHandler;
 }
 
 
@@ -516,6 +506,9 @@ void QuadularBendingSprings<DataTypes>::init()
         return;
     }
 
+    edgeInfo.createTopologicalEngine(_topology,edgeHandler);
+    edgeInfo.registerTopologicalData();
+
     /// prepare to store info in the edge array
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     edgeInf.resize(_topology->getNbEdges());
@@ -523,7 +516,7 @@ void QuadularBendingSprings<DataTypes>::init()
     // set edge tensor to 0
     for (int i=0; i<_topology->getNbEdges(); ++i)
     {
-        QuadularBSEdgeCreationFunction(i, (void*) this, edgeInf[i],
+        edgeHandler->applyCreateFunction(i, edgeInf[i],
                 _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
@@ -531,18 +524,14 @@ void QuadularBendingSprings<DataTypes>::init()
     // create edge tensor by calling the quad creation function
     sofa::helper::vector<unsigned int> quadAdded;
     for (int i=0; i<_topology->getNbQuads(); ++i)
-    {
         quadAdded.push_back(i);
-    }
-    QuadularBSQuadCreationFunction(quadAdded,(void*) this,
-            edgeInf);
-#ifdef TODOTOPO
-    edgeInfo.setCreateFunction(QuadularBSEdgeCreationFunction);
-    edgeInfo.setCreateQuadFunction(QuadularBSQuadCreationFunction);
-    edgeInfo.setDestroyQuadFunction(QuadularBSQuadDestructionFunction);
-    edgeInfo.setCreateParameter( (void *) this );
-    edgeInfo.setDestroyParameter( (void *) this );
-#endif
+
+    edgeHandler->applyQuadCreation(quadAdded,
+            (const sofa::helper::vector<Edge>)0,
+            (const sofa::helper::vector<sofa::helper::vector<unsigned int> >)0,
+            (const sofa::helper::vector<sofa::helper::vector<double> >)0);
+
+
     edgeInfo.endEdit();
     /////
 

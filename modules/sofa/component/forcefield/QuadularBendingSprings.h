@@ -77,6 +77,10 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
+    QuadularBendingSprings();
+
+    ~QuadularBendingSprings();
+
 protected:
 
     class EdgeInformation
@@ -115,20 +119,8 @@ protected:
         }
     };
 
-    EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
-
-    sofa::core::topology::BaseMeshTopology* _topology;
-
-    bool updateMatrix;
-
-    Data<double> f_ks;
-    Data<double> f_kd;
 
 
-
-    QuadularBendingSprings();
-
-    ~QuadularBendingSprings();
 public:
     /// Searches quad topology and creates the bending springs
     virtual void init();
@@ -148,36 +140,62 @@ public:
         f_kd.setValue((double)kd);
     }
 
-    // handle topological changes
-    virtual void handleTopologyChange();
-
     // -- VisualModel interface
     void draw(const core::visual::VisualParams* vparams);
     void initTextures() { }
     void update() { }
 
-protected:
-
     EdgeData<sofa::helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
-    static void QuadularBSEdgeCreationFunction(unsigned int edgeIndex, void* param,
-            EdgeInformation &ei,
-            const Edge& ,  const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double >&);
 
-    static void QuadularBSQuadCreationFunction(const sofa::helper::vector<unsigned int> &quadAdded,
-            void* param, vector<EdgeInformation> &edgeData);
+    class EdgeBSHandler : public TopologyDataHandler<Edge,sofa::helper::vector<EdgeInformation> >
+    {
+    public:
+        typedef typename QuadularBendingSprings<DataTypes>::EdgeInformation EdgeInformation;
 
-    static void QuadularBSQuadDestructionFunction ( const sofa::helper::vector<unsigned int> &quadAdded,
-            void* param, vector<EdgeInformation> &edgeData);
+        EdgeBSHandler(QuadularBendingSprings<DataTypes>* ff, EdgeData<sofa::helper::vector<EdgeInformation> >* data )
+            :TopologyDataHandler<Edge,sofa::helper::vector<EdgeInformation> >(data)
+            ,ff(ff)
+        {
+        }
+
+        void applyCreateFunction(unsigned int edgeIndex, EdgeInformation& ei,
+                const Edge &,
+                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+
+        void applyQuadCreation(const sofa::helper::vector<unsigned int> & quadAdded,
+                const sofa::helper::vector<Edge> &,
+                const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
+                const sofa::helper::vector<sofa::helper::vector<double> > &);
+
+        void applyQuadDestruction(const sofa::helper::vector<unsigned int> & quadRemoved);
+
+        void applyPointDestruction(const sofa::helper::vector<unsigned int> &pointIndices);
+
+        void applyPointRenumbering(const sofa::helper::vector<unsigned int> &pointToRenumber);
+
+    protected:
+        QuadularBendingSprings<DataTypes>* ff;
+    };
+
+
+
+protected:
+    bool updateMatrix;
+
+    Data<double> f_ks;
+    Data<double> f_kd;
 
     double m_potentialEnergy;
 
-    //typedef std::pair<unsigned,unsigned> IndexPair;
-    //void addSpring( unsigned, unsigned, std::set<IndexPair>& );
+    EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
 
-    //// void registerEdge( IndexPair, IndexPair, std::map<IndexPair, IndexPair>&, std::set<IndexPair>&);
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* _topology;
 
+    /// Handler for subset Data
+    EdgeBSHandler* edgeHandler;
 };
 
 using sofa::defaulttype::Vec3dTypes;

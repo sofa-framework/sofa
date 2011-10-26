@@ -84,153 +84,154 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::reinit( )
     computeLumpedMasses();
 }
 
-
+/*
 template <class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::topology::Topology* t)
 {
-    if(t != this->_topology)
-        return;
+	if(t != this->_topology)
+		return;
 
-    HexahedralFEMForceFieldT::handleTopologyChange();
+	HexahedralFEMForceFieldT::handleTopologyChange();
 
-    std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
+	std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
+	std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
 #ifdef TODOTOPO
-    // handle point events
-    _particleMasses.handleTopologyEvents(itBegin,itEnd);
+	// handle point events
+	_particleMasses.handleTopologyEvents(itBegin,itEnd);
 
-    if( _useLumpedMass.getValue() )
-        _lumpedMasses.handleTopologyEvents(itBegin,itEnd);
+	if( _useLumpedMass.getValue() )
+		_lumpedMasses.handleTopologyEvents(itBegin,itEnd);
 
-    // handle hexa events
-    _elementMasses.handleTopologyEvents(itBegin,itEnd);
-    _elementTotalMass.handleTopologyEvents(itBegin,itEnd);
+	// handle hexa events
+	_elementMasses.handleTopologyEvents(itBegin,itEnd);
+	_elementTotalMass.handleTopologyEvents(itBegin,itEnd);
 #endif
 
-    for(std::list<const TopologyChange *>::const_iterator iter = itBegin;
-        iter != itEnd; ++iter)
-    {
-        switch((*iter)->getChangeType())
-        {
-            // for added elements:
-            // compute ElementMasses and TotalMass
-            // add particle masses and lumped masses of adjacent particles
-        case HEXAHEDRAADDED:
-        {
-            const VecElement& hexahedra = this->_topology->getHexahedra();
-            const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraAdded *> (*iter))->hexahedronIndexArray;
+	for(std::list<const TopologyChange *>::const_iterator iter = itBegin;
+		iter != itEnd; ++iter)
+	{
+		switch((*iter)->getChangeType())
+		{
+		// for added elements:
+		// compute ElementMasses and TotalMass
+		// add particle masses and lumped masses of adjacent particles
+		case HEXAHEDRAADDED:
+			{
+				const VecElement& hexahedra = this->_topology->getHexahedra();
+				const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraAdded *> (*iter))->hexahedronIndexArray;
 
-            const VecCoord& initialPoints = *this->mstate->getX0();
+				const VecCoord& initialPoints = *this->mstate->getX0();
 
-            helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
-            helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
+				helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
+				helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
 
-            for(unsigned int i=0; i<hexaModif.size(); ++i)
-            {
-                const unsigned int hexaId = hexaModif[i];
+				for(unsigned int i=0; i<hexaModif.size(); ++i)
+				{
+					const unsigned int hexaId = hexaModif[i];
 
-                Vec<8,Coord> nodes;
-                for(int w=0; w<8; ++w)
-                    nodes[w] = initialPoints[hexahedra[hexaId][w]];
+					Vec<8,Coord> nodes;
+					for(int w=0;w<8;++w)
+						nodes[w] = initialPoints[hexahedra[hexaId][w]];
 
-                computeElementMass( elementMasses[hexaId], elementTotalMass[hexaId],
-                        this->hexahedronInfo.getValue()[hexaId].rotatedInitialElements);
-            }
+					computeElementMass( elementMasses[hexaId], elementTotalMass[hexaId],
+										this->hexahedronInfo.getValue()[hexaId].rotatedInitialElements);
+				}
 
-            this->_elementTotalMass.endEdit();
-            this->_elementMasses.endEdit();
+				this->_elementTotalMass.endEdit();
+				this->_elementMasses.endEdit();
 
 
-            helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
+				helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
 
-            for(unsigned int i=0; i<hexaModif.size(); ++i)
-            {
-                const unsigned int hexaId = hexaModif[i];
+				for(unsigned int i=0; i<hexaModif.size(); ++i)
+				{
+					const unsigned int hexaId = hexaModif[i];
 
-                Real mass = _elementTotalMass.getValue()[hexaId] * (Real) 0.125;
+					Real mass = _elementTotalMass.getValue()[hexaId] * (Real) 0.125;
 
-                for(int w=0; w<8; ++w)
-                    particleMasses[ hexahedra[hexaId][w] ] += mass;
-            }
+					for(int w=0; w<8; ++w)
+						particleMasses[ hexahedra[hexaId][w] ] += mass;
+				}
 
-            this->_particleMasses.endEdit();
+				this->_particleMasses.endEdit();
 
-            if( _useLumpedMass.getValue() )
-            {
-                helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
+				if( _useLumpedMass.getValue() )
+				{
+					helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
 
-                for(unsigned int i=0; i<hexaModif.size(); ++i)
-                {
-                    const unsigned int hexaId = hexaModif[i];
-                    const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
+					for(unsigned int i=0; i<hexaModif.size(); ++i)
+					{
+						const unsigned int hexaId = hexaModif[i];
+						const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
 
-                    for(int w=0; w<8; ++w)
-                    {
-                        for(int j=0; j<8*3; ++j)
-                        {
-                            lumpedMasses[ hexahedra[hexaId][w] ][0] += mass[w*3  ][j];
-                            lumpedMasses[ hexahedra[hexaId][w] ][1] += mass[w*3+1][j];
-                            lumpedMasses[ hexahedra[hexaId][w] ][2] += mass[w*3+2][j];
-                        }
-                    }
-                }
+						for(int w=0;w<8;++w)
+						{
+							for(int j=0;j<8*3;++j)
+							{
+								lumpedMasses[ hexahedra[hexaId][w] ][0] += mass[w*3  ][j];
+								lumpedMasses[ hexahedra[hexaId][w] ][1] += mass[w*3+1][j];
+								lumpedMasses[ hexahedra[hexaId][w] ][2] += mass[w*3+2][j];
+							}
+						}
+					}
 
-                this->_lumpedMasses.endEdit();
-            }
+					this->_lumpedMasses.endEdit();
+				}
 
-        }
-        break;
+			}
+			break;
 
-        // for removed elements:
-        // subttract particle masses and lumped masses of adjacent particles
-        case HEXAHEDRAREMOVED:
-        {
-            const VecElement& hexahedra = this->_topology->getHexahedra();
-            const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraRemoved *> (*iter))->getArray();
+		// for removed elements:
+		// subttract particle masses and lumped masses of adjacent particles
+		case HEXAHEDRAREMOVED:
+			{
+				const VecElement& hexahedra = this->_topology->getHexahedra();
+				const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraRemoved *> (*iter))->getArray();
 
-            helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
+				helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
 
-            for(unsigned int i=0; i<hexaModif.size(); ++i)
-            {
-                const unsigned int hexaId = hexaModif[i];
+				for(unsigned int i=0; i<hexaModif.size(); ++i)
+				{
+					const unsigned int hexaId = hexaModif[i];
 
-                Real mass = _elementTotalMass.getValue()[hexaId] * (Real) 0.125;
+					Real mass = _elementTotalMass.getValue()[hexaId] * (Real) 0.125;
 
-                for(int w=0; w<8; ++w)
-                    particleMasses[ hexahedra[hexaId][w] ] -= mass;
-            }
+					for(int w=0; w<8; ++w)
+						particleMasses[ hexahedra[hexaId][w] ] -= mass;
+				}
 
-            this->_particleMasses.endEdit();
+				this->_particleMasses.endEdit();
 
-            if( _useLumpedMass.getValue() )
-            {
-                helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
+				if( _useLumpedMass.getValue() )
+				{
+					helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
 
-                for(unsigned int i=0; i<hexaModif.size(); ++i)
-                {
-                    const unsigned int hexaId = hexaModif[i];
-                    const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
+					for(unsigned int i=0; i<hexaModif.size(); ++i)
+					{
+						const unsigned int hexaId = hexaModif[i];
+						const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
 
-                    for(int w=0; w<8; ++w)
-                    {
-                        for(int j=0; j<8*3; ++j)
-                        {
-                            lumpedMasses[ hexahedra[hexaId][w] ][0] -= mass[w*3  ][j];
-                            lumpedMasses[ hexahedra[hexaId][w] ][1] -= mass[w*3+1][j];
-                            lumpedMasses[ hexahedra[hexaId][w] ][2] -= mass[w*3+2][j];
-                        }
-                    }
-                }
+						for(int w=0;w<8;++w)
+						{
+							for(int j=0;j<8*3;++j)
+							{
+								lumpedMasses[ hexahedra[hexaId][w] ][0] -= mass[w*3  ][j];
+								lumpedMasses[ hexahedra[hexaId][w] ][1] -= mass[w*3+1][j];
+								lumpedMasses[ hexahedra[hexaId][w] ][2] -= mass[w*3+2][j];
+							}
+						}
+					}
 
-                this->_lumpedMasses.endEdit();
-            }
-        }
-        break;
-        default:
-            break;
-        }
-    }
+					this->_lumpedMasses.endEdit();
+				}
+			}
+			break;
+		default:
+			break;
+		}
+	}
 }
+*/
 
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeParticleMasses(  )
