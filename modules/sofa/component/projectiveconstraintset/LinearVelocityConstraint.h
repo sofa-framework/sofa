@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -44,6 +44,8 @@ namespace component
 
 namespace projectiveconstraintset
 {
+
+using namespace sofa::component::topology;
 
 /** impose a motion to given DOFs (translation and rotation)
 	The motion between 2 key times is linearly interpolated
@@ -65,18 +67,18 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 public :
     /// indices of the DOFs the constraint is applied to
-    Data<SetIndex> m_indices;
+    SetIndex m_indices;
     /// the key frames when the motion is defined by the user
     Data<helper::vector<Real> > m_keyTimes;
     /// the motions corresponding to the key frames
     Data<VecDeriv > m_keyVelocities;
     /// the coordinates on which to applay velocities
-    Data<SetIndex> m_coordinates;
+    SetIndex m_coordinates;
 
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
@@ -112,20 +114,31 @@ public:
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
     void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
 
-    /// Handle topological changes
-    virtual void handleTopologyChange();
-
     virtual void draw(const core::visual::VisualParams* vparams);
 
+    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    {
+    public:
+        typedef typename LinearVelocityConstraint<DataTypes>::SetIndexArray SetIndexArray;
+
+        FCPointHandler(LinearVelocityConstraint<DataTypes>* _lc, PointSubsetData<SetIndexArray>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), lc(_lc) {}
+
+
+
+        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+
+
+        bool applyTestCreateFunction(unsigned int /*index*/,
+                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+                const sofa::helper::vector< double > & /*coefs*/);
+    protected:
+        LinearVelocityConstraint<DataTypes> *lc;
+    };
+
 protected:
-
+    /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
-
-    /// Define TestNewPointFunction (for topology changes)
-    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
-
-    /// Define RemovalFunction (for topology changes)
-    static void FCRemovalFunction ( int , void*);
 
 private:
 
@@ -137,6 +150,9 @@ private:
 
     /// find previous and next time keys
     void findKeyTimes();
+
+    /// Handler for subset Data
+    FCPointHandler* pointHandler;
 };
 
 

@@ -28,6 +28,7 @@
 #include <sofa/component/projectiveconstraintset/HermiteSplineConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/component/topology/TopologySubsetData.inl>
 
 namespace sofa
 {
@@ -95,6 +96,12 @@ void  HermiteSplineConstraint<DataTypes>::addConstraint(unsigned index)
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::init()
 {
+    topology = this->getContext()->getMeshTopology();
+
+    // Initialize functions and parameters for topology data and handler
+    m_indices.createTopologicalEngine(topology);
+    m_indices.registerTopologicalData();
+
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 }
 
@@ -153,7 +160,7 @@ void HermiteSplineConstraint<DataTypes>::projectResponseT(const core::Mechanical
     Real t = (Real) this->getContext()->getTime();
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
     {
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             dx[*it] = Deriv();
     }
@@ -175,7 +182,7 @@ void HermiteSplineConstraint<DataTypes>::projectVelocity(const core::MechanicalP
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
     {
         Real DT = m_tEnd.getValue() - m_tBegin.getValue();
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
 
         t -= m_tBegin.getValue();
         Real u = t/DT;
@@ -199,7 +206,7 @@ void HermiteSplineConstraint<DataTypes>::projectPosition(const core::MechanicalP
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
     {
         Real DT = m_tEnd.getValue() - m_tBegin.getValue();
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
 
         t -= m_tBegin.getValue();
         Real u = t/DT;

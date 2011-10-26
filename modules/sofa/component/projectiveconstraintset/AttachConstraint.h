@@ -34,7 +34,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 #include <set>
 
 namespace sofa
@@ -73,18 +73,19 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    typedef topology::PointSubset SetIndex;
-    typedef helper::vector< unsigned int > SetIndexArray;
+    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 
 protected:
     AttachConstraintInternalData<DataTypes> data;
 
+    /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
 
 public:
-    Data<SetIndex> f_indices1;
-    Data<SetIndex> f_indices2;
+    SetIndex f_indices1;
+    SetIndex f_indices2;
     Data<Real> f_radius;
     Data<bool> f_twoWay;
     Data<bool> f_freeRotations;
@@ -119,8 +120,6 @@ public:
     /// Project the global Mechanical Vector to constrained space using offset parameter
     void applyConstraint(const core::MechanicalParams *mparams /* PARAMS FIRST */, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
-    // Handle topological changes
-    //virtual void handleTopologyChange();
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
@@ -167,12 +166,6 @@ protected :
     static unsigned int DerivConstrainedSize(bool /*freeRotations*/) { return Deriv::size(); }
 
     void calcRestRotations();
-
-    // Define TestNewPointFunction
-    //static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
-
-    // Define RemovalFunction
-    //static void FCRemovalFunction ( int , void*);
 };
 
 

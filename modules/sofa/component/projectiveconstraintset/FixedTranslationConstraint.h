@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDTRANSLATIONCONSTRAINT_H
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa
@@ -37,6 +37,8 @@ namespace component
 
 namespace projectiveconstraintset
 {
+
+using namespace sofa::component::topology;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
@@ -62,18 +64,17 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
-
+    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 protected:
     FixedTranslationConstraintInternalData<DataTypes> data;
     friend class FixedTranslationConstraintInternalData<DataTypes>;
 
 public:
-    Data<SetIndex> f_indices;
+    SetIndex f_indices;
     Data<bool> f_fixAll;
     Data<double> _drawSize;
-    Data<SetIndex> f_coordinates;
+    SetIndex f_coordinates;
 protected:
     FixedTranslationConstraint();
 
@@ -92,22 +93,38 @@ public:
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
     void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
 
-    // Handle topological changes
-    virtual void handleTopologyChange();
 
     virtual void draw(const core::visual::VisualParams* vparams);
+
+    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    {
+    public:
+        typedef typename FixedTranslationConstraint<DataTypes>::SetIndexArray SetIndexArray;
+
+        FCPointHandler(FixedTranslationConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+
+
+
+        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+
+
+        bool applyTestCreateFunction(unsigned int /*index*/,
+                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+                const sofa::helper::vector< double > & /*coefs*/);
+    protected:
+        FixedTranslationConstraint<DataTypes> *fc;
+    };
 
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
 
+    /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
 
-    // Define TestNewPointFunction
-    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
-
-    // Define RemovalFunction
-    static void FCRemovalFunction ( int , void*);
+    /// Handler for subset Data
+    FCPointHandler* pointHandler;
 
 };
 

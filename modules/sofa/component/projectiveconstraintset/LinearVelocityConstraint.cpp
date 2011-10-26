@@ -49,7 +49,7 @@ using namespace sofa::helper;
 template <>
 void LinearVelocityConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
@@ -63,7 +63,7 @@ void LinearVelocityConstraint<Rigid3dTypes>::draw(const core::visual::VisualPara
 template <>
 void LinearVelocityConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
@@ -79,7 +79,7 @@ void LinearVelocityConstraint<Vec6dTypes>::draw(const core::visual::VisualParams
 template <>
 void LinearVelocityConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
@@ -93,7 +93,7 @@ void LinearVelocityConstraint<Rigid3fTypes>::draw(const core::visual::VisualPara
 template <>
 void LinearVelocityConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);

@@ -70,7 +70,7 @@ template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Vec6fTypes
 template <>
 void FixedTranslationConstraint<Vec6dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();
@@ -99,7 +99,7 @@ void FixedTranslationConstraint<Vec6dTypes>::draw(const core::visual::VisualPara
 template <>
 void FixedTranslationConstraint<Vec6fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();

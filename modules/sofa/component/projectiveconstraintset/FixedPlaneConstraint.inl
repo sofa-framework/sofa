@@ -33,6 +33,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/component/topology/TopologySubsetData.inl>
+
 namespace sofa
 {
 
@@ -52,17 +54,20 @@ FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
     , dmax( initData(&dmax,(Real)0,"dmax","Maximum plane distance from the origin") )
 {
     selectVerticesFromPlanes=false;
+    pointHandler = new FCPointHandler(this, &indices);
 }
 
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::~FixedPlaneConstraint()
 {
+    if (pointHandler)
+        delete pointHandler;
 }
+
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedPlaneConstraint<DataTypes>::FPCTestNewPointFunction(int /*nbPoints*/, void* param, const helper::vector< unsigned int > &, const helper::vector< double >& )
+bool FixedPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    FixedPlaneConstraint<DataTypes> *fc= (FixedPlaneConstraint<DataTypes> *)param;
     if (fc)
     {
         return true;
@@ -75,14 +80,12 @@ bool FixedPlaneConstraint<DataTypes>::FPCTestNewPointFunction(int /*nbPoints*/, 
 
 // Define RemovalFunction
 template< class DataTypes>
-void FixedPlaneConstraint<DataTypes>::FPCRemovalFunction(int pointIndex, void* param)
+void FixedPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
-    FixedPlaneConstraint<DataTypes> *fc= (FixedPlaneConstraint<DataTypes> *)param;
     if (fc)
     {
         fc->removeConstraint((unsigned int) pointIndex);
     }
-    return;
 }
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>*  FixedPlaneConstraint<DataTypes>::addConstraint(int index)
@@ -183,26 +186,12 @@ void FixedPlaneConstraint<DataTypes>::init()
     if (selectVerticesFromPlanes)
         selectVerticesAlongPlane();
 
-    topology::PointSubset my_subset = indices.getValue();
-
-    // Force the initialization of defined functions and parameters
-    my_subset.setTestFunction(FPCTestNewPointFunction);
-    my_subset.setRemovalFunction(FPCRemovalFunction);
-
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
+    // Initialize functions and parameters
+    indices.createTopologicalEngine(topology, pointHandler);
+    indices.registerTopologicalData();
 
 }
 
-// Handle topological changes
-template <class DataTypes> void FixedPlaneConstraint<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
-
-    indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-
-}
 
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)

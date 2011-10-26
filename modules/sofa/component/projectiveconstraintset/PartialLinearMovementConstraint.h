@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <boost/type_traits/is_same.hpp>
@@ -51,7 +51,7 @@ namespace projectiveconstraintset
 
 
 
-
+using namespace sofa::component::topology;
 
 
 template<class DataTypes>
@@ -81,8 +81,8 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 protected:
     PartialLinearMovementConstraintInternalData<DataTypes> *data;
@@ -90,7 +90,7 @@ protected:
 
 public :
     /// indices of the DOFs the constraint is applied to
-    core::objectmodel::Data<SetIndex> m_indices;
+    SetIndex m_indices;
     /// the key frames when the motion is defined by the user
     core::objectmodel::Data<helper::vector<Real> > m_keyTimes;
     /// the motions corresponding to the key frames
@@ -149,10 +149,27 @@ public:
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
-    /// Handle topological changes
-    virtual void handleTopologyChange();
-
     virtual void draw(const core::visual::VisualParams*);
+
+    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    {
+    public:
+        typedef typename PartialLinearMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
+
+        FCPointHandler(PartialLinearMovementConstraint<DataTypes>* _lc, PointSubsetData<SetIndexArray>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), lc(_lc) {}
+
+
+
+        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+
+
+        bool applyTestCreateFunction(unsigned int /*index*/,
+                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+                const sofa::helper::vector< double > & /*coefs*/);
+    protected:
+        PartialLinearMovementConstraint<DataTypes> *lc;
+    };
 
 protected:
     template <class DataDeriv>
@@ -163,13 +180,8 @@ protected:
     template <class MyCoord>
     void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, sofa::defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);
 
+    /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
-
-    /// Define TestNewPointFunction (for topology changes)
-    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
-
-    /// Define RemovalFunction (for topology changes)
-    static void FCRemovalFunction ( int , void*);
 
 private:
 
@@ -181,6 +193,9 @@ private:
 
     /// find previous and next time keys
     void findKeyTimes();
+
+    /// Handler for subset Data
+    FCPointHandler* pointHandler;
 };
 
 

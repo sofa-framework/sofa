@@ -102,6 +102,7 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 
 protected:
+    /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
 
 };

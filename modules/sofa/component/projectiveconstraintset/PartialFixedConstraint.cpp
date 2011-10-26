@@ -84,7 +84,7 @@ template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Rigid2fTypes>;
 template <>
 void PartialFixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
@@ -105,7 +105,7 @@ void PartialFixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams
 template <>
 void PartialFixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
@@ -129,7 +129,7 @@ void PartialFixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams
 template <>
 void PartialFixedConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
@@ -150,7 +150,7 @@ void PartialFixedConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams
 template <>
 void PartialFixedConstraint<Rigid2fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);

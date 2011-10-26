@@ -46,7 +46,7 @@ using namespace sofa::helper;
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(unsigned int /*nbPoints*/, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int /*nbPoints*/, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
 {
     if (fc)
     {
@@ -60,7 +60,7 @@ bool FixedLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(unsi
 
 // Define RemovalFunction
 template< class DataTypes>
-void FixedLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void FixedLMConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
     if (fc)
     {
