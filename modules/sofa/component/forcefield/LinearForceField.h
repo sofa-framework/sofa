@@ -59,9 +59,8 @@ public:
     typedef typename Coord::value_type Real;
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
-    typedef helper::vector<unsigned int> VecIndex;
-
-    typedef sofa::component::topology::PointSubsetData< VecIndex > SetIndex;
+    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 protected:
 
