@@ -1,7 +1,7 @@
 #define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP
 
 #include <sofa/component/mapping/SubsetMultiMapping.inl>
-
+#include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 
 using namespace sofa::defaulttype;
