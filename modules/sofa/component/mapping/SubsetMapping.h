@@ -110,7 +110,7 @@ public:
     void init();
 
     // handle topology changes depending on the topology
-    void handleTopologyChange(core::topology::Topology* t);
+    //void handleTopologyChange(core::topology::Topology* t);
 
     virtual ~SubsetMapping();
 
