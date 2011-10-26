@@ -85,7 +85,7 @@ void LinearForceFieldInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Ma
 
     data.indices.clear();
 
-    const VecIndex& m_indices = m->points.getValue();
+    const SetIndexArray& m_indices = m->points.getValue();
 
     data.indices.resize(m_indices.size());
 

@@ -48,6 +48,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
     typedef typename Main::SetIndex SetIndex;
+    typedef typename Main::SetIndexArray SetIndexArray;
 
     // min/max fixed indices for contiguous constraints
     int minIndex;
@@ -75,6 +76,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
     typedef typename Main::SetIndex SetIndex;
+    typedef typename Main::SetIndexArray SetIndexArray;
 
     // min/max fixed indices for contiguous constraints
     int minIndex;
