@@ -177,7 +177,7 @@ public:
         if (p == val) return;
         if (p)
         {
-            if (p->next.get()) p->next.get()->previous.set(NULL);
+            if (p->next.get()) p->next.get()->previous.reset();
             p->next.set(NULL);
         }
         if (val)

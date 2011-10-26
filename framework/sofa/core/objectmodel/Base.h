@@ -225,7 +225,7 @@ public:
     /// Accessor to the map containing all the aliases of this object
     const MapLink& getLinkAliases() const { return m_aliasLink; }
 
-    virtual void* findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
+    virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
     virtual void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
     template<class T>
     bool findLinkDest(T*& ptr, const std::string& path, const BaseLink* link)

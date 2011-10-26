@@ -27,6 +27,7 @@
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/DataEngine.h>
 
 namespace sofa
 {
@@ -69,10 +70,10 @@ void DDGNode::setDirtyValue(const core::ExecParams* params)
     {
         dirtyValue = true;
 
-        // TRACE LOG (HACK...)
-        BaseData* d = dynamic_cast<BaseData*>(this);
-        if (d && d->getOwner())
-            d->getOwner()->sout << "Data " << d->getName() << " is now dirty." << d->getOwner()->sendl;
+        // TRACE LOG
+        Base* owner = getOwner();
+        if (owner)
+            owner->sout << "Data " << getName() << " is now dirty." << owner->sendl;
 
         setDirtyOutputs(params);
     }
@@ -98,9 +99,9 @@ void DDGNode::cleanDirty(const core::ExecParams* params)
     {
         dirtyValue = false;
 
-        BaseData* d = dynamic_cast<BaseData*>(this);
-        if (d && d->getOwner())
-            d->getOwner()->sout << "Data " << d->getName() << " has been updated." << d->getOwner()->sendl;
+        Base* owner = getOwner();
+        if (owner)
+            owner->sout << "Data " << getName() << " has been updated." << owner->sendl;
 
         for(DDGLinkIterator it=inputs.begin(params), itend=inputs.end(params); it != itend; ++it)
             (*it)->dirtyFlags[currentAspect(params)].dirtyOutputs = false;
@@ -166,7 +167,56 @@ sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<DDGNode>::getData(sofa::co
 
 bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link)
 {
-    return false; // TODO
+    std::string pathStr, dataStr(" "); // non-empty data to specify that a data name is optionnal for DDGNode (as it can be a DataEngine)
+    if (link)
+    {
+        if (!link->parseString(path, &pathStr, &dataStr))
+            return false;
+    }
+    else
+    {
+        if (!BaseLink::parseString(path, &pathStr, &dataStr, this->getOwner()))
+            return false;
+    }
+    bool self = (pathStr.empty() || pathStr == "[]");
+    if (dataStr == "") // no Data -> we look for a DataEngine
+    {
+        if (self)
+        {
+            ptr = this;
+            return true;
+        }
+        else
+        {
+            Base* owner = this->getOwner();
+            DataEngine* obj = NULL;
+            if (!owner)
+                return false;
+            if (!owner->findLinkDest(obj, path, link))
+                return false;
+            ptr = obj;
+            return true;
+        }
+    }
+    Base* owner = this->getOwner();
+    if (!owner)
+        return false;
+    if (self)
+    {
+        ptr = owner->findData(dataStr);
+        return (ptr != NULL);
+    }
+    else
+    {
+        Base* obj = NULL;
+        if (!owner->findLinkDest(obj, BaseLink::createString(pathStr), link))
+            return false;
+        if (!obj)
+            return false;
+        ptr = obj->findData(dataStr);
+        return (ptr != NULL);
+    }
+    return false;
 }
 
 } // namespace objectmodel

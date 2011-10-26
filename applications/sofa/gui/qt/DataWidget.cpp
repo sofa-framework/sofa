@@ -90,7 +90,7 @@ void QDisplayDataInfoWidget::linkModification()
 void QDisplayDataInfoWidget::linkEdited()
 {
     std::cerr << "linkEdited " << linkpath_edit->text().ascii() << std::endl;
-    data->setLinkPath(linkpath_edit->text().ascii() );
+    data->setParent(linkpath_edit->text().ascii() );
 }
 
 void QDisplayDataInfoWidget::formatHelperString(const std::string& helper, std::string& final_text)

@@ -105,6 +105,8 @@ public:
 
     const VecSlaves& getSlaves() const;
 
+    BaseObject* getSlave(const std::string& name) const;
+
     virtual void addSlave(BaseObject::SPtr s);
 
     virtual void removeSlave(BaseObject::SPtr s);

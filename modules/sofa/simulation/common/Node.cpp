@@ -274,7 +274,134 @@ core::objectmodel::BaseObject* Node::getObject(const std::string& name) const
 
 void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, const std::string& path, const core::objectmodel::BaseLink* link)
 {
-    return NULL; // TODO
+    std::string pathStr;
+    if (link)
+    {
+        if (!link->parseString(path,&pathStr))
+            return NULL;
+    }
+    else
+    {
+        if (!BaseLink::parseString(path,&pathStr,NULL,this))
+            return NULL;
+    }
+    std::size_t ppos = 0;
+    std::size_t psize = pathStr.size();
+    if (ppos == psize || (ppos == psize-2 && pathStr[ppos] == '[' && pathStr[ppos+1] == ']')) // self-reference
+    {
+        if (!link || !link->getOwnerBase()) return destType->dynamicCast(this);
+        return destType->dynamicCast(link->getOwnerBase());
+    }
+    Node* node = this;
+    BaseObject* master = NULL;
+    bool based = false;
+    if (ppos < psize && pathStr[ppos] == '[') // relative index in the list of objects
+    {
+        if (pathStr[psize-1] != ']')
+            return NULL;
+        int index = atoi(pathStr.c_str()+ppos+1);
+        ObjectReverseIterator it = object.rbegin();
+        ObjectReverseIterator itend = object.rend();
+        if (link && link->getOwnerBase())
+        {
+            // index from last
+            Base* b = link->getOwnerBase();
+            while (it != itend && *it != b)
+                ++it;
+        }
+        while (it != itend && index < 0)
+        {
+            ++it;
+            ++index;
+        }
+        if (it == itend)
+            return NULL;
+        return destType->dynamicCast(it->get());
+    }
+    else if (ppos < psize && pathStr[ppos] == '/') // absolute path
+    {
+        node = dynamic_cast<Node*>(this->getRoot());
+        if (!node) return NULL;
+        ++ppos;
+        based = true;
+    }
+    while(ppos < psize)
+    {
+        if ((ppos+1 < psize && pathStr.substr(ppos,2) == "./")
+            || pathStr.substr(ppos) == ".")
+        {
+            // this must be this node
+            ppos += 2;
+            based = true;
+        }
+        else if ((ppos+2 < psize && pathStr.substr(ppos,3) == "../") // relative
+                || pathStr.substr(ppos) == "..")
+        {
+            ppos += 3;
+            if (master)
+            {
+                master = master->getMaster();
+            }
+            else
+            {
+                Parents parents = node->getParents();
+                if (parents.empty()) return NULL;
+                node = dynamic_cast<Node*>(parents[0]); // TODO: explore other parents
+                if (!node) return NULL;
+            }
+            based = true;
+        }
+        else if (pathStr[ppos] == '/')
+        {
+            // extra /
+            ppos += 1;
+        }
+        else
+        {
+            std::size_t p2pos = pathStr.find('/',ppos);
+            if (p2pos == std::string::npos) p2pos = psize;
+            std::string name = pathStr.substr(ppos,p2pos-ppos-1);
+            ppos = p2pos+1;
+            if (master)
+            {
+                master = master->getSlave(name);
+                if (!master) return NULL;
+            }
+            else
+            {
+                for (;;)
+                {
+                    BaseObject* obj = node->getObject(name);
+                    Node* child = node->getChild(name);
+                    if (child) { node = child; break; }
+                    else if (obj) { master = obj; break; }
+                    if (based) return NULL;
+                    // this can still be found from an ancestor node
+                    Parents parents = node->getParents();
+                    if (parents.empty()) return NULL;
+                    node = dynamic_cast<Node*>(parents[0]); // TODO: explore other parents
+                    if (!node) return NULL;
+                }
+            }
+            based = true;
+        }
+    }
+    if (master)
+        return destType->dynamicCast(master);
+    else
+    {
+        void* r = destType->dynamicCast(node);
+        if (r) return r;
+        for (ObjectIterator it = object.begin(), itend = object.end(); it != itend; ++it)
+        {
+            BaseObject* obj = it->get();
+            void *o = destType->dynamicCast(obj);
+            if (!o) continue;
+            if (!r) r = o;
+            else return NULL; // several objects are possible, this is an ambiguous path
+        }
+        return r;
+    }
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.

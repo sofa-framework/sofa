@@ -663,7 +663,7 @@ void GraphModeler::configureElement(Base* b, xml::BaseElement *elem)
         if (!result.empty())
         {
             if (result[0] == '@')
-                vecDatas[i]->setLinkPath(result);
+                vecDatas[i]->setParent(result);
             else
                 vecDatas[i]->read(result);
         }
