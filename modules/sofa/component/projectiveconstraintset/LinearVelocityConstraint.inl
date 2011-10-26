@@ -32,6 +32,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
+#include <sofa/component/topology/TopologySubsetData.inl>
 
 
 namespace sofa
@@ -53,20 +54,18 @@ using namespace sofa::core::objectmodel;
 
 // Define TestNewPointFunction
 template< class TDataTypes>
-bool LinearVelocityConstraint<TDataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    LinearVelocityConstraint<TDataTypes> *fc= (LinearVelocityConstraint<TDataTypes> *)param;
-    return fc != 0;
+    return lc != 0;
 }
 
 // Define RemovalFunction
 template< class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::FCRemovalFunction(int pointIndex, void* param)
+void LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
-    LinearVelocityConstraint<TDataTypes> *fc= (LinearVelocityConstraint<TDataTypes> *)param;
-    if (fc)
+    if (lc)
     {
-        fc->removeIndex((unsigned int) pointIndex);
+        lc->removeIndex((unsigned int) pointIndex);
     }
 }
 
@@ -87,21 +86,16 @@ LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
     m_keyTimes.endEdit();
     m_keyVelocities.beginEdit()->push_back( Deriv() );
     m_keyVelocities.endEdit();
+
+    pointHandler = new FCPointHandler(this, &m_indices);
 }
 
-
-// Handle topological changes
-template <class TDataTypes> void LinearVelocityConstraint<TDataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
-
-    m_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-}
 
 template <class TDataTypes>
 LinearVelocityConstraint<TDataTypes>::~LinearVelocityConstraint()
 {
+    if (pointHandler)
+        delete pointHandler;
 }
 
 template <class TDataTypes>
@@ -154,13 +148,11 @@ void LinearVelocityConstraint<TDataTypes>::init()
     topology = this->getContext()->getMeshTopology();
 
     // Initialize functions and parameters
-    topology::PointSubset my_subset = m_indices.getValue();
+    m_indices.createTopologicalEngine(topology, pointHandler);
+    m_indices.registerTopologicalData();
 
-    my_subset.setTestFunction(FCTestNewPointFunction);
-    my_subset.setRemovalFunction(FCRemovalFunction);
-
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
+    m_coordinates.createTopologicalEngine(topology);
+    m_coordinates.registerTopologicalData();
 
     x0.resize(0);
     xP.resize(0);
@@ -195,7 +187,7 @@ void LinearVelocityConstraint<TDataTypes>::projectResponse(const core::Mechanica
 
     if (finished && nextT != prevT)
     {
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
 
         //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -222,8 +214,8 @@ void LinearVelocityConstraint<TDataTypes>::projectVelocity(const core::Mechanica
         //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
         Deriv v = ((nextV - prevV)*((cT - prevT)/(nextT - prevT))) + prevV;
 
-        const SetIndexArray & indices = m_indices.getValue().getArray();
-        const SetIndexArray & coordinates = m_coordinates.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & coordinates = m_coordinates.getValue();
 
         if (coordinates.size() == 0)
         {
@@ -255,7 +247,7 @@ void LinearVelocityConstraint<TDataTypes>::projectPosition(const core::Mechanica
     //initialize initial Dofs positions, if it's not done
     if (x0.size() == 0)
     {
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
         x0.resize( x.size() );
         xP.resize( x.size() );
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -281,8 +273,8 @@ void LinearVelocityConstraint<TDataTypes>::projectPosition(const core::Mechanica
         Real dt = (cT - prevT) / (nextT - prevT);
         Deriv m = (nextV-prevV)*dt + prevV;
 
-        const SetIndexArray & indices = m_indices.getValue().getArray();
-        const SetIndexArray & coordinates = m_coordinates.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
+        const SetIndexArray & coordinates = m_coordinates.getValue();
 
         if (coordinates.size() == 0)
         {
@@ -357,7 +349,7 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_LINES);
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
     for (unsigned int i=0 ; i<m_keyVelocities.getValue().size()-1 ; i++)
     {
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)

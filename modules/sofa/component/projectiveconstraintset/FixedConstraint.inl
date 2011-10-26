@@ -33,6 +33,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
+#include <sofa/component/topology/TopologySubsetData.inl>
 
 
 #include <sofa/helper/gl/BasicShapes.h>
@@ -58,9 +59,8 @@ using namespace sofa::core::behavior;
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool FixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    FixedConstraint<DataTypes> *fc= (FixedConstraint<DataTypes> *)param;
     if (fc)
     {
         return true;
@@ -73,14 +73,12 @@ bool FixedConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* 
 
 // Define RemovalFunction
 template< class DataTypes>
-void FixedConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
+void FixedConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
-    FixedConstraint<DataTypes> *fc= (FixedConstraint<DataTypes> *)param;
     if (fc)
     {
         fc->removeConstraint((unsigned int) pointIndex);
     }
-    return;
 }
 
 template <class DataTypes>
@@ -93,22 +91,16 @@ FixedConstraint<DataTypes>::FixedConstraint()
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
+
+    pointHandler = new FCPointHandler(this, &f_indices);
 }
 
-
-// Handle topological changes
-template <class DataTypes> void FixedConstraint<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
-
-    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-
-}
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::~FixedConstraint()
 {
+    if (pointHandler)
+        delete pointHandler;
 }
 
 template <class DataTypes>
@@ -142,25 +134,19 @@ void FixedConstraint<DataTypes>::init()
 
     topology = this->getContext()->getMeshTopology();
 
-//  if (!topology)
-//    serr << "Can not find the topology." << sendl;
+    //  if (!topology)
+    //    serr << "Can not find the topology." << sendl;
 
     // Initialize functions and parameters
-    topology::PointSubset my_subset = f_indices.getValue();
+    f_indices.createTopologicalEngine(topology, pointHandler);
+    f_indices.registerTopologicalData();
 
-    my_subset.setTestFunction(FCTestNewPointFunction);
-    my_subset.setRemovalFunction(FCRemovalFunction);
-
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
-
+    const SetIndexArray & indices = f_indices.getValue();
 
     unsigned int maxIndex=this->mstate->getSize();
-    for (topology::PointSubset::iterator it = my_subset.begin();  it != my_subset.end(); )
+    for (unsigned int i=0; i<indices.size(); ++i)
     {
-        topology::PointSubset::iterator currentIterator=it;
-        const unsigned int index=*it;
-        it++;
+        const unsigned int index=indices[i];
         if (index >= maxIndex)
         {
             serr << "Index " << index << " not valid!" << sendl;
@@ -175,7 +161,7 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
 {
     //cerr<<"FixedConstraint<DataTypes>::projectResponse is called "<<endl;
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
-    const SetIndexArray & indices = f_indices.getValue(mparams).getArray();
+    const SetIndexArray & indices = f_indices.getValue(mparams);
     //serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue(mparams) )
     {
@@ -202,7 +188,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
-    const SetIndexArray & indices = f_indices.getValue(mparams).getArray();
+    const SetIndexArray & indices = f_indices.getValue(mparams);
 
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();
@@ -240,7 +226,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*vData*/)
 {
 #if 0 /// @TODO ADD A FLAG FOR THIS
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     //serr<<"FixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue()==true )    // fix everyting
     {
@@ -272,7 +258,7 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, u
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
     const unsigned int N = Deriv::size();
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
@@ -292,7 +278,7 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, 
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
 
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         for (unsigned int c=0; c<N; ++c)
@@ -312,7 +298,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
 
 
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {

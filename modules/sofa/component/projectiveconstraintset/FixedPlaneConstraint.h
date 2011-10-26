@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <set>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 
 
 namespace sofa
@@ -40,6 +40,8 @@ namespace component
 
 namespace projectiveconstraintset
 {
+
+using namespace sofa::component::topology;
 
 /// This class can be overriden if needed for additionnal storage within template specilizations.
 template <class DataTypes>
@@ -64,7 +66,8 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef topology::PointSubset SetIndex;
+    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 protected:
     FixedPlaneConstraintInternalData<DataTypes> data;
@@ -73,7 +76,7 @@ protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
 
-    Data<SetIndex> indices; // the set of vertex indices
+    SetIndex indices; // the set of vertex indices
     /// direction on which the constraint applies
     Data<Coord> direction;
     /// whether vertices should be selected from 2 parallel planes
@@ -89,8 +92,7 @@ public:
     FixedPlaneConstraint<DataTypes>* addConstraint(int index);
 
     FixedPlaneConstraint<DataTypes>* removeConstraint(int index);
-    // Handle topological changes
-    virtual void handleTopologyChange();
+
     // -- Constraint interface
 
     void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
@@ -105,15 +107,33 @@ public:
     void setDminAndDmax(const Real _dmin,const Real _dmax) {dmin=_dmin; dmax=_dmax; selectVerticesFromPlanes=true;}
 
     void draw(const core::visual::VisualParams* vparams);
-protected:
 
+    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    {
+    public:
+        typedef typename FixedPlaneConstraint<DataTypes>::SetIndexArray SetIndexArray;
+
+        FCPointHandler(FixedPlaneConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+
+
+
+        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+
+
+        bool applyTestCreateFunction(unsigned int /*index*/,
+                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+                const sofa::helper::vector< double > & /*coefs*/);
+    protected:
+        FixedPlaneConstraint<DataTypes> *fc;
+    };
+
+protected:
+    /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
 
-    // Define TestNewPointFunction
-    static bool FPCTestNewPointFunction(int, void*, const helper::vector< unsigned int > &, const helper::vector< double >& );
-
-    // Define RemovalFunction
-    static void FPCRemovalFunction ( int , void*);
+    /// Handler for subset Data
+    FCPointHandler* pointHandler;
 
     bool isPointInPlane(Coord p)
     {

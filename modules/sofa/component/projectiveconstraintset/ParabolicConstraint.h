@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 
 
 namespace sofa
@@ -64,14 +64,14 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
     typedef defaulttype::Vec<3, Real> Vec3R;
     typedef helper::Quater<Real> QuatR;
 
 protected:
     ///indices of the DOFs constraints
-    Data<SetIndex> m_indices;
+    SetIndex m_indices;
 
     /// the three points defining the parabol
     Data<Vec3R> m_P1;
@@ -129,6 +129,9 @@ public:
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
+
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* topology;
 };
 
 } // namespace projectiveconstraintset

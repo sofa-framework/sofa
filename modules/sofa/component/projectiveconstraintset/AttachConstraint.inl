@@ -31,6 +31,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
+#include <sofa/component/topology/TopologySubsetData.inl>
 
 namespace sofa
 {
@@ -445,6 +446,12 @@ void AttachConstraint<DataTypes>::init()
 
     topology = this->getContext()->getMeshTopology();
 
+    f_indices1.createTopologicalEngine(topology);
+    f_indices1.registerTopologicalData();
+
+    f_indices2.createTopologicalEngine(topology);
+    f_indices2.registerTopologicalData();
+
     constraintReleased.resize(f_indices2.getValue().size());
 
     if (f_radius.getValue() >= 0 && f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0 && this->mstate1 && this->mstate2)
@@ -501,8 +508,8 @@ void AttachConstraint<Rigid3dTypes>::calcRestRotations();
 template <class DataTypes>
 void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, DataVecCoord& res1_d, DataVecCoord& res2_d)
 {
-    const SetIndexArray & indices1 = f_indices1.getValue().getArray();
-    const SetIndexArray & indices2 = f_indices2.getValue().getArray();
+    const SetIndexArray & indices1 = f_indices1.getValue();
+    const SetIndexArray & indices2 = f_indices2.getValue();
     const bool freeRotations = f_freeRotations.getValue();
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool last = (f_lastDir.isSet() && f_lastDir.getValue().norm() > 1.0e-10);
@@ -576,8 +583,8 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
     VecDeriv &res1 = *res1_d.beginEdit();
     VecDeriv &res2 = *res2_d.beginEdit();
 
-    const SetIndexArray & indices1 = f_indices1.getValue().getArray();
-    const SetIndexArray & indices2 = f_indices2.getValue().getArray();
+    const SetIndexArray & indices1 = f_indices1.getValue();
+    const SetIndexArray & indices2 = f_indices2.getValue();
     const bool freeRotations = f_freeRotations.getValue();
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
@@ -617,8 +624,8 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
     VecDeriv &res1 = *res1_d.beginEdit();
     VecDeriv &res2 = *res2_d.beginEdit();
 
-    const SetIndexArray & indices1 = f_indices1.getValue().getArray();
-    const SetIndexArray & indices2 = f_indices2.getValue().getArray();
+    const SetIndexArray & indices1 = f_indices1.getValue();
+    const SetIndexArray & indices2 = f_indices2.getValue();
     const bool twoway = f_twoWay.getValue();
     const bool freeRotations = f_freeRotations.getValue();
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
@@ -679,7 +686,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     defaulttype::BaseMatrix *mat = r.matrix;
     unsigned int offset = r.offset;
 
-    const SetIndexArray & indices = f_indices2.getValue().getArray();
+    const SetIndexArray & indices = f_indices2.getValue();
     const unsigned int N = Deriv::size();
     const unsigned int NC = DerivConstrainedSize(f_freeRotations.getValue());
     const unsigned int NCLast = DerivConstrainedSize(f_lastFreeRotation.getValue());
@@ -732,7 +739,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     if (this->f_printLog.getValue())
         sout << "applyConstraint in Vector with offset = " << offset << sendl;
 
-    const SetIndexArray & indices = f_indices2.getValue().getArray();
+    const SetIndexArray & indices = f_indices2.getValue();
     const unsigned int N = Deriv::size();
     const unsigned int NC = DerivConstrainedSize(f_freeRotations.getValue());
     const unsigned int NCLast = DerivConstrainedSize(f_lastFreeRotation.getValue());
@@ -764,8 +771,8 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const SetIndexArray & indices1 = f_indices1.getValue().getArray();
-    const SetIndexArray & indices2 = f_indices2.getValue().getArray();
+    const SetIndexArray & indices1 = f_indices1.getValue();
+    const SetIndexArray & indices2 = f_indices2.getValue();
     const VecCoord& x1 = *this->mstate1->getX();
     const VecCoord& x2 = *this->mstate2->getX();
     glDisable (GL_LIGHTING);

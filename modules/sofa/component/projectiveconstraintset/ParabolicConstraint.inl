@@ -28,6 +28,7 @@
 #include <sofa/component/projectiveconstraintset/ParabolicConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/component/topology/TopologySubsetData.inl>
 
 namespace sofa
 {
@@ -84,6 +85,12 @@ void ParabolicConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
+    topology = this->getContext()->getMeshTopology();
+
+    // Initialize functions and parameters for topology data and handler
+    m_indices.createTopologicalEngine(topology);
+    m_indices.registerTopologicalData();
+
     Vec3R P1 = m_P1.getValue();
     Vec3R P2 = m_P2.getValue();
     Vec3R P3 = m_P3.getValue();
@@ -130,7 +137,7 @@ void ParabolicConstraint<DataTypes>::projectResponseT(const core::MechanicalPara
     Real t = (Real) this->getContext()->getTime();
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
     {
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             dx[*it] = Deriv();
     }
@@ -153,7 +160,7 @@ void ParabolicConstraint<DataTypes>::projectVelocity(const core::MechanicalParam
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
     {
         Real relativeTime = (t - m_tBegin.getValue() ) / (m_tEnd.getValue() - m_tBegin.getValue());
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
 
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
@@ -182,7 +189,7 @@ void ParabolicConstraint<DataTypes>::projectPosition(const core::MechanicalParam
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
     {
         Real relativeTime = (t - m_tBegin.getValue() ) / (m_tEnd.getValue() - m_tBegin.getValue());
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
 
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {

@@ -34,7 +34,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 
 
 namespace sofa
@@ -49,6 +49,7 @@ namespace projectiveconstraintset
 
 using core::objectmodel::Data;
 using namespace sofa::core::objectmodel;
+using namespace sofa::component::topology;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
@@ -77,8 +78,8 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 
 protected:
@@ -86,7 +87,7 @@ protected:
     friend class PartialFixedConstraintInternalData<DataTypes>;
 
 public:
-    Data<SetIndex> f_indices;
+    SetIndex f_indices;
     Data<bool> f_fixAll;
     Data<double> _drawSize;
     enum { NumDimensions = Deriv::total_size };
@@ -112,24 +113,41 @@ public:
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
-    // Handle topological changes
-    virtual void handleTopologyChange();
 
     virtual void draw(const core::visual::VisualParams*);
 
     bool fixAllDOFs() const { return f_fixAll.getValue(); }
 
+
+    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    {
+    public:
+        typedef typename PartialFixedConstraint<DataTypes>::SetIndexArray SetIndexArray;
+
+        FCPointHandler(PartialFixedConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+
+
+
+        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+
+
+        bool applyTestCreateFunction(unsigned int /*index*/,
+                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+                const sofa::helper::vector< double > & /*coefs*/);
+    protected:
+        PartialFixedConstraint<DataTypes> *fc;
+    };
+
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
 
+    /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
 
-    // Define TestNewPointFunction
-    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
-
-    // Define RemovalFunction
-    static void FCRemovalFunction ( int , void*);
+    /// Handler for subset Data
+    FCPointHandler* pointHandler;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)

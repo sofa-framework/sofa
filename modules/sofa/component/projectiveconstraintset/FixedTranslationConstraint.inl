@@ -30,6 +30,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
+#include <sofa/component/topology/TopologySubsetData.inl>
 
 namespace sofa
 {
@@ -48,17 +49,15 @@ using namespace sofa::core::topology;
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedTranslationConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool FixedTranslationConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    FixedTranslationConstraint<DataTypes> *fc = (FixedTranslationConstraint<DataTypes> *) param;
     return fc != 0;
 }
 
 // Define RemovalFunction
 template< class DataTypes>
-void FixedTranslationConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
+void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
-    FixedTranslationConstraint<DataTypes> *fc = (FixedTranslationConstraint<DataTypes> *) param;
     if (fc)
     {
         fc->removeIndex((unsigned int) pointIndex);
@@ -75,22 +74,16 @@ FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
+
+    pointHandler = new FCPointHandler(this, &f_indices);
 }
 
-// Handle topological changes
-template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
-
-    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-}
 
 template <class DataTypes>
 FixedTranslationConstraint<DataTypes>::~FixedTranslationConstraint()
 {
-
+    if (pointHandler)
+        delete pointHandler;
 }
 
 template <class DataTypes>
@@ -123,13 +116,11 @@ void FixedTranslationConstraint<DataTypes>::init()
     topology = this->getContext()->getMeshTopology();
 
     // Initialize functions and parameters
-    topology::PointSubset my_subset = f_indices.getValue();
+    f_indices.createTopologicalEngine(topology, pointHandler);
+    f_indices.registerTopologicalData();
 
-    my_subset.setTestFunction(FCTestNewPointFunction);
-    my_subset.setRemovalFunction(FCRemovalFunction);
-
-    my_subset.setTestParameter((void *) this);
-    my_subset.setRemovalParameter((void *) this);
+    f_coordinates.createTopologicalEngine(topology);
+    f_coordinates.registerTopologicalData();
 
 }
 
@@ -150,7 +141,7 @@ static inline void clearPos(defaulttype::Vec<6,T>& v)
 template <class DataTypes> template <class DataDeriv>
 void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
 
     if (f_fixAll.getValue() == true)
     {
@@ -207,7 +198,7 @@ void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::Me
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();

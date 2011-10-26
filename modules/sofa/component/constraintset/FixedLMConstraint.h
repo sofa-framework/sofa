@@ -82,14 +82,14 @@ protected:
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
         , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     {
-        pointHandler = new FCTPointHandler(this, &f_indices);
+        pointHandler = new FCPointHandler(this, &f_indices);
     }
 
     FixedLMConstraint()
         : f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
         , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     {
-        pointHandler = new FCTPointHandler(this, &f_indices);
+        pointHandler = new FCPointHandler(this, &f_indices);
     }
 
     ~FixedLMConstraint()
@@ -106,7 +106,7 @@ public:
     void init();
     void draw(const core::visual::VisualParams* vparams);
     void initFixedPosition();
-    void reset() {initFixedPosition();};
+    void reset() {initFixedPosition();}
 
     // -- LMConstraint interface
     void buildConstraintMatrix(const core::ConstraintParams* cParams /* PARAMS FIRST */, core::MultiMatrixDerivId cId, unsigned int &cIndex);
@@ -135,10 +135,10 @@ public:
     Data<double> _drawSize;
 
 
-    class FCTPointHandler : public TopologySubsetDataHandler<Point, vector<unsigned int> >
+    class FCPointHandler : public TopologySubsetDataHandler<Point, vector<unsigned int> >
     {
     public:
-        FCTPointHandler(FixedLMConstraint<DataTypes>* _fc, PointSubsetData<helper::vector<unsigned int> >* _data)
+        FCPointHandler(FixedLMConstraint<DataTypes>* _fc, PointSubsetData<helper::vector<unsigned int> >* _data)
             : TopologySubsetDataHandler<Point, sofa::helper::vector<unsigned int> >(_data), fc(_fc) {}
 
 
@@ -161,7 +161,7 @@ protected :
 
     sofa::core::topology::BaseMeshTopology* topology;
 
-    FCTPointHandler* pointHandler;
+    FCPointHandler* pointHandler;
 
 };
 

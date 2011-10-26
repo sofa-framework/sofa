@@ -32,6 +32,8 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
+#include <sofa/component/topology/TopologySubsetData.inl>
+
 
 
 namespace sofa
@@ -51,22 +53,19 @@ using namespace sofa::core::behavior;
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool PartialLinearMovementConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    PartialLinearMovementConstraint<DataTypes> *fc = (PartialLinearMovementConstraint<DataTypes> *)param;
-    return fc != 0;
+    return lc != 0;
 }
 
 // Define RemovalFunction
 template< class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
+void PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
-    PartialLinearMovementConstraint<DataTypes> *fc= (PartialLinearMovementConstraint<DataTypes> *)param;
-    if (fc)
+    if (lc)
     {
-        fc->removeIndex((unsigned int) pointIndex);
+        lc->removeIndex((unsigned int) pointIndex);
     }
-    return;
 }
 
 template <class DataTypes>
@@ -100,21 +99,16 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
     for( unsigned i=0; i<NumDimensions; i++)
         movedDirection[i] = true;
     movedDirections.setValue(movedDirection);
+
+    pointHandler = new FCPointHandler(this, &m_indices);
 }
 
-
-// Handle topological changes
-template <class DataTypes> void PartialLinearMovementConstraint<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
-
-    m_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-}
 
 template <class DataTypes>
 PartialLinearMovementConstraint<DataTypes>::~PartialLinearMovementConstraint()
 {
+    if (pointHandler)
+        delete pointHandler;
 }
 
 template <class DataTypes>
@@ -167,13 +161,8 @@ void PartialLinearMovementConstraint<DataTypes>::init()
     topology = this->getContext()->getMeshTopology();
 
     // Initialize functions and parameters
-    topology::PointSubset my_subset = m_indices.getValue();
-
-    my_subset.setTestFunction(FCTestNewPointFunction);
-    my_subset.setRemovalFunction(FCRemovalFunction);
-
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
+    m_indices.createTopologicalEngine(topology, pointHandler);
+    m_indices.registerTopologicalData();
 
     x0.resize(0);
     nextM = prevM = Deriv();
@@ -207,7 +196,7 @@ void PartialLinearMovementConstraint<DataTypes>::projectResponseT(const core::Me
 
     if (finished && nextT != prevT)
     {
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
 
         //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -238,7 +227,7 @@ void PartialLinearMovementConstraint<DataTypes>::projectVelocity(const core::Mec
 
     if (finished && nextT != prevT)
     {
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
 
         //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -258,7 +247,7 @@ void PartialLinearMovementConstraint<DataTypes>::projectPosition(const core::Mec
     //initialize initial Dofs positions, if it's not done
     if (x0.size() == 0)
     {
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
         x0.resize(x.size());
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
@@ -282,7 +271,7 @@ template <class DataTypes>
 template <class MyCoord>
 void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
 {
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
     //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  current time cT = "<<cT<<endl;
     //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  prevT = "<<prevT<<" ,prevM= "<<prevM<<endl;
     //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  nextT = "<<nextT<<" ,nextM= "<<nextM<<endl;
@@ -372,7 +361,7 @@ template <class DataTypes>
 template <class MyCoord>
 void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
 {
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
 
     Real dt = (cT - prevT) / (nextT - prevT);
     Deriv m = prevM + (nextM-prevM)*dt;
@@ -446,7 +435,7 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::Ba
     //cerr<<"PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     //const unsigned int N = Deriv::size();
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
 
     VecBool movedDirection = movedDirections.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -472,7 +461,7 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::Ba
     //const unsigned int N = Deriv::size();
 
     VecBool movedDirection = movedDirections.getValue();
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         for (unsigned int c = 0; c < NumDimensions; ++c)
@@ -497,7 +486,7 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
         glPointSize(10);
         glColor4f(1, 0.5, 0.5, 1);
         glBegin(GL_LINES);
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
         for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
         {
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -514,7 +503,7 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
 
         sofa::helper::vector<Vector3> points;
         Vector3 point;
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             point = DataTypes::getCPos(x[*it]);

@@ -33,6 +33,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
+#include <sofa/component/topology/TopologySubsetData.inl>
 
 
 
@@ -53,22 +54,19 @@ using namespace sofa::core::behavior;
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool LinearMovementConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool LinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    LinearMovementConstraint<DataTypes> *fc = (LinearMovementConstraint<DataTypes> *)param;
-    return fc != 0;
+    return lc != 0;
 }
 
 // Define RemovalFunction
 template< class DataTypes>
-void LinearMovementConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
+void LinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
 {
-    LinearMovementConstraint<DataTypes> *fc= (LinearMovementConstraint<DataTypes> *)param;
-    if (fc)
+    if (lc)
     {
-        fc->removeIndex((unsigned int) pointIndex);
+        lc->removeIndex((unsigned int) pointIndex);
     }
-    return;
 }
 
 template <class DataTypes>
@@ -89,21 +87,17 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     m_keyTimes.endEdit();
     m_keyMovements.beginEdit()->push_back( Deriv() );
     m_keyMovements.endEdit();
+
+    pointHandler = new FCPointHandler(this, &m_indices);
 }
 
 
-// Handle topological changes
-template <class DataTypes> void LinearMovementConstraint<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
-
-    m_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-}
 
 template <class DataTypes>
 LinearMovementConstraint<DataTypes>::~LinearMovementConstraint()
 {
+    if (pointHandler)
+        delete pointHandler;
 }
 
 template <class DataTypes>
@@ -156,13 +150,8 @@ void LinearMovementConstraint<DataTypes>::init()
     topology = this->getContext()->getMeshTopology();
 
     // Initialize functions and parameters
-    topology::PointSubset my_subset = m_indices.getValue();
-
-    my_subset.setTestFunction(FCTestNewPointFunction);
-    my_subset.setRemovalFunction(FCRemovalFunction);
-
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
+    m_indices.createTopologicalEngine(topology, pointHandler);
+    m_indices.registerTopologicalData();
 
     x0.resize(0);
     nextM = prevM = Deriv();
@@ -195,7 +184,7 @@ void LinearMovementConstraint<DataTypes>::projectResponseT(const core::Mechanica
 
     if (finished && nextT != prevT)
     {
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
 
         //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -224,7 +213,7 @@ void LinearMovementConstraint<DataTypes>::projectVelocity(const core::Mechanical
 
     if (finished && nextT != prevT)
     {
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
 
         //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -244,7 +233,7 @@ void LinearMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
     //initialize initial Dofs positions, if it's not done
     if (x0.size() == 0)
     {
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
         x0.resize(x.size());
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
@@ -268,7 +257,7 @@ template <class DataTypes>
 template <class MyCoord>
 void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
 {
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
 //                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition,  current time cT = "<<cT<<endl;
 //                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition,  prevT = "<<prevT<<" ,prevM= "<<prevM<<endl;
 //                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition,  nextT = "<<nextT<<" ,nextM= "<<nextM<<endl;
@@ -293,7 +282,7 @@ template <class DataTypes>
 template <class MyCoord>
 void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
 {
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
 
     Real dt = (cT - prevT) / (nextT - prevT);
     Deriv m = prevM + (nextM-prevM)*dt;
@@ -364,7 +353,7 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatri
 {
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
@@ -383,7 +372,7 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
 
-    const SetIndexArray & indices = m_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         for (unsigned int c=0; c<N; ++c)
@@ -403,7 +392,7 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         glPointSize(10);
         glColor4f(1, 0.5, 0.5, 1);
         glBegin(GL_LINES);
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
         for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
         {
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -420,7 +409,7 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
 
         sofa::helper::vector<Vector3> points;
         Vector3 point;
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        const SetIndexArray & indices = m_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             point = DataTypes::getCPos(x[*it]);
