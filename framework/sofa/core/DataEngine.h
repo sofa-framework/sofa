@@ -152,7 +152,6 @@ public:
         return NULL;
     }
 
-protected:
     /// Add a link.
     void addLink(objectmodel::BaseLink* l)
     {

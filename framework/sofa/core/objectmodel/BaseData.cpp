@@ -43,6 +43,8 @@ BaseData::BaseData(const char* h, DataFlags dataflags, Base* owner, const char* 
     , m_owner(owner), m_name(name)
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
+    addLink(&inputs);
+    addLink(&outputs);
     m_counters.assign(0);
     m_isSets.assign(false);
     //setAutoLink(true);
@@ -54,6 +56,8 @@ BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly, Base* owne
     , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(owner), m_name(name)
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
+    addLink(&inputs);
+    addLink(&outputs);
     m_counters.assign(0);
     m_isSets.assign(false);
     setFlag(FLAG_DISPLAYED,isDisplayed);
@@ -68,6 +72,8 @@ BaseData::BaseData( const BaseInitData& init)
     , m_owner(init.owner), m_name(init.name)
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
+    addLink(&inputs);
+    addLink(&outputs);
     m_counters.assign(0);
     m_isSets.assign(false);
     if (init.data && init.data != this)
@@ -285,7 +291,10 @@ bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const B
     if (m_owner)
         return m_owner->findDataLinkDest(ptr, path, link);
     else
+    {
+        std::cerr << "DATA LINK ERROR: no owner defined for Data " << getName() << ", cannot lookup Data link " << path << std::endl;
         return false;
+    }
 }
 
 /// Add a link.

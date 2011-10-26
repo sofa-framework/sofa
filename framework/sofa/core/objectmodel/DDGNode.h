@@ -218,6 +218,8 @@ public:
 
     virtual bool findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link);
 
+    void addLink(BaseLink* l);
+
 protected:
 
     BaseLink::InitLink<DDGNode>
@@ -225,9 +227,6 @@ protected:
     {
         return BaseLink::InitLink<DDGNode>(this, name, help);
     }
-
-    /// Add a link.
-    virtual void addLink(BaseLink* l) = 0;
 
     //std::list<DDGNode*> inputs;
     //std::list<DDGNode*> outputs;

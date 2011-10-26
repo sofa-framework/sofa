@@ -302,6 +302,7 @@ public:
     TLink(const InitLink<OwnerType>& init)
         : BaseLink(init, ActiveFlags), m_owner(init.owner)
     {
+        if (m_owner) m_owner->addLink(this);
     }
 
     virtual ~TLink()
@@ -427,7 +428,7 @@ public:
         {
             DestType* ptr = TraitsDestPtr::get(value);
             if (ptr)
-                path = BaseLink::createString(TraitsDestCasts::getBase(ptr), TraitsDestCasts::getData(ptr),
+                path = BaseLink::CreateString(TraitsDestCasts::getBase(ptr), TraitsDestCasts::getData(ptr),
                         TraitsOwnerCasts::getBase(m_owner));
         }
         return path;

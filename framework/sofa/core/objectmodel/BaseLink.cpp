@@ -99,16 +99,18 @@ void BaseLink::releaseAspect(int /*aspect*/)
 {
 }
 
-bool BaseLink::parseString(const std::string& text, std::string* path, std::string* data, Base* owner)
+bool BaseLink::ParseString(const std::string& text, std::string* path, std::string* data, Base* owner)
 {
     if (text.empty())
     {
         if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": empty path." << owner->sendl;
+        else std::cerr << "ERROR parsing Link \""<<text<<"\": empty path." << std::endl;
         return false;
     }
     if (text[0] != '@')
     {
         if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": first character should be '@'." << owner->sendl;
+        else std::cerr << "ERROR parsing Link \""<<text<<"\": first character should be '@'." << std::endl;
         return false;
     }
     std::size_t posPath = text.rfind('/');
@@ -117,12 +119,14 @@ bool BaseLink::parseString(const std::string& text, std::string* path, std::stri
     if (!data && posDot != std::string::npos)
     {
         if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": a Data field name is specified while an object was expected." << owner->sendl;
+        else std::cerr << "ERROR parsing Link \""<<text<<"\": a Data field name is specified while an object was expected." << std::endl;
         return false;
     }
 
     if (data && data->empty() && posDot == std::string::npos)
     {
         if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": a Data field name is required." << owner->sendl;
+        else std::cerr << "ERROR parsing Link \""<<text<<"\": a Data field name is required." << std::endl;
         return false;
     }
 
@@ -142,18 +146,20 @@ bool BaseLink::parseString(const std::string& text, std::string* path, std::stri
         if ((*path)[0] == '[' && (*path)[path->size()-1] != ']')
         {
             if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": missing closing bracket ']'." << owner->sendl;
+            else std::cerr << "ERROR parsing Link \""<<text<<"\": missing closing bracket ']'." << std::endl;
             return false;
         }
         if ((*path)[0] == '[' && (*path)[1] != '-' && (*path)[1] != ']')
         {
             if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": bracket syntax can only be used for self-reference or preceding objects with a negative index." << owner->sendl;
+            else std::cerr << "ERROR parsing Link \""<<text<<"\": bracket syntax can only be used for self-reference or preceding objects with a negative index." << std::endl;
             return false;
         }
     }
     return true;
 }
 
-std::string BaseLink::createString(const std::string& path, const std::string& data)
+std::string BaseLink::CreateString(const std::string& path, const std::string& data)
 {
     std::string result = "@";
     if (!path.empty()) result += path;
@@ -165,28 +171,28 @@ std::string BaseLink::createString(const std::string& path, const std::string& d
     return result;
 }
 
-std::string BaseLink::createStringPath(Base* object, Base* from)
+std::string BaseLink::CreateStringPath(Base* object, Base* from)
 {
     if (!object || object == from) return std::string("[]");
     return object->getName(); // TODO: compute full or relative path
 }
 
-std::string BaseLink::createStringData(BaseData* data)
+std::string BaseLink::CreateStringData(BaseData* data)
 {
     if (!data) return std::string();
     return data->getName();
 }
-std::string BaseLink::createString(Base* object, Base* from)
+std::string BaseLink::CreateString(Base* object, Base* from)
 {
-    return createString(createStringPath(object,from));
+    return CreateString(CreateStringPath(object,from));
 }
-std::string BaseLink::createString(BaseData* data, Base* from)
+std::string BaseLink::CreateString(BaseData* data, Base* from)
 {
-    return createString(createStringPath(data->getOwner(),from),createStringData(data));
+    return CreateString(CreateStringPath(data->getOwner(),from),CreateStringData(data));
 }
-std::string BaseLink::createString(Base* object, BaseData* data, Base* from)
+std::string BaseLink::CreateString(Base* object, BaseData* data, Base* from)
 {
-    return createString(createStringPath(object,from),createStringData(data));
+    return CreateString(CreateStringPath(object,from),CreateStringData(data));
 }
 
 } // namespace objectmodel
