@@ -92,7 +92,11 @@ protected:
         pointHandler = new FCTPointHandler(this, &f_indices);
     }
 
-    ~FixedLMConstraint() { delete pointHandler; }
+    ~FixedLMConstraint()
+    {
+        if (pointHandler)
+            delete pointHandler;
+    }
 
 public:
     void clearConstraints();

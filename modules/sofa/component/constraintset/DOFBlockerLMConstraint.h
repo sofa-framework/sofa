@@ -97,7 +97,12 @@ protected:
         pointHandler = new FCTPointHandler(this, &f_indices);
     }
 
-    ~DOFBlockerLMConstraint() { delete pointHandler; }
+    ~DOFBlockerLMConstraint()
+    {
+        if (pointHandler)
+            delete pointHandler;
+    }
+
 public:
     void clearConstraints();
     void addConstraint(unsigned int index);

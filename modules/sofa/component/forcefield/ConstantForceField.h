@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/ForceField.h>
 
 #include <sofa/component/component.h>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 
 
 namespace sofa
@@ -53,13 +53,15 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef topology::PointSubset VecIndex;
+    typedef helper::vector<unsigned int> VecIndex;
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
+    typedef sofa::component::topology::PointSubsetData< VecIndex > SetIndex;
+
 public:
     /// indices of the points the force applies to
-    Data< VecIndex > points;
+    SetIndex points;
     /// Per-point forces.
     Data< VecDeriv > forces;
     /// Force applied at each point, if per-point forces are not specified
@@ -75,6 +77,9 @@ protected:
 public:
     /// Set a force to a given particle
     void setForce( unsigned i, const Deriv& f );
+
+    /// Init function
+    void init();
 
     /// Add the forces
     virtual void addForce (const core::MechanicalParams* params /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
@@ -95,6 +100,10 @@ public:
     virtual double getPotentialEnergy(const core::MechanicalParams* params /* PARAMS FIRST */, const DataVecCoord& x) const;
 
     void draw(const core::visual::VisualParams* vparams);
+
+protected:
+    sofa::core::topology::BaseMeshTopology* topology;
+
 };
 
 using sofa::defaulttype::Vec1dTypes;
