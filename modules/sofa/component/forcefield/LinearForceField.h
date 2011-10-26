@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 
 namespace sofa
 {
@@ -59,7 +59,9 @@ public:
     typedef typename Coord::value_type Real;
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
-    typedef topology::PointSubset VecIndex;
+    typedef helper::vector<unsigned int> VecIndex;
+
+    typedef sofa::component::topology::PointSubsetData< VecIndex > SetIndex;
 
 protected:
 
@@ -68,7 +70,7 @@ protected:
 
 public:
     /// concerned DOFs
-    Data< VecIndex > points;
+    SetIndex points;
 
     /// applied force for all the points
     Data< Real > force;
@@ -101,7 +103,7 @@ public:
     void addKeyForce(Real time, Deriv force);
     void clearKeyForces();
 
-    virtual void init() { Inherit::init(); };
+    virtual void init();
 
     // ForceField methods
     /// Add the forces
@@ -124,7 +126,10 @@ private :
     Deriv prevF, nextF;
 
     /// initial constrained DOFs position
-    VecCoord x0;
+    //VecCoord x0;
+
+protected:
+    sofa::core::topology::BaseMeshTopology* topology;
 
 }; // definition of the LinearForceField class
 

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_INL
 
-#include "ConstantForceField.h"
+#include <sofa/component/forcefield/ConstantForceField.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
@@ -33,6 +33,7 @@
 //#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/topology/TopologySubsetData.inl>
 
 
 
@@ -55,6 +56,19 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , arrowSizeCoef(initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
     , indexFromEnd(initData(&indexFromEnd,(bool)false,"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector"))
 {
+}
+
+
+template<class DataTypes>
+void ConstantForceField<DataTypes>::init()
+{
+    topology = this->getContext()->getMeshTopology();
+
+    // Initialize functions and parameters for topology data and handler
+    points.createTopologicalEngine(topology);
+    points.registerTopologicalData();
+
+    Inherit::init();
 }
 
 

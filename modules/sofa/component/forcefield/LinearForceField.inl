@@ -31,6 +31,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BaseVector.h>
 
+#include <sofa/component/topology/TopologySubsetData.inl>
+
 namespace sofa
 {
 
@@ -51,6 +53,19 @@ LinearForceField<DataTypes>::LinearForceField()
     , keyForces(initData(&keyForces, "forces", "forces corresponding to the key times"))
     , arrowSizeCoef(initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
 { }
+
+
+template<class DataTypes>
+void LinearForceField<DataTypes>::init()
+{
+    topology = this->getContext()->getMeshTopology();
+
+    // Initialize functions and parameters for topology data and handler
+    points.createTopologicalEngine(topology);
+    points.registerTopologicalData();
+
+    Inherit::init();
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::addPoint(unsigned index)

@@ -118,7 +118,7 @@ public:
         sofa::core::topology::BaseMeshTopology* _topology;
         _topology = this->getContext()->getMeshTopology();
 
-        // Initialize functions and parameters
+        // Initialize functions and parameters for topology data and handler
         fixed.createTopologicalEngine(_topology);
         fixed.registerTopologicalData();
 
