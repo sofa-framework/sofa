@@ -75,13 +75,12 @@ class LinkTraitsValueType<TDestType,TDestPtr, false>
 {
 public:
     typedef TDestPtr T;
-    static std::string name(const T& ptr)
+    static bool path(const T& /*ptr*/, std::string& /*str*/)
     {
-        if (!ptr) return std::string();
-        else return ptr->getName();
+        return false;
     }
     static void set(T& v, const TDestPtr& ptr) { v = ptr; }
-    static void setName(T& /*ptr*/, const std::string& /*name*/) {}
+    static void setPath(T& /*ptr*/, const std::string& /*name*/) {}
 };
 
 template<class TDestType, class TDestPtr>
@@ -99,14 +98,14 @@ public:
         bool operator == (TDestType* p) { return ptr == p; }
         bool operator != (TDestType* p) { return ptr != p; }
     };
-    static std::string name(const T& v)
+    static bool path(const T& v, std::string& str)
     {
-        if (!v.path.empty()) return v.path;
-        else if (!v.ptr) return std::string();
-        else return v.ptr->getName();
+        if (v.path.empty()) return false;
+        str = v.path;
+        return true;
     }
     static void set(T& v, const TDestPtr& ptr) { if (ptr != v.ptr) v.path.clear(); v.ptr = ptr; }
-    static void setName(T& v, const std::string& name) { v.path = name; }
+    static void setPath(T& v, const std::string& name) { v.path = name; }
 };
 
 template<class TDestType, class TValueType, bool multiLink>
@@ -355,11 +354,21 @@ public:
 
     bool add(DestPtr v, const std::string& path)
     {
+        if (!v && path.empty()) return false;
         const int aspect = core::ExecParams::currentAspect();
         unsigned int index = TraitsContainer::add(m_value[aspect],&*v);
-        TraitsValueType::setName(m_value[aspect][index],path);
+        TraitsValueType::setPath(m_value[aspect][index],path);
         added(v, index);
         return true;
+    }
+
+    bool addPath(const std::string& path)
+    {
+        if (path.empty()) return false;
+        DestType* ptr = NULL;
+        if (m_owner)
+            TraitsFindDest::findLinkDest(m_owner, ptr, path, this);
+        return add(ptr, path);
     }
 
     bool remove(DestPtr v)
@@ -371,6 +380,25 @@ public:
         TraitsContainer::remove(m_value[aspect],index);
         removed(v, index);
         return true;
+    }
+
+    bool removePath(const std::string& path)
+    {
+        if (path.empty()) return false;
+        const int aspect = core::ExecParams::currentAspect();
+        unsigned int n = m_value[aspect].size();
+        for (unsigned int index=0; index<n; ++index)
+        {
+            std::string p = getPath(index);
+            if (p == path)
+            {
+                DestPtr v = m_value[aspect][index];
+                TraitsContainer::remove(m_value[aspect],index);
+                removed(v, index);
+                return true;
+            }
+        }
+        return false;
     }
 
     const BaseClass* getDestClass() const
@@ -388,6 +416,23 @@ public:
         return size();
     }
 
+    std::string getPath(unsigned int index) const
+    {
+        const int aspect = core::ExecParams::currentAspect();
+        if (index >= m_value[aspect].size())
+            return std::string();
+        std::string path;
+        const ValueType& value = m_value[aspect][index];
+        if (!TraitsValueType::path(value, path))
+        {
+            DestType* ptr = TraitsDestPtr::get(value);
+            if (ptr)
+                path = BaseLink::createString(TraitsDestCasts::getBase(ptr), TraitsDestCasts::getData(ptr),
+                        TraitsOwnerCasts::getBase(m_owner));
+        }
+        return path;
+    }
+
     Base* getLinkedBase(unsigned int index=0) const
     {
         return TraitsDestCasts::getBase(getIndex(index));
@@ -396,13 +441,9 @@ public:
     {
         return TraitsDestCasts::getData(getIndex(index));
     }
-    std::string getLinkedName(unsigned int index=0) const
+    std::string getLinkedPath(unsigned int index=0) const
     {
-        const int aspect = core::ExecParams::currentAspect();
-        if (index < m_value[aspect].size())
-            return TraitsValueType::name(m_value[aspect][index]);
-        else
-            return std::string();
+        return getPath(index);
     }
 
     /// @name Serialization API
@@ -419,11 +460,11 @@ public:
         while (istr >> path)
         {
             DestType* ptr = NULL;
-            if (path[0] != '@')
+            if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, path, this))
             {
                 ok = false;
             }
-            else if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, path, this))
+            else if (path[0] != '@')
             {
                 ok = false;
             }
@@ -493,6 +534,7 @@ public:
     typedef typename Inherit::Container Container;
     typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
     typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
+    typedef typename Inherit::TraitsFindDest TraitsFindDest;
 
     typedef void (OwnerType::*ValidatorFn)(DestPtr v, unsigned int index, bool add);
 
@@ -560,6 +602,7 @@ public:
     typedef typename Inherit::Container Container;
     typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
     typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
+    typedef typename Inherit::TraitsFindDest TraitsFindDest;
 
     typedef void (OwnerType::*ValidatorFn)(DestPtr before, DestPtr& after);
 
@@ -581,6 +624,11 @@ public:
     void setValidator(ValidatorFn fn)
     {
         m_validator = fn;
+    }
+
+    std::string getPath() const
+    {
+        return Inherit::getPath(0);
     }
 
     DestType* get(const core::ExecParams* params = 0) const
@@ -616,8 +664,17 @@ public:
         const DestPtr before = value;
         if (v == before) return;
         TraitsValueType::set(value, v);
-        TraitsValueType::setName(value, path);
+        TraitsValueType::setPath(value, path);
         changed(before, v);
+    }
+
+    void setPath(const std::string& path)
+    {
+        if (path.empty()) { reset(); return; }
+        DestType* ptr = NULL;
+        if (this->m_owner)
+            TraitsFindDest::findLinkDest(this->m_owner, ptr, path, this);
+        set(ptr, path);
     }
 
 #ifndef SOFA_DEPRECATE_OLD_API

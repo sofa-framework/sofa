@@ -215,8 +215,8 @@ public:
     void setAutoLink(bool b) { setFlag(FLAG_AUTOLINK,b); }
 
     /// If we use the Data as a link and not as value directly
-    void setLinkPath(const std::string &path) { m_linkPath = path; }
-    std::string getLinkPath() const { return m_linkPath; }
+    //void setLinkPath(const std::string &path) { m_linkPath = path; }
+    std::string getLinkPath() const { return parentBaseData.getPath(); }
     /// Can this data be used as a linkPath
     /// True by default.
     /// Useful if you want to customize the use of @ syntax (see ObjectRef and DataObjectRef)
@@ -263,7 +263,8 @@ public:
     /// @}
 
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.
-    virtual bool setParent(BaseData* parent);
+    bool setParent(BaseData* parent, const std::string& path = std::string());
+    bool setParent(const std::string& path);
 
     /// Check if a given Data can be linked as a parent of this data
     virtual bool validParent(BaseData* parent);
@@ -323,8 +324,8 @@ protected:
     Base* m_owner;
     /// Data name within the Base component
     std::string m_name;
-    /// Link to another Data, if used as an input from another Data (@ typo).
-    std::string m_linkPath;
+//    /// Link to another Data, if used as an input from another Data (@ typo).
+//    std::string m_linkPath;
     /// Parent Data
     SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK> parentBaseData;
 

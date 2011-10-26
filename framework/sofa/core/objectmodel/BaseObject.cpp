@@ -114,98 +114,16 @@ void BaseObject::parse( BaseObjectDescription* arg )
                 // test if data is a link and can be linked
                 if (valueString[0] == '@' && dataModif[d]->canBeLinked())
                 {
-                    dataModif[d]->setLinkPath(valueString);
-                    std::size_t posPath = valueString.rfind('/');
-                    if (posPath == std::string::npos) posPath = 0;
-                    std::size_t posDot = valueString.rfind('.');
-                    std::string objectName;
-                    std::string dataName;
-
-                    BaseObject* obj = NULL;
-
-                    /* if '.' not found, try to find the data in the current object */
-                    if (posPath == 0 && posDot == std::string::npos)
+                    if (!dataModif[d]->setParent(valueString))
                     {
-                        obj = this;
-                        objectName = this->getName();
-                        dataName = valueString;
-                    }
-                    else
-                    {
-                        if (posDot == std::string::npos) // no data specified, look for one with the same name
-                        {
-                            objectName = valueString;
-                            dataName = attributeList[i];
-                        }
-                        else
-                        {
-                            objectName = valueString.substr(1,posDot-1);
-                            dataName = valueString.substr(posDot+1);
-                        }
-
-                        if (objectName[0] == '[')
-                        {
-                            if (objectName[objectName.size()-1] != ']')
-                            {
-                                serr<<"ERROR: Missing ']' in at the end of "<< objectName << sendl;
-                                continue;
-                            }
-
-                            objectName = objectName.substr(1, objectName.size()-2);
-
-                            if (objectName.empty())
-                            {
-                                serr<<"ERROR: Missing object level between [] in : " << val << sendl;
-                                continue;
-                            }
-
-                            int objectLevel = atoi(objectName.c_str());
-                            helper::vector<BaseObject*> objects;
-                            getContext()->get<BaseObject>(&objects, BaseContext::Local);
-
-                            helper::vector<BaseObject*>::iterator it;
-
-                            for(it = objects.begin(); it != objects.end(); ++it)
-                            {
-                                if ((*it) == this)
-                                {
-                                    it += objectLevel;
-                                    if ((*it) != NULL)
-                                    {
-                                        obj = (*it);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            obj = getContext()->get<BaseObject>(objectName);
-                        }
-
-                        if (obj == NULL)
-                        {
-                            serr<<"could not find object for option "<< attributeList[i] <<": " << objectName << sendl;
-                            continue;
-                        }
-                    }
-
-                    BaseData* parentData = obj->findField(dataName);
-
-                    if (parentData == NULL)
-                    {
-                        serr<<"could not find parent Data for option "<< attributeList[i] <<": " << val << sendl;
-                        continue;
-                    }
-
-                    /* set parent value to the child */
-                    if (!dataModif[d]->setParent(parentData))
-                    {
-                        serr<<"could not copy value from parent Data "<< valueString << ". Incompatible Data types" << sendl;
+                        serr<<"Could not setup Data link between "<< valueString << " and " << attributeList[i] << "." << sendl;
                         continue;
                     }
                     else
+                    {
+                        BaseData* parentData = dataModif[d]->getParent();
                         sout<<"Link from parent Data " << valueString << " (" << parentData->getValueTypeInfo()->name() << ") to Data " << attributeList[i] << "(" << dataModif[d]->getValueTypeInfo()->name() << ") OK" << sendl;
+                    }
                     /* children Data cannot be modified changing the parent Data value */
                     dataModif[d]->setReadOnly(true);
                     continue;
@@ -278,8 +196,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
             {
                 //serr << "Autolinking Data " << data->getName() << sendl;
                 std::string linkPath = valueString+"."+(*it_map).first;
-                data->setLinkPath(linkPath);
-                data->setParent( (*it_map).second);
+                data->setParent( (*it_map).second, linkPath);
             }
         }
     }
@@ -289,14 +206,6 @@ void* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string
 {
     return this->getContext()->findLinkDestClass(destType, path, link);
 }
-
-/*
-void BaseObject::setContext(BaseContext* n)
-{
-	//context_ = n;
-    l_context.set(n);
-}
-*/
 
 #ifdef SOFA_SMP
 
@@ -341,6 +250,16 @@ BaseObject* BaseObject::getMaster()
 const BaseObject::VecSlaves& BaseObject::getSlaves() const
 {
     return l_slaves.getValue();
+}
+
+BaseObject* BaseObject::getSlave(const std::string& name) const
+{
+    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+    {
+        if ((*iSlaves)->getName() == name)
+            return iSlaves->get();
+    }
+    return NULL;
 }
 
 void BaseObject::addSlave(BaseObject::SPtr s)

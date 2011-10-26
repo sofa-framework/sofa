@@ -247,6 +247,7 @@ public:
 
     Sequence<core::objectmodel::BaseObject,true> object;
     typedef Sequence<core::objectmodel::BaseObject,true>::iterator ObjectIterator;
+    typedef Sequence<core::objectmodel::BaseObject,true>::reverse_iterator ObjectReverseIterator;
 
     Single<core::behavior::BaseAnimationLoop> animationManager;
     Single<core::visual::VisualLoop> visualLoop;

@@ -126,7 +126,7 @@ public:
     virtual unsigned int getSize() const = 0;
     virtual Base* getLinkedBase(unsigned int index=0) const = 0;
     virtual BaseData* getLinkedData(unsigned int index=0) const = 0;
-    virtual std::string getLinkedName(unsigned int index=0) const = 0;
+    virtual std::string getLinkedPath(unsigned int index=0) const = 0;
 
     /// @name Serialization API
     /// @{
@@ -150,6 +150,25 @@ public:
 
     /// Release memory allocated for the specified aspect.
     virtual void releaseAspect(int aspect) = 0;
+
+    /// @name Serialization Helper API
+    /// @{
+
+    static bool parseString(const std::string& text, std::string* path, std::string* data = NULL, Base* start = NULL);
+
+    bool parseString(const std::string& text, std::string* path, std::string* data)
+    {
+        return parseString(text, path, data, this->getOwnerBase());
+    }
+
+    static std::string createString(const std::string& path, const std::string& data="");
+    static std::string createStringPath(Base* object, Base* from);
+    static std::string createStringData(BaseData* data);
+    static std::string createString(Base* object, Base* from);
+    static std::string createString(BaseData* data, Base* from);
+    static std::string createString(Base* object, BaseData* data, Base* from);
+
+    /// @}
 
 protected:
     unsigned int m_flags;

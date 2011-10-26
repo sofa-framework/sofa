@@ -338,9 +338,31 @@ std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
     return result;
 }
 
-void* Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)
+bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)
 {
-    return NULL; /// TODO
+    std::string pathStr, dataStr;
+    if (link)
+    {
+        if (!link->parseString(path, &pathStr, &dataStr))
+            return false;
+    }
+    else
+    {
+        if (!BaseLink::parseString(path, &pathStr, &dataStr, this))
+            return false;
+    }
+    if (pathStr.empty() || pathStr == std::string("[]"))
+    {
+        ptr = this->findData(dataStr);
+        return (ptr != NULL);
+    }
+    Base* obj = NULL;
+    if (!findLinkDest(obj, BaseLink::createString(pathStr), link))
+        return false;
+    if (!obj)
+        return false;
+    ptr = obj->findData(dataStr);
+    return (ptr != NULL);
 }
 
 void* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/)
