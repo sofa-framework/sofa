@@ -27,7 +27,8 @@
 
 #include <sofa/core/MultiMapping.h>
 
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/defaulttype/Vec3Types.h>
 
@@ -66,7 +67,8 @@ public:
     typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
     typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
     /// Correspondance array
-    //typedef helper::vector<unsigned int> IndexArray;
+    typedef helper::vector<unsigned int> IndexArray;
+    typedef sofa::component::topology::PointSubsetData< IndexArray > SetIndex;
     inline unsigned int computeTotalInputPoints() const
     {
         typename std::map< const core::State<In>* , IndexArray >::const_iterator iter;
@@ -101,8 +103,10 @@ protected :
 
     virtual ~SubsetMultiMapping() {};
 
-    typedef topology::PointSubset IndexArray;
-    std::map<const core::State<In>*,IndexArray>  m_indices;
+    std::map<const core::State<In>*,SetIndex>  m_indices;
+
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* topology;
 };
 
 
