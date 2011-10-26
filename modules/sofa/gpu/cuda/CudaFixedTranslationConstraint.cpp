@@ -49,7 +49,7 @@ void FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::vis
 template <>
 void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();
@@ -78,7 +78,7 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
 template <>
 void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();

@@ -78,7 +78,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
     data.maxIndex = -1;
     data.cudaIndices.clear();
     m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
-    const SetIndex& indices = m->f_indices.getValue();
+    const SetIndexArray& indices = m->f_indices.getValue();
     if (!indices.empty())
     {
         // put indices in a set to sort them and remove duplicates
@@ -206,7 +206,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
     data.maxIndex = -1;
     data.cudaIndices.clear();
     m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
-    const SetIndex& indices = m->f_indices.getValue();
+    const SetIndexArray& indices = m->f_indices.getValue();
     if (!indices.empty())
     {
         // put indices in a set to sort them and remove duplicates
@@ -364,16 +364,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(M
         FixedConstraintCudaRigid3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
-// Handle topological changes
-template <>
-void FixedConstraint<gpu::cuda::CudaVec3fTypes>::handleTopologyChange()
-{
-// 	std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-// 	std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
-//
-// 	f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-//printf("WARNING handleTopologyChange<gpu::cuda::CudaVec3fTypes> not implemented\n");
-}
+
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 

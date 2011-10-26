@@ -61,7 +61,8 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    typedef topology::PointSubset VecIndex;
+    typedef typename Main::SetIndex SetIndex;
+    typedef typename Main::SetIndexArray SetIndexArray;
 
     typedef gpu::cuda::CudaKernelsLinearForceField<DataTypes> Kernels;
 

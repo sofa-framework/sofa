@@ -179,7 +179,7 @@ template<class TCoord, class TDeriv, class TReal>
 void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::init(Main* m, VecCoord& x)
 {
     Data& data = *m->data;
-    const SetIndexArray & indices = m->m_indices.getValue().getArray();
+    const SetIndexArray & indices = m->m_indices.getValue();
 //  m->x0.resize( indices.size() );
 //  for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
 //    m->x0[*it] = x[*it];
@@ -318,7 +318,7 @@ template<int N, class real>
 void LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Main* m, VecCoord& x)
 {
     Data& data = *m->data;
-    const SetIndexArray & indices = m->m_indices.getValue().getArray();
+    const SetIndexArray & indices = m->m_indices.getValue();
 //  m->x0.resize( indices.size() );
 //  for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
 //    m->x0[*it] = x[*it];
