@@ -67,8 +67,8 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef sofa::component::topology::PointSubsetData< helper::vector<unsigned int> > SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
 
@@ -135,11 +135,12 @@ public:
     Data<double> _drawSize;
 
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, vector<unsigned int> >
+    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
     {
     public:
-        FCPointHandler(FixedLMConstraint<DataTypes>* _fc, PointSubsetData<helper::vector<unsigned int> >* _data)
-            : TopologySubsetDataHandler<Point, sofa::helper::vector<unsigned int> >(_data), fc(_fc) {}
+        typedef typename FixedLMConstraint<DataTypes>::SetIndexArray SetIndexArray;
+        FCPointHandler(FixedLMConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray >* _data)
+            : TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
 
 
 
