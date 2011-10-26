@@ -205,7 +205,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::top
 {
     if(t != this->_topology)
         return;
-
+#ifdef TODOTOPO
     std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
 
@@ -263,9 +263,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::top
         break;
         }
     }
+#endif
 }
-
-
 
 template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const HexahedraAdded& hexaAddedEvent)
