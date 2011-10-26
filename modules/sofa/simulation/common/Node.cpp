@@ -282,7 +282,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
     }
     else
     {
-        if (!BaseLink::parseString(path,&pathStr,NULL,this))
+        if (!BaseLink::ParseString(path,&pathStr,NULL,this))
             return NULL;
     }
     std::size_t ppos = 0;

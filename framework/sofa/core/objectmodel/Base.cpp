@@ -348,7 +348,7 @@ bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseL
     }
     else
     {
-        if (!BaseLink::parseString(path, &pathStr, &dataStr, this))
+        if (!BaseLink::ParseString(path, &pathStr, &dataStr, this))
             return false;
     }
     if (pathStr.empty() || pathStr == std::string("[]"))
@@ -357,7 +357,7 @@ bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseL
         return (ptr != NULL);
     }
     Base* obj = NULL;
-    if (!findLinkDest(obj, BaseLink::createString(pathStr), link))
+    if (!findLinkDest(obj, BaseLink::CreateString(pathStr), link))
         return false;
     if (!obj)
         return false;

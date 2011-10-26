@@ -283,6 +283,9 @@ public:
 
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
 
+    /// Add a link.
+    void addLink(BaseLink* l);
+
 protected:
 
     BaseLink::InitLink<BaseData>
@@ -290,9 +293,6 @@ protected:
     {
         return BaseLink::InitLink<BaseData>(this, name, help);
     }
-
-    /// Add a link.
-    void addLink(BaseLink* l);
 
     /// List of links
     VecLink m_vecLink;

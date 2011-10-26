@@ -175,7 +175,7 @@ bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const Bas
     }
     else
     {
-        if (!BaseLink::parseString(path, &pathStr, &dataStr, this->getOwner()))
+        if (!BaseLink::ParseString(path, &pathStr, &dataStr, this->getOwner()))
             return false;
     }
     bool self = (pathStr.empty() || pathStr == "[]");
@@ -209,7 +209,7 @@ bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const Bas
     else
     {
         Base* obj = NULL;
-        if (!owner->findLinkDest(obj, BaseLink::createString(pathStr), link))
+        if (!owner->findLinkDest(obj, BaseLink::CreateString(pathStr), link))
             return false;
         if (!obj)
             return false;
@@ -217,6 +217,12 @@ bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const Bas
         return (ptr != NULL);
     }
     return false;
+}
+
+void DDGNode::addLink(BaseLink* /*l*/)
+{
+    // the inputs and outputs links in DDGNode is manually added
+    // once the link vectors are constructed in Base or BaseData
 }
 
 } // namespace objectmodel

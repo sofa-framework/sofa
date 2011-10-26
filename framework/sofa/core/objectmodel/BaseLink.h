@@ -71,11 +71,7 @@ public:
     class BaseInitLink
     {
     public:
-        BaseInitLink(const char* name, const char* help) : /*link(NULL), linkFlags(FLAG_NONE), owner(NULL), ownerData(NULL), */ name(name), help(help) {}
-        //BaseLink* link;
-        //LinkFlags linkFlags;
-        //Base* owner;
-        //BaseData* ownerData;
+        BaseInitLink(const char* name, const char* help) : name(name), help(help) {}
         const char* name;
         const char* help;
     };
@@ -85,7 +81,7 @@ public:
     class InitLink : public BaseInitLink
     {
     public:
-        InitLink(Owner* owner, const char* name, const char* help) : BaseInitLink(name, help), owner(owner) {}
+        InitLink(Owner* o, const char* n, const char* h) : BaseInitLink(n, h), owner(o) {}
         Owner* owner;
     };
 
@@ -154,19 +150,19 @@ public:
     /// @name Serialization Helper API
     /// @{
 
-    static bool parseString(const std::string& text, std::string* path, std::string* data = NULL, Base* start = NULL);
+    static bool ParseString(const std::string& text, std::string* path, std::string* data = NULL, Base* start = NULL);
 
-    bool parseString(const std::string& text, std::string* path, std::string* data)
+    bool parseString(const std::string& text, std::string* path, std::string* data = NULL) const
     {
-        return parseString(text, path, data, this->getOwnerBase());
+        return ParseString(text, path, data, this->getOwnerBase());
     }
 
-    static std::string createString(const std::string& path, const std::string& data="");
-    static std::string createStringPath(Base* object, Base* from);
-    static std::string createStringData(BaseData* data);
-    static std::string createString(Base* object, Base* from);
-    static std::string createString(BaseData* data, Base* from);
-    static std::string createString(Base* object, BaseData* data, Base* from);
+    static std::string CreateString(const std::string& path, const std::string& data="");
+    static std::string CreateStringPath(Base* object, Base* from);
+    static std::string CreateStringData(BaseData* data);
+    static std::string CreateString(Base* object, Base* from);
+    static std::string CreateString(BaseData* data, Base* from);
+    static std::string CreateString(Base* object, BaseData* data, Base* from);
 
     /// @}
 
