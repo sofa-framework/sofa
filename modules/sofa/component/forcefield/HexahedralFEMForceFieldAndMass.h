@@ -47,8 +47,7 @@ using sofa::core::behavior::Mass;
 /** Compute Finite Element forces based on hexahedral elements including continuum mass matrices
 */
 template<class DataTypes>
-class HexahedralFEMForceFieldAndMass : virtual public Mass<DataTypes>,
-    virtual public HexahedralFEMForceField<DataTypes>
+class HexahedralFEMForceFieldAndMass : virtual public Mass<DataTypes>, virtual public HexahedralFEMForceField<DataTypes>
 {
 public:
     SOFA_CLASS2(SOFA_TEMPLATE(HexahedralFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(Mass,DataTypes), SOFA_TEMPLATE(HexahedralFEMForceField,DataTypes));
@@ -81,9 +80,6 @@ public:
     virtual void init( );
     virtual void reinit( );
 
-    // handle topological changes
-    virtual void handleTopologyChange(core::topology::Topology*);
-
     // -- Mass interface
     virtual  void addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
 
@@ -97,7 +93,7 @@ public:
 
     ///// WARNING this method only add diagonal elements in the given matrix !
     // virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix,
-// double mFact, double bFact, double kFact, unsigned int &offset);
+    // double mFact, double bFact, double kFact, unsigned int &offset);
     virtual void addMBKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     virtual  void accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f);
@@ -115,6 +111,14 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
+    double getElementMass(unsigned int index);
+
+    void setDensity(Real d) {_density.setValue( d );}
+    Real getDensity() {return _density.getValue();}
+
+
+
+
 protected:
     virtual void computeElementMasses( ); ///< compute the mass matrices
     Real integrateVolume( int signx, int signy, int signz, Real l0, Real l1, Real l2 );
@@ -124,18 +128,14 @@ protected:
 
     void computeLumpedMasses();
 
-    double getElementMass(unsigned int index);
-
-    void setDensity(Real d) {_density.setValue( d );}
-    Real getDensity() {return _density.getValue();}
-
-protected :
+protected:
+    //HFFHexahedronHandler* hexahedronHandler;
 
     Data<Real> _density;
     Data<bool> _useLumpedMass;
 
     HexahedronData<sofa::helper::vector<ElementMass> > _elementMasses; ///< mass matrices per element
-    HexahedronData<sofa::helper::vector<Real> >		_elementTotalMass; ///< total mass per element
+    HexahedronData<sofa::helper::vector<Real> > _elementTotalMass; ///< total mass per element
 
     PointData<sofa::helper::vector<Real> > _particleMasses; ///< masses per particle in order to compute gravity
     PointData<sofa::helper::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
