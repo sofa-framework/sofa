@@ -84,12 +84,12 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,T
     data.maxIndex = -1;
     data.OpenCLIndices.clear();
     m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
-    const SetIndex& indices = m->f_indices.getValue();
+    const SetIndexArray& indices = m->f_indices.getValue();
     if (!indices.empty())
     {
         // put indices in a set to sort them and remove duplicates
         std::set<int> sortedIndices;
-        for (typename SetIndex::const_iterator it = indices.begin(); it!=indices.end(); it++)
+        for (typename SetIndexArray::const_iterator it = indices.begin(); it!=indices.end(); it++)
             sortedIndices.insert(*it);
         // check if the indices are contiguous
         if (*sortedIndices.begin() + (int)sortedIndices.size()-1 == *sortedIndices.rbegin())
@@ -213,12 +213,12 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::init
     data.maxIndex = -1;
     data.OpenCLIndices.clear();
     m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
-    const SetIndex& indices = m->f_indices.getValue();
+    const SetIndexArray& indices = m->f_indices.getValue();
     if (!indices.empty())
     {
         // put indices in a set to sort them and remove duplicates
         std::set<int> sortedIndices;
-        for (typename SetIndex::const_iterator it = indices.begin(); it!=indices.end(); it++)
+        for (typename SetIndexArray::const_iterator it = indices.begin(); it!=indices.end(); it++)
             sortedIndices.insert(*it);
         // check if the indices are contiguous
         if (*sortedIndices.begin() + (int)sortedIndices.size()-1 == *sortedIndices.rbegin())
