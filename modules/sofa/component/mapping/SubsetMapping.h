@@ -28,10 +28,11 @@
 
 #include <sofa/core/Mapping.h>
 
-#include <sofa/component/topology/PointSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
 #include <sofa/helper/vector.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <memory>
 
@@ -90,9 +91,9 @@ public:
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     /// Correspondance array
-    //typedef helper::vector<unsigned int> IndexArray;
-    typedef topology::PointSubset IndexArray;
-    Data < IndexArray > f_indices;
+    typedef helper::vector<unsigned int> IndexArray;
+    typedef sofa::component::topology::PointSubsetData< IndexArray > SetIndex;
+    SetIndex f_indices;
 
     Data < int > f_first;
     Data < int > f_last;
@@ -126,6 +127,9 @@ public:
 protected:
     std::auto_ptr<MatrixType> matrixJ;
     bool updateJ;
+
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* topology;
 };
 
 using sofa::defaulttype::Vec1dTypes;

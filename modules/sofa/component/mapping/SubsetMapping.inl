@@ -28,7 +28,7 @@
 #include "SubsetMapping.h"
 
 #include <sofa/core/Mapping.inl>
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/component/topology/TopologySubsetData.inl>
 
 namespace sofa
 {
@@ -78,6 +78,7 @@ int SubsetMapping<TIn, TOut>::addPoint(int index)
 }
 
 // Handle topological changes
+/*
 template <class TIn, class TOut>
 void SubsetMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
 {
@@ -89,6 +90,7 @@ void SubsetMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
     f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->fromModel->getX()->size());
     f_indices.endEdit();
 }
+*/
 
 template <class TIn, class TOut>
 void SubsetMapping<TIn, TOut>::init()
@@ -156,6 +158,13 @@ void SubsetMapping<TIn, TOut>::init()
         f_indices.endEdit();
     }
     this->Inherit::init();
+
+    topology = this->getContext()->getMeshTopology();
+
+    // Initialize functions and parameters
+    f_indices.createTopologicalEngine(topology);
+    f_indices.registerTopologicalData();
+
     postInit();
 }
 
