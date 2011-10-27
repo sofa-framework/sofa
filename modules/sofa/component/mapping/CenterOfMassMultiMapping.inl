@@ -164,7 +164,8 @@ void CenterOfMassMultiMapping< TIn, TOut>::init()
     invTotalMass = 1.0/invTotalMass;
     Inherit::init();
 
-    if (this->getToModels()[0]) this->getToModels()[0]->resize(1);
+    State<Out>* toModel = this->toModels[0];
+    if (toModel) toModel->resize(1);
 }
 
 

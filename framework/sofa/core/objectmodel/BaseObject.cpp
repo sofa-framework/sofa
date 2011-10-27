@@ -74,65 +74,23 @@ BaseObject::~BaseObject()
 
 void BaseObject::parse( BaseObjectDescription* arg )
 {
-    std::vector< std::string > attributeList;
-    arg->getAttributeList(attributeList);
-
-    for (unsigned int i=0; i<attributeList.size(); ++i)
+    if (arg->getAttribute("src"))
     {
-        if (attributeList[i] == "src")
+        std::vector< std::string > attributeList;
+        arg->getAttributeList(attributeList);
+        std::string valueString(arg->getAttribute("src"));
+
+        if (valueString[0] != '@')
         {
-            // Parse attribute 'src' for new MeshLoader architecture.
-            const char* val = arg->getAttribute(attributeList[i]);
-            std::string valueString(val);
-
-            if(!val)
-            {
-                serr<<"ERROR: Missing argument for 'src' attribute in object: "<< this->getName() << sendl;
-                break;
-            }
-
-            if (valueString[0] != '@')
-            {
-                serr<<"ERROR: 'src' attribute value should be a link using '@' in object "<< this->getName() << sendl;
-                break;
-            }
-
+            serr<<"ERROR: 'src' attribute value should be a link using '@'" << sendl;
+        }
+        else
+        {
             setSrc(valueString, &attributeList);
-
-            continue;
         }
-
-
-        std::vector< BaseData* > dataModif = findGlobalField(attributeList[i]);
-        for (unsigned int d=0; d<dataModif.size(); ++d)
-        {
-            const char* val = arg->getAttribute(attributeList[i]);
-            if (val)
-            {
-                std::string valueString(val);
-
-                // test if data is a link and can be linked
-                if (valueString[0] == '@' && dataModif[d]->canBeLinked())
-                {
-                    if (!dataModif[d]->setParent(valueString))
-                    {
-                        serr<<"Could not setup Data link between "<< valueString << " and " << attributeList[i] << "." << sendl;
-                        continue;
-                    }
-                    else
-                    {
-                        BaseData* parentData = dataModif[d]->getParent();
-                        sout<<"Link from parent Data " << valueString << " (" << parentData->getValueTypeInfo()->name() << ") to Data " << attributeList[i] << "(" << dataModif[d]->getValueTypeInfo()->name() << ") OK" << sendl;
-                    }
-                    /* children Data cannot be modified changing the parent Data value */
-                    dataModif[d]->setReadOnly(true);
-                    continue;
-                }
-
-                if( !(dataModif[d]->read( valueString ))) serr<<"could not read value for option "<< attributeList[i] <<": " << val << sendl;
-            }
-        }
+        arg->removeAttribute("src");
     }
+    Base::parse(arg);
 }
 
 void BaseObject::setSrc(const std::string &valueString, std::vector< std::string > *attributeList)

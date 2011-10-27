@@ -77,12 +77,12 @@ public:
     /// @}
 
     explicit TData(const BaseInitData& init)
-        : BaseData(init), parentData(NULL)
+        : BaseData(init), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
     {
     }
 
     TData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
-        : BaseData(helpMsg, isDisplayed, isReadOnly, owner, name), parentData(NULL)
+        : BaseData(helpMsg, isDisplayed, isReadOnly, owner, name), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
     {
     }
 
@@ -173,25 +173,31 @@ public:
 
 protected:
 
+    BaseLink::InitLink<TData<T> >
+    initLink(const char* name, const char* help)
+    {
+        return BaseLink::InitLink<TData<T> >(this, name, help);
+    }
+
     void doSetParent(BaseData* parent)
     {
-        parentData = dynamic_cast<TData<T>*>(parent);
+        parentData.set(dynamic_cast<TData<T>*>(parent));
         BaseData::doSetParent(parent);
     }
 
     bool updateFromParentValue(const BaseData* parent)
     {
-        if (parent == parentData)
+        if (parent == parentData.get())
         {
             //virtualSetValue(parentData->virtualGetValue());
-            virtualSetLink(*parentData);
+            virtualSetLink(*parentData.get());
             return true;
         }
         else
             return BaseData::updateFromParentValue(parent);
     }
 
-    TData<T>* parentData;
+    SingleLink<TData<T>,TData<T>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentData;
 };
 
 template <class T, bool COW>
