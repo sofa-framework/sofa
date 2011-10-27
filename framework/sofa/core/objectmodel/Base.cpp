@@ -199,7 +199,13 @@ void Base::releaseAspect(int aspect)
 /// Get the type name of this object (i.e. class and template types)
 std::string Base::getTypeName() const
 {
-    return BaseClass::decodeTypeName(typeid(*this));
+    //return BaseClass::decodeTypeName(typeid(*this));
+    std::string c = getClassName();
+    std::string t = getTemplateName();
+    if (t.empty())
+        return c;
+    else
+        return c + std::string("<") + t + std::string(">");
 }
 
 /// Get the class name of this object
@@ -421,7 +427,17 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             serr<<"Could not read value for link "<< attribute <<": " << value << sendl;
             ok = false;
         }
-        serr << "Link " << linkVec[l]->getName() << " = " << linkVec[l]->getValueString() << sendl;
+        sout << "Link " << linkVec[l]->getName() << " = " << linkVec[l]->getValueString() << sendl;
+        unsigned int s = linkVec[l]->getSize();
+        for (unsigned int i=0; i<s; ++i)
+        {
+            sout  << "  " << linkVec[l]->getLinkedPath(i) << " = ";
+            Base* b = linkVec[l]->getLinkedBase(i);
+            BaseData* d = linkVec[l]->getLinkedData(i);
+            if (b) sout << b->getTypeName() << " " << b->getName();
+            if (d) sout << " . " << d->getValueTypeString() << " " << d->getName();
+            sout << sendl;
+        }
     }
     return ok;
 }

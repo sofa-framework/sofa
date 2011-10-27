@@ -46,7 +46,7 @@
      				
         <Node name="Visu" tags="Visual" >
 			<VisualModel  name="VisualBody" fileMesh="mesh/snake_body.obj"   />
-			<BarycentricMapping object1="../.." object2="VisualBody" />
+			<BarycentricMapping input="@.." output="@VisualBody" />
         </Node>
 		
 		
