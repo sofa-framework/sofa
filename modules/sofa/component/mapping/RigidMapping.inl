@@ -310,7 +310,7 @@ const typename RigidMapping<TIn, TOut>::VecCoord & RigidMapping<TIn, TOut>::getP
 {
     if (useX0.getValue())
     {
-        const VecCoord* v = M_getX0(this->toModel);
+        const VecCoord* v = M_getX0(this->toModel.get());
         if (v)
             return *v;
         else
@@ -590,7 +590,7 @@ template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST */, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId )
 {
     helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
-    helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel].write());
+    helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get(mparams)].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
     InReal kfactor = (InReal)mparams->kFactor();
 

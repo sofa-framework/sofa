@@ -94,11 +94,6 @@ protected :
     {
     }
 
-    SubsetMultiMapping(helper::vector< core::State<In>* > in, helper::vector< core::State<Out>* > out)
-        : Inherit(in, out)
-    {
-    }
-
     virtual ~SubsetMultiMapping() {};
 
     std::map<const core::State<In>*,IndexArray>  m_indices;

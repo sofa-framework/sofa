@@ -31,7 +31,6 @@
 #include <sofa/core/State.h>
 #include <sofa/core/core.h>
 #include <sofa/core/VecId.h>
-#include <sofa/core/objectmodel/ObjectRef.h>
 
 namespace sofa
 {
@@ -71,28 +70,30 @@ public:
 
 protected:
     /// Input Models container. New inputs are added through addInputModel(In* ).
-    helper::vector<State<In>*> fromModels;
+    typedef MultiLink<MultiMapping<In,Out>, State< In >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkFromModels;
+    typedef typename LinkFromModels::Container VecFromModels;
+    LinkFromModels fromModels;
+    //helper::vector<State<In>*> fromModels;
     /// Output Model container. New outputs are added through addOutputModel( Ou* )
-    helper::vector<State<Out>*> toModels;
+    typedef MultiLink<MultiMapping<In,Out>, State< Out >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkToModels;
+    typedef typename LinkToModels::Container VecToModels;
+    LinkToModels toModels;
+    //helper::vector<State<Out>*> toModels;
 
 
-    /// Default Construtor , used by cpp examples.
-    MultiMapping();
     /// Constructor
-    MultiMapping(helper::vector< State<In>* > in, helper::vector< State<Out>* > out);
+    MultiMapping();
     /// Destructor
     virtual ~MultiMapping() {};
 public:
-    objectmodel::DataVectorObjectRef m_inputObjects;
-    objectmodel::DataVectorObjectRef m_outputObjects;
 
-    void addInputModel(State< In >* );
-    void addOutputModel(State< Out >* );
+    void addInputModel(State< In >* model, const std::string& path = "" );
+    void addOutputModel(State< Out >* model, const std::string& path = "" );
 
     /// Return the reference to fromModels.
-    helper::vector< State<In> *>& getFromModels();
+    const VecFromModels& getFromModels();
     /// Return reference to toModels.
-    helper::vector< State<Out> *>& getToModels();
+    const VecToModels& getToModels();
 
     /// Return a container of input models statically casted as BaseObject*
     helper::vector<BaseState* > getFrom();
@@ -343,15 +344,9 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        bool createResult = true;
-        helper::vector< State<In>* > stin;
-        helper::vector< State<Out>* > stout;
-
-        createResult = sofa::core::objectmodel::VectorObjectRef::parseAll< State<In> >("input", arg, stin);
-        createResult = createResult && sofa::core::objectmodel::VectorObjectRef::parseAll< State<Out> >("output", arg, stout);
-
-        //If one of the parsing failed
-        if(!createResult)
+        if (!LinkFromModels::CheckPaths(arg->getAttribute("input",""), context))
+            return false;
+        if (!LinkToModels::CheckPaths(arg->getAttribute("output",""), context))
             return false;
 
         return BaseMapping::canCreate(obj, context, arg);
@@ -364,24 +359,15 @@ public:
     template<class T>
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        bool createResult = true;
-        helper::vector< State<In>* > stin;
-        helper::vector< State<Out>* > stout;
-
-        createResult = sofa::core::objectmodel::VectorObjectRef::parseAll< State<In> >("input", arg, stin);
-        createResult = createResult && sofa::core::objectmodel::VectorObjectRef::parseAll< State<Out> >("output", arg, stout);
-
-        //If one of the parsing failed
-        if(!createResult)
-            return typename T::SPtr();
-
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(stin, stout);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 
         if (context)
             context->addObject(obj);
 
         if (arg)
+        {
             obj->parse(arg);
+        }
 
         return obj;
     }
@@ -389,30 +375,30 @@ public:
 protected:
 
     void getVecInCoord     (const MultiVecCoordId id,         helper::vector<      InDataVecCoord* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels[i]].write()); }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].write()); }
     void getConstVecInCoord(const ConstMultiVecCoordId id,    helper::vector<const InDataVecCoord* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels[i]].read());  }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].read());  }
     void getVecInDeriv      (const MultiVecDerivId id,         helper::vector<      InDataVecDeriv* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels[i]].write()); }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].write()); }
     void getConstVecInDeriv (const ConstMultiVecDerivId id,    helper::vector<const InDataVecDeriv* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels[i]].read());  }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].read());  }
     void getMatInDeriv      (const MultiMatrixDerivId id,      helper::vector<      InDataMatrixDeriv* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels[i]].write()); }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].write()); }
     void getConstMatInDeriv (const ConstMultiMatrixDerivId id, helper::vector<const InDataMatrixDeriv* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels[i]].read());  }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].read());  }
 
     void getVecOutCoord     (const MultiVecCoordId id,         helper::vector<      OutDataVecCoord* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());    }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].write());    }
     void getConstVecOutCoord(const ConstMultiVecCoordId id,    helper::vector<const OutDataVecCoord* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());     }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].read());     }
     void getVecOutDeriv     (const MultiVecDerivId id,         helper::vector<      OutDataVecDeriv* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());    }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].write());    }
     void getConstVecOutDeriv(const ConstMultiVecDerivId id,    helper::vector<const OutDataVecDeriv* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());     }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].read());     }
     void getMatOutDeriv     (const MultiMatrixDerivId id,      helper::vector<      OutDataMatrixDeriv* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write()); }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].write()); }
     void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, helper::vector<const OutDataMatrixDeriv* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());  }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].read());  }
 
 };
 

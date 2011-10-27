@@ -42,9 +42,8 @@ namespace core
 template <class In, class Out>
 Mapping<In,Out>::Mapping(State<In>* from, State<Out>* to)
     : BaseMapping()
-    , fromModel(from), toModel(to)
-    , m_inputObject(initData(&m_inputObject, "input", "Input object to map"))
-    , m_outputObject(initData(&m_outputObject, "output", "Output object to map"))
+    , fromModel(initLink("input", "Input object to map"), from)
+    , toModel(initLink("output", "Output object to map"), to)
     , f_applyRestPosition( initData( &f_applyRestPosition, false, "applyRestPosition", "set to true to apply this mapping to restPosition at init"))
     , f_checkJacobian( initData( &f_checkJacobian, false, "checkJacobian", "set to true to compare results of applyJ/applyJT methods with multiplication with the matrix given by getJ()" ) )
 {
@@ -72,14 +71,14 @@ State<Out>* Mapping<In,Out>::getToModel()
 template <class In, class Out>
 helper::vector<BaseState*> Mapping<In,Out>::getFrom()
 {
-    helper::vector<BaseState*> vec(1,this->fromModel);
+    helper::vector<BaseState*> vec(1,this->fromModel.get());
     return  vec;
 }
 
 template <class In, class Out>
 helper::vector<BaseState*> Mapping<In,Out>::getTo()
 {
-    helper::vector<BaseState*> vec(1,this->toModel);
+    helper::vector<BaseState*> vec(1,this->toModel.get());
     return vec;
 }
 
@@ -89,7 +88,7 @@ template <class In, class Out>
 helper::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechFrom()
 {
     helper::vector<behavior::BaseMechanicalState*> vec;
-    behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModel);
+    behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModel.get());
     if(meshFrom)
         vec.push_back(meshFrom);
 
@@ -100,7 +99,7 @@ template <class In, class Out>
 helper::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
 {
     helper::vector<behavior::BaseMechanicalState*> vec;
-    behavior::BaseMechanicalState* meshTo = dynamic_cast<behavior::BaseMechanicalState*> (this->toModel);
+    behavior::BaseMechanicalState* meshTo = dynamic_cast<behavior::BaseMechanicalState*> (this->toModel.get());
     if(meshTo)
         vec.push_back(meshTo);
 
@@ -110,10 +109,7 @@ helper::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
 template <class In, class Out>
 void Mapping<In,Out>::init()
 {
-    this->m_inputObject.setReadOnly(true);
-    this->m_outputObject.setReadOnly(true);
-
-    if(toModel != NULL && !testMechanicalState(toModel))
+    if(toModel && !testMechanicalState(toModel.get()))
         setNonMechanical();
 
     apply(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecCoordId::position(), ConstVecCoordId::position());
@@ -164,7 +160,9 @@ struct ParallelMappingApplyJ
 template <class In, class Out>
 void Mapping<In,Out>::apply(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
 {
-    if(this->fromModel && this->toModel)
+    State<In>* fromModel = this->fromModel.get(mparams);
+    State<Out>*  toModel = this->toModel.get(mparams);
+    if(fromModel && toModel)
     {
         OutDataVecCoord* out = outPos[toModel].write();
         const InDataVecCoord* in = inPos[fromModel].read();
@@ -184,7 +182,9 @@ void Mapping<In,Out>::apply(const MechanicalParams* mparams /* PARAMS FIRST */, 
 template <class In, class Out>
 void Mapping<In,Out>::applyJ(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
 {
-    if(this->fromModel && this->toModel)
+    State<In>* fromModel = this->fromModel.get(mparams);
+    State<Out>*  toModel = this->toModel.get(mparams);
+    if(fromModel && toModel)
     {
         OutDataVecDeriv* out = outVel[toModel].write();
         const InDataVecDeriv* in = inVel[fromModel].read();
@@ -212,7 +212,9 @@ void Mapping<In,Out>::applyJ(const MechanicalParams* mparams /* PARAMS FIRST */,
 template <class In, class Out>
 void Mapping<In,Out>::applyJT(const MechanicalParams *mparams /* PARAMS FIRST */, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
 {
-    if(this->fromModel && this->toModel)
+    State<In>* fromModel = this->fromModel.get(mparams);
+    State<Out>*  toModel = this->toModel.get(mparams);
+    if(fromModel && toModel)
     {
         InDataVecDeriv* out = inForce[fromModel].write();
         const OutDataVecDeriv* in = outForce[toModel].read();
@@ -229,6 +231,44 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams /* PARAMS FIRST */
     }
 }// Mapping::applyJT
 
+/// ApplyJT (Constraint)///
+template <class In, class Out>
+void Mapping<In,Out>::applyJT(const ConstraintParams* cparams /* PARAMS FIRST  = ConstraintParams::defaultInstance()*/, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
+{
+    State<In>* fromModel = this->fromModel.get(cparams);
+    State<Out>*  toModel = this->toModel.get(cparams);
+    if(fromModel && toModel)
+    {
+        InDataMatrixDeriv* out = inConst[fromModel].write();
+        const OutDataMatrixDeriv* in = outConst[toModel].read();
+        if(out && in)
+        {
+            if (this->isMechanical() && this->f_checkJacobian.getValue())
+            {
+                checkApplyJT(*out->beginEdit(cparams), in->getValue(cparams), this->getJ());
+                out->endEdit(cparams);
+            }
+            else
+                this->applyJT(cparams /* PARAMS FIRST */, *out, *in);
+        }
+    }
+}// Mapping::applyJT (Constraint)
+
+template <class In, class Out>
+void Mapping<In,Out>::computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
+{
+    State<In>* fromModel = this->fromModel.get(mparams);
+    State<Out>*  toModel = this->toModel.get(mparams);
+    if(fromModel && toModel)
+    {
+        OutDataVecDeriv* out = outAcc[toModel].write();
+        const InDataVecDeriv* inV = inVel[fromModel].read();
+        const InDataVecDeriv* inA = inAcc[fromModel].read();
+        if(out && inV && inA)
+            this->computeAccFromMapping(mparams /* PARAMS FIRST */, *out, *inV, *inA);
+    }
+}// Mapping::computeAccFromMapping
+
 template <class In, class Out>
 void Mapping<In,Out>::disable()
 {
@@ -237,8 +277,8 @@ void Mapping<In,Out>::disable()
 template <class In, class Out>
 void Mapping<In,Out>::setModels(State<In>* from, State<Out>* to)
 {
-    this->fromModel = from;
-    this->toModel = to;
+    this->fromModel.set( from );
+    this->toModel.set( to );
     if(to != NULL && !testMechanicalState(to))
         setNonMechanical();
 }

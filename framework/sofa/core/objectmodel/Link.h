@@ -91,12 +91,15 @@ public:
     {
         TDestPtr ptr;
         std::string path;
+        T() : ptr(TDestPtr()) {}
+        explicit T(const TDestPtr& p) : ptr(p) {}
         operator  TDestPtr() const { return ptr; }
-        void operator=(TDestPtr v) { if (v != ptr) { ptr = v; path.clear(); } }
+        void operator=(const TDestPtr& v) { if (v != ptr) { ptr = v; path.clear(); } }
         TDestType* operator*() const { return &(*ptr); }
         TDestType* operator->() const { return &(*ptr); }
-        bool operator == (TDestType* p) { return ptr == p; }
-        bool operator != (TDestType* p) { return ptr != p; }
+        bool operator!() const { return !ptr; }
+        bool operator == (const TDestPtr& p) { return ptr == p; }
+        bool operator != (const TDestPtr& p) { return ptr != p; }
     };
     static bool path(const T& v, std::string& str)
     {
@@ -108,7 +111,7 @@ public:
     static void setPath(T& v, const std::string& name) { v.path = name; }
 };
 
-template<class TDestType, class TValueType, bool multiLink>
+template<class TDestType, class TDestPtr, class TValueType, bool multiLink>
 class LinkTraitsContainer;
 
 
@@ -190,8 +193,8 @@ public:
     }
 };
 
-template<class TDestType, class TValueType>
-class LinkTraitsContainer<TDestType, TValueType, false>
+template<class TDestType, class TDestPtr, class TValueType>
+class LinkTraitsContainer<TDestType, TDestPtr, TValueType, false>
 {
 public:
     typedef SinglePtr<TDestType, TValueType> T;
@@ -200,12 +203,12 @@ public:
     {
         c.clear();
     }
-    static unsigned int add(T& c, TDestType* v)
+    static unsigned int add(T& c, TDestPtr v)
     {
         c.get() = v;
         return 0;
     }
-    static unsigned int find(const T& c, TDestType* v)
+    static unsigned int find(const T& c, TDestPtr v)
     {
         if (c.get() == v) return 0;
         else return 1;
@@ -217,8 +220,8 @@ public:
     }
 };
 
-template<class TDestType, class TValueType>
-class LinkTraitsContainer<TDestType, TValueType, true>
+template<class TDestType, class TDestPtr, class TValueType>
+class LinkTraitsContainer<TDestType, TDestPtr, TValueType, true>
 {
 public:
     typedef helper::vector<TValueType> T;
@@ -226,13 +229,13 @@ public:
     {
         c.clear();
     }
-    static unsigned int add(T& c, TValueType v)
+    static unsigned int add(T& c, TDestPtr v)
     {
         unsigned int index = c.size();
-        c.push_back(v);
+        c.push_back(TValueType(v));
         return index;
     }
-    static unsigned int find(const T& c, TValueType v)
+    static unsigned int find(const T& c, TDestPtr v)
     {
         unsigned int s = c.size();
         for (unsigned int i=0; i<s; ++i)
@@ -259,6 +262,12 @@ public:
     {
         return owner->findLinkDest(ptr, path, link);
     }
+    template<class TContext>
+    static bool checkPath(const std::string& path, TContext* context)
+    {
+        DestType* ptr = NULL;
+        return context->findLinkDest(ptr, path);
+    }
 };
 
 template<class OwnerType, class DestType>
@@ -268,6 +277,12 @@ public:
     static bool findLinkDest(OwnerType* owner, DestType*& ptr, const std::string& path, const BaseLink* link)
     {
         return owner->findDataLinkDest(ptr, path, link);
+    }
+    template<class TContext>
+    static bool checkPath(const std::string& path, TContext* context)
+    {
+        DestType* ptr = NULL;
+        return context->findDataLinkDest(ptr, path);
     }
 };
 
@@ -290,7 +305,7 @@ public:
     typedef typename TraitsDestPtr::T DestPtr;
     typedef LinkTraitsValueType<DestType, DestPtr, ACTIVEFLAG(FLAG_STOREPATH)> TraitsValueType;
     typedef typename TraitsValueType::T ValueType;
-    typedef LinkTraitsContainer<DestType, ValueType, ACTIVEFLAG(FLAG_MULTILINK)> TraitsContainer;
+    typedef LinkTraitsContainer<DestType, DestPtr, ValueType, ACTIVEFLAG(FLAG_MULTILINK)> TraitsContainer;
     typedef typename TraitsContainer::T Container;
     typedef typename Container::const_iterator const_iterator;
     typedef typename Container::const_reverse_iterator const_reverse_iterator;
@@ -474,6 +489,23 @@ public:
         return ok;
     }
 
+    /// Check that a given path is valid, that the pointed object exists and is of the right type
+    template <class TContext>
+    static bool CheckPath( const std::string& path, TContext* context)
+    {
+        if (path.empty())
+            return false;
+        if (!context)
+        {
+            std::string p,d;
+            return BaseLink::ParseString( path, &p, (ActiveFlags & FLAG_DATALINK) ? &d : NULL, NULL);
+        }
+        else
+        {
+            return TraitsFindDest::checkPath(path, context);
+        }
+    }
+
     /// @}
 
     /// Copy the value of an aspect into another one.
@@ -559,6 +591,22 @@ public:
         m_validator = fn;
     }
 
+    /// Check that a given list of path is valid, that the pointed object exists and is of the right type
+    template<class TContext>
+    static bool CheckPaths( const std::string& str, TContext* context)
+    {
+        if (str.empty())
+            return false;
+        std::istringstream istr( str.c_str() );
+        std::string path;
+        bool ok = true;
+        while (istr >> path)
+        {
+            ok &= CheckPath(path, context);
+        }
+        return ok;
+    }
+
     DestType* get(unsigned int index, const core::ExecParams* params = 0) const
     {
         const int aspect = core::ExecParams::currentAspect(params);
@@ -566,6 +614,11 @@ public:
             return TraitsDestPtr::get(this->m_value[aspect][index]);
         else
             return NULL;
+    }
+
+    DestType* operator[](unsigned int index) const
+    {
+        return get(index);
     }
 
 protected:

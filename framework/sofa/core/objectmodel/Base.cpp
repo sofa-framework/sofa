@@ -371,6 +371,59 @@ void* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& 
     return NULL;
 }
 
+bool Base::hasField( const std::string& attribute) const
+{
+    return m_aliasData.find(attribute) != m_aliasData.end()
+            || m_aliasLink.find(attribute) != m_aliasLink.end();
+}
+
+/// Assign one field value (Data or Link)
+bool Base::parseField( const std::string& attribute, const std::string& value)
+{
+    std::vector< BaseData* > dataVec = findGlobalField(attribute);
+    std::vector< BaseLink* > linkVec = findLinks(attribute);
+    if (dataVec.empty() && linkVec.empty())
+    {
+        serr << "Unknown Data field or Link: " << attribute << sendl;
+        return false; // no field found
+    }
+    bool ok = true;
+    for (unsigned int d=0; d<dataVec.size(); ++d)
+    {
+        // test if data is a link and can be linked
+        if (value[0] == '@' && dataVec[d]->canBeLinked())
+        {
+            if (!dataVec[d]->setParent(value))
+            {
+                serr<<"Could not setup Data link between "<< value << " and " << attribute << "." << sendl;
+                ok = false;
+                continue;
+            }
+            else
+            {
+                BaseData* parentData = dataVec[d]->getParent();
+                sout<<"Link from parent Data " << value << " (" << parentData->getValueTypeInfo()->name() << ") to Data " << attribute << "(" << dataVec[d]->getValueTypeInfo()->name() << ") OK" << sendl;
+            }
+            /* children Data cannot be modified changing the parent Data value */
+            dataVec[d]->setReadOnly(true);
+            continue;
+        }
+        if( !(dataVec[d]->read( value )) && !value.empty())
+        {
+            serr<<"Could not read value for data field "<< attribute <<": " << value << sendl;
+            ok = false;
+        }
+    }
+    for (unsigned int l=0; l<dataVec.size(); ++l)
+    {
+        if( !(linkVec[l]->read( value )) && !value.empty())
+        {
+            serr<<"Could not read value for link "<< attribute <<": " << value << sendl;
+            ok = false;
+        }
+    }
+    return ok;
+}
 
 void  Base::parseFields ( const std::list<std::string>& str )
 {
@@ -383,18 +436,7 @@ void  Base::parseFields ( const std::list<std::string>& str )
         if (it == itend) break;
         value = *it;
         ++it;
-        std::vector< BaseData* > fields=findGlobalField(name);
-        if( fields.size() > 0 )
-        {
-            for (unsigned int i=0; i<fields.size(); ++i)
-            {
-                if( !(fields[i]->read( value ))) serr<<"Could not read value for data field " << name <<": "<< value << sendl;
-            }
-        }
-        else
-        {
-            serr<<"Unknown data field: "<< name << sendl;
-        }
+        parseField(name, value);
     }
 }
 
@@ -407,18 +449,7 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
         {
             key=(*i).first;
             val=*(*i).second;
-            std::vector< BaseData* > fields=findGlobalField(key);
-            if( fields.size() > 0 )
-            {
-                for (unsigned int i=0; i<fields.size(); ++i)
-                {
-                    if( !(fields[i]->read( val ))) serr<<"Could not read value for data field "<<key<<": "<<val << sendl;
-                }
-            }
-            else
-            {
-                if ((key!="name") && (key!="type")) serr<<"Unknown data field: " << key << sendl;
-            }
+            parseField(key, val);
         }
     }
 }
@@ -430,16 +461,11 @@ void  Base::parse ( BaseObjectDescription* arg )
     arg->getAttributeList(attributeList);
     for (unsigned int i=0; i<attributeList.size(); ++i)
     {
-        std::vector< BaseData* > dataModif = findGlobalField(attributeList[i]);
-        for (unsigned int d=0; d<dataModif.size(); ++d)
-        {
-            const char* val = arg->getAttribute(attributeList[i]);
-            if (val)
-            {
-                std::string valueString(val);
-                if( !(dataModif[d]->read( valueString ))) serr<<"Could not read value for data field "<< attributeList[i] <<": " << val << sendl;
-            }
-        }
+        if (!hasField(attributeList[i])) continue;
+        const char* val = arg->getAttribute(attributeList[i]);
+        if (!val) continue;
+        std::string valueString(val);
+        parseField(attributeList[i], valueString);
     }
 }
 
@@ -454,9 +480,18 @@ void  Base::writeDatas ( std::map<std::string,std::string*>& args )
         else
             args[name] =  new string(field->getValueString());
     }
+    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    {
+        BaseLink* link = *iLink;
+        std::string name = link->getName();
+        if( args[name] != NULL )
+            *args[name] = link->getValueString();
+        else
+            args[name] =  new string(link->getValueString());
+    }
 }
 
-void  Base::xmlWriteDatas (std::ostream& out, int)
+void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
 {
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
@@ -467,12 +502,22 @@ void  Base::xmlWriteDatas (std::ostream& out, int)
         }
         else
         {
-            if(  field->isPersistent() && field->isSet())
+            if(field->isPersistent() && field->isSet())
             {
                 std::string val = field->getValueString();
                 if (!val.empty())
                     out << " " << field->getName() << "=\""<< val << "\" ";
             }
+        }
+    }
+    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    {
+        BaseLink* link = *iLink;
+        if(link->storePath())
+        {
+            std::string val = link->getValueString();
+            if (!val.empty())
+                out << " " << link->getName() << "=\""<< val << "\" ";
         }
     }
 }

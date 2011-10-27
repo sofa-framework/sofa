@@ -134,6 +134,12 @@ public:
     ///   Data fields management
     /// @{
 
+    /// Assign one field value (Data or Link)
+    virtual bool parseField( const std::string& attribute, const std::string& value);
+
+    /// Check if a given Data field or Link exists
+    virtual bool hasField( const std::string& attribute) const;
+
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     virtual void parse ( BaseObjectDescription* arg );
 

@@ -283,6 +283,15 @@ public:
 
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
 
+    template<class DataT>
+    bool findDataLinkDest(DataT*& ptr, const std::string& path, const BaseLink* link)
+    {
+        BaseData* base = NULL;
+        if (!findDataLinkDest(base, path, link)) return false;
+        ptr = dynamic_cast<DataT*>(base);
+        return (ptr != NULL);
+    }
+
     /// Add a link.
     void addLink(BaseLink* l);
 
@@ -327,7 +336,7 @@ protected:
 //    /// Link to another Data, if used as an input from another Data (@ typo).
 //    std::string m_linkPath;
     /// Parent Data
-    SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK> parentBaseData;
+    SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentBaseData;
 
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);

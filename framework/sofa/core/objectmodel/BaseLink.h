@@ -47,6 +47,7 @@ namespace objectmodel
 class Base;
 class BaseData;
 class BaseClass;
+class BaseObjectDescription;
 
 /**
  *  \brief Abstract base class for all links in the scene grapn, independently of their type.
@@ -163,6 +164,9 @@ public:
     static std::string CreateString(Base* object, Base* from);
     static std::string CreateString(BaseData* data, Base* from);
     static std::string CreateString(Base* object, BaseData* data, Base* from);
+#ifndef SOFA_DEPRECATE_OLD_API
+    static std::string ConvertOldPath(const std::string& path, const char* oldName = NULL, const char* newName = NULL, Base* obj = NULL, bool showWarning = true);
+#endif
 
     /// @}
 

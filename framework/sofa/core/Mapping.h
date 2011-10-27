@@ -29,7 +29,6 @@
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/State.h>
-#include <sofa/core/objectmodel/ObjectRef.h>
 
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -75,16 +74,18 @@ public:
 
 protected:
     /// Input Model, also called parent
-    State< In >* fromModel;
+    SingleLink<Mapping<In,Out>, State< In >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> fromModel;
+    //State< In >* fromModel;
     /// Output Model, also called child
-    State< Out >* toModel;
+    SingleLink<Mapping<In,Out>, State< Out >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> toModel;
+    //State< Out >* toModel;
 public:
     /// Name of the Input Model
     //Data< std::string > object1;
-    objectmodel::DataObjectRef m_inputObject;
+    //objectmodel::DataObjectRef m_inputObject;
     /// Name of the Output Model
     //Data< std::string > object2;
-    objectmodel::DataObjectRef m_outputObject;
+    //objectmodel::DataObjectRef m_outputObject;
 
     Data<bool> f_applyRestPosition;
     Data<bool> f_checkJacobian;
@@ -102,8 +103,8 @@ public:
     virtual void setModels(State< In > * from, State< Out >* to);
 
     /// Set the path to the objects mapped in the scene graph
-    void setPathInputObject(const std::string &o) {m_inputObject.setValue(o);}
-    void setPathOutputObject(const std::string &o) {m_outputObject.setValue(o);}
+    void setPathInputObject(const std::string &o) {fromModel.setPath(o);}
+    void setPathOutputObject(const std::string &o) {toModel.setPath(o);}
 
     /// Return the pointer to the input model.
     State< In >* getFromModel();
@@ -189,24 +190,8 @@ public:
     virtual void applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ /* PARAMS FIRST */, MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) {}
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(const ConstraintParams* cparams /* PARAMS FIRST  = ConstraintParams::defaultInstance()*/, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
-    {
-        if(this->fromModel && this->toModel)
-        {
-            InDataMatrixDeriv* out = inConst[fromModel].write();
-            const OutDataMatrixDeriv* in = outConst[toModel].read();
-            if(out && in)
-            {
-                if (this->isMechanical() && this->f_checkJacobian.getValue())
-                {
-                    checkApplyJT(*out->beginEdit(cparams), in->getValue(cparams), this->getJ());
-                    out->endEdit(cparams);
-                }
-                else
-                    this->applyJT(cparams /* PARAMS FIRST */, *out, *in);
-            }
-        }
-    }
+    virtual void applyJT(const ConstraintParams* cparams /* PARAMS FIRST  = ConstraintParams::defaultInstance()*/, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst );
+
     /// This method must be reimplemented by all mappings if they need to support constraints.
     virtual void applyJT( const ConstraintParams* mparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in)
 #ifdef SOFA_DEPRECATE_OLD_API
@@ -231,17 +216,8 @@ public:
     /// Let \f$ v_c = J v_p \f$ be the velocity of the child given the velocity of the parent, then the acceleration is \f$ a_c = J a_p + dJ v_p \f$.
     /// The second term is null in linear mappings, otherwise it encodes the acceleration due to the change of mapping at constant parent velocity.
     /// For instance, in a rigid mapping with angular velocity\f$ w \f$,  the second term is $ w^(w^rel_pos) $
-    virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
-    {
-        if(this->fromModel && this->toModel)
-        {
-            OutDataVecDeriv* out = outAcc[toModel].write();
-            const InDataVecDeriv* inV = inVel[fromModel].read();
-            const InDataVecDeriv* inA = inAcc[fromModel].read();
-            if(out && inV && inA)
-                this->computeAccFromMapping(mparams /* PARAMS FIRST */, *out, *inV, *inA);
-        }
-    }
+    virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc );
+
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
     virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& accOut, const InDataVecDeriv& vIn, const InDataVecDeriv& accIn)
 #ifdef SOFA_DEPRECATE_OLD_API
@@ -296,54 +272,39 @@ public:
         State<In>* stin = NULL;
         State<Out>* stout = NULL;
 
+        std::string inPath, outPath;
+
+        if (arg->getAttribute("input"))
+            inPath = arg->getAttribute("input");
 #ifndef SOFA_DEPRECATE_OLD_API
-        ////Deprecated check
-        Base* bobjInput = NULL;
-        Base* bobjOutput = NULL;
+        else if (arg->getAttribute("object1"))
+            inPath = BaseLink::ConvertOldPath(arg->getAttribute("object1"), "object1", "input", context, false);
+#endif
+        else
+            inPath = "@..";
 
-        //Input
-        if (arg->getAttribute("object1",NULL) == NULL && arg->getAttribute("input",NULL) == NULL)
-            bobjInput = arg->findObject("../..");
+        context->findLinkDest(stin, inPath, NULL);
 
-        if (arg->getAttribute("object1",NULL) != NULL)
-            bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
+        if (arg->getAttribute("output"))
+            outPath = arg->getAttribute("output");
+#ifndef SOFA_DEPRECATE_OLD_API
+        else if (arg->getAttribute("object2"))
+            outPath = BaseLink::ConvertOldPath(arg->getAttribute("object2"), "object2", "output", context, false);
+#endif
+        else
+            outPath = "@./";
 
-        if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjInput))
-            stin = dynamic_cast< State<In>* >(bo);
-
-        else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjInput))
-            stin = dynamic_cast< State<In>* >(bc->getState());
-
-        //Output
-        if (arg->getAttribute("object2",NULL) == NULL && arg->getAttribute("output",NULL) == NULL)
-            bobjOutput = arg->findObject("..");
-
-        if (arg->getAttribute("object2",NULL) != NULL)
-            bobjOutput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object2", arg);
-
-        if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjOutput))
-            stout = dynamic_cast< State<Out>* >(bo);
-
-        else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjOutput))
-            stout = dynamic_cast< State<Out>* >(bc->getState());
-        /////
-
-        if (stin == NULL || stout == NULL)
-#endif // SOFA_DEPRECATE_OLD_API
-        {
-            stin = sofa::core::objectmodel::ObjectRef::parse< State<In> >("input", arg);
-            stout = sofa::core::objectmodel::ObjectRef::parse< State<Out> >("output", arg);
-        }
+        context->findLinkDest(stout, outPath, NULL);
 
         if (stin == NULL)
         {
-            //context->serr << "Cannot create "<<className(obj)<<" as object1 is missing or invalid." << context->sendl;
+            //context->serr << "Cannot create "<<className(obj)<<" as input model is missing or invalid." << context->sendl;
             return false;
         }
 
         if (stout == NULL)
         {
-            //context->serr << "Cannot create "<<className(obj)<<" as object2 is missing or invalid." << context->sendl;
+            //context->serr << "Cannot create "<<className(obj)<<" as output model is missing or invalid." << context->sendl;
             return false;
         }
 
@@ -365,102 +326,41 @@ public:
     template<class T>
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        State<In>* stin = NULL;
-        State<Out>* stout = NULL;
-
-#ifndef SOFA_DEPRECATE_OLD_API
-        ////Deprecated check
-        std::string object1Path;
-        std::string object2Path;
-
-        Base* bobjInput = NULL;
-        Base* bobjOutput = NULL;
-
-        if(arg != NULL )
-        {
-            //Input
-            if(arg->getAttribute("object1",NULL) == NULL && arg->getAttribute("input",NULL) == NULL)
-            {
-                object1Path = "..";
-                //context->serr << "Deprecated use of implicit value for input" << context->sendl;
-                //context->serr << "Use now : input=\"@" << object1Path << "\" "<< context->sendl;
-                bobjInput = arg->findObject("../..");
-            }
-
-            if(arg->getAttribute("object1",NULL) != NULL)
-            {
-                object1Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object1",NULL));
-                //context->serr << "Deprecated use of attribute " << "object1" << context->sendl;
-                //context->serr << "Use now : input=\"@"
-                //              << object1Path
-                //              << "\""<< context->sendl;
-                bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
-            }
-
-            if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjInput))
-            {
-                stin = dynamic_cast< State<In>* >(bo);
-            }
-            else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjInput))
-            {
-                stin = dynamic_cast< State<In>* >(bc->getState());
-            }
-
-            //Output
-            if(arg->getAttribute("object2",NULL) == NULL && arg->getAttribute("output",NULL) == NULL)
-            {
-                object2Path = ".";
-                //context->serr << "Deprecated use of implicit value for output" << context->sendl;
-                //context->serr << "Use now : output=\"@" << object2Path << "\" "<< context->sendl;
-                bobjOutput = arg->findObject("..");
-            }
-
-            if(arg->getAttribute("object2",NULL) != NULL)
-            {
-                object2Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object2",NULL));
-                //context->serr << "Deprecated use of attribute " << "object2" << context->sendl;
-                //context->serr << "Use now : output=\"@"
-                //              << object2Path
-                //              << "\""<< context->sendl;
-                bobjOutput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object2", arg);
-            }
-
-            if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjOutput))
-            {
-                stout = dynamic_cast< State<Out>* >(bo);
-            }
-            else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjOutput))
-            {
-                stout = dynamic_cast< State<Out>* >(bc->getState());
-            }
-
-            /////
-        }
-
-        if (stin == NULL && stout == NULL)
-#endif // SOFA_DEPRECATE_OLD_API
-        {
-            if (arg)
-            {
-                stin = sofa::core::objectmodel::ObjectRef::parse< State<In> >("input", arg);
-                stout = sofa::core::objectmodel::ObjectRef::parse< State<Out> >("output", arg);
-            }
-        }
-
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>((arg?stin:NULL), (arg?stout:NULL));
-
-#ifndef SOFA_DEPRECATE_OLD_API
-        if (!object1Path.empty())
-            obj->m_inputObject.setValue( object1Path );
-        if (!object2Path.empty())
-            obj->m_outputObject.setValue( object2Path );
-#endif // SOFA_DEPRECATE_OLD_API
+#ifdef SOFA_DEPRECATE_OLD_API
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+#else
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>((State<In>*)NULL, (State<Out>*)NULL);
+#endif
 
         if (context)
             context->addObject(obj);
 
         if (arg)
+        {
+            std::string inPath, outPath;
+            if (arg->getAttribute("input"))
+                inPath = arg->getAttribute("input");
+#ifndef SOFA_DEPRECATE_OLD_API
+            else if (arg->getAttribute("object1"))
+                inPath = BaseLink::ConvertOldPath(arg->getAttribute("object1"), "object1", "input", obj.get());
+#endif
+            else
+                inPath = "@..";
+
+            if (arg->getAttribute("output"))
+                outPath = arg->getAttribute("output");
+#ifndef SOFA_DEPRECATE_OLD_API
+            else if (arg->getAttribute("object2"))
+                outPath = BaseLink::ConvertOldPath(arg->getAttribute("object2"), "object2", "output", obj.get());
+#endif
+            else
+                outPath = "@./";
+
+            obj->fromModel.setPath( inPath );
+            obj->toModel.setPath( outPath );
+
             obj->parse(arg);
+        }
 
         return obj;
     }

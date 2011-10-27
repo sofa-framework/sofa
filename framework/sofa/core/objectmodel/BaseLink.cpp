@@ -27,6 +27,9 @@
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/helper/BackTrace.h>
 
 #include <sstream>
@@ -116,6 +119,8 @@ bool BaseLink::ParseString(const std::string& text, std::string* path, std::stri
     std::size_t posPath = text.rfind('/');
     if (posPath == std::string::npos) posPath = 0;
     std::size_t posDot = text.rfind('.');
+    if (posDot < posPath) posDot = std::string::npos; // dots can appear within the path
+    if (posDot == text.size()-1 && posDot > 0 && text[posDot-1] == '.') posDot = std::string::npos; // double dots can appear at the end of the path
     if (!data && posDot != std::string::npos)
     {
         if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": a Data field name is specified while an object was expected." << owner->sendl;
@@ -171,10 +176,38 @@ std::string BaseLink::CreateString(const std::string& path, const std::string& d
     return result;
 }
 
-std::string BaseLink::CreateStringPath(Base* object, Base* from)
+std::string BaseLink::CreateStringPath(Base* dest, Base* from)
 {
-    if (!object || object == from) return std::string("[]");
-    return object->getName(); // TODO: compute full or relative path
+    if (!dest || dest == from) return std::string("[]");
+    BaseObject* o = dynamic_cast<BaseObject*>(dest);
+    BaseObject* f = dynamic_cast<BaseObject*>(from);
+    BaseContext* ctx = dynamic_cast<BaseContext*>(from);
+    if (!ctx && f) ctx = f->getContext();
+    if (o)
+    {
+        std::string objectPath = o->getName();
+        BaseObject* master = o->getMaster();
+        while (master)
+        {
+            objectPath = master->getName() + std::string("/") + objectPath;
+            master = master->getMaster();
+        }
+        BaseNode* n = dynamic_cast<BaseNode*>(o->getContext());
+        if (f && o->getContext() == ctx)
+            return objectPath;
+        else if (n)
+            return n->getPathName() + std::string("/") + objectPath; // TODO: compute relative path
+        else
+            return objectPath; // we could not determine destination path, specifying simply its name might be enough to find it back
+    }
+    else // dest is a context
+    {
+        if (f && ctx == dest)
+            return std::string("./");
+        BaseNode* n = dynamic_cast<BaseNode*>(dest);
+        if (n) return n->getPathName(); // TODO: compute relative path
+        else return dest->getName(); // we could not determine destination path, specifying simply its name might be enough to find it back
+    }
 }
 
 std::string BaseLink::CreateStringData(BaseData* data)
@@ -194,6 +227,45 @@ std::string BaseLink::CreateString(Base* object, BaseData* data, Base* from)
 {
     return CreateString(CreateStringPath(object,from),CreateStringData(data));
 }
+
+#ifndef SOFA_DEPRECATE_OLD_API
+std::string BaseLink::ConvertOldPath(const std::string& path, const char* oldName, const char* newName, Base* obj, bool showWarning)
+{
+    std::string newPath;
+    if (path.empty())
+        newPath = std::string();
+    else if (path[0] == '@')
+        newPath = path; // this is actually a path with the current syntax
+    else if (path[0] == '/')
+        newPath = std::string("@") + path; // absolute path
+    else if (path == "..")
+        newPath = std::string("@./"); // special case: current context
+    else if (path == ".")
+        newPath = std::string("@[]"); // special case: current object
+    else if (path.substr(0,3) == std::string("../"))
+        newPath = std::string("@") + path.substr(3); // remove one parent level
+    else
+    {
+        if (obj && oldName && newName)
+            obj->serr << "Invalid and deprecated path "<< oldName << "=\"" << path << "\". Replace it with a path specified as " << newName << " and using the new '@' prefixed syntax." << obj->sendl;
+        else if (obj)
+            obj->serr << "Invalid and deprecated path \"" << path << "\". Replace it with a path using the new '@' prefixed syntax." << obj->sendl;
+        else if (oldName && newName)
+            std::cerr << "Invalid and deprecated path "<< oldName << "=\"" << path << "\". Replace it with a path specified as " << newName << " and using the new '@' prefixed syntax." << std::endl;
+        else
+            std::cerr << "Invalid and deprecated path \"" << path << "\". Replace it with a path using the new '@' prefixed syntax." << std::endl;
+        return path;
+    }
+    if (obj && showWarning)
+    {
+        if (oldName && newName)
+            obj->serr << "Deprecated syntax "<< oldName << "=\"" << path << "\". Replace with " << newName << "=\"" << newPath << "\"." << obj->sendl;
+        else
+            obj->serr << "Deprecated syntax \"" << path << "\". Replace with \"" << newPath << "\"." << obj->sendl;
+    }
+    return newPath;
+}
+#endif
 
 } // namespace objectmodel
 
