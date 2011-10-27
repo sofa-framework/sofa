@@ -53,6 +53,7 @@
 #include <boost/graph/topological_sort.hpp>
 
 //#define DEBUG_VISITOR
+//#define DEBUG_LINK
 
 namespace sofa
 {
@@ -285,10 +286,16 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         if (!BaseLink::ParseString(path,&pathStr,NULL,this))
             return NULL;
     }
+#ifdef DEBUG_LINK
+    std::cout << "LINK: Looking for " << destType->className << "<" << destType->templateName << "> " << pathStr << " from Node " << getName() << std::endl;
+#endif
     std::size_t ppos = 0;
     std::size_t psize = pathStr.size();
     if (ppos == psize || (ppos == psize-2 && pathStr[ppos] == '[' && pathStr[ppos+1] == ']')) // self-reference
     {
+#ifdef DEBUG_LINK
+        std::cout << "  self-reference link." << std::endl;
+#endif
         if (!link || !link->getOwnerBase()) return destType->dynamicCast(this);
         return destType->dynamicCast(link->getOwnerBase());
     }
@@ -298,8 +305,14 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
     if (ppos < psize && pathStr[ppos] == '[') // relative index in the list of objects
     {
         if (pathStr[psize-1] != ']')
+        {
+            serr << "Invalid index-based path \"" << path << "\"" << sendl;
             return NULL;
+        }
         int index = atoi(pathStr.c_str()+ppos+1);
+#ifdef DEBUG_LINK
+        std::cout << "  index-based path to " << index << std::endl;
+#endif
         ObjectReverseIterator it = object.rbegin();
         ObjectReverseIterator itend = object.rend();
         if (link && link->getOwnerBase())
@@ -316,10 +329,16 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         }
         if (it == itend)
             return NULL;
+#ifdef DEBUG_LINK
+        std::cout << "  found " << it->get()->getTypeName() << " " << it->get()->getName() << "." << std::endl;
+#endif
         return destType->dynamicCast(it->get());
     }
     else if (ppos < psize && pathStr[ppos] == '/') // absolute path
     {
+#ifdef DEBUG_LINK
+        std::cout << "  absolute path" << std::endl;
+#endif
         node = dynamic_cast<Node*>(this->getRoot());
         if (!node) return NULL;
         ++ppos;
@@ -331,6 +350,9 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             || pathStr.substr(ppos) == ".")
         {
             // this must be this node
+#ifdef DEBUG_LINK
+            std::cout << "  to current node" << std::endl;
+#endif
             ppos += 2;
             based = true;
         }
@@ -341,6 +363,9 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             if (master)
             {
                 master = master->getMaster();
+#ifdef DEBUG_LINK
+                std::cout << "  to master object " << master->getName() << std::endl;
+#endif
             }
             else
             {
@@ -348,22 +373,31 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
                 if (parents.empty()) return NULL;
                 node = dynamic_cast<Node*>(parents[0]); // TODO: explore other parents
                 if (!node) return NULL;
+#ifdef DEBUG_LINK
+                std::cout << "  to parent node " << node->getName() << std::endl;
+#endif
             }
             based = true;
         }
         else if (pathStr[ppos] == '/')
         {
             // extra /
+#ifdef DEBUG_LINK
+            std::cout << "  extra '/'" << std::endl;
+#endif
             ppos += 1;
         }
         else
         {
             std::size_t p2pos = pathStr.find('/',ppos);
             if (p2pos == std::string::npos) p2pos = psize;
-            std::string name = pathStr.substr(ppos,p2pos-ppos-1);
+            std::string name = pathStr.substr(ppos,p2pos-ppos);
             ppos = p2pos+1;
             if (master)
             {
+#ifdef DEBUG_LINK
+                std::cout << "  to slave object " << name << std::endl;
+#endif
                 master = master->getSlave(name);
                 if (!master) return NULL;
             }
@@ -373,30 +407,61 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
                 {
                     BaseObject* obj = node->getObject(name);
                     Node* child = node->getChild(name);
-                    if (child) { node = child; break; }
-                    else if (obj) { master = obj; break; }
+                    if (child)
+                    {
+                        node = child;
+#ifdef DEBUG_LINK
+                        std::cout << "  to child node " << name << std::endl;
+#endif
+                        break;
+                    }
+                    else if (obj)
+                    {
+                        master = obj;
+#ifdef DEBUG_LINK
+                        std::cout << "  to object " << name << std::endl;
+#endif
+                        break;
+                    }
                     if (based) return NULL;
                     // this can still be found from an ancestor node
                     Parents parents = node->getParents();
                     if (parents.empty()) return NULL;
                     node = dynamic_cast<Node*>(parents[0]); // TODO: explore other parents
                     if (!node) return NULL;
+#ifdef DEBUG_LINK
+                    std::cout << "  looking in ancestor node " << node->getName() << std::endl;
+#endif
                 }
             }
             based = true;
         }
     }
     if (master)
+    {
+#ifdef DEBUG_LINK
+        std::cout << "  found " << master->getTypeName() << " " << master->getName() << "." << std::endl;
+#endif
         return destType->dynamicCast(master);
+    }
     else
     {
         void* r = destType->dynamicCast(node);
-        if (r) return r;
-        for (ObjectIterator it = object.begin(), itend = object.end(); it != itend; ++it)
+        if (r)
+        {
+#ifdef DEBUG_LINK
+            std::cout << "  found node " << node->getName() << "." << std::endl;
+#endif
+            return r;
+        }
+        for (ObjectIterator it = node->object.begin(), itend = node->object.end(); it != itend; ++it)
         {
             BaseObject* obj = it->get();
             void *o = destType->dynamicCast(obj);
             if (!o) continue;
+#ifdef DEBUG_LINK
+            std::cout << "  found " << obj->getTypeName() << " " << obj->getName() << "." << std::endl;
+#endif
             if (!r) r = o;
             else return NULL; // several objects are possible, this is an ambiguous path
         }

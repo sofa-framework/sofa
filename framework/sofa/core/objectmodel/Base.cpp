@@ -414,7 +414,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             ok = false;
         }
     }
-    for (unsigned int l=0; l<dataVec.size(); ++l)
+    for (unsigned int l=0; l<linkVec.size(); ++l)
     {
         if( !(linkVec[l]->read( value )) && !value.empty())
         {
