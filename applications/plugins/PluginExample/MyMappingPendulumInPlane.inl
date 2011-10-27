@@ -157,7 +157,7 @@ void MyMappingPendulumInPlane<In,Out>::applyDJT(const core::MechanicalParams* mp
 {
 
     ReadAccessor<Data<VecOutDeriv> > childForce (*mparams->readF(this->toModel));
-    WriteAccessor<Data<VecInDeriv> > parentForce (*parentForceChangeId[this->fromModel].write());
+    WriteAccessor<Data<VecInDeriv> > parentForce (*parentForceChangeId[this->fromModel.get(mparams)].write());
     ReadAccessor<Data<VecInDeriv> > parentDx (*mparams->readDx(this->fromModel));
     InReal kfactor = (InReal)mparams->kFactor();
 

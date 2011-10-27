@@ -59,11 +59,6 @@ protected:
     {
     }
 
-    CenterOfMassMultiMapping(helper::vector< core::State<In>* > in, helper::vector< core::State<Out>* > out)
-        : Inherit(in, out)
-    {
-    }
-
     virtual ~CenterOfMassMultiMapping() {}
 
     helper::vector<const core::behavior::BaseMass*> inputBaseMass;
