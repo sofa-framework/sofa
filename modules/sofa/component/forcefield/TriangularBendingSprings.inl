@@ -489,9 +489,8 @@ void TriangularBendingSprings<DataTypes>::reinit()
     // create edge tensor by calling the triangle creation function
     sofa::helper::vector<unsigned int> triangleAdded;
     for (i=0; i<_topology->getNbTriangles(); ++i)
-    {
         triangleAdded.push_back(i);
-    }
+
     edgeHandler->applyTriangleCreation(triangleAdded,
             (const sofa::helper::vector<Triangle>)0,
             (const sofa::helper::vector<sofa::helper::vector<unsigned int> >)0,

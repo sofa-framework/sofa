@@ -132,8 +132,6 @@ protected:
         }
     };
 
-    TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo;
-    EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
 
     sofa::core::topology::BaseMeshTopology* _topology;
     Data< VecCoord > _initialPoints;										///< the intial positions of the points
@@ -179,19 +177,47 @@ public:
     void updateLameCoefficients();
 
 
+    class TRQSTriangleHandler : public TopologyDataHandler<Triangle,vector<TriangleRestInformation> >
+    {
+    public:
+        typedef typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
+        TRQSTriangleHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, TriangleData<sofa::helper::vector<TriangleRestInformation> >* _data) : TopologyDataHandler<Triangle, sofa::helper::vector<TriangleRestInformation> >(_data), ff(_ff) {}
+
+        void applyCreateFunction(unsigned int triangleIndex, TriangleRestInformation& ,
+                const Triangle & t,
+                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+
+        void applyDestroyFunction(unsigned int, TriangleRestInformation &);
+
+    protected:
+        TriangularQuadraticSpringsForceField<DataTypes>* ff;
+    };
+
+    class TRQSEdgeHandler : public TopologyDataHandler<Edge,vector<EdgeRestInformation> >
+    {
+    public:
+        typedef typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
+        TRQSEdgeHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : TopologyDataHandler<Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
+
+        void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation& ,
+                const Edge & t,
+                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+
+    protected:
+        TriangularQuadraticSpringsForceField<DataTypes>* ff;
+    };
+
+
 protected :
+    TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo;
+    EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
 
     EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
-    static void TRQSEdgeCreationFunction(unsigned int edgeIndex, void* param, EdgeRestInformation &ei,
-            const Edge& ,  const sofa::helper::vector< unsigned int > &,
-            const sofa::helper::vector< double >&);
-    static void TRQSTriangleCreationFunction (unsigned int , void* ,
-            TriangleRestInformation &,
-            const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
-
-
-    static void TRQSTriangleDestroyFunction (unsigned int , void* , TriangleRestInformation &);
+    TRQSTriangleHandler* triangleHandler;
+    TRQSEdgeHandler* edgeHandler;
 
 };
 

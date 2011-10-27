@@ -56,11 +56,8 @@ typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeCreationFunction(unsigned int, void* param, EdgeRestInformation &ei,
-        const Edge& ,  const helper::vector< unsigned int > &,
-        const helper::vector< double >&)
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyCreateFunction(unsigned int, EdgeRestInformation &ei, const Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    TetrahedralTensorMassForceField<DataTypes> *ff= (TetrahedralTensorMassForceField<DataTypes> *)param;
     if (ff)
     {
 
@@ -78,10 +75,11 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeCreationFuncti
 }
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreationFunction (const helper::vector<unsigned int> &tetrahedronAdded,
-        void* param, helper::vector<EdgeRestInformation> &edgeData)
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronCreation(const sofa::helper::vector<unsigned int> &tetrahedronAdded,
+        const sofa::helper::vector<Tetrahedron> &,
+        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
+        const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
-    TetrahedralTensorMassForceField<DataTypes> *ff= (TetrahedralTensorMassForceField<DataTypes> *)param;
     if (ff)
     {
 
@@ -94,6 +92,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreatio
         typename DataTypes::Coord point[4],shapeVector[4];
 
         const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+
+        helper::vector<EdgeRestInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (i=0; i<tetrahedronAdded.size(); ++i)
         {
@@ -162,15 +162,13 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreatio
 
             }
         }
-
+        ff->edgeInfo.endEdit();
     }
 }
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestructionFunction (const helper::vector<unsigned int> &tetrahedronRemoved,
-        void* param, helper::vector<EdgeRestInformation> &edgeData)
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> &tetrahedronRemoved)
 {
-    TetrahedralTensorMassForceField<DataTypes> *ff= (TetrahedralTensorMassForceField<DataTypes> *)param;
     if (ff)
     {
 
@@ -183,6 +181,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
         typename DataTypes::Coord point[4],shapeVector[4];
 
         const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+
+        helper::vector<EdgeRestInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (i=0; i<tetrahedronRemoved.size(); ++i)
         {
@@ -252,7 +252,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
             }
 
         }
-
+        ff->edgeInfo.endEdit();
     }
 }
 
@@ -265,11 +265,12 @@ template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::Tetrahedr
     , lambda(0)
     , mu(0)
 {
+    edgeHandler = new TetrahedralTMEdgeHandler(this, &edgeInfo);
 }
 
 template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::~TetrahedralTensorMassForceField()
 {
-
+    if(edgeHandler) delete edgeHandler;
 }
 
 template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init()
@@ -278,6 +279,10 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     this->Inherited::init();
 
     _topology = this->getContext()->getMeshTopology();
+
+    edgeInfo.createTopologicalEngine(_topology,edgeHandler);
+    edgeInfo.registerTopologicalData();
+
 
     if (_topology->getNbTetrahedra()==0)
     {
@@ -302,26 +307,19 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     // set edge tensor to 0
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
-        TetrahedralTMEdgeCreationFunction(i, (void*) this, edgeInf[i],
-                _topology->getEdge(i),  (const std::vector< unsigned int > )0,
-                (const std::vector< double >)0);
+        edgeHandler->applyCreateFunction(i, edgeInf[i],
+                _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
+                (const sofa::helper::vector< double >)0);
     }
     // create edge tensor by calling the tetrahedron creation function
-    std::vector<unsigned int> tetrahedronAdded;
+    sofa::helper::vector<unsigned int> tetrahedronAdded;
     for (i=0; i<_topology->getNbTetrahedra(); ++i)
         tetrahedronAdded.push_back(i);
-    TetrahedralTMTetrahedronCreationFunction(tetrahedronAdded,(void*) this,
-            edgeInf);
 
-    edgeInfo.createTopologicalEngine(_topology);
-#ifdef TODOTOPO
-    edgeInfo.setCreateFunction(TetrahedralTMEdgeCreationFunction);
-    edgeInfo.setCreateTetrahedronFunction(TetrahedralTMTetrahedronCreationFunction);
-    edgeInfo.setDestroyTetrahedronFunction(TetrahedralTMTetrahedronDestructionFunction);
-    edgeInfo.setCreateParameter( (void *) this );
-    edgeInfo.setDestroyParameter( (void *) this );
-#endif
-    edgeInfo.registerTopologicalData();
+    edgeHandler->applyTetrahedronCreation(tetrahedronAdded,
+            (const sofa::helper::vector<Tetrahedron>)0,
+            (const sofa::helper::vector<sofa::helper::vector<unsigned int> >)0,
+            (const sofa::helper::vector<sofa::helper::vector<double> >)0);
 
     edgeInfo.endEdit();
 }

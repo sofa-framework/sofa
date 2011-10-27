@@ -68,6 +68,14 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
     , showFiber(initData(&showFiber,true,"showFiber","Flag activating rendering of fiber directions within each triangle"))
 {
     this->_anisotropicMaterial = true;
+    triangleHandler = new TRQSTriangleHandler(this, &localFiberDirection);
+}
+
+
+template <class DataTypes>
+TriangularAnisotropicFEMForceField<DataTypes>::~TriangularAnisotropicFEMForceField()
+{
+    if(triangleHandler) delete triangleHandler;
 }
 
 template< class DataTypes>
@@ -99,6 +107,10 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
 {
     _topology = this->getContext()->getMeshTopology();
 
+    // Create specific handler for TriangleData
+    localFiberDirection.createTopologicalEngine(_topology, triangleHandler);
+    localFiberDirection.registerTopologicalData();
+
     Inherited::init();
     reinit();
 }
@@ -124,11 +136,6 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
     lfd.resize(_topology->getNbTriangles());
     localFiberDirection.endEdit();
     Inherited::reinit();
-
-    // Create specific handler for TriangleData
-    triangleHandler = new TRQSTriangleHandler(this, &localFiberDirection);
-    localFiberDirection.createTopologicalEngine(_topology);
-    localFiberDirection.registerTopologicalData();
 }
 
 
