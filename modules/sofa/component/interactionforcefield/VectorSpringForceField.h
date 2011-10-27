@@ -99,29 +99,43 @@ protected:
     double m_potentialEnergy;
     /// true if the springs are initialized from the topology
     bool useTopology;
-
+    bool usingMask;
     /// indices in case we don't use the topology
     sofa::helper::vector<topology::Edge> edgeArray;
+
+
+    void resizeArray(unsigned int n);
+
+
+public:
+
     /// where the springs information are stored
     sofa::component::topology::EdgeData<sofa::helper::vector<Spring> > springArray;
 
+    class EdgeDataHandler : public sofa::component::topology::TopologyDataHandler< topology::Edge, sofa::helper::vector<Spring> >
+    {
+    public:
+        typedef typename VectorSpringForceField<DataTypes>::Spring Spring;
+        EdgeDataHandler(VectorSpringForceField<DataTypes>* ff, topology::EdgeData<sofa::helper::vector<Spring> >* data)
+            :topology::TopologyDataHandler< topology::Edge,sofa::helper::vector<Spring> >(data)
+            ,ff(ff)
+        {
+
+        }
+
+        void applyCreateFunction(unsigned int, Spring &t,
+                const topology::Edge &,
+                const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+    protected:
+        VectorSpringForceField<DataTypes>* ff;
+
+    };
     /// the filename where to load the spring information
     sofa::core::objectmodel::DataFileName m_filename;
     /// By default, assume that all edges have the same stiffness
     Data<double> m_stiffness;
     /// By default, assume that all edges have the same viscosity
     Data<double> m_viscosity;
-
-    void resizeArray(unsigned int n);
-
-    static void springCreationFunction(unsigned int index,
-            void* param, Spring& t,
-            const topology::Edge& e,
-            const sofa::helper::vector< unsigned int > &ancestors,
-            const sofa::helper::vector< double >& coefs);
-
-    bool usingMask;
-public:
 
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
@@ -131,6 +145,10 @@ protected:
     VectorSpringForceField(MechanicalState* _object=NULL);
 
     VectorSpringForceField(MechanicalState* _object1, MechanicalState* _object2);
+    virtual ~VectorSpringForceField();
+
+    EdgeDataHandler* edgeHandler;
+
 public:
     bool load(const char *filename);
 

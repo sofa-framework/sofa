@@ -48,13 +48,11 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
-void VectorSpringForceField<DataTypes>::springCreationFunction(unsigned int ,
-        void* param, Spring& t,
-        const topology::Edge& e,
-        const sofa::helper::vector< unsigned int > &ancestors,
-        const sofa::helper::vector< double >& coefs)
+void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(unsigned int, Spring &t,
+        const topology::Edge & e,
+        const sofa::helper::vector<unsigned int> & ancestors,
+        const sofa::helper::vector<double> & coefs)
 {
-    VectorSpringForceField<DataTypes> *ff= static_cast<VectorSpringForceField<DataTypes> *>(param);
     if (ff)
     {
 
@@ -81,6 +79,7 @@ void VectorSpringForceField<DataTypes>::springCreationFunction(unsigned int ,
         }
 
     }
+
 }
 
 template <class DataTypes>
@@ -142,37 +141,45 @@ void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, SReal ks, SRea
 template <class DataTypes>
 VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _object)
     : Inherit(_object, _object)
-    , m_potentialEnergy( 0.0 ), useTopology( false )
+    , m_potentialEnergy( 0.0 ), useTopology( false ), usingMask(false)
     , m_filename( initData(&m_filename,std::string(""),"filename","File name from which the spring informations are loaded") )
     , m_stiffness( initData(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
     , m_viscosity( initData(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
-    , usingMask(false)
+    , edgeHandler(NULL)
+
 {
-#ifdef TODOTOPO
-    springArray.setCreateFunction(springCreationFunction);
-    springArray.setCreateParameter( (void *) this );
-#endif
 }
 
 template <class DataTypes>
 VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _object1, MechanicalState* _object2)
     : Inherit(_object1, _object2)
-    , m_potentialEnergy( 0.0 ), useTopology( false )
+    , m_potentialEnergy( 0.0 ), useTopology( false ), usingMask(false)
     , m_filename( initData(&m_filename,std::string(""),"filename","File name from which the spring informations are loaded") )
     , m_stiffness( initData(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
     , m_viscosity( initData(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
-    , usingMask(false)
+    , edgeHandler(NULL)
 {
-#ifdef TODOTOPO
-    springArray.setCreateFunction(springCreationFunction);
-    springArray.setCreateParameter( (void *) this );
-#endif
+}
+
+template<class DataTypes>
+VectorSpringForceField<DataTypes>::~VectorSpringForceField()
+{
+    if(edgeHandler) delete edgeHandler;
 }
 
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::init()
 {
     _topology = this->getContext()->getMeshTopology();
+    if(!edgeHandler)
+    {
+        if(_topology)
+        {
+            edgeHandler = new EdgeDataHandler(this,&springArray);
+            springArray.createTopologicalEngine(_topology,edgeHandler);
+            springArray.registerTopologicalData();
+        }
+    }
     this->getContext()->get(edgeGeo);
     this->getContext()->get(edgeMod);
 
