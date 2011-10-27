@@ -145,7 +145,7 @@ template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::Fas
 
 template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::~FastTetrahedralCorotationalForceField()
 {
-
+    if (tetrahedronHandler) delete tetrahedronHandler;
 }
 
 template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>::init()

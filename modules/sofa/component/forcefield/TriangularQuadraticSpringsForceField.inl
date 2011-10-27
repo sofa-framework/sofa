@@ -48,11 +48,8 @@ using namespace	sofa::component::topology;
 using namespace core::topology;
 
 template< class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeCreationFunction(unsigned int edgeIndex, void* param, EdgeRestInformation &ei,
-        const Edge& ,  const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
+void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeHandler::applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation &ei, const Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    TriangularQuadraticSpringsForceField<DataTypes> *ff= (TriangularQuadraticSpringsForceField<DataTypes> *)param;
     if (ff)
     {
 
@@ -68,13 +65,10 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeCreationFunction(u
 
 
 template< class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleCreationFunction (unsigned int triangleIndex, void* param,
-        TriangleRestInformation &tinfo,
-        const Triangle& ,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
+void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, TriangleRestInformation &tinfo,
+        const Triangle &, const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<double> &)
 {
-    TriangularQuadraticSpringsForceField<DataTypes> *ff= (TriangularQuadraticSpringsForceField<DataTypes> *)param;
     if (ff)
     {
         unsigned int j,k,l;
@@ -126,9 +120,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleCreationFuncti
 
 
 template< class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleDestroyFunction(unsigned int triangleIndex, void* param, typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation &tinfo)
+void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::applyDestroyFunction(unsigned int triangleIndex, TriangleRestInformation &tinfo)
 {
-    TriangularQuadraticSpringsForceField<DataTypes> *ff= (TriangularQuadraticSpringsForceField<DataTypes> *)param;
     if (ff)
     {
         unsigned int j;
@@ -158,11 +151,14 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::Tria
     , lambda(0)
     , mu(0)
 {
+    triangleHandler = new TRQSTriangleHandler(this, &triangleInfo);
+    edgeHandler = new TRQSEdgeHandler(this, &edgeInfo);
 }
 
 template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::~TriangularQuadraticSpringsForceField()
 {
-
+    if(triangleHandler) delete triangleHandler;
+    if(edgeHandler) delete edgeHandler;
 }
 
 template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>::init()
@@ -171,6 +167,12 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
     this->Inherited::init();
 
     _topology = this->getContext()->getMeshTopology();
+
+    triangleInfo.createTopologicalEngine(_topology,triangleHandler);
+    triangleInfo.registerTopologicalData();
+
+    edgeInfo.createTopologicalEngine(_topology,edgeHandler);
+    edgeInfo.registerTopologicalData();
 
     if (_topology->getNbTriangles()==0)
     {
@@ -197,13 +199,13 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
     int i;
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
-        TRQSEdgeCreationFunction(i, (void*) this, edgeInf[i],
+        edgeHandler->applyCreateFunction(i, edgeInf[i],
                 _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
     for (i=0; i<_topology->getNbTriangles(); ++i)
     {
-        TRQSTriangleCreationFunction(i, (void*) this, triangleInf[i],
+        triangleHandler->applyCreateFunction(i, triangleInf[i],
                 _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }

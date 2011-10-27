@@ -106,8 +106,6 @@ protected:
         }
     };
 
-    EdgeData<helper::vector<EdgeRestInformation> > edgeInfo;
-
     sofa::core::topology::BaseMeshTopology* _topology;
     VecCoord  _initialPoints;///< the intial positions of the points
 
@@ -146,20 +144,34 @@ public:
     void updateLameCoefficients();
 
 
+    class TetrahedralTMEdgeHandler : public TopologyDataHandler<Edge,vector<EdgeRestInformation> >
+    {
+    public:
+        typedef typename TetrahedralTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
+        TetrahedralTMEdgeHandler(TetrahedralTensorMassForceField<DataTypes>* _ff, EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : TopologyDataHandler<Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
 
-protected :
+        void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation& ei,
+                const Edge &,
+                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+
+        void applyTetrahedronCreation(const sofa::helper::vector<unsigned int> &edgeAdded,
+                const sofa::helper::vector<Tetrahedron> &,
+                const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
+                const sofa::helper::vector<sofa::helper::vector<double> > &);
+
+        void applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> &edgeRemoved);
+
+    protected:
+        TetrahedralTensorMassForceField<DataTypes>* ff;
+    };
+
+protected:
+    EdgeData<helper::vector<EdgeRestInformation> > edgeInfo;
 
     EdgeData<helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
-    static void TetrahedralTMEdgeCreationFunction(unsigned int edgeIndex, void* param,
-            EdgeRestInformation &ei,
-            const Edge& ,  const helper::vector< unsigned int > &,
-            const helper::vector< double >&);
-
-    static void TetrahedralTMTetrahedronCreationFunction(const helper::vector<unsigned int> &triangleAdded,
-            void* param, helper::vector<EdgeRestInformation> &edgeData);
-    static void TetrahedralTMTetrahedronDestructionFunction ( const helper::vector<unsigned int> &triangleAdded,
-            void* param, helper::vector<EdgeRestInformation> &edgeData);
+    TetrahedralTMEdgeHandler* edgeHandler;
 
 };
 

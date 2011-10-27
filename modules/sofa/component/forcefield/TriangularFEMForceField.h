@@ -114,7 +114,7 @@ protected:
     TriangularFEMForceField();
 
     //virtual const char* getTypeName() const { return "TriangularFEMForceField"; }
-    virtual ~TriangularFEMForceField() {}
+    virtual ~TriangularFEMForceField();
 public:
     virtual void init();
     virtual void reinit();

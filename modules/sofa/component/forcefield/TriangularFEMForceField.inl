@@ -194,11 +194,19 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
 #endif
 {
     _anisotropicMaterial = false;
+    triangleHandler = new TRQSTriangleHandler(this, &triangleInfo);
 #ifdef PLOT_CURVE
     f_graphStress.setWidget("graph");
     f_graphCriteria.setWidget("graph");
     f_graphOrientation.setWidget("graph");
 #endif
+}
+
+
+template <class DataTypes>
+TriangularFEMForceField<DataTypes>::~TriangularFEMForceField()
+{
+    if(triangleHandler) delete triangleHandler;
 }
 
 
@@ -224,6 +232,17 @@ void TriangularFEMForceField<DataTypes>::init()
 #endif
 
     _topology = this->getContext()->getMeshTopology();
+
+    // Create specific handler for TriangleData
+    triangleInfo.createTopologicalEngine(_topology, triangleHandler);
+    triangleInfo.registerTopologicalData();
+
+    edgeInfo.createTopologicalEngine(_topology);
+    edgeInfo.registerTopologicalData();
+
+    vertexInfo.createTopologicalEngine(_topology);
+    vertexInfo.registerTopologicalData();
+
 
     if (f_method.getValue() == "small")
         method = SMALL;
@@ -346,18 +365,6 @@ void TriangularFEMForceField<DataTypes>::reinit()
         method = SMALL;
     else if (f_method.getValue() == "large")
         method = LARGE;
-
-    // Create specific handler for TriangleData
-    triangleHandler = new TRQSTriangleHandler(this, &triangleInfo);
-    triangleInfo.createTopologicalEngine(_topology, triangleHandler);
-    triangleInfo.registerTopologicalData();
-
-    edgeInfo.createTopologicalEngine(_topology);
-    edgeInfo.registerTopologicalData();
-
-    vertexInfo.createTopologicalEngine(_topology);
-    vertexInfo.registerTopologicalData();
-
 
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
