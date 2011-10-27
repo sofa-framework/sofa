@@ -79,6 +79,7 @@ public:
     {
         return false;
     }
+    static const TDestPtr& get(const T& v) { return v; }
     static void set(T& v, const TDestPtr& ptr) { v = ptr; }
     static void setPath(T& /*ptr*/, const std::string& /*name*/) {}
 };
@@ -93,10 +94,11 @@ public:
         std::string path;
         T() : ptr(TDestPtr()) {}
         explicit T(const TDestPtr& p) : ptr(p) {}
-        operator  TDestPtr() const { return ptr; }
+        operator TDestType*() const { return &(*ptr); }
         void operator=(const TDestPtr& v) { if (v != ptr) { ptr = v; path.clear(); } }
-        TDestType* operator*() const { return &(*ptr); }
+        TDestType& operator*() const { return *ptr; }
         TDestType* operator->() const { return &(*ptr); }
+        TDestType* get() const { return &(*ptr); }
         bool operator!() const { return !ptr; }
         bool operator == (const TDestPtr& p) { return ptr == p; }
         bool operator != (const TDestPtr& p) { return ptr != p; }
@@ -107,6 +109,7 @@ public:
         str = v.path;
         return true;
     }
+    static const TDestPtr& get(const T& v) { return v.ptr; }
     static void set(T& v, const TDestPtr& ptr) { if (ptr != v.ptr) v.path.clear(); v.ptr = ptr; }
     static void setPath(T& v, const std::string& name) { v.path = name; }
 };
@@ -266,7 +269,7 @@ public:
     static bool checkPath(const std::string& path, TContext* context)
     {
         DestType* ptr = NULL;
-        return context->findLinkDest(ptr, path);
+        return context->findLinkDest(ptr, path, NULL);
     }
 };
 
@@ -282,7 +285,7 @@ public:
     static bool checkPath(const std::string& path, TContext* context)
     {
         DestType* ptr = NULL;
-        return context->findDataLinkDest(ptr, path);
+        return context->findDataLinkDest(ptr, path, NULL);
     }
 };
 
@@ -441,7 +444,7 @@ public:
         const ValueType& value = m_value[aspect][index];
         if (!TraitsValueType::path(value, path))
         {
-            DestType* ptr = TraitsDestPtr::get(value);
+            DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
             if (ptr)
                 path = BaseLink::CreateString(TraitsDestCasts::getBase(ptr), TraitsDestCasts::getData(ptr),
                         TraitsOwnerCasts::getBase(m_owner));
@@ -539,7 +542,7 @@ protected:
     {
         const int aspect = core::ExecParams::currentAspect();
         if (index < m_value[aspect].size())
-            return TraitsDestPtr::get(m_value[aspect][index]);
+            return TraitsDestPtr::get(TraitsValueType::get(m_value[aspect][index]));
         else
             return NULL;
     }
@@ -611,7 +614,7 @@ public:
     {
         const int aspect = core::ExecParams::currentAspect(params);
         if (index < this->m_value[aspect].size())
-            return TraitsDestPtr::get(this->m_value[aspect][index]);
+            return TraitsDestPtr::get(TraitsValueType::get(this->m_value[aspect][index]));
         else
             return NULL;
     }
@@ -688,14 +691,14 @@ public:
     DestType* get(const core::ExecParams* params = 0) const
     {
         const int aspect = core::ExecParams::currentAspect(params);
-        return TraitsDestPtr::get(this->m_value[aspect].get());
+        return TraitsDestPtr::get(TraitsValueType::get(this->m_value[aspect].get()));
     }
 
     void reset()
     {
         const int aspect = core::ExecParams::currentAspect();
         ValueType& value = this->m_value[aspect].get();
-        const DestPtr before = value;
+        const DestPtr before = TraitsValueType::get(value);
         if (!before) return;
         TraitsValueType::set(value, NULL);
         changed(before, NULL);
@@ -705,7 +708,7 @@ public:
     {
         const int aspect = core::ExecParams::currentAspect();
         ValueType& value = this->m_value[aspect].get();
-        const DestPtr before = value;
+        const DestPtr before = TraitsValueType::get(value);
         if (v == before) return;
         TraitsValueType::set(value, v);
         changed(before, v);
@@ -715,11 +718,12 @@ public:
     {
         const int aspect = core::ExecParams::currentAspect();
         ValueType& value = this->m_value[aspect].get();
-        const DestPtr before = value;
-        if (v == before) return;
-        TraitsValueType::set(value, v);
+        const DestPtr before = TraitsValueType::get(value);
+        if (v != before)
+            TraitsValueType::set(value, v);
         TraitsValueType::setPath(value, path);
-        changed(before, v);
+        if (v != before)
+            changed(before, v);
     }
 
     void setPath(const std::string& path)
