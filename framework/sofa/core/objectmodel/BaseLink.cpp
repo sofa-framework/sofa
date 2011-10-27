@@ -120,7 +120,8 @@ bool BaseLink::ParseString(const std::string& text, std::string* path, std::stri
     if (posPath == std::string::npos) posPath = 0;
     std::size_t posDot = text.rfind('.');
     if (posDot < posPath) posDot = std::string::npos; // dots can appear within the path
-    if (posDot == text.size()-1 && posDot > 0 && text[posDot-1] == '.') posDot = std::string::npos; // double dots can appear at the end of the path
+    if (posDot == text.size()-1 && text[posDot-1] == '.') posDot = std::string::npos; // double dots can appear at the end of the path
+    if (posDot == text.size()-1 && (text[posDot-1] == '/' || posDot == 1)) posDot = std::string::npos; // a single dot is allowed at the end of the path, although it is better to end it with '/' instead in order to remove any ambiguity
     if (!data && posDot != std::string::npos)
     {
         if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": a Data field name is specified while an object was expected." << owner->sendl;
@@ -161,6 +162,10 @@ bool BaseLink::ParseString(const std::string& text, std::string* path, std::stri
             return false;
         }
     }
+    //std::cout << "LINK: Parsed \"" << text << "\":";
+    //if (path) std::cout << " path=\"" << *path << "\"";
+    //if (data) std::cout << " data=\"" << *data << "\"";
+    //std::cout << std::endl;
     return true;
 }
 
@@ -170,6 +175,8 @@ std::string BaseLink::CreateString(const std::string& path, const std::string& d
     if (!path.empty()) result += path;
     if (!data.empty())
     {
+        if (result[result.size()-1] == '.')
+            result += '/'; // path ends at a node designed with '.' or '..', so add '/' in order to separate it from the data part
         result += '.';
         result += data;
     }
@@ -245,17 +252,20 @@ std::string BaseLink::ConvertOldPath(const std::string& path, const char* oldNam
     else if (path.substr(0,3) == std::string("../"))
         newPath = std::string("@") + path.substr(3); // remove one parent level
     else
-    {
-        if (obj && oldName && newName)
-            obj->serr << "Invalid and deprecated path "<< oldName << "=\"" << path << "\". Replace it with a path specified as " << newName << " and using the new '@' prefixed syntax." << obj->sendl;
-        else if (obj)
-            obj->serr << "Invalid and deprecated path \"" << path << "\". Replace it with a path using the new '@' prefixed syntax." << obj->sendl;
-        else if (oldName && newName)
-            std::cerr << "Invalid and deprecated path "<< oldName << "=\"" << path << "\". Replace it with a path specified as " << newName << " and using the new '@' prefixed syntax." << std::endl;
-        else
-            std::cerr << "Invalid and deprecated path \"" << path << "\". Replace it with a path using the new '@' prefixed syntax." << std::endl;
-        return path;
-    }
+        newPath = std::string("@") + path; // path from one of the parent nodes
+    /*
+        {
+            if (obj && oldName && newName)
+                obj->serr << "Invalid and deprecated path "<< oldName << "=\"" << path << "\". Replace it with a path specified as " << newName << " and using the new '@' prefixed syntax." << obj->sendl;
+            else if (obj)
+                obj->serr << "Invalid and deprecated path \"" << path << "\". Replace it with a path using the new '@' prefixed syntax." << obj->sendl;
+            else if (oldName && newName)
+                std::cerr << "Invalid and deprecated path "<< oldName << "=\"" << path << "\". Replace it with a path specified as " << newName << " and using the new '@' prefixed syntax." << std::endl;
+            else
+                std::cerr << "Invalid and deprecated path \"" << path << "\". Replace it with a path using the new '@' prefixed syntax." << std::endl;
+            return path;
+        }
+    */
     if (obj && showWarning)
     {
         if (oldName && newName)
