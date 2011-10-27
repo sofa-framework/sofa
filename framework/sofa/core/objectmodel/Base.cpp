@@ -421,6 +421,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             serr<<"Could not read value for link "<< attribute <<": " << value << sendl;
             ok = false;
         }
+        serr << "Link " << linkVec[l]->getName() << " = " << linkVec[l]->getValueString() << sendl;
     }
     return ok;
 }
