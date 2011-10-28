@@ -75,7 +75,7 @@ declare(sofa_engine, modules/sofa/component/sofa_engine.pro, sofa_mesh_collision
 declare(sofa_graph_component, modules/sofa/component/sofa_graph_component.pro, sofatree)
 declare(sofa_topology_mapping, modules/sofa/component/sofa_topology_mapping.pro, sofa_base_topology)
 declare(sofa_boundary_condition, modules/sofa/component/sofa_boundary_condition.pro, sofa_base_topology)
-declare(sofa_user_interaction, modules/sofa/component/sofa_user_interaction.pro, sofa_mesh_collision sofa_deformable sofa_boundary_condition sofa_volumetric_data)
+declare(sofa_user_interaction, modules/sofa/component/sofa_user_interaction.pro, sofa_mesh_collision sofa_topology_mapping sofa_deformable sofa_boundary_condition sofa_volumetric_data)
 declare(sofa_constraint, modules/sofa/component/sofa_constraint.pro, sofa_preconditioner sofa_mesh_collision sofa_simple_fem eigen sofa_user_interaction)
 declare(sofa_haptics, modules/sofa/component/sofa_haptics.pro, sofa_constraint)
 declare(sofa_dense_solver, modules/sofa/component/sofa_dense_solver.pro, sofa_base_linear_solver)
