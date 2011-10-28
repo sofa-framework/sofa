@@ -63,17 +63,15 @@ public:
     SOFA_CLASS(SimpleTesselatedHexaTopologicalMapping,TopologicalMapping);
 protected:
     /** \brief Constructor.
-         *
-     * @param from the topology issuing TopologyChange objects (the "source").
-     * @param to   the topology for which the TopologyChange objects must be translated (the "target").
+     *
      */
-    SimpleTesselatedHexaTopologicalMapping ( In* from=NULL, Out* to=NULL );
+    SimpleTesselatedHexaTopologicalMapping();
 
     /** \brief Destructor.
      *
          * Does nothing.
          */
-    virtual ~SimpleTesselatedHexaTopologicalMapping() {};
+    virtual ~SimpleTesselatedHexaTopologicalMapping() {}
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */

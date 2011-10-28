@@ -39,7 +39,6 @@
 #include <sstream>
 #include <sofa/helper/Polynomial_LD.inl>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/core/objectmodel/ObjectRef.h>
 
 #include <functional>
 #ifdef SOFA_QT4
@@ -829,7 +828,7 @@ public:
 };
 
 
-
+#ifdef TODOLINK
 ////////////////////////////////////////////////////////////////
 /// sofa::core::objectmodel::ObjectRef
 ////////////////////////////////////////////////////////////////
@@ -897,6 +896,7 @@ public:
     {
     }
 };
+#endif
 
 ////////////////////////////////////////////////////////////////
 /// sofa::defaulttype::Mat support

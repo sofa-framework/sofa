@@ -30,7 +30,6 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/core.h>
 #include <sofa/core/VecId.h>
-#include <sofa/core/objectmodel/ObjectRef.h>
 
 
 namespace sofa
@@ -76,34 +75,35 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
+    typedef MultiLink<Multi2Mapping<In1,In2,Out>, State< In1 >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkFromModels1;
+    typedef typename LinkFromModels1::Container VecFromModels1;
+    typedef MultiLink<Multi2Mapping<In1,In2,Out>, State< In2 >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkFromModels2;
+    typedef typename LinkFromModels2::Container VecFromModels2;
+    typedef MultiLink<Multi2Mapping<In1,In2,Out>, State< Out >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkToModels;
+    typedef typename LinkToModels::Container VecToModels;
+
 protected:
     /// Input Models container. New inputs are added through addInputModel(In* ).
-    helper::vector< State<In1>* > fromModels1;
-    helper::vector< State<In2>* > fromModels2;
-    /// Output Model container. New outputs are added through addOutputModel( Ou* )
-    helper::vector< State<Out>* > toModels;
+    LinkFromModels1 fromModels1;
+    LinkFromModels2 fromModels2;
+    LinkToModels toModels;
 
-    /// Default Constructor for cpp examples
-    Multi2Mapping();
     /// Constructor
-    Multi2Mapping(helper::vector< State<In1>* > in1, helper::vector< State<In2>* > in2, helper::vector< State<Out>* > out);
+    Multi2Mapping();
     /// Destructor
     virtual ~Multi2Mapping() {};
 public:
-    objectmodel::DataVectorObjectRef m_inputObjects1;
-    objectmodel::DataVectorObjectRef m_inputObjects2;
-    objectmodel::DataVectorObjectRef m_outputObjects;
 
-    virtual void addInputModel(State<In1>*);
-    virtual void addInputModel(State<In2>*);
-    virtual void addOutputModel(State<Out>*);
+    virtual void addInputModel(State<In1>*, const std::string& path = "");
+    virtual void addInputModel(State<In2>*, const std::string& path = "");
+    virtual void addOutputModel(State<Out>*, const std::string& path = "");
 
     /// Return the reference to fromModels (In1).
-    helper::vector< State<In1>* >& getFromModels1();
+    const VecFromModels1& getFromModels1();
     /// Return the reference to fromModels (In2).
-    helper::vector< State<In2>* >& getFromModels2();
+    const VecFromModels2& getFromModels2();
     /// Return reference to toModels.
-    helper::vector< State<Out>* >& getToModels();
+    const VecToModels& getToModels();
 
     /// Return a container of input models statically casted as BaseObject*
     helper::vector<BaseState*> getFrom();
@@ -427,17 +427,14 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        bool createResult = true;
-        helper::vector< State<In1>* > stin1;
-        helper::vector< State<In2>* > stin2;
-        helper::vector< State<Out>* > stout;
-
-        createResult = sofa::core::objectmodel::VectorObjectRef::parseAll< State<In1> >("input1", arg, stin1);
-        createResult = createResult && sofa::core::objectmodel::VectorObjectRef::parseAll< State<In2> >("input2", arg, stin2);
-        createResult = createResult && sofa::core::objectmodel::VectorObjectRef::parseAll< State<Out> >("output", arg, stout);
-
-        //If one of the parsing failed
-        if(!createResult)
+        std::string input1 = arg->getAttribute("input1","");
+        std::string input2 = arg->getAttribute("input2","");
+        std::string output = arg->getAttribute("output","");
+        if (!input1.empty() && !LinkFromModels1::CheckPaths(input1, context))
+            return false;
+        if (!input2.empty() && !LinkFromModels2::CheckPaths(input2, context))
+            return false;
+        if (output.empty() || !LinkToModels::CheckPaths(output, context))
             return false;
 
         return BaseMapping::canCreate(obj, context, arg);
@@ -450,20 +447,7 @@ public:
     template<class T>
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        bool createResult = true;
-        helper::vector< State<In1>* > stin1;
-        helper::vector< State<In2>* > stin2;
-        helper::vector< State<Out>* > stout;
-
-        createResult = sofa::core::objectmodel::VectorObjectRef::parseAll< State<In1> >("input1", arg, stin1);
-        createResult = createResult && sofa::core::objectmodel::VectorObjectRef::parseAll< State<In2> >("input2", arg, stin2);
-        createResult = createResult && sofa::core::objectmodel::VectorObjectRef::parseAll< State<Out> >("output", arg, stout);
-
-        //If one of the parsing failed
-        if(!createResult)
-            return typename T::SPtr();
-
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(stin1, stin2, stout);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 
         if (context)
             context->addObject(obj);

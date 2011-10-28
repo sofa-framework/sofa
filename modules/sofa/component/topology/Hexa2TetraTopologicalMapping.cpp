@@ -65,9 +65,8 @@ int Hexa2TetraTopologicalMappingClass = core::RegisterObject("Special case of ma
 
 // Implementation
 
-Hexa2TetraTopologicalMapping::Hexa2TetraTopologicalMapping(In* from, Out* to)
-    : TopologicalMapping(from, to)
-    , swapping(initData(&swapping, false, "swapping","Boolean enabling to swapp hexa-edges\n in order to avoid bias effect"))
+Hexa2TetraTopologicalMapping::Hexa2TetraTopologicalMapping()
+    : swapping(initData(&swapping, false, "swapping","Boolean enabling to swapp hexa-edges\n in order to avoid bias effect"))
 {
 }
 
@@ -115,7 +114,7 @@ void Hexa2TetraTopologicalMapping::init()
             int ny = 1;
             int nz = 1;
             {
-                topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel);
+                topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel.get());
                 if (grid != NULL)
                 {
                     nx = grid->getNx()-1;

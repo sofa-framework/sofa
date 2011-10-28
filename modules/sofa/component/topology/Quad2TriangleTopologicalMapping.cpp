@@ -70,8 +70,7 @@ int Quad2TriangleTopologicalMappingClass = core::RegisterObject("Special case of
 
 // Implementation
 
-Quad2TriangleTopologicalMapping::Quad2TriangleTopologicalMapping(In* from, Out* to)
-    : TopologicalMapping(from, to)
+Quad2TriangleTopologicalMapping::Quad2TriangleTopologicalMapping()
 {
 }
 
@@ -125,7 +124,7 @@ void Quad2TriangleTopologicalMapping::init()
             int nz = 1;
 
             {
-                topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel);
+                topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel.get());
                 if (grid != NULL)
                 {
                     nx = grid->getNx()-1;

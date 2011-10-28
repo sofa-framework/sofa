@@ -221,46 +221,6 @@ public:
         if (outroot != NULL)
             dataMatOutRootConst[0]->endEdit();
     }
-//
-///**
-//	 * @name
-//	 */
-//	//@{
-//	/**
-//	 * @brief
-//	 */
-//	void propagateX();
-//
-//	/**
-//	 * @brief
-//	 */
-//	void propagateXfree();
-//
-//
-//	/**
-//	 * @brief
-//	 */
-//	void propagateV();
-//
-//	/**
-//	 * @brief
-//	 */
-//	void propagateDx();
-//
-//	/**
-//	 * @brief
-//	 */
-//	void accumulateForce();
-//
-//	/**
-//	 * @brief
-//	 */
-//	void accumulateDf();
-//
-//	/**
-//	 * @brief
-//	 */
-//	void accumulateConstraint();
 
     /**
       * @brief
@@ -278,59 +238,8 @@ public:
     void setRepartition ( unsigned int value );
     void setRepartition ( sofa::helper::vector<unsigned int> values );
 
-
-    //We have to overload canCreate & create because input2 can be empty
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        bool createResult = true;
-
-        helper::vector< core::State<In>* > stin1;
-        helper::vector< core::State<InRoot>* > stin2;
-        helper::vector< core::State<Out>* > stout;
-
-        createResult = sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<In> >("input1", arg, stin1);
-        createResult = createResult && sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<Out> >("output", arg, stout);
-
-        //If one of the parsing failed
-        if(!createResult)
-            return false;
-
-        return core::BaseMapping::canCreate(obj, context, arg);
-    }
-
-    template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        bool createResult = true;
-        helper::vector< core::State<In>* > stin1;
-        helper::vector< core::State<InRoot>* > stin2;
-        helper::vector< core::State<Out>* > stout;
-
-        createResult = sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<In> >("input1", arg, stin1);
-        createResult = createResult && sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<Out> >("output", arg, stout);
-
-        //If one of the parsing failed
-        if(!createResult)
-            return typename T::SPtr();
-
-        sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<InRoot> >("input2", arg, stin2);
-
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(stin1, stin2, stout);
-
-        if (context)
-            context->addObject(obj);
-
-        if (arg)
-            obj->parse(arg);
-
-        return obj;
-    }
-
 protected:
-    DeformableOnRigidFrameMapping(helper::vector< core::State<In>* > from,
-            helper::vector< core::State<InRoot>* > fromRoot,
-            helper::vector< core::State<Out>* > to);
+    DeformableOnRigidFrameMapping();
 
     virtual ~DeformableOnRigidFrameMapping()
     {}

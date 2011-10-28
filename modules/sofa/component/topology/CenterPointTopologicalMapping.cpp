@@ -52,8 +52,7 @@ int CenterPointTopologicalMappingClass = core::RegisterObject ( "" )
         ;
 
 // Implementation
-CenterPointTopologicalMapping::CenterPointTopologicalMapping ( In* from, Out* to )
-    : TopologicalMapping ( from, to )
+CenterPointTopologicalMapping::CenterPointTopologicalMapping ()
 {
 }
 

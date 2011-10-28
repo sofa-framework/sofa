@@ -37,47 +37,39 @@ namespace core
 
 template < class In1, class In2, class Out >
 Multi2Mapping<In1,In2,Out>::Multi2Mapping()
-    : m_inputObjects1(initData(&m_inputObjects1, "input1", "Input Object(s) (1st Data type)"))
-    , m_inputObjects2(initData(&m_inputObjects2, "input2", "Input Object(s) (2nd Data type)"))
-    , m_outputObjects(initData(&m_outputObjects, "output", "Output Object(s)"))
+    : fromModels1(initLink("input1", "Input Object(s) (1st Data type)"))
+    , fromModels2(initLink("input2", "Input Object(s) (2st Data type)"))
+    , toModels(initLink("output", "Output Object(s)"))
 {
-
-}
-
-
-template < class In1, class In2, class Out >
-Multi2Mapping<In1,In2,Out>::Multi2Mapping(helper::vector< State<In1>* > in1, helper::vector< State<In2>* > in2, helper::vector< State<Out>* > out)
-    : fromModels1(in1), fromModels2(in2), toModels(out)
-    , m_inputObjects1(initData(&m_inputObjects1, "input1", "Input Object(s) (1st Data type)"))
-    , m_inputObjects2(initData(&m_inputObjects2, "input2", "Input Object(s) (2nd Data type)"))
-    , m_outputObjects(initData(&m_outputObjects, "output", "Output Object(s)"))
-{
-
 }
 
 template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::addInputModel(State<In1>* from)
+void Multi2Mapping<In1,In2,Out>::addInputModel(State<In1>* from, const std::string& path)
 {
-    if (!from) return;
-    this->fromModels1.push_back(from);
+    if (from)
+        this->fromModels1.add(from,path);
+    else if (!path.empty())
+        this->fromModels1.addPath(path);
 }
 
 template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::addInputModel(State<In2>* from)
+void Multi2Mapping<In1,In2,Out>::addInputModel(State<In2>* from, const std::string& path)
 {
-    if (!from) return;
-    this->fromModels2.push_back(from);
+    if (from)
+        this->fromModels2.add(from,path);
+    else if (!path.empty())
+        this->fromModels2.addPath(path);
 }
 
 template< class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::addOutputModel(State<Out>* to)
+void Multi2Mapping<In1,In2,Out>::addOutputModel(State<Out>* to, const std::string& path)
 {
-    this->toModels.insert( toModels.end(), to);
-    if (!isMechanical())
-    {
-        if(to != NULL && !testMechanicalState(to))
-            setNonMechanical();
-    }
+    if (to)
+        this->toModels.add(to,path);
+    else if (!path.empty())
+        this->toModels.addPath(path);
+    if (to && isMechanical() && !testMechanicalState(to))
+        setNonMechanical();
 }
 
 ///<TO REMOVE>
@@ -96,38 +88,44 @@ void Multi2Mapping<In1,In2,Out>::addOutputModel(State<Out>* to)
 //}
 
 template< class In1, class In2, class Out >
-helper::vector<State<In1>*>&  Multi2Mapping<In1,In2,Out>::getFromModels1()
+const typename Multi2Mapping<In1,In2,Out>::VecFromModels1& Multi2Mapping<In1,In2,Out>::getFromModels1()
 {
-    return fromModels1;
+    return fromModels1.getValue();
 }
 
 template< class In1, class In2, class Out >
-helper::vector<State<In2>*>&  Multi2Mapping<In1,In2,Out>::getFromModels2()
+const typename Multi2Mapping<In1,In2,Out>::VecFromModels2& Multi2Mapping<In1,In2,Out>::getFromModels2()
 {
-    return fromModels2;
+    return fromModels2.getValue();
 }
 
 template< class In1, class In2, class Out >
-helper::vector< State<Out>* >& Multi2Mapping<In1,In2,Out>::getToModels()
+const typename Multi2Mapping<In1,In2,Out>::VecToModels& Multi2Mapping<In1,In2,Out>::getToModels()
 {
-    return toModels;
+    return toModels.getValue();
 }
 
 template< class In1, class In2, class Out >
 helper::vector<BaseState*> Multi2Mapping<In1,In2,Out>::getFrom()
 {
-    helper::vector<BaseState*> base_fromModels;
-    std::copy(fromModels1.begin(), fromModels1.end(), std::back_inserter(base_fromModels));
-    std::copy(fromModels2.begin(), fromModels2.end(), std::back_inserter(base_fromModels));
-    return base_fromModels;
+    const VecFromModels1& models1 = getFromModels1();
+    const VecFromModels2& models2 = getFromModels2();
+    unsigned int size1 = models1.size();
+    unsigned int size2 = models2.size();
+    helper::vector<BaseState*> baseModels(size1+size2);
+    for (unsigned int i=0; i<size1; ++i) baseModels[      i] = models1[i].ptr.get();
+    for (unsigned int i=0; i<size2; ++i) baseModels[size1+i] = models2[i].ptr.get();
+    return baseModels;
 }
 
 template< class In1, class In2, class Out >
 helper::vector<BaseState* > Multi2Mapping<In1,In2,Out>::getTo()
 {
-    helper::vector<BaseState*> base_toModels;
-    std::copy(toModels.begin(), toModels.end(), std::back_inserter(base_toModels));
-    return base_toModels;
+    const VecToModels& models = getToModels();
+    unsigned int size = models.size();
+    helper::vector<BaseState*> baseModels(size);
+    for (unsigned int i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
+    return baseModels;
 }
 
 template < class In1, class In2,class Out>
@@ -136,17 +134,16 @@ helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMe
     helper::vector<behavior::BaseMechanicalState*> mechFromVec;
     for (unsigned int i=0 ; i<this->fromModels1.size() ; i++)
     {
-        behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModels1[i]);
+        behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModels1.get(i));
         if(meshFrom)
             mechFromVec.push_back(meshFrom);
     }
     for (unsigned int i=0 ; i<this->fromModels2.size() ; i++)
     {
-        behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModels2[i]);
+        behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModels2.get(i));
         if(meshFrom)
             mechFromVec.push_back(meshFrom);
     }
-
     return mechFromVec;
 }
 
@@ -156,7 +153,7 @@ helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMe
     helper::vector<behavior::BaseMechanicalState*> mechToVec;
     for (unsigned int i=0 ; i<this->toModels.size() ; i++)
     {
-        behavior::BaseMechanicalState* meshTo = dynamic_cast<behavior::BaseMechanicalState*> (this->toModels[i]);
+        behavior::BaseMechanicalState* meshTo = dynamic_cast<behavior::BaseMechanicalState*> (this->toModels.get(i));
         if(meshTo)
             mechToVec.push_back(meshTo);
     }

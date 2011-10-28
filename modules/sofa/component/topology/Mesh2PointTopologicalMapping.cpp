@@ -54,9 +54,8 @@ int Mesh2PointTopologicalMappingClass = core::RegisterObject ( "This class maps 
         ;
 
 // Implementation
-Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ( In* from, Out* to )
-    : TopologicalMapping ( from, to ),
-      pointBaryCoords ( initData ( &pointBaryCoords, "pointBaryCoords", "Coordinates for the points of the output topology created from the points of the input topology" ) ),
+Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ()
+    : pointBaryCoords ( initData ( &pointBaryCoords, "pointBaryCoords", "Coordinates for the points of the output topology created from the points of the input topology" ) ),
       edgeBaryCoords ( initData ( &edgeBaryCoords, "edgeBaryCoords", "Coordinates for the points of the output topology created from the edges of the input topology" ) ),
       triangleBaryCoords ( initData ( &triangleBaryCoords, "triangleBaryCoords", "Coordinates for the points of the output topology created from the triangles of the input topology" ) ),
       quadBaryCoords ( initData ( &quadBaryCoords, "quadBaryCoords", "Coordinates for the points of the output topology created from the quads of the input topology" ) ),

@@ -41,7 +41,7 @@ namespace behavior
 template<class DataTypes>
 ProjectiveConstraintSet<DataTypes>::ProjectiveConstraintSet(MechanicalState<DataTypes> *mm)
     : endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
-    , mstate(mm)
+    , mstate(initLink("mstate", "MechanicalState used by this projective constraint"), mm)
 {
 }
 
@@ -72,7 +72,7 @@ void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalP
 
     if (mstate)
     {
-        projectJacobianMatrix(mparams /* PARAMS FIRST */, *cId[mstate].write());
+        projectJacobianMatrix(mparams /* PARAMS FIRST */, *cId[mstate.get(mparams)].write());
     }
 }
 
@@ -144,10 +144,10 @@ void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams*
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
             Task<projectResponseTask<ProjectiveConstraintSet< DataTypes > > >(mparams /* PARAMS FIRST */, this,
-                    **defaulttype::getShared(*dxId[mstate].write()));
+                    **defaulttype::getShared(*dxId[mstate.get(mparams)].write()));
         else
 #endif /* SOFA_SMP */
-            projectResponse(mparams /* PARAMS FIRST */, *dxId[mstate].write());
+            projectResponse(mparams /* PARAMS FIRST */, *dxId[mstate.get(mparams)].write());
     }
 }
 
@@ -163,10 +163,10 @@ void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams*
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
             Task<projectVelocityTask<ProjectiveConstraintSet< DataTypes > > >(mparams /* PARAMS FIRST */, this,
-                    **defaulttype::getShared(*vId[mstate].write()));
+                    **defaulttype::getShared(*vId[mstate.get(mparams)].write()));
         else
 #endif /* SOFA_SMP */
-            projectVelocity(mparams /* PARAMS FIRST */, *vId[mstate].write());
+            projectVelocity(mparams /* PARAMS FIRST */, *vId[mstate.get(mparams)].write());
     }
 }
 
@@ -182,10 +182,10 @@ void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams*
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
             Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(mparams /* PARAMS FIRST */, this,
-                    **defaulttype::getShared(*xId[mstate].write()));
+                    **defaulttype::getShared(*xId[mstate.get(mparams)].write()));
         else
 #endif /* SOFA_SMP */
-            projectPosition(mparams /* PARAMS FIRST */, *xId[mstate].write());
+            projectPosition(mparams /* PARAMS FIRST */, *xId[mstate.get(mparams)].write());
     }
 }
 

@@ -96,10 +96,10 @@ public:
 protected:
     IdentityMapping()
         : Inherit(),
-          matrixJ(),
-          updateJ(false),
           maskFrom(NULL),
-          maskTo(NULL)
+          maskTo(NULL),
+          matrixJ(),
+          updateJ(false)
     {
     }
 

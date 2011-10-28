@@ -129,10 +129,10 @@ RigidMapping<TIn, TOut>::RigidMapping()
     , indexFromEnd(initData(&indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
     , pointsPerFrame(initData(&pointsPerFrame, "repartition", "number of dest dofs per entry dof"))
     , globalToLocalCoords(initData(&globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
-    , matrixJ()
-    , updateJ(false)
     , maskFrom(NULL)
     , maskTo(NULL)
+    , matrixJ()
+    , updateJ(false)
 {
     //std::cout << "RigidMapping Creation\n";
     this->addAlias(&fileRigidMapping, "filename");
@@ -296,26 +296,14 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<
     this->pointsPerFrame.endEdit();
 }
 
-template <class DataTypes>
-const typename DataTypes::VecCoord* M_getX0(core::behavior::MechanicalState<DataTypes>* model)
-{
-    return model->getX0();
-}
-
-template <class DataTypes>
-const typename DataTypes::VecCoord* M_getX0(core::State<DataTypes>* /*model*/)
-{
-    return NULL;
-}
-
 template <class TIn, class TOut>
 const typename RigidMapping<TIn, TOut>::VecCoord & RigidMapping<TIn, TOut>::getPoints()
 {
     if (useX0.getValue())
     {
-        const VecCoord* v = M_getX0(this->toModel.get());
+        const Data<VecCoord>* v = this->toModel.get()->read(core::VecCoordId::restPosition());
         if (v)
-            return *v;
+            return v->getValue();
         else
             serr
                     << "RigidMapping: ERROR useX0 can only be used in MechanicalMappings."

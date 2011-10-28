@@ -120,8 +120,10 @@ Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,3> > >DWClass_PolynomialLD3f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,2> > >DWClass_PolynomialLD2f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,1> > >DWClass_PolynomialLD1f("default",true);
+#ifdef TODOLINK
 using sofa::core::objectmodel::ObjectRef;
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::objectmodel::ObjectRef > >DWClass_ObjectRef("default",true);
+#endif
 
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<2,2,float> > > DWClass_Mat22f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<2,2,double> > > DWClass_Mat22d("default",true);

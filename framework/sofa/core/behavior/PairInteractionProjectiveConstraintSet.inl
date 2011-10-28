@@ -42,10 +42,13 @@ namespace behavior
 template<class DataTypes>
 PairInteractionProjectiveConstraintSet<DataTypes>::PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
     : endTime( initData(&endTime,(double)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
-    , object1( initData(&object1, "object1", "First Object to Constraint"))
-    , object2( initData(&object2, "object2", "Second Object to Constraint"))
-    , mstate1(mm1), mstate2(mm2)
+    , mstate1(initLink("object1", "First object to constrain"), mm1)
+    , mstate2(initLink("object2", "Second object to constrain"), mm2)
 {
+    if (!mm1)
+        mstate1.setPath("@./"); // default to state of the current node
+    if (!mm2)
+        mstate2.setPath("@./"); // default to state of the current node
 }
 
 template<class DataTypes>
@@ -118,10 +121,10 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const Me
         this->mask2 = &mstate2->forceMask;
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<PairConstraintProjectResponseTask<DataTypes> >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*dxId[mstate1].write()), **defaulttype::getShared(*dxId[mstate2].write()));
+            Task<PairConstraintProjectResponseTask<DataTypes> >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*dxId[mstate1.get(mparams)].write()), **defaulttype::getShared(*dxId[mstate2.get(mparams)].write()));
         else
 #endif /* SOFA_SMP */
-            projectResponse(mparams /* PARAMS FIRST */, *dxId[mstate1].write(), *dxId[mstate2].write());
+            projectResponse(mparams /* PARAMS FIRST */, *dxId[mstate1.get(mparams)].write(), *dxId[mstate2.get(mparams)].write());
     }
 }
 
@@ -135,10 +138,10 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const Me
         this->mask2 = &mstate2->forceMask;
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<PairConstraintProjectVelocityTask<DataTypes> >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*vId[mstate1].write()), **defaulttype::getShared(*vId[mstate2].write()));
+            Task<PairConstraintProjectVelocityTask<DataTypes> >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*vId[mstate1.get(mparams)].write()), **defaulttype::getShared(*vId[mstate2.get(mparams)].write()));
         else
 #endif /* SOFA_SMP */
-            projectVelocity(mparams /* PARAMS FIRST */, *vId[mstate1].write(), *vId[mstate2].write());
+            projectVelocity(mparams /* PARAMS FIRST */, *vId[mstate1.get(mparams)].write(), *vId[mstate2.get(mparams)].write());
     }
 }
 
@@ -152,10 +155,10 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(const Me
         this->mask2 = &mstate2->forceMask;
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<PairConstraintProjectPositionTask<DataTypes> >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*xId[mstate1].write()), **defaulttype::getShared(*xId[mstate2].write()));
+            Task<PairConstraintProjectPositionTask<DataTypes> >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*xId[mstate1.get(mparams)].write()), **defaulttype::getShared(*xId[mstate2.get(mparams)].write()));
         else
 #endif /* SOFA_SMP */
-            projectPosition(mparams /* PARAMS FIRST */, *xId[mstate1].write(), *xId[mstate2].write());
+            projectPosition(mparams /* PARAMS FIRST */, *xId[mstate1.get(mparams)].write(), *xId[mstate2.get(mparams)].write());
     }
 }
 

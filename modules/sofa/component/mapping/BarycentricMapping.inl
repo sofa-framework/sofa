@@ -80,7 +80,7 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping()
 
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper)
-    : Inherit(from, to)
+    : Inherit ( from, to )
     , mapper(initLink("mapper","Internal mapper created depending on the type of topology"), mapper)
 #ifdef SOFA_DEV
     , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
@@ -98,8 +98,11 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::
     , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif
 {
-    createMapperFromTopology ( topology );
-    m_init = false;
+    if (topology)
+    {
+        createMapperFromTopology ( topology );
+        m_init = false;
+    }
 }
 
 template <class TIn, class TOut>

@@ -66,10 +66,8 @@ public:
 protected:
     /** \brief Constructor.
      *
-     * @param from the topology issuing TopologyChange objects (the "source").
-     * @param to   the topology for which the TopologyChange objects must be translated (the "target").
      */
-    Tetra2TriangleTopologicalMapping(In* from=NULL, Out* to=NULL);
+    Tetra2TriangleTopologicalMapping();
 
     /** \brief Destructor.
      *

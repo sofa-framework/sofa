@@ -158,7 +158,7 @@ public:
                 pointMod->propagateTopologicalChanges();
                 pointMod->removePointsProcess(remove);
             }
-            else if(container::MechanicalObject<DataTypes>* object = dynamic_cast<container::MechanicalObject<DataTypes>*>(this->mstate))
+            else if(container::MechanicalObject<DataTypes>* object = dynamic_cast<container::MechanicalObject<DataTypes>*>(this->mstate.get()))
             {
                 sout << "ParticleSink: remove "<<remove.size()<<" particles using MechanicalObject."<<sendl;
                 // deleting the vertices

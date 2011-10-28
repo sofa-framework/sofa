@@ -68,33 +68,14 @@ using namespace defaulttype;
 using namespace helper;
 
 template <class TIn, class TInRoot, class TOut>
-PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::PCAOnRigidFrameMapping (
-    helper::vector< core::State<TIn>* > from,
-    helper::vector< core::State<TInRoot>* > fromRoot,
-    helper::vector< core::State<TOut>* > to)
-    : Inherit(from, fromRoot, to)
-    , basis(initData(&basis,"basis","Basis of deformation modes."))
+PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::PCAOnRigidFrameMapping ()
+    : basis(initData(&basis,"basis","Basis of deformation modes."))
     , index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) )
     , indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
     , repartition ( initData ( &repartition,"repartition","number of dest dofs per entry rigid dof" ) )
 {
     maskFrom = NULL;
-    if(!this->getFromModels1().empty())
-    {
-        if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(from[0]))
-            maskFrom = &stateFrom->forceMask;
-    }
-
     maskTo = NULL;
-    if(!this->getToModels().empty())
-    {
-        if (core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(to[0]))
-            maskTo = &stateTo->forceMask;
-    }
-
-
-
-
 }
 
 
@@ -102,6 +83,18 @@ PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::PCAOnRigidFrameMapping (
 template <class TIn, class TInRoot, class TOut>
 void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
 {
+    Inherit::init();
+    if(!this->fromModels1.empty())
+    {
+        if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModels1.get(0)))
+            maskFrom = &stateFrom->forceMask;
+    }
+    if(!this->toModels.empty())
+    {
+        if (core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModels.get(0)))
+            maskTo = &stateTo->forceMask;
+    }
+
     if(this->getFromModels1().empty())
     {
         serr << "Error while iniatilizing ; input Model not found" << sendl;

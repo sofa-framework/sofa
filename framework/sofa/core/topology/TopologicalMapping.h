@@ -33,7 +33,6 @@
 #include <iostream>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/ObjectRef.h>
 
 namespace sofa
 {
@@ -61,21 +60,14 @@ class TopologicalMapping : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(TopologicalMapping, objectmodel::BaseObject);
 
-    /// Name of the Input Topology
-    objectmodel::DataObjectRef m_inputTopology;
-    /// Name of the Output Topology
-    objectmodel::DataObjectRef m_outputTopology;
-
     /// Input Topology
     typedef BaseMeshTopology In;
     /// Output Topology
     typedef BaseMeshTopology Out;
 protected:
-    TopologicalMapping(In* from, Out* to)
-        : m_inputTopology(initData(&m_inputTopology, "input", "Input topology to map"))
-        , m_outputTopology(initData(&m_outputTopology, "output", "Output topology to map"))
-        , fromModel(from), toModel(to)
-
+    TopologicalMapping()
+        : fromModel(initLink("input", "Input topology to map"))
+        , toModel(initLink("output", "Output topology to map"))
     {}
 
     virtual ~TopologicalMapping() { }
@@ -88,16 +80,16 @@ public:
     //}
 
     /// Accessor to the INPUT topology of the TopologicalMapping :
-    In* getFrom() {return fromModel;}
+    In* getFrom() {return fromModel.get();}
 
     /// Accessor to the OUTPUT topology of the TopologicalMapping :
-    Out* getTo() {return toModel;}
+    Out* getTo() {return toModel.get();}
 
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
     virtual void updateTopologicalMappingTopDown() = 0;
 
     /// Method called at each topological changes propagation which comes from the OUTPUT topology to adapt the INPUT topology :
-    virtual void updateTopologicalMappingBottomUp() {};
+    virtual void updateTopologicalMappingBottomUp() {}
 
     /// Return true if this mapping is able to propagate topological changes from input to output model
     virtual bool propagateFromInputToOutputModel() { return true; }
@@ -106,7 +98,7 @@ public:
     virtual bool propagateFromOutputToInputModel() { return false; }
 
     /// return true if the output topology subdivide the input one. (the topology uses the Loc2GlobVec/Glob2LocMap/In2OutMap structs and share the same DOFs)
-    virtual bool isTheOutputTopologySubdividingTheInputOne() { return true;}
+    virtual bool isTheOutputTopologySubdividingTheInputOne() { return true; }
 
     /// Accessor to index maps :
     const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
@@ -146,57 +138,49 @@ public:
     template<class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        BaseMeshTopology* topoIn = NULL;
-        BaseMeshTopology* topoOut = NULL;
+        In* stin = NULL;
+        Out* stout = NULL;
 
+        std::string inPath, outPath;
+
+        if (arg->getAttribute("input"))
+            inPath = arg->getAttribute("input");
 #ifndef SOFA_DEPRECATE_OLD_API
-        ////Deprecated check
-        Base* bobjInput = NULL;
-        Base* bobjOutput = NULL;
+        else if (arg->getAttribute("object1"))
+            inPath = BaseLink::ConvertOldPath(arg->getAttribute("object1"), "object1", "input", context, false);
+#endif
+        else
+            inPath = "@../";
 
-        //Input
-        if (arg->getAttribute("object1",NULL) == NULL && arg->getAttribute("input",NULL) == NULL)
-            bobjInput = arg->findObject("../..");
+        context->findLinkDest(stin, inPath, NULL);
 
-        if (arg->getAttribute("object1",NULL) != NULL)
-            bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
+        if (arg->getAttribute("output"))
+            outPath = arg->getAttribute("output");
+#ifndef SOFA_DEPRECATE_OLD_API
+        else if (arg->getAttribute("object2"))
+            outPath = BaseLink::ConvertOldPath(arg->getAttribute("object2"), "object2", "output", context, false);
+#endif
+        else
+            outPath = "@./";
 
-        if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjInput))
-            topoIn = dynamic_cast< BaseMeshTopology* >(bo);
+        context->findLinkDest(stout, outPath, NULL);
 
-        else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjInput))
-            bc->get(topoIn);
-
-        //Output
-        if (arg->getAttribute("object2",NULL) == NULL && arg->getAttribute("output",NULL) == NULL)
-            bobjOutput = arg->findObject("..");
-
-        if (arg->getAttribute("object2",NULL) != NULL)
-            bobjOutput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object2", arg);
-
-        if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjOutput))
-            topoOut = dynamic_cast< BaseMeshTopology* >(bo);
-
-        else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjOutput))
-            bc->get(topoOut);
-        /////
-
-        if (topoIn == NULL || topoOut == NULL)
-#endif // SOFA_DEPRECATE_OLD_API
+        if (stin == NULL)
         {
-            topoIn = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("input", arg);
-            topoOut = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("output", arg);
-        }
-
-        if (topoIn == NULL)
-        {
-            //context->serr << "Cannot create "<<className(obj)<<" as object1 is missing or invalid." << context->sendl;
+            //context->serr << "Cannot create "<<className(obj)<<" as input model is missing or invalid." << context->sendl;
             return false;
         }
 
-        if (topoOut == NULL)
+        if (stout == NULL)
         {
-            //context->serr << "Cannot create "<<className(obj)<<" as object2 is missing or invalid." << context->sendl;
+            //context->serr << "Cannot create "<<className(obj)<<" as output model is missing or invalid." << context->sendl;
+            return false;
+        }
+
+        if (static_cast<BaseObject*>(stin) == static_cast<BaseObject*>(stout))
+        {
+            // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
+            context->serr << "Creation of " << className(obj) << " topology mapping failed because the same object \"" << stin->getName() << "\" is linked as both input and output." << context->sendl;
             return false;
         }
 
@@ -210,116 +194,53 @@ public:
     template<class T>
     static typename T::SPtr create (T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        typename T::SPtr obj;
-
-        BaseMeshTopology* topoIn=NULL;
-        BaseMeshTopology* topoOut=NULL;
-
-#ifndef SOFA_DEPRECATE_OLD_API
-        {
-            ////Deprecated check
-            std::string object1Path;
-            std::string object2Path;
-
-            Base* bobjInput = NULL;
-            Base* bobjOutput = NULL;
-
-            if( arg != NULL )
-            {
-                //Input
-                if(arg->getAttribute("object1",NULL) == NULL && arg->getAttribute("input",NULL) == NULL)
-                {
-                    object1Path = "..";
-                    //context->serr << "Deprecated use of implicit value for input" << context->sendl;
-                    //context->serr << "Use now : input=\"@" << object1Path << "\" "<< context->sendl;
-                    bobjInput = arg->findObject("../..");
-                }
-
-                if(arg->getAttribute("object1",NULL) != NULL)
-                {
-                    object1Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object1",NULL));
-                    //context->serr << "Deprecated use of attribute " << "object1" << context->sendl;
-                    //context->serr << "Use now : input=\"@"
-                    //              << object1Path
-                    //              << "\""<< context->sendl;
-                    bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
-                }
-
-                if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjInput))
-                {
-                    topoIn = dynamic_cast< BaseMeshTopology* >(bo);
-                }
-                else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjInput))
-                {
-                    bc->get(topoIn);
-                }
-
-                //Output
-                if(arg->getAttribute("object2",NULL) == NULL && arg->getAttribute("output",NULL) == NULL)
-                {
-                    object2Path = ".";
-                    //context->serr << "Deprecated use of implicit value for output" << context->sendl;
-                    //context->serr << "Use now : output=\"@" << object2Path << "\" "<< context->sendl;
-                    bobjOutput = arg->findObject("..");
-                }
-
-                if(arg->getAttribute("object2",NULL) != NULL)
-                {
-                    object2Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object2",NULL));
-                    //context->serr << "Deprecated use of attribute " << "object2" << context->sendl;
-                    //context->serr << "Use now : output=\"@"
-                    //              << object2Path
-                    //              << "\""<< context->sendl;
-                    bobjOutput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object2", arg);
-                }
-
-                if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjOutput))
-                {
-                    topoOut = dynamic_cast< BaseMeshTopology* >(bo);
-                }
-                else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjOutput))
-                {
-                    bc->get(topoOut);
-                }
-
-                /////
-            }
-
-            if(topoIn == NULL && topoOut == NULL)
-#endif // SOFA_DEPRECATE_OLD_API
-            {
-                if(arg)
-                {
-                    topoIn = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("input", arg);
-                    topoOut = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("output", arg);
-                }
-            }
-
-            obj = sofa::core::objectmodel::New<T>((arg?topoIn:NULL), (arg?topoOut:NULL));
-
-#ifndef SOFA_DEPRECATE_OLD_API
-            if (!object1Path.empty())
-                obj->m_inputTopology.setValue( object1Path );
-            if (!object2Path.empty())
-                obj->m_outputTopology.setValue( object2Path );
-#endif // SOFA_DEPRECATE_OLD_API
-        }
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 
         if (context)
             context->addObject(obj);
 
         if (arg)
+        {
+            std::string inPath, outPath;
+            if (arg->getAttribute("input"))
+                inPath = arg->getAttribute("input");
+#ifndef SOFA_DEPRECATE_OLD_API
+            else if (arg->getAttribute("object1"))
+                inPath = BaseLink::ConvertOldPath(arg->getAttribute("object1"), "object1", "input", obj.get());
+#endif
+            else
+                inPath = "@../";
+
+            if (arg->getAttribute("output"))
+                outPath = arg->getAttribute("output");
+#ifndef SOFA_DEPRECATE_OLD_API
+            else if (arg->getAttribute("object2"))
+                outPath = BaseLink::ConvertOldPath(arg->getAttribute("object2"), "object2", "output", obj.get());
+#endif
+            else
+                outPath = "@./";
+
+            obj->fromModel.setPath( inPath );
+            obj->toModel.setPath( outPath );
+
             obj->parse(arg);
+        }
 
         return obj;
     }
 
 protected:
+    /// Input Model, also called parent
+    //State< In >* fromModel;
+    /// Output Model, also called child
+    //State< Out >* toModel;
 
     /// Input source BaseTopology
-    In* fromModel;
+    SingleLink<TopologicalMapping, In, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> fromModel;
+    //In* fromModel;
     /// Output target BaseTopology
-    Out* toModel;
+    SingleLink<TopologicalMapping, Out, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> toModel;
+    //Out* toModel;
 
     // Two index maps :
 

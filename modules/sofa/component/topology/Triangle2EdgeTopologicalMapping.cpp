@@ -60,8 +60,7 @@ int Triangle2EdgeTopologicalMappingClass = core::RegisterObject("Special case of
 
         ;
 
-Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping(In* from, Out* to)
-    : TopologicalMapping(from, to)
+Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping()
 {
 }
 
