@@ -12,9 +12,12 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/objectmodel/Data.h>
 
 namespace cgal
 {
+
+using namespace sofa::core::objectmodel;
 
 template <class DataTypes>
 class TriangularConvexHull3D : public sofa::core::DataEngine
