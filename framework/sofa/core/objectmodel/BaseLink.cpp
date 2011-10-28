@@ -269,9 +269,9 @@ std::string BaseLink::ConvertOldPath(const std::string& path, const char* oldNam
     if (obj && showWarning)
     {
         if (oldName && newName)
-            obj->serr << "Deprecated syntax "<< oldName << "=\"" << path << "\". Replace with " << newName << "=\"" << newPath << "\"." << obj->sendl;
+            obj->sout << "Deprecated syntax "<< oldName << "=\"" << path << "\". Replace with " << newName << "=\"" << newPath << "\"." << obj->sendl;
         else
-            obj->serr << "Deprecated syntax \"" << path << "\". Replace with \"" << newPath << "\"." << obj->sendl;
+            obj->sout << "Deprecated syntax \"" << path << "\". Replace with \"" << newPath << "\"." << obj->sendl;
     }
     return newPath;
 }

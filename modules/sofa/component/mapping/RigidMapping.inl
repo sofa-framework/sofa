@@ -185,6 +185,15 @@ int RigidMapping<TIn, TOut>::addPoint(const Coord& c, int indexFrom)
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::init()
 {
+    if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
+    {
+        maskFrom = &stateFrom->forceMask;
+    }
+    if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
+    {
+        maskTo = &stateTo->forceMask;
+    }
+
     if (!fileRigidMapping.getValue().empty())
         this->load(fileRigidMapping.getFullPath().c_str());
 
