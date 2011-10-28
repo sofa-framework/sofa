@@ -39,8 +39,7 @@ namespace component
 
 namespace container
 {
-
-using namespace core::objectmodel;
+using core::objectmodel::Data;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>
