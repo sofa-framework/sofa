@@ -70,7 +70,7 @@ protected:
 /** Class to perform removing of topological elements (either one element or a an area) and handling topological mapping
   */
 template <class DataTypes>
-class SOFA_ADVANCED_INTERACTION_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
+class SOFA_USER_INTERACTION_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
 {
     typedef typename DataTypes::Real               Real;
     typedef typename DataTypes::Coord              Coord;
@@ -146,10 +146,10 @@ private:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ADVANCED_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3fTypes>;
+extern template class SOFA_USER_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-extern template class SOFA_ADVANCED_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3dTypes>;
+extern template class SOFA_USER_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3dTypes>;
 #endif
 #endif
 

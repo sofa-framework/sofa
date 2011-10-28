@@ -49,10 +49,11 @@ namespace sofa
 
 namespace component
 {
+#ifdef SOFA_DEV
 namespace collision
 {
 class TetrahedronModel;
-}
+#endif // SOFA_DEV
 }
 
 namespace component
@@ -64,7 +65,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
 /// a class to manage the handling of topological changes which have been requested from the Collision Model
-class SOFA_ADVANCED_INTERACTION_API TopologicalChangeManager
+class SOFA_USER_INTERACTION_API TopologicalChangeManager
 {
 public:
     TopologicalChangeManager();
@@ -149,8 +150,9 @@ private:
 
     int removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const helper::vector<int>& indices) const;
 
+#ifdef SOFA_DEV
     int removeItemsFromTetrahedronModel(sofa::component::collision::TetrahedronModel* model, const helper::vector<int>& indices) const;
-
+#endif // SOFA_DEV
     int removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const helper::vector<int>& indices) const;
 
 private:

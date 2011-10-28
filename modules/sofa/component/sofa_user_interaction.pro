@@ -31,6 +31,11 @@ HEADERS += initUserInteraction.h \
            collision/RayDiscreteIntersection.h \
            collision/RayDiscreteIntersection.inl \
            collision/RayNewProximityIntersection.h \
+           collision/RemovePrimitivePerformer.h \
+           collision/RemovePrimitivePerformer.inl \
+           collision/InciseAlongPathPerformer.h \
+           collision/TopologicalChangeManager.h \
+
 
 SOURCES += initUserInteraction.cpp \
            collision/RayTraceDetection.cpp \
@@ -50,6 +55,10 @@ SOURCES += initUserInteraction.cpp \
            collision/RayDiscreteIntersection.cpp \
            collision/RayNewProximityIntersection.cpp \
            collision/RayDistanceGridContact.cpp \
+           collision/RemovePrimitivePerformer.cpp \
+           collision/InciseAlongPathPerformer.cpp \
+           collision/TopologicalChangeManager.cpp \
+
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
