@@ -37,19 +37,19 @@ struct SOFA_CORE_API tristate
 inline tristate fusion_tristate(const tristate &lhs, const tristate &rhs)
 {
     if( lhs.state == rhs.state ) return lhs;
-    else return tristate(tristate::neutral_value);
+    return tristate(tristate::neutral_value);
 }
 
 inline tristate merge_tristate(const tristate& previous, const tristate& current)
 {
     if(current.state == tristate::neutral_value ) return previous;
-    else return current;
+    return current;
 }
 inline tristate difference_tristate(const tristate& previous, const tristate& current)
 {
     if( current.state == tristate::neutral_value || current.state == previous.state )
         return tristate(tristate::neutral_value);
-    else return current;
+    return current;
 }
 
 class SOFA_CORE_API FlagTreeItem
