@@ -992,7 +992,11 @@ void VisualModelImpl::updateVisual()
 #ifdef SOFA_SMP
     modified = true;
 #endif
-
+    //std::cout << "VMI::updateVisual()" << std::endl;
+    //if ((m_positions.getValue()).size()>10)
+    //    std::cout << "positions[10] = " << m_positions.getValue()[10] << std::endl;
+    //if ((m_vertices.getValue()).size()>10)
+    //    std::cout << "vertices[10] = " << m_vertices.getValue()[10] << std::endl;
     if (modified && (!(m_vertices.getValue()).empty() || useTopology))
     {
         if (useTopology)

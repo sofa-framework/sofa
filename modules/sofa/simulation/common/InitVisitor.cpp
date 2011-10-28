@@ -83,6 +83,8 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
         node->object[i]->bwdInit();
     }
 
+    node->bwdInit();
+
 }
 
 

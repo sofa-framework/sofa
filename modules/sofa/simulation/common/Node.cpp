@@ -813,6 +813,18 @@ void Node::setDefaultVisualContextValue()
     */
 }
 
+void Node::bwdInit()
+{
+    if (mechanicalMapping && !mechanicalMapping->isMechanical())
+    {
+        // BUGFIX: the mapping was configured as not mechanical -> remove it from mechanicalMapping and put it in mapping
+        core::BaseMapping* bmap = mechanicalMapping.get();
+        mapping.add(bmap);
+        mechanicalMapping.remove(bmap);
+    }
+    //printComponents();
+}
+
 void Node::initialize()
 {
     //cerr<<"Node::initialize()"<<endl;
@@ -941,73 +953,73 @@ void Node::printComponents()
     using core::objectmodel::ContextObject;
     using core::collision::Pipeline;
 
-    cerr<<"BaseAnimationLoop: ";
+    serr<<"BaseAnimationLoop: ";
     for ( Single<BaseAnimationLoop>::iterator i=animationManager.begin(), iend=animationManager.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"OdeSolver: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"OdeSolver: ";
     for ( Sequence<OdeSolver>::iterator i=solver.begin(), iend=solver.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"LinearSolver: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"LinearSolver: ";
     for ( Sequence<LinearSolver>::iterator i=linearSolver.begin(), iend=linearSolver.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"ConstraintSolver: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"ConstraintSolver: ";
     for ( Sequence<ConstraintSolver>::iterator i=constraintSolver.begin(), iend=constraintSolver.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<"VisualLoop: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<"VisualLoop: ";
     for ( Single<VisualLoop>::iterator i=visualLoop.begin(), iend=visualLoop.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"InteractionForceField: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"InteractionForceField: ";
     for ( Sequence<BaseInteractionForceField>::iterator i=interactionForceField.begin(), iend=interactionForceField.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"ForceField: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"ForceField: ";
     for ( Sequence<BaseForceField>::iterator i=forceField.begin(), iend=forceField.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"State: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"State: ";
     for ( Single<BaseState>::iterator i=state.begin(), iend=state.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"MechanicalState: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"MechanicalState: ";
     for ( Single<BaseMechanicalState>::iterator i=mechanicalState.begin(), iend=mechanicalState.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"Mechanical Mapping: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"Mechanical Mapping: ";
     for ( Single<BaseMapping>::iterator i=mechanicalMapping.begin(), iend=mechanicalMapping.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"Mapping: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"Mapping: ";
     for ( Sequence<BaseMapping>::iterator i=mapping.begin(), iend=mapping.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"Topology: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"Topology: ";
     for ( Single<Topology>::iterator i=topology.begin(), iend=topology.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"MeshTopology: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"MeshTopology: ";
     for ( Single<BaseMeshTopology>::iterator i=meshTopology.begin(), iend=meshTopology.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"Shader: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"Shader: ";
     for ( Single<Shader>::iterator i=shader.begin(), iend=shader.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"ProjectiveConstraintSet: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"ProjectiveConstraintSet: ";
     for ( Sequence<BaseProjectiveConstraintSet>::iterator i=projectiveConstraintSet.begin(), iend=projectiveConstraintSet.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"ConstraintSet: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"ConstraintSet: ";
     for ( Sequence<BaseConstraintSet>::iterator i=constraintSet.begin(), iend=constraintSet.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"BehaviorModel: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"BehaviorModel: ";
     for ( Sequence<BehaviorModel>::iterator i=behaviorModel.begin(), iend=behaviorModel.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"VisualModel: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"VisualModel: ";
     for ( Sequence<VisualModel>::iterator i=visualModel.begin(), iend=visualModel.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"CollisionModel: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"CollisionModel: ";
     for ( Sequence<CollisionModel>::iterator i=collisionModel.begin(), iend=collisionModel.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"ContextObject: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"ContextObject: ";
     for ( Sequence<ContextObject>::iterator i=contextObject.begin(), iend=contextObject.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"Pipeline: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"Pipeline: ";
     for ( Single<Pipeline>::iterator i=collisionPipeline.begin(), iend=collisionPipeline.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"VisitorScheduler: ";
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl<<"VisitorScheduler: ";
     for ( Single<VisitorScheduler>::iterator i=actionScheduler.begin(), iend=actionScheduler.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl;
+        serr<<(*i)->getName()<<" ";
+    serr<<sendl;
 }
 
 /** @name Dependency graph
