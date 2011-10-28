@@ -73,7 +73,10 @@ void TComponentMouseInteraction<DataTypes>::createInteractionComponents(Node* pa
         current->addObject(mouseInteractor);
 
         MousePosition *mecha = dynamic_cast< MousePosition* >(parent->getMechanicalState());
-        mouseMapping = sofa::core::objectmodel::New< IdentityMechanicalMapping >(mecha, static_cast< MouseContainer* >(mouseInSofa.get()));
+
+        this->mouseMapping = sofa::core::objectmodel::New< IdentityMechanicalMapping >();
+        this->mouseMapping->setModels(mecha, static_cast< MouseContainer* >(mouseInSofa.get()));
+
         current->addObject(mouseMapping);
 
         mouseMapping->setNonMechanical();

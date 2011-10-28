@@ -132,6 +132,7 @@ void SofaPluginManager::addLibrary()
         if( ! sstream.str().empty())
         {
             QMessageBox * mbox = new QMessageBox(this,"library loading warning");
+            mbox->setIcon(QMessageBox::Warning);
             mbox->setText(sstream.str().c_str());
             mbox->show();
         }
@@ -149,6 +150,7 @@ void SofaPluginManager::addLibrary()
     else
     {
         QMessageBox * mbox = new QMessageBox(this,"library loading error");
+        mbox->setIcon(QMessageBox::Critical);
         mbox->setText(sstream.str().c_str());
         mbox->show();
     }
@@ -181,6 +183,7 @@ void SofaPluginManager::removeLibrary()
         std::string errlog;
         sstream >> errlog;
         QMessageBox * mbox = new QMessageBox(this,"library unloading error");
+        mbox->setIcon(QMessageBox::Critical);
         mbox->setText(errlog.c_str());
         mbox->show();
     }

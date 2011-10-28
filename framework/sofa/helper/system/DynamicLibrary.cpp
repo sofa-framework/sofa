@@ -82,7 +82,7 @@ void * DynamicLibrary::getSymbol(const std::string & symbol, std::ostream* errlo
 #endif
     if( symbolAddress == NULL )
     {
-        (*errlog) << m_name << " getSymbol("<< symbol <<") Failed" << std::endl;
+        (*errlog) << m_name << " symbol: "<< symbol <<" not found" << std::endl;
     }
     return symbolAddress;
 }
