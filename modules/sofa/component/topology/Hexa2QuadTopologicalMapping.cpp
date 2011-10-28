@@ -63,9 +63,8 @@ int Hexa2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
 
 // Implementation
 
-Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping(In* from, Out* to)
-    : TopologicalMapping(from, to)
-    ,flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
+Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping()
+    : flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
 {
 }
 

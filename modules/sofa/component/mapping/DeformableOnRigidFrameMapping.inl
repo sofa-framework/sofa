@@ -62,11 +62,8 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 template <class TIn, class TInRoot, class TOut>
-DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping (helper::vector< core::State<TIn>* > from,
-        helper::vector< core::State<TInRoot>* > fromRoot,
-        helper::vector< core::State<TOut>* > to)
-    : Inherit(from, fromRoot, to)
-    , index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) )
+DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping()
+    : index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) )
     , fileDeformableOnRigidFrameMapping ( initData ( &fileDeformableOnRigidFrameMapping,"fileDeformableOnRigidFrameMapping","Filename" ) )
     , useX0( initData ( &useX0,false,"useX0","Use x0 instead of local copy of initial positions (to support topo changes)") )
     , indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
@@ -76,22 +73,7 @@ DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping
     this->addAlias(&fileDeformableOnRigidFrameMapping,"filename");
 
     maskFrom = NULL;
-    if(!this->getFromModels1().empty())
-    {
-        if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(from[0]))
-            maskFrom = &stateFrom->forceMask;
-    }
-
     maskTo = NULL;
-    if(!this->getToModels().empty())
-    {
-        if (core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(to[0]))
-            maskTo = &stateTo->forceMask;
-    }
-
-
-
-
 }
 
 template <class TIn, class TInRoot, class TOut>
@@ -129,6 +111,18 @@ int DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::addPoint(const OutCoord& 
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
 {
+    Inherit::init();
+    if(!this->fromModels1.empty())
+    {
+        if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModels1.get(0)))
+            maskFrom = &stateFrom->forceMask;
+    }
+    if(!this->toModels.empty())
+    {
+        if (core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModels.get(0)))
+            maskTo = &stateTo->forceMask;
+    }
+
     if(this->getFromModels1().empty())
     {
         serr << "Error while iniatilizing ; input Model not found" << sendl;

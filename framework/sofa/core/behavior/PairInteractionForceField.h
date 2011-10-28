@@ -78,26 +78,21 @@ public:
     virtual void init();
 
     /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState1() { return mstate1; }
-    BaseMechanicalState* getMechModel1() { return mstate1; }
+    MechanicalState<DataTypes>* getMState1() { return mstate1.get(); }
+    BaseMechanicalState* getMechModel1() { return mstate1.get(); }
     /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState2() { return mstate2; }
-    BaseMechanicalState* getMechModel2() { return mstate2; }
+    MechanicalState<DataTypes>* getMState2() { return mstate2.get(); }
+    BaseMechanicalState* getMechModel2() { return mstate2.get(); }
 
     /// Set the Object1 path
-    void setPathObject1(const std::string & path) { _object1.setValue(path); }
+    void setPathObject1(const std::string & path) { mstate1.setPath(path); }
     /// Set the Object2 path
-    void setPathObject2(const std::string & path) { _object2.setValue(path); }
+    void setPathObject2(const std::string & path) { mstate2.setPath(path); }
     /// Retrieve the Object1 path
-    std::string getPathObject1() const { return _object1.getValue(); }
+    std::string getPathObject1() const { return mstate1.getPath(); }
     /// Retrieve the Object2 path
-    std::string getPathObject2() const { return _object2.getValue(); }
+    std::string getPathObject2() const { return mstate2.getPath(); }
 
-
-
-
-    /// Retrieve the associated MechanicalState given the path
-    BaseMechanicalState* getMState(sofa::core::objectmodel::BaseContext* context, std::string path);
 
     /// @name Vector operations
     /// @{
@@ -215,51 +210,52 @@ public:
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T* obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        // BUGFIX(Jeremie A.): We need to test dynamic casts with the right
-        // DataTypes otherwise the factory don't know which template to
-        // instanciate or make sure that the right template is used.
-        // This means that InteractionForceFields in scene files
-        // still need to appear after the affected objects...
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
-        {
-            //if (!arg->getAttribute("template")) //if a template is specified, the interaction forcefield can be created. If during init, no corresponding MechanicalState is found, it will be erased. It allows the saving of scenes containing PairInteractionForceField
-            //{
-            //return BaseInteractionForceField::canCreate(obj, context, arg);
-            if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
-                return false;
-            if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-                return false;
-            //}
-        }
-        else
-        {
-            //if (context->getMechanicalState() == NULL) return false;
-            if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-                return false;
-        }
+        MechanicalState<DataTypes>* mstate1 = NULL;
+        MechanicalState<DataTypes>* mstate2 = NULL;
+        std::string object1 = arg->getAttribute("object1","@./");
+        std::string object2 = arg->getAttribute("object2","@./");
+        if (object1.empty()) object1 = "@./";
+        if (object2.empty()) object2 = "@./";
+        if (object1[0] != '@')
+            object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
+        if (object2[0] != '@')
+            object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
+        context->findLinkDest(mstate1, object1, NULL);
+        context->findLinkDest(mstate2, object2, NULL);
+
+        if (!mstate1 || !mstate2)
+            return false;
+
         return BaseInteractionForceField::canCreate(obj, context, arg);
     }
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static typename T::SPtr create(T* p0, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T* /*p0*/, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        typename T::SPtr obj = core::behavior::BaseInteractionForceField::create(p0, context, arg);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
+        if (context)
+            context->addObject(obj);
+
+        if (arg)
         {
-            obj->_object1.setValue(arg->getAttribute("object1",".."));
-            obj->_object2.setValue(arg->getAttribute("object2",".."));
-            obj->mstate1 = dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->mstate2 = dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2","..")));
-        }
-        else if (context)
-        {
-            obj->mstate1 =
-                obj->mstate2 =
-                        dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState());
+            std::string object1 = arg->getAttribute("object1","");
+            std::string object2 = arg->getAttribute("object2","");
+            if (!object1.empty() && object1[0] != '@')
+            {
+                object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
+                arg->setAttribute("object1", object1.c_str());
+            }
+            if (!object2.empty() && object2[0] != '@')
+            {
+                object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
+                arg->setAttribute("object2", object2.c_str());
+            }
+
+            obj->parse(arg);
         }
 
         return obj;
@@ -285,10 +281,8 @@ public:
     }
 
 protected:
-    sofa::core::objectmodel::Data< std::string > _object1;
-    sofa::core::objectmodel::Data< std::string > _object2;
-    MechanicalState<DataTypes> *mstate1;
-    MechanicalState<DataTypes> *mstate2;
+    SingleLink<PairInteractionForceField<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
+    SingleLink<PairInteractionForceField<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
 
     ParticleMask *mask1;
     ParticleMask *mask2;

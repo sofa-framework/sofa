@@ -65,10 +65,8 @@ public:
 protected:
     /** \brief Constructor.
     *
-    * @param from the topology issuing TopologyChange objects (the "source").
-    * @param to   the topology for which the TopologyChange objects must be translated (the "target").
     */
-    Hexa2QuadTopologicalMapping(In* from=NULL, Out* to=NULL);
+    Hexa2QuadTopologicalMapping();
 
     /** \brief Destructor.
     *

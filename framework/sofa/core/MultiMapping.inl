@@ -61,7 +61,7 @@ void MultiMapping<In,Out>::addOutputModel(State<Out>* to, const std::string& pat
 }
 
 template< class In, class Out>
-const typename MultiMapping<In,Out>::VecFromModels&  MultiMapping<In,Out>::getFromModels()
+const typename MultiMapping<In,Out>::VecFromModels& MultiMapping<In,Out>::getFromModels()
 {
     return this->fromModels.getValue();
 }

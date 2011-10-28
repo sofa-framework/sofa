@@ -82,11 +82,11 @@ public:
     virtual void init();
 
     /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes1>* getMState1() { return mstate1; }
-    BaseMechanicalState* getMechModel1() { return mstate1; }
+    MechanicalState<DataTypes1>* getMState1() { return mstate1.get(); }
+    BaseMechanicalState* getMechModel1() { return mstate1.get(); }
     /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes2>* getMState2() { return mstate2; }
-    BaseMechanicalState* getMechModel2() { return mstate2; }
+    MechanicalState<DataTypes2>* getMState2() { return mstate2.get(); }
+    BaseMechanicalState* getMechModel2() { return mstate2.get(); }
 
     /// @name Vector operations
     /// @{
@@ -204,13 +204,22 @@ public:
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
-        {
-            if (dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
-                return false;
-            if (dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-                return false;
-        }
+        MechanicalState<DataTypes1>* mstate1 = NULL;
+        MechanicalState<DataTypes2>* mstate2 = NULL;
+        std::string object1 = arg->getAttribute("object1","@./");
+        std::string object2 = arg->getAttribute("object2","@./");
+        if (object1.empty()) object1 = "@./";
+        if (object2.empty()) object2 = "@./";
+        if (object1[0] != '@')
+            object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
+        if (object2[0] != '@')
+            object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
+        context->findLinkDest(mstate1, object1, NULL);
+        context->findLinkDest(mstate2, object2, NULL);
+
+        if (!mstate1 || !mstate2)
+            return false;
+
         return BaseInteractionForceField::canCreate(obj, context, arg);
     }
 
@@ -218,12 +227,27 @@ public:
     template<class T>
     static typename T::SPtr create(T* p0, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        typename T::SPtr obj = core::behavior::BaseInteractionForceField::create(p0, context, arg);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
+        if (context)
+            context->addObject(obj);
+
+        if (arg)
         {
-            obj->mstate1 = dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->mstate2 = dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2","..")));
+            std::string object1 = arg->getAttribute("object1","");
+            std::string object2 = arg->getAttribute("object2","");
+            if (!object1.empty() && object1[0] != '@')
+            {
+                object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
+                arg->setAttribute("object1", object1.c_str());
+            }
+            if (!object2.empty() && object2[0] != '@')
+            {
+                object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
+                arg->setAttribute("object2", object2.c_str());
+            }
+
+            obj->parse(arg);
         }
 
         return obj;
@@ -249,8 +273,8 @@ public:
     }
 
 protected:
-    MechanicalState<DataTypes1> *mstate1;
-    MechanicalState<DataTypes2> *mstate2;
+    SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes1>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
+    SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes2>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
 
     ParticleMask *mask1;
     ParticleMask *mask2;

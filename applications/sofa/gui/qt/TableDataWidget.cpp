@@ -139,8 +139,9 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::P
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::Polynomial_LD<float,3> > > > DWClass_vectorPolynomialLD3f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::Polynomial_LD<float,2> > > > DWClass_vectorPolynomialLD2f("default",true);
 
+#ifdef TODOLINK
 Creator<DataWidgetFactory,TableDataWidget< sofa::core::objectmodel::VectorObjectRef >  >  DWClass_DataVectorRefWidget("default",true);
-
+#endif
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidCoord<2,float> > > > DWClass_vectorRigidCoord2f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidCoord<2,double> > > > DWClass_vectorRigidCoord2d("default",true);

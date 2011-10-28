@@ -344,9 +344,11 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (!LinkFromModels::CheckPaths(arg->getAttribute("input",""), context))
+        std::string input  = arg->getAttribute("input","");
+        std::string output = arg->getAttribute("output","");
+        if (input.empty() || !LinkFromModels::CheckPaths(input, context))
             return false;
-        if (!LinkToModels::CheckPaths(arg->getAttribute("output",""), context))
+        if (output.empty() || !LinkToModels::CheckPaths(output, context))
             return false;
 
         return BaseMapping::canCreate(obj, context, arg);

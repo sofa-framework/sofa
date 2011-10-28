@@ -131,7 +131,6 @@ HEADERS += \
 	objectmodel/KeypressedEvent.h \
 	objectmodel/KeyreleasedEvent.h \
 	objectmodel/MouseEvent.h \
-	objectmodel/ObjectRef.h \
 	objectmodel/Tag.h \
 	visual/DisplayFlags.h \
 	visual/VisualParams.h \
@@ -167,7 +166,6 @@ SOURCES += \
 	objectmodel/KeypressedEvent.cpp \
 	objectmodel/KeyreleasedEvent.cpp \
 	objectmodel/MouseEvent.cpp \
-	objectmodel/ObjectRef.cpp \
 	objectmodel/Tag.cpp \
 	ObjectFactory.cpp \
 	ExecParams.cpp \

@@ -72,7 +72,7 @@ public:
 protected:
     /** Default constructor
     */
-    EvalSurfaceDistance(MechanicalState<DataTypes>* , MechanicalState<DataTypes>*);
+    EvalSurfaceDistance();
     virtual ~EvalSurfaceDistance();
 public:
     /// Compute the error metric between two surfaces

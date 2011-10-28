@@ -54,8 +54,7 @@ int SimpleTesselatedHexaTopologicalMappingClass = core::RegisterObject ( "Specia
         ;
 
 // Implementation
-SimpleTesselatedHexaTopologicalMapping::SimpleTesselatedHexaTopologicalMapping ( In* from, Out* to )
-    : TopologicalMapping ( from, to )
+SimpleTesselatedHexaTopologicalMapping::SimpleTesselatedHexaTopologicalMapping()
 {
 }
 

@@ -64,13 +64,6 @@ public:
 protected:
 
     CenterOfMassMulti2Mapping()
-        :Inherit()
-    {}
-
-    CenterOfMassMulti2Mapping(helper::vector< core::State<In1>* > in1,
-            helper::vector< core::State<In2>* > in2,
-            helper::vector< core::State<Out>* > out)
-        : Inherit(in1, in2, out)
     {
     }
 

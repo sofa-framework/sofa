@@ -40,23 +40,32 @@ namespace behavior
 
 template<class DataTypes1, class DataTypes2>
 MixedInteractionForceField<DataTypes1, DataTypes2>::MixedInteractionForceField(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2)
-    : mstate1(mm1), mstate2(mm2), mask1(NULL), mask2(NULL)
+    : mstate1(initLink("object1", "First object in interaction"), mm1)
+    , mstate2(initLink("object2", "Second object in interaction"), mm2)
+    , mask1(NULL), mask2(NULL)
 {
-    if(mm1==0||mm2==0)
-        return;
+    if (!mm1)
+        mstate1.setPath("@./"); // default to state of the current node
+    if (!mm2)
+        mstate2.setPath("@./"); // default to state of the current node
 }
 
 template<class DataTypes1, class DataTypes2>
 MixedInteractionForceField<DataTypes1, DataTypes2>::~MixedInteractionForceField()
 {
-    if(mstate1==0||mstate2==0)
-        return;
 }
 
 template<class DataTypes1, class DataTypes2>
 void MixedInteractionForceField<DataTypes1, DataTypes2>::init()
 {
     BaseInteractionForceField::init();
+
+    if (mstate1.get() == NULL || mstate2.get() == NULL)
+    {
+        serr<< "Init of MixedInteractionForceField " << getContext()->getName() << " failed!" << sendl;
+        //getContext()->removeObject(this);
+        return;
+    }
     this->mask1 = &mstate1->forceMask;
     this->mask2 = &mstate2->forceMask;
 }
@@ -135,12 +144,12 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const Mechanic
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
             Task<ParallelMixedInteractionForceFieldAddForce< DataTypes1, DataTypes2> >(mparams /* PARAMS FIRST */, this,
-                    **defaulttype::getShared(*fId[mstate1].write()), **defaulttype::getShared(*fId[mstate2].write()),
+                    **defaulttype::getShared(*fId[mstate1.get(mparams)].write()), **defaulttype::getShared(*fId[mstate2.get(mparams)].write()),
                     **defaulttype::getShared(*mparams->readX(mstate1)), **defaulttype::getShared(*mparams->readX(mstate2)),
                     **defaulttype::getShared(*mparams->readV(mstate1)), **defaulttype::getShared(*mparams->readV(mstate2)));
         else
 #endif /*ifdef SOFA_SMP*/
-            addForce( mparams /* PARAMS FIRST */, *fId[mstate1].write()   , *fId[mstate2].write()   ,
+            addForce( mparams /* PARAMS FIRST */, *fId[mstate1.get(mparams)].write()   , *fId[mstate2.get(mparams)].write()   ,
                     *mparams->readX(mstate1), *mparams->readX(mstate2),
                     *mparams->readV(mstate1), *mparams->readV(mstate2) );
     }
@@ -154,11 +163,11 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const Mechani
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
             Task<ParallelMixedInteractionForceFieldAddDForce<DataTypes1, DataTypes2> >(mparams /* PARAMS FIRST */, this,
-                    **defaulttype::getShared(*dfId[mstate1].write()), **defaulttype::getShared(*dfId[mstate2].write()),
+                    **defaulttype::getShared(*dfId[mstate1.get(mparams)].write()), **defaulttype::getShared(*dfId[mstate2.get(mparams)].write()),
                     **defaulttype::getShared(*mparams->readDx(mstate1)) , **defaulttype::getShared(*mparams->readDx(mstate2)));
         else
 #endif /*ifdef SOFA_SMP*/
-            addDForce( mparams /* PARAMS FIRST */, *dfId[mstate1].write()    , *dfId[mstate2].write()   ,
+            addDForce( mparams /* PARAMS FIRST */, *dfId[mstate1.get(mparams)].write()    , *dfId[mstate2.get(mparams)].write()   ,
                     *mparams->readDx(mstate1) , *mparams->readDx(mstate2) );
     }
 }

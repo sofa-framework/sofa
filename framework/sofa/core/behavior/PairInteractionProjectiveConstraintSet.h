@@ -76,11 +76,11 @@ public:
     virtual void init();
 
     /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState1() { return mstate1; }
-    BaseMechanicalState* getMechModel1() { return mstate1; }
+    MechanicalState<DataTypes>* getMState1() { return mstate1.get(); }
+    BaseMechanicalState* getMechModel1() { return mstate1.get(); }
     /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState2() { return mstate2; }
-    BaseMechanicalState* getMechModel2() { return mstate2; }
+    MechanicalState<DataTypes>* getMState2() { return mstate2.get(); }
+    BaseMechanicalState* getMechModel2() { return mstate2.get(); }
 
     /// @name Vector operations
     /// @{
@@ -184,39 +184,52 @@ public:
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T* obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
-        {
-            if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
-                return false;
-            if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-                return false;
-        }
-        else
-        {
-            if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-                return false;
-        }
+        MechanicalState<DataTypes>* mstate1 = NULL;
+        MechanicalState<DataTypes>* mstate2 = NULL;
+        std::string object1 = arg->getAttribute("object1","@./");
+        std::string object2 = arg->getAttribute("object2","@./");
+        if (object1.empty()) object1 = "@./";
+        if (object2.empty()) object2 = "@./";
+        if (object1[0] != '@')
+            object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
+        if (object2[0] != '@')
+            object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
+        context->findLinkDest(mstate1, object1, NULL);
+        context->findLinkDest(mstate2, object2, NULL);
+
+        if (!mstate1 || !mstate2)
+            return false;
+
         return BaseInteractionProjectiveConstraintSet::canCreate(obj, context, arg);
     }
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static typename T::SPtr create(T* p0, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T* /*p0*/, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        typename T::SPtr obj = core::behavior::BaseInteractionProjectiveConstraintSet::create(p0, context, arg);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
+        if (context)
+            context->addObject(obj);
+
+        if (arg)
         {
-            obj->mstate1 = dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->mstate2 = dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2","..")));
-        }
-        else if (context)
-        {
-            obj->mstate1 =
-                obj->mstate2 =
-                        dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState());
+            std::string object1 = arg->getAttribute("object1","");
+            std::string object2 = arg->getAttribute("object2","");
+            if (!object1.empty() && object1[0] != '@')
+            {
+                object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
+                arg->setAttribute("object1", object1.c_str());
+            }
+            if (!object2.empty() && object2[0] != '@')
+            {
+                object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
+                arg->setAttribute("object2", object2.c_str());
+            }
+
+            obj->parse(arg);
         }
 
         return obj;
@@ -233,10 +246,8 @@ public:
     }
 
 protected:
-    Data< std::string > object1;
-    Data< std::string > object2;
-    MechanicalState<DataTypes> *mstate1;
-    MechanicalState<DataTypes> *mstate2;
+    SingleLink<PairInteractionProjectiveConstraintSet<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
+    SingleLink<PairInteractionProjectiveConstraintSet<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
     ParticleMask *mask1;
     ParticleMask *mask2;
 };

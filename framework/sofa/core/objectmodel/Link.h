@@ -750,9 +750,10 @@ public:
         return *get();
     }
 
-    void operator=(DestPtr v)
+    DestPtr operator=(DestPtr v)
     {
         set(v);
+        return v;
     }
 #endif
 

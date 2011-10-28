@@ -31,7 +31,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/objectmodel/ObjectRef.h>
 
 #include <fstream>
 
@@ -72,10 +71,17 @@ public:
     Data < double > distMean, distMin, distMax, distDev;
     /// Relative computed distances (mean, min, max, standard deviation)
     Data < double > rdistMean, rdistMin, rdistMax, rdistDev;
+
+    typedef SingleLink<EvalPointsDistance<DataTypes>,core::behavior::MechanicalState<DataTypes>,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkMState;
+    /// First model mechanical state
+    LinkMState mstate1;
+    /// Second model mechanical state
+    LinkMState mstate2;
+
 protected:
     /** Default constructor
     */
-    EvalPointsDistance(MechanicalState<DataTypes>* , MechanicalState<DataTypes>*);
+    EvalPointsDistance();
     virtual ~EvalPointsDistance();
 public:
     /// Init the computation of the distances
@@ -96,11 +102,11 @@ public:
     virtual void doDraw(const VecCoord& x1, const VecCoord& x2);
 
     /// Retrieve the associated MechanicalState (First model)
-    core::behavior::MechanicalState<DataTypes>* getMState1() { return mstate1; }
-    core::behavior::BaseMechanicalState* getMechModel1() { return mstate1; }
+    core::behavior::MechanicalState<DataTypes>* getMState1() { return mstate1.get(); }
+    core::behavior::BaseMechanicalState* getMechModel1() { return mstate1.get(); }
 
     /// Retrieve the associated MechanicalState (Second model)
-    core::behavior::MechanicalState<DataTypes>* getMState2() { return mstate2; }
+    core::behavior::MechanicalState<DataTypes>* getMState2() { return mstate2.get(); }
     core::behavior::BaseMechanicalState* getMechModel2() { return mstate2; }
 
 
@@ -109,81 +115,14 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        core::behavior::MechanicalState<DataTypes>* _ms0=NULL;
-        core::behavior::MechanicalState<DataTypes>* _ms1=NULL;
-        core::behavior::MechanicalState<DataTypes>* _ms2=NULL;
-
-
-        if(arg->getAttribute("object1",NULL) != NULL)
-        {
-            _ms1 = sofa::core::objectmodel::ObjectRef::parse< core::behavior::MechanicalState<TDataTypes> >("object1", arg);
-        }
-
-        if(arg->getAttribute("object2",NULL) != NULL)
-        {
-            _ms2 = sofa::core::objectmodel::ObjectRef::parse< core::behavior::MechanicalState<TDataTypes> >("object2", arg);
-        }
-
-        _ms0 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
-
-        if( (_ms0==NULL) && (_ms1==NULL) && (_ms2==NULL) )
+        std::string object1 = arg->getAttribute("object1","@./");
+        std::string object2 = arg->getAttribute("object2","@./");
+        if (!LinkMState::CheckPath(object1, context))
             return false;
+        if (!LinkMState::CheckPath(object2, context))
+            return false;
+
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    }
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        core::behavior::MechanicalState<DataTypes>* _ms0=NULL;
-        core::behavior::MechanicalState<DataTypes>* _ms1=NULL;
-        core::behavior::MechanicalState<DataTypes>* _ms2=NULL;
-
-        std::string _msPath1;
-        std::string _msPath2;
-
-        if(arg)
-        {
-
-            if(arg->getAttribute("object1",NULL) != NULL)
-            {
-                _ms1 = sofa::core::objectmodel::ObjectRef::parse< core::behavior::MechanicalState<TDataTypes> >("object1", arg);
-                _msPath1 = arg->getAttribute("object1");
-            }
-
-            if(arg->getAttribute("object2",NULL) != NULL)
-            {
-                _ms2 = sofa::core::objectmodel::ObjectRef::parse< core::behavior::MechanicalState<TDataTypes> >("object2", arg);
-                _msPath2 = arg->getAttribute("object2");
-            }
-
-            _ms0 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
-        }
-
-        if(_ms1 == NULL)
-        {
-            _ms1 = _ms0;
-            _msPath1.clear();
-            _msPath1 = "@" + _ms0->getName();
-        }
-        if(_ms2 == NULL)
-        {
-            _ms2 = _ms0;
-            _msPath2.clear();
-            _msPath2 = "@" + _ms0->getName();
-        }
-
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(_ms1,_ms2);
-        obj->setPathToMS1(_msPath1);
-        obj->setPathToMS2(_msPath2);
-        if (context)
-        {
-            obj->setPeriod(context->getDt());
-            context->addObject(obj);
-        }
-        if (arg) obj->parse(arg);
-
-        return obj;
     }
 
     virtual std::string getTemplateName() const
@@ -196,21 +135,15 @@ public:
         return DataTypes::Name();
     }
 
-    void setPathToMS1(const std::string &o) {m_msPath1.setValue(o);}
-    void setPathToMS2(const std::string &o) {m_msPath2.setValue(o);}
-    void setPeriod(const double& _dt)      {f_period.setValue(_dt);}
+    void setPathToMS1(const std::string &o) { mstate1.setPath(o); }
+    void setPathToMS2(const std::string &o) { mstate2.setPath(o); }
+    void setPeriod(const double& _dt)      { f_period.setValue(_dt); }
 
 protected:
-    /// First model mechanical state
-    core::behavior::MechanicalState<DataTypes>* mstate1;
-    /// Second model mechanical state
-    core::behavior::MechanicalState<DataTypes>* mstate2;
     /// output file
     std::ofstream* outfile;
     /// time value for the distance computations
     double lastTime;
-    sofa::core::objectmodel::DataObjectRef m_msPath1;
-    sofa::core::objectmodel::DataObjectRef m_msPath2;
 };
 
 } // namespace misc

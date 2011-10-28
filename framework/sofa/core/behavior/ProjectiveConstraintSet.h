@@ -86,7 +86,7 @@ public:
     virtual void init();
 
     /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState() { return mstate; }
+    MechanicalState<DataTypes>* getMState() { return mstate.get(); }
 
     /// @name Vector operations
     /// @{
@@ -202,9 +202,9 @@ public:
     }
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+    virtual void applyConstraint(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
-        MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+        MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
         if (r)
             applyConstraint(r.matrix, r.offset);
     }
@@ -216,9 +216,9 @@ public:
     }
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+    virtual void applyConstraint(const MechanicalParams* mparams /* PARAMS FIRST */, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
-        int o = matrix->getGlobalOffset(this->mstate);
+        int o = matrix->getGlobalOffset(this->mstate.get(mparams));
         if (o >= 0)
         {
             unsigned int offset = (unsigned int)o;
@@ -247,7 +247,7 @@ public:
     }
 
 protected:
-    MechanicalState<DataTypes> *mstate;
+    SingleLink<ProjectiveConstraintSet<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_CORE)

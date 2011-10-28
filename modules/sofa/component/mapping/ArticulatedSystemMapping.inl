@@ -49,11 +49,8 @@ namespace mapping
 using sofa::simulation::Node;
 
 template <class TIn, class TInRoot, class TOut>
-ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping (helper::vector< core::State<TIn>* > from,
-        helper::vector< core::State<TInRoot>* > fromRoot,
-        helper::vector< core::State<TOut>* > to)
-    : Inherit(from, fromRoot, to)
-    , ahc(NULL)
+ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping ()
+    : ahc(NULL)
     , m_fromModel(NULL), m_toModel(NULL), m_fromRootModel(NULL)
 {
 
@@ -62,6 +59,7 @@ ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping (helper::
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
 {
+    Inherit::init();
     if(this->getFromModels1().empty())
     {
         serr << "Error while iniatilizing ; input Model not found" << sendl;

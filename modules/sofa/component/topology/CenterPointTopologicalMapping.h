@@ -59,16 +59,14 @@ public:
 protected:
     /** \brief Constructor.
      *
-    * @param from the topology issuing TopologyChange objects (the "source").
-     * @param to   the topology for which the TopologyChange objects must be translated (the "target").
      */
-    CenterPointTopologicalMapping ( In* from=NULL, Out* to=NULL );
+    CenterPointTopologicalMapping ();
 
     /** \brief Destructor.
      *
-         * Does nothing.
-         */
-    virtual ~CenterPointTopologicalMapping() {};
+     * Does nothing.
+     */
+    virtual ~CenterPointTopologicalMapping() {}
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */

@@ -43,108 +43,33 @@ namespace behavior
 
 template<class DataTypes>
 PairInteractionForceField<DataTypes>::PairInteractionForceField(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
-    : _object1(initData(&_object1, "object1", "First object in interaction")),
-      _object2(initData(&_object2, "object2", "Second object in interaction")),
-      mstate1(mm1), mstate2(mm2), mask1(NULL), mask2(NULL)
+    : mstate1(initLink("object1", "First object in interaction"), mm1)
+    , mstate2(initLink("object2", "Second object in interaction"), mm2)
+    , mask1(NULL), mask2(NULL)
 {
-
-    if(mm1==0||mm2==0)
-        return;
+    if (!mm1)
+        mstate1.setPath("@./"); // default to state of the current node
+    if (!mm2)
+        mstate2.setPath("@./"); // default to state of the current node
 }
 
 template<class DataTypes>
 PairInteractionForceField<DataTypes>::~PairInteractionForceField()
 {
-    if(mstate1==0||mstate2==0)
-        return;
 }
 
-
-template<class DataTypes>
-BaseMechanicalState*  PairInteractionForceField<DataTypes>::getMState(sofa::core::objectmodel::BaseContext* context, std::string path)
-{
-    std::string::size_type pos_slash = path.find("/");
-
-    sofa::core::objectmodel::BaseNode* currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(context);
-    if (pos_slash == std::string::npos)
-    {
-        if (path.empty())
-        {
-            BaseMechanicalState *result;
-            context->get(result, sofa::core::objectmodel::BaseContext::SearchDown);
-            return result;
-        }
-        sofa::helper::vector< sofa::core::objectmodel::BaseNode* > list_child = currentNode->getChildren();
-
-        for (unsigned int i=0; i< list_child.size(); ++i)
-        {
-            if (list_child[i]->getName() == path)
-            {
-                sofa::core::objectmodel::BaseContext *c = list_child[i]->getContext();
-                BaseMechanicalState *result;
-                c->get(result, sofa::core::objectmodel::BaseContext::SearchDown);
-                return result;
-            }
-        }
-    }
-    else
-    {
-        std::string name_expected = path.substr(0,pos_slash);
-        path = path.substr(pos_slash+1);
-        sofa::helper::vector< sofa::core::objectmodel::BaseNode* > list_child = currentNode->getChildren();
-
-        for (unsigned int i=0; i< list_child.size(); ++i)
-        {
-            if (list_child[i]->getName() == name_expected)
-                return getMState(list_child[i]->getContext(), path);
-        }
-    }
-    return NULL;
-}
 
 template<class DataTypes>
 void PairInteractionForceField<DataTypes>::init()
 {
 
     BaseInteractionForceField::init();
-    if (mstate1 == NULL || mstate2 == NULL)
+
+    if (mstate1.get() == NULL || mstate2.get() == NULL)
     {
-        std::string path_object1 = _object1.getValue();
-        std::string path_object2 = _object2.getValue();
-
-        mstate1 =  dynamic_cast< MechanicalState<DataTypes>* >( getMState(getContext(), path_object1));
-        mstate2 =  dynamic_cast< MechanicalState<DataTypes>* >( getMState(getContext(), path_object2));
-        if (mstate1 == NULL || mstate2 == NULL)
-        {
-            serr<< "Init of PairInteractionForceField " << getContext()->getName() << " failed!" << sendl;
-            getContext()->removeObject(this);
-            return;
-        }
-    }
-    else
-    {
-        //Interaction created by passing Mechanical State directly, need to find the name of the path to be able to save the scene eventually
-
-        /*
-           if (mstate1->getContext() != getContext())
-           {
-             sofa::core::objectmodel::BaseContext *context = NULL;
-             sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(mstate1->getContext());
-
-             std::string object_name=currentNode->getPathName();
-             if (context != NULL) _object1.setValue(object_name);
-           }
-
-
-           if (mstate2->getContext() != getContext())
-           {
-             sofa::core::objectmodel::BaseContext *context = NULL;
-             sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(mstate2->getContext());
-
-             std::string object_name=currentNode->getPathName();
-             if (context != NULL) _object2.setValue(object_name);
-           }
-        */
+        serr<< "Init of PairInteractionForceField " << getContext()->getName() << " failed!" << sendl;
+        //getContext()->removeObject(this);
+        return;
     }
 
     this->mask1 = &mstate1->forceMask;
@@ -247,17 +172,17 @@ void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mpar
         {
             if (mstate1 == mstate2)
                 Task<ParallelPairInteractionForceFieldAddForce< DataTypes > >(mparams /* PARAMS FIRST */, this,
-                        **defaulttype::getShared(*fId[mstate1].write()),
+                        **defaulttype::getShared(*fId[mstate1.get(mparams)].write()),
                         **defaulttype::getShared(*mparams->readX(mstate1)), **defaulttype::getShared(*mparams->readV(mstate1)));
             else
                 Task<ParallelPairInteractionForceFieldAddForce< DataTypes > >(mparams /* PARAMS FIRST */, this,
-                        **defaulttype::getShared(*fId[mstate1].write()), **defaulttype::getShared(*fId[mstate2].write()),
+                        **defaulttype::getShared(*fId[mstate1.get(mparams)].write()), **defaulttype::getShared(*fId[mstate2.get(mparams)].write()),
                         **defaulttype::getShared(*mparams->readX(mstate1)), **defaulttype::getShared(*mparams->readX(mstate2)),
                         **defaulttype::getShared(*mparams->readV(mstate1)), **defaulttype::getShared(*mparams->readV(mstate2)));
         }
         else
 #endif /* SOFA_SMP */
-            addForce( mparams /* PARAMS FIRST */, *fId[mstate1].write()   , *fId[mstate2].write()   ,
+            addForce( mparams /* PARAMS FIRST */, *fId[mstate1.get(mparams)].write()   , *fId[mstate2.get(mparams)].write()   ,
                     *mparams->readX(mstate1), *mparams->readX(mstate2),
                     *mparams->readV(mstate1), *mparams->readV(mstate2) );
     }
@@ -275,17 +200,17 @@ void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mpa
         {
             if (mstate1 == mstate2)
                 Task<ParallelPairInteractionForceFieldAddDForce< DataTypes > >(mparams /* PARAMS FIRST */, this,
-                        **defaulttype::getShared(*dfId[mstate1].write()),
+                        **defaulttype::getShared(*dfId[mstate1.get(mparams)].write()),
                         **defaulttype::getShared(*mparams->readDx(mstate1)));
             else
                 Task<ParallelPairInteractionForceFieldAddDForce< DataTypes > >(mparams /* PARAMS FIRST */, this,
-                        **defaulttype::getShared(*dfId[mstate1].write()), **defaulttype::getShared(*dfId[mstate2].write()),
+                        **defaulttype::getShared(*dfId[mstate1.get(mparams)].write()), **defaulttype::getShared(*dfId[mstate2.get(mparams)].write()),
                         **defaulttype::getShared(*mparams->readDx(mstate1)), **defaulttype::getShared(*mparams->readDx(mstate2)));
         }
         else
 #endif /* SOFA_SMP */
             addDForce(
-                mparams /* PARAMS FIRST */, *dfId[mstate1].write()    , *dfId[mstate2].write()   ,
+                mparams /* PARAMS FIRST */, *dfId[mstate1.get(mparams)].write()    , *dfId[mstate2.get(mparams)].write()   ,
                 *mparams->readDx(mstate1) , *mparams->readDx(mstate2) );
     }
     else

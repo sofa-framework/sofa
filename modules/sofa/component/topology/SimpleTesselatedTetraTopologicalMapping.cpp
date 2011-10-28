@@ -56,9 +56,8 @@ int SimpleTesselatedTetraTopologicalMappingClass = core::RegisterObject ( "Speci
         ;
 
 // Implementation
-SimpleTesselatedTetraTopologicalMapping::SimpleTesselatedTetraTopologicalMapping ( In* from, Out* to )
-    : TopologicalMapping ( from, to ),
-      d_pointMappedFromPoint( initData ( &d_pointMappedFromPoint, "pointMappedFromPoint", "Each point of the input topology is mapped to the same point")),
+SimpleTesselatedTetraTopologicalMapping::SimpleTesselatedTetraTopologicalMapping ()
+    : d_pointMappedFromPoint( initData ( &d_pointMappedFromPoint, "pointMappedFromPoint", "Each point of the input topology is mapped to the same point")),
       d_pointMappedFromEdge( initData ( &d_pointMappedFromEdge, "pointMappedFromEdge", "Each edge of the input topology is mapped to his midpoint")),
       d_pointSource( initData ( &d_pointSource, "pointSource", "Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1"))
 {

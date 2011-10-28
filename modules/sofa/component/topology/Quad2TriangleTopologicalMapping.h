@@ -68,10 +68,8 @@ public:
 protected:
     /** \brief Constructor.
     *
-    * @param from the topology issuing TopologyChange objects (the "source").
-    * @param to   the topology for which the TopologyChange objects must be translated (the "target").
     */
-    Quad2TriangleTopologicalMapping(In* from=NULL, Out* to=NULL);
+    Quad2TriangleTopologicalMapping();
 
     /** \brief Destructor.
     *

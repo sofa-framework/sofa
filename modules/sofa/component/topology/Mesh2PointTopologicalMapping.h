@@ -64,11 +64,9 @@ public:
     SOFA_CLASS(Mesh2PointTopologicalMapping,TopologicalMapping);
 protected:
     /** \brief Constructor.
-         *
-     * @param from the topology issuing TopologyChange objects (the "source").
-     * @param to   the topology for which the TopologyChange objects must be translated (the "target").
+     *
      */
-    Mesh2PointTopologicalMapping ( In* from=NULL, Out* to=NULL );
+    Mesh2PointTopologicalMapping ();
 
     /** \brief Destructor.
      *

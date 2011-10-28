@@ -1088,7 +1088,7 @@ protected:
 
     BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper);
 
-    BarycentricMapping(core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology );
+    BarycentricMapping(core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology=NULL );
 
     virtual ~BarycentricMapping();
 
