@@ -120,8 +120,8 @@ void RigidMapping<TIn, TOut>::load(const char *filename)
 
 
 template <class TIn, class TOut>
-RigidMapping<TIn, TOut>::RigidMapping(core::State< In >* from, core::State< Out >* to)
-    : Inherit(from, to)
+RigidMapping<TIn, TOut>::RigidMapping()
+    : Inherit()
     , points(initData(&points, "initialPoints", "Local Coordinates of the points"))
     , index(initData(&index, (unsigned)0, "index", "input DOF index"))
     , fileRigidMapping(initData(&fileRigidMapping, "fileRigidMapping", "Filename"))
@@ -131,20 +131,13 @@ RigidMapping<TIn, TOut>::RigidMapping(core::State< In >* from, core::State< Out 
     , globalToLocalCoords(initData(&globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
     , matrixJ()
     , updateJ(false)
+    , maskFrom(NULL)
+    , maskTo(NULL)
 {
     //std::cout << "RigidMapping Creation\n";
-
     this->addAlias(&fileRigidMapping, "filename");
-    maskFrom = NULL;
-    if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(from))
-    {
-        maskFrom = &stateFrom->forceMask;
-    }
-    maskTo = NULL;
-    if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(to))
-    {
-        maskTo = &stateTo->forceMask;
-    }
+
+
 }
 
 template <class TIn, class TOut>
@@ -185,6 +178,7 @@ int RigidMapping<TIn, TOut>::addPoint(const Coord& c, int indexFrom)
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::init()
 {
+
     if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
     {
         maskFrom = &stateFrom->forceMask;

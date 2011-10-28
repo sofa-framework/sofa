@@ -1084,7 +1084,7 @@ public:
     Data< bool > sleeping;
 #endif
 protected:
-    BarycentricMapping(core::State<In>* from, core::State<Out>* to);
+    BarycentricMapping();
 
     BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper);
 

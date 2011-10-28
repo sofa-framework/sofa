@@ -90,23 +90,20 @@ public:
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 protected:
-    RigidRigidMapping(core::State< In >* from, core::State< Out >* to)
-        : Inherit(from, to),
+    RigidRigidMapping()
+        : Inherit(),
           points(initData(&points, "initialPoints", "Initial position of the points")),
           repartition(initData(&repartition,"repartition","number of child frames per parent frame. If empty, all the children are attached to the parent with index given in the \"index\" attribute. If one value, each parent frame drives the given number of children frames. Otherwise, the values are the number of child frames driven by each parent frame. ")),
           index(initData(&index,(unsigned)0,"index","input frame index")),
           fileRigidRigidMapping(initData(&fileRigidRigidMapping,"fileRigidRigidMapping","Filename")),
           axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display")),
           indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
-          globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
+          globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) ),
+          maskFrom(NULL),
+          maskTo(NULL)
     {
         this->addAlias(&fileRigidRigidMapping,"filename");
-        maskFrom = NULL;
-        if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(from))
-            maskFrom = &stateFrom->forceMask;
-        maskTo = NULL;
-        if (core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(to))
-            maskTo = &stateTo->forceMask;
+
     }
 
     virtual ~RigidRigidMapping()

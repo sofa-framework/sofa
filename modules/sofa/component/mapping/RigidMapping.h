@@ -112,7 +112,7 @@ public:
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 protected:
-    RigidMapping(core::State< In >* from, core::State< Out >* to);
+    RigidMapping();
     virtual ~RigidMapping() {}
 public:
     int addPoint(const Coord& c);

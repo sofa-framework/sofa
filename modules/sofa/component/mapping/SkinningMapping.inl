@@ -57,21 +57,18 @@ using helper::ReadAccessor;
 using sofa::defaulttype::Vec;
 
 template <class TIn, class TOut>
-SkinningMapping<TIn, TOut>::SkinningMapping (core::State<In>* from, core::State<Out>* to )
-    : Inherit ( from, to )
+SkinningMapping<TIn, TOut>::SkinningMapping ()
+    : Inherit (  )
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame." ) )
     , nbRef ( initData ( &nbRef, ( unsigned ) 4,"nbRef","Number of primitives influencing each point." ) )
     , f_index ( initData ( &f_index,"indices","parent indices for each child." ) )
     , weight ( initData ( &weight,"weight","influence weights of the Dofs." ) )
     , showFromIndex ( initData ( &showFromIndex, ( unsigned int ) 0, "showFromIndex","Displayed From Index." ) )
     , showWeights ( initData ( &showWeights, false, "showWeights","Show influence." ) )
+    , maskFrom(NULL)
+    , maskTo(NULL)
 {
-    maskFrom = NULL;
-    if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( from ) )
-        maskFrom = &stateFrom->forceMask;
-    maskTo = NULL;
-    if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( to ) )
-        maskTo = &stateTo->forceMask;
+
 }
 
 
@@ -85,6 +82,12 @@ SkinningMapping<TIn, TOut>::~SkinningMapping ()
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::init()
 {
+
+    if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( this->fromModel.get() ) )
+        maskFrom = &stateFrom->forceMask;
+
+    if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( this->toModel.get( )) )
+        maskTo = &stateTo->forceMask;
     unsigned int numChildren = this->toModel->getSize();
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     WriteAccessor<Data<VecOutCoord> > initPos(this->f_initPos);

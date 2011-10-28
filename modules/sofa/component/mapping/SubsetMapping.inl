@@ -41,8 +41,8 @@ namespace mapping
 
 
 template <class TIn, class TOut>
-SubsetMapping<TIn, TOut>::SubsetMapping(core::State<In>* from, core::State<Out>* to)
-    : Inherit(from, to)
+SubsetMapping<TIn, TOut>::SubsetMapping()
+    : Inherit()
     , f_indices( initData(&f_indices, "indices", "list of input indices"))
     , f_first( initData(&f_first, -1, "first", "first index (use if indices are sequential)"))
     , f_last( initData(&f_last, -1, "last", "last index (use if indices are sequential)"))

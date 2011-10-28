@@ -94,17 +94,13 @@ public:
     core::behavior::BaseMechanicalState *stateFrom;
     core::behavior::BaseMechanicalState *stateTo;
 protected:
-    IdentityMapping(core::State<In>* from, core::State<Out>* to)
-        : Inherit(from, to),
+    IdentityMapping()
+        : Inherit(),
           matrixJ(),
-          updateJ(false)
+          updateJ(false),
+          maskFrom(NULL),
+          maskTo(NULL)
     {
-        maskFrom = NULL;
-        if ((stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(from)))
-            maskFrom = &stateFrom->forceMask;
-        maskTo = NULL;
-        if ((stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(to)))
-            maskTo = &stateTo->forceMask;
     }
 
     virtual ~IdentityMapping()
@@ -116,6 +112,8 @@ public:
     /// This is the case for mapping keeping a one-to-one correspondance between
     /// input and output DOFs (mostly identity or data-conversion mappings).
     virtual bool sameTopology() const { return true; }
+
+    void init();
 
     void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<VecCoord>& out, const Data<InVecCoord>& in);
 
