@@ -581,7 +581,6 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  = modules \
-                         modules \
                          framework \
                          applications/plugins
 

@@ -1,5 +1,5 @@
 
-   SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4
+   SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1
            (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS
 
   Authors: See Authors.txt
@@ -55,16 +55,21 @@ Contact information: contact@sofa-framework.org
 
 INSTALLATION
 
-Before building Sofa, copy sofa-default.cfg to sofa-local.cfg and
+NOTE: for up-to-date instructions, please refer to the web site:
+http://www.sofa-framework.org/installation
+
+Before building Sofa, copy sofa-default.prf to sofa-local.prf and
 customize it to your local configuration.
 
 Building Sofa under Windows :
 -----------------------------
- - First of all, get the correct version of windows dependencies from SOFA web page, and unzip it in Sofa directory. Then...
- - MSVC 8 : (Visual 2005)
+ - First of all, get the  correct version of windows dependencies from
+ SOFA web page, and unzip it in Sofa directory. Then...
+
+ - MSVC 8 (Visual 2005) :
      Launch Project VC8.bat.	 
 
- - MSVC 9 : (Visual 2008)
+ - MSVC 9 (Visual 2008) and MSVC 10 (Visual 2010) :
      Launch Project VC9.bat.	 
 
  - console :
@@ -75,14 +80,14 @@ Building Sofa under Windows :
      Then launch nmake to build all projects.
 
 After creating the projects, verify that project runSofa is the activated
-project.
+project, and that Release mode is used instead of Debug.
 
 
 Building Sofa under Linux :
 ---------------------------
 
-- KDevelop :
-     Open the Sofa.kdevelop project
+- QtCreator :
+     Open the Sofa.pro project
 
 - console :
      Run qmake, then make
@@ -91,4 +96,7 @@ Building Sofa under Mac OS :
 ----------------------------
      Run Project MacOS.sh
      Then run make to build all projects.
-     The generated Xcode projects can be used to easily edit the code but with current version of qmake then can not be used to compile it correctly.
+     The generated Xcode projects can  be used to easily edit the code
+     but with current version of qmake then can not be used to compile
+     it correctly.
+     It is also possible (and recommended) to use QtCreator instead.

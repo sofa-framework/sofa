@@ -1,6 +1,6 @@
 /**************************************************************************
-*     SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4    *
-*              (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                  *
+*      SOFA, Simulation Open-Framework Architecture, version 1.0 RC1      *
+*              (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                  *
 *                                                                         *
 *                              CONTRIBUTORS                               *
 *                                                                         *
@@ -15,24 +15,39 @@
         Jeremie Allard
         Barbara Andre
         Pierre-Jean Bensoussan
+        Guillaume Bousquet
+        Frederic Chateau
+        Hadrien Courtecuisse
+        Olivier Comas
         Stephane Cotin
+        Jeremie Dequidt
         Marie Durand
         Christian Duriez
         Herve Delingette
         Florent Falipou
-        Francois Faure 
+        Francois Faure
         Sylvere Fonteneau
+        Christophe Guebert
         Laure Heigeas
+        Tobias Heimann
+        Everton Hermann
+        Jeremy Jaussaud
         Lenka Jerabkova
         Francois Jourdes
+        Hoeryong Jung
+        Vincent Majorczyk
+        Stephanie Marchesseau
         Cesar Mendoza
         Matthieu Nesme
         Paul Neumann
         Chi-Thanh Nguyen
+        Marek Olsak
         Erik Pernod
+        Igor Peterlik
         Juan Pablo de la Plata Alcalde
         Francois Poyer
         Frederick Roy
+        Hugo Talbot
 
 :: SOFA Modules ::
 
@@ -43,7 +58,7 @@
         Matthieu Nesme and Francois Faure
 
     + Dynamic Topologies
-        Barbara Andre and Herve Delingette
+        Barbara Andre, Herve Delingette, Erik Pernod
 
     + Tetrahedral volume rendering
         Sebastien Barbier and George-Pierre Bonneau
@@ -55,4 +70,7 @@
         Juan Pablo de la Plata Alcalde, Christian Duriez
 
     + GPU support using CUDA
-        Jeremie Allard
+        Jeremie Allard, Hadrien Courtecuisse
+
+    + GPU support using OpenCL
+        Jeremie Allard, Vincent Majorczyk
