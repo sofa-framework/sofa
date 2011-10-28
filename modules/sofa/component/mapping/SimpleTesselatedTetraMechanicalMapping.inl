@@ -38,8 +38,8 @@ namespace mapping
 {
 
 template <class TIn, class TOut>
-SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::SimpleTesselatedTetraMechanicalMapping(core::State<In>* from, core::State<Out>* to)
-    : Inherit(from, to)
+SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::SimpleTesselatedTetraMechanicalMapping()
+    : Inherit()
     , topoMap(NULL)
     , inputTopo(NULL)
     , outputTopo(NULL)

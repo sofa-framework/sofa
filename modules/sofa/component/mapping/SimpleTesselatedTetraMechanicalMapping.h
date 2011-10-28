@@ -72,7 +72,7 @@ public:
 
 protected:
 
-    SimpleTesselatedTetraMechanicalMapping(core::State<In>* from, core::State<Out>* to);
+    SimpleTesselatedTetraMechanicalMapping();
 
     virtual ~SimpleTesselatedTetraMechanicalMapping();
 
