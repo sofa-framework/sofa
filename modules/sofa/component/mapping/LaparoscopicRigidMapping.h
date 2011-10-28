@@ -66,8 +66,8 @@ public:
     Data< Vector3 > pivot;
     Data< Quat > rotation;
 protected:
-    LaparoscopicRigidMapping(core::State<In>* from, core::State<Out>* to)
-        : Inherit(from, to)
+    LaparoscopicRigidMapping()
+        : Inherit()
         , pivot(initData(&pivot, Vector3(0,0,0), "pivot","Pivot point position"))
         , rotation(initData(&rotation, Quat(0,0,0,1), "rotation", "TODO-rotation"))
     {

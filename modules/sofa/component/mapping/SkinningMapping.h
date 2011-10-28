@@ -91,7 +91,7 @@ public:
     Data<unsigned int> showFromIndex;
     Data<bool> showWeights;
 protected:
-    SkinningMapping (core::State<In>* from, core::State<Out>* to );
+    SkinningMapping ();
     virtual ~SkinningMapping();
 public:
     void init();

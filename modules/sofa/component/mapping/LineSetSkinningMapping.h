@@ -70,8 +70,8 @@ public:
     typedef typename In::Real Real;
 
 protected:
-    LineSetSkinningMapping(core::State<In>* from, core::State<Out>* to)
-        : Inherit(from, to)
+    LineSetSkinningMapping()
+        : Inherit()
         , nvNeighborhood(initData(&nvNeighborhood,(unsigned int)3,"neighborhoodLevel","Set the neighborhood line level"))
         , numberInfluencedLines(initData(&numberInfluencedLines,(unsigned int)4,"numberInfluencedLines","Set the number of most influenced lines by each vertice"))
         , weightCoef(initData(&weightCoef, (int) 4,"weightCoef","Set the coefficient used to compute the weight of lines"))

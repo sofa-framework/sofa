@@ -111,6 +111,13 @@ void RigidRigidMapping<TIn, TOut>::init()
     if (!fileRigidRigidMapping.getValue().empty())
         this->load(fileRigidRigidMapping.getFullPath().c_str());
 
+    maskFrom = NULL;
+    if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get()))
+        maskFrom = &stateFrom->forceMask;
+    maskTo = NULL;
+    if (core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get()))
+        maskTo = &stateTo->forceMask;
+
 
     if (this->points.getValue().empty() && this->toModel!=NULL)
     {

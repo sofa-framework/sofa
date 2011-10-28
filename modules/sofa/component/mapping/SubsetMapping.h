@@ -101,7 +101,7 @@ public:
     SubsetMappingInternalData<In, Out> data;
     void postInit();
 protected:
-    SubsetMapping(core::State<In>* from, core::State<Out>* to);
+    SubsetMapping();
 public:
     void clear(int reserve);
 

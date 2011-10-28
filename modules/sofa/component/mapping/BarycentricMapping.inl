@@ -68,8 +68,8 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 template <class TIn, class TOut>
-BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::State<Out>* to)
-    : Inherit(from, to)
+BarycentricMapping<TIn, TOut>::BarycentricMapping()
+    : Inherit()
     , mapper(initLink("mapper","Internal mapper created depending on the type of topology"))
     , useRestPosition(core::objectmodel::Base::initData(&useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
 #ifdef SOFA_DEV

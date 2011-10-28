@@ -169,6 +169,15 @@ static inline void peq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::V
     dest.getCenter() += src;
 }
 
+template<class TIn, class TOut>
+void IdentityMapping<TIn, TOut>::init()
+{
+    if ((stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
+        maskFrom = &stateFrom->forceMask;
+    if ((stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
+        maskTo = &stateTo->forceMask;
+}
+
 template <class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<VecCoord>& dOut, const Data<InVecCoord>& dIn)
 {

@@ -119,8 +119,8 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type InReal;
 protected:
-    SPHFluidSurfaceMapping(core::State<In>* from, core::State<Out>* to)
-        : Inherit(from, to),
+    SPHFluidSurfaceMapping()
+        : Inherit(),
           mStep(initData(&mStep,0.5,"step","Step")),
           mRadius(initData(&mRadius,2.0,"radius","Radius")),
           mIsoValue(initData(&mIsoValue,0.5,"isoValue", "Iso Value")),
