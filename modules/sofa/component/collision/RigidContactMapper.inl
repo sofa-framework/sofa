@@ -69,7 +69,9 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
         child = parent->createChild(name);
         outmodel = sofa::core::objectmodel::New<MMechanicalObject>(); child->addObject(outmodel);
         outmodel->useMask.setValue(true);
-        mapping = sofa::core::objectmodel::New<MMapping>(instate, outmodel.get()); child->addObject(mapping);
+        mapping = sofa::core::objectmodel::New<MMapping>();
+        mapping->setModels(instate,outmodel.get());
+        child->addObject(mapping);
     }
     else
     {
