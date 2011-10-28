@@ -32,6 +32,7 @@
 #include <sofa/component/collision/MouseInteractor.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/component.h>
+#include <sofa/core/Mapping.h>
 
 namespace sofa
 {
@@ -76,7 +77,6 @@ public:
     //Components
     simulation::Node::SPtr nodeRayPick;
     sofa::core::behavior::BaseMechanicalState::SPtr mouseInSofa;
-    sofa::core::BaseMapping::SPtr mouseMapping;
     sofa::component::collision::BaseMouseInteractor::SPtr mouseInteractor;
 };
 
@@ -89,6 +89,7 @@ class TComponentMouseInteraction : public ComponentMouseInteraction
     typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
     typedef sofa::component::collision::MouseInteractor< DataTypes > Interactor;
     typedef sofa::component::mapping::IdentityMapping< defaulttype::Vec3Types, DataTypes > IdentityMechanicalMapping;
+    typedef typename sofa::core::Mapping< defaulttype::Vec3Types, DataTypes >::SPtr MouseMapping;
 
 public:
 
@@ -96,7 +97,8 @@ public:
     void createInteractionComponents(sofa::simulation::Node* parent, sofa::simulation::Node* current);
 
     bool  isCompatible( core::objectmodel::BaseContext *context) const;
-
+protected :
+    MouseMapping mouseMapping;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
