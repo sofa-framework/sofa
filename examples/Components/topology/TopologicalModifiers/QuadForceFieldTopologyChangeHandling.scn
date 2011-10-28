@@ -8,25 +8,25 @@
     <TreeCollisionGroupManager name="default2" />
 
     <Node name="QuadularSprings">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="RegularGrid" name="grid" nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
-        <Object type="MechanicalObject" src="@grid"/>
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <RegularGrid name="grid" nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+        <MechanicalObject src="@grid"/>
 	<include href="Objects/QuadSetTopology.xml" src="@grid" />
-        <Object type="UniformMass" totalmass="100" />
-<Object type="RegularGridSpringForceField" name="Springs" stiffness="200" damping="2" />
-        <Object type="QuadularBendingSprings" name="FEM-Bend" stiffness="3000" damping="1.0" />
-        <Object type="FixedConstraint" name="FixedConstraint" indices="0 19" />
+        <UniformMass totalmass="100" />
+<RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
+        <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
+        <FixedConstraint name="FixedConstraint" indices="0 19" />
 
         <Node name="Surf">
             <include href="Objects/TriangleSetTopology.xml" />
-            <Object type="Quad2TriangleTopologicalMapping" object1="../../Container" object2="Container" />
-            <Object type="TriangularFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
-            <Object type="TriangleSet" />
+            <Quad2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+            <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
+            <TriangleSet />
 
 	    <Node name="Visu">
-		<Object type="OglModel" name="Visual" color="green" />
-		<Object type="IdentityMapping" object1="../.." object2="Visual" />
+		<OglModel name="Visual" color="green" />
+		<IdentityMapping object1="../.." object2="Visual" />
 	    </Node>
         </Node>
 
@@ -35,24 +35,24 @@
 
 
     <Node name="QuadularSprings">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="RegularGrid" name="grid" nx="20" ny="1" nz="20" xmin="14" xmax="38" ymin="7" ymax="7" zmin="-12" zmax="12" />
-        <Object type="MechanicalObject" src="@grid"/>
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <RegularGrid name="grid" nx="20" ny="1" nz="20" xmin="14" xmax="38" ymin="7" ymax="7" zmin="-12" zmax="12" />
+        <MechanicalObject src="@grid"/>
 	<include href="Objects/QuadSetTopology.xml" src="@grid" />
-        <Object type="UniformMass" totalmass="100" />
-	<Object type="RegularGridSpringForceField" name="Springs" stiffness="200" damping="2" />
-        <Object type="FixedConstraint" name="FixedConstraint" indices="0 19" />
+        <UniformMass totalmass="100" />
+	<RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
+        <FixedConstraint name="FixedConstraint" indices="0 19" />
 
         <Node name="Surf">
             <include href="Objects/TriangleSetTopology.xml" />
-            <Object type="Quad2TriangleTopologicalMapping" object1="../../Container" object2="Container" />
-            <Object type="TriangularFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
-            <Object type="TriangleSet" />
+            <Quad2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+            <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
+            <TriangleSet />
 
 	    <Node name="Visu">
-		<Object type="OglModel" name="Visual" color="green" />
-		<Object type="IdentityMapping" object1="../.." object2="Visual" />
+		<OglModel name="Visual" color="green" />
+		<IdentityMapping object1="../.." object2="Visual" />
 	    </Node>
         </Node>
 

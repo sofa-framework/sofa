@@ -7,20 +7,20 @@
     <Node name="TriangleSetTopology">
         <EulerImplicit />
         <CGLinearSolver iterations="25" />
-        <Object type="TriangleSetTopologyContainer" name="Container1" fileTopology="mesh/tshirt_0.msh" />
-        <Object type="TriangleSetTopologyModifier" />
-        <Object type="TriangleSetGeometryAlgorithms" />
-        <Object type="MechanicalObject" />
-        <Object type="DiagonalMass" filename="mesh/tshirt_0.msh" />
-        <Object type="FixedConstraint" indices="38 39 40 41 42 43 123 124 137" />
-        <Object type="TriangleFEMForceField" name="FEM" youngModulus="50000" poissonRatio="0.3" method="large" />
+        <TriangleSetTopologyContainer name="Container1" fileTopology="mesh/tshirt_0.msh" />
+        <TriangleSetTopologyModifier />
+        <TriangleSetGeometryAlgorithms />
+        <MechanicalObject />
+        <DiagonalMass filename="mesh/tshirt_0.msh" />
+        <FixedConstraint indices="38 39 40 41 42 43 123 124 137" />
+        <TriangleFEMForceField name="FEM" youngModulus="50000" poissonRatio="0.3" method="large" />
         <Node name="PointSetTopology">
-            <Object type="PointSetTopologyContainer" name="Container2" />
-            <Object type="PointSetTopologyModifier" />
-            <Object type="Mesh2PointTopologicalMapping" object1="Container1" object2="Container2" triangleBaryCoords="0.33 0.33 0" />
-            <Object type="MechanicalObject" />
-            <Object type="CircumcenterMapping" />
-            <Object type="Sphere" radius="0.05" />
+            <PointSetTopologyContainer name="Container2" />
+            <PointSetTopologyModifier />
+            <Mesh2PointTopologicalMapping object1="Container1" object2="Container2" triangleBaryCoords="0.33 0.33 0" />
+            <MechanicalObject />
+            <CircumcenterMapping />
+            <Sphere radius="0.05" />
         </Node>
     </Node>
 </Node>

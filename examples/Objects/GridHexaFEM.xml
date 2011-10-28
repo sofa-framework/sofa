@@ -1,10 +1,10 @@
 <Node name="HexaFEM">
-	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
-	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001"  />
-	<Object type="SparseGrid" n="6 6 6" filename="file"/>
-	<Object type="MechanicalObject" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0" />
-	<Object type="UniformMass" totalmass="5" />
-	<Object type="HexahedronFEMForceField" name="FEM" youngModulus="5000" poissonRatio="0.3"  method="polar"/>
+	<EulerImplicitSolver rayleighStiffness="0.01" />
+	<CGLinearSolver iterations="25" threshold="0.00000001"  />
+	<SparseGrid n="6 6 6" filename="file"/>
+	<MechanicalObject translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0" />
+	<UniformMass totalmass="5" />
+	<HexahedronFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.3"  method="polar"/>
     <VisualNode/>
     <CollisionNode/>
 </Node>

@@ -47,13 +47,13 @@
             <!--<MechanicalObject template="Rigid" name="BeamMO" position="0 0 0.01 0 0 0 1 0.05 0 0.01 0 0 0 1 0.1 0 0.01 0 0 0 1"/>-->
             <BarycentricMapping isMechanical="true" object1="TrussMO" object2="BeamMO" />
             <Node name="VisuThread">
-                <Object type="MechanicalObject" name="Quads" />
+                <MechanicalObject name="Quads" />
                 <include href="Objects/QuadSetTopology.xml" />
-                <Object type="Edge2QuadTopologicalMapping" nbPointsOnEachCircle="10" radius="0.005" object1="BeamMesh" object2="Container" />
-                <Object type="TubularMapping" nbPointsOnEachCircle="10" radius="0.005" object1="BeamMO" object2="Quads" />
+                <Edge2QuadTopologicalMapping nbPointsOnEachCircle="10" radius="0.005" object1="BeamMesh" object2="Container" />
+                <TubularMapping nbPointsOnEachCircle="10" radius="0.005" object1="BeamMO" object2="Quads" />
                 <Node name="VisuOgl">
-                    <Object type="OglModel" name="Visual" color="0.5 0.5 1.0" />
-                    <Object type="IdentityMapping" object1="Quads" object2="Visual" />
+                    <OglModel name="Visual" color="0.5 0.5 1.0" />
+                    <IdentityMapping object1="Quads" object2="Visual" />
                 </Node>
             </Node>
         </Node>

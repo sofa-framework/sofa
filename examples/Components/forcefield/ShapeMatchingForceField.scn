@@ -1,39 +1,39 @@
 <Node name="root" dt="0.02">
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <Object type="CollisionPipeline" verbose="0" draw="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <Object type="CollisionResponse" name="Response" response="default" />
+    <CollisionPipeline verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionResponse name="Response" response="default" />
     <Node name="cubeFEM">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MeshObjLoader" name="loader" filename="mesh/dragon.obj" />
-        <Object type="Mesh" src="@loader" />
-        <Object type="MechanicalObject" src="@loader" scale="1" dz="10" />
-        <Object type="UniformMass" mass="3" />
-        <Object type="RotationFinder" numOfClusters="50" radius="0" />
-        <Object type="ShapeMatchingForceField" name="ShapeMatching" stiffness="10000" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+        <Mesh src="@loader" />
+        <MechanicalObject src="@loader" scale="1" dz="10" />
+        <UniformMass mass="3" />
+        <RotationFinder numOfClusters="50" radius="0" />
+        <ShapeMatchingForceField name="ShapeMatching" stiffness="10000" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" fileMesh="mesh/dragon.obj" color="red" dz="10" />
-            <Object type="IdentityMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="red" dz="10" />
+            <IdentityMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
-            <Object type="MeshObjLoader" name="loader" filename="mesh/dragon.obj" />
-            <Object type="Mesh" src="@loader" />
-            <Object type="MechanicalObject" src="@loader" dz="10" />
-            <Object type="Triangle" contactStiffness="1000" />
-            <Object type="Line" contactStiffness="1000" />
-            <Object type="Point" contactStiffness="1000" />
-            <Object type="IdentityMapping" />
+            <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" dz="10" />
+            <Triangle contactStiffness="1000" />
+            <Line contactStiffness="1000" />
+            <Point contactStiffness="1000" />
+            <IdentityMapping />
         </Node>
     </Node>
     <Node name="Floor">
-        <Object type="MeshObjLoader" name="loader" filename="mesh/floor3.obj" />
-        <Object type="Mesh" src="@loader" />
-        <Object type="MechanicalObject" src="@loader" dy="-10" scale="1.75" />
-        <Object type="Triangle" name="FloorTriangle" simulated="0" moving="0" />
-        <Object type="Line" name="FloorLine" simulated="0" moving="0" />
-        <Object type="Point" name="FloorLine" simulated="0" moving="0" />
-        <Object type="OglModel" name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" scaleTex="0.2" dy="-10" scale="1.75" />
+        <MeshObjLoader name="loader" filename="mesh/floor3.obj" />
+        <Mesh src="@loader" />
+        <MechanicalObject src="@loader" dy="-10" scale="1.75" />
+        <Triangle name="FloorTriangle" simulated="0" moving="0" />
+        <Line name="FloorLine" simulated="0" moving="0" />
+        <Point name="FloorLine" simulated="0" moving="0" />
+        <OglModel name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" scaleTex="0.2" dy="-10" scale="1.75" />
     </Node>
 </Node>

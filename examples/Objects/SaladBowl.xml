@@ -1,9 +1,9 @@
 <Node name="Salad Bowl">
-  <Object type="MeshObjLoader" name="meshLoader" filename="mesh/SaladBowl.obj"/>
-	<Object type="Mesh" src="@meshLoader" />
-	<Object type="MechanicalObject" scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0"/>
-	<Object type="Triangle" name="Floor" moving="false" simulated="false" contactStiffness="10"/>
-	<Object type="Line" name="Floor" moving="false" simulated="false" contactStiffness="10"/>
-	<Object type="Point" name="Floor" moving="false" simulated="false" contactStiffness="10" />
-	<Object type="OglModel" name="FloorV" fileMesh="mesh/SaladBowl.obj" texturename="textures/floor.bmp" color="1 1 1 1" scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" />
+  <MeshObjLoader name="meshLoader" filename="mesh/SaladBowl.obj"/>
+	<Mesh src="@meshLoader" />
+	<MechanicalObject scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0"/>
+	<Triangle name="Floor" moving="false" simulated="false" contactStiffness="10"/>
+	<Line name="Floor" moving="false" simulated="false" contactStiffness="10"/>
+	<Point name="Floor" moving="false" simulated="false" contactStiffness="10" />
+	<OglModel name="FloorV" fileMesh="mesh/SaladBowl.obj" texturename="textures/floor.bmp" color="1 1 1 1" scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" />
 </Node>

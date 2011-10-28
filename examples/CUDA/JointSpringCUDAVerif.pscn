@@ -19,15 +19,15 @@ $nbLinks = 10000;
 	showWireFrame="0"
 	time="0"
 >
-	<Object type="BruteForceDetection"/>
-	<Object type="DefaultContactManager"/>
-	<Object type="DefaultPipeline"/>
-	<Object type="MinProximityIntersection"/>
+	<BruteForceDetection/>
+	<DefaultContactManager/>
+	<DefaultPipeline/>
+	<MinProximityIntersection/>
 
 	<Node>
-		<Object type="EulerExplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<Object type="MechanicalObject" template="CudaRigid3f" name="DOFsGPU"
+		<EulerExplicit name="cg_odesolver" printLog="false"/>
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<MechanicalObject template="CudaRigid3f" name="DOFsGPU"
 				position="0 0 0  0 0 0 1
         
 <?php
@@ -37,13 +37,13 @@ for( $i=0 ; $i<$nbLinks ; $i++)
 }
 ?>   
 		"/>
-		<Object type="UniformMass" template="CudaRigid3f" name="mass"
+		<UniformMass template="CudaRigid3f" name="mass"
 				mass="1 1 [1 0 0,0 1 0,0 0 1]"
 		/>
-		<Object type="FixedConstraint" template="CudaRigid3f" name="fixOrigin" indices="0"
+		<FixedConstraint template="CudaRigid3f" name="fixOrigin" indices="0"
 		/>
 
-        <Object type="JointSpringForceField" template="CudaRigid3fTypes" name="joint springs"
+        <JointSpringForceField template="CudaRigid3fTypes" name="joint springs"
 					spring="
 <?php
 for( $i=0 ; $i<$nbLinks ; $i++)
@@ -55,9 +55,9 @@ for( $i=0 ; $i<$nbLinks ; $i++)
 
 	</Node>
 	<Node>
-		<Object type="EulerExplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<Object type="MechanicalObject" template="Rigid3f" name="DOFsCPU"
+		<EulerExplicit name="cg_odesolver" printLog="false"/>
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<MechanicalObject template="Rigid3f" name="DOFsCPU"
 				position="0 0 1  0 0 0 1
         
 <?php
@@ -67,14 +67,14 @@ for( $i=0 ; $i<$nbLinks ; $i++)
 }
 ?>   
 		"/>
-		<Object type="UniformMass" template="Rigid3f" name="mass"
+		<UniformMass template="Rigid3f" name="mass"
 				mass="1 1 [1 0 0,0 1 0,0 0 1]"
 		/>
-		<Object type="FixedConstraint" template="Rigid3f" name="fixOrigin"
+		<FixedConstraint template="Rigid3f" name="fixOrigin"
 				indices="0"
 		/>
 
-        <Object type="JointSpringForceField" template="Rigid3fTypes" name="joint springs"
+        <JointSpringForceField template="Rigid3fTypes" name="joint springs"
 					spring="
 <?php
 for( $i=0 ; $i<$nbLinks ; $i++)

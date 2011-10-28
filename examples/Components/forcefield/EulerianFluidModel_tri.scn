@@ -1,21 +1,21 @@
 <Node name="Root" dt="0.005">
     <VisualStyle displayFlags="showBehaviorModels" />
     <Node name="EulerianFluid">
-        <!--<Object type="EulerImplicit" name="OdeSolver" printLog="false"/>-->
-        <!--<Object type="CGLinearSolver" iterations="25" name="LinearSolver" tolerance="1.0e-9" threshold="1.0e-9" />-->
-        <Object type="MeshObjLoader" filename="mesh/square_2594_triangles.obj" name="loader" />
+        <!--<EulerImplicit name="OdeSolver" printLog="false"/>-->
+        <!--<CGLinearSolver iterations="25" name="LinearSolver" tolerance="1.0e-9" threshold="1.0e-9" />-->
+        <MeshObjLoader filename="mesh/square_2594_triangles.obj" name="loader" />
         <!-- square_864_triangles.obj -->
         <!--addForces="1" force="2.0" addForcePointSet="189 214 179 202 216 192 222 180 209"-->
         <!-- square_2594_triangles.obj -->
         <!--addForces="1" force="2.0" addForcePointSet="618 661 604 647 688 590 634 678 718 620 666 707 605 653 693"-->
-        <Object type="MeshTopology" src="@loader" name="Mesh" />
-        <Object type="TriangleSetGeometryAlgorithms" name="Geometry" template="Vec3d" />
-        <Object type="MechanicalObject" src="@loader" name="Mechanical" />
-        <Object type="EulerianFluidModel" name="Fluid2D" centerType="1" viscousFluid="1" viscosity="0.1" addForces="0" force="0" addForcePointSet="593 632 677 576 618 661 703 563 604 647 688 726 546 590 634 678 718 574 620 666 707 605 653 693" bdXmin1="-0.1" bdXmax1="0.1" bdYmin1="0" bdYmax1="10" bdZmin1="-1" bdZmax1="1" bdValue1="-0.5" bdXmin2="9.9" bdXmax2="10.1" bdYmin2="0" bdYmax2="10" bdZmin2="-1" bdZmax2="1" bdValue2="0.5" displayBoundary="0" displayDualMesh="0" displayBkMesh="0" displayVorticity="1" displayVelocity="1" displayBkVelocity="0" visCoef1="0.2" visCoef2="0.2" visCoef3="30" />
+        <MeshTopology src="@loader" name="Mesh" />
+        <TriangleSetGeometryAlgorithms name="Geometry" template="Vec3d" />
+        <MechanicalObject src="@loader" name="Mechanical" />
+        <EulerianFluidModel name="Fluid2D" centerType="1" viscousFluid="1" viscosity="0.1" addForces="0" force="0" addForcePointSet="593 632 677 576 618 661 703 563 604 647 688 726 546 590 634 678 718 574 620 666 707 605 653 693" bdXmin1="-0.1" bdXmax1="0.1" bdYmin1="0" bdYmax1="10" bdZmin1="-1" bdZmax1="1" bdValue1="-0.5" bdXmin2="9.9" bdXmax2="10.1" bdYmin2="0" bdYmax2="10" bdZmin2="-1" bdZmax2="1" bdValue2="0.5" displayBoundary="0" displayDualMesh="0" displayBkMesh="0" displayVorticity="1" displayVelocity="1" displayBkVelocity="0" visCoef1="0.2" visCoef2="0.2" visCoef3="30" />
         <!--  centerType: Barycenter = 0, Circumcenter = 1 -->
         <Node name="VisualModel">
-            <Object type="OglModel" name="Space" color="green" />
-            <Object type="IdentityMapping" name="mapping" object1="../.." object2="Space" />
+            <OglModel name="Space" color="green" />
+            <IdentityMapping name="mapping" object1="../.." object2="Space" />
         </Node>
     </Node>
 </Node>

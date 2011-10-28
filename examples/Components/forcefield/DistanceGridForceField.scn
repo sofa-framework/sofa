@@ -1,43 +1,43 @@
 <Node name="root" dt="0.001" showBoundingTree="0" gravity="0 0 0">
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showWireframe" />
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="CollisionResponse" response="default" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <Object type="CollisionGroup" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionGroup />
     <Node name="Simulation">
-        <Object type="CGImplicit" rayleighMass="0.2" iterations="40" tolerance="1e-16" threshold="1e-10" />
+        <CGImplicit rayleighMass="0.2" iterations="40" tolerance="1e-16" threshold="1e-10" />
         <Node name="Mesh">
-            <Object type="TriangleSetTopologyContainer" name="Container1" fileTopology="mesh/aneurysm3D_3_closed.obj" />
-            <Object type="MechanicalObject" />
-            <Object type="TriangleSetTopologyModifier" />
-            <Object type="TriangleSetGeometryAlgorithms" />
-            <Object type="UniformMass" totalmass="100" />
-            <Object type="BoxConstraint" box="-22 -15 -17 -16 -14 -10    -5 -7 2 0 -4.9 8    3.35 -5 -12 4.6 -3.5 -10.965" />
-            <Object type="DistanceGridForceField" filename="share/mesh/aneurysm3D_3.fmesh" stiffnessIn="10" stiffnessOut="10" stiffnessArea="10" draw="true" maxdist="2" minArea="0.2" />
+            <TriangleSetTopologyContainer name="Container1" fileTopology="mesh/aneurysm3D_3_closed.obj" />
+            <MechanicalObject />
+            <TriangleSetTopologyModifier />
+            <TriangleSetGeometryAlgorithms />
+            <UniformMass totalmass="100" />
+            <BoxConstraint box="-22 -15 -17 -16 -14 -10    -5 -7 2 0 -4.9 8    3.35 -5 -12 4.6 -3.5 -10.965" />
+            <DistanceGridForceField filename="share/mesh/aneurysm3D_3.fmesh" stiffnessIn="10" stiffnessOut="10" stiffnessArea="10" draw="true" maxdist="2" minArea="0.2" />
             <Node name="Visual">
-                <Object type="OglModel" name="Visual" color="green" />
-                <Object type="IdentityMapping" object1="../.." object2="Visual" />
+                <OglModel name="Visual" color="green" />
+                <IdentityMapping object1="../.." object2="Visual" />
             </Node>
             <Node name="Visual2">
-                <Object type="OglModel" name="Visual" color="red" dz="0.01" />
+                <OglModel name="Visual" color="red" dz="0.01" />
             </Node>
             <Node name="Barycenters">
-                <Object type="PointSetTopologyContainer" name="Container2" />
-                <Object type="PointSetTopologyModifier" />
-                <Object type="Mesh2PointTopologicalMapping" object1="Container1" object2="Container2" triangleBaryCoords="0.33 0.33 0" />
-                <Object type="MechanicalObject" name="Points" />
-                <Object type="Mesh2PointMechanicalMapping" />
+                <PointSetTopologyContainer name="Container2" />
+                <PointSetTopologyModifier />
+                <Mesh2PointTopologicalMapping object1="Container1" object2="Container2" triangleBaryCoords="0.33 0.33 0" />
+                <MechanicalObject name="Points" />
+                <Mesh2PointMechanicalMapping />
             </Node>
             <Node name="Circumcenters">
-                <Object type="PointSetTopologyContainer" name="Container2" />
-                <Object type="PointSetTopologyModifier" />
-                <Object type="Mesh2PointTopologicalMapping" object1="Container1" object2="Container2" triangleBaryCoords="0.33 0.33 0" />
-                <Object type="MechanicalObject" name="Points" />
-                <Object type="CircumcenterMapping" />
-                <Object type="Sphere" radius="0.01" />
+                <PointSetTopologyContainer name="Container2" />
+                <PointSetTopologyModifier />
+                <Mesh2PointTopologicalMapping object1="Container1" object2="Container2" triangleBaryCoords="0.33 0.33 0" />
+                <MechanicalObject name="Points" />
+                <CircumcenterMapping />
+                <Sphere radius="0.01" />
             </Node>
         </Node>
-        <Object type="VectorSpringForceField" object1="Mesh/Barycenters/Points" object2="Mesh/Circumcenters/Points" stiffness="0.1" viscosity="0" />
+        <VectorSpringForceField object1="Mesh/Barycenters/Points" object2="Mesh/Circumcenters/Points" stiffness="0.1" viscosity="0" />
     </Node>
 </Node>

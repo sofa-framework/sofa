@@ -1,16 +1,16 @@
 <Node name="root" dt="0.02">
-    <Object type="CollisionPipeline" verbose="0" draw="0"/>
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="NewProximityIntersection" name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <Object type="CollisionResponse" name="Response" response="default" />
-    <Object type="CollisionGroup" name="Group" />
+    <CollisionPipeline verbose="0" draw="0"/>
+    <BruteForceDetection name="N2" />
+    <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <CollisionResponse name="Response" response="default" />
+    <CollisionGroup name="Group" />
     <Node name="Chain">
         <Node name="Fixed">
-            <Object type="MeshObjLoader" name="loader" filename="mesh/torus_for_collision.obj" />
-            <Object type="Mesh" src="@loader" />
-            <Object type="MechanicalObject" src="@loader" rx="90" />
-            <Object type="Triangle" simulated="0" moving="0" />
-            <Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="gray" rx="90" />
+            <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" rx="90" />
+            <Triangle simulated="0" moving="0" />
+            <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" rx="90" />
         </Node>
         <include name="FEM" href="Objects/TorusFEM.xml" dx="2.5" />
         <include name="Spring" href="Objects/TorusSpring.xml" dx="5" rx="90" />

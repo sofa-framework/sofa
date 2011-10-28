@@ -4,7 +4,7 @@
 	<NewProximityIntersection name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
 	<CollisionResponse name="Response" response="default" />
 <!--
-	<Object type="CollisionGroup" name="Group" />
+	<CollisionGroup name="Group" />
 -->
 <?
 

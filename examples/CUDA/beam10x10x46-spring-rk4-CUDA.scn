@@ -1,56 +1,56 @@
 <Node name="root" dt="0.0025" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
-	<Object type="CollisionPipeline" verbose="0" />
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="CollisionResponse" name="Response" />
-	<Object type="CudaProximityIntersection" alarmDistance="0.002" contactDistance="0.001" />
+	<CollisionPipeline verbose="0" />
+	<BruteForceDetection name="N2" />
+	<CollisionResponse name="Response" />
+	<CudaProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
 
 	<Node name="Floor">
-		<Object type="RegularGrid"
+		<RegularGrid
 			nx="2" ny="1" nz="2"
 			xmin="10" xmax="-10"
 			ymin="-3.05" ymax="-3.05"
 			zmin="-10" zmax="10" />
-		<Object type="MechanicalObject" />
+		<MechanicalObject />
 		<Node name="Visu">
-			<Object type="OglModel" name="Visual" color="red"/>
-			<Object type="IdentityMapping" object1="../.." object2="Visual"/>
+			<OglModel name="Visual" color="red"/>
+			<IdentityMapping object1="../.." object2="Visual"/>
 		</Node>
 	</Node>
 	<Node name="M1">
-		<Object type="RungeKutta4" />
-		<Object type="RegularGrid"
+		<RungeKutta4 />
+		<RegularGrid
 			nx="10" ny="10" nz="46"
 			xmin="-1.5" xmax="1.5"
 			ymin="0" ymax="3"
 			zmin="-7.5" zmax="7.5"
 		/>
-		<Object type="MechanicalObject" template="CudaVec3f" />
-		<Object type="UniformMass" totalmass="400" />
-		<Object type="BoxConstraint" box="-1.6 -0.1 -7.6 1.6 3.1 -7.4" />
-		<Object type="MeshSpringForceField" stiffness="2333" />
-		<Object type="PlaneForceField" normal="0 1 0" d="-3" stiffness="10000"  draw="1" />
+		<MechanicalObject template="CudaVec3f" />
+		<UniformMass totalmass="400" />
+		<BoxConstraint box="-1.6 -0.1 -7.6 1.6 3.1 -7.4" />
+		<MeshSpringForceField stiffness="2333" />
+		<PlaneForceField normal="0 1 0" d="-3" stiffness="10000"  draw="1" />
 		<Node>
-			<Object type="RegularGrid"
+			<RegularGrid
 				nx="2" ny="2" nz="9"
 				xmin="-0.75" xmax="0.75"
 				ymin="0.75" ymax="2.25"
 				zmin="-5.5" zmax="6.5"
 			/>
 			<MechanicalObject template="CudaVec3f"/>
-			<Object type="CudaSphereModel" radius="1.0" />
-			<Object type="BarycentricMapping" />
+			<CudaSphereModel radius="1.0" />
+			<BarycentricMapping />
 		</Node>
 		<Node>
-			<Object type="CubeTopology" internalPoints="0" splitNormals="1"
+			<CubeTopology internalPoints="0" splitNormals="1"
 				nx="10" ny="10" nz="46"
 				xmin="-1.5" xmax="1.5"
 				ymin="0" ymax="3"
 				zmin="-7.5" zmax="7.5"
 			/>
-			<Object type="MappedObject" name="Mapped" template="CudaVec3f" />
-			<Object type="SubsetMapping" object2="Mapped" />
+			<MappedObject name="Mapped" template="CudaVec3f" />
+			<SubsetMapping object2="Mapped" />
 			<Node>
-				<Object type="CudaVisualModel" template="CudaVec3f" diffuse="0.8 0.8 0.8 1.0" computeNormals="true" />
+				<CudaVisualModel template="CudaVec3f" diffuse="0.8 0.8 0.8 1.0" computeNormals="true" />
 			</Node>
 		</Node>
 	</Node>

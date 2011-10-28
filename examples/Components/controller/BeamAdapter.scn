@@ -16,7 +16,7 @@
         <!--	<EdgeSetController listening="true" mainDirection="1.0 0.0 0.0" reversed="false"/>	-->
         <BeamAdapter name="beamAdapter" listening="true" minCurvatureAngle="3" maxCurvatureAngle="12" nbMaxBeams="6" activate="true" />
         <BeamFEMForceField name="FEM" radius="0.05" youngModulus="500000000" />
-        <Object type="ConstantForceField" indexFromEnd="true" points="0" forces="0 -200.0 0 0 1 0" />
+        <ConstantForceField indexFromEnd="true" points="0" forces="0 -200.0 0 0 1 0" />
         <Node name="CM">
             <MechanicalObject name="CollisionDOFs" template="Vec3d" size="3" />
             <LineSet contactStiffness="100.0" group="2" />
@@ -51,7 +51,7 @@
         <include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid" />
         <!--	<EdgeSetController listening="true" mainDirection="1.0 0.0 0.0" reversed="false"/>	-->
         <BeamFEMForceField name="FEM" radius="0.05" youngModulus="500000000" />
-        <Object type="ConstantForceField" indexFromEnd="true" points="0" forces="0 -200.0 0 0 1 0" />
+        <ConstantForceField indexFromEnd="true" points="0" forces="0 -200.0 0 0 1 0" />
         <Node name="CM">
             <MechanicalObject name="CollisionDOFs" template="Vec3d" size="3" />
             <LineSet contactStiffness="100.0" group="2" />

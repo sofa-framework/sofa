@@ -11,7 +11,7 @@
     <PlaneForceField name="Floor" normal="0 0.2 1" stiffness="100" damping="1" draw="1" />
     <PlaneForceField name="Wall" normal="0 -1 0" d="-4" stiffness="100" damping="1" draw="1" color="1 1 1" />
     <Node name="Visual">
-        <Object type="OglModel" name="Surface" color="red" />
-        <Object type="IdentityMapping" object1="../../Particles" object2="Surface" />
+        <OglModel name="Surface" color="red" />
+        <IdentityMapping object1="../../Particles" object2="Surface" />
     </Node>
 </Node>

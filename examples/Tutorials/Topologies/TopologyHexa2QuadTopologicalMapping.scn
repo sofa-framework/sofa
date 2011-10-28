@@ -9,15 +9,15 @@
     <DefaultContactManager name="Response" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="Cube">
-        <Object type="MeshGmshLoader" name="loader" filename="mesh/nine_hexa.msh" />
+        <MeshGmshLoader name="loader" filename="mesh/nine_hexa.msh" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MechanicalObject src="@loader" template="Vec3d" name="Hexa" />
         <UniformMass template="Vec3d" name="Mass" mass="0.25" />
-        <Object type="HexahedronSetTopologyContainer" src="@loader" name="Container" />
-        <Object type="HexahedronSetTopologyModifier" name="Modifier" />
-        <Object type="HexahedronSetTopologyAlgorithms" name="TopoAlgo" template="Vec3d" />
-        <Object type="HexahedronSetGeometryAlgorithms" name="GeomAlgo" template="Vec3d" drawHexa="1" drawColorHexahedra="1.0 1.0 0.3" />/&gt;
+        <HexahedronSetTopologyContainer src="@loader" name="Container" />
+        <HexahedronSetTopologyModifier name="Modifier" />
+        <HexahedronSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
+        <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawHexa="1" drawColorHexahedra="1.0 1.0 0.3" />/&gt;
         <!--    <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" 
       p0="-10 -10 -10"/>-->
         <HexahedronFEMForceField name="FEM" template="Vec3d" />

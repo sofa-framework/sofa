@@ -1,20 +1,20 @@
 <Node name="root" dt="0.02">
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <Object type="CollisionPipeline" depth="6" verbose="0" draw="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-    <Object type="CollisionResponse" name="Response" response="default" />
-    <Object type="CollisionGroup" name="Group" />
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
+    <CollisionResponse name="Response" response="default" />
+    <CollisionGroup name="Group" />
     <Node name="M1">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MechanicalObject" />
-        <Object type="UniformMass" mass="1" />
-        <Object type="RegularGrid" nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
-        <Object type="FixedConstraint" indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
-        <Object type="HexahedronFEMForceFieldAndMass" name="FEM" youngModulus="40000" poissonRatio="0.3" method="large" density="1" />
-        <Object type="Triangle" />
-        <Object type="Line" />
-        <Object type="Point" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject />
+        <UniformMass mass="1" />
+        <RegularGrid nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
+        <FixedConstraint indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
+        <HexahedronFEMForceFieldAndMass name="FEM" youngModulus="40000" poissonRatio="0.3" method="large" density="1" />
+        <Triangle />
+        <Line />
+        <Point />
     </Node>
 </Node>

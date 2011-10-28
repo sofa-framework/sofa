@@ -1,43 +1,43 @@
 <Node name="Root" dt="0.05" gravity="0 0 0">
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="BruteForceDetection" name="Detection" />
-    <Object type="CollisionResponse" response="default" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-    <Object type="CollisionGroup" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="Detection" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
+    <CollisionGroup />
     <Node name="Tissue">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MeshGmshLoader" name="loader" filename="mesh/square.msh" />
-        <Object type="MechanicalObject" src="@loader" scale="10" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/square.msh" />
+        <MechanicalObject src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
-        <Object type="BoxConstraint" box="-1 14 -1 16 16 1" />
-        <NOObject type="UniformMass" totalmass="0.5" handleTopoChange="true" />
-        <Object type="DiagonalMass" massDensity="0.0001" name="computed using mass density" />
-        <Object type="Gravity" gravity="0 -9.81 0" />
-        <Object type="TriangularFEMForceField" name="FEM" youngModulus="100" poissonRatio="0.5" method="large" />
+        <BoxConstraint box="-1 14 -1 16 16 1" />
+        <NOUniformMass totalmass="0.5" handleTopoChange="true" />
+        <DiagonalMass massDensity="0.0001" name="computed using mass density" />
+        <Gravity gravity="0 -9.81 0" />
+        <TriangularFEMForceField name="FEM" youngModulus="100" poissonRatio="0.5" method="large" />
         <Node name="Collision">
-            <Object type="TriangularMeshRefiner" surfaceLimit="0.1" refiningLevelThreshold="3" keySwitch="52" listening="1" modelSurface="/Tissue/Collision" modelTool="/Instrument/Collision" />
-            <Object type="MechanicalObject" name="CollisionModelTissue" />
-            <Object type="TriangleSet" />
-            <Object type="LineSet" />
-            <Object type="PointSet" />
-            <Object type="IdentityMapping" object1="../.." object2="CollisionModelTissue" />
+            <TriangularMeshRefiner surfaceLimit="0.1" refiningLevelThreshold="3" keySwitch="52" listening="1" modelSurface="/Tissue/Collision" modelTool="/Instrument/Collision" />
+            <MechanicalObject name="CollisionModelTissue" />
+            <TriangleSet />
+            <LineSet />
+            <PointSet />
+            <IdentityMapping object1="../.." object2="CollisionModelTissue" />
         </Node>
     </Node>
     <Node name="Instrument">
-        <Object type="EulerImplicit" rayleighStiffness="0" printLog="false" />
-        <Object type="CGLinearSolver" iterations="100" threshold="0.00000001" />
-        <Object type="MechanicalObject" name="Instrument" template="Rigid" position="4 1 -5 0 0 0 1" />
-        <Object type="MechanicalStateController" mainDirection="0.0 0.0 1.0" template="Rigid" listening="true" handleEventTriggersUpdate="true" />
+        <EulerImplicit rayleighStiffness="0" printLog="false" />
+        <CGLinearSolver iterations="100" threshold="0.00000001" />
+        <MechanicalObject name="Instrument" template="Rigid" position="4 1 -5 0 0 0 1" />
+        <MechanicalStateController mainDirection="0.0 0.0 1.0" template="Rigid" listening="true" handleEventTriggersUpdate="true" />
         <Node name="Collision">
-            <Object type="MechanicalObject" name="CollisionModelInstrument" />
-            <Object type="Sphere" template="Rigid" contactStiffness="0" radius="0.2" />
-            <Object type="RigidMapping" />
+            <MechanicalObject name="CollisionModelInstrument" />
+            <Sphere template="Rigid" contactStiffness="0" radius="0.2" />
+            <RigidMapping />
         </Node>
         <Node name="Visual">
-            <Object type="OglModel" name="Visual" fileMesh="mesh/sphere.obj" color="1.0 0.0 0.0 1.0" scale="0.2" />
-            <Object type="RigidMapping" object1="../../Instrument" object2="Visual" />
+            <OglModel name="Visual" fileMesh="mesh/sphere.obj" color="1.0 0.0 0.0 1.0" scale="0.2" />
+            <RigidMapping object1="../../Instrument" object2="Visual" />
         </Node>
     </Node>
 </Node>

@@ -1,30 +1,30 @@
 <Node dt="0.005" gravity="0 -10 0">
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="NewProximityIntersection" alarmDistance="0.5" contactDistance="0.3" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="CollisionResponse" response="default" />
+    <CollisionPipeline verbose="0" />
+    <NewProximityIntersection alarmDistance="0.5" contactDistance="0.3" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
     <Node name="Fluid">
-        <Object type="RungeKutta4" />
-        <Object type="PointSetTopologyContainer" />
-        <Object type="MechanicalObject" name="MModel" />
-        <Object type="ParticleSource" name="Source" center="&#x0A;-0.375 0 -0.75&#x0A; 0.0   0 -0.75&#x0A; 0.375 0 -0.75&#x0A;-0.75  0 -0.375&#x0A;-0.375 0 -0.375&#x0A; 0.0   0 -0.375&#x0A; 0.375 0 -0.375&#x0A; 0.75  0 -0.375&#x0A;-0.75  0  0.0&#x0A;-0.375 0  0.0&#x0A; 0.0   0  0.0&#x0A; 0.375 0  0.0&#x0A; 0.75  0  0.0&#x0A;-0.75  0  0.375&#x0A;-0.375 0  0.375&#x0A; 0.0   0  0.375&#x0A; 0.375 0  0.375&#x0A; 0.75  0  0.375&#x0A;-0.375 0  0.75&#x0A; 0.0   0  0.75&#x0A; 0.375 0  0.75&#x0A; " translation="0 3 0" radius="0.01 0.1 0.01" velocity="0 -20 0" delay="0.01875" start="-0.1" stop="2" />
-        <Object type="ParticleSink" normal="0 1 0" d0="-10" d1="-11" showPlane="true" printLog="true" />
-        <Object type="UniformMass" name="M1" mass="1" />
-        <Object type="SpatialGridContainer" cellWidth="0.75" sortPoints="true" />
-        <Object type="SPHFluidForceField" radius="0.75" density="15" viscosity="10" pressure="1000" surfaceTension="-1000" />
+        <RungeKutta4 />
+        <PointSetTopologyContainer />
+        <MechanicalObject name="MModel" />
+        <ParticleSource name="Source" center="&#x0A;-0.375 0 -0.75&#x0A; 0.0   0 -0.75&#x0A; 0.375 0 -0.75&#x0A;-0.75  0 -0.375&#x0A;-0.375 0 -0.375&#x0A; 0.0   0 -0.375&#x0A; 0.375 0 -0.375&#x0A; 0.75  0 -0.375&#x0A;-0.75  0  0.0&#x0A;-0.375 0  0.0&#x0A; 0.0   0  0.0&#x0A; 0.375 0  0.0&#x0A; 0.75  0  0.0&#x0A;-0.75  0  0.375&#x0A;-0.375 0  0.375&#x0A; 0.0   0  0.375&#x0A; 0.375 0  0.375&#x0A; 0.75  0  0.375&#x0A;-0.375 0  0.75&#x0A; 0.0   0  0.75&#x0A; 0.375 0  0.75&#x0A; " translation="0 3 0" radius="0.01 0.1 0.01" velocity="0 -20 0" delay="0.01875" start="-0.1" stop="2" />
+        <ParticleSink normal="0 1 0" d0="-10" d1="-11" showPlane="true" printLog="true" />
+        <UniformMass name="M1" mass="1" />
+        <SpatialGridContainer cellWidth="0.75" sortPoints="true" />
+        <SPHFluidForceField radius="0.75" density="15" viscosity="10" pressure="1000" surfaceTension="-1000" />
         <Node id="Visual">
-            <Object type="OglModel" name="VModel" color="blue" />
-            <Object type="SPHFluidSurfaceMapping" name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.5" radius="0.75" step="0.25" />
+            <OglModel name="VModel" color="blue" />
+            <SPHFluidSurfaceMapping name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.5" radius="0.75" step="0.25" />
         </Node>
-        <Object type="SpatialGridPointModel" contactStiffness="1000" />
+        <SpatialGridPointModel contactStiffness="1000" />
     </Node>
     <Node name="World">
-        <Object type="MechanicalObject" position="&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    -4 -1.6 -4    4 -5.6 -4    4 -6.4 4    -4 -2.4 4&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    -4 -1.6 -4    -4 -1.5 -4    4 -1.5 -4    4 -5.6 -4&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    4 -5.6 -4    4 -1.5 -4    4 -1.5 4    4 -6.4 4&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    4 -6.4 4    4 -1.5 4    -4 -1.5 4    -4 -2.4 4&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    -4 -2.4 4    -4 -1.5 4    -4 -1.5 -4    -4 -1.6 -4&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    " scale="1.075" />
-        <Object type="Mesh" triangles="0 1 2  0 2 3    4 5 6  4 6 7    8 9 10  8 10 11    12 13 14  12 14 15    16 17 18  16 18 19" />
-        <Object type="Triangle" contactStiffness="20" moving="false" simulated="false" />
-        <Object type="Line" contactStiffness="20" moving="false" simulated="false" />
-        <Object type="Point" contactStiffness="20" moving="false" simulated="false" />
-        <Object type="OglModel" name="VModel" color="0.95 1.0 0.95 0.25" printLog="true" />
+        <MechanicalObject position="&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    -4 -1.6 -4    4 -5.6 -4    4 -6.4 4    -4 -2.4 4&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    -4 -1.6 -4    -4 -1.5 -4    4 -1.5 -4    4 -5.6 -4&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    4 -5.6 -4    4 -1.5 -4    4 -1.5 4    4 -6.4 4&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    4 -6.4 4    4 -1.5 4    -4 -1.5 4    -4 -2.4 4&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    -4 -2.4 4    -4 -1.5 4    -4 -1.5 -4    -4 -1.6 -4&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;    " scale="1.075" />
+        <Mesh triangles="0 1 2  0 2 3    4 5 6  4 6 7    8 9 10  8 10 11    12 13 14  12 14 15    16 17 18  16 18 19" />
+        <Triangle contactStiffness="20" moving="false" simulated="false" />
+        <Line contactStiffness="20" moving="false" simulated="false" />
+        <Point contactStiffness="20" moving="false" simulated="false" />
+        <OglModel name="VModel" color="0.95 1.0 0.95 0.25" printLog="true" />
     </Node>
 </Node>
