@@ -317,6 +317,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Uncomment if you want to use the plugin BeamAdapter. 
 # DEFINES += SOFA_HAVE_BEAMADAPTER
 
+# Uncomment if you want to use the plugin Shell. 
+# DEFINES += SOFA_HAVE_SHELL
+
 # Uncomment if you want to use the plugin TriangularMeshBasedHexasCutter.
 # Note that you must define SOFA_GPU_CUDA to use this plugin.
 # DEFINES += SOFA_HAVE_TRIANGULARMESHBASEDHEXASCUTTER
