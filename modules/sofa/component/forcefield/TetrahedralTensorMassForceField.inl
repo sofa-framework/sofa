@@ -282,6 +282,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
 
     edgeInfo.createTopologicalEngine(_topology,edgeHandler);
     edgeInfo.registerTopologicalData();
+    edgeInfo.linkToTetrahedronDataArray();
 
 
     if (_topology->getNbTetrahedra()==0)

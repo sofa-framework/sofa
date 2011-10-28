@@ -43,8 +43,8 @@ HEADERS += initBaseTopology.h \
            topology/PointSetTopologyAlgorithms.inl \
            topology/PointSetTopologyContainer.h \
            topology/PointSetTopologyModifier.h \
-           topology/PointSubsetData.h \
-           topology/PointSubsetData.inl \
+#           topology/PointSubsetData.h \
+#           topology/PointSubsetData.inl \
 #           topology/QuadData.h \
 #           topology/QuadData.inl \
            topology/QuadSetGeometryAlgorithms.h \
@@ -117,7 +117,7 @@ SOURCES += initBaseTopology.cpp \
            topology/PointSetTopologyAlgorithms.cpp \
            topology/PointSetTopologyContainer.cpp \
            topology/PointSetTopologyModifier.cpp \
-           topology/PointSubsetData.cpp \
+#           topology/PointSubsetData.cpp \
            topology/QuadSetGeometryAlgorithms.cpp \
            topology/QuadSetTopologyAlgorithms.cpp \
            topology/QuadSetTopologyContainer.cpp \

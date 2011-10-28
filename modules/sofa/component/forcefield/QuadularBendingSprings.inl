@@ -508,6 +508,8 @@ void QuadularBendingSprings<DataTypes>::init()
 
     edgeInfo.createTopologicalEngine(_topology,edgeHandler);
     edgeInfo.registerTopologicalData();
+    edgeInfo.linkToPointDataArray();
+    edgeInfo.linkToQuadDataArray();
 
     /// prepare to store info in the edge array
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
