@@ -37,6 +37,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/Vec.h>
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
@@ -55,8 +56,7 @@ namespace component
 namespace mass
 {
 
-using namespace sofa::component::topology;
-
+using sofa::component::topology::PointData;
 
 // template<class Vec> void readVec1(Vec& vec, const char* str);
 
@@ -87,8 +87,8 @@ public:
     typedef TMassType MassType;
 
     // In case of non 3D template
-    typedef Vec<3,Real> Vec3;
-    typedef StdVectorTypes< Vec3, Vec3, Real >     GeometricalTypes ; /// assumes the geometry object type is 3D
+    typedef sofa::defaulttype::Vec<3,Real> Vec3;
+    typedef sofa::defaulttype::StdVectorTypes< Vec3, Vec3, Real >     GeometricalTypes ; /// assumes the geometry object type is 3D
 
     typedef enum
     {
@@ -104,6 +104,11 @@ public:
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
 
     VecMass f_mass;
+
+    typedef sofa::component::topology::Point Point;
+    typedef sofa::component::topology::Edge Edge;
+    typedef sofa::component::topology::Triangle Triangle;
+    typedef sofa::component::topology::Tetrahedron Tetrahedron;
 
     class DMassPointHandler : public topology::TopologyDataHandler<Point,MassVector>
     {

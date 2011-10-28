@@ -52,10 +52,10 @@ namespace component
 namespace container
 {
 
-using namespace core::behavior;
-using namespace core::objectmodel;
-using namespace sofa::component::topology;
+using core::objectmodel::Data;
+using sofa::component::topology::PointData;
 using sofa::defaulttype::Vector3;
+
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
@@ -72,10 +72,10 @@ public:
  * @brief MechanicalObject class
  */
 template <class DataTypes>
-class MechanicalObject : public MechanicalState<DataTypes>
+class MechanicalObject : public sofa::core::behavior::MechanicalState<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(MechanicalObject, DataTypes),SOFA_TEMPLATE(MechanicalState, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(MechanicalObject, DataTypes),SOFA_TEMPLATE(sofa::core::behavior::MechanicalState, DataTypes));
 
     typedef MechanicalState<DataTypes>      Inherited;
     typedef typename Inherited::VMultiOp    VMultiOp;
@@ -105,7 +105,7 @@ public:
 protected:
     virtual ~MechanicalObject();
 public:
-    virtual void parse ( BaseObjectDescription* arg );
+    virtual void parse ( core::objectmodel::BaseObjectDescription* arg );
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     PointData< VecCoord > x;
@@ -451,8 +451,8 @@ extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2dTypes>;
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1dTypes>;
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2dTypes>;
+//extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2dTypes>;
 #ifdef SOFA_DEV
 #endif
 #endif
@@ -461,10 +461,10 @@ extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2fTypes>;
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1fTypes>;
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2fTypes>;
+//extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2fTypes>;
 #endif
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
+//extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
 #endif
 
 } // namespace container
