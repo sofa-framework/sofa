@@ -76,8 +76,8 @@ public:
 
 
 protected :
-    CenterOfMassMapping ( core::State<In>* from, core::State<Out>* to )
-        : Inherit (from, to)
+    CenterOfMassMapping ( )
+        : Inherit ()
     {}
 
     virtual ~CenterOfMassMapping()

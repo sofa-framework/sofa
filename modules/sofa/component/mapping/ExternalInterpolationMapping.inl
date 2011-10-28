@@ -39,8 +39,8 @@ namespace mapping
 
 
 template <class TIn, class TOut>
-ExternalInterpolationMapping<TIn, TOut>::ExternalInterpolationMapping(core::State<In>* from, core::State<Out>* to)
-    : Inherit(from, to)
+ExternalInterpolationMapping<TIn, TOut>::ExternalInterpolationMapping()
+    : Inherit()
     , f_interpolationIndices( initData(&f_interpolationIndices, "InterpolationIndices", "Table that provides interpolation Indices"))
     , f_interpolationValues( initData(&f_interpolationValues, "InterpolationValues", "Table that provides interpolation Values"))
     , doNotMap(false)

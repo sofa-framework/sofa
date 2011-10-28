@@ -93,7 +93,7 @@ public:
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
 protected:
-    ExternalInterpolationMapping(core::State<In>* from, core::State<Out>* to);
+    ExternalInterpolationMapping();
 
     virtual ~ExternalInterpolationMapping();
 
