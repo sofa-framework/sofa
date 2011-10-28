@@ -49,18 +49,14 @@ namespace sofa
 
 namespace component
 {
-#ifdef SOFA_DEV
+
 namespace collision
 {
+
+#ifdef SOFA_DEV
 class TetrahedronModel;
 #endif // SOFA_DEV
-}
 
-namespace component
-{
-
-namespace collision
-{
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
