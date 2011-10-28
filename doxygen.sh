@@ -1,6 +1,6 @@
 #! /bin/sh
 outputdir=doc/doxygen
-packageslist=`cat doxygen\ packages.txt`
+packageslist=`cat doc/doxygen-packages.txt`
 tags=""
 
 for package in ${packageslist}

@@ -1,4 +1,3 @@
-applications/plugins/frame
 framework/sofa/helper
 framework/sofa/defaulttype
 framework/sofa/core
@@ -16,8 +15,10 @@ modules/sofa/component/contextobject
 modules/sofa/component/interactionforcefield
 modules/sofa/component/linearsolver
 modules/sofa/component/mapping
+modules/sofa/component/projectiveconstraintset
+modules/sofa/component/constraintset
 modules/sofa/component/constraint
-modules/sofa/component/mastersolver
+modules/sofa/component/animationloop
 modules/sofa/component/controller
 modules/sofa/component/collision
 modules/sofa/component/engine
