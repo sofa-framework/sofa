@@ -28,7 +28,9 @@
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/system/glut.h>
 
+#ifdef SOFA_DEV
 #include <sofa/component/collision/TetrahedronModel.h>
+#endif // SOFA_DEV
 #include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
@@ -125,9 +127,11 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             core::CollisionModel::SPtr model;
             if (surfaceOnVolume) // In the case of deleting a volume from a surface an volumique collision model is needed (only tetra available for the moment)
             {
+#ifdef SOFA_DEV
                 model = sofa::core::objectmodel::New<TetrahedronModel>();
                 //model->setContext(topo_curr->getContext());
                 topo_curr->getContext()->addObject(model);
+#endif // SOFA_DEV
             }
             else // other cases, collision model from pick is taken
             {
@@ -141,9 +145,10 @@ void RemovePrimitivePerformer<DataTypes>::execute()
 
             if (surfaceOnVolume) // In the case of deleting a volume from a surface an volumique collision model is needed (only tetra available for the moment)
             {
+#ifdef SOFA_DEV
                 topo_curr->getContext()->removeObject(model);
+#endif // SOFA_DEV
             }
-
             selectedElem.clear();
         }
     }

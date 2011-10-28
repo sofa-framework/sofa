@@ -52,7 +52,6 @@ SOFA_LINK_CLASS(ExternalInterpolationMapping)
 SOFA_LINK_CLASS(SubsetMultiMapping)
 SOFA_LINK_CLASS(TubularMapping)
 SOFA_LINK_CLASS(VoidMapping)
-SOFA_LINK_CLASS(DiscreteBeamBsplineMapping)
 
 } // namespace component
 

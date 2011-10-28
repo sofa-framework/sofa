@@ -58,7 +58,7 @@ protected:
 };
 
 
-class SOFA_ADVANCED_INTERACTION_API InciseAlongPathPerformer: public InteractionPerformer, public InciseAlongPathPerformerConfiguration
+class SOFA_USER_INTERACTION_API InciseAlongPathPerformer: public InteractionPerformer, public InciseAlongPathPerformerConfiguration
 {
 public:
     InciseAlongPathPerformer(BaseMouseInteractor *i)
