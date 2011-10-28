@@ -33,7 +33,7 @@ usePlugin(Haption)
 contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 
 	contains (DEFINES, SOFA_HAVE_VULCAIN) {
-		usePlugin(vulcain)
+                usePlugin(vulcain)
 	}
 
 	contains (DEFINES, SOFA_HAVE_LEM) {
@@ -46,6 +46,10 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 
 	contains (DEFINES, SOFA_HAVE_BEAMADAPTER) {
 		usePlugin(BeamAdapter)
+	}
+
+	contains (DEFINES, SOFA_HAVE_SHELL) {
+                usePlugin(shells)
 	}
 
 	contains (DEFINES, SOFA_HAVE_CGAL) {
