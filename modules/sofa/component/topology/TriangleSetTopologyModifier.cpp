@@ -726,14 +726,16 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isTriangleTopologyDirty()) // triangle Data has not been touched
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    //std::cout << "triangles is dirty" << std::endl;
+    std::cout << "triangles is dirty" << std::endl;
+    std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
+
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-            //std::cout << "performing: " << topoEngine->getName() << std::endl;
+            std::cout << "performing: " << topoEngine->getName() << std::endl;
             topoEngine->update();
         }
     }

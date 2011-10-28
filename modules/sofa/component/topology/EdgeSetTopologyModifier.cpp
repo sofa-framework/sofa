@@ -917,7 +917,7 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-            //std::cout << "performing: " << topoEngine->getName() << std::endl;
+            std::cout << "performing: " << topoEngine->getName() << std::endl;
             topoEngine->update();
         }
     }
