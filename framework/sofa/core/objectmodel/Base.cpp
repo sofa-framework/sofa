@@ -484,6 +484,9 @@ void  Base::parse ( BaseObjectDescription* arg )
         std::string valueString(val);
         parseField(attributeList[i], valueString);
     }
+    // update links
+    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+        (*iLink)->updateLinks();
 }
 
 void  Base::writeDatas ( std::map<std::string,std::string*>& args )
