@@ -27,8 +27,11 @@
 #ifndef SOFA_CORE_STATE_H
 #define SOFA_CORE_STATE_H
 
+#include <sofa/core/core.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <limits>
 
 namespace sofa
@@ -96,29 +99,9 @@ public:
     /// @name BaseData vectors access API based on VecId
     /// @{
 
-    virtual objectmodel::BaseData* baseWrite(VecId v)
-    {
-        switch (v.getType())
-        {
-        case V_ALL: return NULL;
-        case V_COORD: return write(VecCoordId(v));
-        case V_DERIV: return write(VecDerivId(v));
-        case V_MATDERIV: return write(MatrixDerivId(v));
-        }
-        return NULL;
-    }
+    virtual objectmodel::BaseData* baseWrite(VecId v);
 
-    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const
-    {
-        switch (v.getType())
-        {
-        case V_ALL: return NULL;
-        case V_COORD: return read(ConstVecCoordId(v));
-        case V_DERIV: return read(ConstVecDerivId(v));
-        case V_MATDERIV: return read(ConstMatrixDerivId(v));
-        }
-        return NULL;
-    }
+    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const;
 
     /// @}
 
@@ -171,36 +154,27 @@ public:
         return TDataTypes::Name();
     }
 
-    virtual void computeBBox(const core::ExecParams* params)
-    {
-        const VecCoord& x = read(ConstVecCoordId::position())->getValue(params);
-        const unsigned int xSize = x.size();
-
-        if (xSize <= 0)
-            return;
-
-        const Real max_real = std::numeric_limits<Real>::max();
-        const Real min_real = std::numeric_limits<Real>::min();
-        Real p[3] = {0,0,0};
-        Real maxBBox[3] = {min_real,min_real,min_real};
-        Real minBBox[3] = {max_real,max_real,max_real};
-
-        for (unsigned int i = 0; i < xSize; i++)
-        {
-            DataTypes::get(p[0], p[1], p[2], x[i]);
-            for (int c = 0; c < 3; c++)
-            {
-                if (p[c] > maxBBox[c])
-                    maxBBox[c] = p[c];
-
-                if (p[c] < minBBox[c])
-                    minBBox[c] = p[c];
-            }
-        }
-
-        this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
-    }
+    virtual void computeBBox(const core::ExecParams* params);
 };
+
+#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
+extern template class SOFA_CORE_API State<defaulttype::Vec3dTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Vec2dTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Vec1dTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Vec6dTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Rigid3dTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Rigid2dTypes>;
+
+extern template class SOFA_CORE_API State<defaulttype::Vec3fTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Vec2fTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Vec1fTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Vec6fTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Rigid3fTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Rigid2fTypes>;
+
+extern template class SOFA_CORE_API State<defaulttype::ExtVec3dTypes>;
+extern template class SOFA_CORE_API State<defaulttype::ExtVec3fTypes>;
+#endif
 
 } // namespace core
 
