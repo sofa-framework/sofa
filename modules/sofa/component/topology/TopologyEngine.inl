@@ -148,6 +148,7 @@ void TopologyEngineImpl< VecT>::ApplyTopologyChanges()
 template <typename VecT>
 void TopologyEngineImpl< VecT>::linkToPointDataArray()
 {
+    std::cout <<"linkToPointDataArray" << std::endl;
     if (m_pointsLinked) // avoid second registration
         return;
 
@@ -169,6 +170,7 @@ void TopologyEngineImpl< VecT>::linkToPointDataArray()
 template <typename VecT>
 void TopologyEngineImpl< VecT>::linkToEdgeDataArray()
 {
+    std::cout <<"linkToEdgeDataArray" << std::endl;
     if (m_edgesLinked) // avoid second registration
         return;
 
@@ -190,6 +192,7 @@ void TopologyEngineImpl< VecT>::linkToEdgeDataArray()
 template <typename VecT>
 void TopologyEngineImpl< VecT>::linkToTriangleDataArray()
 {
+    std::cout <<"linkToTriangleDataArray" << std::endl;
     if (m_trianglesLinked) // avoid second registration
         return;
 
