@@ -68,7 +68,9 @@ typename SubsetContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Subse
         child = parent->createChild(name);
         outmodel = sofa::core::objectmodel::New<MMechanicalObject>(); child->addObject(outmodel);
         outmodel->useMask.setValue(true);
-        mapping = sofa::core::objectmodel::New<MMapping>(instate, outmodel.get()); child->addObject(mapping);
+        mapping = sofa::core::objectmodel::New<MMapping>();
+        child->addObject(mapping);
+        mapping->setModels(instate, outmodel.get());
     }
     else
     {
