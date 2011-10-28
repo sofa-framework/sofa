@@ -527,6 +527,8 @@ public:
     /// Must be called after each graph modification. Do not call it directly, apply an InitVisitor instead.
     virtual void initialize();
 
+    virtual void bwdInit();
+
     /// Called after initialization to set the default value of the visual context.
     virtual void setDefaultVisualContextValue();
 
