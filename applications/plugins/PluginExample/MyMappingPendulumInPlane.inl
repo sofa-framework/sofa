@@ -45,8 +45,8 @@ using defaulttype::Vector3;
 
 
 template <class In, class Out>
-MyMappingPendulumInPlane<In,Out>::MyMappingPendulumInPlane(core::State<In>* from, core::State<Out>* to)
-    : Inherit ( from, to )
+MyMappingPendulumInPlane<In,Out>::MyMappingPendulumInPlane()
+    : Inherit ( )
     , f_length ( initData ( &f_length,"lengths","distances from the fixed point to the end of the pendulum" ) )
 {
 }
