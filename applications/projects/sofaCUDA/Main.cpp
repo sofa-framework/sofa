@@ -50,6 +50,10 @@
 #endif /* SOFA_SMP */
 #include <sofa/simulation/common/xml/initXml.h>
 
+#ifdef SOFA_DEV
+#include <sofa/gpu/cuda/initCudaDev.h>
+#endif
+
 
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
@@ -177,6 +181,7 @@ int main(int argc, char** argv)
     if (!nbIter)
         glutInit(&argc,argv);
 
+
     mycudaInit();
 
 #ifdef SOFA_SMP
@@ -185,6 +190,12 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 #endif
     sofa::component::init();
+
+#ifdef SOFA_DEV
+    // load cuda_dev library
+    sofa::gpu::cuda::initCudaDev();
+#endif
+
     sofa::simulation::xml::initXml();
 
     if (!nbIter)

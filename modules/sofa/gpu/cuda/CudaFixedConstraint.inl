@@ -368,16 +368,15 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(M
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-// Handle topological changes
-template <>
-void FixedConstraint<gpu::cuda::CudaVec3dTypes>::handleTopologyChange()
-{
-// 	std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-// 	std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
-//
-// 	f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-//printf("WARNING handleTopologyChange<gpu::cuda::CudaVec3dTypes> not implemented\n");
-}
+// // Handle topological changes
+// template <>
+// void FixedConstraint<gpu::cuda::CudaVec3dTypes>::handleTopologyChange() {
+// // 	std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
+// // 	std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+// //
+// // 	f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
+// //printf("WARNING handleTopologyChange<gpu::cuda::CudaVec3dTypes> not implemented\n");
+// }
 
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3dTypes>::projectResponse(Main* m, VecDeriv& dx)
