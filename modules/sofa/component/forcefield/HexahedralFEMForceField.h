@@ -189,13 +189,6 @@ protected:
     void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
     virtual void accumulateForcePolar( WDataRefVecDeriv& f, RDataRefVecCoord & p, const int i);
 
-    /// the callback function called when a hexahedron is created
-    static void FHexahedronCreationFunction (unsigned int , void* ,
-            HexahedronInformation &,
-            const Hexahedron& ,
-            const helper::vector< unsigned int > &,
-            const helper::vector< double >&);
-
 public:
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements

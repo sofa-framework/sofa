@@ -700,11 +700,20 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     vertexMassHandler = new VertexMassHandler(this, &vertexMassInfo);
     vertexMassInfo.createTopologicalEngine(_topology, vertexMassHandler);
     vertexMassInfo.registerTopologicalData();
+    vertexMassInfo.linkToEdgeDataArray();
+    vertexMassInfo.linkToTriangleDataArray();
+    vertexMassInfo.linkToQuadDataArray();
+    vertexMassInfo.linkToTetrahedronDataArray();
+    vertexMassInfo.linkToHexahedronDataArray();
 
     // add the functions to handle topology changes for Edge informations
     edgeMassHandler = new EdgeMassHandler(this, &edgeMassInfo);
     edgeMassInfo.createTopologicalEngine(_topology, edgeMassHandler);
     edgeMassInfo.registerTopologicalData();
+    edgeMassInfo.linkToTriangleDataArray();
+    edgeMassInfo.linkToQuadDataArray();
+    edgeMassInfo.linkToTetrahedronDataArray();
+    edgeMassInfo.linkToHexahedronDataArray();
 
     if ((vertexMassInfo.getValue().size()==0 || edgeMassInfo.getValue().size()==0) && (_topology!=0))
         reinit();
