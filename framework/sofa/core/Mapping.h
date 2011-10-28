@@ -281,7 +281,7 @@ public:
             inPath = BaseLink::ConvertOldPath(arg->getAttribute("object1"), "object1", "input", context, false);
 #endif
         else
-            inPath = "@..";
+            inPath = "@../";
 
         context->findLinkDest(stin, inPath, NULL);
 
@@ -326,11 +326,7 @@ public:
     template<class T>
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-#ifdef SOFA_DEPRECATE_OLD_API
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-#else
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>((State<In>*)NULL, (State<Out>*)NULL);
-#endif
 
         if (context)
             context->addObject(obj);
@@ -345,7 +341,7 @@ public:
                 inPath = BaseLink::ConvertOldPath(arg->getAttribute("object1"), "object1", "input", obj.get());
 #endif
             else
-                inPath = "@..";
+                inPath = "@../";
 
             if (arg->getAttribute("output"))
                 outPath = arg->getAttribute("output");
