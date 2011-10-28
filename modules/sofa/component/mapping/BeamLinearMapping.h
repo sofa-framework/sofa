@@ -85,8 +85,8 @@ protected:
     std::auto_ptr<MatrixType> matrixJ;
     bool updateJ;
 
-    BeamLinearMapping(core::State<In>* from, core::State<Out>* to)
-        : Inherit(from, to)
+    BeamLinearMapping()
+        : Inherit()
         //, index(initData(&index,(unsigned)0,"index","input DOF index"))
         , matrixJ()
         , updateJ(false)

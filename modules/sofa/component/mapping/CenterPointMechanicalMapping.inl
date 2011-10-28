@@ -43,8 +43,8 @@ namespace mapping
 
 
 template <class TIn, class TOut>
-CenterPointMechanicalMapping<TIn, TOut>::CenterPointMechanicalMapping(core::State<In>* from, core::State<Out>* to)
-    : Inherit(from, to)
+CenterPointMechanicalMapping<TIn, TOut>::CenterPointMechanicalMapping()
+    : Inherit()
     , inputTopo(NULL)
     , outputTopo(NULL)
 {

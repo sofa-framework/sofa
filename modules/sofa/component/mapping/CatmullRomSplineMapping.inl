@@ -56,20 +56,12 @@ using helper::ReadAccessor;
 using sofa::defaulttype::Vec;
 
 template <class TIn, class TOut>
-CatmullRomSplineMapping<TIn, TOut>::CatmullRomSplineMapping (core::State<In>* from, core::State<Out>* to )
-    : Inherit ( from, to )
+CatmullRomSplineMapping<TIn, TOut>::CatmullRomSplineMapping ( )
+    : Inherit ( )
     , SplittingLevel(initData(&SplittingLevel, (unsigned int) 0,"SplittingLevel","Number of recursive splits"))
     //, Radius(initData(&Radius,(Real)0.0,"Radius","Radius of the beam (generate triangle mesh if not null, a polyline otherwise)"))
 {
-    sourceMesh=this->getFromModel()->getContext()->getMeshTopology();
-    targetMesh=this->getToModel()->getContext()->getMeshTopology() ;
 
-    maskFrom = NULL;
-    if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( from ) )
-        maskFrom = &stateFrom->forceMask;
-    maskTo = NULL;
-    if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( to ) )
-        maskTo = &stateTo->forceMask;
 }
 
 
@@ -83,6 +75,16 @@ CatmullRomSplineMapping<TIn, TOut>::~CatmullRomSplineMapping ()
 template <class TIn, class TOut>
 void CatmullRomSplineMapping<TIn, TOut>::init()
 {
+
+    sourceMesh=this->getFromModel()->getContext()->getMeshTopology();
+    targetMesh=this->getToModel()->getContext()->getMeshTopology() ;
+
+    maskFrom = NULL;
+    if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( this->getFromModel() ) )
+        maskFrom = &stateFrom->forceMask;
+    maskTo = NULL;
+    if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( this->getToModel() ) )
+        maskTo = &stateTo->forceMask;
     unsigned int k = SplittingLevel.getValue();
     unsigned int P = sourceMesh->getNbPoints();
     unsigned int E = sourceMesh->getNbEdges();

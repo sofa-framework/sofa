@@ -103,8 +103,8 @@ public:
     container::RadiusContainer* radiusContainer;
 protected:
 
-    TubularMapping ( core::State<In>* from, core::State<Out>* to )
-        : Inherit ( from, to )
+    TubularMapping ( )
+        : Inherit ( )
         , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
         , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
         , m_peak (initData(&m_peak, 0, "peak", "=0 no peak, =1 peak on the first segment =2 peak on the two first segment, =-1 peak on the last segment"))

@@ -85,7 +85,7 @@ public:
 
 protected:
 
-    CatmullRomSplineMapping (core::State<In>* from, core::State<Out>* to );
+    CatmullRomSplineMapping ();
     virtual ~CatmullRomSplineMapping();
 
     helper::ParticleMask* maskFrom;

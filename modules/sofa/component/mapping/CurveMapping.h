@@ -130,8 +130,8 @@ public:
 
 protected:
 
-    CurveMapping(core::State<In>* from, core::State<Out>* to)
-        : Inherit(from, to),
+    CurveMapping()
+        : Inherit(),
           abscissa( initData(&abscissa, "abscissa", "")),
           angle( initData(&angle, "angle", "")),
           step( initData(&step, (Real) 10.0, "step", "")),

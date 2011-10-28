@@ -82,7 +82,7 @@ public:
     void applyJT(const core::ConstraintParams *cparams /* PARAMS FIRST */, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in);
 
 protected:
-    CenterPointMechanicalMapping(core::State<In>* from, core::State<Out>* to);
+    CenterPointMechanicalMapping();
 
     virtual ~CenterPointMechanicalMapping();
 
