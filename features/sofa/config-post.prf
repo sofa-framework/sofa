@@ -15,8 +15,8 @@ contains(TEMPLATE, subdirs) | contains(TEMPLATE, vcsubdirs) {
 ########################################################################
 
 win32-msvc* {
-	QMAKE_CXXFLAGS_DEBUG += -wd4250 -wd4251 -wd4275
-	QMAKE_CXXFLAGS_RELEASE += -wd4250 -wd4251 -wd4275
+	QMAKE_CXXFLAGS_DEBUG += -wd4250 -wd4251 -wd4275 /Fd./$${TARGET}
+	QMAKE_CXXFLAGS_RELEASE += -wd4250 -wd4251 -wd4275 /Fd./$${TARGET}
 }
 
 win32-msvc.net {
