@@ -1,30 +1,30 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9.81 0">
     <VisualStyle displayFlags="showBehaviorModels" />
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="CollisionResponse" response="default" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <Object type="CollisionGroup" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionGroup />
     <Node name="QuadularSprings">
-        <!-- <Object type="StaticSolver" iterations="140" /> -->
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MeshGmshLoader" filename="mesh/nine_quads.msh" name="loader" />
-        <Object type="MechanicalObject" src="@loader" name="Quads" />
+        <!-- <StaticSolver iterations="140" /> -->
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader filename="mesh/nine_quads.msh" name="loader" />
+        <MechanicalObject src="@loader" name="Quads" />
         <include href="Objects/QuadSetTopology.xml" src="@loader" />
-        <Object type="QuadularBendingSprings" name="FEM-Bend" stiffness="3000" damping="1.0" />
-        <Object type="DiagonalMass" massDensity="0.5" />
-        <Object type="FixedConstraint" indices="12 15" />
+        <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
+        <DiagonalMass massDensity="0.5" />
+        <FixedConstraint indices="12 15" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" color="yellow" />
-            <Object type="IdentityMapping" object1="../../Quads" object2="Visual" />
+            <OglModel name="Visual" color="yellow" />
+            <IdentityMapping object1="../../Quads" object2="Visual" />
         </Node>
         <Node name="Surf">
             <include href="Objects/TriangleSetTopology.xml" />
-            <Object type="Quad2TriangleTopologicalMapping" object1="../../Container" object2="Container" />
-            <Object type="TriangularFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
-            <Object type="TriangleSet" />
+            <Quad2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+            <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
+            <TriangleSet />
         </Node>
     </Node>
 </Node>

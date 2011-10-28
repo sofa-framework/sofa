@@ -25,8 +25,8 @@
     </Node>
     <SphereLoader filename="mesh/floor.sph" />
     <MechanicalObject position="@[-1].position" translation="0 -12.5 0" />
-    <Object type="Sphere" name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" contactStiffness="1000" />
+    <Sphere name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" contactStiffness="1000" />
     <Node>
-	<Object type="OglModel" name="FloorV" fileMesh="mesh/floor2.obj" texturename="textures/floor2.bmp" translation="0 -12.5 0" />
+	<OglModel name="FloorV" fileMesh="mesh/floor2.obj" texturename="textures/floor2.bmp" translation="0 -12.5 0" />
     </Node>
 </Node>

@@ -1,27 +1,27 @@
 <Node name="root" dt="0.02">
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="CollisionResponse" response="default" />
-    <Object type="CollisionGroup" />-
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <CollisionGroup />-
     <Node name="Liver">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MeshGmshLoader" name="loader" filename="mesh/liver.msh" />
-        <Object type="Mesh" src="@loader" />
-        <Object type="MechanicalObject" src="@loader" template="Vec3f" name="Liver" />
-        <Object type="UniformMass" name="mass" mass="0.05" />
-        <Object type="TetrahedronFEMForceField" name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
-        <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
+        <Mesh src="@loader" />
+        <MechanicalObject src="@loader" template="Vec3f" name="Liver" />
+        <UniformMass name="mass" mass="0.05" />
+        <TetrahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
+        <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu">
-            <Object type="OglShader" fragFilename="shaders/toonShading.frag" vertFilename="shaders/toonShading.vert" />
-            <Object type="OglModel" name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
-            <Object type="BarycentricMapping" object1="../.." object2="VisualModel" />
+            <OglShader fragFilename="shaders/toonShading.frag" vertFilename="shaders/toonShading.vert" />
+            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
+            <BarycentricMapping object1="../.." object2="VisualModel" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject position="@[-1].position" />
-            <Object type="Sphere" name="CollisionModel" listRadius="@[-2].listRadius" />
-            <Object type="BarycentricMapping" />
+            <Sphere name="CollisionModel" listRadius="@[-2].listRadius" />
+            <BarycentricMapping />
         </Node>
     </Node>
 </Node>

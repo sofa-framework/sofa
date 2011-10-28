@@ -2,17 +2,17 @@
 <Node name="root" dt="0.05" gravity="0 0 0">
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <Node name="M0">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MechanicalObject" position="0 0 0  1 0 0  1 1 0  0 1 0" velocity="0 0 0  0 0 0  0 0 0  0 0 0" />
-        <Object type="UniformMass" mass="0.1" />
-        <Object type="Mesh" triangles="0 1 2  0 2 3" />
-        <Object type="TriangleFEMForceField" name="FEM0" youngModulus="100" poissonRatio="0.3" method="large" />
-        <Object type="BoxConstantForceField" box="0 0   0  1 0.5 0" force="0 -1 0" arrowSizeCoef=".2" />
-        <Object type="BoxConstantForceField" box="0 0.5 0  1 1   0" force="0 1  0" arrowSizeCoef=".2" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject position="0 0 0  1 0 0  1 1 0  0 1 0" velocity="0 0 0  0 0 0  0 0 0  0 0 0" />
+        <UniformMass mass="0.1" />
+        <Mesh triangles="0 1 2  0 2 3" />
+        <TriangleFEMForceField name="FEM0" youngModulus="100" poissonRatio="0.3" method="large" />
+        <BoxConstantForceField box="0 0   0  1 0.5 0" force="0 -1 0" arrowSizeCoef=".2" />
+        <BoxConstantForceField box="0 0.5 0  1 1   0" force="0 1  0" arrowSizeCoef=".2" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" color="red" />
-            <Object type="IdentityMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" color="red" />
+            <IdentityMapping object1="../.." object2="Visual" />
         </Node>
     </Node>
 </Node>

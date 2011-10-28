@@ -1,31 +1,31 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9 0">
     <VisualStyle displayFlags="showBehaviorModels" />
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="CollisionResponse" response="default" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <Object type="CollisionGroup" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionGroup />
     <Node name="H">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MeshGmshLoader" name="loader" filename="mesh/nine_hexa.msh" />
-        <Object type="MechanicalObject" src="@loader" name="Hexa" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/nine_hexa.msh" />
+        <MechanicalObject src="@loader" name="Hexa" />
         <include href="Objects/HexahedronSetTopology.xml" src="@loader" />
-        <Object type="HexahedralFEMForceField" name="FEM" youngModulus="100" poissonRatio="0.3" method="large" />
-        <Object type="DiagonalMass" massDensity="0.2" />
-        <Object type="FixedConstraint" indices="12 15 28 31" />
+        <HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" method="large" />
+        <DiagonalMass massDensity="0.2" />
+        <FixedConstraint indices="12 15 28 31" />
         <Node name="Q">
             <include href="Objects/QuadSetTopology.xml" src="@" />
-            <Object type="Hexa2QuadTopologicalMapping" object1="../../Container" object2="Container" />
+            <Hexa2QuadTopologicalMapping object1="../../Container" object2="Container" />
             <Node name="Visu">
-                <Object type="OglModel" name="Visual" color="yellow" />
-                <Object type="IdentityMapping" object1="../../../Hexa" object2="Visual" />
+                <OglModel name="Visual" color="yellow" />
+                <IdentityMapping object1="../../../Hexa" object2="Visual" />
             </Node>
             <Node name="T">
                 <include href="Objects/TriangleSetTopology.xml" src="@" />
-                <Object type="Quad2TriangleTopologicalMapping" object1="../../Container" object2="Container" />
-                <Object type="TriangleSet" />
+                <Quad2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+                <TriangleSet />
             </Node>
         </Node>
     </Node>

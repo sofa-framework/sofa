@@ -1,17 +1,17 @@
 <Node name="Root" dt="0.005">
     <VisualStyle displayFlags="showBehaviorModels" />
     <Node name="EulerianFluid">
-        <Object type="EulerImplicit" name="OdeSolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="LinearSolver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MeshObjLoader" filename="mesh/aneurysm2D_hires.obj" name="loader" />
-        <Object type="MeshTopology" src="@loader" name="Mesh" />
-        <Object type="TriangleSetGeometryAlgorithms" name="Geometry" template="Vec3d" />
-        <Object type="MechanicalObject" src="@loader" name="Mechanical" />
-        <Object type="EulerianFluidModel" name="Fluid" centerType="1" viscousFluid="1" viscosity="0.05" addForces="0" force="0.0" addForcePointSet="120 130 128 137 149 158 162 170 181 188 191 204 217 280 264 202 236" constraintEdgeSet_1="868 877 859 874 865 871 862" constraintValue_1="-0.98" constraintEdgeSet_2="1326 1320 1332 1323 1329 1317" constraintValue_2="0.5" constraintEdgeSet_3="923 932 920 935 917 929 926" constraintValue_3="0.5" displayBoundary="1" displayDualMesh="0" displayBkMesh="0" displayVorticity="1" displayVelocity="1" displayBkVelocity="0" visCoef1="0.2" visCoef2="0.2" visCoef3="30" />
+        <EulerImplicit name="OdeSolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="LinearSolver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshObjLoader filename="mesh/aneurysm2D_hires.obj" name="loader" />
+        <MeshTopology src="@loader" name="Mesh" />
+        <TriangleSetGeometryAlgorithms name="Geometry" template="Vec3d" />
+        <MechanicalObject src="@loader" name="Mechanical" />
+        <EulerianFluidModel name="Fluid" centerType="1" viscousFluid="1" viscosity="0.05" addForces="0" force="0.0" addForcePointSet="120 130 128 137 149 158 162 170 181 188 191 204 217 280 264 202 236" constraintEdgeSet_1="868 877 859 874 865 871 862" constraintValue_1="-0.98" constraintEdgeSet_2="1326 1320 1332 1323 1329 1317" constraintValue_2="0.5" constraintEdgeSet_3="923 932 920 935 917 929 926" constraintValue_3="0.5" displayBoundary="1" displayDualMesh="0" displayBkMesh="0" displayVorticity="1" displayVelocity="1" displayBkVelocity="0" visCoef1="0.2" visCoef2="0.2" visCoef3="30" />
         <!--  Barycenter = 0, Circumcenter = 1 -->
         <Node name="VisualModel">
-            <Object type="OglModel" name="Vessel" color="green" />
-            <Object type="IdentityMapping" name="mapping" object1="../.." object2="Vessel" />
+            <OglModel name="Vessel" color="green" />
+            <IdentityMapping name="mapping" object1="../.." object2="Vessel" />
         </Node>
     </Node>
 </Node>

@@ -2,32 +2,32 @@
               and then you must run the sensAble project-->
 <Node name="root" dt="0.005">
     <VisualStyle displayFlags="showCollisionModels" />
-    <Object type="CollisionPipeline" name="pipeline" depth="6" verbose="0" />
-    <Object type="BruteForceDetection" name="detection" />
-    <Object type="CollisionResponse" name="response" response="default" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.2" contactDistance="0.2" />
+    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <BruteForceDetection name="detection" />
+    <CollisionResponse name="response" response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.2" contactDistance="0.2" />
     <Node name="Liver">
-        <Object type="MeshGmshLoader" filename="mesh/liver.msh" name="loader" />
-        <Object type="MechanicalObject" src="@loader" />
+        <MeshGmshLoader filename="mesh/liver.msh" name="loader" />
+        <MechanicalObject src="@loader" />
         <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
         <Node name="CollisionModel">
             <include href="Objects/TriangleSetTopology.xml" />
-            <Object type="Tetra2TriangleTopologicalMapping" object1="../../Container" object2="Container" />
-            <Object type="TriangleSet" contactStiffness="100" />
+            <Tetra2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+            <TriangleSet contactStiffness="100" />
         </Node>
     </Node>
     <Node name="Instrument">
-        <Object type="CarvingManager" key="0" />
-        <Object type="SensAble" xform="0 0 0 0.0 1.0 0.0 0.0" />
-        <Object type="MechanicalObject" name="instrumentState" template="Rigid" />
+        <CarvingManager key="0" />
+        <SensAble xform="0 0 0 0.0 1.0 0.0 0.0" />
+        <MechanicalObject name="instrumentState" template="Rigid" />
         <Node name="VisualModel">
-            <Object type="OglModel" name="InstrumentVisualModel" fileMesh="mesh/sphere.obj" color="1.0 0.2 0.2 1.0" scale="0.15" />
-            <Object type="RigidMapping" name="MM-&gt;VM mapping" object1="instrumentState" object2="InstrumentVisualModel" />
+            <OglModel name="InstrumentVisualModel" fileMesh="mesh/sphere.obj" color="1.0 0.2 0.2 1.0" scale="0.15" />
+            <RigidMapping name="MM-&gt;VM mapping" object1="instrumentState" object2="InstrumentVisualModel" />
         </Node>
         <Node name="CollisionTip">
             <MechanicalObject name="sphere_tip" />
-            <Object type="SphereModel" radius="0.15" active="0" />
-            <Object type="RigidMapping" isMechanical="false" object1="instrumentState" object2="sphere_tip" index="0" />
+            <SphereModel radius="0.15" active="0" />
+            <RigidMapping isMechanical="false" object1="instrumentState" object2="sphere_tip" index="0" />
         </Node>
     </Node>
 </Node>

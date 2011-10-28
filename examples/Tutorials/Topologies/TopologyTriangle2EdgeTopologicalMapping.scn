@@ -16,7 +16,7 @@
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0" />
+        <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
         <DiagonalMass template="Vec3d" name="mass" massDensity="0.15" />
         <FixedConstraint template="Vec3d" name="FixedDofs" indices="0 1" />
         <OglModel name="Visual" color="red" />

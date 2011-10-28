@@ -1,91 +1,91 @@
 <Node name="root" dt="0.03333">
-    <Object type="CollisionPipeline" verbose="0" depth="10" draw="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
-    <Object type="CollisionResponse" name="Response" response="default" />
-    <Object type="CollisionGroup" name="Group" />
+    <CollisionPipeline verbose="0" depth="10" draw="0" />
+    <BruteForceDetection name="N2" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
+    <CollisionResponse name="Response" response="default" />
+    <CollisionGroup name="Group" />
     <Node name="Torus">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MechanicalObject" useMask="true" dx="0" dy="20" dz="29" rz="64" />
-        <Object type="UniformMass" totalmass="10" />
-        <Object type="RegularGrid" nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
-        <Object type="RegularGridSpringForceField" name="Springs" stiffness="350" damping="1" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject useMask="true" dx="0" dy="20" dz="29" rz="64" />
+        <UniformMass totalmass="10" />
+        <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
+        <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" filename="mesh/torus2_scale3.obj" dx="0" dy="20" dz="29" color="blue" />
-            <Object type="BarycentricMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" filename="mesh/torus2_scale3.obj" dx="0" dy="20" dz="29" color="blue" />
+            <BarycentricMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
-            <Object type="MeshObjLoader" name="loader" filename="mesh/torus2_scale3.obj" />
-            <Object type="Mesh" src="@loader" />
-            <Object type="MechanicalObject" src="@loader" useMask="true" dx="0" dy="20" dz="29" />
-            <Object type="Triangle" />
-            <Object type="Line" />
-            <Object type="Point" />
-            <Object type="BarycentricMapping" />
+            <MeshObjLoader name="loader" filename="mesh/torus2_scale3.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" useMask="true" dx="0" dy="20" dz="29" />
+            <Triangle />
+            <Line />
+            <Point />
+            <BarycentricMapping />
         </Node>
     </Node>
     <Node name="Dragon">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MechanicalObject" useMask="true" dx="20" dy="20" dz="29" rx="33" />
-        <Object type="UniformMass" totalmass="10" />
-        <Object type="RegularGrid" nx="6" ny="5" nz="3" xmin="-11" xmax="11" ymin="-7" ymax="7" zmin="-4" zmax="4" />
-        <Object type="RegularGridSpringForceField" name="Springs" stiffness="350" damping="1" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject useMask="true" dx="20" dy="20" dz="29" rx="33" />
+        <UniformMass totalmass="10" />
+        <RegularGrid nx="6" ny="5" nz="3" xmin="-11" xmax="11" ymin="-7" ymax="7" zmin="-4" zmax="4" />
+        <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" filename="mesh/dragon.obj" dx="20" dy="20" dz="29" color="red" />
-            <Object type="BarycentricMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" filename="mesh/dragon.obj" dx="20" dy="20" dz="29" color="red" />
+            <BarycentricMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
-            <Object type="MeshObjLoader" name="loader" filename="mesh/dragon.obj" />
-            <Object type="Mesh" src="@loader" />
-            <Object type="MechanicalObject" src="@loader" useMask="true" dx="20" dy="20" dz="29" />
-            <Object type="Triangle" />
-            <Object type="Line" />
-            <Object type="Point" />
-            <Object type="BarycentricMapping" />
+            <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" useMask="true" dx="20" dy="20" dz="29" />
+            <Triangle />
+            <Line />
+            <Point />
+            <BarycentricMapping />
         </Node>
     </Node>
     <Node name="Frog">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MechanicalObject" useMask="true" dx="-20" dy="20" dz="29" ry="10" />
-        <Object type="UniformMass" totalmass="10" />
-        <Object type="RegularGrid" nx="6" ny="3" nz="5" xmin="-10" xmax="8" ymin="-3" ymax="2.5" zmin="-7" zmax="7" />
-        <Object type="RegularGridSpringForceField" name="Springs" stiffness="350" damping="1" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject useMask="true" dx="-20" dy="20" dz="29" ry="10" />
+        <UniformMass totalmass="10" />
+        <RegularGrid nx="6" ny="3" nz="5" xmin="-10" xmax="8" ymin="-3" ymax="2.5" zmin="-7" zmax="7" />
+        <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu1">
-            <Object type="OglModel" name="VisualBody" filename="mesh/frog_body.obj" normals="0" dx="-20" dy="20" dz="29" color="0.17 0.70 0.05" />
-            <Object type="BarycentricMapping" object1="../.." object2="VisualBody" />
+            <OglModel name="VisualBody" filename="mesh/frog_body.obj" normals="0" dx="-20" dy="20" dz="29" color="0.17 0.70 0.05" />
+            <BarycentricMapping object1="../.." object2="VisualBody" />
         </Node>
         <Node name="Visu2">
-            <Object type="OglModel" name="VisualEyes" filename="mesh/frog_eyes.obj" normals="0" dx="-20" dy="20" dz="29" color="0.04 0.19 0.52" />
-            <Object type="BarycentricMapping" object1="../.." object2="VisualEyes" />
+            <OglModel name="VisualEyes" filename="mesh/frog_eyes.obj" normals="0" dx="-20" dy="20" dz="29" color="0.04 0.19 0.52" />
+            <BarycentricMapping object1="../.." object2="VisualEyes" />
         </Node>
         <Node name="Visu3">
-            <Object type="OglModel" name="VisualEyebrows" filename="mesh/frog_eyebrows.obj" normals="0" dx="-20" dy="20" dz="29" color="0.44 0.43 0.00" />
-            <Object type="BarycentricMapping" object1="../.." object2="VisualEyebrows" />
+            <OglModel name="VisualEyebrows" filename="mesh/frog_eyebrows.obj" normals="0" dx="-20" dy="20" dz="29" color="0.44 0.43 0.00" />
+            <BarycentricMapping object1="../.." object2="VisualEyebrows" />
         </Node>
         <Node name="Visu4">
-            <Object type="OglModel" name="VisualLips" filename="mesh/frog_lips.obj" normals="0" dx="-20" dy="20" dz="29" color="0.47 0.25 0.03" />
-            <Object type="BarycentricMapping" object1="../.." object2="VisualLips" />
+            <OglModel name="VisualLips" filename="mesh/frog_lips.obj" normals="0" dx="-20" dy="20" dz="29" color="0.47 0.25 0.03" />
+            <BarycentricMapping object1="../.." object2="VisualLips" />
         </Node>
         <Node name="Surf">
-            <Object type="MeshObjLoader" name="loader" filename="mesh/frog-push25.obj" />
-            <Object type="Mesh" src="@loader" />
-            <Object type="MechanicalObject" src="@loader" useMask="true" dx="-20" dy="20" dz="29" />
-            <Object type="Triangle" />
-            <Object type="Line" />
-            <Object type="Point" />
-            <Object type="BarycentricMapping" />
+            <MeshObjLoader name="loader" filename="mesh/frog-push25.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" useMask="true" dx="-20" dy="20" dz="29" />
+            <Triangle />
+            <Line />
+            <Point />
+            <BarycentricMapping />
         </Node>
     </Node>
     <Node name="Floor">
-        <Object type="MeshObjLoader" name="loader" filename="mesh/floor2b.obj" />
-        <Object type="Mesh" src="@loader" />
-        <Object type="MechanicalObject" src="@loader" useMask="true" dy="-10.25" scale="0.5" />
-        <Object type="Triangle" name="Floor" simulated="0" moving="0" />
-        <Object type="Line" name="Floor" simulated="0" moving="0" />
-        <Object type="Point" name="Floor" simulated="0" moving="0" />
-        <Object type="OglModel" name="FloorV" filename="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" dy="-10" />
+        <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
+        <Mesh src="@loader" />
+        <MechanicalObject src="@loader" useMask="true" dy="-10.25" scale="0.5" />
+        <Triangle name="Floor" simulated="0" moving="0" />
+        <Line name="Floor" simulated="0" moving="0" />
+        <Point name="Floor" simulated="0" moving="0" />
+        <OglModel name="FloorV" filename="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" dy="-10" />
     </Node>
 </Node>

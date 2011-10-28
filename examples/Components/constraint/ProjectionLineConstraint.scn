@@ -1,64 +1,64 @@
 <Node name="root" dt="0.005">
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <Object type="CollisionPipeline" depth="6" verbose="0" draw="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-    <Object type="CollisionResponse" name="Response" response="default" />
-    <Object type="CollisionGroup" name="Group" />
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
+    <CollisionResponse name="Response" response="default" />
+    <CollisionGroup name="Group" />
     <Node name="Bilateral ProjectionOnSegment">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MechanicalObject" position="0 5 0 1 5 0 2 5 0 3 5 0  4 5 0 5 5 0 6 5 0 7 5 0 8 5 0 9 5 0 10 5 0" />
-        <Object type="UniformMass" mass="1" />
-        <Object type="FixedConstraint" indices="0 10" />
-        <Object type="ProjectionLineConstraint" indices="5" line="1 9" isSegment="true" bilateral="true" />
-        <Object type="StiffSpringForceField" spring="0 1 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  1 2 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  2 3 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  3 4 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  4 5 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  5 6 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  6 7 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  7 8 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  8 9 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  9 10 100 5 1" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject position="0 5 0 1 5 0 2 5 0 3 5 0  4 5 0 5 5 0 6 5 0 7 5 0 8 5 0 9 5 0 10 5 0" />
+        <UniformMass mass="1" />
+        <FixedConstraint indices="0 10" />
+        <ProjectionLineConstraint indices="5" line="1 9" isSegment="true" bilateral="true" />
+        <StiffSpringForceField spring="0 1 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  1 2 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  2 3 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  3 4 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  4 5 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  5 6 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  6 7 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  7 8 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  8 9 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  9 10 100 5 1" />
         <Node name="col">
-            <Object type="MechanicalObject" />
-            <Object type="Sphere" radius=".5" />
-            <Object type="IdentityMapping" />
+            <MechanicalObject />
+            <Sphere radius=".5" />
+            <IdentityMapping />
         </Node>
     </Node>
     <Node name="Bilateral ProjectionOnLine">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MechanicalObject" position="0 0 0 1 0 0 2 0 0 3 0 0  4 0 0 5 0 0 6 0 0 7 0 0 8 0 0 9 0 0 10 0 0" />
-        <Object type="UniformMass" mass="1" />
-        <Object type="FixedConstraint" indices="0 10" />
-        <Object type="ProjectionLineConstraint" indices="5" line="1 9" isSegment="false" bilateral="true" />
-        <Object type="StiffSpringForceField" spring="0 1 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  &#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 1 2 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 2 3 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 3 4 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 4 5 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 5 6 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 6 7 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 7 8 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 8 9 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 9 10 100 5 1" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject position="0 0 0 1 0 0 2 0 0 3 0 0  4 0 0 5 0 0 6 0 0 7 0 0 8 0 0 9 0 0 10 0 0" />
+        <UniformMass mass="1" />
+        <FixedConstraint indices="0 10" />
+        <ProjectionLineConstraint indices="5" line="1 9" isSegment="false" bilateral="true" />
+        <StiffSpringForceField spring="0 1 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  &#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 1 2 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 2 3 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 3 4 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 4 5 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 5 6 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 6 7 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 7 8 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 8 9 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 9 10 100 5 1" />
         <Node name="col">
-            <Object type="MechanicalObject" />
-            <Object type="Sphere" radius=".5" />
-            <Object type="IdentityMapping" />
+            <MechanicalObject />
+            <Sphere radius=".5" />
+            <IdentityMapping />
         </Node>
     </Node>
     <Node name="Unilateral ProjectionOnSegment">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MechanicalObject" position="15 5 0 16 5 0 17 5 0 18 5 0  19 5 0 20 5 0 21 5 0 22 5 0 23 5 0 24 5 0 25 5 0" />
-        <Object type="UniformMass" mass="1" />
-        <Object type="FixedConstraint" indices="0 10" />
-        <Object type="ProjectionLineConstraint" indices="5" line="1 9" isSegment="true" bilateral="false" />
-        <Object type="StiffSpringForceField" spring="0 1 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  1 2 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  2 3 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  3 4 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  4 5 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  5 6 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  6 7 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  7 8 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  8 9 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  9 10 100 5 1" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject position="15 5 0 16 5 0 17 5 0 18 5 0  19 5 0 20 5 0 21 5 0 22 5 0 23 5 0 24 5 0 25 5 0" />
+        <UniformMass mass="1" />
+        <FixedConstraint indices="0 10" />
+        <ProjectionLineConstraint indices="5" line="1 9" isSegment="true" bilateral="false" />
+        <StiffSpringForceField spring="0 1 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  1 2 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  2 3 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  3 4 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  4 5 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  5 6 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  6 7 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  7 8 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  8 9 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  9 10 100 5 1" />
         <Node name="col">
-            <Object type="MechanicalObject" />
-            <Object type="Sphere" radius=".5" />
-            <Object type="IdentityMapping" />
+            <MechanicalObject />
+            <Sphere radius=".5" />
+            <IdentityMapping />
         </Node>
     </Node>
     <Node name="Unilateral ProjectionOnLine">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MechanicalObject" position="15 0 0 16 0 0 17 0 0 18 0 0  19 0 0 20 0 0 21 0 0 22 0 0 23 0 0 24 0 0 25 0 0" />
-        <Object type="UniformMass" mass="1" />
-        <Object type="FixedConstraint" indices="0 10" />
-        <Object type="ProjectionLineConstraint" indices="5" line="1 9" isSegment="false" bilateral="false" />
-        <Object type="StiffSpringForceField" spring="0 1 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  1 2 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  2 3 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  3 4 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  4 5 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  5 6 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  6 7 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  7 8 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  8 9 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  9 10 100 5 1" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject position="15 0 0 16 0 0 17 0 0 18 0 0  19 0 0 20 0 0 21 0 0 22 0 0 23 0 0 24 0 0 25 0 0" />
+        <UniformMass mass="1" />
+        <FixedConstraint indices="0 10" />
+        <ProjectionLineConstraint indices="5" line="1 9" isSegment="false" bilateral="false" />
+        <StiffSpringForceField spring="0 1 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  1 2 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  2 3 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  3 4 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  4 5 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  5 6 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  6 7 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  7 8 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  8 9 100 5 1&#x0A;&#x09;&#x09;&#x09;&#x09;  9 10 100 5 1" />
         <Node name="col">
-            <Object type="MechanicalObject" />
-            <Object type="Sphere" radius=".5" />
-            <Object type="IdentityMapping" />
+            <MechanicalObject />
+            <Sphere radius=".5" />
+            <IdentityMapping />
         </Node>
     </Node>
 </Node>

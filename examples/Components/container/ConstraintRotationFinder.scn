@@ -1,47 +1,47 @@
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
-    <Object type="FreeMotionAnimationLoop" initial_guess="true" displayTime="1" />
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="LocalMinDistance" name="Proximity" alarmDistance="0.50" contactDistance="0.25" />
-    <Object type="CollisionResponse" name="Response" response="FrictionContact" />
+    <FreeMotionAnimationLoop initial_guess="true" displayTime="1" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <LocalMinDistance name="Proximity" alarmDistance="0.50" contactDistance="0.25" />
+    <CollisionResponse name="Response" response="FrictionContact" />
     <Node name="Floor">
-        <Object type="RegularGrid" nx="2" ny="1" nz="2" xmin="20" xmax="-20" ymin="-3.05" ymax="-3.05" zmin="-20" zmax="20" />
-        <Object type="MechanicalObject" />
-        <Object type="Triangle" simulated="0" moving="0" group="1" />
-        <Object type="Line" simulated="0" moving="0" group="1" />
-        <Object type="Point" simulated="0" moving="0" group="1" />
+        <RegularGrid nx="2" ny="1" nz="2" xmin="20" xmax="-20" ymin="-3.05" ymax="-3.05" zmin="-20" zmax="20" />
+        <MechanicalObject />
+        <Triangle simulated="0" moving="0" group="1" />
+        <Line simulated="0" moving="0" group="1" />
+        <Point simulated="0" moving="0" group="1" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" color="red" />
-            <Object type="IdentityMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" color="red" />
+            <IdentityMapping object1="../.." object2="Visual" />
         </Node>
     </Node>
     <Node name="Sphere">
         <MeshObjLoader filename="mesh/sphere.obj" name="loader" />
         <Mesh src="@loader" />
-        <Object type="MechanicalObject" src="@loader" scale="3.95" dx="0" dy="1" dz="3" />
-        <Object type="Triangle" simulated="0" moving="0" group="1" />
-        <Object type="Line" simulated="0" moving="0" group="1" />
-        <Object type="Point" simulated="0" moving="0" group="1" />
+        <MechanicalObject src="@loader" scale="3.95" dx="0" dy="1" dz="3" />
+        <Triangle simulated="0" moving="0" group="1" />
+        <Line simulated="0" moving="0" group="1" />
+        <Point simulated="0" moving="0" group="1" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" color="blue" />
-            <Object type="IdentityMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" color="blue" />
+            <IdentityMapping object1="../.." object2="Visual" />
         </Node>
     </Node>
     <Node name="SquareCloth1">
-        <Object type="EulerImplicit" rayleighMass="0.05" />
-        <Object type="CGLinearSolver" iterations="10" threshold="0.000001" />
-        <Object type="RegularGrid" nx="15" ny="1" nz="15" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
-        <Object type="MechanicalObject" />
-        <Object type="UniformMass" totalmass="100" />
-        <Object type="BoxConstraint" box="-12.1 7 11.9 -9.9 7 12.1    9.9 7 11.9 12.1 7 12.1" />
-        <Object type="MeshSpringForceField" name="Springs" stiffness="1000" damping="0" />
-        <Object type="QuadBendingSprings" name="Bend" stiffness="2000" damping="1" />
-        <Object type="RotationFinder" showRotations="true" axisToFlip="1" />
-        <Object type="PrecomputedConstraintCorrection" rotations="1" />
+        <EulerImplicit rayleighMass="0.05" />
+        <CGLinearSolver iterations="10" threshold="0.000001" />
+        <RegularGrid nx="15" ny="1" nz="15" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+        <MechanicalObject />
+        <UniformMass totalmass="100" />
+        <BoxConstraint box="-12.1 7 11.9 -9.9 7 12.1    9.9 7 11.9 12.1 7 12.1" />
+        <MeshSpringForceField name="Springs" stiffness="1000" damping="0" />
+        <QuadBendingSprings name="Bend" stiffness="2000" damping="1" />
+        <RotationFinder showRotations="true" axisToFlip="1" />
+        <PrecomputedConstraintCorrection rotations="1" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" color="green" />
-            <Object type="IdentityMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" color="green" />
+            <IdentityMapping object1="../.." object2="Visual" />
         </Node>
-        <Object type="Point" group="2" />
+        <Point group="2" />
     </Node>
 </Node>

@@ -1,19 +1,19 @@
 <Node name="TorusRigid">
-	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
-	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001"  />
-	<Object type="MechanicalObject" template="Rigid"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  />
-	<Object type="UniformMass" />
+	<EulerImplicitSolver rayleighStiffness="0.01" />
+	<CGLinearSolver iterations="25" threshold="0.00000001"  />
+	<MechanicalObject template="Rigid"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  />
+	<UniformMass />
 	<Node name="Visu">
-		<Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="1.0"/>
-		<Object type="RigidMapping" object1="../.." object2="Visual" />
+		<OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="1.0"/>
+		<RigidMapping object1="../.." object2="Visual" />
 	</Node>
 	<Node name="Surf2">
-		<Object type="MeshObjLoader" name="meshLoader" filename="mesh/torus_for_collision.obj"/>
-		<Object type="Mesh" src="@meshLoader" />
-		<Object type="MechanicalObject" scale="1.0" />
-		<Object type="Triangle" />
-		<Object type="Line" />
-		<Object type="Point" />
-		<Object type="RigidMapping" />
+		<MeshObjLoader name="meshLoader" filename="mesh/torus_for_collision.obj"/>
+		<Mesh src="@meshLoader" />
+		<MechanicalObject scale="1.0" />
+		<Triangle />
+		<Line />
+		<Point />
+		<RigidMapping />
 	</Node>
 </Node>

@@ -15,7 +15,7 @@
         <MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true" />
         <EdgeSetController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" />
         <FixedConstraint name="FixedConstraint" indices="0" />
-        <Object type="UniformMass" mass="1 1 0.1 0 0 0 0.1 0 0 0 0.1" printLog="false" /> 
+        <UniformMass mass="1 1 0.1 0 0 0 0.1 0 0 0 0.1" printLog="false" /> 
 
         <BeamFEMForceField name="FEM" radius="0.1" youngModulus="50000000" />
     </Node>

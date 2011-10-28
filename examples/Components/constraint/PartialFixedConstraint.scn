@@ -1,28 +1,28 @@
 <Node name="root" dt="0.02">
-    <!-- <Object type="Simulation" name="Simulation" /> -->
+    <!-- <Simulation name="Simulation" /> -->
     <VisualStyle displayFlags="showBehaviorModels" />
-    <Object type="CollisionPipeline" verbose="0" name="CollisionPipeline" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="CollisionResponse" response="default" name="collision response" />
-    <!--<Object type="CollisionGroup" />-->
+    <CollisionPipeline verbose="0" name="CollisionPipeline" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" name="collision response" />
+    <!--<CollisionGroup />-->
     <Node name="Liver">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" rayleighMass="0" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MeshGmshLoader" name="loader" filename="mesh/liver.msh" />
-        <Object type="Mesh" src="@loader" />
-        <Object type="MechanicalObject" src="@loader" template="Vec3f" name="dofs" />
-        <Object type="UniformMass" name="mass" mass="0.05" />
-        <Object type="TetrahedronFEMForceField" name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
-        <Object type="PartialFixedConstraint" name="partialFixedConstraint" indices="3 39 64" fixedDirections="0 1 1" />
+        <EulerImplicit name="cg_odesolver" printLog="false" rayleighMass="0" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
+        <Mesh src="@loader" />
+        <MechanicalObject src="@loader" template="Vec3f" name="dofs" />
+        <UniformMass name="mass" mass="0.05" />
+        <TetrahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
+        <PartialFixedConstraint name="partialFixedConstraint" indices="3 39 64" fixedDirections="0 1 1" />
         <Node name="Visu">
-            <Object type="OglModel" name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
-            <Object type="BarycentricMapping" object1="../.." object2="VisualModel" name="visual mapping" />
+            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
+            <BarycentricMapping object1="../.." object2="VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject position="@[-1].position" />
-            <Object type="Sphere" listRadius="@[-2].listRadius" />
-            <Object type="BarycentricMapping" name="sphere mapping" />
+            <Sphere listRadius="@[-2].listRadius" />
+            <BarycentricMapping name="sphere mapping" />
         </Node>
     </Node>
 </Node>

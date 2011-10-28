@@ -23,9 +23,9 @@ $indices2 .= $i2 . " ";
 			zmin="-20" zmax="20" />
 		<MechanicalObject />
 		<!--
-		<Object type="Triangle" simulated="0" moving="0" />
-		<Object type="Line" simulated="0" moving="0" />
-		<Object type="Point" simulated="0" moving="0" />
+		<Triangle simulated="0" moving="0" />
+		<Line simulated="0" moving="0" />
+		<Point simulated="0" moving="0" />
 			  -->
 		<Node name="Visu">
 			<OglModel name="Visual" color="red"/>

@@ -1,11 +1,11 @@
 <Node name="root" dt="0.02">
-    <!-- <Object type="Simulation" name="Simulation" /> -->
+    <!-- <Simulation name="Simulation" /> -->
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" name="collision response" />
-    <!--<Object type="CollisionGroup" />-->
+    <!--<CollisionGroup />-->
     <Node name="Liver" depend="topo dofs">
-        <!--<Object type="CGImplicit" iterations="25"/>-->
+        <!--<CGImplicit iterations="25"/>-->
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
@@ -29,16 +29,16 @@
             <BarycentricMapping name="sphere mapping" />
         </Node>
     </Node>
-    <Object type="OglModel" name="VisualModel" filename="mesh/dragon.obj" color="green" dz="-25.0" scale="0.3 0.3 0.3" />
-    <Object type="OglModel" name="FloorV" filename="mesh/floor.obj" color="0.5 0.5 0.5" dy="-2.5" />
-    <!--<Object type="LightManager" listening="true"/>
-	<Object type="SpotLight" position="0 30 0.0001" direction="0 -1 0" />
-	<Object type="SpotLight" position="0 5 15" direction="0 0 -1" />
-	<Object type="OglShadowShader"/>-->
-    <Object type="OglShader" name="dof" passive="true" vertFilename="shaders/depthOfField.vert" fragFilename="shaders/depthOfField.frag" />
-    <Object type="OglFloatVariable" id="blurIntensity" value="0.2" />
-    <Object type="OglFloatVariable" id="focusDistance" value="0.9" />
-    <Object type="OglFloatVariable" id="focusLength" value="0.05" />
-    <Object type="OglIntVariable" id="showDepthMap" value="0" />
-    <Object type="PostProcessManager" zFar="1000" />
+    <OglModel name="VisualModel" filename="mesh/dragon.obj" color="green" dz="-25.0" scale="0.3 0.3 0.3" />
+    <OglModel name="FloorV" filename="mesh/floor.obj" color="0.5 0.5 0.5" dy="-2.5" />
+    <!--<LightManager listening="true"/>
+	<SpotLight position="0 30 0.0001" direction="0 -1 0" />
+	<SpotLight position="0 5 15" direction="0 0 -1" />
+	<OglShadowShader/>-->
+    <OglShader name="dof" passive="true" vertFilename="shaders/depthOfField.vert" fragFilename="shaders/depthOfField.frag" />
+    <OglFloatVariable id="blurIntensity" value="0.2" />
+    <OglFloatVariable id="focusDistance" value="0.9" />
+    <OglFloatVariable id="focusLength" value="0.05" />
+    <OglIntVariable id="showDepthMap" value="0" />
+    <PostProcessManager zFar="1000" />
 </Node>

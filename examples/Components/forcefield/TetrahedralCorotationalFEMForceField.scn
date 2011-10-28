@@ -2,28 +2,28 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
     <VisualStyle displayFlags="showBehaviorModels" />
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="CollisionResponse" response="default" />
-    <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <Object type="CollisionGroup" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionGroup />
     <Node name="TT">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="MeshGmshLoader" filename="mesh/cylinder.msh" name="loader" />
-        <Object type="MechanicalObject" src="@loader" name="Volume" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader filename="mesh/cylinder.msh" name="loader" />
+        <MechanicalObject src="@loader" name="Volume" />
         <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
-        <Object type="DiagonalMass" massDensity="0.5" />
-        <Object type="FixedPlaneConstraint" direction="0 0 1" dmin="-0.1" dmax="0.1" />
-        <Object type="FixedConstraint" indices="0" />
-        <Object type="TetrahedralCorotationalFEMForceField" name="CFEM" youngModulus="360" poissonRatio="0.3" method="large" />
+        <DiagonalMass massDensity="0.5" />
+        <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
+        <FixedConstraint indices="0" />
+        <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="360" poissonRatio="0.3" method="large" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" />
-            <Object type="Tetra2TriangleTopologicalMapping" object1="../../Container" object2="Container" />
-            <Object type="TriangleSet" />
+            <Tetra2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+            <TriangleSet />
             <Node name="Visu">
-                <Object type="OglModel" name="Visual" color="yellow" />
-                <Object type="IdentityMapping" object1="../../../Volume" object2="Visual" />
+                <OglModel name="Visual" color="yellow" />
+                <IdentityMapping object1="../../../Volume" object2="Visual" />
             </Node>
         </Node>
     </Node>

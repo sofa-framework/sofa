@@ -1,27 +1,27 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="CollisionResponse" name="Response" />
-    <Object type="NewProximityIntersection" alarmDistance="0.002" contactDistance="0.001" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse name="Response" />
+    <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
     <Node name="SquareCloth1">
-        <Object type="EulerImplicit" name="cg_odesolver" printLog="false" />
-        <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="RegularGrid" nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
-        <Object type="MechanicalObject" />
-        <Object type="UniformMass" totalmass="100" />
-        <Object type="MeshSpringForceField" name="Springs" stiffness="1000" damping="0" />
-        <Object type="QuadBendingSprings" name="Bend" stiffness="2000" damping="1" />
-        <Object type="FixedConstraint" name="FixedConstraint" indices="0 19" />
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <RegularGrid nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+        <MechanicalObject />
+        <UniformMass totalmass="100" />
+        <MeshSpringForceField name="Springs" stiffness="1000" damping="0" />
+        <QuadBendingSprings name="Bend" stiffness="2000" damping="1" />
+        <FixedConstraint name="FixedConstraint" indices="0 19" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" color="green" />
-            <Object type="IdentityMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" color="green" />
+            <IdentityMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
-            <Object type="MechanicalObject" />
-            <Object type="RegularGrid" nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
-            <Object type="IdentityMapping" />
-            <Object type="Triangle" />
+            <MechanicalObject />
+            <RegularGrid nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+            <IdentityMapping />
+            <Triangle />
         </Node>
     </Node>
 </Node>

@@ -1,110 +1,110 @@
 <Node name="root" dt="0.005">
     <VisualStyle displayFlags="showForceFields" />
-    <Object type="CollisionPipeline" verbose="0" />
-    <Object type="BruteForceDetection" name="N2" />
-    <Object type="CollisionResponse" name="Response" response="default" />
-    <Object type="CollisionGroup" name="Group" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse name="Response" response="default" />
+    <CollisionGroup name="Group" />
     <Node name="M1">
-        <Object type="EulerImplicit" />
-        <Object type="CGLinearSolver" iterations="20" />
-        <Object type="MechanicalObject" dx="0" dy="-10.5" dz="0" />
-        <Object type="UniformMass" mass="0.37" />
-        <Object type="RegularGrid" nx="3" ny="3" nz="3" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
-        <Object type="RegularGridSpringForceField" name="Springs" stiffness="800" damping="8" />
+        <EulerImplicit />
+        <CGLinearSolver iterations="20" />
+        <MechanicalObject dx="0" dy="-10.5" dz="0" />
+        <UniformMass mass="0.37" />
+        <RegularGrid nx="3" ny="3" nz="3" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
+        <RegularGridSpringForceField name="Springs" stiffness="800" damping="8" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" filename="mesh/smCube27.obj" color="yellow" dx="0" dy="-10.5" dz="0" />
-            <Object type="BarycentricMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" filename="mesh/smCube27.obj" color="yellow" dx="0" dy="-10.5" dz="0" />
+            <BarycentricMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
             <MechanicalObject translation="0 -10.5 0" position="@[-1].position" />
-            <Object type="Sphere" listRadius="@[-2].listRadius" />
-            <Object type="BarycentricMapping" />
+            <Sphere listRadius="@[-2].listRadius" />
+            <BarycentricMapping />
         </Node>
     </Node>
     <Node name="M2">
-        <Object type="EulerImplicit" />
-        <Object type="CGLinearSolver" iterations="20" />
-        <Object type="MechanicalObject" dx="0" dy="0" dz="0" />
-        <Object type="UniformMass" mass="0.37" />
-        <Object type="RegularGrid" nx="4" ny="4" nz="4" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
-        <Object type="RegularGridSpringForceField" name="Springs" stiffness="560" damping="5.6" />
+        <EulerImplicit />
+        <CGLinearSolver iterations="20" />
+        <MechanicalObject dx="0" dy="0" dz="0" />
+        <UniformMass mass="0.37" />
+        <RegularGrid nx="4" ny="4" nz="4" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
+        <RegularGridSpringForceField name="Springs" stiffness="560" damping="5.6" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" filename="mesh/smCube27.obj" color="#ff8000" dx="0" dy="0" dz="0" />
-            <Object type="BarycentricMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" filename="mesh/smCube27.obj" color="#ff8000" dx="0" dy="0" dz="0" />
+            <BarycentricMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
             <MechanicalObject position="@[-1].position" />
-            <Object type="Sphere" listRadius="@[-2].listRadius" />
-            <Object type="BarycentricMapping" />
+            <Sphere listRadius="@[-2].listRadius" />
+            <BarycentricMapping />
         </Node>
     </Node>
     <Node name="M3">
-        <Object type="EulerImplicit" />
-        <Object type="CGLinearSolver" iterations="20" />
-        <Object type="MechanicalObject" dx="0" dy="10.5" dz="-4" />
-        <Object type="UniformMass" mass="0.37" />
-        <Object type="RegularGrid" nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
-        <Object type="RegularGridSpringForceField" name="Springs" stiffness="400" damping="4" />
+        <EulerImplicit />
+        <CGLinearSolver iterations="20" />
+        <MechanicalObject dx="0" dy="10.5" dz="-4" />
+        <UniformMass mass="0.37" />
+        <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
+        <RegularGridSpringForceField name="Springs" stiffness="400" damping="4" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" filename="mesh/smCube27.obj" color="red" dx="0" dy="10.5" dz="-4" />
-            <Object type="BarycentricMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" filename="mesh/smCube27.obj" color="red" dx="0" dy="10.5" dz="-4" />
+            <BarycentricMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
             <MechanicalObject position="@[-1].position" dx="0" dy="10.5" dz="-4" />
-            <Object type="Sphere" listRadius="@[-2].listRadius" />
-            <Object type="BarycentricMapping" />
+            <Sphere listRadius="@[-2].listRadius" />
+            <BarycentricMapping />
         </Node>
     </Node>
     <Node name="M4">
-        <Object type="EulerImplicit" />
-        <Object type="CGLinearSolver" iterations="20" />
-        <Object type="MechanicalObject" dx="0" dy="21" dz="0" />
-        <Object type="UniformMass" mass="0.37" />
-        <Object type="RegularGrid" nx="6" ny="6" nz="6" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
-        <Object type="RegularGridSpringForceField" name="Springs" stiffness="280" damping="2.8" />
+        <EulerImplicit />
+        <CGLinearSolver iterations="20" />
+        <MechanicalObject dx="0" dy="21" dz="0" />
+        <UniformMass mass="0.37" />
+        <RegularGrid nx="6" ny="6" nz="6" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
+        <RegularGridSpringForceField name="Springs" stiffness="280" damping="2.8" />
         <Node name="Visu">
-            <Object type="OglModel" name="Visual" filename="mesh/smCube27.obj" color="#801080" dx="0" dy="21" dz="0" />
-            <Object type="BarycentricMapping" object1="../.." object2="Visual" />
+            <OglModel name="Visual" filename="mesh/smCube27.obj" color="#801080" dx="0" dy="21" dz="0" />
+            <BarycentricMapping object1="../.." object2="Visual" />
         </Node>
         <Node name="Surf">
             <SphereLoader filename="mesh/smCube27b.sph" />
             <MechanicalObject position="@[-1].position" translation="0 21 0" />
-            <Object type="Sphere" listRadius="@[-2].listRadius" />
-            <Object type="BarycentricMapping" />
+            <Sphere listRadius="@[-2].listRadius" />
+            <BarycentricMapping />
         </Node>
     </Node>
     <!--
 	<Node name="M5">
-		<Object type="EulerImplicit" />
-		<Object type="CGLinearSolver" iterations="20"/>
-		<Object type="MechanicalObject" dx="-4" dy="31.5" dz="-4"/>
-		<Object type="UniformMass" mass="0.37"/>
-		<Object type="RegularGrid"
+		<EulerImplicit />
+		<CGLinearSolver iterations="20"/>
+		<MechanicalObject dx="-4" dy="31.5" dz="-4"/>
+		<UniformMass mass="0.37"/>
+		<RegularGrid
 			nx="7" ny="7" nz="7"
 			xmin="-3.5" xmax="3.5"
 			ymin="-3.5" ymax="3.5"
 			zmin="-3.5" zmax="3.5"
 			/>
-		<Object type="RegularGridSpringForceField" name="Springs" stiffness="200" damping="2" />
+		<RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
 		<Node name="Visu">
-			<Object type="OglModel" name="Visual" filename="mesh/smCube27.obj" color="cyan" />
-			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+			<OglModel name="Visual" filename="mesh/smCube27.obj" color="cyan" />
+			<BarycentricMapping object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
 			<SphereLoader filename="mesh/smCube27b.sph" />
 			<MechanicalObject position="@[-1].position" />
-			<Object type="Sphere" listRadius="@[-2].position" />
-			<Object type="BarycentricMapping" />
+			<Sphere listRadius="@[-2].position" />
+			<BarycentricMapping />
 		</Node>
 	</Node>
 	-->
     <SphereLoader filename="mesh/floor.sph" />
     <MechanicalObject position="@[-1].position" dy="-20" />
-    <Object type="Sphere" name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" />
+    <Sphere name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" />
     <Node>
-        <Object type="OglModel" name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" dy="-20" />
+        <OglModel name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" dy="-20" />
     </Node>
 </Node>

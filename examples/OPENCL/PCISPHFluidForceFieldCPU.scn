@@ -4,30 +4,30 @@
 		<!--<CentralDifferenceSolver/>-->
         <EulerImplicitSolver/>
         <CGLinearSolver/>
-<!---->		<Object type="MechanicalObject" name="MModel" template="Vec3f"/>  <-- -->
-<!-- 		<Object type="MechanicalObject" name="MModel" template="Vec3f" position="0 6 0" /> -->
+<!---->		<MechanicalObject name="MModel" template="Vec3f"/>  <-- -->
+<!-- 		<MechanicalObject name="MModel" template="Vec3f" position="0 6 0" /> -->
 		<!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
-<!---->		<Object type="RegularGrid"
+<!---->		<RegularGrid
 			nx="3" ny="7" nz="3"
 			xmin="-1.5" xmax="1.5"
 			ymin="-1.5" ymax="6.0"
 			zmin="-1.5" zmax="1.5"
 		/>
 <!---->
-		<Object type="UniformMass" name="M1" mass="1" />
-		<Object type="SpatialGridContainer" cellWidth="1.5" />
+		<UniformMass name="M1" mass="1" />
+		<SpatialGridContainer cellWidth="1.5" />
 		<!-- The following force fields handle collision with walls and an inclined floor -->
-		<Object type="PlaneForceField" normal="1.0 0 0" d="-4.0"/>
-		<Object type="PlaneForceField" normal="-1.0 0 0" d="-4.0"/>
-		<Object type="PlaneForceField" normal="0.5 1.0 0.1" d="-4.0"/>
-		<Object type="PlaneForceField" normal="0 0 1.0" d="-4.0"/>
-		<Object type="PlaneForceField" normal="0 0 -1.0" d="-4.0"/>
+		<PlaneForceField normal="1.0 0 0" d="-4.0"/>
+		<PlaneForceField normal="-1.0 0 0" d="-4.0"/>
+		<PlaneForceField normal="0.5 1.0 0.1" d="-4.0"/>
+		<PlaneForceField normal="0 0 1.0" d="-4.0"/>
+		<PlaneForceField normal="0 0 -1.0" d="-4.0"/>
 
-<Object type="SPHFluidForceField" radius="0.75" density="3.71362" viscosity="10" pressure="1000" surfaceTension="-1000" usePCISPH="true"/>
+<SPHFluidForceField radius="0.75" density="3.71362" viscosity="10" pressure="1000" surfaceTension="-1000" usePCISPH="true"/>
 <!--
 		<Node id="Visual">
-			<Object type="OglModel" name="VModel" color="blue" useVBO="false"/>
-			<Object type="SPHFluidSurfaceMapping" name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.5" radius="0.75" step="0.25"/>
+			<OglModel name="VModel" color="blue" useVBO="false"/>
+			<SPHFluidSurfaceMapping name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.5" radius="0.75" step="0.25"/>
 		</Node>
 -->
 	</Node>

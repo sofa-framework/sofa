@@ -114,14 +114,14 @@ if($gz0[$i]==$lz0[$i]){
 		</Node>
 <!--
 		<Node name="Surf">
-			<Object type="MechanicalObject" />
-			<Object type="RegularGrid"
+			<MechanicalObject />
+			<RegularGrid
 				nx="<?=$NZ?>" ny="1" nz="<?=$NZ/$elems?>"
 				xmin="12" xmax="-12"
 				ymin="7" ymax="7"
 			zmin="<?=-12+((24/$elems)*($i))?>" zmax="<?=(-12+(24/$elems)*($i+1))?>" />
-			<Object type="IdentityMapping" />
-			<Object type="Triangle" />
+			<IdentityMapping />
+			<Triangle />
 		</Node>
 -->
 </Node>

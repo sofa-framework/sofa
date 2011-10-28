@@ -1,23 +1,23 @@
 <Node name="root" dt="0.005">
-    <Object type="Gravity" name="G" gravity="0.0 -9.81 0" />
-    <Object type="CollisionPipeline" name="pipeline" depth="6" verbose="0" />
-    <Object type="BruteForceDetection" name="detection" />
-    <Object type="CollisionResponse" name="response" response="default" />
-    <Object type="DiscreteIntersection" name="proximity" />
+    <Gravity name="G" gravity="0.0 -9.81 0" />
+    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <BruteForceDetection name="detection" />
+    <CollisionResponse name="response" response="default" />
+    <DiscreteIntersection name="proximity" />
     <Node name="Tooth">
         <Node name="VisualModel">
-            <Object type="OglModel" name="ToothVisualModel" fileMesh="mesh/liver-smooth.obj" color="white" />
+            <OglModel name="ToothVisualModel" fileMesh="mesh/liver-smooth.obj" color="white" />
         </Node>
         <Node name="CollisionModel">
-            <Object type="DistanceGrid" fileRigidDistanceGrid="mesh/liver-smooth.obj" scale="1.0" usePoints="0" proximity="0.08" contactStiffness="50.0" contactFriction="0.0" />
+            <DistanceGrid fileRigidDistanceGrid="mesh/liver-smooth.obj" scale="1.0" usePoints="0" proximity="0.08" contactStiffness="50.0" contactFriction="0.0" />
         </Node>
     </Node>
     <Node name="SquareGravity">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <Object type="RegularGrid" nx="50" ny="1" nz="50" xmin="-9" xmax="5" ymin="7" ymax="7" zmin="-7" zmax="7" name="Container" />
-        <Object type="MechanicalObject" name="dofs" />
-        <Object type="UniformMass" totalmass="100" />
+        <RegularGrid nx="50" ny="1" nz="50" xmin="-9" xmax="5" ymin="7" ymax="7" zmin="-7" zmax="7" name="Container" />
+        <MechanicalObject name="dofs" />
+        <UniformMass totalmass="100" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" />
             <Quad2TriangleTopologicalMapping object1="../../Container" object2="Container" />
