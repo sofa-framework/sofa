@@ -23,6 +23,7 @@ HEADERS += \
 	BaseMapping.h \
 	BaseState.h \
 	State.h \
+	State.inl \
 	BehaviorModel.h \
 	CollisionElement.h \
 	CollisionModel.h \
@@ -178,6 +179,7 @@ SOURCES += \
 	Multi2Mapping.cpp \
 	CollisionModel.cpp \
 	DataEngine.cpp \
+	State.cpp \
 	behavior/BaseAnimationLoop.cpp \
 	behavior/LinearSolver.cpp \
 	behavior/MultiMatrix.cpp \
@@ -195,6 +197,7 @@ SOURCES += \
 	behavior/BaseForceField.cpp \
 	behavior/BaseLMConstraint.cpp \
 	behavior/BaseMechanicalState.cpp \
+	behavior/MechanicalState.cpp \
 	behavior/ForceField.cpp \
 	behavior/LMConstraint.cpp \
 	behavior/Mass.cpp \

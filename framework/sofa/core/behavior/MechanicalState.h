@@ -177,6 +177,26 @@ public:
     }
 };
 
+#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec3dTypes>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec2dTypes>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec1dTypes>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec6dTypes>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Rigid3dTypes>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Rigid2dTypes>;
+
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec3fTypes>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec2fTypes>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec1fTypes>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec6fTypes>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Rigid3fTypes>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Rigid2fTypes>;
+
+extern template class SOFA_CORE_API MechanicalState<defaulttype::ExtVec3dTypes>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::ExtVec3fTypes>;
+
+#endif
+
 } // namespace behavior
 
 } // namespace core
