@@ -131,6 +131,9 @@ public:
     /// Read the command line
     virtual bool read( const std::string& str ) = 0;
 
+    /// Update pointers in case the pointed-to objects have appeared
+    virtual void updateLinks() = 0;
+
     /// Print the value of the associated variable
     virtual void printValue( std::ostream& ) const;
 

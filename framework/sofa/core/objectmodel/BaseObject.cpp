@@ -72,6 +72,26 @@ BaseObject::~BaseObject()
     }
 }
 
+// This method insures that context is never NULL (using BaseContext::getDefault() instead)
+// and that all slaves of an object share its context
+void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
+{
+    if (!after) after = BaseContext::getDefault();
+    if (before == after) return;
+    for (unsigned int i = 0; i < l_slaves.size(); ++i) l_slaves.get(i)->l_context.set(after);
+    // update links
+    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+        (*iLink)->updateLinks();
+}
+
+/// This method insures that slaves objects have master and context links set correctly
+void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add)
+{
+    if (!ptr) return;
+    if (add) { ptr->l_master.set(this); ptr->l_context.set(getContext()); }
+    else     { ptr->l_master.reset(); ptr->l_context.reset(); }
+}
+
 void BaseObject::parse( BaseObjectDescription* arg )
 {
     if (arg->getAttribute("src"))
@@ -162,7 +182,10 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 
 void* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link)
 {
-    return this->getContext()->findLinkDestClass(destType, path, link);
+    if (this->getContext() == BaseContext::getDefault())
+        return NULL;
+    else
+        return this->getContext()->findLinkDestClass(destType, path, link);
 }
 
 #ifdef SOFA_SMP

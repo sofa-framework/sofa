@@ -110,7 +110,7 @@ public:
         return true;
     }
     static const TDestPtr& get(const T& v) { return v.ptr; }
-    static void set(T& v, const TDestPtr& ptr) { if (ptr != v.ptr) v.path.clear(); v.ptr = ptr; }
+    static void set(T& v, const TDestPtr& ptr) { if (v.ptr && ptr != v.ptr) v.path.clear(); v.ptr = ptr; }
     static void setPath(T& v, const std::string& name) { v.path = name; }
 };
 
@@ -492,6 +492,7 @@ public:
         return ok;
     }
 
+
     /// Check that a given path is valid, that the pointed object exists and is of the right type
     template <class TContext>
     static bool CheckPath( const std::string& path, TContext* context)
@@ -608,6 +609,33 @@ public:
             ok &= CheckPath(path, context);
         }
         return ok;
+    }
+
+    /// Update pointers in case the pointed-to objects have appeared
+    virtual void updateLinks()
+    {
+        if (!this->m_owner) return;
+        const int aspect = core::ExecParams::currentAspect();
+        unsigned int n = this->size();
+        for (unsigned int i=0; i<n; ++i)
+        {
+            ValueType& value = this->m_value[aspect][i];
+            std::string path;
+            if (TraitsValueType::path(value, path))
+            {
+                DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
+                if (!ptr)
+                {
+                    TraitsFindDest::findLinkDest(this->m_owner, ptr, path, this);
+                    if (ptr)
+                    {
+                        DestPtr v = ptr;
+                        TraitsValueType::set(value,v);
+                        this->added(v, i);
+                    }
+                }
+            }
+        }
     }
 
     DestType* get(unsigned int index, const core::ExecParams* params = 0) const
@@ -733,6 +761,25 @@ public:
         if (this->m_owner)
             TraitsFindDest::findLinkDest(this->m_owner, ptr, path, this);
         set(ptr, path);
+    }
+
+    /// Update pointers in case the pointed-to objects have appeared
+    virtual void updateLinks()
+    {
+        if (!this->m_owner) return;
+        const int aspect = core::ExecParams::currentAspect();
+        ValueType& value = this->m_value[aspect].get();
+        std::string path;
+        if (TraitsValueType::path(value, path))
+        {
+            DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
+            if (!ptr)
+            {
+                TraitsFindDest::findLinkDest(this->m_owner, ptr, path, this);
+                if (ptr)
+                    set(ptr, path);
+            }
+        }
     }
 
 #ifndef SOFA_DEPRECATE_OLD_API

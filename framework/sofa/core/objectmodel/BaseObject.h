@@ -231,20 +231,10 @@ protected:
 
     // This method insures that context is never NULL (using BaseContext::getDefault() instead)
     // and that all slaves of an object share its context
-    void changeContextLink(BaseContext* before, BaseContext*& after)
-    {
-        if (!after) after = BaseContext::getDefault();
-        if (before == after) return;
-        for (unsigned int i = 0; i < l_slaves.size(); ++i) l_slaves.get(i)->l_context.set(after);
-    }
+    void changeContextLink(BaseContext* before, BaseContext*& after);
 
     /// This method insures that slaves objects have master and context links set correctly
-    void changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add)
-    {
-        if (!ptr) return;
-        if (add) { ptr->l_master.set(this); ptr->l_context.set(getContext()); }
-        else     { ptr->l_master.reset(); ptr->l_context.reset(); }
-    }
+    void changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add);
 
     // BaseNode can set the context of its own objects
     friend class BaseNode;
