@@ -124,6 +124,7 @@ declare(sofa_component_misc_dev, modules/sofa/component/sofa_component_misc_dev.
 
 declare(sofa_component, modules/sofa/component/sofa_component.pro, sofa_component_base sofa_component_common sofa_component_general sofa_component_advanced sofa_component_misc)
 
+declare(sofa_component_dev, modules/sofa/component/sofa_component_dev.pro, sofa_component_advanced_dev sofa_component_misc_dev)
 
 declare(sofagpucuda, modules/sofa/gpu/cuda/cuda.pro, sofahelper sofa_engine sofa_sph_fluid cuda)
 
@@ -258,6 +259,7 @@ contains(DEFINES, SOFA_DEV) {
 	contains(DEFINES, SOFA_HAVE_CSPARSE) {
 		enable(sofa_sparse_solver)
 	}
+        enable(sofa_component_dev)
 	enable(sofa_component_advanced_dev)
 	enable(sofa_component_misc_dev)
 	enable(sofa_advanced_interaction)
