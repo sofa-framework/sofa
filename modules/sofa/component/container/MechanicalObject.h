@@ -77,7 +77,7 @@ class MechanicalObject : public sofa::core::behavior::MechanicalState<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(MechanicalObject, DataTypes),SOFA_TEMPLATE(sofa::core::behavior::MechanicalState, DataTypes));
 
-    typedef MechanicalState<DataTypes>      Inherited;
+    typedef sofa::core::behavior::MechanicalState<DataTypes>      Inherited;
     typedef typename Inherited::VMultiOp    VMultiOp;
     typedef typename DataTypes::Real        Real;
     typedef typename DataTypes::Coord       Coord;
