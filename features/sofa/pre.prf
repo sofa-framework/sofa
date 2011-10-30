@@ -219,9 +219,9 @@ contains(CONFIGDEBUG, profile) {
 		MOC_DIR = MOC
 	}
 	
-#	isEmpty(UI_DIR) {
-#		UI_DIR = UI
-#	}
+	isEmpty(UI_DIR) {
+		UI_DIR = UI
+	}
 } else {
 	isEmpty(OBJECTS_DIR): OBJECTS_DIR = .
 }
