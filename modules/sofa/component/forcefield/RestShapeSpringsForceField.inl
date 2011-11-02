@@ -170,20 +170,20 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
         recomputeIndices();
     }
 
-    Springs_dir.resize(m_indices.size() );
+    //Springs_dir.resize(m_indices.size() );
     if ( k.size()!= m_indices.size() )
     {
         //sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
+        const Real k0 = k[0];
 
         for (unsigned int i=0; i<m_indices.size(); i++)
         {
             const unsigned int index = m_indices[i];
             const unsigned int ext_index = m_ext_indices[i];
-
             Deriv dx = p1[index] - p0[ext_index];
-            Springs_dir[i] = p1[index] - p0[ext_index];
-            Springs_dir[i].normalize();
-            f1[index] -=  dx * k[0] ;
+            //Springs_dir[i] = p1[index] - p0[ext_index];
+            //Springs_dir[i].normalize();
+            f1[index] -=  dx * k0 ;
 
             //	if (dx.norm()>0.00000001)
             //		std::cout<<"force on point "<<index<<std::endl;
@@ -200,9 +200,9 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
             const unsigned int ext_index = m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
-            Springs_dir[i] = p1[index] - p0[ext_index];
-            Springs_dir[i].normalize();
-            f1[index] -=  dx * k[i] ;
+            //Springs_dir[i] = p1[index] - p0[ext_index];
+            //Springs_dir[i].normalize();
+            f1[index] -=  dx * k[i];
 
             //	if (dx.norm()>0.00000001)
             //		std::cout<<"force on point "<<index<<std::endl;
@@ -227,11 +227,12 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const core::MechanicalPara
 
     if (k.size()!= m_indices.size() )
     {
-        sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
+        //sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
+        const Real k0 = k[0];
 
         for (unsigned int i=0; i<m_indices.size(); i++)
         {
-            df1[m_indices[i]] -=  dx1[m_indices[i]] * k[0] * kFactor;
+            df1[m_indices[i]] -=  dx1[m_indices[i]] * k0 * kFactor;
         }
     }
     else
@@ -267,6 +268,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
 
     if (k.size()!= m_indices.size() )
     {
+        const Real k0 = k[0];
         for (unsigned int index = 0; index < m_indices.size(); index++)
         {
             curIndex = m_indices[index];
@@ -279,7 +281,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
                 //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[0]);
                 //	}
 
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[0]);
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);
             }
         }
     }
@@ -297,7 +299,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
                 //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[curIndex]);
                 //	}
 
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[i]);
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
             }
         }
     }
