@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP
+
 #include <sofa/component/constraintset/SlidingConstraint.inl>
 
 #include <sofa/defaulttype/Vec3Types.h>
@@ -51,10 +53,10 @@ int SlidingConstraintClass = core::RegisterObject("TODO-SlidingConstraint")
         ;
 
 #ifndef SOFA_FLOAT
-template class SlidingConstraint<Vec3dTypes>;
+template class SOFA_ADVANCED_CONSTRAINT_API SlidingConstraint<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SlidingConstraint<Vec3fTypes>;
+template class SOFA_ADVANCED_CONSTRAINT_API SlidingConstraint<Vec3fTypes>;
 #endif
 
 } // namespace constraintset

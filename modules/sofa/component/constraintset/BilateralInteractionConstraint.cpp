@@ -275,11 +275,11 @@ SOFA_DECL_CLASS(BilateralInteractionConstraint)
 
 int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralInteractionConstraint")
 #ifndef SOFA_FLOAT
-        .add< BilateralInteractionConstraint<Vec3dTypes> >(true)
+        .add< BilateralInteractionConstraint<Vec3dTypes> >()
         .add< BilateralInteractionConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< BilateralInteractionConstraint<Vec3fTypes> >(true)
+        .add< BilateralInteractionConstraint<Vec3fTypes> >()
         .add< BilateralInteractionConstraint<Rigid3fTypes> >()
 #endif
         ;
