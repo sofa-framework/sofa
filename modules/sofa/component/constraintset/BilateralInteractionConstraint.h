@@ -187,7 +187,7 @@ protected:
 
     Data<helper::vector<int> > m1;
     Data<helper::vector<int> > m2;
-    Data<unsigned int> activateAtIteration;
+    Data<int> activateAtIteration;
     Data<bool> merge;
     Data<bool> derivative;
     std::vector<double> prevForces;
@@ -199,35 +199,42 @@ protected:
 
 
     bool activated;
+    int iteration;
 
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherit(object1, object2)
         , m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
-        , activateAtIteration( initData(&activateAtIteration, (unsigned int)0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
+        , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
         , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
         , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
+        , activated(true), iteration(0)
     {
+        this->f_listening.setValue(true);
     }
 
     BilateralInteractionConstraint(MechanicalState* object)
         : Inherit(object, object)
         , m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
-        , activateAtIteration( initData(&activateAtIteration, (unsigned int)0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
+        , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
         , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
         , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
+        , activated(true), iteration(0)
     {
+        this->f_listening.setValue(true);
     }
 
     BilateralInteractionConstraint()
         : m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
-        , activateAtIteration( initData(&activateAtIteration, (unsigned int)0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
+        , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
+        , activated(true), iteration(0)
         , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
         , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
     {
+        this->f_listening.setValue(true);
     }
 
     virtual ~BilateralInteractionConstraint()
@@ -236,10 +243,7 @@ protected:
 public:
     virtual void init();
 
-    virtual void reinit()
-    {
-        init();
-    }
+    virtual void reinit();
 
     virtual void reset()
     {
