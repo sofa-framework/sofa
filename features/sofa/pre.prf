@@ -192,8 +192,14 @@ build_pass {
 # Some configuration variables
 ########################################################################
 
+VERSION_NUM = 1_0
+
+win32 {
+	LIBSUFFIX = _$${VERSION_NUM}
+}
+
 contains(CONFIGDEBUG, debug) {
-	LIBSUFFIX = d
+	LIBSUFFIX = $${LIBSUFFIX}d
 	APPSUFFIX = d
 }
 
