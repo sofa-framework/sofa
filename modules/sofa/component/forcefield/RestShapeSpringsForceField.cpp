@@ -74,9 +74,23 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
         const unsigned int ext_index = m_ext_indices[i];
 
         // translation
-        Vec3d dx = p1[index].getCenter() - p0[ext_index].getCenter();
-        //std::cout<<"dx = "<< dx <<std::endl;
-        getVCenter(f1[index]) -=  dx * k[i] ;
+        if (i >= m_pivots.size())
+        {
+            Vec3d dx = p1[index].getCenter() - p0[ext_index].getCenter();
+            //std::cout<<"dx = "<< dx <<std::endl;
+            getVCenter(f1[index]) -=  dx * k[i] ;
+        }
+        else
+        {
+            CPos localPivot = p0[ext_index].getOrientation().inverseRotate(m_pivots[i] - p0[ext_index].getCenter());
+            //std::cout << "localPivot = " << localPivot << std::endl;
+            CPos rotatedPivot = p1[index].getOrientation().rotate(localPivot);
+            CPos pivot2 = p1[index].getCenter() + rotatedPivot;
+            CPos dx = pivot2 - m_pivots[i];
+            //std::cout << "dx = " << dx << std::endl;
+            getVCenter(f1[index]) -= dx * k[i] ;
+            //getVOrientation(f1[index]) -= cross(rotatedPivot, dx * k[i]);
+        }
 
         // rotation
         Quatd dq = p1[index].getOrientation() * p0[ext_index].getOrientation().inverse();
