@@ -230,9 +230,9 @@ protected:
         : m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
         , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
-        , activated(true), iteration(0)
         , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
         , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
+        , activated(true), iteration(0)
     {
         this->f_listening.setValue(true);
     }
