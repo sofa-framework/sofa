@@ -92,6 +92,12 @@ Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<unsigned int,6> > > DWC
 Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<int,8> > > DWClass_fixed_array8i("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<unsigned int,8> > > DWClass_fixed_array8u("default",true);
 
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::topology::Topology::Edge        > > DWClass_Edge       ("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::topology::Topology::Triangle    > > DWClass_Triangle   ("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::topology::Topology::Quad        > > DWClass_Quad       ("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::topology::Topology::Tetrahedron > > DWClass_Tetrahedron("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::topology::Topology::Hexahedron  > > DWClass_Hexahedron ("default",true);
+
 Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<float,1> > > DWClass_fixed_array1f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<double,1> > > DWClass_fixed_array1d("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<float,2> > > DWClass_fixed_array2f("default",true);

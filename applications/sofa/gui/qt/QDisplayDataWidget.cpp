@@ -54,6 +54,10 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
     }
 
+    const std::string valuetype = data_->getValueTypeString();
+    if (!valuetype.empty())
+        setToolTip(valuetype.c_str());
+
     DataWidget::CreatorArgument dwarg;
     dwarg.name =  data_->getName();
     dwarg.data = data_;
