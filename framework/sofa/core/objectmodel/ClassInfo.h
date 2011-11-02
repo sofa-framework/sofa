@@ -43,8 +43,6 @@ namespace core
 namespace objectmodel
 {
 
-using sofa::core::objectmodel::Data;
-
 class Base;
 
 /**

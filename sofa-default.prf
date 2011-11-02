@@ -228,15 +228,22 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 # Uncomment if you want to compile CUDA GPU prototype (require NVIDIA CUDA SDK)
 # DEFINES += SOFA_GPU_CUDA
+
 # (sm_10 for G80, sm_11 for G92, sm_13 for GT200)
-# CUDA_FLAGS += --ptxas-options=-v -arch sm_10
+# CUDA_FLAGS += --ptxas-options=-v -arch sm_20
+
 # this is necessary for gcc 4.4+
 # CUDA_FLAGS += --compiler-options -fno-inline
+
+# Disable the ABI introduced in CUDA 3.1+ (program stack in kernel, which add registers overhead)
+# CUDA_FLAGS += -Xptxas -abi=no
 
 # Use to generate code for multiple architectures
 # CUDA_FLAGS += -gencode=arch=compute_10,code=\\\"sm_10,compute_10\\\"
 # CUDA_FLAGS += -gencode=arch=compute_13,code=\\\"sm_13,compute_13\\\"
 # CUDA_FLAGS += -gencode=arch=compute_20,code=\\\"sm_20,compute_20\\\"
+
+# CUDA_FLAGS += -g -G
 
 # Uncomment if you want to use gcc4.4 to compile cuda files (use if you have weak error)
 # CUDA_FLAGS += --compiler-bindir=/usr/bin/gcc-4.4
@@ -256,8 +263,15 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Uncomment if you want to activate cublas support in CUDA (requires SOFA_GPU_CUDA_DOUBLE)
 # DEFINES += SOFA_GPU_CUBLAS
 
-# Uncomment if you want to activate cudpp
+# Uncomment if you want to activate CUDPP (for RadixSort)
 # DEFINES += SOFA_GPU_CUDPP
+
+# Uncomment if you want to activate THRUST (for RadixSort)
+# Note: THRUST is included in CUDA SDK 4.0+, it is recommanded to use it if available
+# DEFINES += SOFA_GPU_THRUST
+
+# Uncomment if you want to debug CUDA kernels
+# DEFINES += CUDA_DEBUG
 
 # Uncomment if you want to compile OPENCL GPU prototype (require NVIDIA OPENCL SDK)
 # DEFINES += SOFA_GPU_OPENCL

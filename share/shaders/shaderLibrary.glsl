@@ -294,11 +294,12 @@ vec4 mainFS()
     // Apply the normal map and convert vectors to tangent space
 #if defined(NormalMap_Present)
     mat3 TBN = mat3(Tangent, Bitangent, Normal);
-    //return vec4(Bitangent,1);
 
     Normal = normalize(texture2D(NormalMap, Texcoord).xyz * 2.0 - 1.0);
+    //return vec4(Normal,1);
     ViewDir = normalize(ViewDir * TBN);
     LightDir = normalize(LightDir * TBN);
+    //return vec4(LightDir,1);
 #endif
 
     // Apply the brushing term

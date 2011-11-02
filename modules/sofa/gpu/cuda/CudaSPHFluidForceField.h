@@ -43,6 +43,7 @@ struct GPUSPHFluid
 {
     real h;         ///< particles radius
     real h2;        ///< particles radius squared
+    real inv_h2;    ///< particles radius squared inverse
     real stiffness; ///< pressure stiffness
     real mass;      ///< particles mass
     real mass2;     ///< particles mass squared
@@ -52,11 +53,9 @@ struct GPUSPHFluid
 
     // Precomputed constants for smoothing kernels
     real CWd;          ///< =     constWd(h)
-    real CgradWd;      ///< = constGradWd(h)
+    //real CgradWd;      ///< = constGradWd(h)
     real CgradWp;      ///< = constGradWp(h)
     real ClaplacianWv; ///< =  constLaplacianWv(h)
-    real CgradWc;      ///< = constGradWc(h)
-    real ClaplacianWc; ///< =  constLaplacianWc(h)
 };
 
 typedef GPUSPHFluid<float> GPUSPHFluid3f;
@@ -79,33 +78,42 @@ public:
     typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
     typedef SPHFluidForceFieldInternalData<DataTypes> Data;
     typedef SPHFluidForceField<DataTypes> Main;
+    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     gpu::cuda::GPUSPHFluid<Real> params;
     gpu::cuda::CudaVector<defaulttype::Vec4f> pos4;
 
-    void fillParams(Main* m, double kFactor=1.0, double bFactor=1.0)
+    void fillParams(Main* m, int kernelType, double kFactor=1.0, double bFactor=1.0)
     {
         Real h = m->particleRadius.getValue();
         params.h = h;
         params.h2 = h*h;
+        params.inv_h2 = 1/(h*h);
         params.stiffness = (Real)(kFactor*m->pressureStiffness.getValue());
         params.mass = m->particleMass.getValue();
         params.mass2 = params.mass*params.mass;
         params.density0 = m->density0.getValue();
         params.viscosity = (Real)(bFactor*m->viscosity.getValue());
         params.surfaceTension = (Real)(kFactor*m->surfaceTension.getValue());
-
-        params.CWd          = m->constWd(h);
-        params.CgradWd      = m->constGradWd(h);
-        params.CgradWp      = m->constGradWp(h);
-        params.ClaplacianWv = m->constLaplacianWv(h);
-        params.CgradWc      = m->constGradWc(h);
-        params.ClaplacianWc = m->constLaplacianWc(h);
+        if (kernelType == 1)
+        {
+            params.CWd          = SPHKernel<SPH_KERNEL_CUBIC,Coord>::constW(h);
+            //params.CgradWd      = SPHKernel<SPH_KERNEL_CUBIC,Coord>::constGradW(h);
+            params.CgradWp      = SPHKernel<SPH_KERNEL_CUBIC,Coord>::constGradW(h);
+            params.ClaplacianWv = SPHKernel<SPH_KERNEL_CUBIC,Coord>::constLaplacianW(h);
+        }
+        else
+        {
+            params.CWd          = SPHKernel<SPH_KERNEL_DEFAULT_DENSITY,Coord>::constW(h);
+            //params.CgradWd      = SPHKernel<SPH_KERNEL_DEFAULT_DENSITY,Coord>::constGradW(h);
+            params.CgradWp      = SPHKernel<SPH_KERNEL_DEFAULT_PRESSURE,Coord>::constGradW(h);
+            params.ClaplacianWv = SPHKernel<SPH_KERNEL_DEFAULT_VISCOSITY,Coord>::constLaplacianW(h);
+        }
     }
 
-    void Kernels_computeDensity(int gsize, const void* cells, const void* cellGhost, void* pos4, const void* x);
-    void Kernels_addForce(int gsize, const void* cells, const void* cellGhost, void* f, const void* pos4, const void* vel);
-    void Kernels_addDForce(int gsize, const void* cells, const void* cellGhost, void* f, const void* pos4, const void* dx, const void* vel);
+    void Kernels_computeDensity(int kernelType, int pressureType, int gsize, const void* cells, const void* cellGhost, void* pos4, const void* x);
+    void Kernels_addForce(int kernelType, int pressureType, int viscosityType, int surfaceTensionType, int gsize, const void* cells, const void* cellGhost, void* f, const void* pos4, const void* vel);
+    //void Kernels_addDForce(int kernelType, int pressureType, int viscosityType, int surfaceTensionType, int gsize, const void* cells, const void* cellGhost, void* f, const void* pos4, const void* dx, const void* vel);
 };
 
 

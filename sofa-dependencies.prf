@@ -15,6 +15,7 @@ declare(libxml, libxml.prf)
 declare(qt,     qt.prf)
 declare(qtgui,  qtgui.prf, qt)
 declare(zlib,   zlib.prf)
+declare(thrust,   thrust.prf, cuda)
 declare(system-metis,  system-metis.prf)
 declare(system-taucs,  system-taucs.prf)
 
@@ -126,11 +127,11 @@ declare(sofa_component, modules/sofa/component/sofa_component.pro, sofa_componen
 
 declare(sofa_component_dev, modules/sofa/component/sofa_component_dev.pro, sofa_component_advanced_dev sofa_component_misc_dev)
 
-declare(sofagpucuda, modules/sofa/gpu/cuda/cuda.pro, sofahelper sofa_engine sofa_sph_fluid cuda)
+declare(sofagpucuda, modules/sofa/gpu/cuda/cuda.pro, sofahelper sofa_engine sofa_sph_fluid cuda cudpp thrust)
 
-declare(sofagpucuda_dev, modules/sofa/gpu/cuda/cuda_dev.pro, sofagpucuda sofa_advanced_interaction sofa_misc_dev eigen csparse cudpp taucs taucs_mt system-taucs)
+declare(sofagpucuda_dev, modules/sofa/gpu/cuda/cuda_dev.pro, sofagpucuda sofa_advanced_interaction sofa_misc_dev eigen csparse taucs taucs_mt system-taucs)
 
-declare(sofagpuopencl, modules/sofa/gpu/opencl, sofahelper sofa_engine sofa_sph_fluid opencl eigen csparse cudpp taucs taucs_mt system-taucs)
+declare(sofagpuopencl, modules/sofa/gpu/opencl, sofahelper sofa_engine sofa_sph_fluid opencl eigen csparse taucs taucs_mt system-taucs)
 
 ######################################################################
 # Applications

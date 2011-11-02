@@ -53,7 +53,7 @@ namespace sofa
 namespace helper
 {
 
-DEBUG_OUT_V(extern SOFA_HELPER_API int cptid);
+DEBUG_OUT_V(extern SOFA_HELPER_API int cptid;)
 
 template <class T, class MemoryManager >
 class vector
@@ -90,8 +90,8 @@ protected:
     mutable bool  bufferIsRegistered;  ///< True if the OpenGL buffer is registered with CUDA
     enum { ALL_DEVICE_VALID = 0xFFFFFFFF };
 
-    DEBUG_OUT_V(int id);
-    DEBUG_OUT_V(mutable int spaceDebug);
+    DEBUG_OUT_V(int id;)
+    DEBUG_OUT_V(mutable int spaceDebug;)
 
 public:
 
@@ -591,6 +591,7 @@ public:
             deviceIsValid = 1<<MemoryManager::getBufferDevice();
             return bufferObject;
         }
+        else return 0;
     }
 
     void push_back ( const T& t )

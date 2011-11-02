@@ -35,8 +35,6 @@
 
 #include <sofa/component/component.h>
 
-
-
 namespace sofa
 {
 
@@ -53,6 +51,389 @@ template<class DataTypes>
 class SPHFluidForceFieldInternalData
 {
 public:
+};
+
+enum SPHKernels
+{
+    SPH_KERNEL_DEFAULT_DENSITY,
+    SPH_KERNEL_DEFAULT_PRESSURE,
+    SPH_KERNEL_DEFAULT_VISCOSITY,
+    SPH_KERNEL_CUBIC
+};
+
+template<SPHKernels KT, class Deriv>
+class BaseSPHKernel;
+
+template <class Deriv>
+class BaseSPHKernel<SPH_KERNEL_DEFAULT_DENSITY, Deriv>
+{
+public:
+    typedef typename Deriv::value_type Real;
+    enum { N = Deriv::spatial_dimensions };
+
+    static const char* Name() { return "d"; }
+
+    /// Density Smoothing Kernel:  W = 315 / 64pih9 * (h2 - r2)3 = 315 / 64pih3 * (1 - (r/h)2)3
+    static Real  constW(Real h)
+    {
+        return (Real)(315 / (64*R_PI*h*h*h));
+    }
+    static Real  W2(Real r2_h2, Real C)
+    {
+        Real a = (1-r2_h2);
+        return  C*a*a*a;
+    }
+    static Real  W(Real r_h, Real C)
+    {
+        return W2(r_h*r_h, C);
+    }
+
+    // grad W = d(W)/dr Ur            in spherical coordinates, with Ur = D/|D| = D/r
+    // grad W = 1/h d(W)/dq Ur        with q = r/h
+    // d(W)/dq = d( C(1-q^2)^3 )/dq
+    //         = d( C(1-q^2)^3 )/dq
+    //         = -6C q(1-q^2)^2
+    // grad W = -6C/h q(1-q^2)^2 D/qh
+    // grad W = -6C/h^2 (1-q^2)^2 D
+    static Real constGradW(Real h)
+    {
+        return -6*constW(h)/(h*h);
+    }
+
+    static Deriv gradW2(const Deriv& d, Real r2_h2, Real C)
+    {
+        Real a = (1-r2_h2);
+        return d*(C*a*a);
+    }
+
+    static Deriv gradW(const Deriv& d, Real r_h, Real C)
+    {
+        return gradW2(d, r_h*r_h, C);
+    }
+
+    // laplacian(W) = d(W)/dx2 + d(W)/dy2 + d(W)/dz2
+    //              = d2(W)/dr2 + 2/r d(W)/dr      in spherical coordinate, as W only depends on r
+    //              = 1/h2 d2(W)/dq2 + 2/r 1/h d(W)/dq      with q = r/h
+    //              = 1/h2 (d2(W)/dq2 + 2/q d(W)/dq)
+    //              = -6C/h2 ((1-q2)(1-5q2) + 2/q q(1-q2)^2)
+    //              = -6C/h2 ((1-q2)(1-5q2  + 2-2q2))
+    //              = -6C/h2 ((1-q2)(3-7q2))
+    static Real  constLaplacianW(Real h)
+    {
+        return -6*constW(h)/(h*h);
+    }
+    static Real  laplacianW2(Real r2_h2, Real C)
+    {
+        return C*((1-r2_h2)*(3-7*r2_h2));
+    }
+    static Real  laplacianW(Real r_h, Real C)
+    {
+        return laplacianW2(r_h*r_h, C);
+    }
+};
+
+
+template <class Deriv>
+class BaseSPHKernel<SPH_KERNEL_DEFAULT_PRESSURE, Deriv>
+{
+public:
+    typedef typename Deriv::value_type Real;
+    enum { N = Deriv::spatial_dimensions };
+
+    static const char* Name() { return "p"; }
+
+    /// Pressure Smoothing Kernel:  W = 15 / pih6 (h - r)3 = 15 / pih3 (1 - r/h)3
+    static Real  constW(Real h)
+    {
+        return (Real)(15 / (R_PI*h*h*h));
+    }
+    static Real  W(Real r_h, Real C)
+    {
+        Real a = (1-r_h);
+        return  C*a*a*a;
+    }
+
+    // grad W = d(W)/dr Ur            in spherical coordinates, with Ur = D/|D| = D/r
+    //        = d( C(1-r/h)3 )/dr D/r
+    //        = d( C/h3 (h-r)3 )/dr D/r
+    //        = d( C/h6 (h-r)(h2+r2-2hr) )/dr D/r
+    //        = C/h6 ( (h-r)(2r-2h) -(h2+r2-2hr) ) D/r
+    //        = C/h6 ( -2r2+4hr-2h2 -r2+2hr-h2 ) D/r
+    //        = C/h6 ( -2r2+4hr-2h2 -r2+2hr-h2 ) D/r
+    //        = C/h6 ( -3r2+6hr-3h2 ) D/r
+    //        = 3C/h4 ( -r2/h2+2r/h-1 ) D/r
+    //        = -3C/h4 ( 1-r/h )2 D/r
+    static Real  constGradW(Real h)
+    {
+        return (-3*constW(h)) / (h*h);
+    }
+    static Deriv gradW(const Deriv& d, Real r_h, Real C)
+    {
+        Real a = (1-r_h);
+        return d * (C*a*a/r_h);
+    }
+
+    static Real  constLaplacianW(Real /*h*/)
+    {
+        return 0;
+    }
+
+    static Real  laplacianW(Real /*r_h*/, Real /*C*/)
+    {
+        return 0;
+    }
+
+
+    static Real  W2(Real r2_h2, Real C)
+    {
+        return W(helper::rsqrt(r2_h2), C);
+    }
+
+    static Deriv gradW2(const Deriv& d, Real r2_h2, Real C)
+    {
+        return gradW(d, helper::rsqrt(r2_h2), C);
+    }
+
+    static Real  laplacianW2(Real r2_h2, Real C)
+    {
+        return laplacianW(helper::rsqrt(r2_h2), C);
+    }
+};
+
+template <class Deriv>
+class BaseSPHKernel<SPH_KERNEL_DEFAULT_VISCOSITY, Deriv>
+{
+public:
+    typedef typename Deriv::value_type Real;
+    enum { N = Deriv::spatial_dimensions };
+
+    static const char* Name() { return "v"; }
+
+    /// Viscosity Smoothing Kernel:  W = 15/(2pih3) (-r3/2h3 + r2/h2 + h/2r - 1)
+    static Real  constW(Real h)
+    {
+        return (Real)(15/(2*R_PI*h*h*h));
+    }
+
+    static Real  W(Real r_h, Real C)
+    {
+        Real r2_h2 = r_h*r_h;
+        Real r3_h3 = r2_h2*r_h;
+        return C*(-0.5f*r3_h3 + r2_h2 + 0.5f/r_h - 1);
+    }
+
+    // grad W = d(W)/dr Ur            in spherical coordinates, with Ur = D/|D| = D/r
+    //        = d( C(-r3/2h3 + r2/h2 + h/2r - 1) )/dr D/r
+    //        = C/h (-1.5r2/h2 + 2r/h - 0.5h2/r2) D
+
+    static Real  constGradW(Real h)
+    {
+        return constW(h)/(h*h);
+    }
+    static Deriv gradW(const Deriv& d, Real r_h, Real C)
+    {
+        Real r3_h3 = r_h*r_h*r_h;
+        return d * (C*(2.0f - 1.5f*r_h - 0.5f/r3_h3));
+    }
+
+    // laplacian(W) = d(W)/dx2 + d(W)/dy2 + d(W)/dz2
+    //              = d2(W)/dr2 + 2/r d(W)/dr         in spherical coordinate, as f only depends on r
+    //              = 1/h2 (d2(W)/dq2 + 2/q d(W)/dq)  with q = r/h
+
+    static Real  constLaplacianW(Real h)
+    {
+        return 6*constW(h)/(h*h);
+    }
+
+    static Real  laplacianW(Real r_h, Real C)
+    {
+        return C*(1-r_h);
+    }
+
+    static Real  W2(Real r2_h2, Real C)
+    {
+        return W(helper::rsqrt(r2_h2), C);
+    }
+
+    static Deriv gradW2(const Deriv& d, Real r2_h2, Real C)
+    {
+        return gradW2(d, helper::rsqrt(r2_h2), C);
+    }
+
+    static Real  laplacianW2(Real r2_h2, Real C)
+    {
+        return laplacianW(helper::rsqrt(r2_h2), C);
+    }
+
+};
+
+template <class Deriv>
+class BaseSPHKernel<SPH_KERNEL_CUBIC, Deriv>
+{
+public:
+    typedef typename Deriv::value_type Real;
+    enum { N = Deriv::spatial_dimensions };
+
+    static const char* Name() { return "cubic"; }
+
+    // Cubic spline kernel
+    // Originally defined between 0 and 2h as:
+    // W(q) = \omega { 2/3 - q^2 + 1/2 q^3  if 0 <= q <= 1
+    //               { 1/6 (2-q)^3          if 1 <= q <= 2
+    //               { 0                    if q >= 2
+    // with \omega = 3/2 Pi h^3 in 3D
+    // If we want the same kernel but between 0 and h', we have
+    // W(q') = \omega' { 2/3 - (2q')^2 + 1/2 (2q')^3  if 0 <= q' <= 1/2
+    //               { 1/6 (2-(2q'))^3                if 1/2 <= q' <= 1
+    //               { 0                              if q' >= 1
+    // with \omega' = 8 \omega = 12 Pi h'^3 in 3D
+    // W(q') = 4\omega' { 1/6 - q'^2 + q'^3  if 0 <= q' <= 1/2
+    //                  { 1/3 (1-q')^3       if 1/2 <= q' <= 1
+    //                  { 0                  if q' >= 1
+    static Real constW(Real h)
+    {
+        return (Real) (48/R_PI)/(h*h*h);
+    }
+
+    static Real W(Real r_h, Real C)
+    {
+        if (r_h < (Real)0.5) return C*((Real)(1.0/6.0) - r_h*r_h + r_h*r_h*r_h);
+        else if (r_h < (Real)1) { Real s = 1-r_h; return C*((Real)(1.0/3.0) * (s*s*s)); }
+        else return (Real)0;
+    }
+
+    // grad W = d(W)/dr Ur            in spherical coordinates, with Ur = D/|D| = D/r
+    //        = 1/h d(W)/dq Ur        with q = r/h
+    // if q < 0.5 :  d(W)/dq = Cq(3q - 2)
+    // if q < 1   :  d(W)/dq = C(- (1-q)^2)
+    static Real constGradW(Real h)
+    {
+        return constW(h)/(h*h);
+    }
+
+    static Deriv gradW(const Deriv& d, Real r_h, Real C)
+    {
+        Real g;
+        if (r_h < (Real)0.5)    g = 3*r_h - 2;
+        else if (r_h < (Real)1) { Real s = 1-r_h; g = -s*s/r_h; }
+        else return Deriv();
+        return d*(C*g);
+    }
+
+    // laplacian(W) = d(W)/dx2 + d(W)/dy2 + d(W)/dz2
+    //              = d2(W)/dr2 + 2/r d(W)/dr      in spherical coordinate, as W only depends on r
+    //              = 1/h2 d2(W)/dq2 + 2/r 1/h d(W)/dq      with q = r/h
+    //              = 1/h2 (d2(W)/dq2 + 2/q d(W)/dq)
+    // if q < 0.5 : d2(W)/dq2 = C(6q - 2)
+    // laplacian(W) = 1/h2 (C(6q-2) + 2C(3q-2)
+    //              = C/h2 (12q-6)
+    // if q < 0.5 : d2(W)/dq2 = C(-2q + 2)
+    // laplacian(W) = 1/h2 (C(-2q+2) - 2C/q (1-q)^2)
+    //              = 2C/h2 (1-q)(1 - (1-q)/q)
+    //              = 2C/h2 (1-q)(1 - 1/q + 1)
+    //              = C/h2 (1-q)(4 - 2/q)
+    //              = C/h2 (4 - 2/q - 4q + 2)
+    //              = C/h2 (6 - 4q - 2/q)
+
+    static Real  constLaplacianW(Real h)
+    {
+        return constW(h)/(h*h);
+    }
+
+    static Real  laplacianW(Real r_h, Real C)
+    {
+        if (r_h < (Real)0.5)    return C*(12*r_h-6);
+        else if (r_h < (Real)1) return C*(6-4*r_h-2/r_h);
+        else return 0;
+    }
+
+    static Real  W2(Real r2_h2, Real C)
+    {
+        return W(helper::rsqrt(r2_h2), C);
+    }
+
+    static Deriv gradW2(const Deriv& d, Real r2_h2, Real C)
+    {
+        return gradW(d, helper::rsqrt(r2_h2), C);
+    }
+
+    static Real  laplacianW2(Real r2_h2, Real C)
+    {
+        return laplacianW(helper::rsqrt(r2_h2), C);
+    }
+
+};
+
+template<SPHKernels KT, class Deriv>
+class SPHKernel: public BaseSPHKernel<KT, Deriv>
+{
+public:
+    typedef BaseSPHKernel<KT, Deriv> K;
+    typedef typename Deriv::value_type Real;
+    enum { N = Deriv::spatial_dimensions };
+
+    // Instanced methods, storing constants as member variables
+
+    const Real H;
+    const Real cW;
+    const Real cGW;
+    const Real cLW;
+
+    SPHKernel(Real h)
+        : H(h),
+          cW( K::constW(h) ),
+          cGW( K::constGradW(h) ),
+          cLW( K::constLaplacianW(h) )
+    {
+    }
+
+    Real W(Real r_h) const
+    {
+        return K::W(r_h, cW);
+    }
+
+    Deriv gradW(const Deriv& d, Real r_h) const
+    {
+        return K::gradW(d, r_h, cGW);
+    }
+
+    Real laplacianW(Real r_h) const
+    {
+        return K::laplacianW(r_h, cLW);
+    }
+
+
+    Real W2(Real r2_h2) const
+    {
+        return K::W2(r2_h2, cW);
+    }
+
+    Deriv gradW2(const Deriv& d, Real r2_h2) const
+    {
+        return K::gradW2(d, r2_h2, cGW);
+    }
+
+    Real laplacianW2(Real r2_h2) const
+    {
+        return K::laplacianW2(r2_h2, cLW);
+    }
+
+    // Check kernel constants and derivatives
+
+    bool CheckKernel(std::ostream& sout, std::ostream& serr);
+    bool CheckGrad(std::ostream& sout, std::ostream& serr);
+    bool CheckLaplacian(std::ostream& sout, std::ostream& serr);
+    bool CheckAll(int order, std::ostream& sout, std::ostream& serr)
+    {
+        bool ok = true;
+        if (order >= 0)
+            ok &= CheckKernel(sout, serr);
+        if (order >= 1)
+            ok &= CheckGrad(sout, serr);
+        if (order >= 2)
+            ok &= CheckLaplacian(sout, serr);
+        return ok;
+    }
 };
 
 template<class DataTypes>
@@ -79,6 +460,10 @@ public:
     Data< Real > viscosity;
     Data< Real > surfaceTension;
     //Data< int  > pressureExponent;
+    Data< int > kernelType;
+    Data< int > pressureType;
+    Data< int > viscosityType;
+    Data< int > surfaceTensionType;
 
 protected:
     struct Particle
@@ -115,157 +500,6 @@ public:
     }
 
 protected:
-    /// Density Smoothing Kernel:  W = 315 / 64pih9 * (h2 - r2)3 = 315 / 64pih3 * (1 - (r/h)2)3
-    Real  constWd(Real h) const
-    {
-        return (Real)(315 / (64*R_PI*h*h*h));
-
-    }
-    Real  Wd(Real r_h, Real C)
-    {
-        Real a = (1-r_h*r_h);
-        if(a<=0)return 0;
-        return  C*a*a*a;
-    }
-
-
-
-
-    // grad W = d(W)/dr Ur            in spherical coordinates, with Ur = D/|D| = D/r
-    //        = d( C(1-r2/h2)3 )/dr D/r
-    //        = d( C/h6 (h2-r2)3 )/dr D/r
-    //        = d( C/h6 (h2-r2)(h4+r4-2h2r2) )/dr D/r
-    //        = ( C/h6 (h2-r2)(4r3-4h2r) + (-2r)(h4+r4-2h2r2) ) D/r
-    //        = C/h6 ( 4h2r3-4h4r-4r5+4h2r3 -2h4r -2r5 +4h2r3 ) D/r
-    //        = C/h6 ( -6r5 +12h2r3 -6h4r ) D/r
-    //        = -6C/h6 ( r4 -2h2r2 +h4 ) D
-    //        = -6C/h6 ( h2 - r2 )2 D
-    //        = -6C/h2 ( 1 - r2/h2 )2 D
-    Real constGradWd(Real h) const
-    {
-        return -6*constWd(h)/(h*h);
-        //		return -6*constWd(h)/h;
-    }
-
-    Deriv gradWd(const Deriv& d, Real r_h, Real C)
-    {
-        Real a = (1-r_h*r_h);
-        if(a<=0)return Deriv();
-        return d*(C*a*a);
-        //		return d*(C*a*a)*r_h;
-    }
-
-
-    // laplacian(W) = d(W)/dx2 + d(W)/dy2 + d(W)/dz2
-    //              = 1/r d2(rW)/dr2                 in spherical coordinate, as f only depends on r
-    //              = C/r d2(r(1-r2/h2)3)/dr2
-    //              = C/rh6 d2(r(h2-r2)3)/dr2
-    //              = C/rh6 d2(r(h2-r2)(h4-2h2r2+r4))/dr2
-    //              = C/rh6 d2(r(h6-3h4r2+3h2r4-r6))/dr2
-    //              = C/rh6 d2(h6r-3h4r3+3h2r5-r7)/dr2
-    //              = C/rh6 d(h6-9h4r2+15h2r4-7r6)/dr
-    //              = C/rh6 (-18h4r+60h2r3-42r5)
-    //              = C/h6 (-18h4+60h2r2-42r4)
-    //              = 6C/h2 (-3+10r2/h2-7r4/h4)
-    //              = CL (-3+10r2/h2-7r4/h4)
-    Real  constLaplacianWd(Real h) const
-    {
-        return 6*constWd(h)/(h*h);
-    }
-    Real  laplacianWd(Real r_h, Real C)
-    {
-        Real r2_h2 = r_h*r_h;
-        return C*(-3+10*r2_h2-7*r2_h2*r2_h2);
-    }
-
-    /// Pressure Smoothing Kernel:  W = 15 / pih6 (h - r)3 = 15 / pih3 (1 - r/h)3
-    Real  constWp(Real h) const
-    {
-        return (Real)(15 / (R_PI*h*h*h));
-    }
-    Real  Wp(Real r_h, Real C)
-    {
-        Real a = (1-r_h);
-        return  C*a*a*a;
-    }
-
-    // grad W = d(W)/dr Ur            in spherical coordinates, with Ur = D/|D| = D/r
-    //        = d( C(1-r/h)3 )/dr D/r
-    //        = d( C/h3 (h-r)3 )/dr D/r
-    //        = d( C/h6 (h-r)(h2+r2-2hr) )/dr D/r
-    //        = C/h6 ( (h-r)(2r-2h) -(h2+r2-2hr) ) D/r
-    //        = C/h6 ( -2r2+4hr-2h2 -r2+2hr-h2 ) D/r
-    //        = C/h6 ( -2r2+4hr-2h2 -r2+2hr-h2 ) D/r
-    //        = C/h6 ( -3r2+6hr-3h2 ) D/r
-    //        = 3C/h4 ( -r2/h2+2r/h-1 ) D/r
-    //        = -3C/h4 ( 1-r/h )2 D/r
-    Real  constGradWp(Real h) const
-    {
-        return (-3*constWp(h)) / (h*h*h*h);
-    }
-    Deriv gradWp(const Deriv& d, Real r_h, Real C)
-    {
-        Real a = (1-r_h);
-        return d * (C*a*a);
-    }
-
-    //Real  laplacianWp(Real r_h, Real C);
-
-    /// Viscosity Smoothing Kernel:  W = 15/(2pih3) (-r3/2h3 + r2/h2 + h/2r - 1)
-    Real  constWv(Real h)
-    {
-        return (Real)(15/(2*R_PI*h*h*h));
-    }
-    Real  Wv(Real r_h, Real C)
-    {
-        Real r2_h2 = r_h*r_h;
-        Real r3_h3 = r2_h2*r_h;
-        return C*(-0.5f*r3_h3 + r2_h2 + 0.5f/r_h - 1);
-    }
-
-    // grad W = d(W)/dr Ur            in spherical coordinates, with Ur = D/|D| = D/r
-    //        = d( C(-r3/2h3 + r2/h2 + h/2r - 1) )/dr D/r
-    //        = C(-3r2/2h3 + 2r/h2 - h/2r2) D/r
-    //        = C(-3r/2h3 + 2/h2 - h/2r3) D
-    //        = C/2h2 (-3r/h + 4 - h3/r3) D
-
-    Real  constGradWv(Real h)
-    {
-        return constWv(h)/(2*h*h);
-    }
-    Deriv gradWv(const Deriv& d, Real r_h, Real C)
-    {
-        Real r3_h3 = r_h*r_h*r_h;
-        return d * (C*(-3*r_h  + 4 - 1/r3_h3));
-    }
-
-    // laplacian(W) = d(W)/dx2 + d(W)/dy2 + d(W)/dz2
-    //              = 1/r d2(rW)/dr2                 in spherical coordinate, as f only depends on r
-    //              = C/r d2(r(-r3/2h3 + r2/h2 + h/2r - 1))/dr2
-    //              = C/r d2(-r4/2h3 + r3/h2 + h/2 - r)/dr2
-    //              = C/r d(-4r3/2h3 + 3r2/h2 - 1)/dr
-    //              = C/r (-6r2/h3 + 6r/h2)
-    //              = C (-6r/h3 + 6/h2)
-    //              = 6C/h2 (1 - r/h)
-
-    // laplacian(W) = d(W)/dx2 + d(W)/dy2 + d(W)/dz2
-    //              = 1/r2 d(r2 d(W)/dr)/dr                 in spherical coordinate, as f only depends on r
-    //              = C/r2 d(r2 d(-r3/2h3 + r2/h2 + h/2r - 1)/dr)/dr
-    //              = C/r2 d(r2 (-3r2/2h3 + 2r/h2 - h/2r2))/dr
-    //              = C/r2 d(-3r4/2h3 + 2r3/h2 - h/2))/dr
-    //              = C/r2 (-6r3/h3 + 6r2/h2)
-    //              = 6C/h2 (1 -r/h)
-
-    Real  constLaplacianWv(Real h)
-    {
-        return 6*constWv(h)/(h*h);
-        //return 75/(R_PI*h*h*h*h*h);
-    }
-
-    Real  laplacianWv(Real r_h, Real C)
-    {
-        return C*(1-r_h);
-    }
 
     /// Color Smoothing Kernel: same as Density
     Real  constWc(Real h) const
@@ -279,21 +513,21 @@ protected:
     }
     Real  constGradWc(Real h) const
     {
-        return -6*constWc(h)/(h*h);
+        return -6*constWc(h)/h;
     }
     Deriv gradWc(const Deriv& d, Real r_h, Real C)
     {
         Real a = (1-r_h*r_h);
-        return d*(C*a*a);
+        return d*(C*a*a)*r_h;
     }
     Real  constLaplacianWc(Real h) const
     {
-        return 6*constWc(h)/(h*h);
+        return -6*constWc(h)/(h*h);
     }
     Real  laplacianWc(Real r_h, Real C)
     {
         Real r2_h2 = r_h*r_h;
-        return C*(-3+10*r2_h2-7*r2_h2*r2_h2);
+        return C*((1-r2_h2)*(1-5*r2_h2));
     }
 
 
@@ -338,6 +572,11 @@ public:
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
     void draw(const core::visual::VisualParams* vparams);
+
+protected:
+    void computeNeighbors(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+    template<class Kd, class Kp, class Kv, class Kc>
+    void computeForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 };
 
 using sofa::defaulttype::Vec3dTypes;

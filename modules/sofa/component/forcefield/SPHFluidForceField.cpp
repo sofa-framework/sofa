@@ -47,11 +47,11 @@ SOFA_DECL_CLASS(SPHFluidForceField)
 int SPHFluidForceFieldClass = core::RegisterObject("Smooth Particle Hydrodynamics")
 #ifndef SOFA_FLOAT
         .add< SPHFluidForceField<Vec3dTypes> >()
-        .add< SPHFluidForceField<Vec2dTypes> >()
+//.add< SPHFluidForceField<Vec2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< SPHFluidForceField<Vec3fTypes> >()
-        .add< SPHFluidForceField<Vec2fTypes> >()
+//.add< SPHFluidForceField<Vec2fTypes> >()
 #endif
         ;
 

@@ -34,7 +34,7 @@
 #include <iostream>
 
 
-#define SOFA_NO_VMULTIOP
+//#define SOFA_NO_VMULTIOP
 
 namespace sofa
 {
@@ -124,8 +124,8 @@ void EulerSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, doubl
 
         vop.v_multiop(ops);
 
-        mop.solveConstraint(dt,vel2,core::ConstraintParams::VEL);
-        mop.solveConstraint(dt,pos2,core::ConstraintParams::POS);
+        mop.solveConstraint(vel2,core::ConstraintParams::VEL);
+        mop.solveConstraint(pos2,core::ConstraintParams::POS);
     }
 #endif
 }

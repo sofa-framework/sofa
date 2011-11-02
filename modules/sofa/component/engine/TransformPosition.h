@@ -134,7 +134,7 @@ protected:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 template class SOFA_ENGINE_API TransformPosition<defaulttype::Vec3dTypes>;

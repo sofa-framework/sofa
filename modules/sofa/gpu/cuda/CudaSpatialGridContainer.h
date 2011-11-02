@@ -41,13 +41,6 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/defaulttype/Vec.h>
 
-#ifdef SOFA_GPU_CUDPP
-#include <cudpp.h>
-#include <cudpp_plan.h>
-#include <cudpp_plan_manager.h>
-#include <cudpp_radixsort.h>
-#endif
-
 namespace sofa
 {
 
@@ -127,19 +120,12 @@ protected:
     sofa::gpu::cuda::CudaVector< sofa::gpu::cuda::Vec3f1 > sortedPos;
     const VecCoord* lastX;
 
-#ifdef SOFA_GPU_CUDPP
-    CUDPPHandle cudppHandleSort;
-    unsigned int cudppHandleSortMaxElements;
-#else
-    sofa::gpu::cuda::CudaVector< unsigned int > sortTmp;
-#endif
+    void kernel_computeHash(
+        int cellBits, Real cellWidth, int nbPoints, void* particleIndex, void* particleHash, const void* x);
 
     void kernel_updateGrid(
-        int cellBits, int index0, Real cellWidth, int nbPoints, void* particleIndex, void* particleHash,
-#ifndef SOFA_GPU_CUDPP
-        void* sortTmp,
-#endif
-        void* cells, void* cellGhost, const void* x);
+        int cellBits, int index0, Real cellWidth, int nbPoints, const void* particleHash,
+        void* cells, void* cellGhost);
     //void kernel_reorderData(int nbPoints, const void* particleIndex, const void* particleHash, void* sorted, const void* x);
 
 };

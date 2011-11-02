@@ -141,6 +141,7 @@ __shared__ float ftemp[BSIZE*3];
 __device__ __inline__ float3 getPos3(const float3* pos, int index0, int index)
 {
     //return pos[index];
+
     int index03 = __umul24(index0,3);
     int index3 = __umul24(threadIdx.x,3);
     ftemp[threadIdx.x] = ((const float*)pos)[index03+threadIdx.x];
@@ -183,7 +184,7 @@ __global__ void
 computeHashD(const TIn* pos,
         unsigned int* particleIndex8, unsigned int*  particleHash8, int n)
 {
-    int index0 = __mul24(blockIdx.x, blockDim.x);
+    int index0 = (blockIdx.x*BSIZE);
     int index = index0 + threadIdx.x;
     int nt = n - index0; if (nt > BSIZE) nt = BSIZE;
     float3 p = getPos3(pos,index0,index);
@@ -198,16 +199,19 @@ computeHashD(const TIn* pos,
     hgpos.y = (hgpos.y-1) >> 1;
     hgpos.z = (hgpos.z-1) >> 1;
 
-    __shared__ unsigned int hx[BSIZE];
-    __shared__ unsigned int hy[BSIZE];
-    __shared__ unsigned int hz[BSIZE];
+    __syncthreads();
+
+    __shared__ int hx[3*BSIZE];
     int x = threadIdx.x;
 
-    hx[x] = (__mul24(HASH_PX,hgpos.x) << 3)+halfcell;
-    hy[x] = __mul24(HASH_PY,hgpos.y);
-    hz[x] = __mul24(HASH_PZ,hgpos.z);
+//    hx[x] = (__mul24(HASH_PX,hgpos.x) << 3)+halfcell;
+//    hy[x] = __mul24(HASH_PY,hgpos.y);
+//    hz[x] = __mul24(HASH_PZ,hgpos.z);
+    hx[x] = ((HASH_PX*hgpos.x) << 3)+halfcell;
+    hx[BSIZE+x] = (HASH_PY*hgpos.y);
+    hx[2*BSIZE+x] = (HASH_PZ*hgpos.z);
     __syncthreads();
-    uint3 dH;
+    int3 dH;
     dH.x = (x&1 ? HASH_PX : 0);
     dH.y = (x&2 ? HASH_PY : 0);
     dH.z = (x&4 ? HASH_PZ : 0);
@@ -216,10 +220,10 @@ computeHashD(const TIn* pos,
     for (unsigned int lx = x>>3; lx < nt; lx+=(BSIZE>>3))
     {
         particleIndex8[index0_8_x_7 + (lx<<3)] = index0 + lx;
-        uint3 h;
+        int3 h;
         h.x = hx[lx];
-        h.y = hy[lx];
-        h.z = hz[lx];
+        h.y = hx[BSIZE+lx];
+        h.z = hx[2*BSIZE+lx];
         int hc = h.x & 7;
         h.x = (h.x>>3) + dH.x;
         h.y += dH.y;
@@ -276,7 +280,7 @@ findCellRangeD(int index0, const unsigned int* particleHash,
             cellGhost[ cur>>1 ] = index0+i;
         if (i == n-1)
         {
-            cellRange[ (cur>>1)+1 ] = (index0+n) | (1<<31);
+            cellRange[ (cur>>1)+1 ] = (index0+n) | (1U<<31);
             if (!(cur&1))
                 cellGhost[ cur>>1 ] = index0+n;
         }

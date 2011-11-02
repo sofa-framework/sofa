@@ -14,6 +14,8 @@ HEADERS += initEngine.h \
            engine/PlaneROI.inl \
            engine/SphereROI.h \
            engine/SphereROI.inl \
+           engine/DilateEngine.h \
+           engine/DilateEngine.inl \
            engine/ExtrudeSurface.h \
            engine/ExtrudeSurface.inl \
            engine/ExtrudeQuadsAndGenerateHexas.h \
@@ -71,6 +73,7 @@ SOURCES += initEngine.cpp \
            engine/BoxROI.cpp \
            engine/PlaneROI.cpp \
            engine/SphereROI.cpp \
+           engine/DilateEngine.cpp \
            engine/ExtrudeSurface.cpp \
            engine/ExtrudeQuadsAndGenerateHexas.cpp \
            engine/GenerateRigidMass.cpp \

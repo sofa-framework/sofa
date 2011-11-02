@@ -17,7 +17,7 @@ namespace visualmodel
 
 SOFA_DECL_CLASS(RecordedCamera)
 
-int RecordedCameraClass = core::RegisterObject("RecordedCamera")
+int RecordedCameraClass = core::RegisterObject("Camera moving along a predetermined path (currently only a rotation)")
         .add< RecordedCamera >()
         ;
 
@@ -35,18 +35,19 @@ RecordedCamera::RecordedCamera()
     , m_rotationCenter(initData(&m_rotationCenter, "rotationCenter", "Rotation center coordinates"))
     , m_rotationStartPoint(initData(&m_rotationStartPoint, "rotationStartPoint", "Rotation start position coordinates"))
     , m_rotationLookAt(initData(&m_rotationLookAt, "rotationLookAt", "Position to be focused during rotation"))
+    , m_rotationAxis(initData(&m_rotationAxis, Vec3(0,1,0), "rotationAxis", "Rotation axis"))
+    , m_cameraUp(initData(&m_cameraUp, Vec3(0,0,0), "cameraUp", "Camera Up axis"))
     , p_drawRotation(initData(&p_drawRotation, (bool)false , "drawRotation", "If true, will draw the rotation path"))
     //, m_translationSpeed(initData(&m_translationSpeed, (SReal)0.1 , "translationSpeed", "Pan Speed"))
     //, m_translationPositions(initData(&m_translationPositions, "translationPositions", "Pan Speed"))
     //, m_translationOrientations(initData(&m_translationOrientations, "translationOrientations", "Pan Speed"))
     , m_nextStep(0.0)
     , m_angleStep(0.0)
-    , m_initAngle(0.0)
+    //, m_initAngle(0.0)
     ,firstIteration(true)
 {
+    this->f_listening.setValue(true);
 }
-
-
 
 void RecordedCamera::init()
 {
@@ -73,6 +74,13 @@ void RecordedCamera::reinit()
         this->drawRotation();
 }
 
+void RecordedCamera::reset()
+{
+    BaseCamera::reset();
+    m_nextStep = m_startTime.getValue();
+    if(m_rotationMode.getValue())
+        this->configureRotation();
+}
 
 void RecordedCamera::moveCamera_rotation()
 {
@@ -81,6 +89,7 @@ void RecordedCamera::moveCamera_rotation()
     //double simuDT = this->getContext()->getDt();
     SReal totalTime = this->m_endTime.getValue();
     simuTime -= m_startTime.getValue();
+    totalTime -= m_startTime.getValue();
 
     if (totalTime == 0.0)
         totalTime = 200.0;
@@ -90,14 +99,20 @@ void RecordedCamera::moveCamera_rotation()
 
     // Compute cartesian coordinates from cylindrical ones
     Vec3 _pos = m_rotationCenter.getValue();
-    _pos[2] += m_radius * cos((m_angleStep - m_initAngle));
-    _pos[0] += m_radius * sin((m_angleStep - m_initAngle));
+    helper::Quater<double> q(m_rotationAxis.getValue(), m_angleStep);
+    _pos += q.rotate(m_rotationStartPoint.getValue() - m_rotationCenter.getValue());
+    //_pos[2] += m_radius * cos((m_angleStep - m_initAngle));
+    //_pos[0] += m_radius * sin((m_angleStep - m_initAngle));
     p_position.setValue(_pos);
 
-    // Compute coordinate of point + dV to compute circle tangente
-    Vec3 _poskk = m_rotationCenter.getValue();
-    _poskk[2] += m_radius * cos((m_angleStep - m_initAngle+0.00001));
-    _poskk[0] += m_radius * sin((m_angleStep - m_initAngle+0.00001));
+    // dV to compute circle tangente
+    Vec3 _poskk;
+    if (m_cameraUp.isSet() && m_cameraUp.getValue().norm() > 0.000001)
+        _poskk = -cross(_pos-p_lookAt.getValue(),m_cameraUp.getValue());
+    else
+        _poskk = -cross(_pos-m_rotationCenter.getValue(),m_rotationAxis.getValue());
+    //_poskk[2] += m_radius * cos((m_angleStep - m_initAngle+0.00001));
+    //_poskk[0] += m_radius * sin((m_angleStep - m_initAngle+0.00001));
 
 #ifdef my_debug
     std::cout << "totalTime: " << totalTime << std::endl;
@@ -110,12 +125,11 @@ void RecordedCamera::moveCamera_rotation()
 
     // Compute orientation
     Vec3 zAxis = -(p_lookAt.getValue() - _pos);
-    zAxis.normalize();
-
-    Vec3 xAxis = (_poskk - _pos); xAxis.normalize();
+    Vec3 yAxis = zAxis.cross(_poskk);
+    Vec3 xAxis = yAxis.cross(zAxis);
     xAxis.normalize();
-
-    Vec3 yAxis = zAxis.cross(xAxis);
+    yAxis.normalize();
+    zAxis.normalize();
 
 #ifdef my_debug
     std::cout << "xAxis: " << xAxis << std::endl;
@@ -166,26 +180,65 @@ void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
 void RecordedCamera::configureRotation()
 {
     // HACK: need to init again, as component init seems to be overwritten by viewer settings
-    p_position.setValue(m_rotationStartPoint.getValue());
+    Vec3 _pos = m_rotationStartPoint.getValue();
+    p_position.setValue(_pos);
     p_lookAt.setValue(m_rotationLookAt.getValue());
     p_distance.setValue((p_lookAt.getValue() - p_position.getValue()).norm());
 
 
-    // Compute rotation settings: radius and init angle
-    m_radius = (m_rotationCenter.getValue() - m_rotationStartPoint.getValue()).norm();
-
-    Vec3 _pos = p_position.getValue();
-    if (_pos[0]>=0)
-        m_initAngle = asin(_pos[2]/m_radius);
+    // dV to compute circle tangente
+    Vec3 _poskk;
+    if (m_cameraUp.isSet() && m_cameraUp.getValue().norm() > 0.000001)
+        _poskk = -cross(_pos-p_lookAt.getValue(),m_cameraUp.getValue());
     else
-        m_initAngle = PI - asin(_pos[2]/m_radius);
+        _poskk = -cross(_pos-m_rotationCenter.getValue(),m_rotationAxis.getValue());
+    //_poskk[2] += m_radius * cos((m_angleStep - m_initAngle+0.00001));
+    //_poskk[0] += m_radius * sin((m_angleStep - m_initAngle+0.00001));
 
+#ifdef my_debug
+    std::cout << "totalTime: " << totalTime << std::endl;
+    std::cout << "m_angleStep: " << m_angleStep << std::endl;
+    std::cout << "_pos: " << _pos << std::endl;
+    std::cout << "p_lookAt: " << p_lookAt.getValue() << std::endl;
+#endif
+
+    //Quat orientation  = getOrientationFromLookAt(_pos, p_lookAt.getValue());
+
+    // Compute orientation
+    Vec3 zAxis = -(p_lookAt.getValue() - _pos);
+    Vec3 yAxis = zAxis.cross(_poskk);
+    Vec3 xAxis = yAxis.cross(zAxis);
+    xAxis.normalize();
+    yAxis.normalize();
+    zAxis.normalize();
+
+#ifdef my_debug
+    std::cout << "xAxis: " << xAxis << std::endl;
+    std::cout << "yAxis: " << yAxis << std::endl;
+    std::cout << "zAxis: " << zAxis << std::endl;
+#endif
+
+    Quat orientation  = Quat::createQuaterFromFrame(xAxis, yAxis, zAxis);
+    orientation.normalize();
+
+    p_orientation.setValue(orientation);
+
+    // Compute rotation settings: radius and init angle
+    /*
+        m_radius = (m_rotationCenter.getValue() - m_rotationStartPoint.getValue()).norm();
+
+        Vec3 _pos = p_position.getValue();
+        if (_pos[0]>=0)
+            m_initAngle = asin(_pos[2]/m_radius);
+        else
+            m_initAngle = PI - asin(_pos[2]/m_radius);
+    */
 #ifdef my_debug
     std::cout << "m_rotationStartPoint: " << m_rotationStartPoint << std::endl;
     std::cout << "m_rotationCenter: " << m_rotationCenter << std::endl;
     std::cout << "m_rotationSpeed: " << m_rotationSpeed << std::endl;
-    std::cout << "init p_lookAt: " << p_lookAt << std::endl;
-    std::cout << "m_initAngle: " << m_initAngle << std::endl;
+    //std::cout << "init p_lookAt: " << p_lookAt << std::endl;
+    //std::cout << "m_initAngle: " << m_initAngle << std::endl;
 #endif
 
     firstIteration = false;
@@ -357,15 +410,17 @@ void RecordedCamera::drawRotation()
     Vec3 _pos = m_rotationStartPoint.getValue();
     Vec3 _center = m_rotationCenter.getValue();
 
-    double _initAngle = 0.0;
+    //double _initAngle = 0.0;
 
     // Compute rotation settings: radius and init angle
-    m_radius = (_center - _pos).norm();
+    /*
+        m_radius = (_center - _pos).norm();
 
-    if (_pos[0]>=0)
-        _initAngle = asin(_pos[2]/m_radius);
-    else
-        _initAngle = PI - asin(_pos[2]/m_radius);
+        if (_pos[0]>=0)
+            _initAngle = asin(_pos[2]/m_radius);
+        else
+            _initAngle = PI - asin(_pos[2]/m_radius);
+    */
 
     m_rotationPoints.resize(100);
     double _angleStep = 2*PI/100;
@@ -373,8 +428,10 @@ void RecordedCamera::drawRotation()
     {
         // Compute cartesian coordinates from cylindrical ones
         _pos = m_rotationCenter.getValue();
-        _pos[2] += m_radius * cos((_angleStep*i - _initAngle));
-        _pos[0] += m_radius * sin((_angleStep*i - _initAngle));
+        //_pos[2] += m_radius * cos((_angleStep*i - _initAngle));
+        //_pos[0] += m_radius * sin((_angleStep*i - _initAngle));
+        helper::Quater<double> q(m_rotationAxis.getValue(), _angleStep*i);
+        _pos += q.rotate(m_rotationStartPoint.getValue() - m_rotationCenter.getValue());
         m_rotationPoints[i] = _pos;
     }
 
