@@ -205,6 +205,10 @@ int main(int argc, char** argv)
 
         if (int err=sofa::gui::GUIManager::createGUI(NULL))
             return err;
+
+        //To set a specific resolution for the viewer, use the component ViewerDimensionSetting in you scene graph
+        sofa::gui::GUIManager::SetDimension(800,600);
+
     }
 
     sofa::helper::system::DataRepository.findFile(fileName);
