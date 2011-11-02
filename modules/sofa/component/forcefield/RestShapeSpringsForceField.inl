@@ -50,6 +50,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     : points(initData(&points, "points", "points controlled by the rest shape springs"))
     , stiffness(initData(&stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
     , angularStiffness(initData(&angularStiffness, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
+    , pivotPoints(initData(&pivotPoints, "pivot_points", "global pivot points used when translations instead of the rigid mass centers"))
     , external_rest_shape(initData(&external_rest_shape, "external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
     , external_points(initData(&external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
     , recompute_indices(initData(&recompute_indices, false, "recompute_indices", "Recompute indices (should be false for BBOX)"))
@@ -117,6 +118,8 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
     for (unsigned int i = 0; i < external_points.getValue().size(); i++)
         m_ext_indices.push_back(external_points.getValue()[i]);
+
+    m_pivots = pivotPoints.getValue();
 
     if (m_indices.size()==0)
     {

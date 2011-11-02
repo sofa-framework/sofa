@@ -68,6 +68,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef helper::vector< unsigned int > VecIndex;
@@ -79,6 +80,7 @@ public:
     Data< helper::vector< unsigned int > > points;
     Data< VecReal > stiffness;
     Data< VecReal > angularStiffness;
+    Data< helper::vector< CPos > > pivotPoints;
     Data< std::string > external_rest_shape;
     Data< helper::vector< unsigned int > > external_points;
     Data< bool > recompute_indices;
@@ -109,6 +111,7 @@ protected :
     VecIndex m_indices;
     VecReal k;
     VecIndex m_ext_indices;
+    helper::vector<CPos> m_pivots;
 private :
 
     bool useRestMState; /// An external MechanicalState is used as rest reference.
