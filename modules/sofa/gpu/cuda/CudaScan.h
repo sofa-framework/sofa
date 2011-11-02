@@ -22,57 +22,86 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initEngine.h>
+#ifndef SOFA_GPU_CUDA_CUDASCAN_H
+#define SOFA_GPU_CUDA_CUDASCAN_H
 
+#include <sofa/gpu/cuda/mycuda.h>
+
+#if defined(__cplusplus)
+
+#include <sofa/gpu/cuda/CudaTypes.h>
+
+#include <functional>
+#include <numeric> // for std::partial_sum
 
 namespace sofa
 {
-
-namespace component
+namespace gpu
 {
-
-
-void initEngine()
+namespace cuda
 {
-    static bool first = true;
-    if (first)
+#endif
+
+enum ScanType
+{
+    SCAN_INCLUSIVE = 0,
+    SCAN_EXCLUSIVE = 1,
+};
+
+extern "C" {
+
+    bool CudaScanGPUAvailable(unsigned int size, ScanType type);
+    bool CudaScanGPU(const void* input, void* output, unsigned int size, ScanType type);
+
+} // "C"
+
+#if defined(__cplusplus)
+
+template<class TData>
+void CudaScanCPU(const TData* input, TData* output, unsigned int size, ScanType type)
+{
+    switch(type)
     {
-        first = false;
+    case SCAN_INCLUSIVE:
+        std::partial_sum(input,input+size, output);
+        break;
+    case SCAN_EXCLUSIVE:
+        output[0] = 0;
+        std::partial_sum(input, input+(size-1), output+1);
+        break;
     }
 }
 
-SOFA_LINK_CLASS(AverageCoord)
-SOFA_LINK_CLASS(BoxROI)
-SOFA_LINK_CLASS(PlaneROI)
-SOFA_LINK_CLASS(SphereROI)
-SOFA_LINK_CLASS(DilateEngine)
-SOFA_LINK_CLASS(ExtrudeSurface)
-SOFA_LINK_CLASS(ExtrudeQuadsAndGenerateHexas)
-SOFA_LINK_CLASS(GenerateRigidMass)
-SOFA_LINK_CLASS(GroupFilterYoungModulus)
-SOFA_LINK_CLASS(MergeMeshes)
-SOFA_LINK_CLASS(MergePoints)
-SOFA_LINK_CLASS(MergeSets)
-SOFA_LINK_CLASS(MeshBarycentricMapperEngine)
-SOFA_LINK_CLASS(TransformPosition)
-SOFA_LINK_CLASS(TransformEngine)
-SOFA_LINK_CLASS(PointsFromIndices)
-SOFA_LINK_CLASS(ValuesFromIndices)
-SOFA_LINK_CLASS(IndicesFromValues)
-SOFA_LINK_CLASS(IndexValueMapper)
-SOFA_LINK_CLASS(JoinPoints)
-SOFA_LINK_CLASS(MapIndices)
-SOFA_LINK_CLASS(RandomPointDistributionInSurface)
-SOFA_LINK_CLASS(Spiral)
-SOFA_LINK_CLASS(Vertex2Frame)
-SOFA_LINK_CLASS(TextureInterpolation)
-SOFA_LINK_CLASS(SubsetTopology)
-SOFA_LINK_CLASS(RigidToQuatEngine)
-SOFA_LINK_CLASS(QuatToRigidEngine)
-SOFA_LINK_CLASS(ValuesFromPositions)
-SOFA_LINK_CLASS(NormalsFromPoints)
+#endif
 
-} // namespace component
+static inline void CudaScanPrepare(unsigned int size, ScanType type)
+{
+    if (!CudaScanGPUAvailable(size, type))
+        std::cerr << "CUDA: GPU scan implementation not available (size="<<size<<")" << std::endl;
+}
 
+template<class TData>
+static inline void CudaScan(const CudaVector<TData>* input, unsigned int input0, CudaVector<TData>* output, unsigned int output0, unsigned int size, ScanType type, bool forceCPU = false)
+{
+    bool withCPU = forceCPU;
+    if (!withCPU && !CudaScanGPU(input->deviceReadAt(input0), output->deviceWriteAt(output0), size, type))
+        withCPU = true;
+    if (withCPU)
+    {
+        CudaScanCPU(input->hostReadAt(input0), output->hostWriteAt(output0), size, type);
+    }
+}
+
+template<class TData>
+static inline void CudaScan(const CudaVector<TData>* input, CudaVector<TData>* output, unsigned int size, ScanType type, bool forceCPU = false)
+{
+    CudaScan(input, 0, output, 0, size, type, forceCPU);
+}
+
+#if defined(__cplusplus)
+} // namespace cuda
+} // namespace gpu
 } // namespace sofa
+#endif
+
+#endif

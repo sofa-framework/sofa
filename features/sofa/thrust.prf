@@ -1,0 +1,4 @@
+contains(DEFINES, SOFA_GPU_THRUST) {
+# Thrust is a template library, only using headers
+# Currently, no compile or link-time options are required to use it
+}

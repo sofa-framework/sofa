@@ -56,15 +56,161 @@ SPHFluidForceField<DataTypes>::SPHFluidForceField()
                     viscosity			(initData(&viscosity			,Real(0.001f)	, "viscosity", "Viscosity")),
                     surfaceTension	(initData(&surfaceTension		,Real(0)		, "surfaceTension", "Surface Tension")),
 //	pressureExponent	(initData(&pressureExponent		,1				, "pressureExponent", "Exponent of density variation in pressure expression")),
+                    kernelType(initData(&kernelType, 0, "kernelType", "0 = default kernels, 1 = cubic spline")),
+                    pressureType(initData(&pressureType, 1, "pressureType", "0 = none, 1 = default pressure")),
+                    viscosityType(initData(&viscosityType, 1, "viscosityType", "0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity")),
+                    surfaceTensionType(initData(&surfaceTensionType, 1, "surfaceTensionType", "0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007")),
                     grid(NULL)
 {
 }
 
+template<SPHKernels KT, class Deriv>
+bool SPHKernel<KT,Deriv>::CheckKernel(std::ostream& sout, std::ostream& serr)
+{
+    const int log2S = 5;
+    const int iS = 1 << (log2S);
+    const Real S = (Real)iS;
+    const int iT = 1 << (log2S*N);
+
+    double sum = 0.0;
+    for (int i=0; i<iT; ++i)
+    {
+        double norm2 = 0;
+        double area = 1;
+        for (int c=0; c<N; ++c)
+        {
+            int ix = (i >> log2S*c) & ((1 << log2S)-1);
+            Real x = (ix) / S;
+            norm2 += x*x;
+            area *= (ix==0) ? H/S : 2*H/S;
+        }
+        Real q = (Real)sqrt(norm2);
+        if (q > 1) continue;
+        Real w = W(q);
+        if (w > 1000000000.f)
+        {
+            if (q == 0) sout << "W" << K::Name() << "(" << q << ") = " << w << std::endl;
+            else serr << "W" << K::Name() << "(" << q << ") = " << w << std::endl;
+        }
+        else if (w < 0) serr << "W" << K::Name() << "(" << q << ") = " << w << std::endl;
+        else sum += area*w;
+    }
+    if (fabs(sum-1) > 0.01)
+    {
+        serr << "sum(" << "W" << K::Name() << ") = " << sum << std::endl;
+        return false;
+    }
+    else
+    {
+        sout << "Kernel " << "W" << K::Name() << "  OK" << std::endl;
+        return true;
+    }
+}
+
+template<SPHKernels KT, class Deriv>
+bool SPHKernel<KT,Deriv>::CheckGrad(std::ostream& sout, std::ostream& serr)
+{
+    const int iG = 4*1024;
+    const Real G = (Real)iG;
+
+    Deriv D;
+    int nerr = 0;
+    Real err0 = 0, err1 = -1;
+    Real maxerr = 0, maxerr_q = 0, maxerr_grad = 0, maxerr_dw = 0;
+    for (int r = 2; r < iG; ++r)
+    {
+        Real q = r/G;
+        D[0] = q*H;
+        Deriv grad = gradW(D,q);
+        Real dw = (W(q+0.5f/G) - W(q-0.5f/G)) * G/H;
+        if (fabs(grad[0] - dw) > 0.000001f && fabs(grad[0] - dw) > 0.1f*fabs(dw))
+        {
+            if (!nerr)
+            {
+                serr << "grad" << "W" << K::Name() << "("<<q << ") = " << grad[0] << " != " << dw << std::endl;
+                err0 = err1 = q;
+            }
+            else err1 = q;
+            if (fabs(grad[0] - dw) > maxerr)
+            { maxerr = fabs(grad[0] - dw); maxerr_q = q; maxerr_grad = grad[0]; maxerr_dw = dw; }
+            ++nerr;
+        }
+        else if (err1 == (r-1)/G)
+            serr << "grad" << "W" << K::Name() << "("<<q << ") = " << grad[0] << " ~ " << dw << std::endl;
+    }
+    if (nerr > 0)
+    {
+        serr << "grad" << "W" << K::Name() << " failed within q = [" << err0 << " " << err1 << "] (" << 0.01*(nerr*10000/(iG-2)) << "%) :  " << "grad" << "W" << K::Name() << "("<< maxerr_q << ") = " << maxerr_grad << " != " << maxerr_dw << std::endl;
+        return false;
+    }
+    else
+    {
+        sout << "grad" << "W" << K::Name() << " OK" << std::endl;
+        return true;
+    }
+}
+
+template<SPHKernels KT, class Deriv>
+bool SPHKernel<KT,Deriv>::CheckLaplacian(std::ostream& sout, std::ostream& serr)
+{
+    const int iG = 4*1024;
+    const Real G = (Real)iG;
+
+    int nerr = 0;
+    Real err0 = 0, err1 = -1;
+    Real maxerr = 0, maxerr_q = 0, maxerr_lap = 0, maxerr_l = 0;
+    for (int r = 2; r < iG; ++r)
+    {
+        Real q = r*1.0f/G;
+        Real w0 = W(q);
+        Real wa = W(q-0.5f/G);
+        Real wb = W(q+0.5f/G);
+        Real lap = laplacianW(q);
+        Real dw = (wb - wa) * G/H;
+        Real dw2 = (wb-2*w0+wa) * (2*2*G*G/(H*H));
+        Real l = dw2 + 2/(q*H)*dw;
+        if (fabs(lap - l) > 0.000001f && fabs(lap - l) > 0.1f * fabs(l))
+        {
+            if (!nerr)
+            {
+                serr << "laplacian" << "W" << K::Name() << "("<< q << ") = " << lap << " != " << l << std::endl;
+                err0 = err1 = q;
+            }
+            else err1 = q;
+            ++nerr;
+            if (fabs(lap - dw2) > maxerr)
+            { maxerr = fabs(lap - dw2); maxerr_q = q; maxerr_lap = lap; maxerr_l = l; }
+        }
+        else if (err1 == (r-1)/G)
+            serr << "laplacian" << "W" << K::Name() << "("<< q << ") = " << lap << " ~ " << l << std::endl;
+    }
+    if (nerr > 0)
+    {
+        serr << "laplacian" << "W" << K::Name() << " failed within q = [" << err0 << " " << err1 << "] (" << 0.01*(nerr*10000/(iG-2)) << "%):  "  << "laplacian" << "W" << K::Name() << "("<< maxerr_q << ") = " << maxerr_lap << " != " << maxerr_l << std::endl;
+        return false;
+    }
+    else
+    {
+        sout << "laplacian" << "W" << K::Name() << " OK" << std::endl;
+        return true;
+    }
+}
 
 template<class DataTypes>
 void SPHFluidForceField<DataTypes>::init()
 {
     this->Inherit::init();
+
+    SPHKernel<SPH_KERNEL_CUBIC,Deriv> Kcubic(4);
+    if (!Kcubic.CheckAll(2, sout, serr)) serr << sendl;
+    SPHKernel<SPH_KERNEL_DEFAULT_DENSITY,Deriv> Kd(4);
+    if (!Kd.CheckAll(2, sout, serr)) serr << sendl;
+    SPHKernel<SPH_KERNEL_DEFAULT_PRESSURE,Deriv> Kp(4);
+    if (!Kp.CheckAll(1, sout, serr)) serr << sendl;
+    SPHKernel<SPH_KERNEL_DEFAULT_VISCOSITY,Deriv> Kv(4);
+    if (!Kv.CheckAll(2, sout, serr)) serr << sendl;
+    sout << sendl;
+
     this->getContext()->get(grid); //new Grid(particleRadius.getValue());
     if (grid==NULL)
         serr<<"SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!" << sendl;
@@ -87,47 +233,51 @@ void SPHFluidForceField<DataTypes>::init()
 
 
 template<class DataTypes>
-void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
-    VecDeriv& f = *d_f.beginEdit();
-    const VecCoord& x = d_x.getValue();
-    const VecDeriv& v = d_v.getValue();
+    computeNeighbors(mparams, d_x, d_v);
+
+    switch(kernelType.getValue())
+    {
+    default:
+        serr << "Unsupported kernelType " << kernelType.getValue() << sendl;
+        // fallthrough
+    case 0: // default
+    {
+        computeForce <SPHKernel<SPH_KERNEL_DEFAULT_DENSITY,Deriv>,
+                     SPHKernel<SPH_KERNEL_DEFAULT_PRESSURE,Deriv>,
+                     SPHKernel<SPH_KERNEL_DEFAULT_VISCOSITY,Deriv>,
+                     SPHKernel<SPH_KERNEL_DEFAULT_DENSITY,Deriv> > (mparams, d_f, d_x, d_v);
+        break;
+    }
+    case 1: // cubic
+    {
+        computeForce <SPHKernel<SPH_KERNEL_CUBIC,Deriv>,
+                     SPHKernel<SPH_KERNEL_CUBIC,Deriv>,
+                     SPHKernel<SPH_KERNEL_CUBIC,Deriv>,
+                     SPHKernel<SPH_KERNEL_CUBIC,Deriv> > (mparams, d_f, d_x, d_v);
+        break;
+    }
+    }
+    if (this->f_printLog.getValue())
+    {
+        sout << "density[" << 0 << "] = " << particles[0].density  << "(" << particles[0].neighbors.size() << " neighbors)"<< sendl;
+        sout << "density[" << particles.size()/2 << "] = " << particles[particles.size()/2].density << sendl;
+    }
+}
+
+
+template<class DataTypes>
+void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParams* /*mparams*/, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
+{
+    helper::ReadAccessor<DataVecCoord> x = d_x;
+    //helper::ReadAccessor<DataVecDeriv> v = d_v;
 
     const Real h = particleRadius.getValue();
     const Real h2 = h*h;
-    const Real m = particleMass.getValue();
-    const Real m2 = m*m;
-    const Real d0 = density0.getValue();
-    //const int pE = pressureExponent.getValue();
-    const Real k = pressureStiffness.getValue(); // /(pE); //*(Real)pow(d0,pE-1));
-    const Real time = (Real)this->getContext()->getTime();
-    //const Real dt = (Real)this->getContext()->getDt();
-    //const Real dt2 = dt*dt;
-    lastTime = time;
 
-    //const Vec3d localg = this->getContext()->getLocalGravity();
-    //Deriv g;
-    //DataTypes::set ( g, localg[0], localg[1], localg[2]);
-    //const Deriv mg = g * mass;
     const int n = x.size();
 
-    // Precompute constants for smoothing kernels
-    const Real     CWd =     constWd(h);
-    //const Real CgradWd = constGradWd(h);
-    //const Real  ClaplacianWd =  constLaplacianWd(h);
-    //const Real     CWp =     constWp(h);
-    const Real CgradWp = constGradWp(h);
-    //const Real  ClaplacianWp =  constLaplacianWp(h);
-    //const Real     CWv =     constWv(h);
-    //const Real CgradWv = constGradWv(h);
-    const Real  ClaplacianWv =  constLaplacianWv(h);
-    //const Real     CWc =     constWc(h);
-    const Real CgradWc = constGradWc(h);
-    const Real  ClaplacianWc =  constLaplacianWc(h);
-
-    // Initialization
-    f.resize(n);
-    dforces.clear();
     //int n0 = particles.size();
     particles.resize(n);
     for (int i=0; i<n; i++)
@@ -136,10 +286,6 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
 #ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
         particles[i].neighbors2.clear();
 #endif
-        particles[i].density = 0;
-        particles[i].pressure = 0;
-        particles[i].normal.clear();
-        particles[i].curvature = 0;
     }
 
     // First compute the neighbors
@@ -164,7 +310,7 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
     }
     else
     {
-        grid->updateGrid(x);
+        grid->updateGrid(x.ref());
         grid->findNeighbors(this, h);
 #ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
         // Check grid
@@ -213,6 +359,49 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
         }
 #endif
     }
+}
+
+template<class DataTypes> template<class TKd, class TKp, class TKv, class TKc>
+void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+{
+    helper::WriteAccessor<DataVecDeriv> f = d_f;
+    helper::ReadAccessor<DataVecCoord> x = d_x;
+    helper::ReadAccessor<DataVecDeriv> v = d_v;
+
+    const Real h = particleRadius.getValue();
+    const Real h2 = h*h;
+    const Real m = particleMass.getValue();
+    const Real m2 = m*m;
+    const Real d0 = density0.getValue();
+    //const int pE = pressureExponent.getValue();
+    const Real k = pressureStiffness.getValue(); // /(pE); //*(Real)pow(d0,pE-1));
+    const Real time = (Real)this->getContext()->getTime();
+    const Real viscosity = this->viscosity.getValue();
+    const int viscosityT = (viscosity == 0) ? 0 : viscosityType.getValue();
+    const Real surfaceTension = this->surfaceTension.getValue();
+    const int surfaceTensionT = (surfaceTension <= 0) ? 0 : surfaceTensionType.getValue();
+    //const Real dt = (Real)this->getContext()->getDt();
+    lastTime = time;
+
+    const int n = x.size();
+
+    // Initialization
+    f.resize(n);
+    dforces.clear();
+    //int n0 = particles.size();
+    particles.resize(n);
+    for (int i=0; i<n; i++)
+    {
+        particles[i].density = 0;
+        particles[i].pressure = 0;
+        particles[i].normal.clear();
+        particles[i].curvature = 0;
+    }
+
+    TKd Kd(h);
+    TKp Kp(h);
+    TKv Kv(h);
+    TKc Kc(h);
 
     // Compute density and pressure
     {
@@ -222,14 +411,14 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
                 Particle& Pi = particles[i];
                 Real density = Pi.density;
 
-                density += m*Wd(0,CWd); // density from current particle
+                density += m*Kd.W(0); // density from current particle
 
                 for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
                 {
                     const int j = it->first;
                     const Real r_h = it->second;
                     Particle& Pj = particles[j];
-                    Real d = m*Wd(r_h,CWd);
+                    Real d = m*Kd.W(r_h);
                     density += d;
                     Pj.density += d;
 
@@ -241,7 +430,7 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
     }
 
     // Compute surface normal and curvature
-    if (surfaceTension.getValue() > 0)
+    if (surfaceTensionType == 1)
     {
         for (int i=0; i<n; i++)
         {
@@ -251,10 +440,10 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
                 const int j = it->first;
                 const Real r_h = it->second;
                 Particle& Pj = particles[j];
-                Deriv n = gradWc(x[i]-x[j],r_h,CgradWc) * (m / Pj.density - m / Pi.density);
+                Deriv n = Kc.gradW(x[i]-x[j],r_h) * (m / Pj.density - m / Pi.density);
                 Pi.normal += n;
                 Pj.normal -= n;
-                Real c = laplacianWc(r_h,ClaplacianWc) * (m / Pj.density - m / Pi.density);
+                Real c = Kc.laplacianW(r_h) * (m / Pj.density - m / Pi.density);
                 Pi.curvature += c;
                 Pj.curvature -= c;
             }
@@ -276,30 +465,60 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* /* mp
                 Particle& Pj = particles[j];
                 // Pressure
 
-                Deriv fpressure = gradWp(x[i]-x[j],r_h,CgradWp) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
+                Real pressureFV = ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
+
+                // Viscosity
+                switch(viscosityT)
+                {
+                case 0: break;
+                case 1:
+                {
+                    Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity / (Pi.density * Pj.density) * Kv.laplacianW(r_h) );
+                    f[i] += fviscosity;
+                    f[j] -= fviscosity;
+                    break;
+                }
+                case 2:
+                {
+                    Real vx = dot(v[i]-v[j],x[i]-x[j]);
+                    if (vx < 0)
+                    {
+                        pressureFV += (vx * viscosity * h * m / ((r_h*r_h + 0.01f*h2)*(Pi.density+Pj.density)*0.5f));
+                    }
+                    break;
+                }
+                default:
+                    break;
+                }
+
+                Deriv fpressure = Kp.gradW(x[i]-x[j],r_h) * pressureFV;
                 f[i] += fpressure;
                 f[j] -= fpressure;
 
-                // Viscosity
-                Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity.getValue() / (Pi.density * Pj.density) * laplacianWv(r_h,ClaplacianWv) );
-                f[i] += fviscosity;
-                f[j] -= fviscosity;
             }
 
-            if (surfaceTension.getValue() > 0)
+            switch(surfaceTensionT)
+            {
+            case 0: break;
+            case 1:
             {
                 Real n = Pi.normal.norm();
                 if (n > 0.000001)
                 {
-                    Deriv fsurface = Pi.normal * ( - m * surfaceTension.getValue() * Pi.curvature / n );
+                    Deriv fsurface = Pi.normal * ( - m * surfaceTension * Pi.curvature / n );
                     f[i] += fsurface;
                 }
+                break;
             }
-
+            case 2:
+            {
+                break;
+            }
+            default:
+                break;
+            }
         }
-
     }
-    d_f.endEdit();
 }
 
 template<class DataTypes>

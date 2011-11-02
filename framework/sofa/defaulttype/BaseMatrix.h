@@ -724,7 +724,7 @@ public:
     template<class T>
     const T* blocElements(int i, int j, T* buffer) const
     {
-        blocGet(i,j).elements(buffer);
+        return blocGet(i,j).elements(buffer);
     }
 
     /// Shortcut for blocCreate(i,j).set(buffer)

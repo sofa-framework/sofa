@@ -95,7 +95,7 @@ private:
     T*           hostPointer;    ///< Pointer to the data on the CPU side
     mutable bool deviceIsValid;  ///< True if the data on the GPU is currently valid
     mutable bool hostIsValid;    ///< True if the data on the CPU is currently valid
-    DEBUG_OUT_M(mutable int spaceDebug);
+    DEBUG_OUT_M(mutable int spaceDebug;)
 public:
 
     CudaMatrix()

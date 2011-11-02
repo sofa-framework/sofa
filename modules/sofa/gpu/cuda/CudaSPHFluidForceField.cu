@@ -41,6 +41,7 @@ class GPUSPHFluid
 public:
     real h;         ///< particles radius
     real h2;        ///< particles radius squared
+    real inv_h2;    ///< particles radius squared inverse
     real stiffness; ///< pressure stiffness
     real mass;      ///< particles mass
     real mass2;     ///< particles mass squared
@@ -50,11 +51,9 @@ public:
 
     // Precomputed constants for smoothing kernels
     real CWd;          ///< =     constWd(h)
-    real CgradWd;      ///< = constGradWd(h)
+    //real CgradWd;      ///< = constGradWd(h)
     real CgradWp;      ///< = constGradWp(h)
     real ClaplacianWv; ///< =  constLaplacianWv(h)
-    real CgradWc;      ///< = constGradWc(h)
-    real ClaplacianWc; ///< =  constLaplacianWc(h)
 };
 
 typedef GPUSPHFluid<float> GPUSPHFluid3f;
@@ -63,15 +62,15 @@ typedef GPUSPHFluid<double> GPUSPHFluid3d;
 extern "C"
 {
 
-    void SPHFluidForceFieldCuda3f_computeDensity(unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* pos4, const void* x);
-    void SPHFluidForceFieldCuda3f_addForce (unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v);
-    void SPHFluidForceFieldCuda3f_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v, const void* dx);
+    void SPHFluidForceFieldCuda3f_computeDensity(int kernelType, int pressureType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* pos4, const void* x);
+    void SPHFluidForceFieldCuda3f_addForce (int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v);
+//void SPHFluidForceFieldCuda3f_addDForce(int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v, const void* dx);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-    void SPHFluidForceFieldCuda3d_computeDensity(unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* pos4, const void* x);
-    void SPHFluidForceFieldCuda3d_addForce (unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v);
-    void SPHFluidForceFieldCuda3d_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v, const void* dx);
+    void SPHFluidForceFieldCuda3d_computeDensity(int kernelType, int pressureType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* pos4, const void* x);
+    void SPHFluidForceFieldCuda3d_addForce (int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v);
+//void SPHFluidForceFieldCuda3d_addDForce(int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v, const void* dx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
@@ -89,8 +88,171 @@ extern "C"
 #endif
 #endif
 
+template<class real, int kernelType>
+class SPH;
+
 template<class real>
-class SPH
+class SPH<real,1>
+{
+public:
+    typedef real Real;
+    typedef CudaVec3<Real> Deriv;
+    static Real constW(Real h)
+    {
+        return (Real) (48/R_PI)/(h*h*h);
+    }
+
+    static __device__ Real  W0(Real C)
+    {
+        return C*((Real)(1.0/6.0));
+    }
+    static __device__ Real  W0()
+    {
+        return ((Real)(1.0/6.0));
+    }
+    static __device__ Real W(Real r_h, Real C)
+    {
+        Real s = 1-r_h;
+        if (r_h < (Real)0.5)   return C*((Real)(1.0/6.0) - r_h*r_h*s);
+        else                   return C*((Real)(1.0/3.0) * (s*s*s));
+    }
+    static __device__ Real W2(Real r2_h2, Real C)
+    {
+        Real r_h = sqrtf(r2_h2);
+        Real s = 1-r_h;
+        if (r2_h2 < (Real)0.25) return C*((Real)(1.0/6.0) - r2_h2*s);
+        else                    return C*((Real)(1.0/3.0) * (s*s*s));
+    }
+    static __device__ Real W2(Real r2_h2)
+    {
+        Real r_h = sqrtf(r2_h2);
+        Real s = 1-r_h;
+        if (r2_h2 < (Real)0.25) return   ((Real)(1.0/6.0) - r2_h2*s);
+        else                    return   ((Real)(1.0/3.0) * (s*s*s));
+    }
+    static Real constGradW(Real h)
+    {
+        return constW(h)/(h*h);
+    }
+    static __device__ Deriv gradW(const Deriv& d, Real r_h, Real C)
+    {
+        Real g;
+        if (r_h < (Real)0.5)    g = 3*r_h - 2;
+        else  { Real s = 1-r_h; g = -s*s/r_h; }
+        return d*(C*g);
+    }
+    static Real  constLaplacianW(Real h)
+    {
+        return constW(h)/(h*h);
+    }
+    static __device__ Real  laplacianW(Real r_h, Real C)
+    {
+        if (r_h < (Real)0.5)    return C*(12*r_h-6);
+        else if (r_h < (Real)1) return C*(6-4*r_h-2/r_h);
+        else return 0;
+    }
+    /// Density Smoothing Kernel
+    static Real  constWd(Real h)
+    {
+        return constW(h);
+    }
+    static __device__ Real  Wd(Real r_h, Real C)
+    {
+        return W(r_h,C);
+    }
+    static __device__ Real  Wd2(Real r2_h2, Real C)
+    {
+        return W2(r2_h2,C);
+    }
+    static __device__ Real  Wd2(Real r2_h2)
+    {
+        return W2(r2_h2);
+    }
+    static __device__ Real  Wd0()
+    {
+        return W0();
+    }
+    static Real  constGradWd(Real h)
+    {
+        return constGradW(h);
+    }
+    static __device__ Deriv gradWd(const Deriv& d, Real r_h, Real C)
+    {
+        return gradW(d,r_h,C);
+    }
+    static __device__ Deriv gradWd2(const Deriv& d, Real r2_h2, Real C)
+    {
+        return gradW(d,sqrtf(r2_h2),C);
+    }
+    static Real  constLaplacianWd(Real h)
+    {
+        return constLaplacianW(h);
+    }
+    static __device__ Real  laplacianWd(Real r_h, Real C)
+    {
+        return laplacianW(r_h,C);
+    }
+    static __device__ Real  laplacianWd2(Real r2_h2, Real C)
+    {
+        return laplacianW(sqrtf(r2_h2),C);
+    }
+
+    /// Pressure Smoothing Kernel
+    static Real  constWp(Real h)
+    {
+        return constW(h);
+    }
+    static __device__ Real  Wp(Real r_h, Real C)
+    {
+        return W(r_h,C);
+    }
+    static Real  constGradWp(Real h)
+    {
+        return constGradW(h);
+    }
+    static __device__ Deriv gradWp(const Deriv& d, Real r_h, Real C)
+    {
+        return gradW(d,r_h,C);
+    }
+
+    /// Viscosity Smoothing Kernel
+    static Real  constWv(Real h)
+    {
+        return constW(h);
+    }
+    static __device__ Real  Wv(Real r_h, Real C)
+    {
+        return W(r_h,C);
+    }
+    static __device__ Real  Wv2(Real r2_h2, Real r_h, Real C)
+    {
+        return W2(r2_h2,r_h,C);
+    }
+    static Real  constGradWv(Real h)
+    {
+        return constGradW(h);
+    }
+    static __device__ Deriv gradWv(const Deriv& d, Real r_h, Real C)
+    {
+        return gradW(d,r_h,C);
+    }
+    static __device__ Deriv gradWv2(const Deriv& d, Real r2_h2, Real r_h, Real C)
+    {
+        return gradW(d,r_h,C);
+    }
+    static Real  constLaplacianWv(Real h)
+    {
+        return constLaplacianW(h);
+    }
+
+    static __device__ Real  laplacianWv(Real r_h, Real C)
+    {
+        return laplacianW(r_h,C);
+    }
+};
+
+template<class real>
+class SPH<real,0>
 {
 public:
     typedef real Real;
@@ -103,7 +265,6 @@ public:
     static __device__ Real  Wd(Real r_h, Real C)
     {
         Real a = (1-r_h*r_h);
-        if (a<=0) return 0;
         return  C*a*a*a;
     }
     static __device__ Real  Wd2(Real r2_h2, Real C)
@@ -116,17 +277,14 @@ public:
         Real a = (1-r2_h2);
         return  a*a*a;
     }
-
-    // grad W = d(W)/dr Ur            in spherical coordinates, with Ur = D/|D| = D/r
-    //        = d( C(1-r2/h2)3 )/dr D/r
-    //        = d( C/h6 (h2-r2)3 )/dr D/r
-    //        = d( C/h6 (h2-r2)(h4+r4-2h2r2) )/dr D/r
-    //        = ( C/h6 (h2-r2)(4r3-4h2r) + (-2r)(h4+r4-2h2r2) ) D/r
-    //        = C/h6 ( 4h2r3-4h4r-4r5+4h2r3 -2h4r -2r5 +4h2r3 ) D/r
-    //        = C/h6 ( -6r5 +12h2r3 -6h4r ) D/r
-    //        = -6C/h6 ( r4 -2h2r2 +h4 ) D
-    //        = -6C/h6 ( h2 - r2 )2 D
-    //        = -6C/h2 ( 1 - r2/h2 )2 D
+    static __device__ Real  Wd0(Real C)
+    {
+        return C;
+    }
+    static __device__ Real  Wd0()
+    {
+        return 1;
+    }
     static Real  constGradWd(Real h)
     {
         return -6*constWd(h)/(h*h);
@@ -134,7 +292,6 @@ public:
     static __device__ Deriv gradWd(const Deriv& d, Real r_h, Real C)
     {
         Real a = (1-r_h*r_h);
-        if (a<0) a=0;
         return d*(C*a*a);
     }
     static __device__ Deriv gradWd2(const Deriv& d, Real r2_h2, Real C)
@@ -142,31 +299,18 @@ public:
         Real a = (1-r2_h2);
         return d*(C*a*a);
     }
-
-    // laplacian(W) = d(W)/dx2 + d(W)/dy2 + d(W)/dz2
-    //              = 1/r d2(rW)/dr2                 in spherical coordinate, as f only depends on r
-    //              = C/r d2(r(1-r2/h2)3)/dr2
-    //              = C/rh6 d2(r(h2-r2)3)/dr2
-    //              = C/rh6 d2(r(h2-r2)(h4-2h2r2+r4))/dr2
-    //              = C/rh6 d2(r(h6-3h4r2+3h2r4-r6))/dr2
-    //              = C/rh6 d2(h6r-3h4r3+3h2r5-r7)/dr2
-    //              = C/rh6 d(h6-9h4r2+15h2r4-7r6)/dr
-    //              = C/rh6 (-18h4r+60h2r3-42r5)
-    //              = C/h6 (-18h4+60h2r2-42r4)
-    //              = 6C/h2 (-3+10r2/h2-7r4/h4)
-    //              = CL (-3+10r2/h2-7r4/h4)
     static Real  constLaplacianWd(Real h)
     {
-        return 6*constWd(h)/(h*h);
+        return -6*constWd(h)/(h*h);
     }
     static __device__ Real  laplacianWd(Real r_h, Real C)
     {
         Real r2_h2 = r_h*r_h;
-        return C*(-3+10*r2_h2-7*r2_h2*r2_h2);
+        return C*((1-r2_h2)*(3-7*r2_h2));
     }
     static __device__ Real  laplacianWd2(Real r2_h2, Real C)
     {
-        return C*(-3+10*r2_h2-7*r2_h2*r2_h2);
+        return C*((1-r2_h2)*(3-7*r2_h2));
     }
 
     /// Pressure Smoothing Kernel:  W = 15 / pih6 (h - r)3 = 15 / pih3 (1 - r/h)3
@@ -179,28 +323,15 @@ public:
         Real a = (1-r_h);
         return  C*a*a*a;
     }
-
-    // grad W = d(W)/dr Ur            in spherical coordinates, with Ur = D/|D| = D/r
-    //        = d( C(1-r/h)3 )/dr D/r
-    //        = d( C/h3 (h-r)3 )/dr D/r
-    //        = d( C/h6 (h-r)(h2+r2-2hr) )/dr D/r
-    //        = C/h6 ( (h-r)(2r-2h) -(h2+r2-2hr) ) D/r
-    //        = C/h6 ( -2r2+4hr-2h2 -r2+2hr-h2 ) D/r
-    //        = C/h6 ( -2r2+4hr-2h2 -r2+2hr-h2 ) D/r
-    //        = C/h6 ( -3r2+6hr-3h2 ) D/r
-    //        = 3C/h4 ( -r2/h2+2r/h-1 ) D/r
-    //        = -3C/h4 ( 1-r/h )2 D/r
     static Real  constGradWp(Real h)
     {
-        return (-3*constWp(h)) / (h*h*h*h);
+        return (-3*constWp(h)) / (h*h);
     }
     static __device__ Deriv gradWp(const Deriv& d, Real r_h, Real C)
     {
         Real a = (1-r_h);
-        return d * (C*a*a);
+        return d * (C*a*a/r_h);
     }
-
-    //Real  laplacianWp(Real r_h, Real C);
 
     /// Viscosity Smoothing Kernel:  W = 15/(2pih3) (-r3/2h3 + r2/h2 + h/2r - 1)
     static Real  constWv(Real h)
@@ -218,118 +349,60 @@ public:
         Real r3_h3 = r2_h2*r_h;
         return C*(-0.5f*r3_h3 + r2_h2 + 0.5f/r_h - 1);
     }
-
-    // grad W = d(W)/dr Ur            in spherical coordinates, with Ur = D/|D| = D/r
-    //        = d( C(-r3/2h3 + r2/h2 + h/2r - 1) )/dr D/r
-    //        = C(-3r2/2h3 + 2r/h2 - h/2r2) D/r
-    //        = C(-3r/2h3 + 2/h2 - h/2r3) D
-    //        = C/2h2 (-3r/h + 4 - h3/r3) D
-
     static Real  constGradWv(Real h)
     {
-        return constWv(h)/(2*h*h);
+        return constWv(h)/(h*h);
     }
     static __device__ Deriv gradWv(const Deriv& d, Real r_h, Real C)
     {
         Real r3_h3 = r_h*r_h*r_h;
-        return d * (C*(-3*r_h  + 4 - 1/r3_h3));
+        return d * (C*(2.0f -3.0f*r_h  - 0.5f/r3_h3));
     }
     static __device__ Deriv gradWv2(const Deriv& d, Real r2_h2, Real r_h, Real C)
     {
         Real r3_h3 = r2_h2*r_h;
         return d * (C*(-3*r_h  + 4 - 1/r3_h3));
     }
-
-    // laplacian(W) = d(W)/dx2 + d(W)/dy2 + d(W)/dz2
-    //              = 1/r d2(rW)/dr2                 in spherical coordinate, as f only depends on r
-    //              = C/r d2(r(-r3/2h3 + r2/h2 + h/2r - 1))/dr2
-    //              = C/r d2(-r4/2h3 + r3/h2 + h/2 - r)/dr2
-    //              = C/r d(-4r3/2h3 + 3r2/h2 - 1)/dr
-    //              = C/r (-6r2/h3 + 6r/h2)
-    //              = C (-6r/h3 + 6/h2)
-    //              = 6C/h2 (1 - r/h)
-
-    // laplacian(W) = d(W)/dx2 + d(W)/dy2 + d(W)/dz2
-    //              = 1/r2 d(r2 d(W)/dr)/dr                 in spherical coordinate, as f only depends on r
-    //              = C/r2 d(r2 d(-r3/2h3 + r2/h2 + h/2r - 1)/dr)/dr
-    //              = C/r2 d(r2 (-3r2/2h3 + 2r/h2 - h/2r2))/dr
-    //              = C/r2 d(-3r4/2h3 + 2r3/h2 - h/2))/dr
-    //              = C/r2 (-6r3/h3 + 6r2/h2)
-    //              = 6C/h2 (1 -r/h)
-
     static Real  constLaplacianWv(Real h)
     {
         return 6*constWv(h)/(h*h);
-        //return 75/(R_PI*h*h*h*h*h);
     }
 
     static __device__ Real  laplacianWv(Real r_h, Real C)
     {
         return C*(1-r_h);
     }
-
-    /// Color Smoothing Kernel: same as Density
-    static Real  constWc(Real h)
-    {
-        return (Real)(315 / (64*R_PI*h*h*h));
-    }
-    static __device__ Real  Wc(Real r_h, Real C)
-    {
-        Real a = (1-r_h*r_h);
-        return  C*a*a*a;
-    }
-    static Real  constGradWc(Real h)
-    {
-        return -6*constWc(h)/(h*h);
-    }
-    static __device__ Deriv gradWc(const Deriv& d, Real r_h, Real C)
-    {
-        Real a = (1-r_h*r_h);
-        return d*(C*a*a);
-    }
-    static Real  constLaplacianWc(Real h)
-    {
-        return 6*constWc(h)/(h*h);
-    }
-    static __device__ Real  laplacianWc(Real r_h, Real C)
-    {
-        Real r2_h2 = r_h*r_h;
-        return C*(-3+10*r2_h2-7*r2_h2*r2_h2);
-    }
 };
 
-template<class real>
+template<class real, int kernelType, int pressureType>
 __device__ void SPHFluidInitDensity(CudaVec3<real> /*x1*/, real& density, GPUSPHFluid<real>& params)
 {
-    density = 0; //params.mass * params.CWd; //SPH<real>::Wd(0,params.CWd);
+    density = 0; //params.mass * params.CWd; //SPH<real,kernelType>::Wd(0,params.CWd);
 }
 
-template<class real>
+template<class real, int kernelType, int pressureType>
 __device__ void SPHFluidCalcDensity(CudaVec3<real> x1, CudaVec3<real> x2, real& density, GPUSPHFluid<real>& params)
 {
     CudaVec3<real> n = x2-x1;
     real d2 = norm2(n);
-    if (d2 < params.h2)
+    if (sqrtf(d2) < params.h)
+        //if (d2 < params.h2)
     {
         //real r_h = rsqrtf(params.h2/d2);
         //real r_h = sqrtf(d2/params.h2);
         real r2_h2 = (d2/params.h2);
-        //real inv_d = rsqrtf(d2);
-        //n *= inv_d;
-        //real d = d2*inv_d;
-        //real d = params.mass * SPH<real>::Wd2(r2_h2,params.CWd);
-        real d = SPH<real>::Wd2(r2_h2);
+        real d = SPH<real,kernelType>::Wd2(r2_h2);
         density += d;
     }
 }
 
-template<class real>
+template<class real, int kernelType, int pressureType>
 __device__ void SPHFluidFinalDensity(CudaVec3<real> /*x1*/, real& density, GPUSPHFluid<real>& params)
 {
-    density = (1+density) * params.CWd * params.mass; //SPH<real>::Wd(0,params.CWd);
+    density = (SPH<real,kernelType>::Wd0()+density) * params.CWd * params.mass; //SPH<real,kernelType>::Wd(0,params.CWd);
 }
 
-template<class real, bool surface>
+template<class real, int kernelType, int pressureType, int viscosityType, int surfaceTensionType>
 __device__ void SPHFluidCalcForce(CudaVec4<real> x1, CudaVec3<real> v1, CudaVec4<real> x2, CudaVec3<real> v2, CudaVec3<real>& force, GPUSPHFluid<real>& params)
 {
     CudaVec3<real> n = CudaVec3<real>::make(x2.x-x1.x,x2.y-x1.y,x2.z-x1.z);
@@ -346,14 +419,25 @@ __device__ void SPHFluidCalcForce(CudaVec4<real> x1, CudaVec3<real> v1, CudaVec4
         // Pressure
         real pressure1 = params.stiffness * (density1 - params.density0);
         real pressure2 = params.stiffness * (density2 - params.density0);
-        force += SPH<real>::gradWp(n, r_h, params.CgradWp) * ( params.mass2 * (pressure1 / (density1*density1) + pressure2 / (density2*density2) ));
+        real pressureFV = params.mass2 * (pressure1 / (density1*density1) + pressure2 / (density2*density2) );
 
         // Viscosity
-        force += ( v2 - v1 ) * ( params.mass2 * params.viscosity * SPH<real>::laplacianWv(r_h,params.ClaplacianWv) / (density1 * density2) );
+        if (viscosityType == 1)
+        {
+            force += ( v2 - v1 ) * ( params.mass2 * params.viscosity * SPH<real,kernelType>::laplacianWv(r_h,params.ClaplacianWv) / (density1 * density2) );
+        }
+        else if (viscosityType == 2)
+        {
+            real vx = dot(n,v2-v1);
+            if (vx < 0)
+                pressureFV += - (vx * params.viscosity * params.h * params.mass / ((r2_h2 + 0.01f*params.h2)*(density1+density2)*0.5f));
+        }
+
+        force += SPH<real,kernelType>::gradWp(n, r_h, params.CgradWp) * pressureFV;
     }
 }
-
-template<class real>
+/*
+template<class real, int kernelType, int pressureType, int viscosityType, int surfaceTensionType>
 __device__ void SPHFluidCalcDForce(CudaVec4<real> x1, CudaVec3<real> v1, CudaVec3<real> dx1, CudaVec4<real> x2, CudaVec3<real> v2,  CudaVec3<real> dx2, CudaVec3<real>& dforce, GPUSPHFluid<real>& params)
 {
     CudaVec3<real> n = CudaVec3<real>::make(x2.x-x1.x,x2.y-x1.y,x2.z-x1.z);
@@ -383,11 +467,11 @@ __device__ void SPHFluidCalcDForce(CudaVec4<real> x1, CudaVec3<real> v1, CudaVec
         real dr_h = dot(dn,n)/params.h;
         //real dr2_h2 = 2*r_h*dr_h;
 
-        real ddensity = dot(dxi,SPH<real>::gradWd2(n, r2_h2, params.CgradWd));
+        real ddensity = dot(dxi,SPH<real,kernelType>::gradWd2(n, r2_h2, params.CgradWd));
         real dpressure = params.stiffness*ddensity;
         // d(a/b^2) = (d(a)*b-2*a*d(b))/b^3
         real dfpressure = params.mass2 * ( (dpressure*density1-2*pressure1*ddensity)/(density1*density1*density1)
-                +(dpressure*density2-2*pressure2*ddensity)/(density2*density2*density2) );
+                                          +(dpressure*density2-2*pressure2*ddensity)/(density2*density2*density2) );
         real a = (1-r_h);
         real dWp = params.CgradWp*a*a;
         real ddWp = -2*params.CgradWp*a*dr_h;
@@ -401,12 +485,12 @@ __device__ void SPHFluidCalcDForce(CudaVec4<real> x1, CudaVec3<real> v1, CudaVec
         // force += ( v2 - v1 ) * ( params.mass2 * params.viscosity * params.ClaplacianWv * (1-r_h) / (density1 * density2) );
         real d1d2 = density1*density2;
         dforce += dxi * ( params.mass2 * params.viscosity * params.ClaplacianWv * (1-r_h) / (density1 * density2) )
-                + (v2-v1) * ( params.mass2 * params.viscosity * params.ClaplacianWv * (-dr_h*d1d2 - (1-r_h)*ddensity*(density1+density2))/(d1d2*d1d2));
+            + (v2-v1) * ( params.mass2 * params.viscosity * params.ClaplacianWv * (-dr_h*d1d2 - (1-r_h)*ddensity*(density1+density2))/(d1d2*d1d2));
 
     }
 }
-
-template<class real>
+*/
+template<class real, int kernelType, int pressureType>
 __global__ void SPHFluidForceFieldCuda3t_computeDensity_kernel(int size, const int *cells, const int *cellGhost, GPUSPHFluid<real> params, real* pos4, const real* x)
 {
     __shared__ int2 range;
@@ -415,6 +499,7 @@ __global__ void SPHFluidForceFieldCuda3t_computeDensity_kernel(int size, const i
     int tx3 = __umul24(threadIdx.x,3);
     for (int cell = blockIdx.x; cell < size; cell += gridDim.x)
     {
+        __syncthreads();
         if (!threadIdx.x)
         {
             //range = *(const int2*)(cells+cell);
@@ -443,13 +528,13 @@ __global__ void SPHFluidForceFieldCuda3t_computeDensity_kernel(int size, const i
             if (px < ghost)
             {
                 // actual particle -> compute interactions
-                SPHFluidInitDensity(xi, density, params);
+                SPHFluidInitDensity<real,kernelType,pressureType>(xi, density, params);
 
                 int np = min(range.y-px0,BSIZE);
                 for (int i=0; i < np; ++i)
                 {
                     if (i != threadIdx.x)
-                        SPHFluidCalcDensity(xi, ((const CudaVec3<real>*)temp_x)[i], density, params);
+                        SPHFluidCalcDensity<real,kernelType,pressureType>(xi, ((const CudaVec3<real>*)temp_x)[i], density, params);
                 }
             }
             __syncthreads();
@@ -473,7 +558,7 @@ __global__ void SPHFluidForceFieldCuda3t_computeDensity_kernel(int size, const i
                     int np = min(range.y-py0,BSIZE);
                     for (int i=0; i < np; ++i)
                     {
-                        SPHFluidCalcDensity(xi, ((const CudaVec3<real>*)temp_x)[i], density, params);
+                        SPHFluidCalcDensity<real,kernelType,pressureType>(xi, ((const CudaVec3<real>*)temp_x)[i], density, params);
                     }
                 }
                 __syncthreads();
@@ -481,7 +566,7 @@ __global__ void SPHFluidForceFieldCuda3t_computeDensity_kernel(int size, const i
             if (px < ghost)
             {
                 // actual particle -> write computed density
-                SPHFluidFinalDensity(xi, density, params);
+                SPHFluidFinalDensity<real,kernelType,pressureType>(xi, density, params);
                 CudaVec4<real> res = CudaVec4<real>::make(xi.x,xi.y,xi.z,density);
                 ((CudaVec4<real>*)pos4)[index] = res;
             }
@@ -489,7 +574,7 @@ __global__ void SPHFluidForceFieldCuda3t_computeDensity_kernel(int size, const i
     }
 }
 
-template<class real, bool surface>
+template<class real, int kernelType, int pressureType, int viscosityType, int surfaceTensionType>
 __global__ void SPHFluidForceFieldCuda3t_addForce_kernel(int size, const int *cells, const int *cellGhost, GPUSPHFluid<real> params, real* f, const real* pos4, const real* v)
 {
     __shared__ int2 range;
@@ -539,7 +624,7 @@ __global__ void SPHFluidForceFieldCuda3t_addForce_kernel(int size, const int *ce
                 for (int i=0; i < np; ++i)
                 {
                     if (i != threadIdx.x)
-                        SPHFluidCalcForce<real,surface>(xi, vi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], force, params);
+                        SPHFluidCalcForce<real,kernelType,pressureType,viscosityType,surfaceTensionType>(xi, vi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], force, params);
                 }
             }
             __syncthreads();
@@ -568,7 +653,7 @@ __global__ void SPHFluidForceFieldCuda3t_addForce_kernel(int size, const int *ce
                     int np = min(range.y-py0,BSIZE);
                     for (int i=0; i < np; ++i)
                     {
-                        SPHFluidCalcForce<real,surface>(xi, vi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], force, params);
+                        SPHFluidCalcForce<real,kernelType,pressureType,viscosityType,surfaceTensionType>(xi, vi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], force, params);
                     }
                 }
                 __syncthreads();
@@ -581,8 +666,8 @@ __global__ void SPHFluidForceFieldCuda3t_addForce_kernel(int size, const int *ce
         }
     }
 }
-
-template<class real>
+/*
+template<class real, int kernelType, int pressureType, int viscosityType, int surfaceTensionType>
 __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int *cells, const int *cellGhost, GPUSPHFluid<real> params, real* df, const real* pos4, const real* v, const real* dx)
 {
     __shared__ int2 range;
@@ -631,8 +716,7 @@ __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int *c
             }
             __syncthreads();
             if (px < ghost)
-            {
-                // actual particle -> compute interactions
+            { // actual particle -> compute interactions
                 dforce = CudaVec3<real>::make(0,0,0);
                 int np = min(range.y-px0,BSIZE);
                 for (int i=0; i < np; ++i)
@@ -666,8 +750,7 @@ __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int *c
                 }
                 __syncthreads();
                 if (px < ghost)
-                {
-                    // actual particle -> compute interactions
+                { // actual particle -> compute interactions
                     int np = min(range.y-py0,BSIZE);
                     for (int i=0; i < np; ++i)
                     {
@@ -677,69 +760,486 @@ __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int *c
                 __syncthreads();
             }
             if (px < ghost)
-            {
-                // actual particle -> write computed force
+            { // actual particle -> write computed force
                 ((CudaVec3<real>*)df)[index] += dforce;
             }
         }
     }
 }
-
+*/
 //////////////////////
 // CPU-side methods //
 //////////////////////
 
-void SPHFluidForceFieldCuda3f_computeDensity(unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* pos4, const void* x)
+void SPHFluidForceFieldCuda3f_computeDensity(int kernelType, int pressureType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* pos4, const void* x)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60,1);
-    {SPHFluidForceFieldCuda3t_computeDensity_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)pos4, (const float*)x); mycudaDebugError("SPHFluidForceFieldCuda3t_computeDensity_kernel<float>");}
+    switch(kernelType)
+    {
+    case 0:
+        switch(pressureType)
+        {
+        case 0: //SPHFluidForceFieldCuda3t_computeDensity_kernel<float,0,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)pos4, (const float*)x);
+            break;
+        case 1: SPHFluidForceFieldCuda3t_computeDensity_kernel<float,0,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)pos4, (const float*)x);
+            break;
+        default: break;
+        }
+        break;
+    case 1:
+        switch(pressureType)
+        {
+        case 0: //SPHFluidForceFieldCuda3t_computeDensity_kernel<float,1,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)pos4, (const float*)x);
+            break;
+        case 1: SPHFluidForceFieldCuda3t_computeDensity_kernel<float,1,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)pos4, (const float*)x);
+            break;
+        default: break;
+        }
+        break;
+    default: break;
+    }
+    mycudaDebugError("SPHFluidForceFieldCuda3t_computeDensity_kernel<float>");
 }
 
-void SPHFluidForceFieldCuda3f_addForce(unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* f, const void* x, const void* v)
+void SPHFluidForceFieldCuda3f_addForce(int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60,1);
-    if (params->surfaceTension > 0)
-    {SPHFluidForceFieldCuda3t_addForce_kernel<float,true><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v); mycudaDebugError("SPHFluidForceFieldCuda3t_addForce_kernel<float,true>");}
-    else
-    {SPHFluidForceFieldCuda3t_addForce_kernel<float,false><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v); mycudaDebugError("SPHFluidForceFieldCuda3t_addForce_kernel<float,false>");}
-
+    switch(kernelType)
+    {
+    case 0:
+        switch(pressureType)
+        {
+        case 0:
+            switch(viscosityType)
+            {
+            case 0:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,0,0,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,0,0,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,0,0,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 1:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,0,1,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,0,1,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,0,1,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 2:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,0,2,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,0,2,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,0,2,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            default: break;
+            }
+            break;
+        case 1:
+            switch(viscosityType)
+            {
+            case 0:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,1,0,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,1,0,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,1,0,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 1:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,1,1,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,1,1,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,1,1,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 2:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,1,2,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,1,2,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,0,1,2,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            default: break;
+            }
+            break;
+        default: break;
+        }
+        break;
+    case 1:
+        switch(pressureType)
+        {
+        case 0:
+            switch(viscosityType)
+            {
+            case 0:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,0,0,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,0,0,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,0,0,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 1:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,0,1,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,0,1,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,0,1,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 2:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,0,2,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,0,2,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,0,2,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            default: break;
+            }
+            break;
+        case 1:
+            switch(viscosityType)
+            {
+            case 0:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,1,0,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,1,0,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,1,0,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 1:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,1,1,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,1,1,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,1,1,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 2:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,1,2,0><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,1,2,1><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<float,1,1,2,2><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)f, (const float*)x, (const float*)v);
+                    break;
+                default: break;
+                }
+                break;
+            default: break;
+            }
+            break;
+        default: break;
+        }
+        break;
+    default: break;
+    }
+    mycudaDebugError("SPHFluidForceFieldCuda3t_addForce_kernel<float>");
 }
-
+/*
 void SPHFluidForceFieldCuda3f_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3f* params, void* df, const void* x, const void* v, const void* dx)
 {
-    dim3 threads(BSIZE,1);
-    dim3 grid(60/BSIZE,1);
-    {SPHFluidForceFieldCuda3t_addDForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)df, (const float*)x, (const float*)v, (const float*)dx); mycudaDebugError("SPHFluidForceFieldCuda3t_addDForce_kernel<float>");}
+	dim3 threads(BSIZE,1);
+	dim3 grid(60/BSIZE,1);
+	{SPHFluidForceFieldCuda3t_addDForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (float*)df, (const float*)x, (const float*)v, (const float*)dx); mycudaDebugError("SPHFluidForceFieldCuda3t_addDForce_kernel<float>");}
 }
-
+*/
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-void SPHFluidForceFieldCuda3d_computeDensity(unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* pos4, const void* x)
+void SPHFluidForceFieldCuda3d_computeDensity(int kernelType, int pressureType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* pos4, const void* x)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60,1);
-    {SPHFluidForceFieldCuda3t_computeDensity_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)pos4, (const double*)x); mycudaDebugError("SPHFluidForceFieldCuda3t_computeDensity_kernel<double>");}
+    switch(kernelType)
+    {
+    case 0:
+        switch(pressureType)
+        {
+        case 0: //SPHFluidForceFieldCuda3t_computeDensity_kernel<double,0,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)pos4, (const double*)x);
+            break;
+        case 1: SPHFluidForceFieldCuda3t_computeDensity_kernel<double,0,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)pos4, (const double*)x);
+            break;
+        default: break;
+        }
+        break;
+    case 1:
+        switch(pressureType)
+        {
+        case 0: //SPHFluidForceFieldCuda3t_computeDensity_kernel<double,1,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)pos4, (const double*)x);
+            break;
+        case 1: SPHFluidForceFieldCuda3t_computeDensity_kernel<double,1,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)pos4, (const double*)x);
+            break;
+        default: break;
+        }
+        break;
+    default: break;
+    }
+    mycudaDebugError("SPHFluidForceFieldCuda3t_computeDensity_kernel<double>");
+
 }
 
-void SPHFluidForceFieldCuda3d_addForce(unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* f, const void* x, const void* v)
+void SPHFluidForceFieldCuda3d_addForce (int kernelType, int pressureType, int viscosityType, int surfaceTensionType, unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
-    dim3 grid(60/BSIZE,1);
-    if (params->surfaceTension > 0)
-    {SPHFluidForceFieldCuda3t_addForce_kernel<double,true><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v); mycudaDebugError("SPHFluidForceFieldCuda3t_addForce_kernel<double,true>");}
-    else
-    {SPHFluidForceFieldCuda3t_addForce_kernel<double,false><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v); mycudaDebugError("SPHFluidForceFieldCuda3t_addForce_kernel<double,false>");}
+    dim3 grid(60,1);
+    switch(kernelType)
+    {
+    case 0:
+        switch(pressureType)
+        {
+        case 0:
+            switch(viscosityType)
+            {
+            case 0:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,0,0,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,0,0,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,0,0,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 1:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,0,1,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,0,1,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,0,1,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 2:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,0,2,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,0,2,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,0,2,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            default: break;
+            }
+            break;
+        case 1:
+            switch(viscosityType)
+            {
+            case 0:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,1,0,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,1,0,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,1,0,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 1:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,1,1,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,1,1,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,1,1,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 2:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,1,2,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,1,2,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,0,1,2,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            default: break;
+            }
+            break;
+        default: break;
+        }
+        break;
+    case 1:
+        switch(pressureType)
+        {
+        case 0:
+            switch(viscosityType)
+            {
+            case 0:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,0,0,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,0,0,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,0,0,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 1:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,0,1,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,0,1,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,0,1,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 2:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,0,2,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,0,2,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,0,2,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            default: break;
+            }
+            break;
+        case 1:
+            switch(viscosityType)
+            {
+            case 0:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,1,0,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,1,0,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,1,0,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 1:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,1,1,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,1,1,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,1,1,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            case 2:
+                switch(surfaceTensionType)
+                {
+                case 0: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,1,2,0><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 1: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,1,2,1><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                case 2: SPHFluidForceFieldCuda3t_addForce_kernel<double,1,1,2,2><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v);
+                    break;
+                default: break;
+                }
+                break;
+            default: break;
+            }
+            break;
+        default: break;
+        }
+        break;
+    default: break;
+    }
+    mycudaDebugError("SPHFluidForceFieldCuda3t_addForce_kernel<double>");
+    /*
+    	dim3 threads(BSIZE,1);
+    	dim3 grid(60/BSIZE,1);
+        if (params->surfaceTension > 0)
+    	{SPHFluidForceFieldCuda3t_addForce_kernel<double,true><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v); mycudaDebugError("SPHFluidForceFieldCuda3t_addForce_kernel<double,true>");}
+        else
+    	{SPHFluidForceFieldCuda3t_addForce_kernel<double,false><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)f, (const double*)x, (const double*)v); mycudaDebugError("SPHFluidForceFieldCuda3t_addForce_kernel<double,false>");}
+    */
 }
-
+/*
 void SPHFluidForceFieldCuda3d_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPUSPHFluid3d* params, void* df, const void* x, const void* v, const void* dx)
 {
-    dim3 threads(BSIZE,1);
-    dim3 grid(60/BSIZE,1);
-    {SPHFluidForceFieldCuda3t_addDForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)df, (const double*)x, (const double*)v, (const double*)dx); mycudaDebugError("SPHFluidForceFieldCuda3t_addDForce_kernel<double>");}
+	dim3 threads(BSIZE,1);
+	dim3 grid(60/BSIZE,1);
+	{SPHFluidForceFieldCuda3t_addDForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *params, (double*)df, (const double*)x, (const double*)v, (const double*)dx); mycudaDebugError("SPHFluidForceFieldCuda3t_addDForce_kernel<double>");}
 }
-
+*/
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000

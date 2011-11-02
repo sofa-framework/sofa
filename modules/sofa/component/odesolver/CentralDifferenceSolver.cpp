@@ -32,9 +32,6 @@
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
 
-
-
-
 namespace sofa
 {
 
@@ -137,6 +134,9 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params /* PARAMS FIR
         ops[1].second.push_back(std::make_pair(vel2.id(),dt));
 
         vop.v_multiop(ops);
+
+        mop.solveConstraint(vel2,core::ConstraintParams::VEL);
+        mop.solveConstraint(pos2,core::ConstraintParams::POS);
 #endif
     }
     else

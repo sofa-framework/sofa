@@ -168,9 +168,11 @@ int main(int argc, char** argv)
     if (!files.empty()) fileName = files[0];
     else fileName =
 #if defined(SOFA_GUI_INTERACTION) && defined(SOFA_HAVE_METIS) && defined(SOFA_HAVE_TAUCS_MT) && defined(SOFA_GPU_CUBLAS) && defined(SOFA_HAVE_BOOST)
-            "Demos/Passport/siggraph2011.scn"
+//             "Demos/Passport/siggraph2011.scn"
+            "CUDA/LDIFluidDeform.scn"
 #else
-            "CUDA/quadSpringSphereCUDA.scn"
+            "CUDA/LDIFluidDeform.scn"
+//             "CUDA/quadSpringSphereCUDA.scn"
 #endif
             ;
     //std::string fileName = "CUDA/beam10x10x46-spring-rk4-CUDA.scn";
@@ -207,7 +209,8 @@ int main(int argc, char** argv)
             return err;
 
         //To set a specific resolution for the viewer, use the component ViewerDimensionSetting in you scene graph
-        sofa::gui::GUIManager::SetDimension(800,600);
+        //sofa::gui::GUIManager::SetDimension(800,600);
+        sofa::gui::GUIManager::SetDimension(640,480);
 
     }
 

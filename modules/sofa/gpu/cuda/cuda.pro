@@ -30,6 +30,8 @@ HEADERS += mycuda.h \
            CudaMath.inl \
 	   CudaMathRigid.h \
 	   CudaMathRigid.inl \
+       CudaScan.h \
+       CudaSort.h \
            CudaMechanicalObject.h \
            CudaMechanicalObject.inl \
            CudaUniformMass.h \
@@ -122,6 +124,8 @@ SOURCES += mycuda.cpp \
            VolumetricContact.cpp 
 
 CUDA_SOURCES += mycuda.cu \
+           CudaScan.cu \
+           CudaSort.cu \
            CudaMechanicalObject.cu \
            CudaUniformMass.cu \
 	   CudaTypesBase.cu \

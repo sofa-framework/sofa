@@ -225,7 +225,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         }
         else if (pend < path.length())
         {
-            std::cerr << "ERROR: child node "<<name<<" not found in "<<getPathName()<<std::endl;
+            //std::cerr << "ERROR: child node "<<name<<" not found in "<<getPathName()<<std::endl;
             return NULL;
         }
         else
@@ -233,7 +233,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
             core::objectmodel::BaseObject* obj = simulation::Node::getObject(name);
             if (obj == NULL)
             {
-                std::cerr << "ERROR: object "<<name<<" not found in "<<getPathName()<<std::endl;
+                //std::cerr << "ERROR: object "<<name<<" not found in "<<getPathName()<<std::endl;
                 return NULL;
             }
             else

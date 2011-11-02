@@ -28,6 +28,8 @@ public:
 
     virtual void reinit();
 
+    virtual void reset();
+
     virtual void handleEvent(sofa::core::objectmodel::Event *);
 
     //virtual void rotateWorldAroundPoint(Quat &rotation, const Vec3 &point);
@@ -66,6 +68,8 @@ public:
     Data <Vec3> m_rotationCenter;
     Data <Vec3> m_rotationStartPoint;
     Data <Vec3> m_rotationLookAt;
+    Data <Vec3> m_rotationAxis;
+    Data <Vec3> m_cameraUp;
 
     Data <bool> p_drawRotation;
 
@@ -76,8 +80,8 @@ public:
 protected:
     double m_nextStep;
     double m_angleStep;
-    double m_initAngle;
-    double m_radius;
+    //double m_initAngle;
+    //double m_radius;
     bool firstIteration;
 
     sofa::helper::vector <Vec3> m_rotationPoints;
