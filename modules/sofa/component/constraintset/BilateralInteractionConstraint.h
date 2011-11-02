@@ -159,7 +159,7 @@ protected:
 };
 
 template<class DataTypes>
-class SOFA_ADVANCED_CONSTRAINT_API BilateralInteractionConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
+class BilateralInteractionConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BilateralInteractionConstraint,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::PairInteractionConstraint,DataTypes));

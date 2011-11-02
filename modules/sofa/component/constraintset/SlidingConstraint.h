@@ -41,7 +41,7 @@ namespace constraintset
 {
 
 template<class DataTypes>
-class SOFA_ADVANCED_CONSTRAINT_API SlidingConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
+class SlidingConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(SlidingConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionConstraint,DataTypes));
@@ -119,6 +119,15 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_ADVANCED_CONSTRAINT_API SlidingConstraint< defaulttype::Vec3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_ADVANCED_CONSTRAINT_API SlidingConstraint< defaulttype::Vec3fTypes >;
+#endif
+#endif
 
 } // namespace constraintset
 
