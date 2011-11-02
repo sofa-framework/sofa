@@ -85,7 +85,7 @@ public:
 
     sofa::core::behavior::MechanicalState< DataTypes > *restMState;
 
-    VecDeriv Springs_dir;
+    //VecDeriv Springs_dir;
 protected:
     RestShapeSpringsForceField();
 public:
@@ -95,7 +95,6 @@ public:
     /// Add the forces.
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    /// Constant force has null variation.
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
 
     /// Brings ForceField contribution to the global system stiffness matrix.
@@ -110,7 +109,6 @@ protected :
     VecIndex m_indices;
     VecReal k;
     VecIndex m_ext_indices;
-    //const VecCoord* pp_0;
 private :
 
     bool useRestMState; /// An external MechanicalState is used as rest reference.
