@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 //#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/fixed_array.h>
+#include <sofa/core/topology/Topology.h>
 #include "WDoubleLineEdit.h"
 #include <limits.h>
 
@@ -579,6 +580,61 @@ public:
 
 template<class T, std::size_t N>
 class data_widget_container < sofa::helper::fixed_array<T, N> > : public fixed_vector_data_widget_container < sofa::helper::fixed_array<T, N> >
+{};
+
+
+////////////////////////////////////////////////////////////////
+/// Topological edges/triangles/... support
+////////////////////////////////////////////////////////////////
+
+template<>
+class vector_data_trait < sofa::core::topology::Topology::Edge >
+    : public vector_data_trait < sofa::helper::fixed_array < sofa::core::topology::Topology::PointID, 2 > >
+{
+};
+
+template<>
+class data_widget_container < sofa::core::topology::Topology::Edge > : public fixed_vector_data_widget_container < sofa::core::topology::Topology::Edge >
+{};
+
+template<>
+class vector_data_trait < sofa::core::topology::Topology::Triangle >
+    : public vector_data_trait < sofa::helper::fixed_array < sofa::core::topology::Topology::PointID, 3 > >
+{
+};
+
+template<>
+class data_widget_container < sofa::core::topology::Topology::Triangle > : public fixed_vector_data_widget_container < sofa::core::topology::Topology::Triangle >
+{};
+
+template<>
+class vector_data_trait < sofa::core::topology::Topology::Quad >
+    : public vector_data_trait < sofa::helper::fixed_array < sofa::core::topology::Topology::PointID, 4 > >
+{
+};
+
+template<>
+class data_widget_container < sofa::core::topology::Topology::Quad > : public fixed_vector_data_widget_container < sofa::core::topology::Topology::Quad >
+{};
+
+template<>
+class vector_data_trait < sofa::core::topology::Topology::Tetrahedron >
+    : public vector_data_trait < sofa::helper::fixed_array < sofa::core::topology::Topology::PointID, 4 > >
+{
+};
+
+template<>
+class data_widget_container < sofa::core::topology::Topology::Tetrahedron > : public fixed_vector_data_widget_container < sofa::core::topology::Topology::Tetrahedron >
+{};
+
+template<>
+class vector_data_trait < sofa::core::topology::Topology::Hexahedron >
+    : public vector_data_trait < sofa::helper::fixed_array < sofa::core::topology::Topology::PointID, 8 > >
+{
+};
+
+template<>
+class data_widget_container < sofa::core::topology::Topology::Hexahedron > : public fixed_vector_data_widget_container < sofa::core::topology::Topology::Hexahedron >
 {};
 
 ////////////////////////////////////////////////////////////////

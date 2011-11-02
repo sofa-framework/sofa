@@ -45,6 +45,9 @@
 #include <qtextedit.h>
 #endif
 
+// uncomment to show traces of GUI operations in this file
+//#define DEBUG_GUI
+
 namespace sofa
 {
 
@@ -84,6 +87,9 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     {
         return;
     }
+#ifdef DEBUG_GUI
+    std::cout << "GUI: createDialog(" << base->getClassName() << " " << base->getName() << ")" << std::endl;
+#endif
     emit beginObjectModification(base);
     node = base;
     data_ = NULL;
@@ -138,11 +144,17 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         {
             core::objectmodel::BaseData* data=*it;
 
+            if (data->getName().empty()) continue; // ignore unnamed data
+
             //For each Data of the current Object
             //We determine where it belongs:
             std::string currentGroup=data->getGroup();
 
             if (currentGroup.empty()) currentGroup="Property";
+
+#ifdef DEBUG_GUI
+            std::cout << "GUI: add Data " << data->getName() << " in " << currentGroup << std::endl;
+#endif
 
             QTabulationModifyObject* currentTab=NULL;
 
@@ -237,6 +249,10 @@ void ModifyObject::createDialog(core::objectmodel::BaseData* data)
     node = NULL;
 
     emit beginDataModification(data);
+
+#ifdef DEBUG_GUI
+    std::cout << "GUI: createDialog( Data<" << data->getValueTypeString() << "> " << data->getName() << ")" << std::endl;
+#endif
 
     QVBoxLayout *generalLayout = new QVBoxLayout(this, 0, 1, "generalLayout");
     QHBoxLayout *lineLayout = new QHBoxLayout( 0, 0, 6, "Button Layout");

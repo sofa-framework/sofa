@@ -26,6 +26,7 @@
 ******************************************************************************/
 
 #include "TableDataWidget.h"
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/Factory.inl>
 #include <iostream>
 
@@ -58,6 +59,12 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<std::string> > 
 #ifdef TODOTOPO
 Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointSubset, TABLE_HORIZONTAL > > DWClass_PointSubset("default",true);
 #endif
+
+Creator<DataWidgetFactory, TableDataWidget< sofa::core::topology::BaseMeshTopology::SeqEdges      > > DWClass_SeqEdges     ("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::core::topology::BaseMeshTopology::SeqTriangles  > > DWClass_SeqTriangles ("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::core::topology::BaseMeshTopology::SeqQuads      > > DWClass_SeqQuads     ("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::core::topology::BaseMeshTopology::SeqTetrahedra > > DWClass_SeqTetrahedra("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::core::topology::BaseMeshTopology::SeqHexahedra  > > DWClass_SeqHexahedra ("default",true);
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<Vec<1,int> > > > DWClass_vectorVec1i("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<Vec<1,unsigned int> > > > DWClass_vectorVec1u("default",true);
@@ -125,6 +132,12 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVecto
 Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<Vec<2, double> > > > DWClass_ResizableExtVectorVec2d("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<Vec<3, float> > > > DWClass_ResizableExtVectorVec3f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<Vec<3, double> > > > DWClass_ResizableExtVectorVec3d("default",true);
+
+Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<sofa::core::topology::Topology::Edge > > > DWClass_ResizableExtVectorEdge("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<sofa::core::topology::Topology::Triangle > > > DWClass_ResizableExtVectorTriangle("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<sofa::core::topology::Topology::Quad > > > DWClass_ResizableExtVectorQuad("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<sofa::core::topology::Topology::Tetrahedron > > > DWClass_ResizableExtVectorTetrahedron("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<sofa::core::topology::Topology::Hexahedron > > > DWClass_ResizableExtVectorHexahedron("default",true);
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::Quater<float> > > > DWClass_vectorQuatf("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::Quater<double> > > > DWClass_vectorQuatd("default",true);
