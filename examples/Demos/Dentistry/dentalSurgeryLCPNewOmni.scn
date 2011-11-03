@@ -12,7 +12,7 @@
 		<MechanicalStateController template="Rigid" name="default40"  listening="1"  handleEventTriggersUpdate="1"  mainDirection="-1 0 0" />
 		<Node 	name="RefModel" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
 			<MeshObjLoader name="loader"  filename="data/mesh/dental_instrument_centerline.obj" />
-			<MeshTopology src="@loader"name="default42" />
+			<MeshTopology src="@loader" name="default42" />
 			<MechanicalObject src="@loader" template="Vec3d" name="instrumentCollisionState"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  internalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1"  translation="-1.2 -1.6 3.55"  rotation="180 0 150" />
 			<RigidMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default43" />
 		</Node>
@@ -30,7 +30,7 @@
 		</Node>
 		<Node 	name="CollisionModel" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
 			<MeshObjLoader name="loader"  filename="data/mesh/dental_instrument_centerline.obj" />
-			<MeshTopology src="@loader"name="InstrumentCollisionModel" />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" template="Vec3d" name="instrumentCollisionState"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  internalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1"  translation="-1.2 -1.6 3.55"  rotation="180 0 150" />
 			<TTriangleModel template="Vec3d" name="instrument"  contactStiffness="10" />
 			<LineModel name="instrument"  contactStiffness="10" />
@@ -47,7 +47,7 @@
 		</Node>
 		<Node 	name="CollisionModel" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
 			<MeshObjLoader name="loader"  filename="data/mesh/tooth-closed.obj" />
-			<MeshTopology src="@loader"name="ToothCollisionModel" />
+			<MeshTopology src="@loader" name="ToothCollisionModel" />
 			<MechanicalObject src="@loader" template="Vec3d" name="toothState"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  internalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1"  translation="2 0.5 0"  rotation="0 0 -90" />
 			<TTriangleModel template="Vec3d" name="tooth"  moving="0"  simulated="0"  contactStiffness="100" />
 			<LineModel name="tooth"  moving="0"  simulated="0"  contactStiffness="100" />
