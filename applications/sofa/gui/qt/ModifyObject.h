@@ -75,14 +75,7 @@
 
 namespace sofa
 {
-namespace core
-{
-namespace objectmodel
-{
-class Base;
-class BaseData;
-}
-}
+
 namespace gui
 {
 
@@ -141,8 +134,6 @@ typedef struct ModifyObjectFlags
         MODELER_FLAG = true;
     };
 } ModifyObjectFlags;
-
-class DataWidget;
 
 class SOFA_SOFAGUIQT_API ModifyObject : public QDialog
 {
