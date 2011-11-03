@@ -76,7 +76,7 @@ public:
     TopologySubsetDataHandler(BaseTopologyData <VecT>* _topologyData): sofa::core::topology::TopologyElementHandler < TopologyElementType >()
         , m_topologyData(_topologyData) {}
 
-    bool isTopologyDataRegistered() {return m_topologyData;}
+    bool isTopologyDataRegistered() {return m_topologyData != 0;}
 
     /** Public fonction to apply creation and destruction functions */
     /// Apply removing current elementType elements
