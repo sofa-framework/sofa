@@ -27,71 +27,84 @@ echo
 function qmake_remove_project {
     dir="${1%/*}"
     pro="${1##*/}"
-    parent=$PWD
-    cd "$dir"
+    pushd "$dir"
     echo "Removing project $pro in $dir"
 	let npro+=1
     for g in $($SCRIPTS/files-from-qmake-pro.awk < $pro); do
 	    if [ -d "$g" ]; then
 		    echo "Remove directory $g"
 		    let nrmdir+=1
-		    svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
+		    svn rm --force $g || echo "Failed to remove directory $g";
 	    elif [ -f "$g" ]; then
             if [ "${g: -4}" == ".pro" ]; then
                 qmake_remove_project "$g"
+            else
+		        echo "Remove file $g"
+		        let nrmfile+=1
+		        svn rm --force $g || echo "Failed to remove file $g";
             fi
-		    echo "Remove file $g"
-		    let nrmfile+=1
-		    svn rm --force $g || (echo "Failed to remove file $g"; mv -f $f.bak $f ; exit 1)
 	    else
 		    echo "$g already removed."
 	    fi
 	done
-    cd $parent
+    # note that we can't use dir and pro variables here, as then might have been erased by recursion
+    popd
+	echo "Remove file $1"
+	let nrmfile+=1
+	svn rm --force $1 || echo "Failed to remove file $1";
 }
 
 function qmake_process_dir {
     cd "$1"
     echo "Entering $PWD"
     for f in *.pro *.pri *.cfg *.prf; do
-	echo "Processing qmake project file $f"
-	let npro+=1
-	cp -pf $f $f.bak
-	$SCRIPTS/filter-qmake-pro.awk < $f.bak > $f 2> $f.dev
-	for g in $(cat $f.dev); do
-	    if [ -d "$g" ]; then
-		    echo "Remove directory $g"
-		    let nrmdir+=1
-		    svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
-	    elif [ -f "$g" ]; then
-            if [ "${g: -4}" == ".pro" ]; then
-                qmake_remove_project "$g"
-            fi
-		    echo "Remove file $g"
-		    let nrmfile+=1
-		    svn rm --force $g || (echo "Failed to remove file $g"; mv -f $f.bak $f ; exit 1)
-	    else
-		echo "$g already removed."
-	    fi
-	done
-	rm -f $f.dev
-    if [ "${f: -4}" == ".prf" ]; then
-        cp -pf $f $f.dev
-        $SCRIPTS/post-filter-qmake-prf.awk -v features="$DIR0"/features pass=1 "$f".dev pass=2 "$f".dev > $f
-        rm -f $f.dev
-    fi
-    if [ $(wc -w < "$f") -eq 0 ]; then
-    if [ $(wc -w < "$f".bak) -gt 0 ]; then
-		echo "Remove file $f"
-		let nrmfile+=1
-		svn rm --force $f || (echo "Failed to remove file $f"; mv -f $f.bak $f; exit 1)
-    fi
-    fi
+	    echo "Processing qmake project file $f"
+	    let npro+=1
+	    cp -pf $f $f.bak
+	    $SCRIPTS/filter-qmake-pro.awk < $f.bak > $f 2> $f.dev
+#        cp -pf $f $f.nodev
+	    for g in $(cat $f.dev); do
+	        if [ -d "$g" ]; then
+		        echo "Remove directory $g"
+		        let nrmdir+=1
+		        svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
+	        elif [ -f "$g" ]; then
+                if [ "${g: -4}" == ".pro" ]; then
+                    qmake_remove_project "$g"
+                else
+		            echo "Remove file $g"
+		            let nrmfile+=1
+		            svn rm --force $g || (echo "Failed to remove file $g"; mv -f $f.bak $f ; exit 1)
+                fi
+	        else
+		        echo "$g already removed."
+	        fi
+	    done
+	    rm -f $f.dev
     done
+
     for f in *; do
 	if [ -d "$f" ]; then
 	    qmake_process_dir "$f"
 	fi
+    done
+
+    for f in *.pro *.pri *.cfg *.prf; do
+        if [ "$f" == "sofa-dependencies.prf" ]; then
+	        echo "Post-processing qmake project file $f"
+            cp -pf $f $f.tmp
+            $SCRIPTS/post-filter-qmake-prf.awk -v features="$DIR0"/features pass=1 $f.tmp pass=2 $f.tmp > $f
+            rm -f $f.tmp
+        fi
+        if [ $(wc -w < "$f") -eq 0 -a $(wc -w < "$f".bak) -gt 0 ]; then
+		    echo "Remove file $f"
+		    let nrmfile+=1
+		    svn rm --force $f || (echo "Failed to remove file $f"; mv -f $f.bak $f; exit 1)
+        elif [ $(wc -l < $f.bak) -gt $(wc -l < $f) ]; then
+	        nl=$(($(wc -l < $f.bak)-$(wc -l < $f)))
+	        let nrmline+=$nl
+	        echo $nl "lines removed in project file" $f
+        fi
     done
     echo "Leaving  $PWD"
     cd ..
@@ -114,11 +127,11 @@ function private_process_dir {
 	    if [ -d "$g" ]; then
 		echo "Remove directory $g"
 		let nrmdir+=1
-		svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
+		svn rm --force $g || (echo "Failed to remove directory $g"; exit 1)
 	    elif [ -f "$g" ]; then
 		echo "Remove file $g"
 		let nrmfile+=1
-		svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
+		svn rm --force $g || (echo "Failed to remove file $g"; exit 1)
 	    else
 		echo "$g already removed."
 	    fi
