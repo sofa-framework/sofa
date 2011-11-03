@@ -45,6 +45,7 @@
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/simulation/common/xml/Element.inl>
 #include <iostream>
@@ -118,6 +119,56 @@ Node::Node(const std::string& name)
 
 Node::~Node()
 {
+}
+
+void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+{
+    Inherit1::parse( arg );
+    static const char* oldVisualFlags[] =
+    {
+        "showAll",
+        "showVisual",
+        "showBehavior",
+        "showCollision",
+        "showMapping",
+        "showVisualModels",
+        "showBehaviorModels",
+        "showCollisionModels",
+        "showBoundingCollisionModels",
+        "showMappings",
+        "showMechanicalMappings",
+        "showForceFields",
+        "showInteractionForceFields",
+        "showWireFrame",
+        "showNormals",
+        NULL
+    };
+    std::string oldFlags;
+    for (unsigned int i=0; oldVisualFlags[i]; ++i)
+    {
+        const char* str = arg->getAttribute(oldVisualFlags[i], NULL);
+        if (str == NULL || !*str) continue;
+        bool val;
+        if (str[0] == 'T' || str[0] == 't')
+            val = true;
+        else if (str[0] == 'F' || str[0] == 'f')
+            val = false;
+        else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
+            val = (atoi(str) != 0);
+        else continue;
+        if (!oldFlags.empty()) oldFlags += ' ';
+        if (val) oldFlags += oldVisualFlags[i];
+        else { oldFlags += "hide"; oldFlags += oldVisualFlags[i]+4; }
+    }
+    if (!oldFlags.empty())
+    {
+        serr << "Deprecated visual flags attributes used. Instead, add the following object within the Node:" << sendl;
+        serr << "<VisualStyle displayFlags=\"" << oldFlags << "\" />" << sendl;
+
+        sofa::core::objectmodel::BaseObjectDescription objDesc("displayFlags","VisualStyle");
+        objDesc.setAttribute("displayFlags", oldFlags.c_str());
+        sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(this, &objDesc);
+    }
 }
 
 /// Initialize the components of this node and all the nodes which depend on it.

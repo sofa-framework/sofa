@@ -116,6 +116,10 @@ public:
 
     /// @name High-level interface
     /// @{
+
+    /// Parse the given description to assign values to this object's fields and potentially other parameters
+    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+
     /// Initialize the components
     void init(const core::ExecParams* params);
     /// Apply modifications to the components
