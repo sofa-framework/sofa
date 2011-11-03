@@ -638,6 +638,31 @@ public:
     iterator begin() { return hostWrite(); }
     iterator end() { return hostWrite()+size(); }
 
+    iterator erase(iterator position)
+    {
+        iterator p0 = begin();
+        size_type i = position - p0;
+        size_type n = size();
+        if (i >= n) return end();
+        for (size_type j=i+1; j<n; ++j)
+            *(p0+(j-1)) = *(p0+j);
+        resize(n-1);
+        return begin()+i;
+    }
+
+    iterator insert(iterator position, const T& x)
+    {
+        size_type i = position - begin();
+        size_type n = size();
+        if (i > n) i = n;
+        resize(n+1);
+        iterator p0 = begin();
+        for (size_type j=n; j>i; --j)
+            *(p0+j) = *(p0+(j-1));
+        *(p0+i) = x;
+        return p0+i;
+    }
+
     /// Output stream
     inline friend std::ostream& operator<< ( std::ostream& os, const vector<T,MemoryManager>& vec )
     {

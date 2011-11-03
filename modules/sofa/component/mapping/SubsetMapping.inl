@@ -150,8 +150,7 @@ void SubsetMapping<TIn, TOut>::init()
             if ((unsigned)indices[i] >= inSize)
             {
                 serr << "ERROR(SubsetMapping): incorrect index "<<indices[i]<<" (input size "<<inSize<<")"<<sendl;
-                //indices.getArray().erase(indices.begin()+i);
-                helper::vector<unsigned int> a; indices.swap(a); a.erase(a.begin()+i); indices.swap(a);
+                indices.erase(indices.begin()+i);
                 --i;
             }
         }

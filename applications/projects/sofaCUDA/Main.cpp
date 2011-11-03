@@ -167,15 +167,9 @@ int main(int argc, char** argv)
 
     if (!files.empty()) fileName = files[0];
     else fileName =
-#if defined(SOFA_GUI_INTERACTION) && defined(SOFA_HAVE_METIS) && defined(SOFA_HAVE_TAUCS_MT) && defined(SOFA_GPU_CUBLAS) && defined(SOFA_HAVE_BOOST)
-//             "Demos/Passport/siggraph2011.scn"
-            "CUDA/LDIFluidDeform.scn"
-#else
-            "CUDA/LDIFluidDeform.scn"
-//             "CUDA/quadSpringSphereCUDA.scn"
-#endif
+            "CUDA/quadSpringSphereCUDA.scn"
+//             "CUDA/beam10x10x46-spring-rk4-CUDA.scn"
             ;
-    //std::string fileName = "CUDA/beam10x10x46-spring-rk4-CUDA.scn";
 
 
     int nbIter = iter;
