@@ -1,13 +1,16 @@
 #include "QTabulationModifyObject.h"
 
 #include "QDisplayDataWidget.h"
+#include "QDisplayLinkWidget.h"
 
 #include "ModifyObject.h"
 
 namespace sofa
 {
+
 namespace gui
 {
+
 namespace qt
 {
 
@@ -35,6 +38,25 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
     connect(displaydatawidget, SIGNAL( DataOwnerDirty(bool)),  this, SLOT( updateListViewItem() ) );
     connect(this, SIGNAL(UpdateDatas()), displaydatawidget, SLOT( UpdateData()));
     connect(this, SIGNAL(UpdateDataWidgets()), displaydatawidget, SLOT( UpdateWidgets()));
+}
+
+
+void QTabulationModifyObject::addLink(sofa::core::objectmodel::BaseLink *link, const ModifyObjectFlags& flags)
+{
+    //if (  (!link->isDisplayed()) && flags.HIDE_FLAG ) return;
+
+    //link->setDisplayed(true);
+
+    const std::string name=link->getName();
+    QDisplayLinkWidget* displaylinkwidget = new QDisplayLinkWidget(this,link,flags);
+    this->layout()->add(displaylinkwidget);
+
+    size += displaylinkwidget->getNumWidgets();
+
+    connect(displaylinkwidget, SIGNAL( WidgetDirty(bool) ), this, SLOT( setTabDirty(bool) ) );
+    connect(displaylinkwidget, SIGNAL( LinkOwnerDirty(bool)),  this, SLOT( updateListViewItem() ) );
+    connect(this, SIGNAL(UpdateDatas()), displaylinkwidget, SLOT( UpdateLink()));
+    connect(this, SIGNAL(UpdateDataWidgets()), displaylinkwidget, SLOT( UpdateWidgets()));
 }
 
 
@@ -96,8 +118,8 @@ void QTabulationModifyObject::addStretch()
     dynamic_cast<QVBoxLayout*>(this->layout())->addStretch();
 }
 
-} // qt
-} // gui
-} //sofa
+} // namespace qt
 
+} // namespace gui
 
+} // namespace sofa

@@ -2,6 +2,7 @@
 #define SOFA_GUI_QT_QTABULATIONMODIFYOBJECT_H
 
 #include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/simulation/common/Node.h>
 
 #ifdef SOFA_QT4
@@ -42,6 +43,7 @@ public:
 
     void externalWidgetAddition(int num) {size+=num;}
     void addData(sofa::core::objectmodel::BaseData *data, const ModifyObjectFlags& flags);
+    void addLink(sofa::core::objectmodel::BaseLink *link, const ModifyObjectFlags& flags);
     void addStretch();
 
     unsigned int getIndex() const {return index;};

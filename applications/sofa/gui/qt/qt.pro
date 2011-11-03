@@ -46,6 +46,7 @@ HEADERS += viewer/VisualModelPolicy.h \
 	GenGraphForm.h \
 	AddObject.h \
 	RealGUI.h \
+	LinkWidget.h \
 	DataWidget.h \
 	DataFilenameWidget.h \
 	DisplayFlagsDataWidget.h \
@@ -63,6 +64,7 @@ HEADERS += viewer/VisualModelPolicy.h \
 	SofaVideoRecorderManager.h \	
 	PickHandlerCallBacks.h \
 	QDataDescriptionWidget.h \
+	QDisplayLinkWidget.h \     
 	QDisplayDataWidget.h \     
 	QEnergyStatWidget.h \              
 	QTabulationModifyObject.h \
@@ -79,6 +81,7 @@ SOURCES += viewer/SofaViewer.cpp \
 	GenGraphForm.cpp \
 	AddObject.cpp \
 	RealGUI.cpp \
+	LinkWidget.cpp \ 
 	DataWidget.cpp \ 
 	DataFilenameWidget.cpp \
 	DisplayFlagsDataWidget.cpp \
@@ -95,6 +98,7 @@ SOURCES += viewer/SofaViewer.cpp \
 	SofaMouseManager.cpp \
 	QDataDescriptionWidget.cpp \
 	PickHandlerCallBacks.cpp \
+	QDisplayLinkWidget.cpp \
 	QDisplayDataWidget.cpp \
 	QEnergyStatWidget.cpp \       
 	QMouseOperations.cpp \               

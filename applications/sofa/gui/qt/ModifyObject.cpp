@@ -118,6 +118,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     if (node)
     {
         const sofa::core::objectmodel::Base::VecData& fields = node->getDataFields();
+        const sofa::core::objectmodel::Base::VecLink& links = node->getLinks();
 
         std::map< std::string, std::vector<QTabulationModifyObject* > > groupTabulation;
 
@@ -140,6 +141,10 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             }
         }
 
+        std::vector<std::string> tabNames;
+        //Put first the Property Tab
+        tabNames.push_back("Property");
+
         for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it!=fields.end(); ++it)
         {
             core::objectmodel::BaseData* data=*it;
@@ -159,6 +164,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             QTabulationModifyObject* currentTab=NULL;
 
             std::vector<QTabulationModifyObject* > &tabs=groupTabulation[currentGroup];
+            if (tabs.empty()) tabNames.push_back(currentGroup);
             if (tabs.empty() || tabs.back()->isFull()) tabs.push_back(new QTabulationModifyObject(this,node, item_,tabs.size()+1));
             currentTab = tabs.back();
 
@@ -171,26 +177,45 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             connect(currentTab, SIGNAL( TabDirty(bool) ), this, SIGNAL( componentDirty(bool) ) );
         }
 
+        for( sofa::core::objectmodel::Base::VecLink::const_iterator it = links.begin(); it!=links.end(); ++it)
         {
-            //Put first the Property Tab
-            const std::string groupName="Property";
-            std::vector<QTabulationModifyObject* > &tabsProperty=groupTabulation[groupName];
-            for (unsigned int i=0; i<tabsProperty.size(); ++i)
-            {
-                QString nameTab;
-                if (tabsProperty.size() == 1) nameTab=groupName.c_str();
-                else                  nameTab=QString(groupName.c_str())+ " " + QString::number(tabsProperty[i]->getIndex()) + "/" + QString::number(tabsProperty.size());
-                dialogTab->addTab(tabsProperty[i],nameTab);
-                tabsProperty[i]->addStretch();
-            }
-            groupTabulation.erase(groupName);
+            core::objectmodel::BaseLink* link=*it;
+
+            if (link->getName().empty()) continue; // ignore unnamed link
+
+            //For each Link of the current Object
+            //We determine where it belongs:
+            std::string currentGroup="Links";
+
+#ifdef DEBUG_GUI
+            std::cout << "GUI: add Link " << link->getName() << " in " << currentGroup << std::endl;
+#endif
+
+            QTabulationModifyObject* currentTab=NULL;
+
+            std::vector<QTabulationModifyObject* > &tabs=groupTabulation[currentGroup];
+            if (tabs.empty()) tabNames.push_back(currentGroup);
+            if (tabs.empty() || tabs.back()->isFull()) tabs.push_back(new QTabulationModifyObject(this,node, item_,tabs.size()+1));
+            currentTab = tabs.back();
+
+            currentTab->addLink(link, getFlags());
+            connect(buttonUpdate,   SIGNAL(clicked() ),          currentTab, SLOT( updateDataValue() ) );
+            connect(buttonOk,       SIGNAL(clicked() ),          currentTab, SLOT( updateDataValue() ) );
+            connect(this,           SIGNAL(updateDataWidgets()), currentTab, SLOT( updateWidgetValue()) );
+
+            connect(currentTab, SIGNAL( TabDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
+            connect(currentTab, SIGNAL( TabDirty(bool) ), this, SIGNAL( componentDirty(bool) ) );
         }
 
-        std::map< std::string, std::vector<QTabulationModifyObject* > >::iterator it;
-        for (it=groupTabulation.begin(); it!=groupTabulation.end(); ++it)
+        //std::map< std::string, std::vector<QTabulationModifyObject* > >::iterator it;
+        //for (it=groupTabulation.begin();it!=groupTabulation.end();++it)
+        //{
+        //    const std::string &groupName=it->first;
+        //    std::vector<QTabulationModifyObject* > &tabs=it->second;
+        for (std::vector<std::string>::const_iterator it = tabNames.begin(), itend = tabNames.end(); it != itend; ++it)
         {
-            const std::string &groupName=it->first;
-            std::vector<QTabulationModifyObject* > &tabs=it->second;
+            const std::string& groupName = *it;
+            std::vector<QTabulationModifyObject* > &tabs=groupTabulation[groupName];
 
             for (unsigned int i=0; i<tabs.size(); ++i)
             {
