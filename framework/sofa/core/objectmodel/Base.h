@@ -172,6 +172,9 @@ public:
     /// Find link fields given a name: several can be found as we look into the alias map
     std::vector< BaseLink* > findLinks( const std::string &name ) const;
 
+    /// Update pointers in case the pointed-to objects have appeared
+    virtual void updateLinks();
+
     /// Helper method used to initialize a data field containing a value of type T
     template<class T>
     BaseData::BaseInitData initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )

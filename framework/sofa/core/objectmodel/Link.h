@@ -367,6 +367,7 @@ public:
         if (!v) return false;
         const int aspect = core::ExecParams::currentAspect();
         unsigned int index = TraitsContainer::add(m_value[aspect],&*v);
+        this->updateCounter(aspect);
         added(v, index);
         return true;
     }
@@ -377,6 +378,7 @@ public:
         const int aspect = core::ExecParams::currentAspect();
         unsigned int index = TraitsContainer::add(m_value[aspect],&*v);
         TraitsValueType::setPath(m_value[aspect][index],path);
+        this->updateCounter(aspect);
         added(v, index);
         return true;
     }
@@ -397,6 +399,7 @@ public:
         unsigned int index = TraitsContainer::find(m_value[aspect],v);
         if (index >= m_value[aspect].size()) return false;
         TraitsContainer::remove(m_value[aspect],index);
+        this->updateCounter(aspect);
         removed(v, index);
         return true;
     }
@@ -413,6 +416,7 @@ public:
             {
                 DestPtr v = m_value[aspect][index];
                 TraitsContainer::remove(m_value[aspect],index);
+                this->updateCounter(aspect);
                 removed(v, index);
                 return true;
             }
@@ -631,6 +635,7 @@ public:
                     {
                         DestPtr v = ptr;
                         TraitsValueType::set(value,v);
+                        this->updateCounter(aspect);
                         this->added(v, i);
                     }
                 }
@@ -729,6 +734,7 @@ public:
         const DestPtr before = TraitsValueType::get(value);
         if (!before) return;
         TraitsValueType::set(value, NULL);
+        this->updateCounter(aspect);
         changed(before, NULL);
     }
 
@@ -739,6 +745,7 @@ public:
         const DestPtr before = TraitsValueType::get(value);
         if (v == before) return;
         TraitsValueType::set(value, v);
+        this->updateCounter(aspect);
         changed(before, v);
     }
 
@@ -750,6 +757,7 @@ public:
         if (v != before)
             TraitsValueType::set(value, v);
         TraitsValueType::setPath(value, path);
+        this->updateCounter(aspect);
         if (v != before)
             changed(before, v);
     }

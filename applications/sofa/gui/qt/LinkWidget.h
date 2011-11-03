@@ -104,7 +104,7 @@ public slots:
         }
 
         dirty = false;
-        counter = 0; //baseLink->getCounter();
+        counter = baseLink->getCounter();
 
     }
     /// First checks that the widget is not currently being edited
@@ -115,7 +115,7 @@ public slots:
     {
         if(!dirty)
         {
-            if(counter != 0 /*baseLink->getCounter()*/)
+            if(counter != baseLink->getCounter())
             {
                 readFromLink();
                 this->update();
