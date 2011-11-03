@@ -1,5 +1,3 @@
 includeOnce($$_FILE_) {
-	declare(SensablePlugin, applications/plugins/Sensable, sofacomponent sofasimulation sofaguiqt)
 
-	enable(SensablePlugin)
 }
