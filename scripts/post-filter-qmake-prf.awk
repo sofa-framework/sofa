@@ -25,14 +25,29 @@ END {
   gsub(/).*$/,"",deps); gsub("\t"," ",deps); gsub(/^[ ]*/,"",deps); gsub(/[ ]*$/,"",deps);
   #print "#PROJECT <<<" name "|" path "|" deps ">>>" > "/dev/stderr";
   projects[name] = path;
-  if (system("test -e " path) != 0 && (!features || system("test -e " features "/sofa/" path ) != 0) )
+  found = 0;
+  if (system("test -f " path) == 0)
+      found = path;
+  else if (features && system("test -f " features "/sofa/" path ) == 0)
+      found = features "/sofa/" path;
+  else if (system("test -d " path) == 0)
+  {
+      pro = path;
+      sub(/^.*\//,"",pro)
+      if (system("test -f " path "/" pro ".pro" ) == 0)
+          found = path "/" pro ".pro";
+  }
+  if (!found) #system("test -e " path) != 0 && (!features || system("test -e " features "/sofa/" path ) != 0) )
   {
       if (pass != 2) print "# " name ": PATH " path " NOT FOUND" > "/dev/stderr";
       projMissing[name] = path;
       next;
   }
   else
+  {
+      #if (pass != 2) print "# " name ": PATH " path " FOUND IN " found > "/dev/stderr";
       projFound[name] = path;
+  }
   if (pass != 1)
   {
       split(deps,deparray, " ");
