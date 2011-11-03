@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaSort.h"
+//#include "CudaSort.h"
 #include "mycuda.h"
 
 #include <cuda.h>
@@ -51,6 +51,13 @@ namespace gpu
 namespace cuda
 {
 #endif
+
+extern "C" {
+
+    bool CudaSortGPUAvailable(unsigned int size, bool withData = true);
+    bool CudaSortGPU(void* keys, void* data, unsigned int size, int bits);
+
+} // "C"
 
 #if defined(SOFA_GPU_CUDPP)
 

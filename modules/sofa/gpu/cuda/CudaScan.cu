@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaScan.h"
+//#include "CudaScan.h"
 #include "mycuda.h"
 
 #include <cuda.h>
@@ -51,6 +51,19 @@ namespace gpu
 namespace cuda
 {
 #endif
+
+enum ScanType
+{
+    SCAN_INCLUSIVE = 0,
+    SCAN_EXCLUSIVE = 1,
+};
+
+extern "C" {
+
+    bool CudaScanGPUAvailable(unsigned int size, ScanType type);
+    bool CudaScanGPU(const void* input, void* output, unsigned int size, ScanType type);
+
+} // "C"
 
 void* sofaScanTmpDev = NULL;
 unsigned int sofaScanMaxElements = 0;
