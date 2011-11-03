@@ -42,27 +42,13 @@ template <>
 class SubsetMappingInternalData<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>
 {
 public:
-    sofa::gpu::cuda::CudaVector<int> map;
     int maxNOut;
     sofa::gpu::cuda::CudaVector<int> mapT;
     SubsetMappingInternalData() : maxNOut(0)
     {}
 
-    void clear(int reserve=0)
-    {
-        map.clear();
-        map.reserve(reserve);
-    }
-
-    int addPoint(int fromIndex)
-    {
-        int i = map.size();
-        map.resize(i+1);
-        map[i] = fromIndex;
-        return i;
-    }
-
-    void init(int insize)
+    template<class VecIndex>
+    void init(int insize, const VecIndex& map)
     {
         unsigned int n = map.size();
         std::vector<int> nout;

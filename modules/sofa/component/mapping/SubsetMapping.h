@@ -91,7 +91,7 @@ public:
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     /// Correspondance array
-    typedef helper::vector<unsigned int> IndexArray;
+    typedef typename InVecCoord::template rebind<unsigned int>::other IndexArray;
     typedef sofa::component::topology::PointSubsetData< IndexArray > SetIndex;
     SetIndex f_indices;
 

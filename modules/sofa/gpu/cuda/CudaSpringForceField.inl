@@ -401,7 +401,10 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaSpringForceField_ImplMethods(T) \
     template<> void SpringForceField< T >::init() \
-    { data.init(this, false); } \
+    { \
+	    this->PairInteractionForceField< T >::init();   \
+        data.init(this, false); \
+    } \
     template<> void SpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2) \
     { \
 		VecDeriv& f1 = *d_f1.beginEdit(); \
@@ -415,7 +418,10 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 		d_f2.endEdit(); \
 	} \
     template<> void StiffSpringForceField< T >::init() \
-    { data.init(this, true); } \
+    { \
+	    this->PairInteractionForceField< T >::init(); \
+        data.init(this, true); \
+    } \
     template<> void StiffSpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2) \
     { \
 		VecDeriv& f1 = *d_f1.beginEdit(); \

@@ -144,6 +144,7 @@ public:
     typedef SubsetContactMapper<sofa::gpu::cuda::CudaPointModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
+    typedef typename Inherit::MMapping MMapping;
 
     int addPoint(const Coord& P, int index, Real& r)
     {
@@ -158,8 +159,10 @@ public:
         int maxp = 0;
         for (int i=0; i<nt; i++)
             if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
-        this->mapping->data.map.fastResize(n);
-        SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, this->model->groupSize.getValue(), outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->data.map.deviceWrite());
+        typename MMapping::IndexArray& map = *this->mapping->f_indices.beginEdit();
+        map.fastResize(n);
+        SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, this->model->groupSize.getValue(), outputs->tests.deviceRead(), outputs->results.deviceRead(), map.deviceWrite());
+        this->mapping->f_indices.endEdit();
     }
 };
 
@@ -173,6 +176,7 @@ public:
     typedef SubsetContactMapper<sofa::gpu::cuda::CudaSphereModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
+    typedef typename Inherit::MMapping MMapping;
 
     int addPoint(const Coord& P, int index, Real& r)
     {
@@ -187,8 +191,10 @@ public:
         int maxp = 0;
         for (int i=0; i<nt; i++)
             if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
-        this->mapping->data.map.fastResize(n);
-        SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, 0, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->data.map.deviceWrite());
+        typename MMapping::IndexArray& map = *this->mapping->f_indices.beginEdit();
+        map.fastResize(n);
+        SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, 0, outputs->tests.deviceRead(), outputs->results.deviceRead(), map.deviceWrite());
+        this->mapping->f_indices.endEdit();
     }
 };
 
