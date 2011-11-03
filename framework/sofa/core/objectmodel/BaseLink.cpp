@@ -46,7 +46,7 @@ namespace objectmodel
 BaseLink::BaseLink(const BaseInitLink& init, LinkFlags flags)
     : m_flags(flags), m_name(init.name), m_help(init.help)
 {
-    //m_counters.assign(0);
+    m_counters.assign(0);
     //m_isSets.assign(false);
 }
 
@@ -92,14 +92,17 @@ std::string BaseLink::getValueTypeString() const
     return t;
 }
 
-void BaseLink::copyAspect(int /*destAspect*/, int /*srcAspect*/)
+/// Copy the value of an aspect into another one.
+void BaseLink::copyAspect(int destAspect, int srcAspect)
 {
-    //m_counters[destAspect] = m_counters[srcAspect];
+    m_counters[destAspect] = m_counters[srcAspect];
     //m_isSets[destAspect] = m_isSets[srcAspect];
 }
 
-void BaseLink::releaseAspect(int /*aspect*/)
+/// Release memory allocated for the specified aspect.
+void BaseLink::releaseAspect(int aspect)
 {
+    m_counters[aspect] = -1;
 }
 
 bool BaseLink::ParseString(const std::string& text, std::string* path, std::string* data, Base* owner)

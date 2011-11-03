@@ -286,6 +286,11 @@ bool BaseData::copyValue(const BaseData* parent)
     return false;
 }
 
+bool BaseData::findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link)
+{
+    return DDGNode::findDataLinkDest(ptr, path, link);
+}
+
 bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)
 {
     if (m_owner)

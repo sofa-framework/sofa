@@ -31,6 +31,7 @@
 #pragma once
 #endif
 
+#include <sofa/helper/fixed_array.h>
 #include <sofa/core/core.h>
 #include <sofa/core/ExecParams.h>
 #include <string>
@@ -120,6 +121,14 @@ public:
     virtual const BaseClass* getDestClass() const = 0;
     virtual const BaseClass* getOwnerClass() const = 0;
 
+    /// Return the number of changes since creation
+    /// This can be used to efficiently detect changes
+    int getCounter() const { return m_counters[core::ExecParams::currentAspect()]; }
+
+    /// Return the number of changes since creation
+    /// This can be used to efficiently detect changes
+    int getCounter(const core::ExecParams* params) const { return m_counters[core::ExecParams::currentAspect(params)]; }
+
     virtual unsigned int getSize() const = 0;
     virtual Base* getLinkedBase(unsigned int index=0) const = 0;
     virtual BaseData* getLinkedData(unsigned int index=0) const = 0;
@@ -149,7 +158,7 @@ public:
     virtual void copyAspect(int destAspect, int srcAspect) = 0;
 
     /// Release memory allocated for the specified aspect.
-    virtual void releaseAspect(int aspect) = 0;
+    virtual void releaseAspect(int aspect);
 
     /// @name Serialization Helper API
     /// @{
@@ -177,6 +186,12 @@ protected:
     unsigned int m_flags;
     std::string m_name;
     const char* m_help;
+    /// Number of changes since creation
+    helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
+    void updateCounter(unsigned int aspect)
+    {
+        ++m_counters[aspect];
+    }
 };
 
 } // namespace objectmodel

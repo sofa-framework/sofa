@@ -281,6 +281,8 @@ public:
     /// Accessor to the vector containing all the fields of this object
     const VecLink& getLinks() const { return m_vecLink; }
 
+    virtual bool findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link);
+
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
 
     template<class DataT>

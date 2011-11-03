@@ -484,6 +484,12 @@ void  Base::parse ( BaseObjectDescription* arg )
         std::string valueString(val);
         parseField(attributeList[i], valueString);
     }
+    updateLinks();
+}
+
+/// Update pointers in case the pointed-to objects have appeared
+void Base::updateLinks()
+{
     // update links
     for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
         (*iLink)->updateLinks();
