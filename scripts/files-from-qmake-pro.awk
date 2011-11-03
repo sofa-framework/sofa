@@ -1,8 +1,5 @@
 #!/usr/bin/awk -f
-# This script removes parts flagged by SOFA_DEV inside qmake project files
-# The file with the relevant parts removed is output to the standard output,
-# while files mentionned inside removed parts are output to the standard error.
-# This can be used to remove then from the repository by svn rm'ing them.
+# This script find files mentioned inside a qmake project
 
 # If you never used awk, a good introduction is available at http://www.cs.hmc.edu/qref/awk.html
 
@@ -11,7 +8,6 @@ BEGIN {
     infilelist=0;
     blk_before=0;
     blk_after=0;
-    blk_dev=0;
     if (!plugins)
         plugins = "applications/plugins";
 }
@@ -31,47 +27,31 @@ END {
     if (blk_after != 0) print "# ERROR: unmatched brackets"
 }
 
-# Match blocks conditionnally included depending on the SOFA_DEV flag
-# Note that we now count the brackets in the source file to find the
-# SOFA_DEV closing one instead of relying on the presence of a comment
-
-blk_dev==0 && /contains[ \t]*\([ \t]*DEFINES[ \t]*,[ \t]*SOFA_DEV[ \t]*\)[ \t]*{/ {
-    blk_dev=blk_after;
-    infilelist=0;
-}
-
-blk_dev>0 && blk_after < blk_dev {
-    blk_dev=0;
-    next;
-}
-
 /^[ \t#]*declare/ {
   name=$0;
   gsub(/.*\(/,"",name); gsub(/,.*$/,"",name); gsub(/ /,"",name); gsub(/\t/,"",name);
   path=$0;
   gsub(/.*\([^,]*,/,"",path); gsub(/,.*$/,"",path); gsub(/).*$/,"",path); gsub(/ /,"",path); gsub(/\t/,"",path);
-#  gsub(/).*$/,"",path); gsub(/,$/,"",path); gsub(/ /,"",path);
   #print "#PROJECT <<<",name,"|",path,">>>";
   projects[name] = path;
 }
-blk_dev>0 && /^[ \t#]*enable/ {
+/^[ \t#]*enable/ {
   name=$0;
   gsub(/.*\(/,"",name); gsub(/,.*$/,"",name); gsub(/).*$/,"",name); gsub(/ /,"",name); gsub(/\t/,"",name);
   path = projects[name];
-  #print "#DEV PROJECT <<<",name,"|",path,">>>";
-  print path > "/dev/stderr";
+  #print "#PROJECT <<<",name,"|",path,">>>";
+  print path; # > "/dev/stderr";
   next;
 }
-blk_dev>0 && /^[ \t#]*usePlugin/ {
+/^[ \t#]*usePlugin/ {
   name=$0;
   gsub(/.*\(/,"",name); gsub(/,.*$/,"",name); gsub(/).*$/,"",name); gsub(/ /,"",name); gsub(/\t/,"",name);
-  #print "#DEV PLUGIN <<<",name,">>>";
-  print plugins "/" name > "/dev/stderr";
+  print plugins "/" name; # > "/dev/stderr";
   next;
 }
 
-# /contains[ \t]*\([ \t]*DEFINES[ \t]*,[ \t]*SOFA_DEV[ \t]*\)[ \t]*{/,/[ \t]*}.*SOFA_DEV/ {
-blk_dev>0 {
+#blk_dev>0
+{
     #print "# " $0
     # look for a filename
     # we assume files and directories are listed inside variables containing SUBDIRS, SOURCES or HEADERS
@@ -101,7 +81,7 @@ blk_dev>0 {
 	    gsub(/[\r\n]/,"",fname);
 	    gsub(/\\[:space:]*$/,"",fname);
 	    gsub(/^##*/,"",fname);
-	    if (fname != "") print fname > "/dev/stderr";
+	    if (fname != "") print fname; # > "/dev/stderr";
 	}
 	if (f>nf && (nf==0 || $nf!~/\\[:space:]*$/)) { # no "\\" is put at the end of the line -> end of list
 	    #print "#end"
@@ -111,9 +91,6 @@ blk_dev>0 {
     next;
 }
 
-# Match lines mentionning SOFA_DEV, such as the point where it is defined
-/SOFA_DEV/ { next; }
-
 # other: simply print the line
 #{ print blk_before "<" $0 ">" blk_after; }
-{ print }
+#{ print }

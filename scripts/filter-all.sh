@@ -24,6 +24,32 @@ echo
 echo "STEP 1: Filter project files and remove referenced files"
 echo
 
+function qmake_remove_project {
+    dir="${1%/*}"
+    pro="${1##*/}"
+    parent=$PWD
+    cd "$dir"
+    echo "Removing project $pro in $dir"
+	let npro+=1
+    for g in $($SCRIPTS/files-from-qmake-pro.awk < $pro); do
+	    if [ -d "$g" ]; then
+		    echo "Remove directory $g"
+		    let nrmdir+=1
+		    svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
+	    elif [ -f "$g" ]; then
+            if [ "${g: -4}" == ".pro" ]; then
+                qmake_remove_project "$g"
+            fi
+		    echo "Remove file $g"
+		    let nrmfile+=1
+		    svn rm --force $g || (echo "Failed to remove file $g"; mv -f $f.bak $f ; exit 1)
+	    else
+		    echo "$g already removed."
+	    fi
+	done
+    cd $parent
+}
+
 function qmake_process_dir {
     cd "$1"
     echo "Entering $PWD"
@@ -34,18 +60,33 @@ function qmake_process_dir {
 	$SCRIPTS/filter-qmake-pro.awk < $f.bak > $f 2> $f.dev
 	for g in $(cat $f.dev); do
 	    if [ -d "$g" ]; then
-		echo "Remove directory $g"
-		let nrmdir+=1
-		svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
+		    echo "Remove directory $g"
+		    let nrmdir+=1
+		    svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
 	    elif [ -f "$g" ]; then
-		echo "Remove file $g"
-		let nrmfile+=1
-		svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
+            if [ "${g: -4}" == ".pro" ]; then
+                qmake_remove_project "$g"
+            fi
+		    echo "Remove file $g"
+		    let nrmfile+=1
+		    svn rm --force $g || (echo "Failed to remove file $g"; mv -f $f.bak $f ; exit 1)
 	    else
 		echo "$g already removed."
 	    fi
 	done
 	rm -f $f.dev
+    if [ "${f: -4}" == ".prf" ]; then
+        cp -pf $f $f.dev
+        $SCRIPTS/post-filter-qmake-prf.awk -v features="$DIR0"/features pass=1 "$f".dev pass=2 "$f".dev > $f
+        rm -f $f.dev
+    fi
+    if [ $(wc -w < "$f") -eq 0 ]; then
+    if [ $(wc -w < "$f".bak) -gt 0 ]; then
+		echo "Remove file $f"
+		let nrmfile+=1
+		svn rm --force $f || (echo "Failed to remove file $f"; mv -f $f.bak $f; exit 1)
+    fi
+    fi
     done
     for f in *; do
 	if [ -d "$f" ]; then
