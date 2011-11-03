@@ -40,7 +40,11 @@
 #endif
 
 #if !defined(SOFA_GPU_CUDPP) && !defined(SOFA_GPU_THRUST)
+#ifdef _MSC_VER
+#pragma message( __FILE__ " : Warning: CUDA: please define either SOFA_GPU_CUDPP or SOFA_GPU_THRUST to activate sorting on GPU")
+#else
 #warning CUDA: please define either SOFA_GPU_CUDPP or SOFA_GPU_THRUST to activate sorting on GPU
+#endif
 #endif
 
 #if defined(__cplusplus)
