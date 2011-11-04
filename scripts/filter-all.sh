@@ -91,13 +91,16 @@ function qmake_process_dir {
         if [ $opt_release -gt 0 ]; then
 	        $SCRIPTS/filter-qmake-pro.awk -v FILTER_TAG=SOFA_RELEASE < $f > $f.release 2> $f.unstable
             if [ $(wc -l < "$f".release) -ne $(wc -l < "$f") ]; then
-                echo "Project file $f filtered for the release: " $(wc -l < "$f") " -> " $(wc -l < "$f".release)
+                echo "Project file $f filtered for release"
                 mv -f $f.release $f
+            else
+                rm -f $f.release
             fi
             if [ $(wc -l < "$f".unstable) -gt 0 ]; then
                 echo $(wc -l < "$f".unstable) " files and directory removed from release"
                 cat $f.unstable >> $f.dev
             fi
+            rm -f "$f".unstable
         fi
 #        cp -pf $f $f.nodev
 	    for g in $(cat $f.dev); do

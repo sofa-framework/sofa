@@ -5,7 +5,7 @@ find readme.txt Authors.txt *.bat *.sh sofa-dependencies.prf sofa-default.prf *.
 rm -f ../sofa-modules-${1:-VERSION}.files
 find modules -name .svn  -prune -o -name OBJ -prune -o \( -type f -a ! -name '*~' -a ! -name '*.bak' -a ! -name 'Makefile*' \) -print > ../sofa-modules-${1:-VERSION}.files
 rm -f ../sofa-applications-${1:-VERSION}.files
-find applications tests examples share -name .svn  -prune -o -name OBJ -prune -o \( -type f -a ! -name '*~' -a ! -name '*.bak' -a ! -name 'Makefile*' \) -print > ../sofa-applications-${1:-VERSION}.files
+find applications tests examples share scripts -name .svn  -prune -o -name OBJ -prune -o \( -type f -a ! -name '*~' -a ! -name '*.bak' -a ! -name 'Makefile*' \) -print > ../sofa-applications-${1:-VERSION}.files
 
 if which zip >/dev/null 2>/dev/null; then
     echo ZIP

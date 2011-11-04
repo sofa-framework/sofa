@@ -31,7 +31,7 @@ declare(QGLViewer,  extlibs/libQGLViewer-2.3.3/QGLViewer, qtgui)
 declare(miniFlowVR, extlibs/miniFlowVR, boost)
 declare(csparse,    extlibs/csparse)
 declare(cudpp,      extlibs/cudpp, cuda)
-#declare(cudpp,     extlibs/cudpp-svn/cudpp.pro, cuda)
+#declare(cudpp-svn,     extlibs/cudpp-svn/cudpp.pro, cuda)
 declare(metis,      extlibs/metis)
 declare(taucs,      extlibs/taucs, cilk metis system-metis blas)
 declare(taucs_mt,   extlibs/taucs_mt, metis system-metis blas)
@@ -178,6 +178,8 @@ declare(oneTetrahedron,      applications/tutorials/oneTetrahedron,   sofa_compo
 ######################################################################
 !contains (DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
 	enable(sofabgl)
+    # Eigen is LGPL3+, it is not clear if it is allowed to put it in a LGPL2+ package
+    enable(eigen)
 } # END !SOFA_RELEASE
 
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
@@ -211,7 +213,6 @@ contains(DEFINES, SOFA_GUI_QGLVIEWER) {
 
 enable(newmat)
 enable(tinyxml)
-enable(eigen)
 enable(qwt)
 
 enable(sofahelper)
