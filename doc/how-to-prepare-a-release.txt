@@ -19,7 +19,7 @@ $ VERSIONID=1.0-rc1 # No spaces, to be used in filenames
 $ svn co svn+ssh://scm.gforge.inria.fr/svn/sofa-dev/trunk/Sofa
 $ cd Sofa
 
-3: Set the correct version in text files (readme.txt, Authors.txt, LICENCE.txt, framework/copyright.txt, modules/copyright.txt, applications/copyright.txt)
+3: Set the correct version in text files (readme.txt, Authors.txt, LICENCE.txt, framework/copyright.txt, modules/copyright.txt, applications/copyright.txt, applications/plugins/copyright.txt)
 
 4: Run scripts to update all svn properties and copyright headers
 

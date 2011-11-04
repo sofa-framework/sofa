@@ -10,5 +10,5 @@ fi
 else
 cat $2 > $1;
 fi
-awk ' BEGIN { header=0 } /^\/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/ { if (header==0) { header=1; next; } } /\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\// { if (header==1) { header=2; next; } } /^$/ { if (header==0) next; } { if (header==0) header=2; if (header!=1) print; } ' <$1.bak >> $1
+awk ' BEGIN { header=0 } /^[ \t]*\/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/ { if (header==0) { header=1; next; } } /\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\// { if (header==1) { header=2; next; } } /^$/ { if (header==0) next; } { if (header==0) header=2; if (header!=1) print; } ' <$1.bak >> $1
 rm -f $1.bak
