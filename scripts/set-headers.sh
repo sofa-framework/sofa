@@ -1,4 +1,4 @@
 #!/bin/bash
-find framework \( -iname '*.h' -o -iname '*.cpp' -o -iname '*.inl' -o -iname '*.c' -o -iname '*.cu' \) -exec scripts/set-header.sh \{\} framework/copyright.txt \;
-find modules \( -iname '*.h' -o -iname '*.cpp' -o -iname '*.inl' -o -iname '*.c' -o -iname '*.cu' \) -exec scripts/set-header.sh \{\} modules/copyright.txt \;
-find applications \( -iname '*.h' -o -iname '*.cpp' -o -iname '*.inl' -o -iname '*.c' -o -iname '*.cu' \) -exec scripts/set-header.sh \{\} applications/copyright.txt \;
+for base in $(find framework modules applications -name copyright.txt | awk '{ print substr($0,0,length($0)-13) }' | sort); do
+find $base \( -iname '*.h' -o -iname '*.cpp' -o -iname '*.inl' -o -iname '*.c' -o -iname '*.cu' \) -exec scripts/set-header.sh \{\} $base/copyright.txt \;
+done
