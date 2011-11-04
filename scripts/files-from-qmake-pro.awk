@@ -17,9 +17,10 @@ BEGIN {
 /[{}]/ {
   split($0,a,"#")
   if (a[1]!="") {
-    split(a[1],beg,"{")
-    split(a[1],end,"}")
-    blk_after = blk_before + length(beg) - length(end)
+    l = a[1];
+    beg[1]=""; nbeg = split(l,beg,"{")
+    end[1]=""; nend = split(l,end,"}")
+    blk_after = blk_before + nbeg - nend
   }
 }
 
@@ -31,13 +32,13 @@ END {
   name=$0;
   gsub(/.*\(/,"",name); gsub(/,.*$/,"",name); gsub(/ /,"",name); gsub(/\t/,"",name);
   path=$0;
-  gsub(/.*\([^,]*,/,"",path); gsub(/,.*$/,"",path); gsub(/).*$/,"",path); gsub(/ /,"",path); gsub(/\t/,"",path);
+  gsub(/.*\([^,]*,/,"",path); gsub(/,.*$/,"",path); gsub(/\).*$/,"",path); gsub(/ /,"",path); gsub(/\t/,"",path);
   #print "#PROJECT <<<",name,"|",path,">>>";
   projects[name] = path;
 }
 /^[ \t#]*enable/ {
   name=$0;
-  gsub(/.*\(/,"",name); gsub(/,.*$/,"",name); gsub(/).*$/,"",name); gsub(/ /,"",name); gsub(/\t/,"",name);
+  gsub(/.*\(/,"",name); gsub(/,.*$/,"",name); gsub(/\).*$/,"",name); gsub(/ /,"",name); gsub(/\t/,"",name);
   path = projects[name];
   #print "#PROJECT <<<",name,"|",path,">>>";
   print path; # > "/dev/stderr";
@@ -45,7 +46,7 @@ END {
 }
 /^[ \t#]*usePlugin/ {
   name=$0;
-  gsub(/.*\(/,"",name); gsub(/,.*$/,"",name); gsub(/).*$/,"",name); gsub(/ /,"",name); gsub(/\t/,"",name);
+  gsub(/.*\(/,"",name); gsub(/,.*$/,"",name); gsub(/\).*$/,"",name); gsub(/ /,"",name); gsub(/\t/,"",name);
   print plugins "/" name; # > "/dev/stderr";
   next;
 }

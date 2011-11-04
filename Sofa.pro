@@ -4,6 +4,8 @@ TEMPLATE = subdirs
 
 !contains(DEFINES, SOFA_DEV): message("WARNING: SOFA_DEV not defined, in-development code will be disabled!")
 
+contains(DEFINES, SOFA_RELEASE): message("WARNING: SOFA_RELEASE defined, in-development code will be disabled!")
+
 message( "PRE-CONFIG: " $${CONFIG})
 
 ########################################################################
@@ -11,24 +13,33 @@ message( "PRE-CONFIG: " $${CONFIG})
 ########################################################################
 
 usePlugin(PluginExample) 
-#usePlugin(ldidetection)
-
-contains(DEFINES, SOFA_HAVE_ARTRACK) {
-        usePlugin(ARTrack)
-}
 
 contains(DEFINES, SOFA_HAVE_SENSABLE) {
 	usePlugin(Sensable)
+}
+
+!contains (DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
+
+contains(DEFINES, SOFA_HAVE_ARTRACK) {
+        usePlugin(ARTrack)
 }
 
 contains(DEFINES, SOFA_HAVE_XITACT) {
 	usePlugin(Xitact)
 }
 
-
 contains (DEFINES, SOFA_HAVE_HAPTION) {
-usePlugin(Haption)
+	usePlugin(Haption)
 }
+
+contains (DEFINES, SOFA_HAVE_QTOGREVIEWER) {
+    usePlugin(QtOgreViewer)
+}
+
+#usePlugin(PhysicsBasedInteractiveModeler)
+#usePlugin(ldidetection)
+
+} # END !SOFA_RELEASE
 
 contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 
@@ -84,10 +95,6 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 
 	} # END SOFA_GPU_CUDA
 
-	contains (DEFINES, SOFA_HAVE_QTOGREVIEWER){
-		usePlugin(QtOgreViewer)
-	}
-
 	contains (DEFINES, SOFA_HAVE_STEPLOADER) { # BEGIN SOFA_HAVE_STEPLOADER
 		usePlugin(MeshSTEPLoader)
 	}
@@ -99,8 +106,6 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 	contains(DEFINES, SOFA_HAVE_ASCLEPIOS) {
 		usePlugin(sofa-asclepios)
 	}
-
-} # END SOFA_DEV
 
 contains(DEFINES, SOFA_HAVE_PLUGIN_FEM) {
 	usePlugin(FEM)
@@ -114,12 +119,11 @@ contains (DEFINES, SOFA_HAVE_STABLEFLUID_PLUGIN) {
 	usePlugin(StableFluidBehaviorPlugin)
 }
 
-
 contains (DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES) {
 	usePlugin(ManifoldTopologies)
 }
 
-
+} # END SOFA_DEV
 
 
 ########################################################################

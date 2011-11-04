@@ -13,16 +13,15 @@ BEGIN {
 }
 
 END {
-    if (blk_after != 0) print "# ERROR: unmatched brackets"
 }
 
 /^[ \t#]*declare/ {
   name=$1;
   gsub(/.*\(/,"",name); gsub(/ /,"",name); gsub(/\t/,"",name);
   path=$2;
-  gsub(/).*$/,"",path); gsub(/ /,"",path); gsub(/\t/,"",path);
+  gsub(/\).*$/,"",path); gsub(/ /,"",path); gsub(/\t/,"",path);
   deps=$3;
-  gsub(/).*$/,"",deps); gsub("\t"," ",deps); gsub(/^[ ]*/,"",deps); gsub(/[ ]*$/,"",deps);
+  gsub(/\).*$/,"",deps); gsub("\t"," ",deps); gsub(/^[ ]*/,"",deps); gsub(/[ ]*$/,"",deps);
   #print "#PROJECT <<<" name "|" path "|" deps ">>>" > "/dev/stderr";
   projects[name] = path;
   found = 0;
@@ -65,7 +64,7 @@ END {
 
 pass!=1 && /^[ \t#]*enable/ {
   name=$0;
-  gsub(/.*\(/,"",name); gsub(/,.*$/,"",name); gsub(/).*$/,"",name); gsub(/ /,"",name);
+  gsub(/.*\(/,"",name); gsub(/,.*$/,"",name); gsub(/\).*$/,"",name); gsub(/ /,"",name);
   if (!(name in projFound)) next;
   path = projFound[name];
 }
