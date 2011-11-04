@@ -120,13 +120,9 @@ protected:
     virtual void removeOnMovedPosition(const sofa::helper::vector<unsigned int> &indices);
 
 
-    void setTotalPointSetArraySize(const unsigned int s) { lastPointIndex=s-1; }
-
 protected:
     BaseTopologyData <VecT>* m_topologyData;
 
-    /// to handle properly the removal of items, the container must know the index of the last element
-    unsigned int lastPointIndex;
 };
 
 
