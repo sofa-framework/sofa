@@ -1,7 +1,7 @@
 #!/bin/bash
 echo FILES
 rm -f ../sofa-framework-${1:-VERSION}.files
-find readme.txt LICENCE.txt Authors.txt *.bat config*.sh Project*.sh sofa-dependencies.prf sofa-default.prf *.pro Doxyfile.in extlibs framework features .qmake.cache -name .svn  -prune -o -name OBJ -prune -o \( -type f -a ! -name '*.bak' -a ! -name '*~' -a ! -name 'Makefile*' \) -print > ../sofa-framework-${1:-VERSION}.files
+find readme.txt LICENCE.txt Authors.txt *.bat config*.sh Project*.sh sofa-dependencies.prf sofa-default.prf *.pro extlibs framework features .qmake.cache -name .svn  -prune -o -name OBJ -prune -o \( -type f -a ! -name '*.bak' -a ! -name '*~' -a ! -name 'Makefile*' \) -print > ../sofa-framework-${1:-VERSION}.files
 rm -f ../sofa-modules-${1:-VERSION}.files
 find modules -name .svn  -prune -o -name OBJ -prune -o \( -type f -a ! -name '*~' -a ! -name '*.bak' -a ! -name 'Makefile*' \) -print > ../sofa-modules-${1:-VERSION}.files
 rm -f ../sofa-applications-${1:-VERSION}.files

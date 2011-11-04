@@ -4,7 +4,7 @@
 
 # If you never used awk, a good introduction is available at http://www.cs.hmc.edu/qref/awk.html
 
-# Usage: post-filter-qmake-prf.awk -v features=features pass=1 myfile.prf pass=2 myfile.prf
+# Usage: post-filter-qmake-prf.awk -v features=features pass=1 sofa-dependencies.prf pass=2 sofa-dependencies.prf
 
 # init
 BEGIN {
@@ -21,7 +21,9 @@ END {
   path=$2;
   gsub(/\).*$/,"",path); gsub(/ /,"",path); gsub(/\t/,"",path);
   deps=$3;
-  gsub(/\).*$/,"",deps); gsub("\t"," ",deps); gsub(/^[ ]*/,"",deps); gsub(/[ ]*$/,"",deps);
+  gsub(/\).*$/,"",deps); gsub("\t"," ",deps); gsub(/[ ]*$/,"",deps);
+  postfix=$3;
+  gsub(/^[^\)]*\)/,")",postfix);
   #print "#PROJECT <<<" name "|" path "|" deps ">>>" > "/dev/stderr";
   projects[name] = path;
   found = 0;
@@ -49,16 +51,24 @@ END {
   }
   if (pass != 1)
   {
-      split(deps,deparray, " ");
+      n = split(deps,deparray, " ");
+      removed=0
+      newdeps=""
       for (d in deparray)
       {
           dep = deparray[d];
+          #print "# " d " / " n ": " dep > "/dev/stderr";
           if (!(dep in projFound))
           {
               print "# " name ": DEPENDENCY " dep " NOT FOUND" > "/dev/stderr";
-              sub(dep,"",$3);
+#              sub(dep,"",$3);
+              removed = removed+1
           }
+          else
+              newdeps = newdeps " " dep
       }
+      if (removed > 0)
+          $3 = newdeps postfix
   }
 }
 

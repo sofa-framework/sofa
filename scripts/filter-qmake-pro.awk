@@ -32,7 +32,7 @@ BEGIN {
 
 END {
     if (blk_after != 0) print "# ERROR: unmatched brackets"
-    print "# Filtered with " FILTER_TAG
+#    print "# Filtered with " FILTER_TAG
 }
 
 # Match blocks conditionnally included depending on the SOFA_DEV flag
