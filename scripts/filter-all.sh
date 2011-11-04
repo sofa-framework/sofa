@@ -1,12 +1,36 @@
 #!/bin/bash
-if [ "$1" != "--force" ]; then
+
+opt_force=0
+opt_release=0
+opt_clean=0
+
+RMCMD=${RMCMD:-svn rm --force}
+
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        --force )
+            opt_force=1
+            ;;
+        --release )
+            opt_release=1
+            ;;
+        --rm )
+            RMCMD="rm -rf"
+            ;;
+        --clean )
+            opt_clean=1
+            ;;
+    esac
+    shift
+done
+
+if [ $opt_force -eq 0 ]; then
 echo "WARNING: This script will delete part of the files in the current directory."
 echo "Make sure that you don't have any local changes not copied somewhere else."
 echo "Press Enter to continue, or Ctrl-C to cancel."
 read || exit 0
 fi
-
-RMCMD=${RMCMD:-svn rm --force}
 
 shopt -s nullglob
 
@@ -63,7 +87,18 @@ function qmake_process_dir {
 	    echo "Processing qmake project file $f"
 	    let npro+=1
 	    cp -pf $f $f.bak
-	    $SCRIPTS/filter-qmake-pro.awk < $f.bak > $f 2> $f.dev
+	    $SCRIPTS/filter-qmake-pro.awk -v FILTER_TAG=SOFA_DEV < $f.bak > $f 2> $f.dev
+        if [ $opt_release -gt 0 ]; then
+	        $SCRIPTS/filter-qmake-pro.awk -v FILTER_TAG=SOFA_RELEASE < $f > $f.release 2> $f.unstable
+            if [ $(wc -l < "$f".release) -ne $(wc -l < "$f") ]; then
+                echo "Project file $f filtered for the release: " $(wc -l < "$f") " -> " $(wc -l < "$f".release)
+                mv -f $f.release $f
+            fi
+            if [ $(wc -l < "$f".unstable) -gt 0 ]; then
+                echo $(wc -l < "$f".unstable) " files and directory removed from release"
+                cat $f.unstable >> $f.dev
+            fi
+        fi
 #        cp -pf $f $f.nodev
 	    for g in $(cat $f.dev); do
 	        if [ -d "$g" ]; then
@@ -107,6 +142,9 @@ function qmake_process_dir {
 	        let nrmline+=$nl
 	        echo $nl "lines removed in project file" $f
         fi
+        if [ $opt_clean -gt 0 ]; then
+	        rm -f $f.bak
+        fi
     done
     echo "Leaving  $PWD"
     cd ..
@@ -138,6 +176,9 @@ function private_process_dir {
 		echo "$g already removed."
 	    fi
 	done
+	echo "Remove file private.txt"
+	let nrmfile+=1
+	$RMCMD private.txt || (echo "Failed to remove file $f"; exit 1)
     fi
     for f in *; do
 	if [ -d "$f" ]; then
@@ -165,7 +206,11 @@ function code_process_dir {
 	    nl=$(($(wc -l < $f)-$(wc -l < $f.new)))
 	    let nrmline+=$nl
 	    echo $nl "lines removed in source file" $f
-	    cp -pf $f $f.bak
+        if [ $opt_clean -eq 0 ]; then
+	        cp -pf $f $f.bak
+        else
+            rm -f $f.bak
+        fi
 	    cat $f.new > $f
 	fi
 	rm -f $f.new
