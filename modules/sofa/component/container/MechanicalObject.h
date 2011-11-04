@@ -121,12 +121,12 @@ public:
     Data< VecDeriv > reset_velocity;
 
 
-    class MOPointHandler : public TopologyDataHandler<Point,VecCoord >
+    class MOPointHandler : public sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
     {
     public:
         typedef typename MechanicalObject<DataTypes>::VecCoord VecCoord;
         typedef typename MechanicalObject<DataTypes>::Coord Coord;
-        MOPointHandler(MechanicalObject<DataTypes>* _obj, PointData<VecCoord>* _data) : TopologyDataHandler<Point, VecCoord >(_data), obj(_obj) {}
+        MOPointHandler(MechanicalObject<DataTypes>* _obj, sofa::component::topology::PointData<VecCoord>* _data) : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(_data), obj(_obj) {}
 
         void applyCreateFunction(unsigned int /*pointIndex*/, Coord& /*dest*/,
                 const sofa::helper::vector< unsigned int > &ancestors,
