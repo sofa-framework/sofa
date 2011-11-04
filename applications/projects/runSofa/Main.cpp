@@ -205,7 +205,7 @@ int main(int argc, char** argv)
             mrulist.close();
         }
         else
-            fileName = "Demos/caducee.scn";
+            fileName = "Demos/caduceus.scn";
 
         fileName = sofa::helper::system::DataRepository.getFile(fileName);
     }
