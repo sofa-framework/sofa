@@ -1,6 +1,6 @@
 
    SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1
-           (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS
+           (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH
 
   Authors: See Authors.txt
 

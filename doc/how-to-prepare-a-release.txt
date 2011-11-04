@@ -32,7 +32,7 @@ $ svn commit -m "Preparing release $VERSION"
 
 6: Remove all flagged codes and examples
 
-$ ./scripts/filter-all.sh
+$ ./scripts/filter-all.sh --release --clean
 
 NOTE: After this point do not commit from this directory anymore !
 
@@ -42,7 +42,7 @@ $ sed -i.bak 's/SVN/"'"$VERSION"'"/' Doxyfile.in
 
 8: Remove all the temporary files that were not in SVN
 
-$ svn status --no-ignore --non-interactive | grep '^[I?]' | colrm 1 7 | sed 's/ /\ /g' | xargs rm -rf
+$ svn status --no-ignore --non-interactive | grep '^[I?]' | colrm 1 8 | sed 's/ /\ /g' | xargs rm -rf
 
 9: Create the archives (they will be placed on the parent directory)
 
