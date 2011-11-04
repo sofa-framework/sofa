@@ -178,8 +178,6 @@ declare(oneTetrahedron,      applications/tutorials/oneTetrahedron,   sofa_compo
 ######################################################################
 !contains (DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
 	enable(sofabgl)
-    # Eigen is LGPL3+, it is not clear if it is allowed to put it in a LGPL2+ package
-    enable(eigen)
 } # END !SOFA_RELEASE
 
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
@@ -276,7 +274,9 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 	enable(sofa_misc_solver_dev)
 	enable(sofa_misc_dev)
 } # END SOFA_DEV
+
 contains(DEFINES, SOFA_HAVE_EIGEN2) {
+    enable(eigen)
 	enable(sofa_eigen2_solver)
 }
 contains(DEFINES, SOFA_HAVE_CSPARSE) {
