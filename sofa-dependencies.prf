@@ -176,9 +176,11 @@ declare(oneTetrahedron,      applications/tutorials/oneTetrahedron,   sofa_compo
 ######################################################################
 # Enable artifacts
 ######################################################################
-
-contains(DEFINES, SOFA_DEV) {
+!contains (DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
 	enable(sofabgl)
+} # END !SOFA_RELEASE
+
+contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 	
 	contains(DEFINES, SOFA_EXTLIBS_METIS) {
 		enable(metis)
@@ -192,7 +194,7 @@ contains(DEFINES, SOFA_DEV) {
 	contains(DEFINES, SOFA_HAVE_COLLADADOM) {
 		enable(colladadom)
 	}
-}
+} # END SOFA_DEV
 
 contains(DEFINES, SOFA_HAVE_CSPARSE) {
 	enable(csparse)
@@ -256,7 +258,7 @@ enable(sofa_eulerian_fluid)
 enable(sofa_sph_fluid)
 enable(sofa_volumetric_data)
 enable(sofa_non_uniform_fem)
-contains(DEFINES, SOFA_DEV) {
+contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
     enable(sofa_component_dev)
 	enable(sofa_component_advanced_dev)
 	enable(sofa_component_misc_dev)
@@ -272,7 +274,7 @@ contains(DEFINES, SOFA_DEV) {
 	enable(sofa_misc_collision_dev)
 	enable(sofa_misc_solver_dev)
 	enable(sofa_misc_dev)
-}
+} # END SOFA_DEV
 contains(DEFINES, SOFA_HAVE_EIGEN2) {
 	enable(sofa_eigen2_solver)
 }
@@ -321,8 +323,23 @@ contains(DEFINES, SOFA_GUI_GLUT) {
 	enable(sofaguiglut)
 }
 
+contains (DEFINES, SOFA_HAVE_TUTORIALS) {
+	enable(sofaobjectcreator)
+	enable(chainHybrid)
+	enable(houseOfCards)
+	enable(mixedPendulum)
+	enable(oneParticule)
+	enable(oneTetrahedron)
+}
+
 contains(DEFINES, SOFA_GPU_CUDA) {
 	enable(sofagpucuda)
+	enable(sofaCUDA)
+}
+
+contains(DEFINES, SOFA_GPU_OPENCL) {
+    enable(sofagpuopencl)
+    enable(sofaOPENCL)
 }
 
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
@@ -340,39 +357,33 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 			enable(cudpp)
 		}
       		enable(sofagpucuda_dev)
-		enable(sofaCUDA)
 # This project should be enable in sofa_dependencies-local.prf
 #		enable(sofaCUDA_Bench)
-	}
-	contains(DEFINES, SOFA_GPU_OPENCL) {
-	    enable(sofagpuopencl)
-	    enable(sofaOPENCL)
 	}
 
 } # END SOFA_DEV
 
-contains (DEFINES, SOFA_PML) {
-	enable(sofapml)
-}
+!contains (DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
+	contains(DEFINES, SOFA_HAVE_VDD) {
+		#enable(SofaDevices)
+	}
+	contains(DEFINES, SOFA_HAVE_VRPN) {
+		#enable(SofaVRPN)
+	}
+    
+    contains (DEFINES, SOFA_PML) {
+	    enable(sofapml)
+    }
 
-contains (DEFINES, SOFA_HAVE_TUTORIALS) {
-	enable(sofaobjectcreator)
-	enable(chainHybrid)
-	enable(houseOfCards)
-	enable(mixedPendulum)
-	enable(oneParticule)
-	enable(oneTetrahedron)
-}
-
-
-contains (DEFINES, SOFA_HAVE_BOOSTKERNEL) {
-# SOFA_HAVE_BOOSTKERNEL depend of SOFA_HAVE_TUTORIALS
-DEFINES += SOFA_HAVE_BOOSTKERNEL
-	enable(centerOfMassMapping)
-	enable(centerOfMassMulti2MappingChain)
-	enable(centerOfMassMultiMappingChain)
-	enable(subsetMultimapping)
-}
+    contains (DEFINES, SOFA_HAVE_BOOSTKERNEL) {
+    # SOFA_HAVE_BOOSTKERNEL depend of SOFA_HAVE_TUTORIALS
+    DEFINES += SOFA_HAVE_BOOSTKERNEL
+    	enable(centerOfMassMapping)
+    	enable(centerOfMassMulti2MappingChain)
+    	enable(centerOfMassMultiMappingChain)
+    	enable(subsetMultimapping)
+    }
+} # END !SOFA_RELEASE
 
 
 }

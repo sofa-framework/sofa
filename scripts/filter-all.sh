@@ -6,6 +6,8 @@ echo "Press Enter to continue, or Ctrl-C to cancel."
 read || exit 0
 fi
 
+RMCMD=${RMCMD:-svn rm --force}
+
 shopt -s nullglob
 
 DIR0=$PWD
@@ -34,14 +36,14 @@ function qmake_remove_project {
 	    if [ -d "$g" ]; then
 		    echo "Remove directory $g"
 		    let nrmdir+=1
-		    svn rm --force $g || echo "Failed to remove directory $g";
+		    $RMCMD $g || echo "Failed to remove directory $g";
 	    elif [ -f "$g" ]; then
             if [ "${g: -4}" == ".pro" ]; then
                 qmake_remove_project "$g"
             else
 		        echo "Remove file $g"
 		        let nrmfile+=1
-		        svn rm --force $g || echo "Failed to remove file $g";
+		        $RMCMD $g || echo "Failed to remove file $g";
             fi
 	    else
 		    echo "$g already removed."
@@ -51,7 +53,7 @@ function qmake_remove_project {
     popd
 	echo "Remove file $1"
 	let nrmfile+=1
-	svn rm --force $1 || echo "Failed to remove file $1";
+	$RMCMD $1 || echo "Failed to remove file $1";
 }
 
 function qmake_process_dir {
@@ -67,14 +69,14 @@ function qmake_process_dir {
 	        if [ -d "$g" ]; then
 		        echo "Remove directory $g"
 		        let nrmdir+=1
-		        svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
+		        $RMCMD $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
 	        elif [ -f "$g" ]; then
                 if [ "${g: -4}" == ".pro" ]; then
                     qmake_remove_project "$g"
                 else
 		            echo "Remove file $g"
 		            let nrmfile+=1
-		            svn rm --force $g || (echo "Failed to remove file $g"; mv -f $f.bak $f ; exit 1)
+		            $RMCMD $g || (echo "Failed to remove file $g"; mv -f $f.bak $f ; exit 1)
                 fi
 	        else
 		        echo "$g already removed."
@@ -99,7 +101,7 @@ function qmake_process_dir {
         if [ $(wc -w < "$f") -eq 0 -a $(wc -w < "$f".bak) -gt 0 ]; then
 		    echo "Remove file $f"
 		    let nrmfile+=1
-		    svn rm --force $f || (echo "Failed to remove file $f"; mv -f $f.bak $f; exit 1)
+		    $RMCMD $f || (echo "Failed to remove file $f"; mv -f $f.bak $f; exit 1)
         elif [ $(wc -l < $f.bak) -gt $(wc -l < $f) ]; then
 	        nl=$(($(wc -l < $f.bak)-$(wc -l < $f)))
 	        let nrmline+=$nl
@@ -127,11 +129,11 @@ function private_process_dir {
 	    if [ -d "$g" ]; then
 		echo "Remove directory $g"
 		let nrmdir+=1
-		svn rm --force $g || (echo "Failed to remove directory $g"; exit 1)
+		$RMCMD $g || (echo "Failed to remove directory $g"; exit 1)
 	    elif [ -f "$g" ]; then
 		echo "Remove file $g"
 		let nrmfile+=1
-		svn rm --force $g || (echo "Failed to remove file $g"; exit 1)
+		$RMCMD $g || (echo "Failed to remove file $g"; exit 1)
 	    else
 		echo "$g already removed."
 	    fi
