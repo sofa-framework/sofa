@@ -73,7 +73,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(unsigned int nbE
         if (test)
             data.push_back( size+i );
     }
-    lastPointIndex+=nbElements;
+    this->lastElementIndex+=nbElements;
 }
 
 
@@ -120,7 +120,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::
             it2=0;
             while(it2<data.size())
             {
-                if(data[it2]==lastPointIndex)
+                if(data[it2]==this->lastElementIndex)
                     break;
                 else
                     it2+=1;
@@ -144,7 +144,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::
             it2=0;
             while(it2<data.size())
             {
-                if(data[it2]==lastPointIndex)
+                if(data[it2]==this->lastElementIndex)
                     break;
                 else
                     it2+=1;
@@ -155,7 +155,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::
                 data[it2]=index[i];
             }
         }
-        --lastPointIndex;
+        --this->lastElementIndex;
     }
 
     m_topologyData->endEdit();
