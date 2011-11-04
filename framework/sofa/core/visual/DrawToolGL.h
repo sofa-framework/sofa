@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -18,10 +18,7 @@
 *******************************************************************************
 *                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy
-* JC. Lombardo, J.Esnault
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,15 +16,9 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                            SOFA :: Applications                             *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: The Sofa Team (see authors.txt)                                    *
-*    and Geometric Tools, Inc. Copyright (c) 1998-2006.                       *
-*    // The Wild Magic Library (WM3) source code is supplied under the terms  *
-*    // of the license agreement LPGL                                         *
-*    //     http://www.geometrictools.com/License/WildMagic3License.pdf       *
-*    // and may not be copied or disclosed except in accordance with the      *
-*    // terms of that agreement.                                              *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
