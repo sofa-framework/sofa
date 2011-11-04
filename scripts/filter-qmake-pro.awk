@@ -39,7 +39,7 @@ END {
 # Note that we now count the brackets in the source file to find the
 # SOFA_DEV closing one instead of relying on the presence of a comment
 
-blk_filtered==0 && $0 ~ "contains[ \t]*\([ \t]*DEFINES[ \t]*,[ \t]*"FILTER_TAG"[ \t]*\)[ \t]*{" {
+blk_filtered==0 && $0 ~ "contains[ \t]*\\([ \t]*DEFINES[ \t]*,[ \t]*"FILTER_TAG"[ \t]*\\)[ \t]*{" {
     blk_filtered=blk_after;
     infilelist=0;
 }
