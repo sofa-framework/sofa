@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
-<!------ NEW DEFAULT SCENE (Thanks Manimoul for the caduceus model !!) ------->
-
+<!-- NEW DEFAULT SOFA SCENE (Thanks to Jeremy Ringard for the caduceus model) -->
 <Node name="root" gravity="0 -1000 0" dt="0.04">
     <VisualStyle displayFlags="showVisual  " /> <!--showBehaviorModels showCollisionModels-->
 	<LCPConstraintSolver tolerance="1e-3" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/>
@@ -8,12 +7,10 @@
     <CollisionPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
 	<MinProximityIntersection name="Proximity" alarmDistance="1.5" contactDistance="1" />
-
-	
 	
     <LightManager />
     <SpotLight name="light1" color="1 1 1" position="0 80 25" direction="0 -1 -0.8" cutoff="30" exponent="1" />
-	<SpotLight name="light1" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
+	<SpotLight name="light2" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
     
     <CollisionResponse name="Response" response="FrictionContact" />
     <Node name="Snake" >
@@ -26,10 +23,7 @@
         <UniformMass totalMass="1.0" />
         <HexahedronFEMForceField youngModulus="30000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
 
-		
-
 		<UncoupledConstraintCorrection />
-		
 		
 		<Node name="Collis">
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
@@ -40,39 +34,33 @@
             <Point  selfCollision="0" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
-		
-		
 
-     				
-        <Node name="Visu" tags="Visual" >
+        <Node name="VisuBody" tags="Visual" >
 			<VisualModel  name="VisualBody" fileMesh="mesh/snake_body.obj"   />
 			<BarycentricMapping input="@.." output="@VisualBody" />
         </Node>
-		
-		
-        <Node name="Visu" tags="Visual" >
+
+        <Node name="VisuCornea" tags="Visual" >
 			<VisualModel  name="VisualCornea" fileMesh="mesh/snake_cornea.obj"   />
 			<BarycentricMapping object1="../.." object2="VisualCornea" />
         </Node>	
 		
-        <Node name="Visu" tags="Visual" >
+        <Node name="VisuEye" tags="Visual" >
 			<VisualModel  name="VisualEye" fileMesh="mesh/snake_yellowEye.obj"   />
 			<BarycentricMapping object1="../.." object2="VisualEye" />
         </Node>				
     </Node>
-	
-	
 
     <Node name="Base" >
-	
-		<Node name="Baton">
+
+		<Node name="Stick">
 			<MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <Line simulated="false" moving="false" />
             <Point simulated="false"  moving="false"/>
 		</Node>
-		<Node name="Boules">
+		<Node name="Blobs">
 			<MeshObjLoader name="loader" filename="mesh/collision_boules_V3.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
@@ -81,7 +69,7 @@
             <Point simulated="false" moving="false"/>
 		</Node>	
 		
-		<Node name="Boules">
+		<Node name="Foot">
 			<MeshObjLoader name="loader" filename="mesh/collision_pied.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
@@ -89,19 +77,9 @@
             <Line simulated="false" moving="false"/>
             <Point simulated="false" moving="false"/>
 		</Node>		
-		
 
-				
-		
         <Node name="Visu" tags="Visual" >
             <VisualModel  name="VisualModel" fileMesh="mesh/SOFA_pod.obj" />
         </Node>
-		
     </Node>	
-	
-	
-
-	
-	
-	
 </Node>

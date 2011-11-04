@@ -16,8 +16,6 @@
         <UniformMass totalMass="1.5" />
         <HexahedronFEMForceField youngModulus="1000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
 		<BoxConstraint box="-5 0 -5 5 10 5" />
-	
-
 		
 		<Node name="Collis">
             <MeshObjLoader name="loader" filename="mesh/caducee_snake.obj" />
@@ -34,8 +32,6 @@
 			<BarycentricMapping object1="../.." object2="VisualModel" />
         </Node>
     </Node>
-	
-	
 
     <Node name="Base" >
 		
