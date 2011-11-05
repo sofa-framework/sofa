@@ -133,7 +133,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::
             unsigned int size_before = data.size();
 
             // Call destroy function implemented in specific component
-            this->applyDestroyFunction(index[i], data[index[i]]);
+            this->applyDestroyFunction(index[i], data[data.size()-1]);
 
             // As applyDestroyFunction could already perfom the suppression, if implemented. Size is checked again. If no change this handler really perform the suppresion
             if (size_before == data.size())
