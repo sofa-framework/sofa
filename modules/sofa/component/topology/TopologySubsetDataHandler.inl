@@ -130,14 +130,14 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::
                 data[it2]=index[i];
 
             data[it1]=data[data.size()-1];
+            unsigned int size_before = data.size();
+
+            // Call destroy function implemented in specific component
             this->applyDestroyFunction(index[i], data[index[i]]);
 
-
-            // Fix "vector size specified is too large" exception.
-            if (data.size() > 0)
+            // As applyDestroyFunction could already perfom the suppression, if implemented. Size is checked again. If no change this handler really perform the suppresion
+            if (size_before == data.size())
                 data.resize(data.size() - 1);
-            else
-                data.resize(0);
         }
         else
         {
