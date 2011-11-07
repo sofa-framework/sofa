@@ -1,5 +1,7 @@
-includeOnce($$_FILE_) {
-	declare(sofaframe, applications/plugins/frame, sofacomponentprojectiveconstraintset sofacomponentvisualmodel sofagpucuda)
+includeOnce($$_FILE_) 
+{
+#	declare(sofaframe, applications/plugins/frame, sofacomponentprojectiveconstraintset sofacomponentvisualmodel sofagpucuda)
+	declare(sofaframe, applications/plugins/frame, sofaguiqt)
 
 	enable(sofaframe)
 }
