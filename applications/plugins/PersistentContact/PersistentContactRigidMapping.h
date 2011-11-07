@@ -77,7 +77,7 @@ public:
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    PersistentContactRigidMapping(core::State< In >* from, core::State< Out >* to);
+    PersistentContactRigidMapping();
 
     virtual ~PersistentContactRigidMapping() {}
 

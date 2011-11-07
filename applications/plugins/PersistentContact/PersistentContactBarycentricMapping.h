@@ -67,8 +67,8 @@ public:
     typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
     typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexaMapper;
 
-    PersistentContactBarycentricMapping(core::State<In>* from, core::State<Out>* to)
-        : Inherit(from, to)
+    PersistentContactBarycentricMapping()
+        : Inherit()
     {
     }
 

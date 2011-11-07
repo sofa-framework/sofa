@@ -45,8 +45,8 @@ using namespace sofa::defaulttype;
 
 
 template <class TIn, class TOut>
-PersistentContactRigidMapping<TIn, TOut>::PersistentContactRigidMapping(core::State< In >* from, core::State< Out >* to)
-    : Inherit(from, to)
+PersistentContactRigidMapping<TIn, TOut>::PersistentContactRigidMapping()
+    : Inherit()
 {
     m_inputMapping = 0;
 }

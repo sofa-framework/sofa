@@ -37,6 +37,8 @@ namespace sofa
 namespace component
 {
 
+namespace container { template< class T > class MechanicalObject; }
+
 namespace collision
 {
 
@@ -103,9 +105,9 @@ struct ContactInfo
 template <class TCollisionModel1, class TCollisionModel2>
 class PersistentFrictionContact : public FrictionContact<TCollisionModel1, TCollisionModel2>
 {
+public:
     SOFA_CLASS(SOFA_TEMPLATE2(PersistentFrictionContact, TCollisionModel1, TCollisionModel2), SOFA_TEMPLATE2(FrictionContact, TCollisionModel1, TCollisionModel2));
 
-public:
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
     typedef core::collision::Intersection Intersection;
