@@ -35,9 +35,9 @@
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/component/topology/TopologyData.h>
 #include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/component/topology/PointData.inl>
+//#include <sofa/component/topology/PointData.inl>
 #include <iostream>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/loader/MeshObjLoader.h>

@@ -35,7 +35,8 @@
 #include <sofa/component/topology/PointData.inl>
 
 #include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/component/container/VoxelGridLoader.h>
+//#include <sofa/component/container/VoxelGridLoader.h>
+#include <sofa/core/loader/VoxelGridLoader.h>
 #include <sofa/component/visualmodel/OglAttribute.inl>
 
 #include <sofa/simulation/common/AnimateEndEvent.h>
