@@ -207,7 +207,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyCon
 
     if (this->m_constraint)
     {
-        PersistentConstraint *cc = static_cast< PersistentConstraint* >(this->m_constraint);
+        PersistentConstraint *cc = static_cast< PersistentConstraint* >(this->m_constraint.get());
 
         if (this->f_printLog.getValue())
         {
@@ -460,7 +460,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
         }
 
         this->m_constraint->setName( this->getName() );
-        static_cast< constraintset::PersistentUnilateralInteractionConstraint<Vec3Types> * >(this->m_constraint)->clearContactStates();
+        static_cast< constraintset::PersistentUnilateralInteractionConstraint<Vec3Types> * >(this->m_constraint.get())->clearContactStates();
     }
 
     int size = this->contacts.size();
@@ -620,7 +620,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
 
                 // Add contact in PersistentUnilateralInteractionConstraint
                 typedef constraintset::PersistentUnilateralInteractionConstraint<Vec3Types> PersistentConstraint;
-                PersistentConstraint *persistent_constraint = static_cast< PersistentConstraint * >(this->m_constraint);
+                PersistentConstraint *persistent_constraint = static_cast< PersistentConstraint * >(this->m_constraint.get());
 
                 persistent_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id);
 
