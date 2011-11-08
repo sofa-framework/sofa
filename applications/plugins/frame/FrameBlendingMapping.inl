@@ -1478,62 +1478,60 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
 }
 
 
-/* Commented until topologies API is redefined
-            // This method is only called on mappings handling collision and visual models. Physical ones are not based on a topology (see the method checkForChanges()).
-            template <class TIn, class TOut>
-            void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
+// This method is only called on mappings handling collision and visual models. Physical ones are not based on a topology (see the method checkForChanges()).
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
+{
+    if(!useAdaptivity.getValue()) return;
+
+    if (t == to_topo)
+    {
+        // Handle topological changes on the mapped topology
+        std::list<const core::topology::TopologyChange *>::const_iterator itBegin=to_topo->beginChange();
+        std::list<const core::topology::TopologyChange *>::const_iterator itEnd=to_topo->endChange();
+
+        // Handle topological changes for PointData
+        if (!useDQ.getValue()) inout.handleTopologyEvents(itBegin, itEnd);
+        //else dqinout.handleTopologyEvents(itBegin, itEnd);
+        f_initPos.handleTopologyEvents(itBegin, itEnd);
+        f_index.handleTopologyEvents(itBegin, itEnd);
+        weight.handleTopologyEvents(itBegin, itEnd);
+        weightDeriv.handleTopologyEvents(itBegin, itEnd);
+        weightDeriv2.handleTopologyEvents(itBegin, itEnd);
+
+        while ( itBegin != itEnd )
+        {
+            core::topology::TopologyChangeType changeType = ( *itBegin )->getChangeType();
+
+            switch ( changeType )
             {
-                if(!useAdaptivity.getValue()) return;
 
-                if (t == to_topo)
-                {
-                    // Handle topological changes on the mapped topology
-                    std::list<const core::topology::TopologyChange *>::const_iterator itBegin=to_topo->beginChange();
-                    std::list<const core::topology::TopologyChange *>::const_iterator itEnd=to_topo->endChange();
-
-                    // Handle topological changes for PointData
-                    if (!useDQ.getValue()) inout.handleTopologyEvents(itBegin, itEnd);
-                    //else dqinout.handleTopologyEvents(itBegin, itEnd);
-                    f_initPos.handleTopologyEvents(itBegin, itEnd);
-                    f_index.handleTopologyEvents(itBegin, itEnd);
-                    weight.handleTopologyEvents(itBegin, itEnd);
-                    weightDeriv.handleTopologyEvents(itBegin, itEnd);
-                    weightDeriv2.handleTopologyEvents(itBegin, itEnd);
-
-                    while ( itBegin != itEnd )
-                    {
-                            core::topology::TopologyChangeType changeType = ( *itBegin )->getChangeType();
-
-                            switch ( changeType )
-                            {
-
-                            case core::topology::ENDING_EVENT:
-                                {
-                                    break;
-                                }
-                            case core::topology::POINTSADDED:
-                                {
-                                    //const unsigned int& nbNewVertices = ( static_cast< const typename component::topology::PointsAdded *> ( *itBegin ) )->getNbAddedVertices();
-                                    updateMapping();
-                                    break;
-                                }
-                            case core::topology::POINTSREMOVED:
-                                {
-                                    //const sofa::helper::vector<core::topology::BaseMeshTopology::PointID> &tab = ( static_cast< const typename component::topology::PointsRemoved *> ( *itBegin ) )->getArray();
-                                    //removeSamples( tab);
-                                    break;
-                                }
-                            case core::topology::POINTSRENUMBERING:
-                            default:
-                                    break;
-                            };
-
-                            ++itBegin;
-                    }
-                }
-                return;
+            case core::topology::ENDING_EVENT:
+            {
+                break;
             }
-*/
+            case core::topology::POINTSADDED:
+            {
+                //const unsigned int& nbNewVertices = ( static_cast< const typename component::topology::PointsAdded *> ( *itBegin ) )->getNbAddedVertices();
+                updateMapping();
+                break;
+            }
+            case core::topology::POINTSREMOVED:
+            {
+                //const sofa::helper::vector<core::topology::BaseMeshTopology::PointID> &tab = ( static_cast< const typename component::topology::PointsRemoved *> ( *itBegin ) )->getArray();
+                //removeSamples( tab);
+                break;
+            }
+            case core::topology::POINTSRENUMBERING:
+            default:
+                break;
+            };
+
+            ++itBegin;
+        }
+    }
+    return;
+}
 
 
 template <class TIn, class TOut>
