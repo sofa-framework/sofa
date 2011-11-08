@@ -5,11 +5,12 @@ TARGET = sofamodeler
 
 CONFIGSTATIC = static
 
-INCLUDEPATH *= $ROOT_SRC_DIR/applications/sofa/gui/qt/$$UI_DIR # HACK: this library uses some uic generated headers from this directory.
+INCLUDEPATH *= $ROOT_SRC_DIR/applications/sofa/gui/qt#/$$UI_DIR # HACK: this library uses some uic generated headers from this directory.
 DEPENDPATH *= $ROOT_SRC_DIR/applications/sofa/gui/qt/$$UI_DIR # HACK: this library uses some uic generated headers from this directory.
 
 SOURCES = SofaModeler.cpp \
           GraphModeler.cpp \
+		  LinkComponent.cpp \
           SofaTutorialManager.cpp \
           TutorialSelector.cpp \
           AddPreset.cpp \
@@ -26,6 +27,7 @@ HEADERS = SofaModeler.h \
           AddPreset.h \
           FilterLibrary.h \
           GlobalModification.h \
+		  LinkComponent.h \
           GraphHistoryManager.h \
           ModifierCondition.h \
           ../../../sofa/gui/qt/SofaPluginManager.h 
