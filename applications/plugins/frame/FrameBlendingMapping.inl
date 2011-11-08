@@ -595,7 +595,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
         WriteAccessor<Data<VecOutCoord> >  xto = *this->toModel->write(core::VecCoordId::position());
         WriteAccessor<Data<VecOutCoord> >  xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
 
-        core::behavior::MechanicalState< Out >* mstateto = dynamic_cast<core::behavior::MechanicalState< Out >* >( this->toModel);
+        core::behavior::MechanicalState< Out >* mstateto = this->toModel ? dynamic_cast<core::behavior::MechanicalState< Out >* >( this->toModel.get()) : 0;
         if ( !mstateto)
         {
             serr << "Error: try to insert new samples, which are not mechanical states !" << sendl;
@@ -1478,68 +1478,68 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
 }
 
 
-
-// This method is only called on mappings handling collision and visual models. Physical ones are not based on a topology (see the method checkForChanges()).
-template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
-{
-    if(!useAdaptivity.getValue()) return;
-
-    if (t == to_topo)
-    {
-        // Handle topological changes on the mapped topology
-        std::list<const core::topology::TopologyChange *>::const_iterator itBegin=to_topo->beginChange();
-        std::list<const core::topology::TopologyChange *>::const_iterator itEnd=to_topo->endChange();
-
-        // Handle topological changes for PointData
-        if (!useDQ.getValue()) inout.handleTopologyEvents(itBegin, itEnd);
-        //else dqinout.handleTopologyEvents(itBegin, itEnd);
-        f_initPos.handleTopologyEvents(itBegin, itEnd);
-        f_index.handleTopologyEvents(itBegin, itEnd);
-        weight.handleTopologyEvents(itBegin, itEnd);
-        weightDeriv.handleTopologyEvents(itBegin, itEnd);
-        weightDeriv2.handleTopologyEvents(itBegin, itEnd);
-
-        while ( itBegin != itEnd )
-        {
-            core::topology::TopologyChangeType changeType = ( *itBegin )->getChangeType();
-
-            switch ( changeType )
+/* Commented until topologies API is redefined
+            // This method is only called on mappings handling collision and visual models. Physical ones are not based on a topology (see the method checkForChanges()).
+            template <class TIn, class TOut>
+            void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
             {
+                if(!useAdaptivity.getValue()) return;
 
-            case core::topology::ENDING_EVENT:
-            {
-                break;
+                if (t == to_topo)
+                {
+                    // Handle topological changes on the mapped topology
+                    std::list<const core::topology::TopologyChange *>::const_iterator itBegin=to_topo->beginChange();
+                    std::list<const core::topology::TopologyChange *>::const_iterator itEnd=to_topo->endChange();
+
+                    // Handle topological changes for PointData
+                    if (!useDQ.getValue()) inout.handleTopologyEvents(itBegin, itEnd);
+                    //else dqinout.handleTopologyEvents(itBegin, itEnd);
+                    f_initPos.handleTopologyEvents(itBegin, itEnd);
+                    f_index.handleTopologyEvents(itBegin, itEnd);
+                    weight.handleTopologyEvents(itBegin, itEnd);
+                    weightDeriv.handleTopologyEvents(itBegin, itEnd);
+                    weightDeriv2.handleTopologyEvents(itBegin, itEnd);
+
+                    while ( itBegin != itEnd )
+                    {
+                            core::topology::TopologyChangeType changeType = ( *itBegin )->getChangeType();
+
+                            switch ( changeType )
+                            {
+
+                            case core::topology::ENDING_EVENT:
+                                {
+                                    break;
+                                }
+                            case core::topology::POINTSADDED:
+                                {
+                                    //const unsigned int& nbNewVertices = ( static_cast< const typename component::topology::PointsAdded *> ( *itBegin ) )->getNbAddedVertices();
+                                    updateMapping();
+                                    break;
+                                }
+                            case core::topology::POINTSREMOVED:
+                                {
+                                    //const sofa::helper::vector<core::topology::BaseMeshTopology::PointID> &tab = ( static_cast< const typename component::topology::PointsRemoved *> ( *itBegin ) )->getArray();
+                                    //removeSamples( tab);
+                                    break;
+                                }
+                            case core::topology::POINTSRENUMBERING:
+                            default:
+                                    break;
+                            };
+
+                            ++itBegin;
+                    }
+                }
+                return;
             }
-            case core::topology::POINTSADDED:
-            {
-                //const unsigned int& nbNewVertices = ( static_cast< const typename component::topology::PointsAdded *> ( *itBegin ) )->getNbAddedVertices();
-                updateMapping();
-                break;
-            }
-            case core::topology::POINTSREMOVED:
-            {
-                //const sofa::helper::vector<core::topology::BaseMeshTopology::PointID> &tab = ( static_cast< const typename component::topology::PointsRemoved *> ( *itBegin ) )->getArray();
-                //removeSamples( tab);
-                break;
-            }
-            case core::topology::POINTSRENUMBERING:
-            default:
-                break;
-            };
-
-            ++itBegin;
-        }
-    }
-    return;
-}
-
+*/
 
 
 template <class TIn, class TOut>
 bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
 {
-    core::behavior::MechanicalState< In >* mstatefrom = static_cast<core::behavior::MechanicalState< In >* >( this->fromModel);
+    core::behavior::MechanicalState< In >* mstatefrom = this->fromModel ? static_cast<core::behavior::MechanicalState< In >* >( this->fromModel.get()) : 0;
     unsigned int indexFrom = mstatefrom->getSize();
 
     WriteAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->write(core::VecCoordId::restPosition());
@@ -1584,7 +1584,7 @@ bool FrameBlendingMapping<TIn, TOut>::insertFrame (const Vec3d& pos)
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::removeFrame (const unsigned int index)
 {
-    component::container::MechanicalObject< In >* mstatefrom = static_cast<component::container::MechanicalObject< In >* >( this->fromModel);
+    component::container::MechanicalObject< In >* mstatefrom = this->fromModel ? static_cast<component::container::MechanicalObject< In >* >( this->fromModel.get()) : 0;
     mstatefrom->replaceValue (mstatefrom->getSize()-1,this->addedFrameIndices[index]);
     mstatefrom->resize(mstatefrom->getSize()-1);
     this->addedFrameIndices[index] = this->addedFrameIndices[this->addedFrameIndices.size()-1];
