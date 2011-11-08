@@ -30,6 +30,7 @@
 #include "AddPreset.h"
 #include "GraphHistoryManager.h"
 #include "GlobalModification.h"
+#include "LinkComponent.h"
 #include <sofa/core/SofaLibrary.h>
 
 #include <sofa/simulation/common/Simulation.h>
@@ -85,6 +86,7 @@ using sofa::core::SofaLibrary;
 class GraphModeler : public Q3ListView
 {
     friend class GraphHistoryManager;
+    friend class LinkComponent;
     Q_OBJECT
 public:
     GraphModeler( QWidget* parent=0, const char* name=0, Qt::WFlags f = 0 );
@@ -224,6 +226,9 @@ public slots:
     /// Context Menu Operation: process to a global modification of a Data
     void globalModification();
 
+    /// Context Menu Operation: link a component with another one
+    void linkComponent();
+
     /// Load a file given the node in which it will be added
     GNode::SPtr loadNode(GNode::SPtr, std::string, bool saveHistory=true);
     /// Context Menu Operation: loading a preset: open the window of configuration
@@ -254,6 +259,9 @@ protected:
     GNode      *getGNode(Q3ListViewItem *item) const;
     /// Get the component corresponding to the item, NULL if the item is a GNode
     BaseObject *getObject(Q3ListViewItem *item) const;
+
+    /// Given a component, return the item of the list corresponding
+    Q3ListViewItem *getItem(Base *component) const;
 
     /// Insert a GNode in the scene
     GNode::SPtr addGNode(GNode::SPtr parent, GNode::SPtr node=NULL, bool saveHistory=true);

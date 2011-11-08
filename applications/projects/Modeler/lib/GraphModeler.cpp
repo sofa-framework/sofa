@@ -320,8 +320,6 @@ Base* GraphModeler::getComponent(Q3ListViewItem *item) const
     return NULL;
 }
 
-
-
 BaseObject *GraphModeler::getObject(Q3ListViewItem *item) const
 {
     Base* component=getComponent(item);
@@ -355,6 +353,19 @@ GNode *GraphModeler::getGNode(Q3ListViewItem *item) const
     }
 }
 
+Q3ListViewItem *GraphModeler::getItem(Base *component) const
+{
+    if (!component) return NULL;
+    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
+    for (it = graphListener->items.begin(); it != graphListener->items.end(); it++)
+    {
+        if (it->first == component)
+        {
+            return it->second;
+        }
+    }
+    return NULL;
+}
 
 void GraphModeler::openModifyObject()
 {
@@ -451,6 +462,10 @@ void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int ind
         }
     }
 
+    bool isLoader = false;
+    if (dynamic_cast<sofa::core::loader::BaseLoader*>(getComponent(item)) != NULL)
+        isLoader = true;
+
     Q3PopupMenu *contextMenu = new Q3PopupMenu ( this, "ContextMenu" );
     if (isNode)
     {
@@ -481,6 +496,10 @@ void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int ind
 
     contextMenu->insertItem("Modify"  , this, SLOT( openModifyObject()));
     contextMenu->insertItem("GlobalModification"  , this, SLOT( globalModification()));
+
+    if (!isNode && !isLoader)
+        contextMenu->insertItem("Link"  , this, SLOT( linkComponent()));
+
     contextMenu->popup ( point, index );
 
 }
@@ -572,6 +591,50 @@ void GraphModeler::globalModification()
     for (unsigned int i=0; i<hierarchySelection.size(); ++i) allComponentsSelected.push_back(getComponent(hierarchySelection[i]));
 
     sofa::gui::qt::GlobalModification *window=new sofa::gui::qt::GlobalModification(allComponentsSelected, historyManager);
+
+    connect(window, SIGNAL(displayMessage(const std::string&)), this, SIGNAL(displayMessage(const std::string&)));
+
+    window->show();
+}
+
+void GraphModeler::linkComponent()
+{
+    // get the selected component
+    helper::vector< Q3ListViewItem* > selection;
+    getSelectedItems(selection);
+
+    // a component must be selected
+    if(selection.empty())
+        return;
+
+    Q3ListViewItem *fromItem = *selection.begin();
+    BaseObject *fromObject = getObject(fromItem);
+
+    // the object must exist
+    if(!fromObject)
+        return;
+
+    // the object must not be a loader
+    if(dynamic_cast<sofa::core::loader::BaseLoader*>(fromObject))
+        return;
+
+    // store the partial component hierarchy i.e we store the parent GNodes only
+    std::vector<Q3ListViewItem*> items;
+    for(Q3ListViewItem *item = fromItem->parent(); item != NULL; item = item->parent())
+        items.push_back(item);
+
+    // create and show the LinkComponent dialog box
+    sofa::gui::qt::LinkComponent *window=new sofa::gui::qt::LinkComponent(this, items, fromItem);
+
+    if(window->loaderNumber() == 0)
+    {
+        window->close();
+
+        QMessageBox* messageBox = new QMessageBox(QMessageBox::Warning, "No loaders", "This tree branch does not contain any loader to link with.");
+        messageBox->show();
+
+        return;
+    }
 
     connect(window, SIGNAL(displayMessage(const std::string&)), this, SIGNAL(displayMessage(const std::string&)));
 
