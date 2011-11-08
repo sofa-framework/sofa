@@ -87,7 +87,7 @@ protected:
     bool resetFlag; // We delete all forces that were not read
 };
 
-class UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
+class SOFA_CONSTRAINT_API UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
     UnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev=NULL, bool* active = NULL)
