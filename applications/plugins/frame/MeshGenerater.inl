@@ -35,8 +35,7 @@
 #include <sofa/component/topology/PointData.inl>
 
 #include <sofa/component/container/MechanicalObject.inl>
-//#include <sofa/component/container/VoxelGridLoader.h>
-#include <sofa/core/loader/VoxelGridLoader.h>
+#include <sofa/component/loader/VoxelGridLoader.h>
 #include <sofa/component/visualmodel/OglAttribute.inl>
 
 #include <sofa/simulation/common/AnimateEndEvent.h>
@@ -220,7 +219,7 @@ void MeshGenerater<DataTypes>::init()
         // Init the triangular topology (= Insert faces)
         for ( unsigned int i = 0; i < triangles.size() / 3; i++ )
         {
-            _to_tstm->addTriangleProcess ( Triangle ( helper::make_array<unsigned int> ( triangles[3*i], triangles[3*i+1], triangles[3*i+2] ) ) );
+            _to_tstm->addTriangleProcess ( Triangle ( triangles[3*i], triangles[3*i+1], triangles[3*i+2] ) );
         }
 
         smoothMesh();
@@ -741,7 +740,7 @@ void MeshGenerater<DataTypes>::addNewEltsInTopology ( const sofa::helper::vector
 
     for ( unsigned int i = 0; i < triangles.size(); i+=3 )
     {
-        Triangle tri ( helper::make_array<unsigned int> ( triangles[i], triangles[i+1], triangles[i+2] ) );
+        Triangle tri ( triangles[i], triangles[i+1], triangles[i+2] );
         triangles_to_create.push_back ( tri );
         trianglesIndexList.push_back ( nb_elems );
         nb_elems++;

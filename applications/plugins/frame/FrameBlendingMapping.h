@@ -115,7 +115,7 @@ public:
     typedef Vec<3,double> Vec3d;
 
 public:
-    FrameBlendingMapping (core::State<In>* from, core::State<Out>* to );
+    FrameBlendingMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL);
     virtual ~FrameBlendingMapping();
 
     virtual void init();
@@ -133,7 +133,7 @@ public:
 
     // Adaptativity
     virtual void checkForChanges();
-    virtual void handleTopologyChange(core::topology::Topology* t);
+    //virtual void handleTopologyChange(core::topology::Topology* t);
     virtual bool insertFrame( const Vec3d& pos);
     virtual void removeFrame( const unsigned int index); // Index is relative to addedFrameIndices
 
