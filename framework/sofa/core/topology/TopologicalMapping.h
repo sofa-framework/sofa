@@ -70,12 +70,16 @@ protected:
 
     virtual ~TopologicalMapping() { }
 public:
-    /// Specify the input and output topologies.
-    //	void setModels(In* from, Out* to)
-    //{
-    //	fromModel = from;
-    //	toModel = to;
-    //}
+    /// Specify the input and output models.
+    virtual void setTopologies(In* from, Out* to)
+    {
+        this->fromModel.set( from );
+        this->toModel.set( to );
+    };
+
+    /// Set the path to the objects mapped in the scene graph
+    void setPathInputObject(const std::string &o) {fromModel.setPath(o);}
+    void setPathOutputObject(const std::string &o) {toModel.setPath(o);}
 
     /// Accessor to the INPUT topology of the TopologicalMapping :
     In* getFrom() {return fromModel.get();}
