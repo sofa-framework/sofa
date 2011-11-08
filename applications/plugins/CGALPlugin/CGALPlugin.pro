@@ -39,7 +39,7 @@ README_FILE = CGALPlugin.txt
 #TODO: add an install target for README files
 
 unix : QMAKE_POST_LINK = cp $$SRC_DIR/$$README_FILE $$LIB_DESTDIR 
-win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$LIB_DESTDIR"
+win32 : QMAKE_POST_LINK = copy \"$$toWindowsPath($$SRC_DIR/$$README_FILE)\" \"$$LIB_DESTDIR\"
 
 unix{
         # These flags cause random crashes in CGAL mesher with gcc 4.4
