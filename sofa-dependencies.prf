@@ -155,7 +155,7 @@ declare(sofaCUDA_Bench,   applications/projects/sofaCUDA_Bench,         sofaguim
 declare(sofaOPENCL,       applications/projects/sofaOPENCL,         sofaguimain sofagpuopencl sofa_component_dev)		#opencl
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofa_component sofagpucuda)
-declare(sofaVerification, applications/projects/sofaVerification, sofa_component sofagpucuda)
+declare(sofaVerification, applications/projects/sofaVerification, sofa_component sofa_component_dev sofagpucuda)
 #declare(runLem,          applications/projects/fissuration/lem/exe,     sofaguimain)
 
 declare(centerOfMassMapping,            applications/projects/BoostKernel/applications/centerOfMassMapping,             sofa_component sofaobjectcreator sofaguimain)
