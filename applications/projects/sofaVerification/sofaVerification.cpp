@@ -31,6 +31,9 @@
 #include <sofa/component/misc/WriteTopology.h>
 #include <sofa/component/misc/CompareTopology.h>
 #include <sofa/component/init.h>
+#ifdef SOFA_DEV
+#include <sofa/component/initDev.h>
+#endif
 #include <sofa/helper/system/thread/TimeoutWatchdog.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -86,6 +89,9 @@ void apply(const std::string& directory, std::vector<std::string>& files,
 {
 
     sofa::component::init(); // ensures all components are initialized, also introduce a dependency to all libraries, avoiding problems with -Wl,--as-needed flag
+#ifdef SOFA_DEV
+    sofa::component::initDev();
+#endif
 
     sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
 
