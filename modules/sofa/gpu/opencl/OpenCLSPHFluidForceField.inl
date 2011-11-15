@@ -97,7 +97,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(const core::Mec
     const VecDeriv& v = d_v.getValue();
 
     grid->updateGrid(x);
-    data.fillParams(this);
+    data.fillParams(this, kernelType.getValue());
     f.resize(x.size());
     Grid::Grid* g = grid->getGrid();
     data.pos4.recreate(x.size());
@@ -165,7 +165,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addForce(const core::Mec
     const VecDeriv& v = d_v.getValue();
 
     grid->updateGrid(x);
-    data.fillParams(this);
+    data.fillParams(this, kernelType.getValue());
     f.resize(x.size());
     Grid::Grid* g = grid->getGrid();
     data.pos4.recreate(x.size());

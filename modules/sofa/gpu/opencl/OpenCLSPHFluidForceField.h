@@ -79,11 +79,12 @@ public:
     typedef gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> DataTypes;
     typedef SPHFluidForceFieldInternalData<DataTypes> Data;
     typedef SPHFluidForceField<DataTypes> Main;
+    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     gpu::opencl::GPUSPHFluid<Real> params;
     gpu::opencl::OpenCLVector<defaulttype::Vec4f> pos4;
 
-    void fillParams(Main* m, double kFactor=1.0, double bFactor=1.0)
+    void fillParams(Main* m, int kernelType, double kFactor=1.0, double bFactor=1.0)
     {
         Real h = m->particleRadius.getValue();
         params.h = h;
@@ -95,12 +96,20 @@ public:
         params.viscosity = (Real)(bFactor*m->viscosity.getValue());
         params.surfaceTension = (Real)(kFactor*m->surfaceTension.getValue());
 
-        params.CWd          = m->constWd(h);
-        params.CgradWd      = m->constGradWd(h);
-        params.CgradWp      = m->constGradWp(h);
-        params.ClaplacianWv = m->constLaplacianWv(h);
-        params.CgradWc      = m->constGradWc(h);
-        params.ClaplacianWc = m->constLaplacianWc(h);
+        if (kernelType == 1)
+        {
+            params.CWd          = SPHKernel<SPH_KERNEL_CUBIC,Coord>::constW(h);
+            //params.CgradWd      = SPHKernel<SPH_KERNEL_CUBIC,Coord>::constGradW(h);
+            params.CgradWp      = SPHKernel<SPH_KERNEL_CUBIC,Coord>::constGradW(h);
+            params.ClaplacianWv = SPHKernel<SPH_KERNEL_CUBIC,Coord>::constLaplacianW(h);
+        }
+        else
+        {
+            params.CWd          = SPHKernel<SPH_KERNEL_DEFAULT_DENSITY,Coord>::constW(h);
+            //params.CgradWd      = SPHKernel<SPH_KERNEL_DEFAULT_DENSITY,Coord>::constGradW(h);
+            params.CgradWp      = SPHKernel<SPH_KERNEL_DEFAULT_PRESSURE,Coord>::constGradW(h);
+            params.ClaplacianWv = SPHKernel<SPH_KERNEL_DEFAULT_VISCOSITY,Coord>::constLaplacianW(h);
+        }
     }
 
     void Kernels_computeDensity(int gsize, const gpu::opencl::_device_pointer cells, const gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer pos4, const gpu::opencl::_device_pointer x);
