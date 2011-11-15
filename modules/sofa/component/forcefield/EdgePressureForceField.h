@@ -27,7 +27,7 @@
 
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/topology/EdgeSubsetData.h>
+#include <sofa/component/topology/TopologySubsetData.h>
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 

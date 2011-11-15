@@ -167,7 +167,7 @@ declare(sofatests,        tests,                                  sofacore)
 # SofaVRPN
 # SofaDevices
 #--- Tutorials ---#
-declare(sofaobjectcreator,   applications/tutorials/objectCreator,    sofa_component)
+declare(sofaobjectcreator,   applications/tutorials/objectCreator,    sofa_component sofa_component_dev)
 declare(chainHybrid,         applications/tutorials/chainHybrid,      sofa_component sofaguimain sofaobjectcreator)
 declare(houseOfCards,        applications/tutorials/houseOfCards,     sofa_component sofaguimain sofaobjectcreator)
 declare(mixedPendulum,       applications/tutorials/mixedPendulum,    sofa_component sofaguimain)

@@ -54,20 +54,20 @@ int main(int, char** argv)
     double splength = 1.;
 
     //-------------------- The graph root node
-    GNode* groot = new GNode;
+    GNode::SPtr groot = sofa::core::objectmodel::New<GNode>();
     groot->setName( "root" );
     groot->setGravity( Coord3(0,-10,0) );
 
     // One solver for all the graph
-    Solver* solver = new Solver;
+    Solver::SPtr solver = sofa::core::objectmodel::New<Solver>();
     groot->addObject(solver);
     solver->setName("S");
 
     //-------------------- Deformable body
-    GNode* deformableBody = new GNode("deformableBody", groot);
+    GNode::SPtr deformableBody = sofa::core::objectmodel::New<GNode>("deformableBody", groot.get());
 
     // degrees of freedom
-    MechanicalObject3* DOF = new MechanicalObject3;
+    MechanicalObject3::SPtr DOF = sofa::core::objectmodel::New<MechanicalObject3>();
     deformableBody->addObject(DOF);
     DOF->resize(2);
     DOF->setName("Dof1");
@@ -77,30 +77,30 @@ int main(int, char** argv)
 
     // mass
     //    ParticleMasses* mass = new ParticleMasses;
-    UniformMass3* mass = new UniformMass3;
+    UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();
     deformableBody->addObject(mass);
     mass->setMass(1);
     mass->setName("M1");
 
     // Fixed point
-    FixedConstraint3* constraints = new FixedConstraint3;
+    FixedConstraint3::SPtr constraints = sofa::core::objectmodel::New<FixedConstraint3>();
     deformableBody->addObject(constraints);
     constraints->setName("C");
     constraints->addConstraint(0);
 
 
     // force field
-    StiffSpringForceField3* spring = new StiffSpringForceField3;
+    StiffSpringForceField3::SPtr spring = sofa::core::objectmodel::New<StiffSpringForceField3>();
     deformableBody->addObject(spring);
     spring->setName("F1");
     spring->addSpring( 1,0, 100., 1, splength );
 
 
     //-------------------- Rigid body
-    GNode* rigidBody = new GNode("rigidBody",groot);
+    GNode::SPtr rigidBody = sofa::core::objectmodel::New<GNode>("rigidBody",groot.get());
 
     // degrees of freedom
-    MechanicalObjectRigid3* rigidDOF = new MechanicalObjectRigid3;
+    MechanicalObjectRigid3::SPtr rigidDOF = sofa::core::objectmodel::New<MechanicalObjectRigid3>();
     rigidBody->addObject(rigidDOF);
     rigidDOF->resize(1);
     rigidDOF->setName("Dof2");
@@ -109,7 +109,7 @@ int main(int, char** argv)
             Quat3::identity() );
 
     // mass
-    UniformMassRigid3* rigidMass = new UniformMassRigid3;
+    UniformMassRigid3::SPtr rigidMass = sofa::core::objectmodel::New<UniformMassRigid3>();
     rigidBody->addObject(rigidMass);
     rigidMass->setName("M2");
     UniformMassRigid3::MassType* m = rigidMass->mass.beginEdit();
@@ -126,10 +126,10 @@ int main(int, char** argv)
 
 
     //-------------------- the particles attached to the rigid body
-    GNode* rigidParticles = new GNode("rigidParticles",groot);
+    GNode::SPtr rigidParticles = sofa::core::objectmodel::New<GNode>("rigidParticles",groot.get());
 
     // degrees of freedom of the skin
-    MechanicalObject3* rigidParticleDOF = new MechanicalObject3;
+    MechanicalObject3::SPtr rigidParticleDOF = sofa::core::objectmodel::New<MechanicalObject3>();
     rigidParticles->addObject(rigidParticleDOF);
     rigidParticleDOF->resize(1);
     rigidParticleDOF->setName("Dof3");
@@ -137,17 +137,17 @@ int main(int, char** argv)
     rp_x[0] = Coord3(attach,0,0);
 
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body
-    RigidMappingRigid3_to_3* rigidMapping = new RigidMappingRigid3_to_3(rigidDOF,rigidParticleDOF);
-    std::string pathobject1("@"+rigidBody->getName()+"/"+rigidDOF->getName());
-    std::string pathobject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
-    rigidMapping->setPathInputObject(pathobject1);
-    rigidMapping->setPathOutputObject(pathobject2);
-    rigidParticles->addObject( rigidMapping );
-    rigidMapping->setName("Map23");
+    /*    RigidMappingRigid3_to_3* rigidMapping = new RigidMappingRigid3_to_3(rigidDOF,rigidParticleDOF);
+        std::string pathobject1("@"+rigidBody->getName()+"/"+rigidDOF->getName());
+        std::string pathobject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
+        rigidMapping->setPathInputObject(pathobject1);
+        rigidMapping->setPathOutputObject(pathobject2);
+        rigidParticles->addObject( rigidMapping );
+        rigidMapping->setName("Map23");*/
 
 
     // ---------------- Interaction force between the deformable and the rigid body
-    StiffSpringForceField3* iff = new StiffSpringForceField3( DOF, rigidParticleDOF );
+    StiffSpringForceField3::SPtr iff = sofa::core::objectmodel::New<StiffSpringForceField3>( DOF.get(), rigidParticleDOF.get() );
     iff->setPathObject1(deformableBody->getName()+"/"+DOF->getName());
     iff->setPathObject2(rigidParticles->getName()+"/"+rigidParticleDOF->getName());
     groot->addObject(iff);
@@ -158,7 +158,7 @@ int main(int, char** argv)
 
 
     //=========================== Init the scene
-    sofa::simulation::tree::getSimulation()->init(groot);
+    sofa::simulation::tree::getSimulation()->init(groot.get());
     /*    groot->setAnimate(false);
         groot->setShowNormals(false);
         groot->setShowInteractionForceFields(true);

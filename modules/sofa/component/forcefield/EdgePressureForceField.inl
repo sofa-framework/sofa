@@ -27,7 +27,6 @@
 
 #include <sofa/component/forcefield/EdgePressureForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/EdgeSubsetData.inl>
 #include <sofa/helper/gl/template.h>
 #include <vector>
 #include <set>

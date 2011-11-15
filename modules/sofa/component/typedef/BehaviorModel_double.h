@@ -47,8 +47,6 @@
 
 
 #include <sofa/component/collision/MouseInteractor.h>
-#include <sofa/component/forcefield/VectorField.h>
-
 
 
 //---------------------------------------------------------------------------------------------
@@ -58,18 +56,9 @@ typedef sofa::component::collision::MouseInteractor<sofa::defaulttype::StdRigidT
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for VectorField
-typedef sofa::component::forcefield::VectorField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > VectorField3d;
-
-
-
-
-
 #ifndef SOFA_FLOAT
 typedef MouseInteractor3d MouseInteractor3;
 typedef MouseInteractorRigid3d MouseInteractorRigid3;
-typedef VectorField3d VectorField3;
 #endif
 
 #endif

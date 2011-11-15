@@ -66,18 +66,18 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node : gravity already exists in a GNode by default
-    GNode* groot = new GNode;
+    GNode::SPtr groot = sofa::core::objectmodel::New<GNode>();
     groot->setName( "root" );
     groot->setGravity( Coord3(0,-10,0) );
 
     // One solver for all the graph
-    EulerSolver* solver = new EulerSolver;
+    EulerSolver::SPtr solver = sofa::core::objectmodel::New<EulerSolver>();
     solver->setName("solver");
     solver->f_printLog.setValue(false);
     groot->addObject(solver);
 
     // Tetrahedron degrees of freedom
-    MechanicalObject3* DOF = new MechanicalObject3;
+    MechanicalObject3::SPtr DOF = sofa::core::objectmodel::New<MechanicalObject3>();
     groot->addObject(DOF);
     DOF->resize(4);
     DOF->setName("DOF");
@@ -90,25 +90,25 @@ int main(int argc, char** argv)
     x[3] = Coord3(-10*0.5,0,-10*0.866);
 
     // Tetrahedron uniform mass
-    UniformMass3* mass = new UniformMass3;
+    UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();
     groot->addObject(mass);
     mass->setMass(2);
     mass->setName("mass");
 
     // Tetrahedron topology
-    MeshTopology* topology = new MeshTopology;
+    MeshTopology::SPtr topology = sofa::core::objectmodel::New<MeshTopology>();
     topology->setName("mesh topology");
     groot->addObject( topology );
     topology->addTetra(0,1,2,3);
 
     // Tetrahedron constraints
-    FixedConstraint3* constraints = new FixedConstraint3;
+    FixedConstraint3::SPtr constraints = sofa::core::objectmodel::New<FixedConstraint3>();
     constraints->setName("constraints");
     groot->addObject(constraints);
     constraints->addConstraint(0);
 
     // Tetrahedron force field
-    TetrahedronFEMForceField3* fem = new  TetrahedronFEMForceField3;
+    TetrahedronFEMForceField3::SPtr fem = sofa::core::objectmodel::New<TetrahedronFEMForceField3>();
     fem->setName("FEM");
     groot->addObject(fem);
     fem->setMethod("polar");
@@ -116,10 +116,10 @@ int main(int argc, char** argv)
     fem->setYoungModulus(6);
 
     // Tetrahedron skin
-    GNode* skin = new GNode("skin",groot);;
+    GNode::SPtr skin = sofa::core::objectmodel::New<GNode>("skin",groot.get());;
 
     // The visual model
-    OglModel* visual = new OglModel();
+    OglModel::SPtr visual = sofa::core::objectmodel::New<OglModel>();
     visual->setName( "visual" );
     visual->load(sofa::helper::system::DataRepository.getFile("mesh/liver-smooth.obj"), "", "");
     visual->setColor("red");
@@ -128,12 +128,12 @@ int main(int argc, char** argv)
     skin->addObject(visual);
 
     // The mapping between the tetrahedron (DOF) and the liver (visual)
-    BarycentricMapping3_to_Ext3* mapping = new BarycentricMapping3_to_Ext3(DOF, visual);
-    mapping->setName( "mapping" );
-    skin->addObject(mapping);
+    /*    BarycentricMapping3_to_Ext3* mapping = new BarycentricMapping3_to_Ext3(DOF, visual);
+        mapping->setName( "mapping" );
+        skin->addObject(mapping); */
 
     // Init the scene
-    sofa::simulation::tree::getSimulation()->init(groot);
+    sofa::simulation::tree::getSimulation()->init(groot.get());
     groot->setAnimate(false);
     /*    groot->setShowNormals(false);
         groot->setShowInteractionForceFields(false);

@@ -64,29 +64,29 @@ namespace sofa
 simulation::Node *ObjectCreator::CreateRootWithCollisionPipeline(const std::string &simulationType, const std::string& responseType)
 {
 
-    simulation::Node* root = simulation::getSimulation()->createNewGraph("root");
+    simulation::Node::SPtr root = simulation::getSimulation()->createNewGraph("root");
 
     //Components for collision management
     //------------------------------------
     //--> adding collision pipeline
-    component::collision::DefaultPipeline* collisionPipeline = new component::collision::DefaultPipeline;
+    component::collision::DefaultPipeline::SPtr collisionPipeline = sofa::core::objectmodel::New<component::collision::DefaultPipeline>();
     collisionPipeline->setName("Collision Pipeline");
     root->addObject(collisionPipeline);
 
     //--> adding collision detection system
-    component::collision::BruteForceDetection* detection = new component::collision::BruteForceDetection;
+    component::collision::BruteForceDetection::SPtr detection = sofa::core::objectmodel::New<component::collision::BruteForceDetection>();
     detection->setName("Detection");
     root->addObject(detection);
 
     //--> adding component to detection intersection of elements
-    component::collision::MinProximityIntersection* detectionProximity = new component::collision::MinProximityIntersection;
+    component::collision::MinProximityIntersection::SPtr detectionProximity = sofa::core::objectmodel::New<component::collision::MinProximityIntersection>();
     detectionProximity->setName("Proximity");
     detectionProximity->setAlarmDistance(0.3);   //warning distance
     detectionProximity->setContactDistance(0.2); //min distance before setting a spring to create a repulsion
     root->addObject(detectionProximity);
 
     //--> adding contact manager
-    component::collision::DefaultContactManager* contactManager = new component::collision::DefaultContactManager;
+    component::collision::DefaultContactManager::SPtr contactManager = sofa::core::objectmodel::New<component::collision::DefaultContactManager>();
     contactManager->setName("Contact Manager");
     contactManager->setDefaultResponseType(responseType);
     root->addObject(contactManager);
@@ -95,7 +95,7 @@ simulation::Node *ObjectCreator::CreateRootWithCollisionPipeline(const std::stri
     //--> adding component to handle groups of collision.
     if (simulationType == "bgl")
     {
-        component::collision::BglCollisionGroupManager* collisionGroupManager = new component::collision::BglCollisionGroupManager;
+        component::collision::BglCollisionGroupManager::SPtr collisionGroupManager = sofa::core::objectmodel::New<component::collision::BglCollisionGroupManager>();
         collisionGroupManager->setName("Collision Group Manager");
         root->addObject(collisionGroupManager);
     }
@@ -104,11 +104,11 @@ simulation::Node *ObjectCreator::CreateRootWithCollisionPipeline(const std::stri
         if (simulationType == "tree")
         {
             //--> adding component to handle groups of collision.
-            component::collision::TreeCollisionGroupManager* collisionGroupManager = new component::collision::TreeCollisionGroupManager;
+            component::collision::TreeCollisionGroupManager::SPtr collisionGroupManager = sofa::core::objectmodel::New<component::collision::TreeCollisionGroupManager>();
             collisionGroupManager->setName("Collision Group Manager");
             root->addObject(collisionGroupManager);
         }
-    return root;
+    return root.get();
 }
 
 simulation::Node *ObjectCreator::CreateEulerSolverNode(simulation::Node* parent, const std::string& name, const std::string &scheme)
@@ -119,8 +119,8 @@ simulation::Node *ObjectCreator::CreateEulerSolverNode(simulation::Node* parent,
 
     if (scheme == "Implicit")
     {
-        component::odesolver::EulerImplicitSolver* solver = new component::odesolver::EulerImplicitSolver;
-        CGLinearSolverGraph* linear = new CGLinearSolverGraph;
+        component::odesolver::EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<component::odesolver::EulerImplicitSolver>();
+        CGLinearSolverGraph::SPtr linear = sofa::core::objectmodel::New<CGLinearSolverGraph>();
         solver->setName("Euler Implicit");
         solver->f_rayleighStiffness.setValue(0.01);
         solver->f_rayleighMass.setValue(1);
@@ -135,7 +135,7 @@ simulation::Node *ObjectCreator::CreateEulerSolverNode(simulation::Node* parent,
     }
     else if (scheme == "Explicit")
     {
-        component::odesolver::EulerSolver* solver = new component::odesolver::EulerSolver;
+        component::odesolver::EulerSolver::SPtr solver = sofa::core::objectmodel::New<component::odesolver::EulerSolver>();
         solver->setName("Euler Explicit");
         node->addObject(solver);
     }
@@ -152,32 +152,32 @@ simulation::Node *ObjectCreator::CreateObstacle(simulation::Node* parent, const 
 {
     simulation::Node* nodeFixed = parent->createChild("Fixed");
 
-    sofa::component::loader::MeshObjLoader* loaderFixed = new sofa::component::loader::MeshObjLoader;
+    sofa::component::loader::MeshObjLoader::SPtr loaderFixed = sofa::core::objectmodel::New<sofa::component::loader::MeshObjLoader>();
     loaderFixed->setFilename(sofa::helper::system::DataRepository.getFile(filenameCollision));
     nodeFixed->addObject(loaderFixed);
 
-    component::topology::MeshTopology* meshNodeFixed = new component::topology::MeshTopology;
+    component::topology::MeshTopology::SPtr meshNodeFixed = sofa::core::objectmodel::New<component::topology::MeshTopology>();
     nodeFixed->addObject(meshNodeFixed);
 
-    MechanicalObject3* dofFixed = new MechanicalObject3; dofFixed->setName("Fixed Object");
+    MechanicalObject3::SPtr dofFixed = sofa::core::objectmodel::New<MechanicalObject3>(); dofFixed->setName("Fixed Object");
     dofFixed->setTranslation(translation[0],translation[1],translation[2]);
     dofFixed->setRotation(rotation[0],rotation[1],rotation[2]);
     nodeFixed->addObject(dofFixed);
 
-    component::collision::TriangleModel* triangleFixed = new component::collision::TriangleModel; triangleFixed->setName("Collision Fixed");
+    component::collision::TriangleModel::SPtr triangleFixed = sofa::core::objectmodel::New<component::collision::TriangleModel>(); triangleFixed->setName("Collision Fixed");
     triangleFixed->setSimulated(false); //Not simulated, fixed object
     triangleFixed->setMoving(false);    //No extern events
     nodeFixed->addObject(triangleFixed);
-    component::collision::LineModel* LineFixed = new component::collision::LineModel; LineFixed->setName("Collision Fixed");
+    component::collision::LineModel::SPtr LineFixed = sofa::core::objectmodel::New<component::collision::LineModel>(); LineFixed->setName("Collision Fixed");
     LineFixed->setSimulated(false); //Not simulated, fixed object
     LineFixed->setMoving(false);    //No extern events
     nodeFixed->addObject(LineFixed);
-    component::collision::PointModel* PointFixed = new component::collision::PointModel; PointFixed->setName("Collision Fixed");
+    component::collision::PointModel::SPtr PointFixed = sofa::core::objectmodel::New<component::collision::PointModel>(); PointFixed->setName("Collision Fixed");
     PointFixed->setSimulated(false); //Not simulated, fixed object
     PointFixed->setMoving(false);    //No extern events
     nodeFixed->addObject(PointFixed);
 
-    component::visualmodel::OglModel* visualFixed = new component::visualmodel::OglModel;
+    component::visualmodel::OglModel::SPtr visualFixed = sofa::core::objectmodel::New<component::visualmodel::OglModel>();
     visualFixed->setName("visual");
     visualFixed->setFilename(sofa::helper::system::DataRepository.getFile(filenameVisual));
     visualFixed->setColor(color);
@@ -188,30 +188,30 @@ simulation::Node *ObjectCreator::CreateObstacle(simulation::Node* parent, const 
 }
 
 
-simulation::Node *ObjectCreator::CreateCollisionNodeVec3(simulation::Node* parent, MechanicalObject3* dof, const std::string &filename, const std::vector<std::string> &elements,
+simulation::Node *ObjectCreator::CreateCollisionNodeVec3(simulation::Node* parent, MechanicalObject3* /*dof*/, const std::string &filename, const std::vector<std::string> &elements,
         const Deriv3& translation, const Deriv3 &rotation)
 {
     //Node COLLISION
     simulation::Node* CollisionNode = parent->createChild("Collision");
 
-    sofa::component::loader::MeshObjLoader* loader_surf = new sofa::component::loader::MeshObjLoader;
+    sofa::component::loader::MeshObjLoader::SPtr loader_surf = sofa::core::objectmodel::New<sofa::component::loader::MeshObjLoader>();
     loader_surf->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     CollisionNode->addObject(loader_surf);
 
-    component::topology::MeshTopology* meshTorus_surf= new component::topology::MeshTopology;
+    component::topology::MeshTopology::SPtr meshTorus_surf= sofa::core::objectmodel::New<component::topology::MeshTopology>();
     CollisionNode->addObject(meshTorus_surf);
 
-    MechanicalObject3* dof_surf = new MechanicalObject3;  dof_surf->setName("Collision Object ");
+    MechanicalObject3::SPtr dof_surf = sofa::core::objectmodel::New<MechanicalObject3>();  dof_surf->setName("Collision Object ");
     dof_surf->setTranslation(translation[0],translation[1],translation[2]);
     dof_surf->setRotation(rotation[0],rotation[1],rotation[2]);
     CollisionNode->addObject(dof_surf);
 
     AddCollisionModels(CollisionNode, elements);
 
-    BarycentricMapping3_to_3* mechaMapping = new BarycentricMapping3_to_3(dof, dof_surf);
-    mechaMapping->setPathInputObject("@..");
-    mechaMapping->setPathOutputObject("@.");
-    CollisionNode->addObject(mechaMapping);
+    /*	BarycentricMapping3_to_3* mechaMapping = new BarycentricMapping3_to_3(dof, dof_surf);
+            mechaMapping->setPathInputObject("@..");
+            mechaMapping->setPathOutputObject("@.");
+            CollisionNode->addObject(mechaMapping);*/
 
     return CollisionNode;
 }
@@ -224,7 +224,7 @@ simulation::Node *ObjectCreator::CreateVisualNodeVec3(simulation::Node* parent, 
     const std::string nameVisual="Visual";
     const std::string refVisual = "@" + nameVisual;
     const std::string refDof = "@.." + dof->getName();
-    component::visualmodel::OglModel* visual = new component::visualmodel::OglModel;
+    component::visualmodel::OglModel::SPtr visual = sofa::core::objectmodel::New<component::visualmodel::OglModel>();
     visual->setName(nameVisual);
     visual->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     visual->setColor(color.c_str());
@@ -232,11 +232,11 @@ simulation::Node *ObjectCreator::CreateVisualNodeVec3(simulation::Node* parent, 
     visual->setRotation(rotation[0],rotation[1],rotation[2]);
     VisualNode->addObject(visual);
 
-    BarycentricMapping3_to_Ext3* mapping = new BarycentricMapping3_to_Ext3(dof, visual);
-    mapping->setName("Mapping Visual");
-    mapping->setPathInputObject(refDof);
-    mapping->setPathOutputObject(refVisual);
-    VisualNode->addObject(mapping);
+    /*	BarycentricMapping3_to_Ext3* mapping = new BarycentricMapping3_to_Ext3(dof, visual);
+    	mapping->setName("Mapping Visual");
+    	mapping->setPathInputObject(refDof);
+    	mapping->setPathOutputObject(refVisual);
+            VisualNode->addObject(mapping); */
 
     return VisualNode;
 }
@@ -253,24 +253,24 @@ simulation::Node *ObjectCreator::CreateCollisionNodeRigid(simulation::Node* pare
     simulation::Node* CollisionNode =parent->createChild("Collision");
 
 
-    sofa::component::loader::MeshObjLoader* loader_surf = new sofa::component::loader::MeshObjLoader;
+    sofa::component::loader::MeshObjLoader::SPtr loader_surf = sofa::core::objectmodel::New<sofa::component::loader::MeshObjLoader>();
     loader_surf->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     CollisionNode->addObject(loader_surf);
 
-    component::topology::MeshTopology* meshTorus_surf= new component::topology::MeshTopology;
+    component::topology::MeshTopology::SPtr meshTorus_surf= sofa::core::objectmodel::New<component::topology::MeshTopology>();
     CollisionNode->addObject(meshTorus_surf);
 
-    MechanicalObject3* dof_surf = new MechanicalObject3; dof_surf->setName(dofSurfName);
+    MechanicalObject3::SPtr dof_surf = sofa::core::objectmodel::New<MechanicalObject3>(); dof_surf->setName(dofSurfName);
     dof_surf->setTranslation(translation[0],translation[1],translation[2]);
     dof_surf->setRotation(rotation[0],rotation[1],rotation[2]);
     CollisionNode->addObject(dof_surf);
 
     AddCollisionModels(CollisionNode, elements);
 
-    RigidMappingRigid3_to_3* mechaMapping = new RigidMappingRigid3_to_3(dofRigid, dof_surf);
-    mechaMapping->setPathInputObject(refdofRigid);
-    mechaMapping->setPathOutputObject(refdofSurf);
-    CollisionNode->addObject(mechaMapping);
+    /*	RigidMappingRigid3_to_3* mechaMapping = new RigidMappingRigid3_to_3(dofRigid, dof_surf);
+    	mechaMapping->setPathInputObject(refdofRigid);
+    	mechaMapping->setPathOutputObject(refdofSurf);
+            CollisionNode->addObject(mechaMapping);*/
 
     return CollisionNode;
 }
@@ -283,7 +283,7 @@ simulation::Node *ObjectCreator::CreateVisualNodeRigid(simulation::Node* parent,
     const std::string nameVisual="Visual";
     const std::string refVisual="@"+nameVisual;
     const std::string refdofRigid="@../"+dofRigid->getName();
-    component::visualmodel::OglModel* visualRigid = new component::visualmodel::OglModel;
+    component::visualmodel::OglModel::SPtr visualRigid = sofa::core::objectmodel::New<component::visualmodel::OglModel>();
     visualRigid->setName(nameVisual);
     visualRigid->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     visualRigid->setColor(color);
@@ -291,11 +291,11 @@ simulation::Node *ObjectCreator::CreateVisualNodeRigid(simulation::Node* parent,
     visualRigid->setRotation(rotation[0],rotation[1],rotation[2]);
     RigidVisualNode->addObject(visualRigid);
 
-    RigidMappingRigid3_to_Ext3* mappingRigid = new RigidMappingRigid3_to_Ext3(dofRigid, visualRigid);
-    mappingRigid->setName("Mapping Visual");
-    mappingRigid->setPathInputObject(refdofRigid);
-    mappingRigid->setPathOutputObject(refVisual);
-    RigidVisualNode->addObject(mappingRigid);
+    /*	RigidMappingRigid3_to_Ext3* mappingRigid = new RigidMappingRigid3_to_Ext3(dofRigid, visualRigid);
+    	mappingRigid->setName("Mapping Visual");
+    	mappingRigid->setPathInputObject(refdofRigid);
+    	mappingRigid->setPathOutputObject(refVisual);
+            RigidVisualNode->addObject(mappingRigid);*/
     return RigidVisualNode;
 }
 
@@ -306,22 +306,22 @@ void ObjectCreator::AddCollisionModels(simulation::Node *CollisionNode, const st
     {
         if (elements[i] == "Triangle")
         {
-            component::collision::TriangleModel* triangle = new component::collision::TriangleModel;  triangle->setName("TriangleCollision");
+            component::collision::TriangleModel::SPtr triangle = sofa::core::objectmodel::New<component::collision::TriangleModel>();  triangle->setName("TriangleCollision");
             CollisionNode->addObject(triangle);
         }
         else if(elements[i] == "Line")
         {
-            component::collision::LineModel* line = new component::collision::LineModel;  line->setName("LineCollision");
+            component::collision::LineModel::SPtr line = sofa::core::objectmodel::New<component::collision::LineModel>();  line->setName("LineCollision");
             CollisionNode->addObject(line);
         }
         else if (elements[i] == "Point")
         {
-            component::collision::PointModel* point = new component::collision::PointModel;  point->setName("PointCollision");
+            component::collision::PointModel::SPtr point = sofa::core::objectmodel::New<component::collision::PointModel>();  point->setName("PointCollision");
             CollisionNode->addObject(point);
         }
         else if (elements[i] == "Sphere")
         {
-            component::collision::SphereModel* point = new component::collision::SphereModel;  point->setName("SphereCollision");
+            component::collision::SphereModel::SPtr point = sofa::core::objectmodel::New<component::collision::SphereModel>();  point->setName("SphereCollision");
             CollisionNode->addObject(point);
         }
     }

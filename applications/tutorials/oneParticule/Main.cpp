@@ -58,21 +58,21 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node
-    GNode* groot = new GNode;
+    GNode::SPtr groot = sofa::core::objectmodel::New<GNode>();
     groot->setName( "root" );
     groot->setGravity( Coord3(0,-10,0) );
 
     // One solver for all the graph
-    EulerSolver* solver = new EulerSolver;
+    EulerSolver::SPtr solver = sofa::core::objectmodel::New<EulerSolver>();
     solver->setName("solver");
     solver->f_printLog.setValue(false);
     groot->addObject(solver);
 
     // One node to define the particle
-    GNode* particule_node = new GNode("particle_node", groot);
+    GNode::SPtr particule_node = sofa::core::objectmodel::New<GNode>("particle_node", groot.get());
 
     // The particule, i.e, its degrees of freedom : a point with a velocity
-    MechanicalObject3* particle = new MechanicalObject3;
+    MechanicalObject3::SPtr particle = sofa::core::objectmodel::New<MechanicalObject3>();
     particle->setName("particle");
     particule_node->addObject(particle);
     particle->resize(1);
@@ -84,12 +84,12 @@ int main(int argc, char** argv)
     velocities[0] = Deriv3(0,0,0);
 
     // Its properties, i.e, a simple mass node
-    UniformMass3* mass = new UniformMass3;
+    UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();
     mass->setName("mass");
     particule_node->addObject(mass);
     mass->setMass( 1 );
 
-    sofa::simulation::tree::getSimulation()->init(groot);
+    sofa::simulation::tree::getSimulation()->init(groot.get());
     groot->setAnimate(false);
     //groot->setShowBehaviorModels(true);
 

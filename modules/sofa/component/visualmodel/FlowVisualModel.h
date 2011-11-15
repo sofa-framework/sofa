@@ -37,8 +37,10 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
+#ifdef SOFA_HAVE_MANIFOLDTOPOLOGIES
 #include <sofa/component/topology/ManifoldTriangleSetTopologyContainer.h>
 #include <sofa/component/topology/ManifoldTetrahedronSetTopologyContainer.h>
+#endif
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
@@ -56,73 +58,72 @@ namespace visualmodel
 
 //static unsigned int COLORMAP_SIZE;
 
-static defaulttype::Vec3f ColorMap[64] =
-{
-    defaulttype::Vec3f( 0.0,        0.0,       0.5625 ),
-    defaulttype::Vec3f( 0.0,        0.0,       0.625  ),
-    defaulttype::Vec3f( 0.0,        0.0,       0.6875 ),
-    defaulttype::Vec3f( 0.0,        0.0,         0.75 ),
-    defaulttype::Vec3f( 0.0,        0.0,       0.8125 ),
-    defaulttype::Vec3f( 0.0,        0.0,        0.875 ),
-    defaulttype::Vec3f( 0.0,        0.0,       0.9375 ),
-    defaulttype::Vec3f( 0.0,        0.0,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.0625,          1.0 ),
-    defaulttype::Vec3f( 0.0,      0.125,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.1875,          1.0 ),
-    defaulttype::Vec3f( 0.0,       0.25,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.3125,          1.0 ),
-    defaulttype::Vec3f( 0.0,      0.375,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.4375,          1.0 ),
-    defaulttype::Vec3f( 0.0,        0.5,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.5625,          1.0 ),
-    defaulttype::Vec3f( 0.0,      0.625,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.6875,          1.0 ),
-    defaulttype::Vec3f( 0.0,       0.75,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.8125,          1.0 ),
-    defaulttype::Vec3f( 0.0,     0.875,           1.0 ),
-    defaulttype::Vec3f( 0.0,     0.9375,          1.0 ),
-    defaulttype::Vec3f( 0.0,        1.0,          1.0 ),
-    defaulttype::Vec3f( 0.0625,     1.0,          1.0 ),
-    defaulttype::Vec3f( 0.125,      1.0,       0.9375 ),
-    defaulttype::Vec3f( 0.1875,     1.0,        0.875 ),
-    defaulttype::Vec3f( 0.25,       1.0,       0.8125 ),
-    defaulttype::Vec3f( 0.3125,     1.0,         0.75 ),
-    defaulttype::Vec3f( 0.375,      1.0,       0.6875 ),
-    defaulttype::Vec3f( 0.4375,     1.0,        0.625 ),
-    defaulttype::Vec3f( 0.5,        1.0,       0.5625 ),
-    defaulttype::Vec3f( 0.5625,     1.0,          0.5 ),
-    defaulttype::Vec3f( 0.625,      1.0,       0.4375 ),
-    defaulttype::Vec3f( 0.6875,     1.0,        0.375 ),
-    defaulttype::Vec3f( 0.75,       1.0,       0.3125 ),
-    defaulttype::Vec3f( 0.8125,     1.0,         0.25 ),
-    defaulttype::Vec3f( 0.875,      1.0,       0.1875 ),
-    defaulttype::Vec3f( 0.9375,     1.0,        0.125 ),
-    defaulttype::Vec3f( 1.0,        1.0,       0.0625 ),
-    defaulttype::Vec3f( 1.0,        1.0,          0.0 ),
-    defaulttype::Vec3f( 1.0,       0.9375,        0.0 ),
-    defaulttype::Vec3f( 1.0,        0.875,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.8125,        0.0 ),
-    defaulttype::Vec3f( 1.0,         0.75,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.6875,        0.0 ),
-    defaulttype::Vec3f( 1.0,        0.625,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.5625,        0.0 ),
-    defaulttype::Vec3f( 1.0,          0.5,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.4375,        0.0 ),
-    defaulttype::Vec3f( 1.0,        0.375,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.3125,        0.0 ),
-    defaulttype::Vec3f( 1.0,         0.25,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.1875,        0.0 ),
-    defaulttype::Vec3f( 1.0,        0.125,        0.0 ),
-    defaulttype::Vec3f( 1.0,       0.0625,        0.0 ),
-    defaulttype::Vec3f( 1.0,          0.0,        0.0 ),
-    defaulttype::Vec3f( 0.9375,       0.0,        0.0 ),
-    defaulttype::Vec3f( 0.875,        0.0,        0.0 ),
-    defaulttype::Vec3f( 0.8125,       0.0,        0.0 ),
-    defaulttype::Vec3f( 0.75,         0.0,        0.0 ),
-    defaulttype::Vec3f( 0.6875,       0.0,        0.0 ),
-    defaulttype::Vec3f( 0.625,        0.0,        0.0 ),
-    defaulttype::Vec3f( 0.5625,       0.0,        0.0 )
-};
+/*static defaulttype::Vec3f ColorMap[64] = {
+		defaulttype::Vec3f( 0.0,        0.0,       0.5625 ),
+		defaulttype::Vec3f( 0.0,        0.0,       0.625  ),
+		defaulttype::Vec3f( 0.0,        0.0,       0.6875 ),
+		defaulttype::Vec3f( 0.0,        0.0,         0.75 ),
+		defaulttype::Vec3f( 0.0,        0.0,       0.8125 ),
+		defaulttype::Vec3f( 0.0,        0.0,        0.875 ),
+		defaulttype::Vec3f( 0.0,        0.0,       0.9375 ),
+		defaulttype::Vec3f( 0.0,        0.0,          1.0 ),
+		defaulttype::Vec3f( 0.0,     0.0625,          1.0 ),
+		defaulttype::Vec3f( 0.0,      0.125,          1.0 ),
+		defaulttype::Vec3f( 0.0,     0.1875,          1.0 ),
+		defaulttype::Vec3f( 0.0,       0.25,          1.0 ),
+		defaulttype::Vec3f( 0.0,     0.3125,          1.0 ),
+		defaulttype::Vec3f( 0.0,      0.375,          1.0 ),
+		defaulttype::Vec3f( 0.0,     0.4375,          1.0 ),
+		defaulttype::Vec3f( 0.0,        0.5,          1.0 ),
+		defaulttype::Vec3f( 0.0,     0.5625,          1.0 ),
+		defaulttype::Vec3f( 0.0,      0.625,          1.0 ),
+		defaulttype::Vec3f( 0.0,     0.6875,          1.0 ),
+		defaulttype::Vec3f( 0.0,       0.75,          1.0 ),
+		defaulttype::Vec3f( 0.0,     0.8125,          1.0 ),
+		defaulttype::Vec3f( 0.0,     0.875,           1.0 ),
+		defaulttype::Vec3f( 0.0,     0.9375,          1.0 ),
+		defaulttype::Vec3f( 0.0,        1.0,          1.0 ),
+		defaulttype::Vec3f( 0.0625,     1.0,          1.0 ),
+		defaulttype::Vec3f( 0.125,      1.0,       0.9375 ),
+		defaulttype::Vec3f( 0.1875,     1.0,        0.875 ),
+		defaulttype::Vec3f( 0.25,       1.0,       0.8125 ),
+		defaulttype::Vec3f( 0.3125,     1.0,         0.75 ),
+		defaulttype::Vec3f( 0.375,      1.0,       0.6875 ),
+		defaulttype::Vec3f( 0.4375,     1.0,        0.625 ),
+		defaulttype::Vec3f( 0.5,        1.0,       0.5625 ),
+		defaulttype::Vec3f( 0.5625,     1.0,          0.5 ),
+		defaulttype::Vec3f( 0.625,      1.0,       0.4375 ),
+		defaulttype::Vec3f( 0.6875,     1.0,        0.375 ),
+		defaulttype::Vec3f( 0.75,       1.0,       0.3125 ),
+		defaulttype::Vec3f( 0.8125,     1.0,         0.25 ),
+		defaulttype::Vec3f( 0.875,      1.0,       0.1875 ),
+		defaulttype::Vec3f( 0.9375,     1.0,        0.125 ),
+		defaulttype::Vec3f( 1.0,        1.0,       0.0625 ),
+		defaulttype::Vec3f( 1.0,        1.0,          0.0 ),
+		defaulttype::Vec3f( 1.0,       0.9375,        0.0 ),
+		defaulttype::Vec3f( 1.0,        0.875,        0.0 ),
+		defaulttype::Vec3f( 1.0,       0.8125,        0.0 ),
+		defaulttype::Vec3f( 1.0,         0.75,        0.0 ),
+		defaulttype::Vec3f( 1.0,       0.6875,        0.0 ),
+		defaulttype::Vec3f( 1.0,        0.625,        0.0 ),
+		defaulttype::Vec3f( 1.0,       0.5625,        0.0 ),
+		defaulttype::Vec3f( 1.0,          0.5,        0.0 ),
+		defaulttype::Vec3f( 1.0,       0.4375,        0.0 ),
+		defaulttype::Vec3f( 1.0,        0.375,        0.0 ),
+		defaulttype::Vec3f( 1.0,       0.3125,        0.0 ),
+		defaulttype::Vec3f( 1.0,         0.25,        0.0 ),
+		defaulttype::Vec3f( 1.0,       0.1875,        0.0 ),
+		defaulttype::Vec3f( 1.0,        0.125,        0.0 ),
+		defaulttype::Vec3f( 1.0,       0.0625,        0.0 ),
+		defaulttype::Vec3f( 1.0,          0.0,        0.0 ),
+		defaulttype::Vec3f( 0.9375,       0.0,        0.0 ),
+		defaulttype::Vec3f( 0.875,        0.0,        0.0 ),
+		defaulttype::Vec3f( 0.8125,       0.0,        0.0 ),
+		defaulttype::Vec3f( 0.75,         0.0,        0.0 ),
+		defaulttype::Vec3f( 0.6875,       0.0,        0.0 ),
+		defaulttype::Vec3f( 0.625,        0.0,        0.0 ),
+		defaulttype::Vec3f( 0.5625,       0.0,        0.0 )
+}; */
 
 template <class DataTypes>
 class SOFA_MISC_API FlowVisualModel : public core::visual::VisualModel
@@ -153,9 +154,11 @@ protected:
     FluidState* tetraCenters;
     core::behavior::MechanicalState<DataTypes>* surfaceVolume;
 
+#ifdef SOFA_HAVE_MANIFOLDTOPOLOGIES
     topology::ManifoldTriangleSetTopologyContainer* m_triTopo;
-    topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;
     topology::ManifoldTetrahedronSetTopologyContainer* m_tetraTopo;
+#endif
+    topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;
     topology::TetrahedronSetGeometryAlgorithms<DataTypes>* m_tetraGeo;
     //draw tetrahedra
     core::visual::Shader* shader;
