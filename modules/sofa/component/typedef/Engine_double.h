@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,6 +48,7 @@
 
 #include <sofa/component/engine/AverageCoord.h>
 #include <sofa/component/engine/BoxROI.h>
+#include <sofa/component/engine/DilateEngine.h>
 #include <sofa/component/engine/Distances.h>
 #include <sofa/component/engine/ExtrudeQuadsAndGenerateHexas.h>
 #include <sofa/component/engine/ExtrudeSurface.h>
@@ -89,6 +90,12 @@ typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdVectorTypes<
 typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdRigidTypes<3, double> > BoxROIRigid3d;
 typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > BoxROI3d;
 typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, double>, sofa::defaulttype::Vec<6, double>, double> > BoxROI6d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for DilateEngine
+typedef sofa::component::engine::DilateEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > DilateEngine3d;
 
 
 
@@ -263,6 +270,7 @@ typedef AverageCoord3d AverageCoord3;
 typedef BoxROIRigid3d BoxROIRigid3;
 typedef BoxROI3d BoxROI3;
 typedef BoxROI6d BoxROI6;
+typedef DilateEngine3d DilateEngine3;
 typedef Distances3d Distances3;
 typedef ExtrudeQuadsAndGenerateHexas3d ExtrudeQuadsAndGenerateHexas3;
 typedef ExtrudeSurface3d ExtrudeSurface3;

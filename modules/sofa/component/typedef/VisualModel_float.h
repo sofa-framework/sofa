@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,6 +52,7 @@
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
 
+
 //---------------------------------------------------------------------------------------------
 //Typedef for OglModel
 typedef sofa::component::visualmodel::OglModel OglModelExt3f;
@@ -79,7 +80,6 @@ typedef sofa::component::visualmodel::VisualModelImpl VisualModelImplExt3f;
 
 
 #ifdef SOFA_FLOAT
-typedef DrawVExt3f DrawVExt3;
 typedef OglModelExt3f OglModelExt3;
 typedef OglShaderVisualModelExt3f OglShaderVisualModelExt3;
 typedef OglTetrahedralModel3f OglTetrahedralModel3;

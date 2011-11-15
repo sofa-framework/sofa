@@ -28,6 +28,7 @@
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/component/odesolver/EulerSolver.h>
+#include <sofa/component/visualmodel/VisualStyle.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/VecId.h>
 #include <sofa/gui/GUIManager.h>
@@ -89,9 +90,15 @@ int main(int argc, char** argv)
     particule_node->addObject(mass);
     mass->setMass( 1 );
 
+    // Display Flags
+    sofa::component::visualmodel::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visualmodel::VisualStyle>();
+    groot->addObject(style);
+    sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
+    flags.setShowBehaviorModels(true);
+    style->displayFlags.endEdit();
+
     sofa::simulation::tree::getSimulation()->init(groot.get());
     groot->setAnimate(false);
-    //groot->setShowBehaviorModels(true);
 
     //=======================================
     // Run the main loop

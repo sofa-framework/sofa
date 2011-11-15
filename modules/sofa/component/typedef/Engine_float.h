@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -89,7 +89,6 @@ typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdVectorTypes<
 typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdRigidTypes<3, float> > BoxROIRigid3f;
 typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BoxROI3f;
 typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > BoxROI6f;
-typedef sofa::component::engine::BoxROI<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BoxROICuda3f;
 
 
 
@@ -126,7 +125,6 @@ typedef sofa::component::engine::GroupFilterYoungModulus<sofa::defaulttype::StdV
 //---------------------------------------------------------------------------------------------
 //Typedef for IndexValueMapper
 typedef sofa::component::engine::IndexValueMapper<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IndexValueMapper3f;
-typedef sofa::component::engine::IndexValueMapper<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > IndexValueMapperCuda3f;
 
 
 
@@ -202,7 +200,6 @@ typedef sofa::component::engine::RigidToQuatEngine<sofa::defaulttype::StdVectorT
 //---------------------------------------------------------------------------------------------
 //Typedef for SphereROI
 typedef sofa::component::engine::SphereROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SphereROI3f;
-typedef sofa::component::engine::SphereROI<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SphereROICuda3f;
 
 
 
@@ -267,14 +264,12 @@ typedef AverageCoord3f AverageCoord3;
 typedef BoxROIRigid3f BoxROIRigid3;
 typedef BoxROI3f BoxROI3;
 typedef BoxROI6f BoxROI6;
-typedef BoxROICuda3f BoxROICuda3;
 typedef Distances3f Distances3;
 typedef ExtrudeQuadsAndGenerateHexas3f ExtrudeQuadsAndGenerateHexas3;
 typedef ExtrudeSurface3f ExtrudeSurface3;
 typedef GenerateRigidMassRigid3f GenerateRigidMassRigid3;
 typedef GroupFilterYoungModulus3f GroupFilterYoungModulus3;
 typedef IndexValueMapper3f IndexValueMapper3;
-typedef IndexValueMapperCuda3f IndexValueMapperCuda3;
 typedef JoinPoints3f JoinPoints3;
 typedef MergeMeshesRigid2f MergeMeshesRigid2;
 typedef MergeMeshesRigid3f MergeMeshesRigid3;
@@ -295,7 +290,6 @@ typedef QuatToRigidEngine3f QuatToRigidEngine3;
 typedef RandomPointDistributionInSurface3f RandomPointDistributionInSurface3;
 typedef RigidToQuatEngine3f RigidToQuatEngine3;
 typedef SphereROI3f SphereROI3;
-typedef SphereROICuda3f SphereROICuda3;
 typedef Spiral3f Spiral3;
 typedef SubsetTopologyRigid3f SubsetTopologyRigid3;
 typedef SubsetTopology3f SubsetTopology3;

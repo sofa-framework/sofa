@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,14 +54,12 @@
 #include <sofa/component/controller/LCPForceFeedback.h>
 #include <sofa/component/controller/MechanicalStateController.h>
 #include <sofa/component/controller/RespirationController.h>
-#include <sofa/component/collision/TetrahedronCuttingManager.h>
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ComplianceMatrixUpdateManager
 typedef sofa::component::collision::ComplianceMatrixUpdateManager<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ComplianceMatrixUpdateManager3f;
-typedef sofa::component::collision::ComplianceMatrixUpdateManager<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ComplianceMatrixUpdateManagerCuda3f;
 
 
 
@@ -108,13 +106,6 @@ typedef sofa::component::controller::MechanicalStateController<sofa::defaulttype
 //Typedef for RespirationController
 typedef sofa::component::controller::RespirationController<sofa::defaulttype::StdRigidTypes<3, float> > RespirationControllerRigid3f;
 typedef sofa::component::controller::RespirationController<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RespirationController3f;
-typedef sofa::component::controller::RespirationController<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RespirationControllerCuda3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for TetrahedronCuttingManager
-typedef sofa::component::collision::TetrahedronCuttingManager<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TetrahedronCuttingManagerCuda3f;
 
 
 
@@ -122,7 +113,6 @@ typedef sofa::component::collision::TetrahedronCuttingManager<sofa::gpu::cuda::C
 
 #ifdef SOFA_FLOAT
 typedef ComplianceMatrixUpdateManager3f ComplianceMatrixUpdateManager3;
-typedef ComplianceMatrixUpdateManagerCuda3f ComplianceMatrixUpdateManagerCuda3;
 typedef ComplianceMatrixUpdateManagerCarving3f ComplianceMatrixUpdateManagerCarving3;
 typedef EdgeSetControllerRigid3f EdgeSetControllerRigid3;
 typedef HandStateControllerRigid3f HandStateControllerRigid3;
@@ -134,8 +124,6 @@ typedef MechanicalStateControllerRigid3f MechanicalStateControllerRigid3;
 typedef MechanicalStateController1f MechanicalStateController1;
 typedef RespirationControllerRigid3f RespirationControllerRigid3;
 typedef RespirationController3f RespirationController3;
-typedef RespirationControllerCuda3f RespirationControllerCuda3;
-typedef TetrahedronCuttingManagerCuda3f TetrahedronCuttingManagerCuda3;
 #endif
 
 #endif

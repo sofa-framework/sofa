@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,7 +57,6 @@
 typedef sofa::component::constraintset::LinearSolverConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, float> > LinearSolverConstraintCorrectionRigid3f;
 typedef sofa::component::constraintset::LinearSolverConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > LinearSolverConstraintCorrection1f;
 typedef sofa::component::constraintset::LinearSolverConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > LinearSolverConstraintCorrection3f;
-typedef sofa::component::constraintset::LinearSolverConstraintCorrection<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > LinearSolverConstraintCorrectionCuda3f;
 
 
 
@@ -66,7 +65,6 @@ typedef sofa::component::constraintset::LinearSolverConstraintCorrection<sofa::g
 typedef sofa::component::constraintset::PrecomputedConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, float> > PrecomputedConstraintCorrectionRigid3f;
 typedef sofa::component::constraintset::PrecomputedConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > PrecomputedConstraintCorrection1f;
 typedef sofa::component::constraintset::PrecomputedConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PrecomputedConstraintCorrection3f;
-typedef sofa::component::constraintset::PrecomputedConstraintCorrection<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PrecomputedConstraintCorrectionCuda3f;
 
 
 
@@ -75,7 +73,6 @@ typedef sofa::component::constraintset::PrecomputedConstraintCorrection<sofa::gp
 typedef sofa::component::constraintset::UncoupledConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, float> > UncoupledConstraintCorrectionRigid3f;
 typedef sofa::component::constraintset::UncoupledConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > UncoupledConstraintCorrection1f;
 typedef sofa::component::constraintset::UncoupledConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > UncoupledConstraintCorrection3f;
-typedef sofa::component::constraintset::UncoupledConstraintCorrection<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > UncoupledConstraintCorrectionCuda3f;
 
 
 
@@ -85,15 +82,12 @@ typedef sofa::component::constraintset::UncoupledConstraintCorrection<sofa::gpu:
 typedef LinearSolverConstraintCorrectionRigid3f LinearSolverConstraintCorrectionRigid3;
 typedef LinearSolverConstraintCorrection1f LinearSolverConstraintCorrection1;
 typedef LinearSolverConstraintCorrection3f LinearSolverConstraintCorrection3;
-typedef LinearSolverConstraintCorrectionCuda3f LinearSolverConstraintCorrectionCuda3;
 typedef PrecomputedConstraintCorrectionRigid3f PrecomputedConstraintCorrectionRigid3;
 typedef PrecomputedConstraintCorrection1f PrecomputedConstraintCorrection1;
 typedef PrecomputedConstraintCorrection3f PrecomputedConstraintCorrection3;
-typedef PrecomputedConstraintCorrectionCuda3f PrecomputedConstraintCorrectionCuda3;
 typedef UncoupledConstraintCorrectionRigid3f UncoupledConstraintCorrectionRigid3;
 typedef UncoupledConstraintCorrection1f UncoupledConstraintCorrection1;
 typedef UncoupledConstraintCorrection3f UncoupledConstraintCorrection3;
-typedef UncoupledConstraintCorrectionCuda3f UncoupledConstraintCorrectionCuda3;
 #endif
 
 #endif
