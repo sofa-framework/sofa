@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,7 +34,6 @@
 
 #include <sofa/component/typedef/Particles_float.h>
 #include <sofa/component/typedef/BehaviorModel_float.h>
-#include <sofa/component/typedef/CollisionAlgorithm_float.h>
 #include <sofa/component/typedef/CollisionModel_float.h>
 #include <sofa/component/typedef/ConstraintSet_float.h>
 #include <sofa/component/typedef/ConstraintSolver_float.h>

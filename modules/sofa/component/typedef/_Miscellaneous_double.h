@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,7 +49,6 @@
 #include <sofa/component/misc/DevAngleCollisionMonitor.h>
 #include <sofa/component/misc/DevMonitorManager.h>
 #include <sofa/component/misc/DevTensionMonitor.h>
-#include <sofa/component/topology/DistanceOnGrid.h>
 #include <sofa/component/misc/EvalPointsDistance.h>
 #include <sofa/component/misc/EvalSurfaceDistance.h>
 #include <sofa/component/misc/ExtraMonitor.h>
@@ -57,7 +56,6 @@
 #include <sofa/component/misc/Monitor.h>
 #include <sofa/component/container/RotationFinder.h>
 #include <sofa/component/container/SpatialGridContainer.h>
-#include <sofa/component/misc/SpringIt.h>
 
 
 
@@ -76,12 +74,6 @@ typedef sofa::component::misc::DevMonitorManager DevMonitorManager3d;
 //---------------------------------------------------------------------------------------------
 //Typedef for DevTensionMonitor
 typedef sofa::component::misc::DevTensionMonitor<sofa::defaulttype::StdRigidTypes<3, double> > DevTensionMonitorRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for DistanceOnGrid
-typedef sofa::component::topology::DistanceOnGrid<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > DistanceOnGrid3d;
 
 
 
@@ -137,19 +129,12 @@ typedef sofa::component::container::SpatialGridContainer<sofa::defaulttype::StdV
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for SpringIt
-typedef sofa::component::misc::SpringIt<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > SpringIt3d;
-
-
-
 
 
 #ifndef SOFA_FLOAT
 typedef DevAngleCollisionMonitorRigid3d DevAngleCollisionMonitorRigid3;
 typedef DevMonitorManager3d DevMonitorManager3;
 typedef DevTensionMonitorRigid3d DevTensionMonitorRigid3;
-typedef DistanceOnGrid3d DistanceOnGrid3;
 typedef EvalPointsDistanceRigid3d EvalPointsDistanceRigid3;
 typedef EvalPointsDistance3d EvalPointsDistance3;
 typedef EvalSurfaceDistance3d EvalSurfaceDistance3;
@@ -167,7 +152,6 @@ typedef Monitor3d Monitor3;
 typedef Monitor6d Monitor6;
 typedef RotationFinder3d RotationFinder3;
 typedef SpatialGridContainer3d SpatialGridContainer3;
-typedef SpringIt3d SpringIt3;
 #endif
 
 #endif

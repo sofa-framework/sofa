@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,7 +55,6 @@
 #include <sofa/component/controller/MechanicalStateController.h>
 #include <sofa/component/controller/RespirationController.h>
 #include <sofa/component/collision/TetrahedronCuttingManager.h>
-#include <sofa/component/controller/VMechanismsForceFeedback.h>
 
 
 
@@ -117,13 +116,6 @@ typedef sofa::component::collision::TetrahedronCuttingManager<sofa::defaulttype:
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for VMechanismsForceFeedback
-typedef sofa::component::controller::VMechanismsForceFeedback<sofa::defaulttype::StdRigidTypes<3, double> > VMechanismsForceFeedbackRigid3d;
-typedef sofa::component::controller::VMechanismsForceFeedback<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > VMechanismsForceFeedback1d;
-
-
-
 
 
 #ifndef SOFA_FLOAT
@@ -140,8 +132,6 @@ typedef MechanicalStateController1d MechanicalStateController1;
 typedef RespirationControllerRigid3d RespirationControllerRigid3;
 typedef RespirationController3d RespirationController3;
 typedef TetrahedronCuttingManager3d TetrahedronCuttingManager3;
-typedef VMechanismsForceFeedbackRigid3d VMechanismsForceFeedbackRigid3;
-typedef VMechanismsForceFeedback1d VMechanismsForceFeedback1;
 #endif
 
 #endif

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,7 +47,6 @@
 
 
 #include <sofa/component/projectiveconstraintset/AttachConstraint.h>
-#include <sofa/component/projectiveconstraintset/DisplacementConstraint.h>
 #include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 #include <sofa/component/projectiveconstraintset/FixedPlaneConstraint.h>
 #include <sofa/component/projectiveconstraintset/FixedRotationConstraint.h>
@@ -61,8 +60,6 @@
 #include <sofa/component/projectiveconstraintset/PartialLinearMovementConstraint.h>
 #include <sofa/component/misc/ParticleSink.h>
 #include <sofa/component/misc/ParticleSource.h>
-#include <sofa/component/projectiveconstraintset/ProjectionLineConstraint.h>
-#include <sofa/component/projectiveconstraintset/ProjectionPlaneConstraint.h>
 
 
 
@@ -73,14 +70,6 @@ typedef sofa::component::projectiveconstraintset::AttachConstraint<sofa::default
 typedef sofa::component::projectiveconstraintset::AttachConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > AttachConstraint1d;
 typedef sofa::component::projectiveconstraintset::AttachConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > AttachConstraint2d;
 typedef sofa::component::projectiveconstraintset::AttachConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > AttachConstraint3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for DisplacementConstraint
-typedef sofa::component::projectiveconstraintset::DisplacementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > DisplacementConstraint1d;
-typedef sofa::component::projectiveconstraintset::DisplacementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > DisplacementConstraint2d;
-typedef sofa::component::projectiveconstraintset::DisplacementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > DisplacementConstraint3d;
 
 
 
@@ -193,20 +182,6 @@ typedef sofa::component::misc::ParticleSource<sofa::defaulttype::StdVectorTypes<
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for ProjectionLineConstraint
-typedef sofa::component::projectiveconstraintset::ProjectionLineConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > ProjectionLineConstraint1d;
-typedef sofa::component::projectiveconstraintset::ProjectionLineConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > ProjectionLineConstraint2d;
-typedef sofa::component::projectiveconstraintset::ProjectionLineConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ProjectionLineConstraint3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for ProjectionPlaneConstraint
-typedef sofa::component::projectiveconstraintset::ProjectionPlaneConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ProjectionPlaneConstraint3d;
-
-
-
 
 
 #ifndef SOFA_FLOAT
@@ -215,9 +190,6 @@ typedef AttachConstraintRigid2d AttachConstraintRigid2;
 typedef AttachConstraint1d AttachConstraint1;
 typedef AttachConstraint2d AttachConstraint2;
 typedef AttachConstraint3d AttachConstraint3;
-typedef DisplacementConstraint1d DisplacementConstraint1;
-typedef DisplacementConstraint2d DisplacementConstraint2;
-typedef DisplacementConstraint3d DisplacementConstraint3;
 typedef FixedConstraintRigid3d FixedConstraintRigid3;
 typedef FixedConstraintRigid2d FixedConstraintRigid2;
 typedef FixedConstraint1d FixedConstraint1;
@@ -262,10 +234,6 @@ typedef ParticleSink2d ParticleSink2;
 typedef ParticleSink3d ParticleSink3;
 typedef ParticleSource2d ParticleSource2;
 typedef ParticleSource3d ParticleSource3;
-typedef ProjectionLineConstraint1d ProjectionLineConstraint1;
-typedef ProjectionLineConstraint2d ProjectionLineConstraint2;
-typedef ProjectionLineConstraint3d ProjectionLineConstraint3;
-typedef ProjectionPlaneConstraint3d ProjectionPlaneConstraint3;
 #endif
 
 #endif

@@ -30,6 +30,7 @@
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/odesolver/StaticSolver.h>
 #include <sofa/component/visualmodel/OglModel.h>
+#include <sofa/component/visualmodel/VisualStyle.h>
 // gui
 #include <sofa/gui/GUIManager.h>
 #include <sofa/core/VecId.h>
@@ -156,20 +157,26 @@ int main(int, char** argv)
 
 
 
+    // Display Flags
+    sofa::component::visualmodel::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visualmodel::VisualStyle>();
+    groot->addObject(style);
+    sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
+    flags.setShowNormals(false);
+    flags.setShowInteractionForceFields(true);
+    flags.setShowMechanicalMappings(true);
+    flags.setShowCollisionModels(false);
+    flags.setShowBoundingCollisionModels(false);
+    flags.setShowMappings(false);
+    flags.setShowForceFields(true);
+    flags.setShowWireFrame(false);
+    flags.setShowVisualModels(true);
+    flags.setShowBehaviorModels(true);
+    style->displayFlags.endEdit();
 
     //=========================== Init the scene
     sofa::simulation::tree::getSimulation()->init(groot.get());
     /*    groot->setAnimate(false);
-        groot->setShowNormals(false);
-        groot->setShowInteractionForceFields(true);
-        groot->setShowMechanicalMappings(true);
-        groot->setShowCollisionModels(false);
-        groot->setShowBoundingCollisionModels(false);
-        groot->setShowMappings(false);
-        groot->setShowForceFields(true);
-        groot->setShowWireFrame(false);
-        groot->setShowVisualModels(true);
-        groot->setShowBehaviorModels(true);*/
+    */
 
 
 

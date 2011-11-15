@@ -48,8 +48,8 @@ using sofa::core::ComponentLibrary;
 const std::string headerFile(
     "\
 /******************************************************************************\n\
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *\n\
-*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *\n\
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *\n\
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *\n\
 *                                                                             *\n\
 * This library is free software; you can redistribute it and/or modify it     *\n\
 * under the terms of the GNU Lesser General Public License as published by    *\n\
@@ -91,8 +91,6 @@ static std::multimap< std::string, std::string >          bannedComponents;
 
 static const std::string multimappingName  = "MultiMapping";
 static const std::string multi2mappingName = "Multi2Mapping";
-static const std::string mechanicalmultimappingName  = "MechanicalMultiMapping";
-static const std::string mechanicalmulti2mappingName = "MechanicalMulti2Mapping";
 
 
 struct removeLastChar
@@ -371,7 +369,7 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                 std::string categoryName=category.getName();
                 std::string componentName=component.getName();
                 std::string templateCombination=templateName;
-                bool isMapping=false;
+                bool isMapping = (categoryName == "Mapping");
 
                 //Special case for Mapping and MultiMappings !
                 if ( templateName.substr(0,multimappingName.size()) == multimappingName )
@@ -382,14 +380,6 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                 {
                     categoryName = multi2mappingName;
                 }
-                if ( templateName.substr(0,mechanicalmultimappingName.size()) == mechanicalmultimappingName )
-                {
-                    categoryName = mechanicalmultimappingName;
-                }
-                if ( templateName.substr(0,mechanicalmulti2mappingName.size()) == mechanicalmulti2mappingName )
-                {
-                    categoryName = mechanicalmulti2mappingName;
-                }
                 if (templateName.substr(0, categoryName.size()) == categoryName )
                 {
                     //Special case of Mappings
@@ -397,22 +387,6 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                     templateCombination = templateName.substr(categoryName.size()+1);
                     templateCombination = templateCombination.substr(0,templateCombination.size()-1);
                     isMapping=true;
-                    //Change the name of the typedef to do a difference between a mapping and a mechanical mapping
-                    if (categoryName.find("MechanicalMapping") != std::string::npos)
-                    {
-                        componentName = componentName.substr(0,componentName.size()-7);
-                        componentName += "MechanicalMapping";
-                    }
-                    if( categoryName.find(mechanicalmultimappingName) != std::string::npos )
-                    {
-                        componentName = componentName.substr(0,componentName.size()-multimappingName.size() );
-                        componentName += mechanicalmultimappingName;
-                    }
-                    if( categoryName.find(mechanicalmulti2mappingName) != std::string::npos )
-                    {
-                        componentName = componentName.substr(0,componentName.size()-multi2mappingName.size() );
-                        componentName += mechanicalmulti2mappingName;
-                    }
                 }
 
                 sofa::helper::vector<std::string> inputTemplateList;
@@ -520,58 +494,50 @@ void writeFile(const CategoryLibrary &category,  TYPES t, std::ostream &generalO
 #include <sofa/core/Mapping.h>\n\
 ";
 }
-        else if (category.getName() == "MechanicalMapping")
-{
-    typedefFile << "\
-//Default files needed to create a Mechanical Mapping\n\
-#include <sofa/core/behavior/MechanicalState.h>\n\
-#include <sofa/core/behavior/MechanicalMapping.h>\n\
-";
-}
-    typedefFile << "\n\n";
+        typedefFile << "\n\n";
 
-    //---------------------------------------------------------------------------------------------
-    //COMPONENTS INCLUDES
-    std::map< std::string, std::string >::const_iterator itIncludes;
-    for (itIncludes=includeComponents.begin(); itIncludes!=includeComponents.end(); ++itIncludes)
+//---------------------------------------------------------------------------------------------
+//COMPONENTS INCLUDES
+std::map< std::string, std::string >::const_iterator itIncludes;
+for (itIncludes=includeComponents.begin(); itIncludes!=includeComponents.end(); ++itIncludes)
 {
     //Only write the include if a typedef will follow
     if (typedefComponents.count(itIncludes->first))
-{
-    typedefFile << itIncludes->second;
-}
+    {
+        typedefFile << itIncludes->second;
+    }
 }
 
-    typedefFile << "\n\n";
+typedefFile << "\n\n";
 
-    typedef std::multimap< std::string, std::string >::iterator multimapConstIterator;
-    //---------------------------------------------------------------------------------------------
-    //TYPEDEF DECLARATIONS
-    for (itIncludes=includeComponents.begin(); itIncludes!=includeComponents.end(); ++itIncludes)
+typedef std::multimap< std::string, std::string >::iterator multimapConstIterator;
+//---------------------------------------------------------------------------------------------
+//TYPEDEF DECLARATIONS
+for (itIncludes=includeComponents.begin(); itIncludes!=includeComponents.end(); ++itIncludes)
 {
     std::pair<multimapConstIterator,multimapConstIterator > range;
     range = typedefComponents.equal_range(itIncludes->first);
 
     if (typedefComponents.count(itIncludes->first))
-{
-    typedefFile << "\n//---------------------------------------------------------------------------------------------\n\
-    //Typedef for " << itIncludes->first << "\n";
-    for (multimapConstIterator it=range.first; it!=range.second; it++)
     {
-        std::string& str = (it->second);
-#ifdef WIN32
-        static const std::string keyword_class = "class";
-        size_t pos  = 0;
-        while( ( pos = str.find(keyword_class,pos) ) != std::string::npos )
+        typedefFile << "\n//---------------------------------------------------------------------------------------------\n\
+//Typedef for " << itIncludes->first << "\n";
+        for (multimapConstIterator it=range.first; it!=range.second; it++)
         {
-            str.replace(pos, keyword_class.length() ,"");
-            pos += 1;
-        }
+            std::string& str = (it->second);
+#ifdef WIN32
+            static const std::string keyword_class = "class";
+            size_t pos  = 0;
+            while( ( pos = str.find(keyword_class,pos) ) != std::string::npos )
+            {
+                str.replace(pos, keyword_class.length() ,"");
+                pos += 1;
+            }
 #endif
-        typedefFile << "typedef " << str << ";\n";
+            typedefFile << "typedef " << str << ";\n";
+        }
+        typedefFile << "\n\n";
     }
-    typedefFile << "\n\n";
-}
 }
 
 
@@ -712,13 +678,13 @@ int main(int , char** )
 #ifndef SOFA_FLOAT\n\
 \n";
 
-    std::string filenameSofaDouble=outputPath+"Sofa_double.h";
-    std::ofstream sofaDouble( filenameSofaDouble.c_str() );   sofaDouble  << headerFile << "\n";
-    sofaDouble << "\
+            std::string filenameSofaDouble=outputPath+"Sofa_double.h";
+            std::ofstream sofaDouble( filenameSofaDouble.c_str() );   sofaDouble  << headerFile << "\n";
+            sofaDouble << "\
 #ifndef SOFA_TYPEDEF_DOUBLE\n\
 #define SOFA_TYPEDEF_DOUBLE\n\
 \n";
-    sofaDouble << "\n#include <sofa/component/typedef/Particles_double.h>\n";
+            sofaDouble << "\n#include <sofa/component/typedef/Particles_double.h>\n";
 
     std::string filenameSofaFloat=outputPath+"Sofa_float.h";
     std::ofstream sofaFloat( filenameSofaFloat.c_str() );     sofaFloat   << headerFile << "\n";
@@ -726,58 +692,58 @@ int main(int , char** )
 #ifndef SOFA_TYPEDEF_FLOAT\n\
 #define SOFA_TYPEDEF_FLOAT\n\
 \n";
-    sofaFloat << "\n#include <sofa/component/typedef/Particles_float.h>\n";
+            sofaFloat << "\n#include <sofa/component/typedef/Particles_float.h>\n";
 
-std::cout << "Generating Type definition for Sofa Component: " << std::endl;
-    for (SofaLibrary::VecCategoryIterator itCat=categories.begin(); itCat!=categories.end(); ++itCat)
-    {
-    const CategoryLibrary &category = *(*itCat);
-    std::cerr << "\tProcessing " << category.getNumComponents() << " components for the " << category.getName();
-        const CategoryLibrary::VecComponent &components = category.getComponents();
-        //First read all the components of the categories, and try to know if templates exist
-        bool needToCreateTypedefs=false;
-        for (CategoryLibrary::VecComponentIterator itComp=components.begin(); itComp != components.end(); ++itComp)
-    {
-        const ComponentLibrary &component = *(*itComp);
-        if (!component.getTemplates().empty()) {needToCreateTypedefs=true; break;}
-    }
+        std::cout << "Generating Type definition for Sofa Component: " << std::endl;
+            for (SofaLibrary::VecCategoryIterator itCat=categories.begin(); itCat!=categories.end(); ++itCat)
+            {
+            const CategoryLibrary &category = *(*itCat);
+            std::cerr << "\tProcessing " << category.getNumComponents() << " components for the " << category.getName();
+                const CategoryLibrary::VecComponent &components = category.getComponents();
+                //First read all the components of the categories, and try to know if templates exist
+                bool needToCreateTypedefs=false;
+                for (CategoryLibrary::VecComponentIterator itComp=components.begin(); itComp != components.end(); ++itComp)
+            {
+                const ComponentLibrary &component = *(*itComp);
+                if (!component.getTemplates().empty()) {needToCreateTypedefs=true; break;}
+            }
 
-        //If templates have been found, we create an empty file, in which we will write the typedefs associated
-        if (needToCreateTypedefs)
-    {
-        std::cerr << " -> Generating headers";
-        //Find the files needed to be included
-        printIncludes( category);
+                //If templates have been found, we create an empty file, in which we will write the typedefs associated
+                if (needToCreateTypedefs)
+            {
+                std::cerr << " -> Generating headers";
+                //Find the files needed to be included
+                printIncludes( category);
 
-        //Get typedefs for the TYPE_DOUBLE
-        printFullTypedefs( category, TYPE_DOUBLE);
-        writeFile( category, TYPE_DOUBLE, sofaDouble);
-        typedefComponents.clear();
-        simplificationTypedefComponents.clear();
+                //Get typedefs for the TYPE_DOUBLE
+                printFullTypedefs( category, TYPE_DOUBLE);
+                writeFile( category, TYPE_DOUBLE, sofaDouble);
+                typedefComponents.clear();
+                simplificationTypedefComponents.clear();
 
-        //Get typedefs for the TYPE_FLOAT
-        printFullTypedefs( category, TYPE_FLOAT);
-        writeFile( category, TYPE_FLOAT, sofaFloat);
-        typedefComponents.clear();
-        simplificationTypedefComponents.clear();
+                //Get typedefs for the TYPE_FLOAT
+                printFullTypedefs( category, TYPE_FLOAT);
+                writeFile( category, TYPE_FLOAT, sofaFloat);
+                typedefComponents.clear();
+                simplificationTypedefComponents.clear();
 
-        //Get typedefs for the TYPE_COMBINATION
-        printFullTypedefs( category, TYPE_COMBINATION);
-        writeFile( category, TYPE_COMBINATION, sofaTypedef);
-        typedefComponents.clear();
-        simplificationTypedefComponents.clear();
+                //Get typedefs for the TYPE_COMBINATION
+                printFullTypedefs( category, TYPE_COMBINATION);
+                writeFile( category, TYPE_COMBINATION, sofaTypedef);
+                typedefComponents.clear();
+                simplificationTypedefComponents.clear();
 
-    }
-        std::cerr << std::endl;
-    }
+            }
+                std::cerr << std::endl;
+            }
 
-        sofaTypedef << "\n#endif\n";
-        sofaTypedef << "#endif\n";
+                sofaTypedef << "\n#endif\n";
+                sofaTypedef << "#endif\n";
 
 
-        sofaTypedef << "#endif\n";
-        sofaDouble  << "\n#endif\n";
-        sofaFloat   << "\n#endif\n";
+                sofaTypedef << "#endif\n";
+                sofaDouble  << "\n#endif\n";
+                sofaFloat   << "\n#endif\n";
 
-        return 0;
-    }
+                return 0;
+            }

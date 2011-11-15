@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,18 +49,19 @@
 #include <sofa/component/collision/MouseInteractor.h>
 
 
+
 //---------------------------------------------------------------------------------------------
 //Typedef for MouseInteractor
 typedef sofa::component::collision::MouseInteractor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MouseInteractor3f;
 typedef sofa::component::collision::MouseInteractor<sofa::defaulttype::StdRigidTypes<3, float> > MouseInteractorRigid3f;
-typedef sofa::component::collision::MouseInteractor<sofa::gpu::cuda::CudaVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MouseInteractorCuda3f;
+
+
 
 
 
 #ifdef SOFA_FLOAT
 typedef MouseInteractor3f MouseInteractor3;
 typedef MouseInteractorRigid3f MouseInteractorRigid3;
-typedef MouseInteractorCuda3f MouseInteractorCuda3;
 #endif
 
 #endif

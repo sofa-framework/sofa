@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,8 +52,6 @@
 #include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/HexahedronSetTopologyAlgorithms.h>
-#include <sofa/component/topology/MultilevelHexahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/MultilevelHexahedronSetTopologyAlgorithms.h>
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
 #include <sofa/component/topology/PointSetTopologyAlgorithms.h>
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
@@ -114,22 +112,6 @@ typedef sofa::component::topology::HexahedronSetGeometryAlgorithms<sofa::default
 typedef sofa::component::topology::HexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > HexahedronSetTopologyAlgorithms1d;
 typedef sofa::component::topology::HexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > HexahedronSetTopologyAlgorithms2d;
 typedef sofa::component::topology::HexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > HexahedronSetTopologyAlgorithms3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for MultilevelHexahedronSetGeometryAlgorithms
-typedef sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > MultilevelHexahedronSetGeometryAlgorithms1d;
-typedef sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > MultilevelHexahedronSetGeometryAlgorithms2d;
-typedef sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > MultilevelHexahedronSetGeometryAlgorithms3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for MultilevelHexahedronSetTopologyAlgorithms
-typedef sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > MultilevelHexahedronSetTopologyAlgorithms1d;
-typedef sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > MultilevelHexahedronSetTopologyAlgorithms2d;
-typedef sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > MultilevelHexahedronSetTopologyAlgorithms3d;
 
 
 
@@ -222,27 +204,6 @@ typedef HexahedronSetGeometryAlgorithms3d HexahedronSetGeometryAlgorithms3;
 typedef HexahedronSetTopologyAlgorithms1d HexahedronSetTopologyAlgorithms1;
 typedef HexahedronSetTopologyAlgorithms2d HexahedronSetTopologyAlgorithms2;
 typedef HexahedronSetTopologyAlgorithms3d HexahedronSetTopologyAlgorithms3;
-#ifdef SOFA_HAVE_MANIFOLDTOPOLOGIES
-typedef ManifoldEdgeSetGeometryAlgorithmsRigid3d ManifoldEdgeSetGeometryAlgorithmsRigid3;
-typedef ManifoldEdgeSetGeometryAlgorithmsRigid2d ManifoldEdgeSetGeometryAlgorithmsRigid2;
-typedef ManifoldEdgeSetGeometryAlgorithms1d ManifoldEdgeSetGeometryAlgorithms1;
-typedef ManifoldEdgeSetGeometryAlgorithms2d ManifoldEdgeSetGeometryAlgorithms2;
-typedef ManifoldEdgeSetGeometryAlgorithms3d ManifoldEdgeSetGeometryAlgorithms3;
-typedef ManifoldEdgeSetTopologyAlgorithmsRigid3d ManifoldEdgeSetTopologyAlgorithmsRigid3;
-typedef ManifoldEdgeSetTopologyAlgorithmsRigid2d ManifoldEdgeSetTopologyAlgorithmsRigid2;
-typedef ManifoldEdgeSetTopologyAlgorithms1d ManifoldEdgeSetTopologyAlgorithms1;
-typedef ManifoldEdgeSetTopologyAlgorithms2d ManifoldEdgeSetTopologyAlgorithms2;
-typedef ManifoldEdgeSetTopologyAlgorithms3d ManifoldEdgeSetTopologyAlgorithms3;
-typedef ManifoldTriangleSetTopologyAlgorithms1d ManifoldTriangleSetTopologyAlgorithms1;
-typedef ManifoldTriangleSetTopologyAlgorithms2d ManifoldTriangleSetTopologyAlgorithms2;
-typedef ManifoldTriangleSetTopologyAlgorithms3d ManifoldTriangleSetTopologyAlgorithms3;
-#endif
-typedef MultilevelHexahedronSetGeometryAlgorithms1d MultilevelHexahedronSetGeometryAlgorithms1;
-typedef MultilevelHexahedronSetGeometryAlgorithms2d MultilevelHexahedronSetGeometryAlgorithms2;
-typedef MultilevelHexahedronSetGeometryAlgorithms3d MultilevelHexahedronSetGeometryAlgorithms3;
-typedef MultilevelHexahedronSetTopologyAlgorithms1d MultilevelHexahedronSetTopologyAlgorithms1;
-typedef MultilevelHexahedronSetTopologyAlgorithms2d MultilevelHexahedronSetTopologyAlgorithms2;
-typedef MultilevelHexahedronSetTopologyAlgorithms3d MultilevelHexahedronSetTopologyAlgorithms3;
 typedef PointSetGeometryAlgorithms1d PointSetGeometryAlgorithms1;
 typedef PointSetGeometryAlgorithms2d PointSetGeometryAlgorithms2;
 typedef PointSetGeometryAlgorithms3d PointSetGeometryAlgorithms3;

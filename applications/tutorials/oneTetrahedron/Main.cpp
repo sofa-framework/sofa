@@ -27,6 +27,7 @@
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/component/visualmodel/OglModel.h>
+#include <sofa/component/visualmodel/VisualStyle.h>
 
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/VecId.h>
@@ -128,24 +129,30 @@ int main(int argc, char** argv)
     skin->addObject(visual);
 
     // The mapping between the tetrahedron (DOF) and the liver (visual)
-    /*    BarycentricMapping3_to_Ext3* mapping = new BarycentricMapping3_to_Ext3(DOF, visual);
-        mapping->setName( "mapping" );
-        skin->addObject(mapping); */
+    BarycentricMapping3_to_Ext3::SPtr mapping = sofa::core::objectmodel::New<BarycentricMapping3_to_Ext3>();
+    mapping->setModels(DOF.get(), visual.get());
+    mapping->setName( "mapping" );
+    skin->addObject(mapping);
+
+    // Display Flags
+    sofa::component::visualmodel::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visualmodel::VisualStyle>();
+    groot->addObject(style);
+    sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
+    flags.setShowNormals(false);
+    flags.setShowInteractionForceFields(false);
+    flags.setShowMechanicalMappings(false);
+    flags.setShowCollisionModels(false);
+    flags.setShowBoundingCollisionModels(false);
+    flags.setShowMappings(false);
+    flags.setShowForceFields(true);
+    flags.setShowWireFrame(true);
+    flags.setShowVisualModels(true);
+    flags.setShowBehaviorModels(true);
+    style->displayFlags.endEdit();
 
     // Init the scene
     sofa::simulation::tree::getSimulation()->init(groot.get());
     groot->setAnimate(false);
-    /*    groot->setShowNormals(false);
-        groot->setShowInteractionForceFields(false);
-        groot->setShowMechanicalMappings(false);
-        groot->setShowCollisionModels(false);
-        groot->setShowBoundingCollisionModels(false);
-        groot->setShowMappings(false);
-        groot->setShowForceFields(true);
-        groot->setShowWireFrame(true);
-        groot->setShowVisualModels(true);
-        groot->setShowBehaviorModels(true);*/
-
 
 
     //=======================================
