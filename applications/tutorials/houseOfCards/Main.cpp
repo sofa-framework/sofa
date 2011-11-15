@@ -86,28 +86,28 @@ Node *createCard(Node* parent, const Coord3& position, const Coord3& rotation)
     cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-5);
 
 
-    sofa::component::constraintset::LMConstraintSolver *constraintSolver = new sofa::component::constraintset::LMConstraintSolver();
+    sofa::component::constraintset::LMConstraintSolver::SPtr constraintSolver = sofa::core::objectmodel::New<sofa::component::constraintset::LMConstraintSolver>();
     constraintSolver->constraintVel.setValue(true);
     constraintSolver->constraintPos.setValue(true);
     constraintSolver->numIterations.setValue(25);
 
     card->addObject(constraintSolver);
 
-    MechanicalObjectRigid3* dofRigid = new MechanicalObjectRigid3; dofRigid->setName("Rigid Object");
+    MechanicalObjectRigid3::SPtr dofRigid = sofa::core::objectmodel::New<MechanicalObjectRigid3>(); dofRigid->setName("Rigid Object");
     dofRigid->setTranslation(position[0],position[1],position[2]);
     dofRigid->setRotation(rotation[0],rotation[1],rotation[2]);
     card->addObject(dofRigid);
 
-    UniformMassRigid3* uniMassRigid = new UniformMassRigid3;
+    UniformMassRigid3::SPtr uniMassRigid = sofa::core::objectmodel::New<UniformMassRigid3>();
     uniMassRigid->setTotalMass(0.5);
     uniMassRigid->setFileMass(inertiaMatrix);
     card->addObject(uniMassRigid);
 
     //Node VISUAL
-    Node* RigidVisualNode = sofa::ObjectCreator::CreateVisualNodeRigid(card, dofRigid, visualModel,colors[(colorIdx++)%7]);
+    Node* RigidVisualNode = sofa::ObjectCreator::CreateVisualNodeRigid(card, dofRigid.get(), visualModel,colors[(colorIdx++)%7]);
 
     //Node COLLISION
-    Node* RigidCollisionNode = sofa::ObjectCreator::CreateCollisionNodeRigid(card, dofRigid,collisionModel,modelTypes);
+    Node* RigidCollisionNode = sofa::ObjectCreator::CreateCollisionNodeRigid(card, dofRigid.get(),collisionModel,modelTypes);
 
     return card;
 }
@@ -257,13 +257,13 @@ int main(int argc, char** argv)
     //=======================================
     // Export the scene to file
     const std::string fileName="HouseOfCards.xml";
-    sofa::simulation::getSimulation()->exportXML(root,fileName.c_str(), true);
+    sofa::simulation::getSimulation()->exportXML(root,fileName.c_str());
 
     //=======================================
     // Destroy created scene: step needed, as I can't get rid of the locales (the mass can't init correctly as 0.1 is not considered as a floating point).
     sofa::simulation::DeleteVisitor deleteScene(sofa::core::ExecParams::defaultInstance() );
     root->execute(deleteScene);
-    delete root;
+//    delete root;
 
     //=======================================
     // Create the GUI
@@ -276,10 +276,11 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::SetDimension(800,600);
     //=======================================
     // Load the Scene
-    sofa::simulation::Node* groot = dynamic_cast<sofa::simulation::Node*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+
+    sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
 
 
-    sofa::simulation::getSimulation()->init(groot);
+    sofa::simulation::getSimulation()->init(groot.get());
     sofa::gui::GUIManager::SetScene(groot,fileName.c_str());
 
 

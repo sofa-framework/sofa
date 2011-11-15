@@ -68,7 +68,7 @@ Node *createChainHybrid(Node *root)
     //************************************
     //Torus Fixed
     {
-        Node* torusFixed = sofa::ObjectCreator::CreateObstacle(chain,"mesh/torus_for_collision.obj", "mesh/torus.obj", "gray");
+        //Node* torusFixed = sofa::ObjectCreator::CreateObstacle(chain,"mesh/torus_for_collision.obj", "mesh/torus.obj", "gray");
     }
     //************************************
     //Torus FEM
@@ -80,22 +80,22 @@ Node *createChainHybrid(Node *root)
         loaderFEM->load();
         torusFEM->addObject(loaderFEM);
 
-        MeshTopology* meshTorusFEM = new MeshTopology;
+        MeshTopology::SPtr meshTorusFEM = sofa::core::objectmodel::New<MeshTopology>();
         torusFEM->addObject(meshTorusFEM);
 
         const Deriv3 translation(2.5,0,0);
         const Deriv3 rotation(90,0,0);
 
-        MechanicalObject3* dofFEM = new MechanicalObject3; dofFEM->setName("FEM Object");
+        MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); dofFEM->setName("FEM Object");
         dofFEM->setTranslation(translation[0],translation[1],translation[2]);
         dofFEM->setRotation(rotation[0],rotation[1],rotation[2]);
         torusFEM->addObject(dofFEM);
 
-        UniformMass3* uniMassFEM = new UniformMass3;
+        UniformMass3::SPtr uniMassFEM = sofa::core::objectmodel::New<UniformMass3>();
         uniMassFEM->setTotalMass(5); //the whole object will have 5 as given mass
         torusFEM->addObject(uniMassFEM);
 
-        TetrahedronFEMForceField3* tetraFEMFF = new TetrahedronFEMForceField3;
+        TetrahedronFEMForceField3::SPtr tetraFEMFF = sofa::core::objectmodel::New<TetrahedronFEMForceField3>();
         tetraFEMFF->setName("FEM");
         tetraFEMFF->setComputeGlobalMatrix(false);
         tetraFEMFF->setMethod("large");
@@ -104,10 +104,10 @@ Node *createChainHybrid(Node *root)
         torusFEM->addObject(tetraFEMFF);
 
         //Node VISUAL
-        Node* FEMVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusFEM, dofFEM,visualModel, "red", translation, rotation);
+        Node* FEMVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusFEM, dofFEM.get(),visualModel, "red", translation, rotation);
 
         //Node COLLISION
-        Node* FEMCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusFEM, dofFEM,collisionModel,modelTypes, translation, rotation );
+        Node* FEMCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusFEM, dofFEM.get(),collisionModel,modelTypes, translation, rotation );
     }
     //************************************
     //Torus Spring
@@ -121,24 +121,24 @@ Node *createChainHybrid(Node *root)
         torusSpring->addObject(loaderSpring);
         loaderSpring->init();
 
-        MeshTopology* meshTorusSpring = new MeshTopology;
+        MeshTopology::SPtr meshTorusSpring = sofa::core::objectmodel::New<MeshTopology>();
         torusSpring->addObject(meshTorusSpring);
 
         const Deriv3 translation(5,0,0);
         const Deriv3 rotation(0,0,0);
 
-        MechanicalObject3* dofSpring = new MechanicalObject3; dofSpring->setName("Spring Object");
+        MechanicalObject3::SPtr dofSpring = sofa::core::objectmodel::New<MechanicalObject3>(); dofSpring->setName("Spring Object");
 
         dofSpring->setTranslation(translation[0],translation[1],translation[2]);
         dofSpring->setRotation(rotation[0],rotation[1],rotation[2]);
 
         torusSpring->addObject(dofSpring);
 
-        UniformMass3* uniMassSpring = new UniformMass3;
+        UniformMass3::SPtr uniMassSpring = sofa::core::objectmodel::New<UniformMass3>();
         uniMassSpring->setTotalMass(5); //the whole object will have 5 as given mass
         torusSpring->addObject(uniMassSpring);
 
-        MeshSpringForceField3* springFF = new MeshSpringForceField3;
+        MeshSpringForceField3::SPtr springFF = sofa::core::objectmodel::New<MeshSpringForceField3>();
         springFF->setName("Springs");
         springFF->setStiffness(400);
         springFF->setDamping(0);
@@ -146,10 +146,10 @@ Node *createChainHybrid(Node *root)
 
 
         //Node VISUAL
-        Node* SpringVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusSpring, dofSpring, visualModel,"green", translation, rotation);
+        Node* SpringVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusSpring, dofSpring.get(), visualModel,"green", translation, rotation);
 
         //Node COLLISION
-        Node* SpringCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusSpring, dofSpring, collisionModel,modelTypes,translation, rotation);
+        Node* SpringCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusSpring, dofSpring.get(), collisionModel,modelTypes,translation, rotation);
     }
     //************************************
     //Torus FFD
@@ -159,16 +159,16 @@ Node *createChainHybrid(Node *root)
         const Deriv3 translation(7.5,0,0);
         const Deriv3 rotation(90,0,0);
 
-        MechanicalObject3* dofFFD = new MechanicalObject3; dofFFD->setName("FFD Object");
+        MechanicalObject3::SPtr dofFFD = sofa::core::objectmodel::New<MechanicalObject3>(); dofFFD->setName("FFD Object");
         dofFFD->setTranslation(translation[0],translation[1],translation[2]);
         dofFFD->setRotation(rotation[0],rotation[1],rotation[2]);
         torusFFD->addObject(dofFFD);
 
-        UniformMass3* uniMassFFD = new UniformMass3;
+        UniformMass3::SPtr uniMassFFD = sofa::core::objectmodel::New<UniformMass3>();
         uniMassFFD->setTotalMass(5); //the whole object will have 5 as given mass
         torusFFD->addObject(uniMassFFD);
 
-        RegularGridTopology* gridTopo = new RegularGridTopology(6,2,5); //dimension of the grid
+        RegularGridTopology::SPtr gridTopo = sofa::core::objectmodel::New<RegularGridTopology>(6,2,5); //dimension of the grid
         gridTopo->setPos(
             -2.5,2.5,  //Xmin, Xmax
             -0.5,0.5,  //Ymin, Ymax
@@ -176,17 +176,17 @@ Node *createChainHybrid(Node *root)
         );
         torusFFD->addObject(gridTopo);
 
-        RegularGridSpringForceField3* FFDFF = new RegularGridSpringForceField3;
+        RegularGridSpringForceField3::SPtr FFDFF = sofa::core::objectmodel::New<RegularGridSpringForceField3>();
         FFDFF->setName("Springs FFD");
         FFDFF->setStiffness(200);
         FFDFF->setDamping(0);
         torusFFD->addObject(FFDFF);
 
         //Node VISUAL
-        Node* FFDVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusFFD, dofFFD, visualModel,"yellow", translation);
+        Node* FFDVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusFFD, dofFFD.get(), visualModel,"yellow", translation);
 
         //Node COLLISION
-        Node* FFDCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusFFD ,dofFFD,collisionModel,modelTypes, translation);
+        Node* FFDCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusFFD ,dofFFD.get(),collisionModel,modelTypes, translation);
     }
 
     //************************************
@@ -197,20 +197,20 @@ Node *createChainHybrid(Node *root)
         const Deriv3 translation(10,0,0);
         const Deriv3 rotation(0,0,0);
 
-        MechanicalObjectRigid3* dofRigid = new MechanicalObjectRigid3; dofRigid->setName("Rigid Object");
+        MechanicalObjectRigid3::SPtr dofRigid = sofa::core::objectmodel::New<MechanicalObjectRigid3>(); dofRigid->setName("Rigid Object");
         dofRigid->setTranslation(translation[0],translation[1],translation[2]);
         dofRigid->setRotation(rotation[0],rotation[1],rotation[2]);
         torusRigid->addObject(dofRigid);
 
-        UniformMassRigid3* uniMassRigid = new UniformMassRigid3;
+        UniformMassRigid3::SPtr uniMassRigid = sofa::core::objectmodel::New<UniformMassRigid3>();
         uniMassRigid->setTotalMass(1); //the whole object will have 5 as given mass
         torusRigid->addObject(uniMassRigid);
 
         //Node VISUAL
-        Node* RigidVisualNode = sofa::ObjectCreator::CreateVisualNodeRigid(torusRigid, dofRigid, visualModel,"gray");
+        Node* RigidVisualNode = sofa::ObjectCreator::CreateVisualNodeRigid(torusRigid, dofRigid.get(), visualModel,"gray");
 
         //Node COLLISION
-        Node* RigidCollisionNode = sofa::ObjectCreator::CreateCollisionNodeRigid(torusRigid, dofRigid,collisionModel,modelTypes);
+        Node* RigidCollisionNode = sofa::ObjectCreator::CreateCollisionNodeRigid(torusRigid, dofRigid.get(),collisionModel,modelTypes);
     }
     return root;
 }

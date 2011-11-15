@@ -46,18 +46,10 @@
 #endif
 
 
-#include <sofa/component/visualmodel/DrawV.h>
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/component/visualmodel/OglShaderVisualModel.h>
 #include <sofa/component/visualmodel/OglTetrahedralModel.h>
 #include <sofa/component/visualmodel/VisualModelImpl.h>
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for DrawV
-typedef sofa::component::visualmodel::DrawV DrawVExt3f;
-
 
 
 //---------------------------------------------------------------------------------------------
