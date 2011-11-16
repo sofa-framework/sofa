@@ -53,7 +53,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 
-class SOFA_ADVANCED_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
+class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalGetConstraintResolutionVisitor(const core::ExecParams* params /* PARAMS FIRST */, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
@@ -95,7 +95,7 @@ private:
 };
 
 
-class SOFA_ADVANCED_CONSTRAINT_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
+class SOFA_CONSTRAINT_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalSetConstraint(const core::ConstraintParams* _cparams /* PARAMS FIRST  = sofa::core::ConstraintParams::defaultInstance()*/, core::MultiMatrixDerivId _res, unsigned int &_contactId)
@@ -151,7 +151,7 @@ protected:
 };
 
 
-class SOFA_ADVANCED_CONSTRAINT_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
+class SOFA_CONSTRAINT_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams /* PARAMS FIRST  = sofa::core::ConstraintParams::defaultInstance()*/, core::MultiMatrixDerivId _res)
@@ -198,7 +198,7 @@ protected:
 
 
 
-class SOFA_ADVANCED_CONSTRAINT_API ConstraintProblem
+class SOFA_CONSTRAINT_API ConstraintProblem
 {
 protected:
     LPtrFullMatrix<double> _W;
@@ -229,7 +229,7 @@ public:
 
 
 
-class SOFA_ADVANCED_CONSTRAINT_API ConstraintAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+class SOFA_CONSTRAINT_API ConstraintAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;

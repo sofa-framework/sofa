@@ -50,6 +50,10 @@ SOFA_LINK_CLASS(UncoupledConstraintCorrection)
 SOFA_LINK_CLASS(PrecomputedConstraintCorrection)
 SOFA_LINK_CLASS(LinearSolverConstraintCorrection)
 SOFA_LINK_CLASS(LCPConstraintSolver)
+SOFA_LINK_CLASS(GenericConstraintSolver)
+SOFA_LINK_CLASS(BilateralInteractionConstraint)
+SOFA_LINK_CLASS(ConstraintAnimationLoop)
+
 
 } // namespace component
 

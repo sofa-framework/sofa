@@ -268,12 +268,12 @@ public:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_ADVANCED_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Vec3dTypes >;
-extern template class SOFA_ADVANCED_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Rigid3dTypes >;
+extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Vec3dTypes >;
+extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ADVANCED_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Vec3fTypes >;
-extern template class SOFA_ADVANCED_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Rigid3fTypes >;
+extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Vec3fTypes >;
+extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Rigid3fTypes >;
 #endif
 #endif
 

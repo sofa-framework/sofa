@@ -24,6 +24,11 @@ HEADERS += initConstraint.h \
            constraintset/ConstraintSolverImpl.h \
            animationloop/FreeMotionAnimationLoop.h \
            constraintset/ContactDescription.h \
+           constraintset/GenericConstraintSolver.h \
+           constraintset/BilateralInteractionConstraint.h \
+           constraintset/BilateralInteractionConstraint.inl \
+           animationloop/ConstraintAnimationLoop.h
+
 
 SOURCES += initConstraint.cpp \
            collision/LocalMinDistance.cpp \
@@ -36,6 +41,10 @@ SOURCES += initConstraint.cpp \
            constraintset/LCPConstraintSolver.cpp \
            constraintset/ConstraintSolverImpl.cpp \
            animationloop/FreeMotionAnimationLoop.cpp \
+           constraintset/GenericConstraintSolver.cpp \
+           constraintset/BilateralInteractionConstraint.cpp \
+           animationloop/ConstraintAnimationLoop.cpp
+
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){
 HEADERS += collision/BarycentricDistanceLMConstraintContact.h \
