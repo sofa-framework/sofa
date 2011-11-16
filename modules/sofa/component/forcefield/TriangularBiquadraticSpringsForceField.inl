@@ -165,8 +165,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeHandler::applyCr
 
 
 template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::TriangularBiquadraticSpringsForceField()
-    : edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
-    , triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
+    : triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
+    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
     , updateMatrix(true)
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))

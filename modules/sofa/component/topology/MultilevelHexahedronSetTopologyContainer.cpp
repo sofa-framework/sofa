@@ -52,9 +52,9 @@ MultilevelHexahedronSetTopologyContainer::MultilevelHexahedronSetTopologyContain
       _level(initData(&_level, 0, "level", "Number of resolution levels between the fine and coarse mesh")),
       fineResolution(initData(&fineResolution,Vec3i(0,0,0),"resolution","fine resolution")),
       hexaIndexInRegularGrid(initData(&hexaIndexInRegularGrid,"idxInRegularGrid","indices of the hexa in the grid.")),
-      _coarseResolution(0,0,0),
       _coarseComponents(initData(&_coarseComponents,"coarseComponents", "map between hexahedra and components - coarse")),
-      _fineComponents(initData(&_fineComponents,"fineComponents", "map between hexahedra and components - fine"))
+      _fineComponents(initData(&_fineComponents,"fineComponents", "map between hexahedra and components - fine")),
+      _coarseResolution(0,0,0)
 { }
 
 

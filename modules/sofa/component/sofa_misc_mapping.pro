@@ -25,6 +25,8 @@ HEADERS += initMiscMapping.h \
            mapping/TubularMapping.h \
            mapping/TubularMapping.inl \
            mapping/VoidMapping.h \
+           mapping/BarycentricMappingRigid.h \
+           mapping/BarycentricMappingRigid.inl
 
 SOURCES += initMiscMapping.cpp \
            mapping/BeamLinearMapping.cpp \

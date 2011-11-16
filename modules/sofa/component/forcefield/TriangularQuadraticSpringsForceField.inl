@@ -142,9 +142,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::apply
     }
 }
 template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::TriangularQuadraticSpringsForceField()
-    : triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
-    , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
+    : _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
     , updateMatrix(true)
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
@@ -152,6 +150,8 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::Tria
     , f_useAngularSprings(initData(&f_useAngularSprings,true,"useAngularSprings","If Angular Springs should be used or not"))
     , lambda(0)
     , mu(0)
+    , triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
+    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
 {
     triangleHandler = new TRQSTriangleHandler(this, &triangleInfo);
     edgeHandler = new TRQSEdgeHandler(this, &edgeInfo);
