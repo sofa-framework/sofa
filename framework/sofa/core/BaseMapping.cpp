@@ -38,7 +38,6 @@ BaseMapping::BaseMapping()
 {
     this->addAlias(&f_mapForces, "isMechanical");
     this->addAlias(&f_mapMasses, "isMechanical");
-    this->addAlias(&f_mapConstraints, "isMechanical");
 }
 
 /// Destructor
