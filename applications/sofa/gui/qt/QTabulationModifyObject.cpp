@@ -29,6 +29,9 @@
 
 #include "ModifyObject.h"
 
+// uncomment to show traces of GUI operations in this file
+//#define DEBUG_GUI
+
 namespace sofa
 {
 
@@ -48,7 +51,18 @@ QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
 
 void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, const ModifyObjectFlags& flags)
 {
-    if (  (!data->isDisplayed()) && flags.HIDE_FLAG ) return;
+
+    if (  (!data->isDisplayed()) && flags.HIDE_FLAG )
+    {
+#ifdef DEBUG_GUI
+        std::cout << "GUI: data " << data->getName() << " is hidden." << std::endl;
+#endif
+        return;
+    }
+
+#ifdef DEBUG_GUI
+    std::cout << "GUI> addData " << data->getName() << std::endl;
+#endif
 
     data->setDisplayed(true);
 
@@ -62,6 +76,10 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
     connect(displaydatawidget, SIGNAL( DataOwnerDirty(bool)),  this, SLOT( updateListViewItem() ) );
     connect(this, SIGNAL(UpdateDatas()), displaydatawidget, SLOT( UpdateData()));
     connect(this, SIGNAL(UpdateDataWidgets()), displaydatawidget, SLOT( UpdateWidgets()));
+
+#ifdef DEBUG_GUI
+    std::cout << "GUI< addData " << data->getName() << std::endl;
+#endif
 }
 
 
