@@ -1251,7 +1251,10 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
         }
     }
     if (mapper)
+    {
+        mapper->setName("mapper");
         this->addSlave(mapper.get());
+    }
 }
 
 template <class TIn, class TOut>

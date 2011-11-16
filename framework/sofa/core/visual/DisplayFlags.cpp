@@ -89,14 +89,16 @@ std::istream& FlagTreeItem::read(std::istream &in)
     std::map<std::string, bool> parse_map;
     create_parse_map(this,parse_map);
     std::string token;
-    while(!in.eof())
+    while(in >> token)
     {
-        in >> token;
         if( parse_map.find(token) != parse_map.end() )
         {
             parse_map[token] = true;
         }
+        else
+            std::cerr << "DisplayFlags: unknown token " << token << std::endl;
     }
+    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
 
     read_recursive(this,parse_map);
     return in;
