@@ -7,11 +7,13 @@ DEFINES += SOFA_BUILD_BASE_VISUAL
 
 HEADERS += initBaseVisual.h \
            visualmodel/BaseCamera.h \
-           visualmodel/VisualModelImpl.h
+           visualmodel/VisualModelImpl.h \
+		   visualmodel/VisualStyle.h
 
 SOURCES += initBaseVisual.cpp \
            visualmodel/BaseCamera.cpp \
-           visualmodel/VisualModelImpl.cpp
+           visualmodel/VisualModelImpl.cpp \
+		   visualmodel/VisualStyle.cpp
 
 
 # Make sure there are no cross-dependencies

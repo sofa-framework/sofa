@@ -14,7 +14,6 @@ HEADERS += initOpenGLVisual.h \
            visualmodel/OglRenderingSRGB.h \
            visualmodel/ClipPlane.h \
            visualmodel/InteractiveCamera.h \
-           visualmodel/VisualStyle.h \
            visualmodel/RecordedCamera.h
 
 SOURCES += initOpenGLVisual.cpp \
@@ -26,7 +25,6 @@ SOURCES += initOpenGLVisual.cpp \
            visualmodel/OglRenderingSRGB.cpp \
            visualmodel/ClipPlane.cpp \
            visualmodel/InteractiveCamera.cpp \
-           visualmodel/VisualStyle.cpp \
            visualmodel/OglAttribute.cpp \
            visualmodel/RecordedCamera.cpp
 
