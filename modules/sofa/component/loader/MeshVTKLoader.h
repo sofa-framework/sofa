@@ -244,7 +244,8 @@ protected:
 
             virtual core::objectmodel::BaseData* createSofaData()
             {
-                Data<helper::vector<T> >* sdata = new Data<helper::vector<T> >(name.c_str(), true, false, NULL, name.c_str());
+                Data<helper::vector<T> >* sdata = new Data<helper::vector<T> >(name.c_str(), true, false);
+                sdata->setName(name);
                 helper::vector<T>& sofaData = *sdata->beginEdit();
 
                 for (int i=0 ; i<dataSize ; i++)

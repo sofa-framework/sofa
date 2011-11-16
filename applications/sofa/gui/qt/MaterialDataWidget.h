@@ -127,7 +127,7 @@ public:
             core::objectmodel::Data< helper::vector<sofa::core::loader::Material> >* data):
         TDataWidget< helper::vector<sofa::core::loader::Material> >(parent,name,data),
         _materialDataWidget(NULL),
-        _currentMaterial(0,data->isDisplayed(),data->isReadOnly(),data->getOwner()),
+        _currentMaterial(0,data->isDisplayed(),data->isReadOnly()),
         _comboBox(NULL)
     {
 

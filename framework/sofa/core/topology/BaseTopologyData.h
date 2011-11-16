@@ -79,8 +79,8 @@ public:
     /** Constructor
         \param helpMsg help on the field
          */
-    BaseTopologyData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, sofa::core::objectmodel::Base* owner=NULL, const char* name="")
-        : Data<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
+    BaseTopologyData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+        : Data<T>(helpMsg, isDisplayed, isReadOnly)
     {
 
     }
@@ -89,8 +89,8 @@ public:
         \param value default value
         \param helpMsg help on the field
          */
-    BaseTopologyData( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, sofa::core::objectmodel::Base* owner=NULL, const char* name="")
-        : Data<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
+    BaseTopologyData( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+        : Data<T>(helpMsg, isDisplayed, isReadOnly)
     {
     }
 

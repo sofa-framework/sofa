@@ -35,10 +35,10 @@ namespace core
 namespace objectmodel
 {
 
-BaseData::BaseData(const char* h, DataFlags dataflags, Base* owner, const char* name)
+BaseData::BaseData(const char* h, DataFlags dataflags)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counters(), m_isSets(), m_dataFlags(dataflags)
-    , m_owner(owner), m_name(name)
+    , m_owner(NULL), m_name("")
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     addLink(&inputs);
@@ -46,12 +46,12 @@ BaseData::BaseData(const char* h, DataFlags dataflags, Base* owner, const char* 
     m_counters.assign(0);
     m_isSets.assign(false);
     //setAutoLink(true);
-    if (owner) owner->addData(this);
+    //if (owner) owner->addData(this);
 }
 
-BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly, Base* owner, const char* name)
+BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly)
     : help(h), ownerClass(""), group(""), widget("")
-    , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(owner), m_name(name)
+    , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(NULL), m_name("")
     , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     addLink(&inputs);
@@ -61,7 +61,7 @@ BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly, Base* owne
     setFlag(FLAG_DISPLAYED,isDisplayed);
     setFlag(FLAG_READONLY,isReadOnly);
     //setAutoLink(true);
-    if (owner) owner->addData(this);
+    //if (owner) owner->addData(this);
 }
 
 BaseData::BaseData( const BaseInitData& init)

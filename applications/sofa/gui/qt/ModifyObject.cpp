@@ -149,21 +149,8 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         //Put first the Property Tab
         tabNames.push_back("Property");
 
-        int ndata=0;
-        for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it!=fields.end(); ++it,++ndata)
+        for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it!=fields.end(); ++it)
         {
-#ifdef DEBUG_GUI
-            if (*it) std::cout << "GUI: Data " << (*it)->getName() << std::endl;
-#endif
-        }
-#ifdef DEBUG_GUI
-        for( sofa::core::objectmodel::Base::VecLink::const_iterator it = links.begin(); it!=links.end(); ++it)
-            if (*it) std::cout << "GUI: Link " << (*it)->getName() << std::endl;
-#endif
-        int i=0;
-        for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it!=fields.end(); ++it,++i)
-        {
-            if (i>=ndata) { std::cerr << "ERROR: extra Data " << i << " when creating GUI for " << node->getName() << std::endl; continue; }
             core::objectmodel::BaseData* data=*it;
             if (!data)
             {

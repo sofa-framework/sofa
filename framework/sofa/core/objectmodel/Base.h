@@ -217,9 +217,9 @@ public:
     /// Add an alias to a Link
     void addAlias( BaseLink* link, const char* alias);
 
-    typedef std::vector<BaseData*> VecData;
+    typedef helper::vector<BaseData*> VecData;
     typedef std::multimap<std::string, BaseData*> MapData;
-    typedef std::vector<BaseLink*> VecLink;
+    typedef helper::vector<BaseLink*> VecLink;
     typedef std::multimap<std::string, BaseLink*> MapLink;
 
     /// Accessor to the vector containing all the fields of this object

@@ -103,8 +103,8 @@ public:
     /** Constructor
      *  \param h help
      */
-    BaseData( const char* h, DataFlags flags = FLAG_DEFAULT, Base* owner=NULL, const char* name="");
-    BaseData( const char* h, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="");
+    BaseData( const char* h, DataFlags flags = FLAG_DEFAULT);
+    BaseData( const char* h, bool isDisplayed=true, bool isReadOnly=false);
 
     /// Base destructor
     virtual ~BaseData();
