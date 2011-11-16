@@ -66,6 +66,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
     , f_theta(initData(&f_theta,(Real)(0.0),"fiberAngle","Fiber angle in global reference frame (in degrees)"))
     , f_fiberCenter(initData(&f_fiberCenter,"fiberCenter","Concentric fiber center in global reference frame"))
     , showFiber(initData(&showFiber,true,"showFiber","Flag activating rendering of fiber directions within each triangle"))
+    , localFiberDirection(initData(&localFiberDirection,"localFiberDirection", "Computed fibers direction within each triangle"))
 {
     this->_anisotropicMaterial = true;
     triangleHandler = new TRQSTriangleHandler(this, &localFiberDirection);

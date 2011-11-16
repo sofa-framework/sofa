@@ -74,6 +74,7 @@ public:
     TopologySubsetDataImpl( )
         : sofa::core::topology::BaseTopologyData< VecT >(0, false, false),
           m_topologicalEngine(NULL),
+          m_topology(NULL),
           m_topologyHandler(NULL)
     {}
 
@@ -81,25 +82,16 @@ public:
     TopologySubsetDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : sofa::core::topology::BaseTopologyData< VecT >(data),
           m_topologicalEngine(NULL),
+          m_topology(NULL),
           m_topologyHandler(NULL)
     {}
 
     /// Constructor
-    TopologySubsetDataImpl(size_type n, const value_type& value) : sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
-    {
-        container_type* data = this->beginEdit();
-        data->resize(n, value);
-        this->endEdit();
-    }
-    /// Constructor
-    explicit TopologySubsetDataImpl(size_type n): sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
-    {
-        container_type* data = this->beginEdit();
-        data->resize(n);
-        this->endEdit();
-    }
-    /// Constructor
-    TopologySubsetDataImpl(const container_type& x): sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
+    explicit TopologySubsetDataImpl(const container_type& x)
+        : sofa::core::topology::BaseTopologyData< container_type >(0, false, false),
+          m_topologicalEngine(NULL),
+          m_topology(NULL),
+          m_topologyHandler(NULL)
     {
         container_type* data = this->beginEdit();
         (*data) = x;
@@ -109,7 +101,11 @@ public:
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    TopologySubsetDataImpl(InputIterator first, InputIterator last): sofa::core::topology::BaseTopologyData< container_type >(0, false, false)
+    TopologySubsetDataImpl(InputIterator first, InputIterator last)
+        : sofa::core::topology::BaseTopologyData< container_type >(0, false, false),
+          m_topologicalEngine(NULL),
+          m_topology(NULL),
+          m_topologyHandler(NULL)
     {
         container_type* data = this->beginEdit();
         data->assign(first, last);
@@ -117,7 +113,11 @@ public:
     }
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    TopologySubsetDataImpl(const_iterator first, const_iterator last): sofa::core::topology::BaseTopologyData< container_type >(0, false, false)
+    TopologySubsetDataImpl(const_iterator first, const_iterator last)
+        : sofa::core::topology::BaseTopologyData< container_type >(0, false, false),
+          m_topologicalEngine(NULL),
+          m_topology(NULL),
+          m_topologyHandler(NULL)
     {
         container_type* data = this->beginEdit();
         data->assign(first, last);
@@ -125,7 +125,7 @@ public:
     }
 #endif /* __STL_MEMBER_TEMPLATES */
 
-    ~TopologySubsetDataImpl();
+    virtual ~TopologySubsetDataImpl();
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
@@ -166,7 +166,8 @@ protected:
 
     virtual void createTopologyHandler() {}
 
-    sofa::component::topology::TopologyEngineImpl<VecT>* m_topologicalEngine;
+    typename sofa::component::topology::TopologyEngineImpl<VecT>::SPtr m_topologicalEngine;
+    sofa::core::topology::BaseMeshTopology* m_topology;
     sofa::component::topology::TopologySubsetDataHandler<TopologyElementType,VecT>* m_topologyHandler;
 };
 

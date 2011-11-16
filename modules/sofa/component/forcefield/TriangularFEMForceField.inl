@@ -171,7 +171,11 @@ void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunctio
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
 TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
-    : method(LARGE)
+    : triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
+    , vertexInfo(initData(&vertexInfo, "vertexInfo", "Internal point data"))
+    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , _topology(NULL)
+    , method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
 //, f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
 //, f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))

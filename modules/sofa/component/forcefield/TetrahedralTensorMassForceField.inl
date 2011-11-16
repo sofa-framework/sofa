@@ -264,6 +264,7 @@ template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::Tetrahedr
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , lambda(0)
     , mu(0)
+    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
 {
     edgeHandler = new TetrahedralTMEdgeHandler(this, &edgeInfo);
 }

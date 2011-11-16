@@ -479,6 +479,7 @@ QuadularBendingSprings<DataTypes>::QuadularBendingSprings()
     : updateMatrix(true)
     , f_ks ( initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs"))
     , f_kd ( initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs"))
+    , edgeInfo ( initData(&edgeInfo, "edgeInfo","Internal edge data"))
 {
     edgeHandler = new EdgeBSHandler(this, &edgeInfo);
 }

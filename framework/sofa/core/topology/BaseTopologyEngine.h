@@ -45,16 +45,20 @@ public:
     SOFA_ABSTRACT_CLASS(TopologyEngine, DataEngine);
     //typedef sofa::core::objectmodel::Data< sofa::helper::vector <void*> > t_topologicalData;
 
+protected:
     TopologyEngine() {}//m_topologicalData(NULL)  {}
 
-    /*  virtual ~TopologyEngine()
-      {
-          if (this->m_topologicalData != NULL)
-              this->removeTopologicalData();
-      }
-    */
+    virtual ~TopologyEngine()
+    {
+        //if (this->m_topologicalData != NULL)
+        //    this->removeTopologicalData();
+    }
+
+public:
+
     virtual void init()
     {
+        sofa::core::DataEngine::init();
         // TODO: see if necessary or not....
         // this->addInput(&m_changeList);
 
@@ -86,16 +90,12 @@ public:
     virtual void createEngineName()
     {
         if (m_data_name.empty())
-            m_name = m_prefix + "no_name";
+            setName( m_prefix + "no_name" );
         else
-            m_name = m_prefix + m_data_name;
+            setName( m_prefix + m_data_name );
 
         return;
     }
-
-    const std::string& getName() const { return m_name; }
-
-    void setName(const std::string& name) { m_name=name; }
 
     virtual void linkToPointDataArray() {}
     virtual void linkToEdgeDataArray() {}
@@ -104,14 +104,14 @@ public:
     virtual void linkToTetrahedronDataArray() {}
     virtual void linkToHexahedronDataArray() {}
 
+    void setNamePrefix(const std::string& s) { m_prefix = s; }
+
 protected:
     /// Data handle by the topological engine
     //t_topologicalData* m_topologicalData;
 
     //TopologyHandler* m_topologyHandler;
 
-    /// Engine name base on Data handled: m_name = m_prefix+Data_name
-    std::string m_name;
     /// use to define engine name.
     std::string m_prefix;
     /// use to define data handled name.

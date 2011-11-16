@@ -53,10 +53,23 @@ TopologyDataImpl <TopologyElementType, VecT>::~TopologyDataImpl()
 template <typename TopologyElementType, typename VecT>
 void TopologyDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler)
 {
-    if (_topology)
+    this->m_topology = _topology;
+    if (_topology && dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology))
     {
-        this->m_topologicalEngine = new TopologyEngineImpl<VecT>((sofa::component::topology::TopologyDataImpl<TopologyElementType, VecT>*)this, _topology, _topologyHandler);
+        this->m_topologicalEngine = sofa::core::objectmodel::New<TopologyEngineImpl<VecT> >((sofa::component::topology::TopologyDataImpl<TopologyElementType, VecT>*)this, _topology, _topologyHandler);
+        this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("Engine_"));
+        if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
+        this->m_topologicalEngine->init();
         this->linkToElementDataArray();
+        this->getOwner()->sout<<"TopologyDataImpl: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "topology." << this->getOwner()->sendl;
+    }
+    else if (_topology)
+    {
+        this->getOwner()->sout<<"TopologyDataImpl: " << this->getName() << " initialized with static " << _topology->getClassName() << " topology." << this->getOwner()->sendl;
+    }
+    else
+    {
+        this->getOwner()->serr<<"Error: TopologyDataImpl: " << this->getName() << " NULL topology given to createTopologicalEngine." << this->getOwner()->sendl;
     }
 }
 
@@ -64,12 +77,8 @@ void TopologyDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa:
 template <typename TopologyElementType, typename VecT>
 void TopologyDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
 {
-    if (_topology)
-    {
-        this->m_topologyHandler = new TopologyDataHandler<TopologyElementType, VecT>(this);
-        this->m_topologicalEngine = new TopologyEngineImpl<VecT>((sofa::component::topology::TopologyDataImpl<TopologyElementType, VecT>*)this, _topology, m_topologyHandler);
-        this->linkToElementDataArray();
-    }
+    this->m_topologyHandler = new TopologyDataHandler<TopologyElementType, VecT>(this);
+    createTopologicalEngine(_topology, this->m_topologyHandler);
 }
 
 
@@ -78,10 +87,8 @@ void TopologyDataImpl <TopologyElementType, VecT>::registerTopologicalData()
 {
     if (this->m_topologicalEngine)
         this->m_topologicalEngine->registerTopology();
-#ifndef NDEBUG // too much warnings
-    else
-        std::cout<<"Error: TopologyDataImpl: " << this->getName() << " has no engine. Use createTopologicalEngine function before." << std::endl;
-#endif
+    else if (!this->m_topology)
+        this->getOwner()->serr<<"Error: TopologyDataImpl: " << this->getName() << " has no engine. Use createTopologicalEngine function before registerTopologicalData." << this->getOwner()->sendl;
 }
 
 template <typename TopologyElementType, typename VecT>
@@ -89,16 +96,14 @@ void TopologyDataImpl <TopologyElementType, VecT>::addInputData(sofa::core::obje
 {
     if (this->m_topologicalEngine)
         this->m_topologicalEngine->addInput(_data);
-#ifndef NDEBUG // too much warnings
-    else
-        std::cout<<"Error: TopologyDataImpl: " << this->getName() << " has no engine. Use createTopologicalEngine function before." << std::endl;
-#endif
+    else if (!this->m_topology)
+        this->getOwner()->serr<<"Error: TopologyDataImpl: " << this->getName() << " has no engine. Use createTopologicalEngine function before addInputData." << this->getOwner()->sendl;
 }
 
 
 
 
-/// Funtion used to link Data to point Data array, using the engine's method
+/// Method used to link Data to point Data array, using the engine's method
 template <typename TopologyElementType, typename VecT>
 void TopologyDataImpl <TopologyElementType, VecT>::linkToPointDataArray()
 {
@@ -106,7 +111,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::linkToPointDataArray()
         m_topologicalEngine->linkToPointDataArray();
 }
 
-/// Funtion used to link Data to edge Data array, using the engine's method
+/// Method used to link Data to edge Data array, using the engine's method
 template <typename TopologyElementType, typename VecT>
 void TopologyDataImpl <TopologyElementType, VecT>::linkToEdgeDataArray()
 {
@@ -114,7 +119,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::linkToEdgeDataArray()
         m_topologicalEngine->linkToEdgeDataArray();
 }
 
-/// Funtion used to link Data to triangle Data array, using the engine's method
+/// Method used to link Data to triangle Data array, using the engine's method
 template <typename TopologyElementType, typename VecT>
 void TopologyDataImpl <TopologyElementType, VecT>::linkToTriangleDataArray()
 {
@@ -122,7 +127,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::linkToTriangleDataArray()
         m_topologicalEngine->linkToTriangleDataArray();
 }
 
-/// Funtion used to link Data to quad Data array, using the engine's method
+/// Method used to link Data to quad Data array, using the engine's method
 template <typename TopologyElementType, typename VecT>
 void TopologyDataImpl <TopologyElementType, VecT>::linkToQuadDataArray()
 {
@@ -130,7 +135,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::linkToQuadDataArray()
         m_topologicalEngine->linkToQuadDataArray();
 }
 
-/// Funtion used to link Data to tetrahedron Data array, using the engine's method
+/// Method used to link Data to tetrahedron Data array, using the engine's method
 template <typename TopologyElementType, typename VecT>
 void TopologyDataImpl <TopologyElementType, VecT>::linkToTetrahedronDataArray()
 {
@@ -138,7 +143,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::linkToTetrahedronDataArray()
         m_topologicalEngine->linkToTetrahedronDataArray();
 }
 
-/// Funtion used to link Data to hexahedron Data array, using the engine's method
+/// Method used to link Data to hexahedron Data array, using the engine's method
 template <typename TopologyElementType, typename VecT>
 void TopologyDataImpl <TopologyElementType, VecT>::linkToHexahedronDataArray()
 {

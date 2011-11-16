@@ -522,10 +522,16 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
     //	VecMass& masses = *f_mass.beginEdit();
     pointHandler = new DMassPointHandler(this, &f_mass);
     f_mass.createTopologicalEngine(_topology, pointHandler);
-    f_mass.linkToEdgeDataArray();
-    f_mass.linkToTriangleDataArray();
-    f_mass.linkToTetrahedronDataArray();
-    f_mass.registerTopologicalData();
+    if (edgeGeo)
+        f_mass.linkToEdgeDataArray();
+    if (triangleGeo)
+        f_mass.linkToTriangleDataArray();
+    if (quadGeo)
+        f_mass.linkToQuadDataArray();
+    if (tetraGeo)
+        f_mass.linkToTetrahedronDataArray();
+    if (hexaGeo)
+        f_mass.registerTopologicalData();
     //    f_mass.endEdit();
 }
 

@@ -57,9 +57,6 @@ TopologyEngineImpl< VecT>::TopologyEngineImpl(t_topologicalData *_topologicalDat
 
     if (m_topoHandler == NULL)
         serr <<"Error: Topology Handler not available" << sendl;
-
-
-    this->init();
 }
 
 template <typename VecT>
@@ -69,13 +66,13 @@ void TopologyEngineImpl< VecT>::init()
     //this->linkToPointDataArray();  // already done while creating engine
 
     // Name creation
-    m_prefix = "PointEngine_";
+    if (m_prefix.empty()) m_prefix = "TopologyEngine_";
     m_data_name = this->m_topologicalData->getName();
     this->addOutput(this->m_topologicalData);
 
     sofa::core::topology::TopologyEngine::init();
 
-    sout << "************ PointSetTopologyEngine::init" << this->m_name << "*************** " <<sendl;
+    sout << "************ TopologyEngine::init *************** " <<sendl;
     // Register Engine in containter list
     //if (m_topology)
     //   m_topology->addTopologyEngine(this);
@@ -93,11 +90,11 @@ void TopologyEngineImpl< VecT>::reinit()
 template <typename VecT>
 void TopologyEngineImpl< VecT>::update()
 {
-    sout << "PointSetTopologyEngine::update " << this->m_name << sendl;
+    sout << "TopologyEngine::update" << sendl;
     sout<< "Number of topological changes: " << m_changeList.getValue().size() << sendl;
     this->cleanDirty();
     this->ApplyTopologyChanges();
-    sout << "PointSetTopologyEngine::update - end " << this->m_name << sendl;
+    sout << "TopologyEngine::update - end" << sendl;
 }
 
 
