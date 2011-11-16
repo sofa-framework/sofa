@@ -282,7 +282,7 @@ contains(DEFINES, SOFA_HAVE_EIGEN2) {
 contains(DEFINES, SOFA_HAVE_CSPARSE) {
 	enable(sofa_sparse_solver)
 }
-contains(DEFINES, SOFA_HAVE_TAUCS) {
+contains(DEFINES, SOFA_HAVE_TAUCS) | contains(DEFINES, SOFA_EXTLIBS_TAUCS_MT) {
 	enable(sofa_taucs_solver)
 }
 contains(DEFINES, SOFA_HAVE_PARDISO) {
