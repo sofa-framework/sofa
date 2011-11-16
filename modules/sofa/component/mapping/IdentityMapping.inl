@@ -176,6 +176,7 @@ void IdentityMapping<TIn, TOut>::init()
         maskFrom = &stateFrom->forceMask;
     if ((stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
         maskTo = &stateTo->forceMask;
+    Inherit::init();
 }
 
 template <class TIn, class TOut>
