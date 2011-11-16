@@ -51,10 +51,11 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     Inherit::init();
 
     double dt = this->getContext()->getDt();
+    const VecReal& comp = compliance.getValue();
 
     VecReal usedComp;
 
-    if (compliance.getValue().size() != 7)
+    if (comp.size() != 7)
     {
         using sofa::component::mass::UniformMass;
         using sofa::defaulttype::Rigid3Types;
@@ -115,7 +116,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     Deriv weightedNormal;
     Deriv comp_wN;
 
-    VecReal usedComp = compliance.getValue();
+    const VecReal& usedComp = compliance.getValue();
 
     MatrixDerivRowConstIterator rowIt = constraints.begin();
     MatrixDerivRowConstIterator rowItEnd = constraints.end();
@@ -193,7 +194,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix *m) const
 {
-    const VecReal &comp = compliance.getValue();
+    const VecReal& comp = compliance.getValue();
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
     const unsigned int numDofs = comp.size() / 7;
 
@@ -249,7 +250,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     Data< VecDeriv > &dx_d = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = *dx_d.beginEdit();
 
-    VecReal usedComp = compliance.getValue();
+    const VecReal& usedComp = compliance.getValue();
 
     dx.resize(f.size());
 
@@ -275,7 +276,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     unsigned int dof;
     Deriv weightedNormal;
 
-    VecReal usedComp = compliance.getValue();
+    const VecReal& usedComp = compliance.getValue();
 
     force.resize((*this->mstate->getX()).size());
 
@@ -343,7 +344,7 @@ template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * df, int begin, int end, bool update)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
-    const VecReal usedComp = compliance.getValue();
+    const VecReal& usedComp = compliance.getValue();
 
     if (!update)
         return;
@@ -366,7 +367,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
                 constraint_force[dof] += n * df[id];
 
                 Deriv dx;
-                getVCenter(dx) = getVCenter(constraint_force[dof]) * compliance.getValue()[0];
+                getVCenter(dx) = getVCenter(constraint_force[dof]) * usedComp[0];
 
                 defaulttype::Vec3d wrench = getVOrientation(constraint_force[dof]);
                 getVOrientation(dx)[0] = usedComp[1] * wrench[0] + usedComp[2] * wrench[1] + usedComp[3] * wrench[2];
@@ -388,7 +389,7 @@ template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
-    const VecReal usedComp = compliance.getValue();
+    const VecReal& usedComp = compliance.getValue();
 
     if (this->f_printLog.getValue()) // debug
         std::cout<<"getBlockDiagonalCompliance called for lines and columns "<< begin<< " to "<< end <<std::endl;
@@ -410,7 +411,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
                 weightedNormal = colIt.val();
                 unsigned int dof1 = colIt.index();
 
-                getVCenter(C_n) = getVCenter(weightedNormal) * compliance.getValue()[0];
+                getVCenter(C_n) = getVCenter(weightedNormal) * usedComp[0];
                 defaulttype::Vec3d wrench = getVOrientation(weightedNormal) ;
 
                 getVOrientation(C_n)[0] = usedComp[1] * wrench[0] + usedComp[2] * wrench[1] + usedComp[3] * wrench[2];

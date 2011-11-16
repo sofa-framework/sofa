@@ -954,6 +954,7 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     SparseGridRamificationTopology::SPtr sgrt = sofa::core::objectmodel::New< SparseGridRamificationTopology >(true);
 
     _virtualFinerLevels[0] = sgrt;
+    _virtualFinerLevels[0]->setName("virtualLevel0");
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
@@ -965,12 +966,15 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     _virtualFinerLevels[0]->init();
 
-    serr<<"SparseGridRamificationTopology "<<getName()<<" buildVirtualFinerLevels : ";
-    serr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , ";
+    sout<<"buildVirtualFinerLevels : ";
+    sout<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , ";
 
     for(int i=1; i<nb; ++i)
     {
         _virtualFinerLevels[i] = sofa::core::objectmodel::New< SparseGridRamificationTopology >(true);
+        std::ostringstream oname;
+        oname << "virtualLevel" << i;
+        _virtualFinerLevels[i]->setName(oname.str());
         this->addSlave(_virtualFinerLevels[i]);
 
         _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1].get());
@@ -978,10 +982,10 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
         _virtualFinerLevels[i]->init();
 
 
-        serr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
+        sout<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
     }
 
-    serr<<sendl;
+    sout<<sendl;
 
     this->setFinerSparseGrid(_virtualFinerLevels[nb-1].get());
 }

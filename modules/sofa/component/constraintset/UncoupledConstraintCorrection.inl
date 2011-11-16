@@ -67,17 +67,19 @@ void UncoupledConstraintCorrection<DataTypes>::init()
     Inherit::init();
 
     const VecCoord& x = *this->mstate->getX();
+    const VecReal& comp = compliance.getValue();
 
-    if (x.size() != compliance.getValue().size())
+    if (x.size() != comp.size())
     {
-        serr << "Warning compliance size is not the size of the mstate" << sendl;
+        if (comp.size() > 1)
+            serr << "Warning compliance size ( " << comp.size() << " is not equal to the size of the mstate (" << x.size() << ")" << sendl;
         VecReal UsedComp;
-        if (compliance.getValue().size()>0)
+        if (comp.size()>0)
         {
             for (unsigned int i=0; i<x.size(); i++)
             {
-                //	std::cout << "--> " << compliance.getValue()[0] << std::endl;
-                UsedComp.push_back(compliance.getValue()[0]);
+                //	std::cout << "--> " << comp[0] << std::endl;
+                UsedComp.push_back(comp[0]);
             }
         }
         else
@@ -126,13 +128,13 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
 
             VecReal addedCompliance;
 
-            if (compliance.getValue().size() > 0)
+            if (comp.size() > 0)
             {
-                Real c = compliance.getValue()[0];
+                Real c = comp[0];
 
                 for (unsigned int i = 0; i < nbPoints; i++)
                 {
-                    //	std::cout << "addedCompliance --> " << compliance.getValue()[0] << std::endl;
+                    //	std::cout << "addedCompliance --> " << comp[0] << std::endl;
                     addedCompliance.push_back(c);
                 }
             }
@@ -251,6 +253,7 @@ template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
+    const VecReal& comp = compliance.getValue();
 
     MatrixDerivRowConstIterator rowItEnd = constraints.end();
 
@@ -280,7 +283,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
                 {
                     if (dof == colIt2.index())
                     {
-                        double w = n * colIt2.val() * compliance.getValue()[dof] ;
+                        double w = n * colIt2.val() * comp[dof] ;
                         W->add(indexCurRowConst, indexCurColConst, w);
                         if (indexCurRowConst != indexCurColConst)
                         {
@@ -318,7 +321,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix *m) const
 {
-    const VecReal &comp = compliance.getValue();
+    const VecReal& comp = compliance.getValue();
     const unsigned int s = comp.size();
     const unsigned int dimension = Coord::size();
 
@@ -341,7 +344,7 @@ void UncoupledConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > 
     VecDeriv& dx = *dx_d.beginEdit();
 
     dx.resize(f.size());
-    const VecReal comp = compliance.getValue();
+    const VecReal& comp = compliance.getValue();
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
@@ -433,6 +436,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
     VecDeriv& force = forceData.wref();
     const MatrixDeriv& constraints = *this->mstate->getC();
+    const VecReal& comp = compliance.getValue();
 
     force.resize((*this->mstate->getX()).size());
 
@@ -471,7 +475,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     {
         x[i] = x_free[i];
         v[i] = v_free[i];
-        dx[i] = force[i] * compliance.getValue()[i];
+        dx[i] = force[i] * comp[i];
         x[i] += dx[i];
         v[i] += dx[i]*invDt;
     }
@@ -586,6 +590,7 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
     /// As the contact are uncoupled, a displacement is obtained only on dof involved with the constraints
 
     const MatrixDeriv& constraints = *this->mstate->getC();
+    const VecReal& comp = compliance.getValue();
 
     if (!update)
         return;
@@ -606,7 +611,7 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
 
                 constraint_force[dof] += colIt.val() * df[id];
 
-                Deriv dx =  constraint_force[dof] * compliance.getValue()[dof];
+                Deriv dx =  constraint_force[dof] * comp[dof];
 
                 constraint_disp[dof] = dx;
 
@@ -621,6 +626,7 @@ template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
 {
     const MatrixDeriv& constraints = *this->mstate->getC();
+    const VecReal& comp = compliance.getValue();
 
     for (int id1 = begin; id1 <= end; id1++)
     {
@@ -652,7 +658,7 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
 
                             if (dof1 == dof2)
                             {
-                                double w = n1 * colIt2.val() * compliance.getValue()[dof1];
+                                double w = n1 * colIt2.val() * comp[dof1];
                                 W->add(id1, id2, w);
                                 if (id1 != id2)
                                     W->add(id2, id1, w);
