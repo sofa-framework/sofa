@@ -2,175 +2,64 @@
     <Node name="Spoon1">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MechanicalObject template="Rigid" dx="0" dy="0" dz="0">
-            <Attribute type="name">
-                <Data value="default118" />
-            </Attribute>
-            <Attribute type="position">
-                <Data value="0 1.41421 0 0 0 0.382683 0.92388" />
-            </Attribute>
-            <Attribute type="rest_position">
-                <Data value="0 1.41421 0 0 0 0.382683 0.92388" />
-            </Attribute>
-        </Object>
-        <LinearMovementConstraint template="Rigid">
-            <Attribute type="keyTimes">
-                <Data value="0  &#x0A;&#x09;&#x09;     2  &#x0A;&#x09;&#x09;     10 &#x0A;&#x09;&#x09;     40 &#x0A;&#x09;&#x09;     50 " />
-            </Attribute>
-            <Attribute type="movements">
-                <Data value="0 0 0   0 0 0  &#x0A;&#x09;&#x09;     0 0 0   0 0 0 &#x0A;&#x09;&#x09;     0 0 -1  0 0 0&#x0A;&#x09;&#x09;     0 0 -1  0 0 6.3&#x0A;&#x09;&#x09;     0 0 -1   0 0 6.3 " />
-            </Attribute>
-        </Object>
+        <MechanicalObject template="Rigid" dx="0" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388" />
+        <LinearMovementConstraint template="Rigid" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
+										      0 0 0   0 0 0
+										      0 0 -1  0 0 0
+										      0 0 -1  0 0 6.3
+										      0 0 -1   0 0 6.3" />
         <Node name="coli">
             <MeshObjLoader name="loader" filename="mesh/liver.obj" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader" template="Vec3d">
-                <Attribute type="name">
-                    <Data value="dofs" />
-                </Attribute>
-            </Object>
-            <TriangleMeshModel>
-                <Attribute type="moving">
-                    <Data value="1" />
-                </Attribute>
-                <Attribute type="simulated">
-                    <Data value="1" />
-                </Attribute>
-                <Attribute type="contactStiffness">
-                    <Data value="100000000" />
-                </Attribute>
-            </Object>
+            <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
+            <TriangleMeshModel moving="1" simulated="1" contactStiffness="100000000"/>
             <RigidMapping template="MechanicalMapping&lt;MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt;,MechanicalState&lt;StdVectorTypes&lt;Vec&lt;3,double&gt;,Vec&lt;3,double&gt;,double&gt; &gt; &gt; &gt;" />
         </Node>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/liver.obj" color="red" />
-            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;">
-                <Attribute type="name">
-                    <Data value="default161" />
-                </Attribute>
-                <Attribute type="object1">
-                    <Data value="../.." />
-                </Attribute>
-                <Attribute type="object2">
-                    <Data value="Visual" />
-                </Attribute>
-            </Object>
+            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;" name="default161" object1="../.." object2="Visual" />
         </Node>
     </Node>
     <Node name="Spoon2">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MechanicalObject template="Rigid" dx="10" dy="0" dz="0">
-            <Attribute type="name">
-                <Data value="default118" />
-            </Attribute>
-            <Attribute type="position">
-                <Data value="0 1.41421 0 0 0 0.382683 0.92388" />
-            </Attribute>
-            <Attribute type="rest_position">
-                <Data value="0 1.41421 0 0 0 0.382683 0.92388" />
-            </Attribute>
-        </Object>
-        <LinearMovementConstraint template="Rigid">
-            <Attribute type="keyTimes">
-                <Data value="0  &#x0A;&#x09;&#x09;     2  &#x0A;&#x09;&#x09;     10 &#x0A;&#x09;&#x09;     40 &#x0A;&#x09;&#x09;     50 " />
-            </Attribute>
-            <Attribute type="movements">
-                <Data value="0 0 0   0 0 0  &#x0A;&#x09;&#x09;     0 0 0   0 0 0 &#x0A;&#x09;&#x09;     0 0 -1  0 0 0&#x0A;&#x09;&#x09;     0 0 -1  0 0 6.3&#x0A;&#x09;&#x09;     0 0 0   0 0 6.3 " />
-            </Attribute>
-        </Object>
+        <MechanicalObject template="Rigid" dx="10" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388"/>
+        <LinearMovementConstraint template="Rigid" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
+										      0 0 0   0 0 0
+										      0 0 -1  0 0 0
+										      0 0 -1  0 0 6.3
+										      0 0 0   0 0 6.3" />
         <Node name="coli">
             <MeshObjLoader name="loader" filename="mesh/liver.obj" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader" template="Vec3d">
-                <Attribute type="name">
-                    <Data value="dofs" />
-                </Attribute>
-            </Object>
-            <TriangleMeshModel>
-                <Attribute type="moving">
-                    <Data value="1" />
-                </Attribute>
-                <Attribute type="simulated">
-                    <Data value="1" />
-                </Attribute>
-                <Attribute type="contactStiffness">
-                    <Data value="100000000" />
-                </Attribute>
-            </Object>
+            <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
+            <TriangleMeshModel moving="1" simulated="1" contactStiffness="100000000" />
             <RigidMapping template="MechanicalMapping&lt;MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt;,MechanicalState&lt;StdVectorTypes&lt;Vec&lt;3,double&gt;,Vec&lt;3,double&gt;,double&gt; &gt; &gt; &gt;" />
         </Node>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/liver.obj" color="green" />
-            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;">
-                <Attribute type="name">
-                    <Data value="default161" />
-                </Attribute>
-                <Attribute type="object1">
-                    <Data value="../.." />
-                </Attribute>
-                <Attribute type="object2">
-                    <Data value="Visual" />
-                </Attribute>
-            </Object>
+            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;" name="default161" object1="../.." object2="Visual"/>
         </Node>
     </Node>
     <Node name="Spoon3">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MechanicalObject template="Rigid" dx="20" dy="0" dz="0">
-            <Attribute type="name">
-                <Data value="default118" />
-            </Attribute>
-            <Attribute type="position">
-                <Data value="0 1.41421 0 0 0 0.382683 0.92388" />
-            </Attribute>
-            <Attribute type="rest_position">
-                <Data value="0 1.41421 0 0 0 0.382683 0.92388" />
-            </Attribute>
-        </Object>
-        <LinearMovementConstraint template="Rigid">
-            <Attribute type="keyTimes">
-                <Data value="0  &#x0A;&#x09;&#x09;     2  &#x0A;&#x09;&#x09;     10 &#x0A;&#x09;&#x09;     40 &#x0A;&#x09;&#x09;     50 " />
-            </Attribute>
-            <Attribute type="movements">
-                <Data value="0 0 0   0 0 0  &#x0A;&#x09;&#x09;     0 0 0   0 0 0 &#x0A;&#x09;&#x09;     0 0 -1  0 0 0&#x0A;&#x09;&#x09;     0 0 -1  0 0 6.3&#x0A;&#x09;&#x09;     0 0 -1  0 0 0 " />
-            </Attribute>
-        </Object>
+        <MechanicalObject template="Rigid" dx="20" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388" />
+        <LinearMovementConstraint template="Rigid" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
+										      0 0 0   0 0 0
+										      0 0 -1  0 0 0
+										      0 0 -1  0 0 6.3
+										      0 0 -1   0 0 0" />
         <Node name="coli">
             <MeshObjLoader name="loader" filename="mesh/liver.obj" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader" template="Vec3d">
-                <Attribute type="name">
-                    <Data value="dofs" />
-                </Attribute>
-            </Object>
-            <TriangleMeshModel>
-                <Attribute type="moving">
-                    <Data value="1" />
-                </Attribute>
-                <Attribute type="simulated">
-                    <Data value="1" />
-                </Attribute>
-                <Attribute type="contactStiffness">
-                    <Data value="100000000" />
-                </Attribute>
-            </Object>
+            <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
+            <TriangleMeshModel moving="1" simulated="1" contactStiffness="100000000" />
             <RigidMapping template="MechanicalMapping&lt;MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt;,MechanicalState&lt;StdVectorTypes&lt;Vec&lt;3,double&gt;,Vec&lt;3,double&gt;,double&gt; &gt; &gt; &gt;" />
         </Node>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/liver.obj" color="blue" />
-            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;">
-                <Attribute type="name">
-                    <Data value="default161" />
-                </Attribute>
-                <Attribute type="object1">
-                    <Data value="../.." />
-                </Attribute>
-                <Attribute type="object2">
-                    <Data value="Visual" />
-                </Attribute>
-            </Object>
+            <RigidMapping template="Mapping&lt;State&lt;StdRigidTypes&lt;3,double&gt; &gt;,MappedModel&lt;ExtVectorTypes&lt;Vec&lt;3,float&gt;,Vec&lt;3,float&gt;,float&gt; &gt; &gt; &gt;" name="default161" object1="../.." object2="Visual" />
         </Node>
     </Node>
 </Node>
