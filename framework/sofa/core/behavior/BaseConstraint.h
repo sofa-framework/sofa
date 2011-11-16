@@ -42,7 +42,6 @@ namespace core
 
 namespace behavior
 {
-#ifdef SOFA_DEV
 
 /**
  *  \brief Object computing a constraint resolution within a Gauss-Seidel algorithm
@@ -81,7 +80,6 @@ public:
     /// Custom tolerance, used for the convergence of this particular constraint instead of the global tolerance
     double tolerance;
 };
-#endif // SOFA_DEV
 
 /**
  *  \brief Component computing constraints within a simulated body.
@@ -141,10 +139,8 @@ public:
     /// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
     virtual void getConstraintInfo(VecConstraintBlockInfo& /*blocks*/, VecPersistentID& /*ids*/, VecConstCoord& /*positions*/, VecConstDeriv& /*directions*/, VecConstArea& /*areas*/) {}
 
-#ifdef SOFA_DEV
     /// Add the corresponding ConstraintResolution using the offset parameter
     virtual void getConstraintResolution(std::vector<ConstraintResolution*>& /*resTab*/, unsigned int& /*offset*/) {};
-#endif //SOFA_DEV
 };
 
 } // namespace behavior
