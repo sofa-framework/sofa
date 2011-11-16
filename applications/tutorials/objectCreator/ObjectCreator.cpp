@@ -61,7 +61,7 @@
 namespace sofa
 {
 
-simulation::Node *ObjectCreator::CreateRootWithCollisionPipeline(const std::string &simulationType, const std::string& responseType)
+simulation::Node::SPtr ObjectCreator::CreateRootWithCollisionPipeline(const std::string &simulationType, const std::string& responseType)
 {
 
     simulation::Node::SPtr root = simulation::getSimulation()->createNewGraph("root");
@@ -108,7 +108,7 @@ simulation::Node *ObjectCreator::CreateRootWithCollisionPipeline(const std::stri
             collisionGroupManager->setName("Collision Group Manager");
             root->addObject(collisionGroupManager);
         }
-    return root.get();
+    return root;
 }
 
 simulation::Node *ObjectCreator::CreateEulerSolverNode(simulation::Node* parent, const std::string& name, const std::string &scheme)
@@ -188,7 +188,7 @@ simulation::Node *ObjectCreator::CreateObstacle(simulation::Node* parent, const 
 }
 
 
-simulation::Node *ObjectCreator::CreateCollisionNodeVec3(simulation::Node* parent, MechanicalObject3* /*dof*/, const std::string &filename, const std::vector<std::string> &elements,
+simulation::Node *ObjectCreator::CreateCollisionNodeVec3(simulation::Node* parent, MechanicalObject3* dof, const std::string &filename, const std::vector<std::string> &elements,
         const Deriv3& translation, const Deriv3 &rotation)
 {
     //Node COLLISION
@@ -208,10 +208,11 @@ simulation::Node *ObjectCreator::CreateCollisionNodeVec3(simulation::Node* paren
 
     AddCollisionModels(CollisionNode, elements);
 
-    /*	BarycentricMapping3_to_3* mechaMapping = new BarycentricMapping3_to_3(dof, dof_surf);
-            mechaMapping->setPathInputObject("@..");
-            mechaMapping->setPathOutputObject("@.");
-            CollisionNode->addObject(mechaMapping);*/
+    BarycentricMapping3_to_3::SPtr mechaMapping = sofa::core::objectmodel::New<BarycentricMapping3_to_3>();
+    mechaMapping->setModels(dof, dof_surf.get());
+    mechaMapping->setPathInputObject("@..");
+    mechaMapping->setPathOutputObject("@.");
+    CollisionNode->addObject(mechaMapping);
 
     return CollisionNode;
 }
@@ -232,11 +233,12 @@ simulation::Node *ObjectCreator::CreateVisualNodeVec3(simulation::Node* parent, 
     visual->setRotation(rotation[0],rotation[1],rotation[2]);
     VisualNode->addObject(visual);
 
-    /*	BarycentricMapping3_to_Ext3* mapping = new BarycentricMapping3_to_Ext3(dof, visual);
-    	mapping->setName("Mapping Visual");
-    	mapping->setPathInputObject(refDof);
-    	mapping->setPathOutputObject(refVisual);
-            VisualNode->addObject(mapping); */
+    BarycentricMapping3_to_Ext3::SPtr mapping = sofa::core::objectmodel::New<BarycentricMapping3_to_Ext3>();
+    mapping->setModels(dof, visual.get());
+    mapping->setName("Mapping Visual");
+    mapping->setPathInputObject(refDof);
+    mapping->setPathOutputObject(refVisual);
+    VisualNode->addObject(mapping);
 
     return VisualNode;
 }
@@ -267,10 +269,11 @@ simulation::Node *ObjectCreator::CreateCollisionNodeRigid(simulation::Node* pare
 
     AddCollisionModels(CollisionNode, elements);
 
-    /*	RigidMappingRigid3_to_3* mechaMapping = new RigidMappingRigid3_to_3(dofRigid, dof_surf);
-    	mechaMapping->setPathInputObject(refdofRigid);
-    	mechaMapping->setPathOutputObject(refdofSurf);
-            CollisionNode->addObject(mechaMapping);*/
+    RigidMappingRigid3_to_3::SPtr mechaMapping = sofa::core::objectmodel::New<RigidMappingRigid3_to_3>();
+    mechaMapping->setModels(dofRigid, dof_surf.get());
+    mechaMapping->setPathInputObject(refdofRigid);
+    mechaMapping->setPathOutputObject(refdofSurf);
+    CollisionNode->addObject(mechaMapping);
 
     return CollisionNode;
 }
@@ -291,11 +294,12 @@ simulation::Node *ObjectCreator::CreateVisualNodeRigid(simulation::Node* parent,
     visualRigid->setRotation(rotation[0],rotation[1],rotation[2]);
     RigidVisualNode->addObject(visualRigid);
 
-    /*	RigidMappingRigid3_to_Ext3* mappingRigid = new RigidMappingRigid3_to_Ext3(dofRigid, visualRigid);
-    	mappingRigid->setName("Mapping Visual");
-    	mappingRigid->setPathInputObject(refdofRigid);
-    	mappingRigid->setPathOutputObject(refVisual);
-            RigidVisualNode->addObject(mappingRigid);*/
+    RigidMappingRigid3_to_Ext3::SPtr mappingRigid = sofa::core::objectmodel::New<RigidMappingRigid3_to_Ext3>();
+    mappingRigid->setModels(dofRigid, visualRigid.get());
+    mappingRigid->setName("Mapping Visual");
+    mappingRigid->setPathInputObject(refdofRigid);
+    mappingRigid->setPathOutputObject(refVisual);
+    RigidVisualNode->addObject(mappingRigid);
     return RigidVisualNode;
 }
 

@@ -231,7 +231,7 @@ int main(int argc, char** argv)
 
 
     // The graph root node
-    Node* root = sofa::ObjectCreator::CreateRootWithCollisionPipeline(simulationType,"distanceLMConstraint");
+    Node::SPtr root = sofa::ObjectCreator::CreateRootWithCollisionPipeline(simulationType,"distanceLMConstraint");
     root->setGravity( Coord3(0,-10,0) );
     root->setDt(0.001);
 
@@ -242,10 +242,10 @@ int main(int argc, char** argv)
 
     //************************************
     //Floor
-    Node* torusFixed = sofa::ObjectCreator::CreateObstacle(root,"mesh/floor.obj", "mesh/floor.obj", "gray");
+    Node* torusFixed = sofa::ObjectCreator::CreateObstacle(root.get(),"mesh/floor.obj", "mesh/floor.obj", "gray");
 
     //Add the objects
-    createHouseOfCards(root,sizeHouseOfCards,distanceInBetween, angle);
+    createHouseOfCards(root.get(),sizeHouseOfCards,distanceInBetween, angle);
 
 
     const SReal contactFriction=sqrt(friction);
@@ -257,13 +257,13 @@ int main(int argc, char** argv)
     //=======================================
     // Export the scene to file
     const std::string fileName="HouseOfCards.xml";
-    sofa::simulation::getSimulation()->exportXML(root,fileName.c_str());
+    sofa::simulation::getSimulation()->exportXML(root.get(),fileName.c_str());
 
     //=======================================
     // Destroy created scene: step needed, as I can't get rid of the locales (the mass can't init correctly as 0.1 is not considered as a floating point).
     sofa::simulation::DeleteVisitor deleteScene(sofa::core::ExecParams::defaultInstance() );
     root->execute(deleteScene);
-//    delete root;
+    root.reset();
 
     //=======================================
     // Create the GUI
