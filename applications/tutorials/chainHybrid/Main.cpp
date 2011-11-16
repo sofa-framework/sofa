@@ -238,15 +238,15 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node
-    Node* root = sofa::ObjectCreator::CreateRootWithCollisionPipeline(simulationType);
+    Node::SPtr root = sofa::ObjectCreator::CreateRootWithCollisionPipeline(simulationType);
     root->setGravity( Coord3(0,0,-10) );
 
     //Add the objects
-    createChainHybrid(root);
+    createChainHybrid(root.get());
 
     root->setAnimate(false);
 
-    sofa::simulation::getSimulation()->init(root);
+    sofa::simulation::getSimulation()->init(root.get());
 
 
     //=======================================

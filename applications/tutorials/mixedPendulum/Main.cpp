@@ -138,13 +138,14 @@ int main(int, char** argv)
     rp_x[0] = Coord3(attach,0,0);
 
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body
-    /*    RigidMappingRigid3_to_3* rigidMapping = new RigidMappingRigid3_to_3(rigidDOF,rigidParticleDOF);
-        std::string pathobject1("@"+rigidBody->getName()+"/"+rigidDOF->getName());
-        std::string pathobject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
-        rigidMapping->setPathInputObject(pathobject1);
-        rigidMapping->setPathOutputObject(pathobject2);
-        rigidParticles->addObject( rigidMapping );
-        rigidMapping->setName("Map23");*/
+    RigidMappingRigid3_to_3::SPtr rigidMapping = sofa::core::objectmodel::New<RigidMappingRigid3_to_3>();
+    rigidMapping->setModels(rigidDOF.get(),rigidParticleDOF.get());
+    std::string pathobject1("@"+rigidBody->getName()+"/"+rigidDOF->getName());
+    std::string pathobject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
+    rigidMapping->setPathInputObject(pathobject1);
+    rigidMapping->setPathOutputObject(pathobject2);
+    rigidParticles->addObject( rigidMapping );
+    rigidMapping->setName("Map23");
 
 
     // ---------------- Interaction force between the deformable and the rigid body
