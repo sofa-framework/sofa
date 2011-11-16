@@ -44,6 +44,28 @@ namespace mapping
 {
 
 
+template <class In, class Out>
+void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::clear ( int reserve )
+{
+    helper::vector<MappingData>& vectorData = *(map.beginEdit());
+    vectorData.clear(); if ( reserve>0 ) vectorData.reserve ( reserve );
+    map.endEdit();
+}
+
+template <class In, class Out>
+int BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointInTetra ( const int tetraIndex, const SReal* baryCoords )
+{
+    helper::vector<MappingData>& vectorData = *(map.beginEdit());
+    vectorData.resize ( map.getValue().size() +1 );
+    MappingData& data = *vectorData.rbegin();
+    map.endEdit();
+    data.in_index = tetraIndex;
+    data.baryCoords[0] = ( Real ) baryCoords[0];
+    data.baryCoords[1] = ( Real ) baryCoords[1];
+    data.baryCoords[2] = ( Real ) baryCoords[2];
+    return map.getValue().size()-1;
+}
+
 template<class In, class Out>
 int BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointOrientationInTetra( const int tetraIndex, const Matrix3 baryCoorsOrient )
 {
@@ -431,6 +453,80 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigi
     updateJ = false;
     return matrixJ;
 } // getJ
+
+template <class In, class Out>
+void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+{
+    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<MappingData >& map = this->map.getValue();
+    // TODO: use mapOrient
+    //const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
+
+    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+
+        if (colIt != colItEnd)
+        {
+            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            for ( ; colIt != colItEnd; ++colIt)
+            {
+                unsigned indexIn = colIt.index();
+                InDeriv data = (InDeriv) Out::getDPos(colIt.val());
+
+                const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
+                const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
+                const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
+                int index = map[indexIn].in_index;
+                const topology::Tetrahedron& tetra = tetrahedra[index];
+
+                o.addCol (tetra[0], data * ( 1-fx-fy-fz ) );
+                o.addCol (tetra[1], data * fx );
+                o.addCol (tetra[2], data * fy );
+                o.addCol (tetra[3], data * fz );
+            }
+        }
+    }
+}
+
+template <class In, class Out>
+void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
+{
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<MappingData >& map = this->map.getValue();
+    // TODO: use mapOrient
+    //const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
+
+    std::vector< Vector3 > points;
+    {
+        for ( unsigned int i=0; i<map.size(); i++ )
+        {
+            const Real fx = map[i].baryCoords[0];
+            const Real fy = map[i].baryCoords[1];
+            const Real fz = map[i].baryCoords[2];
+            int index = map[i].in_index;
+            const topology::Tetrahedron& tetra = tetrahedra[index];
+            Real f[4];
+            f[0] = ( 1-fx-fy-fz );
+            f[1] = fx;
+            f[2] = fy;
+            f[3] = fz;
+            for ( int j=0; j<4; j++ )
+            {
+                if ( f[j]<=-0.0001 || f[j]>=0.0001 )
+                {
+                    //                     glColor3f((float)f[j],1,(float)f[j]);
+                    points.push_back ( Out::getCPos(out[i]) );
+                    points.push_back ( in[tetra[j]] );
+                }
+            }
+        }
+    }
+    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+}
 
 } // namespace mapping
 
