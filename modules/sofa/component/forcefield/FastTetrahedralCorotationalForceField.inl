@@ -131,7 +131,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
 }
 
 template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalForceField()
-    : _initialPoints(0)
+    : edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
+    , _initialPoints(0)
     , updateMatrix(true)
     , f_method(initData(&f_method,std::string("large"),"method","\"large\" (by QR) or \"polar\" displacements"))
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))

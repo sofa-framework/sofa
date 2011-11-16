@@ -252,7 +252,8 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
 }
 
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::TriangularTensorMassForceField()
-    : _initialPoints(0)
+    : edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , _initialPoints(0)
     , updateMatrix(true)
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))

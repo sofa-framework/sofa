@@ -70,64 +70,15 @@ public:
     typedef typename container_type::const_iterator const_iterator;
 
 
-    /// Constructors
-public:
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    TopologyDataImpl( )
-        : sofa::core::topology::BaseTopologyData< VecT >(0, false, false),
-          m_topologicalEngine(NULL),
-          m_topologyHandler(NULL)
-    {}
-
     /// Constructor
     TopologyDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : sofa::core::topology::BaseTopologyData< VecT >(data),
           m_topologicalEngine(NULL),
+          m_topology(NULL),
           m_topologyHandler(NULL)
     {}
 
-    /// Constructor
-    TopologyDataImpl(size_type n, const value_type& value) : sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
-    {
-        container_type* data = this->beginEdit();
-        data->resize(n, value);
-        this->endEdit();
-    }
-    /// Constructor
-    explicit TopologyDataImpl(size_type n): sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
-    {
-        container_type* data = this->beginEdit();
-        data->resize(n);
-        this->endEdit();
-    }
-    /// Constructor
-    TopologyDataImpl(const container_type& x): sofa::core::topology::BaseTopologyData< container_type >(0, false, false), m_topologicalEngine(NULL)
-    {
-        container_type* data = this->beginEdit();
-        (*data) = x;
-        this->endEdit();
-    }
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    TopologyDataImpl(InputIterator first, InputIterator last): sofa::core::topology::BaseTopologyData< container_type >(0, false, false)
-    {
-        container_type* data = this->beginEdit();
-        data->assign(first, last);
-        this->endEdit();
-    }
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    TopologyDataImpl(const_iterator first, const_iterator last): sofa::core::topology::BaseTopologyData< container_type >(0, false, false)
-    {
-        container_type* data = this->beginEdit();
-        data->assign(first, last);
-        this->endEdit();
-    }
-#endif /* __STL_MEMBER_TEMPLATES */
-
-    ~TopologyDataImpl();
+    virtual ~TopologyDataImpl();
 
 
     /** Public functions to handle topological engine creation */
@@ -167,9 +118,8 @@ public:
 protected:
     virtual void linkToElementDataArray() {}
 
-    virtual void createTopologyHandler() {}
-
-    sofa::component::topology::TopologyEngineImpl<VecT>* m_topologicalEngine;
+    typename sofa::component::topology::TopologyEngineImpl<VecT>::SPtr m_topologicalEngine;
+    sofa::core::topology::BaseMeshTopology* m_topology;
     sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* m_topologyHandler;
 };
 
@@ -190,27 +140,6 @@ public:
     PointData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologyDataImpl<Point, VecT>(data)
     {}
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    PointData() : TopologyDataImpl<Point, VecT>()
-    {}
-
-    /// Constructor
-    PointData(typename TopologyDataImpl<Point, VecT>::size_type n, const value_type& value): TopologyDataImpl<Point, VecT>(n,value) {}
-
-    /// Constructor
-    explicit PointData(typename TopologyDataImpl<Point, VecT>::size_type n): TopologyDataImpl<Point, VecT>(n) {}
-    /// Constructor
-    PointData(const container_type& x): TopologyDataImpl<Point, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    PointData(InputIterator first, InputIterator last): TopologyDataImpl<Point, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    PointData(typename PointData<VecT>::const_iterator first, typename PointData<VecT>::const_iterator last): TopologyDataImpl<Point, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
     void linkToElementDataArray() {this->linkToPointDataArray();}
@@ -234,27 +163,6 @@ public:
         : TopologyDataImpl<Edge, VecT>(data)
     {}
 
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    EdgeData() : TopologyDataImpl<Edge, VecT>()
-    {}
-
-    /// Constructor
-    EdgeData(typename TopologyDataImpl<Edge, VecT>::size_type n, const value_type& value): TopologyDataImpl<Edge, VecT>(n,value) {}
-
-    /// Constructor
-    explicit EdgeData(typename TopologyDataImpl<Edge, VecT>::size_type n): TopologyDataImpl<Edge, VecT>(n) {}
-    /// Constructor
-    EdgeData(const container_type& x): TopologyDataImpl<Edge, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    EdgeData(InputIterator first, InputIterator last): TopologyDataImpl<Edge, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    EdgeData(typename EdgeData<VecT>::const_iterator first, typename EdgeData<VecT>::const_iterator last): TopologyDataImpl<Edge, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
-
 protected:
     void linkToElementDataArray() {this->linkToEdgeDataArray();}
 
@@ -275,27 +183,6 @@ public:
     TriangleData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologyDataImpl<Triangle, VecT>(data)
     {}
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    TriangleData() : TopologyDataImpl<Triangle, VecT>()
-    {}
-
-    /// Constructor
-    TriangleData(typename TopologyDataImpl<Triangle, VecT>::size_type n, const value_type& value): TopologyDataImpl<Triangle, VecT>(n,value) {}
-
-    /// Constructor
-    explicit TriangleData(typename TopologyDataImpl<Triangle, VecT>::size_type n): TopologyDataImpl<Triangle, VecT>(n) {}
-    /// Constructor
-    TriangleData(const container_type& x): TopologyDataImpl<Triangle, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    TriangleData(InputIterator first, InputIterator last): TopologyDataImpl<Triangle, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    TriangleData(typename TriangleData<VecT>::const_iterator first, typename TriangleData<VecT>::const_iterator last): TopologyDataImpl<Triangle, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
     void linkToElementDataArray() {this->linkToTriangleDataArray();}
@@ -319,27 +206,6 @@ public:
         : TopologyDataImpl<Quad, VecT>(data)
     {}
 
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    QuadData() : TopologyDataImpl<Quad, VecT>()
-    {}
-
-    /// Constructor
-    QuadData(typename TopologyDataImpl<Quad, VecT>::size_type n, const value_type& value): TopologyDataImpl<Quad, VecT>(n,value) {}
-
-    /// Constructor
-    explicit QuadData(typename TopologyDataImpl<Quad, VecT>::size_type n): TopologyDataImpl<Quad, VecT>(n) {}
-    /// Constructor
-    QuadData(const container_type& x): TopologyDataImpl<Quad, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    QuadData(InputIterator first, InputIterator last): TopologyDataImpl<Quad, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    QuadData(typename QuadData<VecT>::const_iterator first, typename QuadData<VecT>::const_iterator last): TopologyDataImpl<Quad, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
-
 protected:
     void linkToElementDataArray() {this->linkToQuadDataArray();}
 
@@ -361,27 +227,6 @@ public:
     TetrahedronData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologyDataImpl<Tetrahedron, VecT>(data)
     {}
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    TetrahedronData() : TopologyDataImpl<Tetrahedron, VecT>()
-    {}
-
-    /// Constructor
-    TetrahedronData(typename TopologyDataImpl<Tetrahedron, VecT>::size_type n, const value_type& value): TopologyDataImpl<Tetrahedron, VecT>(n,value) {}
-
-    /// Constructor
-    explicit TetrahedronData(typename TopologyDataImpl<Tetrahedron, VecT>::size_type n): TopologyDataImpl<Tetrahedron, VecT>(n) {}
-    /// Constructor
-    TetrahedronData(const container_type& x): TopologyDataImpl<Tetrahedron, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    TetrahedronData(InputIterator first, InputIterator last): TopologyDataImpl<Tetrahedron, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    TetrahedronData(typename TetrahedronData<VecT>::const_iterator first, typename TetrahedronData<VecT>::const_iterator last): TopologyDataImpl<Tetrahedron, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
     void linkToElementDataArray() {this->linkToTetrahedronDataArray();}
@@ -405,27 +250,6 @@ public:
     HexahedronData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologyDataImpl<Hexahedron, VecT>(data)
     {}
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    HexahedronData() : TopologyDataImpl<Hexahedron, VecT>()
-    {}
-
-    /// Constructor
-    HexahedronData(typename TopologyDataImpl<Hexahedron, VecT>::size_type n, const value_type& value): TopologyDataImpl<Hexahedron, VecT>(n,value) {}
-
-    /// Constructor
-    explicit HexahedronData(typename TopologyDataImpl<Hexahedron, VecT>::size_type n): TopologyDataImpl<Hexahedron, VecT>(n) {}
-    /// Constructor
-    HexahedronData(const container_type& x): TopologyDataImpl<Hexahedron, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    HexahedronData(InputIterator first, InputIterator last): TopologyDataImpl<Hexahedron, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    HexahedronData(typename HexahedronData<VecT>::const_iterator first, typename HexahedronData<VecT>::const_iterator last): TopologyDataImpl<Hexahedron, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
     void linkToElementDataArray() {this->linkToHexahedronDataArray();}

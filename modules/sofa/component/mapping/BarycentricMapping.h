@@ -814,9 +814,7 @@ public:
 
 };
 
-
-
-/// Class allowing barycentric mapping computation on a TetrehedronSetTopology
+/// Class allowing barycentric mapping computation on a TetrahedronSetTopology
 template<class In, class Out>
 class BarycentricMapperTetrahedronSetTopology : public TopologyBarycentricMapper<In,Out>
 {
@@ -838,7 +836,6 @@ public:
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData > >  map;
-    topology::PointData< sofa::helper::vector<MappingData > >  mapOrient[3];
 
     VecCoord actualTetraPosition;
 
@@ -863,28 +860,12 @@ protected:
           updateJ(true)
     {}
 
-    /*  //IPB
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* topology,
-    helper::ParticleMask *_maskFrom,
-    helper::ParticleMask *_maskTo,
-    core::objectmodel::BaseContext *_mappingContext)
-    : TopologyBarycentricMapper<In,Out>(topology),
-    _container(topology),
-    _geomAlgo(NULL),
-    maskFrom(_maskFrom), maskTo(_maskTo),
-    mappingContext(_mappingContext)
-    {
-    //mappingContext->get(forceField);
-    }
-    //IPE*/
-
     virtual ~BarycentricMapperTetrahedronSetTopology() {}
 
 public:
     void clear(int reserve=0);
 
     int addPointInTetra(const int index, const SReal* baryCoords);
-    virtual int addPointOrientationInTetra ( const int /*tetraIndex*/, const Matrix3 /*baryCoorsOrient*/) { return 0; }
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
@@ -899,33 +880,6 @@ public:
 
 
     virtual int addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
-
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTetrahedronSetTopology<In, Out> &b )
-    {
-        unsigned int size_vec;
-
-        in >> size_vec;
-        sofa::helper::vector<MappingData>& m = *(b.map.beginEdit());
-        m.clear();
-        MappingData value;
-        for (unsigned int i=0; i<size_vec; i++)
-        {
-            in >> value;
-            m.push_back(value);
-        }
-        b.map.endEdit();
-        return in;
-    }
-
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTetrahedronSetTopology<In, Out> & b )
-    {
-
-        out << b.map.getValue().size();
-        out << " " ;
-        out << b.map;
-
-        return out;
-    }
 };
 
 

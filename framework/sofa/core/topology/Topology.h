@@ -132,6 +132,51 @@ public:
     virtual double getPZ(int /*i*/) const { return 0.0; }
 };
 
+template<class TopologyElement>
+struct TopologyElementInfo;
+
+template<>
+struct TopologyElementInfo<Topology::Point>
+{
+    static TopologyObjectType type() { return POINT; }
+    static const char* name() { return "Point"; }
+};
+
+template<>
+struct TopologyElementInfo<Topology::Edge>
+{
+    static TopologyObjectType type() { return EDGE; }
+    static const char* name() { return "Edge"; }
+};
+
+template<>
+struct TopologyElementInfo<Topology::Triangle>
+{
+    static TopologyObjectType type() { return TRIANGLE; }
+    static const char* name() { return "Triangle"; }
+};
+
+template<>
+struct TopologyElementInfo<Topology::Quad>
+{
+    static TopologyObjectType type() { return QUAD; }
+    static const char* name() { return "Quad"; }
+};
+
+template<>
+struct TopologyElementInfo<Topology::Tetrahedron>
+{
+    static TopologyObjectType type() { return TETRAHEDRON; }
+    static const char* name() { return "Tetrahedron"; }
+};
+
+template<>
+struct TopologyElementInfo<Topology::Hexahedron>
+{
+    static TopologyObjectType type() { return HEXAHEDRON; }
+    static const char* name() { return "Hexahedron"; }
+};
+
 } // namespace topology
 
 } // namespace core

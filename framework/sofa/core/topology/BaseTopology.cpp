@@ -172,7 +172,8 @@ void TopologyContainer::resetTopologyEngineList()
     for (std::list<TopologyEngine *>::iterator it=m_topologyEngineList.begin();
             it!=m_topologyEngineList.end(); ++it)
     {
-        delete (*it);
+        //delete (*it);
+        *it = NULL;
     }
 
     m_topologyEngineList.clear();

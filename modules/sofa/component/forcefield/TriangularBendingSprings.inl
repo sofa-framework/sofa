@@ -433,7 +433,8 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRen
 
 template<class DataTypes>
 TriangularBendingSprings<DataTypes>::TriangularBendingSprings(/*double _ks, double _kd*/)
-    : updateMatrix(true)
+    : edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , updateMatrix(true)
     , f_ks(initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs")) //(Real)0.3 ??
     , f_kd(initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs")) // (Real)1000. ??
     , edgeHandler(NULL)

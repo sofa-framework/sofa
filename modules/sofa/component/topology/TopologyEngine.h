@@ -65,15 +65,19 @@ template< class VecT>
 class TopologyEngineImpl : public sofa::core::topology::TopologyEngine
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(TopologyEngineImpl,VecT), sofa::core::topology::TopologyEngine);
     typedef VecT container_type;
     typedef typename container_type::value_type value_type;
     typedef sofa::core::topology::BaseTopologyData<VecT> t_topologicalData;
 
+protected:
     //TopologyEngineImpl();
 
     TopologyEngineImpl(t_topologicalData* _topologicalData,
             sofa::core::topology::BaseMeshTopology* _topology,
             sofa::core::topology::TopologyHandler* _topoHandler);
+
+public:
 
     void init();
 

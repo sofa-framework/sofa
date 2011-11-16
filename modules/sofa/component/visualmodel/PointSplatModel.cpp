@@ -65,7 +65,8 @@ PointSplatModel::PointSplatModel() //const std::string &name, std::string filena
       color(initData(&color, std::string("white"), "color", "Billboard color.")),
       _topology(NULL),
       _mstate(NULL),
-      texture_data(NULL)
+      texture_data(NULL),
+      pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
 }
 
@@ -101,6 +102,7 @@ void PointSplatModel::init()
             helper::vector<unsigned char>* pData = pointData.beginEdit();
             for(unsigned int i=0; i<nbPoints; ++i)
                 (*pData).push_back(imageData[idxInRegularGrid[i]]);
+            pointData.endEdit();
         }
     }
 

@@ -94,6 +94,7 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
     , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
     , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
+    , hexahedronInfo(initData(&hexahedronInfo, "hexahedronInfo", "Internal hexahedron data"))
     , hexahedronHandler(NULL)
 {
 

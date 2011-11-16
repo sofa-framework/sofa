@@ -63,7 +63,8 @@ using namespace sofa::defaulttype;
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField()
-    : _indexedElements(NULL)
+    : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
+    , _indexedElements(NULL)
     , _method(0)
     , _poissonRatio(initData(&_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
@@ -81,7 +82,8 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField()
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner)
-    : _indexedElements(NULL)
+    : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
+    , _indexedElements(NULL)
     , _method(0)
     , _poissonRatio(initData(&_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
