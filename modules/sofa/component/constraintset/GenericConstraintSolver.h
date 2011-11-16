@@ -54,7 +54,7 @@ using namespace helper::system::thread;
 using core::behavior::ConstraintResolution;
 class GenericConstraintSolver;
 
-class SOFA_ADVANCED_CONSTRAINT_API GenericConstraintProblem : public ConstraintProblem
+class SOFA_CONSTRAINT_API GenericConstraintProblem : public ConstraintProblem
 {
 public:
     FullVector<double> _d;
@@ -80,7 +80,7 @@ public:
     void unbuiltGaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
 };
 
-class SOFA_ADVANCED_CONSTRAINT_API GenericConstraintSolver : public ConstraintSolverImpl
+class SOFA_CONSTRAINT_API GenericConstraintSolver : public ConstraintSolverImpl
 {
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef std::vector<list_cc> VecListcc;
@@ -126,7 +126,7 @@ private:
 };
 
 
-class SOFA_ADVANCED_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
+class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, std::vector<core::behavior::ConstraintResolution*>& res)
@@ -178,7 +178,7 @@ private:
     unsigned int _offset;
 };
 
-class SOFA_ADVANCED_CONSTRAINT_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
+class SOFA_CONSTRAINT_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalSetConstraint(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res, unsigned int &_contactId)
@@ -234,7 +234,7 @@ protected:
 };
 
 
-class SOFA_ADVANCED_CONSTRAINT_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
+class SOFA_CONSTRAINT_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
