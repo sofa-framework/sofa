@@ -79,8 +79,8 @@ public:
     {
     }
 
-    TData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
-        : BaseData(helpMsg, isDisplayed, isReadOnly, owner, name), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
+    TData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+        : BaseData(helpMsg, isDisplayed, isReadOnly), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
     {
     }
 
@@ -381,8 +381,8 @@ public:
     /** Constructor
     \param helpMsg help on the field
      */
-    Data( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
-        : TData<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
+    Data( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+        : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_values()
         , shared(NULL)
     {
@@ -394,8 +394,8 @@ public:
     \param value default value
     \param helpMsg help on the field
      */
-    Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
-        : TData<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
+    Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+        : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_values()
         , shared(NULL)
     {

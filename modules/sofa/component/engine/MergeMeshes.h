@@ -112,9 +112,10 @@ protected:
             ohelp << help << (i+1);
             std::string name_i = oname.str();
             std::string help_i = ohelp.str();
-            Data<T>* d = new Data<T>(help_i.c_str(), true, false, this, name_i.c_str());
+            Data<T>* d = new Data<T>(help_i.c_str(), true, false);
+            d->setName(name_i);
             vf.push_back(d);
-            this->addField(d, name_i.c_str());
+            this->addData(d);
             this->addInput(d);
         }
     }
