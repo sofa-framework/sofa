@@ -32,7 +32,7 @@
 
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/TriangleSetTopologyChange.h>
+#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 
 #include <sofa/defaulttype/Vec.h>
@@ -48,7 +48,7 @@
 
 #include "GridMaterial.h"
 #include "MappingTypes.h"
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/TopologyData.h>
 
 namespace sofa
 {
@@ -179,7 +179,6 @@ public:
 
     virtual void draw();
 
-    virtual void handleTopologyChange(core::topology::Topology* t);
     void handleEvent ( core::objectmodel::Event * );
 
     virtual TriangleSetTopologyContainer* getTo() {return _to_topo;};

@@ -35,7 +35,7 @@
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/topology/TopologyData.h>
+#include <sofa/component/topology/TopologyData.inl>
 #include <sofa/component/container/MechanicalObject.inl>
 //#include <sofa/component/topology/PointData.inl>
 #include <iostream>
@@ -101,6 +101,19 @@ namespace component
 namespace mapping
 {
 
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::FramePointHandler::applyCreateFunction(unsigned int, OutCoord &, const Point &,
+        const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+{
+    if (m_map)
+    {
+        if(!m_map->useAdaptivity.getValue()) return;
+
+        m_map->updateMapping();
+    }
+}
+
+
 using helper::WriteAccessor;
 using helper::ReadAccessor;
 
@@ -143,6 +156,8 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( to ) )
         maskTo = &stateTo->forceMask;
 
+    pointHandler = new FramePointHandler(this, &f_initPos);
+
     // These sout are here to check if the template interface work well
     sout << "In VSize: " << defaulttype::InDataTypesInfo<In>::VSize << sendl;
     sout << "Out order: " << defaulttype::OutDataTypesInfo<TOut>::primitive_order << sendl;
@@ -151,6 +166,7 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
 template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::~FrameBlendingMapping ()
 {
+    if(pointHandler) delete pointHandler;
 }
 
 
@@ -252,6 +268,36 @@ void FrameBlendingMapping<TIn, TOut>::init()
         }
         inout.endEdit();
     }
+
+    // Create specific handler for the different PointData
+    if (!useDQ.getValue())
+    {
+        inout.createTopologicalEngine(to_topo);
+        inout.registerTopologicalData();
+    }
+    //else
+    //{
+    //    dqinout.createTopologicalEngine(to_topo);
+    //    dqinout.registerTopologicalData();
+    //}
+
+    f_initPos.createTopologicalEngine(to_topo, pointHandler);
+    f_initPos.registerTopologicalData();
+
+    f_index.createTopologicalEngine(to_topo);
+    f_index.registerTopologicalData();
+
+    f_groups.createTopologicalEngine(to_topo);
+    f_groups.registerTopologicalData();
+
+    weight.createTopologicalEngine(to_topo);
+    weight.registerTopologicalData();
+
+    weightDeriv.createTopologicalEngine(to_topo);
+    weightDeriv.registerTopologicalData();
+
+    weightDeriv2.createTopologicalEngine(to_topo);
+    weightDeriv2.registerTopologicalData();
 
 
     static_cast<simulation::tree::GNode*>(static_cast<simulation::tree::GNode*>(this->getContext())->getParent())->get ( physicalMapping, core::objectmodel::BaseContext::SearchDown );
@@ -1477,61 +1523,6 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
     }
 }
 
-
-// This method is only called on mappings handling collision and visual models. Physical ones are not based on a topology (see the method checkForChanges()).
-template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
-{
-    if(!useAdaptivity.getValue()) return;
-
-    if (t == to_topo)
-    {
-        // Handle topological changes on the mapped topology
-        std::list<const core::topology::TopologyChange *>::const_iterator itBegin=to_topo->beginChange();
-        std::list<const core::topology::TopologyChange *>::const_iterator itEnd=to_topo->endChange();
-
-        // Handle topological changes for PointData
-        if (!useDQ.getValue()) inout.handleTopologyEvents(itBegin, itEnd);
-        //else dqinout.handleTopologyEvents(itBegin, itEnd);
-        f_initPos.handleTopologyEvents(itBegin, itEnd);
-        f_index.handleTopologyEvents(itBegin, itEnd);
-        weight.handleTopologyEvents(itBegin, itEnd);
-        weightDeriv.handleTopologyEvents(itBegin, itEnd);
-        weightDeriv2.handleTopologyEvents(itBegin, itEnd);
-
-        while ( itBegin != itEnd )
-        {
-            core::topology::TopologyChangeType changeType = ( *itBegin )->getChangeType();
-
-            switch ( changeType )
-            {
-
-            case core::topology::ENDING_EVENT:
-            {
-                break;
-            }
-            case core::topology::POINTSADDED:
-            {
-                //const unsigned int& nbNewVertices = ( static_cast< const typename component::topology::PointsAdded *> ( *itBegin ) )->getNbAddedVertices();
-                updateMapping();
-                break;
-            }
-            case core::topology::POINTSREMOVED:
-            {
-                //const sofa::helper::vector<core::topology::BaseMeshTopology::PointID> &tab = ( static_cast< const typename component::topology::PointsRemoved *> ( *itBegin ) )->getArray();
-                //removeSamples( tab);
-                break;
-            }
-            case core::topology::POINTSRENUMBERING:
-            default:
-                break;
-            };
-
-            ++itBegin;
-        }
-    }
-    return;
-}
 
 
 template <class TIn, class TOut>

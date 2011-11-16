@@ -32,7 +32,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
-//#include <sofa/component/topology/PointData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 namespace sofa
 {

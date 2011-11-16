@@ -28,7 +28,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include "FrameFixedConstraint.h"
-#include <sofa/component/topology/PointSubsetData.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>

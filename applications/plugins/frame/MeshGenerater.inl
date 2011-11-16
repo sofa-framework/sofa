@@ -29,10 +29,9 @@
 
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 #include <sofa/component/topology/PointSetTopologyModifier.h>
-#include <sofa/component/topology/HexahedronSetTopologyChange.h>
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
 
-#include <sofa/component/topology/PointData.inl>
+#include <sofa/component/topology/TopologyData.inl>
 
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/component/loader/VoxelGridLoader.h>
@@ -140,6 +139,10 @@ void MeshGenerater<DataTypes>::init()
         serr << "GridMaterial not found." << sendl;
         return;
     }
+
+    // Create specific handler for PointData
+    smoothedMesh0.createTopologicalEngine(_to_topo);
+    smoothedMesh0.registerTopologicalData();
 
     voxelSize.setParent ( &gridMat->voxelSize);
     voxelOrigin.setParent ( &gridMat->origin);
@@ -323,18 +326,6 @@ void MeshGenerater<DataTypes>::getToIndex ( vector<unsigned int>& toIndices, con
     if( itTri != triIDirg2iit.end())
         for( typename ElementSet< BaseMeshTopology::TriangleID >::const_iterator it = itTri->second.begin(); it != itTri->second.end(); it++)
             toIndices.push_back( *it);
-}
-
-
-template <class DataTypes>
-void MeshGenerater<DataTypes>::handleTopologyChange(core::topology::Topology* t)
-{
-    if( t == _to_topo)
-    {
-        std::list<const TopologyChange *>::const_iterator itBegin= _to_topo->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd= _to_topo->endChange();
-        smoothedMesh0.handleTopologyEvents(itBegin, itEnd);
-    }
 }
 
 
@@ -1034,7 +1025,6 @@ void MeshGenerater<DataTypes>::handleEvent ( core::objectmodel::Event * /*event*
             serr << " ################ Points removed" << sendl;
         ++itBegin;
     }
-    smoothedMesh0.handleTopologyEvents(itBegin, itEnd);
 }
 
 
