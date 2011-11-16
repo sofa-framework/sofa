@@ -121,6 +121,8 @@ template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
     : Inherit ( from, to ), FData(), SData()
     , useLinearWeights ( initData ( &useLinearWeights, false, "useLinearWeights","use linearly interpolated weights between the two closest frames." ) )
+    , inout ( initData ( &inout,"inout","Data specific to the conversion between the types" ) )
+    , dqinout ( initData ( &dqinout,"dqinout","Data specific to the conversion between the types" ) )
     , useDQ ( initData ( &useDQ, false, "useDQ","use dual quaternion blending instead of linear blending ." ) )
     , useAdaptivity ( initData ( &useAdaptivity, false, "useAdaptivity","use automatic frame and sample adaptation." ) )
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
