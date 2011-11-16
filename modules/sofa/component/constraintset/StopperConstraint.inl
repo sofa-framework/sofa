@@ -74,14 +74,12 @@ void StopperConstraint<DataTypes>::getConstraintViolation(const core::Constraint
     resV->set(cid, x.getValue()[index.getValue()][0]);
 }
 
-#ifdef SOFA_DEV
 template<class DataTypes>
 void StopperConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     for(int i=0; i<1; i++)
         resTab[offset++] = new StopperConstraintResolution1Dof(min.getValue(), max.getValue());
 }
-#endif
 
 } // namespace constraintset
 

@@ -310,7 +310,6 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintInfo(VecConstraint
     blocks.push_back(info);
 }
 
-#ifdef SOFA_DEV
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
@@ -345,7 +344,6 @@ bool UnilateralInteractionConstraint<DataTypes>::isActive()
 
     return false;
 }
-#endif
 
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
@@ -358,10 +356,8 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
     {
         const Contact& c = contacts[i];
 
-//#ifdef SOFA_DEV
 //		if(contactsStatus && contactsStatus[i]) glColor4f(1,0,0,1); else
 //		if(c.dfree < 0) glColor4f(1,0,1,1); else
-//#endif
 //		glColor4f(1,0.5,0,1);
 
         glLineWidth(5);

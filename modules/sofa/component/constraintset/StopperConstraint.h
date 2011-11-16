@@ -38,7 +38,6 @@ namespace component
 namespace constraintset
 {
 
-#ifdef SOFA_DEV
 class StopperConstraintResolution1Dof : public core::behavior::ConstraintResolution
 {
 protected:
@@ -67,7 +66,6 @@ public:
             force[line] = 0;
     }
 };
-#endif
 
 template< class DataTypes >
 class StopperConstraint : public core::behavior::Constraint<DataTypes>
@@ -120,9 +118,7 @@ public:
     virtual void buildConstraintMatrix(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x);
     virtual void getConstraintViolation(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v);
 
-#ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
-#endif
 };
 } // namespace constraintset
 

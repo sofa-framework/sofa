@@ -453,8 +453,6 @@ extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6dTypes>;
 //extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3dTypes>;
 //extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2dTypes>;
-#ifdef SOFA_DEV
-#endif
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3fTypes>;
