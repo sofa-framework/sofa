@@ -88,7 +88,13 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 #ifdef DEBUG_GUI
     std::cout << "GUI: createDialog(" << base->getClassName() << " " << base->getName() << ")" << std::endl;
 #endif
+#ifdef DEBUG_GUI
+    std::cout << "GUI>emit beginObjectModification(" << base->getName() << ")" << std::endl;
+#endif
     emit beginObjectModification(base);
+#ifdef DEBUG_GUI
+    std::cout << "GUI<emit beginObjectModification(" << base->getName() << ")" << std::endl;
+#endif
     node = base;
     data_ = NULL;
     //Layout to organize the whole window
@@ -143,11 +149,35 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         //Put first the Property Tab
         tabNames.push_back("Property");
 
-        for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it!=fields.end(); ++it)
+        int ndata=0;
+        for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it!=fields.end(); ++it,++ndata)
         {
+#ifdef DEBUG_GUI
+            if (*it) std::cout << "GUI: Data " << (*it)->getName() << std::endl;
+#endif
+        }
+#ifdef DEBUG_GUI
+        for( sofa::core::objectmodel::Base::VecLink::const_iterator it = links.begin(); it!=links.end(); ++it)
+            if (*it) std::cout << "GUI: Link " << (*it)->getName() << std::endl;
+#endif
+        int i=0;
+        for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it!=fields.end(); ++it,++i)
+        {
+            if (i>=ndata) { std::cerr << "ERROR: extra Data " << i << " when creating GUI for " << node->getName() << std::endl; continue; }
             core::objectmodel::BaseData* data=*it;
+            if (!data)
+            {
+                std::cerr << "ERROR: NULL Data in " << node->getName() << std::endl;
+                continue;
+            }
 
             if (data->getName().empty()) continue; // ignore unnamed data
+
+            if (!data->getGroup())
+            {
+                std::cerr << "ERROR: NULL group for Data " << data->getName() << " in " << node->getName() << std::endl;
+                continue;
+            }
 
             //For each Data of the current Object
             //We determine where it belongs:
@@ -158,28 +188,42 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 #ifdef DEBUG_GUI
             std::cout << "GUI: add Data " << data->getName() << " in " << currentGroup << std::endl;
 #endif
-
             QTabulationModifyObject* currentTab=NULL;
 
             std::vector<QTabulationModifyObject* > &tabs=groupTabulation[currentGroup];
+            bool newTab = false;
             if (tabs.empty()) tabNames.push_back(currentGroup);
-            if (tabs.empty() || tabs.back()->isFull()) tabs.push_back(new QTabulationModifyObject(this,node, item_,tabs.size()+1));
+            if (tabs.empty() || tabs.back()->isFull())
+            {
+                newTab = true;
+                tabs.push_back(new QTabulationModifyObject(this,node, item_,tabs.size()+1));
+            }
             currentTab = tabs.back();
-
             currentTab->addData(data, getFlags());
-            connect(buttonUpdate,   SIGNAL(clicked() ),          currentTab, SLOT( updateDataValue() ) );
-            connect(buttonOk,       SIGNAL(clicked() ),          currentTab, SLOT( updateDataValue() ) );
-            connect(this,           SIGNAL(updateDataWidgets()), currentTab, SLOT( updateWidgetValue()) );
+            if (newTab)
+            {
+                connect(buttonUpdate,   SIGNAL(clicked() ),          currentTab, SLOT( updateDataValue() ) );
+                connect(buttonOk,       SIGNAL(clicked() ),          currentTab, SLOT( updateDataValue() ) );
+                connect(this,           SIGNAL(updateDataWidgets()), currentTab, SLOT( updateWidgetValue()) );
 
-            connect(currentTab, SIGNAL( TabDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
-            connect(currentTab, SIGNAL( TabDirty(bool) ), this, SIGNAL( componentDirty(bool) ) );
+                connect(currentTab, SIGNAL( TabDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
+                connect(currentTab, SIGNAL( TabDirty(bool) ), this, SIGNAL( componentDirty(bool) ) );
+            }
+
+#ifdef DEBUG_GUI
+            std::cout << "GUI: added Data " << data->getName() << " in " << currentGroup << std::endl;
+#endif
         }
+#ifdef DEBUG_GUI
+        std::cout << "GUI: end Data" << std::endl;
+#endif
 
         for( sofa::core::objectmodel::Base::VecLink::const_iterator it = links.begin(); it!=links.end(); ++it)
         {
             core::objectmodel::BaseLink* link=*it;
 
-            if (link->getName().empty()) continue; // ignore unnamed link
+            if (link->getName().empty()) continue; // ignore unnamed links
+            if (!link->storePath() && link->getSize() == 0) continue; // ignore empty links
 
             //For each Link of the current Object
             //We determine where it belongs:
@@ -204,6 +248,9 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             connect(currentTab, SIGNAL( TabDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
             connect(currentTab, SIGNAL( TabDirty(bool) ), this, SIGNAL( componentDirty(bool) ) );
         }
+#ifdef DEBUG_GUI
+        std::cout << "GUI: end Link" << std::endl;
+#endif
 
         //std::map< std::string, std::vector<QTabulationModifyObject* > >::iterator it;
         //for (it=groupTabulation.begin();it!=groupTabulation.end();++it)
@@ -220,6 +267,9 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 QString nameTab;
                 if (tabs.size() == 1) nameTab=groupName.c_str();
                 else                  nameTab=QString(groupName.c_str())+ " " + QString::number(tabs[i]->getIndex()) + "/" + QString::number(tabs.size());
+#ifdef DEBUG_GUI
+                std::cout << "GUI: add Tab " << nameTab.ascii() << std::endl;
+#endif
                 dialogTab->addTab(tabs[i],nameTab);
                 tabs[i]->addStretch();
             }
@@ -237,6 +287,9 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
         // Info Widget
         {
+#ifdef DEBUG_GUI
+            std::cout << "GUI: add Tab Infos" << std::endl;
+#endif
             QDataDescriptionWidget* description=new QDataDescriptionWidget(dialogTab, node);
             dialogTab->addTab(description, QString("Infos"));
         }
@@ -244,8 +297,20 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         //Console
         {
             updateConsole();
-            if (outputTab)  dialogTab->addTab(outputTab,  QString("Outputs"));
-            if (warningTab) dialogTab->addTab(warningTab, QString("Warnings"));
+            if (outputTab)
+            {
+#ifdef DEBUG_GUI
+                std::cout << "GUI: add Tab Logs" << std::endl;
+#endif
+                dialogTab->addTab(outputTab,  QString("Logs"));
+            }
+            if (warningTab)
+            {
+#ifdef DEBUG_GUI
+                std::cout << "GUI: add Tab Warnings" << std::endl;
+#endif
+                dialogTab->addTab(warningTab, QString("Warnings"));
+            }
         }
 
 
@@ -271,7 +336,13 @@ void ModifyObject::createDialog(core::objectmodel::BaseData* data)
     data_ = data;
     node = NULL;
 
+#ifdef DEBUG_GUI
+    std::cout << "GUI>emit beginDataModification("<<data->getName()<<")" << std::endl;
+#endif
     emit beginDataModification(data);
+#ifdef DEBUG_GUI
+    std::cout << "GUI<emit beginDataModification("<<data->getName()<<")" << std::endl;
+#endif
 
 #ifdef DEBUG_GUI
     std::cout << "GUI: createDialog( Data<" << data->getValueTypeString() << "> " << data->getName() << ")" << std::endl;
@@ -398,12 +469,30 @@ void ModifyObject::updateValues()
 
     }
 
+#ifdef DEBUG_GUI
+    std::cout << "GUI>emit objectUpdated()" << std::endl;
+#endif
     emit (objectUpdated());
+#ifdef DEBUG_GUI
+    std::cout << "GUI<emit objectUpdated()" << std::endl;
+#endif
 
     if (node)
     {
+#ifdef DEBUG_GUI
+        std::cout << "GUI>emit endObjectModification("<<node->getName()<<")" << std::endl;
+#endif
         emit endObjectModification(node);
+#ifdef DEBUG_GUI
+        std::cout << "GUI<emit endObjectModification("<<node->getName()<<")" << std::endl;
+#endif
+#ifdef DEBUG_GUI
+        std::cout << "GUI>emit beginObjectModification("<<node->getName()<<")" << std::endl;
+#endif
         emit beginObjectModification(node);
+#ifdef DEBUG_GUI
+        std::cout << "GUI<emit beginObjectModification("<<node->getName()<<")" << std::endl;
+#endif
     }
 
     buttonUpdate->setEnabled(false);
@@ -430,7 +519,13 @@ void ModifyObject::updateListViewItem()
 //Called each time a new step of the simulation if computed
 void ModifyObject::updateTables()
 {
+#ifdef DEBUG_GUI
+    std::cout << "GUI>emit updateDataWidgets()" << std::endl;
+#endif
     emit updateDataWidgets();
+#ifdef DEBUG_GUI
+    std::cout << "GUI<emit updateDataWidgets()" << std::endl;
+#endif
     if (energy)
     {
         energy->step();
@@ -444,7 +539,16 @@ void ModifyObject::updateTables()
 
 void ModifyObject::reject   ()
 {
-    if (node)      emit endObjectModification(node);
+    if (node)
+    {
+#ifdef DEBUG_GUI
+        std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+        emit endObjectModification(node);
+#ifdef DEBUG_GUI
+        std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+    }
 //          else if (data) emit endDataModification(data);
     emit(dialogClosed(Id_));
     deleteLater();
@@ -455,7 +559,16 @@ void ModifyObject::accept   ()
 {
     updateValues();
 
-    if (node)      emit endObjectModification(node);
+    if (node)
+    {
+#ifdef DEBUG_GUI
+        std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+        emit endObjectModification(node);
+#ifdef DEBUG_GUI
+        std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+    }
 //          else if (data) emit endDataModification(data);
     emit(dialogClosed(Id_));
     deleteLater();
