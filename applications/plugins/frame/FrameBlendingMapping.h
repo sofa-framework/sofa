@@ -56,8 +56,7 @@ using sofa::component::material::MaterialTypes;
 using sofa::component::material::GridMaterial;
 using defaulttype::FrameData;
 using defaulttype::SampleData;
-using sofa::component::topology::PointData;
-
+using namespace sofa::component::topology;
 
 /** Linear blend skinning, from a variety of input types to a variety of output types.
  */
@@ -133,7 +132,6 @@ public:
 
     // Adaptativity
     virtual void checkForChanges();
-    virtual void handleTopologyChange(core::topology::Topology* t);
     virtual bool insertFrame( const Vec3d& pos);
     virtual void removeFrame( const unsigned int index); // Index is relative to addedFrameIndices
 
@@ -169,6 +167,20 @@ protected:
 
     core::topology::BaseMeshTopology* to_topo; // Used to manage topological changes
 
+    class FramePointHandler : public TopologyDataHandler<Point,sofa::helper::vector<OutCoord> >
+    {
+    public:
+        typedef typename FrameBlendingMapping<TIn, TOut>::OutCoord OutCoord;
+        FramePointHandler(FrameBlendingMapping<TIn, TOut>* _map, PointData<sofa::helper::vector<OutCoord> >* _data) : TopologyDataHandler<Point, sofa::helper::vector<OutCoord> >(_data), m_map(_map) {}
+
+        void applyCreateFunction(unsigned int , OutCoord& ,
+                const Point & ,
+                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< double > &);
+
+    protected:
+        FrameBlendingMapping<TIn, TOut>* m_map;
+    };
 
 public:
     Data<bool> showBlendedFrame;
@@ -187,6 +199,8 @@ public:
     Data<bool> showDetF;
     Data<double> showDetFScaleFactor;
     Data<bool> isAdaptive;
+
+    FramePointHandler* pointHandler;
 
     helper::vector< helper::fixed_array <unsigned int,3> > triangles; ///< Topology of toModel (used for strain display)
     helper::vector< core::loader::PrimitiveGroup > trianglesGroups;  ///< triangle groups of toModel (used for restricting interpolation of a group to a label)
