@@ -5,11 +5,7 @@
 	  permits to have a good interpolation of the inside bead behaviors.-->
     <VisualStyle displayFlags="showVisual showForceFields" />
     <Node name="plane">
-        <OglModel name="plan" fileMesh="mesh/plane_loop_2.obj" rx="90" rz="90" scale=".2" dy="-2.01">
-            <Attribute type="material">
-                <Data value="Default Diffuse 1 1 0.4 0.4 1 Ambient 1 0.8 0.8 0.8 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
-            </Attribute>
-        </Object>
+        <OglModel name="plan" fileMesh="mesh/plane_loop_2.obj" rx="90" rz="90" scale=".2" dy="-2.01" material="Default Diffuse 1 1 0.4 0.4 1 Ambient 1 0.8 0.8 0.8 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
     </Node>
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
