@@ -60,7 +60,6 @@ template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<Vec3fTypes>;
 #endif
 
 
-#ifdef SOFA_DEV
 void UnilateralConstraintResolutionWithFriction::init(int line, double** w, double* force)
 {
     _W[0]=w[line  ][line  ];
@@ -125,8 +124,6 @@ void UnilateralConstraintResolutionWithFriction::store(int line, double* force, 
         _active = NULL; // Won't be used in the haptic thread
     }
 }
-
-#endif // SOFA_DEV
 
 
 } // namespace constraintset

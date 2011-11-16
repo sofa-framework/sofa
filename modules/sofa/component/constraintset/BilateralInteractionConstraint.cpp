@@ -44,7 +44,6 @@ using namespace sofa::helper;
 
 #ifndef SOFA_FLOAT
 
-#ifdef SOFA_DEV
 template<>
 void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
@@ -62,7 +61,6 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(std::
         offset += 3;
     }
 }
-#endif
 
 template <>
 void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
@@ -248,7 +246,6 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getVelocityViolation(defaultt
 
 }
 
-#ifdef SOFA_DEV
 template<>
 void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
@@ -266,7 +263,6 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(std::
         offset += 3;
     }
 }
-#endif
 
 #endif
 

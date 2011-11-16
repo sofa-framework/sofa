@@ -149,7 +149,6 @@ void SlidingConstraint<DataTypes>::getConstraintViolation(const core::Constraint
 }
 
 
-#ifdef SOFA_DEV
 template<class DataTypes>
 void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
@@ -159,7 +158,6 @@ void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::beh
     if(thirdConstraint)
         resTab[offset++] = new UnilateralConstraintResolution();
 }
-#endif
 
 
 template<class DataTypes>

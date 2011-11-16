@@ -42,7 +42,6 @@ namespace component
 
 namespace constraintset
 {
-#ifdef SOFA_DEV
 class UnilateralConstraintResolution : public core::behavior::ConstraintResolution
 {
 public:
@@ -109,8 +108,6 @@ protected:
     bool* _active; // Will set this after the resolution
 };
 
-#endif // SOFA_DEV
-
 
 template<class DataTypes>
 class UnilateralInteractionConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
@@ -172,11 +169,9 @@ protected:
     Real epsilon;
     bool yetIntegrated;
 
-#ifdef SOFA_DEV
     PreviousForcesContainer prevForces;
     bool* contactsStatus;
 //	sofa::helper::vector<bool> contactsStatus;
-#endif
 
     /// Computes constraint violation in position and stores it into resolution global vector
     ///
@@ -196,9 +191,7 @@ protected:
         : Inherit(object1, object2)
         , epsilon(Real(0.001))
         , yetIntegrated(false)
-#ifdef SOFA_DEV
         , contactsStatus(NULL)
-#endif
     {
     }
 
@@ -206,27 +199,21 @@ protected:
         : Inherit(object, object)
         , epsilon(Real(0.001))
         , yetIntegrated(false)
-#ifdef SOFA_DEV
         , contactsStatus(NULL)
-#endif
     {
     }
 
     UnilateralInteractionConstraint()
         : epsilon(Real(0.001))
         , yetIntegrated(false)
-#ifdef SOFA_DEV
         , contactsStatus(NULL)
-#endif
     {
     }
 
     virtual ~UnilateralInteractionConstraint()
     {
-#ifdef SOFA_DEV
         if(contactsStatus)
             delete[] contactsStatus;
-#endif
     }
 public:
     void clear(int reserve = 0)
@@ -265,10 +252,8 @@ public:
 
     virtual void getConstraintInfo(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas);
 
-#ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
     bool isActive();
-#endif
 
     void draw(const core::visual::VisualParams* vparams);
 };
