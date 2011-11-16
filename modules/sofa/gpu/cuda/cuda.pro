@@ -60,6 +60,7 @@ HEADERS += mycuda.h \
            CudaIdentityMapping.inl \
            CudaBarycentricMapping.h \
            CudaBarycentricMapping.inl \
+           CudaBarycentricMappingRigid.h \
            CudaRigidMapping.h \
            CudaRigidMapping.inl \
            CudaSubsetMapping.h \
