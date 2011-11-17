@@ -120,10 +120,10 @@ public:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_ADVANCED_CONSTRAINT_API SlidingConstraint< defaulttype::Vec3dTypes >;
+extern template class SOFA_CONSTRAINT_API SlidingConstraint< defaulttype::Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ADVANCED_CONSTRAINT_API SlidingConstraint< defaulttype::Vec3fTypes >;
+extern template class SOFA_CONSTRAINT_API SlidingConstraint< defaulttype::Vec3fTypes >;
 #endif
 #endif
 

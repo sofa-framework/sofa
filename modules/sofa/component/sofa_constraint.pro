@@ -27,7 +27,11 @@ HEADERS += initConstraint.h \
            constraintset/GenericConstraintSolver.h \
            constraintset/BilateralInteractionConstraint.h \
            constraintset/BilateralInteractionConstraint.inl \
-           animationloop/ConstraintAnimationLoop.h
+           animationloop/ConstraintAnimationLoop.h \
+           constraintset/StopperConstraint.h \
+           constraintset/StopperConstraint.inl \
+           constraintset/SlidingConstraint.h \
+           constraintset/SlidingConstraint.inl \
 
 
 SOURCES += initConstraint.cpp \
@@ -43,7 +47,9 @@ SOURCES += initConstraint.cpp \
            animationloop/FreeMotionAnimationLoop.cpp \
            constraintset/GenericConstraintSolver.cpp \
            constraintset/BilateralInteractionConstraint.cpp \
-           animationloop/ConstraintAnimationLoop.cpp
+           animationloop/ConstraintAnimationLoop.cpp \
+           constraintset/StopperConstraint.cpp \
+           constraintset/SlidingConstraint.cpp \
 
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){
