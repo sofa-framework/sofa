@@ -72,7 +72,6 @@ void TopologyEngineImpl< VecT>::init()
 
     sofa::core::topology::TopologyEngine::init();
 
-    sout << "************ TopologyEngine::init *************** " <<sendl;
     // Register Engine in containter list
     //if (m_topology)
     //   m_topology->addTopologyEngine(this);
@@ -90,11 +89,12 @@ void TopologyEngineImpl< VecT>::reinit()
 template <typename VecT>
 void TopologyEngineImpl< VecT>::update()
 {
+#ifndef NDEBUG // too much warnings
     sout << "TopologyEngine::update" << sendl;
     sout<< "Number of topological changes: " << m_changeList.getValue().size() << sendl;
+#endif
     this->cleanDirty();
     this->ApplyTopologyChanges();
-    sout << "TopologyEngine::update - end" << sendl;
 }
 
 
@@ -105,7 +105,9 @@ void TopologyEngineImpl< VecT>::registerTopology(sofa::core::topology::BaseMeshT
 
     if (m_topology == NULL)
     {
+#ifndef NDEBUG // too much warnings
         serr <<"Error: Topology is not dynamic" << sendl;
+#endif
         return;
     }
     else
@@ -145,7 +147,6 @@ void TopologyEngineImpl< VecT>::ApplyTopologyChanges()
 template <typename VecT>
 void TopologyEngineImpl< VecT>::linkToPointDataArray()
 {
-    std::cout <<"linkToPointDataArray" << std::endl;
     if (m_pointsLinked) // avoid second registration
         return;
 
@@ -167,7 +168,6 @@ void TopologyEngineImpl< VecT>::linkToPointDataArray()
 template <typename VecT>
 void TopologyEngineImpl< VecT>::linkToEdgeDataArray()
 {
-    std::cout <<"linkToEdgeDataArray" << std::endl;
     if (m_edgesLinked) // avoid second registration
         return;
 
@@ -189,7 +189,6 @@ void TopologyEngineImpl< VecT>::linkToEdgeDataArray()
 template <typename VecT>
 void TopologyEngineImpl< VecT>::linkToTriangleDataArray()
 {
-    std::cout <<"linkToTriangleDataArray" << std::endl;
     if (m_trianglesLinked) // avoid second registration
         return;
 

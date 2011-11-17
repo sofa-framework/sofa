@@ -1529,12 +1529,17 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     // FINAL STEP : Apply changes
 
     // Create all the points registered to be created
+    std::cout << "passe la: addPointsProcess" << std::endl;
     m_modifier->addPointsProcess(p_ancestors.size());
 
     // Warn for the creation of all the points registered to be created
+    std::cout << "passe la: addPointsWarning" << std::endl;
     m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
 
+    m_modifier->propagateTopologicalChanges();
+
     //Add and remove triangles lists
+    std::cout << "passe la: addRemoveTriangles" << std::endl;
     m_modifier->addRemoveTriangles (new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
 
     //WARNING can produce error TODO: check it
@@ -1589,6 +1594,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             //std::cout << "ancestors2Snap[i] " << ancestors2Snap[i] <<std::endl;
             //std::cout << "coefs2Snap[i] " << coefs2Snap[i] <<std::endl;
         }
+        std::cout << "passe la: movePointsProcess" << std::endl;
         m_modifier->movePointsProcess ( id2Snap, ancestors2Snap, coefs2Snap);
     }
 
@@ -2334,12 +2340,15 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
 
     // FINAL STEP : Apply changes
     // Create all the points registered to be created
+    std::cout << "passe la ensuite: addPointsProcess" << std::endl;
     m_modifier->addPointsProcess(p_ancestors.size());
 
     // Warn for the creation of all the points registered to be created
+    std::cout << "passe la ensuite: addPointsWarning" << std::endl;
     m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
 
     //Add and remove triangles lists
+    std::cout << "passe la ensuite: addRemoveTriangles" << std::endl;
     m_modifier->addRemoveTriangles (new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
 
 

@@ -157,8 +157,6 @@ void PointSetTopologyContainer::addEngineToList(sofa::core::topology::TopologyEn
 
 void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, sofa::helper::list<sofa::core::topology::TopologyEngine *> &my_enginesList)
 {
-    //std::cout << "updateDataEngineGraph()" << std::endl;
-
     // clear data stored by previous call of this function
     my_enginesList.clear();
     this->m_enginesGraph.clear();
@@ -167,8 +165,6 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
     sofa::core::objectmodel::DDGNode::DDGLinkContainer _outs = my_Data.getOutputs();
     sofa::core::objectmodel::DDGNode::DDGLinkIterator it;
-
-    //std::cout << "PointSetTopologyContainer - Number of outputs for points array: " << _outs.size() << std::endl;
 
     bool allDone = false;
 
@@ -192,7 +188,6 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
             if (topoEngine)
             {
-                //std::cout << "topoEngine here: "<< topoEngine->getName() << std::endl;
                 next_enginesLevel.push_back(topoEngine);
                 enginesNames.push_back(topoEngine->getName());
             }
@@ -221,7 +216,6 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
                 sofa::core::objectmodel::BaseData* data = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*itTmp) );
                 if (data)
                 {
-                    //std::cout << "PointSetTopologyModifier - Data linked to engine: " << data->getName() << std::endl;
                     next_GraphLevel.push_back((*itTmp));
                     dataNames.push_back(data->getName());
 
@@ -252,28 +246,32 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
     // check good loop escape
     if (cpt_security >= 1000)
-        std::cerr << "Error: PointSetTopologyContainer::updateTopologyEngineGraph reach end loop security." << std::endl;
+        serr << "Error: PointSetTopologyContainer::updateTopologyEngineGraph reach end loop security." << sendl;
 
 
     // Reorder engine graph by inverting order and avoiding duplicate engines
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::reverse_iterator it_engines_rev;
 
-    //std::cout << "DEBUG: _engines size: " << _engines.size() << std::endl;
-
+#ifndef NDEBUG
+    std::cout << "DEBUG: _engines size: " << _engines.size() << std::endl;
+#endif
 
     for ( it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
     {
         std::string name = (*it_engines_rev)->getName();
-        //std::cout << "DEBUG: engine name: " << name << std::endl;
+#ifndef NDEBUG
+        std::cout << "DEBUG: engine name: " << name << std::endl;
+#endif
         bool find = false;
 
         for ( it_engines = my_enginesList.begin(); it_engines!=my_enginesList.end(); ++it_engines)
         {
             std::string nameStored = (*it_engines)->getName();
-            //std::cout << "DEBUG: engine name stored: " << nameStored << std::endl;
+#ifndef NDEBUG
+            std::cout << "DEBUG: engine name stored: " << nameStored << std::endl;
+#endif
             if (nameStored == name)
             {
-                //std::cout << "DEBUG: found!" << std::endl;
                 find = true;
                 break;
             }
@@ -281,17 +279,8 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
         if (!find)
             my_enginesList.push_back((*it_engines_rev));
-        //this->addEngineToList((*it_engines_rev));
     }
-    /*
-       for ( it_engines = my_enginesList.begin(); it_engines!=my_enginesList.end(); ++it_engines)
-           std::cout << (*it_engines)->getName() << "   -------- ";
-       std::cout << std::endl;
 
-       std::cout << "updateDataEngineGraph() end" << std::endl;
-
-       this->displayDataGraph(my_Data);
-       */
     return;
 }
 

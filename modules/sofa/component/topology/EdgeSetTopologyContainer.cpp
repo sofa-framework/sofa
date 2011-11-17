@@ -572,10 +572,7 @@ void EdgeSetTopologyContainer::clear()
 
 void EdgeSetTopologyContainer::updateTopologyEngineGraph()
 {
-    std::cout << "EdgeSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
-
     this->updateDataEngineGraph(this->d_edge, this->m_enginesList);
-    //std::cout << "EdgeSetTopologyContainer::updateTopologyEngineGraph() end" << std::endl;
 
     // will concatenate with points one:
     PointSetTopologyContainer::updateTopologyEngineGraph();

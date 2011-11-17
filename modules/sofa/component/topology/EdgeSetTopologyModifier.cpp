@@ -909,7 +909,6 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isEdgeTopologyDirty()) // edge Data has not been touched
         return PointSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    std::cout << "edges is dirty" << std::endl;
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
@@ -917,7 +916,9 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
+#ifndef NDEBUG
             std::cout << "EdgeSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
+#endif
             topoEngine->update();
         }
     }
