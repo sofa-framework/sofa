@@ -70,6 +70,7 @@ FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
     , f_indices( BaseObject::initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( BaseObject::initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , _drawSize( BaseObject::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , f_coordinates( BaseObject::initData(&f_coordinates,"coordinates","Coordinates of the fixed points") )
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
