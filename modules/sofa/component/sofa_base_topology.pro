@@ -15,8 +15,6 @@ HEADERS += initBaseTopology.h \
            topology/EdgeSetTopologyAlgorithms.inl \
            topology/EdgeSetTopologyContainer.h \
            topology/EdgeSetTopologyModifier.h \
-           topology/EdgeSetTopologyEngine.h \
-           topology/EdgeSetTopologyEngine.inl \
            topology/GridTopology.h \
            topology/HexahedronSetGeometryAlgorithms.h \
            topology/HexahedronSetGeometryAlgorithms.inl \
@@ -24,11 +22,7 @@ HEADERS += initBaseTopology.h \
            topology/HexahedronSetTopologyAlgorithms.inl \
            topology/HexahedronSetTopologyContainer.h \
            topology/HexahedronSetTopologyModifier.h \
-           topology/HexahedronSetTopologyEngine.h \
-           topology/HexahedronSetTopologyEngine.inl \
            topology/MeshTopology.h \
-           topology/PointSetTopologyEngine.h \
-           topology/PointSetTopologyEngine.inl \
            topology/PointSetGeometryAlgorithms.h \
            topology/PointSetGeometryAlgorithms.inl \
            topology/PointSetTopologyAlgorithms.h \
@@ -41,8 +35,6 @@ HEADERS += initBaseTopology.h \
            topology/QuadSetTopologyAlgorithms.inl \
            topology/QuadSetTopologyContainer.h \
            topology/QuadSetTopologyModifier.h \
-           topology/QuadSetTopologyEngine.h \
-           topology/QuadSetTopologyEngine.inl \
            topology/RegularGridTopology.h \
            topology/SparseGridTopology.h \
            topology/TetrahedronSetGeometryAlgorithms.h \
@@ -51,16 +43,12 @@ HEADERS += initBaseTopology.h \
            topology/TetrahedronSetTopologyAlgorithms.inl \
            topology/TetrahedronSetTopologyContainer.h \
            topology/TetrahedronSetTopologyModifier.h \
-           topology/TetrahedronSetTopologyEngine.h \
-           topology/TetrahedronSetTopologyEngine.inl \
            topology/TriangleSetGeometryAlgorithms.h \
            topology/TriangleSetGeometryAlgorithms.inl \
            topology/TriangleSetTopologyAlgorithms.h \
            topology/TriangleSetTopologyAlgorithms.inl \
            topology/TriangleSetTopologyContainer.h \
            topology/TriangleSetTopologyModifier.h \
-           topology/TriangleSetTopologyEngine.h \
-           topology/TriangleSetTopologyEngine.inl \
            topology/TopologyData.h \
            topology/TopologyData.inl \
            topology/TopologyDataHandler.h \
