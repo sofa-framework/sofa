@@ -229,8 +229,7 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 # Uncomment if you want to compile CUDA GPU prototype (require NVIDIA CUDA SDK)
 # DEFINES += SOFA_GPU_CUDA
-
-# (sm_10 for G80, sm_11 for G92, sm_13 for GT200)
+# Compute capabilities (sm_10 for G80, sm_11 for G92, sm_13 for GT200, see http://developer.nvidia.com/cuda-gpus)
 # CUDA_FLAGS += --ptxas-options=-v -arch sm_20
 
 # this is necessary for gcc 4.4+
