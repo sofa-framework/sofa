@@ -68,16 +68,6 @@ public:
     typedef typename container_type::const_iterator const_iterator;
 
 
-    /// Constructors
-public:
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    TopologySubsetDataImpl( )
-        : sofa::core::topology::BaseTopologyData< VecT >(0, false, false),
-          m_topologicalEngine(NULL),
-          m_topology(NULL),
-          m_topologyHandler(NULL)
-    {}
-
     /// Constructor
     TopologySubsetDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : sofa::core::topology::BaseTopologyData< VecT >(data),
@@ -86,46 +76,8 @@ public:
           m_topologyHandler(NULL)
     {}
 
-    /// Constructor
-    explicit TopologySubsetDataImpl(const container_type& x)
-        : sofa::core::topology::BaseTopologyData< container_type >(0, false, false),
-          m_topologicalEngine(NULL),
-          m_topology(NULL),
-          m_topologyHandler(NULL)
-    {
-        container_type* data = this->beginEdit();
-        (*data) = x;
-        this->endEdit();
-    }
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    TopologySubsetDataImpl(InputIterator first, InputIterator last)
-        : sofa::core::topology::BaseTopologyData< container_type >(0, false, false),
-          m_topologicalEngine(NULL),
-          m_topology(NULL),
-          m_topologyHandler(NULL)
-    {
-        container_type* data = this->beginEdit();
-        data->assign(first, last);
-        this->endEdit();
-    }
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    TopologySubsetDataImpl(const_iterator first, const_iterator last)
-        : sofa::core::topology::BaseTopologyData< container_type >(0, false, false),
-          m_topologicalEngine(NULL),
-          m_topology(NULL),
-          m_topologyHandler(NULL)
-    {
-        container_type* data = this->beginEdit();
-        data->assign(first, last);
-        this->endEdit();
-    }
-#endif /* __STL_MEMBER_TEMPLATES */
-
     virtual ~TopologySubsetDataImpl();
+
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
@@ -189,27 +141,6 @@ public:
         : TopologySubsetDataImpl<Point, VecT>(data)
     {}
 
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    PointSubsetData() : TopologySubsetDataImpl<Point, VecT>()
-    {}
-
-    /// Constructor
-    PointSubsetData(typename TopologySubsetDataImpl<Point, VecT>::size_type n, const value_type& value): TopologySubsetDataImpl<Point, VecT>(n,value) {}
-
-    /// Constructor
-    explicit PointSubsetData(typename TopologySubsetDataImpl<Point, VecT>::size_type n): TopologySubsetDataImpl<Point, VecT>(n) {}
-    /// Constructor
-    PointSubsetData(const container_type& x): TopologySubsetDataImpl<Point, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    PointSubsetData(InputIterator first, InputIterator last): TopologySubsetDataImpl<Point, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    PointSubsetData(typename PointSubsetData<VecT>::const_iterator first, typename PointSubsetData<VecT>::const_iterator last): TopologySubsetDataImpl<Point, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
-
 protected:
     void linkToElementDataArray() {this->linkToPointDataArray();}
 };
@@ -232,27 +163,6 @@ public:
         : TopologySubsetDataImpl<Edge, VecT>(data)
     {}
 
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    EdgeSubsetData() : TopologySubsetDataImpl<Edge, VecT>()
-    {}
-
-    /// Constructor
-    EdgeSubsetData(typename TopologySubsetDataImpl<Edge, VecT>::size_type n, const value_type& value): TopologySubsetDataImpl<Edge, VecT>(n,value) {}
-
-    /// Constructor
-    explicit EdgeSubsetData(typename TopologySubsetDataImpl<Edge, VecT>::size_type n): TopologySubsetDataImpl<Edge, VecT>(n) {}
-    /// Constructor
-    EdgeSubsetData(const container_type& x): TopologySubsetDataImpl<Edge, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    EdgeSubsetData(InputIterator first, InputIterator last): TopologySubsetDataImpl<Edge, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    EdgeSubsetData(typename EdgeSubsetData<VecT>::const_iterator first, typename EdgeSubsetData<VecT>::const_iterator last): TopologySubsetDataImpl<Edge, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
-
 protected:
     void linkToElementDataArray() {this->linkToEdgeDataArray();}
 
@@ -273,27 +183,6 @@ public:
     TriangleSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologySubsetDataImpl<Triangle, VecT>(data)
     {}
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    TriangleSubsetData() : TopologySubsetDataImpl<Triangle, VecT>()
-    {}
-
-    /// Constructor
-    TriangleSubsetData(typename TopologySubsetDataImpl<Triangle, VecT>::size_type n, const value_type& value): TopologySubsetDataImpl<Triangle, VecT>(n,value) {}
-
-    /// Constructor
-    explicit TriangleSubsetData(typename TopologySubsetDataImpl<Triangle, VecT>::size_type n): TopologySubsetDataImpl<Triangle, VecT>(n) {}
-    /// Constructor
-    TriangleSubsetData(const container_type& x): TopologySubsetDataImpl<Triangle, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    TriangleSubsetData(InputIterator first, InputIterator last): TopologySubsetDataImpl<Triangle, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    TriangleSubsetData(typename TriangleSubsetData<VecT>::const_iterator first, typename TriangleSubsetData<VecT>::const_iterator last): TopologySubsetDataImpl<Triangle, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
     void linkToElementDataArray() {this->linkToTriangleDataArray();}
@@ -317,27 +206,6 @@ public:
         : TopologySubsetDataImpl<Quad, VecT>(data)
     {}
 
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    QuadSubsetData() : TopologySubsetDataImpl<Quad, VecT>()
-    {}
-
-    /// Constructor
-    QuadSubsetData(typename TopologySubsetDataImpl<Quad, VecT>::size_type n, const value_type& value): TopologySubsetDataImpl<Quad, VecT>(n,value) {}
-
-    /// Constructor
-    explicit QuadSubsetData(typename TopologySubsetDataImpl<Quad, VecT>::size_type n): TopologySubsetDataImpl<Quad, VecT>(n) {}
-    /// Constructor
-    QuadSubsetData(const container_type& x): TopologySubsetDataImpl<Quad, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    QuadSubsetData(InputIterator first, InputIterator last): TopologySubsetDataImpl<Quad, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    QuadSubsetData(typename QuadSubsetData<VecT>::const_iterator first, typename QuadSubsetData<VecT>::const_iterator last): TopologySubsetDataImpl<Quad, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
-
 protected:
     void linkToElementDataArray() {this->linkToQuadDataArray();}
 
@@ -359,27 +227,6 @@ public:
     TetrahedronSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologySubsetDataImpl<Tetrahedron, VecT>(data)
     {}
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    TetrahedronSubsetData() : TopologySubsetDataImpl<Tetrahedron, VecT>()
-    {}
-
-    /// Constructor
-    TetrahedronSubsetData(typename TopologySubsetDataImpl<Tetrahedron, VecT>::size_type n, const value_type& value): TopologySubsetDataImpl<Tetrahedron, VecT>(n,value) {}
-
-    /// Constructor
-    explicit TetrahedronSubsetData(typename TopologySubsetDataImpl<Tetrahedron, VecT>::size_type n): TopologySubsetDataImpl<Tetrahedron, VecT>(n) {}
-    /// Constructor
-    TetrahedronSubsetData(const container_type& x): TopologySubsetDataImpl<Tetrahedron, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    TetrahedronSubsetData(InputIterator first, InputIterator last): TopologySubsetDataImpl<Tetrahedron, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    TetrahedronSubsetData(typename TetrahedronSubsetData<VecT>::const_iterator first, typename TetrahedronSubsetData<VecT>::const_iterator last): TopologySubsetDataImpl<Tetrahedron, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
     void linkToElementDataArray() {this->linkToTetrahedronDataArray();}
@@ -403,27 +250,6 @@ public:
     HexahedronSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : TopologySubsetDataImpl<Hexahedron, VecT>(data)
     {}
-
-    /// Optionnaly takes 2 parameters, a creation and a destruction function that will be called when adding/deleting elements.
-    HexahedronSubsetData() : TopologySubsetDataImpl<Hexahedron, VecT>()
-    {}
-
-    /// Constructor
-    HexahedronSubsetData(typename TopologySubsetDataImpl<Hexahedron, VecT>::size_type n, const value_type& value): TopologySubsetDataImpl<Hexahedron, VecT>(n,value) {}
-
-    /// Constructor
-    explicit HexahedronSubsetData(typename TopologySubsetDataImpl<Hexahedron, VecT>::size_type n): TopologySubsetDataImpl<Hexahedron, VecT>(n) {}
-    /// Constructor
-    HexahedronSubsetData(const container_type& x): TopologySubsetDataImpl<Hexahedron, VecT>(x) {}
-
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    HexahedronSubsetData(InputIterator first, InputIterator last): TopologySubsetDataImpl<Hexahedron, VecT>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    HexahedronSubsetData(typename HexahedronSubsetData<VecT>::const_iterator first, typename HexahedronSubsetData<VecT>::const_iterator last): TopologySubsetDataImpl<Hexahedron, VecT>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
 
 protected:
     void linkToElementDataArray() {this->linkToHexahedronDataArray();}

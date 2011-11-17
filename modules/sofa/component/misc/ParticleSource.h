@@ -100,6 +100,7 @@ public:
         , f_start(initData(&f_start, (Real)0, "start", "Source starting time"))
         , f_stop(initData(&f_stop, (Real)1e10, "stop", "Source stopping time"))
         , f_canHaveEmptyVector(initData(&f_canHaveEmptyVector, (bool)false, "canHaveEmptyVector", ""))
+        , lastparticles(initData(&lastparticles, "lastparticles", "lastparticles indices"))
     {
         this->f_listening.setValue(true);
         f_center.beginEdit()->push_back(Coord()); f_center.endEdit();
