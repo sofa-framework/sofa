@@ -55,11 +55,9 @@ using namespace	sofa::component::topology;
 using namespace core::topology;
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyCreateFunction(unsigned int , MassType & t,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >&)
+void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyCreateFunction(unsigned int pointIndex, MassType &m, const Point &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    t=0;
+    m=0;
 }
 
 template <class DataTypes, class MassType>
@@ -70,6 +68,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeCreation(cons
 {
     if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
     {
+
         helper::WriteAccessor<Data<MassVector> > masses(this->m_topologyData);
         typename DataTypes::Real md=dm->getMassDensity();
         typename DataTypes::Real mass=(typename DataTypes::Real) 0;
@@ -111,11 +110,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeDestruction(c
             {
                 mass=(md*dm->edgeGeo->computeRestEdgeLength(edgeRemoved[i]))/(typename DataTypes::Real)2.0;
             }
-            // added mass on its two vertices
+            // removed mass on its two vertices
             masses[e[0]]-=mass;
             masses[e[1]]-=mass;
         }
-
     }
 }
 
@@ -142,12 +140,11 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleCreation(
             {
                 mass=(md*dm->triangleGeo->computeRestTriangleArea(triangleAdded[i]))/(typename DataTypes::Real)3.0;
             }
-            // removed  mass on its three vertices
+            // added mass on its three vertices
             masses[t[0]]+=mass;
             masses[t[1]]+=mass;
             masses[t[2]]+=mass;
         }
-
     }
 }
 
@@ -180,7 +177,6 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleDestructi
             //serr<< "mass vertex " << t[1]<< " = " << masses[t[1]]<<sendl;
             //serr<< "mass vertex " << t[2]<< " = " << masses[t[2]]<<sendl;
         }
-
     }
 }
 
@@ -207,7 +203,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronCreati
             {
                 mass=(md*dm->tetraGeo->computeRestTetrahedronVolume(tetrahedronAdded[i]))/(typename DataTypes::Real)4.0;
             }
-            // removed  mass on its four vertices
+            // added  mass on its four vertices
             masses[t[0]]+=mass;
             masses[t[1]]+=mass;
             masses[t[2]]+=mass;
@@ -243,6 +239,67 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronDestru
             masses[t[1]]-=mass;
             masses[t[2]]-=mass;
             masses[t[3]]-=mass;
+        }
+
+    }
+}
+
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronCreation(const sofa::helper::vector< unsigned int >& hexahedronAdded,
+        const sofa::helper::vector< Hexahedron >& /*elems*/,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
+{
+    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
+    {
+        helper::WriteAccessor<Data<MassVector> > masses(*this->m_topologyData);
+
+        typename DataTypes::Real md=dm->getMassDensity();
+        typename DataTypes::Real mass=(typename DataTypes::Real) 0;
+        unsigned int i;
+
+        for (i=0; i<hexahedronAdded.size(); ++i)
+        {
+            /// get the tetrahedron to be added
+            const Hexahedron &t=dm->_topology->getHexahedron(hexahedronAdded[i]);
+            // compute its mass based on the mass density and the tetrahedron volume
+            if(dm->hexaGeo)
+            {
+                mass=(md*dm->hexaGeo->computeRestHexahedronVolume(hexahedronAdded[i]))/(typename DataTypes::Real)8.0;
+            }
+            // added  mass on its four vertices
+            for (unsigned int j=0; j<8; ++j)
+                masses[t[j]]+=mass;
+        }
+
+    }
+}
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronDestruction(const sofa::helper::vector<unsigned int> & hexahedronRemoved)
+{
+    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
+    {
+        helper::WriteAccessor<Data<MassVector> > masses(*this->m_topologyData);
+
+        typename DataTypes::Real md=dm->getMassDensity();
+        typename DataTypes::Real mass=(typename DataTypes::Real) 0;
+        unsigned int i;
+
+        for (i=0; i<hexahedronRemoved.size(); ++i)
+        {
+            /// get the tetrahedron to be added
+            const Hexahedron &t=dm->_topology->getHexahedron(hexahedronRemoved[i]);
+            if(dm->hexaGeo)
+            {
+                // compute its mass based on the mass density and the tetrahedron volume
+                mass=(md*dm->hexaGeo->computeRestHexahedronVolume(hexahedronRemoved[i]))/(typename DataTypes::Real)8.0;
+            }
+            // removed  mass on its four vertices
+            for (unsigned int j=0; j<8; ++j)
+                masses[t[j]]-=mass;
         }
 
     }
@@ -518,8 +575,6 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 {
     // add the functions to handle topology changes.
-
-    //	VecMass& masses = *f_mass.beginEdit();
     pointHandler = new DMassPointHandler(this, &f_mass);
     f_mass.createTopologicalEngine(_topology, pointHandler);
     if (edgeGeo)
@@ -531,8 +586,8 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
     if (tetraGeo)
         f_mass.linkToTetrahedronDataArray();
     if (hexaGeo)
-        f_mass.registerTopologicalData();
-    //    f_mass.endEdit();
+        f_mass.linkToHexahedronDataArray();
+    f_mass.registerTopologicalData();
 }
 
 template <class DataTypes, class MassType>

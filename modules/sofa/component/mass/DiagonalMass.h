@@ -109,6 +109,7 @@ public:
     typedef sofa::component::topology::Edge Edge;
     typedef sofa::component::topology::Triangle Triangle;
     typedef sofa::component::topology::Tetrahedron Tetrahedron;
+    typedef sofa::component::topology::Hexahedron Hexahedron;
 
     class DMassPointHandler : public topology::TopologyDataHandler<Point,MassVector>
     {
@@ -116,7 +117,7 @@ public:
         typedef typename DiagonalMass<DataTypes,TMassType>::MassVector MassVector;
         DMassPointHandler(DiagonalMass<DataTypes,TMassType>* _dm, PointData<MassVector>* _data) : topology::TopologyDataHandler<Point,MassVector>(_data), dm(_dm) {}
 
-        void applyCreateFunction(unsigned int pointIndex, TMassType& m, const sofa::helper::vector< unsigned int > &,
+        void applyCreateFunction(unsigned int pointIndex, TMassType& m, const Point&, const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
 
         /// Apply adding edges elements.
@@ -142,6 +143,14 @@ public:
                 const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
         /// Apply removing tetrahedron elements.
         void applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
+
+        /// Apply adding hexahedron elements.
+        void applyHexahedronCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
+                const sofa::helper::vector< Hexahedron >& /*elems*/,
+                const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        /// Apply removing hexahedron elements.
+        void applyHexahedronDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
 
     protected:
         DiagonalMass<DataTypes,TMassType>* dm;
