@@ -61,15 +61,15 @@ void TopologyDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa:
         if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
         this->m_topologicalEngine->init();
         this->linkToElementDataArray();
-        this->getOwner()->sout<<"TopologyDataImpl: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "topology." << this->getOwner()->sendl;
+        this->getOwner()->sout<<"TopologyDataImpl: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "Topology." << this->getOwner()->sendl;
     }
     else if (_topology)
     {
-        this->getOwner()->sout<<"TopologyDataImpl: " << this->getName() << " initialized with static " << _topology->getClassName() << " topology." << this->getOwner()->sendl;
+        this->getOwner()->sout<<"TopologyDataImpl: " << this->getName() << " initialized with static " << _topology->getClassName() << " Topology." << this->getOwner()->sendl;
     }
     else
     {
-        this->getOwner()->serr<<"Error: TopologyDataImpl: " << this->getName() << " NULL topology given to createTopologicalEngine." << this->getOwner()->sendl;
+        this->getOwner()->sout<<"TopologyDataImpl: No Topology given to " << this->getName() << " to createTopologicalEngine. Topological changes will be disabled." << this->getOwner()->sendl;
     }
 }
 
@@ -88,7 +88,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::registerTopologicalData()
     if (this->m_topologicalEngine)
         this->m_topologicalEngine->registerTopology();
     else if (!this->m_topology)
-        this->getOwner()->serr<<"Error: TopologyDataImpl: " << this->getName() << " has no engine. Use createTopologicalEngine function before registerTopologicalData." << this->getOwner()->sendl;
+        this->getOwner()->sout<<"TopologyDataImpl: " << this->getName() << " has no engine. Topological changes will be disabled. Use createTopologicalEngine method before registerTopologicalData to allow topological changes." << this->getOwner()->sendl;
 }
 
 template <typename TopologyElementType, typename VecT>
@@ -97,7 +97,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::addInputData(sofa::core::obje
     if (this->m_topologicalEngine)
         this->m_topologicalEngine->addInput(_data);
     else if (!this->m_topology)
-        this->getOwner()->serr<<"Error: TopologyDataImpl: " << this->getName() << " has no engine. Use createTopologicalEngine function before addInputData." << this->getOwner()->sendl;
+        this->getOwner()->sout<<"Warning: TopologyDataImpl: " << this->getName() << " has no engine. Use createTopologicalEngine function before addInputData." << this->getOwner()->sendl;
 }
 
 
