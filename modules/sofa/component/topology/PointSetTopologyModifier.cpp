@@ -203,7 +203,6 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 
     getContext()->executeVisitor(&a);
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
     //TODO: temporary code to test topology engine pipeline.
     sout << sendl << "******* START ENGINE PROCESSING *********" << sendl;
 
@@ -223,8 +222,6 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
         (*it)->cleanDirty();
 
     sout << sendl << "******* START ENGINE PROCESSING END *********" << sendl;
-#endif
-
 
     // remove the changes we just propagated, so that we don't send them again next time
     m_container->resetTopologyChangeList();
@@ -258,15 +255,18 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 
     // get directly the list of engines created at init: case of removing.... for the moment
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+
+#ifndef NDEBUG
     std::cout << "points is dirty" << std::endl;
     std::cout << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size() << std::endl;
+#endif
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-            std::cout << "PointSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
+            sout << "PointSetTopologyModifier::performing: " << topoEngine->getName() << sendl;
             topoEngine->update();
         }
     }

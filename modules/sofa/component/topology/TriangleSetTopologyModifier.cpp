@@ -453,9 +453,6 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
 
     if(!edgeToBeRemoved.empty())
     {
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-        std::cout << "EDGE TO BE REMOVED HERE !!!!!!" << std::endl;
-#endif
         /// warn that edges will be deleted
         removeEdgesWarning(edgeToBeRemoved);
         propagateTopologicalChanges();
@@ -465,9 +462,6 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
 
     if(!vertexToBeRemoved.empty())
     {
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-        std::cout << "VERTEX TO BE REMOVED HERE !!!!!!" << std::endl;
-#endif
         removePointsWarning(vertexToBeRemoved);
         /// propagate to all components
         propagateTopologicalChanges();
