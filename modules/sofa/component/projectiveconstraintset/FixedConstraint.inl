@@ -63,7 +63,7 @@ bool FixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigne
 {
     if (fc)
     {
-        return true;
+        return false;
     }
     else
     {
