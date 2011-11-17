@@ -516,7 +516,26 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             if (!r) r = o;
             else return NULL; // several objects are possible, this is an ambiguous path
         }
-        return r;
+        if (r) return r;
+        // no object found, we look in parent nodes if the searched class is one of the known standard single components (state, topology, ...)
+        if (destType->hasParent(sofa::core::BaseState::GetClass()))
+            return destType->dynamicCast(node->getState());
+        else if (destType->hasParent(core::topology::BaseMeshTopology::GetClass()))
+            return destType->dynamicCast(node->getMeshTopology());
+        else if (destType->hasParent(core::topology::Topology::GetClass()))
+            return destType->dynamicCast(node->getTopology());
+        else if (destType->hasParent(core::visual::Shader::GetClass()))
+            return destType->dynamicCast(node->getShader());
+        else if (destType->hasParent(core::behavior::BaseAnimationLoop::GetClass()))
+            return destType->dynamicCast(node->getAnimationLoop());
+        else if (destType->hasParent(core::behavior::OdeSolver::GetClass()))
+            return destType->dynamicCast(node->getOdeSolver());
+        else if (destType->hasParent(core::collision::Pipeline::GetClass()))
+            return destType->dynamicCast(node->getCollisionPipeline());
+        else if (destType->hasParent(core::visual::VisualLoop::GetClass()))
+            return destType->dynamicCast(node->getVisualLoop());
+
+        return NULL;
     }
 }
 
