@@ -1078,7 +1078,7 @@ void TriangleSetTopologyContainer::updateTopologyEngineGraph()
     // will concatenate with edges one:
     EdgeSetTopologyContainer::updateTopologyEngineGraph();
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+#ifdef NDEBUG
     std::cout << "TriangleSetTopologyContainer::updateTopologyEngineGraph()" << std::endl;
     std::cout << "point m_enginesList.size(): " << PointSetTopologyContainer::m_enginesList.size() << std::endl;
     std::cout << "edge m_enginesList.size(): " << EdgeSetTopologyContainer::m_enginesList.size() << std::endl;
