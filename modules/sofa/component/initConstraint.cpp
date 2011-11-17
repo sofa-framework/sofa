@@ -53,6 +53,8 @@ SOFA_LINK_CLASS(LCPConstraintSolver)
 SOFA_LINK_CLASS(GenericConstraintSolver)
 SOFA_LINK_CLASS(BilateralInteractionConstraint)
 SOFA_LINK_CLASS(ConstraintAnimationLoop)
+SOFA_LINK_CLASS(StopperConstraint)
+SOFA_LINK_CLASS(SlidingConstraint)
 
 
 } // namespace component
