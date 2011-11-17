@@ -510,7 +510,9 @@ void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-            //std::cout << "performing: " << topoEngine->getName() << std::endl;
+#ifndef NDEBUG
+            std::cout << "QuadSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
+#endif
             topoEngine->update();
         }
     }

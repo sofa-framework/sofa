@@ -38,16 +38,6 @@ namespace topology
 {
 
 ///////////////////// Private functions on TopologyDataHandler changes /////////////////////////////
-/*template <typename TopologyElementType, typename VecT>
-bool TopologyDataHandler <TopologyElementType, VecT>::isTopologyDataRegistered()
-{
-    if (m_topologyData)
-        return true;
-    else
-        return false;
-}
-*/
-
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler <TopologyElementType, VecT>::swap( unsigned int i1, unsigned int i2 )
 {
