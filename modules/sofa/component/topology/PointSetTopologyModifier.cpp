@@ -95,16 +95,20 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
         const bool addDOF)
 {
     m_container->setPointTopologyToDirty();
+    const unsigned int nbPTotal = m_container->getNbPoints();
+    sofa::helper::vector <unsigned int> indices; indices.resize(nPoints);
+    for(unsigned int i=0; i<nPoints; ++i)
+        indices[i] = nbPTotal + i;
 
     if(addDOF)
     {
-        PointsAdded *e2 = new PointsAdded(nPoints, ancestors, coefs);
+        PointsAdded *e2 = new PointsAdded(nPoints, indices, ancestors, coefs);
         addStateChange(e2);
         propagateStateChanges();
     }
 
     // Warning that vertices just got created
-    PointsAdded *e = new PointsAdded(nPoints, ancestors, coefs);
+    PointsAdded *e = new PointsAdded(nPoints, indices, ancestors, coefs);
     this->addTopologyChange(e);
 }
 
@@ -255,14 +259,14 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     // get directly the list of engines created at init: case of removing.... for the moment
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
     std::cout << "points is dirty" << std::endl;
-    std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
+    std::cout << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size() << std::endl;
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-            std::cout << "performing: " << topoEngine->getName() << std::endl;
+            std::cout << "PointSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
             topoEngine->update();
         }
     }
