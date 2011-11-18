@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_INL
 
 #include <sofa/component/forcefield/OscillatingTorsionPressureForceField.h>
+#include <sofa/component/topology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
@@ -50,15 +51,6 @@ using namespace core::topology;
 template <class DataTypes> OscillatingTorsionPressureForceField<DataTypes>::~OscillatingTorsionPressureForceField()
 {
     //file.close();
-}
-// Handle topological changes
-template <class DataTypes> void  OscillatingTorsionPressureForceField<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-
-    trianglePressureMap.handleTopologyEvents(itBegin,itEnd);
 }
 
 
@@ -90,8 +82,6 @@ template <class DataTypes> void OscillatingTorsionPressureForceField<DataTypes>:
     origCenter.resize( numPts );
 
     trianglePressureMap.createTopologicalEngine(_topology);
-    trianglePressureMap.setCreateParameter( (void *) this );
-    trianglePressureMap.setDestroyParameter( (void *) this );
     trianglePressureMap.registerTopologicalData();
 
     initTriangleInformation();

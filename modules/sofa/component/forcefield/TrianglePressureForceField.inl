@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_INL
 
 #include <sofa/component/forcefield/TrianglePressureForceField.h>
+#include <sofa/component/topology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
@@ -51,15 +52,6 @@ using namespace core::topology;
 template <class DataTypes> TrianglePressureForceField<DataTypes>::~TrianglePressureForceField()
 {
 }
-// Handle topological changes
-template <class DataTypes> void  TrianglePressureForceField<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-
-    trianglePressureMap.handleTopologyEvents(itBegin,itEnd);
-}
 
 
 template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
@@ -78,8 +70,6 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
     }
 
     trianglePressureMap.createTopologicalEngine(_topology);
-    trianglePressureMap.setCreateParameter( (void *) this );
-    trianglePressureMap.setDestroyParameter( (void *) this );
     trianglePressureMap.registerTopologicalData();
 
     initTriangleInformation();

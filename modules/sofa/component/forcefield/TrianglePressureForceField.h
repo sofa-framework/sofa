@@ -27,7 +27,7 @@
 
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/topology/TopologySubsetData.h>
+#include <sofa/component/topology/TopologySparseData.h>
 
 
 
@@ -84,7 +84,7 @@ protected:
         }
     };
 
-    TriangleSubsetData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap;
+    TriangleSparseData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap;
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
@@ -102,7 +102,8 @@ protected:
 
 
     TrianglePressureForceField()
-        : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+        : trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
+        , pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
         , triangleList(initData(&triangleList,"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
         , normal(initData(&normal,"normal", "Normal direction for the plane selection of triangles"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
@@ -117,10 +118,6 @@ public:
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-    // Handle topological changes
-    virtual void handleTopologyChange();
-
 
     void draw(const core::visual::VisualParams* vparams);
 

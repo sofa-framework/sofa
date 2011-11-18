@@ -27,7 +27,7 @@
 
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/topology/TopologySubsetData.h>
+#include <sofa/component/topology/TopologySparseData.h>
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
@@ -85,7 +85,7 @@ protected:
         }
     };
 
-    EdgeSubsetData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap;
+    EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap;
 
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::TriangleSetTopologyContainer* _completeTopology;
@@ -103,8 +103,9 @@ protected:
 
 
 
-    EdgePressureForceField():
-        pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+    EdgePressureForceField()
+        : edgePressureMap(initData(&edgePressureMap, "edgePressureMap", "map between edge indices and their pressure"))
+        ,pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
         , edgeList(initData(&edgeList,"edgeList", "Indices of edges separated with commas where a pressure is applied"))
         , normal(initData(&normal,"normal", "Normal direction for the plane selection of edges"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
@@ -128,8 +129,6 @@ public:
         mparams->kFactor();
     };
 
-    // Handle topological changes
-    virtual void handleTopologyChange();
 
     void draw(const core::visual::VisualParams* vparams);
 

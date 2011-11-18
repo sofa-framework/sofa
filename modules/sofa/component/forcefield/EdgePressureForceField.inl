@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_INL
 
 #include <sofa/component/forcefield/EdgePressureForceField.h>
+#include <sofa/component/topology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>
@@ -53,17 +54,7 @@ using namespace core::topology;
 template <class DataTypes> EdgePressureForceField<DataTypes>::~EdgePressureForceField()
 {
 }
-// Handle topological changes
-template <class DataTypes>
-void  EdgePressureForceField<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
-
-    edgePressureMap.handleTopologyEvents(itBegin,itEnd);
-
-}
 
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::init()
@@ -90,10 +81,8 @@ void EdgePressureForceField<DataTypes>::init()
     }
 
     // init edgesubsetData engine
-    edgePressureMap.createTopologicalEngine(_completeTopology);
-    edgePressureMap.setCreateParameter( (void *) this );
+    edgePressureMap.createTopologicalEngine(_topology);
     edgePressureMap.registerTopologicalData();
-
 
     if (dmin.getValue()!=dmax.getValue())
     {
@@ -105,7 +94,6 @@ void EdgePressureForceField<DataTypes>::init()
     }
 
     initEdgeInformation();
-
 }
 
 
