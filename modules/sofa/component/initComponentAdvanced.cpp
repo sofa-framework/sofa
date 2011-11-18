@@ -49,7 +49,9 @@ void initComponentAdvanced()
     initSPHFluid();
     initVolumetricData();
     initNonUniformFEM();
+#ifdef SOFA_HAVE_EIGEN2
     initEigen2Solver();
+#endif
 }
 
 
