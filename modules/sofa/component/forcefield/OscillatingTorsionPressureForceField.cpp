@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP
-#ifdef TODOTOPO
+
 #include <sofa/component/forcefield/OscillatingTorsionPressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -66,4 +66,3 @@ template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<
 } // namespace component
 
 } // namespace sofa
-#endif

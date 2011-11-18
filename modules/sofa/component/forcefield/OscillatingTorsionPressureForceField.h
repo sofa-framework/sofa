@@ -27,7 +27,7 @@
 
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/topology/TopologySubsetData.h>
+#include <sofa/component/topology/TopologySparseData.h>
 
 
 
@@ -89,7 +89,7 @@ protected:
     std::ofstream file;
 
 public:
-    TriangleSubsetData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap;
+    TriangleSparseData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap;
     sofa::core::topology::BaseMeshTopology* _topology;
 
     Data<Real> moment;   // total moment/torque applied
@@ -114,11 +114,9 @@ protected:
     double rotationAngle;
 
 
-
-
-
-    OscillatingTorsionPressureForceField():
-        moment(initData(&moment, "moment", "Moment force applied on the entire surface"))
+    OscillatingTorsionPressureForceField()
+        : trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
+        , moment(initData(&moment, "moment", "Moment force applied on the entire surface"))
         , triangleList(initData(&triangleList, "triangleList", "Indices of triangles separated with commas where a pressure is applied"))
         , axis(initData(&axis, Coord(0,0,1), "axis", "Axis of rotation and normal direction for the plane selection of triangles"))
         , center(initData(&center,"center", "Center of rotation"))
@@ -141,9 +139,6 @@ public:
         //TODO: remove this line (avoid warning message) ...
         mparams->kFactor();
     };
-
-    // Handle topological changes
-    virtual void handleTopologyChange();
 
 
     void draw(const core::visual::VisualParams* vparams);

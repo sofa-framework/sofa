@@ -53,10 +53,10 @@ HEADERS += initBaseTopology.h \
            topology/TopologyData.inl \
            topology/TopologyDataHandler.h \
 	   topology/TopologyDataHandler.inl \ 
-#           topology/TopologySparseDataHandler.h \
-#           topology/TopologySparseDataHandler.inl \
-#           topology/TopologySparseData.h \
-#           topology/TopologySparseData.inl \
+           topology/TopologySparseDataHandler.h \
+           topology/TopologySparseDataHandler.inl \
+           topology/TopologySparseData.h \
+           topology/TopologySparseData.inl \
            topology/TopologySubsetData.h \
            topology/TopologySubsetData.inl \
            topology/TopologySubsetDataHandler.h \
