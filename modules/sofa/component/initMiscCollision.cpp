@@ -48,7 +48,6 @@ SOFA_LINK_CLASS(SpatialGridPointModel)
 SOFA_LINK_CLASS(TetrahedronModel)
 SOFA_LINK_CLASS(TetrahedronBarycentricPenalityContact)
 SOFA_LINK_CLASS(TetrahedronRayContact)
-SOFA_LINK_CLASS(TetrahedronBarycentricDistanceLMConstraintContact)
 SOFA_LINK_CLASS(TetrahedronFrictionContact)
 
 

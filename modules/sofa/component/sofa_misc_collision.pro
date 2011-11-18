@@ -16,7 +16,7 @@ HEADERS += initMiscCollision.h \
            collision/TetrahedronModel.h \
 
 SOURCES += initMiscCollision.cpp \
-	   collision/FrictionContact_DistanceGrid.cpp \
+		   collision/FrictionContact_DistanceGrid.cpp \
            collision/TriangleModelInRegularGrid.cpp \
            collision/TreeCollisionGroupManager.cpp \
            collision/RuleBasedContactManager.cpp \
@@ -27,7 +27,6 @@ SOURCES += initMiscCollision.cpp \
            collision/TetrahedronModel.cpp \
            collision/TetrahedronBarycentricPenalityContact.cpp \
            collision/TetrahedronRayContact.cpp \
-           collision/TetrahedronBarycentricDistanceLMConstraintContact.cpp \
            collision/TetrahedronFrictionContact.cpp \
 
 
@@ -38,7 +37,8 @@ SOURCES += collision/ParallelCollisionPipeline.cpp
 }
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){
-SOURCES += collision/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp
+SOURCES += collision/TetrahedronBarycentricDistanceLMConstraintContact.cpp \
+		   collision/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp
 }
 
 # Make sure there are no cross-dependencies
