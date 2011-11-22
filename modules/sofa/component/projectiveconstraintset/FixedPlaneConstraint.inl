@@ -88,16 +88,17 @@ void FixedPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsig
     }
 }
 template <class DataTypes>
-FixedPlaneConstraint<DataTypes>*  FixedPlaneConstraint<DataTypes>::addConstraint(int index)
+void FixedPlaneConstraint<DataTypes>::addConstraint(int index)
 {
     indices.beginEdit()->push_back(index);
-    return this;
+    indices.endEdit();
 }
 
 template <class DataTypes>
-FixedPlaneConstraint<DataTypes>*  FixedPlaneConstraint<DataTypes>::removeConstraint(int /*index*/)
+void FixedPlaneConstraint<DataTypes>::removeConstraint(int index)
 {
-    return this;
+    removeValue(*indices.beginEdit(),index);
+    indices.endEdit();
 }
 
 // -- Mass interface
