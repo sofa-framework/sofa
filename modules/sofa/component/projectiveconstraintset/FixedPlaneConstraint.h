@@ -89,9 +89,9 @@ protected:
 
     ~FixedPlaneConstraint();
 public:
-    FixedPlaneConstraint<DataTypes>* addConstraint(int index);
+    void addConstraint(int index);
 
-    FixedPlaneConstraint<DataTypes>* removeConstraint(int index);
+    void removeConstraint(int index);
 
     // -- Constraint interface
 
