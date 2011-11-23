@@ -1,0 +1,723 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+
+#ifndef IMAGE_IMAGETYPES_H
+#define IMAGE_IMAGETYPES_H
+
+#if  defined (SOFA_HAVE_FFMPEG)  || defined (SOFA_EXTLIBS_FFMPEG)
+#define cimg_use_ffmpeg
+#endif
+#ifdef SOFA_HAVE_OPENCV
+#define cimg_use_opencv
+#endif
+
+#include <CImg.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Quat.h>
+#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <sofa/helper/rmath.h>
+#include <sofa/helper/accessor.h>
+#include <sofa/helper/fixed_array.h>
+
+
+namespace sofa
+{
+
+namespace defaulttype
+{
+
+using namespace cimg_library;
+using namespace helper;
+
+//-----------------------------------------------------------------------------------------------//
+// 5d-image structure on top of a shared memory CImgList
+//-----------------------------------------------------------------------------------------------//
+
+template<typename _T>
+struct Image
+{
+    typedef _T T;
+    typedef Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
+
+protected:
+    CImgList<T> img; // list of images along temporal dimension. Each image is 4-dimensional (x,y,z,s) where s is the spectrum (e.g. channels for color images, vector or tensor values, etc.)
+
+public:
+    static const char* Name();
+
+    ///constructors/destructors
+    Image() {}
+
+    // shared instances
+    Image( const Image<T>& _img ):img(_img.getCImgList(),true)		{}
+    Image( const CImg<T>& _img ):img(_img,true)		{}
+    Image<T>& operator=(const Image<T>& im) {  img.assign(im.getCImgList(),true);	  return *this;		}
+
+    void clear() { img.assign(); }
+    ~Image() { clear(); }
+
+    //accessors
+    CImgList<T>& getCImgList() { return img; }
+    const CImgList<T>& getCImgList() const { return img; }
+
+    CImg<T>& getCImg(const unsigned int t=0) { if (t>=img.size())   return *img._data;		return img(t);    }
+    const CImg<T>& getCImg(const unsigned int t=0) const {   if (t>=img.size())   return *img._data;		return img(t);   }
+
+    imCoord getDimensions() const
+    {
+        imCoord dim;
+        if(!img.size()) dim.fill(0);
+        else
+        {
+            dim[0]=img(0).width();
+            dim[1]=img(0).height();
+            dim[2]=img(0).depth();
+            dim[3]=img(0).spectrum();
+            dim[4]=img.size();
+        }
+        return dim;
+    }
+
+    //affectors
+    void setDimensions(imCoord& dim)
+    {
+        cimglist_for(img,l) img(l).resize(dim[0],dim[1],dim[2],dim[3]);
+        if(img.size()>dim[4]) img.remove(dim[4],img.size()-1);
+        else if(img.size()<dim[4]) img.insert(dim[4]-img.size(),CImg<T>(dim[1],dim[2],dim[3]));
+    }
+
+
+    //iostream
+    inline friend std::istream& operator >> ( std::istream& in, Image<T>& im )
+    {
+        imCoord dim;  in>>dim;
+        im.setDimensions(dim);
+        return in;
+    }
+
+    friend std::ostream& operator << ( std::ostream& out, const Image<T>& im )
+    {
+        out<<im.getDimensions();
+        return out;
+    }
+
+    //basic functions to complement CImgList
+
+    // returns image of size [dimx,1,1,nbChannels]
+    CImg<unsigned int> get_histogram(const unsigned int dimx, const bool mergeChannels=true,const T value_min=(T)0, const T value_max=(T)0) const
+    {
+        if(!img.size()) return CImg<unsigned int>();
+        const unsigned int s=mergeChannels?1:img(0).spectrum();
+        CImg<unsigned int> res(dimx,1,1,s,0);
+        T vmin = value_min, vmax=value_max;
+        if (vmin>=vmax) { vmin = cimg::type<T>::min(); vmax=cimg::type<T>::max(); }
+        cimglist_for(img,l)
+        cimg_forXYZC(img(l),x,y,z,c)
+        {
+            const T val = img(l)(x,y,z,c);
+            ++res((int)((val-vmin)*(dimx-1)/(vmax-vmin)),0,0,mergeChannels?0:c);
+        }
+        return res;
+    }
+
+    // returns an image corresponing to a plane indexed by "coord" along "axis" and inside a bounding box
+    CImg<T> get_plane(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const unsigned int t=0) const
+    {
+        if(axis==0)       return getCImg(t).get_crop(coord,ROI[0][1],ROI[0][2],0,coord,ROI[1][1],ROI[1][2],getCImg(t).spectrum()-1).permute_axes("zyxc");
+        else if(axis==1)  return getCImg(t).get_crop(ROI[0][0],coord,ROI[0][2],0,ROI[1][0],coord,ROI[1][2],getCImg(t).spectrum()-1).permute_axes("xzyc");
+        else              return getCImg(t).get_crop(ROI[0][0],ROI[0][1],coord,0,ROI[1][0],ROI[1][1],coord,getCImg(t).spectrum()-1);
+    }
+
+    // returns a binary image cutting through 3D input meshes, corresponding to a plane indexed by "coord" along "axis" and inside a bounding box
+    // positions are in image coordinates
+    template<typename Real>
+    CImg<bool> get_slicedModels(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const ResizableExtVector<Vec<3,Real> >& position, const ResizableExtVector< component::visualmodel::VisualModelImpl::Triangle >& triangle, const ResizableExtVector< component::visualmodel::VisualModelImpl::Quad >& quad) const
+    {
+        const unsigned int dim[3]= {ROI[1][0]-ROI[0][0]+1,ROI[1][1]-ROI[0][1]+1,ROI[1][2]-ROI[0][2]+1};
+        CImg<bool> ret;
+        if(axis==0)  ret=CImg<bool>(dim[2],dim[1]);
+        else if(axis==1)  ret=CImg<bool>(dim[1],dim[2]);
+        else ret=CImg<bool>(dim[0],dim[1]);
+        ret.fill(false);
+
+        if(triangle.size()==0 && quad.size()==0) //pt visu
+        {
+            for (unsigned int i = 0; i < position.size() ; i++)
+            {
+                Vec<3,unsigned int> pt((unsigned int)round(position[i][0]),(unsigned int)round(position[i][1]),(unsigned int)round(position[i][2]));
+                if(pt[axis]==coord) if(pt[0]>=ROI[0][0] && pt[0]<=ROI[1][0]) if(pt[1]>=ROI[0][1] && pt[1]<=ROI[1][1])	if(pt[2]>=ROI[0][2] && pt[2]<=ROI[1][2])
+                            {
+                                if(axis==0)			ret(pt[2]-ROI[0][2],pt[1]-ROI[0][1])=true;
+                                else if(axis==1)	ret(pt[0]-ROI[0][0],pt[2]-ROI[0][2])=true;
+                                else				ret(pt[0]-ROI[0][0],pt[1]-ROI[0][1])=true;
+                            }
+
+            }
+        }
+        else
+        {
+            //unsigned int count;
+            Real alpha;
+            Vec<3,Real> v[4];
+            Vec<3,int> pt[4];
+            bool tru=true;
+
+            for (unsigned int i = 0; i < triangle.size() ; i++)  // box/ triangle intersection -> polygon with a maximum of 5 edges, to draw
+            {
+                for (unsigned int j = 0; j < 3 ; j++) { v[j] = position[triangle[i][j]]; pt[j]=Vec<3,int>((int)round(v[j][0]),(int)round(v[j][1]),(int)round(v[j][2])); }
+
+                vector<Vec<3,int> > pts;
+                for (unsigned int j = 0; j < 3 ; j++)
+                {
+                    if(pt[j][axis]==coord) pts.push_back(pt[j]);
+                    unsigned int k=(j==2)?0:j+1;
+                    if(pt[j][axis]<pt[k][axis])
+                    {
+                        alpha=(coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=(coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                    }
+                    else
+                    {
+                        alpha=(coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=(coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                    }
+                }
+                for (unsigned int j = 0; j < pts.size() ; j++)
+                {
+                    unsigned int k=(j==pts.size()-1)?0:j+1;
+                    {
+                        if(axis==0)			ret.draw_line(pts[j][2]-(int)ROI[0][2],pts[j][1]-(int)ROI[0][1],pts[k][2]-(int)ROI[0][2],pts[k][1]-(int)ROI[0][1],&tru);
+                        else if(axis==1)	ret.draw_line(pts[j][0]-(int)ROI[0][0],pts[j][2]-(int)ROI[0][2],pts[k][0]-(int)ROI[0][0],pts[k][2]-(int)ROI[0][2],&tru);
+                        else				ret.draw_line(pts[j][0]-(int)ROI[0][0],pts[j][1]-(int)ROI[0][1],pts[k][0]-(int)ROI[0][0],pts[k][1]-(int)ROI[0][1],&tru);
+                    }
+                }
+
+            }
+            for (unsigned int i = 0; i < quad.size() ; i++)
+            {
+                for (unsigned int j = 0; j < 4 ; j++) { v[j] = position[quad[i][j]]; pt[j]=Vec<3,int>((int)round(v[j][0]),(int)round(v[j][1]),(int)round(v[j][2])); }
+
+                vector<Vec<3,int> > pts;
+                for (unsigned int j = 0; j < 4 ; j++)
+                {
+                    if(pt[j][axis]==coord) pts.push_back(pt[j]);
+                    unsigned int k=(j==2)?0:j+1;
+                    if(pt[j][axis]<pt[k][axis])
+                    {
+                        alpha=(coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=(coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                    }
+                    else
+                    {
+                        alpha=(coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=(coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                    }
+                }
+                for (unsigned int j = 0; j < pts.size() ; j++)
+                {
+                    unsigned int k=(j==pts.size()-1)?0:j+1;
+                    {
+                        if(axis==0)			ret.draw_line(pts[j][2]-(int)ROI[0][2],pts[j][1]-(int)ROI[0][1],pts[k][2]-(int)ROI[0][2],pts[k][1]-(int)ROI[0][1],&tru);
+                        else if(axis==1)	ret.draw_line(pts[j][0]-(int)ROI[0][0],pts[j][2]-(int)ROI[0][2],pts[k][0]-(int)ROI[0][0],pts[k][2]-(int)ROI[0][2],&tru);
+                        else				ret.draw_line(pts[j][0]-(int)ROI[0][0],pts[j][1]-(int)ROI[0][1],pts[k][0]-(int)ROI[0][0],pts[k][1]-(int)ROI[0][1],&tru);
+                    }
+                }
+            }
+
+        }
+        return ret;
+    }
+};
+
+template<typename T> inline CImg<unsigned char> convertToUC(const CImg<T> &Image)	{	return CImg<unsigned char>((+Image).normalize(0,255)); 	}
+inline CImg<unsigned char> convertToUC(const CImg<bool> &Image)	{	return CImg<unsigned char>(Image)*255; }
+inline CImg<unsigned char> convertToUC(const CImg<char> &Image) {	return convertToUC(CImg<int>(Image));		}
+
+typedef Image<char> ImageC;
+typedef Image<unsigned char> ImageUC;
+typedef Image<int> ImageI;
+typedef Image<unsigned int> ImageUI;
+typedef Image<short> ImageS;
+typedef Image<unsigned short> ImageUS;
+typedef Image<long> ImageL;
+typedef Image<unsigned long> ImageUL;
+typedef Image<float> ImageF;
+typedef Image<double> ImageD;
+typedef Image<bool> ImageB;
+
+template<> inline const char* ImageC::Name() { return "ImageC"; }
+template<> inline const char* ImageUC::Name() { return "ImageUC"; }
+template<> inline const char* ImageI::Name() { return "ImageI"; }
+template<> inline const char* ImageUI::Name() { return "ImageUI"; }
+template<> inline const char* ImageS::Name() { return "ImageS"; }
+template<> inline const char* ImageUS::Name() { return "ImageUS"; }
+template<> inline const char* ImageL::Name() { return "ImageL"; }
+template<> inline const char* ImageUL::Name() { return "ImageUL"; }
+template<> inline const char* ImageF::Name() { return "ImageF"; }
+template<> inline const char* ImageD::Name() { return "ImageD"; }
+template<> inline const char* ImageB::Name() { return "ImageB"; }
+
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
+
+template<> struct DataTypeName< defaulttype::ImageC > { static const char* name() { return "ImageC"; } };
+template<> struct DataTypeName< defaulttype::ImageUC > { static const char* name() { return "ImageUC"; } };
+template<> struct DataTypeName< defaulttype::ImageI > { static const char* name() { return "ImageI"; } };
+template<> struct DataTypeName< defaulttype::ImageUI > { static const char* name() { return "ImageUI"; } };
+template<> struct DataTypeName< defaulttype::ImageS > { static const char* name() { return "ImageS"; } };
+template<> struct DataTypeName< defaulttype::ImageUS > { static const char* name() { return "ImageUS"; } };
+template<> struct DataTypeName< defaulttype::ImageL > { static const char* name() { return "ImageL"; } };
+template<> struct DataTypeName< defaulttype::ImageUL > { static const char* name() { return "ImageUL"; } };
+template<> struct DataTypeName< defaulttype::ImageF > { static const char* name() { return "ImageF"; } };
+template<> struct DataTypeName< defaulttype::ImageD > { static const char* name() { return "ImageD"; } };
+template<> struct DataTypeName< defaulttype::ImageB > { static const char* name() { return "ImageB"; } };
+
+/// \endcond
+
+//-----------------------------------------------------------------------------------------------//
+// Transforms between image and space/time
+//-----------------------------------------------------------------------------------------------//
+
+// generic interface
+template<typename _Real>
+struct ImageTransform
+{
+    typedef _Real Real;
+    typedef Vec<3,Real> Coord;		// 3d coords
+
+public:
+    virtual Coord fromImage(const Coord& ip) const {return ip;} // image coord to space transform
+    virtual Real fromImage(const Real& ip) const {return ip;}	// image index to time transform
+    virtual Coord toImage(const Coord& p) const {return p;}		// space coord to image transform
+    virtual Real toImage(const Real& p) const {return p;}		// time to image index transform
+
+    virtual void update()=0;
+};
+
+
+// abstract class with vector and iostream
+template<int N,typename _Real>
+struct TImageTransform : public ImageTransform<_Real>
+{
+    typedef ImageTransform<_Real> Inherited;
+    typedef typename Inherited::Real Real;
+    typedef typename Inherited::Coord Coord;
+    enum {size = N};
+    typedef Vec<size,Real> Params;	// transform parameters
+
+protected:
+    Params P;
+
+public:
+    TImageTransform():P() { P.clear(); }
+    TImageTransform(const Params& _P):P(_P) {}
+    TImageTransform(const TImageTransform& T):P(T.getParams()) {}
+
+    Params& getParams() {return P;}
+    const Params& getParams() const {return P;}
+
+    static const char* Name();
+
+    inline friend std::istream& operator >> ( std::istream& in, TImageTransform<N,Real>& T ) { in>>T.getParams();	return in; }
+    friend std::ostream& operator << ( std::ostream& out, const TImageTransform<N,Real>& T )	{ out<<T.getParams();	return out;	}
+
+    TImageTransform& operator=(const TImageTransform& T) 	{ P=T.getParams(); update(); return *this; }
+    void set(const Params& _P) { P=_P; 	update(); }
+};
+
+
+
+//  implementation of linear (scale+rotation+translation) and perspective transforms
+//  for perspective transforms (only for 2D images), the pinhole camera is located at ( scalex(dimx-1)/2, scaley(dimy-1)/2, -scalez/2)
+
+template<typename _Real>
+struct ImageLPTransform : public TImageTransform<12,_Real>
+{
+    typedef TImageTransform<12,_Real> Inherited; // 12 params : translations,rotations,scales,timeOffset,timeScale,isPerspective
+    typedef typename Inherited::Real Real;
+    typedef typename Inherited::Params Params;
+    typedef typename Inherited::Coord Coord;
+
+protected:
+    Real camx;	Real camy; // used only for perpective transforms (camera offset)
+
+public:
+    Coord& getTranslation() { return *reinterpret_cast<Coord*>(&P[0]); }
+    const Coord& getTranslation() const { return *reinterpret_cast<const Coord*>(&P[0]); }
+    Coord& getRotation() { return *reinterpret_cast<Coord*>(&P[3]); }
+    const Coord& getRotation() const { return *reinterpret_cast<const Coord*>(&P[3]); }
+    Coord& getScale() { return *reinterpret_cast<Coord*>(&P[6]); }
+    const Coord& getScale() const { return *reinterpret_cast<const Coord*>(&P[6]); }
+    Real& getOffsetT() { return *reinterpret_cast<Real*>(&P[9]); }
+    const Real& getOffsetT() const { return *reinterpret_cast<const Real*>(&P[9]); }
+    Real& getScaleT() { return *reinterpret_cast<Real*>(&P[10]); }
+    const Real& getScaleT() const { return *reinterpret_cast<const Real*>(&P[10]); }
+    Real& isPerspective() { return *reinterpret_cast<Real*>(&P[11]); }
+    const Real& isPerspective() const { return *reinterpret_cast<const Real*>(&P[11]); }
+
+    ImageLPTransform()	// identity
+        :Inherited()
+    {
+        getScale()[0]=getScale()[1]=getScale()[2]=getScaleT()=(Real)1.0;
+        camx = camy = (Real)0.0;
+    }
+
+    //internal data
+    helper::Quater<Real> qrotation; Coord axisrotation; Real phirotation; // "rotation" in other formats
+
+    void setCamPos(const Real cx,const Real cy) {this->camx=cx;  this->camy=cy; }
+
+    //internal data update
+    virtual void update()
+    {
+        Coord rot=getRotation() * (Real)M_PI / (Real)180.0;
+        qrotation = helper::Quater< Real >::createQuaterFromEuler(rot);
+        qrotation.quatToAxis(axisrotation,phirotation);
+        phirotation*=(Real)180.0/ (Real)M_PI;
+    }
+
+    //transform functions
+    virtual Coord fromImage(const Coord& ip) const
+    {
+        if(!isPerspective()) return qrotation.rotate( ip.linearProduct(getScale()) ) + getTranslation();
+        else
+        {
+            Coord sp=ip.linearProduct(getScale());
+            sp[0]+=(Real)2.0*ip[2]*getScale()[0]*(ip[0]-camx);
+            sp[1]+=(Real)2.0*ip[2]*getScale()[1]*(ip[1]-camy);
+            return qrotation.rotate( sp ) + getTranslation();
+        }
+    }
+    virtual Real fromImage(const Real& ip) const	{ return ip*getScaleT() + getOffsetT(); }
+    virtual Coord toImage(const Coord& p) const
+    {
+        if(!isPerspective()) return qrotation.inverseRotate( p-getTranslation() ).linearDivision(getScale());
+        else
+        {
+            Coord sp=qrotation.inverseRotate( p-getTranslation() );
+            sp[0]=(sp[0]/getScale()[0] + (Real)2.0*sp[2]*camx/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
+            sp[1]=(sp[1]/getScale()[1] + (Real)2.0*sp[2]*camy/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
+            sp[2]=(Real)0.0;
+            return sp;
+        }
+    }
+    virtual Real toImage(const Real& p) const		{ return (p - getOffsetT())/getScaleT(); }
+};
+
+
+
+//-----------------------------------------------------------------------------------------------//
+// Histogram structure
+//-----------------------------------------------------------------------------------------------//
+
+template<typename _T>
+struct Histogram
+{
+    typedef _T T;
+    typedef Image<T> ImageTypes;
+
+protected:
+    const ImageTypes* img;
+
+    unsigned int dimx;		// input number of bins
+    unsigned int dimy;		// input histogram image height
+    bool mergeChannels;		// sum histogram of all channels ?
+
+    double scaleVal;	double offsetVal;		// output histo abscisse to intensity transfer function :  intensity = x * scaleVal + offsetVal
+
+    CImg<unsigned int> histogram;	// output image of size [dimx,1,1,nbChannels]
+    CImg<bool> image;				// output image of size [dimx,dimy,1,nbChannels]
+
+    Vec<2,T> clamp;					// stored clamp values (for visualization)
+
+public:
+    static const char* Name() { return "Histogram"; }
+
+    Histogram(const unsigned int _dimx=256, const unsigned int _dimy=256, const bool _mergeChannels=true)
+        :dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels),
+         img(NULL),clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()))
+    { }
+
+    void setInput(const ImageTypes& _img) { img=&_img; update(); }
+
+    const CImg<bool>& getImage() const {return image;}
+    const CImg<unsigned int>& getHistogram() const {return histogram;}
+    const Vec<2,T>& getClamp() const {return clamp;}
+    void setClamp(const Vec<2,T> _clamp) { clamp=_clamp; }
+
+    void update()
+    {
+        if(!img) return;
+        if(!img->getCImgList().size()) return;
+        clamp[0] =img->getCImgList().min();
+        clamp[1] = img->getCImgList().max();
+        histogram = img->get_histogram(dimx,mergeChannels,clamp[0],clamp[1]);
+        offsetVal = (double)clamp[0];
+        scaleVal = (double)(clamp[1]-clamp[0])/(double)(dimx-1);
+        image = CImg<bool>(dimx,dimy,1,histogram.spectrum(),0);
+        bool tru=true;
+        cimg_forC(histogram,c) image.get_shared_channel(c).draw_graph(histogram.get_shared_channel(c),&tru,1,3,0);
+    }
+
+    T fromHistogram(const unsigned int i) const {return (T)(scaleVal*(double)i + offsetVal); }
+    unsigned int toHistogram(const T i) const {return (unsigned int)( ((double)i - offsetVal)/scaleVal ); }
+
+    inline friend std::istream& operator >> ( std::istream& in, Histogram& h )
+    {
+        Vec<2,T> clamp;
+        in>>clamp;
+        h.setClamp(clamp);
+        return in;
+    }
+
+    friend std::ostream& operator << ( std::ostream& out, const Histogram& h )
+    {
+        out<<h.getClamp();
+        return out;
+    }
+};
+
+
+//-----------------------------------------------------------------------------------------------//
+// Image plane selector (to be embedded into a Data, and visualized with ImagePlaneWidget)
+//-----------------------------------------------------------------------------------------------//
+
+template<typename _T>
+struct ImagePlane
+{
+    typedef _T T;
+    typedef Image<T> ImageTypes;
+    typedef typename ImageTypes::imCoord imCoord;
+    typedef Vec<3,unsigned int> pCoord;
+
+    typedef SReal Real; // put as template param ?
+    typedef ImageTransform<Real> TransformTypes;
+    typedef typename TransformTypes::Coord Coord;
+
+    typedef typename sofa::component::visualmodel::VisualModelImpl VisualModelTypes;
+    typedef std::vector<VisualModelTypes*> VecVisualModel;
+
+protected:
+    const ImageTypes* img;				// input image
+    VecVisualModel visualModels;		// input models to draw on images
+    const TransformTypes* transform;	// input transform
+
+    pCoord plane;				// input [x,y,z] coord of a selected planes. >=dimensions means no selection
+    unsigned int time;			// input selected time
+    Vec<2,T> clamp;				// input clamp values
+
+    bool imagePlaneDirty;			// Dirty when output plane images should be updated
+
+public:
+    static const char* Name() { return "ImagePlane"; }
+
+    ImagePlane()
+        :img(NULL), clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max())) , imagePlaneDirty(true), plane(pCoord(0,0,0)), time(0) // set by user or other objects
+    {
+    }
+
+    void setInput(const ImageTypes& _img,const TransformTypes& _transform, const VecVisualModel& _visualModels)
+    {
+        transform=&_transform;
+        img=&_img;
+        visualModels.assign(_visualModels.begin(),_visualModels.end());
+        this->imagePlaneDirty=true;
+    }
+
+    const pCoord& getPlane() const {return plane;}
+    const unsigned int& getTime() const {return time;}
+    const Vec<2,T>& getClamp() const {return clamp;}
+    imCoord getDimensions() const { return img->getDimensions(); }
+    const bool& isImagePlaneDirty() const {return imagePlaneDirty;}
+
+    void setPlane(const pCoord& p)
+    {
+        bool different=false;
+        for(unsigned int i=0; i<3; i++) if(plane[i]!=p[i]) { plane[i]=p[i]; different=true; }
+        if(different) this->imagePlaneDirty=true;
+    }
+
+    void setTime(const Real t, bool repeat=true)
+    {
+        if(!img->getDimensions()[4] || !transform) return;
+        Real t2=transform->toImage(t) ;
+        if(repeat) t2-=(Real)((int)((int)t2/img->getDimensions()[4])*img->getDimensions()[4]);
+        t2=(t2-floor(t2)>0.5)?ceil(t2):floor(t2); // nearest
+        if(t2<0) t2=0.0; else if(t2>=(Real)img->getDimensions()[4]) t2=(Real)img->getDimensions()[4]-1.0; // clamp
+        if(time!=(unsigned int)t2)
+        {
+            time=(unsigned int)t2;
+            this->imagePlaneDirty=true;
+        }
+    }
+
+
+    void setClamp(const Vec<2,T> _clamp)
+    {
+        if(clamp[0]!=_clamp[0] || clamp[1]!=_clamp[0])
+        {
+            clamp=_clamp;
+            this->imagePlaneDirty=true;
+        }
+    }
+
+    void setImagePlaneDirty(const bool val) { imagePlaneDirty=val; }
+
+    // returns value at point (for the widget)
+    CImg<T> get_point(const Coord& p) const
+    {
+        if(!this->img) return CImg<T>();
+        if(!this->img->getCImgList().size()) return CImg<T>();
+        if(this->time>=this->img->getDimensions()[4]) return CImg<T>();
+        for(unsigned int i=0; i<3; i++) if(p[i]<0 || p[i]>this->img->getDimensions()[i]-1) return CImg<T>();
+        CImg<T> ret(1,1,1,this->img->getDimensions()[3]);
+        cimg_forC(ret,c) ret(0,0,0,c)=this->img->getCImg(this->time).atXYZC((unsigned int)round(p[0]),(unsigned int)round(p[1]),(unsigned int)round(p[2]),c);
+        return ret;
+    }
+    // returns slice image
+    CImg<T> get_slice(const unsigned int index,const unsigned int axis,const Mat<2,3,unsigned int>& roi) const
+    {
+        if(!this->img) return CImg<T>();
+        if(!this->img->getCImgList().size()) return CImg<T>();
+        if(index>=this->img->getDimensions()[axis] || this->time>=this->img->getDimensions()[4]) return CImg<T>();			// discard out of volume planes
+        if((this->img->getDimensions()[0]==1 && axis!=0) || (this->img->getDimensions()[1]==1 && axis!=1) || (this->img->getDimensions()[2]==1 && axis!=2)) return CImg<T>();  // discard unit width/height images
+        return this->img->get_plane(index,axis,roi,this->time);
+    }
+    CImg<T> get_slice(const unsigned int index,const unsigned int axis) const
+    {
+        Mat<2,3,unsigned int> roi;
+        for(unsigned int i=0; i<3; i++) { roi[0][i]=0; roi[1][i]=img->getDimensions()[i]-1; }
+        return get_slice(index,axis,roi);
+    }
+
+    // returns 8-bits color image cutting through visual models
+    CImg<unsigned char> get_slicedModels(const unsigned int index,const unsigned int axis,const Mat<2,3,unsigned int>& roi) const
+    {
+        if(!this->img) return CImg<unsigned char>();
+        if(!this->img->getCImgList().size()) return CImg<unsigned char>();
+        if(index>=this->img->getDimensions()[axis] || this->time>=this->img->getDimensions()[4]) return CImg<unsigned char>();			// discard out of volume planes
+        if((this->img->getDimensions()[0]==1 && axis!=0) || (this->img->getDimensions()[1]==1 && axis!=1) || (this->img->getDimensions()[2]==1 && axis!=2)) return CImg<unsigned char>();  // discard unit width/height images
+
+        const unsigned int dim[3]= {roi[1][0]-roi[0][0]+1,roi[1][1]-roi[0][1]+1,roi[1][2]-roi[0][2]+1};
+        CImg<unsigned char> ret;
+        if(axis==0)  ret=CImg<unsigned char>(dim[2],dim[1],1,3);
+        else if(axis==1)  ret=CImg<unsigned char>(dim[1],dim[2],1,3);
+        else ret=CImg<unsigned char>(dim[0],dim[1],1,3);
+        ret.fill(0);
+
+        for(unsigned int m=0; m<visualModels.size(); m++)
+        {
+            ResizableExtVector<Coord> tposition; tposition.resize(visualModels[m]->getVertices().size());
+            for(unsigned int i=0; i<tposition.size(); i++) 			tposition[i]=transform->toImage(Coord((Real)visualModels[m]->getVertices()[i][0],(Real)visualModels[m]->getVertices()[i][1],(Real)visualModels[m]->getVertices()[i][2]));
+
+            helper::ReadAccessor<Data< Material > > mat(visualModels[m]->material);
+            const unsigned char color[3]= {(unsigned char)round(mat->diffuse[0]*255.),(unsigned char)round(mat->diffuse[1]*255.),(unsigned char)round(mat->diffuse[2]*255.)};
+
+            CImg<bool> tmp = this->img->get_slicedModels(index,axis,roi,tposition,visualModels[m]->getTriangles(),visualModels[m]->getQuads());
+            cimg_foroff(tmp,off) if(tmp[off]) {ret.get_shared_channel(0)[off]=color[0]; ret.get_shared_channel(1)[off]=color[1]; ret.get_shared_channel(2)[off]=color[2]; }
+        }
+
+        return ret;
+
+    }
+
+    CImg<unsigned char> get_slicedModels(const unsigned int index,const unsigned int axis) const
+    {
+        Mat<2,3,unsigned int> roi;
+        for(unsigned int i=0; i<3; i++) { roi[0][i]=0; roi[1][i]=img->getDimensions()[i]-1; }
+        return get_slicedModels(index,axis,roi);
+    }
+
+
+    // returns the transformed point (for the widget)
+    Coord get_pointCoord(const Coord& ip) const { return transform->fromImage(ip); }
+    // returns the 4 slice corners
+    Vec<4,Coord> get_sliceCoord(const unsigned int index,const unsigned int axis,const Mat<2,3,unsigned int>& roi) const
+    {
+        Vec<4,Coord> ip;
+        if(axis==0) // zy
+        {
+            ip[0] = Coord(index,roi[0][1]-0.5,roi[0][2]-0.5);
+            ip[1] = Coord(index,roi[0][1]-0.5,roi[1][2]+0.5);
+            ip[2] = Coord(index,roi[1][1]+0.5,roi[1][2]+0.5);
+            ip[3] = Coord(index,roi[1][1]+0.5,roi[0][2]-0.5);
+        }
+        else if (axis==1) // xz
+        {
+            ip[0] = Coord(roi[0][0]-0.5,index,roi[0][2]-0.5);
+            ip[1] = Coord(roi[1][0]+0.5,index,roi[0][2]-0.5);
+            ip[2] = Coord(roi[1][0]+0.5,index,roi[1][2]+0.5);
+            ip[3] = Coord(roi[0][0]-0.5,index,roi[1][2]+0.5);
+        }
+        else //xy
+        {
+            ip[0] = Coord(roi[0][0]-0.5,roi[0][1]-0.5,index);
+            ip[1] = Coord(roi[1][0]+0.5,roi[0][1]-0.5,index);
+            ip[2] = Coord(roi[1][0]+0.5,roi[1][1]+0.5,index);
+            ip[3] = Coord(roi[0][0]-0.5,roi[1][1]+0.5,index);
+        }
+
+        Vec<4,Coord> ret;
+        for(unsigned int i=0; i<4; i++) ret[i] = transform->fromImage(ip[i]);
+
+        return ret;
+    }
+    Vec<4,Coord> get_sliceCoord(const unsigned int index,const unsigned int axis) const
+    {
+        Mat<2,3,unsigned int> roi;
+        for(unsigned int i=0; i<3; i++) { roi[0][i]=0; roi[1][i]=img->getDimensions()[i]-1; }
+        return get_sliceCoord(index,axis,roi);
+    }
+
+
+
+
+
+    inline friend std::istream& operator >> ( std::istream& in, ImagePlane& p )
+    {
+        pCoord _plane;
+        in>>_plane;
+        p.setPlane(_plane);
+        return in;
+    }
+
+    friend std::ostream& operator << ( std::ostream& out, const ImagePlane& p )
+    {
+        out<<p.getPlane();
+        return out;
+    }
+
+
+};
+
+
+} // namespace defaulttype
+
+
+} // namespace sofa
+
+
+#endif

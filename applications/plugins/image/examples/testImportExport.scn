@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <ImageContainer  name="image" filename="textures/cubemap_bk.bmp" transform="-5 -5 0 0 0 0 0.1 0.1 30 0 1 1" />
+  <ImageExporter name="writer" src="@image" filename="test.raw" exportAtBegin="true" />
+  <ImageContainer  name="image2" filename="@writer.filename"/>
+  <ImageViewer  name="viewer2" src="@image2" />
+</Node>

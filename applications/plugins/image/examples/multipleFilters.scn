@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <ImageContainer  name="image" filename="data/pelvis_f.raw"/>
+  <ImageFilter  filter="1"  param="10"  name="engine1" src="@image" />
+  <ImageFilter  filter="7" param="60 60 60 2" name="engine2" inputImage="@engine1.outputImage" inputTransform="@engine1.outputTransform"/>
+  <ImageFilter  filter="15" param="1"  name="engine3" inputImage="@engine2.outputImage" inputTransform="@engine2.outputTransform" />
+  <ImageViewer  name="viewer" src="@engine3"  plane="50 50 20"/>
+  <OglModel fileMesh="data/pelvis_f.obj" color="1 .4 0.5 1" />
+</Node>
