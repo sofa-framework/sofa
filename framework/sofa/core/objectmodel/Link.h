@@ -475,22 +475,45 @@ public:
     {
         if (str.empty())
             return true;
-        std::istringstream istr( str.c_str() );
-        std::string path;
+
         bool ok = true;
-        while (istr >> path)
+
+        // Allows spaces in links values for single links
+        if (!getFlag(BaseLink::FLAG_MULTILINK))
         {
             DestType* ptr = NULL;
-            if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, path, this))
+
+            if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, str, this))
             {
                 ok = false;
             }
-            else if (path[0] != '@')
+            else if (str[0] != '@')
             {
                 ok = false;
             }
-            add(ptr, path);
+
+            add(ptr, str);
         }
+        else
+        {
+            std::istringstream istr( str.c_str() );
+            std::string path;
+
+            while (istr >> path)
+            {
+                DestType* ptr = NULL;
+                if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, path, this))
+                {
+                    ok = false;
+                }
+                else if (path[0] != '@')
+                {
+                    ok = false;
+                }
+                add(ptr, path);
+            }
+        }
+
         return ok;
     }
 
