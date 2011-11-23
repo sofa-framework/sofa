@@ -1,0 +1,30 @@
+\documentclass[a4paper,11pt]{article}
+\input{../../../../doc/macros_docu} % This file is in parent directory. Your TEXINPUTS environment variable must include .. to reach this file. Example: setenv TEXINPUTS ..:../..:${TEXINPUTS}
+
+% ---- format de page A4
+	\setlength{\textwidth }{16cm}	% largeur de ligne
+	\setlength{\textheight}{23cm}   % hauteur du texte
+	\setlength{\oddsidemargin}{0cm} % marge pages impaires
+	\setlength{\evensidemargin}{0cm}% marge pages paires
+	\setlength{\topmargin}{0cm} 	
+	\setlength{\headheight}{14pt} 
+	\setlength{\headsep}{0.5cm} 
+
+
+% Title Page
+\title{Image Plugin}
+\author{The \sofa{} team}
+\date{2011}
+% \author{Benjamin Gilles\\ {\small INRIA-CNRS, France}}
+
+\begin{document} 
+\maketitle
+
+\begin{abstract}
+This document describes the \sofa{} image plugin.
+\end{abstract}
+
+\input{imagePlugin_body}
+
+\end{document}          
+

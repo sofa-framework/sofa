@@ -349,6 +349,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 # Uncomment if you want to use the plugin Frame
 # DEFINES += SOFA_HAVE_FRAME
 
+# Uncomment if you want to use the plugin Image
+# DEFINES += SOFA_HAVE_IMAGE
+
 # Uncomment if you want to use the plugin Registration
 # DEFINES += SOFA_HAVE_REGISTRATION
 

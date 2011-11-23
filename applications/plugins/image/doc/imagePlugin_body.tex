@@ -1,0 +1,83 @@
+%------------------------------------------------------------------------------------------------------
+\section{Overview}
+
+
+%------------------------------------------------------------------------------------------------------
+\section{Image Type}
+
+\noindent The \texttt{Image} data type is instantiated on the pixel types. The resulting \texttt{Image} types are:  
+\begin{itemize}
+	\item \texttt{ImageC}  (char),
+	\item \texttt{ImageUC} (unsigned char),
+	\item \texttt{ImageI}  (int),
+	\item \texttt{ImageUI} (unsigned int),
+	\item \texttt{ImageS}  (short),
+	\item \texttt{ImageUS} (unsigned short),
+	\item \texttt{ImageL}  (long),
+	\item \texttt{ImageUL} (unsigned long),
+	\item \texttt{ImageF}  (float),
+	\item \texttt{ImageD}  (double),
+	\item \texttt{ImageB}  (bool).
+\end{itemize}
+
+\noindent All components of the plugin are instantiated on the image types (\texttt{ImageUC} by default).
+
+\noindent Images have a total of five dimensions: the spatial dimensions $[x,y,z]$, the channels (for instance the three $rgb$ color channels, the three values of a vectorial image, the six values of a tensor image, etc.) and the time.
+
+\noindent Internally, \sofa{} uses the open-source CImg library (\url{http://cimg.sourceforge.net/}) to store and process images. 
+
+%------------------------------------------------------------------------------------------------------
+\section{Image Transformations}
+
+\noindent Image transformation types have been implemented to describe the relation between 5d image integer coordinates and the real 3d spatial and temporal coordinate. They are instantiated on Reals (double or float precisions).
+
+\noindent Currently, linear (scale+rotation+translation) and perspective transforms are implemented using a single structure. Therefore, components do not need to be instantiated on the transformation types (yet). A transformation vector is a concatenation of $12$ parameters: spatial translation + rotation ($3$ Euler angles in degrees) + spatial scale (=pixel spacing) + temporal offset + temporal scale + a boolean to switch between linear and perspective transforms. For instance the translation  $[1,2,3]$ and orientation $[10,20,30]$ of a 3D image of voxel size $[4,5,6]$ can be described in a scene as : $transform="1 \ 2 \ 3 \ 10 \ 20 \ 30 \ 4 \ 5 \ 6 \ 0 \ 1 \ 0"$.
+
+\noindent Perspective transforms (only for 2D and 2D+t images) model pinhole cameras. Cameras are located in space at the position $[scale_x(dim_x-1)/2, scale_y(dim_y-1)/2, -scale_z/2]$. 
+
+\noindent Transformations are encapsulated into \sofa{} \texttt{Data}, and can therefore be easily transmitted from one component to another. 
+
+
+%------------------------------------------------------------------------------------------------------
+\section{Input / Output}
+
+\noindent The following formats are supported by the ImageContainer (reader) and ImageExporter (writer) components :
+
+\begin{itemize}
+\item 2D:
+	\begin{itemize}
+	\item ".bmp", ".jfif", ".jif", ".ppm", ".pgm", ".pnm", ".pfm", ".exr", ".cr2", ".crw", ".dcr", ".mrw", ".nef", ".orf", ".pix", ".ptx", ".raf", ".srf"
+	\item compressed (requires imagemagick \url{http://www.imagemagick.org/Magick++}): ".png", ".jpg", ".jpeg", ".jpe", ".tiff", ".tif"
+	\end{itemize}
+\item 2D + time:
+	\begin{itemize}
+	\item videos (requires ffmpeg \url{http://www.ffmpeg.org}): ".avi", ".mov", ".asf", ".divx", ".flv", ".mpg", ".m1v", ".m2v", ".m4v", ".mjp", ".mkv", ".mpe", ".movie", ".ogm", ".ogg", ".qt", ".rm", ".vob", ".wmv", ".xvid", ".mpeg"	
+	\end{itemize}
+\item 3D:
+	\begin{itemize}
+	\item raw + header file : ".raw" + ".nfo"
+	\item dicom (requires xmedcon (\url{http://xmedcon.sourceforge.net/}): ".dcm", ".dicom"
+	\item parrec: ".par", ".rec"
+	\item analyze: ".hdr", ".nii"
+	\item inria: ".inr"
+	\end{itemize}
+\item 3D + time :
+	\begin{itemize}
+	\item cimg: ".cimg"
+	\end{itemize}
+\end{itemize}
+
+\noindent Some formats (".par", ".rec" and ".inr") implement the pixel size. The spatial scale transformation parameters are retrieved automatically by the reader. For the "raw" format, a separate header file containing the transformation and the image dimensions is read/written. For the other formats, the transformation needs to be defined in the xml scene.
+
+%------------------------------------------------------------------------------------------------------
+\section{Engines}
+
+\noindent By default, images are shared memory images. So, there is no memory overhead if they are referenced into different components using \texttt{Data}. Engines can be implemented to process images. The classic image filters are implemented through the \texttt{ImageFilter} component (CImg binding).
+
+%------------------------------------------------------------------------------------------------------
+\section{GUI}
+
+
+%------------------------------------------------------------------------------------------------------
+\section{Implementation}
+

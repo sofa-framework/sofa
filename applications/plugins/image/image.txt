@@ -1,0 +1,20 @@
+
+************************************
+*         image.txt    	   	   *
+************************************
+
+
+
+AUTHORS :
+ - Benjamin Gilles
+
+
+
+
+LICENCE :
+ - LGPL
+
+
+
+OTHER COMMENTS :
+

@@ -70,6 +70,10 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 	contains(DEFINES, SOFA_HAVE_FRAME) {
 		usePlugin(frame)
 	}
+	
+	contains(DEFINES, SOFA_HAVE_IMAGE) {
+		usePlugin(image)
+	}	
 
 	contains (DEFINES, SOFA_HAVE_REGISTRATION) {
 		usePlugin(Registration)
