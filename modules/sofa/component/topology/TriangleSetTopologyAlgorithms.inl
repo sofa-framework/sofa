@@ -938,8 +938,10 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     std::cout << "baryCoefs: " << p_baryCoefs << std::endl;
     std::cout << "points2Snap: " << points2Snap << std::endl;
     std::cout << "*********************************" << std::endl;
-    */
+           */
 
+
+    bool error = false;
 
     // STEP 2: Computing triangles along path
 
@@ -975,7 +977,12 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                     }
                 }
                 if(!test)
+                {
+#ifndef NDEBUG
                     std::cout << " Error: SplitAlongPath: error in POINT::EDGE case, the edge between these points has not been found." << std::endl;
+#endif
+                    error = true;
+                }
 
                 break;
             }
@@ -986,6 +993,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 Edge theEdgeSecond = m_container->getEdge(edgeIDSecond);
                 TriangleID triId;
                 Triangle tri;
+                bool found = false;
 
                 sofa::helper::vector <unsigned int> triangleedgeshell = m_container->getTrianglesAroundEdge (edgeIDSecond);
 
@@ -1003,6 +1011,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                         triangles_barycoefs[triangles_barycoefs.size()-2].push_back (0.5); //that is the question... ??
                         triangles_ancestors[triangles_ancestors.size()-1].push_back (triId);
                         triangles_barycoefs[triangles_barycoefs.size()-1].push_back (0.5);
+                        found = true;
 
                         break;
                     }
@@ -1012,7 +1021,22 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 if (vertxInTriangle == -1)
                 {
+#ifndef NDEBUG
                     std::cout << " Error: SplitAlongPath: error in triangle in POINT::EDGE case" << std::endl;
+
+                    std::cout << "*********************************" << std::endl;
+                    std::cout << "topoPath_list: " << topoPath_list << std::endl;
+                    std::cout << "indices_list: " << indices_list << std::endl;
+                    std::cout << "new_edge_points: " << new_edge_points << std::endl;
+                    std::cout << "nb new points: " << p_ancestors.size() << std::endl;
+                    std::cout << "ancestors: " << p_ancestors << std::endl;
+                    std::cout << "baryCoefs: " << p_baryCoefs << std::endl;
+                    std::cout << "points2Snap: " << points2Snap << std::endl;
+                    std::cout << "*********************************" << std::endl;
+#endif
+
+                    error = true;
+
                     break;
                 }
 
@@ -1102,7 +1126,10 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 if (vertxInTriangle == -1)
                 {
+#ifndef NDEBUG
                     std::cout << " Error: SplitAlongPath: error in triangle in EDGE::POINT case" << std::endl;
+#endif
+                    error = true;
                     break;
                 }
 
@@ -1209,7 +1236,10 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 if (edgeInTriangle == -1)
                 {
+#ifndef NDEBUG
                     std::cout << " Error: SplitAlongPath: error in triangle in EDGE::TRIANGLE case" << std::endl;
+#endif
+                    error = true;
                     break;
                 }
 
@@ -1291,7 +1321,10 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 if (edgeInTriangle == -1)
                 {
+#ifndef NDEBUG
                     std::cout << " Error: SplitAlongPath: error in triangle in TRIANGLE::EDGE case" << std::endl;
+#endif
+                    error = true;
                     break;
                 }
 
@@ -1334,7 +1367,10 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 if (triangleIDSecond != triangleIDFirst)
                 {
+#ifndef NDEBUG
                     std::cout << " Error: SplitAlongPath: incision not in the mesh plan not supported yet, in TRIANGLE::TRIANGLE case" << std::endl;
+#endif
+                    error = true;
                     break;
                 }
 
@@ -1524,22 +1560,30 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
         default:
             break;
         }
+
+        if (error)
+        {
+#ifndef NDEBUG
+            std::cout << "ERROR: in the incision path. " << std::endl;
+#endif
+            return -1;
+        }
     }
 
     // FINAL STEP : Apply changes
 
     // Create all the points registered to be created
-    std::cout << "passe la: addPointsProcess" << std::endl;
+    //std::cout << "passe la: addPointsProcess" << std::endl;
     m_modifier->addPointsProcess(p_ancestors.size());
 
     // Warn for the creation of all the points registered to be created
-    std::cout << "passe la: addPointsWarning" << std::endl;
+    //std::cout << "passe la: addPointsWarning" << std::endl;
     m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
 
     m_modifier->propagateTopologicalChanges();
 
     //Add and remove triangles lists
-    std::cout << "passe la: addRemoveTriangles" << std::endl;
+    //std::cout << "passe la: addRemoveTriangles" << std::endl;
     m_modifier->addRemoveTriangles (new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
 
     //WARNING can produce error TODO: check it
@@ -1594,7 +1638,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             //std::cout << "ancestors2Snap[i] " << ancestors2Snap[i] <<std::endl;
             //std::cout << "coefs2Snap[i] " << coefs2Snap[i] <<std::endl;
         }
-        std::cout << "passe la: movePointsProcess" << std::endl;
+        //std::cout << "passe la: movePointsProcess" << std::endl;
         m_modifier->movePointsProcess ( id2Snap, ancestors2Snap, coefs2Snap);
     }
 
@@ -2340,15 +2384,15 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
 
     // FINAL STEP : Apply changes
     // Create all the points registered to be created
-    std::cout << "passe la ensuite: addPointsProcess" << std::endl;
+    //std::cout << "passe la ensuite: addPointsProcess" << std::endl;
     m_modifier->addPointsProcess(p_ancestors.size());
 
     // Warn for the creation of all the points registered to be created
-    std::cout << "passe la ensuite: addPointsWarning" << std::endl;
+    //std::cout << "passe la ensuite: addPointsWarning" << std::endl;
     m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
 
     //Add and remove triangles lists
-    std::cout << "passe la ensuite: addRemoveTriangles" << std::endl;
+    //std::cout << "passe la ensuite: addRemoveTriangles" << std::endl;
     m_modifier->addRemoveTriangles (new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
 
 
