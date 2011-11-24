@@ -538,8 +538,13 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
         // -- STEP 5: Spliting elements along path (incision path is stock inside "new_edges")
         sofa::helper::vector< unsigned int > new_edges;
-        triangleAlgorithm->SplitAlongPath(last_indexPoint, coord_a, BaseMeshTopology::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, epsilonSnap, epsilonBorderSnap);
+        int result = triangleAlgorithm->SplitAlongPath(last_indexPoint, coord_a, BaseMeshTopology::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, epsilonSnap, epsilonBorderSnap);
 
+        if (result == -1)
+        {
+            incision.indexPoint = last_indexPoint;
+            return false;
+        }
 
         // -- STEP 6: Incise along new_edges path (i.e duplicating edges to create an incision)
         sofa::helper::vector<unsigned int> new_points;
@@ -566,7 +571,8 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
             if (!end_points.empty())
                 incision.indexPoint = end_points.back();
         }
-
+        if (!end_points.empty())
+            incision.indexPoint = end_points.back();
 
         // -- STEP 8: Propagating topological events.
         triangleModifier->propagateTopologicalChanges();

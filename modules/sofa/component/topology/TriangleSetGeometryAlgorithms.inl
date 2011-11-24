@@ -1468,19 +1468,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     }
 
 
-    /*
-      std::cout << "*********************************" << std::endl;
-      std::cout << "ind_t_current: " << ind_t_current << std::endl;
-      std::cout << "p_current: " << p_current << std::endl;
-      std::cout << "coord_t: " << coord_t << std::endl;
-      std::cout << "coord_k: " << coord_k << std::endl;
-      std::cout << "indices: " << indices << std::endl;
-      std::cout << "last_point: " << last_point << std::endl;
-      std::cout << "a: " << a << std::endl;
-      std::cout << "b: " << b << std::endl;
-      std::cout << "is_intersected: "<< is_intersected << std::endl;
-      std::cout << "*********************************" << std::endl;
-    */
+#ifndef NDEBUG
+    std::cout << "*********************************" << std::endl;
+    std::cout << "ind_t_current: " << ind_t_current << std::endl;
+    std::cout << "p_current: " << p_current << std::endl;
+    std::cout << "coord_t: " << coord_t << std::endl;
+    std::cout << "coord_k: " << coord_k << std::endl;
+    std::cout << "indices: " << indices << std::endl;
+    std::cout << "last_point: " << last_point << std::endl;
+    std::cout << "a: " << a << std::endl;
+    std::cout << "b: " << b << std::endl;
+    std::cout << "is_intersected: "<< is_intersected << std::endl;
+    std::cout << "*********************************" << std::endl;
+#endif
 
     coord_k_test=coord_k;
     dist_min=(b-a)*(b-a);
@@ -1727,7 +1727,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 #ifndef NDEBUG
         std::cout << "INFO_print - TriangleSetTopology.inl : Cut is not reached" << std::endl;
 #endif
-        ind_tb=ind_triangle;
+//      ind_tb=ind_triangle;
+//      return true;
     }
 
     return (is_reached && is_validated && is_intersected); // b is in triangle indexed by ind_t_current
@@ -1758,6 +1759,17 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
 
     // using old function:
     pathOK = this->computeIntersectedPointsList (last_point, a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
+
+#ifndef NDEBUG
+    std::cout << "*********************************" << std::endl;
+    std::cout << "last_point: " << last_point << std::endl;
+    std::cout << "a: " << a << std::endl;
+    std::cout << "b: " << b << std::endl;
+    std::cout << "triangles_list: "<< triangles_list << std::endl;
+    std::cout << "edges_list: "<< edges_list << std::endl;
+    std::cout << "coordsEdge_list: "<< coordsEdge_list << std::endl;
+    std::cout << "*********************************" << std::endl;
+#endif
 
     if (pathOK)
     {
@@ -1923,12 +1935,10 @@ void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename
 template <typename DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNormals()
 {
-    std::cout << "reorderTrianglesOrientationFromNormals" << std::endl;
     sofa::defaulttype::Vec<3,Real> firstNormal = computeTriangleNormal(0);
-    std::cout << "firstNormal: "<< firstNormal << std::endl;
+
     if (p_flipNormals.getValue())
         firstNormal = -firstNormal;
-    std::cout << "firstNormal: "<< firstNormal << std::endl;
 
     sofa::helper::vector<TriangleID> _neighTri = this->m_topology->getElementAroundElement(0);
     sofa::helper::vector<TriangleID> _neighTri2, buffK, buffKK;
@@ -1995,17 +2005,19 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
             }
         }
 
+#ifndef NDEBUG
         std::cout << "_neighTri: "<< _neighTri << std::endl;
         std::cout << "_neighTri2: "<< _neighTri2 << std::endl;
         std::cout << "buffk: "<< buffK << std::endl;
         std::cout << "buffkk: "<< buffKK << std::endl;
+#endif
         //_neighTri = _neighTri2;
         cpt_secu++;
     }
 
     if(cpt_secu == max)
         std::cerr << "WARNING: TriangleSetGeometryAlgorithms: reorder triangle orientation reach security end of loop." << std::endl;
-    std::cout << "reorderTrianglesOrientationFromNormals end" << std::endl;
+
     return;
 }
 

@@ -92,7 +92,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::move( const sofa::he
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
         const sofa::helper::vector< sofa::helper::vector< double > >& )
 {
-    std::cerr << "WARNING: move event on topology subsetData is not yet handled" << std::endl;
+
 }
 
 
