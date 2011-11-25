@@ -26,13 +26,8 @@
 #define SOFA_IMAGE_HISTOGRAMWIDGET_H
 
 #include "initImage.h"
-#include "ImageTypes.h"
-#include <sofa/helper/vector.h>
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/rmath.h>
 
 #ifdef SOFA_QT4
 #include <QLabel>
@@ -51,6 +46,12 @@
 #include <qgraphicsscene.h>
 #include <qtgui.h>
 #endif
+
+#include "ImageTypes.h"
+#include <sofa/helper/vector.h>
+#include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/rmath.h>
 
 namespace sofa
 {
@@ -320,7 +321,7 @@ public:
     Options *options;
     Layout* container_layout;
 
-    histogram_data_widget_container() : setting(NULL), options(NULL), graph(NULL), container_layout(NULL) {}
+    histogram_data_widget_container() : setting(NULL), graph(NULL), options(NULL), container_layout(NULL) {}
 
     bool createLayout( DataWidget* parent )
     {

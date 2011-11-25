@@ -192,17 +192,17 @@ public:
                 vector<Vec<3,int> > pts;
                 for (unsigned int j = 0; j < 3 ; j++)
                 {
-                    if(pt[j][axis]==coord) pts.push_back(pt[j]);
+                    if(pt[j][axis]==(int)coord) pts.push_back(pt[j]);
                     unsigned int k=(j==2)?0:j+1;
                     if(pt[j][axis]<pt[k][axis])
                     {
-                        alpha=(coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=(coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                     else
                     {
-                        alpha=(coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=(coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                 }
                 for (unsigned int j = 0; j < pts.size() ; j++)
@@ -223,17 +223,17 @@ public:
                 vector<Vec<3,int> > pts;
                 for (unsigned int j = 0; j < 4 ; j++)
                 {
-                    if(pt[j][axis]==coord) pts.push_back(pt[j]);
+                    if(pt[j][axis]==(int)coord) pts.push_back(pt[j]);
                     unsigned int k=(j==2)?0:j+1;
                     if(pt[j][axis]<pt[k][axis])
                     {
-                        alpha=(coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=(coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                     else
                     {
-                        alpha=(coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=(coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                 }
                 for (unsigned int j = 0; j < pts.size() ; j++)
@@ -344,8 +344,8 @@ public:
     inline friend std::istream& operator >> ( std::istream& in, TImageTransform<N,Real>& T ) { in>>T.getParams();	return in; }
     friend std::ostream& operator << ( std::ostream& out, const TImageTransform<N,Real>& T )	{ out<<T.getParams();	return out;	}
 
-    TImageTransform& operator=(const TImageTransform& T) 	{ P=T.getParams(); update(); return *this; }
-    void set(const Params& _P) { P=_P; 	update(); }
+    TImageTransform& operator=(const TImageTransform& T) 	{ P=T.getParams(); this->update(); return *this; }
+    void set(const Params& _P) { P=_P; 	this->update(); }
 };
 
 
@@ -365,18 +365,18 @@ protected:
     Real camx;	Real camy; // used only for perpective transforms (camera offset)
 
 public:
-    Coord& getTranslation() { return *reinterpret_cast<Coord*>(&P[0]); }
-    const Coord& getTranslation() const { return *reinterpret_cast<const Coord*>(&P[0]); }
-    Coord& getRotation() { return *reinterpret_cast<Coord*>(&P[3]); }
-    const Coord& getRotation() const { return *reinterpret_cast<const Coord*>(&P[3]); }
-    Coord& getScale() { return *reinterpret_cast<Coord*>(&P[6]); }
-    const Coord& getScale() const { return *reinterpret_cast<const Coord*>(&P[6]); }
-    Real& getOffsetT() { return *reinterpret_cast<Real*>(&P[9]); }
-    const Real& getOffsetT() const { return *reinterpret_cast<const Real*>(&P[9]); }
-    Real& getScaleT() { return *reinterpret_cast<Real*>(&P[10]); }
-    const Real& getScaleT() const { return *reinterpret_cast<const Real*>(&P[10]); }
-    Real& isPerspective() { return *reinterpret_cast<Real*>(&P[11]); }
-    const Real& isPerspective() const { return *reinterpret_cast<const Real*>(&P[11]); }
+    Coord& getTranslation() { return *reinterpret_cast<Coord*>(&this->P[0]); }
+    const Coord& getTranslation() const { return *reinterpret_cast<const Coord*>(&this->P[0]); }
+    Coord& getRotation() { return *reinterpret_cast<Coord*>(&this->P[3]); }
+    const Coord& getRotation() const { return *reinterpret_cast<const Coord*>(&this->P[3]); }
+    Coord& getScale() { return *reinterpret_cast<Coord*>(&this->P[6]); }
+    const Coord& getScale() const { return *reinterpret_cast<const Coord*>(&this->P[6]); }
+    Real& getOffsetT() { return *reinterpret_cast<Real*>(&this->P[9]); }
+    const Real& getOffsetT() const { return *reinterpret_cast<const Real*>(&this->P[9]); }
+    Real& getScaleT() { return *reinterpret_cast<Real*>(&this->P[10]); }
+    const Real& getScaleT() const { return *reinterpret_cast<const Real*>(&this->P[10]); }
+    Real& isPerspective() { return *reinterpret_cast<Real*>(&this->P[11]); }
+    const Real& isPerspective() const { return *reinterpret_cast<const Real*>(&this->P[11]); }
 
     ImageLPTransform()	// identity
         :Inherited()
@@ -457,8 +457,8 @@ public:
     static const char* Name() { return "Histogram"; }
 
     Histogram(const unsigned int _dimx=256, const unsigned int _dimy=256, const bool _mergeChannels=true)
-        :dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels),
-         img(NULL),clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()))
+        :img(NULL),dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels),
+         clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()))
     { }
 
     void setInput(const ImageTypes& _img) { img=&_img; update(); }
@@ -535,7 +535,7 @@ public:
     static const char* Name() { return "ImagePlane"; }
 
     ImagePlane()
-        :img(NULL), clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max())) , imagePlaneDirty(true), plane(pCoord(0,0,0)), time(0) // set by user or other objects
+        :img(NULL), plane(pCoord(0,0,0)), time(0), clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max())) , imagePlaneDirty(true) // set by user or other objects
     {
     }
 
@@ -633,7 +633,7 @@ public:
             ResizableExtVector<Coord> tposition; tposition.resize(visualModels[m]->getVertices().size());
             for(unsigned int i=0; i<tposition.size(); i++) 			tposition[i]=transform->toImage(Coord((Real)visualModels[m]->getVertices()[i][0],(Real)visualModels[m]->getVertices()[i][1],(Real)visualModels[m]->getVertices()[i][2]));
 
-            helper::ReadAccessor<Data< Material > > mat(visualModels[m]->material);
+            helper::ReadAccessor<Data< core::loader::Material > > mat(visualModels[m]->material);
             const unsigned char color[3]= {(unsigned char)round(mat->diffuse[0]*255.),(unsigned char)round(mat->diffuse[1]*255.),(unsigned char)round(mat->diffuse[2]*255.)};
 
             CImg<bool> tmp = this->img->get_slicedModels(index,axis,roi,tposition,visualModels[m]->getTriangles(),visualModels[m]->getQuads());

@@ -207,7 +207,7 @@ protected:
             {
                 float sigma=0;  if(p.size()) sigma=(float)p[0];
                 unsigned int order=0; if(p.size()>1) order=(unsigned int)p[1];
-                    char axis='x';  if(p.size()>2) if((int)p[2]==1) axis='y'; else if((int)p[2]==2) axis='z';
+                char axis='x';  if(p.size()>2) { if((int)p[2]==1) axis='y'; else if((int)p[2]==2) axis='z'; }
                 cimglist_for(img,l) img(l).deriche (sigma,order,axis);
             }
             break;

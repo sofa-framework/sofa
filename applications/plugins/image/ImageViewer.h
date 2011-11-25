@@ -25,18 +25,20 @@
 #ifndef SOFA_IMAGE_IMAGEVIEWER_H
 #define SOFA_IMAGE_IMAGEVIEWER_H
 
-#include <sofa/component/component.h>
 
 #include "initImage.h"
 #include "ImageTypes.h"
-#include "ImageContainer.h"
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/component/component.h>
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/core/CollisionModel.h>
 
 namespace sofa
 {
@@ -81,6 +83,8 @@ public:
     typedef helper::WriteAccessor<Data< ImagePlaneType > > waPlane;
     Data< ImagePlaneType > plane;
 
+    typedef component::visualmodel::VisualModelImpl VisuModelType;
+
     std::string getTemplateName() const  {	return templateName(this);	}
     static std::string templateName(const ImageViewer<ImageTypes>* = NULL)	{ return ImageTypes::Name(); }
 
@@ -116,11 +120,11 @@ public:
 
     virtual void init()
     {
-        std::vector<sofa::component::visualmodel::VisualModelImpl*> visualModels;
-        this->getContext()->get<sofa::component::visualmodel::VisualModelImpl,std::vector<sofa::component::visualmodel::VisualModelImpl*> >(&visualModels);
+        std::vector<VisuModelType*> visuals;
+        this->getContext()->get<VisuModelType>(&visuals, core::objectmodel::BaseContext::SearchRoot);
 
         waHisto whisto(this->histo);	whisto->setInput(image.getValue());
-        waPlane wplane(this->plane);	wplane->setInput(image.getValue(),transform.getValue(),visualModels);
+        waPlane wplane(this->plane);	wplane->setInput(image.getValue(),transform.getValue(),visuals);
         for(unsigned int i=0; i<3; i++)
         {
             cutplane_tex[i]= new helper::gl::Texture(new helper::io::Image,false);
