@@ -5,6 +5,10 @@ TARGET = sofa_taucs_solver
 
 DEFINES += SOFA_BUILD_TAUCS_SOLVER
 
+HEADERS += initTaucsSolver.h \
+
+SOURCES += initTaucsSolver.cpp \
+
 contains(DEFINES,SOFA_HAVE_TAUCS){
 win32{
   # BLAS
@@ -16,10 +20,10 @@ win32{
   LIBS *= -lmetis$$LIBSUFFIX
 
 HEADERS += linearsolver/SparseTAUCSSolver.h \
-           linearsolver/IncompleteTAUCSSolver.h
+           linearsolver/IncompleteTAUCSSolver.h \
 
 SOURCES += linearsolver/SparseTAUCSSolver.cpp \
-           linearsolver/IncompleteTAUCSSolver.cpp
+           linearsolver/IncompleteTAUCSSolver.cpp \
 }
 
 contains(DEFINES,SOFA_EXTLIBS_TAUCS_MT){
