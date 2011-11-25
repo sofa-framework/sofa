@@ -102,8 +102,8 @@ typedef struct
 typedef struct
 {
     simulation::Node *node;
-    sofa::component::visualmodel::OglModel *visu;
-    sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  > *mapping;
+    sofa::component::visualmodel::OglModel::SPtr visu;
+    sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  >::SPtr mapping;
 
 } VisualComponent;
 
@@ -142,11 +142,14 @@ public:
     SOFA_CLASS(NewOmniDriver, Controller);
     typedef RigidTypes::VecCoord Coord;
     typedef RigidTypes::VecCoord VecCoord;
+    typedef component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> MMechanicalObject;
 
 
 
-    Data<double> scale;
+
+
     Data<double> forceScale;
+    Data<double> scale;
     Data<Vec3d> positionBase;
     Data<Quat> orientationBase;
     Data<Vec3d> positionTool;
@@ -197,7 +200,7 @@ public:
     VisualComponent visualNode[10];
     simulation::Node *nodePrincipal;
     simulation::Node *nodeDOF;
-    sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *rigidDOF;
+    MMechanicalObject::SPtr rigidDOF;
     bool changeScale;
     bool firstInit;
     float oldScale;

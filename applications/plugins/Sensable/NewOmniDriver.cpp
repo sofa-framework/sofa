@@ -43,7 +43,7 @@ namespace controller
 using namespace sofa::defaulttype;
 
 static HHD hHD = HD_INVALID_HANDLE ;
-vector<static HHD> hHDVector;
+vector< HHD > hHDVector;
 vector<NewOmniDriver*> autreOmniDriver;
 static HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
 bool initDeviceBool;
@@ -55,16 +55,16 @@ int compteur_debug = 0;
 //TODO: rajouter le numero de l'interface qui pose pb
 void printError(const HDErrorInfo *error, const char *message)
 {
-//   cout<<hdGetErrorString(error->errorCode)<<endl;
-    //cout<<"HHD: "<<error->hHD<<endl;
-    //cout<<"Error Code: "<<error->hHD<<endl;
-    //cout<<"Internal Error Code: "<<error->internalErrorCode<<endl;
-    //cout<<"Message: "<<message<<endl;
+    cout<<hdGetErrorString(error->errorCode)<<endl;
+    cout<<"HHD: "<<error->hHD<<endl;
+    cout<<"Error Code: "<<error->hHD<<endl;
+    cout<<"Internal Error Code: "<<error->internalErrorCode<<endl;
+    cout<<"Message: "<<message<<endl;
 }
 
 
 //boucle qui recupere les info sur l'interface et les copie sur data->servoDeviceData
-HDCallbackCode HDCALLBACK stateCallback(void *userData)
+HDCallbackCode HDCALLBACK stateCallback(void * /*userData*/)
 {
     //vector<NewOmniDriver*> autreOmniDriver = static_cast<vector<NewOmniDriver*>>(userData);
     //OmniData* data = static_cast<OmniData*>(userData);
@@ -251,7 +251,7 @@ void exitHandler()
 
 //copie les info sur le device de data->servoDeviceData à data->deviceData
 //TODO: ou plutot remplir le PosD ici et gicler data->deviceData qui servirait plus a rien
-HDCallbackCode HDCALLBACK copyDeviceDataCallback(void *pUserData)
+HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * /*pUserData*/)
 {
     //OmniData *data = static_cast<OmniData*>(pUserData);
     //memcpy(&data->deviceData, &data->servoDeviceData, sizeof(DeviceData));
@@ -268,7 +268,7 @@ HDCallbackCode HDCALLBACK copyDeviceDataCallback(void *pUserData)
 }
 
 //stop le callback > difference avec exithandler??
-HDCallbackCode HDCALLBACK stopCallback(void *pUserData)
+HDCallbackCode HDCALLBACK stopCallback(void * /*pUserData*/)
 {
     //OmniData *data = static_cast<OmniData*>(pUserData);
     //data->servoDeviceData.stop = true;
@@ -367,6 +367,7 @@ NewOmniDriver::NewOmniDriver()
     noDevice = false;
     firstInit=true;
     firstDevice = true;
+    pi=3.1415926535897932384626433832795;
 }
 
 //destructeur
@@ -422,7 +423,6 @@ void NewOmniDriver::init()
 
     std::cout << deviceName.getValue()+" [NewOmni] init" << endl;
 
-    pi=3.1415926535897932384626433832795;
 
     modX=false;
     modY=false;
@@ -453,7 +453,11 @@ void NewOmniDriver::init()
 
     sofa::simulation::tree::GNode *parentRoot = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
 
-    nodePrincipal = sofa::simulation::getSimulation()->createNewGraph("omniVisu "+deviceName.getValue());
+    nodePrincipal= parentRoot->createChild("omniVisu "+deviceName.getValue());
+
+    // nodePrincipal = sofa::simulation::getSimulation()->createNewGraph();
+
+
     parentRoot->getParent()->addChild(nodePrincipal);
     nodePrincipal->updateContext();
 
@@ -491,7 +495,9 @@ void NewOmniDriver::init()
 
         if(rigidDOF==NULL)
         {
-            rigidDOF = new sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>();
+
+            rigidDOF = sofa::core::objectmodel::New<MMechanicalObject>();
+
             nodePrincipal->addObject(rigidDOF);
             rigidDOF->name.setValue("rigidDOF");
 
@@ -505,16 +511,16 @@ void NewOmniDriver::init()
         }
 
 
-        visualNode[0].node = sofa::simulation::getSimulation()->createNewGraph("stylet");
-        visualNode[1].node = sofa::simulation::getSimulation()->createNewGraph("articulation 2");
-        visualNode[2].node = sofa::simulation::getSimulation()->createNewGraph("articulation 1");
-        visualNode[3].node = sofa::simulation::getSimulation()->createNewGraph("arm 2");
-        visualNode[4].node = sofa::simulation::getSimulation()->createNewGraph("arm 1");
-        visualNode[5].node = sofa::simulation::getSimulation()->createNewGraph("base");
-        visualNode[6].node = sofa::simulation::getSimulation()->createNewGraph("socle");
-        visualNode[7].node = sofa::simulation::getSimulation()->createNewGraph("axe X");
-        visualNode[8].node = sofa::simulation::getSimulation()->createNewGraph("axe Y");
-        visualNode[9].node = sofa::simulation::getSimulation()->createNewGraph("axe Z");
+        visualNode[0].node = nodePrincipal->createChild("stylet");
+        visualNode[1].node = nodePrincipal->createChild("articulation 2");
+        visualNode[2].node = nodePrincipal->createChild("articulation 1");
+        visualNode[3].node = nodePrincipal->createChild("arm 2");
+        visualNode[4].node = nodePrincipal->createChild("arm 1");
+        visualNode[5].node = nodePrincipal->createChild("base");
+        visualNode[6].node = nodePrincipal->createChild("socle");
+        visualNode[7].node = nodePrincipal->createChild("axe X");
+        visualNode[8].node = nodePrincipal->createChild("axe Y");
+        visualNode[9].node = nodePrincipal->createChild("axe Z");
 
         for(int i=0; i<10; i++)
         {
@@ -523,8 +529,10 @@ void NewOmniDriver::init()
 
             if(visualNode[i].visu == NULL && visualNode[i].mapping == NULL)
             {
-                visualNode[i].visu = new sofa::component::visualmodel::OglModel();
-                visualNode[i].node->addObject(visualNode[i].visu);
+
+                // create the visual model and add it to the graph //
+                visualNode[i].visu = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
+
                 visualNode[i].visu->name.setValue("VisualParticles");
                 if(i==0)
                 {
@@ -551,14 +559,18 @@ void NewOmniDriver::init()
                 visualNode[i].visu->init();
                 visualNode[i].visu->initVisual();
                 visualNode[i].visu->updateVisual();
-                visualNode[i].mapping = new sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes >(rigidDOF,visualNode[i].visu/*from,to*/);
+                visualNode[i].node->addObject(visualNode[i].visu);
+
+                // create the visual mapping and at it to the graph //
+                visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > > ();
+                visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
                 visualNode[i].node->addObject(visualNode[i].mapping);
                 visualNode[i].mapping->name.setValue("RigidMapping");
                 visualNode[i].mapping->f_mapConstraints.setValue(false);
                 visualNode[i].mapping->f_mapForces.setValue(false);
                 visualNode[i].mapping->f_mapMasses.setValue(false);
-                visualNode[i].mapping->m_inputObject.setValue("@../RigidDOF");
-                visualNode[i].mapping->m_outputObject.setValue("@VisualParticles");
+                //visualNode[i].mapping->m_inputObject.setValue("@../RigidDOF");
+                //visualNode[i].mapping->m_outputObject.setValue("@VisualParticles");
                 visualNode[i].mapping->index.setValue(i+1);
                 visualNode[i].mapping->init();
             }
@@ -578,7 +590,7 @@ void NewOmniDriver::init()
 
         for(int j=0; j<8; j++)
         {
-            sofa::defaulttype::ResizableExtVector<sofa::defaulttype::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+            sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
             for(unsigned int i=0; i<scaleMapping.size(); i++)
                 for(int p=0; p<3; p++)
                     scaleMapping[i].at(p)*=(float)(1.0*scale.getValue()/100.0);
@@ -605,7 +617,7 @@ void NewOmniDriver::bwdInit()
     std::cout<<"NewOmniDriver::bwdInit() is called"<<std::endl;
 
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-    LCPForceFeedback<Rigid3dTypes>* ff = context->getTreeObject<LCPForceFeedback<Rigid3dTypes>>();
+    LCPForceFeedback<Rigid3dTypes>* ff = context->getTreeObject< LCPForceFeedback<Rigid3dTypes> >();
     if(ff)
         this->setForceFeedback(ff);
 
@@ -718,7 +730,7 @@ void NewOmniDriver::draw()
             float rapport=((float)data.scale)/oldScale;
             for(int j = 0; j<11 ; j++)
             {
-                sofa::defaulttype::ResizableExtVector<sofa::defaulttype::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+                sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
                 for(unsigned int i=0; i<scaleMapping.size(); i++)
                 {
                     for(int p=0; p<3; p++)
