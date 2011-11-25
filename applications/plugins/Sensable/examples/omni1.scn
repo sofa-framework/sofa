@@ -16,7 +16,7 @@
 		<LCPForceFeedback template="Rigid" name="lCPForceFeedback7"  listening="1"  activate="1" />
 		<UncoupledConstraintCorrection template="Rigid" name="uncoupledConstraintCorrection2"  compliance="1e-005 1e-009 0 0 1e-009 0 1e-009" />
 		<Node 	name="Tool1VM"  >
-			<OglModel template="ExtVec3f" name="VM"  fileMesh="dt/aspi.trian"  rotation="0 0 0"  scale3d="1 1 1"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+			<OglModel template="ExtVec3f" name="VM"  fileMesh="dt/aspi.trian"  rotation="0 0 0"  scale3d="1 1 1"  />
 			<RigidMapping template="Rigid,ExtVec3f" name="rigidMapping6"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@VM"  index="0" />
 		</Node>
 		<Node 	name="Tool1CM"  >
