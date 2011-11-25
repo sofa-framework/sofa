@@ -181,7 +181,7 @@ void ImageLPTransformWidget<TransformType>::readFromData()
     scaleT->setValue(ra->getScaleT());
     isPerspective->setChecked(ra->isPerspective());
 
-    setWidgetDirty(false);
+    this->setWidgetDirty(false);
 }
 
 template<class TransformType>

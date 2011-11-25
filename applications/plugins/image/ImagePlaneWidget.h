@@ -26,14 +26,8 @@
 #define SOFA_IMAGE_IMAGEPLANEWIDGET_H
 
 #include "initImage.h"
-#include "ImageTypes.h"
-#include <sofa/helper/vector.h>
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
-#include <sofa/gui/qt/WDoubleLineEdit.h>
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/rmath.h>
 
 #ifdef SOFA_QT4
 #include <QLabel>
@@ -60,6 +54,12 @@
 #include <qtgui.h>
 #endif
 
+#include "ImageTypes.h"
+#include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/rmath.h>
+#include <sofa/helper/vector.h>
+
 
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
@@ -84,7 +84,7 @@ class ImagePlaneGraphScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    ImagePlaneGraphScene(QImage* im,QObject *parent=0) : QGraphicsScene(parent)	,image(im), drawrectangle(false) 	{ this->setSceneRect(0,0,image->width(),image->height()); }
+    ImagePlaneGraphScene(QImage* im,QObject *parent=0) : QGraphicsScene(parent)	, drawrectangle(false),image(im) 	{ this->setSceneRect(0,0,image->width(),image->height()); }
     QPointF P1;
     QPointF P2;
     bool drawrectangle;
@@ -498,14 +498,14 @@ class Timageplane_data_widget_container: public imageplane_data_widget_container
 
 public:
 
-    Graph* graphXY;
     Options *optionsXY;
+    Graph* graphXY;
 
-    Graph* graphXZ;
     Options *optionsXZ;
+    Graph* graphXZ;
 
-    Graph* graphZY;
     Options *optionsZY;
+    Graph* graphZY;
 
     Layout* container_layout;
 

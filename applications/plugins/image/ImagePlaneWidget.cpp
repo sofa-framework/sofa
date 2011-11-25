@@ -24,8 +24,20 @@
 ******************************************************************************/
 #define SOFA_IMAGE_IMAGEPLANEWIDGET_CPP
 
+//#ifdef SOFA_QT4
+//#include <QDataStream>
+//#include <QMetaType>
+//#include <QTextStream>
+//#else
+//#include <qdatastream.h>
+//#include <qmetatype.h>
+//#include <qtextstream.h>
+//#endif
+
+
 #include "ImagePlaneWidget.h"
-#include <sofa/helper/Factory.inl>
+//#include <sofa/helper/Factory.inl>
+#include <sofa/helper/Factory.h>
 #include <iostream>
 
 

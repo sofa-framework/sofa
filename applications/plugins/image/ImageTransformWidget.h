@@ -26,13 +26,9 @@
 #define SOFA_IMAGE_IMAGETRANSFORMWIDGET_H
 
 #include "initImage.h"
-#include "ImageTypes.h"
-#include <sofa/helper/vector.h>
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/Data.h>
 
 #ifdef SOFA_QT4
 #include <QTextEdit>
@@ -55,6 +51,10 @@ typedef QGroupBox Q3GroupBox;
 typedef QTextEdit   Q3TextEdit;
 #endif
 
+#include "ImageTypes.h"
+#include <sofa/helper/vector.h>
+#include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/objectmodel/Data.h>
 
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
@@ -77,6 +77,7 @@ public :
     typedef typename TransformType::Real Real;
     typedef typename TransformType::Coord Coord;
     typedef TDataWidget<TransformType> Inherited;
+    typedef typename Inherited::MyTData MyTData;
 
     ImageLPTransformWidget(QWidget* parent, const char* name, core::objectmodel::Data<_TransformType>* data)
         : Inherited(parent,name,data)
