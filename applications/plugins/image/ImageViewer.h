@@ -118,6 +118,9 @@ public:
         for(unsigned int i=0; i<3; i++)	if(cutplane_tex[i]) delete cutplane_tex[i];
     }
 
+    // dummy declaration to fix compilation on gcc-4.4.  To remove ASAP
+    template<class T> void get();
+
     virtual void init()
     {
         std::vector<VisuModelType*> visuals;
