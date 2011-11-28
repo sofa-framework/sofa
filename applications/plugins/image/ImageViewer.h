@@ -118,13 +118,10 @@ public:
         for(unsigned int i=0; i<3; i++)	if(cutplane_tex[i]) delete cutplane_tex[i];
     }
 
-    // dummy declaration to fix compilation on gcc-4.4.  To remove ASAP
-    template<class T> void get();
-
     virtual void init()
     {
         std::vector<VisuModelType*> visuals;
-        this->getContext()->get<VisuModelType>(&visuals, core::objectmodel::BaseContext::SearchRoot);
+        this->getContext()->template get<VisuModelType>(&visuals, core::objectmodel::BaseContext::SearchRoot);
 
         waHisto whisto(this->histo);	whisto->setInput(image.getValue());
         waPlane wplane(this->plane);	wplane->setInput(image.getValue(),transform.getValue(),visuals);
