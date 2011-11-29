@@ -95,6 +95,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
         dt = this->gnode->getDt();
 
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
+    sofa::helper::AdvancedTimer::begin("Animate");
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
@@ -270,6 +271,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
 
+    sofa::helper::AdvancedTimer::end("Animate");
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
