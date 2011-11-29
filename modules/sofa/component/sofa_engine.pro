@@ -32,6 +32,8 @@ HEADERS += initEngine.h \
            engine/MergeSets.inl \
            engine/MeshBarycentricMapperEngine.h \
            engine/MeshBarycentricMapperEngine.inl \
+	   engine/MeshROI.h \
+	   engine/MeshROI.inl \
            engine/TransformPosition.h \
            engine/TransformPosition.inl \
            engine/TransformEngine.h \
@@ -82,6 +84,7 @@ SOURCES += initEngine.cpp \
            engine/MergePoints.cpp \
            engine/MergeSets.cpp \
            engine/MeshBarycentricMapperEngine.cpp \
+	   engine/MeshROI.cpp \
            engine/TransformPosition.cpp \
            engine/TransformEngine.cpp \
            engine/PointsFromIndices.cpp \
