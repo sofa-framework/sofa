@@ -43,30 +43,30 @@ SOFA_DECL_CLASS (ImageContainer);
 // Register in the Factory
 
 int ImageContainerClass = core::RegisterObject ( "Image Container" )
-//			  .add<ImageContainer<ImageC> >()
+        .add<ImageContainer<ImageC> >()
         .add<ImageContainer<ImageUC> >(true)
-//			  .add<ImageContainer<ImageI> >()
-//			  .add<ImageContainer<ImageUI> >()
-//			  .add<ImageContainer<ImageS> >()
+        .add<ImageContainer<ImageI> >()
+        .add<ImageContainer<ImageUI> >()
+        .add<ImageContainer<ImageS> >()
         .add<ImageContainer<ImageUS> >()
-//			  .add<ImageContainer<ImageL> >()
-//			  .add<ImageContainer<ImageUL> >()
-//			  .add<ImageContainer<ImageF> >()
-//			  .add<ImageContainer<ImageD> >()
-//			  .add<ImageContainer<ImageB> >()
+        .add<ImageContainer<ImageL> >()
+        .add<ImageContainer<ImageUL> >()
+        .add<ImageContainer<ImageF> >()
+        .add<ImageContainer<ImageD> >()
+        .add<ImageContainer<ImageB> >()
         ;
 
-//      template class SOFA_IMAGE_API ImageContainer<ImageC>;
+template class SOFA_IMAGE_API ImageContainer<ImageC>;
 template class SOFA_IMAGE_API ImageContainer<ImageUC>;
-//      template class SOFA_IMAGE_API ImageContainer<ImageI>;
-//      template class SOFA_IMAGE_API ImageContainer<ImageUI>;
-//      template class SOFA_IMAGE_API ImageContainer<ImageS>;
+template class SOFA_IMAGE_API ImageContainer<ImageI>;
+template class SOFA_IMAGE_API ImageContainer<ImageUI>;
+template class SOFA_IMAGE_API ImageContainer<ImageS>;
 template class SOFA_IMAGE_API ImageContainer<ImageUS>;
-//      template class SOFA_IMAGE_API ImageContainer<ImageL>;
-//      template class SOFA_IMAGE_API ImageContainer<ImageUL>;
-//      template class SOFA_IMAGE_API ImageContainer<ImageF>;
-//      template class SOFA_IMAGE_API ImageContainer<ImageD>;
-//      template class SOFA_IMAGE_API ImageContainer<ImageB>;
+template class SOFA_IMAGE_API ImageContainer<ImageL>;
+template class SOFA_IMAGE_API ImageContainer<ImageUL>;
+template class SOFA_IMAGE_API ImageContainer<ImageF>;
+template class SOFA_IMAGE_API ImageContainer<ImageD>;
+template class SOFA_IMAGE_API ImageContainer<ImageB>;
 
 } // namespace container
 

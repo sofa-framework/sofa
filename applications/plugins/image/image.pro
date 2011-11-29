@@ -15,9 +15,11 @@ contains(DEFINES, SOFA_EXTLIBS_FFMPEG) {
 	INCLUDEPATH += $$SOFA_INSTALL_INC_DIR/extlibs/ffmpeg
 	}
 
-contains(DEFINES, SOFA_HAVE_OPENCV) {
+contains(DEFINES, SOFA_IMAGE_HAVE_OPENCV) { # should be "SOFA_HAVE_OPENCV" -> use "SOFA_IMAGE_HAVE_OPENCV" until the opencv plugin is fixed..
 	INCLUDEPATH += $$SOFA_OPENCV_PATH
-	}
+        LIBS += -lml  -lcvaux -lhighgui -lcv -lcxcore
+        }
+
 
 HEADERS += \
 	initImage.h \

@@ -43,30 +43,30 @@ using namespace defaulttype;
 SOFA_DECL_CLASS(ImageExporter)
 
 int ImageExporterClass = core::RegisterObject("Save an image")
-        //			  .add<ImageExporter<ImageC> >()
+        .add<ImageExporter<ImageC> >()
         .add<ImageExporter<ImageUC> >(true)
-        //			  .add<ImageExporter<ImageI> >()
-        //			  .add<ImageExporter<ImageUI> >()
-        //			  .add<ImageExporter<ImageS> >()
+        .add<ImageExporter<ImageI> >()
+        .add<ImageExporter<ImageUI> >()
+        .add<ImageExporter<ImageS> >()
         .add<ImageExporter<ImageUS> >()
-        //			  .add<ImageExporter<ImageL> >()
-        //			  .add<ImageExporter<ImageUL> >()
-        //			  .add<ImageExporter<ImageF> >()
-        //			  .add<ImageExporter<ImageD> >()
-        //			  .add<ImageExporter<ImageB> >()
+        .add<ImageExporter<ImageL> >()
+        .add<ImageExporter<ImageUL> >()
+        .add<ImageExporter<ImageF> >()
+        .add<ImageExporter<ImageD> >()
+        .add<ImageExporter<ImageB> >()
         ;
 
-//      template class SOFA_IMAGE_API ImageExporter<ImageC>;
+template class SOFA_IMAGE_API ImageExporter<ImageC>;
 template class SOFA_IMAGE_API ImageExporter<ImageUC>;
-//      template class SOFA_IMAGE_API ImageExporter<ImageI>;
-//      template class SOFA_IMAGE_API ImageExporter<ImageUI>;
-//      template class SOFA_IMAGE_API ImageExporter<ImageS>;
+template class SOFA_IMAGE_API ImageExporter<ImageI>;
+template class SOFA_IMAGE_API ImageExporter<ImageUI>;
+template class SOFA_IMAGE_API ImageExporter<ImageS>;
 template class SOFA_IMAGE_API ImageExporter<ImageUS>;
-//      template class SOFA_IMAGE_API ImageExporter<ImageL>;
-//      template class SOFA_IMAGE_API ImageExporter<ImageUL>;
-//      template class SOFA_IMAGE_API ImageExporter<ImageF>;
-//      template class SOFA_IMAGE_API ImageExporter<ImageD>;
-//      template class SOFA_IMAGE_API ImageExporter<ImageB>;
+template class SOFA_IMAGE_API ImageExporter<ImageL>;
+template class SOFA_IMAGE_API ImageExporter<ImageUL>;
+template class SOFA_IMAGE_API ImageExporter<ImageF>;
+template class SOFA_IMAGE_API ImageExporter<ImageD>;
+template class SOFA_IMAGE_API ImageExporter<ImageB>;
 
 
 
