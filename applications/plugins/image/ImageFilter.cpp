@@ -41,30 +41,30 @@ using namespace defaulttype;
 SOFA_DECL_CLASS(ImageFilter)
 
 int ImageFilterClass = core::RegisterObject("Compute a filtered image")
-//			  .add<ImageFilter<ImageC> >()
+        .add<ImageFilter<ImageC> >()
         .add<ImageFilter<ImageUC> >(true)
-//			  .add<ImageFilter<ImageI> >()
-//			  .add<ImageFilter<ImageUI> >()
-//			  .add<ImageFilter<ImageS> >()
+        .add<ImageFilter<ImageI> >()
+        .add<ImageFilter<ImageUI> >()
+        .add<ImageFilter<ImageS> >()
         .add<ImageFilter<ImageUS> >()
-//			  .add<ImageFilter<ImageL> >()
-//			  .add<ImageFilter<ImageUL> >()
-//			  .add<ImageFilter<ImageF> >()
-//			  .add<ImageFilter<ImageD> >()
-//			  .add<ImageFilter<ImageB> >()
+        .add<ImageFilter<ImageL> >()
+        .add<ImageFilter<ImageUL> >()
+        .add<ImageFilter<ImageF> >()
+        .add<ImageFilter<ImageD> >()
+        .add<ImageFilter<ImageB> >()
         ;
 
-//      template class SOFA_IMAGE_API ImageFilter<ImageC>;
+template class SOFA_IMAGE_API ImageFilter<ImageC>;
 template class SOFA_IMAGE_API ImageFilter<ImageUC>;
-//      template class SOFA_IMAGE_API ImageFilter<ImageI>;
-//      template class SOFA_IMAGE_API ImageFilter<ImageUI>;
-//      template class SOFA_IMAGE_API ImageFilter<ImageS>;
+template class SOFA_IMAGE_API ImageFilter<ImageI>;
+template class SOFA_IMAGE_API ImageFilter<ImageUI>;
+template class SOFA_IMAGE_API ImageFilter<ImageS>;
 template class SOFA_IMAGE_API ImageFilter<ImageUS>;
-//      template class SOFA_IMAGE_API ImageFilter<ImageL>;
-//      template class SOFA_IMAGE_API ImageFilter<ImageUL>;
-//      template class SOFA_IMAGE_API ImageFilter<ImageF>;
-//      template class SOFA_IMAGE_API ImageFilter<ImageD>;
-//      template class SOFA_IMAGE_API ImageFilter<ImageB>;
+template class SOFA_IMAGE_API ImageFilter<ImageL>;
+template class SOFA_IMAGE_API ImageFilter<ImageUL>;
+template class SOFA_IMAGE_API ImageFilter<ImageF>;
+template class SOFA_IMAGE_API ImageFilter<ImageD>;
+template class SOFA_IMAGE_API ImageFilter<ImageB>;
 
 
 } //

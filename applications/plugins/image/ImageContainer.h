@@ -32,6 +32,9 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 
 
 namespace sofa
@@ -84,6 +87,7 @@ public:
         this->addAlias(&image, "inputImage");
         this->addAlias(&transform, "inputTransform");
         transform.setGroup("Transform");
+        f_listening.setValue(true);  // to update camera during animate
     }
 
 
@@ -97,7 +101,16 @@ public:
 
     virtual void init()
     {
-        load();
+        waImage wimage(this->image);
+        waTransform wtransform(this->transform);
+        if(!load())
+            if(!loadCamera())
+            {
+                wimage->getCImgList().push_back(CImg<T>());
+                serr << "ImageContainer: no input image "<<sendl;
+            }
+
+        wtransform->setCamPos((Real)wimage->getDimensions()[0]/2.0,(Real)wimage->getDimensions()[1]/2.0); // for perspective transforms
     }
 
 
@@ -198,9 +211,28 @@ protected:
         else wimage->getCImgList().push_back(CImg<T>().load(fname.c_str()));
 
         if(wimage->getCImg()) sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << sendl;
-        wtransform->setCamPos((Real)wimage->getDimensions()[0]/2.0,(Real)wimage->getDimensions()[1]/2.0); // for perspective transforms
+        else return false;
 
         return true;
+    }
+
+
+    bool loadCamera()
+    {
+        if (this->m_filename.isSet()) return false;
+#ifdef cimg_use_opencv
+        waImage wimage(this->image);
+        if(!wimage->getCImgList().size()) wimage->getCImgList().push_back(CImg<T>().load_camera());
+        else wimage->getCImgList()[0].load_camera();
+        if(wimage->getCImg())  return true;  else return false;
+#else
+        return false;
+#endif
+    }
+
+    void handleEvent(sofa::core::objectmodel::Event *event)
+    {
+        if (dynamic_cast<simulation::AnimateEndEvent*>(event)) loadCamera();
     }
 
 
@@ -267,24 +299,15 @@ protected:
         glBegin(GL_LINE_LOOP);	glVertex3d(c[2][0],c[2][1],c[2][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[6][0],c[6][1],c[6][2]);	glEnd ();
 
 
-        //glTranslated(rtransform->getTranslation()[0],rtransform->getTranslation()[1],rtransform->getTranslation()[2]);
-        //glRotated(rtransform->phirotation,rtransform->axisrotation[0],rtransform->axisrotation[1],rtransform->axisrotation[2]);
-        //glScaled(rtransform->getScale()[0],rtransform->getScale()[1],rtransform->getScale()[2]);
-        //raImage rimage(this->image);
-        //const imCoord dim= rimage->getDimensions();
-        //const Vector4 pmin(-0.5,-0.5,-0.5,0.0),pmax(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5,0.0);
-
-        //glBegin(GL_LINE_LOOP);	glVertex3d(pmax[0],pmin[1],pmin[2]); glVertex3d(pmax[0],pmin[1],pmax[2]); glVertex3d(pmax[0],pmax[1],pmax[2]); glVertex3d(pmax[0],pmax[1],pmin[2]);	glEnd ();
-        //glBegin(GL_LINE_LOOP);  glVertex3d(pmin[0],pmin[1],pmin[2]); glVertex3d(pmin[0],pmin[1],pmax[2]); glVertex3d(pmin[0],pmax[1],pmax[2]); glVertex3d(pmin[0],pmax[1],pmin[2]);	glEnd ();
-        //            glBegin(GL_LINE_LOOP);	glVertex3d(pmin[0],pmax[1],pmin[2]); glVertex3d(pmax[0],pmax[1],pmin[2]); glVertex3d(pmax[0],pmax[1],pmax[2]); glVertex3d(pmin[0],pmax[1],pmax[2]);	glEnd ();
-        //            glBegin(GL_LINE_LOOP);	glVertex3d(pmin[0],pmin[1],pmin[2]); glVertex3d(pmax[0],pmin[1],pmin[2]); glVertex3d(pmax[0],pmin[1],pmax[2]); glVertex3d(pmin[0],pmin[1],pmax[2]);	glEnd ();
-        //            glBegin(GL_LINE_LOOP);	glVertex3d(pmin[0],pmin[1],pmax[2]); glVertex3d(pmin[0],pmax[1],pmax[2]); glVertex3d(pmax[0],pmax[1],pmax[2]); glVertex3d(pmax[0],pmin[1],pmax[2]);	glEnd ();
-        //            glBegin(GL_LINE_LOOP);	glVertex3d(pmin[0],pmin[1],pmin[2]); glVertex3d(pmin[0],pmax[1],pmin[2]); glVertex3d(pmax[0],pmax[1],pmin[2]); glVertex3d(pmax[0],pmin[1],pmin[2]);	glEnd ();
-
         glPopMatrix ();
         glPopAttrib();
     }
 };
+
+
+
+
+
 
 }
 

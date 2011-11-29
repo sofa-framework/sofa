@@ -227,6 +227,7 @@ public:
     {
         scene = new HistogramGraphScene(S->getImage(),this);
         this->setScene(scene);
+        this->setMouseTracking(true);
         Render ();
     }
 

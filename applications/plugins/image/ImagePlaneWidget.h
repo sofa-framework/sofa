@@ -155,7 +155,7 @@ signals:
     void onPlane(const unsigned int,const Vector3&,const Vector3&,const QString&);  // when the mouse is on image -> update info
 
 public:
-    ImagePlaneGraphWidget(QWidget *parent )	: QGraphicsView(parent),scene(NULL)   {	}
+    ImagePlaneGraphWidget(QWidget *parent )	: QGraphicsView(parent),scene(NULL)   {	 this->setMouseTracking(true); }
 
     virtual QSize 	sizeHint () const { return QSize(10000,10000); }  // for vertical expanding
 

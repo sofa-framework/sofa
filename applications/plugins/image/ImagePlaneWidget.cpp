@@ -24,19 +24,7 @@
 ******************************************************************************/
 #define SOFA_IMAGE_IMAGEPLANEWIDGET_CPP
 
-//#ifdef SOFA_QT4
-//#include <QDataStream>
-//#include <QMetaType>
-//#include <QTextStream>
-//#else
-//#include <qdatastream.h>
-//#include <qmetatype.h>
-//#include <qtextstream.h>
-//#endif
-
-
 #include "ImagePlaneWidget.h"
-//#include <sofa/helper/Factory.inl>
 #include <sofa/helper/Factory.h>
 #include <iostream>
 
@@ -64,29 +52,29 @@ template class SOFA_IMAGE_API TDataWidget<ImageF>;
 template class SOFA_IMAGE_API TDataWidget<ImageD>;
 template class SOFA_IMAGE_API TDataWidget<ImageB>;
 
-//template class SOFA_IMAGE_API TDataWidget<ImagePlane<char> >;
+template class SOFA_IMAGE_API TDataWidget<ImagePlane<char> >;
 template class SOFA_IMAGE_API TDataWidget<ImagePlane<unsigned char> >;
-//template class SOFA_IMAGE_API TDataWidget<ImagePlane<int> >;
-//template class SOFA_IMAGE_API TDataWidget<ImagePlane<unsigned int> >;
-//template class SOFA_IMAGE_API TDataWidget<ImagePlane<short> >;
+template class SOFA_IMAGE_API TDataWidget<ImagePlane<int> >;
+template class SOFA_IMAGE_API TDataWidget<ImagePlane<unsigned int> >;
+template class SOFA_IMAGE_API TDataWidget<ImagePlane<short> >;
 template class SOFA_IMAGE_API TDataWidget<ImagePlane<unsigned short> >;
-//template class SOFA_IMAGE_API TDataWidget<ImagePlane<long> >;
-//template class SOFA_IMAGE_API TDataWidget<ImagePlane<unsigned long> >;
-//template class SOFA_IMAGE_API TDataWidget<ImagePlane<float> >;
-//template class SOFA_IMAGE_API TDataWidget<ImagePlane<double> >;
-//template class SOFA_IMAGE_API TDataWidget<ImagePlane<bool> >;
+template class SOFA_IMAGE_API TDataWidget<ImagePlane<long> >;
+template class SOFA_IMAGE_API TDataWidget<ImagePlane<unsigned long> >;
+template class SOFA_IMAGE_API TDataWidget<ImagePlane<float> >;
+template class SOFA_IMAGE_API TDataWidget<ImagePlane<double> >;
+template class SOFA_IMAGE_API TDataWidget<ImagePlane<bool> >;
 
-//helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<char> > >			DWClass_imagepC("imageplane",true);
+helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<char> > >		DWClass_imagepC("imageplane",true);
 helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<unsigned char> > >	DWClass_imagepUC("imageplane",true);
-//helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<int> > >			DWClass_imagepI("imageplane",true);
-//helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<unsigned int> > >	DWClass_imagepUI("imageplane",true);
-//helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<short> > >			DWClass_imagepS("imageplane",true);
+helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<int> > >		DWClass_imagepI("imageplane",true);
+helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<unsigned int> > >	DWClass_imagepUI("imageplane",true);
+helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<short> > >		DWClass_imagepS("imageplane",true);
 helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<unsigned short> > >	DWClass_imagepUS("imageplane",true);
-//helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<long> > >			DWClass_imagepL("imageplane",true);
-//helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<unsigned long> > >	DWClass_imagepUL("imageplane",true);
-//helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<float> > >			DWClass_imagepF("imageplane",true);
-//helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<double> > >			DWClass_imagepD("imageplane",true);
-//helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<bool> > >			DWClass_imagepB("imageplane",true);
+helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<long> > >		DWClass_imagepL("imageplane",true);
+helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<unsigned long> > >	DWClass_imagepUL("imageplane",true);
+helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<float> > >		DWClass_imagepF("imageplane",true);
+helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<double> > >		DWClass_imagepD("imageplane",true);
+helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<bool> > >		DWClass_imagepB("imageplane",true);
 
 
 } // qt
