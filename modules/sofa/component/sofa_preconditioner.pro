@@ -8,7 +8,6 @@ DEFINES += SOFA_BUILD_PRECONDITIONER
 HEADERS += initPreconditioner.h \
            container/RotationFinder.h \
            container/RotationFinder.inl \
-           misc/BaseRotationFinder.h \
            linearsolver/ShewchukPCGLinearSolver.h \
            linearsolver/PCGLinearSolver.h \
            linearsolver/JacobiPreconditioner.h \

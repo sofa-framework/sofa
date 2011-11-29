@@ -22,33 +22,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_BASEROTATIONFINDER_H
-#define SOFA_COMPONENT_MISC_BASEROTATIONFINDER_H
+#ifndef SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
+#define SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/helper/vector.h>
+
 
 namespace sofa
 {
 
-namespace component
+namespace defaulttype
+{
+class BaseMatrix;
+} // namespace defaulttype
+
+namespace core
 {
 
-namespace misc
+namespace behavior
 {
 
-/// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
 class BaseRotationFinder : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-
-    virtual void getRotations(defaulttype::BaseMatrix * m,int offset = 0) = 0;
+    virtual void getRotations(defaulttype::BaseMatrix * m, int offset = 0) = 0;
 };
 
-} // namespace misc
+} // namespace behavior
 
-} // namespace component
+} // namespace core
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H

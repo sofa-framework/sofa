@@ -69,7 +69,7 @@ template<class DataTypes>
 void WarpPreconditioner<DataTypes>::bwdInit()
 {
     sofa::core::objectmodel::BaseContext * c = this->getContext();
-    c->get<sofa::component::misc::BaseRotationFinder >(&rotationFinders, sofa::core::objectmodel::BaseContext::Local);
+    c->get< sofa::core::behavior::BaseRotationFinder >(&rotationFinders, sofa::core::objectmodel::BaseContext::Local);
 
     mstate = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
     this->getContext()->get(realSolver, solverName.getValue());
