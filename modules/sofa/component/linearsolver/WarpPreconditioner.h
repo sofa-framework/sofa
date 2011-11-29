@@ -225,7 +225,7 @@ private :
     //CudaMatrixUtils Utils;
 
     unsigned indRotationFinder;
-    std::vector<sofa::component::misc::BaseRotationFinder *> rotationFinders;
+    std::vector< sofa::core::behavior::BaseRotationFinder * > rotationFinders;
 
     TRotationMatrix Rcur;
 
