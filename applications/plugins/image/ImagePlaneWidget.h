@@ -264,8 +264,8 @@ public:
         this->visumodels=true;
         readFromData(d0);
         this->setScrollBarPolicies(false);
-//			this->horizontalScrollBar()->setFixedHeight ( scrollbarsize );
-//			this->verticalScrollBar()->setFixedWidth( scrollbarsize );
+        //			this->horizontalScrollBar()->setFixedHeight ( scrollbarsize );
+        //			this->verticalScrollBar()->setFixedWidth( scrollbarsize );
         //		this->cornerWidget()->setFixedSize(scrollbarsize+2,scrollbarsize+2);
         this->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding));
         scene = new ImagePlaneGraphScene(&image,this);
