@@ -60,8 +60,6 @@ template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
 {
 
-    serr<<"++++++++++ Begin init ++++++++++"<<sendl;
-
     if(this->getFromModels1().empty())
     {
         serr << "Error while iniatilizing ; input Model not found" << sendl;
@@ -73,11 +71,9 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
         serr << "Error while iniatilizing ; output Model not found" << sendl;
         return;
     }
-    serr<<"++++++++++ step0  "<<sendl;
 
     m_fromModel = this->getFromModels1()[0];
     m_toModel = this->getToModels()[0];
-    serr<<"++++++++++ step1  "<<sendl;
 
     Node* context = dynamic_cast<Node*>(m_fromModel->getContext());
     context->getNodeObject(ahc);
@@ -89,7 +85,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     ArticulationAxis.clear();
     ArticulationPos.resize(xfrom.size());
     ArticulationAxis.resize(xfrom.size());
-    serr<<"++++++++++ step2  "<<sendl;
+
     //Root
     if(!this->getFromModels2().empty())
     {
@@ -103,7 +99,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     {
         CoordinateBuf[c].x() = 0.0;
     }
-    serr<<"++++++++++ step3  "<<sendl;
 
     using container::ArticulatedHierarchyContainer;
 
@@ -119,7 +114,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
         // sout << "(*ac)->OrientationArticulationCenter : " << (*ac)->OrientationArticulationCenter << sendl;
         // todo : warning if a (*a)->articulationIndex.getValue() exceed xfrom size !
     }
-    serr<<"++++++++++ step4  "<<sendl;
 
     helper::WriteAccessor<Data<OutVecCoord> > xtoData = *m_toModel->write(core::VecCoordId::position());
     apply(xtoData.wref(),
@@ -132,7 +126,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     applyJT(vfrom, vto);
     */
 
-    serr<<"++++++++++ Begin end ++++++++++"<<sendl;
 }
 
 

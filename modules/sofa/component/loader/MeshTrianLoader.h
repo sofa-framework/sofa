@@ -69,9 +69,11 @@ protected:
 
     bool readTrian(const char* filename);
 
+    bool readTrian2(const char* filename);
+
 public:
     //Add specific Data here:
-
+    Data <bool> p_trian2;
     Data <helper::vector < helper::fixed_array <int,3> > > neighborTable;
     Data <helper::vector < helper::vector <unsigned int> > > edgesOnBorder;
     Data <helper::vector <unsigned int> > trianglesOnBorderList;

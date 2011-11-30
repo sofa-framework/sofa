@@ -51,6 +51,7 @@ int MeshTrianLoaderClass = core::RegisterObject("Specific mesh loader for trian 
         ;
 
 MeshTrianLoader::MeshTrianLoader() : MeshLoader()
+    , p_trian2(initData(&p_trian2,(bool)false,"trian2","Set to true if the mesh is a trian2 format."))
     , neighborTable(initData(&neighborTable,"neighborTable","Table of neighborhood triangle indices for each triangle."))
     , edgesOnBorder(initData(&edgesOnBorder,"edgesOnBorder","List of edges which are on the border of the mesh loaded."))
     , trianglesOnBorderList(initData(&trianglesOnBorderList,"trianglesOnBorderList","List of triangle indices which are on the border of the mesh loaded."))
@@ -79,7 +80,10 @@ bool MeshTrianLoader::load()
     }
 
     // -- Reading file
-    fileRead = this->readTrian (filename);
+    if (p_trian2.getValue())
+        fileRead = this->readTrian2 (filename);
+    else
+        fileRead = this->readTrian (filename);
 
     file.close();
     return fileRead;
@@ -106,7 +110,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
     for (unsigned int i=0; i<nbVertices; ++i)
     {
-        double x,y,z;
+        SReal x,y,z;
 
         dataFile >> x >> y >> z;
 
@@ -224,6 +228,70 @@ bool MeshTrianLoader::readTrian (const char* filename)
     //MeshLoader job now
     //trian->computeCenter();
     //createVirtualVertices(vv,ee,tt,zz,trian);
+
+    return true;
+}
+
+
+bool MeshTrianLoader::readTrian2 (const char* filename)
+{
+    std::ifstream dataFile (filename);
+
+    // --- data used in trian2 files ---
+    unsigned int nbVertices = 0;
+    unsigned int nbNormals = 0;
+    unsigned int nbTriangles = 0;
+
+    // --- TODO: Loading material parameters ---
+    char buffer[256];
+    for (unsigned int i=0; i<13; ++i)
+    {
+        dataFile.getline (buffer,256);
+    }
+
+    // --- Loading Vertices positions ---
+    dataFile >> buffer >> nbVertices; //Loading number of Vertex
+
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
+    for (unsigned int i=0; i<nbVertices; ++i)
+    {
+        SReal x,y,z;
+
+        dataFile >> x >> y >> z;
+        my_positions.push_back (Vector3(x, y, z));
+    }
+    positions.endEdit();
+
+
+    // --- Loading Normals positions ---
+    dataFile >> buffer >> nbNormals; //Loading number of Vertex
+
+    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(normals.beginEdit());
+    for (unsigned int i=0; i<nbNormals; ++i)
+    {
+        SReal x,y,z;
+
+        dataFile >> x >> y >> z;
+        my_normals.push_back (Vector3(x, y, z));
+    }
+    normals.endEdit();
+
+
+    // --- Loading Triangles array ---
+    dataFile >> buffer >> nbTriangles; //Loading number of Triangle
+
+    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
+
+    for (unsigned int i=0; i<nbTriangles; ++i)
+    {
+        Triangle nodes;
+
+        dataFile >>  nodes[0] >> nodes[1] >> nodes[2] ;
+
+        addTriangle(&my_triangles, nodes);
+    }
+
+    triangles.endEdit();
 
     return true;
 }
