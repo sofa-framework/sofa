@@ -332,6 +332,9 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
     core::visual::VisualLoop* vloop = root->getVisualLoop();
     if(vloop)
     {
+        if (!vparams) vparams = sofa::core::visual::VisualParams::defaultInstance();
+        vparams->update();
+
         vloop->drawStep(vparams);
     }
     else

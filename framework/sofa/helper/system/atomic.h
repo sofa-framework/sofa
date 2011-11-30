@@ -83,6 +83,8 @@ public:
     void operator--(int) { dec(); }
 
     int exchange_and_add(int i) { return __exchange_and_add((_Atomic_word*)&val,i); }
+    int exchange(int i) { return atomic_xchg(&val,i); }
+    int compare_and_swap(int cmp, int with) { return atomic_cmpxchg(&val, cmp, with); }
 
     static const char* getImplName() { return "Kernel"; }
 };
@@ -100,28 +102,28 @@ public:
     void set(int i) { val = i; }
     void add(int i)
     {
-        __asm__ __volatile__ ("lock; add{l} {%1,%0|%0,%1}"
+        __asm__ __volatile__ ("lock add{l} {%1,%0|%0,%1}"
                 : "+m" (val) : "ir" (i) : "memory");
     }
     void sub(int i)
     {
-        __asm__ __volatile__ ("lock; sub{l} {%1,%0|%0,%1}"
+        __asm__ __volatile__ ("lock sub{l} {%1,%0|%0,%1}"
                 : "+m" (val) : "ir" (i) : "memory");
     }
     void inc()
     {
-        __asm__ __volatile__ ("lock; inc{l} %0"
+        __asm__ __volatile__ ("lock inc{l} %0"
                 : "+m" (val) : : "memory");
     }
     void dec()
     {
-        __asm__ __volatile__ ("lock; dec{l} %0"
+        __asm__ __volatile__ ("lock dec{l} %0"
                 : "+m" (val) : : "memory");
     }
     bool dec_and_test_null()
     {
         unsigned char c;
-        __asm__ __volatile__("lock; dec{l} %0; sete %1"
+        __asm__ __volatile__("lock dec{l} %0; sete %1"
                 :"+m" (val), "=qm" (c)
                 : : "memory");
         return c != 0;
@@ -129,7 +131,7 @@ public:
     bool add_and_test_neg(int i)
     {
         unsigned char c;
-        __asm__ __volatile__("lock; add{l} {%2,%0|%0,%2}; sets %1"
+        __asm__ __volatile__("lock add{l} {%2,%0|%0,%2}; sets %1"
                 :"+m" (val), "=qm" (c)
                 :"ir" (i) : "memory");
         return c != 0;
@@ -138,11 +140,21 @@ public:
     int exchange_and_add(int i)
     {
         int res;
-        __asm__ __volatile__ ("lock; xadd{l} {%0,%1|%1,%0}"
+        __asm__ __volatile__ ("lock xadd{l} {%0,%1|%1,%0}"
                 : "=r" (res), "+m" (val)
                 : "0" (i)
                 : "memory");
         return res;
+    }
+
+    int exchange(int with)
+    {
+        int result;
+        __asm__ __volatile__ ( "lock xchg %0,%1"
+                : "=a" (result), "+m" (val)
+                : "a" (with)
+                : "memory");
+        return result;
     }
 
     int compare_and_swap(int cmp, int with)

@@ -106,6 +106,9 @@ public:
     /// Get the default ExecParams, to be used to provide a default values for method parameters
     static ExecParams* defaultInstance();
 
+    /// Make sure this instance is up-to-date relative to the current thread
+    void update();
+
     /// Request a specific mode of execution
     ExecParams& setExecMode(ExecMode v) { storage->execMode = v; return *this; }
 
