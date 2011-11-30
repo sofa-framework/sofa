@@ -61,6 +61,12 @@ ExecParams::ExecParamsThreadStorage* ExecParams::threadStorage()
     return defaultInstance()->storage;
 }
 
+/// Make sure this instance is up-to-date relative to the current thread
+void ExecParams::update()
+{
+    storage = threadStorage();
+}
+
 } // namespace core
 
 } // namespace sofa

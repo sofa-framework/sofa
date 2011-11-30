@@ -43,7 +43,9 @@ public:
 
     Result processNodeTopDown(Node* node);
 
-private:
+protected:
+    void processObject(sofa::core::objectmodel::BaseObject* obj);
+
     int destAspect;
     int srcAspect;
 };

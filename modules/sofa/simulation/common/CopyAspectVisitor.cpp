@@ -40,13 +40,25 @@ CopyAspectVisitor::~CopyAspectVisitor()
 {
 }
 
+void CopyAspectVisitor::processObject(sofa::core::objectmodel::BaseObject* obj)
+{
+    obj->copyAspect(destAspect, srcAspect);
+    const sofa::core::objectmodel::BaseObject::VecSlaves& slaves = obj->getSlaves();
+
+    for(sofa::core::objectmodel::BaseObject::VecSlaves::const_iterator iObj = slaves.begin(), endObj = slaves.end(); iObj != endObj; ++iObj)
+    {
+        //fprintf(stderr, "    Copy master: %s, slave: %s\n", obj->getName().c_str(), (*iObj)->getName().c_str());
+        processObject(iObj->get());
+    }
+}
+
 CopyAspectVisitor::Result CopyAspectVisitor::processNodeTopDown(Node* node)
 {
     node->copyAspect(destAspect, srcAspect);
     for(Node::ObjectIterator iObj = node->object.begin(), endObj = node->object.end(); iObj != endObj; ++iObj)
     {
-        fprintf(stderr, "Copy node: %s, object: %s\n", node->getName().c_str(), (*iObj)->getName().c_str());
-        (*iObj)->copyAspect(destAspect, srcAspect);
+        //fprintf(stderr, "Copy node: %s, object: %s\n", node->getName().c_str(), (*iObj)->getName().c_str());
+        processObject(iObj->get());
     }
     return RESULT_CONTINUE;
 }

@@ -128,6 +128,7 @@ public:
     static VisualParams* defaultInstance()
     {
         static VisualParams m_defaultInstance;
+        m_defaultInstance.update();
         return &m_defaultInstance;
     }
 

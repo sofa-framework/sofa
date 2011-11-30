@@ -25,7 +25,7 @@
 #include "MultithreadGUI.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/thread/CircularQueue.inl>
+//#include <sofa/helper/system/thread/CircularQueue.inl>
 #include <sofa/simulation/common/CopyAspectVisitor.h>
 #include <sofa/simulation/common/ReleaseAspectVisitor.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -56,16 +56,7 @@
 #include <sofa/gui/MouseOperations.h>
 
 #include <sofa/simulation/common/PropagateEventVisitor.h>
-#ifdef SOFA_SMP
-#include <sofa/component/visualmodel/VisualModelImpl.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/CollisionVisitor.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/PropagateEventVisitor.h>
-#include <sofa/simulation/common/VisualVisitor.h>
-#include <athapascan-1>
-#include "Multigraph.inl"
-#endif /* SOFA_SMP */
+
 // define this if you want video and OBJ capture to be only done once per N iteration
 //#define CAPTURE_PERIOD 5
 
@@ -84,69 +75,6 @@ using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 using sofa::simulation::getSimulation;
-#ifdef SOFA_SMP
-using namespace sofa::simulation;
-struct doCollideTask
-{
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-        // groot->execute<CollisionVisitor>();
-        // TODO MultithreadGUI::instance->getScene()->execute<CollisionVisitor>();
-        // TODO AnimateBeginEvent ev ( 0.0 );
-        // TODO PropagateEventVisitor act ( &ev );
-        // TODO MultithreadGUI::instance->getScene()->execute ( act );
-        //	sofa::simulation::tree::getSimulation()->animate(groot.get());
-
-    }
-};
-struct animateTask
-{
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-
-        getSimulation()->animate( MultithreadGUI::instance->getScene());
-
-    }
-};
-
-struct collideTask
-{
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-
-        //   a1::Fork<doCollideTask>()();
-        //	sofa::simulation::tree::getSimulation()->animate(groot.get());
-
-    }
-};
-struct visuTask
-{
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-        // TODO AnimateEndEvent ev ( 0.0 );
-        // TODO PropagateEventVisitor act ( &ev );
-        // TODO MultithreadGUI::instance->getScene()->execute ( act );
-        // TODO MultithreadGUI::instance->getScene()->execute<VisualUpdateVisitor>();
-
-    }
-};
-struct MainLoopTask
-{
-
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-        Iterative::Fork<doCollideTask>()();
-        Iterative::Fork<animateTask >(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
-        Iterative::Fork<visuTask>()();
-        //a1::Fork<collideTask>(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
-    }
-};
-#endif /* SOFA_SMP */
 
 MultithreadGUI* MultithreadGUI::instance = NULL;
 
@@ -159,6 +87,7 @@ void MultithreadGUI::initAspects()
     aspectPool.setReleaseCallback(boost::bind(&MultithreadGUI::releaseAspect, this, _1));
     simuAspect = aspectPool.allocate();
     core::ExecParams::defaultInstance()->setAspectID(simuAspect->aspectID());
+    renderMsgBuffer = new AspectBuffer(aspectPool);
 }
 
 void MultithreadGUI::initThreads()
@@ -179,36 +108,60 @@ void MultithreadGUI::simulationLoop()
     ep->setAspectID(simuAspect->aspectID());
     groot->getContext()->setAnimate(true);
 
+    simulation::getSimulation()->exportXML ( groot.get(), "debug_scene_init0.xml" );
+
     AspectRef renderAspect = aspectPool.allocate();
     fprintf(stderr, "Allocated aspect %d for render\nCopy from %d to %d\n", renderAspect->aspectID(), simuAspect->aspectID(), renderAspect->aspectID());
+
+
+    ep->setAspectID(renderAspect->aspectID());
+    simulation::getSimulation()->exportXML ( groot.get(), "debug_scene_init1.xml" );
+    ep->setAspectID(simuAspect->aspectID());
+
     simulation::CopyAspectVisitor copyAspect(ep, renderAspect->aspectID(), simuAspect->aspectID());
     groot->execute(copyAspect);
-    renderMsgQueue.push(renderAspect);
+
+    ep->setAspectID(renderAspect->aspectID());
+    simulation::getSimulation()->exportXML ( groot.get(), "debug_scene_copy1.xml" );
+    ep->setAspectID(simuAspect->aspectID());
+
+    renderMsgBuffer->push(renderAspect);
 
     while(!closeSimu)
     {
-        CTime::sleep(0.1);
-        /*
+        CTime::sleep(0.001);
         step();
         //boost::thread::sleep(boost::get_system_time() + boost::posix_time::milliseconds(500));
-        AspectRef renderAspect = aspectPool.allocate();
-        //fprintf(stderr, "Allocated aspect %d for render\nCopy from %d to %d\n", renderAspect->aspectID(), simuAspect->aspectID(), renderAspect->aspectID());
+        AspectRef renderAspect = renderMsgBuffer->allocate();  // aspectPool.allocate();
+        fprintf(stderr, "Allocated aspect %d for render\nCopy from %d to %d\n", renderAspect->aspectID(), simuAspect->aspectID(), renderAspect->aspectID());
         simulation::CopyAspectVisitor copyAspect(ep, renderAspect->aspectID(), simuAspect->aspectID());
         groot->execute(copyAspect);
-        renderMsgQueue.push(renderAspect);
-        */
+        renderMsgBuffer->push(renderAspect);
+
+        std::cout << "ASPECTS: simu=" << simuAspect->aspectID() << " render=" << renderAspect->aspectID() << " POOL=[";
+        for (int i=0,n=aspectPool.nbAspects(); i<n; ++i)
+            std::cout << ' ' << aspectPool.getAspectCounter(i);
+        std::cout << "]" << std::endl;
+
     }
 }
 
 bool MultithreadGUI::processMessages()
 {
-    fprintf(stderr, "Process Messages\n");
+    //fprintf(stderr, "Process Messages\n");
     bool needUpdate = false;
     do
     {
-        while(!renderMsgQueue.isEmpty())
+        /*
+                while(!renderMsgQueue.isEmpty())
+                {
+                    renderMsgQueue.pop(glAspect);
+                    fprintf(stderr, "pop aspect\n");
+                    needUpdate = true;
+                }
+        */
+        if (renderMsgBuffer->pop(glAspect))
         {
-            renderMsgQueue.pop(glAspect);
             fprintf(stderr, "pop aspect\n");
             needUpdate = true;
         }
@@ -241,17 +194,6 @@ void MultithreadGUI::releaseAspect(int aspect)
 
 int MultithreadGUI::mainLoop()
 {
-#ifdef SOFA_SMP
-    if(groot)
-    {
-// TODO	getScene()->execute<CollisionVisitor>();
-        a1::Sync();
-        mg=new Iterative::Multigraph<MainLoopTask>();
-        mg->compile();
-        mg->deploy();
-
-    }
-#endif /* SOFA_SMP */
     instance->initThreads();
 
     glutMainLoop();
@@ -391,7 +333,7 @@ void MultithreadGUI::glut_idle()
 //    }
     if (instance)
     {
-        CTime::sleep(0.1);
+        //CTime::sleep(0.1);
         instance->animate();
     }
 }
@@ -402,6 +344,7 @@ void MultithreadGUI::glut_idle()
 // --- Constructor
 // ---------------------------------------------------------
 MultithreadGUI::MultithreadGUI()
+    : renderMsgBuffer(NULL)
 {
     instance = this;
 
@@ -489,6 +432,9 @@ MultithreadGUI::MultithreadGUI()
     pick.changeOperation(RIGHT,  "Remove");
 
     vparams.drawTool() = &drawTool;
+
+    visuFPS = 0;
+    simuFPS = 0;
 }
 
 
@@ -498,6 +444,11 @@ MultithreadGUI::MultithreadGUI()
 MultithreadGUI::~MultithreadGUI()
 {
     closeThreads();
+    if (renderMsgBuffer)
+    {
+        renderMsgBuffer->clear();
+        delete renderMsgBuffer;
+    }
     if (instance == this) instance = NULL;
 }
 
@@ -505,7 +456,7 @@ void MultithreadGUI::initTextures()
 {
     if (!initTexturesDone)
     {
-        //         std::cout << "-----------------------------------> initTexturesDone\n";
+        std::cout << "-----------------------------------> initTextures\n";
         //---------------------------------------------------
         simulation::getSimulation()->initTextures(groot.get());
         //---------------------------------------------------
@@ -1247,6 +1198,8 @@ void MultithreadGUI::paintGL()
     // draw the scene
     DrawScene();
 
+    eventNewFrame();
+
     if (_video)
     {
 #ifdef CAPTURE_PERIOD
@@ -1254,6 +1207,40 @@ void MultithreadGUI::paintGL()
         if ((counter++ % CAPTURE_PERIOD)==0)
 #endif
             screenshot(2);
+    }
+}
+
+void MultithreadGUI::eventNewFrame()
+{
+    static ctime_t beginTime[10];
+    static const ctime_t timeTicks = CTime::getRefTicksPerSec();
+    static int frameCounter = 0;
+    if (frameCounter==0)
+    {
+        ctime_t t = CTime::getRefTime();
+        for (int i=0; i<10; i++)
+            beginTime[i] = t;
+    }
+    ++frameCounter;
+    if ((frameCounter%10) == 0)
+    {
+        ctime_t curtime = CTime::getRefTime();
+        int i = ((frameCounter/10)%10);
+        visuFPS = ((double)timeTicks / (curtime - beginTime[i]))*(frameCounter<100?frameCounter:100);
+        char buf[120];
+        sprintf(buf, "%.1f vFPS, %.1f sFPS", visuFPS, simuFPS);
+        std::string title = "SOFA";
+        if (!sceneFileName.empty())
+        {
+            title += " :: ";
+            title += sceneFileName;
+        }
+        title += " :: ";
+        title += buf;
+        glutSetWindowTitle(title.c_str());
+
+        beginTime[i] = curtime;
+        //frameCounter = 0;
     }
 }
 
@@ -1273,18 +1260,7 @@ void MultithreadGUI::eventNewStep()
     {
         ctime_t curtime = CTime::getRefTime();
         int i = ((frameCounter/10)%10);
-        double fps = ((double)timeTicks / (curtime - beginTime[i]))*(frameCounter<100?frameCounter:100);
-        char buf[100];
-        sprintf(buf, "%.1f FPS", fps);
-        std::string title = "SOFA";
-        if (!sceneFileName.empty())
-        {
-            title += " :: ";
-            title += sceneFileName;
-        }
-        title += " :: ";
-        title += buf;
-        glutSetWindowTitle(title.c_str());
+        simuFPS = ((double)timeTicks / (curtime - beginTime[i]))*(frameCounter<100?frameCounter:100);
 
         beginTime[i] = curtime;
         //frameCounter = 0;
@@ -2197,11 +2173,7 @@ void MultithreadGUI::step()
 {
     {
         //groot->setLogTime(true);
-#ifdef SOFA_SMP
-        mg->step();
-#else
         getSimulation()->animate(groot.get());
-#endif
 
         if( m_dumpState )
             getSimulation()->dumpState( groot.get(), *m_dumpStateStream );
@@ -2283,107 +2255,6 @@ void MultithreadGUI::saveView()
         std::cout << "View parameters saved in "<<viewFileName<<std::endl;
     }
 }
-/*
-void MultithreadGUI::showVisual(bool value)
-{
-    if (groot)
-    {
-        groot->getContext()->setShowVisualModels(value);
-        getSimulation()->updateVisualContext(groot.get());
-    }
-    redraw();
-}
-
-void MultithreadGUI::showBehavior(bool value)
-{
-    if (groot)
-    {
-        groot->getContext()->setShowBehaviorModels(value);
-        getSimulation()->updateVisualContext(groot.get());
-    }
-    redraw();
-}
-
-void MultithreadGUI::showCollision(bool value)
-{
-    if (groot)
-    {
-        groot->getContext()->setShowCollisionModels(value);
-        getSimulation()->updateVisualContext(groot.get());
-    }
-    redraw();
-}
-
-void MultithreadGUI::showBoundingCollision(bool value)
-{
-    if (groot)
-    {
-        groot->getContext()->setShowBoundingCollisionModels(value);
-        getSimulation()->updateVisualContext(groot.get());
-    }
-    redraw();
-}
-
-void MultithreadGUI::showMapping(bool value)
-{
-    if (groot)
-    {
-        groot->getContext()->setShowMappings(value);
-        getSimulation()->updateVisualContext(groot.get());
-    }
-    redraw();
-}
-
-void MultithreadGUI::showMechanicalMapping(bool value)
-{
-    if (groot)
-    {
-        groot->getContext()->setShowMechanicalMappings(value);
-        getSimulation()->updateVisualContext(groot.get());
-    }
-    redraw();
-}
-
-void MultithreadGUI::showForceField(bool value)
-{
-    if (groot)
-    {
-        groot->getContext()->setShowForceFields(value);
-        getSimulation()->updateVisualContext(groot.get());
-    }
-    redraw();
-}
-
-void MultithreadGUI::showInteractionForceField(bool value)
-{
-    if (groot)
-    {
-        groot->getContext()->setShowInteractionForceFields(value);
-        getSimulation()->updateVisualContext(groot.get());
-    }
-    redraw();
-}
-
-void MultithreadGUI::showWireFrame(bool value)
-{
-    if (groot)
-    {
-        groot->getContext()->setShowWireFrame(value);
-        getSimulation()->updateVisualContext(groot.get());
-    }
-    redraw();
-}
-
-void MultithreadGUI::showNormals(bool value)
-{
-    if (groot)
-    {
-        groot->getContext()->setShowNormals(value);
-        getSimulation()->updateVisualContext(groot.get());
-    }
-    redraw();
-}
-*/
 void MultithreadGUI::screenshot(int compression_level)
 {
     capture.saveScreen(compression_level);

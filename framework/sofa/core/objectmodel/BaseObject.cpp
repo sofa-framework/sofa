@@ -266,20 +266,26 @@ void BaseObject::removeSlave(BaseObject::SPtr s)
 void BaseObject::copyAspect(int destAspect, int srcAspect)
 {
     Base::copyAspect(destAspect, srcAspect);
-    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
-    {
-        (*iSlaves)->copyAspect(destAspect, srcAspect);
-    }
+    // copyAspect is no longer recursive to slave objects
+    /*
+        for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+        {
+            (*iSlaves)->copyAspect(destAspect, srcAspect);
+        }
+    */
 }
 
 /// Release memory allocated for the specified aspect.
 void BaseObject::releaseAspect(int aspect)
 {
     Base::releaseAspect(aspect);
-    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
-    {
-        (*iSlaves)->releaseAspect(aspect);
-    }
+    // releaseAspect is no longer recursive to slave objects
+    /*
+        for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+        {
+            (*iSlaves)->releaseAspect(aspect);
+        }
+    */
 }
 
 void BaseObject::init()

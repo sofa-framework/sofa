@@ -29,7 +29,7 @@
 #include <sofa/gui/PickHandler.h>
 
 #include <sofa/core/objectmodel/AspectPool.h>
-#include <sofa/helper/system/thread/CircularQueue.h>
+//#include <sofa/helper/system/thread/CircularQueue.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Vec.h>
@@ -74,6 +74,7 @@ namespace glut
 
 using sofa::core::objectmodel::AspectPool;
 using sofa::core::objectmodel::AspectRef;
+using sofa::core::objectmodel::AspectBuffer;
 using namespace sofa::helper::system::thread;
 
 using namespace sofa::defaulttype;
@@ -149,8 +150,10 @@ private:
     AspectPool aspectPool;
     AspectRef glAspect;
     AspectRef simuAspect;
-    CircularQueue<AspectRef, FixedSize<4>::type, OneThreadPerEnd> renderMsgQueue;
+    //CircularQueue<AspectRef, FixedSize<4>::type, OneThreadPerEnd> renderMsgQueue;
+    AspectBuffer* renderMsgBuffer;
     bool closeSimu;
+    double simuFPS, visuFPS;
     //------------------------------------
 private:
 
@@ -258,6 +261,7 @@ public:
     void mouseEvent ( int type, int x, int y, int bt );
 
     void eventNewStep();
+    void eventNewFrame();
 
 protected:
     void calcProjection();

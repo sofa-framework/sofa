@@ -34,6 +34,7 @@
 #include <sstream>
 #include <string.h>
 
+//#define NO_VBO
 
 namespace sofa
 {
@@ -589,6 +590,9 @@ void OglModel::initVisual()
     initTextures();
 
     initDone = true;
+#ifdef NO_VBO
+    canUseVBO = false;
+#else
 #ifdef SOFA_HAVE_GLEW
     //This test is not enough to detect if we can enable the VBO.
     canUseVBO = (GLEW_ARB_vertex_buffer_object!=0);
@@ -596,8 +600,9 @@ void OglModel::initVisual()
 
     if (useVBO.getValue() && !canUseVBO)
     {
-        serr << "OglModel : VBO is not supported by your GPU ; will use display list instead" << sendl;
+        serr << "OglModel : VBO is not supported by your GPU" << sendl;
     }
+#endif
 
     updateBuffers();
 
