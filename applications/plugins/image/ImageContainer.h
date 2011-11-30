@@ -160,7 +160,7 @@ protected:
                     {
                         fileStream >> dim;
                     }
-                    else if(str.find("translation")!=std::string::npos)
+                    else if(str.find("translation")!=std::string::npos || str.find("origin")!=std::string::npos)
                     {
                         fileStream >> wtransform->getTranslation();
                     }
@@ -220,6 +220,8 @@ protected:
     bool loadCamera()
     {
         if (this->m_filename.isSet()) return false;
+        if(this->name.getValue().find("CAMERA")==std::string::npos) return false;
+
 #ifdef cimg_use_opencv
         waImage wimage(this->image);
         if(!wimage->getCImgList().size()) wimage->getCImgList().push_back(CImg<T>().load_camera());

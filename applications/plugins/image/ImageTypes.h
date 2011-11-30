@@ -29,7 +29,7 @@
 #if  defined (SOFA_HAVE_FFMPEG)  || defined (SOFA_EXTLIBS_FFMPEG)
 #define cimg_use_ffmpeg
 #endif
-#ifdef SOFA_IMAGE_HAVE_OPENCV
+#ifdef SOFA_IMAGE_HAVE_OPENCV // should be "SOFA_HAVE_OPENCV" -> use "SOFA_IMAGE_HAVE_OPENCV" until the opencv plugin is fixed..
 #define cimg_use_opencv
 #endif
 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
-  <ImageContainer  name="cam"  transform="-5 -5 3 0 0 0 0.02 0.02 30 0 1 1" />
-  <!-- <ImageFilter  param="5" filter="1" name="engine" src="@cam" /> -->
-  <ImageViewer  name="viewer" src="@cam" />
+  <ImageContainer  name="CAMERA"  transform="-5 -5 3 0 0 0 0.02 0.02 30 0 1 1" />
+  <!-- <ImageFilter  param="5" filter="1" name="engine" src="@CAMERA" /> -->
+  <ImageViewer  name="viewer" src="@CAMERA" />
   <OglModel fileMesh="mesh/cube.obj" color="1 1 0.5 1"/>
 </Node>
