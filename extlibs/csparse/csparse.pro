@@ -3,6 +3,8 @@ load(sofa/pre)
 TEMPLATE = lib
 TARGET = csparse
 
+CONFIGSTATIC = static
+
 DEFINES += use_namespace 
 
 SOURCES = \    
