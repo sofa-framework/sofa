@@ -1,10 +1,7 @@
 contains(DEFINES, SOFA_HAVE_BOOST){
   !isEmpty(BOOST_ROOT) {
     INCLUDEPATH *= $$BOOST_ROOT
-    LIBS *= -L$$BOOST_ROOT\stage\lib
-  }
-  win32 {
-    BOOST_PREFIX = lib
+    LIBS *= -L$$BOOST_ROOT/lib
   }
   LIBS *= -l$${BOOST_PREFIX}boost_thread$$BOOST_SUFFIX -l$${BOOST_PREFIX}boost_system$$BOOST_SUFFIX
 } else {

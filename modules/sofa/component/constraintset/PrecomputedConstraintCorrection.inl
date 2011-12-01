@@ -1492,7 +1492,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
         for (int id2 = id1; id2<=end; id2++)
         {
             int c2 = id_to_localIndex[id2];
-            Real w = localW.element(c1,c2);
+            Real w = (Real)localW.element(c1,c2);
 
             W->add(id1, id2, w);
             if (id1 != id2)

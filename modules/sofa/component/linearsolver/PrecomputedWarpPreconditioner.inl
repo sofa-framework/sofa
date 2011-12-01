@@ -207,7 +207,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
         for (unsigned int j=0; j<matrixSize; j++)
         {
             Real * minvVal = (*internalData.MinvPtr)[j];
-            for (unsigned i=0; i<matrixSize; i++) minvVal[i] /= factInt;
+            for (unsigned i=0; i<matrixSize; i++) minvVal[i] /= (Real)factInt;
         }
     }
 
@@ -260,7 +260,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
 
                 for (unsigned c=0; c<dof_on_node; c++)
                 {
-                    minvVal[i*dof_on_node+c] = r.element(pid_i*dof_on_node+c)*factInt;
+                    minvVal[i*dof_on_node+c] = (Real)(r.element(pid_i*dof_on_node+c)*factInt);
                 }
             }
 
@@ -456,7 +456,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
                 for (unsigned int c=0; c<dof_on_node; c++)
                 {
-                    minvVal[i*dof_on_node+c] = (Real) velocity[pid_i][c]*factInt;
+                    minvVal[i*dof_on_node+c] = (Real) (velocity[pid_i][c]*factInt);
                 }
             }
         }
@@ -655,7 +655,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(defaulttype::BaseM
             for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end();)
             {
                 int c = i1->first;
-                Real v0 = i1->second; i1++; Real v1 = i1->second; i1++; Real v2 = i1->second; i1++;
+                Real v0 = (Real)i1->second; i1++; Real v1 = (Real)i1->second; i1++; Real v2 = (Real)i1->second; i1++;
                 internalData.JR.set(l,c+0,v0 * R[(c+0)*3+0] + v1 * R[(c+1)*3+0] + v2 * R[(c+2)*3+0] );
                 internalData.JR.set(l,c+1,v0 * R[(c+0)*3+1] + v1 * R[(c+1)*3+1] + v2 * R[(c+2)*3+1] );
                 internalData.JR.set(l,c+2,v0 * R[(c+0)*3+2] + v1 * R[(c+1)*3+2] + v2 * R[(c+2)*3+2] );
@@ -668,10 +668,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(defaulttype::BaseM
             for (unsigned c = 0; c<internalData.idActiveDofs.size(); c++)
             {
                 int col = internalData.idActiveDofs[c];
-                Real v = 0.0;
+                Real v = (Real)0.0;
                 for (typename SparseMatrix<Real>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
                 {
-                    v += internalData.MinvPtr->element(i1->first,col) * i1->second;
+                    v += (Real)(internalData.MinvPtr->element(i1->first,col) * i1->second);
                 }
                 internalData.JRMinv.set(nl,c,v);
             }
@@ -686,10 +686,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(defaulttype::BaseM
             for (unsigned c = 0; c<internalData.idActiveDofs.size(); c++)
             {
                 int col = internalData.idActiveDofs[c];
-                Real v = 0.0;
+                Real v = (Real)0.0;
                 for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
                 {
-                    v += internalData.MinvPtr->element(i1->first,col) * i1->second;
+                    v += (Real)(internalData.MinvPtr->element(i1->first,col) * i1->second);
                 }
                 internalData.JRMinv.set(nl,c,v);
             }
@@ -704,10 +704,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(defaulttype::BaseM
         for (typename JMatrix::LineConstIterator jit2 = J.begin(); jit2 != J.end(); jit2++)
         {
             int col = jit2->first;
-            Real res = 0.0;
+            Real res = (Real)0.0;
             for (typename JMatrix::LElementConstIterator i1 = jit2->second.begin(); i1 != jit2->second.end(); i1++)
             {
-                res += internalData.JRMinv.element(nl,internalData.invActiveDofs[i1->first]) * i1->second;
+                res += (Real)(internalData.JRMinv.element(nl,internalData.invActiveDofs[i1->first]) * i1->second);
             }
             result->add(row,col,res*fact);
         }

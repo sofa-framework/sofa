@@ -249,11 +249,6 @@ protected:
     void accumulateForcePolar( Vector& f, const Vector & p,Index elementIndex );
     void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0 );
 
-    /// the callback function called when a tetrahedron is created
-    static void CFTetrahedronCreationFunction (unsigned int , void* ,
-            TetrahedronInformation &,
-            const Tetrahedron& , const helper::vector< unsigned int > &, const helper::vector< double >&);
-
     void printStiffnessMatrix(int idTetra);
 
 };

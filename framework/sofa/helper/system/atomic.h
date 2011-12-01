@@ -273,6 +273,7 @@ public:
 
     int exchange_and_add(int i) { return InterlockedExchangeAdd(&val,i); }
     int compare_and_swap(int cmp, int with) { return InterlockedCompareExchange(&val, with, cmp); }
+    int exchange(int i) { return InterlockedExchange(&val,i); }
 
     static const char* getImplName() { return "Win32"; }
 };

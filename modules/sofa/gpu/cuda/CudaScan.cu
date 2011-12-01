@@ -380,7 +380,7 @@ bool CudaScanTHRUST(const void* input, void* output, unsigned int size, ScanType
 
 enum ScanImplType
 {
-    SCAN_DEFAULT = 0,
+    SCANDEFAULT = 0,
     SCAN_SOFA,
 #if defined(SOFA_GPU_CUDPP)
     SCAN_CUDPP,
@@ -394,14 +394,14 @@ enum ScanImplType
 ScanImplType CudaScanImpl()
 {
     static bool done = false;
-    static ScanImplType impl = SCAN_DEFAULT;
+    static ScanImplType impl = SCANDEFAULT;
     if (!done)
     {
         const char* str = mygetenv("CUDA_SCAN");
         if (!str || !*str)
-            impl = SCAN_DEFAULT;
+            impl = SCANDEFAULT;
         else if ((str[0] == 'D' || str[0] == 'd') && (str[1] == 'E' || str[1] == 'e'))
-            impl = SCAN_DEFAULT;
+            impl = SCANDEFAULT;
         else if ((str[0] == 'S' || str[0] == 's') && (str[1] == 'O' || str[1] == 'o'))
             impl = SCAN_SOFA;
 #if defined(SOFA_GPU_CUDPP)
@@ -424,19 +424,19 @@ bool CudaScanGPUAvailable(unsigned int size, ScanType type)
     ScanImplType impl = CudaScanImpl();
     switch(impl)
     {
-    case SCAN_DEFAULT: // alias for the first active implementation
+    case SCANDEFAULT: // alias for the first active implementation
 #if defined(SOFA_GPU_CUDPP)
     case SCAN_CUDPP:
         if (CudaScanCUDPPAvailable(size, type))
             return true;
-        if (impl != SCAN_DEFAULT)
+        if (impl != SCANDEFAULT)
             break;
 #endif
 #if defined(SOFA_GPU_THRUST)
     case SCAN_THRUST:
         if (CudaScanTHRUSTAvailable(size, type))
             return true;
-        if (impl != SCAN_DEFAULT)
+        if (impl != SCANDEFAULT)
             break;
 #endif
     case SCAN_UNKNOWN:
@@ -450,19 +450,19 @@ bool CudaScanGPU(const void* input, void* output, unsigned int size, ScanType ty
     ScanImplType impl = CudaScanImpl();
     switch(impl)
     {
-    case SCAN_DEFAULT: // alias for the first active implementation
+    case SCANDEFAULT: // alias for the first active implementation
 #if defined(SOFA_GPU_CUDPP)
     case SCAN_CUDPP:
         if (CudaScanCUDPP(input, output, size, type))
             return true;
-        if (impl != SCAN_DEFAULT)
+        if (impl != SCANDEFAULT)
             break;
 #endif
 #if defined(SOFA_GPU_THRUST)
     case SCAN_THRUST:
         if (CudaScanTHRUST(input, output, size, type))
             return true;
-        if (impl != SCAN_DEFAULT)
+        if (impl != SCANDEFAULT)
             break;
 #endif
     case SCAN_UNKNOWN:

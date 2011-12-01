@@ -143,8 +143,6 @@ protected:
                 const Edge& ,  const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double >&);
 
-        void applyCreateFunction(unsigned int edgeIndex, void *param, const EdgeInformation &ei, const Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
-
         void applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
                 const sofa::helper::vector<Triangle> & ,
                 const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ,
