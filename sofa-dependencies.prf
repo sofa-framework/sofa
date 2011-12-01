@@ -7,7 +7,6 @@ declare(cilk,   cilk.prf)
 declare(cuda,   cuda.prf)
 declare(opencl,  opencl.prf)
 declare(flowvr, flowvr.prf)
-declare(fltk,   fltk.prf)
 declare(glut,   glut.prf)
 declare(glew,   glew.prf)
 declare(libpng, libpng.prf)
@@ -137,11 +136,10 @@ declare(sofagpuopencl, modules/sofa/gpu/opencl, sofahelper sofa_engine sofa_sph_
 # Applications
 ######################################################################
 #----- Sofa -----#
-declare(sofagui,     applications/sofa/gui/libgui.pro,     sofa_graph_component sofa_base_collision sofa_user_interaction sofa_advanced_interaction)
+declare(sofagui,     applications/sofa/gui/libgui.pro,     sofa_graph_component sofa_base_collision sofa_user_interaction sofa_advanced_interaction sofa_base_visual)
 declare(sofaguiqt,   applications/sofa/gui/qt,             sofagui qwt QGLViewer sofa_base_visual sofa_exporter sofa_loader sofa_opengl_visual sofa_misc_forcefield)
 declare(sofaguimain, applications/sofa/gui/libguimain.pro, sofaguiqt sofaguiglut sofa_component sofagpucuda sofagpuopencl)
 declare(sofaguiglut, applications/sofa/gui/glut,           sofagui glut)
-declare(sofaguifltk, applications/sofa/gui/fltk,           sofaguiqt fltk)
 #--- Projects ---#
 declare(runSofa,          applications/projects/runSofa,          sofaguimain sofa_component_dev)
 declare(generateDoc,      applications/projects/generateDoc,      sofa_component sofagpucuda)
@@ -344,9 +342,6 @@ contains(DEFINES, SOFA_GPU_OPENCL) {
 }
 
 contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
-	contains (DEFINES, SOFA_GUI_FLTK) {
-		enable(sofaguifltk)
-	}
 	contains(DEFINES, SOFA_HAVE_VDD) {
 		#enable(SofaDevices)
 	}

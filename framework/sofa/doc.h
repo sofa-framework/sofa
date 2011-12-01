@@ -168,14 +168,6 @@
  *  \brief Qt-based User Interface.
  */
 
-#ifdef SOFA_DEV
-
-/** \namespace sofa::gui::fltk
- *  \brief FLTK-based User Interface.
- */
-
-#endif // SOFA_DEV
-
 /** \} */
 
 #endif

@@ -297,15 +297,6 @@ else {
   message( "|  GLUT GUI: DISABLED")
 }
 
-contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
-contains(DEFINES,SOFA_GUI_FLTK) {
-  message( "|  FLTK GUI: ENABLED")
-}
-else {
-  message( "|  FLTK GUI: DISABLED")
-}
-} # END SOFA_DEV
-
 !contains(DEFINES,SOFA_GUI_QTVIEWER) {
 !contains(DEFINES,SOFA_GUI_QGLVIEWER) {
 {
