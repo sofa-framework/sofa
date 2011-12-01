@@ -39,7 +39,7 @@
 
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 
-#include <sofa/component/container/RotationFinder.h>
+#include <sofa/core/behavior/RotationFinder.h>
 
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/Quater.h>
@@ -884,14 +884,14 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
         return;
 
     using sofa::component::forcefield::TetrahedronFEMForceField;
-    using sofa::component::container::RotationFinder;
+    using sofa::core::behavior::RotationFinder;
 
     // we draw the rotations associated to each node //
 
     simulation::Node *node = dynamic_cast< simulation::Node* >(this->getContext());
 
     TetrahedronFEMForceField< DataTypes >* forceField = NULL;
-    RotationFinder< DataTypes >* rotationFinder = NULL;
+    RotationFinder< DataTypes > * rotationFinder = NULL;
 
     if (node != NULL)
     {
@@ -941,7 +941,7 @@ template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
 {
     using sofa::component::forcefield::TetrahedronFEMForceField;
-    using sofa::component::container::RotationFinder;
+    using sofa::core::behavior::RotationFinder;
 
     helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::holonomicC());
     MatrixDeriv& c = cData.wref();
@@ -1010,8 +1010,10 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 {
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
 
+    using sofa::core::behavior::RotationFinder;
+
     sofa::component::forcefield::TetrahedronFEMForceField<DataTypes>* forceField = NULL;
-    sofa::component::container::RotationFinder<DataTypes>* rotationFinder = NULL;
+    RotationFinder< DataTypes >* rotationFinder = NULL;
 
     if (node != NULL)
     {
@@ -1019,7 +1021,7 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<DataTypes> > ();
         if (forceField == NULL)
         {
-            rotationFinder = node->get<component::container::RotationFinder<DataTypes> > ();
+            rotationFinder = node->get< RotationFinder< DataTypes > > ();
             if (rotationFinder == NULL)
             {
                 sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";

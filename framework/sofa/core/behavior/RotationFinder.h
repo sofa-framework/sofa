@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,41 +16,45 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initPreconditioner.h>
+#ifndef SOFA_CORE_BEHAVIOR_ROTATIONFINDER_H
+#define SOFA_CORE_BEHAVIOR_ROTATIONFINDER_H
+
+#include <sofa/core/behavior/BaseRotationFinder.h>
 
 
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-
-void initPreconditioner()
+namespace behavior
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(ShewchukPCGLinearSolver)
-SOFA_LINK_CLASS(PCGLinearSolver)
-SOFA_LINK_CLASS(JacobiPreconditioner)
-SOFA_LINK_CLASS(BlockJacobiPreconditioner)
-SOFA_LINK_CLASS(SSORPreconditioner)
-SOFA_LINK_CLASS(WarpPreconditioner)
-SOFA_LINK_CLASS(PrecomputedWarpPreconditioner)
+template <class DataTypes>
+class RotationFinder : public BaseRotationFinder
+{
+public:
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename Coord::value_type Real;
+    typedef defaulttype::Mat< 3, 3, Real > Mat3x3;
 
+    virtual const helper::vector< Mat3x3 >& getRotations() = 0;
+};
 
-} // namespace component
+} // namespace behavior
+
+} // namespace core
 
 } // namespace sofa
+
+#endif // SOFA_CORE_BEHAVIOR_ROTATIONFINDER_H

@@ -74,6 +74,7 @@ HEADERS += \
 	behavior/ProjectiveConstraintSet.h \
 	behavior/ProjectiveConstraintSet.inl \
 	behavior/OdeSolver.h \
+	behavior/RotationFinder.h \
 	collision/BroadPhaseDetection.h \
 	collision/CollisionAlgorithm.h \
 	collision/CollisionGroupManager.h \

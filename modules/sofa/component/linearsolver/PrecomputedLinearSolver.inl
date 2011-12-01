@@ -43,7 +43,6 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/container/RotationFinder.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
