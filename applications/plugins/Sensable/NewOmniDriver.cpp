@@ -394,9 +394,6 @@ void NewOmniDriver::setForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff)
         return;
     }
 
-    if(data.forceFeedback)
-        delete data.forceFeedback;
-
     data.forceFeedback = ff;
 };
 
