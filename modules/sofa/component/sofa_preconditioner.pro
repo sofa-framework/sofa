@@ -6,8 +6,6 @@ TARGET = sofa_preconditioner
 DEFINES += SOFA_BUILD_PRECONDITIONER
 
 HEADERS += initPreconditioner.h \
-           container/RotationFinder.h \
-           container/RotationFinder.inl \
            linearsolver/ShewchukPCGLinearSolver.h \
            linearsolver/PCGLinearSolver.h \
            linearsolver/JacobiPreconditioner.h \
@@ -21,7 +19,6 @@ HEADERS += initPreconditioner.h \
            linearsolver/PrecomputedWarpPreconditioner.inl
 
 SOURCES += initPreconditioner.cpp \
-           container/RotationFinder.cpp \
            linearsolver/ShewchukPCGLinearSolver.cpp \
            linearsolver/PCGLinearSolver.cpp \
            linearsolver/JacobiPreconditioner.cpp \

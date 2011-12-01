@@ -43,7 +43,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/container/RotationFinder.inl>
+#include <sofa/core/behavior/RotationFinder.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
 #include <sofa/helper/gl/Axis.h>
@@ -521,14 +521,14 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
 
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
     sofa::component::forcefield::TetrahedronFEMForceField<TDataTypes>* forceField = NULL;
-    sofa::component::container::RotationFinder<TDataTypes>* rotationFinder = NULL;
+    sofa::core::behavior::RotationFinder<TDataTypes>* rotationFinder = NULL;
 
     if (node != NULL)
     {
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<TDataTypes> > ();
         if (forceField == NULL)
         {
-            rotationFinder = node->get<component::container::RotationFinder<TDataTypes> > ();
+            rotationFinder = node->get< sofa::core::behavior::RotationFinder<TDataTypes> > ();
             if (rotationFinder == NULL)
                 sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
 
