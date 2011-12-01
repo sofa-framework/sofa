@@ -305,9 +305,9 @@ bool MeshROI<DataTypes>::isPointInMesh(const typename DataTypes::CPos& p)
     const Vec6 b = f_box.getValue();
     typename DataTypes::CPos Vec;
     if (sqrt( (b[0]-p[0])*(b[0]-p[0]) + (b[1]-p[1])*(b[1]-p[1]) + (b[2]-p[2])*(b[2]-p[2]) ) < sqrt( (b[3]-p[0])*(b[3]-p[0]) + (b[4]-p[1])*(b[4]-p[1]) + (b[5]-p[2])*(b[5]-p[2]) ) )
-    {Vec[0] = (b[0]-100.0)-p[0] ; Vec[1]= (b[1]-100.0)-p[1]; Vec[2]= (b[2]-100.0)-p[2];}
+    {Vec[0] = (b[0]-100.0f)-p[0] ; Vec[1]= (b[1]-100.0f)-p[1]; Vec[2]= (b[2]-100.0f)-p[2];}
     else
-    {Vec[0] = (b[3]+100.0)-p[0] ; Vec[1]= (b[4]+100.0)-p[1]; Vec[2]= (b[5]+100.0)-p[2];}
+    {Vec[0] = (b[3]+100.0f)-p[0] ; Vec[1]= (b[4]+100.0f)-p[1]; Vec[2]= (b[5]+100.0f)-p[2];}
     helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles_i = f_triangles_i;
     const VecCoord* x0 = &f_X0_i.getValue();
     int Through=0;
@@ -334,9 +334,9 @@ bool MeshROI<DataTypes>::isPointInMesh(const typename DataTypes::CPos& p)
             if(d>=0)
             {
                 typename DataTypes::CPos ptIN ;
-                ptIN[0] = p[0] + d*Vec[0];
-                ptIN[1] = p[1] + d*Vec[1];
-                ptIN[2] = p[2] + d*Vec[2];
+                ptIN[0] = (Real)(p[0] + d*Vec[0]);
+                ptIN[1] = (Real)(p[1] + d*Vec[1]);
+                ptIN[2] = (Real)(p[2] + d*Vec[2]);
                 if(CheckSameOrder(p0,p1,ptIN,N)) { if(CheckSameOrder(p1,p2,ptIN,N)) { if(CheckSameOrder(p2,p0,ptIN,N)) { Through++; } } }
             }
         }

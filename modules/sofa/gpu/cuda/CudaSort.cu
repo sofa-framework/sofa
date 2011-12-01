@@ -156,7 +156,7 @@ bool CudaSortTHRUST(void* keys, void* data, unsigned int size, int /*bits*/)
 
 enum SortImplType
 {
-    SORT_DEFAULT = 0,
+    SORTDEFAULT = 0,
 #if defined(SOFA_GPU_CUDPP)
     SORT_CUDPP,
 #endif
@@ -169,14 +169,14 @@ enum SortImplType
 SortImplType CudaSortImpl()
 {
     static bool done = false;
-    static SortImplType impl = SORT_DEFAULT;
+    static SortImplType impl = SORTDEFAULT;
     if (!done)
     {
         const char* str = mygetenv("CUDA_SORT");
         if (!str || !*str)
-            impl = SORT_DEFAULT;
+            impl = SORTDEFAULT;
         else if ((str[0] == 'D' || str[0] == 'd') && (str[1] == 'E' || str[1] == 'e'))
-            impl = SORT_DEFAULT;
+            impl = SORTDEFAULT;
 #if defined(SOFA_GPU_CUDPP)
         else if ((str[0] == 'C' || str[0] == 'c') && (str[1] == 'U' || str[1] == 'u'))
             impl = SORT_CUDPP;
@@ -202,14 +202,14 @@ bool CudaSortGPUAvailable(unsigned int size, bool withData)
     case SORT_CUDPP:
         if (CudaSortCUDPPAvailable(size, withData))
             return true;
-        if (impl != SORT_DEFAULT)
+        if (impl != SORTDEFAULT)
             break;
 #endif
 #if defined(SOFA_GPU_THRUST)
     case SORT_THRUST:
         if (CudaSortTHRUSTAvailable(size, withData))
             return true;
-        if (impl != SORT_DEFAULT)
+        if (impl != SORTDEFAULT)
             break;
 #endif
     case SORT_UNKNOWN:
