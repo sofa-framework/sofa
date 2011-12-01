@@ -744,6 +744,8 @@ void QtViewer::MakeStencilMask()
 // ---------------------------------------------------------
 void QtViewer::DrawScene(void)
 {
+    if (!groot) return;
+
     if(!currentCamera)
     {
         std::cerr << "ERROR: no camera defined" << std::endl;

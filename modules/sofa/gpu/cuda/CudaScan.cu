@@ -378,7 +378,7 @@ bool CudaScanTHRUST(const void* input, void* output, unsigned int size, ScanType
 
 #endif
 
-enum GPUSCAN
+enum ScanImplType
 {
     SCAN_DEFAULT = 0,
     SCAN_SOFA,
@@ -391,10 +391,10 @@ enum GPUSCAN
     SCAN_UNKNOWN
 };
 
-GPUSCAN CudaScanImpl()
+ScanImplType CudaScanImpl()
 {
     static bool done = false;
-    static GPUSCAN impl = SCAN_DEFAULT;
+    static ScanImplType impl = SCAN_DEFAULT;
     if (!done)
     {
         const char* str = mygetenv("CUDA_SCAN");
@@ -421,7 +421,7 @@ GPUSCAN CudaScanImpl()
 
 bool CudaScanGPUAvailable(unsigned int size, ScanType type)
 {
-    GPUSCAN impl = CudaScanImpl();
+    ScanImplType impl = CudaScanImpl();
     switch(impl)
     {
     case SCAN_DEFAULT: // alias for the first active implementation
@@ -447,7 +447,7 @@ bool CudaScanGPUAvailable(unsigned int size, ScanType type)
 
 bool CudaScanGPU(const void* input, void* output, unsigned int size, ScanType type)
 {
-    GPUSCAN impl = CudaScanImpl();
+    ScanImplType impl = CudaScanImpl();
     switch(impl)
     {
     case SCAN_DEFAULT: // alias for the first active implementation

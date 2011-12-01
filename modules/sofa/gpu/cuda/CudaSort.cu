@@ -154,7 +154,7 @@ bool CudaSortTHRUST(void* keys, void* data, unsigned int size, int /*bits*/)
 
 #endif
 
-enum GPUSORT
+enum SortImplType
 {
     SORT_DEFAULT = 0,
 #if defined(SOFA_GPU_CUDPP)
@@ -166,10 +166,10 @@ enum GPUSORT
     SORT_UNKNOWN
 };
 
-GPUSORT CudaSortImpl()
+SortImplType CudaSortImpl()
 {
     static bool done = false;
-    static GPUSORT impl = SORT_DEFAULT;
+    static SortImplType impl = SORT_DEFAULT;
     if (!done)
     {
         const char* str = mygetenv("CUDA_SORT");
@@ -194,7 +194,7 @@ GPUSORT CudaSortImpl()
 
 bool CudaSortGPUAvailable(unsigned int size, bool withData)
 {
-    GPUSORT impl = CudaSortImpl();
+    SortImplType impl = CudaSortImpl();
     switch(impl)
     {
     case SORT_DEFAULT: // alias for the first active implementation
@@ -220,7 +220,7 @@ bool CudaSortGPUAvailable(unsigned int size, bool withData)
 
 bool CudaSortGPU(void* keys, void* data, unsigned int size, int bits)
 {
-    GPUSORT impl = CudaSortImpl();
+    SortImplType impl = CudaSortImpl();
     switch(impl)
     {
     case SORT_DEFAULT: // alias for the first active implementation
