@@ -114,6 +114,20 @@ public:
     void linkToTetrahedronDataArray();
     void linkToHexahedronDataArray();
 
+    sofa::component::topology::TopologyEngineImpl<VecT>* getTopologicalEngine()
+    {
+        return m_topologicalEngine.get();
+    }
+
+    sofa::core::topology::BaseMeshTopology* getTopology()
+    {
+        return m_topology;
+    }
+
+    sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* getTopologyHandler()
+    {
+        return m_topologyHandler;
+    }
 
 protected:
     virtual void linkToElementDataArray() {}

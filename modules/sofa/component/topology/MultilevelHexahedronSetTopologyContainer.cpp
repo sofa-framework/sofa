@@ -103,6 +103,10 @@ void MultilevelHexahedronSetTopologyContainer::init()
 
     HexahedronSetTopologyContainer::init();
 
+    _coarseComponents.createTopologicalEngine(this);
+    _fineComponents.createTopologicalEngine(this);
+    // do not register these engines for now...
+
 }
 
 

@@ -94,7 +94,7 @@ public:
             const sofa::helper::vector< double > &) {t = value_type();}
 
 
-protected:
+//    protected:
     /// Swaps values at indices i1 and i2.
     virtual void swap( unsigned int i1, unsigned int i2 );
 
