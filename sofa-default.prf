@@ -38,13 +38,6 @@ DEFINES += SOFA_GUI_GLUT
 # Uncomment if you want to enable interactionmode
 # DEFINES += SOFA_GUI_INTERACTION
 
-contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
-
-# Uncomment if you want to compile FLTK interface
-# DEFINES += SOFA_GUI_FLTK
-
-} # END SOFA_DEV
-
 
 ########################################################################
 # Options
