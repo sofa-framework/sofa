@@ -89,7 +89,8 @@ public:
     Data<defaulttype::Vec3f> color;
     Data<bool> showPlane;
 
-    sofa::component::topology::PointSubsetData< helper::vector<unsigned int> > fixed;
+    sofa::component::topology::PointSubsetData< SetIndexArray > fixed;
+    //Data< SetIndexArray > fixed;
 protected:
     ParticleSink()
         : planeNormal(initData(&planeNormal, "normal", "plane normal"))
@@ -97,7 +98,7 @@ protected:
         , planeD1(initData(&planeD1, (Real)0, "d1", "plane d coef at which particles are removed"))
         , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
         , showPlane(initData(&showPlane, false, "showPlane", "enable/disable drawing of plane"))
-        , fixed(initData(&fixed, false, "fixed", "indices of fixed particles"))
+        , fixed(initData(&fixed, "fixed", "indices of fixed particles"))
     {
         this->f_listening.setValue(true);
         Deriv n;

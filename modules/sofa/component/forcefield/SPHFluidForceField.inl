@@ -169,7 +169,7 @@ bool SPHKernel<KT,Deriv>::CheckLaplacian(std::ostream& sout, std::ostream& serr)
         Real dw = (wb - wa) * G/H;
         Real dw2 = (wb-2*w0+wa) * (2*2*G*G/(H*H));
         Real l = dw2 + 2/(q*H)*dw;
-        if (fabs(lap - l) > 0.000001f && fabs(lap - l) > 0.1f * fabs(l))
+        if (fabs(lap - l) > 0.00001f && fabs(lap - l) > 0.1f * fabs(l))
         {
             if (!nerr)
             {
