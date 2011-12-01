@@ -71,7 +71,7 @@ namespace boost {
 
   template <class Tag2>
   inline detail::error_property_not_found
-  get_property_value(const no_property& p, Tag2) {
+  get_property_value(const no_property&, Tag2) {
     return detail::error_property_not_found();
   }
 
