@@ -29,6 +29,7 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
 #include <sofa/helper/system/glut.h>
+#include <math.h>
 
 namespace sofa
 {
@@ -119,7 +120,7 @@ void RecordedCamera::moveCamera_rotation()
         totalTime = 200.0;
 
     double ratio = (simuTime / totalTime);
-    m_angleStep = 2*PI * ratio;
+    m_angleStep = 2*M_PI * ratio;
 
     // Compute cartesian coordinates from cylindrical ones
     Vec3 _pos = m_rotationCenter.getValue();
@@ -255,7 +256,7 @@ void RecordedCamera::configureRotation()
         if (_pos[0]>=0)
             m_initAngle = asin(_pos[2]/m_radius);
         else
-            m_initAngle = PI - asin(_pos[2]/m_radius);
+            m_initAngle = M_PI - asin(_pos[2]/m_radius);
     */
 #ifdef my_debug
     std::cout << "m_rotationStartPoint: " << m_rotationStartPoint << std::endl;
@@ -443,11 +444,11 @@ void RecordedCamera::drawRotation()
         if (_pos[0]>=0)
             _initAngle = asin(_pos[2]/m_radius);
         else
-            _initAngle = PI - asin(_pos[2]/m_radius);
+            _initAngle = M_PI - asin(_pos[2]/m_radius);
     */
 
     m_rotationPoints.resize(100);
-    double _angleStep = 2*PI/100;
+    double _angleStep = 2*M_PI/100;
     for (unsigned int i = 0; i<100; ++i)
     {
         // Compute cartesian coordinates from cylindrical ones

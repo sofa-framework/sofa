@@ -97,22 +97,6 @@ const std::string QtViewer::VIEW_FILE_EXTENSION = "view";
 bool QtViewer::_mouseTrans = false;
 bool QtViewer::_mouseRotate = false;
 Quaternion QtViewer::_mouseInteractorNewQuat;
-Quaternion QtViewer::_newQuat;
-Quaternion QtViewer::_currentQuat;
-Vector3 QtViewer::_mouseInteractorRelativePosition(0, 0, 0);
-
-//float g_DepthOffset[2] = { 3.0f, 0.0f };
-float g_DepthOffset[2] =
-{ 10.0f, 0.0f };
-float g_DepthBias[2] =
-{ 0.0f, 0.0f };
-
-// These are the light's matrices that need to be stored
-float g_mProjection[16] =
-{ 0 };
-float g_mModelView[16] =
-{ 0 };
-//float g_mCameraInverse[16] = {0};
 
 
 QGLFormat QtViewer::setupGLFormat()
@@ -152,16 +136,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     _facetNormal = GL_FALSE;
     _renderingMode = GL_RENDER;
     _waitForRender = false;
-
-    /*_surfaceModel = NULL;
-      _springMassView = NULL;
-      _mapView = NULL;
-      sphViewer = NULL;
-    */
-
-    // init trackball rotation matrix / quaternion
-    _newTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
-    _newQuat = _newTrackball.GetQuaternion();
 
     ////////////////
     // Interactor //
@@ -771,7 +745,10 @@ void QtViewer::MakeStencilMask()
 void QtViewer::DrawScene(void)
 {
     if(!currentCamera)
-        return ;
+    {
+        std::cerr << "ERROR: no camera defined" << std::endl;
+        return;
+    }
 
     calcProjection();
 
@@ -1079,7 +1056,6 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
         else if (_mouseInteractorTranslationMode)
         {
             _mouseInteractorAbsolutePosition = Vector3(0, 0, 0);
-            _mouseInteractorRelativePosition = Vector3(0, 0, 0);
 
             if (_translationMode == XY_TRANSLATION)
             {
@@ -1099,28 +1075,6 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
                 _mouseInteractorSavedPosX = x;
                 _mouseInteractorSavedPosY = y;
             }
-
-            _newQuatBckUp[0] = _newQuat[0];
-            _newQuatBckUp[1] = _newQuat[1];
-            _newQuatBckUp[2] = _newQuat[2];
-            _newQuatBckUp[3] = _newQuat[3];
-
-            _newQuatBckUp.normalize();
-
-            // Conjugate calculation of the scene orientation quaternion
-            conjQuat[0] = -_newQuatBckUp[0];
-            conjQuat[1] = -_newQuatBckUp[1];
-            conjQuat[2] = -_newQuatBckUp[2];
-            conjQuat[3] = _newQuatBckUp[3];
-
-            conjQuat.normalize();
-
-            resQuat = _newQuatBckUp.quatVectMult(
-                    _mouseInteractorAbsolutePosition) * conjQuat;
-
-            _mouseInteractorRelativePosition[0] = resQuat[0];
-            _mouseInteractorRelativePosition[1] = resQuat[1];
-            _mouseInteractorRelativePosition[2] = resQuat[2];
 
             _mouseTrans = true;
             update();
@@ -1419,9 +1373,9 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
             if (dx || dy)
             {
                 //g_DepthBias[0] += dx*0.01;
-                g_DepthBias[1] += dy * 0.01;
-                std::cout << "Depth bias = " << g_DepthBias[0] << " "
-                        << g_DepthBias[1] << std::endl;
+                //g_DepthBias[1] += dy * 0.01;
+                //std::cout << "Depth bias = " << g_DepthBias[0] << " "
+                //          << g_DepthBias[1] << std::endl;
                 update();
                 _mouseInteractorSavedPosX = eventX;
                 _mouseInteractorSavedPosY = eventY;
@@ -1434,10 +1388,10 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
             int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
             {
-                g_DepthOffset[0] += dx * 0.01;
-                g_DepthOffset[1] += dy * 0.01;
-                std::cout << "Depth offset = " << g_DepthOffset[0] << " "
-                        << g_DepthOffset[1] << std::endl;
+                //g_DepthOffset[0] += dx * 0.01;
+                //g_DepthOffset[1] += dy * 0.01;
+                //std::cout << "Depth offset = " << g_DepthOffset[0] << " "
+                //          << g_DepthOffset[1] << std::endl;
                 update();
                 _mouseInteractorSavedPosX = eventX;
                 _mouseInteractorSavedPosY = eventY;

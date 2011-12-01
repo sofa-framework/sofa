@@ -214,8 +214,6 @@ protected:
 
     bool m_isControlPressed;
     bool _video;
-    bool _shadow;
-    bool _gl_shadow;
     bool _axis;
     int _background;
     bool initTexturesDone;

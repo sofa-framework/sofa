@@ -32,8 +32,6 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/gl/Trackball.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/helper/system/thread/CTime.h>
@@ -42,6 +40,7 @@
 #include <sofa/helper/system/glut.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/component/visualmodel/InteractiveCamera.h>
 #ifdef SOFA_SMP
 #include <Multigraph.h>
 #endif
@@ -131,9 +130,9 @@ private:
 
     enum
     {
-        TRACKBALL_MODE = 1,
-        PAN_MODE = 2,
-        ZOOM_MODE = 3,
+        //TRACKBALL_MODE = 1,
+        //PAN_MODE = 2,
+        //ZOOM_MODE = 3,
 
         BTLEFT_MODE = 101,
         BTRIGHT_MODE = 102,
@@ -151,16 +150,13 @@ private:
 
     sofa::simulation::Node::SPtr groot;
     std::string sceneFileName;
+    sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
     int				_W, _H;
     int				_clearBuffer;
     bool			_lightModelTwoSides;
     float			_lightPosition[4];
     int				_navigationMode;
-    Trackball		_currentTrackball;
-    Trackball		_newTrackball;
-    //	Quaternion		_currentQuat;
-    //	Quaternion		_newQuat;
     int				_mouseX, _mouseY;
     int				_savedMouseX, _savedMouseY;
     bool			_spinning;
@@ -171,7 +167,7 @@ private:
     int 			_background;
     float			_zoomSpeed;
     float			_panSpeed;
-    Transformation	_sceneTransform;
+    //Transformation	_sceneTransform;
     Vector3			_previousEyePos;
     GLUquadricObj*	_arrow;
     GLUquadricObj*	_tube;
@@ -189,9 +185,6 @@ private:
     double lastProjectionMatrix[16];
     double lastModelviewMatrix[16];
     GLint lastViewport[4];
-    bool    sceneBBoxIsValid;
-    Vector3 sceneMinBBox;
-    Vector3 sceneMaxBBox;
     bool initTexturesDone;
     Capture capture;
 public:
@@ -206,7 +199,6 @@ public:
     void screenshot(int compression_level = -1);
     void exportOBJ(bool exportMTL=true);
     void dumpState(bool);
-    void displayComputationTime(bool);
     void setExportGnuplot(bool);
 
     void initializeGL();
@@ -238,7 +230,12 @@ public:
     {
         return sceneFileName;
     }
-    void SwitchToPresetView();
+    void setCameraMode(core::visual::VisualParams::CameraType);
+    void getView(Vec3d& pos, Quat& ori) const;
+    void setView(const Vec3d& pos, const Quat &ori);
+    void moveView(const Vec3d& pos, const Quat &ori);
+    void newView();
+
     int GetWidth()
     {
         return _W;
@@ -248,34 +245,20 @@ public:
         return _H;
     };
 
-    void	UpdateOBJ(void);
+    void	UpdateOBJ();
 
     /////////////////
     // Interaction //
     /////////////////
 
-    bool _mouseInteractorTranslationMode;
-    bool _mouseInteractorRotationMode;
+    PickHandler pick;
     bool _mouseInteractorMoving;
     int _mouseInteractorSavedPosX;
     int _mouseInteractorSavedPosY;
-    int _translationMode;
-    Quaternion _mouseInteractorCurrentQuat;
-    Vector3 _mouseInteractorAbsolutePosition;
-    Trackball _mouseInteractorTrackball;
-    void ApplyMouseInteractorTransformation(int x, int y);
-
-    Quaternion _mouseInteractorNewQuat;
-    Vector3 _mouseInteractorRelativePosition;
-    Quaternion _newQuat;
-    Quaternion _currentQuat;
-    bool _mouseTrans;
-    bool _mouseRotate;
-    PickHandler pick;
 
 private:
 
-    void	InitGFX(void);
+    void	InitGFX();
     void	PrintString(void* font, char* string);
     void	Display3DText(float x, float y, float z, char* string);
     void	DrawAxis(double xpos, double ypos, double zpos, double arrowSize);
@@ -286,15 +269,11 @@ private:
             double zmax, double step);
     void	DrawXZPlane(double yo, double xmin, double xmax, double zmin,
             double zmax, double step);
-    void	CreateOBJmodelDisplayList(int material_mode);
-    //int     loadBMP(char *filename, TextureImage *texture);
-    //void	LoadGLTexture(char *Filename);
-    void	DrawLogo(void);
-    void	DisplayOBJs(bool shadowPass = false);
-    void	DisplayMenu(void);
+
+    void	DrawLogo();
+    void	DisplayOBJs();
+    void	DisplayMenu();
     void	DrawScene();
-    void	ApplySceneTransformation(int x, int y);
-    //int		handle(int event);	// required by FLTK
 
 protected:
     bool isControlPressed() const;
@@ -308,7 +287,7 @@ protected:
     bool m_displayComputationTime;
     bool m_exportGnuplot;
     std::ofstream* m_dumpStateStream;
-    VisualParams vparams;
+    VisualParams* vparams;
     DrawToolGL   drawTool;
 };
 
@@ -319,5 +298,3 @@ protected:
 } // namespace sofa
 
 #endif
-
-
