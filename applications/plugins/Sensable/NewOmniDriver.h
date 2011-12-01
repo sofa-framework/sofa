@@ -109,8 +109,8 @@ typedef struct
 
 typedef struct
 {
-    LCPForceFeedback<Rigid3dTypes>* forceFeedback;
-    simulation::Node *context;
+    LCPForceFeedback<Rigid3dTypes>::SPtr forceFeedback;
+    simulation::Node::SPtr *context;
 
     sofa::defaulttype::SolidTypes<double>::Transform endOmni_H_virtualTool;
     //Transform baseOmni_H_endOmni;
