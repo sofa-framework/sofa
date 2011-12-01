@@ -197,7 +197,7 @@ bool CudaSortGPUAvailable(unsigned int size, bool withData)
     SortImplType impl = CudaSortImpl();
     switch(impl)
     {
-    case SORT_DEFAULT: // alias for the first active implementation
+    case SORTDEFAULT: // alias for the first active implementation
 #if defined(SOFA_GPU_CUDPP)
     case SORT_CUDPP:
         if (CudaSortCUDPPAvailable(size, withData))
@@ -223,19 +223,19 @@ bool CudaSortGPU(void* keys, void* data, unsigned int size, int bits)
     SortImplType impl = CudaSortImpl();
     switch(impl)
     {
-    case SORT_DEFAULT: // alias for the first active implementation
+    case SORTDEFAULT: // alias for the first active implementation
 #if defined(SOFA_GPU_CUDPP)
     case SORT_CUDPP:
         if (CudaSortCUDPP(keys, data, size, bits))
             return true;
-        if (impl != SORT_DEFAULT)
+        if (impl != SORTDEFAULT)
             break;
 #endif
 #if defined(SOFA_GPU_THRUST)
     case SORT_THRUST:
         if (CudaSortTHRUST(keys, data, size, bits))
             return true;
-        if (impl != SORT_DEFAULT)
+        if (impl != SORTDEFAULT)
             break;
 #endif
     case SORT_UNKNOWN:
