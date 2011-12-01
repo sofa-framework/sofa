@@ -169,8 +169,6 @@ private:
     bool			_animationOBJ; int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool			_axis;
     int 			_background;
-    bool			_shadow;
-    bool			_glshadow;
     float			_zoomSpeed;
     float			_panSpeed;
     Transformation	_sceneTransform;
@@ -229,9 +227,6 @@ public:
 protected:
 
     void calcProjection();
-    void ApplyShadowMap();
-    void CreateRenderTexture(GLuint& textureID, int sizeX, int sizeY, int channels, int type);
-    void StoreLightMatrices();
 
 public:
     void setScene(sofa::simulation::Node::SPtr scene, const char* filename=NULL, bool temporaryFile=false);
