@@ -46,6 +46,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/core/ObjectFactory.h>
 
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
@@ -176,8 +177,13 @@ int SimpleGUI::closeGUI()
 
 SOFA_DECL_CLASS(SimpleGUI)
 
+sofa::core::ObjectFactory::ClassEntry* classVisualModel = NULL;
+
 int SimpleGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
 {
+    // Replace generic visual models with OglModel
+    sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
+            &classVisualModel);
     return 0;
 }
 
@@ -310,7 +316,7 @@ SimpleGUI::SimpleGUI()
     _zoom = 1.0;
     _zoomSpeed = 250.0;
     _panSpeed = 25.0;
-    _navigationMode = TRACKBALL_MODE;
+    _navigationMode = 0;
     _spinning = false;
     _moving = false;
     _video = false;
@@ -322,16 +328,8 @@ SimpleGUI::SimpleGUI()
     _facetNormal = GL_FALSE;
     _renderingMode = GL_RENDER;
     _waitForRender = false;
-    _mouseTrans = false;
-    _mouseRotate = false;
-    sceneBBoxIsValid = false;
     texLogo = NULL;
 
-    /*_surfaceModel = NULL;
-    _springMassView = NULL;
-    _mapView = NULL;
-    sphViewer = NULL;
-    */
     _arrow = gluNewQuadric();
     gluQuadricDrawStyle(_arrow, GLU_FILL);
     gluQuadricOrientation(_arrow, GLU_OUTSIDE);
@@ -352,20 +350,12 @@ SimpleGUI::SimpleGUI()
     gluQuadricOrientation(_disk, GLU_OUTSIDE);
     gluQuadricNormals(_disk, GLU_SMOOTH);
 
-    // init trackball rotation matrix / quaternion
-    _newTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
-    _newQuat = _newTrackball.GetQuaternion();
-
     ////////////////
     // Interactor //
     ////////////////
     _mouseInteractorMoving = false;
-    _mouseInteractorTranslationMode = false;
-    _mouseInteractorRotationMode = false;
     _mouseInteractorSavedPosX = 0;
     _mouseInteractorSavedPosY = 0;
-    _mouseInteractorTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
-    _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
 
     //////////////////////
     m_isControlPressed = false;
@@ -373,7 +363,6 @@ SimpleGUI::SimpleGUI()
     m_isAltPressed = false;
     m_dumpState = false;
     m_dumpStateStream = 0;
-    m_displayComputationTime = false;
     m_exportGnuplot = false;
 
     //Register the different Operations possible
@@ -387,7 +376,8 @@ SimpleGUI::SimpleGUI()
     pick.changeOperation(MIDDLE, "Incise");
     pick.changeOperation(RIGHT,  "Remove");
 
-    vparams.drawTool() = &drawTool;
+    vparams = core::visual::VisualParams::defaultInstance();
+    vparams->drawTool() = &drawTool;
 }
 
 
@@ -483,7 +473,7 @@ void SimpleGUI::initializeGL(void)
         glShadeModel(GL_SMOOTH);
 
         // Define background color
-        glClearColor(0.0589f, 0.0589f, 0.0589f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         //Load texture for logo
@@ -507,7 +497,7 @@ void SimpleGUI::initializeGL(void)
     }
 
     // switch to preset view
-    SwitchToPresetView();
+    resetView();
 }
 
 // ---------------------------------------------------------
@@ -865,7 +855,7 @@ void SimpleGUI::DrawLogo()
 // -------------------------------------------------------------------
 // ---
 // -------------------------------------------------------------------
-void SimpleGUI::DisplayOBJs(bool shadowPass)
+void SimpleGUI::DisplayOBJs()
 {
 
     Enable<GL_LIGHTING> light;
@@ -877,7 +867,7 @@ void SimpleGUI::DisplayOBJs(bool shadowPass)
     glDisable(GL_COLOR_MATERIAL);
 
 
-    vparams.sceneBBox() = groot->f_bbox.getValue();
+    vparams->sceneBBox() = groot->f_bbox.getValue();
 
     if (!initTexturesDone)
     {
@@ -890,20 +880,14 @@ void SimpleGUI::DisplayOBJs(bool shadowPass)
 
     {
 
-        if (!shadowPass)
-        {
-            getSimulation()->draw(&vparams,groot.get());
-        }
+        getSimulation()->draw(vparams,groot.get());
 
         if (_axis)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);
-            if (sceneMinBBox[0] < sceneMaxBBox[0])
-            {
-                Vec3d minTemp=sceneMinBBox;
-                Vec3d maxTemp=sceneMaxBBox;
-                DrawBox(minTemp.ptr(), maxTemp.ptr());
-            }
+            if (vparams->sceneBBox().minBBox().x() < vparams->sceneBBox().maxBBox().x())
+                DrawBox(vparams->sceneBBox().minBBoxPtr(),
+                        vparams->sceneBBox().maxBBoxPtr());
         }
     }
 
@@ -941,15 +925,24 @@ void SimpleGUI::DisplayMenu(void)
 // ---------------------------------------------------------
 void SimpleGUI::DrawScene(void)
 {
+    if (!groot) return;
+    if(!currentCamera)
+    {
+        std::cerr << "ERROR: no camera defined" << std::endl;
+        return;
+    }
 
-    _newQuat.buildRotationMatrix(_sceneTransform.rotation);
     calcProjection();
 
     if (_background==0)
         DrawLogo();
 
     glLoadIdentity();
-    _sceneTransform.Apply();
+
+    GLdouble mat[16];
+
+    currentCamera->getOpenGLMatrix(mat);
+    glMultMatrixd(mat);
 
     glGetDoublev(GL_MODELVIEW_MATRIX,lastModelviewMatrix);
 
@@ -982,6 +975,9 @@ void SimpleGUI::resizeGL(int width, int height)
     _W = width;
     _H = height;
 
+    if(currentCamera)
+        currentCamera->setViewport(width, height);
+
 //     std::cout << "GL window: " <<width<<"x"<<height <<std::endl;
 
     calcProjection();
@@ -995,70 +991,36 @@ void SimpleGUI::calcProjection()
 {
     int width = _W;
     int height = _H;
-    double xNear, yNear, zNear, zFar, xOrtho, yOrtho;
+    double xNear, yNear, xOrtho, yOrtho;
     double xFactor = 1.0, yFactor = 1.0;
     double offset;
     double xForeground, yForeground, zForeground, xBackground, yBackground,
            zBackground;
+    Vector3 center;
 
-    //if (!sceneBBoxIsValid)
-    {
-        getSimulation()->computeBBox(groot.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        sceneBBoxIsValid = true;
-    }
-    //std::cout << "Scene BBox = "<<sceneMinBBox<<" - "<<sceneMaxBBox<<"\n";
-    if (sceneMinBBox[0] > sceneMaxBBox[0])
-    {
-        zNear = 1.0;
-        zFar = 1000.0;
-    }
-    else
-    {
-        zNear = 1e10;
-        zFar = -1e10;
-        double minBBox[3] = {sceneMinBBox[0], sceneMinBBox[1], sceneMinBBox[2] };
-        double maxBBox[3] = {sceneMaxBBox[0], sceneMaxBBox[1], sceneMaxBBox[2] };
-        if (_axis)
-        {
-            for (int i=0; i<3; i++)
-            {
-                if (minBBox[i]>-2) minBBox[i] = -2;
-                if (maxBBox[i]<14) maxBBox[i] = 14;
-            }
-        }
+    /// Camera part
+    if (!currentCamera)
+        return;
 
-        for (int corner=0; corner<8; ++corner)
-        {
-            Vector3 p((corner&1)?minBBox[0]:maxBBox[0],
-                    (corner&2)?minBBox[1]:maxBBox[1],
-                    (corner&4)?minBBox[2]:maxBBox[2]);
-            p = _sceneTransform * p;
-            double z = -p[2];
-            if (z < zNear) zNear = z;
-            if (z > zFar) zFar = z;
-        }
-        if (zFar <= 0 || zFar >= 1000)
-        {
-            zNear = 1;
-            zFar = 1000.0;
-        }
-        else
-        {
-            zNear *= 0.9; // add some margin
-            zFar *= 1.1;
-            if (zNear < zFar*0.01)
-                zNear = zFar*0.01;
-            if (zNear < 1.0) zNear = 1.0;
-            if (zFar < 2.0) zFar = 2.0;
-        }
-        //std::cout << "Z = ["<<zNear<<" - "<<zFar<<"]\n";
+    if (groot && (!groot->f_bbox.getValue().isValid() || _axis))
+    {
+        vparams->sceneBBox() = groot->f_bbox.getValue();
+        currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());
     }
-    xNear = 0.35*zNear;
-    yNear = 0.35*zNear;
-    offset = 0.001*zNear;        // for foreground and background planes
+    currentCamera->computeZ();
 
-    xOrtho = fabs(_sceneTransform.translation[2]) * xNear / zNear;
-    yOrtho = fabs(_sceneTransform.translation[2]) * yNear / zNear;
+    vparams->zNear() = currentCamera->getZNear();
+    vparams->zFar() = currentCamera->getZFar();
+    ///
+
+    xNear = 0.35 * vparams->zNear();
+    yNear = 0.35 * vparams->zNear();
+    offset = 0.001 * vparams->zNear(); // for foreground and background planes
+
+    xOrtho = fabs(vparams->sceneTransform().translation[2]) * xNear
+            / vparams->zNear();
+    yOrtho = fabs(vparams->sceneTransform().translation[2]) * yNear
+            / vparams->zNear();
 
     if ((height != 0) && (width != 0))
     {
@@ -1073,24 +1035,39 @@ void SimpleGUI::calcProjection()
             yFactor = 1.0;
         }
     }
+    vparams->viewport() = sofa::helper::make_array(0,0,width,height);
 
-    lastViewport[0] = 0;
-    lastViewport[1] = 0;
-    lastViewport[2] = width;
-    lastViewport[3] = height;
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    zForeground = -zNear - offset;
-    zBackground = -zFar + offset;
+    xFactor *= 0.01;
+    yFactor *= 0.01;
 
-    glFrustum(-xNear * xFactor, xNear * xFactor, -yNear * yFactor,
-            yNear * yFactor, zNear, zFar);
-    xForeground = -zForeground * xNear / zNear;
-    yForeground = -zForeground * yNear / zNear;
-    xBackground = -zBackground * xNear / zNear;
-    yBackground = -zBackground * yNear / zNear;
+    //std::cout << xNear << " " << yNear << std::endl;
+
+    zForeground = -vparams->zNear() - offset;
+    zBackground = -vparams->zFar() + offset;
+
+    if (currentCamera->getCameraType() == core::visual::VisualParams::PERSPECTIVE_TYPE)
+        gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
+    else
+    {
+        float ratio = vparams->zFar() / (vparams->zNear() * 20);
+        Vector3 tcenter = vparams->sceneTransform() * center;
+        if (tcenter[2] < 0.0)
+        {
+            ratio = -300 * (tcenter.norm2()) / tcenter[2];
+        }
+        glOrtho((-xNear * xFactor) * ratio, (xNear * xFactor) * ratio, (-yNear
+                * yFactor) * ratio, (yNear * yFactor) * ratio,
+                vparams->zNear(), vparams->zFar());
+    }
+
+    xForeground = -zForeground * xNear / vparams->zNear();
+    yForeground = -zForeground * yNear / vparams->zNear();
+    xBackground = -zBackground * xNear / vparams->zNear();
+    yBackground = -zBackground * yNear / vparams->zNear();
 
     xForeground *= xFactor;
     yForeground *= yFactor;
@@ -1100,11 +1077,6 @@ void SimpleGUI::calcProjection()
     glGetDoublev(GL_PROJECTION_MATRIX,lastProjectionMatrix);
 
     glMatrixMode(GL_MODELVIEW);
-
-    vparams.zFar()  = zFar;
-    vparams.zNear() = zNear;
-    vparams.viewport() = sofa::helper::make_array(0,0,width,height);
-    vparams.sceneBBox() = sofa::defaulttype::BoundingBox(sceneMinBBox,sceneMaxBBox);
 }
 
 // ---------------------------------------------------------
@@ -1188,43 +1160,6 @@ void SimpleGUI::eventNewStep()
         beginTime[i] = curtime;
         //frameCounter = 0;
     }
-    if (m_displayComputationTime && (frameCounter%100) == 0 && groot!=NULL)
-    {
-        std::cout << "========== ITERATION " << frameCounter << " ==========\n";
-        const simulation::Node::NodeTimer& total = groot->getTotalTime();
-        const std::map<std::string, simulation::Node::NodeTimer>& times = groot->getVisitorTime();
-        const std::map<std::string, std::map<sofa::core::objectmodel::BaseObject*, simulation::Node::ObjectTimer> >& objtimes = groot->getObjectTime();
-        const double fact = 1000000.0 / (100*groot->getTimeFreq());
-        for (std::map<std::string, simulation::Node::NodeTimer>::const_iterator it = times.begin(); it != times.end(); ++it)
-        {
-            std::cout << "TIME "<<it->first<<": " << ((int)(fact*it->second.tTree+0.5))*0.001 << " ms (" << (1000*it->second.tTree/total.tTree)*0.1 << " %).\n";
-            std::map<std::string, std::map<sofa::core::objectmodel::BaseObject*, simulation::Node::ObjectTimer> >::const_iterator it1 = objtimes.find(it->first);
-            if (it1 != objtimes.end())
-            {
-                for (std::map<sofa::core::objectmodel::BaseObject*, simulation::Node::ObjectTimer>::const_iterator it2 = it1->second.begin(); it2 != it1->second.end(); ++it2)
-                {
-                    std::cout << "  "<< sofa::helper::gettypename(typeid(*(it2->first)))<<" "<< it2->first->getName() <<": "
-                            << ((int)(fact*it2->second.tObject+0.5))*0.001 << " ms (" << (1000*it2->second.tObject/it->second.tTree)*0.1 << " %).\n";
-                }
-            }
-        }
-        for (std::map<std::string, std::map<sofa::core::objectmodel::BaseObject*, simulation::Node::ObjectTimer> >::const_iterator it = objtimes.begin(); it != objtimes.end(); ++it)
-        {
-            if (times.count(it->first)>0) continue;
-            ctime_t ttotal = 0;
-            for (std::map<sofa::core::objectmodel::BaseObject*, simulation::Node::ObjectTimer>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
-                ttotal += it2->second.tObject;
-            std::cout << "TIME "<<it->first<<": " << ((int)(fact*ttotal+0.5))*0.001 << " ms (" << (1000*ttotal/total.tTree)*0.1 << " %).\n";
-            if (ttotal > 0)
-                for (std::map<sofa::core::objectmodel::BaseObject*, simulation::Node::ObjectTimer>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
-                {
-                    std::cout << "  "<< sofa::helper::gettypename(typeid(*(it2->first)))<<" "<< it2->first->getName() <<": "
-                            << ((int)(fact*it2->second.tObject+0.5))*0.001 << " ms (" << (1000*it2->second.tObject/ttotal)*0.1 << " %).\n";
-                }
-        }
-        std::cout << "TOTAL TIME: " << ((int)(fact*total.tTree+0.5))*0.001 << " ms (" << ((int)(100/(fact*total.tTree*0.000001)+0.5))*0.01 << " FPS).\n";
-        groot->resetTime();
-    }
 }
 
 // ---------------------------------------------------------
@@ -1234,143 +1169,11 @@ void SimpleGUI::animate(void)
 {
     if (_spinning)
     {
-        _newQuat = _currentQuat + _newQuat;
+        //_newQuat = _currentQuat + _newQuat;
     }
 
     // update the entire scene
     redraw();
-}
-
-
-// ---------------------------------------------------------
-// ---
-// ---------------------------------------------------------
-void SimpleGUI::ApplySceneTransformation(int x, int y)
-{
-    float    x1, x2, y1, y2;
-    float    xshift, yshift, zshift;
-
-    if (_moving)
-    {
-        if (_navigationMode == TRACKBALL_MODE)
-        {
-            x1 = (2.0f * _W / 2.0f - _W) / _W;
-            y1 = (_H - 2.0f * _H / 2.0f) / _H;
-            x2 = (2.0f * (x + (-_mouseX + _W / 2.0f)) - _W) / _W;
-            y2 = (_H - 2.0f * (y + (-_mouseY + _H / 2.0f))) / _H;
-            _currentTrackball.ComputeQuaternion(x1, y1, x2, y2);
-            _currentQuat = _currentTrackball.GetQuaternion();
-            _savedMouseX = _mouseX;
-            _savedMouseY = _mouseY;
-            _mouseX = x;
-            _mouseY = y;
-            _newQuat = _currentQuat + _newQuat;
-            redraw();
-        }
-        else if (_navigationMode == ZOOM_MODE)
-        {
-            zshift = (2.0f * y - _W) / _W - (2.0f * _mouseY - _W) / _W;
-            _sceneTransform.translation[2] = _previousEyePos[2] -
-                    _zoomSpeed * zshift;
-            redraw();
-        }
-        else if (_navigationMode == PAN_MODE)
-        {
-            xshift = (2.0f * x - _W) / _W - (2.0f * _mouseX - _W) / _W;
-            yshift = (2.0f * y - _W) / _W - (2.0f * _mouseY - _W) / _W;
-            _sceneTransform.translation[0] = _previousEyePos[0] +
-                    _panSpeed * xshift;
-            _sceneTransform.translation[1] = _previousEyePos[1] -
-                    _panSpeed * yshift;
-            redraw();
-        }
-    }
-}
-
-
-// ---------------------------------------------------------
-// ---
-// ---------------------------------------------------------
-void SimpleGUI::ApplyMouseInteractorTransformation(int x, int y)
-{
-    // Mouse Interaction
-    double coeffDeplacement = 0.025;
-    Quaternion conjQuat, resQuat, _newQuatBckUp;
-
-    float x1, x2, y1, y2;
-
-    if (_mouseInteractorMoving)
-    {
-        if (_mouseInteractorRotationMode)
-        {
-            if ((_mouseInteractorSavedPosX != x) || (_mouseInteractorSavedPosY != y))
-            {
-                x1 = 0;
-                y1 = 0;
-                x2 = (2.0f * (x + (-_mouseInteractorSavedPosX + _W / 2.0f)) - _W) / _W;
-                y2 = (_H - 2.0f * (y + (-_mouseInteractorSavedPosY + _H / 2.0f))) / _H;
-
-                _mouseInteractorTrackball.ComputeQuaternion(x1, y1, x2, y2);
-                _mouseInteractorCurrentQuat = _mouseInteractorTrackball.GetQuaternion();
-                _mouseInteractorSavedPosX = x;
-                _mouseInteractorSavedPosY = y;
-
-                _mouseInteractorNewQuat = _mouseInteractorCurrentQuat + _mouseInteractorNewQuat;
-                _mouseRotate = true;
-            }
-            else
-            {
-                _mouseRotate = false;
-            }
-
-            redraw();
-        }
-        else if (_mouseInteractorTranslationMode)
-        {
-            _mouseInteractorAbsolutePosition =  Vector3(0,0,0);
-            _mouseInteractorRelativePosition =  Vector3(0,0,0);
-
-            if (_translationMode == XY_TRANSLATION)
-            {
-                _mouseInteractorAbsolutePosition[0] = coeffDeplacement * (x - _mouseInteractorSavedPosX);
-                _mouseInteractorAbsolutePosition[1] = -coeffDeplacement * (y - _mouseInteractorSavedPosY);
-
-                _mouseInteractorSavedPosX = x;
-                _mouseInteractorSavedPosY = y;
-            }
-            else if (_translationMode == Z_TRANSLATION)
-            {
-                _mouseInteractorAbsolutePosition[2] = coeffDeplacement * (y - _mouseInteractorSavedPosY);
-
-                _mouseInteractorSavedPosX = x;
-                _mouseInteractorSavedPosY = y;
-            }
-
-            _newQuatBckUp[0] = _newQuat[0];
-            _newQuatBckUp[1] = _newQuat[1];
-            _newQuatBckUp[2] = _newQuat[2];
-            _newQuatBckUp[3] = _newQuat[3];
-
-            _newQuatBckUp.normalize();
-
-            // Conjugate calculation of the scene orientation quaternion
-            conjQuat[0] = -_newQuatBckUp[0];
-            conjQuat[1] = -_newQuatBckUp[1];
-            conjQuat[2] = -_newQuatBckUp[2];
-            conjQuat[3] = _newQuatBckUp[3];
-
-            conjQuat.normalize();
-
-            resQuat = _newQuatBckUp.quatVectMult(_mouseInteractorAbsolutePosition) * conjQuat;
-
-            _mouseInteractorRelativePosition[0] = resQuat[0];
-            _mouseInteractorRelativePosition[1] = resQuat[1];
-            _mouseInteractorRelativePosition[2] = resQuat[2];
-
-            _mouseTrans = true;
-            redraw();
-        }
-    }
 }
 
 
@@ -1484,31 +1287,16 @@ void SimpleGUI::keyPressEvent ( int k )
             break;
         }
 
-        case 'c':
-        {
-            // --- switch interaction mode
-            if (!_mouseInteractorTranslationMode)
-            {
-                std::cout << "Interaction Mode ON\n";
-                _mouseInteractorTranslationMode = true;
-                _mouseInteractorRotationMode = false;
-            }
-            else
-            {
-                std::cout << "Interaction Mode OFF\n";
-                _mouseInteractorTranslationMode = false;
-                _mouseInteractorRotationMode = false;
-            }
-            break;
-        }
         case GLUT_KEY_F5:
         {
             if (!sceneFileName.empty())
             {
                 std::cout << "Reloading "<<sceneFileName<<std::endl;
                 std::string filename = sceneFileName;
-                Quaternion q = _newQuat;
-                Transformation t = _sceneTransform;
+                Vec3d pos;
+                Quat  ori;
+                getView(pos, ori);
+
                 simulation::Node::SPtr newroot = getSimulation()->load(filename.c_str());
                 getSimulation()->init(newroot.get());
                 if (newroot == NULL)
@@ -1517,8 +1305,7 @@ void SimpleGUI::keyPressEvent ( int k )
                     break;
                 }
                 setScene(newroot, filename.c_str());
-                _newQuat = q;
-                _sceneTransform = t;
+                setView(pos, ori);
             }
 
             break;
@@ -1541,8 +1328,7 @@ void SimpleGUI::keyReleaseEvent ( int k )
 void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
 {
 
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT,viewport);
+    const sofa::core::visual::VisualParams::Viewport& viewport = vparams->viewport();
 
     MousePosition mousepos;
     mousepos.screenWidth  = viewport[2];
@@ -1558,99 +1344,16 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
     {
         pick.deactivateRay();
     }
-    if (_mouseInteractorRotationMode)
-    {
-        switch (type)
-        {
-        case MouseButtonPress:
-            // Mouse left button is pushed
-            if (button == GLUT_LEFT_BUTTON)
-            {
-                _mouseInteractorMoving = true;
-                _mouseInteractorSavedPosX = eventX;
-                _mouseInteractorSavedPosY = eventY;
-            }
-            break;
 
-        case MouseMove:
-            //
-            break;
-
-        case MouseButtonRelease:
-            // Mouse left button is released
-            if (button == GLUT_LEFT_BUTTON)
-            {
-                if (_mouseInteractorMoving)
-                {
-                    _mouseInteractorMoving = false;
-                }
-            }
-            break;
-
-        default:
-            break;
-        }
-        ApplyMouseInteractorTransformation(eventX, eventY);
-    }
-    else if (_mouseInteractorTranslationMode)
-    {
-        switch (type)
-        {
-        case MouseButtonPress:
-            // Mouse left button is pushed
-            if (button == GLUT_LEFT_BUTTON)
-            {
-                _translationMode = XY_TRANSLATION;
-                _mouseInteractorSavedPosX = eventX;
-                _mouseInteractorSavedPosY = eventY;
-                _mouseInteractorMoving = true;
-            }
-            // Mouse right button is pushed
-            else if (button == GLUT_RIGHT_BUTTON)
-            {
-                _translationMode = Z_TRANSLATION;
-                _mouseInteractorSavedPosY = eventY;
-                _mouseInteractorMoving = true;
-            }
-
-            break;
-
-        case MouseButtonRelease:
-            // Mouse left button is released
-            if ((button == GLUT_LEFT_BUTTON) && (_translationMode == XY_TRANSLATION))
-            {
-                if (_mouseInteractorMoving)
-                {
-                    //_mouseInteractorRelativePosition = Vector3::ZERO;
-                    _mouseInteractorMoving = false;
-                }
-            }
-            // Mouse right button is released
-            else if ((button == GLUT_RIGHT_BUTTON) && (_translationMode == Z_TRANSLATION))
-            {
-                if (_mouseInteractorMoving)
-                {
-                    //_mouseInteractorRelativePosition = Vector3::ZERO;
-                    _mouseInteractorMoving = false;
-                }
-            }
-            break;
-
-        default:
-            break;
-        }
-
-        ApplyMouseInteractorTransformation(eventX, eventY);
-    }
-    else if (isShiftPressed())
+    if (isShiftPressed())
     {
         _moving = false;
 
         Vec3d p0, px, py, pz;
-        gluUnProject(eventX, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(p0[0]), &(p0[1]), &(p0[2]));
-        gluUnProject(eventX+1, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(px[0]), &(px[1]), &(px[2]));
-        gluUnProject(eventX, lastViewport[3]-1-(eventY+1), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(py[0]), &(py[1]), &(py[2]));
-        gluUnProject(eventX, lastViewport[3]-1-(eventY), 1, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(pz[0]), &(pz[1]), &(pz[2]));
+        gluUnProject(eventX, viewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, viewport.data(), &(p0[0]), &(p0[1]), &(p0[2]));
+        gluUnProject(eventX+1, viewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, viewport.data(), &(px[0]), &(px[1]), &(px[2]));
+        gluUnProject(eventX, viewport[3]-1-(eventY+1), 0, lastModelviewMatrix, lastProjectionMatrix, viewport.data(), &(py[0]), &(py[1]), &(py[2]));
+        gluUnProject(eventX, viewport[3]-1-(eventY), 1, lastModelviewMatrix, lastProjectionMatrix, viewport.data(), &(pz[0]), &(pz[1]), &(pz[2]));
         px -= p0;
         py -= p0;
         pz -= p0;
@@ -1952,136 +1655,55 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         switch (type)
         {
         case MouseButtonPress:
-            // rotate with left button
+        {
+            //<CAMERA API>
+            sofa::core::objectmodel::MouseEvent* mEvent = NULL;
             if (button == GLUT_LEFT_BUTTON)
-            {
-                _navigationMode = TRACKBALL_MODE;
-                _newTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
-                _currentQuat = _newTrackball.GetQuaternion();
-                _moving = true;
-                _spinning = false;
-                _mouseX = eventX;
-                _mouseY = eventY;
-            }
-            // translate with middle button (if it exists)
-            else if (button == GLUT_MIDDLE_BUTTON)
-            {
-                _navigationMode = PAN_MODE;
-                _moving = true;
-                _spinning = false;
-                _mouseX = eventX;
-                _mouseY = eventY;
-                _previousEyePos[0] = _sceneTransform.translation[0];
-                _previousEyePos[1] = _sceneTransform.translation[1];
-            }
-            // zoom with right button
+                mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, eventX, eventY);
             else if (button == GLUT_RIGHT_BUTTON)
-            {
-                _navigationMode = ZOOM_MODE;
-                _moving = true;
-                _spinning = false;
-                _mouseX = eventX;
-                _mouseY = eventY;
-                _previousEyePos[2] = _sceneTransform.translation[2];
-            }
+                mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed, eventX, eventY);
+            else if (button == GLUT_MIDDLE_BUTTON)
+                mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed, eventX, eventY);
+            currentCamera->manageEvent(mEvent);
+            _moving = true;
+            _spinning = false;
+            _mouseX = eventX;
+            _mouseY = eventY;
             break;
-
+        }
         case MouseMove:
-            //
+        {
+            //<CAMERA API>
+            sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Move, eventX, eventY);
+            currentCamera->manageEvent(&me);
             break;
+        }
 
         case MouseButtonRelease:
-            // Mouse left button is released
+        {
+            //<CAMERA API>
+            sofa::core::objectmodel::MouseEvent* mEvent = NULL;
             if (button == GLUT_LEFT_BUTTON)
-            {
-                if (_moving && _navigationMode == TRACKBALL_MODE)
-                {
-                    _moving = false;
-                    int dx = eventX - _savedMouseX;
-                    int dy = eventY - _savedMouseY;
-                    if ((dx >= MINMOVE) || (dx <= -MINMOVE) ||
-                        (dy >= MINMOVE) || (dy <= -MINMOVE))
-                    {
-                        _spinning = true;
-                    }
-                }
-            }
-            // Mouse middle button is released
-            else if (button == GLUT_MIDDLE_BUTTON)
-            {
-                if (_moving && _navigationMode == PAN_MODE)
-                {
-                    _moving = false;
-                }
-            }
-            // Mouse right button is released
+                mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, eventX, eventY);
             else if (button == GLUT_RIGHT_BUTTON)
-            {
-                if (_moving && _navigationMode == ZOOM_MODE)
-                {
-                    _moving = false;
-                }
-            }
+                mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased, eventX, eventY);
+            else if (button == GLUT_MIDDLE_BUTTON)
+                mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased, eventX, eventY);
+            currentCamera->manageEvent(mEvent);
+            _moving = false;
+            _spinning = false;
+            _mouseX = eventX;
+            _mouseY = eventY;
+            break;
+        }
 
-            break;
-            /*
-            case FL_MOUSEWHEEL:
-            // it is also possible to zoom with mouse wheel (if it exists)
-            if (Fl::event_button() == FL_MOUSEWHEEL)
-            {
-            _navigationMode = ZOOM_MODE;
-            _moving = true;
-            _mouseX = 0;
-            _mouseY = 0;
-            eventX = 0;
-            eventY = 10 * Fl::event_dy();
-            _previousEyePos[2] = _sceneTransform.translation[2];
-            }
-            break;
-            */
         default:
             break;
         }
 
-        ApplySceneTransformation(eventX, eventY);
+        redraw();
     }
 }
-
-// -------------------------------------------------------------------
-// ---
-// -------------------------------------------------------------------
-void SimpleGUI::SwitchToPresetView()
-{
-    if (!sceneFileName.empty())
-    {
-        std::string viewFileName = sceneFileName+".view";
-        std::ifstream in(viewFileName.c_str());
-        if (!in.fail())
-        {
-            in >> _sceneTransform.translation[0];
-            in >> _sceneTransform.translation[1];
-            in >> _sceneTransform.translation[2];
-            in >> _newQuat[0];
-            in >> _newQuat[1];
-            in >> _newQuat[2];
-            in >> _newQuat[3];
-            _newQuat.normalize();
-            in.close();
-            return;
-        }
-//        std::cout << "PRESET FAILED " << viewFileName << std::endl;
-    }
-//    std::cout << "PRESET" << std::endl;
-    _sceneTransform.translation[0] = 0.0;
-    _sceneTransform.translation[1] = 0.0;
-    _sceneTransform.translation[2] = -50.0;
-    _newQuat[0] = 0.17;
-    _newQuat[1] = -0.83;
-    _newQuat[2] = -0.26;
-    _newQuat[3] = -0.44;
-    //ResetScene();
-}
-
 
 void SimpleGUI::step()
 {
@@ -2141,15 +1763,6 @@ void SimpleGUI::dumpState(bool value)
     }
 }
 
-void SimpleGUI::displayComputationTime(bool value)
-{
-    m_displayComputationTime = value;
-    if (groot)
-    {
-        groot->setLogTime(m_displayComputationTime);
-    }
-}
-
 void SimpleGUI::resetScene()
 {
     if (groot)
@@ -2161,23 +1774,90 @@ void SimpleGUI::resetScene()
 
 void SimpleGUI::resetView()
 {
-    SwitchToPresetView();
+    bool fileRead = false;
+
+    if (!sceneFileName.empty())
+    {
+        std::string viewFileName = sceneFileName + ".view";
+        fileRead = currentCamera->importParametersFromFile(viewFileName);
+    }
+
+    //if there is no .view file , look at the center of the scene bounding box
+    // and with a Up vector in the same axis as the gravity
+    if (!fileRead)
+    {
+        newView();
+    }
     redraw();
+}
+
+void SimpleGUI::setCameraMode(core::visual::VisualParams::CameraType mode)
+{
+    currentCamera->setCameraType(mode);
+}
+
+void SimpleGUI::getView(Vec3d& pos, Quat& ori) const
+{
+    if (!currentCamera)
+        return;
+
+    const Vec3d& camPosition = currentCamera->getPosition();
+    const Quat& camOrientation = currentCamera->getOrientation();
+
+    pos[0] = camPosition[0];
+    pos[1] = camPosition[1];
+    pos[2] = camPosition[2];
+
+    ori[0] = camOrientation[0];
+    ori[1] = camOrientation[1];
+    ori[2] = camOrientation[2];
+    ori[3] = camOrientation[3];
+}
+
+void SimpleGUI::setView(const Vec3d& pos, const Quat &ori)
+{
+    Vec3d position;
+    Quat orientation;
+    for (unsigned int i=0 ; i<3 ; i++)
+    {
+        position[i] = pos[i];
+        orientation[i] = ori[i];
+    }
+    orientation[3] = ori[3];
+
+    if (currentCamera)
+        currentCamera->setView(position, orientation);
+
+    redraw();
+}
+
+void SimpleGUI::moveView(const Vec3d& pos, const Quat &ori)
+{
+    if (!currentCamera)
+        return;
+
+    currentCamera->moveCamera(pos, ori);
+    redraw();
+}
+
+void SimpleGUI::newView()
+{
+    if (!currentCamera || !groot)
+        return;
+
+    currentCamera->setDefaultView(groot->getGravity());
 }
 
 void SimpleGUI::saveView()
 {
     if (!sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName+".view";
-        std::ofstream out(viewFileName.c_str());
-        if (!out.fail())
-        {
-            out << _sceneTransform.translation[0] << " " << _sceneTransform.translation[1] << " " << _sceneTransform.translation[2] << "\n";
-            out << _newQuat[0] << " " << _newQuat[1] << " " << _newQuat[2] << " " << _newQuat[3] << "\n";
-            out.close();
-        }
-        std::cout << "View parameters saved in "<<viewFileName<<std::endl;
+        std::string viewFileName = sceneFileName + ".view";
+
+        if(currentCamera->exportParametersInFile(viewFileName))
+            std::cout << "View parameters saved in " << viewFileName << std::endl;
+        else
+            std::cout << "Error while saving view parameters in " << viewFileName << std::endl;
     }
 }
 
@@ -2233,9 +1913,29 @@ void SimpleGUI::setScene(sofa::simulation::Node::SPtr scene, const char* filenam
     capture.setPrefix(ofilename.str());
     groot = scene;
     initTexturesDone = false;
-    sceneBBoxIsValid = false;
+
+    //Camera initialization
+    if (groot)
+    {
+        groot->get(currentCamera);
+        if (!currentCamera)
+        {
+            currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
+            currentCamera->setName(core::objectmodel::Base::shortName(currentCamera.get()));
+            groot->addObject(currentCamera);
+            currentCamera->p_position.forceSet();
+            currentCamera->p_orientation.forceSet();
+            currentCamera->bwdInit();
+            resetView();
+        }
+
+        vparams->sceneBBox() = groot->f_bbox.getValue();
+        currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());
+
+        // init pickHandler
+        pick.init(groot.get());
+    }
     redraw();
-    pick.reset();
 }
 
 void SimpleGUI::setExportGnuplot( bool exp )

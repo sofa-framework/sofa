@@ -12,9 +12,7 @@ HEADERS += initOpenGLVisual.h \
            visualmodel/LightManager.h \
            visualmodel/PointSplatModel.h \
            visualmodel/OglRenderingSRGB.h \
-           visualmodel/ClipPlane.h \
-           visualmodel/InteractiveCamera.h \
-           visualmodel/RecordedCamera.h
+           visualmodel/ClipPlane.h
 
 SOURCES += initOpenGLVisual.cpp \
            visualmodel/OglModel.cpp \
@@ -24,9 +22,7 @@ SOURCES += initOpenGLVisual.cpp \
            visualmodel/PointSplatModel.cpp \
            visualmodel/OglRenderingSRGB.cpp \
            visualmodel/ClipPlane.cpp \
-           visualmodel/InteractiveCamera.cpp \
-           visualmodel/OglAttribute.cpp \
-           visualmodel/RecordedCamera.cpp
+           visualmodel/OglAttribute.cpp
 
 contains(DEFINES,SOFA_HAVE_GLEW) {
 HEADERS += visualmodel/OglAttribute.h \

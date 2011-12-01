@@ -41,8 +41,6 @@ SofaViewer::SofaViewer()
     , currentCamera(NULL)
     , m_isControlPressed(false)
     , _video(false)
-    , _shadow(false)
-    , _gl_shadow(true)
     , _axis(false)
     , backgroundColour(Vector3())
     , texLogo(NULL)
@@ -270,13 +268,6 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         // --- change background
     {
         _background = (_background + 1) % 3;
-        break;
-    }
-    case Qt::Key_L:
-        // --- draw shadows
-    {
-        if (_gl_shadow)
-            _shadow = !_shadow;
         break;
     }
     case Qt::Key_R:

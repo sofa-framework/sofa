@@ -48,9 +48,6 @@
 
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
-#ifdef SOFA_HAVE_GLEW
-#include <sofa/helper/gl/GLSLShader.h>
-#endif
 #include <sofa/helper/io/ImageBMP.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -121,12 +118,6 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     _renderingMode = GL_RENDER;
 
     _waitForRender=false;
-
-    /*_surfaceModel = NULL;
-      _springMassView = NULL;
-      _mapView = NULL;
-      sphViewer = NULL;
-    */
 
     //////////////////////
 
@@ -211,21 +202,6 @@ void QtGLViewer::init(void)
         // Here we initialize our multi-texturing functions
 #ifdef SOFA_HAVE_GLEW
         glewInit();
-#endif
-#if 0
-        if (!GLEW_ARB_multitexture)
-            std::cerr << "Error: GL_ARB_multitexture not supported\n";
-
-        glActiveTextureARB        = (PFNGLACTIVETEXTUREARBPROC)        glewGetProcAddress("glActiveTextureARB");
-        glMultiTexCoord2fARB    = (PFNGLMULTITEXCOORD2FARBPROC)        glewGetProcAddress("glMultiTexCoord2fARB");
-
-        // Make sure our multi-texturing extensions were loaded correctly
-        if(!glActiveTextureARB || !glMultiTexCoord2fARB)
-        {
-            // Print an error message and quit.
-            //    MessageBox(g_hWnd, "Your current setup does not support multitexturing", "Error", MB_OK);
-            //PostQuitMessage(0);
-        }
 #endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
@@ -1248,7 +1224,6 @@ QString QtGLViewer::helpString()
                                 <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
                                 <li><b>C</b>: TO CENTER THE VIEW<br></li>\
                                 <li><b>H</b>: TO OPEN HELP of QGLViewer<br></li>\
-                                <li><b>L</b>: TO DRAW SHADOWS<br></li>\
                                 <li><b>O</b>: TO EXPORT TO .OBJ<br>\
                                 The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
                                 <li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\

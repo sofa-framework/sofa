@@ -103,10 +103,6 @@ private:
     bool			_lightModelTwoSides;
     float			_lightPosition[4];
 
-    Trackball		_currentTrackball;
-    Trackball		_newTrackball;
-    //	Quaternion		_currentQuat;
-    //	Quaternion		_newQuat;
     int				_mouseX, _mouseY;
     int				_savedMouseX, _savedMouseY;
 
@@ -233,9 +229,6 @@ public:
     void ApplyMouseInteractorTransformation(int x, int y);
 
     static Quaternion _mouseInteractorNewQuat;
-    static Vector3 _mouseInteractorRelativePosition;
-    static Quaternion _newQuat;
-    static Quaternion _currentQuat;
     static bool _mouseTrans;
     static bool _mouseRotate;
 
