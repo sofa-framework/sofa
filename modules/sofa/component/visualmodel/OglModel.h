@@ -98,6 +98,18 @@ public:
 
     virtual void updateBuffers();
 
+
+public:
+    bool isUseTriangles()	{ return useTriangles; }
+    bool isUseQuads()	{ return useQuads; }
+    Data<bool> isUseVbo()	{ return useVBO.getValue(); }
+
+    helper::gl::Texture* getTex() const	{ return tex; }
+    GLuint getVbo()	{ return vbo;	}
+    GLuint getIboTriangles() { return iboTriangles; }
+    GLuint getIboQuads()    { return iboQuads; }
+    const std::vector<helper::gl::Texture*>& getTextures() const { return textures;	}
+
 #ifdef SOFA_HAVE_GLEW
     void createVertexBuffer();
     void createTrianglesIndicesBuffer();

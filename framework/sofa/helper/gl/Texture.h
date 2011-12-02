@@ -69,6 +69,8 @@ public:
     void   update ();	// to use for dynamic change of the texture image (no memory overhead due to multiple texture creation)
     ~Texture();
 
+    GLuint getId() const { return id; }
+
 private:
     Texture(const Texture& ) {};
     Texture operator=(const Texture& ) { return Texture(); }
