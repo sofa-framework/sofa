@@ -1,36 +1,38 @@
 <Node name="InstrumentEdgeSet">
-  <EulerImplicit rayleighStiffness="0" printLog="false" />
-  <BTDLinearSolver template="NewMatBand" bandWidth="11"  printLog="false" verbose="false"/>
-  
-  <MeshLoader name="loader" filename="mesh/edgeSet.mesh"/>
-  <MechanicalObject src="@loader" name="MechanicalDOFs" template="Rigid" scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1"/>
-  
-  <include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid" />
-  
-  <MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
-  <EdgeSetController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0"/>
-  
-  <FixedConstraint name="FixedConstraint" indices="0" />
-  <UniformMass mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
-  <BeamFEMForceField name="FEM" radius="0.1" youngModulus="50000000" />
-  
-  <Node name="CM">
-    <MechanicalObject name="CollisionDOFs" template="Vec3d" size="3"/>
-    <LineSet />
-    <PointSet />
-    <IdentityMapping/>
-  </Node>
-  
-  <Node name="VM">
-    <MechanicalObject name="TubularDOFs" />
-    <include href="Objects/QuadSetTopology.xml"/>
-    <Edge2QuadTopologicalMapping name="TopoMapping" nbPointsOnEachCircle="10" radius="0.3" object1="../../Container" object2="Container"/>
-    <TubularMapping name="TubularMapping"  nbPointsOnEachCircle="10" radius="0.3" object1="../../MechanicalDOFs" object2="../TubularDOFs" />
-
-    <Node name="Visu">
-      <OglModel name="Visual" color="1.0 0.0 0.0 1.0" />
-      <IdentityMapping object1="../../TubularDOFs" object2="Visual" />
-    </Node>			
-  </Node>
-  
+    <EulerImplicit rayleighStiffness="0" printLog="false" />
+    <BTDLinearSolver template="BTDMatrix6d" printLog="false" verbose="false"/>
+    
+    <MechanicalObject name="MechanicalDOFs" template="Rigid" scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1"/>
+    
+    <EdgeSetTopologyContainer  name="Container" position="0 0 0  1 0 0  2 0 0" edges="0 1  1 2" />
+    <EdgeSetTopologyModifier   name="Modifier" />
+    <EdgeSetTopologyAlgorithms name="TopoAlgo"   template="Rigid" />
+    <EdgeSetGeometryAlgorithms name="GeomAlgo"   template="Rigid" />
+    
+    <MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
+    <EdgeSetController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" speed="-1"/>
+    
+    <FixedConstraint name="FixedConstraint" indices="0" />
+    <UniformMass mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
+    <BeamFEMForceField name="FEM" radius="0.1" youngModulus="50000000" />
+    
+    <Node name="CM">
+        <MechanicalObject name="CollisionDOFs" template="Vec3d" size="3"/>
+        <LineSet />
+        <PointSet />
+        <IdentityMapping/>
+    </Node>
+    
+    <Node name="VM">
+        <MechanicalObject name="TubularDOFs" />
+        <include href="Objects/QuadSetTopology.xml"/>
+        <Edge2QuadTopologicalMapping name="TopoMapping" nbPointsOnEachCircle="10" radius="0.3" object1="../../Container" object2="Container"/>
+        <TubularMapping name="TubularMapping"  nbPointsOnEachCircle="10" radius="0.3" object1="../../MechanicalDOFs" object2="../TubularDOFs" />
+        
+        <Node name="Visu">
+            <OglModel name="Visual" color="1.0 0.0 0.0 1.0" />
+            <IdentityMapping object1="../../TubularDOFs" object2="Visual" />
+        </Node>			
+    </Node>
+    
 </Node>
