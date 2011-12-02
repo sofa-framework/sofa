@@ -102,7 +102,7 @@ public:
 public:
     bool isUseTriangles()	{ return useTriangles; }
     bool isUseQuads()	{ return useQuads; }
-    Data<bool> isUseVbo()	{ return useVBO.getValue(); }
+    bool isUseVbo()	{ return useVBO.getValue(); }
 
     helper::gl::Texture* getTex() const	{ return tex; }
     GLuint getVbo()	{ return vbo;	}

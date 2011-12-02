@@ -58,12 +58,14 @@ public:
     template<class Sphere>
     bool testIntersection(RigidDistanceGridCollisionElement&, Sphere&);
     bool testIntersection(RigidDistanceGridCollisionElement&, Triangle&);
+    bool testIntersection(Ray&, RigidDistanceGridCollisionElement&);
 
     int computeIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, Point&, OutputVector*);
     template<class Sphere>
     int computeIntersection(RigidDistanceGridCollisionElement&, Sphere&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, Triangle&, OutputVector*);
+    int computeIntersection(Ray&, RigidDistanceGridCollisionElement&, OutputVector*);
 
 protected:
 

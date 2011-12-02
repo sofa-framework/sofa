@@ -27,6 +27,7 @@ SOURCES += initVolumetricData.cpp \
            mapping/ImplicitSurfaceMapping.cpp \
            container/DistanceGrid.cpp \
            collision/DistanceGridCollisionModel.cpp \
+           collision/RayDistanceGridContact.cpp \
            collision/RigidDistanceGridDiscreteIntersection.cpp \
            collision/FFDDistanceGridDiscreteIntersection.cpp \
            collision/BarycentricPenalityContact_DistanceGrid.cpp \

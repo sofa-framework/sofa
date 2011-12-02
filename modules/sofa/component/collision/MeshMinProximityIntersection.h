@@ -47,7 +47,7 @@ class SOFA_MESH_COLLISION_API MeshMinProximityIntersection : public core::collis
     typedef MinProximityIntersection::OutputVector OutputVector;
 
 public:
-    MeshMinProximityIntersection(MinProximityIntersection* object);
+    MeshMinProximityIntersection(MinProximityIntersection* object, bool addSelf=true);
 
     bool testIntersection(Point&, Point&);
     bool testIntersection(Sphere&, Point&);

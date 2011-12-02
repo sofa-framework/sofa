@@ -47,7 +47,7 @@ class SOFA_MESH_COLLISION_API MeshNewProximityIntersection : public core::collis
     typedef NewProximityIntersection::OutputVector OutputVector;
 
 public:
-    MeshNewProximityIntersection(NewProximityIntersection* object);
+    MeshNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
 
     bool testIntersection(Point&, Point&);
     template<class Sphere>

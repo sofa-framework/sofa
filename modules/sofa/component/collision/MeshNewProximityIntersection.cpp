@@ -50,18 +50,21 @@ using namespace sofa::core::collision;
 
 IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection> MeshNewProximityIntersectors("Mesh");
 
-MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersection* object)
+MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersection* object, bool addSelf)
     : intersection(object)
 {
-    intersection->intersectors.add<PointModel, PointModel, MeshNewProximityIntersection>(this);
-    intersection->intersectors.add<SphereModel, PointModel, MeshNewProximityIntersection>(this);
-    intersection->intersectors.add<LineModel, PointModel, MeshNewProximityIntersection>(this);
-    intersection->intersectors.add<LineModel, SphereModel, MeshNewProximityIntersection>(this);
-    intersection->intersectors.add<LineModel, LineModel, MeshNewProximityIntersection>(this);
-    intersection->intersectors.add<TriangleModel, PointModel, MeshNewProximityIntersection>(this);
-    intersection->intersectors.add<TriangleModel, SphereModel, MeshNewProximityIntersection>(this);
-    intersection->intersectors.add<TriangleModel, LineModel, MeshNewProximityIntersection>(this);
-    intersection->intersectors.add<TriangleModel, TriangleModel, MeshNewProximityIntersection>(this);
+    if (addSelf)
+    {
+        intersection->intersectors.add<PointModel, PointModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<SphereModel, PointModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<LineModel, PointModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<LineModel, SphereModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<LineModel, LineModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleModel, PointModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleModel, SphereModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleModel, LineModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleModel, TriangleModel, MeshNewProximityIntersection>(this);
+    }
 }
 
 bool MeshNewProximityIntersection::testIntersection(Point& e1, Point& e2)

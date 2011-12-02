@@ -50,35 +50,38 @@ SOFA_DECL_CLASS(MeshMinProximityIntersection)
 
 IntersectorCreator<MinProximityIntersection, MeshMinProximityIntersection> MeshMinProximityIntersectors("Mesh");
 
-MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersection* object)
+MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersection* object, bool addSelf)
     : intersection(object)
 {
-    if (intersection->usePointPoint.getValue())
-        intersection->intersectors.add<PointModel, PointModel, MeshMinProximityIntersection>(this);
-    else
-        intersection->intersectors.ignore<PointModel, PointModel>();
-
-    intersection->intersectors.add<LineModel, LineModel, MeshMinProximityIntersection>(this);
-    intersection->intersectors.add<LineModel, PointModel, MeshMinProximityIntersection>(this);
-    intersection->intersectors.add<TriangleModel, PointModel, MeshMinProximityIntersection>(this);
-    intersection->intersectors.ignore<TriangleModel, LineModel>();
-    intersection->intersectors.ignore<TriangleModel, TriangleModel>();
-
-    if (intersection->useSphereTriangle.getValue())
+    if (addSelf)
     {
-        intersection->intersectors.add<SphereModel, PointModel, MeshMinProximityIntersection>(this);
-        intersection->intersectors.add<TriangleModel, SphereModel, MeshMinProximityIntersection>(this);
-        intersection->intersectors.add<LineModel, SphereModel, MeshMinProximityIntersection>(this);
-    }
-    else
-    {
-        intersection->intersectors.ignore<SphereModel, PointModel>();
-        intersection->intersectors.ignore<LineModel, SphereModel>();
-        intersection->intersectors.ignore<TriangleModel, SphereModel>();
-    }
+        if (intersection->usePointPoint.getValue())
+            intersection->intersectors.add<PointModel, PointModel, MeshMinProximityIntersection>(this);
+        else
+            intersection->intersectors.ignore<PointModel, PointModel>();
+
+        intersection->intersectors.add<LineModel, LineModel, MeshMinProximityIntersection>(this);
+        intersection->intersectors.add<LineModel, PointModel, MeshMinProximityIntersection>(this);
+        intersection->intersectors.add<TriangleModel, PointModel, MeshMinProximityIntersection>(this);
+        intersection->intersectors.ignore<TriangleModel, LineModel>();
+        intersection->intersectors.ignore<TriangleModel, TriangleModel>();
+
+        if (intersection->useSphereTriangle.getValue())
+        {
+            intersection->intersectors.add<SphereModel, PointModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<TriangleModel, SphereModel, MeshMinProximityIntersection>(this);
+            intersection->intersectors.add<LineModel, SphereModel, MeshMinProximityIntersection>(this);
+        }
+        else
+        {
+            intersection->intersectors.ignore<SphereModel, PointModel>();
+            intersection->intersectors.ignore<LineModel, SphereModel>();
+            intersection->intersectors.ignore<TriangleModel, SphereModel>();
+        }
 
 //    intersection->intersectors.ignore<RayModel, PointModel>();
 //    intersection->intersectors.ignore<RayModel, LineModel>();
+    }
 }
 
 bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2)

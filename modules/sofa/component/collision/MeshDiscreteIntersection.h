@@ -49,7 +49,7 @@ class SOFA_MESH_COLLISION_API MeshDiscreteIntersection : public core::collision:
     typedef DiscreteIntersection::OutputVector OutputVector;
 
 public:
-    MeshDiscreteIntersection(DiscreteIntersection* object);
+    MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
 
     bool testIntersection(Triangle&, Line&);
     template<class Sphere>

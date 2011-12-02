@@ -50,10 +50,13 @@ SOFA_DECL_CLASS(MeshDiscreteIntersection)
 
 IntersectorCreator<DiscreteIntersection, MeshDiscreteIntersection> MeshDiscreteIntersectors("Mesh");
 
-MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* object)
+MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf)
     : intersection(object)
 {
-    intersection->intersectors.add<TriangleModel,     LineModel,       MeshDiscreteIntersection>  (this);
+    if (addSelf)
+    {
+        intersection->intersectors.add<TriangleModel,     LineModel,       MeshDiscreteIntersection>  (this);
+    }
 }
 
 bool MeshDiscreteIntersection::testIntersection(Triangle&, Line&)

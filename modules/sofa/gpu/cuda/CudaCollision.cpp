@@ -29,12 +29,13 @@
 #include "CudaContactMapper.h"
 #include "CudaPenalityContactForceField.h"
 #include "CudaSpringForceField.h"
-#include "CudaDistanceGridCollisionModel.h"
 #include "CudaSphereModel.h"
 #include "CudaPointModel.h"
 
 #include <sofa/component/collision/MouseInteractor.inl>
 #include <sofa/component/collision/NewProximityIntersection.inl>
+#include <sofa/component/collision/MeshNewProximityIntersection.inl>
+#include <sofa/component/collision/RayDiscreteIntersection.inl>
 #include <sofa/component/collision/DiscreteIntersection.inl>
 #include <sofa/component/collision/ComponentMouseInteraction.inl>
 #include <sofa/component/collision/AttachBodyPerformer.inl>
@@ -72,115 +73,7 @@ template class AttachBodyPerformer< CudaVec3dTypes >;
 template class FixParticlePerformer< CudaVec3dTypes >;
 #endif
 
-template <>
-void BarycentricPenalityContact<CudaPointModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
-{
-    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
-    //const bool printLog = this->f_printLog.getValue();
-    if (ff==NULL)
-    {
-        MechanicalState1* mstate1 = mapper1.createMapping("contactPointsCUDA");
-        MechanicalState2* mstate2 = mapper2.createMapping("contactPointsCUDA");
-        ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
-        ff->setName( getName() );
-        ff->init();
-    }
-
-    mapper1.setPoints1(&outputs);
-    mapper2.setPoints2(&outputs);
-    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
-#if 0
-    int insize = outputs.size();
-    int size = insize;
-    ff->clear(size);
-    //int i = 0;
-    for (int i=0; i<insize; i++)
-    {
-        int index = i; //oldIndex[i];
-        if (index < 0) continue; // this contact is ignored
-        //DetectionOutput* o = &outputs[i];
-        //CollisionElement1 elem1(o->elem.first);
-        //CollisionElement2 elem2(o->elem.second);
-        //int index1 = elem1.getIndex();
-        //int index2 = elem2.getIndex();
-        int index1 = index;
-        int index2 = index;
-        //// Create mapping for first point
-        //index1 = mapper1.addPoint(o->point[0], index1);
-        //// Create mapping for second point
-        //index2 = mapper2.addPoint(o->point[1], index2);
-        double distance = d0 + outputs.get(i)->distance; // + mapper1.radius(elem1) + mapper2.radius(elem2);
-        double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0))/distance;
-        double mu_v = (model1->getContactFriction(0) + model1->getContactFriction(0));
-        ff->addContact(index1, index2, outputs.get(i)->normal, (float)distance, (float)stiffness, (float)mu_v, (float)mu_v, index);
-    }
-#else
-    double distance = d0; // + mapper1.radius(elem1) + mapper2.radius(elem2);
-    double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0)); ///distance;
-    ff->setContacts((float)distance, (float)stiffness, &outputs, true);
-#endif
-    // Update mappings
-    mapper1.update();
-    mapper2.update();
-}
-
-template <>
-void BarycentricPenalityContact<CudaSphereModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
-{
-
-    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
-    //const bool printLog = this->f_printLog.getValue();
-    if (ff==NULL)
-    {
-        MechanicalState1* mstate1 = mapper1.createMapping("contactPointsCUDA");
-        MechanicalState2* mstate2 = mapper2.createMapping("contactPointsCUDA");
-        ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
-        ff->setName( getName() );
-        ff->init();
-    }
-
-    mapper1.setPoints1(&outputs);
-    mapper2.setPoints2(&outputs);
-    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
-#if 0
-    int insize = outputs.size();
-    int size = insize;
-    ff->clear(size);
-    //int i = 0;
-    for (int i=0; i<insize; i++)
-    {
-        int index = i; //oldIndex[i];
-        if (index < 0) continue; // this contact is ignored
-        //DetectionOutput* o = &outputs[i];
-        //CollisionElement1 elem1(o->elem.first);
-        //CollisionElement2 elem2(o->elem.second);
-        //int index1 = elem1.getIndex();
-        //int index2 = elem2.getIndex();
-        int index1 = index;
-        int index2 = index;
-        //// Create mapping for first point
-        //index1 = mapper1.addPoint(o->point[0], index1);
-        //// Create mapping for second point
-        //index2 = mapper2.addPoint(o->point[1], index2);
-        double distance = d0 + outputs.get(i)->distance; // + mapper1.radius(elem1) + mapper2.radius(elem2);
-        double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0))/distance;
-        double mu_v = (model1->getContactFriction(0) + model1->getContactFriction(0));
-        ff->addContact(index1, index2, outputs.get(i)->normal, (float)distance, (float)stiffness, (float)mu_v, (float)mu_v, index);
-    }
-#else
-    double distance = d0; // + mapper1.radius(elem1) + mapper2.radius(elem2);
-    double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0)); ///distance;
-    ff->setContacts((float)distance, (float)stiffness, &outputs, true);
-#endif
-    // Update mappings
-    mapper1.update();
-    mapper2.update();
-
-}
-
 ContactMapperCreator< ContactMapper<CudaSphereModel> > CudaSphereContactMapperClass("default",true);
-
-
 
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<CudaVec3fTypes> > ComponentMouseInteractionCudaVec3fClass ("MouseSpringCudaVec3f",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer <CudaVec3fTypes> >  AttachBodyPerformerCudaVec3fClass("AttachBody",true);
@@ -223,13 +116,15 @@ class CudaProximityIntersection : public sofa::component::collision::NewProximit
 {
 public:
     SOFA_CLASS(CudaProximityIntersection,sofa::component::collision::NewProximityIntersection);
+
     virtual void init()
     {
         sofa::component::collision::NewProximityIntersection::init();
         intersectors.add<CudaSphereModel, CudaSphereModel,   DiscreteIntersection>(this);
-        // TODO: re-enamble Ray-CudaSphere and Triangle-CudaSphere once intersectors split is completed
-        //intersectors.add<RayModel,        CudaSphereModel,   DiscreteIntersection>(this);
-        //intersectors.add<TriangleModel,   CudaSphereModel,   CudaProximityIntersection>(this);
+        RayDiscreteIntersection* rayIntersector = new RayDiscreteIntersection(this, false);
+        intersectors.add<RayModel,        CudaSphereModel,   RayDiscreteIntersection>(rayIntersector);
+        MeshNewProximityIntersection* meshIntersector = new MeshNewProximityIntersection(this, false);
+        intersectors.add<TriangleModel,   CudaSphereModel,   MeshNewProximityIntersection>(meshIntersector);
     }
 
 };
@@ -240,15 +135,6 @@ int CudaProximityIntersectionClass = core::RegisterObject("GPGPU Proximity Inter
         ;
 
 sofa::helper::Creator<core::collision::Contact::Factory, component::collision::RayContact<CudaSphereModel> > RayCudaSphereContactClass("ray",true);
-
-//sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaRigidDistanceGridCollisionModel, CudaRigidDistanceGridCollisionModel,CudaVec3fTypes> > CudaDistanceGridCudaDistanceGridContactClass("default", true);
-sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaPointModel, CudaRigidDistanceGridCollisionModel,CudaVec3fTypes> > CudaPointCudaDistanceGridContactClass("default", true);
-sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaSphereModel, CudaRigidDistanceGridCollisionModel,CudaVec3fTypes> > CudaSphereCudaDistanceGridContactClass("default", true);
-//sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaRigidDistanceGridCollisionModel, sofa::component::collision::RigidDistanceGridCollisionModel> > CudaDistanceGridDistanceGridContactClass("default", true);
-//sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaRigidDistanceGridCollisionModel, sofa::component::collision::PointModel> > CudaDistanceGridPointContactClass("default", true);
-//sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaRigidDistanceGridCollisionModel, sofa::component::collision::SphereModel> > CudaDistanceGridSphereContactClass("default", true);
-//sofa::helper::Creator<sofa::core::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaRigidDistanceGridCollisionModel, sofa::component::collision::TriangleModel> > CudaDistanceGridTriangleContactClass("default", true);
-
 
 } // namespace cuda
 
