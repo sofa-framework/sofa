@@ -75,7 +75,7 @@ declare(sofa_engine, modules/sofa/component/sofa_engine.pro, sofa_mesh_collision
 declare(sofa_graph_component, modules/sofa/component/sofa_graph_component.pro, sofatree)
 declare(sofa_topology_mapping, modules/sofa/component/sofa_topology_mapping.pro, sofa_base_topology)
 declare(sofa_boundary_condition, modules/sofa/component/sofa_boundary_condition.pro, sofa_base_topology)
-declare(sofa_user_interaction, modules/sofa/component/sofa_user_interaction.pro, sofa_mesh_collision sofa_topology_mapping sofa_deformable sofa_boundary_condition sofa_volumetric_data)
+declare(sofa_user_interaction, modules/sofa/component/sofa_user_interaction.pro, sofa_mesh_collision sofa_topology_mapping sofa_deformable sofa_boundary_condition)
 declare(sofa_constraint, modules/sofa/component/sofa_constraint.pro, sofa_preconditioner sofa_mesh_collision sofa_simple_fem eigen sofa_user_interaction)
 declare(sofa_haptics, modules/sofa/component/sofa_haptics.pro, sofa_constraint)
 declare(sofa_dense_solver, modules/sofa/component/sofa_dense_solver.pro, sofa_base_linear_solver)
@@ -83,7 +83,7 @@ declare(sofa_sparse_solver, modules/sofa/component/sofa_sparse_solver.pro, sofa_
 declare(sofa_preconditioner, modules/sofa/component/sofa_preconditioner.pro, sofa_dense_solver sofa_sparse_solver sofa_implicit_ode_solver sofa_simple_fem)
 declare(sofa_opengl_visual, modules/sofa/component/sofa_opengl_visual.pro, sofa_base_visual)
 declare(sofa_eulerian_fluid, modules/sofa/component/sofa_eulerian_fluid.pro, sofatree)
-declare(sofa_volumetric_data, modules/sofa/component/sofa_volumetric_data.pro, sofa_base_collision sofa_mesh_collision miniFlowVR)
+declare(sofa_volumetric_data, modules/sofa/component/sofa_volumetric_data.pro, sofa_base_collision sofa_mesh_collision  sofa_user_interaction miniFlowVR)
 declare(sofa_non_uniform_fem, modules/sofa/component/sofa_non_uniform_fem.pro, sofa_simple_fem sofa_opengl_visual sofa_dense_solver sofa_volumetric_data)
 declare(sofa_non_uniform_fem_dev, modules/sofa/component/sofa_non_uniform_fem_dev.pro, sofa_non_uniform_fem eigen)
 declare(sofa_advanced_fem, modules/sofa/component/sofa_advanced_fem.pro, sofa_base_topology eigen)
@@ -126,7 +126,7 @@ declare(sofa_component, modules/sofa/component/sofa_component.pro, sofa_componen
 
 declare(sofa_component_dev, modules/sofa/component/sofa_component_dev.pro, sofa_component_advanced_dev sofa_component_misc_dev)
 
-declare(sofagpucuda, modules/sofa/gpu/cuda/cuda.pro, sofahelper sofa_engine sofa_sph_fluid cuda cudpp thrust)
+declare(sofagpucuda, modules/sofa/gpu/cuda/cuda.pro, sofahelper sofa_engine sofa_sph_fluid sofa_user_interaction sofa_volumetric_data cuda cudpp thrust)
 
 declare(sofagpucuda_dev, modules/sofa/gpu/cuda/cuda_dev.pro, sofagpucuda sofa_advanced_interaction sofa_misc_dev eigen csparse taucs taucs_mt system-taucs)
 

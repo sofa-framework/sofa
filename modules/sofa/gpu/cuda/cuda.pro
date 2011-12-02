@@ -35,6 +35,8 @@ HEADERS += mycuda.h \
            CudaMechanicalObject.inl \
            CudaUniformMass.h \
            CudaUniformMass.inl \
+           CudaDiagonalMass.h \
+           CudaDiagonalMass.inl \
            CudaFixedConstraint.h \
            CudaFixedConstraint.inl \
 	   CudaLinearMovementConstraint.h \
@@ -90,6 +92,7 @@ SOURCES += mycuda.cpp \
 	   CudaIndexValueMapper.cpp \
            CudaMechanicalObject.cpp \
            CudaUniformMass.cpp \
+           CudaDiagonalMass.cpp \
 	   CudaExtraMonitor.cpp \
            CudaFixedConstraint.cpp \
            CudaFixedTranslationConstraint.cpp \
@@ -108,6 +111,8 @@ SOURCES += mycuda.cpp \
            CudaBarycentricMappingRigid.cpp \
            CudaRigidMapping.cpp \
            CudaSubsetMapping.cpp \
+           CudaCollision.cpp \
+           CudaCollisionDistanceGrid.cpp \
            CudaDistanceGridCollisionModel.cpp \
            CudaCollisionDetection.cpp \
 	   CudaSphereModel.cpp \
@@ -124,6 +129,7 @@ CUDA_SOURCES += mycuda.cu \
            CudaSort.cu \
            CudaMechanicalObject.cu \
            CudaUniformMass.cu \
+           CudaDiagonalMass.cu \
 	   CudaTypesBase.cu \
            CudaFixedConstraint.cu \
            CudaLinearMovementConstraint.cu \

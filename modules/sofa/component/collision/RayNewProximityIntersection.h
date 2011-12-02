@@ -48,7 +48,7 @@ class SOFA_USER_INTERACTION_API RayNewProximityIntersection : public core::colli
     typedef NewProximityIntersection::OutputVector OutputVector;
 
 public:
-    RayNewProximityIntersection(NewProximityIntersection* object);
+    RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
 
     bool testIntersection(Ray&, Triangle&);
 

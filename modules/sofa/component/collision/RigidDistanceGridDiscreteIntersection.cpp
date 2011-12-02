@@ -56,6 +56,7 @@ RigidDistanceGridDiscreteIntersection::RigidDistanceGridDiscreteIntersection(Dis
     intersection->intersectors.add<RigidDistanceGridCollisionModel, PointModel,                      RigidDistanceGridDiscreteIntersection>  (this);
     intersection->intersectors.add<RigidDistanceGridCollisionModel, SphereModel,                     RigidDistanceGridDiscreteIntersection>  (this);
     intersection->intersectors.add<RigidDistanceGridCollisionModel, TriangleModel,                   RigidDistanceGridDiscreteIntersection>  (this);
+    intersection->intersectors.add<RayModel, RigidDistanceGridCollisionModel, RigidDistanceGridDiscreteIntersection>  (this);
     intersection->intersectors.add<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel, RigidDistanceGridDiscreteIntersection> (this);
 }
 
@@ -756,6 +757,127 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
         }
     }
     return 1;
+}
+
+bool RigidDistanceGridDiscreteIntersection::testIntersection(Ray& /*e2*/, RigidDistanceGridCollisionElement& /*e1*/)
+{
+    return true;
+}
+
+int RigidDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, RigidDistanceGridCollisionElement& e1, OutputVector* contacts)
+{
+    Vector3 rayOrigin(e2.origin());
+    Vector3 rayDirection(e2.direction());
+    const double rayLength = e2.l();
+
+    int nc = 0;
+    DistanceGrid* grid1 = e1.getGrid();
+    bool useXForm = e1.isTransformed();
+
+    if (useXForm)
+    {
+        const Vector3& t1 = e1.getTranslation();
+        const Matrix3& r1 = e1.getRotation();
+        rayOrigin = r1.multTranspose(rayOrigin-t1);
+        rayDirection = r1.multTranspose(rayDirection);
+        // now ray infos are in grid1 space
+    }
+
+    double l0 = 0;
+    double l1 = rayLength;
+    Vector3 r0 = rayOrigin;
+    Vector3 r1 = rayOrigin + rayDirection*l1;
+
+    DistanceGrid::Coord bbmin = grid1->getBBMin(), bbmax = grid1->getBBMax();
+    // clip along each axis
+    for (int c=0; c<3 && l1>l0; c++)
+    {
+        if (rayDirection[c] > 0)
+        {
+            // test if the ray is inside
+            if (r1[c] < bbmin[c] || r0[c] > bbmax[c])
+            { l1 = 0; break; }
+            if (r0[c] < bbmin[c])
+            {
+                // intersect with p[c] == bbmin[c] plane
+                double l = (bbmin[c]-rayOrigin[c]) / rayDirection[c];
+                if(l0 < l)
+                {
+                    l0 = l;
+                    r0 = rayOrigin + rayDirection*l0;
+                }
+            }
+            if (r1[c] > bbmax[c])
+            {
+                // intersect with p[c] == bbmax[c] plane
+                double l = (bbmax[c]-rayOrigin[c]) / rayDirection[c];
+                if(l1 > l)
+                {
+                    l1 = l;
+                    r1 = rayOrigin + rayDirection*l1;
+                }
+            }
+        }
+        else
+        {
+            // test if the ray is inside
+            if (r0[c] < bbmin[c] || r1[c] > bbmax[c])
+            { l1 = 0; break; }
+            if (r0[c] > bbmax[c])
+            {
+                // intersect with p[c] == bbmax[c] plane
+                double l = (bbmax[c]-rayOrigin[c]) / rayDirection[c];
+                if(l0 < l)
+                {
+                    l0 = l;
+                    r0 = rayOrigin + rayDirection*l0;
+                }
+            }
+            if (r1[c] < bbmin[c])
+            {
+                // intersect with p[c] == bbmin[c] plane
+                double l = (bbmin[c]-rayOrigin[c]) / rayDirection[c];
+                if(l1 > l)
+                {
+                    l1 = l;
+                    r1 = rayOrigin + rayDirection*l1;
+                }
+            }
+        }
+
+    }
+
+    if (l0 < l1)
+    {
+        // some part of the ray is inside the grid
+        Vector3 p = rayOrigin + rayDirection*l0;
+        double dist = grid1->interp(p);
+        double epsilon = grid1->getCellWidth().norm()*0.1f;
+        while (l0 < l1 && (dist > epsilon || dist < -epsilon))
+        {
+            l0 += dist;
+            p = rayOrigin + rayDirection*l0;
+            dist = grid1->interp(p);
+            //sout << "p="<<p<<" dist="<<dist<<" l0="<<l0<<" l1="<<l1<<" epsilon="<<epsilon<<sendl;
+        }
+        if (dist < epsilon)
+        {
+            // intersection found
+
+            contacts->resize(contacts->size()+1);
+            DetectionOutput *detection = &*(contacts->end()-1);
+
+            detection->point[0] = e2.origin() + e2.direction()*l0;
+            detection->point[1] = p;
+            detection->normal = e2.direction(); // normal in global space from p1's surface
+            detection->value = dist;
+            detection->elem.first = e2;
+            detection->elem.second = e1;
+            detection->id = e2.getIndex();
+            ++nc;
+        }
+    }
+    return nc;
 }
 
 

@@ -50,12 +50,15 @@ SOFA_DECL_CLASS(RayNewProximityIntersection)
 
 IntersectorCreator<NewProximityIntersection, RayNewProximityIntersection> RayNewProximityIntersectors("Ray");
 
-RayNewProximityIntersection::RayNewProximityIntersection(NewProximityIntersection* object)
+RayNewProximityIntersection::RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf)
     : intersection(object)
 {
-    intersection->intersectors.ignore<RayModel, PointModel>();
-    intersection->intersectors.ignore<RayModel, LineModel>();
-    intersection->intersectors.add<RayModel, TriangleModel, RayNewProximityIntersection>(this);
+    if (addSelf)
+    {
+        intersection->intersectors.ignore<RayModel, PointModel>();
+        intersection->intersectors.ignore<RayModel, LineModel>();
+        intersection->intersectors.add<RayModel, TriangleModel, RayNewProximityIntersection>(this);
+    }
 }
 
 bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)

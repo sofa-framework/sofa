@@ -56,6 +56,7 @@ FFDDistanceGridDiscreteIntersection::FFDDistanceGridDiscreteIntersection(Discret
     intersection->intersectors.add<FFDDistanceGridCollisionModel, PointModel,                        FFDDistanceGridDiscreteIntersection>  (this);
     intersection->intersectors.add<FFDDistanceGridCollisionModel, SphereModel,                       FFDDistanceGridDiscreteIntersection>  (this);
     intersection->intersectors.add<FFDDistanceGridCollisionModel, TriangleModel,                     FFDDistanceGridDiscreteIntersection>  (this);
+    intersection->intersectors.add<RayModel, FFDDistanceGridCollisionModel,   FFDDistanceGridDiscreteIntersection>  (this);
     intersection->intersectors.add<FFDDistanceGridCollisionModel,   RigidDistanceGridCollisionModel, FFDDistanceGridDiscreteIntersection>  (this);
     intersection->intersectors.add<FFDDistanceGridCollisionModel,   FFDDistanceGridCollisionModel,   FFDDistanceGridDiscreteIntersection> (this);
 }
@@ -761,6 +762,107 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         }
     }
     return nc;
+}
+
+bool FFDDistanceGridDiscreteIntersection::testIntersection(Ray& /*e1*/, FFDDistanceGridCollisionElement& /*e2*/)
+{
+    return true;
+}
+
+int FFDDistanceGridDiscreteIntersection::computeIntersection(Ray& e2, FFDDistanceGridCollisionElement& e1, OutputVector* contacts)
+{
+    Vector3 rayOrigin(e2.origin());
+    Vector3 rayDirection(e2.direction());
+    const double rayLength = e2.l();
+
+    DistanceGrid* grid1 = e1.getGrid();
+    FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
+
+    // Center of the sphere
+    const Vector3 center1 = c1.center;
+    // Radius of the sphere
+    const double radius1 = c1.radius;
+
+    const Vector3 tmp = center1 - rayOrigin;
+    double rayPos = tmp*rayDirection;
+    const double dist2 = tmp.norm2() - (rayPos*rayPos);
+    if (dist2 >= (radius1*radius1))
+        return 0;
+
+    double l0 = rayPos - sqrt(radius1*radius1 - dist2);
+    double l1 = rayPos + sqrt(radius1*radius1 - dist2);
+    if (l0 < 0) l0 = 0;
+    if (l1 > rayLength) l1 = rayLength;
+    if (l0 > l1) return 0; // outside of ray
+    //const double dist = sqrt(dist2);
+    //double epsilon = grid1->getCellWidth().norm()*0.1f;
+
+    c1.updateFaces();
+    DistanceGrid::Coord p1;
+    const SReal cubesize = c1.invDP.norm();
+    for(int i=0; i<100; i++)
+    {
+        rayPos = l0 + (l1-l0)*(i*0.01);
+        p1 = rayOrigin + rayDirection*rayPos;
+        // estimate the barycentric coordinates
+        DistanceGrid::Coord b = c1.undeform0(p1);
+        // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
+        int iter;
+        SReal err1 = 1000.0f;
+        bool found = false;
+        for(iter=0; iter<5; ++iter)
+        {
+            DistanceGrid::Coord pdeform = c1.deform(b);
+            DistanceGrid::Coord diff = p1-pdeform;
+            SReal err = diff.norm();
+            //if (iter>3)
+            //    sout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<""<<sendl;
+            SReal berr = err*cubesize; if (berr>0.5f) berr=0.5f;
+            if (b[0] < -berr || b[0] > 1+berr
+                || b[1] < -berr || b[1] > 1+berr
+                || b[2] < -berr || b[2] > 1+berr)
+                break; // far from the cube
+            if (err < 0.001f)
+            {
+                // we found the corresponding point, but is is only valid if inside the current cube
+                if (b[0] > -0.1f && b[0] < 1.1f
+                    && b[1] > -0.1f && b[1] < 1.1f
+                    && b[2] > -0.1f && b[2] < 1.1f)
+                {
+                    found = true;
+                }
+                break;
+            }
+            err1 = err;
+            b += c1.undeformDir( b, diff );
+        }
+        if (found)
+        {
+            SReal d = grid1->interp(c1.initpos(b));
+            if (d < 0)
+            {
+                // intersection found
+
+                contacts->resize(contacts->size()+1);
+                DetectionOutput *detection = &*(contacts->end()-1);
+
+                detection->point[0] = e2.origin() + e2.direction()*rayPos;
+                detection->point[1] = c1.initpos(b);
+                detection->normal = e2.direction(); // normal in global space from p1's surface
+                detection->value = d;
+                detection->elem.first = e2;
+                detection->elem.second = e1;
+                detection->id = e2.getIndex();
+                return 1;
+            }
+        }
+        // else move along the ray
+        //if (dot(Vector3(grid1->grad(c1.initpos(b))),rayDirection) < 0)
+        //    rayPos += 0.5*d;
+        //else
+        //    rayPos -= 0.5*d;
+    }
+    return 0;
 }
 
 

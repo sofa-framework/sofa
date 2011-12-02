@@ -54,7 +54,6 @@ SOURCES += initUserInteraction.cpp \
            collision/RayModel.cpp \
            collision/RayDiscreteIntersection.cpp \
            collision/RayNewProximityIntersection.cpp \
-           collision/RayDistanceGridContact.cpp \
            collision/RemovePrimitivePerformer.cpp \
            collision/InciseAlongPathPerformer.cpp \
            collision/TopologicalChangeManager.cpp \
