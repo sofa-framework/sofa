@@ -72,6 +72,8 @@ SOFA_LINK_CLASS(RigidToQuatEngine)
 SOFA_LINK_CLASS(QuatToRigidEngine)
 SOFA_LINK_CLASS(ValuesFromPositions)
 SOFA_LINK_CLASS(NormalsFromPoints)
+SOFA_LINK_CLASS(ClusteringEngine)
+SOFA_LINK_CLASS(ShapeMatching)
 
 } // namespace component
 

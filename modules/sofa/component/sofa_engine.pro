@@ -67,7 +67,12 @@ HEADERS += initEngine.h \
            engine/ValuesFromPositions.h \
            engine/ValuesFromPositions.inl \
            engine/NormalsFromPoints.h \
-           engine/NormalsFromPoints.inl
+           engine/NormalsFromPoints.inl \
+           engine/ClusteringEngine.h \
+           engine/ClusteringEngine.inl \
+           engine/ShapeMatching.h \
+           engine/ShapeMatching.inl 
+
 
 
 SOURCES += initEngine.cpp \
@@ -101,7 +106,9 @@ SOURCES += initEngine.cpp \
            engine/RigidToQuatEngine.cpp \
            engine/QuatToRigidEngine.cpp \
            engine/ValuesFromPositions.cpp \
-           engine/NormalsFromPoints.cpp
+           engine/NormalsFromPoints.cpp \
+           engine/ClusteringEngine.cpp \
+           engine/ShapeMatching.cpp 
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
