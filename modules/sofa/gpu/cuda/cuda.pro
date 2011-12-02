@@ -22,7 +22,6 @@ win32 {
 
 HEADERS += mycuda.h \
            gpucuda.h \
-           BaseCudaLDIContactResponse.h \
            CudaTypes.h \
 	   CudaTypesBase.h \
            CudaCommon.h \
@@ -81,8 +80,6 @@ HEADERS += mycuda.h \
            CudaTetrahedralVisualModel.inl \
            CudaParticleSource.h \
            CudaParticleSource.inl \
-           VolumetricContact.h \
-           VolumetricContact.inl \
 	   CudaMemoryManager.h 
 
 SOURCES += mycuda.cpp \
@@ -120,9 +117,7 @@ SOURCES += mycuda.cpp \
            CudaVisualModel.cpp \
            CudaTetrahedralVisualModel.cpp \
            CudaSetTopology.cpp \
-           CudaParticleSource.cpp \
-    	   CudaMappedBeamToTetraForceField.cpp \
-           VolumetricContact.cpp 
+           CudaParticleSource.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaScan.cu \

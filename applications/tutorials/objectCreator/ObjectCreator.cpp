@@ -153,13 +153,16 @@ simulation::Node *ObjectCreator::CreateObstacle(simulation::Node* parent, const 
     simulation::Node* nodeFixed = parent->createChild("Fixed");
 
     sofa::component::loader::MeshObjLoader::SPtr loaderFixed = sofa::core::objectmodel::New<sofa::component::loader::MeshObjLoader>();
+    loaderFixed->setName("loader");
     loaderFixed->setFilename(sofa::helper::system::DataRepository.getFile(filenameCollision));
     nodeFixed->addObject(loaderFixed);
 
     component::topology::MeshTopology::SPtr meshNodeFixed = sofa::core::objectmodel::New<component::topology::MeshTopology>();
+    meshNodeFixed->setSrc("@"+loaderFixed->getName(), loaderFixed.get());
     nodeFixed->addObject(meshNodeFixed);
 
     MechanicalObject3::SPtr dofFixed = sofa::core::objectmodel::New<MechanicalObject3>(); dofFixed->setName("Fixed Object");
+    dofFixed->setSrc("@"+loaderFixed->getName(), loaderFixed.get());
     dofFixed->setTranslation(translation[0],translation[1],translation[2]);
     dofFixed->setRotation(rotation[0],rotation[1],rotation[2]);
     nodeFixed->addObject(dofFixed);
@@ -195,13 +198,16 @@ simulation::Node *ObjectCreator::CreateCollisionNodeVec3(simulation::Node* paren
     simulation::Node* CollisionNode = parent->createChild("Collision");
 
     sofa::component::loader::MeshObjLoader::SPtr loader_surf = sofa::core::objectmodel::New<sofa::component::loader::MeshObjLoader>();
+    loader_surf->setName("loader");
     loader_surf->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     CollisionNode->addObject(loader_surf);
 
     component::topology::MeshTopology::SPtr meshTorus_surf= sofa::core::objectmodel::New<component::topology::MeshTopology>();
+    meshTorus_surf->setSrc("@"+loader_surf->getName(), loader_surf.get());
     CollisionNode->addObject(meshTorus_surf);
 
     MechanicalObject3::SPtr dof_surf = sofa::core::objectmodel::New<MechanicalObject3>();  dof_surf->setName("Collision Object ");
+    dof_surf->setSrc("@"+loader_surf->getName(), loader_surf.get());
     dof_surf->setTranslation(translation[0],translation[1],translation[2]);
     dof_surf->setRotation(rotation[0],rotation[1],rotation[2]);
     CollisionNode->addObject(dof_surf);
@@ -256,13 +262,16 @@ simulation::Node *ObjectCreator::CreateCollisionNodeRigid(simulation::Node* pare
 
 
     sofa::component::loader::MeshObjLoader::SPtr loader_surf = sofa::core::objectmodel::New<sofa::component::loader::MeshObjLoader>();
+    loader_surf->setName("loader");
     loader_surf->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     CollisionNode->addObject(loader_surf);
 
     component::topology::MeshTopology::SPtr meshTorus_surf= sofa::core::objectmodel::New<component::topology::MeshTopology>();
+    meshTorus_surf->setSrc("@"+loader_surf->getName(), loader_surf.get());
     CollisionNode->addObject(meshTorus_surf);
 
     MechanicalObject3::SPtr dof_surf = sofa::core::objectmodel::New<MechanicalObject3>(); dof_surf->setName(dofSurfName);
+    dof_surf->setSrc("@"+loader_surf->getName(), loader_surf.get());
     dof_surf->setTranslation(translation[0],translation[1],translation[2]);
     dof_surf->setRotation(rotation[0],rotation[1],rotation[2]);
     CollisionNode->addObject(dof_surf);

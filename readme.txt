@@ -94,6 +94,8 @@ Building Sofa under Linux :
 
 Building Sofa under Mac OS :
 ----------------------------
+     Download the mac dependencies package from SOFA web page,
+     and unzip it in Sofa directory.
      Run Project MacOS.sh
      Then run make to build all projects.
      The generated Xcode projects can  be used to easily edit the code

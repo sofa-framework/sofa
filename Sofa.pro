@@ -121,6 +121,7 @@ contains (DEFINES, SOFA_HAVE_SOHUSIM) {
 
 contains (DEFINES, SOFA_HAVE_STABLEFLUID_PLUGIN) {
 	usePlugin(StableFluidBehaviorPlugin)
+	usePlugin(StableFluidModelPlugin)
 }
 
 contains (DEFINES, SOFA_HAVE_MANIFOLDTOPOLOGIES) {
