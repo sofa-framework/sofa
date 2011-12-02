@@ -72,6 +72,7 @@ SOFA_LINK_CLASS(OscillatorConstraint)
 SOFA_LINK_CLASS(ParabolicConstraint)
 SOFA_LINK_CLASS(PartialFixedConstraint)
 SOFA_LINK_CLASS(PartialLinearMovementConstraint)
+SOFA_LINK_CLASS(PositionBasedDynamicsConstraint)
 
 } // namespace component
 

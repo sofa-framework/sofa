@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,16 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_NormalsFromPoints_H
-#define SOFA_COMPONENT_ENGINE_NormalsFromPoints_H
+#define SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP
 
-#include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/component/engine/ShapeMatching.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec3Types.h>
-
-#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -42,60 +39,54 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
+SOFA_DECL_CLASS(ShapeMatching)
 
-/**
- * This class computes the average of a set of Coordinates
- */
-template <class DataTypes>
-class NormalsFromPoints : public core::DataEngine
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(NormalsFromPoints,DataTypes),core::DataEngine);
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
+using namespace defaulttype;
 
-protected:
-
-    NormalsFromPoints();
-
-    virtual ~NormalsFromPoints() {}
-public:
-    void init();
-
-    void reinit();
-
-    void update();
-
-    Data< VecCoord > position;
-    Data< helper::vector< helper::fixed_array <unsigned int,3> > > triangles;
-    Data< helper::vector< helper::fixed_array <unsigned int,4> > > quads;
-    Data< VecCoord > normals;       ///< result
-    Data<bool> invertNormals;
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const NormalsFromPoints<DataTypes>* = NULL) { return DataTypes::Name();    }
-
-protected:
-    MechanicalState<DataTypes> *mstate;
-};
-
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)
-#pragma warning(disable : 4231)
+int ShapeMatchingClass = core::RegisterObject("Compute target positions using shape matching deformation method by Mueller et al.")
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API NormalsFromPoints<defaulttype::Vec3dTypes>;
+        .add< ShapeMatching<Vec3dTypes> >()
+        .add< ShapeMatching<Rigid3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API NormalsFromPoints<defaulttype::Vec3fTypes>;
+        .add< ShapeMatching<Vec3fTypes> >()
+        .add< ShapeMatching<Rigid3fTypes> >()
 #endif //SOFA_DOUBLE
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_ENGINE_API ShapeMatching<Vec3dTypes>;
+template class SOFA_ENGINE_API ShapeMatching<Rigid3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_ENGINE_API ShapeMatching<Vec3fTypes>;
+template class SOFA_ENGINE_API ShapeMatching<Rigid3fTypes>;
+#endif //SOFA_DOUBLE
+
+
+// specialization for rigids
+
+#ifndef SOFA_FLOAT
+template <>
+void ShapeMatching<Rigid3dTypes>::update()
+{
+    // TO DO: shape matching for rigids as in [Muller11]
+}
+
 #endif
 
-} // namespace engine
+#ifndef SOFA_DOUBLE
+template <>
+void ShapeMatching<Rigid3fTypes>::update()
+{
+    // TO DO: shape matching for rigids as in [Muller11]
+}
 
+#endif
+
+
+} //
 } // namespace component
 
 } // namespace sofa
 
-#endif

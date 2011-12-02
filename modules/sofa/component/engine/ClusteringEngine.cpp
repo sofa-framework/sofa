@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,16 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_NormalsFromPoints_H
-#define SOFA_COMPONENT_ENGINE_NormalsFromPoints_H
-
-#include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#define SOFA_COMPONENT_ENGINE_CLUSTERING_CPP
+#include <sofa/component/engine/ClusteringEngine.inl>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
-
-#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -42,60 +36,28 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
+SOFA_DECL_CLASS(ClusteringEngine)
 
-/**
- * This class computes the average of a set of Coordinates
- */
-template <class DataTypes>
-class NormalsFromPoints : public core::DataEngine
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(NormalsFromPoints,DataTypes),core::DataEngine);
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
-
-protected:
-
-    NormalsFromPoints();
-
-    virtual ~NormalsFromPoints() {}
-public:
-    void init();
-
-    void reinit();
-
-    void update();
-
-    Data< VecCoord > position;
-    Data< helper::vector< helper::fixed_array <unsigned int,3> > > triangles;
-    Data< helper::vector< helper::fixed_array <unsigned int,4> > > quads;
-    Data< VecCoord > normals;       ///< result
-    Data<bool> invertNormals;
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const NormalsFromPoints<DataTypes>* = NULL) { return DataTypes::Name();    }
-
-protected:
-    MechanicalState<DataTypes> *mstate;
-};
-
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)
-#pragma warning(disable : 4231)
+int ClusteringEngineClass = core::RegisterObject("Group points into overlapping clusters according to a user defined number of clusters and radius")
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API NormalsFromPoints<defaulttype::Vec3dTypes>;
+        .add< ClusteringEngine<Vec3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API NormalsFromPoints<defaulttype::Vec3fTypes>;
+        .add< ClusteringEngine<Vec3fTypes> >()
 #endif //SOFA_DOUBLE
-#endif
+        ;
 
-} // namespace engine
+#ifndef SOFA_FLOAT
+template class SOFA_ENGINE_API ClusteringEngine<Vec3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_ENGINE_API ClusteringEngine<Vec3fTypes>;
+#endif //SOFA_DOUBLE
 
+
+
+} //
 } // namespace component
 
 } // namespace sofa
 
-#endif

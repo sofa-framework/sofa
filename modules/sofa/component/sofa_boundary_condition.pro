@@ -53,7 +53,9 @@ HEADERS += initBoundaryCondition.h \
            projectiveconstraintset/PartialFixedConstraint.h \
            projectiveconstraintset/PartialFixedConstraint.inl \
            projectiveconstraintset/PartialLinearMovementConstraint.h \
-           projectiveconstraintset/PartialLinearMovementConstraint.inl
+           projectiveconstraintset/PartialLinearMovementConstraint.inl \
+           projectiveconstraintset/PositionBasedDynamicsConstraint.h \
+           projectiveconstraintset/PositionBasedDynamicsConstraint.inl
 
 
 SOURCES += initBoundaryCondition.cpp \
@@ -80,7 +82,8 @@ SOURCES += initBoundaryCondition.cpp \
            projectiveconstraintset/OscillatorConstraint.cpp \
            projectiveconstraintset/ParabolicConstraint.cpp \
            projectiveconstraintset/PartialFixedConstraint.cpp \
-           projectiveconstraintset/PartialLinearMovementConstraint.cpp
+           projectiveconstraintset/PartialLinearMovementConstraint.cpp \
+           projectiveconstraintset/PositionBasedDynamicsConstraint.cpp
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 -1 0" dt="0.05"  >
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <CollisionPipeline verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionResponse name="Response" response="default" />
+	<Node 	name="dragon"  >
+		<EulerImplicit name="cg_odesolver" printLog="false" />
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+		<Mesh name="topo" src="@loader" />
+		<MechanicalObject name="dofs" src="@loader" scale="1" dz="10" />
+		<UniformMass mass="3" />
+
+		<ClusteringEngine template="Vec3d" name="clustering" radius='1'  number='50' position="@topo.position"/>
+		<ShapeMatching template="Vec3d" name="shapeMatching" iterations='1' position="@dofs.position" cluster="@clustering.cluster"/>
+	 	<PositionBasedDynamicsConstraint template="Vec3d" stiffness = '1' position="@shapeMatching.targetPosition"/>		
+		
+        <Node name="Visu">
+            <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="red" dz="10" />
+            <IdentityMapping object1="../.." object2="Visual" />
+        </Node>
+        <Node name="Surf">
+            <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" dz="10" />
+            <Triangle contactStiffness="1000" />
+            <Line contactStiffness="1000" />
+            <Point contactStiffness="1000" />
+            <IdentityMapping />
+        </Node>
+	</Node>
+    <Node name="Floor">
+        <MeshObjLoader name="loader" filename="mesh/floor3.obj" />
+        <Mesh src="@loader" />
+        <MechanicalObject src="@loader" dy="-10" scale="1.75" />
+        <Triangle name="FloorTriangle" simulated="0" moving="0" />
+        <Line name="FloorLine" simulated="0" moving="0" />
+        <Point name="FloorLine" simulated="0" moving="0" />
+        <OglModel name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" scaleTex="0.2" dy="-10" scale="1.75" />
+    </Node>
+</Node>
