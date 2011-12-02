@@ -5,9 +5,8 @@
 # Uncomment to activate internal in-development codes put inside SOFA_DEV blocks
 DEFINES += SOFA_DEV
 
-# Uncomment to restrict compilation to to-be-released codes
+# Uncomment SOFA_RELEASE to restrict compilation to to-be-released codes
 # DEFINES += SOFA_RELEASE
-
 
 ########################################################################
 # Type used in SOFA: if none specified, both will be available

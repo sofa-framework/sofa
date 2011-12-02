@@ -46,46 +46,15 @@
 #endif
 
 
-#include <sofa/component/collision/ComplianceMatrixUpdateManager.h>
-#include <sofa/component/collision/ComplianceMatrixUpdateManagerCarving.h>
 #include <sofa/component/controller/EdgeSetController.h>
-#include <sofa/component/controller/HandStateController.h>
-#include <sofa/component/controller/JointSpringController.h>
 #include <sofa/component/controller/LCPForceFeedback.h>
 #include <sofa/component/controller/MechanicalStateController.h>
-#include <sofa/component/controller/RespirationController.h>
-#include <sofa/component/collision/TetrahedronCuttingManager.h>
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for ComplianceMatrixUpdateManager
-typedef sofa::component::collision::ComplianceMatrixUpdateManager<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ComplianceMatrixUpdateManager3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for ComplianceMatrixUpdateManagerCarving
-typedef sofa::component::collision::ComplianceMatrixUpdateManagerCarving<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ComplianceMatrixUpdateManagerCarving3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for EdgeSetController
 typedef sofa::component::controller::EdgeSetController<sofa::defaulttype::StdRigidTypes<3, double> > EdgeSetControllerRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for HandStateController
-typedef sofa::component::controller::HandStateController<sofa::defaulttype::StdRigidTypes<3, double> > HandStateControllerRigid3d;
-typedef sofa::component::controller::HandStateController<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > HandStateController1d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for JointSpringController
-typedef sofa::component::controller::JointSpringController<sofa::defaulttype::StdRigidTypes<3, double> > JointSpringControllerRigid3d;
 
 
 
@@ -103,35 +72,14 @@ typedef sofa::component::controller::MechanicalStateController<sofa::defaulttype
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for RespirationController
-typedef sofa::component::controller::RespirationController<sofa::defaulttype::StdRigidTypes<3, double> > RespirationControllerRigid3d;
-typedef sofa::component::controller::RespirationController<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > RespirationController3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for TetrahedronCuttingManager
-typedef sofa::component::collision::TetrahedronCuttingManager<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > TetrahedronCuttingManager3d;
-
-
-
 
 
 #ifndef SOFA_FLOAT
-typedef ComplianceMatrixUpdateManager3d ComplianceMatrixUpdateManager3;
-typedef ComplianceMatrixUpdateManagerCarving3d ComplianceMatrixUpdateManagerCarving3;
 typedef EdgeSetControllerRigid3d EdgeSetControllerRigid3;
-typedef HandStateControllerRigid3d HandStateControllerRigid3;
-typedef HandStateController1d HandStateController1;
-typedef JointSpringControllerRigid3d JointSpringControllerRigid3;
 typedef LCPForceFeedbackRigid3d LCPForceFeedbackRigid3;
 typedef LCPForceFeedback1d LCPForceFeedback1;
 typedef MechanicalStateControllerRigid3d MechanicalStateControllerRigid3;
 typedef MechanicalStateController1d MechanicalStateController1;
-typedef RespirationControllerRigid3d RespirationControllerRigid3;
-typedef RespirationController3d RespirationController3;
-typedef TetrahedronCuttingManager3d TetrahedronCuttingManager3;
 #endif
 
 #endif

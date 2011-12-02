@@ -1,5 +1,5 @@
 contains(DEFINES, SOFA_QT4) {
-	QT *= qt3support
+	QT *= qt3support xml
 }
 QT *= opengl
 

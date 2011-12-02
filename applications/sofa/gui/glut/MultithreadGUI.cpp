@@ -1148,7 +1148,8 @@ void MultithreadGUI::paintGL()
     */
     // clear buffers (color and depth)
     if (_background==0)
-        glClearColor(0.0589f, 0.0589f, 0.0589f, 1.0f);
+        glClearColor(0.0f,0.0f,0.0f,0.0f);
+    //glClearColor(0.0589f, 0.0589f, 0.0589f, 1.0f);
     else if (_background==1)
         glClearColor(0.0f,0.0f,0.0f,0.0f);
     else if (_background==2)

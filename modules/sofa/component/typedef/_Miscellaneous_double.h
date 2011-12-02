@@ -54,7 +54,6 @@
 #include <sofa/component/misc/ExtraMonitor.h>
 #include <sofa/component/container/MappedObject.h>
 #include <sofa/component/misc/Monitor.h>
-#include <sofa/component/container/RotationFinder.h>
 #include <sofa/component/container/SpatialGridContainer.h>
 
 
@@ -118,12 +117,6 @@ typedef sofa::component::misc::Monitor<sofa::defaulttype::StdVectorTypes<sofa::d
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for RotationFinder
-typedef sofa::component::container::RotationFinder<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > RotationFinder3d;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for SpatialGridContainer
 typedef sofa::component::container::SpatialGridContainer<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > SpatialGridContainer3d;
 
@@ -150,7 +143,6 @@ typedef MappedObject6d MappedObject6;
 typedef MonitorRigid3d MonitorRigid3;
 typedef Monitor3d Monitor3;
 typedef Monitor6d Monitor6;
-typedef RotationFinder3d RotationFinder3;
 typedef SpatialGridContainer3d SpatialGridContainer3;
 #endif
 

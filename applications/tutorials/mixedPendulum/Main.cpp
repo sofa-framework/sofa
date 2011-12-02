@@ -150,8 +150,8 @@ int main(int, char** argv)
 
     // ---------------- Interaction force between the deformable and the rigid body
     StiffSpringForceField3::SPtr iff = sofa::core::objectmodel::New<StiffSpringForceField3>( DOF.get(), rigidParticleDOF.get() );
-    iff->setPathObject1(deformableBody->getName()+"/"+DOF->getName());
-    iff->setPathObject2(rigidParticles->getName()+"/"+rigidParticleDOF->getName());
+    iff->setPathObject1("@"+deformableBody->getName()+"/"+DOF->getName());
+    iff->setPathObject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
     groot->addObject(iff);
     iff->setName("F13");
     iff->addSpring( 1,0, 100., 1., splength );
