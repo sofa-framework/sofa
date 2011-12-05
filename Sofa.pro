@@ -63,7 +63,7 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
                 usePlugin(shells)
 	}
 
-	contains (DEFINES, SOFA_HAVE_CGAL) {
+        contains (DEFINES, SOFA_HAVE_CGAL) {
 		usePlugin(CGALPlugin)
 	}
 
@@ -71,7 +71,11 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 		usePlugin(frame)
 	}
 	
-	contains(DEFINES, SOFA_HAVE_IMAGE) {
+        contains(DEFINES, SOFA_HAVE_optixdetection) {
+                usePlugin(optixdetection)
+        }
+
+        contains(DEFINES, SOFA_HAVE_IMAGE) {
 		usePlugin(image)
 	}	
 
