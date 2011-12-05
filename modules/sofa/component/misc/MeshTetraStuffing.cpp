@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/misc/MeshTetraStuffing.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/gl/DrawManager.h>
 #include <sofa/component/collision/TriangleOctree.h>
 #include <sofa/component/collision/RayTriangleIntersection.h>
 
@@ -47,12 +47,12 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(MeshTetraStuffing)
 
-int MeshLoaderClass = core::RegisterObject("Create a tetrahedral volume mesh from a surface, using the algorithm from F. Labelle and J.R. Shewchuk, \"Isosurface Stuffing: Fast Tetrahedral Meshes with Good Dihedral Angles\", SIGGRAPH 2007.")
+int MeshTetraStuffingClass = core::RegisterObject("Create a tetrahedral volume mesh from a surface, using the algorithm from F. Labelle and J.R. Shewchuk, \"Isosurface Stuffing: Fast Tetrahedral Meshes with Good Dihedral Angles\", SIGGRAPH 2007.")
         .add< MeshTetraStuffing >()
         ;
 
 MeshTetraStuffing::MeshTetraStuffing()
-    : bbox(initData(&bbox,"bbox","BBox to restrict the volume to"))
+    : vbbox(initData(&vbbox,"vbbox","BBox to restrict the volume to"))
     , size(initData(&size,(Real)-8.0,"size","Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension"))
     , inputPoints(initData(&inputPoints,"inputPoints","Input surface mesh points"))
     , inputTriangles(initData(&inputTriangles,"inputTriangles","Input surface mesh triangles"))
@@ -112,13 +112,13 @@ void MeshTetraStuffing::init()
             inTN[t] = (inP[inT[t][1]]-inP[inT[t][0]]).cross(inP[inT[t][2]]-inP[inT[t][0]]);
         }
     }
-    helper::fixed_array<Point,2>& bb = *bbox.beginEdit();
+    helper::fixed_array<Point,2>& bb = *vbbox.beginEdit();
     if (bb[0][0] >= bb[1][0])
     {
         bb[0] = inputBBox[0] - (inputBBox[1]-inputBBox[0])*0.01;
         bb[1] = inputBBox[1] + (inputBBox[1]-inputBBox[0])*0.01;
     }
-    bbox.endEdit();
+    vbbox.endEdit();
 
     cellsize = size.getValue();
     if (cellsize < 0)
@@ -204,6 +204,18 @@ void MeshTetraStuffing::init()
                 helper::vector< collision::TriangleOctree::traceResult > results;
 #ifdef USE_OCTREE
                 octree.octreeRoot->traceAll(origin, direction, results);
+                helper::set< int > tris;
+                for (unsigned int i=0; i<results.size(); ++i)
+                {
+                    if (tris.find(results[i].tid) != tris.end())
+                    {
+                        if (i < results.size()-1)
+                            results[i] = results[results.size()-1];
+                        results.resize(results.size()-1);
+                        --i;
+                    }
+                    else tris.insert(results[i].tid);
+                }
 #else
                 for (unsigned int t=0; t<inT.size(); ++t)
                 {
@@ -906,7 +918,7 @@ MeshTetraStuffing::Point MeshTetraStuffing::getEdgeDir(int e)
     return p;
 }
 
-void MeshTetraStuffing::draw()
+void MeshTetraStuffing::draw(const core::visual::VisualParams* vparams)
 {
     if (!bDraw.getValue()) return;
     //const SeqPoints& inP = inputPoints.getValue();
@@ -914,15 +926,15 @@ void MeshTetraStuffing::draw()
     const SeqPoints& outP = outputPoints.getValue();
     //const SeqTetrahedra& outT = outputTetrahedra.getValue();
 
-    //simulation::getSimulation()->DrawUtility.drawPoints(inP, 1, Vec<4,float>(1,0,0,1));
-    simulation::getSimulation()->DrawUtility.drawPoints(intersections, 2, Vec<4,float>(1,0,0,1));
-    //simulation::getSimulation()->DrawUtility.drawPoints(insides, 1, Vec<4,float>(0,1,0,1));
-    //simulation::getSimulation()->DrawUtility.drawLines(rays, 1, Vec<4,float>(1,1,0,1));
-    simulation::getSimulation()->DrawUtility.drawPoints(outP, 1, Vec<4,float>(0,1,0,1));
+    //vparams->drawTool()->drawPoints(inP, 1, Vec<4,float>(1,0,0,1));
+    vparams->drawTool()->drawPoints(intersections, 2, Vec<4,float>(1,0,0,1));
+    //vparams->drawTool()->drawPoints(insides, 1, Vec<4,float>(0,1,0,1));
+    //vparams->drawTool()->drawLines(rays, 1, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawPoints(outP, 1, Vec<4,float>(0,1,0,1));
     if (!diags.empty())
-        simulation::getSimulation()->DrawUtility.drawLines(diags, 1, Vec<4,float>(0,1,1,1));
+        vparams->drawTool()->drawLines(diags, 1, Vec<4,float>(0,1,1,1));
     if (!snaps.empty())
-        simulation::getSimulation()->DrawUtility.drawPoints(snaps, 4, Vec<4,float>(0,0,1,1));
+        vparams->drawTool()->drawPoints(snaps, 4, Vec<4,float>(0,0,1,1));
 }
 
 }
