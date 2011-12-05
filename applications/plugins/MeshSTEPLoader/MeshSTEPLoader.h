@@ -28,7 +28,7 @@
 
 
 #ifdef __linux__
-#include <config.h>
+//#include <config.h>
 #endif
 #include <BRep_Tool.hxx>
 #include <vector>
@@ -73,7 +73,6 @@
 #include <ShapeAnalysis_Surface.hxx>
 
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/component/component.h>
 #include <sofa/helper/SVector.h>
 
 namespace sofa
