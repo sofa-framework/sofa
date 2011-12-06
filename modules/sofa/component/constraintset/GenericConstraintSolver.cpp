@@ -172,6 +172,10 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     MechanicalSetConstraint(cParams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
     MechanicalAccumulateConstraint2(cParams, core::MatrixDerivId::holonomicC()).execute(context);
 
+    // suppress the constraints that are on DOFS currently concerned by projective constraint
+    core::MechanicalParams mparams = core::MechanicalParams(*cParams);
+    simulation::MechanicalProjectJacobianMatrixVisitor(&mparams).execute(context);
+
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 

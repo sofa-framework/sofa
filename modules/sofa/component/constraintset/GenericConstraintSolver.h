@@ -247,6 +247,7 @@ public:
 #endif
     }
 
+
     virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
     {
         ctime_t t0 = begin(node, map);
