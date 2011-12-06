@@ -103,7 +103,7 @@ contains (DEFINES, SOFA_GPU_CUDA) {
 			cuda.output = $${OBJECTS_DIR}/${QMAKE_FILE_BASE}_cuda.obj
 			cuda.clean = $${OBJECTS_DIR}/${QMAKE_FILE_BASE}_cuda.obj
 		}
-		cuda.commands = $$(CUDA_BIN_PATH)/nvcc.exe -c $$CUDA_FLAGS -Xcompiler -nologo $${join(INCLUDEPATH,'" -I "','-I "','"')} $${join(DEFINES," -D","-D",)} ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
+		cuda.commands = '"'$$(CUDA_BIN_PATH)/nvcc.exe'"' -c $$CUDA_FLAGS -Xcompiler -nologo $${join(INCLUDEPATH,'" -I "','-I "','"')} $${join(DEFINES," -D","-D",)} ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
 		cuda.dependency_type = TYPE_C
 	}
 	unix {
