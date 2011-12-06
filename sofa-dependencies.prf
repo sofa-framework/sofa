@@ -76,7 +76,7 @@ declare(sofa_graph_component, modules/sofa/component/sofa_graph_component.pro, s
 declare(sofa_topology_mapping, modules/sofa/component/sofa_topology_mapping.pro, sofa_base_topology)
 declare(sofa_boundary_condition, modules/sofa/component/sofa_boundary_condition.pro, sofa_base_topology)
 declare(sofa_user_interaction, modules/sofa/component/sofa_user_interaction.pro, sofa_mesh_collision sofa_topology_mapping sofa_deformable sofa_boundary_condition)
-declare(sofa_constraint, modules/sofa/component/sofa_constraint.pro, sofa_mesh_collision sofa_simple_fem sofa_implicit_ode_solver sofa_eigen2_solver eigen)
+declare(sofa_constraint, modules/sofa/component/sofa_constraint.pro, sofa_mesh_collision sofa_simple_fem sofa_implicit_ode_solver sofa_eigen2_solver eigen sofa_user_interaction)
 declare(sofa_haptics, modules/sofa/component/sofa_haptics.pro, sofa_constraint)
 declare(sofa_dense_solver, modules/sofa/component/sofa_dense_solver.pro, sofa_base_linear_solver)
 declare(sofa_sparse_solver, modules/sofa/component/sofa_sparse_solver.pro, sofa_base_linear_solver sofa_implicit_ode_solver csparse metis)
