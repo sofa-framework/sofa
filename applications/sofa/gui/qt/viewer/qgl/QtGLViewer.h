@@ -173,10 +173,8 @@ private:
     void	CreateOBJmodelDisplayList(int material_mode);
     //int     loadBMP(char *filename, TextureImage *texture);
     //void	LoadGLTexture(char *Filename);
-    void	DrawLogo(void);
     void	DisplayOBJs();
     void	DisplayMenu(void);
-    void	DrawScene();
     void MakeStencilMask();
 
     //int		handle(int event);	// required by FLTK
@@ -184,6 +182,8 @@ private:
 protected:
     //virtual bool event ( QEvent * e );
 
+    virtual void	DrawScene();
+    virtual void	DrawLogo(void);
 
 
     virtual void keyPressEvent ( QKeyEvent * e );
