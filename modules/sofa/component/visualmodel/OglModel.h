@@ -29,6 +29,7 @@
 #include <string>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Texture.h>
+#include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
@@ -66,6 +67,13 @@ public:
 protected:
     Data<bool> premultipliedAlpha, useVBO, writeZTransparent, alphaBlend, depthTest;
     Data<int> cullFace;
+
+    //alpha blend function
+    Data<sofa::helper::OptionsGroup> blendEquation;
+    Data<sofa::helper::OptionsGroup> sourceFactor;
+    Data<sofa::helper::OptionsGroup> destFactor;
+    GLenum blendEq, sfactor, dfactor;
+
     helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboTriangles, iboQuads;
     bool canUseVBO, VBOGenDone, initDone, useTriangles, useQuads;
@@ -81,6 +89,8 @@ protected:
     std::vector<helper::gl::Texture*> textures;
 
     std::map<int, int> materialTextureIdMap; //link between a material and a texture
+
+    GLenum getGLenum(const char* c ) const;
 
 
     OglModel();

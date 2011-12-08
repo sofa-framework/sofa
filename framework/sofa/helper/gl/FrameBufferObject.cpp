@@ -186,6 +186,20 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
         setSize(width, height);
 }
 
+
+void FrameBufferObject::reinit(unsigned int width, unsigned height, bool lDepthTexture, bool lEnableDepth, bool lEnableColor )
+{
+    destroy();
+
+    depthTexture = lDepthTexture;
+    enableDepth = lEnableDepth;
+    enableColor = lEnableColor;
+
+    init(width, height);
+
+}
+
+
 void FrameBufferObject::start()
 {
     if (initialized)
@@ -212,6 +226,11 @@ void FrameBufferObject::stop()
             glReadBuffer(GL_BACK);
         }
     }
+}
+
+GLuint FrameBufferObject::getID()
+{
+    return id;
 }
 
 GLuint FrameBufferObject::getDepthTexture()

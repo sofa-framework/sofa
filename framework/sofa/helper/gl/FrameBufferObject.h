@@ -80,6 +80,7 @@ public:
 
     void init(unsigned int width, unsigned height);
     void destroy();
+    void reinit(unsigned int width, unsigned height, bool lDepthTexture, bool lEnableDepth, bool lEnableColor );
 
     void start();
     void stop();
@@ -88,6 +89,7 @@ public:
 
     void setSize(unsigned int width, unsigned height);
 
+    GLuint getID();
     GLuint getDepthTexture();
     GLuint getColorTexture();
 

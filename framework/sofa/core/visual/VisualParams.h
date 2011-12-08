@@ -34,7 +34,7 @@
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/defaulttype/Vec.h>
-
+#include <sofa/helper/gl/FrameBufferObject.h>
 
 namespace sofa
 {
@@ -58,6 +58,7 @@ class VisualParams : public ExecParams
 public:
 
     typedef sofa::helper::fixed_array<GLint,4> Viewport;
+
 
     /// The enumeration used to describe each step of the rendering.
     enum Pass
@@ -119,6 +120,7 @@ public:
         ,m_cameraType(PERSPECTIVE_TYPE)
         ,m_pass(Std)
         ,m_drawTool(NULL)
+        ,m_boundFrameBuffer(NULL)
         ,m_x (ConstVecCoordId::position())
         ,m_v (ConstVecDerivId::velocity())
         ,m_supportedAPIs(0)
@@ -150,6 +152,9 @@ public:
 
     DrawTool*& drawTool() { return m_drawTool; }
     DrawTool*& drawTool() const { return m_drawTool; }
+
+    helper::gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
+    helper::gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
 
     DisplayFlags& displayFlags() { return m_displayFlags; }
     const DisplayFlags& displayFlags() const { return m_displayFlags; }
@@ -183,6 +188,7 @@ protected:
     Pass                                m_pass;
     DisplayFlags                        m_displayFlags;
     mutable DrawTool*                   m_drawTool;
+    mutable helper::gl::FrameBufferObject*	m_boundFrameBuffer;
     /// Ids of position vector
     ConstMultiVecCoordId m_x;
     /// Ids of velocity vector

@@ -66,10 +66,32 @@ OglModel::OglModel()
     , alphaBlend(initData(&alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
     , depthTest(initData(&depthTest, (bool) true, "depthTest", "Enable depth testing"))
     , cullFace(initData(&cullFace, (int) 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
+    , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
+    , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
+    , destFactor( initData(&destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
     , tex(NULL), canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
     , oldTrianglesSize(0), oldQuadsSize(0)
 {
     textures.clear();
+
+    sofa::helper::OptionsGroup* blendEquationOptions = blendEquation.beginEdit();
+    blendEquationOptions->setNames(4,"GL_FUNC_ADD", "GL_FUNC_SUBTRACT", "GL_MIN", "GL_MAX"); // .. add other options
+    blendEquationOptions->setSelectedItem(0);
+    this->f_printLog.setValue(true);
+    blendEquation.endEdit();
+
+    // alpha blend values
+    sofa::helper::OptionsGroup* sourceFactorOptions = sourceFactor.beginEdit();
+    sourceFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
+    sourceFactorOptions->setSelectedItem(2);
+    this->f_printLog.setValue(true);
+    sourceFactor.endEdit();
+
+    sofa::helper::OptionsGroup* destFactorOptions = destFactor.beginEdit();
+    destFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
+    destFactorOptions->setSelectedItem(3);
+    this->f_printLog.setValue(true);
+    destFactor.endEdit();
 }
 
 OglModel::~OglModel()
@@ -372,7 +394,8 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if (alphaBlend.getValue())
     {
         glDepthMask(GL_FALSE);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquation( blendEq );
+        glBlendFunc( sfactor, dfactor );
         glEnable(GL_BLEND);
     }
 
@@ -406,6 +429,9 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     if (alphaBlend.getValue())
     {
+        // restore Default value
+        glBlendEquation( GL_FUNC_ADD );
+        glBlendFunc( GL_ONE, GL_ONE );
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
     }
@@ -605,6 +631,13 @@ void OglModel::initVisual()
 #endif
 
     updateBuffers();
+
+    if ( alphaBlend.getValue() )
+    {
+        blendEq = getGLenum( blendEquation.getValue().getSelectedItem().c_str() );
+        sfactor = getGLenum( sourceFactor.getValue().getSelectedItem().c_str() );
+        dfactor = getGLenum( destFactor.getValue().getSelectedItem().c_str() );
+    }
 
 }
 
@@ -850,6 +883,56 @@ void OglModel::updateBuffers()
     }
 
 }
+
+
+GLenum OglModel::getGLenum(const char* c ) const
+{
+
+    if ( strcmp( c, "GL_ZERO") == 0)
+    {
+        return GL_ZERO;
+    }
+    else if  ( strcmp( c, "GL_ONE") == 0)
+    {
+        return GL_ONE;
+    }
+    else if (strcmp( c, "GL_SRC_ALPHA") == 0 )
+    {
+        return GL_SRC_ALPHA;
+    }
+    else if (strcmp( c, "GL_ONE_MINUS_SRC_ALPHA") == 0 )
+    {
+        return GL_ONE_MINUS_SRC_ALPHA;
+    }
+    // .... add ohter OGL symbolic constants
+    // glBlendEquation Value
+    else if  ( strcmp( c, "GL_FUNC_ADD") == 0)
+    {
+        return GL_FUNC_ADD;
+    }
+    else if (strcmp( c, "GL_FUNC_SUBTRACT") == 0 )
+    {
+        return GL_FUNC_SUBTRACT;
+    }
+    else if (strcmp( c, "GL_MAX") == 0 )
+    {
+        return GL_MAX;
+    }
+    else if (strcmp( c, "GL_MIN") == 0 )
+    {
+        return GL_MIN;
+    }
+
+    else
+    {
+        // error: not valid
+        std::cerr   << " OglModel - not valid or not supported openGL enum value: " << c ;
+        return GL_ZERO;
+    }
+
+
+}
+
 
 } // namespace visualmodel
 
