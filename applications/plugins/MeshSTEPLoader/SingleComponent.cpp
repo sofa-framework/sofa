@@ -40,7 +40,7 @@ namespace engine
 using namespace sofa::defaulttype;
 
 int SingleComponentClass = core::RegisterObject("Load mesh of one shape, in the case there are several components (see PluginSingleComponent.txt for further information).")
-        .add< SingleComponent<int> >();
+        .add< SingleComponent<int> >(true);
 
 template class SingleComponent<int>;
 

@@ -61,6 +61,7 @@ SingleComponent<DataTypes>::SingleComponent()
     addAlias(&_positionsO,"position");
     addAlias(&_trianglesO,"triangles");
     addAlias(&_normalsO,"normals");
+    addAlias(&_uvO,"uv");
 }
 
 template <class DataTypes>
