@@ -91,6 +91,11 @@ public:
 
     Data<unsigned int> indexActiveShader;
 
+    // enable writing gl_BackColor in the vertex shader
+    Data<bool> backfaceWriting;
+
+    Data<bool> clampVertexColor;
+
 protected:
     ///OpenGL shader
     std::vector<sofa::helper::gl::GLSLShader*> shaderVector;

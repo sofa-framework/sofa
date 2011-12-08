@@ -66,6 +66,8 @@ OglShader::OglShader():
     geometryOutputType(initData(&geometryOutputType, (int) -1, "geometryOutputType", "Set output types for the geometry shader")),
     geometryVerticesOut(initData(&geometryVerticesOut, (int) -1, "geometryVerticesOut", "Set max number of vertices in output for the geometry shader")),
     indexActiveShader(initData(&indexActiveShader, (unsigned int) 0, "indexActiveShader", "Set current active shader")),
+    backfaceWriting( initData(&backfaceWriting, (bool) false, "backfaceWriting", "it enables writing to gl_BackColor inside a GLSL vertex shader" ) ),
+    clampVertexColor( initData(&clampVertexColor, (bool) true, "clampVertexColor", "clamp the vertex color between 0 and 1" ) ),
     hasGeometryShader(false)
 {
 
@@ -288,6 +290,12 @@ void OglShader::drawVisual(const core::visual::VisualParams* )
 
 void OglShader::stop()
 {
+    if ( backfaceWriting.getValue() )
+        glDisable(GL_VERTEX_PROGRAM_TWO_SIDE);
+
+    if ( !clampVertexColor.getValue() )
+        glClampColorARB(GL_CLAMP_VERTEX_COLOR, GL_TRUE);
+
     if(turnOn.getValue())
         shaderVector[indexActiveShader.getValue()]->TurnOff();
 }
@@ -296,6 +304,12 @@ void OglShader::start()
 {
     if(turnOn.getValue())
         shaderVector[indexActiveShader.getValue()]->TurnOn();
+
+    if ( !clampVertexColor.getValue() )
+        glClampColorARB(GL_CLAMP_VERTEX_COLOR, GL_FALSE);
+
+    if ( backfaceWriting.getValue() )
+        glEnable(GL_VERTEX_PROGRAM_TWO_SIDE);
 }
 
 bool OglShader::isActive()
