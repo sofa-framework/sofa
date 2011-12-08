@@ -52,6 +52,9 @@
 #define LAPLACIAN 14
 #define STENSOR 15
 #define DISTANCE 16
+#define GRADIENT 17
+#define HESSIAN 18
+#define NORMALIZE 19
 
 
 namespace sofa
@@ -71,18 +74,24 @@ using namespace helper;
  */
 
 
-template <class _ImageTypes>
+template <class _InImageTypes,class _OutImageTypes>
 class ImageFilter : public core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(ImageFilter,_ImageTypes),Inherited);
+    SOFA_CLASS(SOFA_TEMPLATE2(ImageFilter,_InImageTypes,_OutImageTypes),Inherited);
 
-    typedef _ImageTypes ImageTypes;
-    typedef typename ImageTypes::T T;
-    typedef typename ImageTypes::imCoord imCoord;
-    typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
-    typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
+    typedef _InImageTypes InImageTypes;
+    typedef typename InImageTypes::T Ti;
+    typedef typename InImageTypes::imCoord imCoordi;
+    typedef helper::WriteAccessor<Data< InImageTypes > > waImagei;
+    typedef helper::ReadAccessor<Data< InImageTypes > > raImagei;
+
+    typedef _OutImageTypes OutImageTypes;
+    typedef typename OutImageTypes::T To;
+    typedef typename OutImageTypes::imCoord imCoordo;
+    typedef helper::WriteAccessor<Data< OutImageTypes > > waImageo;
+    typedef helper::ReadAccessor<Data< OutImageTypes > > raImageo;
 
     typedef SReal Real;
     typedef ImageLPTransform<Real> TransformType;
@@ -96,33 +105,33 @@ public:
     Data<OptionsGroup> filter;
     Data< ParamTypes > param;
 
-    Data< ImageTypes > inputImage;
+    Data< InImageTypes > inputImage;
     Data< TransformType > inputTransform;
 
-    Data< ImageTypes > outputImage;
+    Data< OutImageTypes > outputImage;
     Data< TransformType > outputTransform;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const ImageFilter<ImageTypes>* = NULL) { return ImageTypes::Name(); }
+    static std::string templateName(const ImageFilter<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
 
     ImageFilter()    :   Inherited()
         , filter ( initData ( &filter,"filter","Filter" ) )
         , param ( initData ( &param,"param","Parameters" ) )
-        , inputImage(initData(&inputImage,ImageTypes(),"inputImage",""))
+        , inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
         , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
-        , outputImage(initData(&outputImage,ImageTypes(),"outputImage",""))
+        , outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
         , outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
     {
         inputImage.setReadOnly(true);
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(17	,"0 - None"
+        helper::OptionsGroup filterOptions(20	,"0 - None"
                 ,"1 - Blur ( sigma )"
                 ,"2 - Blur Median ( n )"
-                ,"4 - Blur Bilateral ( sigma_s, sigma_r)"
-                ,"5 - Blur Anisotropic ( amplitude )"
-                ,"3 - Deriche ( sigma , order , axis )"
+                ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
+                ,"4 - Blur Anisotropic ( amplitude )"
+                ,"5 - Deriche ( sigma , order , axis )"
                 ,"6 - Crop ( xmin , ymin , zmin , xmax , ymax , zmax)"
                 ,"7 - Resize( dimx , dimy , dimz , no interp.|nearest neighb.|moving av.|linear|grid|bicubic|lanzcos)"
                 ,"8 - Trim ( tmin , tmax )"
@@ -133,7 +142,10 @@ public:
                 ,"13 - Threshold ( value )"
                 ,"14 - Laplacian"
                 ,"15 - Structure tensors ( scheme )"
-                ,"16 - Distance ( value )" //, const float sizex=1, const float sizey=1, const float sizez=1
+                ,"16 - Distance ( value )"
+                ,"17 - Gradient ( axis x | y | z | magnitude)"
+                ,"18 - Hessian (axis1 , axis2) "
+                ,"19 - Normalize ( out_min, out_max , in_min, in_max)"
                                           );
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
@@ -162,12 +174,12 @@ protected:
 
         cleanDirty();
         raParam p(this->param);
-        raImage in(this->inputImage);
+        raImagei in(this->inputImage);
         raTransform inT(this->inputTransform);
-        waImage out(this->outputImage);
+        waImageo out(this->outputImage);
         waTransform outT(this->outputTransform);
 
-        CImgList<T>& img = out->getCImgList();
+        CImgList<To>& img = out->getCImgList();
         if(updateImage) img.assign(in->getCImgList());	// copy
         if(updateTransform) outT->operator=(inT);	// copy
 
@@ -289,7 +301,7 @@ protected:
         case THRESHOLD:
             if(updateImage)
             {
-                T value=0; if(p.size()) value=(T)p[0];
+                To value=0; if(p.size()) value=(To)p[0];
                 cimglist_for(img,l) img(l).threshold (value);
             }
             break;
@@ -309,15 +321,69 @@ protected:
         case DISTANCE:
             if(updateImage || updateTransform)
             {
-                T value=0; if(p.size()) value=(T)p[0];
-                float factor=100; // hack to avoid cimg crash with small distances..
-                float sizex=(float)inT->getScale()[0]*factor;
-                float sizey=(float)inT->getScale()[1]*factor;
-                float sizez=(float)inT->getScale()[2]*factor;
+                To value=0; if(p.size()) value=(To)p[0];
+                float sizex=(float)inT->getScale()[0];
+                float sizey=(float)inT->getScale()[1];
+                float sizez=(float)inT->getScale()[2];
                 cimglist_for(img,l) {img(l).distance ( value , sizex , sizey , sizez);  }
             }
             break;
+        case GRADIENT:
+            if(updateImage || updateTransform)
+            {
+                char axis='a';  if(p.size()) { if((int)p[0]==0) axis='x'; else if((int)p[0]==1) axis='y'; else if((int)p[0]==2) axis='z'; }
 
+                CImg_3x3x3(I,To);
+                cimglist_for(img,l)
+                {
+                    To *ptrd = img(l)._data;
+                    const CImg<Ti>& inputImg=in->getCImg(l);
+                    // Central finite differences.
+                    if(axis=='x') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)      *(ptrd++) = (Incc - Ipcc)*(To)0.5/(To)inT->getScale()[0];
+                    else if(axis=='y') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To) *(ptrd++) = (Icnc - Icpc)*(To)0.5/(To)inT->getScale()[1];
+                    else if(axis=='z') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To) *(ptrd++) = (Iccn - Iccp)*(To)0.5/(To)inT->getScale()[2];
+                    else  cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)
+                    {
+                        To ix = (Incc - Ipcc)*(To)0.5/(To)inT->getScale()[0];
+                        To iy = (Icnc - Icpc)*(To)0.5/(To)inT->getScale()[1];
+                        To iz = (Iccn - Iccp)*(To)0.5/(To)inT->getScale()[2];
+                        *(ptrd++) = sqrt(ix*ix+iy*iy+iz*iz);
+                    }
+                }
+            }
+            break;
+        case HESSIAN:
+            if(updateImage || updateTransform)
+            {
+                char axis1='x';  if(p.size()) { if((int)p[0]==1) axis1='y'; else if((int)p[0]==2) axis1='z'; }
+                char axis2='x';  if(p.size()>1) { if((int)p[1]==1) axis2='y'; else if((int)p[1]==2) axis2='z'; }
+                if (axis1>axis2) cimg::swap(axis1,axis2);
+                CImg_3x3x3(I,To);
+                cimglist_for(img,l)
+                {
+                    To *ptrd = img(l)._data;
+                    const CImg<Ti>& inputImg=in->getCImg(l);
+                    // Central finite differences.
+                    if(axis1=='x' && axis2=='x') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Ipcc + Incc - 2*Iccc)              /(To)(inT->getScale()[0]*inT->getScale()[0]);
+                    else if(axis1=='x' && axis2=='y') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Ippc + Innc - Ipnc - Inpc)*(To)0.25/(To)(inT->getScale()[0]*inT->getScale()[1]);
+                    else if(axis1=='x' && axis2=='z') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Ipcp + Incn - Ipcn - Incp)*(To)0.25/(To)(inT->getScale()[0]*inT->getScale()[2]);
+                    else if(axis1=='y' && axis2=='y') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Icpc + Icnc - 2*Iccc)              /(To)(inT->getScale()[1]*inT->getScale()[1]);
+                    else if(axis1=='y' && axis2=='z') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Icpp + Icnn - Icpn - Icnp)*(To)0.25/(To)(inT->getScale()[1]*inT->getScale()[2]);
+                    else if(axis1=='z' && axis2=='z') cimg_forC(inputImg,c) cimg_for3x3x3(inputImg,x,y,z,c,I,To)  *(ptrd++) = (Iccn + Iccp - 2*Iccc)              /(To)(inT->getScale()[2]*inT->getScale()[2]);
+                }
+            }
+            break;
+
+        case NORMALIZE:
+            if(updateImage)
+            {
+                To o1=cimg::type<To>::min();    if(p.size())   o1=(To)p[0];
+                To o2=cimg::type<To>::max();    if(p.size()>1) o2=(To)p[1];
+                Ti i1=cimg::type<Ti>::min();    if(p.size()>2) i1=(Ti)p[2];
+                Ti i2=cimg::type<Ti>::max();    if(p.size()>3) i2=(Ti)p[3];
+                cimglist_for(img,l) {img(l).cut(i1 , i2).normalize( o1   , o2);  }
+            }
+            break;
         default:
             break;
         }

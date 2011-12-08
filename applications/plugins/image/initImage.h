@@ -27,6 +27,8 @@
 
 #include <sofa/helper/system/config.h>
 
+#define BUILD_ALL_IMAGE_TYPES // comment to reduce compilation time
+
 #ifdef SOFA_BUILD_IMAGE
 #define SOFA_IMAGE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else

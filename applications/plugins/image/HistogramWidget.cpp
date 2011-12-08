@@ -42,8 +42,10 @@ using namespace defaulttype;
 
 SOFA_DECL_CLASS(HistogramDataWidget);
 
-template class SOFA_IMAGE_API TDataWidget<Histogram<char> >;
 template class SOFA_IMAGE_API TDataWidget<Histogram<unsigned char> >;
+template class SOFA_IMAGE_API TDataWidget<Histogram<double> >;
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API TDataWidget<Histogram<char> >;
 template class SOFA_IMAGE_API TDataWidget<Histogram<int> >;
 template class SOFA_IMAGE_API TDataWidget<Histogram<unsigned int> >;
 template class SOFA_IMAGE_API TDataWidget<Histogram<short> >;
@@ -51,11 +53,13 @@ template class SOFA_IMAGE_API TDataWidget<Histogram<unsigned short> >;
 template class SOFA_IMAGE_API TDataWidget<Histogram<long> >;
 template class SOFA_IMAGE_API TDataWidget<Histogram<unsigned long> >;
 template class SOFA_IMAGE_API TDataWidget<Histogram<float> >;
-template class SOFA_IMAGE_API TDataWidget<Histogram<double> >;
 template class SOFA_IMAGE_API TDataWidget<Histogram<bool> >;
+#endif
 
-helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<char> > >				DWClass_histoC("imagehistogram",true);
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<unsigned char> > >	DWClass_histoUC("imagehistogram",true);
+helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<double> > >			DWClass_histoD("imagehistogram",true);
+#ifdef BUILD_ALL_IMAGE_TYPES
+helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<char> > >				DWClass_histoC("imagehistogram",true);
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<int> > >				DWClass_histoI("imagehistogram",true);
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<unsigned int> > >		DWClass_histoUI("imagehistogram",true);
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<short> > >			DWClass_histoS("imagehistogram",true);
@@ -63,8 +67,8 @@ helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<unsigned short
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<long> > >				DWClass_histoL("imagehistogram",true);
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<unsigned long> > >	DWClass_histoUL("imagehistogram",true);
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<float> > >			DWClass_histoF("imagehistogram",true);
-helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<double> > >			DWClass_histoD("imagehistogram",true);
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<bool> > >				DWClass_histoB("imagehistogram",true);
+#endif
 
 } // qt
 } // gui
