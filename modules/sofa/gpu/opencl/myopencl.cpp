@@ -27,6 +27,10 @@
 #include <iostream>
 #include <sstream>
 
+#ifdef WIN32
+#include "direct.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -62,7 +66,13 @@ std::string _mainPath;
 
 void createPath()
 {
+#ifndef WIN32
     _mainPath = getcwd(NULL,0);
+#else
+    _mainPath = _getcwd(NULL, 0);
+    _mainPath += "/..";
+#endif
+
     _mainPath += CL_KERNEL_PATH;
 }
 

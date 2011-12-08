@@ -69,29 +69,29 @@ extern "C" {
     } _device_pointer;
 
 
-    extern int myopenclInit(int device=-1);
-    extern int myopenclGetnumDevices();
-    extern void myopenclCreateBuffer(int device,cl_mem* dptr,int n);
-    extern void myopenclReleaseBuffer(int device,cl_mem p);
-    extern void myopenclEnqueueWriteBuffer(int device,cl_mem ddest,size_t offset,const void * hsrc,size_t n);
-    extern void myopenclEnqueueReadBuffer(int device,void * hdest,const cl_mem dsrc,size_t offset, size_t n);
-    extern void myopenclEnqueueCopyBuffer(int device, cl_mem ddest,size_t destOffset, const cl_mem dsrc,size_t srcOffset, size_t n);
-    extern void myopenclSetKernelArg(cl_kernel kernel, int num_arg,int size,void* arg);
+    SOFA_GPU_OPENCL_API extern int myopenclInit(int device=-1);
+    SOFA_GPU_OPENCL_API extern int myopenclGetnumDevices();
+    SOFA_GPU_OPENCL_API extern void myopenclCreateBuffer(int device,cl_mem* dptr,int n);
+    SOFA_GPU_OPENCL_API extern void myopenclReleaseBuffer(int device,cl_mem p);
+    SOFA_GPU_OPENCL_API extern void myopenclEnqueueWriteBuffer(int device,cl_mem ddest,size_t offset,const void * hsrc,size_t n);
+    SOFA_GPU_OPENCL_API extern void myopenclEnqueueReadBuffer(int device,void * hdest,const cl_mem dsrc,size_t offset, size_t n);
+    SOFA_GPU_OPENCL_API extern void myopenclEnqueueCopyBuffer(int device, cl_mem ddest,size_t destOffset, const cl_mem dsrc,size_t srcOffset, size_t n);
+    SOFA_GPU_OPENCL_API extern void myopenclSetKernelArg(cl_kernel kernel, int num_arg,int size,void* arg);
 
-    extern void myopenclBuildProgram(void* p);
-    extern void myopenclBuildProgramWithFlags(void * program, char * flags);
-    extern cl_program myopenclProgramWithSource(const char * s,const size_t size);
-    extern cl_kernel myopenclCreateKernel(void* p,const char * kernel_name);
-    extern void myopenclExecKernel(int device,cl_kernel kernel,unsigned int work_dim,const size_t *global_work_offset,const size_t *global_work_size,const size_t *local_work_size);
-    extern void myopenclBarrier(_device_pointer d,std::string file, int line);
+    SOFA_GPU_OPENCL_API extern void myopenclBuildProgram(void* p);
+    SOFA_GPU_OPENCL_API extern void myopenclBuildProgramWithFlags(void * program, char * flags);
+    SOFA_GPU_OPENCL_API extern cl_program myopenclProgramWithSource(const char * s,const size_t size);
+    SOFA_GPU_OPENCL_API extern cl_kernel myopenclCreateKernel(void* p,const char * kernel_name);
+    SOFA_GPU_OPENCL_API extern void myopenclExecKernel(int device,cl_kernel kernel,unsigned int work_dim,const size_t *global_work_offset,const size_t *global_work_size,const size_t *local_work_size);
+    SOFA_GPU_OPENCL_API extern void myopenclBarrier(_device_pointer d,std::string file, int line);
 
-    extern void myopenclMemsetDevice(int d, _device_pointer dDestPointer, int value, size_t n);
-    extern void* myopencldevice(int device);
-    extern int myopenclNumDevices();
-    extern int & myopenclError();
-    extern std::string myopenclErrorMsg(cl_int err);
-    extern void myopenclShowError(std::string file, int line);
-    extern std::string myopenclPath();
+    SOFA_GPU_OPENCL_API extern void myopenclMemsetDevice(int d, _device_pointer dDestPointer, int value, size_t n);
+    SOFA_GPU_OPENCL_API extern void* myopencldevice(int device);
+    SOFA_GPU_OPENCL_API extern int myopenclNumDevices();
+    SOFA_GPU_OPENCL_API extern int & myopenclError();
+    SOFA_GPU_OPENCL_API extern std::string myopenclErrorMsg(cl_int err);
+    SOFA_GPU_OPENCL_API extern void myopenclShowError(std::string file, int line);
+    SOFA_GPU_OPENCL_API extern std::string myopenclPath();
 
     extern int myopenclMultiOpMax;
 }

@@ -49,8 +49,8 @@
 
 #define MAX_WORKGROUP_INCLUSIVE_SCAN_SIZE 1024
 #define MAX_LOCAL_GROUP_SIZE 256
-#include "OpenCLProgram.h"
-#include "OpenCLKernel.h"
+#include "../OpenCLProgram.h"
+#include "../OpenCLKernel.h"
 
 using namespace sofa::helper;
 using namespace sofa::gpu::opencl;
