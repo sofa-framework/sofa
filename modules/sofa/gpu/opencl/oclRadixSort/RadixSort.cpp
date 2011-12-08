@@ -39,9 +39,9 @@
 
 //#include <oclUtils.h>
 #include "RadixSort.h"
-#include "OpenCLMemoryManager.h"
+#include "../OpenCLMemoryManager.h"
 #define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
-#include "tools/showvector.h"
+#include "../tools/showvector.h"
 
 
 

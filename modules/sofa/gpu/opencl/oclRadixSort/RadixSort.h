@@ -45,8 +45,8 @@
 //#include <CL/opencl.h>
 #endif
 #include "Scan.h"
-#include "OpenCLProgram.h"
-#include "OpenCLKernel.h"
+#include "../OpenCLProgram.h"
+#include "../OpenCLKernel.h"
 
 using namespace sofa::gpu::opencl;
 using namespace sofa::helper;
