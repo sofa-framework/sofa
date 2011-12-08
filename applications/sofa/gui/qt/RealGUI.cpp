@@ -971,7 +971,7 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
         root->get(visualStyle);
         if(visualStyle)
         {
-            displayFlag = new DisplayFlagsDataWidget(tabView,"displayFlagwidget",&visualStyle->displayFlags);
+            displayFlag = new DisplayFlagsDataWidget(tabView,"displayFlagwidget",&visualStyle->displayFlags, true);
             displayFlag->createWidgets();
             displayFlag->updateWidgetValue();
             connect( displayFlag, SIGNAL( WidgetDirty(bool) ), this, SLOT(showhideElements() ));

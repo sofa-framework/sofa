@@ -190,7 +190,7 @@ DisplayFlags::DisplayFlags():
     m_showProcessorColor(FlagTreeItem("showProcessorColor","hideProcessorColor",&m_showOptions))
 #endif
 {
-    m_showVisualModels.setValue(tristate::true_value); // BUGFIX: visual models are visible by default
+    m_showVisualModels.setValue(tristate::neutral_value);
     m_showBehaviorModels.setValue(tristate::neutral_value);
     m_showForceFields.setValue(tristate::neutral_value);
     m_showInteractionForceFields.setValue(tristate::neutral_value);

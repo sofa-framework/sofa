@@ -162,7 +162,10 @@ bool DisplayFlagsDataWidget::createWidgets()
 void DisplayFlagsDataWidget::readFromData()
 {
     const DisplayFlags& displayFlags = this->getData()->getValue();
-    flags->setFlag(DisplayFlagWidget::VISUALMODELS, displayFlags.getShowVisualModels());
+    if (isRoot)
+        flags->setFlag(DisplayFlagWidget::VISUALMODELS, sofa::core::visual::merge_tristate(true,displayFlags.getShowVisualModels()));
+    else
+        flags->setFlag(DisplayFlagWidget::VISUALMODELS, displayFlags.getShowVisualModels());
     flags->setFlag(DisplayFlagWidget::BEHAVIORMODELS, displayFlags.getShowBehaviorModels());
     flags->setFlag(DisplayFlagWidget::COLLISIONMODELS, displayFlags.getShowCollisionModels());
     flags->setFlag(DisplayFlagWidget::BOUNDINGCOLLISIONMODELS, displayFlags.getShowBoundingCollisionModels());
