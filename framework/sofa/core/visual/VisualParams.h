@@ -123,6 +123,7 @@ public:
         ,m_v (ConstVecDerivId::velocity())
         ,m_supportedAPIs(0)
     {
+        m_displayFlags.setShowVisualModels(true); // BUGFIX: visual models are visible by default
     }
 
     static VisualParams* defaultInstance()
@@ -150,8 +151,8 @@ public:
     DrawTool*& drawTool() { return m_drawTool; }
     DrawTool*& drawTool() const { return m_drawTool; }
 
-    DisplayFlags& displayFlags() { return m_displayflags; }
-    const DisplayFlags& displayFlags() const { return m_displayflags; }
+    DisplayFlags& displayFlags() { return m_displayFlags; }
+    const DisplayFlags& displayFlags() const { return m_displayFlags; }
 
     sofa::defaulttype::BoundingBox&  sceneBBox()    { return m_sceneBoundingBox; }
     const sofa::defaulttype::BoundingBox&  sceneBBox() const   { return m_sceneBoundingBox; }
@@ -180,7 +181,7 @@ protected:
     double                              m_zFar;
     CameraType                          m_cameraType;
     Pass                                m_pass;
-    DisplayFlags                        m_displayflags;
+    DisplayFlags                        m_displayFlags;
     mutable DrawTool*                   m_drawTool;
     /// Ids of position vector
     ConstMultiVecCoordId m_x;
