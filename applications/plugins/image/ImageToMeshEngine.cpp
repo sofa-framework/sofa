@@ -41,8 +41,10 @@ using namespace defaulttype;
 SOFA_DECL_CLASS(ImageToMeshEngine)
 
 int ImageToMeshEngineClass = core::RegisterObject("Compute a mesh from a depth map image ")
-        .add<ImageToMeshEngine<ImageC> >()
         .add<ImageToMeshEngine<ImageUC> >(true)
+        .add<ImageToMeshEngine<ImageD> >()
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<ImageToMeshEngine<ImageC> >()
         .add<ImageToMeshEngine<ImageI> >()
         .add<ImageToMeshEngine<ImageUI> >()
         .add<ImageToMeshEngine<ImageS> >()
@@ -50,12 +52,14 @@ int ImageToMeshEngineClass = core::RegisterObject("Compute a mesh from a depth m
         .add<ImageToMeshEngine<ImageL> >()
         .add<ImageToMeshEngine<ImageUL> >()
         .add<ImageToMeshEngine<ImageF> >()
-        .add<ImageToMeshEngine<ImageD> >()
         .add<ImageToMeshEngine<ImageB> >()
+#endif
         ;
 
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageC>;
 template class SOFA_IMAGE_API ImageToMeshEngine<ImageUC>;
+template class SOFA_IMAGE_API ImageToMeshEngine<ImageD>;
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API ImageToMeshEngine<ImageC>;
 template class SOFA_IMAGE_API ImageToMeshEngine<ImageI>;
 template class SOFA_IMAGE_API ImageToMeshEngine<ImageUI>;
 template class SOFA_IMAGE_API ImageToMeshEngine<ImageS>;
@@ -63,9 +67,8 @@ template class SOFA_IMAGE_API ImageToMeshEngine<ImageUS>;
 template class SOFA_IMAGE_API ImageToMeshEngine<ImageL>;
 template class SOFA_IMAGE_API ImageToMeshEngine<ImageUL>;
 template class SOFA_IMAGE_API ImageToMeshEngine<ImageF>;
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageD>;
 template class SOFA_IMAGE_API ImageToMeshEngine<ImageB>;
-
+#endif
 
 } //
 } // namespace component

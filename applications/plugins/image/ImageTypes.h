@@ -134,11 +134,13 @@ public:
         CImg<unsigned int> res(dimx,1,1,s,0);
         T vmin = value_min, vmax=value_max;
         if (vmin>=vmax) { vmin = cimg::type<T>::min(); vmax=cimg::type<T>::max(); }
+
         cimglist_for(img,l)
         cimg_forXYZC(img(l),x,y,z,c)
         {
             const T val = img(l)(x,y,z,c);
-            ++res((int)((val-vmin)*(dimx-1)/(vmax-vmin)),0,0,mergeChannels?0:c);
+            long double v = ((long double)val-(long double)vmin)/((long double)vmax-(long double)vmin)*((long double)dimx-(long double)1);
+            ++res((int)(v),0,0,mergeChannels?0:c);
         }
         return res;
     }

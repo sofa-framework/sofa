@@ -40,31 +40,61 @@ using namespace defaulttype;
 
 SOFA_DECL_CLASS(ImageFilter)
 
-int ImageFilterClass = core::RegisterObject("Compute a filtered image")
-        .add<ImageFilter<ImageC> >()
-        .add<ImageFilter<ImageUC> >(true)
-        .add<ImageFilter<ImageI> >()
-        .add<ImageFilter<ImageUI> >()
-        .add<ImageFilter<ImageS> >()
-        .add<ImageFilter<ImageUS> >()
-        .add<ImageFilter<ImageL> >()
-        .add<ImageFilter<ImageUL> >()
-        .add<ImageFilter<ImageF> >()
-        .add<ImageFilter<ImageD> >()
-        .add<ImageFilter<ImageB> >()
+int ImageFilterClass = core::RegisterObject("Filter an image")
+        .add<ImageFilter<ImageUC,ImageUC    > >(true)
+        .add<ImageFilter<ImageD ,ImageD     > >()
+
+        .add<ImageFilter<ImageUC,ImageD    > >()
+
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<ImageFilter<ImageC ,ImageC     > >()
+        .add<ImageFilter<ImageI ,ImageI     > >()
+        .add<ImageFilter<ImageUI,ImageUI    > >()
+        .add<ImageFilter<ImageS ,ImageS     > >()
+        .add<ImageFilter<ImageUS,ImageUS    > >()
+        .add<ImageFilter<ImageL ,ImageL     > >()
+        .add<ImageFilter<ImageUL,ImageUL    > >()
+        .add<ImageFilter<ImageF ,ImageF     > >()
+        .add<ImageFilter<ImageB ,ImageB     > >()
+
+        .add<ImageFilter<ImageC ,ImageD     > >()
+        .add<ImageFilter<ImageI ,ImageD     > >()
+        .add<ImageFilter<ImageUI,ImageD    > >()
+        .add<ImageFilter<ImageS ,ImageD     > >()
+        .add<ImageFilter<ImageUS,ImageD    > >()
+        .add<ImageFilter<ImageL ,ImageD     > >()
+        .add<ImageFilter<ImageUL,ImageD    > >()
+        .add<ImageFilter<ImageF ,ImageD     > >()
+        .add<ImageFilter<ImageB ,ImageD     > >()
+#endif
         ;
 
-template class SOFA_IMAGE_API ImageFilter<ImageC>;
-template class SOFA_IMAGE_API ImageFilter<ImageUC>;
-template class SOFA_IMAGE_API ImageFilter<ImageI>;
-template class SOFA_IMAGE_API ImageFilter<ImageUI>;
-template class SOFA_IMAGE_API ImageFilter<ImageS>;
-template class SOFA_IMAGE_API ImageFilter<ImageUS>;
-template class SOFA_IMAGE_API ImageFilter<ImageL>;
-template class SOFA_IMAGE_API ImageFilter<ImageUL>;
-template class SOFA_IMAGE_API ImageFilter<ImageF>;
-template class SOFA_IMAGE_API ImageFilter<ImageD>;
-template class SOFA_IMAGE_API ImageFilter<ImageB>;
+template class SOFA_IMAGE_API ImageFilter<ImageUC  ,ImageUC    >;
+template class SOFA_IMAGE_API ImageFilter<ImageD   ,ImageD     >;
+
+template class SOFA_IMAGE_API ImageFilter<ImageUC  ,ImageD    >;
+
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API ImageFilter<ImageC   ,ImageC     >;
+template class SOFA_IMAGE_API ImageFilter<ImageI   ,ImageI     >;
+template class SOFA_IMAGE_API ImageFilter<ImageUI  ,ImageUI    >;
+template class SOFA_IMAGE_API ImageFilter<ImageS   ,ImageS     >;
+template class SOFA_IMAGE_API ImageFilter<ImageUS  ,ImageUS    >;
+template class SOFA_IMAGE_API ImageFilter<ImageL   ,ImageL     >;
+template class SOFA_IMAGE_API ImageFilter<ImageUL  ,ImageUL    >;
+template class SOFA_IMAGE_API ImageFilter<ImageF   ,ImageF     >;
+template class SOFA_IMAGE_API ImageFilter<ImageB   ,ImageB     >;
+
+template class SOFA_IMAGE_API ImageFilter<ImageC   ,ImageD     >;
+template class SOFA_IMAGE_API ImageFilter<ImageI   ,ImageD     >;
+template class SOFA_IMAGE_API ImageFilter<ImageUI  ,ImageD    >;
+template class SOFA_IMAGE_API ImageFilter<ImageS   ,ImageD     >;
+template class SOFA_IMAGE_API ImageFilter<ImageUS  ,ImageD    >;
+template class SOFA_IMAGE_API ImageFilter<ImageL   ,ImageD     >;
+template class SOFA_IMAGE_API ImageFilter<ImageUL  ,ImageD    >;
+template class SOFA_IMAGE_API ImageFilter<ImageF   ,ImageD     >;
+template class SOFA_IMAGE_API ImageFilter<ImageB   ,ImageD     >;
+#endif
 
 
 } //

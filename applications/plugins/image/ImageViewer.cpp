@@ -39,8 +39,10 @@ SOFA_DECL_CLASS (ImageViewer);
 // Register in the Factory
 
 int ImageViewerClass = core::RegisterObject ( "Image viewer" )
-        .add<ImageViewer<ImageC> >()
         .add<ImageViewer<ImageUC> >(true)
+        .add<ImageViewer<ImageD> >()
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<ImageViewer<ImageC> >()
         .add<ImageViewer<ImageI> >()
         .add<ImageViewer<ImageUI> >()
         .add<ImageViewer<ImageS> >()
@@ -48,12 +50,14 @@ int ImageViewerClass = core::RegisterObject ( "Image viewer" )
         .add<ImageViewer<ImageL> >()
         .add<ImageViewer<ImageUL> >()
         .add<ImageViewer<ImageF> >()
-        .add<ImageViewer<ImageD> >()
         .add<ImageViewer<ImageB> >()
+#endif
         ;
 
-template class SOFA_IMAGE_API ImageViewer<ImageC>;
 template class SOFA_IMAGE_API ImageViewer<ImageUC>;
+template class SOFA_IMAGE_API ImageViewer<ImageD>;
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API ImageViewer<ImageC>;
 template class SOFA_IMAGE_API ImageViewer<ImageI>;
 template class SOFA_IMAGE_API ImageViewer<ImageUI>;
 template class SOFA_IMAGE_API ImageViewer<ImageS>;
@@ -61,8 +65,8 @@ template class SOFA_IMAGE_API ImageViewer<ImageUS>;
 template class SOFA_IMAGE_API ImageViewer<ImageL>;
 template class SOFA_IMAGE_API ImageViewer<ImageUL>;
 template class SOFA_IMAGE_API ImageViewer<ImageF>;
-template class SOFA_IMAGE_API ImageViewer<ImageD>;
 template class SOFA_IMAGE_API ImageViewer<ImageB>;
+#endif
 
 } // namespace misc
 
