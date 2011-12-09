@@ -99,7 +99,9 @@ protected:
           maskFrom(NULL),
           maskTo(NULL),
           matrixJ(),
-          updateJ(false)
+          updateJ(false),
+          stateFrom(NULL),
+          stateTo(NULL)
     {
     }
 
