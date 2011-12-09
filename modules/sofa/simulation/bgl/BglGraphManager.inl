@@ -66,7 +66,7 @@ void BglGraphManager::getInVertices(Container &data, typename Graph::vertex_desc
     typedef typename boost::graph_traits< Graph >::vertex_descriptor Vertex;
 
     InEdgeIterator it,it_end;
-    for (tie(it, it_end)=in_edges(v, g); it!=it_end; ++it)
+    for (boost::tie(it, it_end)=in_edges(v, g); it!=it_end; ++it)
     {
         Node *inV=getNode(source(*it, g), g);
         data.insert(data.end(),static_cast<typename Container::value_type>(inV));
@@ -83,7 +83,7 @@ void BglGraphManager::getOutVertices(Container &data, typename Graph::vertex_des
     typedef typename boost::graph_traits< Graph >::vertex_descriptor Vertex;
 
     OutEdgeIterator it,it_end;
-    for (tie(it, it_end)=out_edges(v, g); it!=it_end; ++it)
+    for (boost::tie(it, it_end)=out_edges(v, g); it!=it_end; ++it)
     {
         Node *outV=getNode(target(*it, g), g);
         data.insert(data.end(),static_cast<typename Container::value_type>(outV));

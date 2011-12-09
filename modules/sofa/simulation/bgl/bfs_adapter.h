@@ -80,7 +80,7 @@ public:
         if (visitor->processNodeTopDown(node)==Visitor::RESULT_PRUNE)
         {
             OutEdgeIterator it,it_end;
-            for (tie(it, it_end)=out_edges(u, g); it!=it_end;)
+            for (boost::tie(it, it_end)=out_edges(u, g); it!=it_end;)
             {
                 Edge e=*it;
                 ++it;
