@@ -646,8 +646,13 @@ void Grid2D::step_forces(const Grid2D* prev, Grid2D* /*temp*/, real dt, real /*d
 
     if (t > 0 && t < tend)
     {
-        float f = 2*t;
-        srand(*(const unsigned int*)(const void*)&f);
+        union
+        {
+            float f;
+            unsigned int i;
+        } tmp;
+        tmp.f = 2*t;
+        srand(tmp.i);
         vec2 v(4,0);
         int cx = 1*ny/4;
         int cy = 3*ny/4;

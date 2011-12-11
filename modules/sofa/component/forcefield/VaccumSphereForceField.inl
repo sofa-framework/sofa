@@ -199,7 +199,8 @@ void VaccumSphereForceField<DataTypes>::draw(const core::visual::VisualParams* v
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
-    const Coord center = sphereCenter.getValue();
+    defaulttype::Vec3d center;
+    DataTypes::get(center[0], center[1], center[2], sphereCenter.getValue());
     const Real r = sphereRadius.getValue();
 
     glEnable(GL_LIGHTING);

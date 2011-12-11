@@ -98,10 +98,10 @@ protected:
         : Inherit(),
           maskFrom(NULL),
           maskTo(NULL),
-          matrixJ(),
-          updateJ(false),
           stateFrom(NULL),
-          stateTo(NULL)
+          stateTo(NULL),
+          matrixJ(),
+          updateJ(false)
     {
     }
 

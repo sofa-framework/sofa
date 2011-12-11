@@ -693,8 +693,13 @@ void Grid3D::step_forces(const Grid3D* prev, Grid3D* /*temp*/, real dt, real /*d
 
     if (t > 0 && t < tend)
     {
-        float f = 2*t;
-        srand(*(const unsigned int*)(const void*)&f);
+        union
+        {
+            float f;
+            unsigned int i;
+        } tmp;
+        tmp.f = 2*t;
+        srand(tmp.i);
         vec3 v(4,0,-4);
         int cx = 1*nz/4; //-Gx0;
         int cy = 3*ny/4; //-Gx0;

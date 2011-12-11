@@ -107,7 +107,10 @@ void LocalMinDistanceFilter::invalidate()
 
     //std::cout<<"invalidate is called on Filter "<<this->getName()<<std::endl;
     //std::cout<<"m_revision before : "<<m_revision;
-    m_revision = m_revision++;
+
+    /// TODO: this does not do anything...
+    //m_revision = m_revision++;
+
     if (m_revision >= std::numeric_limits< unsigned int >::max())
         m_revision=0;
 
