@@ -227,7 +227,7 @@ void ClusteringEngine<DataTypes>::dijkstra(const VI& ptIndices , VD& distances, 
 
     for (i=0; i<nbi; i++)
     {
-        q.insert( DistanceToPoint(0.,ptIndices[i]) );
+        q.insert( DistanceToPoint((Real)0,ptIndices[i]) );
         distances[ptIndices[i]]=0;
         voronoi[ptIndices[i]]=i;
     }
