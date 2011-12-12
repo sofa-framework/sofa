@@ -33,265 +33,508 @@ namespace sofa
 namespace helper
 {
 
-// Constructor
-template<class Real>
-DualQuat<Real>::DualQuat ()
+template<typename real>
+real DualQuatCoord3<real>::norm2() const
 {
-    for ( int i = 0; i < 2; i++ )
-        for ( int j = 0; j < 4; j++ )
-            _q[i][j] = 0;
+    real r = (real)0.;
+    for (int i=0; i<4; i++) r += orientation[i]*orientation[i] + dual[i]*dual[i];
+    return r;
 }
 
-// Constructor
-template<class Real>
-DualQuat<Real>::DualQuat ( const DualQuat<Real>& q )
+template<typename real>
+void DualQuatCoord3<real>::normalize()
 {
-    _q[0] = q[0];
-    _q[1] = q[1];
+    real Q0 = (real) sqrt ( orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2] + orientation[3]*orientation[3] );
+    if( Q0 == 0) return;
+    real Q0QE = (real) ( orientation[0]*dual[0] + orientation[1]*dual[1] + orientation[2]*dual[2] + orientation[3]*dual[3] );
+    real Q0inv=(real)1./Q0;
+    orientation *= Q0inv;
+    dual -= orientation*Q0QE*Q0inv;
+    dual *= Q0inv;
 }
 
-// Constructor
-template<class Real>
-DualQuat<Real>::DualQuat ( const Quat& qRe, const Quat& qIm )
+
+
+// get velocity/quaternion change mapping : dq = J(q) v
+template<typename real>
+void DualQuatCoord3<real>::velocity_getJ( Mat<4,3,real>& J0, Mat<4,3,real>& JE)
 {
-    _q[0] = qRe;
-    _q[1] = qIm;
+    // multiplication by orientation quaternion
+    J0[0][0] = orientation[3];  	J0[0][1] = orientation[2];  	J0[0][2] =-orientation[1];
+    J0[1][0] =-orientation[2];  	J0[1][1] = orientation[3];  	J0[1][2] = orientation[0];
+    J0[2][0] = orientation[1];  	J0[2][1] =-orientation[0];  	J0[2][2] = orientation[3];
+    J0[3][0] =-orientation[0];  	J0[3][1] =-orientation[1];  	J0[3][2] =-orientation[2];
+    J0*=(real)0.5;
+
+    Vec<3,real> t=getTranslation();
+    JE[0][0] = dual[3]+orientation[1]*t[1]+orientation[2]*t[2];  	JE[0][1] = dual[2]-orientation[1]*t[0]-orientation[3]*t[2];  	JE[0][2] =-dual[1]-orientation[2]*t[0]+orientation[3]*t[1];
+    JE[1][0] =-dual[2]-orientation[0]*t[1]+orientation[3]*t[2];  	JE[1][1] = dual[3]+orientation[0]*t[0]+orientation[2]*t[2];  	JE[1][2] = dual[0]-orientation[3]*t[0]-orientation[2]*t[1];
+    JE[2][0] = dual[1]-orientation[3]*t[1]-orientation[0]*t[2];  	JE[2][1] =-dual[0]+orientation[3]*t[0]-orientation[1]*t[2];  	JE[2][2] = dual[3]+orientation[0]*t[0]+orientation[1]*t[1];
+    JE[3][0] =-dual[0]+orientation[2]*t[1]-orientation[1]*t[2];  	JE[3][1] =-dual[1]-orientation[2]*t[0]+orientation[0]*t[2];  	JE[3][2] =-dual[2]+orientation[1]*t[0]-orientation[0]*t[1];
+    JE*=(real)0.5;
 }
 
-// Constructor
-template<class Real>
-DualQuat<Real>::DualQuat ( const Vec& tr, const Quat& q )
+// get quaternion change: dqn = J(q) dq
+template<typename real>
+DualQuatCoord3<real> DualQuatCoord3<real>::velocity_applyJ( const Vec<6,real>& a )
 {
-    fromTransQuat ( tr, q );
+    DualQuatCoord3 r ;
+
+    r.orientation[0] = (real)0.5* (a[3] * orientation[3] + a[4] * orientation[2] - a[5] * orientation[1]);
+    r.orientation[1] = (real)0.5* (a[4] * orientation[3] + a[5] * orientation[0] - a[3] * orientation[2]);
+    r.orientation[2] = (real)0.5* (a[5] * orientation[3] + a[3] * orientation[1] - a[4] * orientation[0]);
+    r.orientation[3] = (real)0.5* (-(a[3] * orientation[0] + a[4] * orientation[1] + a[5] * orientation[2]));
+
+    r.setTranslation(getTranslation()+Vec3(a[0],a[1],a[2]));
+    r.dual-=dual;
+
+    //Mat<4,3,real> J0,JE;
+    //velocity_getJ(J0,JE);
+    //r.orientation=J0*getVOrientation(v);
+    //r.dual=JE*getVOrientation(a)+J0*getVCenter(v);
+    return r;
 }
 
-// Constructor
-template<class Real>
-DualQuat<Real>::DualQuat ( const Vec& tr1, const Quat& q1, const Vec& tr2, const Quat& q2 )
+// get velocity : dq = JT(q) dqn
+template<typename real>
+Vec<6,real> DualQuatCoord3<real>::velocity_applyJT( const DualQuatCoord3<real>& dq )
 {
-    //TODO// refaire la fonction en calculant directement le vecteur. Histoire d'aller plus vite...
-    defaulttype::Mat<4,4,Real> minusTr1M4, tr2M4, rigidM4, relRot1M4;
-    defaulttype::Mat<3,3,Real> relRot1M3;
-
-    minusTr1M4.identity();
-    tr2M4.identity();
-    relRot1M4.identity();
-
-    minusTr1M4 ( 0, 3 ) = -tr1[0];
-    minusTr1M4 ( 1, 3 ) = -tr1[1];
-    minusTr1M4 ( 2, 3 ) = -tr1[2];
-    tr2M4 ( 0, 3 ) = tr2[0];
-    tr2M4 ( 1, 3 ) = tr2[1];
-    tr2M4 ( 2, 3 ) = tr2[2];
-
-    // The rotational part of the matrix rigidM4 is the same as 'q2 * q1.inverse()'
-    Quat rotQ = ( q2 * q1.inverse());
-    rotQ.toMatrix ( relRot1M3 );
-
-    for ( int i = 0; i < 3; i++ )
-        for ( int j = 0; j < 3; j++ )
-            relRot1M4 ( i, j ) = relRot1M3 ( i, j );
-
-    // We get the rigid transformation from state 1 to state 2.
-    rigidM4 = tr2M4 * relRot1M4 * minusTr1M4;
-
-    Vec tr = Vec ( rigidM4 ( 0, 3 ), rigidM4 ( 1, 3 ), rigidM4 ( 2, 3 ) );
-
-    fromTransQuat ( tr, rotQ );
+    Mat<4,3,real> J0,JE;
+    velocity_getJ(J0,JE);
+    Vec<3,real> omega=J0.transposed()*dq.orientation+JE.transposed()*dq.dual;
+    Vec<3,real> vel=J0.transposed()*dq.dual;
+    Vec<6,real> v;
+    for(unsigned int i=0; i<3; i++) {v[i]=vel[i]; v[i+3]=omega[i];}
+    return v;
 }
 
-// Destructor
-template<class Real>
-DualQuat<Real>::~DualQuat()
+// get jacobian of the normalization : dqn = J(q) dq
+template<typename real>
+void DualQuatCoord3<real>::normalize_getJ( Mat<4,4,real>& J0, Mat<4,4,real>& JE)
 {
+    J0.fill(0); JE.fill(0);
+
+    unsigned int i,j;
+    real Q0 = (real) sqrt ( orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2] + orientation[3]*orientation[3] );
+    if(Q0==0) return;
+    real Q0QE = (real) ( orientation[0]*dual[0] + orientation[1]*dual[1] + orientation[2]*dual[2] + orientation[3]*dual[3] );
+    real Q0inv=(real)1./Q0;
+    DualQuatCoord3<real> qn;
+    qn.orientation = orientation*Q0inv;
+    qn.dual = dual-qn.orientation*Q0QE*Q0inv;
+    qn.dual *= Q0inv;
+    for(i=0; i<4; i++) J0[i][i]=(real)1.-qn.orientation[i]*qn.orientation[i];
+    for(i=0; i<4; i++) for(j=0; j<i; j++) J0[i][j]=J0[j][i]=-qn.orientation[j]*qn.orientation[i];
+    for(i=0; i<4; i++) for(j=0; j<=i; j++) JE[i][j]=JE[j][i]=-qn.dual[j]*qn.orientation[i]-qn.dual[i]*qn.orientation[j];
+    J0 *= Q0inv;
+    JE -= J0*Q0QE*Q0inv;
+    JE *= Q0inv;
 }
 
-template<class Real>
-DualQuat<Real> DualQuat<Real>::identity()
+
+// get normalized quaternion change: dqn = J(q) dq
+template<typename real>
+DualQuatCoord3<real> DualQuatCoord3<real>::normalize_applyJ( const DualQuatCoord3<real>& dq )
 {
-    return DualQuat( Quat::identity(), Quat::identity());
+    Mat<4,4,real> J0,JE;
+    normalize_getJ(J0,JE);
+    DualQuatCoord3<real> r;
+    r.orientation=J0*dq.orientation;
+    r.dual=JE*dq.orientation+J0*dq.dual;
+    return r;
 }
 
-template<class Real>
-void DualQuat<Real>::normalize()
+
+// get unnormalized quaternion change: dq = JT(q) dqn
+template<typename real>
+DualQuatCoord3<real> DualQuatCoord3<real>::normalize_applyJT( const DualQuatCoord3<real>& dqn )
 {
-    Real mag = (Real) sqrt ( _q[0][0]*_q[0][0] + _q[0][1]*_q[0][1] + _q[0][2]*_q[0][2] + _q[0][3]*_q[0][3] );
-    assert ( mag != 0 ); // We can't normalize a null dual quaternion.
-    for ( int i = 0; i < 2; i++ )
-        for ( int j = 0; j < 4; j++ )
-            _q[i][j] /= mag;
+    Mat<4,4,real> J0,JE;
+    normalize_getJ(J0,JE);
+    DualQuatCoord3<real> r;
+    r.orientation=J0*dqn.orientation+JE*dqn.dual;
+    r.dual=J0*dqn.dual;
+    return r;
 }
 
-template<class Real>
-void DualQuat<Real>::fromTransQuat ( const Vec& tr, const Quat& q )
+// get Jacobian change: dJ = H(p) dq
+template<typename real>
+void  DualQuatCoord3<real>::normalize_getdJ( Mat<4,4,real>& dJ0, Mat<4,4,real>& dJE, const DualQuatCoord3<real>& dq )
 {
-    // non-dual part (just copy quat q):
-    _q[0] = q;
+    dJ0.fill(0); dJE.fill(0);
 
-    // dual part:
-    _q[1][3] = -(Real)0.5* ( tr[0]*q[0] + tr[1]*q[1] + tr[2]*q[2] ); // q[w]
-    _q[1][0] =  (Real)0.5* ( tr[0]*q[3] + tr[1]*q[2] - tr[2]*q[1] ); // q[x]
-    _q[1][1] =  (Real)0.5* ( -tr[0]*q[2] + tr[1]*q[3] + tr[2]*q[0] ); // q[y]
-    _q[1][2] =  (Real)0.5* ( tr[0]*q[1] - tr[1]*q[0] + tr[2]*q[3] ); // q[z]
+    unsigned int i,j;
+    real Q0 = (real) sqrt ( orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2] + orientation[3]*orientation[3] );
+    if(Q0==0) return;
+    real Q0QE = (real) ( orientation[0]*dual[0] + orientation[1]*dual[1] + orientation[2]*dual[2] + orientation[3]*dual[3] );
+    real Q0inv=(real)1./Q0;
+    real Q0inv2=Q0inv*Q0inv;
+    real Q0QE2=Q0QE*Q0inv2;
+    DualQuatCoord3<real> qn;
+    qn.orientation = orientation*Q0inv;
+    qn.dual = dual-qn.orientation*Q0QE*Q0inv;
+    qn.dual *= Q0inv;
 
-    // Do it an unit dual quat
-    normalize();
+    real q0dqe = (real) ( qn.orientation[0]*dq.dual[0] + qn.orientation[1]*dq.dual[1] + qn.orientation[2]*dq.dual[2] + qn.orientation[3]*dq.dual[3]);
+
+    if(dq.orientation[0] || dq.orientation[1] || dq.orientation[2] || dq.orientation[3])
+    {
+        real q0dq0 = (real) ( qn.orientation[0]*dq.orientation[0] + qn.orientation[1]*dq.orientation[1] + qn.orientation[2]*dq.orientation[2] + qn.orientation[3]*dq.orientation[3]);
+        real qedq0 = (real) ( qn.dual[0]*dq.orientation[0] + qn.dual[1]*dq.orientation[1] + qn.dual[2]*dq.orientation[2] + qn.dual[3]*dq.orientation[3]);
+        for(i=0; i<4; i++)
+        {
+            for(j=0; j<=i; j++)
+            {
+                dJ0[i][j]=dJ0[j][i]=-qn.orientation[j]*dq.orientation[i]-qn.orientation[i]*dq.orientation[j]+(real)3.*q0dq0*qn.orientation[i]*qn.orientation[j];
+                dJE[i][j]=dJE[j][i]=-qn.orientation[j]*dq.dual[i]-qn.orientation[i]*dq.dual[j]+(real)3.*q0dqe*qn.orientation[i]*qn.orientation[j]
+                        -qn.dual[j]*dq.orientation[i]-qn.dual[i]*dq.orientation[j]+(real)3.*qedq0*qn.orientation[i]*qn.orientation[j]
+                        +(real)3.*q0dq0*(qn.dual[j]*qn.orientation[i]+qn.dual[i]*qn.orientation[j]);
+            }
+            dJ0[i][i]-=q0dq0;
+            dJE[i][i]-=q0dqe+qedq0;
+        }
+        dJ0*=Q0inv2; dJE*=Q0inv2;
+        for(i=0; i<4; i++) for(j=0; j<4; j++) dJE[i][j]-=(real)2.*dJ0[i][j]*Q0QE2;
+    }
+    else
+    {
+        for(i=0; i<4; i++)
+        {
+            for(j=0; j<=i; j++) dJE[i][j]=dJE[j][i]=-qn.orientation[j]*dq.dual[i]-qn.orientation[i]*dq.dual[j]+(real)3.*q0dqe*qn.orientation[i]*qn.orientation[j];
+            dJE[i][i]-=q0dqe;
+        }
+        dJE*=Q0inv2;
+    }
 }
 
-template<class Real>
-void DualQuat<Real>::toTransQuat ( Vec& vec, Quat& quat ) const
-{
-    // non-dual part (just copy quat q):
-    quat = _q[0];
 
-    // dual part:
-    vec[0] = 2* ( -_q[1][3]*_q[0][0] + _q[1][0]*_q[0][3] - _q[1][1]*_q[0][2] + _q[1][2]*_q[0][1] );
-    vec[1] = 2* ( -_q[1][3]*_q[0][1] + _q[1][0]*_q[0][2] + _q[1][1]*_q[0][3] - _q[1][2]*_q[0][0] );
-    vec[2] = 2* ( -_q[1][3]*_q[0][2] - _q[1][0]*_q[0][1] + _q[1][1]*_q[0][0] + _q[1][2]*_q[0][3] );
+template<typename real>
+Vec<3,real> DualQuatCoord3<real>::rotate(const Vec<3,real>& v) const
+{
+    return Vec<3,real>(
+            (real)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v[0] + (2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3])) * v[1] + (2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3])) * v[2]),
+            (real)((2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3]))*v[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v[1] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v[2]),
+            (real)((2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3]))*v[0] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v[2])
+            );
 }
 
-template<class Real>
-void DualQuat<Real>::toMatrix ( defaulttype::Matrix4& M ) const
+template<typename real>
+Vec<3,real> DualQuatCoord3<real>::inverseRotate(const Vec<3,real>& v) const
 {
-    Real t0, t1, t2;
-    t0 = 2 * ( -_q[1][3]*_q[0][0] + _q[1][0]*_q[0][3] - _q[1][1]*_q[0][2] + _q[1][2]*_q[0][1] );
-    t1 = 2 * ( -_q[1][3]*_q[0][1] + _q[1][0]*_q[0][2] + _q[1][1]*_q[0][3] - _q[1][2]*_q[0][0] );
-    t2 = 2 * ( -_q[1][3]*_q[0][2] - _q[1][0]*_q[0][1] + _q[1][1]*_q[0][0] + _q[1][2]*_q[0][3] );
-
-    M ( 0, 0 ) = 1 - 2* ( _q[0][1]*_q[0][1] + _q[0][2]*_q[0][2] ); // 1 - 2(y0*y0) - 2(z0*z0)
-    M ( 0, 1 ) =     2* ( _q[0][0]*_q[0][1] - _q[0][3]*_q[0][2] ); // 2(x0y0 - w0z0)
-    M ( 0, 2 ) =     2* ( _q[0][0]*_q[0][2] + _q[0][3]*_q[0][1] ); // 2(x0z0 + w0y0)
-    M ( 0, 3 ) = t0;
-    M ( 1, 0 ) =     2* ( _q[0][0]*_q[0][1] + _q[0][3]*_q[0][2] ); // 2(x0y0 + w0z0)
-    M ( 1, 1 ) = 1 - 2* ( _q[0][0]*_q[0][0] + _q[0][2]*_q[0][2] ); // 1 - 2(x0*x0) - 2(z0*z0)
-    M ( 1, 2 ) =     2* ( _q[0][1]*_q[0][2] - _q[0][3]*_q[0][0] ); // 2(y0z0 - w0x0)
-    M ( 1, 3 ) = t1;
-    M ( 2, 0 ) =     2* ( _q[0][0]*_q[0][2] - _q[0][3]*_q[0][1] ); // 2(x0z0 - w0y0)
-    M ( 2, 1 ) =     2* ( _q[0][1]*_q[0][2] + _q[0][3]*_q[0][0] ); // 2(y0z0 + w0x0)
-    M ( 2, 2 ) = 1 - 2* ( _q[0][0]*_q[0][0] + _q[0][1]*_q[0][1] ); // 1 - 2(x0*x0) - 2(y0*y0)
-    M ( 2, 3 ) = t2;
-    M ( 3, 0 ) = M ( 3, 1 ) = M ( 3, 2 ) = 0;
-    M ( 3, 3 ) = 1;
+    return Vec<3,real>(
+            (real)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v[0] + (2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3])) * v[1] + (2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3])) * v[2]),
+            (real)((2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]))*v[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v[1] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v[2]),
+            (real)((2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3]))*v[0] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v[2])
+            );
 }
 
-template<class Real>
-void DualQuat<Real>::toGlMatrix ( double M[16] ) const
+template<typename real>
+void DualQuatCoord3<real>::invert()
 {
-    // GL matrices are transposed.
-    Real t0, t1, t2;
-    t0 = 2 * ( -_q[1][3]*_q[0][0] + _q[1][0]*_q[0][3] - _q[1][1]*_q[0][2] + _q[1][2]*_q[0][1] );
-    t1 = 2 * ( -_q[1][3]*_q[0][1] + _q[1][0]*_q[0][2] + _q[1][1]*_q[0][3] - _q[1][2]*_q[0][0] );
-    t2 = 2 * ( -_q[1][3]*_q[0][2] - _q[1][0]*_q[0][1] + _q[1][1]*_q[0][0] + _q[1][2]*_q[0][3] );
-
-    M[0] = 1 - 2* ( _q[0][1]*_q[0][1] + _q[0][2]*_q[0][2] ); // 1 - 2(y0*y0) - 2(z0*z0)
-    M[1] =     2* ( _q[0][0]*_q[0][1] + _q[0][3]*_q[0][2] ); // 2(x0y0 + w0z0)
-    M[2] =     2* ( _q[0][0]*_q[0][2] - _q[0][3]*_q[0][1] ); // 2(x0z0 - w0y0)
-    M[3] = 0;
-    M[4] =     2* ( _q[0][0]*_q[0][1] - _q[0][3]*_q[0][2] ); // 2(x0y0 - w0z0)
-    M[5] = 1 - 2* ( _q[0][0]*_q[0][0] + _q[0][2]*_q[0][2] ); // 1 - 2(x0*x0) - 2(z0*z0)
-    M[6] =     2* ( _q[0][1]*_q[0][2] + _q[0][3]*_q[0][0] ); // 2(y0z0 + w0x0)
-    M[7] = 0;
-    M[8] =     2* ( _q[0][0]*_q[0][2] + _q[0][3]*_q[0][1] ); // 2(x0z0 + w0y0)
-    M[9] =     2* ( _q[0][1]*_q[0][2] - _q[0][3]*_q[0][0] ); // 2(y0z0 - w0x0)
-    M[10] = 1 - 2* ( _q[0][0]*_q[0][0] + _q[0][1]*_q[0][1] ); // 1 - 2(x0*x0) - 2(y0*y0)
-    M[11] = 0;
-    M[12] = t0;
-    M[13] = t1;
-    M[14] = t2;
-    M[15] = 1;
+    for ( unsigned int j = 0; j < 3; j++ )
+    {
+        orientation[j]=-orientation[j];
+        dual[j]=-dual[j];
+    }
 }
 
-template<class Real>
-void DualQuat<Real>::fromMatrix ( const defaulttype::Matrix4 M )
+template<typename real>
+DualQuatCoord3<real> DualQuatCoord3<real>::inverse( )
 {
-    defaulttype::Matrix3 rotPartM3;
-    for ( int i = 0; i < 3; i++ )
-        for ( int j = 0; j < 3; j++ )
-            rotPartM3 ( i, j ) = M ( i, j );
-
-    // non-dual part (just copy quat q):
-    _q[0].fromMatrix ( rotPartM3 );
-
-    // dual part:
-    _q[1][3] = -(Real)(0.5* ( M( 0, 3)*_q[0][0] + M( 1, 3)*_q[0][1] + M( 2, 3)*_q[0][2] ));
-    _q[1][0] =  (Real)(0.5* ( M( 0, 3)*_q[0][3] + M( 1, 3)*_q[0][2] - M( 2, 3)*_q[0][1] ));
-    _q[1][1] =  (Real)(0.5* (-M( 0, 3)*_q[0][2] + M( 1, 3)*_q[0][3] + M( 2, 3)*_q[0][0] ));
-    _q[1][2] =  (Real)(0.5* ( M( 0, 3)*_q[0][1] - M( 1, 3)*_q[0][0] + M( 2, 3)*_q[0][3] ));
-
-    normalize();
+    DualQuatCoord3<real> r;
+    for ( unsigned int j = 0; j < 3; j++ )
+    {
+        r.orientation[j]=-orientation[j];
+        r.dual[j]=-dual[j];
+    }
+    r.orientation[3]=orientation[3];
+    r.dual[3]=dual[3];
+    return r;
 }
 
-template<class Real>
-typename DualQuat<Real>::Vec DualQuat<Real>::transform ( const typename DualQuat<Real>::Vec& vec )
-{
-    defaulttype::Matrix4 M;
-    toMatrix ( M );
 
-    sofa::defaulttype::Vec<4, Real>res = M * sofa::defaulttype::Vec<4, Real> ( vec[0], vec[1], vec[2], 1 );
-    return Vec ( res[0], res[1], res[2] );
+// compute the product with another frame on the right
+template<typename real>
+DualQuatCoord3<real> DualQuatCoord3<real>::multRight( const DualQuatCoord3<real>& c ) const
+{
+    DualQuatCoord3<real> r;
+    //r.orientation = orientation * c.getOrientation();
+    //r.dual = orientation * c.getDual() + dual * c.getOrientation();
+    r.orientation[0] = orientation[3]*c.getOrientation()[0] - orientation[2]*c.getOrientation()[1] + orientation[1]*c.getOrientation()[2] + orientation[0]*c.getOrientation()[3];
+    r.orientation[1] = orientation[2]*c.getOrientation()[0] + orientation[3]*c.getOrientation()[1] - orientation[0]*c.getOrientation()[2] + orientation[1]*c.getOrientation()[3];
+    r.orientation[2] =-orientation[1]*c.getOrientation()[0] + orientation[0]*c.getOrientation()[1] + orientation[3]*c.getOrientation()[2] + orientation[2]*c.getOrientation()[3];
+    r.orientation[3] =-orientation[0]*c.getOrientation()[0] - orientation[1]*c.getOrientation()[1] - orientation[2]*c.getOrientation()[2] + orientation[3]*c.getOrientation()[3];
+    r.dual[0] = orientation[3]*c.getDual()[0] - orientation[2]*c.getDual()[1] + orientation[1]*c.getDual()[2] + orientation[0]*c.getDual()[3];
+    r.dual[1] = orientation[2]*c.getDual()[0] + orientation[3]*c.getDual()[1] - orientation[0]*c.getDual()[2] + orientation[1]*c.getDual()[3];
+    r.dual[2] =-orientation[1]*c.getDual()[0] + orientation[0]*c.getDual()[1] + orientation[3]*c.getDual()[2] + orientation[2]*c.getDual()[3];
+    r.dual[3] =-orientation[0]*c.getDual()[0] - orientation[1]*c.getDual()[1] - orientation[2]*c.getDual()[2] + orientation[3]*c.getDual()[3];
+    r.dual[0]+= dual[3]*c.getOrientation()[0] - dual[2]*c.getOrientation()[1] + dual[1]*c.getOrientation()[2] + dual[0]*c.getOrientation()[3];
+    r.dual[1]+= dual[2]*c.getOrientation()[0] + dual[3]*c.getOrientation()[1] - dual[0]*c.getOrientation()[2] + dual[1]*c.getOrientation()[3];
+    r.dual[2]+=-dual[1]*c.getOrientation()[0] + dual[0]*c.getOrientation()[1] + dual[3]*c.getOrientation()[2] + dual[2]*c.getOrientation()[3];
+    r.dual[3]+=-dual[0]*c.getOrientation()[0] - dual[1]*c.getOrientation()[1] - dual[2]*c.getOrientation()[2] + dual[3]*c.getOrientation()[3];
+    return r;
 }
 
-template<class Real>
-DualQuat<Real> DualQuat<Real>::operator+ ( const DualQuat<Real>& dq ) const
+// get jacobian of the product with another frame f on the right : d(q*f) = J(q) f
+template<typename real>
+void DualQuatCoord3<real>::multRight_getJ( Mat<4,4,real>& J0,Mat<4,4,real>& JE)
 {
-    DualQuat<Real>res;
-
-    for ( int i = 0; i < 2; i++ )
-        for ( int j = 0; j < 4; j++ )
-            res[i][j] = _q[i][j] + dq[i][j];
-
-    return res;
+    J0[0][0] = orientation[3];	J0[0][1] =-orientation[2];	J0[0][2] = orientation[1];	J0[0][3] = orientation[0];
+    J0[1][0] = orientation[2];	J0[1][1] = orientation[3];	J0[1][2] =-orientation[0];	J0[1][3] = orientation[1];
+    J0[2][0] =-orientation[1];	J0[2][1] = orientation[0];	J0[2][2] = orientation[3];	J0[2][3] = orientation[2];
+    J0[3][0] =-orientation[0];	J0[3][1] =-orientation[1];	J0[3][2] =-orientation[2];	J0[3][3] = orientation[3];
+    JE[0][0] = dual[3];		JE[0][1] =-dual[2];		JE[0][2] = dual[1];		JE[0][3] = dual[0];
+    JE[1][0] = dual[2];		JE[1][1] = dual[3];		JE[1][2] =-dual[0];		JE[1][3] = dual[1];
+    JE[2][0] =-dual[1];		JE[2][1] = dual[0];		JE[2][2] = dual[3];		JE[2][3] = dual[2];
+    JE[3][0] =-dual[0];		JE[3][1] =-dual[1];		JE[3][2] =-dual[2];		JE[3][3] = dual[3];
 }
 
-template<class Real>
-DualQuat<Real> DualQuat<Real>::operator* ( const Real r ) const
+// Apply a transformation with respect to itself
+template<typename real>
+DualQuatCoord3<real> DualQuatCoord3<real>::multLeft( const DualQuatCoord3<real>& c )
 {
-    DualQuat<Real> res;
-    for ( int i = 0; i < 2; i++ )
-        for ( int j = 0; j < 4; j++ )
-            res[i][j] = _q[i][j] * r;
-    return res;
+    DualQuatCoord3<real> r;
+    r.orientation[0] = orientation[3]*c.getOrientation()[0] + orientation[2]*c.getOrientation()[1] - orientation[1]*c.getOrientation()[2] + orientation[0]*c.getOrientation()[3];
+    r.orientation[1] =-orientation[2]*c.getOrientation()[0] + orientation[3]*c.getOrientation()[1] + orientation[0]*c.getOrientation()[2] + orientation[1]*c.getOrientation()[3];
+    r.orientation[2] = orientation[1]*c.getOrientation()[0] - orientation[0]*c.getOrientation()[1] + orientation[3]*c.getOrientation()[2] + orientation[2]*c.getOrientation()[3];
+    r.orientation[3] =-orientation[0]*c.getOrientation()[0] - orientation[1]*c.getOrientation()[1] - orientation[2]*c.getOrientation()[2] + orientation[3]*c.getOrientation()[3];
+    r.dual[0] = orientation[3]*c.getDual()[0] + orientation[2]*c.getDual()[1] - orientation[1]*c.getDual()[2] + orientation[0]*c.getDual()[3];
+    r.dual[1] =-orientation[2]*c.getDual()[0] + orientation[3]*c.getDual()[1] + orientation[0]*c.getDual()[2] + orientation[1]*c.getDual()[3];
+    r.dual[2] = orientation[1]*c.getDual()[0] - orientation[0]*c.getDual()[1] + orientation[3]*c.getDual()[2] + orientation[2]*c.getDual()[3];
+    r.dual[3] =-orientation[0]*c.getDual()[0] - orientation[1]*c.getDual()[1] - orientation[2]*c.getDual()[2] + orientation[3]*c.getDual()[3];
+    r.dual[0]+= dual[3]*c.getOrientation()[0] + dual[2]*c.getOrientation()[1] - dual[1]*c.getOrientation()[2] + dual[0]*c.getOrientation()[3];
+    r.dual[1]+=-dual[2]*c.getOrientation()[0] + dual[3]*c.getOrientation()[1] + dual[0]*c.getOrientation()[2] + dual[1]*c.getOrientation()[3];
+    r.dual[2]+= dual[1]*c.getOrientation()[0] - dual[0]*c.getOrientation()[1] + dual[3]*c.getOrientation()[2] + dual[2]*c.getOrientation()[3];
+    r.dual[3]+=-dual[0]*c.getOrientation()[0] - dual[1]*c.getOrientation()[1] - dual[2]*c.getOrientation()[2] + dual[3]*c.getOrientation()[3];
+    return r;
 }
 
-template<class Real>
-DualQuat<Real> DualQuat<Real>::operator/ ( const Real r ) const
+// get jacobian of the product with another frame f on the left : d(f*q) = J(q) f
+template<typename real>
+void DualQuatCoord3<real>::multLeft_getJ( Mat<4,4,real>& J0,Mat<4,4,real>& JE)
 {
-    DualQuat<Real> res;
-    for ( int i = 0; i < 2; i++ )
-        for ( int j = 0; j < 4; j++ )
-            res[i][j] = _q[i][j] / r;
-    return res;
+    J0[0][0] = orientation[3];	J0[0][1] = orientation[2];	J0[0][2] =-orientation[1];	J0[0][3] = orientation[0];
+    J0[1][0] =-orientation[2];	J0[1][1] = orientation[3];	J0[1][2] = orientation[0];	J0[1][3] = orientation[1];
+    J0[2][0] = orientation[1];	J0[2][1] =-orientation[0];	J0[2][2] = orientation[3];	J0[2][3] = orientation[2];
+    J0[3][0] =-orientation[0];	J0[3][1] =-orientation[1];	J0[3][2] =-orientation[2];	J0[3][3] = orientation[3];
+    JE[0][0] = dual[3];		JE[0][1] = dual[2];		JE[0][2] =-dual[1];		JE[0][3] = dual[0];
+    JE[1][0] =-dual[2];		JE[1][1] = dual[3];		JE[1][2] = dual[0];		JE[1][3] = dual[1];
+    JE[2][0] = dual[1];		JE[2][1] =-dual[0];		JE[2][2] = dual[3];		JE[2][3] = dual[2];
+    JE[3][0] =-dual[0];		JE[3][1] =-dual[1];		JE[3][2] =-dual[2];		JE[3][3] = dual[3];
 }
 
-template<class Real>
-DualQuat<Real> DualQuat<Real>::operator= ( const DualQuat<Real>& dq )
+
+// Write to the given matrix
+template<typename  real>
+template<typename real2>
+void DualQuatCoord3<real>::toMatrix( Mat<3,4,real2>& m) const
 {
-    _q[0] = dq[0];
-    _q[1] = dq[1];
-    return ( *this );
+    m[0][0] = (real2) (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]));
+    m[0][1] = (real2) (2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]));
+    m[0][2] = (real2) (2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3]));
+
+    m[1][0] = (real2) (2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3]));
+    m[1][1] = (real2) (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]));
+    m[1][2] = (real2) (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]));
+
+    m[2][0] = (real2) (2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3]));
+    m[2][1] = (real2) (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]));
+    m[2][2] = (real2) (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]));
+
+    Vec<3,real> p=getTranslation();
+    m[0][3] =  (real2) p[0];
+    m[1][3] =  (real2) p[1];
+    m[2][3] =  (real2) p[2];
 }
 
-template<class Real>
-DualQuat<Real>& DualQuat<Real>::operator+= ( const DualQuat<Real>& dq )
+template<typename  real>
+template<typename  real2>
+void DualQuatCoord3<real>::toRotationMatrix( Mat<3,3,real2>& m) const
 {
-    for ( int i = 0; i < 2; i++ )
-        for ( int j = 0; j < 4; j++ )
-            _q[i][j] += dq[i][j];
+    m[0][0] = (real2) (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]));
+    m[0][1] = (real2) (2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]));
+    m[0][2] = (real2) (2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3]));
 
-    return ( *this );
+    m[1][0] = (real2) (2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3]));
+    m[1][1] = (real2) (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]));
+    m[1][2] = (real2) (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]));
+
+    m[2][0] = (real2) (2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3]));
+    m[2][1] = (real2) (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]));
+    m[2][2] = (real2) (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]));
 }
 
-template<class Real>
-const Quater<Real>& DualQuat<Real>::operator[] ( unsigned int i ) const
+
+// Project a point from the child frame to the parent frame: P = R(q)p + t(q)
+template<typename  real>
+Vec<3,real> DualQuatCoord3<real>::pointToParent( const Vec<3,real>& p )
 {
-    return _q[i];
+    Vec<3,real> p2;
+    p2[0] = (real) ((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*p[0] + (2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3])) * p[1] + (2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3])) * p[2]);
+    p2[1] = (real) ((2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3]))*p[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*p[1] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*p[2]);
+    p2[2] = (real) ((2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3]))*p[0] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*p[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*p[2]);
+    p2+=getTranslation();
+    return p2;
 }
 
-template<class Real>
-Quater<Real>& DualQuat<Real>::operator[] ( unsigned int i )
+// get jacobian of the transformation : dP = J(p,q) dq
+template<typename  real>
+void DualQuatCoord3<real>::pointToParent_getJ( Mat<3,4,real>& J0,Mat<3,4,real>& JE,const Vec<3,real>& p)
 {
-    return _q[i];
+    J0.fill(0); JE.fill(0);
+    J0[0][0] = (real)2.*(- dual[3] + orientation[0]*p[0] + orientation[1]*p[1] + orientation[2]*p[2]);	J0[0][1] =   (real)2.*(dual[2] - orientation[1]*p[0] + orientation[0]*p[1] + orientation[3]*p[2]);	J0[0][2] = (real)2.*(- dual[1] - orientation[2]*p[0] - orientation[3]*p[1] + orientation[0]*p[2]);	J0[0][3] = (real)2.*(  dual[0] + orientation[3]*p[0] - orientation[2]*p[1] + orientation[1]*p[2]);
+    J0[1][0] = -J0[0][1];	J0[1][1] = J0[0][0];	J0[1][2] = J0[0][3];	J0[1][3] = -J0[0][2];
+    J0[2][0] = -J0[0][2];	J0[2][1] = -J0[0][3];	J0[2][2] = J0[0][0];	J0[2][3] = J0[0][1];
+    JE[0][0] = (real)2.* orientation[3];		JE[0][1] = -(real)2.*orientation[2];		JE[0][2] =  (real)2.*orientation[1];		JE[0][3] = -(real)2.*orientation[0];
+    JE[1][0] = -JE[0][1];	JE[1][1] = JE[0][0];	JE[1][2] = JE[0][3];	JE[1][3] = -JE[0][2];
+    JE[2][0] = -JE[0][2];	JE[2][1] = -JE[0][3];	JE[2][2] = JE[0][0];	JE[2][3] = JE[0][1];
 }
+
+// get transformed position change: dP = J(p,q) dq
+template<typename  real>
+Vec<3,real> DualQuatCoord3<real>::pointToParent_applyJ( const DualQuatCoord3<real>& dq ,const Vec<3,real>& p)
+{
+    Mat<3,4,real> J0,JE;
+    pointToParent_getJ(J0,JE,p);
+    Vec<3,real> r=J0*dq.orientation+JE*dq.dual;
+    return r;
+}
+
+// get quaternion change: dq = JT(p,q) dP
+template<typename  real>
+DualQuatCoord3<real> DualQuatCoord3<real>::pointToParent_applyJT( const Vec<3,real>& dP ,const Vec<3,real>& p)
+{
+    Mat<3,4,real> J0,JE;
+    pointToParent_getJ(J0,JE,p);
+    DualQuatCoord3<real> r;
+    r.orientation=J0.transposed()*dP;
+    r.dual=JE.transposed()*dP;
+    return r;
+}
+
+
+// get rigid transformation change: d(R,t) = H(q) dq
+template<typename  real>
+Mat<3,4,real> DualQuatCoord3<real>::rigid_applyH( const DualQuatCoord3<real>& dq )
+{
+    Mat<3,4,real> dR;
+    dR[0][0]=(real)2.*(-2*orientation[1]*dq.orientation[1]-2*orientation[2]*dq.orientation[2]);
+    dR[0][1]=(real)2.*(orientation[1]*dq.orientation[0]+orientation[0]*dq.orientation[1]-orientation[3]*dq.orientation[2]-orientation[2]*dq.orientation[3]);
+    dR[0][2]=(real)2.*(orientation[2]*dq.orientation[0]+orientation[3]*dq.orientation[1]+orientation[0]*dq.orientation[2]+orientation[1]*dq.orientation[3]);
+    dR[0][3]=(real)2.*(-dual[3]*dq.orientation[0]+dual[2]*dq.orientation[1]-dual[1]*dq.orientation[2]+dual[0]*dq.orientation[3]+orientation[3]*dq.dual[0]-orientation[2]*dq.dual[1]+orientation[1]*dq.dual[2]-orientation[0]*dq.dual[3]);
+    dR[1][0]=(real)2.*(orientation[1]*dq.orientation[0]+orientation[0]*dq.orientation[1]+orientation[3]*dq.orientation[2]+orientation[2]*dq.orientation[3]);
+    dR[1][1]=(real)2.*(-2*orientation[0]*dq.orientation[0]-2*orientation[2]*dq.orientation[2]);
+    dR[1][2]=(real)2.*(-orientation[3]*dq.orientation[0]+orientation[2]*dq.orientation[1]+orientation[1]*dq.orientation[2]-orientation[0]*dq.orientation[3]);
+    dR[1][3]=(real)2.*(-dual[2]*dq.orientation[0]-dual[3]*dq.orientation[1]+dual[0]*dq.orientation[2]+dual[1]*dq.orientation[3]+orientation[2]*dq.dual[0]+orientation[3]*dq.dual[1]-orientation[0]*dq.dual[2]-orientation[1]*dq.dual[3]);
+    dR[2][0]=(real)2.*(orientation[2]*dq.orientation[0]-orientation[3]*dq.orientation[1]+orientation[0]*dq.orientation[2]-orientation[1]*dq.orientation[3]);
+    dR[2][1]=(real)2.*(orientation[3]*dq.orientation[0]+orientation[2]*dq.orientation[1]+orientation[1]*dq.orientation[2]+orientation[0]*dq.orientation[3]);
+    dR[2][2]=(real)2.*(-2*orientation[0]*dq.orientation[0]-2*orientation[1]*dq.orientation[1]);
+    dR[2][3]=(real)2.*(dual[1]*dq.orientation[0]-dual[0]*dq.orientation[1]-dual[3]*dq.orientation[2]+dual[2]*dq.orientation[3]-orientation[1]*dq.dual[0]+orientation[0]*dq.dual[1]+orientation[3]*dq.dual[2]-orientation[2]*dq.dual[3]);
+    return dR;
+}
+// get rotation change: dR = H(q) dq
+template<typename  real>
+Mat<3,3,real> DualQuatCoord3<real>::rotation_applyH( const DualQuatCoord3<real>& dq )
+{
+    Mat<3,3,real> dR;
+    dR[0][0]=(real)2.*(-2*orientation[1]*dq.orientation[1]-2*orientation[2]*dq.orientation[2]);
+    dR[0][1]=(real)2.*(orientation[1]*dq.orientation[0]+orientation[0]*dq.orientation[1]-orientation[3]*dq.orientation[2]-orientation[2]*dq.orientation[3]);
+    dR[0][2]=(real)2.*(orientation[2]*dq.orientation[0]+orientation[3]*dq.orientation[1]+orientation[0]*dq.orientation[2]+orientation[1]*dq.orientation[3]);
+    dR[1][0]=(real)2.*(orientation[1]*dq.orientation[0]+orientation[0]*dq.orientation[1]+orientation[3]*dq.orientation[2]+orientation[2]*dq.orientation[3]);
+    dR[1][1]=(real)2.*(-2*orientation[0]*dq.orientation[0]-2*orientation[2]*dq.orientation[2]);
+    dR[1][2]=(real)2.*(-orientation[3]*dq.orientation[0]+orientation[2]*dq.orientation[1]+orientation[1]*dq.orientation[2]-orientation[0]*dq.orientation[3]);
+    dR[2][0]=(real)2.*(orientation[2]*dq.orientation[0]-orientation[3]*dq.orientation[1]+orientation[0]*dq.orientation[2]-orientation[1]*dq.orientation[3]);
+    dR[2][1]=(real)2.*(orientation[3]*dq.orientation[0]+orientation[2]*dq.orientation[1]+orientation[1]*dq.orientation[2]+orientation[0]*dq.orientation[3]);
+    dR[2][2]=(real)2.*(-2*orientation[0]*dq.orientation[0]-2*orientation[1]*dq.orientation[1]);
+    return dR;
+}
+
+// get quaternion change: dq = H^T(q) d(R,t)
+template<typename  real>
+DualQuatCoord3<real> DualQuatCoord3<real>::rigid_applyHT( const Mat<3,4,real>& dR )
+{
+    DualQuatCoord3<real> r;
+    r.orientation[0]=(real)2.*(orientation[1]*dR[0][1]+orientation[2]*dR[0][2]-dual[3]*dR[0][3]+orientation[1]*dR[1][0]-2*orientation[0]*dR[1][1]-orientation[3]*dR[1][2]-dual[2]*dR[1][3]+orientation[2]*dR[2][0]+orientation[3]*dR[2][1]-2*orientation[0]*dR[2][2]+dual[1]*dR[2][3]);
+    r.orientation[1]=(real)2.*(-2*orientation[1]*dR[0][0]+orientation[0]*dR[0][1]+orientation[3]*dR[0][2]+dual[2]*dR[0][3]+orientation[0]*dR[1][0]+orientation[2]*dR[1][2]-dual[3]*dR[1][3]-orientation[3]*dR[2][0]+orientation[2]*dR[2][1]-2*orientation[1]*dR[2][2]-dual[0]*dR[2][3]);
+    r.orientation[2]=(real)2.*(-2*orientation[2]*dR[0][0]-orientation[3]*dR[0][1]+orientation[0]*dR[0][2]-dual[1]*dR[0][3]+orientation[3]*dR[1][0]-2*orientation[2]*dR[1][1]+orientation[1]*dR[1][2]+dual[0]*dR[1][3]+orientation[0]*dR[2][0]+orientation[1]*dR[2][1]-dual[3]*dR[2][3]);
+    r.orientation[3]=(real)2.*(-orientation[2]*dR[0][1]+orientation[1]*dR[0][2]+dual[0]*dR[0][3]+orientation[2]*dR[1][0]-orientation[0]*dR[1][2]+dual[1]*dR[1][3]-orientation[1]*dR[2][0]+orientation[0]*dR[2][1]+dual[2]*dR[2][3]);
+    r.dual[0]=(real)2.*(orientation[3]*dR[0][3]+orientation[2]*dR[1][3]-orientation[1]*dR[2][3]);
+    r.dual[1]=(real)2.*(-orientation[2]*dR[0][3]+orientation[3]*dR[1][3]+orientation[0]*dR[2][3]);
+    r.dual[2]=(real)2.*(orientation[1]*dR[0][3]-orientation[0]*dR[1][3]+orientation[3]*dR[2][3]);
+    r.dual[3]=(real)2.*(-orientation[0]*dR[0][3]-orientation[1]*dR[1][3]-orientation[2]*dR[2][3]);
+    return r;
+}
+// get quaternion change: dq = H^T(q) dR
+template<typename  real>
+DualQuatCoord3<real> DualQuatCoord3<real>::rotation_applyHT( const Mat<3,3,real>& dR )
+{
+    DualQuatCoord3<real> r;
+    r.orientation[0]=(real)2.*(orientation[1]*dR[0][1]+orientation[2]*dR[0][2]+orientation[1]*dR[1][0]-2*orientation[0]*dR[1][1]-orientation[3]*dR[1][2]+orientation[2]*dR[2][0]+orientation[3]*dR[2][1]-2*orientation[0]*dR[2][2]);
+    r.orientation[1]=(real)2.*(-2*orientation[1]*dR[0][0]+orientation[0]*dR[0][1]+orientation[3]*dR[0][2]+orientation[0]*dR[1][0]+orientation[2]*dR[1][2]-orientation[3]*dR[2][0]+orientation[2]*dR[2][1]-2*orientation[1]*dR[2][2]);
+    r.orientation[2]=(real)2.*(-2*orientation[2]*dR[0][0]-orientation[3]*dR[0][1]+orientation[0]*dR[0][2]+orientation[3]*dR[1][0]-2*orientation[2]*dR[1][1]+orientation[1]*dR[1][2]+orientation[0]*dR[2][0]+orientation[1]*dR[2][1]);
+    r.orientation[3]=(real)2.*(-orientation[2]*dR[0][1]+orientation[1]*dR[0][2]+orientation[2]*dR[1][0]-orientation[0]*dR[1][2]-orientation[1]*dR[2][0]+orientation[0]*dR[2][1]);
+    r.dual[0]=r.dual[1]=r.dual[2]=r.dual[3]=(real)0.;
+    return r;
+}
+
+// get Jacobian change: dJ = H(p) dq
+template<typename  real>
+Mat<3,8,real> DualQuatCoord3<real>::pointToParent_applyH( const DualQuatCoord3<real>& dq ,const Vec<3,real>& p)
+{
+    Mat<3,8,real> dJ;
+    dJ.fill(0);
+    dJ[0][0] = (real)2.*(- dq.dual[3] + dq.orientation[0]*p[0] + dq.orientation[1]*p[1] + dq.orientation[2]*p[2]);	dJ[0][1] =   (real)2.*(dq.dual[2] - dq.orientation[1]*p[0] + dq.orientation[0]*p[1] + dq.orientation[3]*p[2]);	dJ[0][2] = (real)2.*(- dq.dual[1] - dq.orientation[2]*p[0] - dq.orientation[3]*p[1] + dq.orientation[0]*p[2]);	dJ[0][3] = (real)2.*(  dq.dual[0] + dq.orientation[3]*p[0] - dq.orientation[2]*p[1] + dq.orientation[1]*p[2]);
+    dJ[1][0] = -dJ[0][1];	dJ[1][1] = dJ[0][0];	dJ[1][2] = dJ[0][3];	dJ[1][3] = -dJ[0][2];
+    dJ[2][0] = -dJ[0][2];	dJ[2][1] = -dJ[0][3];	dJ[2][2] = dJ[0][0];	dJ[2][3] = dJ[0][1];
+    dJ[0][4] =  (real)2.*dq.orientation[3];		dJ[0][5] = -(real)2.*dq.orientation[2];		dJ[0][6] =  (real)2.*dq.orientation[1];		dJ[0][7] = -(real)2.*dq.orientation[0];
+    dJ[1][4] = -dJ[0][5];	dJ[1][5] = dJ[0][4];	dJ[1][6] = dJ[0][7];	dJ[1][7] = -dJ[0][6];
+    dJ[2][4] = -dJ[0][6];	dJ[2][5] = -dJ[0][7];	dJ[2][6] = dJ[0][4];	dJ[2][7] = dJ[0][5];
+    return dJ;
+}
+
+// get quaternion change: dq = H^T(p) dJ
+template<typename  real>
+DualQuatCoord3<real> DualQuatCoord3<real>::pointToParent_applyHT( const Mat<3,8,real>& dJ ,const Vec<3,real>& p)
+{
+    DualQuatCoord3<real> r;
+    r.orientation[0]=(real)2.*(p[0]*dJ[0][0]+p[1]*dJ[0][1]+p[2]*dJ[0][2]-dJ[0][7]-p[1]*dJ[1][0]+p[0]*dJ[1][1]-p[2]*dJ[1][3]-dJ[1][6]-p[2]*dJ[2][0]+p[0]*dJ[2][2]+p[1]*dJ[2][3]+dJ[2][5]);
+    r.orientation[1]=(real)2.*(p[1]*dJ[0][0]-p[0]*dJ[0][1]+p[2]*dJ[0][3]+dJ[0][6]+p[0]*dJ[1][0]+p[1]*dJ[1][1]+p[2]*dJ[1][2]-dJ[1][7]-p[2]*dJ[2][1]+p[1]*dJ[2][2]-p[0]*dJ[2][3]-dJ[2][4]);
+    r.orientation[2]=(real)2.*(p[2]*dJ[0][0]-p[0]*dJ[0][2]-p[1]*dJ[0][3]-dJ[0][5]+p[2]*dJ[1][1]-p[1]*dJ[1][2]+p[0]*dJ[1][3]+dJ[1][4]+p[0]*dJ[2][0]+p[1]*dJ[2][1]+p[2]*dJ[2][2]-dJ[2][7]);
+    r.orientation[3]=(real)2.*(p[2]*dJ[0][1]-p[1]*dJ[0][2]+p[0]*dJ[0][3]+dJ[0][4]-p[2]*dJ[1][0]+p[0]*dJ[1][2]+p[1]*dJ[1][3]+dJ[1][5]+p[1]*dJ[2][0]-p[0]*dJ[2][1]+p[2]*dJ[2][3]+dJ[2][6]);
+    r.dual[0]=(real)2.*(dJ[0][3]+dJ[1][2]-dJ[2][1]);
+    r.dual[1]=(real)2.*(-dJ[0][2]+dJ[1][3]+dJ[2][0]);
+    r.dual[2]=(real)2.*(dJ[0][1]-dJ[1][0]+dJ[2][3]);
+    r.dual[3]=(real)2.*(-dJ[0][0]-dJ[1][1]-dJ[2][2]);
+    return r;
+}
+
+
+// Project a point from the parent frame to the child frame
+template<typename  real>
+Vec<3,real> DualQuatCoord3<real>::pointToChild( const Vec<3,real>& v )
+{
+    Vec<3,real> p,v2=v-this->getTranslation();
+    p[0]=(real)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v2[0] + (2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3])) * v2[1] + (2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3])) * v2[2]);
+    p[1]=(real)((2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]))*v2[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v2[1] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v2[2]);
+    p[2]=(real)((2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3]))*v2[0] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v2[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v2[2]);
+    return p;
+}
+
+// compute the projection of a vector from the parent frame to the child
+template<typename  real>
+Vec<3,real> DualQuatCoord3<real>::vectorToChild( const Vec<3,real>& v )
+{
+    //return orientation.inverseRotate(v);
+    Vec<3,real> p;
+    p[0]=(real)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v[0] + (2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3])) * v[1] + (2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3])) * v[2]);
+    p[1]=(real)((2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]))*v[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v[1] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v[2]);
+    p[2]=(real)((2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3]))*v[0] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v[2]);
+    return p;
+}
+
+
+
+
 
 } // namespace helper
 

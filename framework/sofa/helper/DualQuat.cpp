@@ -32,8 +32,8 @@ namespace helper
 {
 
 // instanciate the classes
-template class DualQuat<double>;
-template class DualQuat<float>;
+template class DualQuatCoord3<double>;
+template class DualQuatCoord3<float>;
 
 } // namespace helper
 
