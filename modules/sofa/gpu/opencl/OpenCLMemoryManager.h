@@ -27,6 +27,7 @@
 
 #include "myopencl.h"
 #include <sofa/helper/MemoryManager.h>
+#include <sofa/core/objectmodel/BaseClass.h>
 #include <iostream>
 #include <stdlib.h>
 #include "OpenCLCommon.h"
@@ -115,12 +116,14 @@ public:
     static void memcpyHostToDevice(int d, device_pointer dDestPointer,const host_pointer hSrcPointer, size_t n)
     {
         DEBUG_TEXT("OpenCLMemoryManager::memcpyHostToDevice");
+        if (myopenclVerboseLevel>=LOG_TRACE) std::cout << "OPENCL: CPU->GPU copy of "<<sofa::core::objectmodel::BaseClass::decodeTypeName ( typeid ( *hSrcPointer ) ) <<": "<<n*sizeof(T) <<" B"<<std::endl;
         myopenclEnqueueWriteBuffer(d,(dDestPointer).m,(dDestPointer).offset,hSrcPointer,n);
     }
 
     static void memcpyDeviceToHost(int d, host_pointer hDestPointer, const device_pointer dSrcPointer, size_t n)
     {
         DEBUG_TEXT("OpenCLMemoryManager::memcpyDeviceToHost");
+        if (myopenclVerboseLevel>=LOG_TRACE) std::cout << "OPENCL: GPU->CPU copy of "<<sofa::core::objectmodel::BaseClass::decodeTypeName ( typeid ( *hDestPointer ) ) <<": "<<n*sizeof(T) <<" B"<<std::endl;
         myopenclEnqueueReadBuffer(d,hDestPointer,(dSrcPointer).m,(dSrcPointer).offset,n);
     }
 
@@ -135,23 +138,6 @@ public:
         DEBUG_TEXT("OpenCLMemoryManager::memsetDevice");
         OpenCLMemoryManager_memsetDevice(d, dDestPointer, value, n);
     }
-
-//	static void memsetDevice(int d, device_pointer dDestPointer, int value, size_t n)
-//	{
-//		myopenclMemsetDevice(d,dDestPointer,value,n);
-//	}
-
-
-
-    /*	static void memsetDevice(int d, device_pointer dDestPointer, int value, size_t n)
-    	{
-    		T* array = new T[n];
-    		memset((void*)array, value, n);
-    		myopenclEnqueueWriteBuffer(d,(dDestPointer).m,(dDestPointer).offset,(void*)array,n);
-    		delete(array);
-    	}*/
-
-
 
     static int getBufferDevice()
     {

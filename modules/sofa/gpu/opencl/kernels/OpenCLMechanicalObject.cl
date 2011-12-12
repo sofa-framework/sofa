@@ -141,7 +141,7 @@ __kernel void MechanicalObject_Vec1t_vDot(
 
 
 
-__kernel void MechanicalObject_Vec13_vAdd(
+__kernel void MechanicalObject_Vec3t_vAdd(
     __global Real* res,
     __global const Real* a,
     __global const Real* b

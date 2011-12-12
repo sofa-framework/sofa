@@ -1,7 +1,4 @@
 
-
-
-
 __kernel void MemoryManager_memset(
     __global unsigned int *res1,
     unsigned int offset,

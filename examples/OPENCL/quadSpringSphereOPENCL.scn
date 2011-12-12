@@ -13,9 +13,9 @@
 	<Node name="SquareCloth1">
 		<EulerImplicit rayleighMass="0.05"/>
 		<CGLinearSolver iterations="10" threshold="0.000001"/>
+<!--		<Euler/> -->
 
 		<MechanicalObject template="OpenCLVec3f" />
-		<!-- --> <WriteState filename="OPENCL" /> <!-- -->
 
 		<UniformMass totalmass="100" />
 
@@ -26,12 +26,13 @@
 		<MeshSpringForceField name="Springs" stiffness="1000" damping="0"/>
 
 		<QuadBendingSprings name="Bend" stiffness="2000" damping="1"/>
+
 		<SphereForceField stiffness="1000" damping="1" center="0 1 3" radius="4" />
 		<PlaneForceField stiffness="1000" damping="20" normal="0 1 0" d="-3" />
-		
+
 		<Node name="Visu">
 			<OglModel name="Visual" color="green"/>
-			<IdentityMapping object1="../.." object2="Visual"/>
+			<IdentityMapping input="@.." output="@Visual"/>
 		</Node>
 	</Node>
 	

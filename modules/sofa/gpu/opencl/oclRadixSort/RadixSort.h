@@ -49,7 +49,6 @@
 #include "../OpenCLKernel.h"
 
 using namespace sofa::gpu::opencl;
-using namespace sofa::helper;
 
 class RadixSort
 {

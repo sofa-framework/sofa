@@ -69,8 +69,8 @@ int FixedConstraintOpenCLClass = core::RegisterObject("Supports GPU-side computa
 //////   kernels
 
 
-sofa::helper::OpenCLProgram* FixedConstraintOpenCLFloat_program;
-sofa::helper::OpenCLProgram* FixedConstraintOpenCLDouble_program;
+OpenCLProgram* FixedConstraintOpenCLFloat_program = NULL;
+OpenCLProgram* FixedConstraintOpenCLDouble_program = NULL;
 
 
 void FixedConstraint_CreateProgramWithFloat()
@@ -82,11 +82,8 @@ void FixedConstraint_CreateProgramWithFloat()
         types["Real"]="float";
         types["Real4"]="float4";
 
-        std::string source = *sofa::helper::OpenCLProgram::loadSource("OpenCLFixedConstraint.cl");
-        source = stringBSIZE + source;
-
         FixedConstraintOpenCLFloat_program
-            = new sofa::helper::OpenCLProgram(&source,&types);
+            = new OpenCLProgram("OpenCLFixedConstraint.cl",stringBSIZE,&types);
 
         FixedConstraintOpenCLFloat_program->buildProgram();
         sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);
@@ -106,7 +103,7 @@ void FixedConstraint_CreateProgramWithDouble()
         types["Real4"]="double4";
 
         FixedConstraintOpenCLDouble_program
-            = new sofa::helper::OpenCLProgram(sofa::helper::OpenCLProgram::loadSource("OpenCLFixedConstraint.cl"),&types);
+            = new OpenCLProgram("OpenCLFixedConstraint.cl",stringBSIZE,&types);
 
         FixedConstraintOpenCLDouble_program->buildProgram();
 
@@ -114,7 +111,7 @@ void FixedConstraint_CreateProgramWithDouble()
 }
 
 
-sofa::helper::OpenCLKernel * FixedConstraintOpenCL3f_addForce_kernel;
+OpenCLKernel * FixedConstraintOpenCL3f_addForce_kernel = NULL;
 void FixedConstraintOpenCL3f_projectResponseIndexed(unsigned int size, const _device_pointer indices, _device_pointer dx)
 {
     DEBUG_TEXT("FixedConstraintOpenCL3f_projectResponseIndexed");
@@ -122,7 +119,7 @@ void FixedConstraintOpenCL3f_projectResponseIndexed(unsigned int size, const _de
 
     FixedConstraint_CreateProgramWithFloat();
     if(FixedConstraintOpenCL3f_addForce_kernel==NULL)FixedConstraintOpenCL3f_addForce_kernel
-            = new sofa::helper::OpenCLKernel(FixedConstraintOpenCLFloat_program,"FixedConstraint3t_projectResponseIndexed");
+            = new OpenCLKernel(FixedConstraintOpenCLFloat_program,"FixedConstraint3t_projectResponseIndexed");
 
 
     FixedConstraintOpenCL3f_addForce_kernel->setArg<unsigned int>(0,&size);

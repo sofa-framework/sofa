@@ -49,7 +49,7 @@ int SPHFluidForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side comp
 
 /////////////////////////////
 
-sofa::helper::OpenCLProgram* SPHFluidForceFieldOpenCLFloat_program;
+OpenCLProgram* SPHFluidForceFieldOpenCLFloat_program = NULL;
 
 
 void SPHFluidForceField_CreateProgramWithFloat()
@@ -60,11 +60,8 @@ void SPHFluidForceField_CreateProgramWithFloat()
         types["Real"]="float";
         types["Real4"]="float4";
 
-        std::string source =*sofa::helper::OpenCLProgram::loadSource("OpenCLSPHFluidForceField.cl");
-        source = stringBSIZE + source;
-
         SPHFluidForceFieldOpenCLFloat_program
-            = new sofa::helper::OpenCLProgram(&source,&types);
+            = new OpenCLProgram("OpenCLSPHFluidForceField.cl",stringBSIZE,&types);
 
         SPHFluidForceFieldOpenCLFloat_program->buildProgram();
 
@@ -73,7 +70,7 @@ void SPHFluidForceField_CreateProgramWithFloat()
     }
 }
 
-sofa::helper::OpenCLKernel *SPHFluidForceFieldOpenCL3f_computeDensity_kernel;
+OpenCLKernel *SPHFluidForceFieldOpenCL3f_computeDensity_kernel = NULL;
 void SPHFluidForceFieldOpenCL3f_computeDensity(unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3f* params,_device_pointer pos4, const _device_pointer x)
 {
 
@@ -84,7 +81,7 @@ void SPHFluidForceFieldOpenCL3f_computeDensity(unsigned int size, const _device_
     SPHFluidForceField_CreateProgramWithFloat();
 //std::cout << BSIZE << " " << stringBSIZE << "\n";
     if(SPHFluidForceFieldOpenCL3f_computeDensity_kernel==NULL)SPHFluidForceFieldOpenCL3f_computeDensity_kernel
-            = new sofa::helper::OpenCLKernel(SPHFluidForceFieldOpenCLFloat_program,"SPHFluidForceField_computeDensity");
+            = new OpenCLKernel(SPHFluidForceFieldOpenCLFloat_program,"SPHFluidForceField_computeDensity");
 
 
     SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<unsigned int>(0,&size);
@@ -113,7 +110,7 @@ void SPHFluidForceFieldOpenCL3f_computeDensity(unsigned int size, const _device_
 
 }
 
-sofa::helper::OpenCLKernel *SPHFluidForceFieldOpenCL3f_addForce_kernel;
+OpenCLKernel *SPHFluidForceFieldOpenCL3f_addForce_kernel = NULL;
 void SPHFluidForceFieldOpenCL3f_addForce (unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3f* params,_device_pointer f, const _device_pointer pos4, const _device_pointer v)
 {
 
@@ -148,7 +145,7 @@ void SPHFluidForceFieldOpenCL3f_addForce (unsigned int size, const _device_point
     SPHFluidForceField_CreateProgramWithFloat();
 
     if(SPHFluidForceFieldOpenCL3f_addForce_kernel==NULL)SPHFluidForceFieldOpenCL3f_addForce_kernel
-            = new sofa::helper::OpenCLKernel(SPHFluidForceFieldOpenCLFloat_program,"SPHFluidForceField_addForce");
+            = new OpenCLKernel(SPHFluidForceFieldOpenCLFloat_program,"SPHFluidForceField_addForce");
 
 
 

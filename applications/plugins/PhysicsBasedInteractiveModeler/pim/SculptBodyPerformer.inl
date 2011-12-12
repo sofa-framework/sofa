@@ -201,7 +201,7 @@ void SculptBodyPerformer<DataTypes>::start()
         mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
         if (!mstateCollision)
         {
-            std::cerr << "uncompatible MState during Mouse Interaction " << std::endl;
+            std::cerr << "incompatible MState during Mouse Interaction " << std::endl;
             return;
         }
 
@@ -230,7 +230,7 @@ void SculptBodyPerformer<DataTypes>::execute()
         mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
         if (!mstateCollision)
         {
-            std::cerr << "uncompatible MState during Mouse Interaction " << std::endl;
+            std::cerr << "incompatible MState during Mouse Interaction " << std::endl;
             return;
         }
         inflate();
@@ -552,7 +552,7 @@ void SculptBodyPerformer<DataTypes>::animate()
         mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
         if (!mstateCollision)
         {
-            std::cerr << "uncompatible MState during Mouse Interaction " << std::endl;
+            std::cerr << "incompatible MState during Mouse Interaction " << std::endl;
             return;
         }
 

@@ -44,24 +44,20 @@ namespace opencl
 #define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 
-sofa::helper::OpenCLProgram* OpenCLMemoryManager_program;
+OpenCLProgram* OpenCLMemoryManager_program = NULL;
 void OpenCLMemoryManager_CreateProgram()
 {
     if(OpenCLMemoryManager_program==NULL)
     {
-
-        std::string source =*sofa::helper::OpenCLProgram::loadSource("OpenCLMemoryManager.cl");
-        source = stringBSIZE + source;
-
         OpenCLMemoryManager_program
-            = new sofa::helper::OpenCLProgram(&source);
+            = new OpenCLProgram("OpenCLMemoryManager.cl",stringBSIZE);
         OpenCLMemoryManager_program->buildProgram();
         sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);
         std::cout << OpenCLMemoryManager_program->buildLog(0);
     }
 }
 
-sofa::helper::OpenCLKernel * OpenCLMemoryManager_memsetDevice_kernel;
+OpenCLKernel * OpenCLMemoryManager_memsetDevice_kernel = NULL;
 
 
 void OpenCLMemoryManager_memsetDevice(int d, _device_pointer a, int value, size_t size)
@@ -76,7 +72,7 @@ void OpenCLMemoryManager_memsetDevice(int d, _device_pointer a, int value, size_
     OpenCLMemoryManager_CreateProgram();
 
     if(OpenCLMemoryManager_memsetDevice_kernel==NULL)OpenCLMemoryManager_memsetDevice_kernel
-            = new sofa::helper::OpenCLKernel(OpenCLMemoryManager_program,"MemoryManager_memset");
+            = new OpenCLKernel(OpenCLMemoryManager_program,"MemoryManager_memset");
 
     i= value;
 

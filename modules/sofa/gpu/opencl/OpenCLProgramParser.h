@@ -22,12 +22,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OPENCLPROGRAMPARSER_H
-#define OPENCLPROGRAMPARSER_H
+#ifndef SOFA_GPU_OPENCL_OPENCLPROGRAMPARSER_H
+#define SOFA_GPU_OPENCL_OPENCLPROGRAMPARSER_H
 
 #include <iostream>
 #include <vector>
 #include <map>
+
+
+namespace sofa
+{
+
+namespace gpu
+{
+
+namespace opencl
+{
 
 class OpenCLProgramParser
 {
@@ -210,4 +220,10 @@ public:
 
 };
 
-#endif // OPENCLPROGRAMPARSER_H
+}
+
+}
+
+}
+
+#endif // SOFA_GPU_OPENCL_OPENCLPROGRAMPARSER_H
