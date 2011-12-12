@@ -62,6 +62,7 @@ SkinningMapping<TIn, TOut>::SkinningMapping ()
     , maskFrom(NULL)
     , maskTo(NULL)
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame." ) )
+    , useDQ ( initData ( &useDQ, false, "useDQ","use dual quaternion blending instead of linear blending ." ) )
     , nbRef ( initData ( &nbRef, ( unsigned ) 4,"nbRef","Number of primitives influencing each point." ) )
     , f_index ( initData ( &f_index,"indices","parent indices for each child." ) )
     , weight ( initData ( &weight,"weight","influence weights of the Dofs." ) )
@@ -126,19 +127,46 @@ void SkinningMapping<TIn, TOut>::reinit()
 
     // precompute local/rotated positions
 
-    f_localPos.resize(out.size());
-    f_rotatedPos.resize(out.size());
-
-    for(unsigned int i=0; i<out.size(); i++ )
+    if(this->useDQ.getValue())
     {
-        Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
-        f_localPos[i].resize(nbref);
-        f_rotatedPos[i].resize(nbref);
-
-        for (unsigned int j=0 ; j<nbref; j++ )
+        f_T0.resize(out.size());
+        f_TE.resize(out.size());
+        f_Pa.resize(out.size());
+        f_Pt.resize(out.size());
+        for(unsigned int i=0; i<out.size(); i++ )
         {
-            f_localPos[i][j]= xfrom[index[i][j]].pointToChild(cto) * m_weights[i][j];
-            f_rotatedPos[i][j]= (cto - xfrom[index[i][j]].getCenter() ) * m_weights[i][j];
+            Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
+            f_T0[i].resize(nbref);
+            f_TE[i].resize(nbref);
+            f_Pa[i].resize(nbref);
+            f_Pt[i].resize(nbref);
+
+            for (unsigned int j=0 ; j<nbref; j++ )
+            {
+                DQCoord T0inv=xfrom[index[i][j]]; T0inv.invert();
+                T0inv.multLeft_getJ(f_T0[i][j],f_TE[i][j]);
+                f_T0[i][j]*=m_weights[i][j]; f_TE[i][j]*=m_weights[i][j];
+            }
+            //apply(InitialTransform);
+        }
+
+    }
+    else
+    {
+        f_localPos.resize(out.size());
+        f_rotatedPos.resize(out.size());
+
+        for(unsigned int i=0; i<out.size(); i++ )
+        {
+            Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
+            f_localPos[i].resize(nbref);
+            f_rotatedPos[i].resize(nbref);
+
+            for (unsigned int j=0 ; j<nbref; j++ )
+            {
+                f_localPos[i][j]= xfrom[index[i][j]].pointToChild(cto) * m_weights[i][j];
+                f_rotatedPos[i][j]= (cto - xfrom[index[i][j]].getCenter() ) * m_weights[i][j];
+            }
         }
     }
 
@@ -204,13 +232,59 @@ void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const type
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( this->weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
 
-    for ( unsigned int i = 0 ; i < out.size(); i++ )
+    if(this->useDQ.getValue())
     {
-        out[i] = OutCoord ();
-        for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+        for ( unsigned int i = 0 ; i < out.size(); i++ )
         {
-            f_rotatedPos[i][j]=in[index[i][j]].rotate(f_localPos[i][j]);
-            out[i] += in[index[i][j]].getCenter() * m_weights[i][j] + f_rotatedPos[i][j];
+            out[i] = OutCoord ();
+
+            DQCoord q;		// frame current position in DQ form
+            DQCoord b;      // linearly blended dual quaternions : b= sum_i w_i q_i*q0_i^-1
+
+            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+            {
+                q=in[index[i][j]];
+                // weighted relative transform : w_i.q_i*q0_i^-1
+                q.getDual() = f_TE[i][j]*q.getOrientation() + f_T0[i][j]*q.getDual();
+                q.getOrientation() = f_T0[i][j]*q.getOrientation();
+                b+=q;
+            }
+
+            DQCoord bn=b;       // normalized dual quaternion : bn=b/|b|
+            bn.normalize();
+            Mat44 N0,NE; // Real/Dual part of the normalization Jacobian : dbn = [N0,NE] db
+            b.normalize_getJ( N0 , NE );
+
+            out[i] = bn.pointToParent( this->f_initPos.getValue()[i] );
+            Mat34 Q0,QE; // Real/Dual part of the transformation Jacobian : dP = [Q0,QE] dbn
+            bn.pointToParent_getJ( Q0 , QE , this->f_initPos.getValue()[i] );
+
+            Mat34 QN0 = Q0*N0 + QE*NE , QNE = QE * N0;
+            Mat43 TL0 , TLE;
+
+            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+            {
+                q=in[index[i][j]];
+                q.velocity_getJ ( TL0 , TLE );  // Real/Dual part of quaternion Jacobian : dq_i = [L0,LE] [Omega_i, dt_i]
+                TLE  = f_TE[i][j] * TL0 + f_T0[i][j] * TLE;
+                TL0  = f_T0[i][j] * TL0 ;
+                // dP = QNTL [Omega_i, dt_i]
+                f_Pa[i][j] = QN0 * TL0 + QNE * TLE;
+                f_Pt[i][j] = QNE * TL0 ;
+            }
+
+        }
+    }
+    else
+    {
+        for ( unsigned int i = 0 ; i < out.size(); i++ )
+        {
+            out[i] = OutCoord ();
+            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+            {
+                f_rotatedPos[i][j]=in[index[i][j]].rotate(f_localPos[i][j]);
+                out[i] += in[index[i][j]].getCenter() * m_weights[i][j] + f_rotatedPos[i][j];
+            }
         }
     }
 }
@@ -225,12 +299,26 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
 
     if ( ! ( this->maskTo->isInUse() ) )
     {
-        for ( unsigned int i=0; i<out.size(); i++ )
+        if(this->useDQ.getValue())
         {
-            out[i] = OutDeriv();
-            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+            for ( unsigned int i=0; i<out.size(); i++ )
             {
-                out[i] += getLinear( in[index[i][j]] ) * m_weights[i][j] + cross(getAngular(in[index[i][j]]), f_rotatedPos[i][j]);
+                out[i] = OutDeriv();
+                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+                {
+                    out[i] += f_Pt[i][j] * getLinear( in[index[i][j]] )  + f_Pa[i][j] * getAngular(in[index[i][j]]);
+                }
+            }
+        }
+        else
+        {
+            for ( unsigned int i=0; i<out.size(); i++ )
+            {
+                out[i] = OutDeriv();
+                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+                {
+                    out[i] += getLinear( in[index[i][j]] ) * m_weights[i][j] + cross(getAngular(in[index[i][j]]), f_rotatedPos[i][j]);
+                }
             }
         }
     }
@@ -240,14 +328,28 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
         const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it;
-
-        for ( it=indices.begin(); it!=indices.end(); it++ )
+        if(this->useDQ.getValue())
         {
-            unsigned int i= ( unsigned int ) ( *it );
-            out[i] = OutDeriv();
-            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+            for ( it=indices.begin(); it!=indices.end(); it++ )
             {
-                out[i] += getLinear( in[index[i][j]] ) * m_weights[i][j] + cross(getAngular(in[index[i][j]]), f_rotatedPos[i][j]);
+                unsigned int i= ( unsigned int ) ( *it );
+                out[i] = OutDeriv();
+                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+                {
+                    out[i] += f_Pt[i][j] * getLinear( in[index[i][j]] )  + f_Pa[i][j] * getAngular(in[index[i][j]]);
+                }
+            }
+        }
+        else
+        {
+            for ( it=indices.begin(); it!=indices.end(); it++ )
+            {
+                unsigned int i= ( unsigned int ) ( *it );
+                out[i] = OutDeriv();
+                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+                {
+                    out[i] += getLinear( in[index[i][j]] ) * m_weights[i][j] + cross(getAngular(in[index[i][j]]), f_rotatedPos[i][j]);
+                }
             }
         }
     }
@@ -263,13 +365,26 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
     if ( ! ( this->maskTo->isInUse() ) )
     {
         this->maskFrom->setInUse ( false );
-
-        for ( unsigned int i=0; i<in.size(); i++ )
+        if(this->useDQ.getValue())
         {
-            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+            for ( unsigned int i=0; i<in.size(); i++ )
             {
-                getLinear(out[index[i][j]])  += in[i] * m_weights[i][j];
-                getAngular(out[index[i][j]]) += cross(f_rotatedPos[i][j], in[i]);
+                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+                {
+                    getLinear(out[index[i][j]])  += f_Pt[i][j].transposed() * in[i];
+                    getAngular(out[index[i][j]]) += f_Pa[i][j].transposed() * in[i];
+                }
+            }
+        }
+        else
+        {
+            for ( unsigned int i=0; i<in.size(); i++ )
+            {
+                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+                {
+                    getLinear(out[index[i][j]])  += in[i] * m_weights[i][j];
+                    getAngular(out[index[i][j]]) += cross(f_rotatedPos[i][j], in[i]);
+                }
             }
         }
     }
@@ -280,15 +395,30 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
 
         ParticleMask::InternalStorage::const_iterator it;
 
-        for ( it=indices.begin(); it!=indices.end(); it++ )
+        if(this->useDQ.getValue())
         {
-            const int i= ( int ) ( *it );
-
-            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+            for ( it=indices.begin(); it!=indices.end(); it++ )
             {
-                getLinear(out[index[i][j]])  += in[i] * m_weights[i][j];
-                getAngular(out[index[i][j]]) += cross(f_rotatedPos[i][j], in[i]);
-                maskFrom->insertEntry ( index[i][j] );
+                const int i= ( int ) ( *it );
+                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+                {
+                    getLinear(out[index[i][j]])  += f_Pt[i][j].transposed() * in[i];
+                    getAngular(out[index[i][j]]) += f_Pa[i][j].transposed() * in[i];
+                    maskFrom->insertEntry ( index[i][j] );
+                }
+            }
+        }
+        else
+        {
+            for ( it=indices.begin(); it!=indices.end(); it++ )
+            {
+                const int i= ( int ) ( *it );
+                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+                {
+                    getLinear(out[index[i][j]])  += in[i] * m_weights[i][j];
+                    getAngular(out[index[i][j]]) += cross(f_rotatedPos[i][j], in[i]);
+                    maskFrom->insertEntry ( index[i][j] );
+                }
             }
         }
     }
@@ -303,24 +433,45 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacob
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
 
-    for (typename Out::MatrixDeriv::RowConstIterator childJacobian = childJacobians.begin(); childJacobian != childJacobians.end(); ++childJacobian)
-    {
-        typename In::MatrixDeriv::RowIterator parentJacobian = parentJacobians.writeLine(childJacobian.index());
 
-        for (typename Out::MatrixDeriv::ColConstIterator childParticle = childJacobian.begin(); childParticle != childJacobian.end(); ++childParticle)
+    if(this->useDQ.getValue())
+        for (typename Out::MatrixDeriv::RowConstIterator childJacobian = childJacobians.begin(); childJacobian != childJacobians.end(); ++childJacobian)
         {
-            unsigned int childIndex = childParticle.index();
-            const OutDeriv& childJacobianVec = childParticle.val();
+            typename In::MatrixDeriv::RowIterator parentJacobian = parentJacobians.writeLine(childJacobian.index());
 
-            for ( unsigned int j=0; j<nbref && m_weights[childIndex][j]>0.; j++ )
+            for (typename Out::MatrixDeriv::ColConstIterator childParticle = childJacobian.begin(); childParticle != childJacobian.end(); ++childParticle)
             {
-                InDeriv parentJacobianVec;
-                getLinear(parentJacobianVec)  += childJacobianVec * m_weights[childIndex][j];
-                getAngular(parentJacobianVec) += cross(f_rotatedPos[childIndex][j], childJacobianVec);
-                parentJacobian.addCol(index[childIndex][j],parentJacobianVec);
+                unsigned int childIndex = childParticle.index();
+                const OutDeriv& childJacobianVec = childParticle.val();
+
+                for ( unsigned int j=0; j<nbref && m_weights[childIndex][j]>0.; j++ )
+                {
+                    InDeriv parentJacobianVec;
+                    getLinear(parentJacobianVec)  += f_Pt[childIndex][j].transposed() * childJacobianVec;
+                    getAngular(parentJacobianVec) += f_Pa[childIndex][j].transposed() * childJacobianVec;
+                    parentJacobian.addCol(index[childIndex][j],parentJacobianVec);
+                }
             }
         }
-    }
+    else
+        for (typename Out::MatrixDeriv::RowConstIterator childJacobian = childJacobians.begin(); childJacobian != childJacobians.end(); ++childJacobian)
+        {
+            typename In::MatrixDeriv::RowIterator parentJacobian = parentJacobians.writeLine(childJacobian.index());
+
+            for (typename Out::MatrixDeriv::ColConstIterator childParticle = childJacobian.begin(); childParticle != childJacobian.end(); ++childParticle)
+            {
+                unsigned int childIndex = childParticle.index();
+                const OutDeriv& childJacobianVec = childParticle.val();
+
+                for ( unsigned int j=0; j<nbref && m_weights[childIndex][j]>0.; j++ )
+                {
+                    InDeriv parentJacobianVec;
+                    getLinear(parentJacobianVec)  += childJacobianVec * m_weights[childIndex][j];
+                    getAngular(parentJacobianVec) += cross(f_rotatedPos[childIndex][j], childJacobianVec);
+                    parentJacobian.addCol(index[childIndex][j],parentJacobianVec);
+                }
+            }
+        }
 }
 
 

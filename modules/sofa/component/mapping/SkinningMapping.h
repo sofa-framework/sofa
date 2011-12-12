@@ -32,6 +32,8 @@
 #include <sofa/helper/SVector.h>
 #include <sofa/component/component.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/helper/DualQuat.h>
+#include <sofa/defaulttype/Mat.h>
 
 namespace sofa
 {
@@ -44,7 +46,6 @@ namespace mapping
 
 using sofa::helper::vector;
 using sofa::helper::SVector;
-
 
 template <class TIn, class TOut>
 class SkinningMapping : public core::Mapping<TIn, TOut>
@@ -73,15 +74,31 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real OutReal;
 
+    typedef helper::DualQuatCoord3<OutReal> DQCoord;
+    typedef defaulttype::Mat<4,4,OutReal> Mat44;
+    typedef defaulttype::Mat<3,3,OutReal> Mat33;
+    typedef defaulttype::Mat<3,4,OutReal> Mat34;
+    typedef defaulttype::Mat<4,3,OutReal> Mat43;
+
 protected:
 
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
     Data<VecOutCoord> f_initPos;  // initial child coordinates in the world reference frame
-    vector<vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight
-    vector<vector<OutCoord> > f_rotatedPos;  /// rotated child coordinates
 
+    // data for linear blending
+    vector<vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
+    vector<vector<OutCoord> > f_rotatedPos;  /// rotated child coordinates :  dp = Omega_i x f_rotatedPos  :
+
+    // data for dual quat blending
+    vector<vector< Mat44 > > f_T0; /// Real part of blended quaternion Jacobian : db = [T0,TE] dq
+    vector<vector< Mat44 > > f_TE; /// Dual part of blended quaternion Jacobian : db = [T0,TE] dq
+    vector<vector< Mat33 > > f_Pa; /// dp = Pa.Omega_i  : affine part
+    vector<vector< Mat33 > > f_Pt; /// dp = Pt.dt_i : translation part
+
+
+    Data<bool> useDQ;  // use dual quat blending instead of linear blending
     Data<unsigned int> nbRef; // Number of primitives influencing each point.
     Data< vector<SVector<unsigned int> > > f_index; // indices of primitives influencing each point.
     Data< vector<SVector<InReal> > > weight;
