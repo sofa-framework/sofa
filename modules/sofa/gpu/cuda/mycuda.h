@@ -99,7 +99,6 @@ extern "C" {
     };
 
     extern MycudaVerboseLevel SOFA_GPU_CUDA_API mycudaVerboseLevel;
-    extern int mycudaMultiOpMax;
 }
 
 

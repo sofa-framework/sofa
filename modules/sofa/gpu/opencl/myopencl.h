@@ -78,8 +78,8 @@ extern "C" {
     SOFA_GPU_OPENCL_API extern void myopenclEnqueueCopyBuffer(int device, cl_mem ddest,size_t destOffset, const cl_mem dsrc,size_t srcOffset, size_t n);
     SOFA_GPU_OPENCL_API extern void myopenclSetKernelArg(cl_kernel kernel, int num_arg,int size,void* arg);
 
-    SOFA_GPU_OPENCL_API extern void myopenclBuildProgram(void* p);
-    SOFA_GPU_OPENCL_API extern void myopenclBuildProgramWithFlags(void * program, char * flags);
+    SOFA_GPU_OPENCL_API extern bool myopenclBuildProgram(void* p);
+    SOFA_GPU_OPENCL_API extern bool myopenclBuildProgramWithFlags(void * program, char * flags);
     SOFA_GPU_OPENCL_API extern cl_program myopenclProgramWithSource(const char * s,const size_t size);
     SOFA_GPU_OPENCL_API extern cl_kernel myopenclCreateKernel(void* p,const char * kernel_name);
     SOFA_GPU_OPENCL_API extern void myopenclExecKernel(int device,cl_kernel kernel,unsigned int work_dim,const size_t *global_work_offset,const size_t *global_work_size,const size_t *local_work_size);
@@ -93,7 +93,16 @@ extern "C" {
     SOFA_GPU_OPENCL_API extern void myopenclShowError(std::string file, int line);
     SOFA_GPU_OPENCL_API extern std::string myopenclPath();
 
-    extern int myopenclMultiOpMax;
+
+    enum MyopenclVerboseLevel
+    {
+        LOG_NONE = 0,
+        LOG_ERR = 1,
+        LOG_INFO = 2,
+        LOG_TRACE = 3
+    };
+
+    extern MyopenclVerboseLevel SOFA_GPU_OPENCL_API myopenclVerboseLevel;
 }
 
 template<class T>
@@ -110,7 +119,7 @@ void myopenclSetKernelArg<_device_pointer>(cl_kernel kernel, int num_arg, const 
 
 
 #if defined(__cplusplus)
-} // namespace cuda
+} // namespace opencl
 } // namespace gpu
 } // namespace sofa
 #endif

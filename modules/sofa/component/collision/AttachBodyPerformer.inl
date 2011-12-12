@@ -171,7 +171,7 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         index = picked.indexCollisionElement;
         if (!mstateCollision)
         {
-            this->interactor->serr << "uncompatible MState during Mouse Interaction " << this->interactor->sendl;
+            this->interactor->serr << "incompatible MState during Mouse Interaction " << this->interactor->sendl;
             return false;
         }
     }

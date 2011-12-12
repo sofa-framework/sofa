@@ -6,4 +6,6 @@ HEADERS += myopencl.h \
     gpuopencl.h \
     OpenCLCommon.h
 SOURCES += myopencl.cpp \
-    OpenCLCommon.cpp
+    OpenCLCommon.cpp \
+    OpenCLProgram.cpp \
+    OpenCLMouseInteraction.cpp

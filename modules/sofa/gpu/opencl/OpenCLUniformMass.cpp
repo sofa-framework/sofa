@@ -60,11 +60,11 @@ int UniformMassOpenCLClass = core::RegisterObject("Supports GPU-side computation
 ///////////////////////////////////////
 //             kernels
 
-sofa::helper::OpenCLProgram* UniformMassOpenCLFloat_program;
+OpenCLProgram* UniformMassOpenCLFloat_program = NULL;
 
-sofa::helper::OpenCLKernel * UniformMassOpenCL3f_addForce_kernel;
-sofa::helper::OpenCLKernel * UniformMassOpenCL3f_addMDX_kernel;
-sofa::helper::OpenCLKernel * UniformMassOpenCL3f_accFromF_kernel;
+OpenCLKernel * UniformMassOpenCL3f_addForce_kernel = NULL;
+OpenCLKernel * UniformMassOpenCL3f_addMDX_kernel = NULL;
+OpenCLKernel * UniformMassOpenCL3f_accFromF_kernel = NULL;
 void UniformMass_CreateProgramWithFloat()
 {
     if(UniformMassOpenCLFloat_program==NULL)
@@ -74,25 +74,21 @@ void UniformMass_CreateProgramWithFloat()
         types["Real"]="float";
         types["Real4"]="float4";
 
-        std::string source = *sofa::helper::OpenCLProgram::loadSource("OpenCLUniformMass.cl");
-        source = stringBSIZE + source;
-
-
         UniformMassOpenCLFloat_program
-            = new sofa::helper::OpenCLProgram(&source,&types);
+            = new OpenCLProgram("OpenCLUniformMass.cl",stringBSIZE,&types);
 
         UniformMassOpenCLFloat_program->buildProgram();
         sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);
         std::cout << UniformMassOpenCLFloat_program->buildLog(0);
 
         UniformMassOpenCL3f_addForce_kernel
-            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addForce_v2");
+            = new OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addForce_v2");
 
         UniformMassOpenCL3f_addMDX_kernel
-            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addMDx");
+            = new OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addMDx");
 
         UniformMassOpenCL3f_accFromF_kernel
-            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_accFromF");
+            = new OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_accFromF");
 
     }
 }

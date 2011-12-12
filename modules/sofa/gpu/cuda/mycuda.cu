@@ -164,17 +164,6 @@ int deviceCount = 0;
 int mycudaInit(int device)
 {
     cudaInitCalled = true;
-    {
-        const char* var = mygetenv("CUDA_MULTIOPS");
-        if (var && *var)
-        {
-            mycudaMultiOpMax = atoi(var);
-            if (mycudaMultiOpMax)
-                myprintf("CUDA: Merging of up to %d identical operations enabled.\n", mycudaMultiOpMax);
-            else
-                myprintf("CUDA: Merging of identical operations disabled.\n", mycudaMultiOpMax);
-        }
-    }
     cudaCheck(cudaGetDeviceCount(&deviceCount),"cudaGetDeviceCount");
     myprintf("CUDA: %d device(s) found.\n", deviceCount);
     for (int i=0; i<deviceCount; i++)

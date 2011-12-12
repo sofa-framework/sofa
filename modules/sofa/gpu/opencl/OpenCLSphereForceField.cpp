@@ -56,10 +56,10 @@ int SphereForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side comput
 ////////////////////////////////////////////////////////////////////////////////////
 //start kernel
 
-sofa::helper::OpenCLProgram* SphereForceFieldOpenCLFloat_program;
+OpenCLProgram* SphereForceFieldOpenCLFloat_program = NULL;
 
-sofa::helper::OpenCLKernel * SphereForceFieldOpenCL3f_addForce_kernel;
-sofa::helper::OpenCLKernel * SphereForceFieldOpenCL3f_addDForce_kernel;
+OpenCLKernel * SphereForceFieldOpenCL3f_addForce_kernel = NULL;
+OpenCLKernel * SphereForceFieldOpenCL3f_addDForce_kernel = NULL;
 
 /*
 void SphereForceField_CreateProgramWithFloat()
@@ -72,7 +72,7 @@ void SphereForceField_CreateProgramWithFloat()
 		types["Real4"]="float4";
 
 		SphereForceFieldOpenCLFloat_program
-				= new sofa::helper::OpenCLProgram(sofa::helper::OpenCLProgram::loadSource("OpenCLSphereForceField.cl"),&types);
+				= new OpenCLProgram("OpenCLSphereForceField.cl",stringBSIZE,&types);
 
 		SphereForceFieldOpenCLFloat_program->buildProgram();
 		sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);
@@ -85,18 +85,16 @@ void SphereForceField_CreateProgramWithFloat()
 {
     if(SphereForceFieldOpenCLFloat_program==NULL)
     {
-        std::cout << sofa::helper::OpenCLProgram::loadSource("OpenCLSphereForceField.cl") << std::endl;
-
         SphereForceFieldOpenCLFloat_program
-            = new sofa::helper::OpenCLProgram();
+            = new OpenCLProgram();
 
-        std::string source =*sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField.cl");
-        source = stringBSIZE + source;
-
-        SphereForceFieldOpenCLFloat_program->setSource(source);
-        std::string macros = *sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField_Sphere.macrocl");
-        SphereForceFieldOpenCLFloat_program->addMacros(&macros,"all");
-        SphereForceFieldOpenCLFloat_program->addMacros(&macros,"float");
+        SphereForceFieldOpenCLFloat_program->setSourceFile("OpenCLGenericParticleForceField.cl", stringBSIZE);
+        std::string macros;
+        if (OpenCLProgram::loadSource("OpenCLGenericParticleForceField_Sphere.macrocl",&macros))
+        {
+            SphereForceFieldOpenCLFloat_program->addMacros(&macros,"all");
+            SphereForceFieldOpenCLFloat_program->addMacros(&macros,"float");
+        }
         SphereForceFieldOpenCLFloat_program->createProgram();
         SphereForceFieldOpenCLFloat_program->buildProgram();
         sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);
@@ -106,10 +104,10 @@ void SphereForceField_CreateProgramWithFloat()
 
         //create kernels
         SphereForceFieldOpenCL3f_addForce_kernel
-            = new sofa::helper::OpenCLKernel(SphereForceFieldOpenCLFloat_program,"GenericParticleForceField_3f_addForce_Sphere");
+            = new OpenCLKernel(SphereForceFieldOpenCLFloat_program,"GenericParticleForceField_3f_addForce_Sphere");
 
         SphereForceFieldOpenCL3f_addDForce_kernel
-            = new sofa::helper::OpenCLKernel(SphereForceFieldOpenCLFloat_program,"GenericParticleForceField_3f_addDForce_Sphere");
+            = new OpenCLKernel(SphereForceFieldOpenCLFloat_program,"GenericParticleForceField_3f_addDForce_Sphere");
     }
 }
 

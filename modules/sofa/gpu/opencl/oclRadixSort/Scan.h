@@ -52,7 +52,6 @@
 #include "../OpenCLProgram.h"
 #include "../OpenCLKernel.h"
 
-using namespace sofa::helper;
 using namespace sofa::gpu::opencl;
 
 class Scan

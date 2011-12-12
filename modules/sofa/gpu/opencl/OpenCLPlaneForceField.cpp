@@ -53,27 +53,24 @@ int PlaneForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side computa
 ////////////////////////////////////////////////////////////////////////////////////
 //start kernel
 
-sofa::helper::OpenCLProgram* PlaneForceFieldOpenCLFloat_program;
+OpenCLProgram* PlaneForceFieldOpenCLFloat_program = NULL;
 
-sofa::helper::OpenCLKernel * PlaneForceFieldOpenCL3f_addForce_kernel;
-sofa::helper::OpenCLKernel * PlaneForceFieldOpenCL3f_addDForce_kernel;
+OpenCLKernel * PlaneForceFieldOpenCL3f_addForce_kernel = NULL;
+OpenCLKernel * PlaneForceFieldOpenCL3f_addDForce_kernel = NULL;
 
 void PlaneForceField_CreateProgramWithFloat()
 {
     if(PlaneForceFieldOpenCLFloat_program==NULL)
     {
-        std::cout << sofa::helper::OpenCLProgram::loadSource("OpenCLPlaneForceField.cl") << std::endl;
-
         PlaneForceFieldOpenCLFloat_program
-            = new sofa::helper::OpenCLProgram();
-
-        std::string source =*sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField.cl");
-        source = stringBSIZE + source;
-
-        PlaneForceFieldOpenCLFloat_program->setSource(source);
-        std::string macros = *sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField_Plane.macrocl");
-        PlaneForceFieldOpenCLFloat_program->addMacros(&macros,"all");
-        PlaneForceFieldOpenCLFloat_program->addMacros(&macros,"float");
+            = new OpenCLProgram();
+        PlaneForceFieldOpenCLFloat_program->setSourceFile("OpenCLGenericParticleForceField.cl",stringBSIZE);
+        std::string macros;
+        if (OpenCLProgram::loadSource("OpenCLGenericParticleForceField_Plane.macrocl",&macros))
+        {
+            PlaneForceFieldOpenCLFloat_program->addMacros(&macros,"all");
+            PlaneForceFieldOpenCLFloat_program->addMacros(&macros,"float");
+        }
         PlaneForceFieldOpenCLFloat_program->createProgram();
         PlaneForceFieldOpenCLFloat_program->buildProgram();
         sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);
@@ -83,10 +80,10 @@ void PlaneForceField_CreateProgramWithFloat()
 
         //create kernels
         PlaneForceFieldOpenCL3f_addForce_kernel
-            = new sofa::helper::OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"GenericParticleForceField_3f_addForce_Plane");
+            = new OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"GenericParticleForceField_3f_addForce_Plane");
 
         PlaneForceFieldOpenCL3f_addDForce_kernel
-            = new sofa::helper::OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"GenericParticleForceField_3f_addDForce_Plane");
+            = new OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"GenericParticleForceField_3f_addDForce_Plane");
     }
 }
 

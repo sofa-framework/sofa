@@ -56,6 +56,7 @@ SOFA_LINK_CLASS(CudaRigidMapping)
 SOFA_LINK_CLASS(CudaSubsetMapping)
 SOFA_LINK_CLASS(CudaDistanceGridCollisionModel)
 SOFA_LINK_CLASS(CudaTetrahedronFEMForceField)
+SOFA_LINK_CLASS(CudaMouseInteractor)
 //SOFA_LINK_CLASS(CudaCollision)
 SOFA_LINK_CLASS(CudaCollisionDetection)
 SOFA_LINK_CLASS(CudaPointModel)
@@ -69,8 +70,6 @@ extern "C"
     MycudaVerboseLevel mycudaVerboseLevel = LOG_ERR;
 //MycudaVerboseLevel mycudaVerboseLevel = LOG_INFO;
 //MycudaVerboseLevel mycudaVerboseLevel = LOG_TRACE;
-
-    int mycudaMultiOpMax = 0;
 }
 
 static void timerSyncCB(void*)
@@ -86,9 +85,6 @@ void mycudaPrivateInit(int /*device*/)
     const char* verbose = getenv("CUDA_VERBOSE");
     if (verbose && *verbose)
         mycudaVerboseLevel = (MycudaVerboseLevel) atoi(verbose);
-    const char* multiop = getenv("CUDA_MULTIOP");
-    if (multiop && *multiop)
-        mycudaMultiOpMax = atoi(multiop);
 }
 
 void mycudaLogError(const char* err, const char* src)

@@ -127,7 +127,7 @@ void SpatialGridContainer_RadixSort(sofa::gpu::opencl::_device_pointer keys,
 
 
 
-sofa::helper::OpenCLProgram* SpatialGridContainerOpenCLFloat_program;
+OpenCLProgram* SpatialGridContainerOpenCLFloat_program = NULL;
 
 
 void SpatialGridContainer_CreateProgramWithFloat()
@@ -137,13 +137,8 @@ void SpatialGridContainer_CreateProgramWithFloat()
         std::map<std::string, std::string> types;
         types["Real"]="float";
         types["Real4"]="float4";
-
-        std::string source =*sofa::helper::OpenCLProgram::loadSource("OpenCLSpatialGridContainer.cl");
-        source = stringBSIZE + source;
-
-
         SpatialGridContainerOpenCLFloat_program
-            = new sofa::helper::OpenCLProgram(&source,&types);
+            = new OpenCLProgram("OpenCLSpatialGridContainer.cl",stringBSIZE,&types);
 
         SpatialGridContainerOpenCLFloat_program->buildProgram();
 
@@ -153,7 +148,7 @@ void SpatialGridContainer_CreateProgramWithFloat()
 }
 
 
-sofa::helper::OpenCLKernel *SpatialGridContainer3f_computeHash_kernel;
+OpenCLKernel *SpatialGridContainer3f_computeHash_kernel = NULL;
 void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex8,gpu::opencl::_device_pointer particleHash8, const gpu::opencl::_device_pointer x)
 {
     DEBUG_TEXT("SpatialGridContainer3f_computeHash");
@@ -187,7 +182,7 @@ void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoi
 
 
     if(SpatialGridContainer3f_computeHash_kernel==NULL)SpatialGridContainer3f_computeHash_kernel
-            = new sofa::helper::OpenCLKernel(SpatialGridContainerOpenCLFloat_program,"computeHashD");
+            = new OpenCLKernel(SpatialGridContainerOpenCLFloat_program,"computeHashD");
 
 
     SpatialGridContainer3f_computeHash_kernel->setArg<_device_pointer>(0,&x);
@@ -235,7 +230,7 @@ void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoi
 
 //ShowVector *show_hash;
 
-sofa::helper::OpenCLKernel *SpatialGridContainer3f_findCellRange_kernel;
+OpenCLKernel *SpatialGridContainer3f_findCellRange_kernel = NULL;
 void SpatialGridContainer_findCellRange(int cellBits, int index0, float /*cellWidth*/, int nbPoints, const gpu::opencl::_device_pointer particleHash8,gpu::opencl::_device_pointer cellRange,gpu::opencl::_device_pointer cellGhost)
 {
     DEBUG_TEXT("SpatialGridContainer_findCellRange");
@@ -252,7 +247,7 @@ void SpatialGridContainer_findCellRange(int cellBits, int index0, float /*cellWi
     SpatialGridContainer_CreateProgramWithFloat();
 
     if(SpatialGridContainer3f_findCellRange_kernel==NULL)SpatialGridContainer3f_findCellRange_kernel
-            = new sofa::helper::OpenCLKernel(SpatialGridContainerOpenCLFloat_program,"findCellRangeD");
+            = new OpenCLKernel(SpatialGridContainerOpenCLFloat_program,"findCellRangeD");
 
 
     SpatialGridContainer3f_findCellRange_kernel->setArg<int>(0,&index0);

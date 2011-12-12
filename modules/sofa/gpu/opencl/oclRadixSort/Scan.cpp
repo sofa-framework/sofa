@@ -66,13 +66,13 @@ Scan::Scan(
 
     if(cpProgram==NULL)
     {
-        cpProgram = new OpenCLProgram(OpenCLProgram::loadSource("oclRadixSort/Scan_b.cl"));
+        cpProgram = new OpenCLProgram("oclRadixSort/Scan_b.cl");
         std::cout << "\n-/--/--/--/-\n" << cpProgram->buildLog(0) << "\n/-//-//-//-/\n";
         cpProgram->buildProgram();
 
-        ckScanExclusiveLocal1 = new sofa::helper::OpenCLKernel(cpProgram,"scanExclusiveLocal1");
-        ckScanExclusiveLocal2 = new sofa::helper::OpenCLKernel(cpProgram,"scanExclusiveLocal2");
-        ckUniformUpdate =  new sofa::helper::OpenCLKernel(cpProgram,"uniformUpdate");
+        ckScanExclusiveLocal1 = new OpenCLKernel(cpProgram,"scanExclusiveLocal1");
+        ckScanExclusiveLocal2 = new OpenCLKernel(cpProgram,"scanExclusiveLocal2");
+        ckUniformUpdate =  new OpenCLKernel(cpProgram,"uniformUpdate");
 
     }
 }

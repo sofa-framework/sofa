@@ -73,7 +73,7 @@ RadixSort::RadixSort(
 
 {
     DEBUG_TEXT("RadixSort")
-    int n=8192;
+    unsigned int n=8192;
     while(n<maxElements)n*=2;
     maxElements=n;
 
@@ -85,7 +85,7 @@ RadixSort::RadixSort(
             (maxElements / (CTA_SIZE * 2)) : (maxElements / (CTA_SIZE * 2) + 1);
     */
     //cl_int ciErrNum;
-    int sizeCounter = WARP_SIZE * numBlocks * sizeof(unsigned int);
+    //int sizeCounter = WARP_SIZE * numBlocks * sizeof(unsigned int);
 
 
     sofa::gpu::opencl::OpenCLMemoryManager<unsigned int>::deviceAlloc(0,&d_tempKeys, sizeof(unsigned int) * maxElements);
@@ -109,17 +109,17 @@ RadixSort::RadixSort(
     if(cpProgram==NULL)
     {
         cpProgram = new OpenCLProgram();
-        cpProgram->setSource(*OpenCLProgram::loadSource("oclRadixSort/RadixSort.cl"));
+        cpProgram->setSourceFile("oclRadixSort/RadixSort.cl");
         cpProgram->setTypes(types);
         cpProgram->createProgram();
         cpProgram->buildProgram(flags);
         std::cout << cpProgram->buildLog(0);
 
-        ckRadixSortBlocksKeysOnly = new sofa::helper::OpenCLKernel(cpProgram,"radixSortBlocksKeysOnly");
-        ckFindRadixOffsets        = new sofa::helper::OpenCLKernel(cpProgram,"findRadixOffsets");
-        ckScanNaive               = new sofa::helper::OpenCLKernel(cpProgram,"scanNaive");
-        ckReorderDataKeysOnly     = new sofa::helper::OpenCLKernel(cpProgram,"reorderDataKeysOnly");
-        ckMemset				  = new sofa::helper::OpenCLKernel(cpProgram,"RSMemset");
+        ckRadixSortBlocksKeysOnly = new OpenCLKernel(cpProgram,"radixSortBlocksKeysOnly");
+        ckFindRadixOffsets        = new OpenCLKernel(cpProgram,"findRadixOffsets");
+        ckScanNaive               = new OpenCLKernel(cpProgram,"scanNaive");
+        ckReorderDataKeysOnly     = new OpenCLKernel(cpProgram,"reorderDataKeysOnly");
+        ckMemset				  = new OpenCLKernel(cpProgram,"RSMemset");
     }
 }
 

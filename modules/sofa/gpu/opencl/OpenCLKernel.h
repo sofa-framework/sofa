@@ -22,18 +22,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OPENCLKERNEL_H
-#define OPENCLKERNEL_H
+#ifndef SOFA_GPU_OPENCL_OPENCLKERNEL_H
+#define SOFA_GPU_OPENCL_OPENCLKERNEL_H
 
 #include <string>
-#include "OpenCLProgramParser.h"
 #include "myopencl.h"
 #include "OpenCLProgram.h"
 
 namespace sofa
 {
 
-namespace helper
+namespace gpu
+{
+
+namespace opencl
 {
 
 class OpenCLKernel
@@ -73,11 +75,11 @@ public:
 };
 
 
-
-
 }
 
 }
 
+}
 
-#endif // OPENCLKERNEL_H
+
+#endif // SOFA_GPU_OPENCL_OPENCLKERNEL_H

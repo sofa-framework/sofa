@@ -27,19 +27,16 @@
 #include <iostream>
 #include <sstream>
 
-#ifdef WIN32
-#include "direct.h"
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sofa/helper/BackTrace.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/BackTrace.h>
+#include <sofa/helper/system/SetDirectory.h>
 #include <map>
 
 #define DEBUG_TEXT(t) //printf("\t  %s\n",t);
-#define CL_KERNEL_PATH "/modules/sofa/gpu/opencl/kernels/"
+#define CL_KERNEL_PATH "../modules/sofa/gpu/opencl/kernels/"
 
 #if defined(__cplusplus)
 namespace sofa
@@ -50,11 +47,11 @@ namespace opencl
 {
 #endif
 
+SOFA_LINK_CLASS(OpenCLMouseInteractor)
 
 
 //private data
 int _numDevices = 0;
-int myopenclMultiOpMax = 0;
 cl_context _context = NULL;
 cl_command_queue* _queues = NULL;
 cl_device_id* _devices = NULL;
@@ -62,18 +59,18 @@ cl_int _error=CL_SUCCESS;
 
 std::string _mainPath;
 
+extern "C"
+{
+//MyopenclVerboseLevel myopenclVerboseLevel = LOG_ERR;
+    MyopenclVerboseLevel myopenclVerboseLevel = LOG_INFO;
+//MyopenclVerboseLevel myopenclVerboseLevel = LOG_TRACE;
+}
+
 //private functions
 
 void createPath()
 {
-#ifndef WIN32
-    _mainPath = getcwd(NULL,0);
-#else
-    _mainPath = _getcwd(NULL, 0);
-    _mainPath += "/..";
-#endif
-
-    _mainPath += CL_KERNEL_PATH;
+    _mainPath = sofa::helper::system::SetDirectory::GetRelativeFromProcess(CL_KERNEL_PATH);
 }
 
 
@@ -279,13 +276,18 @@ void releaseQueues()
                 clReleaseCommandQueue(_queues[i]);
                 myopenclShowError(__FILE__, __LINE__);
             }
+        delete[] _queues;
+        _queues = NULL;
     }
-    delete[] _queues;
 }
 
 void releaseDevices()
 {
-    if(_devices) delete[] _devices;
+    if(_devices)
+    {
+        delete[] _devices;
+        _devices = NULL;
+    }
 }
 
 int selectedDeviceIndex = -1;
@@ -400,6 +402,10 @@ int myopenclInit(int device)
     DEBUG_TEXT("myopenclInit");
     createPath();
 
+    const char* verbose = getenv("OPENCL_VERBOSE");
+    if (verbose && *verbose)
+        myopenclVerboseLevel = (MyopenclVerboseLevel) atoi(verbose);
+
     listPlatform();
     if (device==-1)
     {
@@ -438,17 +444,33 @@ int myopenclGetnumDevices()
     return _numDevices;
 }
 
+int myopenclBufferCount = 0;
+std::map<cl_mem, int> myopenclBufferId;
+std::map<cl_mem, int> myopenclBufferSizes;
+
 void myopenclCreateBuffer(int /*device*/,cl_mem* dptr,int n)
 {
     DEBUG_TEXT("myopenclCreateBuffer ");
+    if (myopenclVerboseLevel>=LOG_INFO) printf("OPENCL: malloc(%d).\n",n);
     *dptr = clCreateBuffer(_context,CL_MEM_READ_WRITE,n,NULL,&_error);
     myopenclShowError(__FILE__, __LINE__);
+    if (myopenclVerboseLevel>=LOG_TRACE)
+    {
+        myopenclBufferId[*dptr] = myopenclBufferCount++;
+        myopenclBufferSizes[*dptr] = n;
+        printf("OPENCL: malloc(%d) -> b%d.\n",n,myopenclBufferId[*dptr]);
+    }
     DEBUG_TEXT("~myopenclCreateBuffer ");
 }
 
 void myopenclReleaseBuffer(int /*device*/,cl_mem p)
 {
     DEBUG_TEXT("myopenclReleaseBuffer ");
+    if (myopenclVerboseLevel>=LOG_TRACE)
+    {
+        printf("OPENCL: free(%d) -> b%d.\n",myopenclBufferSizes[p],myopenclBufferId[p]);
+        myopenclBufferSizes[p] = 0;
+    }
     _error = clReleaseMemObject((cl_mem) p);
     myopenclShowError(__FILE__, __LINE__);
     DEBUG_TEXT("~myopenclReleaseBuffer ");
@@ -483,17 +505,24 @@ void myopenclEnqueueCopyBuffer(int device, cl_mem ddest,size_t destOffset,const 
 cl_program myopenclProgramWithSource(const char * s,const size_t size)
 {
     DEBUG_TEXT("myopenclProgramWithSource");
-    return clCreateProgramWithSource(_context, 1, &s, &size, &_error);
+    cl_program p = clCreateProgramWithSource(_context, 1, &s, &size, &_error);
     myopenclShowError(__FILE__, __LINE__);
+    return p;
     DEBUG_TEXT("~myopenclProgramWithSource");
 }
+
+std::map<cl_kernel,std::string> myopenclKernelNames;
 
 cl_kernel myopenclCreateKernel(void* p,const char * kernel_name)
 {
     DEBUG_TEXT("myopenclCreateKernel");
-    std::cout << "clCreateKernel(p, " << kernel_name << ");" << std::endl;
-    return clCreateKernel((cl_program)p, kernel_name, &_error);
+    if (myopenclVerboseLevel>=LOG_INFO)
+        std::cout << "OPENCL: Create Kernel " << kernel_name << std::endl;
+    cl_kernel k = clCreateKernel((cl_program)p, kernel_name, &_error);
     myopenclShowError(__FILE__, __LINE__);
+    if (myopenclVerboseLevel>=LOG_TRACE)
+        myopenclKernelNames[k] = kernel_name;
+    return k;
     DEBUG_TEXT("~myopenclCreateKernel");
 }
 
@@ -501,42 +530,81 @@ template<>
 void myopenclSetKernelArg<_device_pointer>(cl_kernel kernel, int num_arg, const _device_pointer* arg)
 {
     if (arg->offset) std::cerr << "OpenCL ERROR: non-zero offset " << arg->offset << std::endl;
-    myopenclSetKernelArg(kernel, num_arg, sizeof(cl_mem), (void*)&arg->m);
+    if (myopenclVerboseLevel>=LOG_TRACE)
+    {
+        printf("OPENCL: Set Kernel %s Arg %d : buffer b%d (%d B)\n", myopenclKernelNames[kernel].c_str(), num_arg, myopenclBufferId[arg->m], myopenclBufferSizes[arg->m]);
+    }
+    _error = clSetKernelArg(kernel, num_arg,sizeof(cl_mem), &(arg->m));
+    myopenclShowError(__FILE__, __LINE__);
 }
 
 void myopenclSetKernelArg(cl_kernel kernel,int num_arg,int size,void* arg)
 {
     DEBUG_TEXT("myopenclSetKernelArg");
 //std::cout << "clSetKernelArg(kernel, " << num_arg << ", " << size << ", " << arg << ");" << std::endl;
+    if (myopenclVerboseLevel>=LOG_TRACE)
+    {
+        if (size == (int)sizeof(cl_mem) && myopenclBufferId.find(*(cl_mem*)arg) != myopenclBufferId.end())
+            printf("OPENCL: Set Kernel %s Arg %d : buffer b%d (%d B) ?\n", myopenclKernelNames[kernel].c_str(), num_arg, myopenclBufferId[*(cl_mem*)arg], myopenclBufferSizes[*(cl_mem*)arg]);
+        else if (size == (int)sizeof(int))
+            printf("OPENCL: Set Kernel %s Arg %d : int %d or float %f\n", myopenclKernelNames[kernel].c_str(), num_arg, *(int*)arg, *(float*)arg);
+        else
+            printf("OPENCL: Set Kernel %s Arg %d size %d\n", myopenclKernelNames[kernel].c_str(), num_arg, size);
+    }
     _error = clSetKernelArg(kernel, num_arg,size, arg);
     myopenclShowError(__FILE__, __LINE__);
     DEBUG_TEXT("~myopenclSetKernelArg");
 }
 
 
-void myopenclBuildProgram(void * program)
+bool myopenclBuildProgram(void * program)
 {
     DEBUG_TEXT("myopenclBuildProgram");
     _error = clBuildProgram((cl_program)program,0,NULL,NULL,NULL,NULL);
-
-    myopenclShowError(__FILE__, __LINE__);
+    //myopenclShowError(__FILE__, __LINE__);
     DEBUG_TEXT("~myopenclBuildProgram");
+    return (_error == CL_SUCCESS);
 }
 
-void myopenclBuildProgramWithFlags(void * program, char * flags)
+bool myopenclBuildProgramWithFlags(void * program, char * flags)
 {
     DEBUG_TEXT("myopenclBuildProgram");
     _error = clBuildProgram((cl_program)program,0,NULL,flags,NULL,NULL);
-
-    myopenclShowError(__FILE__, __LINE__);
+    //myopenclShowError(__FILE__, __LINE__);
     DEBUG_TEXT("~myopenclBuildProgram");
+    return (_error == CL_SUCCESS);
 }
 
 void myopenclExecKernel(int device,cl_kernel kernel,unsigned int work_dim,const size_t *global_work_offset,const size_t *global_work_size,const size_t *local_work_size)
 {
     DEBUG_TEXT("myopenclExecKernel");
 
+    if (myopenclVerboseLevel>=LOG_TRACE)
+    {
+        std::cout << "OPENCL: Exec Kernel " << myopenclKernelNames[kernel] << std::endl;
+        std::cout << "          G=<";
+        for (unsigned int i=0; i<work_dim; ++i) { if (i) std::cout << ','; std::cout << global_work_size[i]; }
+        std::cout << ">";
+        if (local_work_size)
+        {
+            std::cout << " L=<";
+            for (unsigned int i=0; i<work_dim; ++i) { if (i) std::cout << ','; std::cout << local_work_size[i]; }
+            std::cout << ">";
+        }
+        if (global_work_offset)
+        {
+            std::cout << " O=<";
+            for (unsigned int i=0; i<work_dim; ++i) { if (i) std::cout << ','; std::cout << global_work_offset[i]; }
+            std::cout << ">";
+        }
+        std::cout << std::endl;
+    }
+
     _error = clEnqueueNDRangeKernel(_queues[device],kernel,work_dim,global_work_offset,global_work_size,local_work_size,0,NULL,NULL);
+    myopenclShowError(__FILE__, __LINE__);
+
+    if (myopenclVerboseLevel>=LOG_TRACE)
+        std::cout << "OPENCL: End  Kernel " << myopenclKernelNames[kernel] << std::endl;
 
     DEBUG_TEXT("~myopenclExecKernel");
 }
@@ -628,9 +696,9 @@ void myopenclShowError(std::string file, int line)
 {
     if(_error!=CL_SUCCESS && _error!=1)
     {
-        std::cout << "Error (file '" << file << "' line " << line << "): " << myopenclErrorMsg(_error) << std::endl;
+        std::cerr << "OPENCL Error (file '" << file << "' line " << line << "): " << myopenclErrorMsg(_error) << std::endl;
         sofa::helper::BackTrace::dump();
-        exit(1);
+        exit(701);
     }
 }
 
