@@ -128,7 +128,7 @@ declare(sofa_component_dev, modules/sofa/component/sofa_component_dev.pro, sofa_
 
 declare(sofagpucuda, modules/sofa/gpu/cuda/cuda.pro, sofahelper sofa_engine sofa_sph_fluid sofa_user_interaction sofa_volumetric_data cuda cudpp thrust)
 
-declare(sofagpucuda_dev, modules/sofa/gpu/cuda/cuda_dev.pro, sofagpucuda sofa_advanced_interaction sofa_misc_dev eigen csparse taucs taucs_mt system-taucs)
+declare(sofagpucuda_dev, modules/sofa/gpu/cuda/cuda_dev.pro, sofagpucuda sofa_preconditioner sofa_advanced_interaction sofa_misc_dev eigen csparse taucs taucs_mt system-taucs)
 
 declare(sofagpuopencl, modules/sofa/gpu/opencl, sofahelper sofa_engine sofa_sph_fluid sofa_user_interaction opencl eigen csparse taucs taucs_mt system-taucs)
 
