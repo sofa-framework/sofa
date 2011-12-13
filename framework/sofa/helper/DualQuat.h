@@ -68,7 +68,7 @@ public:
     template<typename real2>
     DualQuatCoord3(const RigidCoord<3,real2>& c)
     {
-        for(unsigned int i=0; i<4; i++) orientation[i] =  c.getOrientation()[i];
+        for(unsigned int i=0; i<4; i++) orientation[i] =  (real)c.getOrientation()[i];
         setTranslation(c.getCenter());
     }
 
@@ -161,7 +161,7 @@ public:
     void operator =(const DualQuatCoord3<real2>& c) { dual = c.getDual(); orientation = c.getOrientation(); }
 
     template<typename real2>
-    void operator =(const RigidCoord<3,real2>& c)        { for(unsigned int i=0; i<4; i++) orientation[i] =  c.getOrientation()[i]; setTranslation(c.getCenter()); }
+    void operator =(const RigidCoord<3,real2>& c)        { for(unsigned int i=0; i<4; i++) orientation[i] =  (real)c.getOrientation()[i]; setTranslation(c.getCenter()); }
 
     void operator =(const Vec3& p)     { setTranslation(p); }
 
@@ -218,9 +218,9 @@ public:
     // Jacobian functions
     // get velocity/quaternion change mapping : dq = J(q) v
     void velocity_getJ( Mat<4,3,real>& J0, Mat<4,3,real>& JE);
-    // get quaternion change: dqn = J(q) dq
+    // get quaternion change: dq = J(q) v
     DualQuatCoord3<real> velocity_applyJ( const Vec<6,real>& a );
-    // get velocity : dq = JT(q) dqn
+    // get velocity : v = JT(q) dq
     Vec<6,real> velocity_applyJT( const DualQuatCoord3<real>& dq );
     // get jacobian of the normalization : dqn = J(q) dq
     void normalize_getJ( Mat<4,4,real>& J0, Mat<4,4,real>& JE) ;

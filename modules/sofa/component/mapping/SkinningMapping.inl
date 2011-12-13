@@ -62,7 +62,9 @@ SkinningMapping<TIn, TOut>::SkinningMapping ()
     , maskFrom(NULL)
     , maskTo(NULL)
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame." ) )
+#ifdef SOFA_DEV
     , useDQ ( initData ( &useDQ, false, "useDQ","use dual quaternion blending instead of linear blending ." ) )
+#endif
     , nbRef ( initData ( &nbRef, ( unsigned ) 4,"nbRef","Number of primitives influencing each point." ) )
     , f_index ( initData ( &f_index,"indices","parent indices for each child." ) )
     , weight ( initData ( &weight,"weight","influence weights of the Dofs." ) )
@@ -126,7 +128,7 @@ void SkinningMapping<TIn, TOut>::reinit()
     }
 
     // precompute local/rotated positions
-
+#ifdef SOFA_DEV
     if(this->useDQ.getValue())
     {
         f_T0.resize(out.size());
@@ -152,6 +154,7 @@ void SkinningMapping<TIn, TOut>::reinit()
 
     }
     else
+#endif
     {
         f_localPos.resize(out.size());
         f_rotatedPos.resize(out.size());
@@ -232,6 +235,7 @@ void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const type
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( this->weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
 
+#ifdef SOFA_DEV
     if(this->useDQ.getValue())
     {
         for ( unsigned int i = 0 ; i < out.size(); i++ )
@@ -276,6 +280,7 @@ void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const type
         }
     }
     else
+#endif
     {
         for ( unsigned int i = 0 ; i < out.size(); i++ )
         {
@@ -299,6 +304,7 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
 
     if ( ! ( this->maskTo->isInUse() ) )
     {
+#ifdef SOFA_DEV
         if(this->useDQ.getValue())
         {
             for ( unsigned int i=0; i<out.size(); i++ )
@@ -311,6 +317,7 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
             }
         }
         else
+#endif
         {
             for ( unsigned int i=0; i<out.size(); i++ )
             {
@@ -328,6 +335,7 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
         const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it;
+#ifdef SOFA_DEV
         if(this->useDQ.getValue())
         {
             for ( it=indices.begin(); it!=indices.end(); it++ )
@@ -341,6 +349,7 @@ void SkinningMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typ
             }
         }
         else
+#endif
         {
             for ( it=indices.begin(); it!=indices.end(); it++ )
             {
@@ -365,6 +374,7 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
     if ( ! ( this->maskTo->isInUse() ) )
     {
         this->maskFrom->setInUse ( false );
+#ifdef SOFA_DEV
         if(this->useDQ.getValue())
         {
             for ( unsigned int i=0; i<in.size(); i++ )
@@ -377,6 +387,7 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
             }
         }
         else
+#endif
         {
             for ( unsigned int i=0; i<in.size(); i++ )
             {
@@ -394,7 +405,7 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
         const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it;
-
+#ifdef SOFA_DEV
         if(this->useDQ.getValue())
         {
             for ( it=indices.begin(); it!=indices.end(); it++ )
@@ -409,6 +420,7 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typ
             }
         }
         else
+#endif
         {
             for ( it=indices.begin(); it!=indices.end(); it++ )
             {
@@ -433,7 +445,7 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacob
     ReadAccessor<Data<vector<SVector<InReal> > > > m_weights  ( weight );
     ReadAccessor<Data<vector<SVector<unsigned int> > > > index ( f_index );
 
-
+#ifdef SOFA_DEV
     if(this->useDQ.getValue())
         for (typename Out::MatrixDeriv::RowConstIterator childJacobian = childJacobians.begin(); childJacobian != childJacobians.end(); ++childJacobian)
         {
@@ -454,6 +466,7 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacob
             }
         }
     else
+#endif
         for (typename Out::MatrixDeriv::RowConstIterator childJacobian = childJacobians.begin(); childJacobian != childJacobians.end(); ++childJacobian)
         {
             typename In::MatrixDeriv::RowIterator parentJacobian = parentJacobians.writeLine(childJacobian.index());

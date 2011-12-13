@@ -32,8 +32,11 @@
 #include <sofa/helper/SVector.h>
 #include <sofa/component/component.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/DualQuat.h>
 #include <sofa/defaulttype/Mat.h>
+
+#ifdef SOFA_DEV
+#include <sofa/helper/DualQuat.h>
+#endif
 
 namespace sofa
 {
@@ -74,11 +77,13 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real OutReal;
 
+#ifdef SOFA_DEV
     typedef helper::DualQuatCoord3<OutReal> DQCoord;
     typedef defaulttype::Mat<4,4,OutReal> Mat44;
     typedef defaulttype::Mat<3,3,OutReal> Mat33;
     typedef defaulttype::Mat<3,4,OutReal> Mat34;
     typedef defaulttype::Mat<4,3,OutReal> Mat43;
+#endif
 
 protected:
 
@@ -92,13 +97,14 @@ protected:
     vector<vector<OutCoord> > f_rotatedPos;  /// rotated child coordinates :  dp = Omega_i x f_rotatedPos  :
 
     // data for dual quat blending
+#ifdef SOFA_DEV
     vector<vector< Mat44 > > f_T0; /// Real part of blended quaternion Jacobian : db = [T0,TE] dq
     vector<vector< Mat44 > > f_TE; /// Dual part of blended quaternion Jacobian : db = [T0,TE] dq
     vector<vector< Mat33 > > f_Pa; /// dp = Pa.Omega_i  : affine part
     vector<vector< Mat33 > > f_Pt; /// dp = Pt.dt_i : translation part
-
-
     Data<bool> useDQ;  // use dual quat blending instead of linear blending
+#endif
+
     Data<unsigned int> nbRef; // Number of primitives influencing each point.
     Data< vector<SVector<unsigned int> > > f_index; // indices of primitives influencing each point.
     Data< vector<SVector<InReal> > > weight;
