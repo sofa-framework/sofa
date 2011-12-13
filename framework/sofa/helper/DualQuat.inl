@@ -74,7 +74,7 @@ void DualQuatCoord3<real>::velocity_getJ( Mat<4,3,real>& J0, Mat<4,3,real>& JE)
     JE*=(real)0.5;
 }
 
-// get quaternion change: dqn = J(q) dq
+// get quaternion change: dq = J(q) v
 template<typename real>
 DualQuatCoord3<real> DualQuatCoord3<real>::velocity_applyJ( const Vec<6,real>& a )
 {
@@ -95,7 +95,7 @@ DualQuatCoord3<real> DualQuatCoord3<real>::velocity_applyJ( const Vec<6,real>& a
     return r;
 }
 
-// get velocity : dq = JT(q) dqn
+// get velocity : v = JT(q) dq
 template<typename real>
 Vec<6,real> DualQuatCoord3<real>::velocity_applyJT( const DualQuatCoord3<real>& dq )
 {
