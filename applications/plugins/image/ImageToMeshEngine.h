@@ -170,7 +170,7 @@ protected:
         if(inTex->getCImgList())
         {
             const CImg<T>& tex = inTex->getCImg(this->time);
-            CImg<unsigned char> plane=defaulttype::convertToUC( tex.get_resize(texture_res,texture_res,1,-100,1) );
+            CImg<unsigned char> plane=convertToUC( tex.get_resize(texture_res,texture_res,1,-100,1) );
             cimg_forXY(plane,x,y)
             {
                 unsigned char *b=texture->getImage()->getPixels()+4*(y*texture_res+x);

@@ -39,10 +39,9 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
-
-#include <sstream>
-#include <iomanip>
-#include <fstream>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Quat.h>
+#include <sofa/helper/rmath.h>
 
 namespace sofa
 {
@@ -121,25 +120,21 @@ protected:
         raTransform rtransform(this->transform);
         if (!rimage->getCImgList()) { serr << "ImageExporter: no image "<<name<<sendl; return false; }
 
-        if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
+        if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
+           || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
         {
-            // write info file
-            std::string infoFile(fname); infoFile.replace(infoFile.find_last_of('.')+1,infoFile.size(),"nfo");
-            std::ofstream fileStream (infoFile.c_str(), std::ofstream::out);
+            if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
 
-            if (!fileStream.is_open() ) 	{	serr << "Can not open " << infoFile << sendl;	return false; }
-            fileStream << "voxelType: " <<  rimage->getCImg(this->time).pixel_type() << endl; // not used (should be known in advance for template)
-            fileStream << "dimensions: " << rimage->getDimensions() << endl;
-            fileStream << "translation: "<< rtransform->getTranslation() << endl;
-            fileStream << "rotation: "<< rtransform->getRotation() << endl;
-            fileStream << "spacing: "<< rtransform->getScale() << endl;
-            fileStream << "offsetT: "<< rtransform->getOffsetT() << endl;
-            fileStream << "scaleT: "<< rtransform->getScaleT() << endl;
-            fileStream << "isPerpective: "<< rtransform->isPerspective() << endl;
-            fileStream.close();
-
-            sout << "Saved info file "<< infoFile << sendl;
-            rimage->getCImg(this->time).save_raw(fname.c_str());
+            double scale[3]; for(unsigned int i=0; i<3; i++) scale[i]=(double)rtransform->getScale()[i];
+            double translation[3]; for(unsigned int i=0; i<3; i++) translation[i]=(double)rtransform->getTranslation()[i];
+            Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
+            helper::Quater< Real > q = helper::Quater< Real >::createQuaterFromEuler(rotation);
+            Mat<3,3,Real> R;  q.toMatrix(R);
+            double affine[9]; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) affine[3*i+j]=(double)R[i][j];
+            double offsetT=(double)rtransform->getOffsetT();
+            double scaleT=(double)rtransform->getScaleT();
+            bool isPerspective=rtransform->isPerspective();
+            save_metaimage<T,double>(rimage->getCImgList(),fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective);
         }
         else if	(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
             rimage->getCImgList().save_cimg(fname.c_str());

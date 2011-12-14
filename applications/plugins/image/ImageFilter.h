@@ -31,7 +31,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/helper/SVector.h>
 
 #include <sofa/component/component.h>
 

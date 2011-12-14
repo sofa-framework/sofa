@@ -27,7 +27,8 @@ HEADERS += \
 	ImageContainer.h \
    	ImageViewer.h \
 	ImageFilter.h \
-	ImageToMeshEngine.h \
+        MergeImages.h \
+        ImageToMeshEngine.h \
 	ImageExporter.h \
 	ImagePlaneWidget.h \
 	ImageTransformWidget.h \
@@ -38,7 +39,8 @@ SOURCES += \
 	ImageContainer.cpp \
 	ImageViewer.cpp \
 	ImageFilter.cpp \
-	ImageToMeshEngine.cpp \
+        MergeImages.cpp \
+        ImageToMeshEngine.cpp \
 	ImageExporter.cpp \
 	ImagePlaneWidget.cpp \
 	ImageTransformWidget.cpp \

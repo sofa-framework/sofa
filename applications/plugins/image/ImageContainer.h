@@ -35,6 +35,9 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Quat.h>
+#include <sofa/helper/rmath.h>
 
 
 namespace sofa
@@ -135,60 +138,22 @@ protected:
 
 
         // read image
-        if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
+        if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
+           || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
         {
-            // read info file
-            std::string infoFile(fname); infoFile.replace(infoFile.find_last_of('.')+1,infoFile.size(),"nfo");
+            if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
 
-            if (sofa::helper::system::DataRepository.findFile(infoFile)) // check if the file exists
-            {
-                infoFile=sofa::helper::system::DataRepository.getFile(infoFile);
-                std::ifstream fileStream (infoFile.c_str(), std::ifstream::in);
-                if (!fileStream.is_open())	{	serr << "Can not open " << infoFile << sendl;	return false; }
-
-                std::string str;
-                imCoord dim; dim.fill(1);
-
-                while(!fileStream.eof())
-                {
-                    fileStream >> str;
-                    if(str.find("voxelType")!=std::string::npos)
-                    {
-                        char vtype[32]; fileStream.getline(vtype,32); // not used (should be known in advance for template)
-                    }
-                    else if(str.find("dimensions")!=std::string::npos || str.find("dim")!=std::string::npos)
-                    {
-                        fileStream >> dim;
-                    }
-                    else if(str.find("translation")!=std::string::npos || str.find("origin")!=std::string::npos)
-                    {
-                        fileStream >> wtransform->getTranslation();
-                    }
-                    else if(str.find("rotation")!=std::string::npos || str.find("orientation")!=std::string::npos)
-                    {
-                        fileStream >> wtransform->getRotation();
-                    }
-                    else if(str.find("spacing")!=std::string::npos || str.find("scale3d")!=std::string::npos || str.find("voxelSize")!=std::string::npos)
-                    {
-                        fileStream >> wtransform->getScale();
-                    }
-                    else if(str.find("offsetT")!=std::string::npos || str.find("timeOffset")!=std::string::npos)
-                    {
-                        fileStream >> wtransform->getOffsetT();
-                    }
-                    else if(str.find("scaleT")!=std::string::npos || str.find("timeScale")!=std::string::npos)
-                    {
-                        fileStream >> wtransform->getScaleT();
-                    }
-                    else if(str.find("isPerpective")!=std::string::npos || str.find("perpective")!=std::string::npos)
-                    {
-                        fileStream >> wtransform->isPerspective();
-                    }
-                }
-                fileStream.close();
-                sout << "Loaded info file "<< infoFile <<", dim = "<< dim  << sendl;
-                wimage->getCImgList().push_back(CImg<T>().load_raw(fname.c_str(),dim[0],dim[1],dim[2],dim[3]));
-            }
+            double scale[3]= {1.,1.,1.},translation[3]= {0.,0.,0.},affine[9]= {1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
+            bool isPerspective=false;
+            wimage->getCImgList().assign(load_metaimage<T,double>(fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective));
+            for(unsigned int i=0; i<3; i++) wtransform->getScale()[i]=(Real)scale[i];
+            for(unsigned int i=0; i<3; i++) wtransform->getTranslation()[i]=(Real)translation[i];
+            Mat<3,3,Real> R; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) R[i][j]=(Real)affine[3*i+j];
+            helper::Quater< Real > q; q.fromMatrix(R);
+            wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
+            wtransform->getOffsetT()=(Real)offsetT;
+            wtransform->getScaleT()=(Real)scaleT;
+            wtransform->isPerspective()=isPerspective;
         }
         else if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
             wimage->getCImgList().load_cimg(fname.c_str());

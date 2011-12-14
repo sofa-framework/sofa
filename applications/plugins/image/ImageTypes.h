@@ -33,7 +33,7 @@
 #define cimg_use_opencv
 #endif
 
-#include <CImg.h>
+#include <SOFACImg.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
@@ -74,7 +74,7 @@ public:
     // shared instances
     Image( const Image<T>& _img ):img(_img.getCImgList(),true)		{}
     Image( const CImg<T>& _img ):img(_img,true)		{}
-    Image<T>& operator=(const Image<T>& im) {  img.assign(im.getCImgList(),true);	  return *this;		}
+    Image<T>& operator=(const Image<T>& im) {  if(im.getCImgList().size()) img.assign(im.getCImgList(),true);	  return *this;		}
 
     void clear() { img.assign(); }
     ~Image() { clear(); }
@@ -106,7 +106,7 @@ public:
     {
         cimglist_for(img,l) img(l).resize(dim[0],dim[1],dim[2],dim[3]);
         if(img.size()>dim[4]) img.remove(dim[4],img.size()-1);
-        else if(img.size()<dim[4]) img.insert(dim[4]-img.size(),CImg<T>(dim[1],dim[2],dim[3]));
+        else if(img.size()<dim[4]) img.insert(dim[4]-img.size(),CImg<T>(dim[0],dim[1],dim[2],dim[3]));
     }
 
 
@@ -254,9 +254,6 @@ public:
     }
 };
 
-template<typename T> inline CImg<unsigned char> convertToUC(const CImg<T> &Image)	{	return CImg<unsigned char>((+Image).normalize(0,255)); 	}
-inline CImg<unsigned char> convertToUC(const CImg<bool> &Image)	{	return CImg<unsigned char>(Image)*255; }
-inline CImg<unsigned char> convertToUC(const CImg<char> &Image) {	return convertToUC(CImg<int>(Image));		}
 
 typedef Image<char> ImageC;
 typedef Image<unsigned char> ImageUC;
@@ -463,7 +460,7 @@ public:
          clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()))
     { }
 
-    void setInput(const ImageTypes& _img) { img=&_img; update(); }
+    void setInput(const ImageTypes& _img) {  img=&_img; update(); }
 
     const CImg<bool>& getImage() const {return image;}
     const CImg<unsigned int>& getHistogram() const {return histogram;}
@@ -564,14 +561,15 @@ public:
 
     void setTime(const Real t, bool repeat=true)
     {
-        if(!img->getDimensions()[4] || !transform) return;
-        Real t2=transform->toImage(t) ;
-        if(repeat) t2-=(Real)((int)((int)t2/img->getDimensions()[4])*img->getDimensions()[4]);
+        if(!this->img)  return;
+        if(!this->img->getDimensions()[4] || !this->transform) return;
+        Real t2=this->transform->toImage(t) ;
+        if(repeat) t2-=(Real)((int)((int)t2/this->img->getDimensions()[4])*this->img->getDimensions()[4]);
         t2=(t2-floor(t2)>0.5)?ceil(t2):floor(t2); // nearest
-        if(t2<0) t2=0.0; else if(t2>=(Real)img->getDimensions()[4]) t2=(Real)img->getDimensions()[4]-1.0; // clamp
-        if(time!=(unsigned int)t2)
+        if(t2<0) t2=0.0; else if(t2>=(Real)this->img->getDimensions()[4]) t2=(Real)this->img->getDimensions()[4]-1.0; // clamp
+        if(this->time!=(unsigned int)t2)
         {
-            time=(unsigned int)t2;
+            this->time=(unsigned int)t2;
             this->imagePlaneDirty=true;
         }
     }
