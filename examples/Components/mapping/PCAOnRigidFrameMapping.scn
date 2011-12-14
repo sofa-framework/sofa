@@ -1,5 +1,5 @@
 <Node name="Scene" gravity="0 0 0" dt="0.1">
-    <VisualStyle displayFlags="showBehavior" />
+    <VisualStyle displayFlags="showBehavior showVisual" />
     <EulerImplicitSolver rayleighStiffness="1" rayleighMass="1" />
     <CGLinearSolver template="GraphScattered" iterations="50" threshold="1e-008" />
     <MechanicalObject template="Rigid" name="rigidframe" position="0 0 0 0 0 0 1" />
@@ -19,10 +19,11 @@
         <MergeMeshes name="basis" nbMeshes="6" position1="@r_femur.position" position2="@r_femur_0.position" position3="@r_femur_1.position" position4="@r_femur_2.position" position5="@r_femur_3.position" position6="@r_femur_4.position" />
     </Node>
     <Node name="Femur">
-        <MeshObjLoader name="mesh" filename="mesh/r_femur.obj" />
         <MechanicalObject template="Vec1d" name="weights" position="0 0 0 0 0" />
         <UniformMass template="Vec1d" name="weight_mass" mass="0.01" />
         <Node name="PCA">
+			<MeshObjLoader name="loader" filename="mesh/r_femur.obj" />
+			<Mesh src="@loader" />
             <MechanicalObject template="Vec3d" name="deformed" />
             <PCAOnRigidFrameMapping name="PCAmapping" template="Multi2Mapping&lt;[Vec1d,Rigid],Vec3d&gt;" basis="@../../basis/basis.position" input1="@../weights" input2="@../../rigidframe" output="@deformed" />
             <Node name="Visu">
@@ -31,5 +32,10 @@
             </Node>
         </Node>
     </Node>
-    <StiffSpringForceField template="Vec1d" name="ExternalSprings" object1="Femur/weights" object2="Ground/ground" spring="0 0 5 5 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;1 0 5 5 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;2 0 5 5 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;3 0 5 5 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;4 0 5 5 0" />
+	<StiffSpringForceField  template="Vec1d" name="ExternalSprings" object1="Femur/weights" object2="Ground/ground"
+							spring="0 0 10 0 0
+									1 0 10 0 0
+									2 0 10 0 0
+									3 0 10 0 0
+									4 0 10 0 0"	/>
 </Node>
