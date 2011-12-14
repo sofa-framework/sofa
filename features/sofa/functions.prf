@@ -102,6 +102,7 @@ defineTest(addSubdirs) {
 		for(entry, entries) {
 			name = $$replace(entry, [/\\\\\\.], _)
 			SUBDIRS += $$name
+			
 			isProjectFile(entry) {
 				eval  ($${name}.file = $$entry)
 				export($${name}.file)
@@ -116,6 +117,7 @@ defineTest(addSubdirs) {
 			export($${name}.depends)
 		}
 	}
+	
 	export(SUBDIRS)
 }
 
@@ -194,6 +196,7 @@ defineTest(addInstallableSubdir) {
 # variables needs to be modified, the feature file will have to call export(VAR)
 # on them.
 defineTest(requireLib) {
+	
 	name = $$1
 	feature = $$2
 	isEmpty(name)   : error(missing name parameter in requireLib)
@@ -237,6 +240,7 @@ defineTest(requireLib) {
 # will have to export them using export(VAR)
 #
 defineTest(requireExtLib) {
+	
 	name = $$1
 	project  = $$2
 	isEmpty(name)   : error(missing name parameter in requireExtLib)
@@ -385,24 +389,32 @@ defineReplace(computeTransitiveDependencies) {
 	# Maximum recursivity has to be arbitrarily defined, here we set it to 100.
 	queue = $$name
 	for(depth, 1..100) {
+	#	message( -> $$queue )
 	  isEmpty(queue): break() # Stop looping when there is no more dependencies
 	  # Loop on the current queue. A new queue will be filled for the next iteration.
 		for(dep, queue) {
 			# Ignore already analysed dependencies (to break circular dependencies)
 			!contains(analysed, $$dep) {
+				
 				!equals(dep, $$eval($${dep}.name)) {
 					error(computeTransitiveDependencies: undeclared artifact $$dep)
 				}
-				deps = $$eval($${dep}.deps) # Retrieve the dependencies of the current artifact
-				newqueue *= $$deps					# Fill the next queue with these dependencies
-				tdeps *= $$deps							# Add them to the list of transitive dependencies
-				analysed *= $$dep						# Add the current artifact to the list of analysed ones
+				
+				equals($${dep}.enabled, true) {
+					deps = $$eval($${dep}.deps) # Retrieve the dependencies of the current artifact
+					newqueue *= $$deps			# Fill the next queue with these dependencies
+					tdeps *= $$deps				# Add them to the list of transitive dependencies
+					analysed *= $$dep			# Add the current artifact to the list of analysed ones
+				} else {
+				#	message( $$dep skipped )
+				}
 			}
 		}
 		# Switch queues
 		queue = $$newqueue
 		newqueue = 
 	}
+	
 	return($$tdeps)
 }
 

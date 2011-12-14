@@ -207,6 +207,9 @@ contains(DEFINES, SOFA_GUI_QGLVIEWER) {
 	enable(QGLViewer)
 }
 
+enable(thrust)
+enable(qtgui)
+
 enable(newmat)
 enable(tinyxml)
 enable(qwt)
