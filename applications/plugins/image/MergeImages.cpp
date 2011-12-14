@@ -22,8 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include "initImage.h"
+#define SOFA_IMAGE_MERGEIMAGES_CPP
+
+#include "MergeImages.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -31,61 +33,46 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_IMAGE_API void initExternalModule();
-    SOFA_IMAGE_API const char* getModuleName();
-    SOFA_IMAGE_API const char* getModuleVersion();
-    SOFA_IMAGE_API const char* getModuleLicense();
-    SOFA_IMAGE_API const char* getModuleDescription();
-    SOFA_IMAGE_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace engine
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return "Image Plugin";
-}
+using namespace defaulttype;
 
-const char* getModuleVersion()
-{
-    return "0.1";
-}
+SOFA_DECL_CLASS(MergeImages)
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+int MergeImagesClass = core::RegisterObject("Merge images")
+        .add<MergeImages<ImageUC> >(true)
+        .add<MergeImages<ImageD> >()
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<MergeImages<ImageC> >()
+        .add<MergeImages<ImageI> >()
+        .add<MergeImages<ImageUI> >()
+        .add<MergeImages<ImageS> >()
+        .add<MergeImages<ImageUS> >()
+        .add<MergeImages<ImageL> >()
+        .add<MergeImages<ImageUL> >()
+        .add<MergeImages<ImageF> >()
+        .add<MergeImages<ImageB> >()
+#endif
+        ;
+
+template class SOFA_IMAGE_API MergeImages<ImageUC>;
+template class SOFA_IMAGE_API MergeImages<ImageD>;
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API MergeImages<ImageC>;
+template class SOFA_IMAGE_API MergeImages<ImageI>;
+template class SOFA_IMAGE_API MergeImages<ImageUI>;
+template class SOFA_IMAGE_API MergeImages<ImageS>;
+template class SOFA_IMAGE_API MergeImages<ImageUS>;
+template class SOFA_IMAGE_API MergeImages<ImageL>;
+template class SOFA_IMAGE_API MergeImages<ImageUL>;
+template class SOFA_IMAGE_API MergeImages<ImageF>;
+template class SOFA_IMAGE_API MergeImages<ImageB>;
+#endif
 
 
-const char* getModuleDescription()
-{
-    return "Image support in SOFA";
-}
-
-const char* getModuleComponentList()
-{
-    return "ImageContainer,ImageExporter,ImageViewer,ImageFilter,ImageToMeshEngine";
-}
-
-} // namespace image
+} //
+} // namespace component
 
 } // namespace sofa
-
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(ImageContainer)
-SOFA_LINK_CLASS(ImageExporter)
-SOFA_LINK_CLASS(ImageViewer)
-SOFA_LINK_CLASS(ImageFilter)
-SOFA_LINK_CLASS(MergeImages)
-SOFA_LINK_CLASS(ImageToMeshEngine)
 

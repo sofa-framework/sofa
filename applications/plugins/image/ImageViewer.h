@@ -121,7 +121,8 @@ public:
     virtual void init()
     {
         std::vector<VisuModelType*> visuals;
-        this->getContext()->template get<VisuModelType>(&visuals, core::objectmodel::BaseContext::SearchRoot);
+        sofa::core::objectmodel::BaseContext* context = this->getContext();
+        context->get<VisuModelType>(&visuals,core::objectmodel::BaseContext::SearchRoot);
 
         waHisto whisto(this->histo);	whisto->setInput(image.getValue());
         waPlane wplane(this->plane);	wplane->setInput(image.getValue(),transform.getValue(),visuals);
