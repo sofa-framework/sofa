@@ -164,17 +164,17 @@ public:
 
 protected:
 
-    template<class T>
-    void createInputDataVector(unsigned int nb, helper::vector< Data<T>* >& vf, std::string name, std::string /*help*/)
+    template<class t>
+    void createInputDataVector(unsigned int nb, helper::vector< Data<t>* >& vf, std::string name, std::string help)
     {
         vf.reserve(nb);
         for (unsigned int i=vf.size(); i<nb; i++)
         {
             std::ostringstream oname; oname << name << (1+i); std::string name_i = oname.str();
 
-            Data<T>* d = new Data<T>();
+            Data<t>* d = new Data<t>();
             d->setName(name_i);
-            d->setHelpMsg("");
+            d->setHelpMsg(help.c_str());
             d->setReadOnly(true);
 
             vf.push_back(d);
@@ -182,8 +182,8 @@ protected:
             this->addInput(d);
         }
     }
-    template<class T>
-    void deleteInputDataVector(helper::vector< Data<T>* >& vf)
+    template<class t>
+    void deleteInputDataVector(helper::vector< Data<t>* >& vf)
     {
         for (unsigned int i=0; i<vf.size(); ++i)
         {

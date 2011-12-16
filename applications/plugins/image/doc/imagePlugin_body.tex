@@ -51,23 +51,25 @@
 	\end{itemize}
 \item 2D + time:
 	\begin{itemize}
+	\item dicom (requires xmedcon (\url{http://xmedcon.sourceforge.net/}): ".dcm", ".dicom"
 	\item videos (requires ffmpeg \url{http://www.ffmpeg.org}): ".avi", ".mov", ".asf", ".divx", ".flv", ".mpg", ".m1v", ".m2v", ".m4v", ".mjp", ".mkv", ".mpe", ".movie", ".ogm", ".ogg", ".qt", ".rm", ".vob", ".wmv", ".xvid", ".mpeg"	
 	\end{itemize}
 \item 3D:
 	\begin{itemize}
-	\item raw + header file : ".raw" + ".nfo"
-	\item dicom (requires xmedcon (\url{http://xmedcon.sourceforge.net/}): ".dcm", ".dicom"
 	\item parrec: ".par", ".rec"
 	\item analyze: ".hdr", ".nii"
 	\item inria: ".inr"
 	\end{itemize}
 \item 3D + time :
 	\begin{itemize}
+	\item raw + meta image header file : ".raw" + ".mhd" (\url{http://www.vtk.org/Wiki/MetaIO/Documentation})
 	\item cimg: ".cimg"
 	\end{itemize}
 \end{itemize}
 
-\noindent Some formats (".par", ".rec" and ".inr") implement the pixel size. The spatial scale transformation parameters are retrieved automatically by the reader. For the "raw" format, a separate header file containing the transformation and the image dimensions is read/written. For the other formats, the transformation needs to be defined in the xml scene.
+\noindent Some formats (".par", ".rec" and ".inr") implement the pixel size. The spatial scale transformation parameters are retrieved automatically by the reader. For the metaimage format, a separate header file containing the transformation and the image dimensions is read/written. For the other formats, the transformation needs to be defined in the xml scene.
+
+\noindent Only 2D dicoms are supported. To import a volume from dicom files, taking into account scale, orientation and position, the best way is to first convert dicoms series to metaimage using available software  (such as \url{http://lcni.uoregon.edu/~jolinda/MRIConvert/}), and then load metaimages in sofa.
 
 %------------------------------------------------------------------------------------------------------
 \section{Engines}
