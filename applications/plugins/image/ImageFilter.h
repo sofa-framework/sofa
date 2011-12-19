@@ -346,7 +346,7 @@ protected:
                         To ix = (Incc - Ipcc)*(To)0.5/(To)inT->getScale()[0];
                         To iy = (Icnc - Icpc)*(To)0.5/(To)inT->getScale()[1];
                         To iz = (Iccn - Iccp)*(To)0.5/(To)inT->getScale()[2];
-                        *(ptrd++) = sqrt(ix*ix+iy*iy+iz*iz);
+                        *(ptrd++) = sqrt( (SReal) ix*ix+iy*iy+iz*iz);
                     }
                 }
             }
