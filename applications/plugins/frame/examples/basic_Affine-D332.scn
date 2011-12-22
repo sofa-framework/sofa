@@ -25,7 +25,7 @@
 		</Node>
 
 		<Node name="Collision">
-			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
+			<MeshObjLoader name="MeshObjLoader" filename="mesh/beam.obj"/>
     		  	<Mesh /> 
      		 	<MechanicalObject  name="PointSet"  />
       		<Triangle />
