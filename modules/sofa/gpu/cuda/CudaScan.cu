@@ -60,8 +60,8 @@ enum ScanType
 
 extern "C" {
 
-    bool CudaScanGPUAvailable(unsigned int size, ScanType type);
-    bool CudaScanGPU(const void* input, void* output, unsigned int size, ScanType type);
+    bool SOFA_GPU_CUDA_API CudaScanGPUAvailable(unsigned int size, ScanType type);
+    bool SOFA_GPU_CUDA_API CudaScanGPU(const void* input, void* output, unsigned int size, ScanType type);
 
 } // "C"
 

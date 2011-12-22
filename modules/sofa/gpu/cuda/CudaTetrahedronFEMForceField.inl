@@ -51,7 +51,7 @@ extern "C"
     void TetrahedronFEMForceFieldCuda3f1_addDForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
     void TetrahedronFEMForceFieldCuda3f1_addKToMatrix(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, double factor);
 
-    void TetrahedronFEMForceFieldCuda3f_getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations);
+    void SOFA_GPU_CUDA_API TetrahedronFEMForceFieldCuda3f_getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
@@ -651,9 +651,9 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaTetrahedronFEMForceField_ImplMethods(T) \
-    template<> void TetrahedronFEMForceField< T >::reinit() \
+    template<> inline void TetrahedronFEMForceField< T >::reinit() \
     { data.reinit(this); } \
-    template<> void TetrahedronFEMForceField< T >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) \
+    template<> inline void TetrahedronFEMForceField< T >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) \
     { \
 		VecDeriv& f = *d_f.beginEdit(); \
 		const VecCoord& x = d_x.getValue(); \
@@ -661,20 +661,20 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 		data.addForce(this, f, x, v); \
 		d_f.endEdit(); \
 	} \
-    template<> void TetrahedronFEMForceField< T >::getRotations(VecReal & rotations) \
+    template<> inline void TetrahedronFEMForceField< T >::getRotations(VecReal & rotations) \
     { data.getRotations(this, rotations); } \
-    template<> void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * rotations,int offset) \
+    template<> inline void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * rotations,int offset) \
     { data.getRotations(this, rotations,offset); } \
-    template<> void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx) \
+    template<> inline void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx) \
     { \
 		VecDeriv& df = *d_df.beginEdit(); \
 		const VecDeriv& dx = d_dx.getValue(); \
 		data.addDForce(this, df, dx, mparams->kFactor(), mparams->bFactor()); \
 		d_df.endEdit(); \
 	} \
-    template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset) \
+    template<> inline void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset) \
     { data.addKToMatrix(this, mat, kFactor, offset); } \
-    template<> void TetrahedronFEMForceField< T >::handleEvent(sofa::core::objectmodel::Event* event) \
+    template<> inline void TetrahedronFEMForceField< T >::handleEvent(sofa::core::objectmodel::Event* event) \
     { data.handleEvent(this,event); }
 
 CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3fTypes);

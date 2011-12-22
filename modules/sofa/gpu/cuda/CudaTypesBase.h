@@ -33,8 +33,8 @@
 
 extern "C"
 {
-    void matrix_vector_productf(int dim,const void * M,int mPitch,const void * r,void * z);
-    void matrix_vector_productd(int dim,const void * M,int mPitch,const void * r,void * z);
+    extern void SOFA_GPU_CUDA_API matrix_vector_productf(int dim,const void * M,int mPitch,const void * r,void * z);
+    extern void SOFA_GPU_CUDA_API matrix_vector_productd(int dim,const void * M,int mPitch,const void * r,void * z);
 }
 
 template<typename real> class CudaBaseMatrixKernels;

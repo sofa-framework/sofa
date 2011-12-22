@@ -58,8 +58,8 @@ namespace cuda
 
 extern "C" {
 
-    bool CudaSortGPUAvailable(unsigned int size, bool withData = true);
-    bool CudaSortGPU(void* keys, void* data, unsigned int size, int bits);
+    bool SOFA_GPU_CUDA_API CudaSortGPUAvailable(unsigned int size, bool withData = true);
+    bool SOFA_GPU_CUDA_API CudaSortGPU(void* keys, void* data, unsigned int size, int bits);
 
 } // "C"
 
