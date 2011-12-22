@@ -37,7 +37,7 @@
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <sofa/component/forcefield/TetrahedronFEMForceField.inl>
 
 #include <sofa/core/behavior/RotationFinder.h>
 

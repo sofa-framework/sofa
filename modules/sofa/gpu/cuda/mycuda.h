@@ -81,8 +81,8 @@ extern "C" {
 // sed -i.bak -e 's/\([ \t]\)\([_A-Za-z][_A-Za-z0-9]*[ \t]*\(<[_A-Za-z0-9 :,().+*\/|&^-]*\(<[_A-Za-z0-9 :,().+*\/|&^-]*>[_A-Za-z0-9 :,().+*\/|&^-]*\)*>\)\?[:space:]*\)<<</\1###\2###<<</g' -e's/###\([^;#]*[^;# \t]\)\([:space:]*\)###\(<<<[^;]*>>>[^;]*\);/{\1\2\3; mycudaDebugError("\1");}/g' -e 's/###\([^;#]*\)###\(<<<\)/\1\2/g' myfile.cu
 
     extern void SOFA_GPU_CUDA_API mycudaLogError(const char* err, const char* src);
-    extern int myprintf(const char* fmt, ...);
-    extern int mycudaGetMultiProcessorCount();
+    extern int SOFA_GPU_CUDA_API myprintf(const char* fmt, ...);
+    extern int SOFA_GPU_CUDA_API mycudaGetMultiProcessorCount();
     extern void mycudaPrivateInit(int device=-1);
 
     extern void cuda_void_kernel();
