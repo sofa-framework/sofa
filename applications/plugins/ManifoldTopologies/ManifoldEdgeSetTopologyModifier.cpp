@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include "ManifoldEdgeSetTopologyModifier.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/EdgeSetTopologyChange.h>
 #include "ManifoldEdgeSetTopologyContainer.h"
 #include <algorithm>
 #include <functional>
