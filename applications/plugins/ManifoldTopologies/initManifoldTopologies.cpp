@@ -76,6 +76,11 @@ const char* getModuleVersion()
     return "1.0";
 }
 
+const char* getModuleLicense()
+{
+    return "?";
+}
+
 const char* getModuleDescription()
 {
     return "Use Manifold Topologies functionnalities into SOFA";
@@ -99,5 +104,5 @@ SOFA_LINK_CLASS(ManifoldEdgeSetTopologyModifier)
 SOFA_LINK_CLASS(ManifoldTriangleSetTopologyContainer)
 SOFA_LINK_CLASS(ManifoldTriangleSetTopologyModifier)
 SOFA_LINK_CLASS(ManifoldTriangleSetTopologyAlgorithms)
-SOFA_LINK_CLASS(ManifoldTetrahedronSetTopologyContainer)
+//SOFA_LINK_CLASS(ManifoldTetrahedronSetTopologyContainer)
 
