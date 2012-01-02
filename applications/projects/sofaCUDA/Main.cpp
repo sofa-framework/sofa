@@ -50,6 +50,7 @@
 
 #ifdef SOFA_DEV
 #include <sofa/gpu/cuda/initCudaDev.h>
+#include <sofa/component/initMiscMappingDev.h>
 #endif
 
 
@@ -188,6 +189,7 @@ int main(int argc, char** argv)
 #ifdef SOFA_DEV
     // load cuda_dev library
     sofa::gpu::cuda::initCudaDev();
+    sofa::component::initMiscMappingDev();
 #endif
 
     sofa::simulation::xml::initXml();
