@@ -23,9 +23,9 @@ SingleComponent.h
 README_FILE = PluginMeshSTEPLoader.txt
 
 unix {
-INCLUDEPATH += /usr/include/opencascade
+INCLUDEPATH += /usr/include/opencascade  # FF: is this really useful ?
 DEPENDPATH += /usr/include/opencascade
-LIBS += -lTKernel -lTKMath -lTKAdvTools -lGL -lTKG2d -lTKG3d -lTKGeomBase -lTKBRep -lTKGeomAlgo -lTKTopAlgo -lTKPrim -lTKBO -lTKHLR -lTKMesh -lTKShHealing -lTKBool -lTKXMesh -lTKFillet -lTKFeat -lTKOffset -lTKSTL -lTKXSBase -lTKSTEPBase -lTKIGES -lTKSTEPAttr -lTKSTEP209 -lTKSTEP    -lTKService -lTKV2d -lTKV3d -lTKOpenGl -lTKMeshVS -lTKNIS -lTKVRML
+LIBS += -lgl2ps -lTKernel -lTKMath -lTKAdvTools -lGL -lTKG2d -lTKG3d -lTKGeomBase -lTKBRep -lTKGeomAlgo -lTKTopAlgo -lTKPrim -lTKBO -lTKHLR -lTKMesh -lTKShHealing -lTKBool -lTKXMesh -lTKFillet -lTKFeat -lTKOffset -lTKSTL -lTKXSBase -lTKSTEPBase -lTKIGES -lTKSTEPAttr -lTKSTEP209 -lTKSTEP    -lTKService -lTKV2d -lTKV3d -lTKOpenGl -lTKMeshVS -lTKNIS -lTKVRML
 }
 
 win32 {

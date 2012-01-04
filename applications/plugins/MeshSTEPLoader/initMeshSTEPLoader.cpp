@@ -62,6 +62,11 @@ void initExternalModule()
     }
 }
 
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
 const char* getModuleName()
 {
     return "Plugin MeshSTEPLoader";
