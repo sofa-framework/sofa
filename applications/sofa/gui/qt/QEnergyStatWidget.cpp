@@ -99,9 +99,9 @@ void QEnergyStatWidget::step()
 
 void QEnergyStatWidget::updateVisualization()
 {
-    energy_curve[0]->setRawData(&history[0],&(energy_history[0][0]), history.size());
-    energy_curve[1]->setRawData(&history[0],&(energy_history[1][0]), history.size());
-    energy_curve[2]->setRawData(&history[0],&(energy_history[2][0]), history.size());
+    energy_curve[0]->setRawSamples(&history[0],&(energy_history[0][0]), history.size());
+    energy_curve[1]->setRawSamples(&history[0],&(energy_history[1][0]), history.size());
+    energy_curve[2]->setRawSamples(&history[0],&(energy_history[2][0]), history.size());
     graphEnergy->replot();
 }
 

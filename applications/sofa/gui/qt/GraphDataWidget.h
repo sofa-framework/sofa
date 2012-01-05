@@ -32,11 +32,14 @@
 #include <sofa/helper/system/SetDirectory.h>
 
 #include <sofa/component/topology/TopologyData.h>
+#include <qwt_compat.h>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_legend.h>
 #include <qwt_scale_engine.h>
-#include <qwt_plot_printfilter.h>
+#include <qwt_series_data.h>
+// #include <qwt_plot_printfilter.h>
+#include <qwt_plot_renderer.h>
 
 #include <fstream>
 
@@ -50,7 +53,7 @@ namespace qt
 {
 
 template<class T>
-class QwtDataAccess : public QwtData
+class QwtDataAccess : public QwtSeriesData< QPointF >
 {
 protected:
     const T* data0;
@@ -60,10 +63,10 @@ public:
     typedef vector_data_trait<value_type> vtrait;
     typedef typename vtrait::value_type real_type;
     QwtDataAccess() : data0(NULL) {}
-    QwtDataAccess(const QwtDataAccess<T>& c) : QwtData(c), data0(c.data0) {}
+    QwtDataAccess(const QwtDataAccess<T>& c) : QwtSeriesData<QPointF>(c), data0(c.data0) {}
 
     void setData(const T* p) { data0 = p; }
-    virtual QwtData* copy() const { return new QwtDataAccess<T>(*this); }
+    virtual QwtSeriesData<QPointF>* copy() const { return new QwtDataAccess<T>(*this); }
     virtual size_t size() const
     {
         if (data0 == NULL)
@@ -71,23 +74,81 @@ public:
         else
             return trait::size(*(data0));
     }
+
+    /*
     virtual double x (size_t i) const
     {
-        if (i >= size())
-            return 0.0;
-        else if (vtrait::size(*trait::get(*(data0), i)) < 2)
-            return (double)i;
-        else
-            return (double)(*vtrait::get(*trait::get(*(data0), i), 0));
+    if (i >= size())
+        return 0.0;
+    else if (vtrait::size(*trait::get(*(data0), i)) < 2)
+        return (double)i;
+    else
+        return (double)(*vtrait::get(*trait::get(*(data0), i), 0));
     }
     virtual double y (size_t i) const
     {
+    if (i >= size())
+        return 0.0;
+    else if (vtrait::size(*trait::get(*(data0), i)) < 2)
+        return (double)(*vtrait::get(*trait::get(*(data0), i), 0));
+    else
+        return (double)(*vtrait::get(*trait::get(*(data0), i), 1));
+    }
+    */
+
+    virtual QPointF sample (size_t i) const
+    {
         if (i >= size())
-            return 0.0;
+            return QPointF();
         else if (vtrait::size(*trait::get(*(data0), i)) < 2)
-            return (double)(*vtrait::get(*trait::get(*(data0), i), 0));
+            return QPointF(i, (double)(*vtrait::get(*trait::get(*(data0), i), 0)));
         else
-            return (double)(*vtrait::get(*trait::get(*(data0), i), 1));
+            return QPointF((double)(*vtrait::get(*trait::get(*(data0), i), 0)), (double)(*vtrait::get(*trait::get(*(data0), i), 1)));
+    }
+
+    virtual QRectF boundingRect () const
+    {
+        if (size() == 0)
+            return QRectF();
+
+        real_type x, y , xMin, xMax, yMin, yMax;
+
+        if (vtrait::size(*trait::get(*(data0), 0)) < 2)
+        {
+            x = xMin = xMax = 0;
+            y = yMin = yMax = (*vtrait::get(*trait::get(*(data0), 0), 0));
+        }
+        else
+        {
+            x = xMin = xMax = (*vtrait::get(*trait::get(*(data0), 0), 0));
+            y = yMin = yMax = (*vtrait::get(*trait::get(*(data0), 0), 1));
+        }
+
+        for (size_t i=1; i < size(); i++)
+        {
+            if (vtrait::size(*trait::get(*(data0), i)) < 2)
+            {
+                x = i;
+                y = (*vtrait::get(*trait::get(*(data0), i), 0));
+            }
+            else
+            {
+                x = (*vtrait::get(*trait::get(*(data0), i), 0));
+                y = (*vtrait::get(*trait::get(*(data0), i), 1));
+            }
+
+            if (x > xMax)
+                xMax = x;
+            else if (x < xMin)
+                xMin = x;
+
+            if (y > yMax)
+                yMax = y;
+            else if (y < yMin)
+                yMin = y;
+        }
+
+        return QRectF(xMin, yMin, xMax-xMin, yMax-yMin);
     }
 };
 
@@ -159,23 +220,22 @@ public:
 
     QWidget *getWidget() {return w;}
 
-    QColor getColor(float h)
-    {
-        int i = int(h * 6) % 6;
-        float f = h * 6 - floor(h * 6);
-        int c1 = 255 - floor(255 * f);
-        int c2 = floor(255 * f);
+    /* QColor getColor(float h)
+     {
+    int i = int(h * 6) % 6;
+    float f = h * 6 - floor(h * 6);
+    int c1 = 255 - floor(255 * f);
+    int c2 = floor(255 * f);
 
-        switch(i)
-        {
-        case 0: return QColor(255, c2, 0);
-        case 1: return QColor(c1, 255, 0);
-        case 2: return QColor(0, 255, c2);
-        case 3: return QColor(0, c1, 255);
-        case 4: return QColor(c2, 0, 255);
+    switch(i) {
+    case 0: return QColor(255, c2, 0);
+    case 1: return QColor(c1, 255, 0);
+    case 2: return QColor(0, 255, c2);
+    case 3: return QColor(0, c1, 255);
+    case 4: return QColor(c2, 0, 255);
     case 5: default: return QColor(255, 0, c1);
-        }
     }
+     }*/
 
     void readFromData(const data_type& d0)
     {
@@ -215,9 +275,10 @@ public:
                     c->setTitle(s);
             }
 
-            c->setPen(getColor(i / (float)n));
+            // c->setPen(getColor(i / (float)n));
+            c->setPen(QColor::fromHsv(255*i/n, 255, 255));
             cd->setData(v);
-            c->setData(*cd);
+            c->setData(cd);
             if(c->minXValue() < minX) minX = c->minXValue();
             if(c->maxXValue() > maxX) maxX = c->maxXValue();
             if(c->minYValue() < minY) minY = c->minYValue();
@@ -266,14 +327,24 @@ public:
 #ifdef SOFA_QT4
     void exportImage(const std::string &baseFileName) const
     {
-        const std::string filename=baseFileName+".png";
-        QwtPlotPrintFilter filter;
-        filter.setOptions(QwtPlotPrintFilter::PrintAll);
-        QImage image(w->width(), w->height(),QImage::Format_RGB32);
-        image.fill(0xffffffff); //white image
-        w->print(image,filter);
+        const std::string filename=baseFileName + ".svg";
+
+        const float resolution = 72.f; // dpi
+        const float inch2mm = 25.4f;
+
+        QwtPlotRenderer renderer;
+        renderer.setDiscardFlag(QwtPlotRenderer::DiscardNone);
+        renderer.renderDocument(w, filename.c_str(), "svg", QSizeF(inch2mm * w->width() / resolution, inch2mm * w->height() / resolution), resolution);
+
         std::cerr << "Export Image: " << filename << std::endl;
-        image.save(filename.c_str());
+
+        //	Qwt 5.2.0 Code
+        //	QwtPlotPrintFilter filter;
+        //	filter.setOptions(QwtPlotPrintFilter::PrintAll);
+        //	QImage image(w->width(), w->height(),QImage::Format_RGB32);
+        //	image.fill(0xffffffff); //white image
+        //	w->print(image,filter);
+        //	image.save(filename.c_str());
     }
 #endif
 protected:
