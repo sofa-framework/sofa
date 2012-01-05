@@ -114,5 +114,5 @@ QWT_CONFIG     += QwtDesigner
 
 macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
 
-    QWT_CONFIG += QwtFramework
+#    QWT_CONFIG += QwtFramework
 }  
