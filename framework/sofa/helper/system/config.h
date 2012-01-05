@@ -39,7 +39,9 @@
 #endif
 
 #ifdef _MSC_VER
-# define _USE_MATH_DEFINES // required to get M_PI from math.h
+#ifndef _USE_MATH_DEFINES
+# define _USE_MATH_DEFINES 1 // required to get M_PI from math.h
+#endif
 // Visual C++ does not include stdint.h
 typedef signed __int8		int8_t;
 typedef signed __int16		int16_t;
