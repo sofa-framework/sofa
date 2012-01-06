@@ -11,10 +11,12 @@ DEFINES += SOFA_BUILD_SENSABLEPLUGIN
 
 SOURCES = \
 initSensable.cpp \
-NewOmniDriver.cpp
+NewOmniDriver.cpp \
+OmniDriver.cpp \
 
 HEADERS = \
-NewOmniDriver.h
+NewOmniDriver.h \
+OmniDriver.h
 
 README_FILE = PluginSensable.txt
 
