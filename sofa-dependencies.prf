@@ -155,6 +155,7 @@ declare(sofaOPENCL,       applications/projects/sofaOPENCL,         sofaguimain 
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofa_component sofagpucuda)
 declare(sofaVerification, applications/projects/sofaVerification, sofa_component sofa_component_dev sofagpucuda)
+declare(sofaInfo, applications/projects/sofaInfo, sofaguimain sofa_component_dev)
 #declare(runLem,          applications/projects/fissuration/lem/exe,     sofaguimain)
 
 declare(centerOfMassMapping,            applications/projects/BoostKernel/applications/centerOfMassMapping,             sofa_component sofaobjectcreator sofaguimain)
@@ -310,6 +311,7 @@ enable(generateTypedefs)
 enable(meshconv)
 enable(sofaInitTimer)
 enable(sofaVerification)
+enable(sofaInfo)
 
 contains(DEFINES, SOFA_HAVE_BOOST) {
 	enable(sofatests)
