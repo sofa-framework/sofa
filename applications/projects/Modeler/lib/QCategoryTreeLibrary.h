@@ -46,7 +46,7 @@ using sofa::core::ComponentLibrary;
 typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
 //***************************************************************
-class QCategoryTreeLibrary : virtual public QWidget, public CategoryLibrary
+class QCategoryTreeLibrary : public QWidget, public CategoryLibrary
 {
 
     Q_OBJECT
