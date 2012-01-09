@@ -1,0 +1,15 @@
+# MTL written from /Volumes/XEON/malleus.obj
+newmtl Material_046007
+Kd 0.784 0.7528 0.6432
+Ns 200
+d 1
+illum 2
+Ka 0 0 0
+Ks 0 0 0
+newmtl Material_046008
+Kd 0.6616 0.6616 0.6616
+Ns 200
+d 1
+illum 2
+Ka 0 0 0
+Ks 0 0 0
