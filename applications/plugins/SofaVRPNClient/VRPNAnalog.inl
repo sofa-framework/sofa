@@ -23,24 +23,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 /*
- * VRPNAnalog.h
+ * VRPNAnalog.cpp
  *
  *  Created on: 8 sept. 2009
  *      Author: froy
  */
 
-#ifndef SOFAVRPNCLIENT_VRPNANALOG_H_
-#define SOFAVRPNCLIENT_VRPNANALOG_H_
+#ifndef SOFAVRPNCLIENT_VRPNANALOG_INL_
+#define SOFAVRPNCLIENT_VRPNANALOG_INL_
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/DataEngine.h>
-#include <sofa/helper/RandomGenerator.h>
+#include <VRPNAnalog.h>
 
-#include <VRPNDevice.h>
-
-#include <vrpn/vrpn_Analog.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofavrpn
 {
@@ -48,64 +42,80 @@ namespace sofavrpn
 namespace client
 {
 
-//typedef	struct _vrpn_ANALOGCB {
-//	struct timeval	msg_time;	// Timestamp of analog data
-//	vrpn_int32	num_channel;    // how many channels
-//	vrpn_float64	channel[vrpn_CHANNEL_MAX];  // analog values
-//} vrpn_ANALOGCB;
-
-struct VRPNAnalogData
+template<class Datatypes>
+VRPNAnalog<Datatypes>::VRPNAnalog()
+    : f_channels(initData(&f_channels, "channels", "Channels"))
 {
-    vrpn_ANALOGCB data;
-    bool modified;
-};
+    anr = NULL;
 
-void handle_analog(void *userdata, const vrpn_ANALOGCB a);
+    rg.initSeed( (long int) this );
+}
 
-template<class DataTypes>
-class VRPNAnalog : public virtual VRPNDevice
+template<class Datatypes>
+VRPNAnalog<Datatypes>::~VRPNAnalog()
 {
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(VRPNAnalog, DataTypes), VRPNDevice);
-
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Point;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
-
-    Data<sofa::helper::vector<Real> > f_channels;
-
-    VRPNAnalogData analogData;
-
-    VRPNAnalog();
-    virtual ~VRPNAnalog();
-
-//	void init();
-//	void reinit();
-    void update();
+    // TODO Auto-generated destructor stub
+}
 
 
-private:
-    vrpn_Analog_Remote* anr;
-    sofa::helper::RandomGenerator rg;
+template<class Datatypes>
+bool VRPNAnalog<Datatypes>::connectToServer()
+{
+    analogData.data.num_channel = 0;
+    analogData.modified = false;
+    anr = new vrpn_Analog_Remote(deviceURL.c_str());
+    anr->register_change_handler((void*) &analogData, handle_analog);
 
-    bool connectToServer();
-    //callback
-    //static void handle_analog(void *userdata, const vrpn_ANALOGCB a);
-};
+    anr->mainloop();
 
-#if defined(WIN32) && !defined(SOFAVRPNCLIENT_VRPNANALOG_CPP_)
-#pragma warning(disable : 4231)
-#ifndef SOFA_FLOAT
-template class SOFA_SOFAVRPNCLIENT_API VRPNAnalog<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_SOFAVRPNCLIENT_API VRPNAnalog<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
-#endif
+    return true;
+}
+
+template<class Datatypes>
+void VRPNAnalog<Datatypes>::update()
+{
+    sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Real> > > channels = f_channels;
+    //std::cout << "read analog " << this->getName() << std::endl;
+    if (anr)
+    {
+        //get infos
+        analogData.modified = false;
+        anr->mainloop();
+
+        if(analogData.modified)
+        {
+            channels.clear();
+
+            if (analogData.data.num_channel > 1 && analogData.data.num_channel < 256)
+            {
+                //std::cout << "Size :" << analogData.data.num_channel << std::endl;
+                //put infos in Datas
+
+                channels.resize(analogData.data.num_channel);
+
+                for (int i=0  ; i < analogData.data.num_channel ; i++)
+                    channels[i] = analogData.data.channel[i];
+
+            }
+            else
+            {
+                std::cout << "No Channels readable" << std::endl;
+            }
+        }
+
+    }
+//	channels.resize(64);
+//	for (unsigned int i=0 ; i<64 ;i++)
+//	{
+//		//channels[i] = i;
+//		channels[i] = (Real)rg.randomDouble(0, 639);
+//	}
 
 }
 
 }
 
-#endif /* SOFAVRPNCLIENT_VRPNANALOG_H_ */
+}
+
+#endif //SOFAVRPNCLIENT_VRPNANALOG_INL_
+

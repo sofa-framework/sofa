@@ -23,32 +23,26 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 /*
- * VRPNImager.h
+ * VRPNTracker.h
  *
- *  Created on: 14 May 2010
- *      Author: peterlik
+ *  Created on: 8 sept. 2009
+ *      Author: froy
  */
 
-#ifndef SOFAVRPNCLIENT_VRPNIMAGER_H_
-#define SOFAVRPNCLIENT_VRPNIMAGER_H_
+#ifndef SOFAVRPNCLIENT_VRPNTRACKER_H_
+#define SOFAVRPNCLIENT_VRPNTRACKER_H_
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/objectmodel/Event.h>
 
-//#include <sofa/helper/RandomGenerator.h>
-#include <sofa/core/DataEngine.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/Quater.h>
-
+#include <sofa/helper/RandomGenerator.h>
 
 #include <VRPNDevice.h>
 
-//#include <vrpn/vrpn_Connection.h>
-//#include <vrpn/vrpn_FileConnection.h>
-#include <vrpn/vrpn_Imager.h>
-
+#include <vrpn/vrpn_Tracker.h>
+#include <memory>
 
 namespace sofavrpn
 {
@@ -56,91 +50,51 @@ namespace sofavrpn
 namespace client
 {
 
-struct VRPNImagerData
-{
-
-    //sofa::helper::vector<vrpn_TRACKERCB> data;
-    bool got_dimensions;          //< Heard image dimensions from server?
-    bool ready_for_region;        //< Everything set up to handle a region?
-    bool already_posted;          //< Posted redisplay since the last display?
-    int Xdim, Ydim;               //< Dimensions in X and Y
-    vrpn_Imager_Remote *remote_imager;
-    float rigidPointData[7];
-
-    unsigned char *image;        //< Pointer to the storage for the image
-
-
-
-    VRPNImagerData() :
-        got_dimensions(false),
-        ready_for_region(false),
-        already_posted(false),
-        image(NULL)
-    {}
-};
-
-void  VRPN_CALLBACK handle_discarded_frames(void *, const vrpn_IMAGERDISCARDEDFRAMESCB info);
-void  VRPN_CALLBACK handle_description_message(void *, const struct timeval);
-void  VRPN_CALLBACK handle_region_change(void *userdata, const vrpn_IMAGERREGIONCB info);
-void  VRPN_CALLBACK handle_end_of_frame(void *,const struct _vrpn_IMAGERENDFRAMECB);
-
 template<class DataTypes>
-class VRPNImager :  public virtual VRPNDevice
+class VRPNTracker :  public virtual VRPNDevice
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(VRPNImager, DataTypes), VRPNDevice);
+    SOFA_CLASS(SOFA_TEMPLATE(VRPNTracker, DataTypes), VRPNDevice);
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Point;
     typedef typename DataTypes::Coord Coord;
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
-    typedef sofa::helper::Quater<Real> Quat;
-
 
     typedef typename DataTypes::VecCoord VecCoord;
 
-    VRPNImager();
-    virtual ~VRPNImager();
+    VRPNTracker();
+    virtual ~VRPNTracker();
 
 //	void init();
 //	void reinit();
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const VRPNImager<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-    //Data<Point> rigidPoint;
-    //Data<sofa::helper::vector<Vec3 > > f_positions;
-    //Data<sofa::helper::vector<Quat> > f_orientations;
-    Data<Point> f_rigidPoint;
-    Data<Real>  f_scale;
-
 private:
-    vrpn_Imager_Remote      *g_imager;      //< Imager client object
-    VRPNImagerData  imagerData;
-    unsigned int imageTextureID;
+    sofa::core::objectmodel::Data<VecCoord> f_points;
 
+    sofa::core::objectmodel::Data<Real> p_dx, p_dy, p_dz;
+    sofa::core::objectmodel::Data<Real> p_scale;
+    sofa::core::objectmodel::Data<bool> p_nullPoint;
+
+    std::auto_ptr<vrpn_Tracker_Remote> tkr;
+    sofa::helper::RandomGenerator rg;
 
     bool connectToServer();
     void update();
-    void draw();
+    void updateCallback(const vrpn_TRACKERCB& t);
 
+    static void handle_tracker(void* userdata, const vrpn_TRACKERCB t);
     void handleEvent(sofa::core::objectmodel::Event* event);
+    //DEBUG
+    double angleX, angleY, angleZ;
 };
 
-#if defined(WIN32) && !defined(SOFAVRPNCLIENT_VRPNIMAGER_CPP_)
+#if defined(WIN32) && !defined(SOFAVRPNCLIENT_VRPNTRACKER_CPP_)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-template class SOFA_SOFAVRPNCLIENT_API VRPNImager<defaulttype::Vec3dTypes>;
+template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_SOFAVRPNCLIENT_API VRPNImager<defaulttype::Vec3fTypes>;
+template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 
@@ -148,4 +102,4 @@ template class SOFA_SOFAVRPNCLIENT_API VRPNImager<defaulttype::Vec3fTypes>;
 
 }
 
-#endif /* SOFAVRPNCLIENT_VRPNIMAGER_H_ */
+#endif /* SOFAVRPNCLIENT_VRPNTRACKER_H_ */

@@ -155,13 +155,13 @@ void IRTracker<Datatypes>::update()
 {
     cleanDirty();
 
-    sofa::helper::ReadAccessor< Data<VecCoord > > leftDots = f_leftDots;
-    sofa::helper::ReadAccessor< Data<VecCoord > > rightDots = f_rightDots;
+    sofa::helper::ReadAccessor< sofa::core::objectmodel::Data<VecCoord > > leftDots = f_leftDots;
+    sofa::helper::ReadAccessor< sofa::core::objectmodel::Data<VecCoord > > rightDots = f_rightDots;
 
-    const double &scale = f_scale.getValue();
+    //const double &scale = f_scale.getValue();
     const double &distanceSide = f_distanceSide.getValue();
 
-    sofa::helper::WriteAccessor< Data<VecCoord > > points = f_points;
+    sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<VecCoord > > points = f_points;
 
     if (leftDots.size() != rightDots.size())
     {

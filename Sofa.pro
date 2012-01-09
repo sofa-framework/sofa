@@ -20,6 +20,10 @@ contains(DEFINES, SOFA_HAVE_SENSABLE) {
 
 !contains (DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
 
+contains (DEFINES, SOFA_HAVE_VRPN) {
+	usePlugin(SofaVRPNClient)
+}
+
 contains(DEFINES, SOFA_HAVE_ARTRACK) {
         usePlugin(ARTrack)
 }

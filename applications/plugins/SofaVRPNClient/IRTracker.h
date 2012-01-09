@@ -23,17 +23,23 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 /*
- * VRPNButton.cpp
+ * IRTracker.h
  *
  *  Created on: 8 sept. 2009
  *      Author: froy
  */
 
-#include "VRPNButton.h"
+#ifndef SOFAVRPNCLIENT_IRTRACKER_H_
+#define SOFAVRPNCLIENT_IRTRACKER_H_
 
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/DataEngine.h>
+
+#include <VRPNDevice.h>
+
+#include <vrpn/vrpn_Analog.h>
 
 namespace sofavrpn
 {
@@ -41,63 +47,58 @@ namespace sofavrpn
 namespace client
 {
 
-int VRPNButtonClass = sofa::core::RegisterObject("VRPN Tracker")
-        .add< VRPNButton >();
-
-SOFA_DECL_CLASS(VRPNButton)
-
-void handle_button(void *userdata, const vrpn_BUTTONCB b)
+template<class DataTypes>
+class IRTracker : public virtual sofa::core::objectmodel::BaseObject, public virtual sofa::core::DataEngine
 {
-    printf("\nButton %3d is in state: %d                      \n",
-            b.button, b.state);
-    fflush(stdout);
-}
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(IRTracker, DataTypes), sofa::core::objectmodel::BaseObject);
 
-VRPNButton::VRPNButton()
-{
-    // TODO Auto-generated constructor stub
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Point;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
 
-}
+    static const double WIIMOTE_X_RESOLUTION;
+    static const double WIIMOTE_Y_RESOLUTION;
+    static const double WIIMOTE_X_ANGLE;
+    static const double WIIMOTE_Y_ANGLE;
 
-VRPNButton::~VRPNButton()
-{
-    // TODO Auto-generated destructor stub
-}
-
-bool VRPNButton::connectToServer()
-{
-    btn = new vrpn_Button_Remote(deviceURL.c_str());
-    btn->register_change_handler(NULL, handle_button);
-
-    //main interactive loop
-
-    while (1)
-    {
-        // Let the tracker do its thing
-        btn->mainloop();
-    }
-
-    return true;
-}
+    IRTracker();
+    virtual ~IRTracker();
 
 
+    //input
+    sofa::core::objectmodel::Data<VecCoord > f_leftDots;
+    sofa::core::objectmodel::Data<VecCoord > f_rightDots;
+    sofa::core::objectmodel::Data<Real> f_distance;
+    sofa::core::objectmodel::Data<Real> f_distanceSide;
+    sofa::core::objectmodel::Data<Real> f_scale;
 
+    //output
+    sofa::core::objectmodel::Data<VecCoord> f_points;
 
-void VRPNButton::update()
-{
-//	if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
-//	{
-//		switch(ev->getKey())
-//		{
-//
-//			case 'T':
-//			case 't':
-//				std::cout << "Tracker : " << std::endl;
-//				break;
-//		}
-//	}
-}
+    //Parameters
+    sofa::core::objectmodel::Data<double> p_yErrorCoeff, p_sideErrorCoeff, p_realSideErrorCoeff;
+
+    void update();
+
+    Coord get3DPoint(double lx, double ly, double rx, double ry);
+private:
+
+};
+
+#if defined(WIN32) && !defined(SOFAVRPNCLIENT_IRTRACKER_CPP_)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+template class SOFA_SOFAVRPNCLIENT_API IRTracker<defaulttype::Vec3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_SOFAVRPNCLIENT_API IRTracker<defaulttype::Vec3fTypes>;
+#endif //SOFA_DOUBLE
+#endif
 
 }
 
 }
+
+#endif /* SOFAVRPNCLIENT_IRTRACKER_H_ */

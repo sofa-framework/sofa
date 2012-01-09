@@ -23,89 +23,30 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 /*
- * ToolTracker.h
+ * vrpnclient_config.h
  *
- *  Created on: 8 sept. 2009
+ *  Created on: 4 nov. 2009
  *      Author: froy
  */
 
-#ifndef SOFAVRPNCLIENT_TOOLTRACKER_H_
-#define SOFAVRPNCLIENT_TOOLTRACKER_H_
+#ifndef VRPNCLIENT_CONFIG_H_
+#define VRPNCLIENT_CONFIG_H_
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/DataEngine.h>
-#include <sofa/defaulttype/Quat.h>
-#include <VRPNDevice.h>
+#include <sofa/helper/system/config.h>
 
-#include <vrpn/vrpn_Analog.h>
-
-namespace sofavrpn
-{
-
-namespace client
-{
-
-/*
- * Find a tool given various parameters...
- *
- */
-
-template<class DataTypes>
-class ToolTracker : public virtual sofa::core::objectmodel::BaseObject, public virtual sofa::core::DataEngine
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(ToolTracker, DataTypes), sofa::core::objectmodel::BaseObject);
-
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Point;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
-
-    typedef typename sofa::defaulttype::RigidTypes::Coord RPoint;
-    typedef typename sofa::defaulttype::RigidTypes::Coord RCoord;
-
-    //input
-    Data<VecCoord > f_points;
-    //distances between each point for the given tool
-    Data<sofa::helper::vector<double> > f_distances;
-
-
-    //output
-    Data<Coord> f_center;
-    Data<sofa::defaulttype::Quat> f_orientation;
-    //the same...
-    Data<RCoord> f_rigidCenter;
-
-    //parameters
-    Data<bool> f_drawTool;
-
-    ToolTracker();
-    virtual ~ToolTracker();
-
-//	void init();
-//	void reinit();
-    void update();
-    void draw();
-
-private:
-
-};
-
-#if defined(WIN32) && !defined(SOFAVRPNCLIENT_TOOLTRACKER_CPP_)
-#pragma warning(disable : 4231)
-#ifndef SOFA_FLOAT
-template class SOFA_SOFAVRPNCLIENT_API ToolTracker<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_SOFAVRPNCLIENT_API ToolTracker<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#ifndef WIN32
+#define SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_SOFAVRPNCLIENT_API
+#else
+#ifdef SOFA_BUILD_SOFAVRPNCLIENT
+#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+#define SOFA_SOFAVRPNCLIENT_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+#define SOFA_SOFAVRPNCLIENT_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 #endif
 
-}
 
-}
-
-#endif /* SOFAVRPNCLIENT_TOOLTRACKER_H_ */
+#endif /* VRPNCLIENT_CONFIG_H_ */

@@ -23,17 +23,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 /*
- * VRPNDevice.h
+ * VRPNButton.cpp
  *
  *  Created on: 8 sept. 2009
  *      Author: froy
  */
 
-#ifndef VRPNDEVICE_H_
-#define VRPNDEVICE_H_
+#include "VRPNButton.h"
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/BaseController.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 namespace sofavrpn
 {
@@ -41,35 +41,63 @@ namespace sofavrpn
 namespace client
 {
 
-class VRPNDevice :  public virtual sofa::core::objectmodel::BaseObject, public sofa::core::behavior::BaseController
+int VRPNButtonClass = sofa::core::RegisterObject("VRPN Tracker")
+        .add< VRPNButton >();
+
+SOFA_DECL_CLASS(VRPNButton)
+
+void handle_button(void * /*userdata*/, const vrpn_BUTTONCB b)
 {
-public:
-    SOFA_CLASS(VRPNDevice,sofa::core::objectmodel::BaseObject);
+    printf("\nButton %3d is in state: %d                      \n",
+            b.button, b.state);
+    fflush(stdout);
+}
 
-private:
-    bool connect();
-    void handleEvent(sofa::core::objectmodel::Event *);
+VRPNButton::VRPNButton()
+{
+    // TODO Auto-generated constructor stub
 
-protected:
-    virtual bool connectToServer() =0;
-    virtual void update() =0;
+}
 
-public:
-    Data<std::string> deviceName;
-    Data<std::string> serverName;
-    Data<std::string> serverPort;
+VRPNButton::~VRPNButton()
+{
+    // TODO Auto-generated destructor stub
+}
 
-    std::string deviceURL;
+bool VRPNButton::connectToServer()
+{
+    btn = new vrpn_Button_Remote(deviceURL.c_str());
+    btn->register_change_handler(NULL, handle_button);
 
-    VRPNDevice();
-    virtual ~VRPNDevice();
+    //main interactive loop
 
-    virtual void init();
-    virtual void reinit();
-};
+    while (1)
+    {
+        // Let the tracker do its thing
+        btn->mainloop();
+    }
 
+    return true;
+}
+
+
+
+
+void VRPNButton::update()
+{
+//	if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+//	{
+//		switch(ev->getKey())
+//		{
+//
+//			case 'T':
+//			case 't':
+//				std::cout << "Tracker : " << std::endl;
+//				break;
+//		}
+//	}
 }
 
 }
 
-#endif /* VRPNDEVICE_H_ */
+}

@@ -1,31 +1,9 @@
+load(sofa/pre)
+defineAsPlugin(SofaVRPNClient)
 ######  PLUGIN TARGET
-TARGET = SofaVRPN
-######  GENERAL PLUGIN CONFIGURATION, you shouldn't have to modify it
+TARGET = SofaVRPNClient
 
-SOFA_DIR=../../../..
-TEMPLATE = lib
-
-include($${SOFA_DIR}/sofa.cfg)
-
-DESTDIR = $$SOFA_DIR/lib/sofa-plugins
-
-#set configuration to dynamic library
-CONFIG += $$CONFIGLIBRARIES
-!contains(CONFIGSTATIC, static) {
-	CONFIG -= staticlib
-CONFIG += dll
-}
-
-
-###### SPECIFIC PLUGIN CONFIGURATION, you should modify it to configure your plugin
-
-INCLUDEPATH += .
-DEPENDPATH += .
-
-LIBS += $$SOFA_GUI_LIBS
-LIBS += $$SOFA_LIBS
-
-LIBS += $$EXT_LIBS -lvrpn_client$$LIBSUFFIX
+DEFINES += SOFA_BUILD_SOFAVRPNCLIENT
 
 HEADERS +=  vrpnclient_config.h \
 			VRPNDevice.h \
@@ -54,3 +32,5 @@ SOURCES += 	initSofaVRPNClient.cpp \
 		  	#ContactWarning.cpp \
  			#ContactDisabler.cpp \
 		  	ToolTracker.cpp
+
+load(sofa/post)
