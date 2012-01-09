@@ -44,7 +44,7 @@ namespace qt
 using sofa::core::ComponentLibrary;
 typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
-class QComponentTreeLibrary : virtual public QWidget, public ComponentLibrary
+class QComponentTreeLibrary : public QWidget, public ComponentLibrary
 {
 
     Q_OBJECT

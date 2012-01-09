@@ -48,7 +48,7 @@ typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
 //***************************************************************
 //Library using QToolBox
-class QSofaTreeLibrary : virtual public QTreeWidget, public SofaLibrary
+class QSofaTreeLibrary : public QTreeWidget, public SofaLibrary
 {
     Q_OBJECT
 public:

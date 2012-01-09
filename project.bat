@@ -13,6 +13,7 @@ set PATH=%QMAKEPATH%\bin;%PATH%
 if "%1" == "VC7" goto vc7
 if "%1" == "VC8" goto vc8
 if "%1" == "VC9" goto vc9
+if "%1" == "VC10" goto vc10
 if "%1" == "VC9_X64" goto vc9_x64
 if "%1" == "clean" goto clean
 
@@ -40,6 +41,13 @@ goto common
 set QMAKESPEC=win32-msvc2008
 @echo on
 @echo Making Visual project 9
+qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
+goto common
+
+:vc10
+set QMAKESPEC=win32-msvc2010
+@echo on
+@echo Making Visual project 10
 qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
 goto common
 

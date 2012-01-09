@@ -41,7 +41,7 @@ namespace gui
 namespace qt
 {
 
-class QTableViewUpdater : virtual public QTableView
+class QTableViewUpdater : public QTableView
 {
     Q_OBJECT
 
@@ -58,7 +58,7 @@ public slots:
 
 };
 
-class QTableModelUpdater : virtual public QStandardItemModel
+class QTableModelUpdater : public QStandardItemModel
 {
     Q_OBJECT
 
