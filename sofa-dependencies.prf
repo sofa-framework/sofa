@@ -36,6 +36,10 @@ declare(metis,      extlibs/metis)
 declare(taucs,      extlibs/taucs, cilk metis system-metis blas)
 declare(taucs_mt,   extlibs/taucs_mt, metis system-metis blas)
 declare(colladadom, extlibs/colladadom, tinyxml)
+declare(vrpn_quat,        extlibs/VRPN/quat/quat.pro)
+declare(vrpn_client,        extlibs/VRPN/vrpn_client.pro, vrpn_quat)
+declare(vrpn_atmellib,        extlibs/VRPN/vrpn/atmellib/vrpn_atmellib.pro, vrpn_quat)
+declare(vrpn_server,        extlibs/VRPN/vrpn_server.pro, vrpn_quat vrpn_atmellib)
 
 ######################################################################
 # Framework
@@ -153,6 +157,7 @@ declare(sofaCUDA,         applications/projects/sofaCUDA,         sofaguimain so
 declare(sofaCUDA_Bench,   applications/projects/sofaCUDA_Bench,         sofaguimain sofagpucuda sofa_component_dev)
 declare(sofaOPENCL,       applications/projects/sofaOPENCL,         sofaguimain sofagpuopencl sofa_component_dev)		#opencl
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
+declare(SofaVRPNServer, applications/projects/SofaVRPNServer, vrpn_quat vrpn_atmellib vrpn_server)
 declare(sofaInitTimer,    applications/projects/sofaInitTimer,    sofa_component sofagpucuda)
 declare(sofaVerification, applications/projects/sofaVerification, sofa_component sofa_component_dev sofagpucuda)
 declare(sofaInfo, applications/projects/sofaInfo, sofaguimain sofa_component_dev)
@@ -164,7 +169,7 @@ declare(centerOfMassMultiMappingChain,  applications/projects/BoostKernel/applic
 declare(subsetMultimapping,             applications/projects/BoostKernel/applications/subsetMultimapping,              sofa_component sofaobjectcreator sofaguimain)
 
 declare(sofatests,        tests,                                  sofacore)
-# SofaVRPN
+
 # SofaDevices
 #--- Tutorials ---#
 declare(sofaobjectcreator,   applications/tutorials/objectCreator,    sofa_component sofa_component_dev)
@@ -352,7 +357,11 @@ contains(DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
 		#enable(SofaDevices)
 	}
 	contains(DEFINES, SOFA_HAVE_VRPN) {
-		#enable(SofaVRPN)
+		enable(vrpn_quat)
+		enable(vrpn_client)
+        unix: enable(vrpn_atmellib)
+        unix: enable(vrpn_server)
+		enable(SofaVRPNServer)
 	}
 	contains(DEFINES, SOFA_GPU_CUDA) {
 		contains(DEFINES, SOFA_GPU_CUDPP) {

@@ -113,7 +113,7 @@ void VRPNTracker<DataTypes>::update()
 template<class DataTypes>
 void VRPNTracker<DataTypes>::updateCallback(const vrpn_TRACKERCB& t)
 {
-    sofa::helper::WriteAccessor< Data< VecCoord > > points = f_points;
+    sofa::helper::WriteAccessor< sofa::core::objectmodel::Data< VecCoord > > points = f_points;
 
     if(points.size() < static_cast<unsigned>(t.sensor + 1))
     {

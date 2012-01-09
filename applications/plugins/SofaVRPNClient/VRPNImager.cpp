@@ -122,7 +122,7 @@ void  VRPN_CALLBACK handle_region_change(void *userData, const vrpn_IMAGERREGION
     uint32_t numData;
     unsigned char line[imagerData->Xdim];
 
-    for (unsigned i = 0; i < imagerData->Xdim; i++)
+    for (unsigned i = 0; i < (unsigned)imagerData->Xdim; i++)
         line[i] = imagerData->image[3*i];
 
     memcpy(&numData, line, myOffset);

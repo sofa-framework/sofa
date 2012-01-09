@@ -97,7 +97,7 @@ bool VRPNImager<DataTypes>::connectToServer()
         std::cout << "Out of memory when allocating image!" << std::endl;
         return -1;
     }
-    for (unsigned int i = 0; i < imagerData.Xdim * imagerData.Ydim * 3; i++)
+    for (unsigned int i = 0; i < (unsigned)(imagerData.Xdim * imagerData.Ydim * 3); i++)
     {
         imagerData.image[i] = 0;
     }
@@ -115,7 +115,7 @@ void VRPNImager<DataTypes>::update()
 
     Point x;
 
-    for (unsigned i=0; i < 7; i++)
+    for (unsigned i=0; i < x.size(); i++)
         x[i] = imagerData.rigidPointData[i];
     //float temp = x[1];
     x[0]*= f_scale.getValue();
@@ -123,43 +123,45 @@ void VRPNImager<DataTypes>::update()
     x[2]= -x[2]*f_scale.getValue();
 
 
+    if (x.size() > 3)
+    {
+        // process quaternion
 
+        //x[0] *= 1;
+        //x[1] *= -1;
+        //x[2] *= -1;
+        //x[2]; x[2]=temp;
+        /*temp=x[5];
+        x[5]=x[6];
+        x[6]=temp;*/
+        /*x[3] = 0;
+        x[4] = 0;
+        x[5] = 0;
+        x[6] = 1;*/
+        //x[3] = imagerData.rigidPointData[
 
-    //x[0] *= 1;
-    //x[1] *= -1;
-    //x[2] *= -1;
-    //x[2]; x[2]=temp;
-    /*temp=x[5];
-    x[5]=x[6];
-    x[6]=temp;*/
-    /*x[3] = 0;
-    x[4] = 0;
-    x[5] = 0;
-    x[6] = 1;*/
-    //x[3] = imagerData.rigidPointData[
+        std::cout << "PointData = " <<  f_rigidPoint.getValue() << std::endl;
+        Quat qt(x[3], x[4], x[5], x[6]);
+        Vec3 currentAxisRotation;
+        Real currentAngleRotation;
+        qt.quatToAxis(currentAxisRotation, currentAngleRotation);
 
-    std::cout << "PointData = " <<  f_rigidPoint.getValue() << std::endl;
-    Quat qt(x[3], x[4], x[5], x[6]);
-    Vec3 currentAxisRotation;
-    Real currentAngleRotation;
-    qt.quatToAxis(currentAxisRotation, currentAngleRotation);
+        //Quat qt2(currentAxisRotation*(-1), currentAngleRotation);
+        currentAxisRotation[1] *= -1;
+        currentAxisRotation[2] *= -1;
 
-    //Quat qt2(currentAxisRotation*(-1), currentAngleRotation);
-    currentAxisRotation[1] *= -1;
-    currentAxisRotation[2] *= -1;
+        /*Real ttemp;
+        ttemp = currentAxisRotation[0];
+        currentAxisRotation[0]=currentAxisRotation[2];
+        currentAxisRotation[2]=ttemp;*/
 
-    /*Real ttemp;
-    ttemp = currentAxisRotation[0];
-    currentAxisRotation[0]=currentAxisRotation[2];
-    currentAxisRotation[2]=ttemp;*/
+        Quat qt2(currentAxisRotation, currentAngleRotation);
 
-    Quat qt2(currentAxisRotation, currentAngleRotation);
-
-    x[3] = qt2[0];
-    x[4] = qt2[1];
-    x[5] = qt2[2];
-    x[6] = qt2[3];
-
+        x[3] = qt2[0];
+        x[4] = qt2[1];
+        x[5] = qt2[2];
+        x[6] = qt2[3];
+    }
     //std::cout << "Quat = " << qt << std::endl;
     //std::cout << "Euler = " << qt.toEulerVector() << std::endl;
     f_rigidPoint.setValue(x);
@@ -243,7 +245,7 @@ void VRPNImager<DataTypes>::draw()
 }
 
 template<class DataTypes>
-void VRPNImager<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
+void VRPNImager<DataTypes>::handleEvent(sofa::core::objectmodel::Event* /*event*/)
 {
 
     update();

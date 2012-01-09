@@ -1,0 +1,4 @@
+includeOnce($$_FILE_) {
+	declare(SofaVRPNClient, applications/plugins/SofaVRPNClient, vrpn_quat vrpn_client sofacore sofasimulation)
+	enable(SofaVRPNClient)
+}

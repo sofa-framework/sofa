@@ -23,18 +23,24 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 /*
- * VRPNAnalog.cpp
+ * ToolTracker.h
  *
  *  Created on: 8 sept. 2009
  *      Author: froy
  */
 
-#ifndef SOFAVRPNCLIENT_VRPNANALOG_INL_
-#define SOFAVRPNCLIENT_VRPNANALOG_INL_
+#ifndef SOFAVRPNCLIENT_TOOLTRACKER_H_
+#define SOFAVRPNCLIENT_TOOLTRACKER_H_
 
-#include <VRPNAnalog.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/DataEngine.h>
+#include <sofa/defaulttype/Quat.h>
+#include <VRPNDevice.h>
 
-#include <sofa/core/ObjectFactory.h>
+#include <vrpn/vrpn_Analog.h>
 
 namespace sofavrpn
 {
@@ -42,80 +48,64 @@ namespace sofavrpn
 namespace client
 {
 
-template<class Datatypes>
-VRPNAnalog<Datatypes>::VRPNAnalog()
-    : f_channels(initData(&f_channels, "channels", "Channels"))
+/*
+ * Find a tool given various parameters...
+ *
+ */
+
+template<class DataTypes>
+class ToolTracker : public virtual sofa::core::objectmodel::BaseObject, public virtual sofa::core::DataEngine
 {
-    anr = NULL;
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(ToolTracker, DataTypes), sofa::core::objectmodel::BaseObject);
 
-    rg.initSeed( (long int) this );
-}
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Point;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
 
-template<class Datatypes>
-VRPNAnalog<Datatypes>::~VRPNAnalog()
-{
-    // TODO Auto-generated destructor stub
-}
+    typedef typename sofa::defaulttype::RigidTypes::Coord RPoint;
+    typedef typename sofa::defaulttype::RigidTypes::Coord RCoord;
+
+    //input
+    sofa::core::objectmodel::Data<VecCoord > f_points;
+    //distances between each point for the given tool
+    sofa::core::objectmodel::Data<sofa::helper::vector<double> > f_distances;
 
 
-template<class Datatypes>
-bool VRPNAnalog<Datatypes>::connectToServer()
-{
-    analogData.data.num_channel = 0;
-    analogData.modified = false;
-    anr = new vrpn_Analog_Remote(deviceURL.c_str());
-    anr->register_change_handler((void*) &analogData, handle_analog);
+    //output
+    sofa::core::objectmodel::Data<Coord> f_center;
+    sofa::core::objectmodel::Data<sofa::defaulttype::Quat> f_orientation;
+    //the same...
+    sofa::core::objectmodel::Data<RCoord> f_rigidCenter;
 
-    anr->mainloop();
+    //parameters
+    sofa::core::objectmodel::Data<bool> f_drawTool;
 
-    return true;
-}
+    ToolTracker();
+    virtual ~ToolTracker();
 
-template<class Datatypes>
-void VRPNAnalog<Datatypes>::update()
-{
-    sofa::helper::WriteAccessor< Data<sofa::helper::vector<Real> > > channels = f_channels;
-    //std::cout << "read analog " << this->getName() << std::endl;
-    if (anr)
-    {
-        //get infos
-        analogData.modified = false;
-        anr->mainloop();
+//	void init();
+//	void reinit();
+    void update();
+    void draw();
 
-        if(analogData.modified)
-        {
-            channels.clear();
+private:
 
-            if (analogData.data.num_channel > 1 && analogData.data.num_channel < 256)
-            {
-                //std::cout << "Size :" << analogData.data.num_channel << std::endl;
-                //put infos in Datas
+};
 
-                channels.resize(analogData.data.num_channel);
-
-                for (int i=0  ; i < analogData.data.num_channel ; i++)
-                    channels[i] = analogData.data.channel[i];
-
-            }
-            else
-            {
-                std::cout << "No Channels readable" << std::endl;
-            }
-        }
-
-    }
-//	channels.resize(64);
-//	for (unsigned int i=0 ; i<64 ;i++)
-//	{
-//		//channels[i] = i;
-//		channels[i] = (Real)rg.randomDouble(0, 639);
-//	}
+#if defined(WIN32) && !defined(SOFAVRPNCLIENT_TOOLTRACKER_CPP_)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+template class SOFA_SOFAVRPNCLIENT_API ToolTracker<defaulttype::Vec3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_SOFAVRPNCLIENT_API ToolTracker<defaulttype::Vec3fTypes>;
+#endif //SOFA_DOUBLE
+#endif
 
 }
 
 }
 
-}
-
-#endif //SOFAVRPNCLIENT_VRPNANALOG_INL_
-
+#endif /* SOFAVRPNCLIENT_TOOLTRACKER_H_ */

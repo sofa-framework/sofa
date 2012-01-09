@@ -106,8 +106,8 @@ void WiimoteDriver<Datatypes>::update()
 {
     cleanDirty();
 
-    sofa::helper::ReadAccessor< Data<sofa::helper::vector<Real> > > channels = f_channels;
-    sofa::helper::WriteAccessor< Data<VecCoord > > points = f_dots;
+    sofa::helper::ReadAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Real> > > channels = f_channels;
+    sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<VecCoord > > points = f_dots;
 
     points.clear();
     points.resize(4);
@@ -132,7 +132,7 @@ void WiimoteDriver<Datatypes>::update()
 template<class Datatypes>
 void WiimoteDriver<Datatypes>::draw()
 {
-    sofa::helper::ReadAccessor< Data<VecCoord > > points = f_dots;
+    sofa::helper::ReadAccessor< sofa::core::objectmodel::Data<VecCoord > > points = f_dots;
 
     if (p_viewDots.getValue())
     {
