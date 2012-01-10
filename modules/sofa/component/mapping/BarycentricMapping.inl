@@ -2922,7 +2922,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
         return matrixJ;
     if (outSize > 0 && map1d.size()+map2d.size()+map3d.size() == 0)
         return NULL; // error: maps not yet created ?
-    std::cout << "BarycentricMapperMeshTopology: creating " << outSize << "x" << inSize << " " << NOut << "x" << NIn << " J matrix" << std::endl;
+//	std::cout << "BarycentricMapperMeshTopology: creating " << outSize << "x" << inSize << " " << NOut << "x" << NIn << " J matrix" << std::endl;
     if (!matrixJ) matrixJ = new MatrixType;
     if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
         matrixJ->resize(outSize*NOut, inSize*NIn);

@@ -24,8 +24,6 @@ HEADERS += initBaseLinearSolver.h \
            linearsolver/ParallelMatrixLinearSolver.h \
            linearsolver/ParallelMatrixLinearSolver.inl \
            linearsolver/MatrixExpr.h \
-           linearsolver/GenerateBenchSolver.h \
-           linearsolver/GenerateBenchSolver.inl \
            linearsolver/matrix_bloc_traits.h
 
 SOURCES += initBaseLinearSolver.cpp \
@@ -35,8 +33,7 @@ SOURCES += initBaseLinearSolver.cpp \
            linearsolver/FullVector.cpp \
            linearsolver/GraphScatteredTypes.cpp \
            linearsolver/DefaultMultiMatrixAccessor.cpp \
-           linearsolver/MatrixLinearSolver.cpp \
-           linearsolver/GenerateBenchSolver.cpp
+           linearsolver/MatrixLinearSolver.cpp 
 
 
 # Make sure there are no cross-dependencies
