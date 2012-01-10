@@ -152,7 +152,7 @@ signals:
     void roiResized();		// to synchronize different views (scrollBars on/off)
 
     void sliceModified();	// when the slice index is modified using slider or wheel -> set widget dirty
-    void onPlane(const unsigned int,const Vector3&,const Vector3&,const QString&);  // when the mouse is on image -> update info
+    void onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&);  // when the mouse is on image -> update info
 
 public:
     ImagePlaneGraphWidget(QWidget *parent )	: QGraphicsView(parent),scene(NULL)   {	 this->setMouseTracking(true); }
