@@ -22,50 +22,67 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * VRPNButton.h
- *
- *  Created on: 8 sept. 2009
- *      Author: froy
- */
-
-#ifndef VRPNButton_H_
-#define VRPNButton_H_
+#ifndef OPTITRACKNATNETCLIENT_H
+#define OPTITRACKNATNETCLIENT_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
+//#include <sofa/core/behavior/BaseController.h>
 
-#include <VRPNDevice.h>
+#include <iostream>
+#include <boost/array.hpp>
+#include <boost/asio.hpp>
 
-#include <vrpn/vrpn_Button.h>
+// internal message buffer class, as defined in NatNet SDK
+struct sPacket;
 
-namespace sofavrpn
-{
-
-namespace client
-{
-
-class VRPNButton :  public virtual VRPNDevice
+class OptiTrackNatNetClient :  public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(VRPNButton,sofavrpn::client::VRPNDevice);
+    SOFA_CLASS(OptiTrackNatNetClient,sofa::core::objectmodel::BaseObject);
 
-    VRPNButton();
-    virtual ~VRPNButton();
+protected:
+    bool connect();
+    void handleEvent(sofa::core::objectmodel::Event *);
 
-//	void init();
-//	void reinit();
+    virtual void update();
 
-private:
-    vrpn_Button_Remote* btn;
+public:
+    sofa::core::objectmodel::Data<std::string> serverName;
+    sofa::core::objectmodel::Data<std::string> clientName;
 
-    bool connectToServer();
-    void update();
+    OptiTrackNatNetClient();
+    virtual ~OptiTrackNatNetClient();
+
+    virtual void init();
+    virtual void reinit();
+
+protected:
+    boost::asio::ip::udp::endpoint server_endpoint;
+    boost::asio::ip::udp::socket* command_socket;
+    boost::asio::ip::udp::socket* data_socket;
+
+    sPacket* recv_command_packet;
+    boost::asio::ip::udp::endpoint recv_command_endpoint;
+
+    sPacket* recv_data_packet;
+    boost::asio::ip::udp::endpoint recv_data_endpoint;
+    void start_command_receive();
+    void handle_command_receive(const boost::system::error_code& error,
+            std::size_t bytes_transferred);
+
+    void start_data_receive();
+    void handle_data_receive(const boost::system::error_code& error,
+            std::size_t bytes_transferred);
+    void decodeFrame(const sPacket& data);
+    void decodeModelDef(const sPacket& data);
+
+    std::string serverString;
+    sofa::helper::fixed_array<unsigned char,4> serverVersion; // sending app's version [major.minor.build.revision]
+    sofa::helper::fixed_array<unsigned char,4> natNetVersion; // sending app's NatNet version [major.minor.build.revision]
+
+    static boost::asio::io_service& get_io_service();
+    static boost::asio::ip::udp::resolver& get_resolver();
+
 };
 
-}
-
-}
-
-#endif /* VRPNBUTTON_H_ */
+#endif /* OPTITRACKNATNETCLIENT_H */

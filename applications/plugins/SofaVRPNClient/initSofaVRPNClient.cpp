@@ -38,6 +38,7 @@ extern "C" {
     SOFA_SOFAVRPNCLIENT_API void initExternalModule();
     SOFA_SOFAVRPNCLIENT_API const char* getModuleName();
     SOFA_SOFAVRPNCLIENT_API const char* getModuleVersion();
+    SOFA_SOFAVRPNCLIENT_API const char* getModuleLicense();
     SOFA_SOFAVRPNCLIENT_API const char* getModuleDescription();
     SOFA_SOFAVRPNCLIENT_API const char* getModuleComponentList();
 }
@@ -59,6 +60,11 @@ const char* getModuleName()
 const char* getModuleVersion()
 {
     return "beta 1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
 }
 
 const char* getModuleDescription()

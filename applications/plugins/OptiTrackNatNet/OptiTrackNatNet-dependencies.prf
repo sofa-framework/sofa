@@ -1,0 +1,4 @@
+includeOnce($$_FILE_) {
+	declare(OptiTrackNatNet, applications/plugins/OptiTrackNatNet, sofacore sofasimulation boost)
+	enable(OptiTrackNatNet)
+}

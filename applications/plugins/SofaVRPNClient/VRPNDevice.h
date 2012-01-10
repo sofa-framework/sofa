@@ -44,7 +44,7 @@ namespace client
 class VRPNDevice :  public virtual sofa::core::objectmodel::BaseObject, public sofa::core::behavior::BaseController
 {
 public:
-    SOFA_CLASS(VRPNDevice,sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS2(VRPNDevice,sofa::core::objectmodel::BaseObject, sofa::core::behavior::BaseController);
 
 private:
     bool connect();

@@ -18,6 +18,10 @@ contains(DEFINES, SOFA_HAVE_SENSABLE) {
 	usePlugin(Sensable)
 }
 
+contains(DEFINES,SOFA_HAVE_OPTITRACK) {
+	usePlugin(OptiTrackNatNet)
+}
+
 !contains (DEFINES, SOFA_RELEASE) { # BEGIN !SOFA_RELEASE
 
 contains (DEFINES, SOFA_HAVE_VRPN) {
