@@ -112,7 +112,7 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* m
     }
     else
     {
-        std::cout << "	-- Warning DefaultMultiMatrixAccessor : mapping " << mapping->getName()<<" do not build matrices " << std::endl;
+        //std::cout << "	-- Warning DefaultMultiMatrixAccessor : mapping " << mapping->getName()<<" do not build matrices " << std::endl;
     }
 }
 

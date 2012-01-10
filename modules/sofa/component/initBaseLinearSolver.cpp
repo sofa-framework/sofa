@@ -45,7 +45,6 @@ void initBaseLinearSolver()
 SOFA_LINK_CLASS(CGLinearSolver)
 SOFA_LINK_CLASS(CholeskySolver)
 SOFA_LINK_CLASS(BTDLinearSolver)
-SOFA_LINK_CLASS(GenerateBenchSolver)
 
 
 } // namespace component
