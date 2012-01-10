@@ -22,50 +22,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * VRPNButton.h
- *
- *  Created on: 8 sept. 2009
- *      Author: froy
- */
+#include <sofa/helper/system/config.h>
 
-#ifndef VRPNButton_H_
-#define VRPNButton_H_
+#include "initOptiTrackNatNet.h"
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-
-#include <VRPNDevice.h>
-
-#include <vrpn/vrpn_Button.h>
-
-namespace sofavrpn
+namespace sofa
 {
 
-namespace client
+namespace component
 {
 
-class VRPNButton :  public virtual VRPNDevice
+//Here are just several convenient functions to help user to know what contains the plugin
+
+extern "C" {
+    SOFA_OPTITRACKNATNET_API void initExternalModule();
+    SOFA_OPTITRACKNATNET_API const char* getModuleName();
+    SOFA_OPTITRACKNATNET_API const char* getModuleVersion();
+    SOFA_OPTITRACKNATNET_API const char* getModuleLicense();
+    SOFA_OPTITRACKNATNET_API const char* getModuleDescription();
+    SOFA_OPTITRACKNATNET_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
-public:
-    SOFA_CLASS(VRPNButton,sofavrpn::client::VRPNDevice);
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-    VRPNButton();
-    virtual ~VRPNButton();
+const char* getModuleName()
+{
+    return "OptiTrack NatNet";
+}
 
-//	void init();
-//	void reinit();
+const char* getModuleVersion()
+{
+    return "1.0";
+}
 
-private:
-    vrpn_Button_Remote* btn;
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-    bool connectToServer();
-    void update();
-};
+const char* getModuleDescription()
+{
+    return "Network client to receive tracked points and rigids from NaturalPoint OptiTrack devices using NatNet protocol";
+}
 
+const char* getModuleComponentList()
+{
+    return "OptiTrackNatNetClient";
 }
 
 }
 
-#endif /* VRPNBUTTON_H_ */
+}
+
+SOFA_LINK_CLASS(OptiTrackNatNetClient)
