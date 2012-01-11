@@ -135,7 +135,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * /*userData*/)
         SolidTypes<double>::Transform world_H_virtualTool = autreOmniDriver[i]->data.world_H_baseOmni * baseOmni_H_endOmni * autreOmniDriver[i]->data.endOmni_H_virtualTool;
 
 
-//partie pour ff simulatnnée
+//partie pour ff simulatnnÃ©e
 #if 1
         positionDevs[i].getCenter()=world_H_virtualTool.getOrigin();
         positionDevs[i].getOrientation()=world_H_virtualTool.getOrientation();
@@ -249,7 +249,7 @@ void exitHandler()
 }
 
 
-//copie les info sur le device de data->servoDeviceData à data->deviceData
+//copie les info sur le device de data->servoDeviceData a data->deviceData
 //TODO: ou plutot remplir le PosD ici et gicler data->deviceData qui servirait plus a rien
 HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * /*pUserData*/)
 {
@@ -281,7 +281,7 @@ HDCallbackCode HDCALLBACK stopCallback(void * /*pUserData*/)
 /**
  * Sets up the device,
  */
-//initialise l'omni > TODO: a appeler plusieur fois depuis l'interface n°1
+//initialise l'omni > TODO: a appeler plusieur fois depuis l'interface nï¿½1
 int NewOmniDriver::initDevice()
 {
     cout<<"init Device is called"<<endl;
@@ -376,7 +376,7 @@ NewOmniDriver::~NewOmniDriver()
 
 }
 
-//arrete le call back TODO: a ne lancer que depuis l'interface n°1
+//arrete le call back TODO: a ne lancer que depuis l'interface nï¿½1
 void NewOmniDriver::cleanup()
 {
     cout << "NewOmniDriver::cleanup()" << endl;
@@ -397,7 +397,7 @@ void NewOmniDriver::setForceFeedback(LCPForceFeedback<Rigid3dTypes>* ff)
     data.forceFeedback = ff;
 };
 
-//executé 1 fois au démarrage de runsofa, initialisation de toutes les variables sauf celle en lien avec l'haptique
+//executï¿½ 1 fois au dï¿½marrage de runsofa, initialisation de toutes les variables sauf celle en lien avec l'haptique
 void NewOmniDriver::init()
 {
     if(firstDevice)
@@ -455,7 +455,12 @@ void NewOmniDriver::init()
     // nodePrincipal = sofa::simulation::getSimulation()->createNewGraph();
 
 
+
+    //if (parentRoot->getParent()) {
     parentRoot->getParent()->addChild(nodePrincipal);
+    //} else {
+    //    parentRoot->addChild(nodePrincipal);
+    //}
     nodePrincipal->updateContext();
 
     DOFs=NULL;
@@ -680,8 +685,8 @@ void NewOmniDriver::reinit()
     std::cout<<"NewOmniDriver::reinit() done" <<std::endl;
 }
 
-//recupere les coordonnées de l'interface dans le composant omnidriver pour les mettre dans le conposant mechanical object
-//TODO: copier directement lesdonnées dans le mechanical object dans la fonction on animated event
+//recupere les coordonnï¿½es de l'interface dans le composant omnidriver pour les mettre dans le conposant mechanical object
+//TODO: copier directement lesdonnï¿½es dans le mechanical object dans la fonction on animated event
 //adapte l'echelle des composant
 //?? qu'est ce qui apelle ctte fonction?
 void NewOmniDriver::draw()
@@ -751,7 +756,7 @@ void NewOmniDriver::draw()
 
 }
 
-//evenement touche clavier appuiyée
+//evenement touche clavier appuiyï¿½e
 void NewOmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 {
     //cout<<kpe->getKey()<<" "<<int(kpe->getKey())<<endl;
@@ -854,7 +859,7 @@ void NewOmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
     }
 }
 
-//evenement touche clavier relachée
+//evenement touche clavier relachï¿½e
 void NewOmniDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre)
 {
     if (kre->getKey()=='X' || kre->getKey()=='x' )
@@ -882,7 +887,6 @@ void NewOmniDriver::onAnimateBeginEvent()
     // copy data->servoDeviceData to gDeviceData
     if(firstDevice)
         hdScheduleSynchronous(copyDeviceDataCallback, (void*) &autreOmniDriver, HD_MIN_SCHEDULER_PRIORITY);
-
     if (data.deviceData.ready)
     {
         data.deviceData.quat.normalize();
@@ -904,7 +908,6 @@ void NewOmniDriver::onAnimateBeginEvent()
         SolidTypes<double>::Transform tampon = data.world_H_baseOmni;
 
         sofa::helper::Quater<float> q;
-
 #if 1
         //get position base
         posD[0].getCenter() =  tampon.getOrigin();
@@ -935,7 +938,6 @@ void NewOmniDriver::onAnimateBeginEvent()
         tampon*=transform_segr4;
         posD[4].getCenter() =  tampon.getOrigin();
         posD[4].getOrientation() =  tampon.getOrientation();
-
         //get pos arm 1
         sofa::helper::Quater<float> quarter5(Vec3d(1.0,0.0,0.0),-(float)(pi/2)+angle1[2]-angle1[1]);
         SolidTypes<double>::Transform transform_segr5(Vec3d(0.0,13.33*data.scale/100,0.0),quarter5);
@@ -957,7 +959,6 @@ void NewOmniDriver::onAnimateBeginEvent()
         posD[7].getCenter() =  tampon.getOrigin();
         posD[7].getOrientation() =  tampon.getOrientation();
 #else
-
         q.clear();
         SolidTypes<double>::Transform transform_segr[6];
         transform_segr[0].set(Vec3d(0.0,0.0,0.0),q);//get position base
@@ -976,7 +977,6 @@ void NewOmniDriver::onAnimateBeginEvent()
             posD[i].getOrientation() =  tampon.getOrientation();
         }
 #endif
-
         //get pos of axes
 
         posD[8].getCenter() =  data.world_H_baseOmni.getOrigin();
@@ -997,7 +997,6 @@ void NewOmniDriver::onAnimateBeginEvent()
 
             DOFs->x0.endEdit();
         }
-
         //button state
         Vec1d& openT = (*openTool.beginEdit());
         if(data.deviceData.m_buttonState & HD_DEVICE_BUTTON_1)
@@ -1016,16 +1015,18 @@ void NewOmniDriver::onAnimateBeginEvent()
         }
         openTool.endEdit();
 
-        // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
-        data.forceFeedback->setReferencePosition(world_H_virtualTool);
-
+        if( data.forceFeedback)
+        {
+            // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
+            data.forceFeedback->setReferencePosition(world_H_virtualTool);
+        }
         /// TODO : SHOULD INCLUDE VELOCITY !!
     }
     else
         std::cout<<"data not ready \n"<<std::endl;
 }
 
-//boucle qui se declanche si il y a un evenement
+//boucle qui se declenche si il y a un evenement
 void NewOmniDriver::handleEvent(core::objectmodel::Event *event)
 {
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))

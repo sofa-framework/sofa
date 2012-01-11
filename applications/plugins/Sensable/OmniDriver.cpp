@@ -308,59 +308,36 @@ OmniDriver::OmniDriver()
     , visu_base(NULL)
     , visu_end(NULL)
 {
-
     this->f_listening.setValue(true);
     data.forceFeedback = new NullForceFeedback();
     noDevice = false;
     moveOmniBase = false;
 }
 
-OmniDriver::~OmniDriver()
-{
-    /*  if (visu_base)
-      {
-        delete visu_base;
-      }
-      if (visu_end)
-      {
-        delete visu_end;
-      }
-    */
-}
+OmniDriver::~OmniDriver() {}
 
 void OmniDriver::cleanup()
 {
     sout << "OmniDriver::cleanup()" << sendl;
     hdScheduleSynchronous(stopCallbackOmni, (void*) &data, HD_MIN_SCHEDULER_PRIORITY);
-    //exitHandler();
     isInitialized = false;
-//    delete forceFeedback;
 }
 
 void OmniDriver::setForceFeedback(ForceFeedback* ff)
 {
+    if(data.forceFeedback == ff) return;
 
-    // the forcefeedback is already set
-    if(data.forceFeedback == ff)
-    {
-        return;
-    }
-
-    if(data.forceFeedback)
-        delete data.forceFeedback;
+    if(data.forceFeedback) delete data.forceFeedback;
     data.forceFeedback = ff;
-};
+}
 
 void OmniDriver::init()
 {
     using core::behavior::MechanicalState;
     mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
-    if (!mState)
-        serr << "OmniDriver has no binding MechanicalState" << sendl;
-    else
-        std::cout << "[NewOmni] init" << endl;
+    if (!mState) serr << "OmniDriver has no binding MechanicalState" << sendl;
+    else std::cout << "[NewOmni] init" << endl;
 }
-
 
 void OmniDriver::bwdInit()
 {
@@ -368,13 +345,9 @@ void OmniDriver::bwdInit()
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
     ForceFeedback *ff = context->getTreeObject<ForceFeedback>();
 
-    if(ff)
-    {
-        this->setForceFeedback(ff);
-    }
-    //std::cerr << "setForceFeedback(ff) ok" << std::endl;
+    if(ff) this->setForceFeedback(ff);
+
     setDataValue();
-    //std::cerr << "OmniDriver::bwdInit() setDataValueOK" << std::endl;
 
     if(initDevice(data)==-1)
     {
@@ -383,7 +356,6 @@ void OmniDriver::bwdInit()
     }
 }
 
-
 void OmniDriver::setDataValue()
 {
     data.scale = scale.getValue();
@@ -391,7 +363,7 @@ void OmniDriver::setDataValue()
     Quat q = orientationBase.getValue();
     q.normalize();
     orientationBase.setValue(q);
-    data.world_H_baseOmni.set( positionBase.getValue(), q		);
+    data.world_H_baseOmni.set( positionBase.getValue(), q);
     q=orientationTool.getValue();
     q.normalize();
     data.endOmni_H_virtualTool.set(positionTool.getValue(), q);
@@ -404,30 +376,32 @@ void OmniDriver::reset()
     this->reinit();
 }
 
-void OmniDriver::reinitVisual()
+void OmniDriver::reinitVisual() {}
+
+void OmniDriver::reinit()
 {
-    cout << "OmniDriver::reinitVisual() is called " << endl;
-    if(visu_base!=NULL)
+    this->bwdInit();
+    this->reinitVisual();
+}
+
+void OmniDriver::draw()
+{
+    if(omniVisu.getValue())
     {
-        cout << "visu_base = " << visu_base << endl;
-//        delete(visu_base);
+        // compute position of the endOmni in worldframe
+        SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
+        SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
+
         visu_base = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
         visu_base->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
-        visu_end->setColor(1.0f,1.0f,1.0f,1.0f);
+        visu_base->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
         visu_base->initVisual();
         visu_base->updateVisual();
         visu_base->applyRotation(orientationBase.getValue());
         visu_base->applyTranslation( positionBase.getValue()[0],positionBase.getValue()[1], positionBase.getValue()[2]);
 
-    }
-
-    if (visu_end != NULL)
-    {
-        //serr<<"create visual model for OmniDriver end"<<sendl;
-        cout << "visu_end = " << visu_end << endl;
-//        delete(visu_end);
         visu_end = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_end->fileMesh.setValue("mesh/stylus.obj");
         visu_end->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
@@ -435,74 +409,8 @@ void OmniDriver::reinitVisual()
         visu_end->init();
         visu_end->initVisual();
         visu_end->updateVisual();
-    }
-
-
-}
-
-void OmniDriver::reinit()
-{
-    std::cout<<"OmniDriver::reinit() is called" <<std::endl;
-    this->cleanup();
-    this->bwdInit();
-    this->reinitVisual();
-    std::cout<<"OmniDriver::reinit() done" <<std::endl;
-
-
-//////////////// visu_base: place the visual model of the OmniDriver
-
-
-    //sofa::component::visualmodel::RigidMappedModel::VecCoord* x_rigid = visu_base->getRigidX();
-    // x_rigid->resize(1);
-    //(*x_rigid)[0].getOrientation() = q;
-    //(*x_rigid)[0].getCenter() =  positionBase.getValue();
-    //double s =
-    //this->scale=Vector3(this->)
-
-}
-
-void OmniDriver::draw()
-{
-    //cout << "OmniDriver::draw is called" << endl;
-    if(omniVisu.getValue())
-    {
-        if (visu_base == NULL)
-        {
-            cout << "Creating visu_base" << endl;
-            // create visual object
-            //serr<<"create visual model for OmniDriver base"<<sendl;
-            visu_base = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
-            visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-            visu_base->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
-            visu_base->init();
-            visu_base->initVisual();
-            visu_base->updateVisual();
-            visu_base->applyRotation(orientationBase.getValue());
-            visu_base->applyTranslation( positionBase.getValue()[0],positionBase.getValue()[1], positionBase.getValue()[2]);
-            //getContext()->addObject(visu_base);
-        }
-
-
-        if (visu_end == NULL)
-        {
-            //serr<<"create visual model for OmniDriver end"<<sendl;
-            visu_end = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
-            visu_end->fileMesh.setValue("mesh/stylus.obj");
-            visu_end->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
-            visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
-            visu_end->init();
-            visu_end->initVisual();
-            visu_end->updateVisual();
-        }
-
-        // compute position of the endOmni in worldframe
-        SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
-        SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
-
-
-        visu_end->xforms.resize(1);
-        (visu_end->xforms)[0].getOrientation() = world_H_endOmni.getOrientation();
-        (visu_end->xforms)[0].getCenter() =  world_H_endOmni.getOrigin();
+        visu_end->applyRotation(world_H_endOmni.getOrientation());
+        visu_end->applyTranslation(world_H_endOmni.getOrigin()[0],world_H_endOmni.getOrigin()[1],world_H_endOmni.getOrigin()[2]);
 
         // draw the 2 visual models
         visu_base->drawVisual(sofa::core::visual::VisualParams::defaultInstance());
@@ -510,40 +418,23 @@ void OmniDriver::draw()
     }
 }
 
-void OmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
-{
+void OmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent */*kpe*/) {}
 
-
-
-}
-
-void OmniDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre)
-{
-
-    //omniVisu.setValue(false);
-
-}
+void OmniDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent */*kre*/) {}
 
 void OmniDriver::handleEvent(core::objectmodel::Event *event)
 {
 
-    //std::cout<<"NewEvent detected !!"<<std::endl;
-
-
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
-        //getData(); // copy data->servoDeviceData to gDeviceData
         hdScheduleSynchronous(copyDeviceDataCallbackOmni, (void *) &data, HD_MIN_SCHEDULER_PRIORITY);
         if (data.deviceData.ready)
         {
             data.deviceData.quat.normalize();
-            //sout << "driver is working ! " << data->servoDeviceData.transform[12+0] << endl;
-
 
             /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
             SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
             SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
-
 
             // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
             data.forceFeedback->setReferencePosition(world_H_virtualTool);
@@ -558,24 +449,8 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 
             xfree[0].getOrientation() = world_H_virtualTool.getOrientation();
             x[0].getOrientation() = world_H_virtualTool.getOrientation();
-
-            if (moveOmniBase)
-            {
-                std::cout<<" new positionBase = "<<positionBase_buf<<std::endl;
-                visu_base->applyTranslation(positionBase_buf[0] - positionBase.getValue()[0],
-                        positionBase_buf[1] - positionBase.getValue()[1],
-                        positionBase_buf[2] - positionBase.getValue()[2]);
-                positionBase.setValue(positionBase_buf);
-                setDataValue();
-                //this->reinitVisual();
-            }
-
         }
-        else
-            std::cout<<"data not ready"<<std::endl;
-
-
-
+        else std::cout<<"data not ready"<<std::endl;
     }
 
     if (dynamic_cast<core::objectmodel::KeypressedEvent *>(event))
@@ -587,12 +462,10 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             std::cout<<"key z detected "<<std::endl;
             omniVisu.setValue(moveOmniBase);
 
-
             if(moveOmniBase)
             {
                 this->cleanup();
                 positionBase_buf = positionBase.getValue();
-
             }
             else
             {
@@ -620,13 +493,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             positionBase_buf.y()=2.5;
             positionBase_buf.z()=2.6;
         }
-
-
-
     }
-
-
-
 }
 
 int OmniDriverClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
