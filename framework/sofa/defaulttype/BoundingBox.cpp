@@ -115,6 +115,16 @@ SReal* BoundingBox::maxBBoxPtr()
     return bbox.second.elems;
 }
 
+const SReal* BoundingBox::minBBoxPtr() const
+{
+    return bbox.first.elems;
+}
+
+const SReal* BoundingBox::maxBBoxPtr() const
+{
+    return bbox.second.elems;
+}
+
 const Vector3& BoundingBox::minBBox() const
 {
     return bbox.first;
@@ -135,19 +145,19 @@ Vector3& BoundingBox::maxBBox()
     return bbox.second;
 }
 
-bool BoundingBox::contains(const sofa::defaulttype::Vector3& point)
+bool BoundingBox::contains(const sofa::defaulttype::Vector3& point) const
 {
     return  point.x() >= minBBox().x() && point.x() <= maxBBox().x() &&
             point.y() >= minBBox().y() && point.y() <= maxBBox().y() &&
             point.z() >= minBBox().z() && point.z() <= maxBBox().z();
 }
 
-bool BoundingBox::contains(const BoundingBox& other)
+bool BoundingBox::contains(const BoundingBox& other) const
 {
     return contains(other.minBBox()) && contains(other.maxBBox());
 }
 
-bool BoundingBox::intersect(const BoundingBox& other)
+bool BoundingBox::intersect(const BoundingBox& other) const
 {
     if( other.minBBox().x() > maxBBox().x() || other.maxBBox().x ()< minBBox().x() ) return false;
     if( other.minBBox().y() > maxBBox().y() || other.maxBBox().y ()< minBBox().y() ) return false;

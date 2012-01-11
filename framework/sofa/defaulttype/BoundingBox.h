@@ -62,6 +62,8 @@ public:
 
     SReal* minBBoxPtr();
     SReal* maxBBoxPtr();
+    const SReal* minBBoxPtr() const;
+    const SReal* maxBBoxPtr() const;
     const Vector3&  minBBox() const;
     const Vector3&  maxBBox() const;
     Vector3& minBBox();
@@ -71,10 +73,10 @@ public:
 
 
 
-    bool contains( const sofa::defaulttype::Vector3& point);
-    bool contains( const BoundingBox& other);
+    bool contains( const sofa::defaulttype::Vector3& point) const;
+    bool contains( const BoundingBox& other) const;
 
-    bool intersect( const BoundingBox& other);
+    bool intersect( const BoundingBox& other) const;
     void intersection( const BoundingBox& other);
 
     void include( const sofa::defaulttype::Vector3& point);
@@ -105,7 +107,7 @@ public:
     TBoundingBox(const TReal* minBBoxPtr, const TReal* maxBBoxPtr)
         :BoundingBox(Vector3(minBBoxPtr),Vector3(maxBBoxPtr))
     {
-    };
+    }
 
 };
 
