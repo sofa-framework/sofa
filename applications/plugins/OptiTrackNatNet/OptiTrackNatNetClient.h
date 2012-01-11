@@ -27,13 +27,24 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 //#include <sofa/core/behavior/BaseController.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Quat.h>
 
 #include <iostream>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 
-// internal message buffer class, as defined in NatNet SDK
+namespace SofaOptiTrackNatNet
+{
+
+/// internal message buffer class, as defined in NatNet SDK
 struct sPacket;
+
+/// decoded definition of tracked objects
+struct ModelDef;
+
+/// decoded frame of tracked data
+struct FrameData;
 
 class OptiTrackNatNetClient :  public virtual sofa::core::objectmodel::BaseObject
 {
@@ -56,6 +67,8 @@ public:
     virtual void init();
     virtual void reinit();
 
+public:
+
 protected:
     boost::asio::ip::udp::endpoint server_endpoint;
     boost::asio::ip::udp::socket* command_socket;
@@ -76,6 +89,9 @@ protected:
     void decodeFrame(const sPacket& data);
     void decodeModelDef(const sPacket& data);
 
+    virtual void processFrame(const FrameData* data);
+    virtual void processModelDef(const ModelDef* data);
+
     std::string serverString;
     sofa::helper::fixed_array<unsigned char,4> serverVersion; // sending app's version [major.minor.build.revision]
     sofa::helper::fixed_array<unsigned char,4> natNetVersion; // sending app's NatNet version [major.minor.build.revision]
@@ -84,5 +100,87 @@ protected:
     static boost::asio::ip::udp::resolver& get_resolver();
 
 };
+
+
+struct PointCloudDef
+{
+    const char* name;
+    int nMarkers;
+    struct Marker
+    {
+        const char* name;
+    };
+    Marker* markers;
+};
+
+struct RigidDef
+{
+    const char* name;
+    int ID;
+    int parentID;
+    sofa::defaulttype::Vec3f offset;
+};
+
+struct SkeletonDef
+{
+    const char* name;
+    int ID;
+    int nRigids;
+    RigidDef* rigids;
+};
+
+struct ModelDef
+{
+    int nPointClouds;
+    PointCloudDef* pointClouds;
+    int nRigids;
+    RigidDef* rigids;
+    int nSkeletons;
+    SkeletonDef* skeletons;
+};
+
+struct PointCloudData
+{
+    const char* name;
+    int nMarkers;
+    const sofa::defaulttype::Vec3f* markersPos;
+};
+
+struct RigidData
+{
+    int ID;
+    sofa::defaulttype::Vec3f pos;
+    sofa::defaulttype::Quatf rot;
+    int nMarkers;
+    const sofa::defaulttype::Vec3f* markersPos;
+    const int* markersID; // optional (2.0+)
+    const float* markersSize; // optional (2.0+)
+    float meanError; // optional (2.0+)
+};
+
+struct SkeletonData
+{
+    int ID;
+    int nRigids;
+    RigidData* rigids;
+};
+
+struct FrameData
+{
+    int frameNumber;
+    int nPointClouds;
+    PointCloudData* pointClouds;
+    int nRigids;
+    RigidData* rigids;
+    int nSkeletons;
+    SkeletonData* skeletons;
+
+    float latency;
+    // unidentified markers
+    int nOtherMarkers;
+    const sofa::defaulttype::Vec3f* otherMarkersPos;
+};
+
+} // namespace SofaOptiTrackNatNet
 
 #endif /* OPTITRACKNATNETCLIENT_H */
