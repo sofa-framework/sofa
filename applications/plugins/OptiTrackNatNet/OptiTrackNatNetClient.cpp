@@ -49,6 +49,9 @@ namespace SofaOptiTrackNatNet
 #define NAT_MESSAGESTRING           8
 #define NAT_UNRECOGNIZED_REQUEST    100
 //#define UNDEFINED                   999999.9999
+#if defined(__GNUC__)
+#pragma pack(push,1)
+#endif
 
 // sender
 struct sSender
@@ -73,6 +76,10 @@ struct sPacket
     } Data;                                 // Payload
 
 };
+
+#if defined(__GNUC__)
+#pragma pack(pop)
+#endif
 
 #define MULTICAST_ADDRESS		"239.255.42.99"     // IANA, local network
 #define PORT_COMMAND            1510
@@ -269,21 +276,21 @@ void OptiTrackNatNetClient::handle_command_receive(const boost::system::error_co
                 natNetVersion[i] = PacketIn.Data.Sender.NatNetVersion[i];
                 serverVersion[i] = PacketIn.Data.Sender.Version[i];
             }
-            serr << "Connected to server \"" << serverString << " v" << serverVersion[0];
+            serr << "Connected to server \"" << serverString << "\" v" << (int)serverVersion[0];
             if (serverVersion[1] || serverVersion[2] || serverVersion[3])
-                serr << "." << serverVersion[1];
+                serr << "." << (int)serverVersion[1];
             if (serverVersion[2] || serverVersion[3])
-                serr << "." << serverVersion[2];
+                serr << "." << (int)serverVersion[2];
             if (serverVersion[3])
-                serr << "." << serverVersion[3];
-            serr << " protocol v" << natNetVersion[0];
+                serr << "." << (int)serverVersion[3];
+            serr << " protocol v" << (int)natNetVersion[0];
             if (natNetVersion[1] || natNetVersion[2] || natNetVersion[3])
-                serr << "." << natNetVersion[1];
+                serr << "." << (int)natNetVersion[1];
             if (natNetVersion[2] || natNetVersion[3])
-                serr << "." << natNetVersion[2];
+                serr << "." << (int)natNetVersion[2];
             if (natNetVersion[3])
-                serr << "." << natNetVersion[3];
-
+                serr << "." << (int)natNetVersion[3];
+            serr << sendl;
             // request scene info
             boost::array<unsigned short, 2> reqMsg;
             reqMsg[0] = NAT_REQUEST_MODELDEF; reqMsg[1] = 0;
@@ -509,35 +516,37 @@ void OptiTrackNatNetClient::decodeModelDef(const sPacket& data)
 
 void OptiTrackNatNetClient::processFrame(const FrameData* data)
 {
-    sout << "Frame # : " << data->frameNumber << "\n";
-    sout << "\tPoint Cloud Count : " << data->nPointClouds << "\n";
+#define ENDL sendl
+//#define ENDL "\n"
+    sout << "Frame # : " << data->frameNumber << ENDL;
+    sout << "\tPoint Cloud Count : " << data->nPointClouds << ENDL;
     for (int iP = 0; iP < data->nPointClouds; ++iP)
     {
-        sout << "\n";
+        sout << ENDL;
         if (data->pointClouds[iP].name)
-            sout << "\t\tModel Name : " << data->pointClouds[iP].name << "\n";
+            sout << "\t\tModel Name : " << data->pointClouds[iP].name << ENDL;
         sout << "\t\tMarkers (" << data->pointClouds[iP].nMarkers << ") :";
         for (int i = 0; i < data->pointClouds[iP].nMarkers; ++i)
             sout << " [" << data->pointClouds[iP].markersPos[i] << "]";
-        sout << "\n";
+        sout << ENDL;
     }
 
     sout << "\tUnidentified Markers (" << data->nOtherMarkers << ") :";
     for (int i = 0; i < data->nOtherMarkers; ++i)
         sout << " [" << data->otherMarkersPos[i] << "]";
-    sout << "\n";
+    sout << ENDL;
 
-    sout << "\tRigid Body Count : " << data->nRigids << "\n";
+    sout << "\tRigid Body Count : " << data->nRigids << ENDL;
     for (int iR = 0; iR < data->nRigids; ++iR)
     {
-        sout << "\n";
-        sout << "\t\tID : " << data->rigids[iR].ID << "\n";
-        sout << "\t\tpos : " << data->rigids[iR].pos << "\n";
+        sout << ENDL;
+        sout << "\t\tID : " << data->rigids[iR].ID << ENDL;
+        sout << "\t\tpos : " << data->rigids[iR].pos << ENDL;
         if (data->rigids[iR].rot[0] != 0.0f
             || data->rigids[iR].rot[1] != 0.0f
             || data->rigids[iR].rot[2] != 0.0f
             || data->rigids[iR].rot[3] != 0.0f)
-            sout << "\t\trot : " << data->rigids[iR].rot << "\n";
+            sout << "\t\trot : " << data->rigids[iR].rot << ENDL;
         sout << "\t\tMarkers (" << data->rigids[iR].nMarkers << ") :";
         for (int i = 0; i < data->rigids[iR].nMarkers; ++i)
         {
@@ -547,26 +556,26 @@ void OptiTrackNatNetClient::processFrame(const FrameData* data)
             if (data->rigids[iR].markersSize)
                 sout << ",size=" << data->rigids[iR].markersSize[i];
         }
-        sout << "\n";
+        sout << ENDL;
     }
 
-    sout << "\tSkeleton Count : " << data->nSkeletons << "\n";
+    sout << "\tSkeleton Count : " << data->nSkeletons << ENDL;
     for (int iS = 0; iS < data->nSkeletons; ++iS)
     {
-        sout << "\n";
-        sout << "\t\tID : " << data->skeletons[iS].ID << "\n";
+        sout << ENDL;
+        sout << "\t\tID : " << data->skeletons[iS].ID << ENDL;
 
-        sout << "\t\tRigid Body Count : " << data->skeletons[iS].nRigids << "\n";
+        sout << "\t\tRigid Body Count : " << data->skeletons[iS].nRigids << ENDL;
         for (int iR = 0; iR < data->skeletons[iS].nRigids; ++iR)
         {
-            sout << "\n";
-            sout << "\t\t\tID : " << data->skeletons[iS].rigids[iR].ID << "\n";
-            sout << "\t\t\tpos : " << data->skeletons[iS].rigids[iR].pos << "\n";
+            sout << ENDL;
+            sout << "\t\t\tID : " << data->skeletons[iS].rigids[iR].ID << ENDL;
+            sout << "\t\t\tpos : " << data->skeletons[iS].rigids[iR].pos << ENDL;
             if (data->skeletons[iS].rigids[iR].rot[0] != 0.0f
                 || data->skeletons[iS].rigids[iR].rot[1] != 0.0f
                 || data->skeletons[iS].rigids[iR].rot[2] != 0.0f
                 || data->skeletons[iS].rigids[iR].rot[3] != 0.0f)
-                sout << "\t\t\trot : " << data->skeletons[iS].rigids[iR].rot << "\n";
+                sout << "\t\t\trot : " << data->skeletons[iS].rigids[iR].rot << ENDL;
             sout << "\t\t\tMarkers (" << data->skeletons[iS].rigids[iR].nMarkers << ") :";
             for (int i = 0; i < data->skeletons[iS].rigids[iR].nMarkers; ++i)
             {
@@ -576,10 +585,11 @@ void OptiTrackNatNetClient::processFrame(const FrameData* data)
                 if (data->skeletons[iS].rigids[iR].markersSize)
                     sout << ",size=" << data->skeletons[iS].rigids[iR].markersSize[i];
             }
-            sout << "\n";
+            sout << ENDL;
         }
     }
-    sout << "latency : " << data->latency << "\n";
+    sout << "latency : " << data->latency << ENDL;
+#undef ENDL
     sout << sendl;
 }
 

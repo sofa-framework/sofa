@@ -1,4 +1,4 @@
 <?xml version="1.0"?>
-<Node>
-  <OptiTrackNatNetClient />
+<Node animate="1">
+  <OptiTrackNatNetClient serverName="134.206.17.253" />
 </Node>
