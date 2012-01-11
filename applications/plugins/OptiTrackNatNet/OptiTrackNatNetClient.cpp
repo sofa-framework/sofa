@@ -29,6 +29,9 @@
 
 #include <boost/bind.hpp>
 
+namespace SofaOptiTrackNatNet
+{
+
 //////////
 // From PacketClient.cpp in NatNet SDK
 
@@ -356,13 +359,233 @@ void OptiTrackNatNetClient::handle_data_receive(const boost::system::error_code&
     start_data_receive();
 }
 
+template<class T>
+static void memread(T& dest, const unsigned char*& ptr)
+{
+    dest = *(const T*)ptr;
+    ptr += sizeof(T);
+}
+
+static void memread(const char*& dest, const unsigned char*& ptr)
+{
+    dest = (const char*) ptr;
+    ptr += strlen(dest)+1;
+}
+
+template<class T>
+static void memread(const T*& dest, int n, const unsigned char*& ptr)
+{
+    if (n <= 0)
+        dest = NULL;
+    else
+    {
+        dest = (const T*)ptr;
+        ptr += n*sizeof(T);
+    }
+}
+
 void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
 {
+    const int major = natNetVersion[0];
+    const int minor = natNetVersion[1];
 
+    FrameData frame;
+
+    const unsigned char *ptr = data.Data.cData;
+
+    memread(frame.frameNumber,ptr);
+
+    memread(frame.nPointClouds,ptr);
+    if (frame.nPointClouds <= 0)
+        frame.pointClouds = NULL;
+    else
+    {
+        frame.pointClouds = new PointCloudData[frame.nPointClouds];
+        for (int iP = 0; iP < frame.nPointClouds; ++iP)
+        {
+            PointCloudData& pdata = frame.pointClouds[iP];
+            memread(pdata.name,ptr);
+            memread(pdata.nMarkers,ptr);
+            memread(pdata.markersPos, pdata.nMarkers, ptr);
+        }
+    }
+    memread(frame.nOtherMarkers,ptr);
+    memread(frame.otherMarkersPos, frame.nOtherMarkers, ptr);
+
+    memread(frame.nRigids,ptr);
+    if (frame.nRigids <= 0)
+        frame.rigids = NULL;
+    else
+    {
+        frame.rigids = new RigidData[frame.nRigids];
+        for (int iR = 0; iR < frame.nRigids; ++iR)
+        {
+            RigidData& rdata = frame.rigids[iR];
+            memread(rdata.ID,ptr);
+            memread(rdata.pos,ptr);
+            memread(rdata.rot,ptr);
+            memread(rdata.nMarkers, ptr);
+            memread(rdata.markersPos, rdata.nMarkers, ptr);
+            if (major < 2)
+            {
+                rdata.markersID = NULL;
+                rdata.markersSize = NULL;
+                rdata.meanError = -1.0f;
+            }
+            else
+            {
+                memread(rdata.markersID, rdata.nMarkers, ptr);
+                memread(rdata.markersSize, rdata.nMarkers, ptr);
+                memread(rdata.meanError, ptr);
+            }
+        }
+    }
+
+    if (major <= 1 || (major == 2 && minor <= 0))
+    {
+        frame.nSkeletons = 0;
+        frame.skeletons = NULL;
+    }
+    else
+    {
+        memread(frame.nSkeletons,ptr);
+        if (frame.nSkeletons <= 0)
+            frame.skeletons = NULL;
+        else
+        {
+            frame.skeletons = new SkeletonData[frame.nSkeletons];
+            for (int iS = 0; iS < frame.nSkeletons; ++iS)
+            {
+                SkeletonData& sdata = frame.skeletons[iS];
+                memread(sdata.ID,ptr);
+                memread(sdata.nRigids, ptr);
+                if (sdata.nRigids <= 0)
+                    sdata.rigids = NULL;
+                else
+                {
+                    sdata.rigids = new RigidData[sdata.nRigids];
+                    for (int iR = 0; iR < sdata.nRigids; ++iR)
+                    {
+                        RigidData& rdata = sdata.rigids[iR];
+                        memread(rdata.ID,ptr);
+                        memread(rdata.pos,ptr);
+                        memread(rdata.rot,ptr);
+                        memread(rdata.nMarkers, ptr);
+                        memread(rdata.markersPos, rdata.nMarkers, ptr);
+                        memread(rdata.markersID, rdata.nMarkers, ptr);
+                        memread(rdata.markersSize, rdata.nMarkers, ptr);
+                        memread(rdata.meanError, ptr);
+                    }
+                }
+            }
+        }
+    }
+    memread(frame.latency, ptr);
+
+    processFrame(&frame);
+
+    if (frame.pointClouds)
+    {
+        delete[] frame.pointClouds;
+    }
+    if (frame.rigids)
+    {
+        delete[] frame.rigids;
+    }
+    if (frame.skeletons)
+    {
+        for (int i=0; i<frame.nSkeletons; ++i)
+        {
+            if (frame.skeletons[i].rigids)
+                delete[] frame.skeletons[i].rigids;
+        }
+        delete[] frame.skeletons;
+    }
 }
 
 void OptiTrackNatNetClient::decodeModelDef(const sPacket& data)
 {
+}
+
+void OptiTrackNatNetClient::processFrame(const FrameData* data)
+{
+    sout << "Frame # : " << data->frameNumber << "\n";
+    sout << "\tPoint Cloud Count : " << data->nPointClouds << "\n";
+    for (int iP = 0; iP < data->nPointClouds; ++iP)
+    {
+        sout << "\n";
+        if (data->pointClouds[iP].name)
+            sout << "\t\tModel Name : " << data->pointClouds[iP].name << "\n";
+        sout << "\t\tMarkers (" << data->pointClouds[iP].nMarkers << ") :";
+        for (int i = 0; i < data->pointClouds[iP].nMarkers; ++i)
+            sout << " [" << data->pointClouds[iP].markersPos[i] << "]";
+        sout << "\n";
+    }
+
+    sout << "\tUnidentified Markers (" << data->nOtherMarkers << ") :";
+    for (int i = 0; i < data->nOtherMarkers; ++i)
+        sout << " [" << data->otherMarkersPos[i] << "]";
+    sout << "\n";
+
+    sout << "\tRigid Body Count : " << data->nRigids << "\n";
+    for (int iR = 0; iR < data->nRigids; ++iR)
+    {
+        sout << "\n";
+        sout << "\t\tID : " << data->rigids[iR].ID << "\n";
+        sout << "\t\tpos : " << data->rigids[iR].pos << "\n";
+        if (data->rigids[iR].rot[0] != 0.0f
+            || data->rigids[iR].rot[1] != 0.0f
+            || data->rigids[iR].rot[2] != 0.0f
+            || data->rigids[iR].rot[3] != 0.0f)
+            sout << "\t\trot : " << data->rigids[iR].rot << "\n";
+        sout << "\t\tMarkers (" << data->rigids[iR].nMarkers << ") :";
+        for (int i = 0; i < data->rigids[iR].nMarkers; ++i)
+        {
+            sout << " [" << data->rigids[iR].markersPos[i] << "]";
+            if (data->rigids[iR].markersID)
+                sout << ",id=" << data->rigids[iR].markersID[i];
+            if (data->rigids[iR].markersSize)
+                sout << ",size=" << data->rigids[iR].markersSize[i];
+        }
+        sout << "\n";
+    }
+
+    sout << "\tSkeleton Count : " << data->nSkeletons << "\n";
+    for (int iS = 0; iS < data->nSkeletons; ++iS)
+    {
+        sout << "\n";
+        sout << "\t\tID : " << data->skeletons[iS].ID << "\n";
+
+        sout << "\t\tRigid Body Count : " << data->skeletons[iS].nRigids << "\n";
+        for (int iR = 0; iR < data->skeletons[iS].nRigids; ++iR)
+        {
+            sout << "\n";
+            sout << "\t\t\tID : " << data->skeletons[iS].rigids[iR].ID << "\n";
+            sout << "\t\t\tpos : " << data->skeletons[iS].rigids[iR].pos << "\n";
+            if (data->skeletons[iS].rigids[iR].rot[0] != 0.0f
+                || data->skeletons[iS].rigids[iR].rot[1] != 0.0f
+                || data->skeletons[iS].rigids[iR].rot[2] != 0.0f
+                || data->skeletons[iS].rigids[iR].rot[3] != 0.0f)
+                sout << "\t\t\trot : " << data->skeletons[iS].rigids[iR].rot << "\n";
+            sout << "\t\t\tMarkers (" << data->skeletons[iS].rigids[iR].nMarkers << ") :";
+            for (int i = 0; i < data->skeletons[iS].rigids[iR].nMarkers; ++i)
+            {
+                sout << " [" << data->skeletons[iS].rigids[iR].markersPos[i] << "]";
+                if (data->skeletons[iS].rigids[iR].markersID)
+                    sout << ",id=" << data->skeletons[iS].rigids[iR].markersID[i];
+                if (data->skeletons[iS].rigids[iR].markersSize)
+                    sout << ",size=" << data->skeletons[iS].rigids[iR].markersSize[i];
+            }
+            sout << "\n";
+        }
+    }
+    sout << "latency : " << data->latency << "\n";
+    sout << sendl;
+}
+
+void OptiTrackNatNetClient::processModelDef(const ModelDef* data)
+{
+
 }
 
 void OptiTrackNatNetClient::handleEvent(sofa::core::objectmodel::Event *event)
@@ -384,3 +607,5 @@ SOFA_DECL_CLASS(OptiTrackNatNetClient)
 int OptiTrackNatNetClientClass = sofa::core::RegisterObject("Network client to receive tracked points and rigids from NaturalPoint OptiTrack devices using NatNet protocol")
         .add< OptiTrackNatNetClient >()
         ;
+
+} // namespace SofaOptiTrackNatNet
