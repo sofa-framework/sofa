@@ -74,7 +74,7 @@ PointModel::PointModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , mstate(NULL)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
-    , PointActiverEngine(initData(&PointActiverEngine,"PointActiverEngine", "path of a component PointActiver that activate or deactivate collision point during execution") )
+    , PointActiverPath(initData(&PointActiverPath,"PointActiverPath", "path of a component PointActiver that activate or deactivate collision point during execution") )
     , m_lmdFilter( NULL )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
 {
@@ -107,27 +107,42 @@ void PointModel::init()
     if (computeNormals.getValue()) updateNormals();
 
 
-
-    const std::string path = PointActiverEngine.getValue();
+    const std::string path = PointActiverPath.getValue();
 
     if (path.size()==0)
     {
+
         myActiver = new PointActiver();
-//		std::cout<<"no Point Activer found path ="<<path<<std::endl;
+        serr<<"path = "<<path<<" no Point Activer found for PointModel "<<this->getName()<<sendl;
     }
     else
     {
-        this->getContext()->get(myActiver ,path  );
+
+        core::objectmodel::BaseObject *activer=NULL;
+        this->getContext()->get(activer ,path  );
+
+        if (activer != NULL)
+            sout<<" Activer named"<<activer->getName()<<" found"<<sendl;
+        else
+            serr<<"wrong path for PointActiver"<<sendl;
+
+
+        myActiver = dynamic_cast<PointActiver *> (activer);
+
+
 
         if (myActiver==NULL)
         {
             myActiver = new PointActiver();
-            std::cout<<"wrong path for Point Activer  "<<std::endl;
+
+
+            serr<<"no dynamic cast possible for Point Activer for PointModel "<< this->getName() <<sendl;
         }
         else
-            std::cout<<"Point Activer found !"<<std::endl;
+        {
+            sout<<"PointActiver named"<<activer->getName()<<" found !! for PointModel "<< this->getName() <<sendl;
+        }
     }
-
 }
 
 void PointModel::draw(const core::visual::VisualParams* ,int index)
@@ -206,15 +221,13 @@ void PointModel::draw(const core::visual::VisualParams* vparams)
 
 bool PointModel::canCollideWithElement(int index, CollisionModel* model2, int index2)
 {
-    //sout<<"PointModel("<<this->getName()<<") :: canCollideWithElement("<<model2->getName()<<") is called"<<sendl;
+
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
     if (this->getContext() != model2->getContext()) return true;
 
 
-    //if(index==4)
-    //{
-    //	std::cout<<" model : "<<model2->getName()<<"at index ["<<index2<<"] can collide with point 4 ?"<<std::endl;
-    //}
+    bool debug= false;
+
 
     if (model2 == this)
     {
@@ -226,21 +239,32 @@ bool PointModel::canCollideWithElement(int index, CollisionModel* model2, int in
 
 
 
+
         // in the neighborhood, if we find a point in common, we cancel the collision
         const helper::vector <unsigned int>& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
         const helper::vector <unsigned int>& verticesAroundVertex2 =topology->getVerticesAroundVertex(index2);
 
         for (unsigned int i1=0; i1<verticesAroundVertex1.size(); i1++)
         {
+
             unsigned int v1 = verticesAroundVertex1[i1];
 
             for (unsigned int i2=0; i2<verticesAroundVertex2.size(); i2++)
             {
-                if (v1==verticesAroundVertex2[i2])
+
+                if (debug)
+                    std::cout<<"v1 = "<<v1 <<"  verticesAroundVertex2[i2]"<<verticesAroundVertex2[i2]<<std::endl;
+                if (v1==verticesAroundVertex2[i2] || v1==index2 || index == verticesAroundVertex2[i2])
+                {
+                    if(debug)
+                        std::cout<<" return false"<<std::endl;
                     return false;
+                }
             }
         }
-        return true; // || index > index2+1;
+        if(debug)
+            std::cout<<" return true"<<std::endl;
+        return true;
     }
     else
         return model2->canCollideWithElement(index2, this, index);

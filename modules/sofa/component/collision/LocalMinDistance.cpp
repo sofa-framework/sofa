@@ -432,6 +432,8 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
     b[0] = AP*AB;
     b[1] = AP*AC;
 
+
+
     const double det = determinant(A);
 
     double alpha = 0.5;
@@ -599,6 +601,13 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e2.p2()-e2.p1();
     const Vector3 AP = e1.p()-e2.p1();
+
+    if (AB.norm()<0.000000000001*AP.norm())
+    {
+        //std::cout<<" AB.norm() = 0 detected"<<std::endl;
+        return 0;
+    }
+
 
     double A;
     double b;
