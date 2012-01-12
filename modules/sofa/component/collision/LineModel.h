@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_LINEMODEL_H
 
 #include <sofa/core/CollisionModel.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/collision/LocalMinDistanceFilter.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -159,7 +160,7 @@ protected:
     int meshRevision;
     LineLocalMinDistanceFilter *m_lmdFilter;
 
-    Data<std::string> LineActiverEngine;
+    Data< std::string  > LineActiverPath;
     Data<bool> m_displayFreePosition;
 
     LineActiver *myActiver;

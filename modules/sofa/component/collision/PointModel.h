@@ -133,7 +133,7 @@ protected:
 
     Data<bool> computeNormals;
 
-    Data<std::string> PointActiverEngine;
+    Data<std::string> PointActiverPath;
 
     VecDeriv normals;
 

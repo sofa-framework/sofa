@@ -66,7 +66,7 @@ using namespace sofa::core::topology;
 LineModel::LineModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
     , mstate(NULL), topology(NULL), meshRevision(-1), m_lmdFilter(NULL)
-    , LineActiverEngine(initData(&LineActiverEngine,"LineActiverEngine", "path of a component LineActiver that activate or deactivate collision line during execution") )
+    , LineActiverPath(initData(&LineActiverPath,"LineActiverPath", "path of a component LineActiver that activates or deactivates collision line during execution") )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
 {
 }
@@ -122,24 +122,41 @@ void LineModel::init()
 
     updateFromTopology();
 
-    const std::string path = LineActiverEngine.getValue();
+    const std::string path = LineActiverPath.getValue();
 
     if (path.size()==0)
     {
+
         myActiver = new LineActiver();
-//		std::cout<<"no Line Activer found for LineModel "<<this->getName()<<std::endl;
+        serr<<"path = "<<path<<" no Line Activer found for LineModel "<<this->getName()<<sendl;
     }
     else
     {
-        this->getContext()->get(myActiver ,path  );
+
+        core::objectmodel::BaseObject *activer=NULL;
+        this->getContext()->get(activer ,path  );
+
+        if (activer != NULL)
+            sout<<" Activer named"<<activer->getName()<<" found"<<sendl;
+        else
+            serr<<"wrong path for Line Activer"<<sendl;
+
+
+        myActiver = dynamic_cast<LineActiver *> (activer);
+
+
 
         if (myActiver==NULL)
         {
             myActiver = new LineActiver();
-            std::cout<<"wrong path for Line Activer for LineModel "<< this->getName() <<std::endl;
+
+
+            serr<<"wrong path for Line Activer for LineModel "<< this->getName() <<sendl;
         }
         else
-            std::cout<<"Line Activer  found !! for LineModel "<< this->getName() <<std::endl;
+        {
+            sout<<"Line Activer named"<<activer->getName()<<" found !! for LineModel "<< this->getName() <<sendl;
+        }
     }
 
 }
