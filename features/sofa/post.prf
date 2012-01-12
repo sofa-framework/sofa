@@ -69,20 +69,20 @@ win32 : !build_pass : equals(IS_SLN, true) : equals(SRC_DIR, $$ROOT_SRC_DIR) {
 equals(IS_SLN, true) {
 	ENV_LIB = $$(LIB)
 	!isEmpty(ENV_LIB) {
-		ENV_LIB = $$join(ENV_LIB, |,,) # Transform spaces to pipes
+		ENV_LIB = $$join(ENV_LIB, <,,) # Transform spaces to <
 		ENV_LIB = $$split(ENV_LIB, ;)  # Transform semi-colons to spaces
 		for(library, ENV_LIB) {        # Loop on space separated elements => each path entry
-			library = $$replace(library, |, ' ') # Revert pipes to spaces
-			LIBS *= -L\"$$library\"               # Add quoted path as a library path
+			library = $$replace(library, <, ' ') # Revert < to spaces
+			LIBS *= -L$$library               # Add quoted path as a library path
 		}
 	}
 	ENV_INCLUDE = $$(INCLUDE)
 	!isEmpty(ENV_INCLUDE) {
-		ENV_INCLUDE = $$join(ENV_INCLUDE, |,,) # Transform spaces to pipes
+		ENV_INCLUDE = $$join(ENV_INCLUDE, <,,) # Transform spaces to <
 		ENV_INCLUDE = $$split(ENV_INCLUDE, ;)  # Transform semi-colons to spaces
 		for(include, ENV_INCLUDE) {            # Loop on space separated elements => each path entry
-			include = $$replace(include, |, ' ') # Revert pipes to spaces
-			INCLUDEPATH *= \"$$include\"          # Add quoted path as a library path
+			include = $$replace(include, <, ' ') # Revert < to spaces
+			INCLUDEPATH *= $$include          # Add quoted path as a library path
 		}
 	}
 }
