@@ -40,38 +40,38 @@ using namespace sofa::defaulttype;
 using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
-#ifndef SOFA_FLOAT
-#endif
-#ifndef SOFA_DOUBLE
+
 template class BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes>;
-template class BarycentricMapping< Vec3fTypes, CudaVec3fTypes>;
-template class BarycentricMapping< CudaVec3fTypes, Vec3fTypes>;
 template class BarycentricMapping< CudaVec3fTypes, ExtVec3fTypes>;
-// template class BarycentricMapping< CudaVec3fTypes, ExtVec3dTypes>;
 template class BarycentricMapping< CudaVec3f1Types, CudaVec3f1Types>;
 template class BarycentricMapping< CudaVec3f1Types, CudaVec3fTypes>;
 template class BarycentricMapping< CudaVec3fTypes, CudaVec3f1Types>;
-template class BarycentricMapping< Vec3fTypes, CudaVec3f1Types>;
-template class BarycentricMapping< CudaVec3f1Types, Vec3fTypes>;
 template class BarycentricMapping< CudaVec3f1Types, ExtVec3fTypes>;
 
-#endif
+
 #ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
 template class BarycentricMapping< Vec3dTypes, CudaVec3fTypes>;
 template class BarycentricMapping< CudaVec3fTypes, Vec3dTypes>;
 template class BarycentricMapping< Vec3dTypes, CudaVec3f1Types>;
 template class BarycentricMapping< CudaVec3f1Types, Vec3dTypes>;
 #endif
+#ifndef SOFA_DOUBLE
+template class BarycentricMapping< Vec3fTypes, CudaVec3fTypes>;
+template class BarycentricMapping< CudaVec3fTypes, Vec3fTypes>;
+template class BarycentricMapping< Vec3fTypes, CudaVec3f1Types>;
+template class BarycentricMapping< CudaVec3f1Types, Vec3fTypes>;
 #endif
-}
-}
+
+} // namespace mapping
+
+} // namespace component
 
 namespace gpu
 {
 
 namespace cuda
 {
+
 using namespace sofa::defaulttype;
 using namespace sofa::core;
 using namespace sofa::core::behavior;
@@ -80,32 +80,24 @@ using namespace sofa::component::mapping;
 SOFA_DECL_CLASS(CudaBarycentricMapping)
 
 int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-#ifndef SOFA_FLOAT
-#endif
-#ifndef SOFA_DOUBLE
         .add< BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes> >()
-        .add< BarycentricMapping< Vec3fTypes, CudaVec3fTypes> >()
-        .add< BarycentricMapping< CudaVec3fTypes, Vec3fTypes> >()
         .add< BarycentricMapping< CudaVec3fTypes, ExtVec3fTypes> >()
-// .add< BarycentricMapping< CudaVec3fTypes, ExtVec3dTypes> >()
         .add< BarycentricMapping< CudaVec3f1Types, CudaVec3f1Types> >()
         .add< BarycentricMapping< CudaVec3f1Types, CudaVec3fTypes> >()
         .add< BarycentricMapping< CudaVec3fTypes, CudaVec3f1Types> >()
-        .add< BarycentricMapping< Vec3fTypes, CudaVec3f1Types> >()
-        .add< BarycentricMapping< CudaVec3f1Types, Vec3fTypes> >()
         .add< BarycentricMapping< CudaVec3f1Types, ExtVec3fTypes> >()
-#endif
 #ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
         .add< BarycentricMapping< Vec3dTypes, CudaVec3fTypes> >()
         .add< BarycentricMapping< CudaVec3fTypes, Vec3dTypes> >()
         .add< BarycentricMapping< Vec3dTypes, CudaVec3f1Types> >()
         .add< BarycentricMapping< CudaVec3f1Types, Vec3dTypes> >()
-// .add< BarycentricMapping< CudaVec3f1Types, ExtVec3dTypes> >()
 #endif
+#ifndef SOFA_DOUBLE
+        .add< BarycentricMapping< Vec3fTypes, CudaVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3fTypes, Vec3fTypes> >()
+        .add< BarycentricMapping< Vec3fTypes, CudaVec3f1Types> >()
+        .add< BarycentricMapping< CudaVec3f1Types, Vec3fTypes> >()
 #endif
-
-
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< BarycentricMapping< CudaVec3fTypes, CudaVec3dTypes> >()
         .add< BarycentricMapping< CudaVec3dTypes, CudaVec3fTypes> >()
