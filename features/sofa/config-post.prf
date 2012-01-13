@@ -139,7 +139,12 @@ contains (DEFINES, SOFA_GPU_CUDA) {
 			contains(QMAKE_CFLAGS, -m32) | contains(CONFIG, x86) : CUDA_FLAGS *= -m32
 			else : CUDA_FLAGS *= -m64
 		}
-		cuda.commands = nvcc -c $$CUDA_FLAGS -Xcompiler -fPIC,$${join(QMAKE_CXXFLAGS_RELEASE,",")}  $${join(DEFINES," -D","-D")} $(INCPATH) ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
+		#Uncomment the following lines if you use gcc4.6 for Sofa
+		#(else gcc4.4 won't recognize the flag -fno-partial-inlining)
+		#QMAKE_NVCCXFLAGS = QMAKE_CXXFLAGS_RELEASE
+		#QMAKE_NVCCXFLAGS -= -fno-partial-inlining
+
+		cuda.commands = nvcc -c $$CUDA_FLAGS -Xcompiler -fPIC,$${join(QMAKE_NVCCXFLAGS,",")}  $${join(DEFINES," -D","-D")} $(INCPATH) ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
 		cuda.dependency_type = TYPE_C
 #		macx: cuda.commands += --host-compilation 'C'
 	}
