@@ -29,8 +29,8 @@ HEADERS += mycuda.h \
            CudaMath.inl \
 	   CudaMathRigid.h \
 	   CudaMathRigid.inl \
-       CudaScan.h \
-       CudaSort.h \
+       	   CudaScan.h \
+           CudaSort.h \
            CudaMechanicalObject.h \
            CudaMechanicalObject.inl \
            CudaUniformMass.h \
@@ -49,9 +49,9 @@ HEADERS += mycuda.h \
            CudaTetrahedronFEMForceField.inl \
            CudaTetrahedronTLEDForceField.h \
            CudaTetrahedronTLEDForceField.inl \
-		   CudaHexahedronTLEDForceField.h \
-		   CudaHexahedronTLEDForceField.inl \
-   	       CudaPlaneForceField.h \
+	   CudaHexahedronTLEDForceField.h \
+	   CudaHexahedronTLEDForceField.inl \
+   	   CudaPlaneForceField.h \
            CudaPlaneForceField.inl \
            CudaSphereForceField.h \
            CudaSphereForceField.inl \
@@ -102,7 +102,7 @@ SOURCES += mycuda.cpp \
            CudaSpringForceField.cpp \
            CudaTetrahedronFEMForceField.cpp \ 
            CudaTetrahedronTLEDForceField.cpp \
-	       CudaHexahedronTLEDForceField.cpp \
+	   CudaHexahedronTLEDForceField.cpp \
            CudaPlaneForceField.cpp \
            CudaSphereForceField.cpp \
            CudaEllipsoidForceField.cpp \
@@ -122,7 +122,8 @@ SOURCES += mycuda.cpp \
            CudaVisualModel.cpp \
            CudaTetrahedralVisualModel.cpp \
            CudaSetTopology.cpp \
-           CudaParticleSource.cpp
+           CudaParticleSource.cpp \
+	   CudaMeshMatrixMass.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaScan.cu \
@@ -137,7 +138,7 @@ CUDA_SOURCES += mycuda.cu \
            CudaSpringForceField.cu \
            CudaTetrahedronFEMForceField.cu \
            CudaTetrahedronTLEDForceField.cu \
-	       CudaHexahedronTLEDForceField.cu \
+	   CudaHexahedronTLEDForceField.cu \
            CudaPlaneForceField.cu \
            CudaSphereForceField.cu \
            CudaEllipsoidForceField.cu \
