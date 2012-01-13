@@ -142,8 +142,8 @@ contains (DEFINES, SOFA_GPU_CUDA) {
 
 		#Uncomment the following lines if you use gcc4.6 for Sofa
 		#(else gcc4.4 won't recognize the flag -fno-partial-inlining)
-		#QMAKE_NVCCFLAGS = QMAKE_CXXFLAGS_RELEASE
-		#QMAKE_NVCCFLAGS -= -fno-partial-inlining
+		QMAKE_NVCCFLAGS = $$QMAKE_CXXFLAGS_RELEASE
+		QMAKE_NVCCFLAGS -= -fno-partial-inlining
 
 		cuda.commands = nvcc -c $$CUDA_FLAGS -Xcompiler -fPIC,$${join(QMAKE_NVCCFLAGS,",")}  $${join(DEFINES," -D","-D")} $(INCPATH) ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
 		cuda.dependency_type = TYPE_C
