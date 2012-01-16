@@ -9,7 +9,7 @@
     <EulerImplicit  />
     <CGLinearSolver  />
     <MeshVTKLoader name="loader" filename="mesh/Ossicles.vtu" />
-    <MechanicalObject src="@loader" template="Vec3d" name="mecaObj" scale3d="1 1 1" restScale="1" />
+    <MechanicalObject src="@loader"  name="mecaObj" scale3d="1 1 1" restScale="1" />
 
 
 	<TetrahedronSetTopologyContainer name="Container"  src="@loader"/>
