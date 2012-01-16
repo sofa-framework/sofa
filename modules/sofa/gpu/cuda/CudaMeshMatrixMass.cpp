@@ -24,6 +24,12 @@
 ******************************************************************************/
 #include <sofa/component/mass/MeshMatrixMass.inl>
 #include <sofa/core/behavior/Mass.inl>
+
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/QuadSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include "CudaTypes.h"
@@ -55,7 +61,7 @@ namespace cuda
 SOFA_DECL_CLASS(CudaMeshMatrixMassClass)
 
 int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >()
+//.add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::mass::MeshMatrixMass<CudaVec2dTypes, double > >()
 #endif // SOFA_GPU_CUDA_DOUBLE
