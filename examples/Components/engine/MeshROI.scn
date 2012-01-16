@@ -1,13 +1,13 @@
 <Node name="root" gravity="0 -9 1" dt="0.05">
     <VisualStyle displayFlags="showBehaviorModels showWireframe" />
-    <DefaultPipeline name="default0" verbose="0" />
-    <BruteForceDetection name="N2" />
-    <DefaultContactManager name="default1" response="default" />
-    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <TreeCollisionGroupManager name="default2" />
-    <Node name="SquareGravity" gravity="0 -9.81 0">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+    <DefaultPipeline />
+    <BruteForceDetection  />
+    <DefaultContactManager response="default" />
+    <MinProximityIntersection  alarmDistance="0.8" contactDistance="0.5" />
+    <TreeCollisionGroupManager  />
+    <Node >
+        <EulerImplicit  />
+        <CGLinearSolver  />
         <MeshVTKLoader name="loader" filename="mesh/Ossicles.vtu" />
         <MechanicalObject src="@loader" template="Vec3d" name="mecaObj" scale3d="1 1 1" restScale="1" />
 
@@ -15,15 +15,15 @@
 	<TetrahedronSetTopologyContainer name="Container"  src="@loader"/>
         <TriangleSetTopologyModifier name="Modifier" />
 	<TetrahedronSetTopologyModifier name="Modifier"/>
-	<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
-	<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
-        <DiagonalMass template="Vec3d" name="default5" massDensity="0.15" />
+	<TetrahedronSetTopologyAlgorithms  name="TopoAlgo"/>
+	<TetrahedronSetGeometryAlgorithms  name="GeomAlgo"/>
+        <DiagonalMass  massDensity="0.15" />
         
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="1e10" poissonRatio="0.3" method="large" />
 
-	<Node name="MeshROI" activated="1" >  
+	<Node name="MeshROI"  >  
 	   <MeshObjLoader name="ROIloader" filename="mesh/malleus.obj" scale3d="1 1 1" translation="0 0 0" rotation="0 0 0"/>
-		<MeshROI name="ROIm" template="Vec3d" drawMesh="0" drawBox="0" drawEdges="0" drawTriangles="1" drawTetrahedra="1" drawOut="0" computeMeshROI="1"  doUpdate="0"
+		<MeshROI name="ROIm"  drawMesh="0" drawBox="0" drawEdges="0" drawTriangles="1" drawTetrahedra="1" drawOut="0" computeMeshROI="1"  doUpdate="0"
 			 position="@../mecaObj.position" tetrahedra="@../loader.tetrahedra" ROIposition="@ROIloader.position" ROItriangles="@ROIloader.triangles" />
 	 </Node>
     </Node>
