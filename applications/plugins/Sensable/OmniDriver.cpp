@@ -183,9 +183,20 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
     currentForce[1] = Wrench_endOmni_inBaseOmni.getForce()[1] * data->forceScale;
     currentForce[2] = Wrench_endOmni_inBaseOmni.getForce()[2] * data->forceScale;
 
+//    if (Wrench_endOmni_inBaseOmni.getForce().norm() > 0.1)
+//        printf("wrench = %f\n",Wrench_endOmni_inBaseOmni.getForce().norm());
+
     //cout << "OMNIDATA " << world_H_virtualTool.getOrigin() << " " << Wrench_tool_inWorld.getForce() << endl; // << currentForce[0] << " " << currentForce[1] << " " << currentForce[2] << endl;
     if((data->servoDeviceData.m_buttonState & HD_DEVICE_BUTTON_1) || data->permanent_feedback)
         hdSetDoublev(HD_CURRENT_FORCE, currentForce);
+    else
+    {
+        // reset force feedback
+        currentForce[0] = 0.0;
+        currentForce[1] = 0.0;
+        currentForce[2] = 0.0;
+        hdSetDoublev(HD_CURRENT_FORCE, currentForce);
+    }
 
     ++data->servoDeviceData.nupdates;
     hdEndFrame(hapticHD);
@@ -264,10 +275,10 @@ int OmniDriver::initDevice(OmniData& data)
         hHD = hdInitDevice(HD_DEFAULT_DEVICE);
         if (HD_DEVICE_ERROR(error = hdGetError()))
         {
-            printError(stderr, &error, "[NewOmni] Failed to initialize the device");
+            printError(stderr, &error, "[Omni] Failed to initialize the device");
             return -1;
         }
-        printf("[NewOmni] Found device %s\n",hdGetString(HD_DEVICE_MODEL_TYPE));
+        printf("[Omni] Found device %s\n",hdGetString(HD_DEVICE_MODEL_TYPE));
 
         hdEnable(HD_FORCE_OUTPUT);
         hdEnable(HD_MAX_FORCE_CLAMPING);
@@ -276,7 +287,7 @@ int OmniDriver::initDevice(OmniData& data)
         hdStartScheduler();
         if (HD_DEVICE_ERROR(error = hdGetError()))
         {
-            printError(stderr, &error, "[NewOmni] Failed to start the scheduler");
+            printError(stderr, &error, "[Omni] Failed to start the scheduler");
             return -1;
         }
     }
@@ -336,16 +347,28 @@ void OmniDriver::init()
     using core::behavior::MechanicalState;
     mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
     if (!mState) serr << "OmniDriver has no binding MechanicalState" << sendl;
-    else std::cout << "[NewOmni] init" << endl;
+    else std::cout << "[Omni] init" << endl;
 }
 
 void OmniDriver::bwdInit()
 {
     std::cout<<"OmniDriver::bwdInit() is called"<<std::endl;
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-    ForceFeedback *ff = context->getTreeObject<ForceFeedback>();
 
-    if(ff) this->setForceFeedback(ff);
+    // WIP fix omnidriver
+#if 0
+    ForceFeedback *ff = context->getTreeObject<ForceFeedback>();
+#else
+    simulation::Node *root = dynamic_cast<simulation::Node *>(context->getRootContext()); // access to current node
+    ForceFeedback *ff = root->getTreeObject<ForceFeedback>();
+#endif
+    if(ff)
+    {
+        this->setForceFeedback(ff);
+        printf("[Omni] Found ForceFeedback %s\n",ff->getName().c_str());
+    }
+    else
+        printf("[Omni] No ForceFeedback found.\n");
 
     setDataValue();
 
