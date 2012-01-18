@@ -39,6 +39,23 @@ namespace cuda
 
 extern "C"
 {
+    void MechanicalObjectCudaVec2f_vAssign(unsigned int size, void* res, const void* a);
+    void MechanicalObjectCudaVec2f_vClear(unsigned int size, void* res);
+    void MechanicalObjectCudaVec2f_vMEq(unsigned int size, void* res, float f);
+    void MechanicalObjectCudaVec2f_vEqBF(unsigned int size, void* res, const void* b, float f);
+    void MechanicalObjectCudaVec2f_vPEq(unsigned int size, void* res, const void* a);
+    void MechanicalObjectCudaVec2f_vPEqBF(unsigned int size, void* res, const void* b, float f);
+    void MechanicalObjectCudaVec2f_vAdd(unsigned int size, void* res, const void* a, const void* b);
+    void MechanicalObjectCudaVec2f_vOp(unsigned int size, void* res, const void* a, const void* b, float f);
+    void MechanicalObjectCudaVec2f_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v);
+    void MechanicalObjectCudaVec2f_vPEqBF2(unsigned int size, void* res1, const void* b1, float f1, void* res2, const void* b2, float f2);
+    void MechanicalObjectCudaVec2f_vPEq4BF2(unsigned int size, void* res1, const void* b11, float f11, const void* b12, float f12, const void* b13, float f13, const void* b14, float f14,
+            void* res2, const void* b21, float f21, const void* b22, float f22, const void* b23, float f23, const void* b24, float f24);
+    void MechanicalObjectCudaVec2f_vOp2(unsigned int size, void* res1, const void* a1, const void* b1, float f1, void* res2, const void* a2, const void* b2, float f2);
+    int MechanicalObjectCudaVec2f_vDotTmpSize(unsigned int size);
+    void MechanicalObjectCudaVec2f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
+
+
     void MechanicalObjectCudaVec3f_vAssign(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaVec3f_vClear(unsigned int size, void* res);
     void MechanicalObjectCudaVec3f_vMEq(unsigned int size, void* res, float f);
@@ -201,6 +218,45 @@ extern "C"
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // extern "C"
+
+
+template<>
+class CudaKernelsMechanicalObject<CudaVec2fTypes>
+{
+public:
+    static void vAssign(unsigned int size, void* res, const void* a)
+    {   MechanicalObjectCudaVec2f_vAssign(size, res, a); }
+    static void vClear(unsigned int size, void* res)
+    {   MechanicalObjectCudaVec2f_vClear(size, res); }
+    static void vMEq(unsigned int size, void* res, float f)
+    {   MechanicalObjectCudaVec2f_vMEq(size, res, f); }
+    static void vEqBF(unsigned int size, void* res, const void* b, float f)
+    {   MechanicalObjectCudaVec2f_vEqBF(size, res, b, f); }
+    static void vPEq(unsigned int size, void* res, const void* a)
+    {   MechanicalObjectCudaVec2f_vPEq(size, res, a); }
+    static void vPEqBF(unsigned int size, void* res, const void* b, float f)
+    {   MechanicalObjectCudaVec2f_vPEqBF(size, res, b, f); }
+    static void vAdd(unsigned int size, void* res, const void* a, const void* b)
+    {   MechanicalObjectCudaVec2f_vAdd(size, res, a, b); }
+    static void vOp(unsigned int size, void* res, const void* a, const void* b, float f)
+    {   MechanicalObjectCudaVec2f_vOp(size, res, a, b, f); }
+    static void vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
+    {   MechanicalObjectCudaVec2f_vIntegrate(size, a, v, x, f_v_v, f_v_a, f_x_x, f_x_v); }
+    static void vPEqBF2(unsigned int size, void* res1, const void* b1, float f1, void* res2, const void* b2, float f2)
+    {   MechanicalObjectCudaVec2f_vPEqBF2(size, res1, b1, f1, res2, b2, f2); }
+    static void vPEq4BF2(unsigned int size, void* res1, const void* b11, float f11, const void* b12, float f12, const void* b13, float f13, const void* b14, float f14,
+            void* res2, const void* b21, float f21, const void* b22, float f22, const void* b23, float f23, const void* b24, float f24)
+    {
+        MechanicalObjectCudaVec2f_vPEq4BF2(size, res1, b11, f11, b12, f12, b13, f13, b14, f14,
+                res2, b21, f21, b22, f22, b23, f23, b24, f24);
+    }
+    static void vOp2(unsigned int size, void* res1, const void* a1, const void* b1, float f1, void* res2, const void* a2, const void* b2, float f2)
+    {   MechanicalObjectCudaVec2f_vOp2(size, res1, a1, b1, f1, res2, a2, b2, f2); }
+    static int vDotTmpSize(unsigned int size)
+    {   return MechanicalObjectCudaVec2f_vDotTmpSize(size); }
+    static void vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp)
+    {   MechanicalObjectCudaVec2f_vDot(size, res, a, b, tmp, cputmp); }
+};
 
 template<>
 class CudaKernelsMechanicalObject<CudaVec3fTypes>
@@ -2054,6 +2110,7 @@ template<> void MechanicalObject< T >::addFromBaseVectorSameSize(core::VecId des
 { if (const CudaBaseVector<Real> * vec = dynamic_cast<const CudaBaseVector<Real> *>(src)) data.addFromCudaBaseVectorSameSize(this, dest,vec,offset); \
 else data.addFromBaseVectorSameSize(this, dest,src,offset); }
 
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec2fTypes);
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3f1Types);
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec6fTypes);
