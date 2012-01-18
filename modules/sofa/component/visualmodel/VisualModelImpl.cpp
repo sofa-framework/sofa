@@ -65,6 +65,7 @@ using namespace sofa::core::loader;
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->core::visual::VisualModel::parse(arg);
+
     VisualModelImpl* obj = this;
 
     if (arg->getAttribute("normals")!=NULL)
@@ -122,6 +123,8 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_vbitangents		(initData   (&m_vbitangents, "bitangents", "tangents for normal mapping"))
     , m_triangles		(initData   (&m_triangles, "triangles", "triangles of the model"))
     , m_quads			(initData   (&m_quads, "quads", "quads of the model"))
+    , m_vertPosIdx		(initData   (&m_vertPosIdx, "vertPosIdx", "If vertices have multiple normals/texcoords stores vertices position indices"))
+    , m_vertNormIdx		(initData   (&m_vertNormIdx, "vertNormIdx", "If vertices have multiple normals/texcoords stores vertices normal indices"))
     , fileMesh          (initData   (&fileMesh, "fileMesh"," Path to the model"))
     , texturename       (initData   (&texturename, "texturename", "Name of the Texture"))
     , m_translation     (initData   (&m_translation, Vector3(), "translation", "Initial Translation of the object"))
@@ -325,6 +328,8 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     ResizableExtVector<Coord>& vertices = *(m_vertices.beginEdit());
     ResizableExtVector<Deriv>& vnormals = *(m_vnormals.beginEdit());
     ResizableExtVector<TexCoord>& vtexcoords = *(m_vtexcoords.beginEdit());
+    ResizableExtVector<int>& vertPosIdx = (*m_vertPosIdx.beginEdit());
+    ResizableExtVector<int>& vertNormIdx = (*m_vertNormIdx.beginEdit());;
 
     positions.resize(nbVIn);
 
@@ -385,6 +390,8 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     m_vnormals.endEdit();
     m_vtexcoords.endEdit();
     m_positions.endEdit();
+    m_vertPosIdx.endEdit();
+    m_vertNormIdx.endEdit();
 
     // Then we create the triangles and quads
     ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
@@ -652,6 +659,7 @@ void VisualModelImpl::computeNormals()
 
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
+    const ResizableExtVector<int> &vertNormIdx = m_vertNormIdx.getValue();
 
     if (vertNormIdx.empty())
     {
@@ -1067,6 +1075,8 @@ void VisualModelImpl::updateVisual()
 
 void VisualModelImpl::computePositions()
 {
+    const ResizableExtVector<int> &vertPosIdx = m_vertPosIdx.getValue();
+
     if (!vertPosIdx.empty())
     {
         // Need to transfer positions
@@ -1634,6 +1644,9 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     const ResizableExtVector<TexCoord>& vtexcoords = m_vtexcoords.getValue();
     const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
+
+    const ResizableExtVector<int> &vertPosIdx = m_vertPosIdx.getValue();
+    const ResizableExtVector<int> &vertNormIdx = m_vertNormIdx.getValue();
 
     int nbv = x.size();
 

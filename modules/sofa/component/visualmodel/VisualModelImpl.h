@@ -214,11 +214,11 @@ protected:
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertice
     /// If it is empty then each vertex correspond to one position
-    ResizableExtVector<int> vertPosIdx;
+    Data< ResizableExtVector<int> > m_vertPosIdx;
 
     /// Similarly this vector store which input normal is used for each vertice
     /// If it is empty then each vertex correspond to one normal
-    ResizableExtVector<int> vertNormIdx;
+    Data< ResizableExtVector<int> > m_vertNormIdx;
 
     /// Rendering method.
     virtual void internalDraw(const core::visual::VisualParams* /*vparams*/, bool /*transparent*/) {}
@@ -369,7 +369,7 @@ public:
 
     const ResizableExtVector<Coord>& getVertices() const
     {
-        if (!vertPosIdx.empty())
+        if (!m_vertPosIdx.getValue().empty())
         {
             // Splitted vertices for multiple texture or normal coordinates per vertex.
             return m_vertices.getValue();
