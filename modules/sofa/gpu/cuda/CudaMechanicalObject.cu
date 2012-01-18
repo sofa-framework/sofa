@@ -39,6 +39,22 @@ namespace cuda
 
 extern "C"
 {
+    void MechanicalObjectCudaVec2f_vAssign(unsigned int size, void* res, const void* a);
+    void MechanicalObjectCudaVec2f_vClear(unsigned int size, void* res);
+    void MechanicalObjectCudaVec2f_vMEq(unsigned int size, void* res, float f);
+    void MechanicalObjectCudaVec2f_vEqBF(unsigned int size, void* res, const void* b, float f);
+    void MechanicalObjectCudaVec2f_vPEq(unsigned int size, void* res, const void* a);
+    void MechanicalObjectCudaVec2f_vPEqBF(unsigned int size, void* res, const void* b, float f);
+    void MechanicalObjectCudaVec2f_vAdd(unsigned int size, void* res, const void* a, const void* b);
+    void MechanicalObjectCudaVec2f_vOp(unsigned int size, void* res, const void* a, const void* b, float f);
+    void MechanicalObjectCudaVec2f_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v);
+    void MechanicalObjectCudaVec2f_vPEqBF2(unsigned int size, void* res1, const void* b1, float f1, void* res2, const void* b2, float f2);
+    void MechanicalObjectCudaVec2f_vPEq4BF2(unsigned int size, void* res1, const void* b11, float f11, const void* b12, float f12, const void* b13, float f13, const void* b14, float f14,
+            void* res2, const void* b21, float f21, const void* b22, float f22, const void* b23, float f23, const void* b24, float f24);
+    void MechanicalObjectCudaVec2f_vOp2(unsigned int size, void* res1, const void* a1, const void* b1, float f1, void* res2, const void* a2, const void* b2, float f2);
+    int MechanicalObjectCudaVec2f_vDotTmpSize(unsigned int size);
+    void MechanicalObjectCudaVec2f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
+
     void MechanicalObjectCudaVec3f_vAssign(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaVec3f_vClear(unsigned int size, void* res);
     void MechanicalObjectCudaVec3f_vMEq(unsigned int size, void* res, float f);
@@ -209,6 +225,16 @@ __global__ void MechanicalObjectCudaVec1t_vClear_kernel(int size, real* res)
 }
 
 template<class real>
+__global__ void MechanicalObjectCudaVec2t_vClear_kernel(int size, CudaVec2<real>* res)
+{
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    //if (index < size)
+    {
+        res[index] = CudaVec3<real>::make(0.0f,0.0f);
+    }
+}
+
+template<class real>
 __global__ void MechanicalObjectCudaVec3t_vClear_kernel(int size, CudaVec3<real>* res)
 {
     int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
@@ -235,6 +261,21 @@ __global__ void MechanicalObjectCudaVec1t_vMEq_kernel(int size, real* res, real 
     //if (index < size)
     {
         res[index] *= f;
+    }
+}
+
+template<class real>
+__global__ void MechanicalObjectCudaVec2t_vMEq_kernel(int size, real* res, real f)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        res[index] *= f;
+        index += BSIZE;
+        res[index] *= f;
+        //CudaVec3<real> ri = res[index];
+        //ri *= f;
+        //res[index] = ri;
     }
 }
 
@@ -319,6 +360,21 @@ __global__ void MechanicalObjectCudaVec1t_vEqBF_kernel(int size, real* res, cons
 }
 
 template<class real>
+__global__ void MechanicalObjectCudaVec2t_vEqBF_kernel(int size, real* res, const real* b, real f)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        res[index] = b[index] * f;
+        index += BSIZE;
+        res[index] = b[index] * f;
+        //CudaVec3<real> bi = b[index];
+        //CudaVec3<real> ri = bi * f;
+        //res[index] = ri;
+    }
+}
+
+template<class real>
 __global__ void MechanicalObjectCudaVec3t_vEqBF_kernel(int size, real* res, const real* b, real f)
 {
     int index = umul24(blockIdx.x,BSIZE*3)+threadIdx.x;
@@ -394,6 +450,22 @@ __global__ void MechanicalObjectCudaVec1t_vPEq_kernel(int size, real* res, const
     //if (index < size)
     {
         res[index] += a[index];
+    }
+}
+
+template<class real>
+__global__ void MechanicalObjectCudaVec2t_vPEq_kernel(int size, real* res, const real* a)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        res[index] += a[index];
+        index += BSIZE;
+        res[index] += a[index];
+        //CudaVec3<real> ai = a[index];
+        //CudaVec3<real> ri = res[index];
+        //ri += ai;
+        //res[index] = ri;
     }
 }
 
@@ -497,6 +569,22 @@ __global__ void MechanicalObjectCudaVec1t_vPEqBF_kernel(int size, real* res, con
     //if (index < size)
     {
         res[index] += b[index] * f;
+    }
+}
+
+template<class real>
+__global__ void MechanicalObjectCudaVec2t_vPEqBF_kernel(int size, real* res, const real* b, real f)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        res[index] += b[index] * f;
+        index += BSIZE;
+        res[index] += b[index] * f;
+        //CudaVec3<real> bi = b[index];
+        //CudaVec3<real> ri = res[index];
+        //ri += bi * f;
+        //res[index] = ri;
     }
 }
 
@@ -621,6 +709,24 @@ __global__ void MechanicalObjectCudaVec1t_vPEqBF2_kernel(int size, real* res1, c
 }
 
 template<class real>
+__global__ void MechanicalObjectCudaVec2t_vPEqBF2_kernel(int size, real* res1, const real* b1, real f1, real* res2, const real* b2, real f2)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        res1[index] += b1[index] * f1;
+        res2[index] += b2[index] * f2;
+        index += BSIZE;
+        res1[index] += b1[index] * f1;
+        res2[index] += b2[index] * f2;
+        //CudaVec3<real> bi = b[index];
+        //CudaVec3<real> ri = res[index];
+        //ri += bi * f;
+        //res[index] = ri;
+    }
+}
+
+template<class real>
 __global__ void MechanicalObjectCudaVec3t_vPEqBF2_kernel(int size, real* res1, const real* b1, real f1, real* res2, const real* b2, real f2)
 {
     int index = umul24(blockIdx.x,BSIZE*3)+threadIdx.x;
@@ -671,6 +777,42 @@ __global__ void MechanicalObjectCudaVec1t_vPEq4BF2_kernel(int size, real* res1, 
     //if (index < size)
     {
         real r1,r2;
+        r1 = res1[index];
+        r2 = res2[index];
+        r1 += b11[index] * f11;
+        r2 += b21[index] * f21;
+        r1 += b12[index] * f12;
+        r2 += b22[index] * f22;
+        r1 += b13[index] * f13;
+        r2 += b23[index] * f23;
+        r1 += b14[index] * f14;
+        r2 += b24[index] * f24;
+        res1[index] = r1;
+        res2[index] = r2;
+    }
+}
+
+template<class real>
+__global__ void MechanicalObjectCudaVec2t_vPEq4BF2_kernel(int size, real* res1, const real* b11, real f11, const real* b12, real f12, const real* b13, real f13, const real* b14, real f14,
+        real* res2, const real* b21, real f21, const real* b22, real f22, const real* b23, real f23, const real* b24, real f24)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        real r1,r2;
+        r1 = res1[index];
+        r2 = res2[index];
+        r1 += b11[index] * f11;
+        r2 += b21[index] * f21;
+        r1 += b12[index] * f12;
+        r2 += b22[index] * f22;
+        r1 += b13[index] * f13;
+        r2 += b23[index] * f23;
+        r1 += b14[index] * f14;
+        r2 += b24[index] * f24;
+        res1[index] = r1;
+        res2[index] = r2;
+        index += BSIZE;
         r1 = res1[index];
         r2 = res2[index];
         r1 += b11[index] * f11;
@@ -792,6 +934,22 @@ __global__ void MechanicalObjectCudaVec1t_vAdd_kernel(int size, real* res, const
 }
 
 template<class real>
+__global__ void MechanicalObjectCudaVec2t_vAdd_kernel(int size, real* res, const real* a, const real* b)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        res[index] = a[index] + b[index];
+        index += BSIZE;
+        res[index] = a[index] + b[index];
+        //CudaVec3<real> ai = a[index];
+        //CudaVec3<real> bi = b[index];
+        //CudaVec3<real> ri = ai + bi;
+        //res[index] = ri;
+    }
+}
+
+template<class real>
 __global__ void MechanicalObjectCudaVec3t_vAdd_kernel(int size, real* res, const real* a, const real* b)
 {
     int index = umul24(blockIdx.x,BSIZE*3)+threadIdx.x;
@@ -877,6 +1035,22 @@ __global__ void MechanicalObjectCudaVec1t_vOp_kernel(int size, real* res, const 
     //if (index < size)
     {
         res[index] = a[index] + b[index] * f;
+    }
+}
+
+template<class real>
+__global__ void MechanicalObjectCudaVec2t_vOp_kernel(int size, real* res, const real* a, const real* b, real f)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        res[index] = a[index] + b[index] * f;
+        index += BSIZE;
+        res[index] = a[index] + b[index] * f;
+        //CudaVec3<real> ai = a[index];
+        //CudaVec3<real> bi = b[index];
+        //CudaVec3<real> ri = ai + bi * f;
+        //res[index] = ri;
     }
 }
 
@@ -986,6 +1160,20 @@ __global__ void MechanicalObjectCudaVec1t_vOp2_kernel(int size, real* res1, cons
 }
 
 template<class real>
+__global__ void MechanicalObjectCudaVec2t_vOp2_kernel(int size, real* res1, const real* a1, const real* b1, real f1, real* res2, const real* a2, const real* b2, real f2)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        res1[index] = a1[index] + b1[index] * f1;
+        res2[index] = a2[index] + b2[index] * f2;
+        index += BSIZE;
+        res1[index] = a1[index] + b1[index] * f1;
+        res2[index] = a2[index] + b2[index] * f2;
+    }
+}
+
+template<class real>
 __global__ void MechanicalObjectCudaVec3t_vOp2_kernel(int size, real* res1, const real* a1, const real* b1, real f1, real* res2, const real* a2, const real* b2, real f2)
 {
     int index = umul24(blockIdx.x,BSIZE*3)+threadIdx.x;
@@ -1031,6 +1219,23 @@ __global__ void MechanicalObjectCudaVec1t_vIntegrate_kernel(int size, const real
     //if (index < size)
     {
         real vi = v[index]*f_v_v + a[index] * f_v_a;
+        v[index] = vi;
+        x[index] = x[index]*f_x_x + vi * f_x_v;
+    }
+}
+
+template<class real>
+__global__ void MechanicalObjectCudaVec2t_vIntegrate_kernel(int size, const real* a, real* v, real* x, real f_v_v, real f_v_a, real f_x_x, real f_x_v)
+{
+    int index = umul24(blockIdx.x,BSIZE*2)+threadIdx.x;
+    //if (index < size)
+    {
+        real vi;
+        vi = v[index]*f_v_v + a[index] * f_v_a;
+        v[index] = vi;
+        x[index] = x[index]*f_x_x + vi * f_x_v;
+        index += BSIZE;
+        vi = v[index]*f_v_v + a[index] * f_v_a;
         v[index] = vi;
         x[index] = x[index]*f_x_x + vi * f_x_v;
     }
@@ -1266,6 +1471,14 @@ __global__ void MechanicalObjectCudaVec_vSum_kernel(int n, real* res, const real
 // CPU-side methods //
 //////////////////////
 
+void MechanicalObjectCudaVec2f_vAssign(unsigned int size, void* res, const void* a)
+{
+    //dim3 threads(BSIZE,1);
+    //dim3 grid((size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec2t_vAssign_kernel<float><<< grid, threads >>>(res, a);
+    cudaMemcpy(res, a, size*2*sizeof(float), cudaMemcpyDeviceToDevice);
+}
+
 void MechanicalObjectCudaVec3f_vAssign(unsigned int size, void* res, const void* a)
 {
     //dim3 threads(BSIZE,1);
@@ -1295,6 +1508,16 @@ void MechanicalObjectCudaRigid3f_vAssignCoord(unsigned int size, void* res, cons
 void MechanicalObjectCudaRigid3f_vAssignDeriv(unsigned int size, void* res, const void* a)
 {
     cudaMemcpy(res, a, size*6*sizeof(float), cudaMemcpyDeviceToDevice);
+}
+
+void MechanicalObjectCudaVec2f_vClear(unsigned int size, void* res)
+{
+    //dim3 threads(BSIZE,1);
+    //dim3 grid((size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec2t_vClear_kernel<float><<< grid, threads >>>(size, (CudaVec3<real>*)res);
+    //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec1t_vClear_kernel<float><<< grid, threads >>>(3*size, (float*)res);
+    cudaMemset(res, 0, size*2*sizeof(float));
 }
 
 void MechanicalObjectCudaVec3f_vClear(unsigned int size, void* res)
@@ -1330,6 +1553,15 @@ void MechanicalObjectCudaRigid3f_vClearCoord(unsigned int size, void* res)
 void MechanicalObjectCudaRigid3f_vClearDeriv(unsigned int size, void* res)
 {
     cudaMemset(res, 0, size*6*sizeof(float));
+}
+
+void MechanicalObjectCudaVec2f_vMEq(unsigned int size, void* res, float f)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vMEq_kernel<float><<< grid, threads >>>(size, (float*)res, f); mycudaDebugError("MechanicalObjectCudaVec3t_vMEq_kernel<float>");}
+    //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec1t_vMEq_kernel<float><<< grid, threads >>>(3*size, (float*)res, f);
 }
 
 void MechanicalObjectCudaVec3f_vMEq(unsigned int size, void* res, float f)
@@ -1371,6 +1603,15 @@ void MechanicalObjectCudaRigid3f_vMEqDeriv(unsigned int size, void* res, float f
     {MechanicalObjectCudaRigid3t_vMEqDeriv_kernel<float><<< grid, threads >>>(size, (float*)res, f); mycudaDebugError("MechanicalObjectCudaRigid3t_vMEqDeriv_kernel<float>");}
 }
 
+void MechanicalObjectCudaVec2f_vEqBF(unsigned int size, void* res, const void* b, float f)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vEqBF_kernel<float><<< grid, threads >>>(size, (float*)res, (const float*)b, f); mycudaDebugError("MechanicalObjectCudaVec3t_vEqBF_kernel<float>");}
+    //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec1t_vEqBF_kernel<float><<< grid, threads >>>(3*size, (float*)res, (const float*)b, f);
+}
+
 void MechanicalObjectCudaVec3f_vEqBF(unsigned int size, void* res, const void* b, float f)
 {
     dim3 threads(BSIZE,1);
@@ -1408,6 +1649,15 @@ void MechanicalObjectCudaRigid3f_vEqBFDeriv(unsigned int size, void* res, const 
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     {MechanicalObjectCudaRigid3t_vEqBFDeriv_kernel<float><<< grid, threads >>>(size, (float*)res, (const float*)b, f); mycudaDebugError("MechanicalObjectCudaRigid3t_vEqBFDeriv_kernel<float>");}
+}
+
+void MechanicalObjectCudaVec2f_vPEq(unsigned int size, void* res, const void* a)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vPEq_kernel<float><<< grid, threads >>>(size, (float*)res, (const float*)a); mycudaDebugError("MechanicalObjectCudaVec3t_vPEq_kernel<float>");}
+    //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec1t_vPEq_kernel<float><<< grid, threads >>>(3*size, (float*)res, (const float*)a);
 }
 
 void MechanicalObjectCudaVec3f_vPEq(unsigned int size, void* res, const void* a)
@@ -1456,6 +1706,15 @@ void MechanicalObjectCudaRigid3f_vPEqDeriv(unsigned int size, void* res, const v
     {MechanicalObjectCudaRigid3t_vPEqDeriv_kernel<float><<< grid, threads >>>(size, (float*)res, (const float*)a); mycudaDebugError("MechanicalObjectCudaRigid3t_vPEqDeriv_kernel<float>");}
 }
 
+void MechanicalObjectCudaVec2f_vPEqBF(unsigned int size, void* res, const void* b, float f)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vPEqBF_kernel<float><<< grid, threads >>>(size, (float*)res, (const float*)b, f); mycudaDebugError("MechanicalObjectCudaVec3t_vPEqBF_kernel<float>");}
+    //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec1t_vPEqBF_kernel<float><<< grid, threads >>>(3*size, (float*)res, (const float*)b, f);
+}
+
 void MechanicalObjectCudaVec3f_vPEqBF(unsigned int size, void* res, const void* b, float f)
 {
     dim3 threads(BSIZE,1);
@@ -1502,6 +1761,13 @@ void MechanicalObjectCudaRigid3f_vPEqBFDeriv(unsigned int size, void* res, const
     {MechanicalObjectCudaRigid3t_vPEqBFDeriv_kernel<float><<< grid, threads >>>(size, (float*)res, (const float*)b, f); mycudaDebugError("MechanicalObjectCudaRigid3t_vPEqBFDeriv_kernel<float>");}
 }
 
+void MechanicalObjectCudaVec2f_vPEqBF2(unsigned int size, void* res1, const void* b1, float f1, void* res2, const void* b2, float f2)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vPEqBF2_kernel<float><<< grid, threads >>>(size, (float*)res1, (const float*)b1, f1, (float*)res2, (const float*)b2, f2); mycudaDebugError("MechanicalObjectCudaVec3t_vPEqBF2_kernel<float>");}
+}
+
 void MechanicalObjectCudaVec3f_vPEqBF2(unsigned int size, void* res1, const void* b1, float f1, void* res2, const void* b2, float f2)
 {
     dim3 threads(BSIZE,1);
@@ -1529,6 +1795,15 @@ void MechanicalObjectCudaVec3f1_vPEqBF2(unsigned int size, void* res1, const voi
 //   dim3 grid((size+BSIZE-1)/BSIZE,1);
 //   {MechanicalObjectCudaRigid3t_vPEqBF2_kernel<float><<< grid, threads >>>(size, (CudaRigid3<float>*)res1, (const CudaRigid3<float>*)b1, f1, (CudaRigid3<float>*)res2, (const CudaRigid3<float>*)b2, f2); mycudaDebugError("MechanicalObjectCudaRigid3t_vPEqBF2_kernel<float>");}
 // }
+
+void MechanicalObjectCudaVec2f_vPEq4BF2(unsigned int size, void* res1, const void* b11, float f11, const void* b12, float f12, const void* b13, float f13, const void* b14, float f14,
+        void* res2, const void* b21, float f21, const void* b22, float f22, const void* b23, float f23, const void* b24, float f24)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    MechanicalObjectCudaVec2t_vPEq4BF2_kernel<float><<< grid, threads >>>(size, (float*)res1, (const float*)b11, f11, (const float*)b12, f12, (const float*)b13, f13, (const float*)b14, f14,
+            (float*)res2, (const float*)b21, f21, (const float*)b22, f22, (const float*)b23, f23, (const float*)b24, f24);
+}
 
 void MechanicalObjectCudaVec3f_vPEq4BF2(unsigned int size, void* res1, const void* b11, float f11, const void* b12, float f12, const void* b13, float f13, const void* b14, float f14,
         void* res2, const void* b21, float f21, const void* b22, float f22, const void* b23, float f23, const void* b24, float f24)
@@ -1566,6 +1841,13 @@ void MechanicalObjectCudaVec3f1_vPEq4BF2(unsigned int size, void* res1, const vo
 //                                                                          (float*)res2, (const float*)b21, f21, (const float*)b22, f22, (const float*)b23, f23, (const float*)b24, f24);
 // }
 
+void MechanicalObjectCudaVec2f_vOp2(unsigned int size, void* res1, const void* a1, const void* b1, float f1, void* res2, const void* a2, const void* b2, float f2)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vOp2_kernel<float><<< grid, threads >>>(size, (float*)res1, (const float*)a1, (const float*)b1, f1, (float*)res2, (const float*)a2, (const float*)b2, f2); mycudaDebugError("MechanicalObjectCudaVec3t_vOp2_kernel<float>");}
+}
+
 void MechanicalObjectCudaVec3f_vOp2(unsigned int size, void* res1, const void* a1, const void* b1, float f1, void* res2, const void* a2, const void* b2, float f2)
 {
     dim3 threads(BSIZE,1);
@@ -1593,6 +1875,15 @@ void MechanicalObjectCudaVec3f1_vOp2(unsigned int size, void* res1, const void* 
 //     dim3 grid((size+BSIZE-1)/BSIZE,1);
 //     {MechanicalObjectCudaRigid3t_vOp2_kernel<float><<< grid, threads >>>(size, (float*)res1, (const float*)a1, (const float*)b1, f1, (float*)res2, (const float*)a2, (const float*)b2, f2); mycudaDebugError("MechanicalObjectCudaRigid3t_vOp2_kernel<float>");}
 // }
+
+void MechanicalObjectCudaVec2f_vAdd(unsigned int size, void* res, const void* a, const void* b)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vAdd_kernel<float><<< grid, threads >>>(size, (float*)res, (const float*)a, (const float*)b); mycudaDebugError("MechanicalObjectCudaVec3t_vAdd_kernel<float>");}
+    //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec1t_vAdd_kernel<float><<< grid, threads >>>(3*size, (float*)res, (const float*)a, (const float*)b);
+}
 
 void MechanicalObjectCudaVec3f_vAdd(unsigned int size, void* res, const void* a, const void* b)
 {
@@ -1640,6 +1931,14 @@ void MechanicalObjectCudaRigid3f_vAddDeriv(unsigned int size, void* res, const v
     {MechanicalObjectCudaRigid3t_vAddDeriv_kernel<float><<< grid, threads >>>(size, (float*)res, (const float*)a, (const float*)b); mycudaDebugError("MechanicalObjectCudaRigid3t_vAddDeriv_kernel<float>");}
 }
 
+void MechanicalObjectCudaVec2f_vOp(unsigned int size, void* res, const void* a, const void* b, float f)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vOp_kernel<float><<< grid, threads >>>(size, (float*)res, (const float*)a, (const float*)b, f); mycudaDebugError("MechanicalObjectCudaVec3t_vOp_kernel<float>");}
+    //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec1t_vOp_kernel<float><<< grid, threads >>>(3*size, (float*)res, (const float*)a, (const float*)b, f);
+}
 
 void MechanicalObjectCudaVec3f_vOp(unsigned int size, void* res, const void* a, const void* b, float f)
 {
@@ -1686,6 +1985,14 @@ void MechanicalObjectCudaRigid3f_vOpDeriv(unsigned int size, void* res, const vo
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     {MechanicalObjectCudaRigid3t_vOpDeriv_kernel<float><<< grid, threads >>>(size, (float*)res, (const float*)a, (const float*)b, f); mycudaDebugError("MechanicalObjectCudaRigid3t_vOpDeriv_kernel<float>");}
 }
+void MechanicalObjectCudaVec2f_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {MechanicalObjectCudaVec2t_vIntegrate_kernel<float><<< grid, threads >>>(size, (const float*)a, (float*)v, (float*)x, f_v_v, f_v_a, f_x_x, f_x_v); mycudaDebugError("MechanicalObjectCudaVec3t_vIntegrate_kernel<float>");}
+    //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec1t_vIntegrate_kernel<float><<< grid, threads >>>(3*size, (const float*)a, (float*)v, (float*)x, f_v_v, f_v_a, f_x_x, f_x_v);
+}
 
 void MechanicalObjectCudaVec3f_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
 {
@@ -1718,6 +2025,51 @@ void MechanicalObjectCudaVec3f1_vIntegrate(unsigned int size, const void* a, voi
 // 	dim3 grid((size+BSIZE-1)/BSIZE,1);
 // 	{MechanicalObjectCudaRigid3t_vIntegrate_kernel<float><<< grid, threads >>>(size, (const float*)a, (float*)v, (float*)x, f_v_v, f_v_a, f_x_x, f_x_v); mycudaDebugError("MechanicalObjectCudaRigid3t_vIntegrate_kernel<float>");}
 // }
+
+int MechanicalObjectCudaVec2f_vDotTmpSize(unsigned int size)
+{
+    size *= 2;
+    int nblocs = (size+RED_BSIZE-1)/RED_BSIZE;
+    if (nblocs > 256) nblocs = 256;
+    return nblocs;
+}
+
+void MechanicalObjectCudaVec2f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* rtmp)
+{
+    size *= 2;
+    if (size==0)
+    {
+        *res = 0.0f;
+    }
+    else
+    {
+        int nblocs = (size+RED_BSIZE-1)/RED_BSIZE;
+        if (nblocs > 256) nblocs = 256;
+        dim3 threads(RED_BSIZE,1);
+        dim3 grid(nblocs,1);
+        //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
+        MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
+        if (nblocs == 1)
+        {
+            cudaMemcpy(res,tmp,sizeof(float),cudaMemcpyDeviceToHost);
+        }
+        else
+        {
+            /*
+            dim3 threads(RED_BSIZE,1);
+            dim3 grid(1,1);
+            {MechanicalObjectCudaVec_vSum_kernel<float><<< grid, threads, RED_BSIZE * sizeof(float) >>>(nblocs, (float*)tmp, (const float*)tmp); mycudaDebugError("MechanicalObjectCudaVec_vSum_kernel<float>");}
+            cudaMemcpy(res,tmp,sizeof(float),cudaMemcpyDeviceToHost);
+            */
+            cudaMemcpy(rtmp,tmp,nblocs*sizeof(float),cudaMemcpyDeviceToHost);
+            float r = 0.0f;
+            for (int i=0; i<nblocs; i++)
+                r+=rtmp[i];
+            *res = r;
+            //myprintf("dot=%f\n",r);
+        }
+    }
+}
 
 int MechanicalObjectCudaVec3f_vDotTmpSize(unsigned int size)
 {

@@ -41,6 +41,7 @@ namespace container
 {
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
+template class MechanicalObject<CudaVec2fTypes>;
 template class MechanicalObject<CudaVec3fTypes>;
 template class MechanicalObject<CudaVec3f1Types>;
 template class MechanicalObject<CudaVec6fTypes>;
@@ -65,6 +66,7 @@ namespace cuda
 SOFA_DECL_CLASS(CudaMechanicalObject)
 
 int MechanicalObjectCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::container::MechanicalObject<CudaVec2fTypes> >()
         .add< component::container::MechanicalObject<CudaVec3fTypes> >()
         .add< component::container::MechanicalObject<CudaVec3f1Types> >()
         .add< component::container::MechanicalObject<CudaVec6fTypes> >()
@@ -78,6 +80,7 @@ int MechanicalObjectCudaClass = core::RegisterObject("Supports GPU-side computat
         ;
 
 int MappedObjectCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::container::MappedObject<CudaVec2fTypes> >()
         .add< component::container::MappedObject<CudaVec3fTypes> >()
         .add< component::container::MappedObject<CudaVec3f1Types> >()
         .add< component::container::MappedObject<CudaVec6fTypes> >()
