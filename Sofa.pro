@@ -55,7 +55,11 @@ contains (DEFINES, SOFA_DEV) { # BEGIN SOFA_DEV
                 usePlugin(vulcain)
 	}
 
-	contains (DEFINES, SOFA_HAVE_LEM) {
+        contains (DEFINES, SOFA_HAVE_ldidetection) {
+                usePlugin(ldidetection)
+        }
+
+        contains (DEFINES, SOFA_HAVE_LEM) {
 		usePlugin(lem)
 	}
 

@@ -531,10 +531,12 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
             }
             getVCenter(out[outIdx]) += in[inIdx];
             getVOrientation(out[outIdx]) +=  (typename InDeriv::Rot)cross(rotatedPoints[inIdx], in[inIdx]);
+//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, inIdx = "<< inIdx << endl;
 //                        cerr<<"RigidMapping<TIn, TOut>::applyJT, in[inIdx] = "<< in[inIdx] << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, rotatedPoint[inIdx] = "<< rotatedPoints[inIdx] << endl;
 //                        cerr<<"RigidMapping<TIn, TOut>::applyJT, cross(rotatedPoints[inIdx], in[inIdx]) = "<< cross(rotatedPoints[inIdx], in[inIdx]) << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, getVCenter(out[outIdx]) = "<< getVCenter(out[outIdx]) << endl;
-//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, getVOrientation(out[outIdx]) = "<< getVOrientation(out[outIdx]) << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, force(out[outIdx]) = "<< getVCenter(out[outIdx]) << endl;
+//                        cerr<<"RigidMapping<TIn, TOut>::applyJT, torque(out[outIdx]) = "<< getVOrientation(out[outIdx]) << endl;
 
         }
         if (isMaskInUse)
@@ -681,8 +683,8 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 
     if (this->f_printLog.getValue())
     {
-        sout << "J on mapped DOFs = " << in << sendl;
-        sout << "J on input  DOFs = " << out << sendl;
+        sout << "J on mapped DOFs == " << in << sendl;
+        sout << "J on input  DOFs == " << out << sendl;
     }
 
     switch (pointsPerFrame.getValue().size())

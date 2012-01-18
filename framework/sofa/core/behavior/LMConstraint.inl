@@ -28,6 +28,8 @@
 #include <sofa/core/behavior/LMConstraint.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -55,6 +57,9 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
     if (constrainedObject1 != NULL && constrainedObject2 != NULL)
     {
         //Constraint created by passing Mechanical State directly, need to find the name of the path to be able to save the scene eventually
+
+//            cerr << "start LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject1 = " << simulatedObject1->getName() << endl;
+//            cerr << "start LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject2 = " << simulatedObject2->getName() << endl;
 
         if (constrainedObject1->getContext() != getContext())
         {
@@ -101,6 +106,8 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
                 break;
             simulatedObject2 = mapping->getMechFrom()[0];
         }
+//                cerr << "LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject1 = " << simulatedObject1->getName() << endl;
+//                cerr << "LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject2 = " << simulatedObject2->getName() << endl;
     }
 }
 
