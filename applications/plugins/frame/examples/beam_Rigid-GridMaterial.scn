@@ -1,4 +1,6 @@
-<Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="1" showCollisionModels="0" showBehaviorModels="0">
+<?xml version="1.0"?>
+<Node name="Scene" gravity="0 0 0" dt="1" >
+    	<VisualStyle displayFlags="showBehavior showVisual" />
 	<CudaRasterizer template="Vec3d" tags="LDI" subVolumeResolution="32" keepDist="1" useAtomics="1" maxLayers="64" zsortBits="16" pixelSize="0.8" responseType="1" responseStiffness="30" drawIntersection="0" drawSides="0" drawSubVols="0" />
 	<DiscreteIntersection />
 	<CollisionResponse response="default" name="LDIPenality"/>

@@ -125,6 +125,8 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , dqinout ( initData ( &dqinout,"dqinout","Data specific to the conversion between the types" ) )
     , useDQ ( initData ( &useDQ, false, "useDQ","use dual quaternion blending instead of linear blending ." ) )
     , useAdaptivity ( initData ( &useAdaptivity, false, "useAdaptivity","use automatic frame and sample adaptation." ) )
+    , maskFrom(NULL)
+    , maskTo(NULL)
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
     , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
     , f_groups ( initData ( &f_groups,"groups","child group (initialized from trianglegroupes)" ) )
@@ -151,13 +153,6 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , targetSampleNumber ( initData ( &targetSampleNumber, ( unsigned int ) 0, "targetSampleNumber","Target samples number" ) )
     , restrictInterpolationToLabel ( initData ( &restrictInterpolationToLabel, "restrictInterpolationToLabel","Restrict interpolation to a label in gridmaterial." ) )
 {
-    maskFrom = NULL;
-    if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( from ) )
-        maskFrom = &stateFrom->forceMask;
-    maskTo = NULL;
-    if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( to ) )
-        maskTo = &stateTo->forceMask;
-
     pointHandler = new FramePointHandler(this, &f_initPos);
 
     // These sout are here to check if the template interface work well
@@ -176,6 +171,11 @@ FrameBlendingMapping<TIn, TOut>::~FrameBlendingMapping ()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::init()
 {
+    if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
+        maskFrom = &stateFrom->forceMask;
+    if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
+        maskTo = &stateTo->forceMask;
+
     // init samples and frames according to target numbers
     gridMaterial=NULL;
     this->getContext()->get( gridMaterial, core::objectmodel::BaseContext::SearchRoot);
@@ -369,24 +369,18 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
 {
     checkForChanges();
 
-    //if( this->f_printLog.getValue() ){
-    //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, in = "<< in << std::endl;
-    //}
+    if( this->f_printLog.getValue() ) std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, in = "<< in << std::endl;
     if(useDQ.getValue())
         for ( unsigned int i = 0 ; i < out.size(); i++ )
         {
             out[i] = dqinout[i].apply( in );
-            //if( this->f_printLog.getValue() ){
-            //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << std::endl;
-            //}
+//                    if( this->f_printLog.getValue() )   std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << std::endl;
         }
     else
         for ( unsigned int i = 0 ; i < out.size(); i++ )
         {
             out[i] = inout[i].apply( in );
-            //if( this->f_printLog.getValue() ){
-            //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << std::endl;
-            //}
+            if( this->f_printLog.getValue() )     std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << std::endl;
         }
 
 }
@@ -394,116 +388,96 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-//                if ( ! ( this->maskTo->isInUse() ) )
-//                {
-    //if( this->f_printLog.getValue() ){
-    //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, in = "<< in << std::endl;
-    //}
-    if(useDQ.getValue())
-        for ( unsigned int i=0; i<out.size(); i++ )
-        {
-            out[i] = dqinout[i].mult( in );
-            //if( this->f_printLog.getValue() ){
-            //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, out = "<< out[i] << std::endl;
-            //}
-        }
-    else
-        for ( unsigned int i=0; i<out.size(); i++ )
-        {
-            out[i] = inout[i].mult( in );
-            //if( this->f_printLog.getValue() ){
-            //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, out = "<< out[i] << std::endl;
-            //}
-        }
-//                }
-//                else
-//                {
-//                    typedef helper::ParticleMask ParticleMask;
-//                    const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+//                 std::cout<<"maskto="<<   maskTo<<std::endl;
+//                if (this->maskTo) std::cout<<"masktoUse="<<   this->maskTo->isInUse()<<std::endl;
 
-//                    ParticleMask::InternalStorage::const_iterator it;
-//                    if(useDQ.getValue())
-//                        for ( it=indices.begin();it!=indices.end();it++ )
-//                        {
-//                        unsigned int i= ( unsigned int ) ( *it );
-//                        out[i] = dqinout[i].mult( in );
-//                    }
-//                    else
-//                        for ( it=indices.begin();it!=indices.end();it++ )
-//                        {
-//                        unsigned int i= ( unsigned int ) ( *it );
-//                        out[i] = inout[i].mult( in );
-//                    }
-//                }
+    if ((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
+    {
+        if( this->f_printLog.getValue() ) std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, in = "<< in << std::endl;
+        if(useDQ.getValue())
+            for ( unsigned int i=0; i<out.size(); i++ )
+            {
+                out[i] = dqinout[i].mult( in );
+                //if( this->f_printLog.getValue() ) std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, out = "<< out[i] << std::endl;
+            }
+        else
+            for ( unsigned int i=0; i<out.size(); i++ )
+            {
+                out[i] = inout[i].mult( in );
+                //if( this->f_printLog.getValue() )     std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, out = "<< out[i] << std::endl;
+            }
+    }
+    else
+    {
+        typedef helper::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+        ParticleMask::InternalStorage::const_iterator it;
+        if(useDQ.getValue())
+            for ( it=indices.begin(); it!=indices.end(); it++ )
+            {
+                unsigned int i= ( unsigned int ) ( *it );
+                out[i] = dqinout[i].mult( in );
+            }
+        else
+            for ( it=indices.begin(); it!=indices.end(); it++ )
+            {
+                unsigned int i= ( unsigned int ) ( *it );
+                out[i] = inout[i].mult( in );
+            }
+    }
 }
 
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-//                if ( ! ( this->maskTo->isInUse() ) )
-//                {
-//                    this->maskFrom->setInUse ( false );
-    //if( this->f_printLog.getValue() ){
-    //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values before = "<< out << std::endl;
-    //}
-    if(useDQ.getValue())
-        for ( unsigned int i=0; i<in.size(); i++ ) // VecType
-        {
-            dqinout[i].addMultTranspose( out, in[i] );
-            //if( this->f_printLog.getValue() ){
-            //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
-            // }
-        }
+    if((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
+    {
+        if( this->f_printLog.getValue() )  std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values before = "<< out << std::endl;
+        if(useDQ.getValue())
+            for ( unsigned int i=0; i<in.size(); i++ ) // VecType
+            {
+                dqinout[i].addMultTranspose( out, in[i] );
+                //if( this->f_printLog.getValue() )     std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+            }
+        else
+            for ( unsigned int i=0; i<in.size(); i++ ) // VecType
+            {
+                inout[i].addMultTranspose( out, in[i] );
+                //if( this->f_printLog.getValue() )    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+            }
+
+        if( this->f_printLog.getValue() )  std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
+    }
     else
-        for ( unsigned int i=0; i<in.size(); i++ ) // VecType
-        {
-            inout[i].addMultTranspose( out, in[i] );
-            //if( this->f_printLog.getValue() ){
-            //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
-            // }
-        }
+    {
+        typedef helper::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+        ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > > index ( f_index );
 
-    //if( this->f_printLog.getValue() ){
-    //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
-    //}
-//                }
-//                else
-//                {
-//                    typedef helper::ParticleMask ParticleMask;
-//                    const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-//                    ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > > index ( f_index );
+        ParticleMask::InternalStorage::const_iterator it;
+        if( this->f_printLog.getValue() )     std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, use mask, parent values before = "<< out << std::endl;
 
-//                    ParticleMask::InternalStorage::const_iterator it;
-//                    //if( this->f_printLog.getValue() ){
-//                    //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, use mask, parent values before = "<< out << std::endl;
-//                    //}
-//                    if(useDQ.getValue())
-//                        for ( it=indices.begin();it!=indices.end();it++ ) // VecType
-//                        {
-//                        const int i= ( int ) ( *it );
-//                        dqinout[i].addMultTranspose( out, in[i] );
-//                        //  if( this->f_printLog.getValue() ){
-//                        //      std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
-//                        // }
-//                        for (unsigned int j = 0; j < nbRef; ++j)
-//                            maskFrom->insertEntry ( index[i][j] );
-//                    }
-//                    else
-//                        for ( it=indices.begin();it!=indices.end();it++ ) // VecType
-//                        {
-//                        const int i= ( int ) ( *it );
-//                        inout[i].addMultTranspose( out, in[i] );
-//                        //  if( this->f_printLog.getValue() ){
-//                        //      std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
-//                        // }
-//                        for (unsigned int j = 0; j < nbRef; ++j)
-//                            maskFrom->insertEntry ( index[i][j] );
-//                    }
+        if(useDQ.getValue())
+            for ( it=indices.begin(); it!=indices.end(); it++ ) // VecType
+            {
+                const int i= ( int ) ( *it );
+                dqinout[i].addMultTranspose( out, in[i] );
+                // if( this->f_printLog.getValue() )      std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+                for (unsigned int j = 0; j < nbRef; ++j)
+                    maskFrom->insertEntry ( index[i][j] );
+            }
+        else
+            for ( it=indices.begin(); it!=indices.end(); it++ ) // VecType
+            {
+                const int i= ( int ) ( *it );
+                inout[i].addMultTranspose( out, in[i] );
+                // if( this->f_printLog.getValue() )    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+                for (unsigned int j = 0; j < nbRef; ++j)
+                    maskFrom->insertEntry ( index[i][j] );
+            }
 
-//                    //if( this->f_printLog.getValue() ){
-//                    //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
-//                    //}
-//                }
+        if( this->f_printLog.getValue() )    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
+    }
 }
 
 
@@ -1164,6 +1138,7 @@ void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
         {
             glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
             glDisable( GL_LIGHTING);
+
             typedef Vec<3,double> Vec3;
             if ( ! triangles.empty())
             {

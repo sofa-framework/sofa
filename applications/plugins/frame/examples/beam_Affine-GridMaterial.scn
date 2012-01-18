@@ -1,27 +1,28 @@
-<Node name="Scene" gravity="0 0.01 0" dt="1" showVisualModels="1" showCollisionModels="0" showBehaviorModels="1">
+<?xml version="1.0"?>
+<Node name="Scene" gravity="0 0 0" dt="1" >
+    	<VisualStyle displayFlags="showBehavior showVisual" />
 	<CudaRasterizer template="Vec3d" tags="LDI" subVolumeResolution="32" keepDist="1" useAtomics="1" maxLayers="64" zsortBits="16" pixelSize="0.049" responseType="1" responseStiffness="30" drawIntersection="0" drawSides="0" drawSubVols="0" />
 	<DiscreteIntersection />
 	<CollisionResponse response="default" name="LDIPenality"/>
 	<CollisionGroup/>
 
 	<Node name="Beam-RAW_generation">
-		<MeshLoader name="meshLoader"  filename="mesh/beam.obj"/>
-		<Mesh name="modelTopo" tags="LDI SelfCollision"/>
+		<MeshObjLoader name="MeshLoader"  filename="mesh/beam.obj"/>
+		<Mesh name="modelTopo" src="@MeshLoader" tags="LDI SelfCollision"/>
 		<MechanicalObject />
 	</Node>
 
 	<Node name="Beam">
 
-		<!--	<EulerSolver /> 
 		<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
 		<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
--->
+
 		<MechanicalObject template="Affine" name="DOFs" useMask="0" rest_position="0 0 -0.95 [1 0 0, 0 1 0, 0 0 1] 0 0 0.95 [1 0 0, 0 1 0, 0 0 1]" 
 												position="0 0 -0.95 [1 0 0, 0 1 0, 0 0 1] 0 0 2 [1 0 0, 0 1 0, 0 0 1]"/> 
 		<FrameDiagonalMass template="AffineFrame3x12dMass"  showAxisSizeFactor="0.2"/>
 
 		<FrameFixedConstraint template="Affine" indices="0" allowed="0 0 0 0 0 0 0 0 0 0 0 0" />
-			<FrameRigidConstraint template="Affine" indices="1" />  
+		<FrameRigidConstraint template="Affine" indices="1" />  
 
 		<Voxelizer name="VoxelLoader" filename="" vROICenter="0 0 0" vROIRadius="500"
 				triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="0.049 0.049 0.049" valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw"

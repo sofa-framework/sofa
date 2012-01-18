@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<Node name="Scene" gravity="0 0 0" dt="1" >
+    	<VisualStyle displayFlags="showBehavior showVisual" />
+
+	<Node name="Steak">
+		<EulerImplicitSolver rayleighStiffness="0.05"  rayleighMass="0.05" />
+		<CGLinearSolver template="GraphScattered" iterations="3"  threshold="1e-008" />
+
+		<MechanicalObject template="Affine" name="DOFs" useMask="0" position="2.4 0.45 0  1 0 0 0 1 0 0 0 1  1.5 2.5 0  1 0 0 0 1 0 0 0 1  " showObject="1" showObjectScale="0.5" /> 
+		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="0.2"/>
+		<FrameFixedConstraint template="Affine" indices="0" allowed="0 0 0 0 0 0 0 0 0 0 0 0" />
+
+		<GridMaterial name="gridmaterial" 
+				imageFile="material/steak-seg.ppm"
+				labelToStiffnessPairs="1 20000
+254 5000
+255 15000000000"
+				labelToDensityPairs="1 1000
+254 1000
+255 2000"
+				distanceType="Geodesic"
+				showVoxelData="None"
+				showPlane="-1 -1 13"
+				show3DValuesHeight="0"
+				showWeightIndex="0"
+				nbVoronoiSubdivisions="0"
+
+				/>
+
+		<Node name="Physics">
+			<MechanicalObject template="DeformationGradient332" useMask="0" name="PointSet" showObject="0" showObjectScale="0.02"  />
+			<FrameBlendingMapping template="Mapping&lt;Affine,DeformationGradient332&gt;" name="PMapping"  input="@../DOFs"  output="@PointSet" 
+				targetFrameNumber="3"
+				targetSampleNumber="1" initializeFramesInRigidParts="1" />
+			<GreenLagrangeForceField template="DeformationGradient332"  printLog="0"/>
+		</Node>
+		<Node name="Collision">
+			<MeshObjLoader name="MeshLoader" filename="mesh/steak.obj"/>
+			<Mesh src="@MeshLoader" /> 
+			<MechanicalObject  name="PointSet" scale3d="1 1 1" translation="0 0 0" useMask="1"/>
+			
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" name="CMapping"  input="@../DOFs"  output="@PointSet" />
+		</Node>
+
+		<Node name="Visu">
+			<OglModel name="Beam" fileMesh="mesh/steak.obj" texturename="material/steak.png" normals="0" color="1 .8 .3 1" scale3d="1 1 1" translation="0 0 0"/>
+			<FrameBlendingMapping template="Mapping&lt;Affine,ExtVec3f&gt;" name="VMapping"  input="@../DOFs"  output="@Beam"/>
+		</Node>
+	</Node>
+</Node>

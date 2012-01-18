@@ -1,8 +1,9 @@
+<?xml version="1.0"?>
 <Node name="root">
 	<Node name="Turtle">
 		<Node name="Grid">
 			<GridMaterial name="gridmaterial" 
-				imageFile="textures/Turtle_64_64_64.raw" 
+				imageFile="material/Turtle_64_64_64.raw" 
 				labelToStiffnessPairs="1 1
 2 20000
 3 1"  

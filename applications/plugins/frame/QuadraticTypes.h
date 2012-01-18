@@ -123,7 +123,7 @@ public:
             {
                 for(unsigned j=i+1; j<spatial_dimensions; j++)
                 {
-                    q[i][j] = (q[i][j] - q[j][i]) *0.5;
+                    q[i][j] = (q[i][j] - q[j][i]) *(Real)0.5;
                     q[j][i] = - q[i][j];
                 }
             }
