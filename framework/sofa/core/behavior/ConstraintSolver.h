@@ -39,7 +39,10 @@ namespace behavior
 {
 
 /**
- *  \brief Component responsible for the expression and solution of system of equations related to constraints
+ *  \brief Component responsible for the expression and solution of system of equations related to constraints.
+ The main method is solveConstraint(const ConstraintParams *, MultiVecId , MultiVecId );
+ The default implementation successively calls: prepareStates, buildSystem, solveSystem, applyCorrection.
+ The parameters are defined in class ConstraintParams.
  *
  */
 class SOFA_CORE_API ConstraintSolver : public virtual objectmodel::BaseObject

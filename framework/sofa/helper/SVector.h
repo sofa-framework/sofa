@@ -102,7 +102,7 @@ public:
         in >> c;
         if ( c != '[' )
         {
-            std::cerr << "Bad begin character : " << c << std::endl;
+            std::cerr << "SVector::read : Bad begin character : " << c << ", expected  [" << std::endl;
             return in;
         }
         c = ',';
@@ -114,7 +114,7 @@ public:
         }
         if ( c != ']' )
         {
-            std::cerr << "Bad end character : " << c << std::endl;
+            std::cerr << "SVector::read : Bad end character : " << c << ", expected  ]" << std::endl;
             return in;
         }
         return in;

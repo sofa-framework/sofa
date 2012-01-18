@@ -48,6 +48,7 @@ namespace component
 extern "C" {
     SOFA_MESHSTEPLOADERPLUGIN_API void initExternalModule();
     SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleName();
+    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleLicense();
     SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleVersion();
     SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleDescription();
     SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleComponentList();

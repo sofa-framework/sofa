@@ -16,7 +16,8 @@ initMeshSTEPLoader.cpp
 HEADERS = \
 MeshSTEPLoader.h\
 SingleComponent.inl\
-SingleComponent.h
+SingleComponent.h \
+initMeshSTEPLoader.h
 
 
 
