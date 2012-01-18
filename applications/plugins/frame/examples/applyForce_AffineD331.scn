@@ -1,4 +1,6 @@
-<Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1">
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="1">
+    	<VisualStyle displayFlags="showBehavior showVisual" />
 	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" printLog="0" verbose="0"/>
 	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
@@ -13,11 +15,7 @@
 
 
 		<Node name="Physics">
-			<MechanicalObject template="DeformationGradient331" name="PointSet" useMask="0"  
-			position="1 0 0  1 0 0 0 1 0 0 0 1      -1 0 0  1 0 0 0 1 0 0 0 1 "  showObject="1" showObjectScale="0.05"/>
-<!--			<MechanicalObject template="DeformationGradient331" name="PointSet" useMask="0"  
-			position="0 0 -1 1 0 0,0 1 0,0 0 1 1.52974e-16 2.33374e-16 0.791954 0.638776 1.76459 -1.67199e-17,-1.19826 0.260014 1.00529e-18,1.92076e-16 -1.63746e-16 0.929742 "  showObject="1" showObjectScale="0.05"/>-->
-
+			<MechanicalObject template="DeformationGradient331" name="PointSet" useMask="0"  position="1 0 0  1 0 0 0 1 0 0 0 1      -1 0 0  1 0 0 0 1 0 0 0 1 "  showObject="1" showObjectScale="0.05"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient331"   printLog="0" />
 		</Node>

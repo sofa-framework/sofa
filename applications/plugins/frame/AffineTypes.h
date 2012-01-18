@@ -96,7 +96,7 @@ public:
             {
                 for(unsigned j=i+1; j<spatial_dimensions; j++)
                 {
-                    a[i][j] = (a[i][j] - a[j][i]) *0.5;
+                    a[i][j] = (a[i][j] - a[j][i]) *(Real)0.5;
                     a[j][i] = - a[i][j];
                 }
             }
