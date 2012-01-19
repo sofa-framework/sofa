@@ -35,3 +35,42 @@
 
 #endif //FRAME_INIT_H
 
+/** \mainpage
+The control nodes of the simulation are moving frames stored in a sofa MechanicalObject templated on the type of frame.
+The master DOFs can be of different types:
+- rigid frames, with 6 degrees of freedom (DOF) per frame, are implemented using standard sofa RigidTypes.
+- affine deformable frames (12 DOF/node) are implemented in sofa::defaulttype::StdAffineTypes.
+- quadraticallydeformable frames (30 DOF/node) are implemented in sofa::defaulttype::StdQuadraticTypes.
+
+The MechanicalObject is attached to a scenegraph node (do not mix simulation nodes, like particles or frames, with scenegraph nodes, which define the structure of the SOFA scenegraph).
+Deformable material attached to the control frames is stored in a child scenegraph node.
+The slave DOFs can be of different types:
+- standard sofa particles for moving points. This is used to attach a deformable mesh.
+- deformation gradient, to represent the local deformation of a continuum, using class sofa::defaulttype::DeformationGradientTypes. There are two flavors of these:
+    - DeformationGradient331dTypes, which correspond to standard Deformation Gradients (somehow redundant with affine deformable frames)
+    - DeformationGradient332dTypes, which correspond to <A href="http://graphics.ethz.ch/~smartin/data/elastons.pdf"> Elastons </A>
+- affine deformable frames
+
+The connection between the control (master) frames and the deformable (slave) material is done by a sofa::component::mapping::FrameBlendingMapping.
+This component is templated on two classes, the first corresponds to the type of master frames, and the second corresponds to the type of slave DOFs.
+
+Variants of standard sofa classes adapted to moving frames have been developed:
+- sofa::component::mass::FrameDiagonalMass  to store each frame's mass and inertia
+- ConstantForceField (FrameConstantForceField.h)
+- sofa::component::projectiveconstraintset::FrameFixedConstraint  to maintain frames  at the same place
+- LinearMovementConstraint to impose translations (FrameLinearMovementConstraint.h)
+- sofa::component::projectiveconstraintset::FrameRigidConstraint to rigidify a deformable master frame
+- sofa::component::forcefield::FrameSpringForceField2
+
+These are ForceFields to implement material constitutive laws:
+- sofa::component::forcefield::FrameVolumePreservationForceField
+- sofa::component::forcefield::GreenLagrangeForceField
+- sofa::component::forcefield::CorotationalForceField
+- sofa::component::forcefield::FrameHookeForceField
+
+Materials are implemented in:
+-
+
+The source of this main page is in initFrame.h
+
+  */
