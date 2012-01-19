@@ -461,7 +461,7 @@ public:
 
 public slots:
 
-    void onPlane(const unsigned int /*axis*/,const Vector3& ip,const Vector3& p,const QString& val)
+    void onPlane(const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& ip,const sofa::defaulttype::Vec3d& p,const QString& val)
     {
         label1->setText("Pixel value = " + val);
         label2->setText("Image position = [ " + QString().setNum((int)round(ip[0])) + "," + QString().setNum((int)round(ip[1])) + "," + QString().setNum((int)round(ip[2]))+ " ]");
@@ -544,7 +544,7 @@ public:
         {
             graphXY = new Graph(parent,2,d);
             QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphXY, SLOT( togglemodels(int) ) );
-            QObject::connect(graphXY,SIGNAL(onPlane(const unsigned int,const Vector3&,const Vector3&,const QString&)),info,SLOT(onPlane(const unsigned int,const Vector3&,const Vector3&,const QString&)));
+            QObject::connect(graphXY,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
             if(d.getDimensions()[2]>1)
             {
                 optionsXY = new Options(graphXY,parent,0,graphXY->getIndexMax(),graphXY->getIndex(),optionheight);
@@ -558,7 +558,7 @@ public:
         {
             graphXZ = new Graph(parent,1,d);
             QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphXZ, SLOT( togglemodels(int) ) );
-            QObject::connect(graphXZ,SIGNAL(onPlane(const unsigned int,const Vector3&,const Vector3&,const QString&)),info,SLOT(onPlane(const unsigned int,const Vector3&,const Vector3&,const QString&)));
+            QObject::connect(graphXZ,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
             if(d.getDimensions()[1]>1)
             {
                 optionsXZ = new Options(graphXZ,parent,0,graphXZ->getIndexMax(),graphXZ->getIndex(),optionheight);
@@ -572,7 +572,7 @@ public:
         {
             graphZY = new Graph(parent,0,d);
             QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphZY, SLOT( togglemodels(int) ) );
-            QObject::connect(graphZY,SIGNAL(onPlane(const unsigned int,const Vector3&,const Vector3&,const QString&)),info,SLOT(onPlane(const unsigned int,const Vector3&,const Vector3&,const QString&)));
+            QObject::connect(graphZY,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
             if(d.getDimensions()[0]>1)
             {
                 optionsZY = new Options(graphZY,parent,0,graphZY->getIndexMax(),graphZY->getIndex(),optionheight);

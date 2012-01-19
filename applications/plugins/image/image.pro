@@ -28,8 +28,9 @@ HEADERS += \
    	ImageViewer.h \
 	ImageFilter.h \
         MergeImages.h \
-        ImageToMeshEngine.h \
-	ImageExporter.h \
+        DepthMapToMeshEngine.h \
+        MeshToImageEngine.h \
+        ImageExporter.h \
 	ImagePlaneWidget.h \
 	ImageTransformWidget.h \
 	HistogramWidget.h 
@@ -40,8 +41,9 @@ SOURCES += \
 	ImageViewer.cpp \
 	ImageFilter.cpp \
         MergeImages.cpp \
-        ImageToMeshEngine.cpp \
-	ImageExporter.cpp \
+        DepthMapToMeshEngine.cpp \
+        MeshToImageEngine.cpp \
+        ImageExporter.cpp \
 	ImagePlaneWidget.cpp \
 	ImageTransformWidget.cpp \
 	HistogramWidget.cpp  

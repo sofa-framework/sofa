@@ -106,14 +106,17 @@ public:
     {
         waImage wimage(this->image);
         waTransform wtransform(this->transform);
-        if(!load())
-            if(!loadCamera())
-            {
-                wimage->getCImgList().push_back(CImg<T>());
-                serr << "ImageContainer: no input image "<<sendl;
-            }
+
+        if(!wimage->getCImg())
+            if(!load())
+                if(!loadCamera())
+                {
+                    wimage->getCImgList().push_back(CImg<T>());
+                    serr << "ImageContainer: no input image "<<sendl;
+                }
 
         wtransform->setCamPos((Real)wimage->getDimensions()[0]/2.0,(Real)wimage->getDimensions()[1]/2.0); // for perspective transforms
+        wtransform->update(); // update of internal data
     }
 
 

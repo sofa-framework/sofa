@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <VisualStyle displayFlags="showWireframe showVisual" />
+  <OglModel name="mesh" fileMesh="mesh/Armadillo_simplified.obj" color="1 1 0.5 .1"/>
+  <MeshToImageEngine  name="rasterizer" position="@mesh.vertices" triangles="@mesh.triangles" voxelSize="0.1" padSize="20" rotateImage="false" printLog="true"/>
+  <ImageContainer template="ImageB" name="image" src="@rasterizer" />
+  <ImageViewer template="ImageB" name="viewer" src="@image" plane="100 100 100"/>
+</Node>
+

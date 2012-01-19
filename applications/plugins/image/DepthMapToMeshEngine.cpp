@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_IMAGE_IMAGETOMESHENGINE_CPP
+#define SOFA_IMAGE_DEPTHMAPTOMESHENGINE_CPP
 
-#include "ImageToMeshEngine.h"
+#include "DepthMapToMeshEngine.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -38,36 +38,36 @@ namespace engine
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(ImageToMeshEngine)
+SOFA_DECL_CLASS(DepthMapToMeshEngine)
 
-int ImageToMeshEngineClass = core::RegisterObject("Compute a mesh from a depth map image ")
-        .add<ImageToMeshEngine<ImageUC> >(true)
-        .add<ImageToMeshEngine<ImageD> >()
+int DepthMapToMeshEngineClass = core::RegisterObject("Compute a mesh from a depth map image ")
+        .add<DepthMapToMeshEngine<ImageUC> >(true)
+        .add<DepthMapToMeshEngine<ImageD> >()
 #ifdef BUILD_ALL_IMAGE_TYPES
-        .add<ImageToMeshEngine<ImageC> >()
-        .add<ImageToMeshEngine<ImageI> >()
-        .add<ImageToMeshEngine<ImageUI> >()
-        .add<ImageToMeshEngine<ImageS> >()
-        .add<ImageToMeshEngine<ImageUS> >()
-        .add<ImageToMeshEngine<ImageL> >()
-        .add<ImageToMeshEngine<ImageUL> >()
-        .add<ImageToMeshEngine<ImageF> >()
-        .add<ImageToMeshEngine<ImageB> >()
+        .add<DepthMapToMeshEngine<ImageC> >()
+        .add<DepthMapToMeshEngine<ImageI> >()
+        .add<DepthMapToMeshEngine<ImageUI> >()
+        .add<DepthMapToMeshEngine<ImageS> >()
+        .add<DepthMapToMeshEngine<ImageUS> >()
+        .add<DepthMapToMeshEngine<ImageL> >()
+        .add<DepthMapToMeshEngine<ImageUL> >()
+        .add<DepthMapToMeshEngine<ImageF> >()
+        .add<DepthMapToMeshEngine<ImageB> >()
 #endif
         ;
 
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageUC>;
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageD>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageUC>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageD>;
 #ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageC>;
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageI>;
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageUI>;
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageS>;
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageUS>;
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageL>;
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageUL>;
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageF>;
-template class SOFA_IMAGE_API ImageToMeshEngine<ImageB>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageC>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageI>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageUI>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageS>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageUS>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageL>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageUL>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageF>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageB>;
 #endif
 
 } //
