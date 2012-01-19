@@ -386,6 +386,8 @@ protected:
         default:
             break;
         }
+
+        if(updateTransform) outT->update(); // update internal data
     }
 
 };

@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_IMAGE_IMAGETOMESHENGINE_H
-#define SOFA_IMAGE_IMAGETOMESHENGINE_H
+#ifndef SOFA_IMAGE_DEPTHMAPTOMESHENGINE_H
+#define SOFA_IMAGE_DEPTHMAPTOMESHENGINE_H
 
 #include "initImage.h"
 #include "ImageTypes.h"
@@ -57,11 +57,11 @@ using namespace core::topology;
 
 
 template <class _ImageTypes>
-class ImageToMeshEngine : public core::DataEngine
+class DepthMapToMeshEngine : public core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(ImageToMeshEngine,_ImageTypes),Inherited);
+    SOFA_CLASS(SOFA_TEMPLATE(DepthMapToMeshEngine,_ImageTypes),Inherited);
 
     typedef SReal Real;
 
@@ -102,9 +102,9 @@ public:
     Data< SeqTriangles > triangles;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const ImageToMeshEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
+    static std::string templateName(const DepthMapToMeshEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
-    ImageToMeshEngine()    :   Inherited()
+    DepthMapToMeshEngine()    :   Inherited()
         , depthFactor(initData(&depthFactor,(Real)(1.0),"depthFactor","Intensity to depth factor"))
         , invert(initData(&invert,false,"invert","Invert intensities"))
         , image(initData(&image,ImageTypes(),"image",""))
@@ -122,7 +122,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual ~ImageToMeshEngine()
+    virtual ~DepthMapToMeshEngine()
     {
         if(texture) delete texture;
     }
@@ -278,4 +278,4 @@ protected:
 
 } // namespace sofa
 
-#endif // SOFA_IMAGE_IMAGETOMESHENGINE_H
+#endif // SOFA_IMAGE_DEPTHMAPTOMESHENGINE_H
