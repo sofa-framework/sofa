@@ -417,17 +417,17 @@ public:
 
 
 /** Local deformation state of a material object.
+Template parameters are used to define the spatial dimensions, the material dimensions, and the order.
+In the instanciated classes, the suffix corresponds to the parameters.
+For instance, DeformationGradient332d moves in 3 spatial dimensions, is attached to a  volumetric object (3 dimensions), represents the deformation using an elaston (order=2), and encodes floating point numbers at double precision.
 
-  spatial_dimensions is the number of dimensions the object is moving in.
-  material_dimensions is the number of internal dimensions of the object: 1 for a wire, 2 for a hull, 3 for a volumetric object
-  order is the degree of the local displacement function: 0 for a simple displacement, 1 for a displacent and a nonrigid local frame, 2 for a displacent, a nonrigid local frame and the gradient of this frame.
   */
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
 struct DeformationGradientTypes
 {
-    static const unsigned int spatial_dimensions = _spatial_dimensions;
-    static const unsigned int material_dimensions = _material_dimensions;
-    static const unsigned int order = _order;  ///< 0: only a point, no gradient 1:deformation gradient, 2: deformation gradient and its gradient
+    static const unsigned int spatial_dimensions = _spatial_dimensions;   ///< Number of dimensions the frame is moving in, typically 3
+    static const unsigned int material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
+    static const unsigned int order = _order;  ///< 0: only a point, no gradient 1:deformation gradient, 2: deformation gradient and its gradient (=elaston)
     static const unsigned int NumMatrices = order==0? 0 : (order==1? 1 : (order==2? 1 + material_dimensions : -1 ));
     static const unsigned int VSize = spatial_dimensions +  NumMatrices * material_dimensions * material_dimensions;  // number of entries
     typedef _Real Real;
@@ -438,8 +438,9 @@ struct DeformationGradientTypes
     typedef vector<MaterialCoord> VecMaterialCoord;
     typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
     typedef Mat<material_dimensions,material_dimensions, Real> MaterialFrame;      ///< Matrix representing a deformation gradient
-    typedef Vec<material_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient
+    typedef Vec<material_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient (for order 2)
 
+    /** Time derivative, or other vector-like version of a deformation gradient */
     class Deriv
     {
     protected:
@@ -533,6 +534,7 @@ struct DeformationGradientTypes
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
 
+    /** Deformation gradient */
     class Coord
     {
     protected:
@@ -543,9 +545,11 @@ struct DeformationGradientTypes
         Coord( const Vec<VSize,Real>& d):v(d) {}
         void clear() { v.clear(); for( unsigned int i = 0; i < spatial_dimensions; ++i) getMaterialFrame()[i][i] = (Real)1.0;}
 
-        /// seen as a vector
+        //@{
+        /** Seen as a vector */
         Vec<VSize,Real>& getVec() { return v; }
         const Vec<VSize,Real>& getVec() const { return v; }
+        //@}
 
         /// point
         SpatialCoord& getCenter() { return *reinterpret_cast<SpatialCoord*>(&v[0]); }
@@ -738,6 +742,10 @@ struct DeformationGradientTypes
 
     static const char* Name();
 
+    /** @name Conversions
+      * Convert to/from points in space
+     */
+    //@{
 
     template<typename T>
     static void set ( Deriv& c, T x, T y, T z )
@@ -788,9 +796,10 @@ struct DeformationGradientTypes
         c.getCenter() [1] += ( Real ) y;
         c.getCenter() [2] += ( Real ) z;
     }
+    //@}
 
 
-
+    /// Weighted sum
     static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
@@ -805,6 +814,7 @@ struct DeformationGradientTypes
         return c;
     }
 
+    /// Weighted sum
     static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
