@@ -36,7 +36,7 @@
 #endif //FRAME_INIT_H
 
 /** \mainpage
-The control nodes of the simulation are moving frames stored in a sofa MechanicalObject templated on the type of frame.
+The control nodes (master degrees of freedom, DOFs) of the simulation are moving frames, stored in a sofa MechanicalObject template class instanciated on the type of frame.
 The master DOFs can be of different types:
 - rigid frames, with 6 degrees of freedom (DOF) per frame, are implemented using standard sofa RigidTypes.
 - affine deformable frames (12 DOF/node) are implemented in sofa::defaulttype::StdAffineTypes.
@@ -68,8 +68,9 @@ These are ForceFields to implement material constitutive laws:
 - sofa::component::forcefield::CorotationalForceField
 - sofa::component::forcefield::FrameHookeForceField
 
-Materials are implemented in:
--
+Materials implement the stress-strain constitutive law of the continuum. They are implemented in:
+- sofa::component::material::HookeMaterial3 : a very simple uniform Hooke material
+- sofa::component::material::GridMaterial : a material distribution represented by a voxel grid. This class also optimizes the distribution of the master DOFs, the shape functions and the integration point.
 
 The source of this main page is in initFrame.h
 
