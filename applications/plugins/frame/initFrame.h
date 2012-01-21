@@ -53,6 +53,8 @@ The slave DOFs can be of different types:
 
 The connection between the control (master) frames and the deformable (slave) material is done by a sofa::component::mapping::FrameBlendingMapping.
 This component is templated on two classes, the first corresponds to the type of master frames, and the second corresponds to the type of slave DOFs.
+The actual blending is performed using auxiliary classes: sofa::defaulttype::LinearBlending for linear blending, or sofa::defaulttype::DualQuatBlending for dual quaternion blending.
+The default implementations of these classes do nothing, all the implementation is in their specializations.
 
 Variants of standard sofa classes adapted to moving frames have been developed:
 - sofa::component::mass::FrameDiagonalMass  to store each frame's mass and inertia

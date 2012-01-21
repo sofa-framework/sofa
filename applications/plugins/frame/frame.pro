@@ -30,7 +30,6 @@ HEADERS += \
            DualQuatBlending.inl \
            FrameBlendingMapping.h \
            FrameBlendingMapping.inl \
-           Blending.inl \
            FrameConstantForceField.h \
            FrameMass.h \
            FrameDiagonalMass.h \

@@ -106,13 +106,14 @@ struct LinearBlending<
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
+    /** Linear blend skinning.
+    \f$ p = \sum_i w_i M_i \bar M_i p_0 \f$ where \f$ \bar M_i\f$ is the inverse of \f$ M_i \f$ in the reference configuration, and \f$ p_0 \f$ is the position of p in the reference configuration.
+      The variation of p when a change \f$ dM_i \f$ is applied is thus \f$ w_i dM_i \bar M_i p_0 \f$, which we can compute as:\f$ dM_i * ( w_i \bar M_i p_0 ) \f$ in homogeneous coordinates.
+      */
     struct JacobianBlock
     {
-        /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
-        OutCoord Pa;    ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
+        OutCoord Pa;    ///< = \f$ w_i \bar M_i p_0 \f$  : affine part
+        Real Pt;      ///< = \f$ w_i  \f$  : translation part
     };
 
     Vec<nbRef,unsigned int> index;
@@ -124,7 +125,6 @@ struct LinearBlending<
         unsigned int i=0;
         for ( ; i<nbRef && w[i]>0; i++ )
         {
-            //                    inverseInitialTransform[index[i]] = In::inverse(InitialTransform[index[i]]);
             Jb[i].Pa= In::inverse(InitialTransform[index[i]]).pointToParent(InitialPos) *w[i];
             Jb[i].Pt= w[i];
         }
@@ -154,7 +154,7 @@ struct LinearBlending<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-        */
+          */
 
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
@@ -222,8 +222,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: A = \sum_i w_i M_i \bar M_i A_0  where \bar M_i is the inverse of M_i in the reference configuration, and A_0 is the position of A in the reference configuration.
-        The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         OutCoord Pa;    ///< = dA = dMa_i (w_i \bar M_i A_0)  : affine part
         Real Pt;      ///< = dA = dMt_i (w_i)  : translation part
     };
@@ -271,7 +271,7 @@ struct LinearBlending<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-        */
+          */
 
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
@@ -349,8 +349,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: A = \sum_i w_i M_i \bar M_i A_0  where \bar M_i is the inverse of M_i in the reference configuration, and A_0 is the position of A in the reference configuration.
-        The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         Affine Pa;    ///< = dA = dMa_i (w_i \bar M_i A_0)  : affine part
         Real Pt;      ///< = dA = dMt_i (w_i)  : translation part
     };
@@ -412,7 +412,7 @@ struct LinearBlending<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-        */
+          */
         //Adot~ (w_x-I)A
         Mat33 Adot=crossProductMatrix(d.getAngular());
         Adot[0][0]-=(Real)1.;	Adot[1][1]-=(Real)1.; Adot[2][2]-=(Real)1.;
@@ -498,8 +498,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         SpatialCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
@@ -637,8 +637,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         SpatialCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
@@ -779,8 +779,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         QuadraticCoord Pa;    ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
     };
@@ -891,8 +891,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: A = \sum_i w_i M_i \bar M_i A_0  where \bar M_i is the inverse of M_i in the reference configuration, and A_0 is the position of A in the reference configuration.
-        The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         QuadraticCoord PaT;    ///< = dA = dMa_i (w_i \bar M_i A_0)  : affine part
         QuadraticMat PaA;
         Real Pt;      ///< = dA = dMt_i (w_i)  : translation part
@@ -953,7 +953,7 @@ struct LinearBlending<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-        */
+          */
 
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
@@ -1030,8 +1030,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         QuadraticCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame2 Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
@@ -1187,8 +1187,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         //                JacobianBlock(){}
         //                JacobianBlock(const SpatialCoord2& p2, const Real& w,  const MaterialFrame2& f2,  const MaterialDeriv& dw,  const MaterialFrameGradient2& df2,  const MaterialMat& ddw):Pa(p2),Pt(w),Fa(f2),Ft(dw),dFa(df2),dFt(ddw){}
         QuadraticCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
@@ -1352,8 +1352,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: A = \sum_i w_i M_i \bar M_i A_0  where \bar M_i is the inverse of M_i in the reference configuration, and A_0 is the position of A in the reference configuration.
-        The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         QuadraticCoord PaT;    ///< = dA = dMa_i (w_i \bar M_i A_0)  : affine part
         QuadraticMat PaA;
         Real Pt;      ///< = dA = dMt_i (w_i)  : translation part
@@ -1414,7 +1414,7 @@ struct LinearBlending<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-        */
+          */
 
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
@@ -1487,8 +1487,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         OutCoord Pa0; ///< weighted point in local frame:   dp = dMa_i (w_i \bar M_i p_0)  : affine part
         OutCoord Pa;  ///< rotated point :  dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
@@ -1536,7 +1536,7 @@ struct LinearBlending<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec6 product, and apply the transpose of this matrix
-        */
+          */
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
             getLinear(res[index[i]])  += d * Jb[i].Pt;
@@ -1546,7 +1546,7 @@ struct LinearBlending<
     void addMultTranspose( ParentJacobianRow& parentJacobianRow, const OutDeriv& childJacobianVec ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec6 product, and apply the transpose of this matrix
-        */
+          */
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
             InDeriv parentJacobianVec;
@@ -1603,8 +1603,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: A = \sum_i w_i M_i \bar M_i A_0  where \bar M_i is the inverse of M_i in the reference configuration, and A_0 is the position of A in the reference configuration.
-        The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         OutCoord Pa0;    ///< = dA = dMa_i (w_i \bar M_i A_0)  : affine part
         OutCoord Pa;    ///< = dA =  Omega_i x [ Ma_i (w_i \bar M_i A_0) ]  : affine part
         Real Pt;      ///< = dA = dMt_i (w_i)  : translation part
@@ -1675,7 +1675,7 @@ struct LinearBlending<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-        */
+          */
 
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
@@ -1750,8 +1750,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: A = \sum_i w_i M_i \bar M_i A_0  where \bar M_i is the inverse of M_i in the reference configuration, and A_0 is the position of A in the reference configuration.
-        The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of A when a change dM_i is applied is thus w_i dM_i \bar M_i A_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         Affine Pa0;    ///< = dA = dMa_i (w_i \bar M_i A_0)  : affine part
         Affine Pa;    ///< = dA =  Omega_i x [ Ma_i (w_i \bar M_i A_0) ]  : affine part
         Real Pt;      ///< = dA = dMt_i (w_i)  : translation part
@@ -1844,18 +1844,18 @@ struct LinearBlending<
 
 
         /*				Mat33 w=Adot*Sinv;
-        				res.getAngular()[0]=(w[2][1]-w[1][2])*0.5;
-        				res.getAngular()[1]=(w[0][2]-w[2][0])*0.5;
-        				res.getAngular()[2]=(w[1][0]-w[0][1])*0.5;
+        res.getAngular()[0]=(w[2][1]-w[1][2])*0.5;
+        res.getAngular()[1]=(w[0][2]-w[2][0])*0.5;
+        res.getAngular()[2]=(w[1][0]-w[0][1])*0.5;
         */
 
         /*				Mat33 Sinv2,R2,S2,A2=Adot+A,I;
-        	            polar_decomp(A2, R2, S2);
-        				Quat q1; q1.fromMatrix(R);
-        				Quat q2; q2.fromMatrix(R2);
-        				Quat q=q2*q1.inverse();
-        				Real phi; q.quatToAxis(res.getAngular(), phi);
-        				res.getAngular()*=phi;
+             polar_decomp(A2, R2, S2);
+        Quat q1; q1.fromMatrix(R);
+        Quat q2; q2.fromMatrix(R2);
+        Quat q=q2*q1.inverse();
+        Real phi; q.quatToAxis(res.getAngular(), phi);
+        res.getAngular()*=phi;
         */
 
         /*
@@ -1873,7 +1873,7 @@ struct LinearBlending<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-        */
+          */
         //Adot~ (w_x-I)A
         Mat33 Adot=crossProductMatrix(d.getAngular());
         Adot[0][0]-=(Real)1.;	Adot[1][1]-=(Real)1.; Adot[2][2]-=(Real)1.;
@@ -1961,8 +1961,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         SpatialCoord Pa0; ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         SpatialCoord Pa;  ///< = dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
@@ -2117,8 +2117,8 @@ struct LinearBlending<
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-        */
+          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
         SpatialCoord Pa0; ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         SpatialCoord Pa;  ///< = dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
