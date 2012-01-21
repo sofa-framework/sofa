@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+
 <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Frame-based Elastic Materials</title></head><body>
   
 <h1>Frame-based Elastic Materials</h1>
@@ -23,6 +24,32 @@ This SOFA plugin implements the work presented in the following papers:<br>
 <br>
 <br>
 Type command <span style="font-family: monospace;">doxygen Doxyfile</span> in this directory to generate the code documentation, then read the main page <a href="doxygen/html/index.html">doxygen/html/index.html</a><br>
+<br>
+<br>
+The current implementation uses two levels of scenegraph nodes, as illustrated in the <a href="#Snapshot_D332">next figure</a>. The moving frames are in the <span style="font-style: italic;">Beam</span> parent node, while the <span style="font-style: italic;">Physics</span> child node contains deformation gradients (or elastons). A skinning mapping (also called frame blending), <span style="font-style: italic;">FrameBlendingMapping</span>,&nbsp; creates the connections. It is the main workhorse of the <span style="font-style: italic;">Frame-based Elastic Models</span> paper.<br>
+The material constitutive law is implemented in ForceFields applied to
+the sampling points, here a GreenLagrangeForceField and a
+FrameVolumePreservationForceField. The material parameters are actually
+defined in the top level, in the HookeMaterial3 component. <br>
+Other children can be mapped, such as a collision model and a
+volumetric model. In thi case the children are points, not deformation
+gradients.<br>
+<br>
+<br>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><a name="Snapshot_D332"></a>Snapshot of a simulation. The frames are the control nodes, while the
+yellow cross is the sampling point with an elaston. The wireframe mesh
+is a visual model.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><img style="width: 1296px; height: 732px;" alt="" src="basic_Affine-D332.png"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
 <br>
 <br>
 

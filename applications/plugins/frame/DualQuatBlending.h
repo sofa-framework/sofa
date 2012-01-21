@@ -40,8 +40,10 @@ namespace defaulttype
 using std::endl;
 using sofa::helper::vector;
 
+/** Template class used to implement the linear blending. The default class does nothing, all the implementation is in the specializations in file DualQuatBlending.inl
+    */
 template<class In, class Out, class Material, int nbRef, int type>
-class DualQuatBlending;
+class DualQuatBlending {};
 
 template<int N, typename real>
 class DualQuatCoord;
