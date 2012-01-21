@@ -82,7 +82,9 @@ HEADERS += mycuda.h \
            CudaTetrahedralVisualModel.inl \
            CudaParticleSource.h \
            CudaParticleSource.inl \
-	   CudaMemoryManager.h 
+	   CudaMemoryManager.h  \
+	   CudaMeshMatrixMass.h \
+	   CudaMeshMatrixMass.inl
 
 SOURCES += mycuda.cpp \
            CudaBoxROI.cpp  \
@@ -149,6 +151,7 @@ CUDA_SOURCES += mycuda.cu \
            CudaContactMapper.cu \
            CudaPenalityContactForceField.cu \
            CudaVisualModel.cu \
-           CudaParticleSource.cu
+           CudaParticleSource.cu \
+	   CudaMeshMatrixMass.cu
 
 load(sofa/post)
