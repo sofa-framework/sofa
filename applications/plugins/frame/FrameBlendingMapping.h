@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_H
 
 #include "initFrame.h"
-#include "MappingTypes.h"
+#include "Blending.h"
 #include "NewMaterial.h"
 #include "GridMaterial.h"
 #include <sofa/core/Mapping.h>
@@ -58,8 +58,11 @@ using defaulttype::FrameData;
 using defaulttype::SampleData;
 using namespace sofa::component::topology;
 
-/** Linear blend skinning, from a variety of input types to a variety of output types.
- */
+/** Skinning, from a variety of input types to a variety of output types.
+  Linear or Dual quaternion blendi is possible.
+  The actual blending is implemented in template helper classes LinearBlending and DualQuatBlending, specialized on the different types.
+
+*/
 template <class TIn, class TOut>
 class FrameBlendingMapping : public core::Mapping<TIn, TOut>, public FrameData<TIn,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)>, public SampleData<TOut,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)>
 {
@@ -105,10 +108,10 @@ public:
     typedef typename FData::MassVector MassVector;
     typedef SampleData<TOut,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)> SData;
 
-    // Conversion types
+    // Mapping types
     static const unsigned int nbRef = GridMat::nbRef;
-    typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::type > InOut;
-    typedef typename defaulttype::DualQuatBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::type > DQInOut;
+    typedef typename defaulttype::LinearBlending<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::type > Blending;
+    typedef typename defaulttype::DualQuatBlending<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::type > DQBlending;
     typedef defaulttype::BaseFrameBlendingMapping<true> PhysicalMapping;
 
     typedef Vec<3,double> Vec3d;
@@ -117,16 +120,22 @@ public:
     FrameBlendingMapping (core::State<In>* from = NULL, core::State<Out>* to= NULL);
     virtual ~FrameBlendingMapping();
 
+
+    /// @name Mapping  Mapping functions
+    //@{
     virtual void init();
-
     virtual void draw(const core::visual::VisualParams* vparams);
-
-    virtual void apply( InCoord& coord, const InCoord& restCoord);
-    virtual void apply( typename SData::MaterialCoord& coord, const typename SData::MaterialCoord& restCoord);
     virtual void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
     virtual void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
     virtual void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
     virtual void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+    //@}
+
+protected:
+    virtual void apply( InCoord& coord, const InCoord& restCoord);
+    virtual void apply( typename SData::MaterialCoord& coord, const typename SData::MaterialCoord& restCoord);
+
+
 
     inline void findIndexInRepartition( bool& influenced, unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
 
@@ -148,18 +157,18 @@ protected:
     PhysicalMapping* physicalMapping;
     virtual void updateMapping(const bool& computeWeights = false);
 
-    PointData<sofa::helper::vector<InOut> > inout;  ///< Data specific to the conversion between the types
-    PointData<sofa::helper::vector<DQInOut> > dqinout;  ///< Data specific to the conversion between the types
-    Data<bool> useDQ;  // use dual quat blending instead of linear blending
-    Data<bool> useAdaptivity;  // use automatic adaptation of frames and samples
+    PointData<sofa::helper::vector<Blending> > blending;      ///< Mapping objects which perform the mapping, in case of linear blending. One per slave node.
+    PointData<sofa::helper::vector<DQBlending> > dq_blending; ///< Mapping objects which perform the mapping, in case of dual quaternion blending. One per slave node.
+    Data<bool> useDQ;                                         ///< use dual quat blending instead of linear blending
+    Data<bool> useAdaptivity;                                 ///< use automatic adaptation of frames and samples
 
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
+    helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
+    helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
-    PointData<sofa::helper::vector<OutCoord> > f_initPos;            // initial child coordinates in the world reference frame
+    PointData<sofa::helper::vector<OutCoord> > f_initPos;                 ///< initial child coordinates in the world reference frame
     PointData<sofa::helper::vector<Vec<nbRef,unsigned int> > > f_index;   ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
-    PointData<sofa::helper::vector<unsigned int> > f_groups;            // child group for restricting interpolation (initialized from trianglegroupes)
+    PointData<sofa::helper::vector<unsigned int> > f_groups;              ///< child group for restricting interpolation (initialized from trianglegroups)
 
     PointData<sofa::helper::vector<Vec<nbRef,InReal> > >       weight;
     PointData<sofa::helper::vector<Vec<nbRef,MaterialCoord> > > weightDeriv;
@@ -181,6 +190,7 @@ protected:
     protected:
         FrameBlendingMapping<TIn, TOut>* m_map;
     };
+    FramePointHandler* pointHandler;
 
 public:
     Data<bool> showBlendedFrame;
@@ -200,15 +210,14 @@ public:
     Data<double> showDetFScaleFactor;
     Data<bool> isAdaptive;
 
-    FramePointHandler* pointHandler;
 
     helper::vector< helper::fixed_array <unsigned int,3> > triangles; ///< Topology of toModel (used for strain display)
-    helper::vector< core::loader::PrimitiveGroup > trianglesGroups;  ///< triangle groups of toModel (used for restricting interpolation of a group to a label)
+    helper::vector< core::loader::PrimitiveGroup > trianglesGroups;   ///< triangle groups of toModel (used for restricting interpolation of a group to a label)
 
-    GridMaterial< materialType>* gridMaterial;
-    Data<unsigned int> targetFrameNumber;
-    Data<bool> initializeFramesInRigidParts;  ///< Automatically initialize frames in rigid parts if stiffness>15E6
-    Data<unsigned int> targetSampleNumber;
+    GridMaterial< materialType>* gridMaterial;        ///< where the material data is
+    Data<unsigned int> targetFrameNumber;             ///< Desired number of frames resulting from the automatic discretization of the material. Use 0 to use user-defined frames.
+    Data<bool> initializeFramesInRigidParts;          ///< Automatically initialize frames in rigid parts if stiffness>15E6
+    Data<unsigned int> targetSampleNumber;            ///< Desired number of integration points resulting from the automatic discretization of the material. Use 0 to use user-defined integration points.
     Data<vector<int> > restrictInterpolationToLabel;  ///< restrict interpolation to a certain label in the gridmaterial
 };
 

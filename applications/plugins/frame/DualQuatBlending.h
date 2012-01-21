@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FRAME_DUALQUATTYPES_H
-#define FRAME_DUALQUATTYPES_H
+#ifndef FRAME_DualQuatBlending_H
+#define FRAME_DualQuatBlending_H
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -39,6 +39,9 @@ namespace defaulttype
 
 using std::endl;
 using sofa::helper::vector;
+
+template<class In, class Out, class Material, int nbRef, int type>
+class DualQuatBlending;
 
 template<int N, typename real>
 class DualQuatCoord;
@@ -690,6 +693,7 @@ public:
             return this->orientation[i-4];
     }
 };
+
 
 
 

@@ -56,7 +56,8 @@ template<class DeformationGradientType, bool _iscorotational>
 class CStrain;
 
 
-
+/** Measure of strain, based on a deformation gradient. Corotational or Green-Lagrange. Can also represent the corresponding stress. Used by the materials to compute stress based on strain.
+  */
 template<class DeformationGradientType, bool _iscorotational>
 class CStrain
 {
@@ -81,9 +82,9 @@ public:
     static const unsigned int strain_order = order==1? 0 : ( (order==2 && iscorotational)? 1 : ( (order==2 && !iscorotational)? 2 : 0 )) ;
     static const unsigned int NumStrainVec = strain_order==0? 1 : ( strain_order==1? 1 + material_dimensions : ( strain_order==2? 1 + material_dimensions*(material_dimensions+3)/2 : 0 )) ;
     typedef Vec<NumStrainVec,StrainVec> Strain;  ///< Strain and its gradient, in vector form
-    typedef Strain Stress;
+    typedef Strain Stress;       ///< both have the same vector type, the dot product of which is a deformation energy per volume unit.
     typedef Strain StrainDeriv;  ///< Strain change and its gradient, in vector form
-    typedef Stress StressDeriv;  ///< Strain change and its gradient, in vector form
+    typedef Stress StressDeriv;  ///< Stress change and its gradient, in vector form
 
     static const unsigned int strainenergy_order = 2*strain_order; 	///< twice the order of strain
     static const unsigned int strainenergy_size = strainenergy_order==0? 1 : (
@@ -91,13 +92,13 @@ public:
                     (strainenergy_order==4 && material_dimensions==1)? 5 : (
                             (strainenergy_order==4 && material_dimensions==2)? 15 : (
                                     (strainenergy_order==4 && material_dimensions==3)? 35 : 1 ))));
-    typedef Vec<strainenergy_size,Real> StrainEnergyVec;
+    typedef Vec<strainenergy_size,Real> StrainEnergyVec;  ///< @todo Explain this
 
 
-
-    static StrainVec getStrainVec(  const MaterialFrame& f ) // convert assymetric matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx)/2 eyz=(Fyz+Fzy)/2, ezx=(Fxz+Fzx)/2,
+    /// Convert a symetric matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx)/2 eyz=(Fyz+Fzy)/2, ezx=(Fxz+Fzx)/2,
+    static StrainVec getStrainVec(  const MaterialFrame& f )
     {
-//                cerr<<"static StrainVec getStrainVec, f = "<< f << endl;
+        //                cerr<<"static StrainVec getStrainVec, f = "<< f << endl;
         StrainVec s;
         unsigned int ei=0;
         for(unsigned int j=0; j<material_dimensions; j++)
@@ -112,7 +113,8 @@ public:
         return s;
     }
 
-    static MaterialFrame getFrame( const StrainVec& s  ) // voigt notation to symmetric matrix (F+F^T)/2  Fxx=exx, Fxy=Fyx=exy/2, etc.
+    /// Voigt notation to symmetric matrix (F+F^T)/2  Fxx=exx, Fxy=Fyx=exy/2, etc.
+    static MaterialFrame getFrame( const StrainVec& s  )
     {
         MaterialFrame f;
         unsigned int ei=0;
@@ -129,7 +131,7 @@ public:
     }
 
 
-
+    /// Compute strain based on deformation gradient
     static void apply( const Coord& F, Strain& strain, MaterialFrame* rotation=NULL)
     // Apply : strain = f(F) convert deformation gradient to strain
     {
@@ -175,6 +177,7 @@ public:
         }
     }
 
+    /// Compute a change of strain based on a change of deformation gradient.
     static void mult( const Deriv& dF, const Coord& F, StrainDeriv& strain , const MaterialFrame* rotation=NULL)
     // ApplyJ : dstrain = J(dF)  convert deformation gradient change to strain change
     {
@@ -215,8 +218,10 @@ public:
         }
     }
 
-    static void addMultTranspose( Deriv& dF , const Coord& F, const StrainDeriv& s, const StrainEnergyVec& integ, const MaterialFrame* rotation=NULL)
-    // for each dof Fi, add Fi+= sum_p  (dE/dFi dp )^T dE dp = [(dE /dFi )^T dE ]^(order 2) . sum_p  dp^(order 2)
+    /** Accumulate (change of) generalized forces on the deformation gradient, based on a (change of) stress.
+      For each dof Fi, add Fi+= sum_p  (dE/dFi dp )^T dE dp = [(dE /dFi )^T dE ]^(order 2) . sum_p  dp^(order 2)
+      */
+    static void addMultTranspose( Deriv& dF , const Coord& F, const StressDeriv& s, const StrainEnergyVec& integ, const MaterialFrame* rotation=NULL)
     {
         if(iscorotational) // cauchy strain (order 0 or 1) : e= [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I
         {
@@ -418,10 +423,10 @@ public:
 
 /** Local deformation state of a material object.
 Template parameters are used to define the spatial dimensions, the material dimensions, and the order.
-In the instanciated classes, the suffix corresponds to the parameters.
+Order 1 corresponds to a traditional deformation gradient, while order 2 corresponds to an elaston.
+In the names of the instanciated classes, the suffix corresponds to the parameters.
 For instance, DeformationGradient332d moves in 3 spatial dimensions, is attached to a  volumetric object (3 dimensions), represents the deformation using an elaston (order=2), and encodes floating point numbers at double precision.
-
-  */
+*/
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
 struct DeformationGradientTypes
 {
@@ -440,7 +445,8 @@ struct DeformationGradientTypes
     typedef Mat<material_dimensions,material_dimensions, Real> MaterialFrame;      ///< Matrix representing a deformation gradient
     typedef Vec<material_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient (for order 2)
 
-    /** Time derivative, or other vector-like version of a deformation gradient */
+    /** Time derivative of a (generalized) deformation gradient, or other vector-like associated quantities, such as generalized forces.
+    */
     class Deriv
     {
     protected:
@@ -650,91 +656,91 @@ struct DeformationGradientTypes
             m[15] = 1;
         }
         /*
-                    /// Write the OpenGL transformation matrix
-                    void drawDeformationGradient( const float& scale) const
+                /// Write the OpenGL transformation matrix
+                void drawDeformationGradient( const float& scale) const
+                {
+                    BOOST_STATIC_ASSERT(spatial_dimensions == 3);
+                    glPushMatrix();
+                    //drawCylinder();
+                    glPopMatrix();
+                }
+
+                void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const Vec<4,float> colour, int subdRadius, int subdLength)
+                  {
+                    Vector3 tmp = p2-p1;
+                    vparams->drawTool()->setMaterial(colour);
+                    // create Vectors p and q, co-planar with the cylinder's cross-sectional disk
+                    Vector3 p=tmp;
+                    if (fabs(p[0]) + fabs(p[1]) < 0.00001*tmp.norm())
+                      p[0] += 1.0;
+                    else
+                      p[2] += 1.0;
+                    Vector3 q;
+                    q = p.cross(tmp);
+                    p = tmp.cross(q);
+                    // do the normalization outside the segment loop
+                    p.normalize();
+                    q.normalize();
+
+                    int i2;
+                    float theta, st, ct;
+                    // build the cylinder from rectangular subd
+                    std::vector<Vector3> points;
+                    std::vector<Vec<4,int> > indices;
+                    std::vector<Vector3> normals;
+
+                    std::vector<Vector3> pointsCloseCylinder1;
+                    std::vector<Vector3> normalsCloseCylinder1;
+                    std::vector<Vector3> pointsCloseCylinder2;
+                    std::vector<Vector3> normalsCloseCylinder2;
+
+                    Vector3 dir=p1-p2; dir.normalize();
+                    pointsCloseCylinder1.push_back(p1);
+                    normalsCloseCylinder1.push_back(dir);
+                    pointsCloseCylinder2.push_back(p2);
+                    normalsCloseCylinder2.push_back(-dir);
+
+
+                    Vector3 dtmp = tmp / (double)subdLength;
+                    for( int j = 0; j < subdLength; ++j) // Length subdivision
                     {
-                        BOOST_STATIC_ASSERT(spatial_dimensions == 3);
-                        glPushMatrix();
-                        //drawCylinder();
-                        glPopMatrix();
-                    }
-
-                    void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const Vec<4,float> colour, int subdRadius, int subdLength)
-                      {
-                        Vector3 tmp = p2-p1;
-                        vparams->drawTool()->setMaterial(colour);
-                        // create Vectors p and q, co-planar with the cylinder's cross-sectional disk
-                        Vector3 p=tmp;
-                        if (fabs(p[0]) + fabs(p[1]) < 0.00001*tmp.norm())
-                          p[0] += 1.0;
-                        else
-                          p[2] += 1.0;
-                        Vector3 q;
-                        q = p.cross(tmp);
-                        p = tmp.cross(q);
-                        // do the normalization outside the segment loop
-                        p.normalize();
-                        q.normalize();
-
-                        int i2;
-                        float theta, st, ct;
-                        // build the cylinder from rectangular subd
-                        std::vector<Vector3> points;
-                        std::vector<Vec<4,int> > indices;
-                        std::vector<Vector3> normals;
-
-                        std::vector<Vector3> pointsCloseCylinder1;
-                        std::vector<Vector3> normalsCloseCylinder1;
-                        std::vector<Vector3> pointsCloseCylinder2;
-                        std::vector<Vector3> normalsCloseCylinder2;
-
-                        Vector3 dir=p1-p2; dir.normalize();
-                        pointsCloseCylinder1.push_back(p1);
-                        normalsCloseCylinder1.push_back(dir);
-                        pointsCloseCylinder2.push_back(p2);
-                        normalsCloseCylinder2.push_back(-dir);
-
-
-                        Vector3 dtmp = tmp / (double)subdLength;
-                        for( int j = 0; j < subdLength; ++j) // Length subdivision
+                        for (i2=0 ; i2<=subd ; i2++)
                         {
-                            for (i2=0 ; i2<=subd ; i2++)
-                            {
-                                // sweep out a circle
-                                theta =  i2 * 2.0 * 3.14 / subd;
-                                st = sin(theta);
-                                ct = cos(theta);
-                                // construct normal
-                                tmp = p*ct+q*st;
-                                // set the normal for the two subseqent points
-                                normals.push_back(tmp);
+                            // sweep out a circle
+                            theta =  i2 * 2.0 * 3.14 / subd;
+                            st = sin(theta);
+                            ct = cos(theta);
+                            // construct normal
+                            tmp = p*ct+q*st;
+                            // set the normal for the two subseqent points
+                            normals.push_back(tmp);
 
-                                // point on disk 1
-                                Vector3 w(p1 + dtmp*j);
-                                w += tmp*radius;
-                                points.push_back(w);
-                                pointsCloseCylinder1.push_back(w);
-                                normalsCloseCylinder1.push_back(dir);
+                            // point on disk 1
+                            Vector3 w(p1 + dtmp*j);
+                            w += tmp*radius;
+                            points.push_back(w);
+                            pointsCloseCylinder1.push_back(w);
+                            normalsCloseCylinder1.push_back(dir);
 
-                                // point on disk 2
-                                w=p1 + dtmp*(j+1);
-                                w += tmp*radius;
-                                points.push_back(w);
-                                pointsCloseCylinder2.push_back(w);
-                                normalsCloseCylinder2.push_back(-dir);
-                            }
+                            // point on disk 2
+                            w=p1 + dtmp*(j+1);
+                            w += tmp*radius;
+                            points.push_back(w);
+                            pointsCloseCylinder2.push_back(w);
+                            normalsCloseCylinder2.push_back(-dir);
                         }
-                        pointsCloseCylinder1.push_back(pointsCloseCylinder1[1]);
-                        normalsCloseCylinder1.push_back(normalsCloseCylinder1[1]);
-                        pointsCloseCylinder2.push_back(pointsCloseCylinder2[1]);
-                        normalsCloseCylinder2.push_back(normalsCloseCylinder2[1]);
+                    }
+                    pointsCloseCylinder1.push_back(pointsCloseCylinder1[1]);
+                    normalsCloseCylinder1.push_back(normalsCloseCylinder1[1]);
+                    pointsCloseCylinder2.push_back(pointsCloseCylinder2[1]);
+                    normalsCloseCylinder2.push_back(normalsCloseCylinder2[1]);
 
-                        vparams->drawTool()->drawTriangleStrip(points, normals,colour);
-                        if (radius1 > 0) vparams->drawTool()->drawTriangleFan(pointsCloseCylinder1, normalsCloseCylinder1,colour);
-                        if (radius2 > 0) vparams->drawTool()->drawTriangleFan(pointsCloseCylinder2, normalsCloseCylinder2,colour);
+                    vparams->drawTool()->drawTriangleStrip(points, normals,colour);
+                    if (radius1 > 0) vparams->drawTool()->drawTriangleFan(pointsCloseCylinder1, normalsCloseCylinder1,colour);
+                    if (radius2 > 0) vparams->drawTool()->drawTriangleFan(pointsCloseCylinder2, normalsCloseCylinder2,colour);
 
-                        vparams->drawTool()->resetMaterial(colour);
-                      }
+                    vparams->drawTool()->resetMaterial(colour);
+                  }
         */
     };
 
@@ -743,8 +749,8 @@ struct DeformationGradientTypes
     static const char* Name();
 
     /** @name Conversions
-      * Convert to/from points in space
-     */
+              * Convert to/from points in space
+             */
     //@{
 
     template<typename T>
@@ -838,7 +844,7 @@ struct DeformationGradientTypes
 // ==========================================================================
 
 /** Mass associated with a sampling point
-*/
+      */
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
 struct DeformationGradientMass
 {
@@ -1036,13 +1042,13 @@ namespace behavior
 {
 
 /** Return the inertia force applied to a body referenced in a moving coordinate system.
-\param sv spatial velocity (omega, vorigin) of the coordinate system
-\param a acceleration of the origin of the coordinate system
-\param m mass of the body
-\param x position of the body in the moving coordinate system
-\param v velocity of the body in the moving coordinate system
-This default implementation returns no inertia.
-*/
+      \param sv spatial velocity (omega, vorigin) of the coordinate system
+      \param a acceleration of the origin of the coordinate system
+      \param m mass of the body
+      \param x position of the body in the moving coordinate system
+      \param v velocity of the body in the moving coordinate system
+      This default implementation returns no inertia.
+      */
 template<class DeformationGradientT, class Vec, class M, class SV>
 typename DeformationGradientT::Deriv inertiaForce ( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const typename DeformationGradientT::Coord& /*x*/, const  typename DeformationGradientT::Deriv& /*v*/ );
 

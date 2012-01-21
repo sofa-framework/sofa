@@ -47,7 +47,7 @@
 #include <sofa/component/container/MechanicalObject.h>
 
 #include "GridMaterial.h"
-#include "MappingTypes.h"
+#include "Blending.h"
 #include <sofa/component/topology/TopologyData.h>
 
 namespace sofa

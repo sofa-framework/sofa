@@ -48,6 +48,8 @@ namespace defaulttype
 using std::endl;
 using sofa::helper::vector;
 
+/** DOF types associated with deformable frames. Each deformable frame generates an affine displacement field, with 12 independent degrees of freedom.
+  */
 template<int N, typename real>
 class StdAffineTypes
 {
@@ -414,7 +416,7 @@ public:
 };
 
 
-
+/** Mass associated with an affine deformable frame */
 template<int N,typename real>
 class AffineMass
 {

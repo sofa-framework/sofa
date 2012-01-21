@@ -26,6 +26,8 @@
 #define FRAME_MAPPINGTYPES_H
 
 #include "FrameMass.h"
+#include "LinearBlending.h"
+#include "DualQuatBlending.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/topology/TopologyData.h>
 #include <limits>
@@ -38,11 +40,12 @@ namespace defaulttype
 
 using sofa::defaulttype::FrameMass;
 
-template<class In, class Out, class Material, int nbRef, int type>
-class LinearBlendTypes;
 
-template<class In, class Out, class Material, int nbRef, int type>
-class DualQuatBlendTypes;
+//      template<class In, class Out, class Material, int nbRef, int type>
+//      class LinearBlending;
+
+//      template<class In, class Out, class Material, int nbRef, int type>
+//      class DualQuatBlending;
 
 
 
@@ -184,6 +187,12 @@ public:
 
     virtual void apply( MaterialCoord& coord, const MaterialCoord& restCoord) = 0; // Allow to tranfsorm a voxel from restPos for example
 };
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Dual Quaternion Blending
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 } // namespace defaulttype
 } // namespace sofa
