@@ -48,6 +48,7 @@ namespace defaulttype
 using std::endl;
 using sofa::helper::vector;
 
+/** DOF types for moving frames which generate a quadratic displacement field, with 30 scalar DOFs */
 template<int N, typename real>
 class StdQuadraticTypes
 {
@@ -618,13 +619,13 @@ namespace behavior
 {
 
 /** Return the inertia force applied to a body referenced in a moving coordinate system.
-\param sv spatial velocity (omega, vorigin) of the coordinate system
-\param a acceleration of the origin of the coordinate system
-\param m mass of the body
-\param x position of the body in the moving coordinate system
-\param v velocity of the body in the moving coordinate system
-This default implementation returns no inertia.
-*/
+      \param sv spatial velocity (omega, vorigin) of the coordinate system
+      \param a acceleration of the origin of the coordinate system
+      \param m mass of the body
+      \param x position of the body in the moving coordinate system
+      \param v velocity of the body in the moving coordinate system
+      This default implementation returns no inertia.
+      */
 template<class Coord, class Deriv, class Vec, class M, class SV>
 Deriv inertiaForce ( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const Coord& /*x*/, const Deriv& /*v*/ );
 

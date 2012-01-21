@@ -9,11 +9,12 @@ DEFINES += SOFA_BUILD_FRAME
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
 DEPENDPATH -= $$SOFA_INSTALL_INC_DIR/applications
+QMAKE_CXXFLAGS  += -fno-strict-aliasing
 
 HEADERS += \
            initFrame.h \
            AffineTypes.h \
-           DualQuatTypes.h \
+           DualQuatBlending.h \
            QuadraticTypes.h \
            CorotationalForceField.h \
            CorotationalForceField.inl \
@@ -22,11 +23,14 @@ HEADERS += \
            FrameVolumePreservationForceField.h \
            FrameVolumePreservationForceField.inl \
            DeformationGradientTypes.h \
-           MappingTypes.h \
+           Blending.h \
+           LinearBlending.h \
+           LinearBlending.inl \
+           DualQuatBlending.h \
+           DualQuatBlending.inl \
            FrameBlendingMapping.h \
            FrameBlendingMapping.inl \
-           LinearBlendTypes.inl \
-           DualQuatBlendTypes.inl \
+           Blending.inl \
            FrameConstantForceField.h \
            FrameMass.h \
            FrameDiagonalMass.h \

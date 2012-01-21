@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include "initFrame.h"
 #include "GridMaterial.h"
-#include "MappingTypes.h"
+#include "Blending.h"
 
 namespace sofa
 {
@@ -68,7 +68,7 @@ public:
     static const unsigned strainenergy_size = StrainType::strainenergy_size;
     typedef typename StrainType::StrainEnergyVec StrainEnergyVec;
 
-//                typedef material::GridMaterial<material::MaterialTypes<material_dimensions,Real> > Material;
+    //                typedef material::GridMaterial<material::MaterialTypes<material_dimensions,Real> > Material;
     typedef material::Material<material::MaterialTypes<material_dimensions,Real> > Material;
     typedef typename Material::StrStr StressStrainMatrix;
     typedef typename Material::VecMaterialCoord VecMaterialCoord;

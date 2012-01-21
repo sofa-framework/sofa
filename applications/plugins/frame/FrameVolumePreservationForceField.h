@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include "initFrame.h"
 #include "GridMaterial.h"
-#include "MappingTypes.h"
+#include "Blending.h"
 
 namespace sofa
 {

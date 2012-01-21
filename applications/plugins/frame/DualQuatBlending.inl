@@ -25,10 +25,10 @@
 #ifndef SOFA_DEFAULTTYPE_DUALQUATBLENTYPES_INL
 #define SOFA_DEFAULTTYPE_DUALQUATBLENTYPES_INL
 
-#include "MappingTypes.h"
+#include "DualQuatBlending.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
-#include "DualQuatTypes.h"
+
 
 namespace sofa
 {
@@ -50,7 +50,7 @@ const Mat<Dim,Dim,Real>& VectoMat(const Vec<Dim*Dim,Real>& v) { return *reinterp
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdAffineTypes<3,typename _Material::Real>,
         Out, _Material, nbRef, 0
         >
@@ -96,13 +96,13 @@ struct DualQuatBlendTypes<
     {
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -119,7 +119,7 @@ struct DualQuatBlendTypes<
 
 
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdAffineTypes<3,typename _Material::Real>,
         Out, _Material, nbRef, 3
         >
@@ -165,13 +165,13 @@ struct DualQuatBlendTypes<
     {
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -185,7 +185,7 @@ struct DualQuatBlendTypes<
 
 
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdAffineTypes<3,typename _Material::Real>,
         Out, _Material, nbRef, 4
         >
@@ -234,13 +234,13 @@ struct DualQuatBlendTypes<
     {
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 4>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 4>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 4>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 4>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -254,7 +254,7 @@ struct DualQuatBlendTypes<
 
 
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdAffineTypes<3,typename _Material::Real>,
         Out, _Material, nbRef, 1
         >
@@ -303,13 +303,13 @@ struct DualQuatBlendTypes<
     {
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -323,7 +323,7 @@ struct DualQuatBlendTypes<
 
 
 template<class Out, class  _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdAffineTypes<3,typename _Material::Real>,
         Out,
         _Material, nbRef,2
@@ -373,13 +373,13 @@ struct DualQuatBlendTypes<
     {
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdAffineTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -395,7 +395,7 @@ struct DualQuatBlendTypes<
 
 
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdQuadraticTypes<3,typename _Material::Real>,
         Out, _Material, nbRef,0
         >
@@ -442,13 +442,13 @@ struct DualQuatBlendTypes<
     {
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -463,7 +463,7 @@ struct DualQuatBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdQuadraticTypes<3,typename _Material::Real>,
         Out, _Material, nbRef,3
         >
@@ -512,13 +512,13 @@ struct DualQuatBlendTypes<
     {
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -532,7 +532,7 @@ struct DualQuatBlendTypes<
 
 
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdQuadraticTypes<3,typename _Material::Real>,
         Out, _Material, nbRef,1
         >
@@ -581,13 +581,13 @@ struct DualQuatBlendTypes<
     {
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -601,7 +601,7 @@ struct DualQuatBlendTypes<
 
 
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdQuadraticTypes<3,typename _Material::Real>,
         Out, _Material, nbRef,2
         >
@@ -654,13 +654,13 @@ struct DualQuatBlendTypes<
     {
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -671,7 +671,7 @@ struct DualQuatBlendTypes<
 
 // Warning !!!! Onlly the declaration is done. The actual definitions of the methods come from Quadratic->Affine (type case 3)
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdQuadraticTypes<3,typename _Material::Real>,
         Out, _Material, nbRef,5
         >
@@ -720,13 +720,13 @@ struct DualQuatBlendTypes<
     {
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 5>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 5>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 5>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdQuadraticTypes<3,typename _Material::Real>,Out, _Material, nbRef, 5>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -742,7 +742,7 @@ struct DualQuatBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdRigidTypes<3,typename _Material::Real>,
         Out, _Material, nbRef,0
         >
@@ -869,13 +869,13 @@ struct DualQuatBlendTypes<
             parentJacobianRow.addCol(index[i],parentJacobianVec);
         }
     }
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 0>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -889,7 +889,7 @@ struct DualQuatBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdRigidTypes<3,typename _Material::Real>,
         Out, _Material, nbRef, 3
         >
@@ -1053,13 +1053,13 @@ struct DualQuatBlendTypes<
 
 
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 3>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -1073,7 +1073,7 @@ struct DualQuatBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class Out, class _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdRigidTypes<3,typename _Material::Real>,
         Out, _Material, nbRef, 4
         >
@@ -1230,13 +1230,13 @@ struct DualQuatBlendTypes<
 
 
 
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 4>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 4>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 4>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 4>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -1250,7 +1250,7 @@ struct DualQuatBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class Out, class  _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdRigidTypes<3,typename _Material::Real>,
         Out, _Material, nbRef,1
         >
@@ -1453,13 +1453,13 @@ struct DualQuatBlendTypes<
             parentJacobianRow.addCol(index[i],parentJacobianVec);
         }
     }
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 1>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;
@@ -1474,7 +1474,7 @@ struct DualQuatBlendTypes<
 
 
 template<class Out, class  _Material, int nbRef>
-struct DualQuatBlendTypes<
+struct DualQuatBlending<
         StdRigidTypes<3,typename _Material::Real>,
         Out, _Material, nbRef,2
         >
@@ -1740,13 +1740,13 @@ struct DualQuatBlendTypes<
             parentJacobianRow.addCol(index[i],parentJacobianVec);
         }
     }
-    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    inline friend std::ostream& operator<< ( std::ostream& o, const DualQuatBlending<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return o;
     }
 
-    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlendTypes<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
+    inline friend std::istream& operator>> ( std::istream& i, DualQuatBlending<StdRigidTypes<3,typename _Material::Real>,Out, _Material, nbRef, 2>& /*e*/ )
     {
         // Not implemented !!  Just needed to compile
         return i;

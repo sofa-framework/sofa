@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_INL
 
 #include "FrameBlendingMapping.h"
-#include "LinearBlendTypes.inl"
-#include "DualQuatBlendTypes.inl"
+#include "LinearBlending.inl"
+#include "DualQuatBlending.inl"
 #include "GridMaterial.inl"
 #include <sofa/core/Mapping.inl>
 #include <sofa/helper/gl/Axis.h>
@@ -37,7 +37,6 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/topology/TopologyData.inl>
 #include <sofa/component/container/MechanicalObject.inl>
-//#include <sofa/component/topology/PointData.inl>
 #include <iostream>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/loader/MeshObjLoader.h>
@@ -121,8 +120,8 @@ template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
     : Inherit ( from, to ), FData(), SData()
     , useLinearWeights ( initData ( &useLinearWeights, false, "useLinearWeights","use linearly interpolated weights between the two closest frames." ) )
-    , inout ( initData ( &inout,"inout","Data specific to the conversion between the types" ) )
-    , dqinout ( initData ( &dqinout,"dqinout","Data specific to the conversion between the types" ) )
+    , blending ( initData ( &blending,"inout","Data specific to the conversion between the types" ) )
+    , dq_blending ( initData ( &dq_blending,"dqinout","Data specific to the conversion between the types" ) )
     , useDQ ( initData ( &useDQ, false, "useDQ","use dual quaternion blending instead of linear blending ." ) )
     , useAdaptivity ( initData ( &useAdaptivity, false, "useAdaptivity","use automatic frame and sample adaptation." ) )
     , maskFrom(NULL)
@@ -148,9 +147,9 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , showStrainScaleFactor ( initData ( &showStrainScaleFactor, 1.0, "showStrainScaleFactor","Strain Tensors Scale Factor." ) )
     , showDetF ( initData ( &showDetF, false, "showDetF","Show Computed Det F." ) )
     , showDetFScaleFactor ( initData ( &showDetFScaleFactor, 1.0, "showDetFScaleFactor","Det F Scale Factor." ) )
-    , targetFrameNumber ( initData ( &targetFrameNumber, ( unsigned int ) 0, "targetFrameNumber","Target frames number" ) )
+    , targetFrameNumber ( initData ( &targetFrameNumber, ( unsigned int ) 0, "targetFrameNumber","Desired number of frames resulting from the automatic discretization of the material. Use 0 to use user-defined frames." ) )
     , initializeFramesInRigidParts ( initData ( &initializeFramesInRigidParts, false, "initializeFramesInRigidParts","Automatically initialize frames in rigid parts if stiffness>15E6." ) )
-    , targetSampleNumber ( initData ( &targetSampleNumber, ( unsigned int ) 0, "targetSampleNumber","Target samples number" ) )
+    , targetSampleNumber ( initData ( &targetSampleNumber, ( unsigned int ) 0, "targetSampleNumber","Desired number of integration points resulting from the automatic discretization of the material. Use 0 to use user-defined integration points." ) )
     , restrictInterpolationToLabel ( initData ( &restrictInterpolationToLabel, "restrictInterpolationToLabel","Restrict interpolation to a label in gridmaterial." ) )
 {
     pointHandler = new FramePointHandler(this, &f_initPos);
@@ -238,7 +237,7 @@ void FrameBlendingMapping<TIn, TOut>::init()
     // init jacobians for mapping
     if(useDQ.getValue())
     {
-        vector<DQInOut>& dqInOut = *(dqinout.beginEdit());
+        vector<DQBlending>& dqInOut = *(dq_blending.beginEdit());
         dqInOut.resize( out.size() );
         for(unsigned int i=0; i<out.size(); i++ )
         {
@@ -251,11 +250,11 @@ void FrameBlendingMapping<TIn, TOut>::init()
                 weightDeriv2.getValue()[i]
             );
         }
-        dqinout.endEdit();
+        dq_blending.endEdit();
     }
     else
     {
-        vector<InOut>& inOut = *(inout.beginEdit());
+        vector<Blending>& inOut = *(blending.beginEdit());
         inOut.resize( out.size() );
         for(unsigned int i=0; i<out.size(); i++ )
         {
@@ -268,14 +267,14 @@ void FrameBlendingMapping<TIn, TOut>::init()
                 weightDeriv2.getValue()[i]
             );
         }
-        inout.endEdit();
+        blending.endEdit();
     }
 
     // Create specific handler for the different PointData
     if (!useDQ.getValue())
     {
-        inout.createTopologicalEngine(to_topo);
-        inout.registerTopologicalData();
+        blending.createTopologicalEngine(to_topo);
+        blending.registerTopologicalData();
     }
     //else
     //{
@@ -325,8 +324,8 @@ void FrameBlendingMapping<TIn, TOut>::apply( InCoord& coord, const InCoord& rest
     gridMaterial->getIndices( reps, hexaID );
 
     // Allocates and initialises mapping data.
-    defaulttype::LinearBlendTypes<In,In,GridMat,nbRef, defaulttype::OutDataTypesInfo<In>::type > map;
-    defaulttype::DualQuatBlendTypes<In,In,GridMat,nbRef, defaulttype::OutDataTypesInfo<In>::type > dqmap;
+    defaulttype::LinearBlending<In,In,GridMat,nbRef, defaulttype::OutDataTypesInfo<In>::type > map;
+    defaulttype::DualQuatBlending<In,In,GridMat,nbRef, defaulttype::OutDataTypesInfo<In>::type > dqmap;
     if(useDQ.getValue()) dqmap.init(restCoord,reps,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
     else map.init(restCoord,reps,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
 
@@ -351,8 +350,8 @@ void FrameBlendingMapping<TIn, TOut>::apply( typename SData::MaterialCoord& coor
     gridMaterial->getIndices( reps, hexaID );
 
     // Allocates and initialises mapping data.
-    defaulttype::LinearBlendTypes<In,Vec3dTypes,GridMat,nbRef, 0 > map;
-    defaulttype::DualQuatBlendTypes<In,Vec3dTypes,GridMat,nbRef, 0 > dqmap;
+    defaulttype::LinearBlending<In,Vec3dTypes,GridMat,nbRef, 0 > map;
+    defaulttype::DualQuatBlending<In,Vec3dTypes,GridMat,nbRef, 0 > dqmap;
     if(useDQ.getValue()) dqmap.init(restCoord,reps,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
     else map.init(restCoord,reps,this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w,Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
 
@@ -373,13 +372,13 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
     if(useDQ.getValue())
         for ( unsigned int i = 0 ; i < out.size(); i++ )
         {
-            out[i] = dqinout[i].apply( in );
-//                    if( this->f_printLog.getValue() )   std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << std::endl;
+            out[i] = dq_blending[i].apply( in );
+            //                    if( this->f_printLog.getValue() )   std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << std::endl;
         }
     else
         for ( unsigned int i = 0 ; i < out.size(); i++ )
         {
-            out[i] = inout[i].apply( in );
+            out[i] = blending[i].apply( in );
             if( this->f_printLog.getValue() )     std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << std::endl;
         }
 
@@ -388,8 +387,8 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-//                 std::cout<<"maskto="<<   maskTo<<std::endl;
-//                if (this->maskTo) std::cout<<"masktoUse="<<   this->maskTo->isInUse()<<std::endl;
+    //                 std::cout<<"maskto="<<   maskTo<<std::endl;
+    //                if (this->maskTo) std::cout<<"masktoUse="<<   this->maskTo->isInUse()<<std::endl;
 
     if ((!this->maskTo)||(this->maskTo&& !(this->maskTo->isInUse())) )
     {
@@ -397,13 +396,13 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
         if(useDQ.getValue())
             for ( unsigned int i=0; i<out.size(); i++ )
             {
-                out[i] = dqinout[i].mult( in );
+                out[i] = dq_blending[i].mult( in );
                 //if( this->f_printLog.getValue() ) std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, out = "<< out[i] << std::endl;
             }
         else
             for ( unsigned int i=0; i<out.size(); i++ )
             {
-                out[i] = inout[i].mult( in );
+                out[i] = blending[i].mult( in );
                 //if( this->f_printLog.getValue() )     std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, out = "<< out[i] << std::endl;
             }
     }
@@ -416,13 +415,13 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
             for ( it=indices.begin(); it!=indices.end(); it++ )
             {
                 unsigned int i= ( unsigned int ) ( *it );
-                out[i] = dqinout[i].mult( in );
+                out[i] = dq_blending[i].mult( in );
             }
         else
             for ( it=indices.begin(); it!=indices.end(); it++ )
             {
                 unsigned int i= ( unsigned int ) ( *it );
-                out[i] = inout[i].mult( in );
+                out[i] = blending[i].mult( in );
             }
     }
 }
@@ -436,13 +435,13 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
         if(useDQ.getValue())
             for ( unsigned int i=0; i<in.size(); i++ ) // VecType
             {
-                dqinout[i].addMultTranspose( out, in[i] );
+                dq_blending[i].addMultTranspose( out, in[i] );
                 //if( this->f_printLog.getValue() )     std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
             }
         else
             for ( unsigned int i=0; i<in.size(); i++ ) // VecType
             {
-                inout[i].addMultTranspose( out, in[i] );
+                blending[i].addMultTranspose( out, in[i] );
                 //if( this->f_printLog.getValue() )    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
             }
 
@@ -461,7 +460,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
             for ( it=indices.begin(); it!=indices.end(); it++ ) // VecType
             {
                 const int i= ( int ) ( *it );
-                dqinout[i].addMultTranspose( out, in[i] );
+                dq_blending[i].addMultTranspose( out, in[i] );
                 // if( this->f_printLog.getValue() )      std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
                 for (unsigned int j = 0; j < nbRef; ++j)
                     maskFrom->insertEntry ( index[i][j] );
@@ -470,7 +469,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
             for ( it=indices.begin(); it!=indices.end(); it++ ) // VecType
             {
                 const int i= ( int ) ( *it );
-                inout[i].addMultTranspose( out, in[i] );
+                blending[i].addMultTranspose( out, in[i] );
                 // if( this->f_printLog.getValue() )    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
                 for (unsigned int j = 0; j < nbRef; ++j)
                     maskFrom->insertEntry ( index[i][j] );
@@ -495,7 +494,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parent
                 unsigned int childIndex = childParticle.index();
                 const OutDeriv& childJacobianVec = childParticle.val();
 
-                dqinout[childIndex].addMultTranspose( parentJacobian, childJacobianVec );
+                dq_blending[childIndex].addMultTranspose( parentJacobian, childJacobianVec );
             }
         else
             for (typename Out::MatrixDeriv::ColConstIterator childParticle = childJacobian.begin(); childParticle != childJacobian.end(); ++childParticle)
@@ -503,7 +502,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parent
                 unsigned int childIndex = childParticle.index();
                 const OutDeriv& childJacobianVec = childParticle.val();
 
-                inout[childIndex].addMultTranspose( parentJacobian, childJacobianVec );
+                blending[childIndex].addMultTranspose( parentJacobian, childJacobianVec );
             }
     }
 }
@@ -880,8 +879,8 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames (MassVector& f_mass0, M
 
     VecInDeriv d(in.size()),m(in.size());
 
-    defaulttype::LinearBlendTypes<In,Vec3dTypes,GridMat,nbRef, 0 > map;
-    defaulttype::DualQuatBlendTypes<In,Vec3dTypes,GridMat,nbRef, 0 > dqmap;
+    defaulttype::LinearBlending<In,Vec3dTypes,GridMat,nbRef, 0 > map;
+    defaulttype::DualQuatBlending<In,Vec3dTypes,GridMat,nbRef, 0 > dqmap;
 
     for(unsigned int i=0; i<out.size(); i++) // treat each sample
     {
@@ -1113,19 +1112,19 @@ void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
     }
 
     /*
-    // Display def tensor values for each points
-    if ( this->showDefTensorsValues.getValue())
-    {
-        char txt[100];
-        glColor3f( 0.5, 0.5, 0.5);
-        for ( unsigned int i=0;i<xto.size();i++ )
-        {
-            const Vec6& e = this->deformationTensors[i];
-            sprintf( txt, "( %i, %i, %i)", (int)(e[0]*scale), (int)(e[1]*scale), (int)(e[2]*scale));
-            sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
-        }
-    }
-    */
+                // Display def tensor values for each points
+                if ( this->showDefTensorsValues.getValue())
+                {
+                    char txt[100];
+                    glColor3f( 0.5, 0.5, 0.5);
+                    for ( unsigned int i=0;i<xto.size();i++ )
+                    {
+                        const Vec6& e = this->deformationTensors[i];
+                        sprintf( txt, "( %i, %i, %i)", (int)(e[0]*scale), (int)(e[1]*scale), (int)(e[2]*scale));
+                        sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
+                    }
+                }
+                */
 
     // Deformation tensor show
     if ( this->showStrain.getValue())
@@ -1159,13 +1158,13 @@ void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 
                             if(useDQ.getValue())
                             {
-                                defaulttype::DualQuatBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > map;
+                                defaulttype::DualQuatBlending<In,DefGrad1,GridMat,nbRef, 1 > map;
                                 map.init(out0,f_index.getValue()[indexP],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weight.getValue()[indexP],weightDeriv.getValue()[indexP],weightDeriv2.getValue()[indexP]);
                                 out = map.apply( xfrom );
                             }
                             else
                             {
-                                defaulttype::LinearBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > map;
+                                defaulttype::LinearBlending<In,DefGrad1,GridMat,nbRef, 1 > map;
                                 map.init(out0,f_index.getValue()[indexP],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weight.getValue()[indexP],weightDeriv.getValue()[indexP],weightDeriv2.getValue()[indexP]);
                                 out = map.apply( xfrom );
                             }
@@ -1215,13 +1214,13 @@ void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 
                         if(useDQ.getValue())
                         {
-                            defaulttype::DualQuatBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > map;
+                            defaulttype::DualQuatBlending<In,DefGrad1,GridMat,nbRef, 1 > map;
                             map.init(out0,f_index.getValue()[i],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weight.getValue()[i],weightDeriv.getValue()[i],weightDeriv2.getValue()[i]);
                             out = map.apply( xfrom );
                         }
                         else
                         {
-                            defaulttype::LinearBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > map;
+                            defaulttype::LinearBlending<In,DefGrad1,GridMat,nbRef, 1 > map;
                             map.init(out0,f_index.getValue()[i],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),weight.getValue()[i],weightDeriv.getValue()[i],weightDeriv2.getValue()[i]);
                             out = map.apply( xfrom );
                         }
@@ -1374,7 +1373,7 @@ void FrameBlendingMapping<TIn, TOut>::updateMapping(const bool& computeWeights)
     // init jacobians for mapping
     if(useDQ.getValue())
     {
-        vector<DQInOut>& dqInOut = *(dqinout.beginEdit());
+        vector<DQBlending>& dqInOut = *(dq_blending.beginEdit());
         dqInOut.resize( out.size() );
         for(unsigned int i=0; i<out.size(); i++ )
         {
@@ -1387,11 +1386,11 @@ void FrameBlendingMapping<TIn, TOut>::updateMapping(const bool& computeWeights)
                 weightDeriv2.getValue()[i]
             );
         }
-        dqinout.endEdit();
+        dq_blending.endEdit();
     }
     else
     {
-        vector<InOut>& inOut = *(inout.beginEdit());
+        vector<Blending>& inOut = *(blending.beginEdit());
         inOut.resize( out.size() );
         for(unsigned int i=0; i<out.size(); i++ )
         {
@@ -1404,7 +1403,7 @@ void FrameBlendingMapping<TIn, TOut>::updateMapping(const bool& computeWeights)
                 weightDeriv2.getValue()[i]
             );
         }
-        inout.endEdit();
+        blending.endEdit();
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Update_Mapping");
@@ -1452,40 +1451,40 @@ void FrameBlendingMapping<TIn, TOut>::checkForChanges()
         }
 
         /*/
-        // Remove a frame depending on the gradient of the deformation tensor.
-        ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > > index ( f_index );
-        ReadAccessor<Data<vector<Vec<nbRef,InReal> > > > m_weights ( weight );
-        for (unsigned int i = 0; i < this->addedFrameIndices.size();)
-        {
-            // Check all the elastons mapped by this frame.
-            double criteria = 0;
-            unsigned int nbElastons = 0;
-            for (unsigned int j = 0; j < index.size(); ++j)
-            {
-                for (unsigned int ref = 0; ref < nbRef; ++ref)
-                {
-                    if ( index[j][ref] == this->addedFrameIndices[i] && m_weights[j][ref] != 0) // If this elaston is mapped by the frame
+                    // Remove a frame depending on the gradient of the deformation tensor.
+                    ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > > index ( f_index );
+                    ReadAccessor<Data<vector<Vec<nbRef,InReal> > > > m_weights ( weight );
+                    for (unsigned int i = 0; i < this->addedFrameIndices.size();)
                     {
-                        double elastonCriteria = 0;
-                        for (unsigned int k = num_spatial_dimensions+9; k < OutCoord::total_size; ++k) // Check if the second order terms are < epsilon
-                            elastonCriteria += out[i][k] * out[i][k];
-                        criteria += sqrt( elastonCriteria) * pow (gridMaterial->getVolumeForVoronoi(j), 1/3.0);
-                        nbElastons++;
+                        // Check all the elastons mapped by this frame.
+                        double criteria = 0;
+                        unsigned int nbElastons = 0;
+                        for (unsigned int j = 0; j < index.size(); ++j)
+                        {
+                            for (unsigned int ref = 0; ref < nbRef; ++ref)
+                            {
+                                if ( index[j][ref] == this->addedFrameIndices[i] && m_weights[j][ref] != 0) // If this elaston is mapped by the frame
+                                {
+                                    double elastonCriteria = 0;
+                                    for (unsigned int k = num_spatial_dimensions+9; k < OutCoord::total_size; ++k) // Check if the second order terms are < epsilon
+                                        elastonCriteria += out[i][k] * out[i][k];
+                                    criteria += sqrt( elastonCriteria) * pow (gridMaterial->getVolumeForVoronoi(j), 1/3.0);
+                                    nbElastons++;
+                                }
+                            }
+                        }
+                        criteria /= nbElastons;
+
+                        serr << "removal criteria[" << i << "]: " << criteria << sendl;
+
+                        if (criteria < this->adaptativeCriteria.getValue())
+                        {
+                            removeFrame (i);
+                            dofModified = true;
+                        }
+                        else ++i;
                     }
-                }
-            }
-            criteria /= nbElastons;
-
-            serr << "removal criteria[" << i << "]: " << criteria << sendl;
-
-            if (criteria < this->adaptativeCriteria.getValue())
-            {
-                removeFrame (i);
-                dofModified = true;
-            }
-            else ++i;
-        }
-        //*/
+                    //*/
     }
 
 
@@ -1593,8 +1592,8 @@ bool FrameBlendingMapping<TIn, TOut>::inverseApply( InCoord& restCoord, InCoord&
     DefGrad1::set( out0, restCoord.getCenter()[0], restCoord.getCenter()[1], restCoord.getCenter()[2]);
     while (!stop)
     {
-        defaulttype::LinearBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > map;
-        defaulttype::DualQuatBlendTypes<In,DefGrad1,GridMat,nbRef, 1 > dqmap;
+        defaulttype::LinearBlending<In,DefGrad1,GridMat,nbRef, 1 > map;
+        defaulttype::DualQuatBlending<In,DefGrad1,GridMat,nbRef, 1 > dqmap;
 
         if (!gridMaterial->interpolateWeightsRepartition(out0.getCenter(),index,weights)) return false;
 

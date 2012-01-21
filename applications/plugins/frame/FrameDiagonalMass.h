@@ -31,7 +31,7 @@
 
 #include <sofa/core/behavior/Mass.h>
 #include "FrameMass.h"
-#include "MappingTypes.h"
+#include "Blending.h"
 #include "initFrame.h"
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 
@@ -47,6 +47,7 @@ using sofa::defaulttype::FrameData;
 using defaulttype::Quat;
 using sofa::component::topology::PointSetTopologyContainer;
 
+/** One different mass for each moving frame */
 template <class DataTypes, class TMassType>
 class FrameDiagonalMass : public core::behavior::Mass<DataTypes>
 {
