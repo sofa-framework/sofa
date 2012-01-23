@@ -137,14 +137,42 @@ protected:
         //void localStiffness();
         void init(double E, double L, double nu, double r, double rInner);
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& /*bi*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& bi )
         {
+            os	<< bi._E0 << " "
+                << bi._E << " "
+                << bi._nu << " "
+                << bi._L << " "
+                << bi._r << " "
+                << bi._rInner << " "
+                << bi._G << " "
+                << bi._Iy << " "
+                << bi._Iz << " "
+                << bi._J << " "
+                << bi._A << " "
+                << bi._Asy << " "
+                << bi._Asz << " "
+                << bi._k_loc;
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, BeamInfo& /*bi*/ )
+        inline friend std::istream& operator>> ( std::istream& in, BeamInfo& bi )
         {
+            in	>> bi._E0
+                >> bi._E
+                >> bi._nu
+                >> bi._L
+                >> bi._r
+                >> bi._rInner
+                >> bi._G
+                >> bi._Iy
+                >> bi._Iz
+                >> bi._J
+                >> bi._A
+                >> bi._Asy
+                >> bi._Asz
+                >> bi._k_loc;
             return in;
         }
     };
