@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
+
 <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Frame-based Elastic Materials</title></head><body>
   
 <h1>Frame-based Elastic Materials</h1>
@@ -12,28 +13,32 @@ This SOFA plugin implements the work presented in the following papers:<br>
 <dl class="NoticeResAvecVignette">
 <dd class="ValeurResAvecVignette Fichier_joint">
 <a href="http://hal.inria.fr/inria-00589199" target="_blank">
-<img style="border: 0px solid ; width: 293px; height: 93px;" src="http://hal.inria.fr/docs/00/58/91/99/IMG/Teaser.png" alt="Icone de Teaser.png" title="Teaser.png">&nbsp; Frame-based Elastic Models</a>&nbsp;&nbsp; Benjamin Gilles; Guillaume Bousquet; François Faure; Dinesh Pai<i>, ACM Transactions on Graphics</i>, ACM, 2011, 30 (2)<a href="http://hal.inria.fr/inria-00589199/PDF/FBEM.pdf" onclick="jsRequestMajCptConsult(589199);" target="_blank"></a>&nbsp;<span class="LienBibtexACoteFulltext"><a href="http://haltools.inrialpes.fr/Public/AfficheBibTex.php?id=inria-00589199" target="_self"></a>
+<img style="border: 0px solid ; width: 136px; height: 43px;" src="http://hal.inria.fr/docs/00/58/91/99/IMG/Teaser.png" alt="Icone de Teaser.png" title="Teaser.png">&nbsp; Frame-based Elastic Models</a>&nbsp;&nbsp; Benjamin Gilles; Guillaume Bousquet; François Faure; Dinesh Pai<i>, ACM Transactions on Graphics</i>, ACM, 2011, 30 (2)<a href="http://hal.inria.fr/inria-00589199/PDF/FBEM.pdf" onclick="jsRequestMajCptConsult(589199);" target="_blank"></a>&nbsp;<span class="LienBibtexACoteFulltext"><a href="http://haltools.inrialpes.fr/Public/AfficheBibTex.php?id=inria-00589199" target="_self"></a>
 </span></dd>
 </dl>
 
 <dl class="NoticeResAvecVignette">
 <dd class="ValeurResAvecVignette Detail">
 <a href="http://hal.inria.fr/inria-00589204" target="_blank">
-<img style="border: 0px solid ; width: 99px; height: 123px;" src="http://hal.inria.fr/docs/00/61/55/07/IMG/steak-deformed2.png" alt="Icone de steak-deformed2.png" title="steak-deformed2.png">Sparse Meshless Models of Complex Deformable Solids</a>&nbsp; François Faure; Benjamin Gilles; Guillaume Bousquet; Dinesh K. Pai,<i>&nbsp; ACM Transactions on Graphics</i>, ACM, 2011, Proceedings of SIGGRAPH'2011</dd>
+<img style="border: 0px solid ; width: 46px; height: 58px;" src="http://hal.inria.fr/docs/00/61/55/07/IMG/steak-deformed2.png" alt="Icone de steak-deformed2.png" title="steak-deformed2.png">Sparse Meshless Models of Complex Deformable Solids</a>&nbsp; François Faure; Benjamin Gilles; Guillaume Bousquet; Dinesh K. Pai,<i>&nbsp; ACM Transactions on Graphics</i>, ACM, 2011, Proceedings of SIGGRAPH'2011</dd>
 </dl>
 <br>
 <br>
 Type command <span style="font-family: monospace;">doxygen Doxyfile</span> in this directory to generate the code documentation, then read the main page <a href="doxygen/html/index.html">doxygen/html/index.html</a><br>
+We first present a <a href="#Simple_example">simple example</a>, then an advanced <a href="#Frame-based_elastic_model">example of frame-based elastic model</a>, then an advanced <a href="#Complex_deformable_solid">example of complex deformable solid</a>.<br>
 <br>
-<br>
-The current implementation uses two levels of scenegraph nodes, as illustrated in the <a href="#Snapshot_D332">next figure</a>. The moving frames are in the <span style="font-style: italic;">Beam</span> parent node, while the <span style="font-style: italic;">Physics</span> child node contains deformation gradients (or elastons). A skinning mapping (also called frame blending), <span style="font-style: italic;">FrameBlendingMapping</span>,&nbsp; creates the connections. It is the main workhorse of the <span style="font-style: italic;">Frame-based Elastic Models</span> paper.<br>
+<h3><a name="Simple_example"></a>Simple example</h3>
+
+The current implementation uses two levels of scenegraph nodes, as illustrated in the <a href="#Snapshot_D332">next figure</a>. In this simple example (file&nbsp; <a href="basic_Affine-D332.scn" target="_blank">basic_Affine-D332.scn</a>), the moving frames (shown as red, green, blue frames) are in the <span style="font-style: italic;">Beam</span> parent node, while the <span style="font-style: italic;">Physics</span> child node contains deformation gradients (or elastons). A skinning mapping (also called frame blending), <span style="font-style: italic;">FrameBlendingMapping</span>,&nbsp; creates the connections. It is the main workhorse of the <span style="font-style: italic;">Frame-based Elastic Models</span> paper. Here it maps only one sample, shown as a yellow cross. It is an elaston ( <span style="font-style: italic;">DeformationGradient332</span>
+template specialization), therefore a single one is sufficient to
+capture all the deformation modes between the two affine frames.<br>
 The material constitutive law is implemented in ForceFields applied to
 the sampling points, here a GreenLagrangeForceField and a
 FrameVolumePreservationForceField. The material parameters are actually
 defined in the top level, in the HookeMaterial3 component. <br>
 Other children can be mapped, such as a collision model and a
 volumetric model. In thi case the children are points, not deformation
-gradients.<br>
+gradients (<span style="font-style: italic;">Vec3d</span> and <span style="font-style: italic;">ExtVec3f</span> template specializations).<br>
 <br>
 <br>
 <table style="text-align: left; width: 100%;" border="1" cellpadding="2" cellspacing="2">
@@ -49,6 +54,11 @@ is a visual model.</td>
     </tr>
   </tbody>
 </table>
+<br>
+<br>
+<h3><a name="Frame-based_elastic_model"></a>Frame-based elastic model</h3>
+<br>
+<h3><a name="Complex_deformable_solid"></a>Complex deformable solid</h3>
 <br>
 <br>
 <br>
