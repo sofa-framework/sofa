@@ -27,7 +27,7 @@
 
 
 #include "HexaRemover.h"
-#include "MeshGenerater.inl"
+#include "MeshGenerator.inl"
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
 

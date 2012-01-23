@@ -26,7 +26,7 @@
 #define SOFA_FRAME_HEXA_REMOVER_H
 
 #include "Blending.h"
-#include "MeshGenerater.h"
+#include "MeshGenerator.h"
 #include <sofa/gpu/cuda/CudaRasterizer.h>
 #include <map>
 
@@ -62,7 +62,7 @@ class HexaRemover: public core::objectmodel::BaseObject
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
 
-    typedef typename engine::MeshGenerater<DataTypes> MeshGen;
+    typedef typename engine::MeshGenerator<DataTypes> MeshGen;
     typedef typename MeshGen::GridMat GridMat;
     typedef typename MeshGen::GCoord GCoord;
     typedef typename MeshGen::SCoord SCoord;

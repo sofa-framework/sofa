@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FRAME_MAPPINGTYPES_H
-#define FRAME_MAPPINGTYPES_H
+#ifndef FRAME_BLENDING_H
+#define FRAME_BLENDING_H
 
 #include "FrameMass.h"
 #include "LinearBlending.h"

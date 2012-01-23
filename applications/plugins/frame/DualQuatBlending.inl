@@ -25,7 +25,7 @@
 #ifndef SOFA_DEFAULTTYPE_DUALQUATBLENTYPES_INL
 #define SOFA_DEFAULTTYPE_DUALQUATBLENTYPES_INL
 
-#include "DualQuatBlending.h"
+#include <sofa/helper/DualQuat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
 
@@ -761,7 +761,7 @@ struct DualQuatBlending<
     typedef typename In::VecDeriv VecInDeriv;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
     typedef typename In::Deriv InDeriv;
-    typedef DualQuatCoord<3,InReal> DQCoord;
+    typedef helper::DualQuatCoord3<InReal> DQCoord;
 
     struct JacobianBlock
     {
@@ -912,7 +912,7 @@ struct DualQuatBlending<
     typedef Mat<3,3,Real> Mat33;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
     typedef typename In::Deriv InDeriv;
-    typedef DualQuatCoord<3,InReal> DQCoord;
+    typedef helper::DualQuatCoord3<InReal> DQCoord;
 
 
     struct JacobianBlock
@@ -1029,7 +1029,7 @@ struct DualQuatBlending<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-        */
+          */
         for ( unsigned int i=0; i<nbRef && Jb[i].w>0; i++ )
         {
             getLinear(res[index[i]]) +=  Jb[i].Pt.transposed() * d.getVCenter();
@@ -1096,7 +1096,7 @@ struct DualQuatBlending<
     typedef Mat<3,3,Real> Mat33;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
     typedef typename In::Deriv InDeriv;
-    typedef DualQuatCoord<3,InReal> DQCoord;
+    typedef helper::DualQuatCoord3<InReal> DQCoord;
 
 
     struct JacobianBlock
@@ -1206,7 +1206,7 @@ struct DualQuatBlending<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-        */
+          */
         for ( unsigned int i=0; i<nbRef && Jb[i].w>0; i++ )
         {
             getLinear(res[index[i]]) +=  Jb[i].Pt.transposed() * d.getVCenter();
@@ -1273,7 +1273,7 @@ struct DualQuatBlending<
     typedef Mat<3,3,Real> Mat33;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
     typedef typename In::Deriv InDeriv;
-    typedef DualQuatCoord<3,InReal> DQCoord;
+    typedef helper::DualQuatCoord3<InReal> DQCoord;
 
     struct JacobianBlock
     {
@@ -1497,7 +1497,7 @@ struct DualQuatBlending<
     typedef Mat<3,3,Real> Mat33;
     typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
     typedef typename In::Deriv InDeriv;
-    typedef DualQuatCoord<3,InReal> DQCoord;
+    typedef helper::DualQuatCoord3<InReal> DQCoord;
 
     struct JacobianBlock
     {

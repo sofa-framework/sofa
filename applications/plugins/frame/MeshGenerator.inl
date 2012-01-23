@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_FRAME_MESHGENERATER_INL
-#define SOFA_FRAME_MESHGENERATER_INL
+#ifndef SOFA_FRAME_MESHGENERATOR_INL
+#define SOFA_FRAME_MESHGENERATOR_INL
 
-#include "MeshGenerater.h"
+#include "MeshGenerator.h"
 
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 #include <sofa/component/topology/PointSetTopologyModifier.h>
@@ -70,7 +70,7 @@ using namespace sofa::helper::gl;
 using namespace sofa::simulation;
 
 template <class DataTypes>
-MeshGenerater<DataTypes>::MeshGenerater ()
+MeshGenerator<DataTypes>::MeshGenerator ()
     : core::DataEngine (),
       roi ( initData ( &roi, Vec6i ( 0,0,0, 0xFFFF, 0xFFFF, 0xFFFF ), "ROI", "Region of interest (xmin, ymin, zmin, xmax, ymax, zmax)" ) ),
       mIsoValue ( initData ( &mIsoValue, 128.0f, "isoValue", "Iso-value to be used by marching cubes." ) ),
@@ -91,13 +91,13 @@ MeshGenerater<DataTypes>::MeshGenerater ()
 
 
 template <class DataTypes>
-MeshGenerater<DataTypes>::~MeshGenerater()
+MeshGenerator<DataTypes>::~MeshGenerator()
 {
 }
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::init()
+void MeshGenerator<DataTypes>::init()
 {
     addInput(&roi);
     addInput(&mIsoValue);
@@ -185,7 +185,7 @@ void MeshGenerater<DataTypes>::init()
             sout << "Init of the mCube seeds." << sendl;
             vector<Vec<3, int> >& seeds = *mCubeSeeds.beginEdit();
             marchingCubes.findSeeds ( seeds, mIsoValue.getValue(), &valueData[0] );
-            sout << "You can add the following seeds to the scene file by adding to the MeshGenerater component the option 'seeds=\"" << seeds << "\"' to obtain a faster initialization." << sendl;
+            sout << "You can add the following seeds to the scene file by adding to the MeshGenerator component the option 'seeds=\"" << seeds << "\"' to obtain a faster initialization." << sendl;
             mCubeSeeds.endEdit();
         }
 
@@ -240,7 +240,7 @@ void MeshGenerater<DataTypes>::init()
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::initVoxels()
+void MeshGenerator<DataTypes>::initVoxels()
 {
     const Vec3i& res = voxelDimension.getValue();
     valueData.resize(res[0]*res[1]*res[2]);
@@ -259,7 +259,7 @@ void MeshGenerater<DataTypes>::initVoxels()
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::initOglAttributes()
+void MeshGenerator<DataTypes>::initOglAttributes()
 {
     sofa::helper::vector< OglFloatAttribute* > vecFloatAttribute;
     segmentationID = NULL;
@@ -309,7 +309,7 @@ void MeshGenerater<DataTypes>::initOglAttributes()
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::getFromIndex ( vector<unsigned int>& fromIndices, const unsigned int toIndex ) const
+void MeshGenerator<DataTypes>::getFromIndex ( vector<unsigned int>& fromIndices, const unsigned int toIndex ) const
 {
     fromIndices.clear();
     const vector< vector< HexaIDInRegularGrid > >& triIRG = triangleIndexInRegularGrid.getValue();
@@ -318,7 +318,7 @@ void MeshGenerater<DataTypes>::getFromIndex ( vector<unsigned int>& fromIndices,
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::getToIndex ( vector<unsigned int>& toIndices, const unsigned int fromIndex ) const
+void MeshGenerator<DataTypes>::getToIndex ( vector<unsigned int>& toIndices, const unsigned int fromIndex ) const
 {
     toIndices.clear();
     const map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >& triIDirg2iit = triangleIDInRegularGrid2IndexInTopo.getValue();
@@ -331,7 +331,7 @@ void MeshGenerater<DataTypes>::getToIndex ( vector<unsigned int>& toIndices, con
 
 /*
 template <class DataTypes>
-void MeshGenerater<DataTypes>::updateTopologicalMappingTopDown()
+void MeshGenerator<DataTypes>::updateTopologicalMappingTopDown()
 {
         // Handle topological changes on the hexa topology
         std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
@@ -346,7 +346,7 @@ void MeshGenerater<DataTypes>::updateTopologicalMappingTopDown()
 
                 case core::topology::ENDING_EVENT:
                         {
-                                // sout << "INFO_print : MeshGenerater - ENDING_EVENT" << sendl;
+                                // sout << "INFO_print : MeshGenerator - ENDING_EVENT" << sendl;
                                 _to_tstm->propagateTopologicalChanges();
                                 _to_tstm->notifyEndingEvent();
                                 _to_tstm->propagateTopologicalChanges();
@@ -355,7 +355,7 @@ void MeshGenerater<DataTypes>::updateTopologicalMappingTopDown()
 
                 case core::topology::TRIANGLESREMOVED:
                         {
-                                //sout << "INFO_print : MeshGenerater - TRIANGLESREMOVED" << sendl;
+                                //sout << "INFO_print : MeshGenerator - TRIANGLESREMOVED" << sendl;
                                 // Nothing to do.
                                 break;
                         }
@@ -372,14 +372,14 @@ void MeshGenerater<DataTypes>::updateTopologicalMappingTopDown()
 
                 case core::topology::POINTSREMOVED:
                         {
-                                // sout << "INFO_print : MeshGenerater - POINTSREMOVED" << sendl;
+                                // sout << "INFO_print : MeshGenerator - POINTSREMOVED" << sendl;
                                 // do nothing
                                 break;
                         }
 
                 case core::topology::POINTSRENUMBERING:
                         {
-                                // sout << "INFO_print : MeshGenerater - POINTSRENUMBERING" << sendl;
+                                // sout << "INFO_print : MeshGenerator - POINTSRENUMBERING" << sendl;
                                 // do nothing
                                 break;
                         }
@@ -396,7 +396,7 @@ void MeshGenerater<DataTypes>::updateTopologicalMappingTopDown()
 */
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::removeVoxels ( const sofa::helper::vector<unsigned int>& removedHexahedraID )
+void MeshGenerator<DataTypes>::removeVoxels ( const sofa::helper::vector<unsigned int>& removedHexahedraID )
 {
     // Delete voxels
     gridMat->removeVoxels( removedHexahedraID);
@@ -417,14 +417,14 @@ void MeshGenerater<DataTypes>::removeVoxels ( const sofa::helper::vector<unsigne
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::update()
+void MeshGenerator<DataTypes>::update()
 {
     // Not implemented. As the voxel array is not an input data, the method 'removeVoxels' must be explicit called to update the ouput topology.
 }
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::removeOldMesh ( const sofa::helper::vector<unsigned int>& removedHexahedraID )
+void MeshGenerator<DataTypes>::removeOldMesh ( const sofa::helper::vector<unsigned int>& removedHexahedraID )
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Remove_old_mesh");
@@ -505,7 +505,7 @@ void MeshGenerater<DataTypes>::removeOldMesh ( const sofa::helper::vector<unsign
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::localyRemesh ( const sofa::helper::vector<BaseMeshTopology::PointID> &removedHexaID )
+void MeshGenerator<DataTypes>::localyRemesh ( const sofa::helper::vector<BaseMeshTopology::PointID> &removedHexaID )
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Localy_remesh");
@@ -533,7 +533,7 @@ void MeshGenerater<DataTypes>::localyRemesh ( const sofa::helper::vector<BaseMes
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vector< unsigned int>& triangles, const sofa::helper::vector<BaseMeshTopology::PointID> &removedHexaID )
+void MeshGenerator<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vector< unsigned int>& triangles, const sofa::helper::vector<BaseMeshTopology::PointID> &removedHexaID )
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Compute_New_Mesh");
@@ -695,7 +695,7 @@ void MeshGenerater<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::addNewEltsInTopology ( const sofa::helper::vector< Vector3 >& vertices, const sofa::helper::vector< unsigned int>& triangles )
+void MeshGenerator<DataTypes>::addNewEltsInTopology ( const sofa::helper::vector< Vector3 >& vertices, const sofa::helper::vector< unsigned int>& triangles )
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Add_New_Elements_In_Topology");
@@ -752,7 +752,7 @@ void MeshGenerater<DataTypes>::addNewEltsInTopology ( const sofa::helper::vector
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::smoothMesh ( const unsigned int oldVertSize, const unsigned int oldTriSize)
+void MeshGenerator<DataTypes>::smoothMesh ( const unsigned int oldVertSize, const unsigned int oldTriSize)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("smooth_Mesh");
@@ -823,7 +823,7 @@ void MeshGenerater<DataTypes>::smoothMesh ( const unsigned int oldVertSize, cons
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::updateOglAttributes ( const unsigned int oldVertSize, const unsigned int oldTriSize)
+void MeshGenerator<DataTypes>::updateOglAttributes ( const unsigned int oldVertSize, const unsigned int oldTriSize)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("UpdateOglAttributes");
@@ -915,7 +915,7 @@ void MeshGenerater<DataTypes>::updateOglAttributes ( const unsigned int oldVertS
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::updateTrianglesInfos( const vector< vector<unsigned int> >& triIDirg)
+void MeshGenerator<DataTypes>::updateTrianglesInfos( const vector< vector<unsigned int> >& triIDirg)
 {
     // Add all the regular grid indices of the new triangles to the 'triangleIndexInRegularGrid' struct
     vector< vector< HexaIDInRegularGrid > >& triangleIDirg = *triangleIndexInRegularGrid.beginEdit();
@@ -934,7 +934,7 @@ void MeshGenerater<DataTypes>::updateTrianglesInfos( const vector< vector<unsign
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::draw()
+void MeshGenerator<DataTypes>::draw()
 {
     //if ( !getContext()->getShowMappings() ) return;
 
@@ -1012,7 +1012,7 @@ void MeshGenerater<DataTypes>::draw()
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::handleEvent ( core::objectmodel::Event * /*event*/ )
+void MeshGenerator<DataTypes>::handleEvent ( core::objectmodel::Event * /*event*/ )
 {
     std::list<const TopologyChange *>::const_iterator itBegin= _to_topo->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd= _to_topo->endChange();
@@ -1029,7 +1029,7 @@ void MeshGenerater<DataTypes>::handleEvent ( core::objectmodel::Event * /*event*
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::dispMaps() const
+void MeshGenerator<DataTypes>::dispMaps() const
 {
     serr << "triangleIndexInRegularGrid:" << sendl;
     unsigned int cpt = 0;
@@ -1060,7 +1060,7 @@ void MeshGenerater<DataTypes>::dispMaps() const
 
 
 template <class DataTypes>
-void MeshGenerater<DataTypes>::getHexaCoord( Coord& coord, const unsigned int hexaID) const
+void MeshGenerator<DataTypes>::getHexaCoord( Coord& coord, const unsigned int hexaID) const
 {
     SCoord sCoord;
     if( !gridMat->getCoord( hexaID, sCoord)) serr << "Warning: unexisting coord ID." << sendl;
@@ -1075,4 +1075,4 @@ void MeshGenerater<DataTypes>::getHexaCoord( Coord& coord, const unsigned int he
 
 } // namespace sofa
 
-#endif // SOFA_FRAME_MESHGENERATER_H
+#endif // SOFA_FRAME_MESHGENERATOR_H

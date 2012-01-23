@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_FRAME_MESHGENERATER_H
-#define SOFA_FRAME_MESHGENERATER_H
+#ifndef SOFA_FRAME_MESHGENERATOR_H
+#define SOFA_FRAME_MESHGENERATOR_H
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/helper/MarchingCubeUtility.h>
@@ -74,7 +74,7 @@ using sofa::component::material::GridMaterial;
 using sofa::component::material::Material3d;
 
 /**
-* This class, called MeshGenerater, generate a triangular mesh from a voxel array :
+* This class, called MeshGenerator, generate a triangular mesh from a voxel array :
 *
 * Considering as INPUT:
 * - a voxel array (retreived from GridMaterial)
@@ -85,12 +85,12 @@ using sofa::component::material::Material3d;
 * - triangular topology
 * with the marching cubes algorithm
 *
-* MeshGenerater class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
+* MeshGenerator class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
 *
 */
 
 template <class DataTypes>
-class MeshGenerater : public core::DataEngine
+class MeshGenerator : public core::DataEngine
 {
 public:
     typedef typename DataTypes::Coord Coord;
@@ -112,7 +112,7 @@ public:
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
 
-    SOFA_CLASS(MeshGenerater, core::DataEngine);
+    SOFA_CLASS(MeshGenerator, core::DataEngine);
 
     template <class T>
     class ElementSet: public std::set<T>
@@ -144,13 +144,13 @@ public:
         *
         * Does nothing.
         */
-    MeshGenerater();
+    MeshGenerator();
 
     /** \brief Destructor.
     *
     * Does nothing.
     */
-    virtual ~MeshGenerater();
+    virtual ~MeshGenerator();
 
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
     */
@@ -290,4 +290,4 @@ protected:
 
 } // namespace sofa
 
-#endif // SOFA_FRAME_MESHGENERATER_H
+#endif // SOFA_FRAME_MESHGENERATOR_H
