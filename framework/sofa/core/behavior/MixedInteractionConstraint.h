@@ -131,13 +131,22 @@ public:
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
-        {
-            if (dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
-                return false;
-            if (dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-                return false;
-        }
+        MechanicalState<DataTypes1>* mstate1 = NULL;
+        MechanicalState<DataTypes2>* mstate2 = NULL;
+        std::string object1 = arg->getAttribute("object1","@./");
+        std::string object2 = arg->getAttribute("object2","@./");
+        if (object1.empty()) object1 = "@./";
+        if (object2.empty()) object2 = "@./";
+        if (object1[0] != '@')
+            object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
+        if (object2[0] != '@')
+            object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
+        context->findLinkDest(mstate1, object1, NULL);
+        context->findLinkDest(mstate2, object2, NULL);
+
+        if (!mstate1 || !mstate2)
+            return false;
+
         return BaseInteractionConstraint::canCreate(obj, context, arg);
     }
 
@@ -147,10 +156,22 @@ public:
     {
         typename T::SPtr obj = core::behavior::BaseInteractionConstraint::create(p0, context, arg);
 
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
+        if (arg)
         {
-            obj->mstate1 = dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->mstate2 = dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2","..")));
+            std::string object1 = arg->getAttribute("object1","");
+            std::string object2 = arg->getAttribute("object2","");
+            if (!object1.empty() && object1[0] != '@')
+            {
+                object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
+                arg->setAttribute("object1", object1.c_str());
+            }
+            if (!object2.empty() && object2[0] != '@')
+            {
+                object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
+                arg->setAttribute("object2", object2.c_str());
+            }
+
+            obj->parse(arg);
         }
 
         return obj;
@@ -167,10 +188,8 @@ public:
     }
 
 protected:
-    Data< std::string > object1;
-    Data< std::string > object2;
-    MechanicalState<DataTypes1> *mstate1;
-    MechanicalState<DataTypes2> *mstate2;
+    SingleLink<MixedInteractionConstraint<DataTypes1,DataTypes2>, MechanicalState<DataTypes1>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
+    SingleLink<MixedInteractionConstraint<DataTypes1,DataTypes2>, MechanicalState<DataTypes2>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
     ParticleMask *mask1;
     ParticleMask *mask2;
 };
