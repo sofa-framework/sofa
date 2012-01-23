@@ -33,6 +33,10 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Quat.h>
+#include <newmat/newmat.h>
+#include <newmat/newmatap.h>
 
 namespace sofa
 {
@@ -64,6 +68,7 @@ public:
     Data< Real > voxelSize;
     Data< bool > rotateImage;
     Data< unsigned int > padSize;
+    Data< unsigned int > subdiv;
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -96,6 +101,7 @@ public:
         , voxelSize(initData(&voxelSize,(Real)(1.0),"voxelSize","voxel Size"))
         , rotateImage(initData(&rotateImage,false,"rotateImage","orient the image bounding box according to the mesh (OBB)"))
         , padSize(initData(&padSize,(unsigned int)(0),"padSize","size of border in number of voxels"))
+        , subdiv(initData(&subdiv,(unsigned int)(4),"subdiv","number of subdivisions for face rasterization (if needed, increase to avoid holes)"))
         , image(initData(&image,ImageTypes(),"image",""))
         , transform(initData(&transform,TransformType(),"transform",""))
         , position(initData(&position,SeqPositions(),"position","input positions"))
@@ -134,21 +140,59 @@ protected:
         waImage iml(this->image);
         waTransform tr(this->transform);
 
-        // update transform using (O)BB
+        // update transform
+        for(unsigned int j=0; j<3; j++) tr->getScale()[j]=this->voxelSize.getValue();
 
         Real BB[3][2]= { {pos[0][0],pos[0][0]} , {pos[0][1],pos[0][1]} , {pos[0][2],pos[0][2]} };
-        if(!this->rotateImage.getValue())
+        if(!this->rotateImage.getValue()) // use Axis Aligned Bounding Box
         {
             for(unsigned int i=1; i<nbp; i++) for(unsigned int j=0; j<3; j++) { if(BB[j][0]>pos[i][j]) BB[j][0]=pos[i][j]; if(BB[j][1]<pos[i][j]) BB[j][1]=pos[i][j]; }
             for(unsigned int j=0; j<3; j++) tr->getRotation()[j]=(Real)0 ;
+            for(unsigned int j=0; j<3; j++) tr->getTranslation()[j]=BB[j][0]-tr->getScale()[j]*this->padSize.getValue();
         }
-        else
+        else  // use Oriented Bounding Box
         {
+            // get mean and covariance
+            Coord mean; mean.fill(0);
+            for(unsigned int i=0; i<nbp; i++) mean+=pos[i];
+            mean/=(Real)nbp;
+            Mat<3,3,Real> M; M.fill(0);
+            for(unsigned int i=0; i<nbp; i++)  for(unsigned int j=0; j<3; j++)  for(unsigned int k=j; k<3; k++)  M[j][k] += (pos[i][j] - mean[j]) * (pos[i][k] - mean[k]);
+            M/=(Real)nbp;
+            // get eigen vectors of the covariance matrix
+            NEWMAT::SymmetricMatrix e(3); e = 0.0;
+            for(unsigned int j=0; j<3; j++) { for(unsigned int k=j; k<3; k++)  e(j+1,k+1) = M[j][k]; for(unsigned int k=0; k<j; k++)  e(k+1,j+1) = e(j+1,k+1); }
+            NEWMAT::DiagonalMatrix D(3); D = 0.0;
+            NEWMAT::Matrix V(3,3); V = 0.0;
+            NEWMAT::Jacobi(e, D, V);
+            for(unsigned int j=0; j<3; j++) for(unsigned int k=0; k<3; k++) M[j][k]=V(j+1,k+1);
+            if(determinant(M)<0) M*=(Real)-1.0;
+            Mat<3,3,Real> MT=M.transposed();
 
+            // get orientation from eigen vectors
+            helper::Quater< Real > q; q.fromMatrix(M);
+            //  q.toEulerVector() does not work
+            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
+            tr->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
+            tr->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
+            tr->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+
+//std::cout<<"M="<<M<<std::endl;
+//std::cout<<"q="<<q<<std::endl;
+//std::cout<<"rot="<<tr->getRotation()<<std::endl;
+//helper::Quater< Real > qtest= helper::Quater< Real >::createQuaterFromEuler(tr->getRotation());
+//std::cout<<"qtest="<<qtest<<std::endl;
+//Mat<3,3,Real> Mtest; qtest.toMatrix(Mtest);
+//std::cout<<"Mtest="<<Mtest<<std::endl;
+
+            // get bb
+            Coord P=MT*pos[0];
+            for(unsigned int i=0; i<3; i++) BB[i][0] = BB[i][1] = P[i];
+            for(unsigned int i=1; i<nbp; i++) { P=MT*(pos[i]);  for(unsigned int j=0; j<3; j++) { if(BB[j][0]>P[j]) BB[j][0]=P[j]; if(BB[j][1]<P[j]) BB[j][1]=P[j]; } }
+            P=Coord(BB[0][0],BB[1][0],BB[2][0]) - tr->getScale()*this->padSize.getValue();
+            tr->getTranslation()=M*(P);
         }
 
-        for(unsigned int j=0; j<3; j++) tr->getScale()[j]=this->voxelSize.getValue();
-        for(unsigned int j=0; j<3; j++) tr->getTranslation()[j]=BB[j][0]-tr->getScale()[j]*this->padSize.getValue();
         tr->getOffsetT()=(Real)0.0;
         tr->getScaleT()=(Real)1.0;
         tr->isPerspective()=false;
@@ -156,7 +200,7 @@ protected:
 
         // update image extents
         unsigned int dim[3];
-        for(unsigned int j=0; j<3; j++) dim[j]=ceil((BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
+        for(unsigned int j=0; j<3; j++) dim[j]=1+ceil((BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
         iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
         CImg<T>& im=iml->getCImg();
         T color0=(T)0,color1=(T)1;
@@ -168,7 +212,7 @@ protected:
         {
             Coord pts[3];
             for(unsigned int j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
-            this->draw_triangle(im,pts[0],pts[1],pts[2],color0,4);
+            this->draw_triangle(im,pts[0],pts[1],pts[2],color0,this->subdiv.getValue());
         }
 
         // flood fill from the exterior point (0,0,0)
