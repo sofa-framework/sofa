@@ -254,5 +254,8 @@ int main(int argc, char** argv)
     if (groot!=NULL)
         sofa::simulation::getSimulation()->unload(groot);
 
+
+    sofa::gui::GUIManager::closeGUI();
+
     return 0;
 }

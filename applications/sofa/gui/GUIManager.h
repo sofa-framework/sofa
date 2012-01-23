@@ -77,6 +77,7 @@ public:
     static std::string ListSupportedGUI(char separator);
     static void AddGUIOption(const char* option);
     static int createGUI(sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static void closeGUI();
 
     /// @name Static methods for direct access to GUI
     /// @{
@@ -89,6 +90,7 @@ public:
     static void SetScene(sofa::simulation::Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
     static void SetDimension(int  width , int  height );
     static void SetFullScreen();
+
 
     /// @}
 protected:
