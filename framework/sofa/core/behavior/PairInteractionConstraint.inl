@@ -40,10 +40,8 @@ namespace behavior
 template<class DataTypes>
 PairInteractionConstraint<DataTypes>::PairInteractionConstraint(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
     : endTime( initData(&endTime,(double)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
-    , object1( initData(&object1, "object1", "First Object to Constraint"))
-    , object2( initData(&object2, "object2", "Second Object to Constraint"))
-    , mstate1(mm1)
-    , mstate2(mm2)
+    , mstate1(initLink("object1", "First object to constrain"), mm1)
+    , mstate2(initLink("object2", "Second object to constrain"), mm2)
 {
 }
 
@@ -88,7 +86,7 @@ void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const Constrain
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams /* PARAMS FIRST */, *cId[mstate1].write(), *cId[mstate2].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
+        buildConstraintMatrix(cParams /* PARAMS FIRST */, *cId[mstate1.get(cParams)].write(), *cId[mstate2.get(cParams)].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
     }
 }
 
