@@ -26,7 +26,7 @@
 
 		<Node name="Physics">
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
-			<Mesh src="@MeshLoader"  tags="LDI"/>
+			<Mesh src="@MeshLoader"  />
 			<MechanicalObject  template="DeformationGradient331" name="PointSet"   showObject="1" showObjectScale="0.05" useMask="0"/>
 			<FrameBlendingMapping template="Mapping&lt;Affine,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient331"   printLog="0" />

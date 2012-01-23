@@ -59,7 +59,7 @@ using defaulttype::SampleData;
 using namespace sofa::component::topology;
 
 /** Skinning, from a variety of input types to a variety of output types.
-  Linear or Dual quaternion blendi is possible.
+  Linear or Dual quaternion blending is possible.
   The actual blending is implemented in template helper classes LinearBlending and DualQuatBlending, specialized on the different types.
 
 */

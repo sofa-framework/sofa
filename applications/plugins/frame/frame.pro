@@ -11,6 +11,7 @@ INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications
 DEPENDPATH -= $$SOFA_INSTALL_INC_DIR/applications
 QMAKE_CXXFLAGS  += -fno-strict-aliasing
 
+
 HEADERS += \
            initFrame.h \
            AffineTypes.h \
@@ -42,8 +43,8 @@ HEADERS += \
            FrameMechanicalObject.h \
            GridMaterial.h \
            GridMaterial.inl \
-           MeshGenerater.h \
-           MeshGenerater.inl \
+           MeshGenerator.h \
+           MeshGenerator.inl \
            NewMaterial.h \
            NewHookeMaterial.h \
            NewHookeMaterial.inl
@@ -62,11 +63,14 @@ SOURCES += \
            FrameRigidConstraint.cpp \
            FrameMechanicalObject.cpp \
            GridMaterial.cpp \
-           MeshGenerater.cpp \
+           MeshGenerator.cpp \
            NewHookeMaterial.cpp
            #TetrahedronFEMForceFieldWithExternalMaterial.cpp
 
 contains(DEFINES, SOFA_GPU_CUDA) { # BEGIN SOFA_GPU_CUDA
+
+INCLUDEPATH += /usr/local/cuda/include/
+DEPENDPATH += /usr/local/cuda/include/
 
 HEADERS += \
            HexaRemover.h \

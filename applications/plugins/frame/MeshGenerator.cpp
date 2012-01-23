@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_FRAME_MESHGENERATER_CPP
+#define SOFA_FRAME_MESHGENERATOR_CPP
 
-#include "MeshGenerater.inl"
+#include "MeshGenerator.inl"
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec.h>
@@ -47,11 +47,11 @@ using namespace sofa::core;
 using namespace sofa::helper::gl;
 using namespace sofa::simulation;
 
-SOFA_DECL_CLASS ( MeshGenerater );
+SOFA_DECL_CLASS ( MeshGenerator );
 
 // Register in the Factory
-int MeshGeneraterClass = core::RegisterObject ( "Special case of mapping where HexahedronSetTopology is converted to QuadSetTopology" )
-        .add< MeshGenerater<Vec3dTypes> >()
+int MeshGeneratorClass = core::RegisterObject ( "Special case of mapping where HexahedronSetTopology is converted to QuadSetTopology" )
+        .add< MeshGenerator<Vec3dTypes> >()
         ;
 
 
