@@ -721,6 +721,8 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     //Reset the graph
     f_graph.beginEdit()->clear();
     f_graph.endEdit();
+
+    this->copyVertexMass();
 }
 
 template <class DataTypes, class MassType>
@@ -821,6 +823,9 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
     }
 }
 
+
+template <class DataTypes, class MassType>
+void MeshMatrixMass<DataTypes, MassType>::copyVertexMass() {}
 
 
 template <class DataTypes, class MassType>

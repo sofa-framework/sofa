@@ -60,6 +60,12 @@ namespace mass
 
 using namespace sofa::component::topology;
 
+template<class DataTypes, class TMassType>
+class MeshMatrixMassInternalData
+{
+};
+
+
 // template<class Vec> void readVec1(Vec& vec, const char* str);
 template <class DataTypes, class TMassType>
 class MeshMatrixMass : public core::behavior::Mass<DataTypes>
@@ -121,6 +127,10 @@ protected:
     MeshMatrixMass();
     ~MeshMatrixMass();
 
+    /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)
+    MeshMatrixMassInternalData<DataTypes, MassType> data;
+    friend class MeshMatrixMassInternalData<DataTypes, MassType>;
+
 public:
 
     sofa::core::topology::BaseMeshTopology* _topology;
@@ -156,6 +166,9 @@ public:
     {
         m_massDensity.setValue(m);
     }
+
+    /// Copy the vertex mass scalar (in case of CudaTypes)
+    void copyVertexMass();
 
 
     // -- Mass interface

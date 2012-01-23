@@ -42,8 +42,6 @@ using namespace sofa::component::linearsolver;
 extern "C"
 {
     void MeshMatrixMassCuda_addMDxf(unsigned int size, float factor, float massLumpingCoeff,const void * vertexMass, const void* dx, void* res);
-
-//        void MeshMatrixMassCuda_addMToMatrixf(unsigned int size, float factor, const void * mass, const void* dx, void* res);
 }
 }//cuda
 }//gpu
@@ -81,17 +79,6 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addMDx(const core::MechanicalParams*
     d_f.endEdit();
 }
 
-
-//template<>
-//void MeshMatrixMass<CudaVec2fTypes, float>::addMToMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
-//{
-//        VecDeriv& a = *d_a.beginEdit();
-//        const VecDeriv& f = d_f.getValue();
-
-//        MeshMatrixMassCuda_addMToMatrixf(dx.size(),(float) d_factor, (float) massLumpingCoeff, f_mass.getValue().deviceRead() , dx.deviceRead(), f.deviceWrite());
-
-//        d_a.endEdit();
-//}
 
 } // namespace mass
 } // namespace component

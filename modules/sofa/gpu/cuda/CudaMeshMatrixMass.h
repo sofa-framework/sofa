@@ -43,15 +43,13 @@ template<>
 class MeshMatrixMassInternalData<CudaVec2fTypes,float>
 {
 public:
+    /// Cuda vector copying the vertex mass (enabling deviceRead)
     CudaVector<float> vMass;
 };
 
 
 template <>
 void MeshMatrixMass<gpu::cuda::CudaVec2fTypes, float>::addMDx(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
-
-//template <>
-//void MeshMatrixMass<gpu::cuda::CudaVec2fTypes, float>::addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
 } // namespace mass
 
