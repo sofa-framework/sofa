@@ -220,6 +220,12 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
     }
     return 0;
 }
+
+void GUIManager::closeGUI()
+{
+    if(currentGUI) currentGUI->closeGUI();
+}
+
 void GUIManager::Redraw()
 {
     if (currentGUI) currentGUI->redraw();

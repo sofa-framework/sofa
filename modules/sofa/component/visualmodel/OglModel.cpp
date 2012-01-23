@@ -69,7 +69,9 @@ OglModel::OglModel()
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
     , destFactor( initData(&destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
-    , tex(NULL), canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
+    , tex(NULL)
+    , vbo(0), iboTriangles(0), iboQuads(0)
+    , canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
     , oldTrianglesSize(0), oldQuadsSize(0)
 {
     textures.clear();
@@ -102,6 +104,25 @@ OglModel::~OglModel()
     {
         delete textures[i];
     }
+
+    // NB fjourdes : I don t know why gDEBugger still reports
+    // graphics memory leaks after destroying the GLContext
+    // even if the vbos destruction is claimed with the following
+    // lines...
+    if( vbo > 0 )
+    {
+        glDeleteBuffersARB(1,&vbo);
+    }
+    if( iboTriangles > 0)
+    {
+        glDeleteBuffersARB(1,&iboTriangles);
+    }
+
+    if( iboQuads > 0 )
+    {
+        glDeleteBuffersARB(1,&iboQuads);
+    }
+
 }
 
 void OglModel::drawGroup(int ig, bool transparent)
@@ -201,6 +222,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     Vec4f specular = m.useSpecular?m.specular:Vec4f();
     Vec4f emissive = m.useEmissive?m.emissive:Vec4f();
     float shininess = m.useShininess?m.shininess:45;
+    if( shininess > 128.0f ) shininess = 128.0f;
 
     if (shininess == 0.0f)
     {
