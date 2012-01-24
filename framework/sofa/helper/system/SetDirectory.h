@@ -65,6 +65,9 @@ public:
     /// Get the extension of a file from an absolute path description, i.e. if given"a/b/c.d", return "d"
     static std::string GetExtension(const char* filename);
 
+    /// Get the filename from an absolute path description without extension i.e. if given"a/b/c.d", return "c"
+    static std::string GetFileNameWithoutExtension(const char* filename);
+
     /// Get the full path of the current process. The given filename should be the value of argv[0].
     static std::string GetProcessFullPath(const char* filename);
 
