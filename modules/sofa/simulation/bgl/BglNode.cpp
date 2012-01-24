@@ -292,12 +292,15 @@ bool BglNode::hasAncestor(const BaseContext* context) const
 std::string BglNode::getPathName() const
 {
     std::string str;
-    if (!l_parents.empty())
-        str = (*l_parents.begin())->getPathName();
-    str += '/';
-    str += getName();
-    return str;
 
+    if (!l_parents.empty())
+    {
+        str = (*l_parents.begin())->getPathName();
+        str += '/';
+        str += getName();
+    }
+
+    return str;
 }
 
 
