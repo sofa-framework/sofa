@@ -222,37 +222,29 @@ public:
     //virtual const sofa::helper::vector <EdgeID>& getEdgesOnBorder();
 
     //virtual const sofa::helper::vector <PointID>& getPointsOnBorder();
-
-protected:
-    int nbPoints;
+public:
     typedef vector<defaulttype::Vec<3, SReal > > SeqPoints;
     Data< SeqPoints > seqPoints;
-
     Data<SeqEdges> seqEdges;
-    bool validEdges;
-
-    //SeqTriangles   seqTriangles;
     Data<SeqTriangles> seqTriangles;
-    bool         validTriangles;
-
-    //SeqQuads       seqQuads;
     Data<SeqQuads>       seqQuads;
-    bool         validQuads;
-
-    //SeqTetrahedra      seqTetrahedra;
     Data<SeqTetrahedra>      seqTetrahedra;
-    bool         validTetrahedra;
-
 #ifdef SOFA_NEW_HEXA
     //SeqHexahedra	   seqHexahedra;
     Data<SeqHexahedra>	   seqHexahedra;
 #else
     Data<SeqCubes>       seqHexahedra;
 #endif
-    bool         validHexahedra;
-
     Data<SeqUV>	seqUVs;
-    bool	validUVs;
+
+protected:
+    int  nbPoints;
+    bool validEdges;
+    bool validTriangles;
+    bool validQuads;
+    bool validTetrahedra;
+    bool validHexahedra;
+    bool validUVs;
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     vector< EdgesAroundVertex > m_edgesAroundVertex;
