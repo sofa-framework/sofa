@@ -1,0 +1,14 @@
+<Node 	name="Root"   >
+	<MeshSTEPLoader name="loader"  filename="Product.stp"  deflection="0.1"  debug="0"  keepDuplicate="1" />
+	
+	<Node 	name="obj1"  >
+	  <MeshTopology name="topology" />
+	  <OglModel name="vis" src="@topology"   />
+	  <STEPShapeExtractor input="@../loader" output="@topology"  shapeNumber="0" />  
+	</Node>
+	<Node 	name="obj2"  >
+		<MeshTopology name="topology" />
+		<OglModel src="@topology"/>
+        <STEPShapeExtractor input="@../loader" output="@topology" shapeNumber="1" />
+    </Node>
+</Node>

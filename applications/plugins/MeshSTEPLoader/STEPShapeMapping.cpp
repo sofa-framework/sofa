@@ -1,0 +1,123 @@
+#include "STEPShapeMapping.h"
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa
+{
+namespace component
+{
+namespace engine
+{
+using namespace sofa::component::topology;
+using namespace sofa::component::engine;
+using namespace sofa::component::loader;
+
+int STEPShapeExtractorClass = core::RegisterObject("Extract a shape from a MeshSTEPLoader according to a shape number.")
+        .add< STEPShapeExtractor>(true);
+
+
+SOFA_DECL_CLASS(STEPShapeExtractorClass)
+
+STEPShapeExtractor::STEPShapeExtractor(MeshSTEPLoader* loader, MeshTopology* topology):
+    shapeNumber(initData(&shapeNumber,"shapeNumber", "Shape number to be loaded" ) )
+    ,loader(initLink("input","Input MeshSTEPLoader to map"), loader)
+    ,topology(initLink("output", "Output MeshTopology to map"), topology)
+{
+}
+
+
+void STEPShapeExtractor::init()
+{
+    MeshSTEPLoader* input = loader.get();
+    MeshTopology* output = topology.get();
+
+
+
+    if( input == NULL || output == NULL )
+    {
+        serr << "init failed! NULL pointers." << sendl;
+        return;
+    }
+
+    addInput(&input->positions);
+    addInput(&input->triangles);
+    addInput(&input->_uv);
+
+    addOutput(&output->seqPoints);
+    addOutput(&output->seqTriangles);
+    addOutput(&output->seqUVs);
+}
+
+
+void STEPShapeExtractor::update()
+{
+    MeshSTEPLoader* input = loader.get();
+    MeshTopology* output = topology.get();
+
+    if( input == NULL || output == NULL )
+    {
+        serr << "init failed! NULL pointers." << sendl;
+        return;
+    }
+
+    const helper::vector<sofa::defaulttype::Vector3>& positionsI = input->positions.getValue();
+    const helper::vector<Topology::Triangle >& trianglesI = input->triangles.getValue();
+    const helper::vector<sofa::defaulttype::Vector2>& uvI = input->_uv.getValue();
+
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(output->seqPoints.beginEdit());
+    helper::vector<Topology::Triangle >& my_triangles = *(output->seqTriangles.beginEdit());
+    helper::vector<sofa::defaulttype::Vector2>& my_uv = *(output->seqUVs.beginEdit());
+
+    const helper::vector<helper::fixed_array <unsigned int,3> >& my_indicesComponents = input->_indicesComponents.getValue();
+
+    unsigned int my_numberShape = shapeNumber.getValue();
+
+    if (my_numberShape >= my_indicesComponents.size())
+    {
+        serr << "Number of the shape not valid" << sendl;
+    }
+    else
+    {
+        unsigned int numNodes = 0, numTriangles = 0;
+        for (unsigned int i=0; i<my_indicesComponents.size(); ++i)
+        {
+            if (my_indicesComponents[i][0] == my_numberShape)
+            {
+                if(positionsI.size()>0 )
+                {
+                    for (unsigned int j=0; j<my_indicesComponents[i][1]; ++j)
+                    {
+                        my_positions.push_back(positionsI[j+numNodes]);
+                        my_uv.push_back(uvI[j+numNodes]);
+                    }
+                }
+
+                if(trianglesI.size() > 0 )
+                {
+                    for (unsigned int j=0; j<my_indicesComponents[i][2]; ++j)
+                    {
+                        Topology::Triangle triangleTemp(trianglesI[j+numTriangles][0]-numNodes, trianglesI[j+numTriangles][1]-numNodes, trianglesI[j+numTriangles][2]-numNodes);
+                        my_triangles.push_back(triangleTemp);
+                    }
+                }
+
+                break;
+            }
+            numNodes += my_indicesComponents[i][1];
+            numTriangles += my_indicesComponents[i][2];
+        }
+    }
+
+    output->seqPoints.endEdit();
+    output->seqTriangles.endEdit();
+    output->seqUVs.endEdit();
+
+}
+
+
+
+
+}
+
+}
+
+}
