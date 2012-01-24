@@ -1,5 +1,5 @@
 includeOnce($$_FILE_) {
-	declare(MeshSTEPLoader, applications/plugins/MeshSTEPLoader, sofacore)
+	declare(MeshSTEPLoader, applications/plugins/MeshSTEPLoader, sofa_base_topology)
 	
 	enable(MeshSTEPLoader)
 }
