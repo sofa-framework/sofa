@@ -45,10 +45,62 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::topology;
+
 using helper::vector;
 using helper::fixed_array;
+using sofa::defaulttype::Vector2;
+
+using sofa::core::topology::Topology;
+
+
+class MeshTopology;
+namespace internal
+{
+
+class PrimitiveUpdate : public sofa::core::DataEngine
+{
+public:
+    typedef Topology::Edge Edge;
+    typedef Topology::Quad Quad;
+    typedef Topology::Triangle Triangle;
+    typedef Topology::Hexa Hexa;
+    typedef Topology::Tetra Tetra;
+    SOFA_ABSTRACT_CLASS(PrimitiveUpdate,sofa::core::DataEngine);
+    PrimitiveUpdate(MeshTopology* t):topology(t) {}
+protected:
+    MeshTopology* topology;
+};
+
+class EdgeUpdate : public PrimitiveUpdate
+{
+public:
+    SOFA_CLASS(EdgeUpdate,PrimitiveUpdate);
+    EdgeUpdate(MeshTopology* t);
+    void update();
+protected:
+    void updateFromVolume();
+    void updateFromSurface();
+};
+
+
+class TriangleUpdate : public PrimitiveUpdate
+{
+public:
+
+    SOFA_CLASS(TriangleUpdate,PrimitiveUpdate);
+    TriangleUpdate(MeshTopology* t);
+    void update();
+};
+
+class QuadUpdate : public PrimitiveUpdate
+{
+public:
+    SOFA_CLASS(QuadUpdate,PrimitiveUpdate);
+    QuadUpdate(MeshTopology* t);
+    void update();
+};
+
+}
 
 
 class SOFA_BASE_TOPOLOGY_API MeshTopology : public core::topology::BaseMeshTopology
@@ -94,7 +146,6 @@ public:
     virtual int getNbUVs();
     virtual const UV getUV(UVID i);
     void addUV(double u, double v);
-    virtual void updateUVs();
     //
 
     /// @name neighbors queries
@@ -239,12 +290,10 @@ public:
 
 protected:
     int  nbPoints;
-    bool validEdges;
-    bool validTriangles;
-    bool validQuads;
+
     bool validTetrahedra;
     bool validHexahedra;
-    bool validUVs;
+
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     vector< EdgesAroundVertex > m_edgesAroundVertex;
@@ -596,9 +645,6 @@ public:
 
     void invalidate();
 
-    virtual void updateEdges();
-    virtual void updateTriangles();
-    virtual void updateQuads();
     virtual void updateTetrahedra();
     virtual void updateHexahedra();
 
