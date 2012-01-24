@@ -137,16 +137,16 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
                     }
                     /*else
                     {
-                    	Handle(StepRepr_RepresentationItem) aReprItem = Handle(StepRepr_RepresentationItem)::DownCast(anEntity);
+                    Handle(StepRepr_RepresentationItem) aReprItem = Handle(StepRepr_RepresentationItem)::DownCast(anEntity);
 
-                    	if (aReprItem.IsNull())
-                    	{
-                    		serr <<"Error[OpenCascade]: STEPReader::ReadAttributes():\nStepRepr_RepresentationItem Is NULL" << sendl;
-                    	}
-                    	else
-                    	{
-                    		sout << "Name = " << aReprItem->Name()->ToCString() << sendl;
-                    	}
+                    if (aReprItem.IsNull())
+                    {
+                    serr <<"Error[OpenCascade]: STEPReader::ReadAttributes():\nStepRepr_RepresentationItem Is NULL" << sendl;
+                    }
+                    else
+                    {
+                    sout << "Name = " << aReprItem->Name()->ToCString() << sendl;
+                    }
                     }*/
                 }
             }

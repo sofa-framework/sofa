@@ -49,6 +49,8 @@ template <class DataTypes>
 SingleComponent<DataTypes>::SingleComponent()
     : _positionsI(initData(&_positionsI, "positionsI", "input: vertices position of whole mesh"))
     , _positionsO(initData(&_positionsO, "positionsO", "output: vertices position of the component"))
+    , _edgesI(initData(&_edgesI, "edgesI", "input: edges of whole mesh"))
+    , _edgesO(initData(&_edgesO, "edgesO", "output: edges of the component"))
     , _trianglesI(initData(&_trianglesI, "trianglesI", "input: triangles of whole mesh"))
     , _trianglesO(initData(&_trianglesO, "trianglesO", "output: triangles of the component"))
     , _normalsI(initData(&_normalsI, "normalsI", "input: normals of the whole mesh"))
@@ -120,19 +122,30 @@ void SingleComponent<DataTypes>::loadMesh()
         {
             if (my_indicesComponents[i][0] == my_numberShape)
             {
-                for (unsigned int j=0; j<my_indicesComponents[i][1]; ++j)
+                if(positionsI.size()>0 )
                 {
-                    my_positions.push_back(positionsI[j+numNodes]);
-                    my_uv.push_back(uvI[j+numNodes]);
+                    for (unsigned int j=0; j<my_indicesComponents[i][1]; ++j)
+                    {
+                        my_positions.push_back(positionsI[j+numNodes]);
+                        my_uv.push_back(uvI[j+numNodes]);
+                    }
                 }
-                for (unsigned int j=0; j<my_indicesComponents[i][2]; ++j)
+
+                if(trianglesI.size() > 0 )
                 {
-                    helper::fixed_array <unsigned int,3> triangleTemp(trianglesI[j+numTriangles][0]-numNodes, trianglesI[j+numTriangles][1]-numNodes, trianglesI[j+numTriangles][2]-numNodes);
-                    my_triangles.push_back(triangleTemp);
+                    for (unsigned int j=0; j<my_indicesComponents[i][2]; ++j)
+                    {
+                        helper::fixed_array <unsigned int,3> triangleTemp(trianglesI[j+numTriangles][0]-numNodes, trianglesI[j+numTriangles][1]-numNodes, trianglesI[j+numTriangles][2]-numNodes);
+                        my_triangles.push_back(triangleTemp);
+                    }
                 }
-                for (unsigned int j=0; j<my_indicesComponents[i][1]; ++j)
+
+                if(normalsI.size() > 0 )
                 {
-                    my_normals.push_back(normalsI[j+numNodes]);
+                    for (unsigned int j=0; j<my_indicesComponents[i][1]; ++j)
+                    {
+                        my_normals.push_back(normalsI[j+numNodes]);
+                    }
                 }
                 break;
             }

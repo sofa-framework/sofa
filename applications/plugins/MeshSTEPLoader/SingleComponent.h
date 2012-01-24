@@ -76,6 +76,8 @@ protected:
 public:
     Data<helper::vector<sofa::defaulttype::Vector3> > _positionsI;
     Data<helper::vector<sofa::defaulttype::Vector3> > _positionsO;
+    Data<helper::vector<helper::fixed_array <unsigned int,2> > > _edgesI;
+    Data<helper::vector<helper::fixed_array <unsigned int,2> > > _edgesO;
     Data<helper::vector<helper::fixed_array <unsigned int,3> > > _trianglesI;
     Data<helper::vector<helper::fixed_array <unsigned int,3> > > _trianglesO;
     Data<helper::vector<sofa::defaulttype::Vector3> > _normalsI;
