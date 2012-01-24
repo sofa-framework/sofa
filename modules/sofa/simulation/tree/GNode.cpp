@@ -410,9 +410,14 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
 std::string GNode::getPathName() const
 {
     std::string str;
-    if (parent()!=NULL) str = parent()->getPathName();
-    str += '/';
-    str += getName();
+
+    if (parent() != NULL)
+    {
+        str = parent()->getPathName();
+        str += '/';
+        str += getName();
+    }
+
     return str;
 }
 
