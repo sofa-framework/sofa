@@ -107,7 +107,7 @@ public:
         waImage wimage(this->image);
         waTransform wtransform(this->transform);
 
-        if(!wimage->getCImg())
+        if(!wimage->getCImgList().size())
             if(!load())
                 if(!loadCamera())
                 {
@@ -139,7 +139,6 @@ protected:
         waImage wimage(this->image);
         waTransform wtransform(this->transform);
 
-
         // read image
         if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
            || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
@@ -153,7 +152,12 @@ protected:
             for(unsigned int i=0; i<3; i++) wtransform->getTranslation()[i]=(Real)translation[i];
             Mat<3,3,Real> R; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) R[i][j]=(Real)affine[3*i+j];
             helper::Quater< Real > q; q.fromMatrix(R);
-            wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
+            // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles
+            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
+            wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
+            wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
+            wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+
             wtransform->getOffsetT()=(Real)offsetT;
             wtransform->getScaleT()=(Real)scaleT;
             wtransform->isPerspective()=isPerspective;
@@ -178,7 +182,7 @@ protected:
         }
         else wimage->getCImgList().push_back(CImg<T>().load(fname.c_str()));
 
-        if(wimage->getCImg()) sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << sendl;
+        if(wimage->getCImgList().size()) sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << sendl;
         else return false;
 
         return true;
@@ -194,7 +198,7 @@ protected:
         waImage wimage(this->image);
         if(!wimage->getCImgList().size()) wimage->getCImgList().push_back(CImg<T>().load_camera());
         else wimage->getCImgList()[0].load_camera();
-        if(wimage->getCImg())  return true;  else return false;
+        if(wimage->getCImgList().size())  return true;  else return false;
 #else
         return false;
 #endif
