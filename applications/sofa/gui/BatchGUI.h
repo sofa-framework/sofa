@@ -46,6 +46,8 @@ public:
 
     void setScene(sofa::simulation::Node::SPtr groot, const char* filename="", bool temporaryFile=false);
 
+    void resetScene();
+
     int mainLoop();
     void redraw();
     int closeGUI();
@@ -67,6 +69,11 @@ public:
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
     ~BatchGUI();
+
+    void startDumpVisitor();
+    void stopDumpVisitor();
+
+    std::ostringstream m_dumpVisitorStream;
 
     sofa::simulation::Node::SPtr groot;
     std::string filename;

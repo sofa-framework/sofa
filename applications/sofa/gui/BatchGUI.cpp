@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include "BatchGUI.h"
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/common/UpdateContextVisitor.h>
 #ifdef SOFA_SMP
 #include <athapascan-1>
 #endif
@@ -91,7 +92,46 @@ void BatchGUI::setScene(sofa::simulation::Node::SPtr groot, const char* filename
 {
     this->groot = groot;
     this->filename = (filename?filename:"");
+
+    resetScene();
 }
+
+
+void BatchGUI::resetScene()
+{
+    sofa::simulation::Node* root = currentSimulation();
+    startDumpVisitor();
+
+    if ( root )
+    {
+        root->setTime(0.);
+        simulation::getSimulation()->reset ( root );
+
+        sofa::simulation::UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(root);
+    }
+}
+
+void BatchGUI::startDumpVisitor()
+{
+#ifdef SOFA_DUMP_VISITOR_INFO
+    sofa::simulation::Node* root = currentSimulation();
+    if (root)
+    {
+        m_dumpVisitorStream.str("");
+        Visitor::startDumpVisitor(&m_dumpVisitorStream, root->getTime());
+    }
+#endif
+}
+
+void BatchGUI::stopDumpVisitor()
+{
+#ifdef SOFA_DUMP_VISITOR_INFO
+    Visitor::stopDumpVisitor();
+    m_dumpVisitorStream.flush();
+    m_dumpVisitorStream.str("");
+#endif
+}
+
 
 sofa::simulation::Node* BatchGUI::currentSimulation()
 {
