@@ -30,6 +30,7 @@ HEADERS += \
         MergeImages.h \
         DepthMapToMeshEngine.h \
         MeshToImageEngine.h \
+        MarchingCubesEngine.h \
         ImageExporter.h \
 	ImagePlaneWidget.h \
 	ImageTransformWidget.h \
@@ -43,6 +44,7 @@ SOURCES += \
         MergeImages.cpp \
         DepthMapToMeshEngine.cpp \
         MeshToImageEngine.cpp \
+        MarchingCubesEngine.cpp \
         ImageExporter.cpp \
 	ImagePlaneWidget.cpp \
 	ImageTransformWidget.cpp \
