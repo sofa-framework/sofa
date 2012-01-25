@@ -141,7 +141,7 @@ public:
                 ,"13 - Threshold ( value )"
                 ,"14 - Laplacian"
                 ,"15 - Structure tensors ( scheme )"
-                ,"16 - Distance ( value )"
+                ,"16 - Distance ( value, scale )"
                 ,"17 - Gradient ( axis x | y | z | magnitude)"
                 ,"18 - Hessian (axis1 , axis2) "
                 ,"19 - Normalize ( out_min, out_max , in_min, in_max)"
@@ -321,9 +321,10 @@ protected:
             if(updateImage || updateTransform)
             {
                 To value=0; if(p.size()) value=(To)p[0];
-                float sizex=(float)inT->getScale()[0];
-                float sizey=(float)inT->getScale()[1];
-                float sizez=(float)inT->getScale()[2];
+                float scale=1; if(p.size()>1) scale=(float)p[1];
+                float sizex=(float)inT->getScale()[0]*scale;
+                float sizey=(float)inT->getScale()[1]*scale;
+                float sizez=(float)inT->getScale()[2]*scale;
                 cimglist_for(img,l) {img(l).distance ( value , sizex , sizey , sizez);  }
             }
             break;
