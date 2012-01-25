@@ -400,7 +400,7 @@ void BaseCamera::fitSphere(const Vec3 &center, SReal radius)
 void BaseCamera::fitBoundingBox(const Vec3 &min, const Vec3 &max)
 {
     SReal diameter = std::max(fabs(max[1]-min[1]), fabs(max[0]-min[0]));
-    diameter = std::max(fabs(max[2]-min[2]), diameter);
+    diameter = std::max((SReal)fabs(max[2]-min[2]), diameter);
     Vec3 center = (min + max)*0.5;
 
     fitSphere(center,0.5*diameter);

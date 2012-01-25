@@ -38,23 +38,22 @@ namespace engine
 SOFA_DECL_CLASS(DilateEngine)
 
 int DilateEngineClass = core::RegisterObject("Move mesh vertices along their normal")
-//#ifdef SOFA_FLOAT
+#ifndef SOFA_FLOAT
 //  .add< DilateEngine<defaulttype::Vec3fTypes> >(true) // default template
-//#else
         .add< DilateEngine<defaulttype::Vec3dTypes> >(true) // default template
-//#ifndef SOFA_DOUBLE
-//  .add< DilateEngine<defaulttype::Vec3fTypes> >()
-//#endif
-//#endif
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add< DilateEngine<defaulttype::Vec3fTypes> >()
 //  .add< DilateEngine<defaulttype::ExtVec3fTypes> >()
+#endif //SOFA_DOUBLE
         ;
 
-//#ifndef SOFA_FLOAT
+#ifndef SOFA_FLOAT
 template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
-//#endif //SOFA_FLOAT
-//#ifndef SOFA_DOUBLE
-//template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
-//#endif //SOFA_DOUBLE
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
+#endif //SOFA_DOUBLE
 //template class SOFA_ENGINE_API DilateEngine<defaulttype::ExtVec3fTypes>;
 
 } // namespace constraint

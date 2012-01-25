@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_VISUALMODEL_BASECAMERA_H
 #define SOFA_COMPONENT_VISUALMODEL_BASECAMERA_H
 
+
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
