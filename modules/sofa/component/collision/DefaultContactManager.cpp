@@ -122,6 +122,11 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
             core::CollisionModel* model1 = outputsIt->first.first;
             core::CollisionModel* model2 = outputsIt->first.second;
             std::string responseUsed = getContactResponse(model1, model2);
+            if(! responseUsed.compare("null") ) // We can create rules in order to not respond to specific collisions
+            {
+                ++outputsIt;
+                continue;
+            }
             core::collision::Contact::SPtr contact = core::collision::Contact::Create(responseUsed, model1, model2, intersectionMethod);
             if (contact == NULL) serr << "Contact "<<responseUsed<<" between " << model1->getClassName()<<" and "<<model2->getClassName() << " creation failed"<<sendl;
             else
