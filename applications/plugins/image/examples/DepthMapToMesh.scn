@@ -4,6 +4,6 @@
   <ImageViewer  name="viewer"  src="@image" />
   <ImageFilter name="filter" filter="7"  param="256 256 1 1"  src="@image" />
   <ImageContainer  name="texture"  filename="data/test0014-scale.bmp" drawBB="false" />
-  <ImageToMeshEngine  name="engine" depthFactor="-0.0005" image="@filter.outputImage" transform="@filter.outputTransform" texImage="@texture.image"/>
+  <DepthMapToMeshEngine  name="engine" depthFactor="-0.0005" image="@filter.outputImage" transform="@filter.outputTransform" texImage="@texture.image"/>
   <!--<TriangleSetTopologyContainer name="mesh" position="@engine.position"  triangles="@engine.triangles"/>-->
 </Node>
