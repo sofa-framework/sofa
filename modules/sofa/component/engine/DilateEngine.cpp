@@ -43,7 +43,7 @@ int DilateEngineClass = core::RegisterObject("Move mesh vertices along their nor
         .add< DilateEngine<defaulttype::Vec3dTypes> >(true) // default template
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< DilateEngine<defaulttype::Vec3fTypes> >()
+//.add< DilateEngine<defaulttype::Vec3fTypes> >()
 //  .add< DilateEngine<defaulttype::ExtVec3fTypes> >()
 #endif //SOFA_DOUBLE
         ;
@@ -52,7 +52,7 @@ int DilateEngineClass = core::RegisterObject("Move mesh vertices along their nor
 template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
+//template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 //template class SOFA_ENGINE_API DilateEngine<defaulttype::ExtVec3fTypes>;
 
