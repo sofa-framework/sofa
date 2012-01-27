@@ -56,6 +56,7 @@ SOURCES += \
            GreenLagrangeForceField.cpp \
            FrameVolumePreservationForceField.cpp \
            FrameBlendingMapping.cpp \
+           FrameBlendingMapping-Affine3d.cpp \
            FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \
            FrameFixedConstraint.cpp \

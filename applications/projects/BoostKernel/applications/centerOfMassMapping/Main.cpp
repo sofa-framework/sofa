@@ -38,6 +38,7 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/topology/CubeTopology.h>
+#include <sofa/component/visualmodel/VisualStyle.h>
 #include <sofa/helper/vector.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
@@ -51,26 +52,27 @@ using namespace sofa::simulation;
 using namespace sofa::component::container;
 using namespace sofa::component::topology;
 using namespace sofa::component::collision;
+using namespace sofa::component::visualmodel;
+using sofa::core::objectmodel::New;
 
-Node* createCube(Node* parent, double dx, double dy, double dz)
+Node::SPtr  createCube(Node::SPtr  parent, double dx, double dy, double dz)
 {
     static int i = 1;
     std::ostringstream oss;
     oss << "cube_" << i++;
 
-
-    Node* cube_node = parent->createChild(oss.str());
-    MechanicalObject3* DOF = new MechanicalObject3;
+    Node::SPtr  cube_node = parent->createChild(oss.str());
+    MechanicalObject3::SPtr DOF = New<MechanicalObject3>();
     cube_node->addObject(DOF);
     DOF->setName("cube");
     DOF->setTranslation(dx,dy,dz);
 
-    CubeTopology* cubeTopology = new CubeTopology(2,2,2);
+    CubeTopology::SPtr cubeTopology = New<CubeTopology>(2,2,2);
     cubeTopology->setPos(-1,1,-1,1,-1,1);
     cube_node->addObject(cubeTopology);
 
 
-    TriangleFEMForceField3* triangleFEM = new TriangleFEMForceField3;
+    TriangleFEMForceField3::SPtr triangleFEM = New<TriangleFEMForceField3>();
     triangleFEM->setName("FEM");
     //triangleFEM->setComputeGlobalMatrix(false);
     triangleFEM->setMethod(0);
@@ -79,7 +81,7 @@ Node* createCube(Node* parent, double dx, double dy, double dz)
     cube_node->addObject(triangleFEM);
 
 
-    UniformMass3* uniMassCube = new UniformMass3;
+    UniformMass3::SPtr uniMassCube = New<UniformMass3>();
     uniMassCube->setTotalMass(1);
     cube_node->addObject(uniMassCube);
 
@@ -104,42 +106,50 @@ int main( int argc, char** argv )
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node
-    Node* root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
+    Node::SPtr root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
     root->setGravity( Coord3(0,0,0) );
+
+    VisualStyle::SPtr visualStyle = New<sofa::component::visualmodel::VisualStyle>();
+    root->addObject(visualStyle);
+    VisualStyle::DisplayFlags displayFlags;
+    displayFlags.setShowAll();
+    visualStyle->displayFlags.setValue(displayFlags);
 
     std::string scheme="Implicit";
 
     if (!implicit) scheme="Explicit";
 
-    Node* SolverNode = sofa::ObjectCreator::CreateEulerSolverNode(root,"SolverNode", scheme);
+    Node::SPtr SolverNode = sofa::ObjectCreator::CreateEulerSolverNode(root,"SolverNode", scheme);
 
-    Node* cube1 = createCube(SolverNode, 0,0,0   );
-    Node* cube2 = createCube(SolverNode,  10,0,0  );
-    Node* cube3 = createCube(SolverNode,  0,0,10  );
-    Node* cube4 = createCube(SolverNode,  10,0,10 );
-    Node* MultiParentsNode = cube1->createChild("MultiParentsNode");
+    Node::SPtr  cube1 = createCube(SolverNode, 0,0,0   );
+    Node::SPtr  cube2 = createCube(SolverNode,  10,0,0  );
+    Node::SPtr  cube3 = createCube(SolverNode,  0,0,10  );
+    Node::SPtr  cube4 = createCube(SolverNode,  10,0,10 );
+    Node::SPtr  MultiParentsNode = cube1->createChild("MultiParentsNode");
     cube2->addChild(MultiParentsNode);
     cube3->addChild(MultiParentsNode);
     cube4->addChild(MultiParentsNode);
 
-    MechanicalObject3* dofMultiMapping = new MechanicalObject3; dofMultiMapping->setName("Center Of Mass");
+    MechanicalObject3::SPtr dofMultiMapping = New<MechanicalObject3>();
+    dofMultiMapping->setName("Center Of Mass");
 
     MultiParentsNode->addObject(dofMultiMapping);
 
-    CenterOfMassMultiMapping3_to_3* multiMappingCOM = new CenterOfMassMultiMapping3_to_3();
+    CenterOfMassMultiMapping3_to_3::SPtr multiMappingCOM = New< CenterOfMassMultiMapping3_to_3>();
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube1->getMechanicalState()) );
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube2->getMechanicalState()) );
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube3->getMechanicalState()) );
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube4->getMechanicalState()) );
-    multiMappingCOM->addOutputModel(dofMultiMapping);
+    multiMappingCOM->addOutputModel(dofMultiMapping.get());
 
 
     MultiParentsNode->addObject(multiMappingCOM);
 
-    ConstantForceField3* constantFF = new ConstantForceField3();
+    ConstantForceField3::SPtr constantFF = New<ConstantForceField3>();
     constantFF->setForce( 0,MechanicalObject3::Deriv(0,10,0) );
     MultiParentsNode->addObject(constantFF) ;
-    MultiParentsNode->addObject( new SphereModel);
+    SphereModel::SPtr aSphere = New<SphereModel>();
+    MultiParentsNode->addObject( aSphere );
 
     //cube1->addChild(MultiParentsNode);
 
@@ -150,7 +160,7 @@ int main( int argc, char** argv )
     root->setAnimate(false);
 
 
-    getSimulation()->init(root);
+    getSimulation()->init(root.get());
 
 
     //=======================================

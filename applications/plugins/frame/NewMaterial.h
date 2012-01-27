@@ -75,8 +75,11 @@ public:
     typedef typename CStrain<D332,false>::Strain Strain10;
     typedef vector<Strain10> VecStrain10;
 
-    /** \brief Compute stress based on local strain and strain rate at each point.
-    */
+    /** @name Stress
+     *   Compute stress at each point based on local strain and strain rate.
+     */
+    //@{
+    /** Compute stress at each point based on local strain and strain rate. */
     virtual Real getBulkModulus(const unsigned int sampleindex) const = 0;
     virtual bool computeVolumeIntegrationFactors(const unsigned int sampleindex,const MaterialCoord& point,const unsigned int order,vector<Real>& moments)=0;
     virtual void computeStress  ( VecStrain1& stress, VecStrStr* stressStrainMatrices, const VecStrain1& strain, const VecStrain1& strainRate, const VecMaterialCoord& point )=0;
@@ -85,6 +88,7 @@ public:
     virtual void computeStressChange  ( VecStrain4& stressChange, const VecStrain4& strainChange, const VecMaterialCoord& point )=0;
     virtual void computeStress  ( VecStrain10& stress, VecStrStr* stressStrainMatrices, const VecStrain10& strain, const VecStrain10& strainRate, const VecMaterialCoord& point )=0;
     virtual void computeStressChange  ( VecStrain10& stressChange, const VecStrain10& strainChange, const VecMaterialCoord& point )=0;
+    //@}
 
     /// get the StressStrain matrices at the given points, assuming null strain or linear material
     virtual void getStressStrainMatrix( StrStr& matrix, const MaterialCoord& point ) const =0;
@@ -113,17 +117,17 @@ public:
     //    virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
 
 
-//    /** \brief Compute stress based on local strain and strain rate at each point.
-//      The stress-strain relation may depend on strain rate (time derivative of strain).
-//      The stress-strain matrices are written if the pointer is not null.
-//    */
-//    virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate ) = 0;
-//
-//    /** \brief Compute elaston stress based on local strain and strain rate at each point.
-//      The stress-strain relation may depend on strain rate (time derivative of strain).
-//      The stress-strain matrices are written if the pointer is not null.
-//    */
-//    virtual void computeStress  ( VecEl2Str& stress, VecStrStr* stressStrainMatrices, const VecEl2Str& strain, const VecEl2Str& strainRate ) = 0;
+    //    /** \brief Compute stress based on local strain and strain rate at each point.
+    //      The stress-strain relation may depend on strain rate (time derivative of strain).
+    //      The stress-strain matrices are written if the pointer is not null.
+    //    */
+    //    virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate ) = 0;
+    //
+    //    /** \brief Compute elaston stress based on local strain and strain rate at each point.
+    //      The stress-strain relation may depend on strain rate (time derivative of strain).
+    //      The stress-strain matrices are written if the pointer is not null.
+    //    */
+    //    virtual void computeStress  ( VecEl2Str& stress, VecStrStr* stressStrainMatrices, const VecEl2Str& strain, const VecEl2Str& strainRate ) = 0;
 
     //typedef defaulttype::DeformationGradient<3,3,1,Real> DeformationGradient331;
     //typedef typename DeformationGradient331::SampleIntegVector SampleIntegVector331;
@@ -171,17 +175,17 @@ struct MaterialTypes
     static const int StrDim = N*(N+1)/2;             ///< Number of independent entries in the symmetric DxD strain tensor
     typedef Vec<N,Real> Coord;
 
-//    typedef defaulttype::Vec<StrDim,R> Str;       ///< Strain or stress tensor in Voigt (i.e. vector) notation
-//    typedef helper::vector<Str> VecStr;
-//
-//    /** Strain or stress tensor in Voigt (i.e. vector) notation for an elaston.
-//    The first column is the strain (or stress), the other columns are its derivatives in the space directions (TODO: check this)
-//    */
-//    typedef defaulttype::Mat<StrDim,D*D+1,R> ElStr;
-//    typedef helper::vector<ElStr> VecElStr;
-//
-//    typedef defaulttype::Mat<StrDim,StrDim,R> StrStr;  ///< Stress-strain matrix
-//    typedef helper::vector<StrStr> VecStrStr;
+    //    typedef defaulttype::Vec<StrDim,R> Str;       ///< Strain or stress tensor in Voigt (i.e. vector) notation
+    //    typedef helper::vector<Str> VecStr;
+    //
+    //    /** Strain or stress tensor in Voigt (i.e. vector) notation for an elaston.
+    //    The first column is the strain (or stress), the other columns are its derivatives in the space directions (TODO: check this)
+    //    */
+    //    typedef defaulttype::Mat<StrDim,D*D+1,R> ElStr;
+    //    typedef helper::vector<ElStr> VecElStr;
+    //
+    //    typedef defaulttype::Mat<StrDim,StrDim,R> StrStr;  ///< Stress-strain matrix
+    //    typedef helper::vector<StrStr> VecStrStr;
 
     static const char* Name();
 };
