@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_GRIDTOPOLOGY_H
 
 #include <sofa/component/topology/MeshTopology.h>
-
+#include <sofa/core/DataEngine.h>
 namespace sofa
 {
 
@@ -45,6 +45,24 @@ class SOFA_BASE_TOPOLOGY_API GridTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(GridTopology,MeshTopology);
+    friend class GridUpdate;
+private:
+    class GridUpdate : public sofa::core::DataEngine
+    {
+    public:
+        typedef MeshTopology::Edge Edge;
+        typedef MeshTopology::Quad Quad;
+        typedef MeshTopology::Hexa Hexa;
+        SOFA_CLASS(GridUpdate,sofa::core::DataEngine);
+        GridUpdate(GridTopology* t);
+        void update();
+    protected:
+        void updateEdges();
+        void updateQuads();
+        void updateHexas();
+    private:
+        GridTopology* topology;
+    };
 protected:
     GridTopology();
     GridTopology(int nx, int ny, int nz);
@@ -112,9 +130,6 @@ protected:
     Data< Vec3i > n;
 
     virtual void setSize();
-    virtual void updateEdges();
-    virtual void updateQuads();
-    virtual void updateHexahedra();
 };
 
 } // namespace topology

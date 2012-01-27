@@ -41,10 +41,9 @@ namespace component
 namespace topology
 {
 
-namespace internal
-{
 
-EdgeUpdate::EdgeUpdate(MeshTopology* t)
+
+MeshTopology::EdgeUpdate::EdgeUpdate(MeshTopology* t)
     :PrimitiveUpdate(t)
 {
     if( topology->hasVolume() )
@@ -54,7 +53,7 @@ EdgeUpdate::EdgeUpdate(MeshTopology* t)
         addOutput(&topology->seqEdges);
         setDirtyValue();
     }
-    else if( t->hasSurface() )
+    else if( topology->hasSurface() )
     {
         addInput(&topology->seqTriangles);
         addInput(&topology->seqQuads);
@@ -64,18 +63,22 @@ EdgeUpdate::EdgeUpdate(MeshTopology* t)
 
 }
 
-void EdgeUpdate::update()
+void MeshTopology::EdgeUpdate::update()
 {
     if(topology->hasVolume() ) updateFromVolume();
     else if(topology->hasSurface()) updateFromSurface();
 }
 
-void EdgeUpdate::updateFromVolume()
+void MeshTopology::EdgeUpdate::updateFromVolume()
 {
     typedef MeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef MeshTopology::SeqHexahedra  SeqHexahedra;
+    typedef MeshTopology::SeqEdges     SeqEdges;
     typedef MeshTopology::Tetra Tetra;
     typedef MeshTopology::Hexa Hexa;
+
+    SeqEdges& seqEdges = *topology->seqEdges.beginEdit();
+    seqEdges.clear();
     std::map<Edge,unsigned int> edgeMap;
     int edgeIndex;
 
@@ -101,10 +104,9 @@ void EdgeUpdate::updateFromVolume()
             if (ite==edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                edgeIndex=topology->seqEdges.getValue().size();
+                edgeIndex=seqEdges.size();
                 edgeMap[e]=edgeIndex;
-                topology->seqEdges.beginEdit()->push_back(e);
-                topology->seqEdges.endEdit();
+                seqEdges.push_back(e);
             }
             else
             {
@@ -142,10 +144,10 @@ void EdgeUpdate::updateFromVolume()
             if (ite==edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                edgeIndex=topology->seqEdges.getValue().size();
+                edgeIndex=seqEdges.size();
                 edgeMap[e]=edgeIndex;
-                topology->seqEdges.beginEdit()->push_back(e);
-                topology->seqEdges.endEdit();
+                seqEdges.push_back(e);
+
             }
             else
             {
@@ -154,18 +156,21 @@ void EdgeUpdate::updateFromVolume()
             //m_edgesInHexahedron[i][j]=edgeIndex;
         }
     }
+    topology->seqEdges.endEdit();
 }
 
-void EdgeUpdate::updateFromSurface()
+void MeshTopology::EdgeUpdate::updateFromSurface()
 {
     typedef MeshTopology::SeqTriangles SeqTriangles;
     typedef MeshTopology::SeqQuads     SeqQuads;
+    typedef MeshTopology::SeqEdges     SeqEdges;
     typedef MeshTopology::Triangle     Triangle;
     typedef MeshTopology::Quad         Quad;
 
     std::map<Edge,unsigned int> edgeMap;
     int edgeIndex;
-
+    SeqEdges& seqEdges = *topology->seqEdges.beginEdit();
+    seqEdges.clear();
     const SeqTriangles& triangles = topology->getTriangles(); // do not use seqTriangles directly as it might not be up-to-date
     for (unsigned int i = 0; i < triangles.size(); ++i)
     {
@@ -186,10 +191,9 @@ void EdgeUpdate::updateFromSurface()
             if (ite==edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                edgeIndex=topology->seqEdges.getValue().size();
+                edgeIndex=seqEdges.size();
                 edgeMap[e]=edgeIndex;
-                topology->seqEdges.beginEdit()->push_back(e);
-                topology->seqEdges.endEdit();
+                seqEdges.push_back(e);
             }
             else
             {
@@ -219,10 +223,9 @@ void EdgeUpdate::updateFromSurface()
             if (ite==edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                edgeIndex=topology->seqEdges.getValue().size();
+                edgeIndex=seqEdges.size();
                 edgeMap[e]=edgeIndex;
-                topology->seqEdges.beginEdit()->push_back(e);
-                topology->seqEdges.endEdit();
+                seqEdges.push_back(e);
             }
             else
             {
@@ -231,10 +234,12 @@ void EdgeUpdate::updateFromSurface()
             //m_edgesInQuad[i][j]=edgeIndex;
         }
     }
+
+    topology->seqEdges.endEdit();
 }
 
 
-TriangleUpdate::TriangleUpdate(MeshTopology *t)
+MeshTopology::TriangleUpdate::TriangleUpdate(MeshTopology *t)
     :PrimitiveUpdate(t)
 {
     addInput(&topology->seqTetrahedra);
@@ -243,12 +248,13 @@ TriangleUpdate::TriangleUpdate(MeshTopology *t)
 }
 
 
-void TriangleUpdate::update()
+void MeshTopology::TriangleUpdate::update()
 {
     typedef MeshTopology::SeqTetrahedra SeqTetrahedra;
-    if (topology->getNbTetrahedra()==0) return; // no tetrahedra to extract triangles from
+    typedef MeshTopology::SeqTriangles SeqTriangles;
     const SeqTetrahedra& tetrahedra = topology->getTetrahedra();
-
+    SeqTriangles& seqTriangles = *topology->seqTriangles.beginEdit();
+    seqTriangles.clear();
     // create a temporary map to find redundant triangles
     std::map<Triangle,unsigned int> triangleMap;
     std::map<Triangle,unsigned int>::iterator itt;
@@ -281,11 +287,10 @@ void TriangleUpdate::update()
             if (itt==triangleMap.end())
             {
                 // edge not in edgeMap so create a new one
-                triangleIndex=topology->seqTriangles.getValue().size();
+                triangleIndex=seqTriangles.size();
                 tr=Triangle(v[0],v[1],v[2]);
                 triangleMap[tr]=triangleIndex;
-                topology->seqTriangles.beginEdit()->push_back(tr);
-                topology->seqTriangles.endEdit();
+                seqTriangles.push_back(tr);
             }
             else
             {
@@ -295,9 +300,11 @@ void TriangleUpdate::update()
         }
     }
 
+    topology->seqTriangles.endEdit();
+
 }
 
-QuadUpdate::QuadUpdate(MeshTopology *t)
+MeshTopology::QuadUpdate::QuadUpdate(MeshTopology *t)
     :PrimitiveUpdate(t)
 {
     addInput(&topology->seqHexahedra);
@@ -305,11 +312,14 @@ QuadUpdate::QuadUpdate(MeshTopology *t)
     setDirtyValue();
 }
 
-void QuadUpdate::update()
+void MeshTopology::QuadUpdate::update()
 {
     typedef MeshTopology::SeqHexahedra SeqHexahedra;
+    typedef MeshTopology::SeqQuads SeqQuads;
 
-    if (!topology->seqQuads.getValue().empty()) return; // quads already defined
+    SeqQuads& seqQuads = *topology->seqQuads.beginEdit();
+    seqQuads.clear();
+
     if (topology->getNbHexahedra()==0) return; // no hexahedra to extract edges from
 
     const SeqHexahedra& hexahedra = topology->getHexahedra(); // do not use seqQuads directly as it might not be up-to-date
@@ -341,14 +351,12 @@ void QuadUpdate::update()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=topology->seqQuads.getValue().size();
+            quadIndex=seqQuads.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
 
-            topology->seqQuads.beginEdit()->push_back(qu);
-            topology->seqQuads.endEdit();
-
+            seqQuads.push_back(qu);
         }
         else
         {
@@ -372,12 +380,12 @@ void QuadUpdate::update()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=topology->seqQuads.getValue().size();
+            quadIndex=seqQuads.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
-            topology->seqQuads.beginEdit()->push_back(qu);
-            topology->seqQuads.endEdit();
+            seqQuads.push_back(qu);
+
         }
         else
         {
@@ -401,12 +409,11 @@ void QuadUpdate::update()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=topology->seqQuads.getValue().size();
+            quadIndex=seqQuads.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
-            topology->seqQuads.beginEdit()->push_back(qu);
-            topology->seqQuads.endEdit();
+            seqQuads.push_back(qu);
         }
         else
         {
@@ -434,8 +441,7 @@ void QuadUpdate::update()
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
-            topology->seqQuads.beginEdit()->push_back(qu);
-            topology->seqQuads.endEdit();
+            seqQuads.push_back(qu);
         }
         else
         {
@@ -459,12 +465,11 @@ void QuadUpdate::update()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=topology->seqQuads.getValue().size();
+            quadIndex=seqQuads.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
-            topology->seqQuads.beginEdit()->push_back(qu);
-            topology->seqQuads.endEdit();
+            seqQuads.push_back(qu);
         }
         else
         {
@@ -488,12 +493,11 @@ void QuadUpdate::update()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=topology->seqQuads.getValue().size();
+            quadIndex=seqQuads.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
-            topology->seqQuads.beginEdit()->push_back(qu);
-            topology->seqQuads.endEdit();
+            seqQuads.push_back(qu);
         }
         else
         {
@@ -502,10 +506,8 @@ void QuadUpdate::update()
         //m_quadsInHexahedron[i][5]=quadIndex;
     }
 
+    topology->seqQuads.endEdit();
 }
-
-} // namespace internal
-
 
 using namespace sofa::defaulttype;
 using core::topology::BaseMeshTopology;
@@ -929,6 +931,7 @@ void MeshTopology::createEdgesInTetrahedronArray ()
 void MeshTopology::createEdgesInHexahedronArray ()
 {
     //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
+    //getEdges();
     const SeqHexahedra& hexahedra = getHexahedra(); // do not use seqHexahedra directly as it might not be up-to-date
     m_edgesInHexahedron.clear();
     m_edgesInHexahedron.resize(hexahedra.size());

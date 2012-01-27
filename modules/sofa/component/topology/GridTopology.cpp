@@ -42,9 +42,112 @@ int GridTopologyClass = core::RegisterObject("Base class fo a regular grid in 3D
         .add< GridTopology >()
         ;
 
+
+GridTopology::GridUpdate::GridUpdate(GridTopology *t):
+    topology(t)
+{
+    addInput(&t->n);
+    addOutput(&t->seqEdges);
+    addOutput(&t->seqQuads);
+    addOutput(&t->seqHexahedra);
+    setDirtyValue();
+}
+
+void GridTopology::GridUpdate::update()
+{
+    updateEdges();
+    updateQuads();
+    updateHexas();
+}
+
+void GridTopology::GridUpdate::updateEdges()
+{
+    SeqEdges& edges = *topology->seqEdges.beginEdit();
+    const Vec3i& n = topology->n.getValue();
+    edges.clear();
+    edges.reserve( (n[0]-1)*n[1]*n[2] +
+            n[0]*(n[1]-1)*n[2] +
+            n[0]*n[1]*(n[2]-1) );
+    // lines along X
+    for (int z=0; z<n[2]; z++)
+        for (int y=0; y<n[1]; y++)
+            for (int x=0; x<n[0]-1; x++)
+                edges.push_back(Edge(topology->point(x,y,z),topology->point(x+1,y,z)));
+    // lines along Y
+    for (int z=0; z<n[2]; z++)
+        for (int y=0; y<n[1]-1; y++)
+            for (int x=0; x<n[0]; x++)
+                edges.push_back(Edge(topology->point(x,y,z),topology->point(x,y+1,z)));
+    // lines along Z
+    for (int z=0; z<n[2]-1; z++)
+        for (int y=0; y<n[1]; y++)
+            for (int x=0; x<n[0]; x++)
+                edges.push_back(Edge(topology->point(x,y,z),topology->point(x,y,z+1)));
+    topology->seqEdges.endEdit();
+}
+
+void GridTopology::GridUpdate::updateQuads()
+{
+    SeqQuads& quads = *topology->seqQuads.beginEdit();
+    const Vec3i& n = topology->n.getValue();
+    quads.clear();
+    quads.reserve((n[0]-1)*(n[1]-1)*n[2]+(n[0]-1)*n[1]*(n[2]-1)+n[0]*(n[1]-1)*(n[2]-1));
+    // quads along XY plane
+    for (int z=0; z<n[2]; z++)
+        for (int y=0; y<n[1]-1; y++)
+            for (int x=0; x<n[0]-1; x++)
+                quads.push_back(Quad(topology->point(x,y,z),
+                        topology->point(x+1,y,z),
+                        topology->point(x+1,y+1,z),
+                        topology->point(x,y+1,z)));
+    // quads along XZ plane
+    for (int z=0; z<n[2]-1; z++)
+        for (int y=0; y<n[1]; y++)
+            for (int x=0; x<n[0]-1; x++)
+                quads.push_back(Quad(topology->point(x,y,z),
+                        topology->point(x+1,y,z),
+                        topology->point(x+1,y,z+1),
+                        topology->point(x,y,z+1)));
+    // quads along YZ plane
+    for (int z=0; z<n[2]-1; z++)
+        for (int y=0; y<n[1]-1; y++)
+            for (int x=0; x<n[0]; x++)
+                quads.push_back(Quad(topology->point(x,y,z),
+                        topology->point(x,y+1,z),
+                        topology->point(x,y+1,z+1),
+                        topology->point(x,y,z+1)));
+
+    topology->seqQuads.endEdit();
+}
+
+void GridTopology::GridUpdate::updateHexas()
+{
+    SeqHexahedra& hexahedra = *topology->seqHexahedra.beginEdit();
+    const Vec3i& n = topology->n.getValue();
+    hexahedra.clear();
+    hexahedra.reserve((n[0]-1)*(n[1]-1)*(n[2]-1));
+    for (int z=0; z<n[2]-1; z++)
+        for (int y=0; y<n[1]-1; y++)
+            for (int x=0; x<n[0]-1; x++)
+#ifdef SOFA_NEW_HEXA
+                hexahedra.push_back(Hexa(topology->point(x  ,y  ,z  ),topology->point(x+1,y  ,z  ),
+                        topology->point(x+1,y+1,z  ),topology->point(x  ,y+1,z  ),
+                        topology->point(x  ,y  ,z+1),topology->point(x+1,y  ,z+1),
+                        topology->point(x+1,y+1,z+1),topology->point(x  ,y+1,z+1)));
+#else
+                hexahedra.push_back(Hexa(topology->point(x  ,y  ,z  ),topology->point(x+1,y  ,z  ),
+                        topology->point(x  ,y+1,z  ),topology->point(x+1,y+1,z  ),
+                        topology->point(x  ,y  ,z+1),topology->point(x+1,y  ,z+1),
+                        topology->point(x  ,y+1,z+1),topology->point(x+1,y+1,z+1)));
+#endif
+    topology->seqHexahedra.endEdit();
+}
+
 GridTopology::GridTopology()
     : n(initData(&n,Vec3i(2,2,2),"n","grid resolution"))
 {
+    GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
+    this->addSlave(gridUpdate);
 }
 
 GridTopology::GridTopology(int _nx, int _ny, int _nz)
@@ -60,6 +163,8 @@ GridTopology::GridTopology( Vec3i np )
     nbPoints = np[0]*np[1]*np[2];
     this->n.setValue(np);
 }
+
+
 
 void GridTopology::setSize(int nx, int ny, int nz)
 {
@@ -77,77 +182,8 @@ void GridTopology::setNumVertices(Vec3i n)
 void GridTopology::setSize()
 {
     this->nbPoints = n.getValue()[0]*n.getValue()[1]*n.getValue()[2];
-    invalidate();
 }
 
-void GridTopology::updateEdges()
-{
-    SeqEdges& edges = *seqEdges.beginEdit();
-    edges.clear();
-    edges.reserve((n.getValue()[0]-1)*n.getValue()[1]*n.getValue()[2]+n.getValue()[0]*(n.getValue()[1]-1)*n.getValue()[2]+n.getValue()[0]*n.getValue()[1]*(n.getValue()[2]-1));
-    // lines along X
-    for (int z=0; z<n.getValue()[2]; z++)
-        for (int y=0; y<n.getValue()[1]; y++)
-            for (int x=0; x<n.getValue()[0]-1; x++)
-                edges.push_back(Edge(point(x,y,z),point(x+1,y,z)));
-    // lines along Y
-    for (int z=0; z<n.getValue()[2]; z++)
-        for (int y=0; y<n.getValue()[1]-1; y++)
-            for (int x=0; x<n.getValue()[0]; x++)
-                edges.push_back(Edge(point(x,y,z),point(x,y+1,z)));
-    // lines along Z
-    for (int z=0; z<n.getValue()[2]-1; z++)
-        for (int y=0; y<n.getValue()[1]; y++)
-            for (int x=0; x<n.getValue()[0]; x++)
-                edges.push_back(Edge(point(x,y,z),point(x,y,z+1)));
-    seqEdges.endEdit();
-}
-
-void GridTopology::updateQuads()
-{
-    SeqQuads& quads = *seqQuads.beginEdit();
-    quads.clear();
-    quads.reserve((n.getValue()[0]-1)*(n.getValue()[1]-1)*n.getValue()[2]+(n.getValue()[0]-1)*n.getValue()[1]*(n.getValue()[2]-1)+n.getValue()[0]*(n.getValue()[1]-1)*(n.getValue()[2]-1));
-    // quads along XY plane
-    for (int z=0; z<n.getValue()[2]; z++)
-        for (int y=0; y<n.getValue()[1]-1; y++)
-            for (int x=0; x<n.getValue()[0]-1; x++)
-                quads.push_back(Quad(point(x,y,z),point(x+1,y,z),point(x+1,y+1,z),point(x,y+1,z)));
-    // quads along XZ plane
-    for (int z=0; z<n.getValue()[2]-1; z++)
-        for (int y=0; y<n.getValue()[1]; y++)
-            for (int x=0; x<n.getValue()[0]-1; x++)
-                quads.push_back(Quad(point(x,y,z),point(x+1,y,z),point(x+1,y,z+1),point(x,y,z+1)));
-    // quads along YZ plane
-    for (int z=0; z<n.getValue()[2]-1; z++)
-        for (int y=0; y<n.getValue()[1]-1; y++)
-            for (int x=0; x<n.getValue()[0]; x++)
-                quads.push_back(Quad(point(x,y,z),point(x,y+1,z),point(x,y+1,z+1),point(x,y,z+1)));
-
-    seqQuads.endEdit();
-}
-
-void GridTopology::updateHexahedra()
-{
-    SeqHexahedra& hexahedra = *seqHexahedra.beginEdit();
-    hexahedra.clear();
-    hexahedra.reserve((n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1));
-    for (int z=0; z<n.getValue()[2]-1; z++)
-        for (int y=0; y<n.getValue()[1]-1; y++)
-            for (int x=0; x<n.getValue()[0]-1; x++)
-#ifdef SOFA_NEW_HEXA
-                hexahedra.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
-                        point(x+1,y+1,z  ),point(x  ,y+1,z  ),
-                        point(x  ,y  ,z+1),point(x+1,y  ,z+1),
-                        point(x+1,y+1,z+1),point(x  ,y+1,z+1)));
-#else
-                hexahedra.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
-                        point(x  ,y+1,z  ),point(x+1,y+1,z  ),
-                        point(x  ,y  ,z+1),point(x+1,y  ,z+1),
-                        point(x  ,y+1,z+1),point(x+1,y+1,z+1)));
-#endif
-    seqHexahedra.endEdit();
-}
 
 GridTopology::Hexa GridTopology::getHexaCopy(int i)
 {
