@@ -43,7 +43,8 @@ namespace component
 namespace topology
 {
 
-
+/** Handle topology changes (not used currently)
+  */
 template <class DataTypes>
 class HexaRemover: public core::objectmodel::BaseObject
 {

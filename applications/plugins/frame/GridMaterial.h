@@ -68,6 +68,8 @@ using namespace helper;
 using std::map;
 using helper::vector;
 
+/** Material distribution defined using a volumetric image.
+  */
 template<class TMaterialTypes>
 class SOFA_FRAME_API GridMaterial : public Material<TMaterialTypes>
 {
@@ -75,6 +77,8 @@ public:
     SOFA_CLASS( SOFA_TEMPLATE(GridMaterial, TMaterialTypes), SOFA_TEMPLATE(Material, TMaterialTypes) );
 
     typedef Material<TMaterialTypes> Inherited;
+
+
     typedef typename Inherited::Real Real;        ///< Scalar values.
     typedef typename Inherited::MaterialCoord MaterialCoord;
     typedef typename Inherited::VecMaterialCoord VecMaterialCoord;
@@ -82,47 +86,6 @@ public:
     typedef typename Inherited::VecStr VecStr;      ///< Vector of strain or stress tensors
     typedef typename Inherited::StrStr StrStr;			///< Stress-strain matrix
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
-    typedef unsigned char voxelType;
-
-    static const unsigned int num_material_dimensions = 3;
-    static const unsigned int num_spatial_dimensions = 3;
-
-    static const unsigned int nbRef = 4;
-
-    typedef Vec<num_material_dimensions,Real> Coord;    ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
-    typedef vector<Coord> VecCoord;
-    typedef Vec<num_material_dimensions,Real> Gradient;    ///< gradient of a scalar value in material space
-    typedef vector<Gradient> VecGradient;
-    typedef Mat<num_material_dimensions,num_material_dimensions,Real> Hessian;    ///< hessian (second derivative) of a scalar value in material space
-    typedef vector<Hessian> VecHessian;
-
-    typedef Vec<num_spatial_dimensions,Real> SCoord;     ///< Coordinate of a point in the space the object is moving in
-    typedef vector<Coord> VecSCoord;
-    typedef Vec<num_spatial_dimensions,Real> SGradient;    ///< gradient of a scalar value in space
-    typedef vector<Gradient> VecSGradient;
-    typedef Mat<num_spatial_dimensions,num_spatial_dimensions,Real> SHessian;    ///< hessian (second derivative) of a scalar value in space
-    typedef vector<Hessian> VecSHessian;
-
-    typedef Vec<num_spatial_dimensions,int> GCoord;			///< Vector of grid coordinates
-
-    typedef Vec<nbRef,Real> VRefReal;
-    typedef Vec<nbRef,SCoord> VRefCoord;
-    typedef Vec<nbRef,SGradient> VRefGradient;
-    typedef Vec<nbRef,SHessian> VRefHessian;
-    typedef Vec<nbRef,unsigned int> VRef;
-    typedef Vec<3,unsigned int> Vec3i;
-
-    typedef vector<unsigned int> VUI;
-
-    typedef map<Real,Real> mapLabelType; // voxeltype does not work..
-
-    GridMaterial();
-    virtual ~GridMaterial();
-
-    /// Recompute the stress-strain matrix when the parameters are changed.
-    virtual void init();
-    virtual void reinit();
-
     typedef typename Inherited::Strain1 Strain1;
     typedef typename Inherited::VecStrain1 VecStrain1;
     typedef typename Inherited::Strain4 Strain4;
@@ -130,15 +93,75 @@ public:
     typedef typename Inherited::Strain10 Strain10;
     typedef typename Inherited::VecStrain10 VecStrain10;
 
-    /** \brief Compute stress based on local strain and strain rate at each point.
-    */
+
+    /** @name Dimensions
+      Constant for efficiency. These could be template parameters. */
+    //@{
+    static const unsigned int num_material_dimensions = 3;
+    static const unsigned int num_spatial_dimensions = 3;
+    //@}
+
+    /** @name Material space
+      Types related to material coordinates. */
+    //@{
+    typedef Vec<num_material_dimensions,Real> Coord;    ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
+    typedef vector<Coord> VecCoord;
+    typedef Vec<num_material_dimensions,Real> Gradient;    ///< gradient of a scalar value in material space
+    typedef vector<Gradient> VecGradient;
+    typedef Mat<num_material_dimensions,num_material_dimensions,Real> Hessian;    ///< hessian (second derivative) of a scalar value in material space
+    typedef vector<Hessian> VecHessian;
+    //@}
+
+    /** @name World space
+      Types related to spatial coordinates. */
+    //@{
+    typedef Vec<num_spatial_dimensions,Real> SCoord;     ///< Coordinate of a point in the space the object is moving in
+    typedef vector<Coord> VecSCoord;
+    typedef Vec<num_spatial_dimensions,Real> SGradient;    ///< gradient of a scalar value in space
+    typedef vector<Gradient> VecSGradient;
+    typedef Mat<num_spatial_dimensions,num_spatial_dimensions,Real> SHessian;    ///< hessian (second derivative) of a scalar value in space
+    typedef vector<Hessian> VecSHessian;
+    //@}
+
+
+    /** @name Image types
+      Types related to the volumetric image used to represent the material. */
+    //@{
+    typedef unsigned char voxelType;
+    typedef Vec<num_spatial_dimensions,int> GCoord;			///< Vector of grid coordinates
+    //@}
+
+
+    /** @name Sample types
+      Types related to the sampling points. */
+    //@{
+    static const unsigned int nbRef = 4; ///< Number of frames influencing each point.
+    typedef Vec<nbRef,Real> VRefReal;
+    typedef Vec<nbRef,SCoord> VRefCoord;
+    typedef Vec<nbRef,SGradient> VRefGradient;
+    typedef Vec<nbRef,SHessian> VRefHessian;
+    typedef Vec<nbRef,unsigned int> VRef;
+    //@}
+
+
+    GridMaterial();
+    virtual ~GridMaterial();
+
+    virtual void init();
+    /// Recompute the stress-strain matrix when the parameters are changed.
+    virtual void reinit();
+
+
+    /** @name Compute Stress
+      Compute stress or stress change at each point based on local strain and strain rate. */
+    //@{
     virtual void computeStress  ( VecStrain1& stress, VecStrStr* stressStrainMatrices, const VecStrain1& strain, const VecStrain1& strainRate, const VecMaterialCoord& point );
     virtual void computeStress  ( VecStrain4& stress, VecStrStr* stressStrainMatrices, const VecStrain4& strain, const VecStrain4& strainRate, const VecMaterialCoord& point );
     virtual void computeStress  ( VecStrain10& stress, VecStrStr* stressStrainMatrices, const VecStrain10& strain, const VecStrain10& strainRate, const VecMaterialCoord& point );
     virtual void computeStressChange  ( VecStrain1& stressChange, const VecStrain1& strainChange, const VecMaterialCoord& point );
     virtual void computeStressChange  ( VecStrain4& stressChange, const VecStrain4& strainChange, const VecMaterialCoord& point );
     virtual void computeStressChange  ( VecStrain10& stressChange, const VecStrain10& strainChange, const VecMaterialCoord& point );
-
+    //@}
 
     /// get the StressStrain matrices at the given points, assuming null strain or linear material
     virtual void getStressStrainMatrix( StrStr& matrix, const MaterialCoord& point ) const;
@@ -224,6 +247,9 @@ public:
 
 protected:
 
+    typedef Vec<3,unsigned int> Vec3i;
+    typedef vector<unsigned int> VUI;
+    typedef map<Real,Real> mapLabelType; // voxeltype does not work..
 
     /*********************************/
     /*           Grid data           */
