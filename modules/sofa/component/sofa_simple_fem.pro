@@ -26,6 +26,8 @@ HEADERS += initSimpleFEM.h \
            forcefield/TriangleFEMForceField.inl \
            forcefield/TriangularFEMForceField.h \
            forcefield/TriangularFEMForceField.inl \
+           forcefield/TriangularFEMForceFieldOptim.h \
+           forcefield/TriangularFEMForceFieldOptim.inl \
            container/PoissonContainer.h \
            container/StiffnessContainer.h \
            container/RadiusContainer.h \
@@ -41,7 +43,8 @@ SOURCES += initSimpleFEM.cpp \
            forcefield/TetrahedronFEMForceField.cpp \
            forcefield/TriangularAnisotropicFEMForceField.cpp \
            forcefield/TriangleFEMForceField.cpp \
-           forcefield/TriangularFEMForceField.cpp
+           forcefield/TriangularFEMForceField.cpp \
+           forcefield/TriangularFEMForceFieldOptim.cpp
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_INSTALL_INC_DIR/applications

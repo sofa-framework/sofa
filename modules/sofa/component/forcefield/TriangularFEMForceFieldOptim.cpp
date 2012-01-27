@@ -22,9 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initSimpleFEM.h>
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP
 
+#include <sofa/component/forcefield/TriangularFEMForceFieldOptim.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
 {
@@ -32,28 +34,33 @@ namespace sofa
 namespace component
 {
 
-
-void initSimpleFEM()
+namespace forcefield
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(BeamFEMForceField)
-SOFA_LINK_CLASS(HexahedralFEMForceField)
-SOFA_LINK_CLASS(HexahedralFEMForceFieldAndMass)
-SOFA_LINK_CLASS(HexahedronFEMForceField)
-SOFA_LINK_CLASS(HexahedronFEMForceFieldAndMass)
-SOFA_LINK_CLASS(TetrahedralCorotationalFEMForceField)
-SOFA_LINK_CLASS(TetrahedronFEMForceField)
-SOFA_LINK_CLASS(TriangularAnisotropicFEMForceField)
-SOFA_LINK_CLASS(TriangleFEMForceField)
-SOFA_LINK_CLASS(TriangularFEMForceField)
-SOFA_LINK_CLASS(TriangularFEMForceFieldOptim)
+SOFA_DECL_CLASS(TriangularFEMForceFieldOptim)
 
+
+using namespace sofa::defaulttype;
+
+// Register in the Factory
+int TriangularFEMForceFieldOptimClass = core::RegisterObject("Corotational Triangular finite elements")
+#ifndef SOFA_FLOAT
+        .add< TriangularFEMForceFieldOptim<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< TriangularFEMForceFieldOptim<Vec3fTypes> >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_SIMPLE_FEM_API TriangularFEMForceFieldOptim<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_SIMPLE_FEM_API TriangularFEMForceFieldOptim<Vec3fTypes>;
+#endif
+
+
+} // namespace forcefield
 
 } // namespace component
 
