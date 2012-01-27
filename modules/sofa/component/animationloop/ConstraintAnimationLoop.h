@@ -236,7 +236,7 @@ public:
 
     SOFA_CLASS(ConstraintAnimationLoop, sofa::simulation::CollisionAnimationLoop);
 protected:
-    ConstraintAnimationLoop(simulation::Node* gnode);
+    ConstraintAnimationLoop(simulation::Node* gnode = NULL);
     virtual ~ConstraintAnimationLoop();
 public:
     // virtual const char* getTypeName() const { return "AnimationLoop"; }

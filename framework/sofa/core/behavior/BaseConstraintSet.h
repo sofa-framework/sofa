@@ -80,6 +80,7 @@ public:
 protected:
 
     Data< int > group;
+public:
     Data< unsigned int > m_constraintIndex; /// Constraint index (first index in the right hand term resolution vector)
 };
 

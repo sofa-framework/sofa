@@ -18,6 +18,10 @@ contains(DEFINES, SOFA_HAVE_SENSABLE) {
 	usePlugin(Sensable)
 }
 
+contains(DEFINES, SOFA_HAVE_ASYNCHROHAPTICS) {
+	usePlugin(AsynchroHaptics)
+}
+
 contains(DEFINES,SOFA_HAVE_OPTITRACK) {
 	usePlugin(OptiTrackNatNet)
 }
