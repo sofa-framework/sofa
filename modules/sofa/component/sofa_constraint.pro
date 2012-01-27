@@ -7,7 +7,7 @@ DEFINES += SOFA_BUILD_CONSTRAINT
 
 HEADERS += initConstraint.h \
            collision/LocalMinDistance.h \
-#           collision/LocalMinDistance.inl \
+           collision/LocalMinDistance.inl \
            collision/LMDNewProximityIntersection.h \
            collision/LMDNewProximityIntersection.inl \
            collision/FrictionContact.h \

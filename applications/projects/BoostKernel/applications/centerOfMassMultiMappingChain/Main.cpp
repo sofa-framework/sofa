@@ -266,7 +266,7 @@ int main(int argc, char** argv)
 
     // The graph root node
     Node::SPtr  root = sofa::ObjectCreator::CreateRootWithCollisionPipeline(simulationType);
-    root->setGravity( Coord3(0,0,-10) );
+    root->setGravity( Coord3(0,0,-0) );
 
     //Add the objects
     createChainHybrid(root);

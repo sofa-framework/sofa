@@ -36,7 +36,7 @@ namespace component
 
 namespace mapping
 {
-//            SOFA_DECL_CLASS(FrameBlendingMapping);
+SOFA_DECL_CLASS(FrameBlendingMapping_Affine3d);
 
 using namespace defaulttype;
 using namespace core;
@@ -52,14 +52,14 @@ int FrameBlendingMappingClass_Affine3d = core::RegisterObject("skin a model from
         .add< FrameBlendingMapping< Affine3dTypes, Vec3dTypes > >()
         .add< FrameBlendingMapping< Affine3dTypes, Affine3dTypes > >()
         .add< FrameBlendingMapping< Affine3dTypes, Rigid3dTypes > >()
-        .add< FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes > >()
-        .add< FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes > >()
+//                                            .add< FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes > >()
+//                                            .add< FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< FrameBlendingMapping< Affine3dTypes, ExtVec3fTypes > >()
+//                                            .add< FrameBlendingMapping< Affine3dTypes, ExtVec3fTypes > >()
 #endif
 #endif
         ;
@@ -68,14 +68,14 @@ int FrameBlendingMappingClass_Affine3d = core::RegisterObject("skin a model from
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Affine3dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Rigid3dTypes >;
-template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes >;
-template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes >;
+//            template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes >;
+//            template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes >;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 #endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, ExtVec3fTypes >;
+//            template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, ExtVec3fTypes >;
 #endif //SOFA_DOUBLE
 #endif //SOFA_FLOAT
 

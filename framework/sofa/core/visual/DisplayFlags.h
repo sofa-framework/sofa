@@ -168,24 +168,24 @@ public:
 #ifdef SOFA_SMP
     tristate getShowProcessorColor() const { return m_showProcessorColor.state(); }
 #endif
-    void setShowAll(tristate v=true) { m_showAll.setValue(v); }
-    void setShowVisual(tristate v=true ) { m_showVisual.setValue(v); }
-    void setShowVisualModels(tristate v=true)  { m_showVisualModels.setValue(v) ; }
-    void setShowBehavior(tristate v=true) { m_showBehavior.setValue(v); }
-    void setShowBehaviorModels(tristate v=true)  { m_showBehaviorModels.setValue(v) ; }
-    void setShowForceFields(tristate v=true)  { m_showForceFields.setValue(v) ; }
-    void setShowInteractionForceFields(tristate v=true) { m_showInteractionForceFields.setValue(v) ; }
-    void setShowCollision(tristate v=true ) { m_showCollisionModels.setValue(v); }
-    void setShowCollisionModels(tristate v=true) { m_showCollisionModels.setValue(v) ; }
-    void setShowBoundingCollisionModels(tristate v=true) { m_showBoundingCollisionModels.setValue(v) ; }
-    void setShowMapping(tristate v=true) { m_showMapping.setValue(v); }
-    void setShowMappings(tristate v=true) { m_showVisualMappings.setValue(v) ; }
-    void setShowMechanicalMappings(tristate v=true) { m_showMechanicalMappings.setValue(v) ; }
-    void setShowOptions(tristate v=true) { m_showOptions.setValue(v); }
-    void setShowWireFrame(tristate v=true) { m_showWireframe.setValue(v) ; }
-    void setShowNormals(tristate v=true) { m_showNormals.setValue(v) ; }
+    DisplayFlags& setShowAll(tristate v=true) { m_showAll.setValue(v); return (*this); }
+    DisplayFlags& setShowVisual(tristate v=true ) { m_showVisual.setValue(v); return (*this); }
+    DisplayFlags& setShowVisualModels(tristate v=true)  { m_showVisualModels.setValue(v); return (*this); }
+    DisplayFlags& setShowBehavior(tristate v=true) { m_showBehavior.setValue(v); return (*this); }
+    DisplayFlags& setShowBehaviorModels(tristate v=true)  { m_showBehaviorModels.setValue(v); return (*this); }
+    DisplayFlags& setShowForceFields(tristate v=true)  { m_showForceFields.setValue(v); return (*this); }
+    DisplayFlags& setShowInteractionForceFields(tristate v=true) { m_showInteractionForceFields.setValue(v); return (*this); }
+    DisplayFlags& setShowCollision(tristate v=true ) { m_showCollisionModels.setValue(v); return (*this); }
+    DisplayFlags& setShowCollisionModels(tristate v=true) { m_showCollisionModels.setValue(v); return (*this); }
+    DisplayFlags& setShowBoundingCollisionModels(tristate v=true) { m_showBoundingCollisionModels.setValue(v); return (*this); }
+    DisplayFlags& setShowMapping(tristate v=true) { m_showMapping.setValue(v); return (*this); }
+    DisplayFlags& setShowMappings(tristate v=true) { m_showVisualMappings.setValue(v); return (*this); }
+    DisplayFlags& setShowMechanicalMappings(tristate v=true) { m_showMechanicalMappings.setValue(v); return (*this); }
+    DisplayFlags& setShowOptions(tristate v=true) { m_showOptions.setValue(v); return (*this); }
+    DisplayFlags& setShowWireFrame(tristate v=true) { m_showWireframe.setValue(v); return (*this); }
+    DisplayFlags& setShowNormals(tristate v=true) { m_showNormals.setValue(v); return (*this); }
 #ifdef SOFA_SMP
-    void setShowProcessorColor(tristate v) const { return m_showProcessorColor.setValue(v); }
+    DisplayFlags& setShowProcessorColor(tristate v) const { return m_showProcessorColor.setValue(v); return (*this); }
 #endif
     friend std::ostream& operator<< ( std::ostream& os, const DisplayFlags& flags )
     {

@@ -72,20 +72,19 @@ Node::SPtr  createCube(Node::SPtr  parent, double dx, double dy, double dz)
     cube_node->addObject(cubeTopology);
 
 
-    TriangleFEMForceField3::SPtr triangleFEM = New<TriangleFEMForceField3>();
-    triangleFEM->setName("FEM");
-    //triangleFEM->setComputeGlobalMatrix(false);
-    triangleFEM->setMethod(0);
-    triangleFEM->setPoisson(0.3);
-    triangleFEM->setYoung(500);
-    cube_node->addObject(triangleFEM);
+//  TriangleFEMForceField3::SPtr triangleFEM = New<TriangleFEMForceField3>();
+//  triangleFEM->setName("FEM");
+//  //triangleFEM->setComputeGlobalMatrix(false);
+//  triangleFEM->setMethod(0);
+//  triangleFEM->setPoisson(0.3);
+//  triangleFEM->setYoung(500);
+//  cube_node->addObject(triangleFEM);
 
 
     UniformMass3::SPtr uniMassCube = New<UniformMass3>();
     uniMassCube->setTotalMass(1);
     cube_node->addObject(uniMassCube);
 
-    //cube_node->setShowForceFields(true);
 
     return cube_node;
 }
@@ -109,11 +108,13 @@ int main( int argc, char** argv )
     Node::SPtr root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
     root->setGravity( Coord3(0,0,0) );
 
-    VisualStyle::SPtr visualStyle = New<sofa::component::visualmodel::VisualStyle>();
-    root->addObject(visualStyle);
-    VisualStyle::DisplayFlags displayFlags;
-    displayFlags.setShowAll();
-    visualStyle->displayFlags.setValue(displayFlags);
+//  VisualStyle::SPtr visualStyle = New<sofa::component::visualmodel::VisualStyle>();
+//  root->addObject(visualStyle);
+//  VisualStyle::DisplayFlags displayFlags;
+//  displayFlags.setShowAll();
+//  visualStyle->displayFlags.setValue(displayFlags);
+
+    addVisualStyle(root)->setShowVisual().setShowBehavior().setShowMapping(false);
 
     std::string scheme="Implicit";
 
