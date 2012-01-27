@@ -310,6 +310,10 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 #Uncomment if you want to compile the Boost Kernel projects
 #DEFINES += SOFA_HAVE_BOOSTKERNEL
+
+# Uncomment if you want to use AsyncroHaptics
+# DEFINES += SOFA_HAVE_ASYNCHROHAPTICS
+
 ########################################################################
 # Plugins
 ########################################################################
