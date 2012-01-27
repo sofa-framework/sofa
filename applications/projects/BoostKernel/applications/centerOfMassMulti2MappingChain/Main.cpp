@@ -83,6 +83,7 @@ Node::SPtr createChainHybrid(Node::SPtr root)
     torusFEM->addObject(loaderFEM);
 
     MeshTopology::SPtr  meshTorusFEM = New<MeshTopology>();
+    meshTorusFEM->setSrc("",loaderFEM.get());
     torusFEM->addObject(meshTorusFEM);
 
     const Deriv3 translationFEM(2.5,0,0);
@@ -109,7 +110,7 @@ Node::SPtr createChainHybrid(Node::SPtr root)
     Node::SPtr  FEMVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusFEM,dofFEM,visualModel, "red", translationFEM, rotationFEM);
 
     //Node COLLISION
-    Node::SPtr  FEMCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusFEM, dofFEM,collisionModel, modelTypes, translationFEM, rotationFEM );
+//  Node::SPtr  FEMCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusFEM, dofFEM,collisionModel, modelTypes, translationFEM, rotationFEM );
 
     //************************************
     //Torus Spring
@@ -124,6 +125,7 @@ Node::SPtr createChainHybrid(Node::SPtr root)
     loaderSpring->init();
 
     MeshTopology::SPtr  meshTorusSpring = New< MeshTopology>();
+    meshTorusSpring->setSrc("",loaderSpring.get());
     torusSpring->addObject(meshTorusSpring);
 
     const Deriv3 translationSpring(5,0,0);
@@ -151,7 +153,7 @@ Node::SPtr createChainHybrid(Node::SPtr root)
     Node::SPtr  SpringVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusSpring,dofSpring, visualModel,"green", translationSpring, rotationSpring);
 
     //Node COLLISION
-    Node::SPtr  SpringCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusSpring ,dofSpring, collisionModel, modelTypes, translationSpring, rotationSpring);
+//  Node::SPtr  SpringCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusSpring ,dofSpring, collisionModel, modelTypes, translationSpring, rotationSpring);
 
     //************************************
     //Torus FFD
@@ -188,7 +190,7 @@ Node::SPtr createChainHybrid(Node::SPtr root)
     Node::SPtr  FFDVisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(torusFFD, dofFFD, visualModel,"yellow", translationFFD);
 
     //Node COLLISION
-    Node::SPtr  FFDCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusFFD,dofFFD,collisionModel,  modelTypes, translationFFD);
+//  Node::SPtr  FFDCollisionNode = sofa::ObjectCreator::CreateCollisionNodeVec3(torusFFD,dofFFD,collisionModel,  modelTypes, translationFFD);
 
 
 
@@ -213,7 +215,7 @@ Node::SPtr createChainHybrid(Node::SPtr root)
     Node::SPtr  RigidVisualNode = sofa::ObjectCreator::CreateVisualNodeRigid(torusRigid, dofRigid, visualModel,"gray");
 
     //Node COLLISION
-    Node::SPtr  RigidCollisionNode = sofa::ObjectCreator::CreateCollisionNodeRigid(torusRigid,dofRigid,collisionModel, modelTypes);
+//  Node::SPtr  RigidCollisionNode = sofa::ObjectCreator::CreateCollisionNodeRigid(torusRigid,dofRigid,collisionModel, modelTypes);
 
 
     //************************************
@@ -268,7 +270,7 @@ int main(int argc, char** argv)
 
     // The graph root node
     Node::SPtr  root = sofa::ObjectCreator::CreateRootWithCollisionPipeline(simulationType);
-    root->setGravity( Coord3(0,0,-10) );
+    root->setGravity( Coord3(0,0,-0) );
 
     //Add the objects
     createChainHybrid(root);

@@ -60,6 +60,15 @@ void VisualStyle::bwdDraw(VisualParams* vparams)
 
 }
 
+helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::Node::SPtr node )
+{
+    VisualStyle::SPtr visualStyle = New<sofa::component::visualmodel::VisualStyle>();
+    node->addObject(visualStyle);
+//    return visualStyle->displayFlags.setValue(displayFlags);
+    return helper::write(visualStyle->displayFlags);
+
+}
+
 
 }
 }

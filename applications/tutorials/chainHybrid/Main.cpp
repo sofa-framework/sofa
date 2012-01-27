@@ -68,19 +68,20 @@ Node *createChainHybrid(Node *root)
     //************************************
     //Torus Fixed
     {
-        //Node::SPtr  torusFixed = sofa::ObjectCreator::CreateObstacle(chain,"mesh/torus_for_collision.obj", "mesh/torus.obj", "gray");
+        Node::SPtr  torusFixed = sofa::ObjectCreator::CreateObstacle(chain,"mesh/torus_for_collision.obj", "mesh/torus.obj", "gray");
     }
     //************************************
     //Torus FEM
     {
         Node::SPtr  torusFEM = sofa::ObjectCreator::CreateEulerSolverNode(chain,"FEM");
 
-        MeshGmshLoader* loaderFEM = new MeshGmshLoader;
+        MeshGmshLoader::SPtr  loaderFEM = New<MeshGmshLoader>();
         loaderFEM->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh"));
         loaderFEM->load();
         torusFEM->addObject(loaderFEM);
 
         MeshTopology::SPtr meshTorusFEM = sofa::core::objectmodel::New<MeshTopology>();
+        meshTorusFEM->setSrc("",loaderFEM.get());
         torusFEM->addObject(meshTorusFEM);
 
         const Deriv3 translation(2.5,0,0);
@@ -114,7 +115,7 @@ Node *createChainHybrid(Node *root)
     {
         Node::SPtr  torusSpring = sofa::ObjectCreator::CreateEulerSolverNode(chain,"Spring");
 
-        MeshGmshLoader* loaderSpring = new MeshGmshLoader;
+        MeshGmshLoader::SPtr  loaderSpring = New<MeshGmshLoader>();
         loaderSpring->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh"));
         loaderSpring->load();
 
@@ -122,6 +123,7 @@ Node *createChainHybrid(Node *root)
         loaderSpring->init();
 
         MeshTopology::SPtr meshTorusSpring = sofa::core::objectmodel::New<MeshTopology>();
+        meshTorusSpring->setSrc("",loaderSpring.get());
         torusSpring->addObject(meshTorusSpring);
 
         const Deriv3 translation(5,0,0);

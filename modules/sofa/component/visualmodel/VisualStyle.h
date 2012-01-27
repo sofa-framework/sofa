@@ -28,6 +28,7 @@
 #include <sofa/component/component.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -79,6 +80,8 @@ public:
 protected:
     DisplayFlags backupFlags;
 };
+
+helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::Node::SPtr node );
 
 
 } // visual
