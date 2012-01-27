@@ -75,8 +75,13 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addMDx(const core::MechanicalParams*
     const CudaVector<float>& vertexMass = data.vMass;
 
     MeshMatrixMassCuda_addMDxf(dx.size(),(float) d_factor, (float) massLumpingCoeff, vertexMass.deviceRead() , dx.deviceRead(), f.deviceWrite());
-
     d_f.endEdit();
+}
+
+template<>
+void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */)
+{
+    std::cout<<"MeshMatrixMass<CudaVec2fTypes, float>::addForce   NOT implemented yet."<<std::endl;
 }
 
 
