@@ -138,18 +138,21 @@ void RegularGridTopology::init()
 
     if (computeHexaList.getValue())
     {
+        updateHexahedra();
         const SeqHexahedra seq_hexa= this->getHexahedra();
         sout<<"Init: Number of Hexadredra ="<<seq_hexa.size()<<sendl;
     }
 
     if (computeQuadList.getValue())
     {
+        //updateQuads();
         const SeqQuads seq_quads= this->getQuads();
         sout<<"Init: Number of Quads ="<<seq_quads.size()<<sendl;
     }
 
     if (computeEdgeList.getValue())
     {
+        //updateEdges();
         const SeqLines seq_l=this->getLines();
         sout<<"Init: Number of Lines ="<<seq_l.size()<<sendl;
     }
