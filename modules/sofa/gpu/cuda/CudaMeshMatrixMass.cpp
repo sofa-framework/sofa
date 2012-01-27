@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/gpu/cuda/CudaMeshMatrixMass.inl>
 #include <sofa/component/mass/MeshMatrixMass.inl>
 #include <sofa/core/behavior/Mass.inl>
 
@@ -61,7 +62,7 @@ namespace cuda
 SOFA_DECL_CLASS(CudaMeshMatrixMassClass)
 
 int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >()
+        .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >(true)
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::mass::MeshMatrixMass<CudaVec2dTypes, double > >()
 #endif // SOFA_GPU_CUDA_DOUBLE
