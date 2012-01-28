@@ -128,6 +128,10 @@ void CubeTopology::setSize()
         this->nbPoints = nx*ny*nz;
 
     invalidate();
+
+    // FF: add the following functions which seem to be missing, but I am not sure…
+    updateEdges();
+    updateQuads();
 }
 
 int CubeTopology::point(int x, int y, int z, Plane p) const
