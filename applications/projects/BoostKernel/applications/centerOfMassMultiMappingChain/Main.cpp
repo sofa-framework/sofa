@@ -26,29 +26,29 @@
 #include "../../../../tutorials/objectCreator/ObjectCreator.h"
 
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/helper/system/FileRepository.h>
+
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/bgl/BglSimulation.h>
 #include <sofa/simulation/common/Node.h>
+using namespace sofa::simulation;
 
 #include <sofa/gui/GUIManager.h>
-#include <sofa/helper/system/FileRepository.h>
 
 
 #include <sofa/component/loader/MeshGmshLoader.h>
+using namespace sofa::component::loader;
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
+using namespace sofa::component::topology;
 #include <sofa/component/collision/SphereModel.h>
+using namespace sofa::component::collision;
+#include <sofa/component/visualmodel/VisualStyle.h>
+using namespace sofa::component::visualmodel;
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
-// ---------------------------------------------------------------------
-// ---
-// ---------------------------------------------------------------------
-using namespace sofa::simulation;
-using namespace sofa::component::container;
-using namespace sofa::component::loader;
-using namespace sofa::component::topology;
-using namespace sofa::component::collision;
+
 
 Node::SPtr createChainHybrid(Node::SPtr root)
 {
@@ -267,6 +267,7 @@ int main(int argc, char** argv)
     // The graph root node
     Node::SPtr  root = sofa::ObjectCreator::CreateRootWithCollisionPipeline(simulationType);
     root->setGravity( Coord3(0,0,-0) );
+    addVisualStyle(root)->setShowVisual().setShowCollision().setShowMapping(false);
 
     //Add the objects
     createChainHybrid(root);

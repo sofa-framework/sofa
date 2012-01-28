@@ -89,9 +89,12 @@ void TriangleFEMForceField<DataTypes>::init()
     serr<<"TriangleFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<sendl;
     _mesh = this->getContext()->getMeshTopology();
 
+    if( _mesh )
+        serr<<"TriangleFEMForceField<DataTypes>::init, mesh has " <<_mesh->getTriangles().size() <<" triangles and " << _mesh->getQuads().size() << " quads" << endl;
+
     if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
     {
-        serr << "ERROR(TriangleFEMForceField): object must have a triangular MeshTopology."<<sendl;
+        serr << "ERROR(TriangleFEMForceField): Need a MeshTopology with triangles or quads."<<sendl;
         return;
     }
     if (!_mesh->getTriangles().empty())
@@ -658,8 +661,8 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 {
     if (!vparams->displayFlags().getShowForceFields())
         return;
-//     if (!this->_object)
-//         return;
+    //     if (!this->_object)
+    //         return;
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
