@@ -38,12 +38,13 @@ namespace cuda
 
 extern "C"
 {
-    void MeshMatrixMassCuda_addMDxf(unsigned int size, float factor, float massLumpingCoeff, const void * vertexMass, const void* dx, void* res);
+    void MeshMatrixMassCuda_addMDx2f(unsigned int size, float factor, float massLumpingCoeff, const void * vertexMass, const void* dx, void* res);
+    void MeshMatrixMassCuda_addForce2f(int dim, void * f, const void * vertexMass, const double * gravity, float massLumpingCoeff);
 }
 
 
 template<class real>
-__global__ void MeshMatrixMassCuda_addMDx_kernel(int size, real factor, real massLumpingCoeff,const real * vertexMass, const real* dx, real* res)
+__global__ void MeshMatrixMassCuda_addMDx2f_kernel(real factor, real massLumpingCoeff,const real * vertexMass, const real* dx, real* res)
 {
     int tx = threadIdx.x;
     int tx2 = tx>>1;
@@ -71,20 +72,35 @@ __global__ void MeshMatrixMassCuda_addMDx_kernel(int size, real factor, real mas
     res[index2+tx] += s_dx[tx] * s_vertexMass[tx2] * massLumpingCoeff * factor;
 }
 
-
+template<class real>
+__global__ void MeshMatrixMassCuda_addForce2f_kernel(int dim, real *  f, const real * vertexMass, real g_x, real g_y, real massLumpingCoeff)
+{
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index2 = index * 2;
+    if (index < dim)
+    {
+        f[index2+0] += vertexMass[index] * massLumpingCoeff * g_x;
+        f[index2+1] += vertexMass[index] * massLumpingCoeff * g_y;
+    }
+}
 
 //////////////////////
 // CPU-side methods //
 //////////////////////
 
-void MeshMatrixMassCuda_addMDxf(unsigned int size, float factor, float massLumpingCoeff, const void * vertexMass, const void* dx, void* res)
+void MeshMatrixMassCuda_addMDx2f(unsigned int size, float factor, float massLumpingCoeff, const void * vertexMass, const void* dx, void* res)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    {MeshMatrixMassCuda_addMDx_kernel<float><<< grid, threads >>>(size, factor, massLumpingCoeff, (const float *) vertexMass, (const float *) dx, (float*) res);}
+    {MeshMatrixMassCuda_addMDx2f_kernel<float><<< grid, threads >>>(factor, massLumpingCoeff, (const float *) vertexMass, (const float *) dx, (float*) res);}
 }
 
-
+void MeshMatrixMassCuda_addForce2f(int dim, void * f, const void * vertexMass, const double * g, float massLumpingCoeff)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((dim+BSIZE-1)/BSIZE,1);
+    MeshMatrixMassCuda_addForce2f_kernel<float><<< grid, threads >>>(dim, (float *) f, (const float *) vertexMass, g[0], g[1], massLumpingCoeff);
+}
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda

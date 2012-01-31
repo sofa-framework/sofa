@@ -41,7 +41,8 @@ using namespace sofa::component::linearsolver;
 
 extern "C"
 {
-    void MeshMatrixMassCuda_addMDxf(unsigned int size, float factor, float massLumpingCoeff,const void * vertexMass, const void* dx, void* res);
+    void MeshMatrixMassCuda_addMDx2f(unsigned int size, float factor, float massLumpingCoeff,const void * vertexMass, const void* dx, void* res);
+    void MeshMatrixMassCuda_addForce2f(int dim, void * f, const void * vertexMass, const double * gravity, float massLumpingCoeff);
 }
 }//cuda
 }//gpu
@@ -56,7 +57,7 @@ using namespace sofa::gpu::cuda;
 template<>
 void MeshMatrixMass<CudaVec2fTypes, float>::copyVertexMass()
 {
-    std::cout<<"CudaMeshMatrixMass::copyVertexMass is called"<<std::endl;
+//    std::cout<<"CudaMeshMatrixMass::copyVertexMass is called"<<std::endl;
     vector<MassType>& vertexInf = *(vertexMassInfo.beginEdit());
     data.vMass.resize(_topology->getNbPoints());
 
@@ -74,14 +75,19 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addMDx(const core::MechanicalParams*
     const VecDeriv& dx = d_dx.getValue();
     const CudaVector<float>& vertexMass = data.vMass;
 
-    MeshMatrixMassCuda_addMDxf(dx.size(),(float) d_factor, (float) massLumpingCoeff, vertexMass.deviceRead() , dx.deviceRead(), f.deviceWrite());
+    MeshMatrixMassCuda_addMDx2f(dx.size(),(float) d_factor, (float) massLumpingCoeff, vertexMass.deviceRead() , dx.deviceRead(), f.deviceWrite());
     d_f.endEdit();
 }
 
 template<>
-void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */)
+void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
 {
-    std::cout<<"MeshMatrixMass<CudaVec2fTypes, float>::addForce   NOT implemented yet."<<std::endl;
+    VecDeriv& f = *d_f.beginEdit();
+    const CudaVector<float>& vertexMass = data.vMass;
+    Vec3d g ( this->getContext()->getGravity() );
+
+    MeshMatrixMassCuda_addForce2f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) massLumpingCoeff);
+    d_f.endEdit();
 }
 
 
