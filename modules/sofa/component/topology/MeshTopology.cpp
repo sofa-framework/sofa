@@ -618,18 +618,21 @@ void MeshTopology::init()
         EdgeUpdate::SPtr edgeUpdate = sofa::core::objectmodel::New<EdgeUpdate>(this);
         edgeUpdate->setName("edgeUpdate");
         this->addSlave(edgeUpdate);
+        edgeUpdate->update();
     }
     if(seqTriangles.getValue().empty() )
     {
         TriangleUpdate::SPtr triangleUpdate = sofa::core::objectmodel::New<TriangleUpdate>(this);
         triangleUpdate->setName("triangleUpdate");
         this->addSlave(triangleUpdate);
+        triangleUpdate->update();
     }
     if(seqQuads.getValue().empty() )
     {
         QuadUpdate::SPtr quadUpdate = sofa::core::objectmodel::New<QuadUpdate>(this);
         quadUpdate->setName("quadUpdate");
         this->addSlave(quadUpdate);
+        quadUpdate->update();
     }
 }
 
