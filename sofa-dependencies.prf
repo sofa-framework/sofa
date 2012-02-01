@@ -154,7 +154,7 @@ declare(meshconv,         applications/projects/meshconv,         sofa_component
 declare(sofamodeler,      applications/projects/Modeler/lib,      sofaguimain sofa_component_dev)
 declare(Modeler,          applications/projects/Modeler/exec,     sofamodeler sofa_component_dev)
 declare(sofaCUDA,         applications/projects/sofaCUDA,         sofaguimain sofagpucuda sofagpucuda_dev sofa_component_dev)
-declare(sofaCUDA_Bench,   applications/projects/sofaCUDA_Bench,         sofaguimain sofagpucuda sofa_component_dev)
+declare(sofaCUDA_Bench,   applications/projects/sofaCUDA_Bench,         sofaguimain sofa_component_dev sofa_base_linear_solver sofagpucuda sofagpucuda_dev)
 declare(sofaOPENCL,       applications/projects/sofaOPENCL,         sofaguimain sofagpuopencl sofa_component_dev)		#opencl
 declare(SofaFlowVR,       applications/projects/SofaFlowVR,       sofaguimain)
 declare(SofaVRPNServer, applications/projects/SofaVRPNServer, vrpn_quat vrpn_atmellib vrpn_server)
