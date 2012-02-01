@@ -5,6 +5,10 @@ TARGET = sofa_base_mechanics
 
 DEFINES += SOFA_BUILD_BASE_MECHANICS
 
+win32 {
+	QMAKE_CXXFLAGS += /bigobj
+}
+
 HEADERS += initBaseMechanics.h \
            container/MappedObject.h \
            container/MappedObject.inl \

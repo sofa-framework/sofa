@@ -5,6 +5,10 @@ TARGET = sofa_misc_mapping
 
 DEFINES += SOFA_BUILD_MISC_MAPPING
 
+win32 {
+	QMAKE_CXXFLAGS += /bigobj
+}
+
 HEADERS += initMiscMapping.h \
            mapping/BeamLinearMapping.h \
            mapping/BeamLinearMapping.inl \

@@ -13,6 +13,10 @@ DEPENDPATH -= $$ROOT_SRC_DIR/modules
 INCLUDEPATH -= $$ROOT_SRC_DIR/applications
 DEPENDPATH -= $$ROOT_SRC_DIR/applications
 
+win32 {
+	QMAKE_CXXFLAGS += /bigobj
+}
+
 HEADERS += \
 	core.h \
 	VecId.h \
