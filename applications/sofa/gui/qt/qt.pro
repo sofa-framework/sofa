@@ -38,6 +38,9 @@ else {
 	}
 }
 
+win32 {
+	QMAKE_CXXFLAGS += /bigobj
+}
 
 HEADERS += viewer/VisualModelPolicy.h \
 	viewer/SofaViewer.h \

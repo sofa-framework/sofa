@@ -5,6 +5,10 @@ TARGET = sofa_constraint
 
 DEFINES += SOFA_BUILD_CONSTRAINT
 
+win32 {
+	QMAKE_CXXFLAGS += /bigobj
+}
+
 HEADERS += initConstraint.h \
            collision/LocalMinDistance.h \
            collision/LocalMinDistance.inl \

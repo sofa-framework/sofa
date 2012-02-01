@@ -5,6 +5,10 @@ TARGET = sofa_base_linear_solver
 
 DEFINES += SOFA_BUILD_BASE_LINEAR_SOLVER
 
+win32 {
+	QMAKE_CXXFLAGS += /bigobj
+}
+
 HEADERS += initBaseLinearSolver.h \
            linearsolver/CGLinearSolver.h \
 		   linearsolver/CGLinearSolver.inl \
