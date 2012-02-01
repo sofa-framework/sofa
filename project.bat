@@ -4,6 +4,7 @@ REM Visual C++ 2003 or 2005
 REM use : project [VC7 / VC8 / vc9 / clean]
 REM default visual project depends on the environment variable QMAKESPEC 
 
+set TARGET_MACHINE=x86
 @if not "%QMAKEPATH%" == ""  goto params
 set QMAKEPATH=%CD%\tools\qt4win
 set QTDIR=%CD%\tools\qt4win
@@ -52,7 +53,8 @@ qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
 goto common
 
 :vc9_x64
-set QMAKESPEC=win64-msvc2008
+set QMAKESPEC=win32-msvc2008
+set TARGET_MACHINE=x64
 @echo on
 @echo Making Visual project 9 x64
 qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
